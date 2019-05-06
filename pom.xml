@@ -625,4 +625,9 @@
       </build>
     </profile>
   </profiles>
+
+  <modules>
+    <module>modules</module>
+    <module>distribution</module>
+  </modules>
 </project>
