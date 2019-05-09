@@ -32,5 +32,6 @@
 
   <modules>
     <module>startup-customization</module>
+    <module>homepage</module>
   </modules>
 </project>

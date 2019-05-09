@@ -1,0 +1,47 @@
+<html>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Welcome to LFS</title>
+        <!-- <link href="../content/starter/css/bundle.css" rel="stylesheet"> -->
+    </head>
+    <body>
+        <div id="main-container"></div>
+        <script src="/apps/lfs//index.js"></script>
+
+        <h1>Session</h1>
+        <h2 id="Login"><a href="../system/sling/login.html" title="Login to Apache Sling">Login</a> (admin:admin)</h2>
+        <h2 id="Logout"><a href="../system/sling/logout" title="Logout of Apache Sling">Logout,</a> </h2>
+
+        <script src="../system/sling.js"></script>
+        <script>
+            var info = Sling.getSessionInfo();
+            if (info.userID !== 'anonymous') {
+                var login = document.querySelector('#Login');
+                var logout = document.querySelector('#Logout');
+                login.style.display = 'none';
+                logout.style.display = 'block';
+                logout.insertAdjacentHTML('beforeend', info.userID);
+            }
+        </script>
+    </body>
+</html>

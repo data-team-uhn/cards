@@ -26,3 +26,4 @@
 [artifacts]
     # Customizes the page displayed during startup, before all the bundles are activated
     ca.sickkids.ccm.lfs/lfs-startup-customization/${lfs.version}
+    ca.sickkids.ccm.lfs/lfs-homepage/${lfs.version}
