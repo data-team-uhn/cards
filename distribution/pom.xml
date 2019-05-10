@@ -32,19 +32,198 @@
 
   <properties>
     <sling.java.version>8</sling.java.version>
+    <test.host>localhost</test.host>
+     <!--
+      Set this to true to stop mvn once the integration test Jetty instance is
+      started. Useful to manually test the integration testing webapp.
+      -->
+    <launchpad.keep.running>false</launchpad.keep.running>
+
+        <!--
+          If set to "true" this will start the launchpad with standard debug options,
+          or set to a string to provide custom debug settings
+        -->
+    <launchpad.debug/>
   </properties>
 
   <build>
     <plugins>
+      <!-- Reserve the port numbers used by the webapp during the build -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>reserve-network-port</id>
+            <goals>
+              <goal>reserve-network-port</goal>
+            </goals>
+            <phase>process-resources</phase>
+            <configuration>
+              <minPortNumber>9000</minPortNumber>
+              <portNames>
+                <portName>http.port</portName>
+                <portName>sling.control.port</portName>
+              </portNames>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.sling</groupId>
         <artifactId>slingstart-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>start-container</id>
+            <goals>
+              <goal>start</goal>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
           <setFeatureVersions>false</setFeatureVersions>
+          <usePomDependencies>true</usePomDependencies>
+          <servers>
+            <server>
+              <port>${http.port}</port>
+              <controlPort>${sling.control.port}</controlPort>
+              <contextPath>${http.base.path}</contextPath>
+              <debug>${launchpad.debug}</debug>
+            </server>
+          </servers>
         </configuration>
       </plugin>
+
+      <!-- This is a plugin designed to run integration tests (Surefire is more for unit tests) -->
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <runOrder>alphabetical</runOrder>
+          <systemPropertyVariables>
+            <launchpad.http.server.url>http://${test.host}:${http.port}/</launchpad.http.server.url>
+            <launchpad.webdav.server.url>http://${test.host}:${http.port}/${webdav.workspace.path}</launchpad.webdav.server.url>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
+
+  <!-- All of the below below dependencies were copied from the pom.xml of the sling-org-apache-sling-caconfig-integration-tests repository -->
+  <dependencies>
+    <!-- From Apache Sling caconfig tests -->   
+    <dependency>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>org.apache.sling.caconfig.api</artifactId>
+        <version>1.1.3-SNAPSHOT</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>org.apache.sling.caconfig.spi</artifactId>
+        <version>1.3.5-SNAPSHOT</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>org.apache.sling.caconfig.impl</artifactId>
+        <version>1.4.17-SNAPSHOT</version>
+        <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>3.1.0</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>1.7.5</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>org.apache.sling.commons.testing</artifactId>
+        <version>2.1.0</version>
+        <exclusions>
+            <exclusion>
+                <groupId>junit</groupId>
+                <artifactId>junit-dep</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>asm</groupId>
+                <artifactId>asm</artifactId>
+            </exclusion>
+        </exclusions>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>javax.jcr</groupId>
+        <artifactId>jcr</artifactId>
+        <version>2.0</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>org.apache.sling.junit.teleporter</artifactId>
+        <version>1.0.14</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>org.apache.sling.junit.core</artifactId>
+        <version>1.0.26</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>org.apache.sling.testing.tools</artifactId>
+        <version>1.0.16</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>org.apache.sling.resourcebuilder</artifactId>
+        <version>1.0.2</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>org.apache.sling.launchpad</artifactId>
+        <version>9</version>
+        <type>slingfeature</type>
+        <classifier>slingfeature</classifier>
+        <scope>provided</scope>
+    </dependency>
+    <!-- From Apache Sling caconfig tests (End) -->
+  </dependencies>
 
   <profiles>
     <profile>
