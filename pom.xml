@@ -253,12 +253,18 @@
         </configuration>
       </plugin>
 
+      <!-- Run Checkstyle on Java code-->
       <plugin>
-        <!-- Run Checkstyle -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
       </plugin>
-      <!-- We want to force packaging the license resources in the produced XWiki artifacts -->
+
+      <!-- Validate HTL files -->
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>htl-maven-plugin</artifactId>
+      </plugin>
+
       <!-- Check that declared dependencies match what's actually used -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -277,6 +283,7 @@
           </execution>
         </executions>
       </plugin>
+
       <!-- Fail the build if the test coverage is below a given value. -->
       <plugin>
         <groupId>org.jacoco</groupId>
@@ -390,6 +397,26 @@
             </execution>
           </executions>
         </plugin>
+
+        <!-- Validate HTL files -->
+        <plugin>
+          <groupId>org.apache.sling</groupId>
+          <artifactId>htl-maven-plugin</artifactId>
+          <version>1.2.2-1.4.0</version>
+          <executions>
+            <execution>
+              <id>validate-htl</id>
+              <goals>
+                <goal>validate</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <failOnWarnings>true</failOnWarnings>
+            <sourceDirectory>src</sourceDirectory>
+          </configuration>
+        </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
