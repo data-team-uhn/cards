@@ -18,7 +18,7 @@
 #
 
 # This adds support for various scripting languages in Sling
-[feature name=sling]
+[feature name=sling-scripting]
 
 [artifacts]
     # The generic support for scripting in Sling
