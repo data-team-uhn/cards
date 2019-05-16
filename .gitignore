@@ -41,3 +41,9 @@ nbproject
 
 # Eclipse build for war modules
 overlays
+
+# Node and friends
+**/src/main/frontend/node/
+**/src/main/frontend/node_modules/
+**/src/main/frontend/dist/
+**/src/main/frontend/package-lock.json
