@@ -71,33 +71,6 @@
     org.apache.httpcomponents/httpclient-osgi/4.5.6
     javax.mail/mail/1.5.0-b01
 
-# The webconsole, administrative UI for inspecting the application
-[artifacts startLevel=5]
-    org.apache.sling/org.apache.sling.extensions.webconsolebranding/1.0.2
-    org.apache.sling/org.apache.sling.extensions.webconsolesecurityprovider/1.2.0
-    org.apache.felix/org.apache.felix.inventory/1.0.6
-    org.apache.felix/org.apache.felix.prefs/1.1.0
-    org.apache.felix/org.apache.felix.webconsole/4.3.8
-    org.apache.felix/org.apache.felix.webconsole.plugins.ds/2.1.0
-    org.apache.felix/org.apache.felix.webconsole.plugins.obr/1.0.4
-    org.apache.felix/org.apache.felix.webconsole.plugins.packageadmin/1.0.4
-    org.apache.felix/org.apache.felix.webconsole.plugins.event/1.1.8
-    org.apache.felix/org.apache.felix.webconsole.plugins.memoryusage/1.0.8
-    org.apache.sling/org.apache.sling.commons.johnzon/1.1.2
-    org.apache.felix/org.apache.felix.bundlerepository/2.0.10
-    org.apache.sling/org.apache.sling.extensions.threaddump/0.2.2
-    org.apache.aries.jmx/org.apache.aries.jmx.api/1.1.5
-    org.apache.aries.jmx/org.apache.aries.jmx.core/1.1.8
-    org.apache.aries.jmx/org.apache.aries.jmx.whiteboard/1.2.0
-    org.apache.sling/org.apache.sling.jcr.webconsole/1.0.2
-    commons-fileupload/commons-fileupload/1.3.3
-    org.apache.sling/org.apache.sling.commons.log.webconsole/1.0.0
-
-# Initial content
-[artifacts startLevel=7]
-    org.apache.sling/org.apache.sling.starter.content/1.0.2
-    org.apache.sling/org.apache.sling.starter.startup/1.0.7-SNAPSHOT
-
 # Other Apache Felix modules
 [artifacts startLevel=10]
     org.apache.felix/org.apache.felix.http.sslfilter/1.2.6
@@ -227,6 +200,3 @@
     user.mapping=[
       "org.apache.sling.jcr.resource:validation\=sling-readall"
     ]
-
-  org.apache.sling.jackrabbit.usermanager.impl.post.CreateUserServlet
-    self.registration.enabled=B"true"
