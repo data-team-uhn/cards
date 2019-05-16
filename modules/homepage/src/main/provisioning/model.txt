@@ -17,13 +17,14 @@
 #  under the License.
 #
 
-# This is the LFS project
-[feature name=lfs]
+# The LFS homepage
+[feature name=lfs-homepage]
 
-[variables]
-    lfs.version=0.1-SNAPSHOT
+[:repoinit]
+    create path (lfs:Homepage) /content
+    create path (sling:Folder) /libs/lfs/resources
 
-[artifacts]
-    # Customizes the page displayed during startup, before all the bundles are activated
-    ca.sickkids.ccm.lfs/lfs-startup-customization/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-homepage/${lfs.version}/slingfeature/slingfeature
+    set ACL for everyone
+        allow   jcr:read    on /content
+        allow   jcr:read    on /libs/lfs/resources
+    end

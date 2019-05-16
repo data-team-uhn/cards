@@ -32,13 +32,6 @@
 
   <build>
     <plugins>
-      <!-- This is an OSGi bundle -->
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-
       <!-- Compile the React code -->
       <plugin>
         <groupId>com.github.eirslett</groupId>
@@ -76,14 +69,44 @@
           <workingDirectory>src/main/frontend</workingDirectory>
         </configuration>
       </plugin>
+
+      <!-- This is an OSGi bundle -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
         <configuration>
           <instructions>
             <Include-Resource>src/main/frontend/dist/,{maven-resources}</Include-Resource>
-            <Sling-Initial-Content>SLING-INF/content/;overwrite:=true;path:=/;maven:mount:=false</Sling-Initial-Content>
+            <Sling-Nodetypes>SLING-INF/nodetypes/homepage.cnd</Sling-Nodetypes>
+            <!-- Initial content to be loaded on bundle installation -->
+            <Sling-Initial-Content>
+              SLING-INF/content/content;overwrite:=true;path:=/content;maven:mount:=false,
+              SLING-INF/content/libs/lfs/Homepage;overwrite:=true;path:=/libs/lfs/Homepage;maven:mount:=true,
+              SLING-INF/content/libs/lfs/resources;overwrite:=true;path:=/libs/lfs/resources;maven:mount:=true
+            </Sling-Initial-Content>
           </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>slingstart-maven-plugin</artifactId>
+        <version>1.8.2</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>attach-prov-model</id>
+            <goals>
+              <goal>attach-slingfeature</goal>
+              <goal>attach-modelarchive</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <setFeatureVersions>true</setFeatureVersions>
+          <attach>
+            <type>jar</type>
+          </attach>
         </configuration>
       </plugin>
     </plugins>

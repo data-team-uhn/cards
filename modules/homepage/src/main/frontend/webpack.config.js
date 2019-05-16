@@ -19,7 +19,7 @@ module.exports = {
     extensions: ['*', '.js', '.jsx']
   },
   output: {
-    path: __dirname + '/dist/SLING-INF/content/apps/lfs/',
+    path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
     publicPath: '/',
     filename: '[name].js'
   },
