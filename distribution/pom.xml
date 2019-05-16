@@ -55,51 +55,14 @@
         </configuration>
       </plugin>
 
-      <!-- Reserve the port numbers used by the webapp during the build -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>reserve-network-port</id>
-            <goals>
-              <goal>reserve-network-port</goal>
-            </goals>
-            <phase>process-resources</phase>
-            <configuration>
-              <minPortNumber>9000</minPortNumber>
-              <portNames>
-                <portName>http.port</portName>
-                <portName>sling.control.port</portName>
-              </portNames>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.sling</groupId>
         <artifactId>slingstart-maven-plugin</artifactId>
         <version>1.8.2</version>
         <!-- This allows us to use the "slingstart" packaging type -->
         <extensions>true</extensions>
-        <executions>
-          <execution>
-            <id>start-container</id>
-            <goals>
-              <goal>start</goal>
-              <goal>stop</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <createWebapp>true</createWebapp>
-          <servers>
-            <server>
-              <port>${http.port}</port>
-              <controlPort>${sling.control.port}</controlPort>
-            </server>
-          </servers>
         </configuration>
       </plugin>
     </plugins>
