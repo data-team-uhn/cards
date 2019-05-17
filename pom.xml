@@ -450,6 +450,17 @@
           <artifactId>maven-clean-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
           <version>3.1.0</version>
+          <!-- Delete the running instance when cleaning -->
+          <configuration>
+            <filesets>
+              <fileset>
+                <directory>${basedir}</directory>
+                <includes>
+                  <include>sling/**</include>
+                </includes>
+              </fileset>
+            </filesets>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
