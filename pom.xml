@@ -413,7 +413,7 @@
           </executions>
           <configuration>
             <failOnWarnings>true</failOnWarnings>
-            <sourceDirectory>src</sourceDirectory>
+            <sourceDirectory>src/main/resources/</sourceDirectory>
           </configuration>
         </plugin>
 
