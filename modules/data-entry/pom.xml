@@ -26,9 +26,9 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-homepage</artifactId>
+  <artifactId>lfs-dataentry</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - The homepage</name>
+  <name>LFS - Data entry module</name>
 
   <build>
     <plugins>
@@ -53,16 +53,6 @@
               <goal>npm</goal>
             </goals>
           </execution>
-          <!-- Runs webpack to compile the JS source code -->
-          <execution>
-            <id>webpack</id>
-            <goals>
-              <goal>webpack</goal>
-            </goals>
-            <configuration>
-              <outputdir>${project.build.directory}/classes/SLING-INF/content/apps/lfs/</outputdir>
-            </configuration>
-          </execution>
         </executions>
         <configuration>
           <nodeVersion>v12.2.0</nodeVersion>
@@ -77,13 +67,9 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Include-Resource>src/main/frontend/dist/,{maven-resources}</Include-Resource>
-            <Sling-Nodetypes>SLING-INF/nodetypes/homepage.cnd</Sling-Nodetypes>
-            <!-- Initial content to be loaded on bundle installation -->
+            <Include-Resource>{maven-resources}</Include-Resource>
+            <Sling-Nodetypes>SLING-INF/nodetypes/dataentry.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
-              SLING-INF/content/content;overwrite:=true;path:=/content;maven:mount:=false,
-              SLING-INF/content/libs/lfs/Homepage;overwrite:=true;path:=/libs/lfs/Homepage;maven:mount:=true,
-              SLING-INF/content/libs/lfs/resources;overwrite:=true;path:=/libs/lfs/resources;maven:mount:=true
             </Sling-Initial-Content>
           </instructions>
         </configuration>

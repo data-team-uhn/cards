@@ -27,8 +27,8 @@
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// Simple nodetype for identifying the homepage.
-[lfs:Dataentry] > sling:Resource
+// Simple nodetype to store user-entered data.
+[lfs:dataEntry] > sling:Resource
   // Attributes:
   query
 
