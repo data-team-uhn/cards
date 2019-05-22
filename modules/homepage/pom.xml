@@ -78,7 +78,7 @@
         <configuration>
           <instructions>
             <Include-Resource>src/main/frontend/dist/,{maven-resources}</Include-Resource>
-            <Sling-Nodetypes>SLING-INF/nodetypes/homepage.cnd</Sling-Nodetypes>
+            <Sling-Nodetypes>SLING-INF/nodetypes/homepage.cnd,SLING-INF/nodetypes/dataentry.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>
               SLING-INF/content/content;overwrite:=true;path:=/content;maven:mount:=false,
