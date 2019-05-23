@@ -88,12 +88,12 @@ function HomePage(props) {
         </Typography>
         <Grid container spacing={2} justify="center">
           <Grid item>
-            <Button variant="contained" href="../content/slingshot.html" color="primary">
+            <Button variant="contained" href="content.loginSignUp.html" color="primary">
               Login
             </Button>
           </Grid>
           <Grid item>
-            <Button variant="outlined" href="../content/slingshot.html" color="primary">
+            <Button variant="outlined" href="content.loginSignUp.html" color="primary">
               Sign Up
             </Button>
           </Grid>
