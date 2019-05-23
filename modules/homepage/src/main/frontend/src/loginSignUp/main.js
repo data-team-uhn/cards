@@ -29,6 +29,8 @@ class MainPageContainer extends React.Component {
   }
 }
 
+export default MainPageContainer;
+
 // const MainElement = <Main />;
 
 ReactDOM.render(

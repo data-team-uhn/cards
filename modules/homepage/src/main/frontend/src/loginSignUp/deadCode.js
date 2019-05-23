@@ -162,11 +162,11 @@
       }
 
       const RegisterComponent = withStyles(styles)(Register);
-
+/*
       <Slide direction="up" in={this.state.signInShown} mountOnEnter unmountOnExit>
-      {/* {this.state.signInShown ? <SignIn swapForm={this.handleSwap} /> : <InputForm swapForm={this.handleSwap} />} */}
+      {/* {this.state.signInShown ? <SignIn swapForm={this.handleSwap} /> : <InputForm swapForm={this.handleSwap} />} *//*}
       {this.state.signInShown ? <SignIn swapForm={this.handleSwap} /> : null } 
     </Slide>
     <Slide direction="up" in={!this.state.signInShown} mountOnEnter unmountOnExit>
       {!this.state.signInShown ? <InputForm swapForm={this.handleSwap} /> : null}
-    </Slide>
+    </Slide>*/
