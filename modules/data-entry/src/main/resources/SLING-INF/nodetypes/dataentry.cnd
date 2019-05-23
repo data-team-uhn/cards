@@ -33,3 +33,10 @@
   query
 
   // We don't define any properties or subchildren
+
+//-----------------------------------------------------------------------------
+// Test nodetype to display data entries
+[lfs:dataEntryViewer] > sling:Folder
+  // Attributes:
+  query
+  - sling:resourceType (STRING) = "lfs/dataEntryViewer" mandatory autocreated protected

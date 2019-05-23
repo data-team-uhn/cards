@@ -32,6 +32,12 @@
 
   <build>
     <plugins>
+      <!-- Compile the React code -->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+      </plugin>
+
       <!-- This is an OSGi bundle -->
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -39,9 +45,12 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Include-Resource>{maven-resources}</Include-Resource>
+            <Include-Resource>src/main/frontend/dist/,{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/dataentry.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
+              SLING-INF/content/dataview;overwrite:=true;path:=/dataview;maven:mount:=false,
+              SLING-INF/content/libs/lfs/dataEntryViewer;overwrite:=true;path:=/libs/lfs/dataEntryViewer;maven:mount:=true,
+              SLING-INF/content/libs/lfs/resources;overwrite:=true;path:=/libs/lfs/resources;maven:mount:=true
             </Sling-Initial-Content>
           </instructions>
         </configuration>

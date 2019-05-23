@@ -19,3 +19,14 @@
 
 # The LFS homepage
 [feature name=lfs-dataentry]
+
+[:repoinit]
+    create path (lfs:dataEntryViewer) /dataview
+    create path (lfs:dataEntry) /dataview/test
+    create path (lfs:dataEntry) /dataview/test2
+
+    set ACL for everyone
+        allow   jcr:read    on /dataview
+        allow   jcr:read    on /dataview/test
+        deny    jcr:read    on /dataview/test2
+    end
