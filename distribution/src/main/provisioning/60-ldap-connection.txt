@@ -22,10 +22,10 @@
 
 [configurations]
   org.apache.jackrabbit.oak.security.authentication.ldap.impl.LdapIdentityProvider
-    bind.dn="CN\=<username>,OU\=<ou>,DC\=sickkids,DC\=ca"
-    bind.password=<Password>
-    host.name="sickkids.ca"
+    bind.dn="${lfs.ldap.dn}"
+    bind.password="${lfs.ldap.password}"
+    host.name="${lfs.ldap.host}"
     provider.name="ldap"
-    user.baseDN="DC\=sickkids,DC\=ca"
-    user.idAttribute="sAMAccountName"
-    user.objectclass=["user"]
+    user.baseDN="${lfs.ldap.baseDn}"
+    user.idAttribute="${lfs.ldap.idAttribute}"
+    user.objectclass=["${lfs.ldap.userClass}"]

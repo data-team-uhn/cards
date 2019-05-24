@@ -32,6 +32,12 @@
 
   <properties>
     <sling.java.version>8</sling.java.version>
+    <lfs.ldap.dn/>
+    <lfs.ldap.password/>
+    <lfs.ldap.host/>
+    <lfs.ldap.baseDn/>
+    <lfs.ldap.idAttribute/>
+    <lfs.ldap.userClass/>
   </properties>
 
   <build>
@@ -41,6 +47,7 @@
         <artifactId>slingstart-maven-plugin</artifactId>
         <configuration>
           <setFeatureVersions>false</setFeatureVersions>
+          <usePomVariables>true</usePomVariables>
         </configuration>
       </plugin>
     </plugins>
