@@ -28,11 +28,11 @@ class SignIn extends React.Component {
   }
 
   loginRedirectPath = () => {
-
+    return "/";
   };
 
   loginValidationPOSTPath = () => {
-
+    return "/j_security_check";
   };
 
   togglePasswordMask = () => {
@@ -56,8 +56,8 @@ class SignIn extends React.Component {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form} method="POST" action={this.loginValidationPOSTPath}>
-            <input type="hidden" name="resource" value={this.loginRedirectPath} />
+          <form className={classes.form} method="POST" action={this.loginValidationPOSTPath()}>
+            <input type="hidden" name="resource" value={this.loginRedirectPath()} />
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="j_username">Username</InputLabel>
               <Input id="j_username" name="j_username" autoComplete="email" autoFocus />
