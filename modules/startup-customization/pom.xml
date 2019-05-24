@@ -30,6 +30,15 @@
   <packaging>bundle</packaging>
   <name>LFS - Customizations for the startup phase of the distribution package</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.starter.startup</artifactId>
+      <version>1.0.7-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>
