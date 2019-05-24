@@ -17,14 +17,5 @@
 #  under the License.
 #
 
-# This is the LFS project
-[feature name=lfs]
-
-[variables]
-    lfs.version=0.1-SNAPSHOT
-
-[artifacts]
-    # Customizes the page displayed during startup, before all the bundles are activated
-    ca.sickkids.ccm.lfs/lfs-startup-customization/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-homepage/${lfs.version}/slingfeature/slingfeature
-    ca.sickkids.ccm.lfs/lfs-dataentry/${lfs.version}/slingfeature/slingfeature
+# The LFS homepage
+[feature name=lfs-dataentry]
