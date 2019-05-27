@@ -87,8 +87,10 @@
           </execution>
         </executions>
         <configuration>
+          <!-- This will automatically add an [artifacts] entry with the jar produced by this module in the provisioning file -->
           <attach>
             <type>jar</type>
+            <startLevel>10</startLevel>
           </attach>
         </configuration>
       </plugin>
