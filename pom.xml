@@ -450,17 +450,6 @@
           <artifactId>maven-clean-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
           <version>3.1.0</version>
-          <!-- Delete the running instance when cleaning -->
-          <configuration>
-            <filesets>
-              <fileset>
-                <directory>${basedir}</directory>
-                <includes>
-                  <include>sling/**</include>
-                </includes>
-              </fileset>
-            </filesets>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -616,6 +605,35 @@
         <license.skip>true</license.skip>
         <dependencyCheck.skip>true</dependencyCheck.skip>
       </properties>
+    </profile>
+
+    <profile>
+      <!-- By default the sling running instance is also cleaned. To disable this, use `mvn install -P-clean-instance` -->
+      <id>clean-instance</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-clean-plugin</artifactId>
+              <!-- Delete the running instance when cleaning -->
+              <configuration>
+                <filesets>
+                  <fileset>
+                    <directory>${basedir}</directory>
+                    <includes>
+                      <include>sling/**</include>
+                    </includes>
+                  </fileset>
+                </filesets>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
 
     <profile>
