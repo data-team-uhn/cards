@@ -91,8 +91,6 @@
       <plugin>
         <groupId>org.apache.sling</groupId>
         <artifactId>slingstart-maven-plugin</artifactId>
-        <version>1.8.2</version>
-        <extensions>true</extensions>
         <executions>
           <execution>
             <id>attach-prov-model</id>
@@ -103,7 +101,6 @@
           </execution>
         </executions>
         <configuration>
-          <setFeatureVersions>true</setFeatureVersions>
           <attach>
             <type>jar</type>
           </attach>

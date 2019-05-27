@@ -418,6 +418,18 @@
         </plugin>
 
         <plugin>
+          <groupId>org.apache.sling</groupId>
+          <artifactId>slingstart-maven-plugin</artifactId>
+          <!-- Lock down plugin version for build reproducibility -->
+          <version>1.8.2</version>
+          <!-- This allows us to use the "slingstart" and "slingfeature" packaging type -->
+          <extensions>true</extensions>
+          <configuration>
+            <setFeatureVersions>true</setFeatureVersions>
+          </configuration>
+        </plugin>
+
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->

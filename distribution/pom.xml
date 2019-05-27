@@ -58,10 +58,8 @@
       <plugin>
         <groupId>org.apache.sling</groupId>
         <artifactId>slingstart-maven-plugin</artifactId>
-        <version>1.8.2</version>
-        <!-- This allows us to use the "slingstart" packaging type -->
-        <extensions>true</extensions>
         <configuration>
+          <setFeatureVersions>false</setFeatureVersions>
           <createWebapp>true</createWebapp>
         </configuration>
       </plugin>
