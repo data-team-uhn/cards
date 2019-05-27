@@ -34,5 +34,6 @@
     <module>startup-customization</module>
     <module>homepage</module>
     <module>data-entry</module>
+    <module>ldap-support</module>
   </modules>
 </project>

@@ -19,19 +19,24 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-parent</artifactId>
+    <artifactId>lfs-modules</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs</artifactId>
-  <packaging>slingstart</packaging>
-  <name>LFS standalone distribution</name>
-  <description>The ready to use LFS distribution.</description>
+  <artifactId>lfs-ldap-support</artifactId>
+  <packaging>slingfeature</packaging>
+  <name>LFS - Support for LDAP authentication</name>
 
   <properties>
-    <sling.java.version>8</sling.java.version>
+    <lfs.ldap.dn/>
+    <lfs.ldap.password/>
+    <lfs.ldap.host/>
+    <lfs.ldap.baseDn/>
+    <lfs.ldap.idAttribute/>
+    <lfs.ldap.userClass/>
   </properties>
 
   <build>
@@ -39,28 +44,7 @@
       <plugin>
         <groupId>org.apache.sling</groupId>
         <artifactId>slingstart-maven-plugin</artifactId>
-        <configuration>
-          <setFeatureVersions>false</setFeatureVersions>
-        </configuration>
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <!-- During the release we also want to generate the war file for server deployment -->
-      <id>release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.sling</groupId>
-            <artifactId>slingstart-maven-plugin</artifactId>
-            <configuration>
-              <createWebapp>true</createWebapp>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
