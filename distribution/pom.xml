@@ -60,9 +60,26 @@
         <artifactId>slingstart-maven-plugin</artifactId>
         <configuration>
           <setFeatureVersions>false</setFeatureVersions>
-          <createWebapp>true</createWebapp>
         </configuration>
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <!-- During the release we also want to generate the war file for server deployment -->
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>slingstart-maven-plugin</artifactId>
+            <configuration>
+              <createWebapp>true</createWebapp>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
