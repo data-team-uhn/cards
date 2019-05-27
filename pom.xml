@@ -608,6 +608,35 @@
     </profile>
 
     <profile>
+      <!-- By default the sling running instance is also cleaned. To disable this, use `mvn install -P-clean-instance` -->
+      <id>clean-instance</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-clean-plugin</artifactId>
+              <!-- Delete the running instance when cleaning -->
+              <configuration>
+                <filesets>
+                  <fileset>
+                    <directory>${basedir}</directory>
+                    <includes>
+                      <include>sling/**</include>
+                    </includes>
+                  </fileset>
+                </filesets>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+
+    <profile>
       <!-- Profile used when the release plugin executes. We want javadocs and source jars to be released
            + ensure we sign files using GPG. -->
       <id>release</id>

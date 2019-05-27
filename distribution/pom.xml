@@ -36,25 +36,6 @@
 
   <build>
     <plugins>
-      <!-- Delete some more files when cleaning -->
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${basedir}</directory>
-              <includes>
-                <include>derby.log</include>
-                <include>cachedir/**</include>
-                <include>sling/**</include>
-                <include>jackrabbit/**</include>
-                <include>coverage.ec</include>
-              </includes>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.sling</groupId>
         <artifactId>slingstart-maven-plugin</artifactId>

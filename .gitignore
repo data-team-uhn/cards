@@ -47,3 +47,7 @@ overlays
 **/src/main/frontend/node_modules/
 **/src/main/frontend/dist/
 **/src/main/frontend/package-lock.json
+
+# Running instance
+/sling/
+/distribution/sling/
