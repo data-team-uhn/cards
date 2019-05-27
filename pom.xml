@@ -676,6 +676,36 @@
         </plugins>
       </build>
     </profile>
+
+    <!--
+        Use this profile to install the built module automatically during development.
+        Requires a running instance.
+        By default it connects to http://localhost:8080 with admin:admin.
+        To specify a different password, use `-Dsling.password=newPassword`
+        To specify a different URL, use `-Dsling.url=https://lfs.server:8443/system/console` (the URL must end with `/system/console` to work properly)
+    -->
+    <profile>
+      <id>autoInstallBundle</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>maven-sling-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install-bundle</id>
+                <goals>
+                  <goal>install</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <modules>
