@@ -40,3 +40,12 @@
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
   // Set a default title
   - title (String) = "Welcome to LFS" mandatory autocreated
+
+//-----------------------------------------------------------------------------
+// Simple nodetype for identifying the page with the theme.
+[lfs:Themepage] > sling:Folder
+  // Attributes:
+  // We can use the homepage in a query
+  query
+
+  // We don't define any properties or subchildren

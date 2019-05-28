@@ -22,7 +22,11 @@
 
 [:repoinit]
     create path (lfs:Homepage) /content
+    create path (lfs:Themepage) /themepage
+    create path (sling:Folder) /libs/lfs/resources
 
     set ACL for everyone
         allow   jcr:read    on /content
+        allow   jcr:read    on /themepage
+        allow   jcr:read    on /libs/lfs/resources
     end
