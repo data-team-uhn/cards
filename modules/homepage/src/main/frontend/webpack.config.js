@@ -4,7 +4,8 @@ module.exports = {
     loginSignUp: './src/loginSignUp/main.js',
     navbar: './src/navbar/navbarMain.js',
     userSplash: './src/userSplash/userSplashPage.js',
-    index: './src/homePage/index.js'
+    index: './src/homePage/index.js',
+    userBoard:'./src/userBoard/userBoard.js'
   },
   module: {
     rules: [

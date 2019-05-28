@@ -162,11 +162,46 @@
       }
 
       const RegisterComponent = withStyles(styles)(Register);
-/*
+
       <Slide direction="up" in={this.state.signInShown} mountOnEnter unmountOnExit>
-      {/* {this.state.signInShown ? <SignIn swapForm={this.handleSwap} /> : <InputForm swapForm={this.handleSwap} />} *//*}
+      {/* {this.state.signInShown ? <SignIn swapForm={this.handleSwap} /> : <InputForm swapForm={this.handleSwap} />} */}
       {this.state.signInShown ? <SignIn swapForm={this.handleSwap} /> : null } 
     </Slide>
-    <Slide direction="up" in={!this.state.signInShown} mountOnEnter unmountOnExit>
+    <Slide direction="uexit
+    p" in={!this.state.signInShown} mountOnEnter unmountOnExit>
       {!this.state.signInShown ? <InputForm swapForm={this.handleSwap} /> : null}
-    </Slide>*/
+    </Slide>
+
+<div id="error">
+  <p>${ServletRequest.getParameterValues("j_reason")}</p>
+</div>
+
+
+removeUser(name) {
+  let url = "http://localhost:8080/system/userManager/user/" + name + ".delete.html";
+
+  fetch(url, {
+    method: 'POST',
+  })
+  .then(function (response) {
+    alert("User"+name+" was deleted.")}
+  .catch (
+
+  );
+}
+
+changePassword(name, oldPwd, newPwd, newPwdConfirm) {
+  let formData = new FormData();
+  formData.append('oldPwd', oldPwd);
+  formData.append('newPwd', newPwd);
+  formData.append('newPwdConfirm', newPwdConfirm);
+  let url = "http://localhost:8080/system/userManager/user" + name + ".changePassword.html";
+
+  fetch (url, {
+    method: 'POST',
+    body: formData
+  })
+  .then(function (response) {
+    
+  })
+}

@@ -49,4 +49,5 @@ overlays
 **/src/main/frontend/package-lock.json
 
 #Automatically generated Sling folder
+/.metadata/
 sling/

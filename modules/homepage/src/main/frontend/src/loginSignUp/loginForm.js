@@ -24,11 +24,12 @@ class SignIn extends React.Component {
 
     this.state = {
       passwordIsMasked: false,
+      failedLogin: false,
     };
   }
 
   loginRedirectPath = () => {
-    return "/";
+    return "/content.html";
   };
 
   loginValidationPOSTPath = () => {
@@ -56,12 +57,15 @@ class SignIn extends React.Component {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+          
+          
           <form className={classes.form} method="POST" action={this.loginValidationPOSTPath()}>
             <input type="hidden" name="resource" value={this.loginRedirectPath()} />
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="j_username">Username</InputLabel>
               <Input id="j_username" name="j_username" autoComplete="email" autoFocus />
             </FormControl>
+
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="j_password">Password</InputLabel>
               <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password"
