@@ -19,9 +19,6 @@
 # The main modules for Apache Sling
 [feature name=sling]
 
-[variables]
-    jackrabbit.version=2.16.3
-
 # The Sling framework
 [artifacts]
     org.apache.sling/org.apache.sling.adapter/2.1.10

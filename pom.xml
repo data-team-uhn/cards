@@ -145,6 +145,9 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <slf4j.version>1.7.26</slf4j.version>
+    <jackrabbit.version>2.16.3</jackrabbit.version>
+    <oak.version>1.8.8</oak.version>
+
     <enforcer.skip>false</enforcer.skip>
     <checkstyle.skip>false</checkstyle.skip>
     <license.skip>false</license.skip>
@@ -425,7 +428,10 @@
           <!-- This allows us to use the "slingstart" and "slingfeature" packaging type -->
           <extensions>true</extensions>
           <configuration>
+            <!-- Add the current project version into the provisioning files -->
             <setFeatureVersions>true</setFeatureVersions>
+            <!-- Allows using the maven properties defined above as variables in the provisioning files -->
+            <usePomVariables>true</usePomVariables>
           </configuration>
         </plugin>
 
