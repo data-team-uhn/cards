@@ -36,38 +36,6 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.7.6</version>
-        <executions>
-          <!-- Installs NodeJS and NPM locally -->
-          <execution>
-            <id>install node and npm</id>
-            <goals>
-              <goal>install-node-and-npm</goal>
-            </goals>
-            <phase>initialize</phase>
-          </execution>
-          <!-- Brings in the dependencies using npm -->
-          <execution>
-            <id>npm install</id>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-          </execution>
-          <!-- Runs webpack to compile the JS source code -->
-          <execution>
-            <id>webpack</id>
-            <goals>
-              <goal>webpack</goal>
-            </goals>
-            <configuration>
-              <outputdir>${project.build.directory}/classes/SLING-INF/content/apps/lfs/</outputdir>
-            </configuration>
-          </execution>
-        </executions>
-        <configuration>
-          <nodeVersion>v12.2.0</nodeVersion>
-          <workingDirectory>src/main/frontend</workingDirectory>
-        </configuration>
       </plugin>
 
       <!-- This is an OSGi bundle -->
@@ -91,8 +59,6 @@
       <plugin>
         <groupId>org.apache.sling</groupId>
         <artifactId>slingstart-maven-plugin</artifactId>
-        <version>1.8.2</version>
-        <extensions>true</extensions>
         <executions>
           <execution>
             <id>attach-prov-model</id>
@@ -103,9 +69,10 @@
           </execution>
         </executions>
         <configuration>
-          <setFeatureVersions>true</setFeatureVersions>
+          <!-- This will automatically add an [artifacts] entry with the jar produced by this module in the provisioning file -->
           <attach>
             <type>jar</type>
+            <startLevel>5</startLevel>
           </attach>
         </configuration>
       </plugin>

@@ -39,13 +39,28 @@
       <plugin>
         <groupId>org.apache.sling</groupId>
         <artifactId>slingstart-maven-plugin</artifactId>
-        <version>1.8.2</version>
-        <!-- This allows us to use the "slingstart" packaging type -->
-        <extensions>true</extensions>
         <configuration>
-          <createWebapp>true</createWebapp>
+          <setFeatureVersions>false</setFeatureVersions>
         </configuration>
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <!-- During the release we also want to generate the war file for server deployment -->
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>slingstart-maven-plugin</artifactId>
+            <configuration>
+              <createWebapp>true</createWebapp>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

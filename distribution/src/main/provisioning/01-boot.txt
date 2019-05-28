@@ -30,9 +30,6 @@
     repository.home=${sling.home}/repository
     localIndexDir=${sling.home}/repository/index
 
-[variables]
-    slf4j.version=1.7.26
-
 [artifacts]
     org.apache.sling/org.apache.sling.javax.activation/0.1.0
     org.apache.geronimo.specs/geronimo-annotation_1.3_spec/1.1
