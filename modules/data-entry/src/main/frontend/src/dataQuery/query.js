@@ -124,7 +124,7 @@ function HomePage(props) {
   const items = props.elements.split(",");
   const components = items.map(cardData => {
     var cardDataList = cardData.split("|");
-    return <DataViewCardComponent dataName={cardDataList[0]} dataProps={cardDataList[1]} />;
+    return <DataViewCardComponent key={cardDataList[0]} dataName={cardDataList[0]} dataProps={cardDataList[1]} />;
     });
 
   return (

@@ -1,6 +1,7 @@
 module.exports = {
   mode: 'development',
   entry: {
+    redirect: './src/dataQuery/redirect.js',
     showQuery: './src/dataQuery/query.js'
   },
   module: {
@@ -18,6 +19,7 @@ module.exports = {
   output: {
     path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
     publicPath: '/',
+    library: 'dataQuery',
     filename: '[name].js'
   },
   devServer: {

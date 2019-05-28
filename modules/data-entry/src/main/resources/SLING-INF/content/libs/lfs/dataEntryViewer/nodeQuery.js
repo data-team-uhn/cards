@@ -1,3 +1,4 @@
+// Locate all visible lfs:dataEntry nodes
 use(function(){
   var query = resolver.findResources("select * from [lfs:dataEntry] as n", "JCR-SQL2");
 

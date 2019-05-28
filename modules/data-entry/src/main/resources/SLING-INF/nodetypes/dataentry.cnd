@@ -33,9 +33,11 @@
   query
 
   // We don't define any properties or subchildren
+  - name (STRING) = "testname" mandatory autocreated
+  - value (STRING) = "testvalue" mandatory autocreated
 
 //-----------------------------------------------------------------------------
-// Test nodetype to display data entries
+// Nodetype for homepage to display/create/edit data entries
 [lfs:dataEntryViewer] > sling:Folder
   // Attributes:
   query
