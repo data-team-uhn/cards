@@ -45,7 +45,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Include-Resource>src/main/frontend/dist/,{maven-resources}</Include-Resource>
+            <Include-Resource>src/main/frontend/dist/,{maven-resources},media/</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/homepage.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
