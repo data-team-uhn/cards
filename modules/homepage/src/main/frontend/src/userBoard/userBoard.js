@@ -16,6 +16,8 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { withStyles } from '@material-ui/core/styles';
 
+let userNamesHolder = [];
+
 const styles = theme => ({
   appBar: {
     position: 'relative',
@@ -99,42 +101,177 @@ function UserCard(props) {
 
 const UserCardComponent = withStyles(styles)(UserCard);
 
+let user = "myuser";
+let admin = null;
+let systemUser = null;
+let disabled = null;
+let path = null;
+
 class UserBoard extends React.Component {
   constructor (props) {
     super(props);
-    //this.state = {
-      //userNames: []
-    //};
-  }
-  /*
-  handleLoadUsers = () => {
-    fetch("http://localhost:8080/system/userManager/user.json", {method: 'GET'}).then(function(response) {
-      var names = [];  
-      for (key in response) {
-        names.push(key);
-      }
+    this.state = {
+      userNames: [],
+      user: "myuser",
+      admin: null,
+      systemUser:null,
+      disabled:null,
+      path:null
+    };
 
-      this.setState ({userNames: names});
+    this.handleLoadUsers = this.handleLoadUsers.bind(this);
+    this.handleSetUser = this.handleSetUser.bind(this);
+  }
+  //"http://localhost:8080/bin/cpm/usermanagement.user"
+  handleLoadUsers () {
+    fetch("http://localhost:8080/system/userManager/user.1.json", 
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Basic ' + btoa('admin:admin')
+        }
+    })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(data){
+      console.log(JSON.stringify(data));
+      var names = [];
+      for (var name in data){
+        names.push(name);
+      }
+      console.log(names);
+      userNamesHolder = names;
+      //this.setState({userNames: names});
+      
+    })
+    .catch(function(error) {
+      console.log(error);
     });
+  }
+
+  handleSetUser(userName) {
+    this.setState({currentUser: userName});
+    fetch("http://localhost:8080/bin/cpm/usermanagement.user.json/"+userName, 
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Basic ' + btoa('admin:admin')
+        }
+    })
+    .then(function(response){
+      return response.json();
+    })
+    .then(function(data){
+      /*
+      this.setState({
+        admin: data.admin,
+        systemUser: data.systemUser,
+        disabled: data.disabled,
+        path: data.path
+      });*/
+      admin = data.admin;
+      systemUser = data.systemUser;
+      disabled = data.disabled;
+      path = data.path;
+      console.log(data);
+      console.log(admin+" "+systemUser+" "+disabled+" "+path);
+    })
+    .catch(function(error){
+      console.log(error);
+    })
+  }
+
+  /*
+  handleUserPasswordChange(userName, oldPwd, newPwd, newPwdConfirm) {
+    let formData = new FormData();
+    formData.append('oldPwd', oldPwd);
+    formData.append('newPwd', newPwd);
+    formData.append('newPwdConfirm', newPwdConfirm);
+    let url = "http://localhost:8080/system/userManager/user" + name + ".changePassword.html";
+  
+    fetch (url, {
+      method: 'POST',
+      body: formData
+    })
+    .then(function (response) {
+      
+    })
+    .catch (
+
+    );
+  }
+  
+  handleDelete(userName) {
+    let url = "http://localhost:8080/system/userManager/user/" + name + ".delete.html";
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization' : 'Basic' + btoa('admin:admin')
+      }
+    })
+    .then(function (response) {
+      alert("User"+name+" was deleted.")}
+    .catch (
+  
+    );
   }
   */
 
-  
   render() {
     const {classes} = this.props;
+    const userList = userNamesHolder.map((value, index) => {
+      return(
+        <li key = {index}><Button onClick={this.handleSetUser(value)}>{value}</Button></li>
+        
+      );
+    })
     return (
       <React.Fragment>
         {/* Blank navbar */}
-        <AppBar position="static" className={classes.appBar}>
+        <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" color="inherit" noWrap>
               LFS Repository
             </Typography>
           </Toolbar>
         </AppBar>
+        
+        <ul>
+          {userList}
+        </ul>
 
+        <Card>
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="h2">
+              Heading
+            </Typography>
+            <Typography>User: {user}</Typography>
+            <Typography>Admin status: {admin=== true ? "true" : "false"}</Typography>
+            <Typography>System user status: {systemUser=== true ? "true" : "false"}</Typography>
+            <Typography>Disabled: {disabled=== true ? "true" : "false"}</Typography>
+            <Typography>Path: {path}</Typography>
+          </CardContent>
+          <CardActions>
+            <Button size="small" color="primary">
+              View
+            </Button>
+            <Button size="small" color="primary">
+              Edit
+            </Button>
+            <button>
+              Change User's Password
+            </button>
+            <button>
+              Delete User
+            </button>
 
-        <Button>Load Users</Button>
+          </CardActions>
+        </Card>
+
+        <button onClick={() => this.handleLoadUsers}>Load Users</button>
+        <button onClick={() => this.handleSetUser("myuser")}>Load Admin</button>
       </React.Fragment>
     );
   }
