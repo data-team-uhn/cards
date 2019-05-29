@@ -1,0 +1,4 @@
+<%
+response.setContentType('text/html');
+sling.include(resource + '.html');
+%>
