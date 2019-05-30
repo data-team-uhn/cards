@@ -1,4 +1,4 @@
-import React from 'react';
+ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -107,6 +107,9 @@ let systemUser = null;
 let disabled = null;
 let path = null;
 
+
+
+
 class UserBoard extends React.Component {
   constructor (props) {
     super(props);
@@ -125,7 +128,7 @@ class UserBoard extends React.Component {
 
   //"http://localhost:8080/bin/cpm/usermanagement.user"
   handleLoadUsers () {
-    fetch("http://localhost:8080/system/userManager/user.1.json", 
+    fetch("http://"+"localhost:8080"+"/system/userManager/user.1.json", 
       {
         method: 'GET',
         headers: {
@@ -146,13 +149,51 @@ class UserBoard extends React.Component {
       this.setState({userNames: names});
       
     })
-    .catch(function(error) {
+    .catch((error) => {
       console.log(error);
     });
   }
 
-  handleSetUser(userName) {
-    let url = "http://localhost:8080/bin/cpm/usermanagement.user.json/" + userName;
+  handleSetUsersSystem(userName) {
+    let pathUrl = "http://"+"localhost:8080"+"/system/userManager/user/"+userName+".json";
+    let path = "";
+    fetch(pathUrl,
+      {
+        Method: 'GET',
+        headers: {
+          'Authorization': 'Basic' + btoa('admin:admin')
+        }
+    })
+    .then((response) => {
+      return response.json;
+    })
+    .then((data) => {
+      path = data.path;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+    let userUrl = "http://"+"localhost:8080"+path;
+    fetch(userUrl, 
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Basic' + btoa('admin:admin')
+        }
+    })
+    .then((response) =>{
+      return response.json;
+    })
+    .then((data) => {
+      this.setState({
+        systemUser: data.jcr:primaryType,
+      })
+    })
+  }  
+
+  handleSetUserBin(userName) {
+    let url = "http://"+"localhost:8080"+"/bin/cpm/usermanagement.user.json/" + userName;
     fetch(url, 
       {
         method: 'GET',
@@ -164,13 +205,14 @@ class UserBoard extends React.Component {
       return response.json();
     })
     .then((data) => {
-      /*
+      
       this.setState({
         admin: data.admin,
         systemUser: data.systemUser,
         disabled: data.disabled,
         path: data.path
-      });*///this.setState({currentUser: userName});
+      });
+      this.setState({currentUser: userName});
       admin = data.admin;
       systemUser = data.systemUser;
       disabled = data.disabled;
@@ -178,7 +220,7 @@ class UserBoard extends React.Component {
       console.log(data);
       console.log(admin+" "+systemUser+" "+disabled+" "+path);
     })
-    .catch(function(error){
+    .catch((error) => {
       console.log(JSON.stringify(error, Object.getOwnPropertyNames(error)));
     })
   }
@@ -224,7 +266,7 @@ class UserBoard extends React.Component {
     const {classes} = this.props;
     const userList = this.state.userNames.map((value, index) => {//userNamesHolder.map((value, index) => {
       return(
-        <li key = {index}><Button onClick={()=>this.handleSetUser(value)}>{value}</Button></li>
+        <li key = {index}><Button onClick={()=>this.handleSetUserBin(value)}>{value}</Button></li>
         
       );
     })
@@ -239,6 +281,9 @@ class UserBoard extends React.Component {
           </Toolbar>
         </AppBar>
         
+        <button>Create New User</button>
+        <button></button>
+
         <ul>
           {userList}
         </ul>
@@ -246,21 +291,14 @@ class UserBoard extends React.Component {
         <Card>
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
-              Heading
+              User: {this.state.currentUser}
             </Typography>
-            <Typography>User: {user}</Typography>
-            <Typography>Admin status: {admin=== true ? "true" : "false"}</Typography>
-            <Typography>System user status: {systemUser=== true ? "true" : "false"}</Typography>
-            <Typography>Disabled: {disabled=== true ? "true" : "false"}</Typography>
-            <Typography>Path: {path}</Typography>
+            <Typography>Admin status: {this.state.admin=== true ? "true" : "false"}</Typography>
+            <Typography>System user status: {this.state.systemUser=== true ? "true" : "false"}</Typography>
+            <Typography>Disabled: {this.state.disabled=== true ? "true" : "false"}</Typography>
+            <Typography>Path: {this.state.path}</Typography>
           </CardContent>
           <CardActions>
-            <Button size="small" color="primary">
-              View
-            </Button>
-            <Button size="small" color="primary">
-              Edit
-            </Button>
             <button>
               Change User's Password
             </button>
@@ -271,8 +309,13 @@ class UserBoard extends React.Component {
           </CardActions>
         </Card>
 
+        <Card>
+          <CardContent>
+          
+          </CardContent>
+        </Card>
+
         <button onClick={() => this.handleLoadUsers()}>Load Users</button>
-        <button onClick={() => this.handleSetUser("myuser")}>Load Admin</button>
       </React.Fragment>
     );
   }
