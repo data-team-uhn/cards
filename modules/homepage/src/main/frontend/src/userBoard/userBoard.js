@@ -122,6 +122,7 @@ class UserBoard extends React.Component {
     this.handleLoadUsers = this.handleLoadUsers.bind(this);
     this.handleSetUser = this.handleSetUser.bind(this);
   }
+
   //"http://localhost:8080/bin/cpm/usermanagement.user"
   handleLoadUsers () {
     fetch("http://localhost:8080/system/userManager/user.1.json", 
@@ -131,18 +132,18 @@ class UserBoard extends React.Component {
           'Authorization': 'Basic ' + btoa('admin:admin')
         }
     })
-    .then(function(response) {
+    .then((response) => {
       return response.json();
     })
-    .then(function(data){
+    .then((data) => {
       console.log(JSON.stringify(data));
       var names = [];
       for (var name in data){
         names.push(name);
       }
       console.log(names);
-      userNamesHolder = names;
-      //this.setState({userNames: names});
+      //userNamesHolder = names;
+      this.setState({userNames: names});
       
     })
     .catch(function(error) {
@@ -151,25 +152,25 @@ class UserBoard extends React.Component {
   }
 
   handleSetUser(userName) {
-    this.setState({currentUser: userName});
-    fetch("http://localhost:8080/bin/cpm/usermanagement.user.json/"+userName, 
+    let url = "http://localhost:8080/bin/cpm/usermanagement.user.json/" + userName;
+    fetch(url, 
       {
         method: 'GET',
         headers: {
           'Authorization': 'Basic ' + btoa('admin:admin')
         }
     })
-    .then(function(response){
+    .then((response) => {
       return response.json();
     })
-    .then(function(data){
+    .then((data) => {
       /*
       this.setState({
         admin: data.admin,
         systemUser: data.systemUser,
         disabled: data.disabled,
         path: data.path
-      });*/
+      });*///this.setState({currentUser: userName});
       admin = data.admin;
       systemUser = data.systemUser;
       disabled = data.disabled;
@@ -178,7 +179,7 @@ class UserBoard extends React.Component {
       console.log(admin+" "+systemUser+" "+disabled+" "+path);
     })
     .catch(function(error){
-      console.log(error);
+      console.log(JSON.stringify(error, Object.getOwnPropertyNames(error)));
     })
   }
 
@@ -221,9 +222,9 @@ class UserBoard extends React.Component {
 
   render() {
     const {classes} = this.props;
-    const userList = userNamesHolder.map((value, index) => {
+    const userList = this.state.userNames.map((value, index) => {//userNamesHolder.map((value, index) => {
       return(
-        <li key = {index}><Button onClick={this.handleSetUser(value)}>{value}</Button></li>
+        <li key = {index}><Button onClick={()=>this.handleSetUser(value)}>{value}</Button></li>
         
       );
     })
@@ -270,7 +271,7 @@ class UserBoard extends React.Component {
           </CardActions>
         </Card>
 
-        <button onClick={() => this.handleLoadUsers}>Load Users</button>
+        <button onClick={() => this.handleLoadUsers()}>Load Users</button>
         <button onClick={() => this.handleSetUser("myuser")}>Load Admin</button>
       </React.Fragment>
     );
