@@ -779,6 +779,18 @@
         </plugins>
       </build>
     </profile>
+
+    <!-- Integration tests shouldn't be run for every build, they need to be explicitly triggered using this profile: `mvn install -PintegrationTests` -->
+
+    <profile>
+      <id>integrationTests</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>tests</module>
+      </modules>
+    </profile>
   </profiles>
 
   <modules>
