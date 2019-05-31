@@ -16,6 +16,14 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { withStyles } from '@material-ui/core/styles';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
+
+
 let userNamesHolder = [];
 
 const styles = theme => ({
@@ -101,12 +109,43 @@ function UserCard(props) {
 
 const UserCardComponent = withStyles(styles)(UserCard);
 
-let user = "myuser";
-let admin = null;
-let systemUser = null;
-let disabled = null;
-let path = null;
+function Transition(props) {
+  return <Slide direction="up" {...props} />
+}
 
+class deleteUserDialogue extends React.Component {
+  state = {
+    open: true,
+    failedDelete: false
+  };
+
+  handleDelete() {
+
+  }
+
+  handleClose() {
+    this.UNSAFE_componentWillMount.setState({open: false});
+  }
+
+  render() {
+    return (
+      <div>
+        <Dialog
+          open={true}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={() =>this.handleClose()}
+        >
+        
+        </Dialog>
+      </div>
+    );
+  }
+}
+
+class changeUserPasswordDialogue extends React.Component {
+
+}
 
 
 
@@ -123,7 +162,8 @@ class UserBoard extends React.Component {
     };
 
     this.handleLoadUsers = this.handleLoadUsers.bind(this);
-    this.handleSetUser = this.handleSetUser.bind(this);
+    this.handleSetUserBin = this.handleSetUserBin.bind(this);
+    this.handleSetUsersSystem = this.handleSetUsersSystem.bind(this);
   }
 
   //"http://localhost:8080/bin/cpm/usermanagement.user"
@@ -159,37 +199,38 @@ class UserBoard extends React.Component {
     let path = "";
     fetch(pathUrl,
       {
-        Method: 'GET',
-        headers: {
-          'Authorization': 'Basic' + btoa('admin:admin')
-        }
-    })
-    .then((response) => {
-      return response.json;
-    })
-    .then((data) => {
-      path = data.path;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
-    let userUrl = "http://"+"localhost:8080"+path;
-    fetch(userUrl, 
-      {
         method: 'GET',
         headers: {
           'Authorization': 'Basic' + btoa('admin:admin')
         }
     })
-    .then((response) =>{
-      return response.json;
+    .then((response) => {
+      return response.json();
     })
     .then((data) => {
-      this.setState({
-        systemUser: data.jcr:primaryType,
+      path = "http://"+"localhost:8080"+data.path+".json";
+      return path;
+    }).then((path) => {
+      fetch(path, 
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Basic' + btoa('admin:admin')
+        }
+      })
+      .then((response) =>{
+        return response.json();
+      })
+      .then((data) => {
+        this.setState({
+          systemUser: data["jcr:primaryType"] === "rep:SystemUser" ? true : false,
+          currentUser: userName
+        });
       })
     })
+    .catch((error) => {
+      console.log(error);
+    });
   }  
 
   handleSetUserBin(userName) {
@@ -266,7 +307,7 @@ class UserBoard extends React.Component {
     const {classes} = this.props;
     const userList = this.state.userNames.map((value, index) => {//userNamesHolder.map((value, index) => {
       return(
-        <li key = {index}><Button onClick={()=>this.handleSetUserBin(value)}>{value}</Button></li>
+        <li key = {index}><Button onClick={()=>this.handleSetUsersSystem(value)}>{value}</Button></li>
         
       );
     })
@@ -307,12 +348,6 @@ class UserBoard extends React.Component {
             </button>
 
           </CardActions>
-        </Card>
-
-        <Card>
-          <CardContent>
-          
-          </CardContent>
         </Card>
 
         <button onClick={() => this.handleLoadUsers()}>Load Users</button>
