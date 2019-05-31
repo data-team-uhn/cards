@@ -149,7 +149,6 @@ function HomePage(props) {
         <Grid container spacing={40}>
           <Grid item sm={6} md={4} lg={3}>
             <Card className={classes.card}>
-              <CardMedia className={classes.cardMedia} image="../content/starter/sling-logo.svg" />
               <CardContent>
                 <Typography variant="h5"> Some Dev Links </Typography>
                 <Typography variant="h6">
