@@ -28,3 +28,4 @@
         allow   jcr:read    on /content
         allow   jcr:read    on /libs/lfs/resources
     end
+    
