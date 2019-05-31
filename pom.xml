@@ -752,6 +752,9 @@
         By default it connects to http://localhost:8080 with admin:admin.
         To specify a different password, use `-Dsling.password=newPassword`
         To specify a different URL, use `-Dsling.url=https://lfs.server:8443/system/console` (the URL must end with `/system/console` to work properly)
+
+        TL;DR:
+        mvn install -PautoInstallBundle
     -->
     <profile>
       <id>autoInstallBundle</id>
