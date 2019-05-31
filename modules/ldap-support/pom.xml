@@ -22,18 +22,29 @@
 
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-parent</artifactId>
+    <artifactId>lfs-modules</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-modules</artifactId>
-  <packaging>pom</packaging>
-  <name>LFS Modules</name>
+  <artifactId>lfs-ldap-support</artifactId>
+  <packaging>slingfeature</packaging>
+  <name>LFS - Support for LDAP authentication</name>
 
-  <modules>
-    <module>startup-customization</module>
-    <module>homepage</module>
-    <module>data-entry</module>
-    <module>ldap-support</module>
-  </modules>
+  <properties>
+    <lfs.ldap.dn/>
+    <lfs.ldap.password/>
+    <lfs.ldap.host/>
+    <lfs.ldap.baseDn/>
+    <lfs.ldap.idAttribute/>
+    <lfs.ldap.userClass/>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>slingstart-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>
