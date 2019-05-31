@@ -20,29 +20,49 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.sling.testing.clients.SlingClient;
 import org.apache.sling.testing.clients.SlingHttpResponse;
+import org.apache.sling.testing.clients.util.poller.Polling;
 import org.apache.sling.testing.junit.rules.SlingInstanceRule;
 import org.apache.sling.testing.junit.rules.SlingRule;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+
+import static org.apache.http.HttpStatus.SC_OK;
 
 public class HomepageIT
 {
     @ClassRule
     public static SlingInstanceRule slingInstanceRule = new SlingInstanceRule();
 
+    private static SlingClient client;
+
     @Rule
     public SlingRule slingMethodRule = new SlingRule();
 
-    private SlingClient client;
-
-    @Before
-    public void waitForStartup() throws TimeoutException, InterruptedException
+    @BeforeClass
+    public static void waitForStartup() throws TimeoutException, InterruptedException
     {
-        this.client = slingInstanceRule.defaultInstance.getClient(SlingClient.class, null, null);
-        this.client.waitExists("/", 1000000 /* 10 seconds */, 200);
+        client = slingInstanceRule.defaultInstance.getClient(SlingClient.class, null, null);
+
+        Polling p = new Polling()
+        {
+            @Override
+            public Boolean call() throws Exception
+            {
+                return HomepageIT.client.doGet("/").getStatusLine().getStatusCode() == SC_OK;
+            }
+
+            @Override
+            protected String message()
+            {
+                return "Server did not correctly start after %1$d ms";
+            }
+        };
+
+        // Poll every 200 milliseconds for at most 10 seconds
+        p.poll(10000, 200);
     }
 
     @Test
@@ -65,7 +85,7 @@ public class HomepageIT
 
     private void checkHtmlHomepage(final String location) throws Exception
     {
-        SlingHttpResponse response = this.client.doGet(location, 200);
+        SlingHttpResponse response = client.doGet(location, 200);
         assertMimeType(response, "text/html");
         Assert.assertTrue(response.getContent().contains("<title>Welcome to LFS</title>"));
     }
