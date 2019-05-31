@@ -117,7 +117,6 @@
           <runOrder>alphabetical</runOrder>
           <systemPropertyVariables>
             <launchpad.http.server.url>http://${test.host}:${http.port}/</launchpad.http.server.url>
-            <launchpad.webdav.server.url>http://${test.host}:${http.port}/${webdav.workspace.path}</launchpad.webdav.server.url>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -125,74 +124,10 @@
   </build>
 
   <dependencies>
-    <!-- We will be testing the distribution -->
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>lfs</artifactId>
-      <version>${project.version}</version>
-      <type>slingstart</type>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Dependencies needed to compile the test classes -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>1.7.5</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.commons.testing</artifactId>
-      <version>2.1.0</version>
-      <exclusions>
-        <exclusion>
-          <groupId>junit</groupId>
-          <artifactId>junit-dep</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-simple</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>asm</groupId>
-          <artifactId>asm</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.jcr</groupId>
-      <artifactId>jcr</artifactId>
-      <version>2.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.junit.teleporter</artifactId>
-      <version>1.0.18</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.junit.core</artifactId>
-      <version>1.0.26</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -205,12 +140,6 @@
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.clients</artifactId>
       <version>1.2.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.resourcebuilder</artifactId>
-      <version>1.0.4</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
