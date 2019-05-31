@@ -107,24 +107,57 @@ function UserCard(props) {
   );
 }
 
+// COMMENTED OUT PORTION IS FOR POPUP USER DELETE FORM WHICH IS CURRENTLY NOT WORKING
+/*
 const UserCardComponent = withStyles(styles)(UserCard);
 
 function Transition(props) {
   return <Slide direction="up" {...props} />
 }
 
-class deleteUserDialogue extends React.Component {
-  state = {
-    open: true,
-    failedDelete: false
-  };
-
+class DeleteUserDialogue extends React.Component {
+  constructor (props) {
+    super(props); 
+    this.state = {
+      open: true,
+      isSubmitted: false,
+      failedDelete: false
+    };
+    this.dialogueText = "Are you sure you want to delete user " + this.props.userName + "?";
+  }
+ 
   handleDelete() {
-
+    let url = "http://"+"localhost:8080"+"/system/userManager/user/"+this.props.userName+".delete.html";
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization' : 'Basic' + btoa('admin:admin')
+      }
+    })
+    .then(() => {
+      this.setState({
+        isSubmitted: true,
+        failedDelete: false
+      });
+      this.dialogueText = "Sucessfully deleted " + this.props.userName + ".";
+    })
+    .catch((error) => {
+      this.setState({
+        isSubmitted: true,
+        failedDelete: true
+      });
+      if(error.getElementById("Status")===404) {
+        this.dialogueText = "User " + this.props.userName + " could not be found. Delete failed.";
+      }
+      else {
+        this.dialogueText = "An error has occured with your delete reques. Error: " + error;
+      }
+      console.log(error);
+    })
   }
 
   handleClose() {
-    this.UNSAFE_componentWillMount.setState({open: false});
+    this.setState({open: false});
   }
 
   render() {
@@ -136,13 +169,44 @@ class deleteUserDialogue extends React.Component {
           keepMounted
           onClose={() =>this.handleClose()}
         >
-        
+        <DialogContent>
+          <DialogueTitle>
+            Delete user + {this.props.userName}.
+          </DialogueTitle>
+          <DialogContentText>
+            {this.dialogueText}
+          </DialogContentText>
+        </DialogContent>  
+        <DialogActions>
+          {!this.isSubmitted && <button>Delete</button>}
+          <button onClick={() => this.handleClose()}>{this.isSubmitted===false? "Cancel" : "Close"}</button>
+        </DialogActions>
         </Dialog>
       </div>
     );
   }
-}
+}*//*
+  
+  
+  handleDelete(userName) {
+    let url = "http://localhost:8080/system/userManager/user/" + name + ".delete.html";
 
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization' : 'Basic' + btoa('admin:admin')
+      }
+    })
+    .then(function (response) {
+      alert("User"+name+" was deleted.")}
+    .catch (
+  
+    );
+  }
+  *//*
+handleUserPasswordChange(userName, oldPwd, newPwd, newPwdConfirm) {
+    
+  }*/
 class changeUserPasswordDialogue extends React.Component {
 
 }
@@ -158,7 +222,17 @@ class UserBoard extends React.Component {
       admin: null,
       systemUser:null,
       disabled:null,
-      path:null
+      path:null,
+
+      deleteUser: false,
+      oldPwd: "",
+      newPwd: "",
+      newPwdConfirm: "",
+      
+      newUserName: "",
+      newUserPwd: "",
+      newUserPwdConfirm: ""
+
     };
 
     this.handleLoadUsers = this.handleLoadUsers.bind(this);
@@ -209,6 +283,9 @@ class UserBoard extends React.Component {
     })
     .then((data) => {
       path = "http://"+"localhost:8080"+data.path+".json";
+      this.setState({
+        path: data.path,
+      });
       return path;
     }).then((path) => {
       fetch(path, 
@@ -224,7 +301,7 @@ class UserBoard extends React.Component {
       .then((data) => {
         this.setState({
           systemUser: data["jcr:primaryType"] === "rep:SystemUser" ? true : false,
-          currentUser: userName
+          currentUser: userName,
         });
       })
     })
@@ -266,42 +343,76 @@ class UserBoard extends React.Component {
     })
   }
 
-  /*
-  handleUserPasswordChange(userName, oldPwd, newPwd, newPwdConfirm) {
-    let formData = new FormData();
-    formData.append('oldPwd', oldPwd);
-    formData.append('newPwd', newPwd);
-    formData.append('newPwdConfirm', newPwdConfirm);
-    let url = "http://localhost:8080/system/userManager/user" + name + ".changePassword.html";
-  
-    fetch (url, {
-      method: 'POST',
-      body: formData
-    })
-    .then(function (response) {
-      
-    })
-    .catch (
-
-    );
-  }
-  
-  handleDelete(userName) {
-    let url = "http://localhost:8080/system/userManager/user/" + name + ".delete.html";
-
+  handleDelete(name) {
+    let url = "http://"+"localhost:8080"+"/system/userManager/user/"+name+".delete.html";
     fetch(url, {
       method: 'POST',
       headers: {
         'Authorization' : 'Basic' + btoa('admin:admin')
       }
     })
-    .then(function (response) {
-      alert("User"+name+" was deleted.")}
-    .catch (
-  
-    );
+    .catch((error) => {
+
+      if(error.getElementById("Status")===404) {
+        console.log("missing user 404");
+      }
+      else {
+        console.log("other error 505");
+      }
+      console.log(error);
+    })
   }
-  */
+
+  handlePasswordChange(name) {
+    let formData = new FormData();
+    formData.append('oldPwd', this.state.oldPwd);
+    formData.append('newPwd', this.state.newPwd);
+    formData.append('newPwdConfirm', this.state.newPwdConfirm);
+    let url = "http://localhost:8080/system/userManager/user/" + name + ".changePassword.html";
+  
+    console.log(formData);
+    fetch (url, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic' + btoa('admin:admin')
+      },
+      body: formData
+    })
+    .then(() =>{
+      //alert("Password has been changed");
+    })
+    .catch ((error) =>{
+      if(error.getElementById("Status")===404) {
+        console.log("missing user 404");
+      }
+      else {
+        console.log("other error 505");
+      }
+      console.log(error);
+    });
+  }
+
+  handleCreateUser() {
+    let formData = new FormData();
+    formData.append(':name', this.state.newUserName);
+    formData.append('pwd', this.state.newUserPwd);
+    formData.append('pwdConfirm', this.state.newUserPwdConfirm);
+
+    console.log(formData);
+
+    let url = "http://localhost:8080/system/userManager/user.create.html";
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic' + btoa('admin:admin')
+      },
+      body:formData  
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
 
   render() {
     const {classes} = this.props;
@@ -343,7 +454,7 @@ class UserBoard extends React.Component {
             <button>
               Change User's Password
             </button>
-            <button>
+            <button onClick={() => this.handleDelete(this.state.currentUser)}>
               Delete User
             </button>
 
@@ -351,6 +462,45 @@ class UserBoard extends React.Component {
         </Card>
 
         <button onClick={() => this.handleLoadUsers()}>Load Users</button>
+
+        <form
+          onSubmit={() => this.handlePasswordChange(this.state.currentUser)}
+        >
+
+        <label>
+          Old Password
+          <textarea value={this.state.oldPwd} onChange={(event)=>{this.setState({oldPwd: event.target.value})}}></textarea>
+        </label>
+        <label>
+          New Password
+          <textarea value={this.state.newPwd} onChange={(event)=>{this.setState({newPwd: event.target.value})}}></textarea>
+        </label>
+        <label>
+          Confirm New Password
+           <textarea value={this.state.newPwdConfirm} onChange={(event)=>{this.setState({newPwdConfirm: event.target.value})}}></textarea>
+        </label>
+       
+       <input type="submit" value="Submit" />
+
+        </form>
+
+        <form
+          onSubmit={()=>this.handleCreateUser()}
+        >
+          <label>
+            Name
+            <textarea value={this.state.newUserName} onChange={(event) => {this.setState({newUserName: event.target.value})}}></textarea>
+          </label>
+          <label>
+            Password
+            <textarea value={this.state.newUserPwd} onChange={(event) => {this.setState({newUserPwd: event.target.value})}}></textarea>
+          </label>
+          <label>
+            Confirm Password
+            <textarea value={this.state.newUserPwdConfirm} onChange={(event) => {this.setState({newUserPwdConfirm: event.target.value})}}></textarea>
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
       </React.Fragment>
     );
   }
