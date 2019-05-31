@@ -32,16 +32,7 @@
 
   <properties>
     <test.host>localhost</test.host>
-     <!--
-      Set this to true to stop mvn once the integration test Jetty instance is
-      started. Useful to manually test the integration testing webapp.
-      -->
-    <launchpad.keep.running>false</launchpad.keep.running>
-
-        <!--
-          If set to "true" this will start the launchpad with standard debug options,
-          or set to a string to provide custom debug settings
-        -->
+    <!-- If set to "true" this will start the launchpad with standard debug options, or set to a string to provide custom debug settings -->
     <launchpad.debug/>
   </properties>
 
@@ -83,14 +74,14 @@
         </executions>
         <configuration>
           <!--
-               We're adding the LFS distribution here as a model fragment instead of in a provisioning file because of the way the version is handled.
-               We must use project.version here, since using LATEST (no version specified here) will cause the whole jar itself to be included as well.
-               If we just specify ca.sickkids.ccm.lfs/lfs//slingstart in a provisioning file, which means "use the version defined in the pom",
-               due to a bug in the slingstart-maven-plugin the dependency itself will be included as well in the final jar, which will be invalid.
-               If, instead, we specify a specific version, then that is duplication and will cause issues during the release.
-               The ideal solution is to specify ${project.version}, which is the recommended Maven way of referencing modules sharing the same version,
-               but that is not allowed in provisioning files.
-               The inline model fragment in the pom file will be interpolated with Maven variables, so we can use ${project.version} as the dependency version.
+              We're adding the LFS distribution here as a model fragment instead of in a provisioning file because of the way the version is handled.
+              We must use project.version here, since using LATEST (no version specified here) will cause the whole jar itself to be included as well.
+              If we just specify ca.sickkids.ccm.lfs/lfs//slingstart in a provisioning file, which means "use the version defined in the pom",
+              due to a bug in the slingstart-maven-plugin the dependency itself will be included as well in the final jar, which will be invalid.
+              If, instead, we specify a specific version, then that is duplication and will cause issues during the release.
+              The ideal solution is to specify ${project.version}, which is the recommended Maven way of referencing modules sharing the same version,
+              but that is not allowed in provisioning files.
+              The inline model fragment in the pom file will be interpolated with Maven variables, so we can use ${project.version} as the dependency version.
           -->
           <model>
             [feature name="lfs-distribution"]
@@ -103,7 +94,7 @@
             <server>
               <port>${http.port}</port>
               <controlPort>${sling.control.port}</controlPort>
-              <contextPath>${http.base.path}</contextPath>
+              <contextPath>/</contextPath>
               <debug>${launchpad.debug}</debug>
             </server>
           </servers>
@@ -136,91 +127,91 @@
   <dependencies>
     <!-- We will be testing the distribution -->
     <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>lfs</artifactId>
-        <version>${project.version}</version>
-        <type>slingstart</type>
-        <scope>provided</scope>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>lfs</artifactId>
+      <version>${project.version}</version>
+      <type>slingstart</type>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Dependencies needed to compile the test classes -->
     <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
-        <version>3.1.0</version>
-        <scope>provided</scope>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <scope>provided</scope>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>1.7.5</version>
-        <scope>test</scope>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.5</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>org.apache.sling.commons.testing</artifactId>
-        <version>2.1.0</version>
-        <exclusions>
-            <exclusion>
-                <groupId>junit</groupId>
-                <artifactId>junit-dep</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>asm</groupId>
-                <artifactId>asm</artifactId>
-            </exclusion>
-        </exclusions>
-        <scope>test</scope>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.commons.testing</artifactId>
+      <version>2.1.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit-dep</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>asm</groupId>
+          <artifactId>asm</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <scope>test</scope>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>javax.jcr</groupId>
-        <artifactId>jcr</artifactId>
-        <version>2.0</version>
-        <scope>test</scope>
+      <groupId>javax.jcr</groupId>
+      <artifactId>jcr</artifactId>
+      <version>2.0</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>org.apache.sling.junit.teleporter</artifactId>
-        <version>1.0.18</version>
-        <scope>test</scope>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.junit.teleporter</artifactId>
+      <version>1.0.18</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>org.apache.sling.junit.core</artifactId>
-        <version>1.0.26</version>
-        <scope>test</scope>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.junit.core</artifactId>
+      <version>1.0.26</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>org.apache.sling.testing.rules</artifactId>
-        <version>1.0.8</version>
-        <scope>test</scope>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.testing.rules</artifactId>
+      <version>1.0.8</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>org.apache.sling.testing.clients</artifactId>
-        <version>1.2.0</version>
-        <scope>test</scope>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.testing.clients</artifactId>
+      <version>1.2.0</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>org.apache.sling.resourcebuilder</artifactId>
-        <version>1.0.4</version>
-        <scope>test</scope>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.resourcebuilder</artifactId>
+      <version>1.0.4</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
