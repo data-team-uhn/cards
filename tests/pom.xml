@@ -64,18 +64,20 @@
         <groupId>org.apache.sling</groupId>
         <artifactId>slingstart-maven-plugin</artifactId>
         <executions>
+          <!-- This is responsible for starting the server before the tests run, and stopping it afterwards -->
           <execution>
             <id>start-container</id>
             <goals>
+              <!-- Without specifying a phase for this execution, these goals bind by default to the pre-integration-test and post-integration-test phases -->
               <goal>start</goal>
               <goal>stop</goal>
             </goals>
           </execution>
         </executions>
+        <!-- As a slingstart module, the server will be built by default, so no specific execution needs to be declared for that. Here we just customize the package. -->
         <configuration>
           <!--
               We're adding the LFS distribution here as a model fragment instead of in a provisioning file because of the way the version is handled.
-              We must use project.version here, since using LATEST (no version specified here) will cause the whole jar itself to be included as well.
               If we just specify ca.sickkids.ccm.lfs/lfs//slingstart in a provisioning file, which means "use the version defined in the pom",
               due to a bug in the slingstart-maven-plugin the dependency itself will be included as well in the final jar, which will be invalid.
               If, instead, we specify a specific version, then that is duplication and will cause issues during the release.
@@ -90,6 +92,7 @@
           </model>
           <setFeatureVersions>false</setFeatureVersions>
           <usePomDependencies>true</usePomDependencies>
+          <!-- This configures the server started by the start-container execution above -->
           <servers>
             <server>
               <port>${http.port}</port>
