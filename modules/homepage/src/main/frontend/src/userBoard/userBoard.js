@@ -211,6 +211,36 @@ class changeUserPasswordDialogue extends React.Component {
 
 }
 
+class TestPopup extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state ={open: true};
+    this.handleClose = this.handleClose.bind(this);
+  }
+  
+
+  handleClose() {
+    this.setState({open: false});
+  }
+
+  render() {
+    return (
+      <div>
+        <Dialog
+          open={this.state.open}
+          onClose={() => this.handleClose()}
+        >
+          <DialogTitle>
+            Test Dialogue
+          </DialogTitle>
+          <DialogActions>
+            <Button onClick={this.handleClose}>Close</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }
+}
 
 
 class UserBoard extends React.Component {
@@ -231,7 +261,8 @@ class UserBoard extends React.Component {
       
       newUserName: "",
       newUserPwd: "",
-      newUserPwdConfirm: ""
+      newUserPwdConfirm: "",
+      deployPopup: false
 
     };
 
@@ -414,6 +445,14 @@ class UserBoard extends React.Component {
     });
   }
 
+  hidePopup () {
+    this.setState({deployPopup: false});
+  }
+
+  showPopup() {
+    this.setState({deployPopup: true});
+  }
+
   render() {
     const {classes} = this.props;
     const userList = this.state.userNames.map((value, index) => {//userNamesHolder.map((value, index) => {
@@ -425,6 +464,10 @@ class UserBoard extends React.Component {
     return (
       <React.Fragment>
         {/* Blank navbar */}
+        {this.state.deployPopup && 
+          <TestPopup handleClose={() => this.hidePopup()}></TestPopup>
+        }
+
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" color="inherit" noWrap>
@@ -462,6 +505,7 @@ class UserBoard extends React.Component {
         </Card>
 
         <button onClick={() => this.handleLoadUsers()}>Load Users</button>
+        <button onClick={()=>this.showPopup()}>Trigger popup</button>
 
         <form
           onSubmit={() => this.handlePasswordChange(this.state.currentUser)}
