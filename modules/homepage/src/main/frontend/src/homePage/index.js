@@ -162,10 +162,18 @@ function HomePage(props) {
               </CardContent>
             </Card>
           </Grid>
-
-          <PlaceHolderCardComponent />
-          <PlaceHolderCardComponent />
-
+          <Grid item sm={6} md={4} lg={3}>
+            <Card className={classes.card}>
+              <CardContent>
+                <Typography variant="h5"> Data entries </Typography>
+                <Typography variant="h6">
+                  <ul>
+                    <li><Link href="/view"> See all data entries </Link></li>
+                  </ul>
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
       </div>
 
@@ -194,6 +202,5 @@ PlaceHolderCard.propTypes = {
 
 // export default withStyles(styles)(Album);
 const HomePageComponent = withStyles(styles)(HomePage);
-
 
 ReactDOM.render(<HomePageComponent />, document.querySelector('#main-container'));
