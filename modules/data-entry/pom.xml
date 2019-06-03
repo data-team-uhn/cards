@@ -26,9 +26,9 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-homepage</artifactId>
+  <artifactId>lfs-dataentry</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - The homepage</name>
+  <name>LFS - Data entry module</name>
 
   <build>
     <plugins>
@@ -46,9 +46,8 @@
         <configuration>
           <instructions>
             <Include-Resource>src/main/frontend/dist/,{maven-resources}</Include-Resource>
-            <Sling-Nodetypes>SLING-INF/nodetypes/homepage.cnd</Sling-Nodetypes>
-            <!-- Initial content to be loaded on bundle installation -->
-            <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
+            <Sling-Nodetypes>SLING-INF/nodetypes/dataentry.cnd</Sling-Nodetypes>
+            <Sling-Initial-Content>SLING-INF/content/</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
@@ -68,7 +67,7 @@
           <!-- This will automatically add an [artifacts] entry with the jar produced by this module in the provisioning file -->
           <attach>
             <type>jar</type>
-            <startLevel>5</startLevel>
+            <startLevel>10</startLevel>
           </attach>
         </configuration>
       </plugin>

@@ -17,15 +17,6 @@
 #  under the License.
 #
 
-# This is the LFS project
-[feature name=lfs]
-
-[variables]
-    lfs.version=0.1-SNAPSHOT
-
-[artifacts]
-    # Customizes the page displayed during startup, before all the bundles are activated
-    ca.sickkids.ccm.lfs/lfs-startup-customization/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-homepage/${lfs.version}/slingfeature/slingfeature
-    ca.sickkids.ccm.lfs/lfs-dataentry/${lfs.version}/slingfeature/slingfeature
-    ca.sickkids.ccm.lfs/lfs-ldap-support/${lfs.version}/slingfeature
+# There is nothing else to put in here, since the distribution is included inline in the pom.xml,
+# but the presence of at least one provisioning file is required by the slingstart-maven-plugin.
+[feature name=integration-tests]

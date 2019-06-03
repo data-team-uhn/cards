@@ -1,0 +1,18 @@
+{
+    "sling:resourceType": "sling:redirect",
+    "sling:target": "/content",
+    "content" : {
+        "jcr:primaryType": "lfs:Homepage",
+        "sling:resourceType": "lfs/Homepage",
+        "rep:policy": {
+            "jcr:primaryType": "rep:ACL",
+            "allow": {
+                "jcr:primaryType": "rep:GrantACE",
+                "rep:principalName": "everyone",
+                "rep:privileges": [
+                    "jcr:read"
+                ]
+            }
+        }
+    }
+}
