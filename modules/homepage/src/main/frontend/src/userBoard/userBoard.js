@@ -22,90 +22,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
+import { Snackbar } from '@material-ui/core';
 
 
-let userNamesHolder = [];
-
-const styles = theme => ({
-  appBar: {
-    position: 'relative',
-  },
-  icon: {
-    marginRight: theme.spacing.unit * 2,
-  },
-  heroUnit: {
-    backgroundColor: theme.palette.background.paper,
-  },
-  mainContent: {
-    maxWidth: 600,
-    margin: '0 auto',
-    padding: `${theme.spacing.unit * 8}px 0 ${theme.spacing.unit * 6}px`,
-  },
-  heroButtons: {
-    marginTop: theme.spacing.unit * 4,
-  },
-  layout: {
-    width: 'auto',
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
-      width: 1100,
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    },
-  },
-  cardGrid: {
-    padding: `${theme.spacing.unit * 8}px 0`,
-  },
-  card: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    maxHeight: '400',
-  },
-  cardMedia: {
-    paddingTop: '56.25%', // 16:9
-    objectFit: 'cover',
-    flexDirection: 'column',
-  },
-  cardContent: {
-    flexGrow: 1,
-  },
-  footer: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing.unit * 6,
-  },
-});
-
-{/* Stateless component for user cards */}
-function UserCard(props) {
-  const { classes } = props;
-
-  return (
-    <React.Fragment>
-      <Grid item sm={6} md={4} lg={3}>
-        <Card className={classes.card}>
-          <CardContent className={classes.cardContent}>
-            <Typography gutterBottom variant="h5" component="h2">
-              Heading
-            </Typography>
-            <Typography>
-              
-            </Typography>
-          </CardContent>
-          <CardActions>
-            <Button size="small" color="primary">
-              View
-            </Button>
-            <Button size="small" color="primary">
-              Edit
-            </Button>
-          </CardActions>
-        </Card>
-      </Grid>
-    </React.Fragment>
-  );
-}
 
 // COMMENTED OUT PORTION IS FOR POPUP USER DELETE FORM WHICH IS CURRENTLY NOT WORKING
 /*
@@ -185,39 +104,16 @@ class DeleteUserDialogue extends React.Component {
       </div>
     );
   }
-}*//*
-  
-  
-  handleDelete(userName) {
-    let url = "http://localhost:8080/system/userManager/user/" + name + ".delete.html";
+}*/
 
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization' : 'Basic' + btoa('admin:admin')
-      }
-    })
-    .then(function (response) {
-      alert("User"+name+" was deleted.")}
-    .catch (
-  
-    );
-  }
-  *//*
-handleUserPasswordChange(userName, oldPwd, newPwd, newPwdConfirm) {
-    
-  }*/
-class changeUserPasswordDialogue extends React.Component {
 
-}
-
+// Experimental Dialogue
 class TestPopup extends React.Component {
   constructor(props) {
     super(props);
     this.state ={open: true};
     this.handleClose = this.handleClose.bind(this);
   }
-  
 
   handleClose() {
     this.setState({open: false});
@@ -231,7 +127,7 @@ class TestPopup extends React.Component {
           onClose={() => this.handleClose()}
         >
           <DialogTitle>
-            Test Dialogue
+            Test Dialogue some content
           </DialogTitle>
           <DialogActions>
             <Button onClick={this.handleClose}>Close</Button>
@@ -262,7 +158,7 @@ class UserBoard extends React.Component {
       newUserName: "",
       newUserPwd: "",
       newUserPwdConfirm: "",
-      deployPopup: false
+      //deployPopup: false
 
     };
 
@@ -271,7 +167,10 @@ class UserBoard extends React.Component {
     this.handleSetUsersSystem = this.handleSetUsersSystem.bind(this);
   }
 
+
   //"http://localhost:8080/bin/cpm/usermanagement.user"
+
+  // Loads simple list of local users (with only path and groups as user information)
   handleLoadUsers () {
     fetch("http://"+"localhost:8080"+"/system/userManager/user.1.json", 
       {
@@ -299,6 +198,12 @@ class UserBoard extends React.Component {
     });
   }
 
+  // Automatically loads full list of users when component is rendered 
+  componentWillMount() {
+    this.handleLoadUsers();
+  }
+
+  // Selects a specific local user and obtains more information from them using a POST request to home/users
   handleSetUsersSystem(userName) {
     let pathUrl = "http://"+"localhost:8080"+"/system/userManager/user/"+userName+".json";
     let path = "";
@@ -341,6 +246,9 @@ class UserBoard extends React.Component {
     });
   }  
 
+  // Performs same function as above method but uses bin/cpm/usermanagement.user.json/ instad.
+  // This provides more information than the previous method but will probably not be used because that directory
+  // is only accessible when on dev mode.
   handleSetUserBin(userName) {
     let url = "http://"+"localhost:8080"+"/bin/cpm/usermanagement.user.json/" + userName;
     fetch(url, 
@@ -374,6 +282,7 @@ class UserBoard extends React.Component {
     })
   }
 
+  // Given a local user name, deletes the user
   handleDelete(name) {
     let url = "http://"+"localhost:8080"+"/system/userManager/user/"+name+".delete.html";
     fetch(url, {
@@ -391,9 +300,14 @@ class UserBoard extends React.Component {
         console.log("other error 505");
       }
       console.log(error);
-    })
+    })/*
+    componentWillUpdate() {
+      this.handleLoadUsers();
+    }
+    */
   }
 
+  // Given a local user name, changes the password of the user
   handlePasswordChange(name) {
     let formData = new FormData();
     formData.append('oldPwd', this.state.oldPwd);
@@ -423,6 +337,8 @@ class UserBoard extends React.Component {
     });
   }
 
+
+  // Creates a local user based on several state variables changed by form input
   handleCreateUser() {
     let formData = new FormData();
     formData.append(':name', this.state.newUserName);
@@ -444,7 +360,7 @@ class UserBoard extends React.Component {
       console.log(error);
     });
   }
-
+/*
   hidePopup () {
     this.setState({deployPopup: false});
   }
@@ -452,7 +368,7 @@ class UserBoard extends React.Component {
   showPopup() {
     this.setState({deployPopup: true});
   }
-
+*/
   render() {
     const {classes} = this.props;
     const userList = this.state.userNames.map((value, index) => {//userNamesHolder.map((value, index) => {
@@ -464,30 +380,30 @@ class UserBoard extends React.Component {
     return (
       <React.Fragment>
         {/* Blank navbar */}
-        {this.state.deployPopup && 
+       {this.state.deployPopup && 
           <TestPopup handleClose={() => this.hidePopup()}></TestPopup>
         }
 
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" color="inherit" noWrap>
-              LFS Repository
+              LFS Repository Update!fjas;l
             </Typography>
           </Toolbar>
         </AppBar>
         
         <button>Create New User</button>
-        <button></button>
 
         <ul>
           {userList}
         </ul>
-
+        
         <Card>
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
-              User: {this.state.currentUser}
+              User Current: {this.state.currentUser}
             </Typography>
+            <Typography>Gurble</Typography>
             <Typography>Admin status: {this.state.admin=== true ? "true" : "false"}</Typography>
             <Typography>System user status: {this.state.systemUser=== true ? "true" : "false"}</Typography>
             <Typography>Disabled: {this.state.disabled=== true ? "true" : "false"}</Typography>
@@ -507,6 +423,7 @@ class UserBoard extends React.Component {
         <button onClick={() => this.handleLoadUsers()}>Load Users</button>
         <button onClick={()=>this.showPopup()}>Trigger popup</button>
 
+        <p>Change local user password.</p>
         <form
           onSubmit={() => this.handlePasswordChange(this.state.currentUser)}
         >
@@ -527,7 +444,8 @@ class UserBoard extends React.Component {
        <input type="submit" value="Submit" />
 
         </form>
-
+        
+        <p>Create new local user.</p>
         <form
           onSubmit={()=>this.handleCreateUser()}
         >
