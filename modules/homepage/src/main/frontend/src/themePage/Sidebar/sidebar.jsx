@@ -1,3 +1,4 @@
+// Taken from https://www.creative-tim.com/product/material-dashboard-react
 import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
@@ -11,6 +12,8 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Icon from "@material-ui/core/Icon";
 
+import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
+import RTLNavbarLinks from "../Navbars/RTLNavbarLinks.jsx";
 import sidebarStyle from "./sidebarStyle.jsx";
 
 const Sidebar = ({ ...props }) => {
@@ -24,13 +27,22 @@ const Sidebar = ({ ...props }) => {
   var links = (
     <List className={classes.list}>
       {routes.map((prop, key) => {
-        var activePro = " ";
+        var adminButton = " ";
         var listItemClasses;
 
         // Generate a list of class names for each item in the sidebar
-        listItemClasses = classNames({
-          [" " + classes[color]]: activeRoute(prop.layout + prop.path)
-        });
+        // We colour two links in: the currently active
+        // link, and the administration link
+        if (prop.path === "/admin.html") {
+          adminButton = classes.adminButton + " ";
+          listItemClasses = classNames({
+            [" " + classes[color]]: true
+          });
+        } else {
+          listItemClasses = classNames({
+            [" " + classes[color]]: activeRoute(prop.layout + prop.path)
+          });
+        }
         const whiteFontClasses = classNames({
           [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
         });
@@ -40,7 +52,7 @@ const Sidebar = ({ ...props }) => {
         return (
           <NavLink
             to={prop.layout + prop.path}
-            className={activePro + classes.item}
+            className={adminButton + classes.item}
             activeClassName="active"
             key={key}
           >
@@ -76,13 +88,14 @@ const Sidebar = ({ ...props }) => {
     </List>
   );
 
+  // Setup the div containing the logo at the top of the sidebar
   var brand = (
     <div className={classes.logo}>
       <a
         href="https://phenotips.org/"
-        /*className={classNames(classes.logoLink, {
+        className={classNames(classes.logoLink, {
           [classes.logoLinkRTL]: props.rtlActive
-        })}*/
+        })}
       >
         <div className={classes.logoImage}>
           <img src={logoImage} alt="logo" className={classes.img} />
@@ -112,6 +125,7 @@ const Sidebar = ({ ...props }) => {
         >
           {brand}
           <div className={classes.sidebarWrapper}>
+            {props.rtlActive ? <RTLNavbarLinks /> : <AdminNavbarLinks />}
             {links}
           </div>
           {image !== undefined ? (
