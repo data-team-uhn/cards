@@ -24,7 +24,56 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { Snackbar } from '@material-ui/core';
 
-
+const styles = theme => ({
+  appBar: {
+    position: 'relative',
+  },
+  icon: {
+    marginRight: theme.spacing.unit * 2,
+  },
+  heroUnit: {
+    backgroundColor: theme.palette.background.paper,
+  },
+  mainContent: {
+    maxWidth: 600,
+    margin: '0 auto',
+    padding: `${theme.spacing.unit * 8}px 0 ${theme.spacing.unit * 6}px`,
+  },
+  heroButtons: {
+    marginTop: theme.spacing.unit * 4,
+  },
+  layout: {
+    width: 'auto',
+    marginLeft: theme.spacing.unit * 3,
+    marginRight: theme.spacing.unit * 3,
+    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+      width: 1100,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+  },
+  cardGrid: {
+    padding: `${theme.spacing.unit * 8}px 0`,
+  },
+  card: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    maxHeight: '400',
+  },
+  cardMedia: {
+    paddingTop: '56.25%', // 16:9
+    objectFit: 'cover',
+    flexDirection: 'column',
+  },
+  cardContent: {
+    flexGrow: 1,
+  },
+  footer: {
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing.unit * 6,
+  },
+});
 
 // COMMENTED OUT PORTION IS FOR POPUP USER DELETE FORM WHICH IS CURRENTLY NOT WORKING
 /*
@@ -158,7 +207,7 @@ class UserBoard extends React.Component {
       newUserName: "",
       newUserPwd: "",
       newUserPwdConfirm: "",
-      //deployPopup: false
+      deployPopup: false
 
     };
 
@@ -189,7 +238,6 @@ class UserBoard extends React.Component {
         names.push(name);
       }
       console.log(names);
-      //userNamesHolder = names;
       this.setState({userNames: names});
       
     })
@@ -300,11 +348,7 @@ class UserBoard extends React.Component {
         console.log("other error 505");
       }
       console.log(error);
-    })/*
-    componentWillUpdate() {
-      this.handleLoadUsers();
-    }
-    */
+    })
   }
 
   // Given a local user name, changes the password of the user
@@ -360,7 +404,7 @@ class UserBoard extends React.Component {
       console.log(error);
     });
   }
-/*
+
   hidePopup () {
     this.setState({deployPopup: false});
   }
@@ -368,7 +412,7 @@ class UserBoard extends React.Component {
   showPopup() {
     this.setState({deployPopup: true});
   }
-*/
+
   render() {
     const {classes} = this.props;
     const userList = this.state.userNames.map((value, index) => {//userNamesHolder.map((value, index) => {
@@ -387,7 +431,7 @@ class UserBoard extends React.Component {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" color="inherit" noWrap>
-              LFS Repository Update!fjas;l
+              LFS Repository
             </Typography>
           </Toolbar>
         </AppBar>
@@ -403,7 +447,6 @@ class UserBoard extends React.Component {
             <Typography gutterBottom variant="h5" component="h2">
               User Current: {this.state.currentUser}
             </Typography>
-            <Typography>Gurble</Typography>
             <Typography>Admin status: {this.state.admin=== true ? "true" : "false"}</Typography>
             <Typography>System user status: {this.state.systemUser=== true ? "true" : "false"}</Typography>
             <Typography>Disabled: {this.state.disabled=== true ? "true" : "false"}</Typography>
