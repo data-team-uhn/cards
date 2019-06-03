@@ -16,78 +16,93 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import Assignment from '@material-ui/icons/Assignment';
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
 import PropTypes from 'prop-types';
 import React from "react";
 import ReactDOM from "react-dom";
 import Sidebar from "./Sidebar/sidebar"
 import sidebarRoutes from './routes';
 import { withStyles } from '@material-ui/core/styles';
-import { Router, Route, Switch, Redirect } from "react-router-dom";
+import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-// import PhenotipsLogo from "../../../../../media/SLING-INF/content/libs/lfs/resources/phenotips-logo.png";
+import Navbar from "./Navbars/Navbar";
+import IndexStyle from "./indexStyle.jsx";
 
-const styles = {
-  drawerPaper: {
-    color: "white",
-    backgroundColor: "#141414ff",
-    backgroundImage: "url(/libs/lfs/resources/cancer-cells.jpg)",
-    backgroundSize: "cover",
-    backgroundPosition: "center center",
-  },
-  icon: {
-    color: "#ffffffff"
-  }
-};
+const switchRoutes = (
+  <Switch>
+    {sidebarRoutes.map((prop, key) => {
+      if (prop.layout === "") {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+          />
+        );
+      }
+    })}
+  </Switch>
+);
 
 class Main extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      image: "/libs/lfs/resources/cancer-cells.jpg",
+      color: "blue",
+      hasImage: true,
+      fixedClasses: "dropdown show",
+      mobileOpen: false
+    };
   }
 
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
-  }
+  };
 
   render() {
     const { classes, ...rest } = this.props;
 
     return (
-      <React.Fragment>
+      <div className={classes.wrapper}>
         <Sidebar
-        routes={ sidebarRoutes }
-        layout="/Sidebar"
-        path="/Sidebar"
-        rtlActive={ false }
-        name="asdf" // Unsure what this is used for
-        open={ true }
-        onClose={ this.handleDrawerToggle }
-        classes={ classes }
-        logoImage="/libs/lfs/resources/phenotips-logo.png"
-        logoLink="/"
-        image="/libs/lfs/resources/cancer-cells.jpg"
-        {...rest}
-        ></Sidebar>
-      </React.Fragment>
+          routes={sidebarRoutes}
+          logoText={"LFS Data Core"}
+          logoImage={"/libs/lfs/resources/lfs-logo-tmp-cyan.png"}
+          image={this.state.image}
+          handleDrawerToggle={this.handleDrawerToggle}
+          open={this.state.mobileOpen}
+          color={ "blue" }
+          {...rest}
+        />
+        <div className={classes.mainPanel} ref="mainPanel">
+          <div className={classes.content}>
+            <div className={classes.container}>{switchRoutes}</div>
+          </div>
+          <Navbar
+            routes={ sidebarRoutes }
+            handleDrawerToggle={this.handleDrawerToggle}
+            {...rest}
+          />
+        </div>
+      </div>
     );
   }
 }
 
-const MainComponent = (withStyles(styles)(Main));
+Main.propTypes = {
+  classes: PropTypes.object.isRequired
+};
+const MainComponent = (withStyles(IndexStyle)(Main));
 
 const hist = createBrowserHistory();
 ReactDOM.render(
   <Router history={hist}>
     <Switch>
       <Route path="/" component={MainComponent} />
-      {/*<Redirect from="/" to="/view.html" />*/}
     </Switch>
   </Router>,
   document.querySelector('#main-container')
 );
+
+export default MainComponent;

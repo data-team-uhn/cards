@@ -16,26 +16,54 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import HomeIcon from '@material-ui/icons/Home';
-import Person from '@material-ui/icons/Person';
+import { Assignment, Dashboard, Pets, Settings, Subtitles } from '@material-ui/icons';
 
-const sidebarRoutes = [
+import DashboardPage from "./Dashboard/dashboard.jsx";
+
+var sidebarRoutes = [
     {
       path: "/themepage.html",
-      name: "Home",
-      rtlName: "لوحة القيادة",
-      icon: HomeIcon,
-      component: "",
+      name: "Dashboard",
+      rtlName: "rtl:Dashboard",
+      icon: Dashboard,
+      component: DashboardPage,
       layout: ""
     },
     {
       path: "/view.html",
-      name: "Data entry",
-      rtlName: "ملف تعريفي للمستخدم",
-      icon: Person,
+      name: "Patients",
+      rtlName: "rtl:Patients",
+      icon: Assignment,
+      component: "",
+      layout: ""
+    },
+    {
+      path: "/modelorganisms.html",
+      name: "Model Organisms",
+      rtlName: "rtl:ModelOrganisms",
+      icon: Pets,
+      component: "",
+      layout: ""
+    },
+    {
+      path: "/variants.html",
+      name: "Variants",
+      rtlName: "rtl:Variants",
+      icon: Subtitles,
+      component: "",
+      layout: ""
+    },
+    {
+      path: "/admin.html",
+      name: "Administration",
+      rtlName: "rtl:Admin",
+      icon: Settings,
       component: "",
       layout: ""
     },
 ];
+
+// TODO:Find all findable JCR nodes and add them to the available routes
+
 
 export default sidebarRoutes

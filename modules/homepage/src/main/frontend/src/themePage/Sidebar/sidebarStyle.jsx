@@ -14,7 +14,7 @@ import {
     grayColor,
     blackColor,
     hexToRgb
-  } from "./themeStyle.jsx";
+  } from "../themeStyle.jsx";
 
   const sidebarStyle = theme => ({
     drawerPaper: {
@@ -102,7 +102,7 @@ import {
       display: "inline-block",
       maxHeight: "30px",
       marginLeft: "10px",
-      marginRight: "15paddingpx"
+      marginRight: "15px"
     },
     img: {
       width: "35px",
@@ -293,7 +293,7 @@ import {
       zIndex: "4",
       overflowScrolling: "touch"
     },
-    activePro: {
+    adminButton: {
       [theme.breakpoints.up("md")]: {
         position: "absolute",
         width: "100%",
