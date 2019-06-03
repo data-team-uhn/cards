@@ -80,7 +80,11 @@
         <configuration>
           <excludes combine.children="append">
             <!-- Ignore files from material-dashboard-react, as they're under their own license -->
+            <exclude>**/Dashboard/**</exclude>
+            <exclude>**/Navbars/**</exclude>
             <exclude>**/Sidebar/**</exclude>
+            <exclude>**/themePage/themeStyle.jsx</exclude>
+            <exclude>**/themePage/indexStyle.jsx</exclude>
           </excludes>
         </configuration>
       </plugin>
