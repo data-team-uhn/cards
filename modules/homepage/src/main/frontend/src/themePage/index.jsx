@@ -26,13 +26,16 @@ import HomeIcon from '@material-ui/icons/Home';
 import PropTypes from 'prop-types';
 import React from "react";
 import ReactDOM from "react-dom";
+import Sidebar from "./Sidebar/sidebar"
+import sidebarRoutes from './routes';
 import { withStyles } from '@material-ui/core/styles';
+import { Router, Route, Switch, Redirect } from "react-router-dom";
+import { createBrowserHistory } from "history";
 
 const styles = {
   drawerPaper: {
     color: "white",
     backgroundColor: "#141414ff",
-    backgroundImage: "url(/libs/lfs/resources/cancer-cells.jpg)",
     backgroundSize: "cover",
     backgroundPosition: "center center",
   },
@@ -41,40 +44,47 @@ const styles = {
   }
 };
 
-function Sidebar(props) {
-  const { classes } = props;
+class Main extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 
-  var icons = [(<HomeIcon className={classes.icon}/>), (<Assignment className={classes.icon}/>)]
-  var items = ['Home', 'Data'];
-  return (
-    <React.Fragment>
-      <Drawer
-        anchor="left"
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <List>
-          {items.map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{icons[index]}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-    </React.Fragment>
-  );
+  handleDrawerToggle = () => {
+    this.setState({ mobileOpen: !this.state.mobileOpen });
+  }
+
+  render() {
+    const { classes, ...rest } = this.props;
+
+    return (
+      <React.Fragment>
+        <Sidebar
+        routes={ sidebarRoutes }
+        layout="/Sidebar"
+        path="/Sidebar"
+        icon={ HomeIcon }
+        rtlActive={ false }
+        name="asdf" // Unsure what this is used for
+        open={ true }
+        onClose={ this.handleDrawerToggle }
+        classes={ classes }
+        image="/libs/lfs/resources/cancer-cells.jpg"
+        {...rest}
+        ></Sidebar>
+      </React.Fragment>
+    );
+  }
 }
 
-Sidebar.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+const MainComponent = (withStyles(styles)(Main));
 
-const SidebarComponent = withStyles(styles)(Sidebar);
-
+const hist = createBrowserHistory();
 ReactDOM.render(
-  <SidebarComponent />,
+  <Router history={hist}>
+    <Switch>
+      <Route path="/" component={MainComponent} />
+      {/*<Redirect from="/" to="/view.html" />*/}
+    </Switch>
+  </Router>,
   document.querySelector('#main-container')
 );
