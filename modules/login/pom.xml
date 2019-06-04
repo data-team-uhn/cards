@@ -28,7 +28,7 @@
 
   <artifactId>lfs-login</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Singup and Login</name>
+  <name>LFS - Signup and Login</name>
 
   <build>
     <plugins>
