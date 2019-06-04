@@ -19,9 +19,9 @@
 <%
 // This script is used whenever there's no explicit extension in the URL,
 // such as http://localhost:8080/ or http://localhost:8080/content (thus "null"),
-// and the HTTP method is GET (thus null.get).
+// and the HTTP method is GET (thus "null.GET").
 // For security, HTL doesn't allow calling methods with arguments,
-// so the more powerful ESP language must be used (thus null.GET.esp).
+// so the more powerful ESP language must be used (thus "null.GET.esp").
 
 // Sling automatically adds a content type based on the extension, but since this has no extension we must explicitly add the response ContentType.
 response.setContentType('text/html');
