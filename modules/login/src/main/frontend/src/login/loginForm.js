@@ -32,7 +32,6 @@ class SignIn extends React.Component {
     this.state = {
       passwordIsMasked: false,
       failedLogin: false,
-
       username: "",
       password: ""
     };

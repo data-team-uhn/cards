@@ -22,4 +22,4 @@
 
 [configurations]
     org.apache.sling.auth.form.FormAuthenticationHandler
-        form.login.form="/content.loginSignUp.html"
+        form.login.form="/login.html"
