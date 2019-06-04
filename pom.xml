@@ -670,15 +670,18 @@
               <groupId>com.github.eirslett</groupId>
               <artifactId>frontend-maven-plugin</artifactId>
               <version>1.7.6</version>
+                <!-- Do not run npm or webpack -->
               <executions>
-                <!-- Do not run node or npm-->
                 <execution>
                   <id>install node and npm</id>
                   <phase>none</phase>
                 </execution>
-                <!-- Do not run npm install -->
                 <execution>
                   <id>npm install</id>
+                  <phase>none</phase>
+                </execution>
+                <execution>
+                  <id>webpack</id>
                   <phase>none</phase>
                 </execution>
               </executions>
