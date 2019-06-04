@@ -18,7 +18,7 @@ const Sidebar = ({ ...props }) => {
   function activeRoute(routeName) {
     return props.location.pathname.indexOf(routeName) > -1 ? true : false;
   }
-  const { classes, color, logo, image, logoText, routes } = props;
+  const { classes, color, logoImage, image, logoText, routes } = props;
 
   // Links
   var links = (
@@ -76,21 +76,21 @@ const Sidebar = ({ ...props }) => {
     </List>
   );
 
-  /*var brand = (
+  var brand = (
     <div className={classes.logo}>
       <a
         href="https://phenotips.org/"
-        className={classNames(classes.logoLink, {
+        /*className={classNames(classes.logoLink, {
           [classes.logoLinkRTL]: props.rtlActive
-        })}
+        })}*/
       >
         <div className={classes.logoImage}>
-          <img src={logo} alt="logo" className={classes.img} />
+          <img src={logoImage} alt="logo" className={classes.img} />
         </div>
         {logoText}
       </a>
     </div>
-  );*/
+  );
 
   // Use different implementations depending on the screen size
   return (
@@ -110,7 +110,7 @@ const Sidebar = ({ ...props }) => {
             keepMounted: true // Better open performance on mobile.
           }}
         >
-          {/*brand*/}
+          {brand}
           <div className={classes.sidebarWrapper}>
             {links}
           </div>
@@ -133,7 +133,7 @@ const Sidebar = ({ ...props }) => {
             })
           }}
         >
-          {/*brand*/}
+          {brand}
           <div className={classes.sidebarWrapper}>{links}</div>
           {image !== undefined ? (
             <div
