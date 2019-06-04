@@ -4,7 +4,7 @@ module.exports = {
     navbar: './src/navbar/navbarMain.js',
     userSplash: './src/userSplash/userSplashPage.js',
     index: './src/homePage/index.js',
-    userBoard:'./src/userBoard/userBoard.js'
+    //userBoard:'./src/userBoard/userBoard.js'
   },
   module: {
     rules: [

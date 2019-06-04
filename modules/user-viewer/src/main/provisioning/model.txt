@@ -17,16 +17,14 @@
 #  under the License.
 #
 
-# This is the LFS project
-[feature name=lfs]
+# Login page for LFS
+[feature name=lfs-userviewer]
 
-[variables]
-    lfs.version=0.1-SNAPSHOT
+[:repoinit]
+    create path (lfs:userViewer) /userViewer
+    create path (sling:Folder) /libs/lfs/resources
 
-[artifacts]
-    # Customizes the page displayed during startup, before all the bundles are activated
-    ca.sickkids.ccm.lfs/lfs-startup-customization/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-homepage/${lfs.version}/slingfeature/slingfeature
-    ca.sickkids.ccm.lfs/lfs-dataentry/${lfs.version}/slingfeature/slingfeature
-    ca.sickkids.ccm.lfs/lfs-login/${lfs.version}/slingfeature/slingfeature
-    ca.sickkids.ccm.lfs/lfs-userviewer/${lfs.version}/slingfeature/slingfeature
+    set ACL for everyone
+        allow   jcr:read    on /userViewer
+        allow   jcr:read    on /libs/lfs/resources
+    end

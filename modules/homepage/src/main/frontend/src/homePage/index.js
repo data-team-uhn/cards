@@ -104,7 +104,6 @@ function PlaceHolderCard(props) {
 
 const PlaceHolderCardComponent = withStyles(styles)(PlaceHolderCard);
 
-{/* Functional component without state. Fine for homepage */}
 function HomePage(props) {
   const { classes } = props;
 
@@ -131,6 +130,7 @@ function HomePage(props) {
         <Typography variant="h6" align="center" color="textSecondary" paragraph>
           A data gathering initiative for patients with <Link href="https://en.wikipedia.org/wiki/Li%E2%80%93Fraumeni_syndrome">Li–Fraumeni syndrome</Link>.
         </Typography>
+
         <Grid container spacing={16} justify="center">
           <Grid item>
             <Button variant="contained" href="login.html" color="primary">
