@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from 'react';
+import React from 'react';
 import { Avatar, Button, Paper, Typography, Icon, TextField, Tooltip, withStyles } from '@material-ui/core';
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -28,7 +28,6 @@ import styles from "../styling/styles";
 class FormFields extends React.Component {
   constructor(props) {
     super(props);
-
   }
 
   render() {
@@ -112,9 +111,9 @@ class FormFields extends React.Component {
           required
 
         />
-        {!isValid ? 
+        {!isValid ?
           // Render hover over and button
-          <React.Fragment> 
+          <React.Fragment>
             <Tooltip title="You must fill in all fields.">
               <div>
                 <Button
@@ -129,7 +128,7 @@ class FormFields extends React.Component {
                 </Button>
               </div>
             </Tooltip>
-          </React.Fragment> : 
+          </React.Fragment> :
           // Else just render the button
           <Button
           type="submit"
@@ -147,7 +146,6 @@ class FormFields extends React.Component {
   }
 }
 
-// export default withStyles(styles)(InputForm);
 const FormFieldsComponent = withStyles(styles)(FormFields);
 
 class SignUpForm extends React.Component {
@@ -174,12 +172,6 @@ class SignUpForm extends React.Component {
       usernameError: false
     }, () => { console.log("Error has been hidden"); });
   }
-
-  //  componentDidUpdate() {
-  //   const { errors } = this.props;
-
-  //   this.form.setErrors(errors);
-  // }
 
   // Hacky way to update resource for Sling User so that we
   // are able to render the page
@@ -209,7 +201,7 @@ class SignUpForm extends React.Component {
   submitValues({ name, email, confirmPassword, password }) {
     console.log({ name, email, confirmPassword, password });
 
-    // Use native fetch, sort like the XMLHttpRequest so 
+    // Use native fetch, sort like the XMLHttpRequest so
     //  no need for other libraries.
     function handleErrors(response) {
       if (response.status == 500) {
@@ -243,8 +235,6 @@ class SignUpForm extends React.Component {
     })
       .then(handleErrors) // Handle errors first
       .then(function (response) {
-        // updateResource(name);
-        // this.updateResource(name);
         alert("Created user!");
       })
       .catch(function (error) {
@@ -271,7 +261,7 @@ class SignUpForm extends React.Component {
     })
     .catch(function (error) {
       console.log("Node has NOT been changed");
-    }); 
+    });
   }
 
   render() {
@@ -293,7 +283,6 @@ class SignUpForm extends React.Component {
     });
 
     // Hooks only work inside functional components
-    // const formikRef = React.useRef();
 
     return (
       <React.Fragment>
@@ -313,7 +302,6 @@ class SignUpForm extends React.Component {
               initialValues={values}
               validationSchema={validationSchema}
               onSubmit={this.submitValues}
-              //  ref={formikRef}
               ref={el => (this.form = el)}
             />
             <Typography>
@@ -335,4 +323,3 @@ class SignUpForm extends React.Component {
 }
 
 export default withStyles(styles)(SignUpForm);
-  // const InputFormComponent = withStyles(styles)(InputForm);

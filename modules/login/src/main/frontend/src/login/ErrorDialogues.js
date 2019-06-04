@@ -28,10 +28,6 @@ class UsernameTakenDialog extends React.Component {
     open: true,
   };
 
-  // handleClickOpen = () => {
-  //   this.setState({ open: true });
-  // };
-
   handleClose = () => {
     this.setState({ open: false });
   };

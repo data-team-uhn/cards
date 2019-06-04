@@ -88,12 +88,12 @@ function HomePage(props) {
         </Typography>
         <Grid container spacing={2} justify="center">
           <Grid item>
-            <Button variant="contained" href="content.loginSignUp.html" color="primary">
+            <Button variant="contained" href="login.html" color="primary">
               Login
             </Button>
           </Grid>
           <Grid item>
-            <Button variant="outlined" href="content.loginSignUp.html" color="primary">
+            <Button variant="outlined" href="login.html?signup=true" color="primary">
               Sign Up
             </Button>
           </Grid>
@@ -139,7 +139,6 @@ HomePage.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-// export default withStyles(styles)(Album);
 const HomePageComponent = withStyles(styles)(HomePage);
 
 ReactDOM.render(<HomePageComponent />, document.querySelector('#main-container'));

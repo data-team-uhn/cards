@@ -19,6 +19,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Avatar, Button, CssBaseline, FormControl, FormControlLabel, Checkbox, Input, InputLabel, Paper, Typography, withStyles, InputAdornment, IconButton, Tooltip, Icon } from '@material-ui/core';
+import axios from 'axios';
 import styles from "../styling/styles";
 
 class SignIn extends React.Component {
@@ -27,6 +28,10 @@ class SignIn extends React.Component {
 
     this.state = {
       passwordIsMasked: false,
+      failedLogin: false,
+
+      username: "",
+      password: ""
     };
   }
 
@@ -42,12 +47,37 @@ class SignIn extends React.Component {
     this.setState(prevState => ({
       passwordIsMasked: !prevState.passwordIsMasked,
     }));
-  };
+  }
+
+  submitLogin () {
+    axios({
+      method: 'POST',
+      url: '/j_security_check',
+      headers: {
+        'content-type':'application/x-www-form-urlencoded;charset=utf-8'
+      },
+      dataType: "text",
+      params: {
+        j_username: this.state.username,
+        j_password: this.state.password,
+        j_validate: true,
+        resource: "/content.html"
+      }
+    })
+    .then((response) => {
+      alert("You have successfully logged in!");
+      this.setState({failedLogin: false});
+    })
+    .catch((error)=>{
+      alert("Failed to log in.");
+      this.setState({failedLogin: true});
+    });
+  }
 
   render () {
     const { classes } = this.props;
     const { passwordIsMasked } = this.state;
-  
+
     return (
       <main className={classes.main}>
         <CssBaseline />
@@ -59,15 +89,21 @@ class SignIn extends React.Component {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form} method="POST" action={this.loginValidationPOSTPath()}>
+
+          {this.state.failedLogin && <Typography component="h2">An invalid username or password has been entered.</Typography>}
+
+          <form className={classes.form} onSubmit={(event)=>{event.preventDefault(); this.submitLogin();}} method="POST" action={this.loginValidationPOSTPath()}>
             <input type="hidden" name="resource" value={this.loginRedirectPath()} />
+            <input type="hidden" name="j_validate" value={true}/>
+
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="j_username">Username</InputLabel>
-              <Input id="j_username" name="j_username" autoComplete="email" autoFocus />
+              <Input id="j_username" name="j_username" autoComplete="email" autoFocus onChange={(event) => {this.setState({username: event.target.value});}}/>
             </FormControl>
+
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="j_password">Password</InputLabel>
-              <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password"
+              <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" onChange={(event) => {this.setState({password: event.target.value});}}
                 endAdornment={
                 <InputAdornment position="end">
                   <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>

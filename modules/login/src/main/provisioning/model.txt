@@ -17,22 +17,12 @@
 #  under the License.
 #
 
-# This is the LFS project
-[feature name=lfs]
+# Login page for LFS
+[feature name=lfs-login]
 
-[variables]
-    lfs.version=0.1-SNAPSHOT
+[:repoinit]
+    create path (lfs:login) /login
 
-[artifacts]
-    # Customizes the page displayed during startup, before all the bundles are activated
-    ca.sickkids.ccm.lfs/lfs-startup-customization/${lfs.version}
-
-    # Add support for external authenticators
-    ca.sickkids.ccm.lfs/lfs-ldap-support/${lfs.version}/slingfeature
-
-    # UI modules
-    ca.sickkids.ccm.lfs/lfs-commons/${lfs.version}/slingfeature/slingfeature
-    ca.sickkids.ccm.lfs/lfs-uiextension/${lfs.version}/
-    ca.sickkids.ccm.lfs/lfs-homepage/${lfs.version}/slingfeature/slingfeature
-    ca.sickkids.ccm.lfs/lfs-dataentry/${lfs.version}/slingfeature/slingfeature
-    ca.sickkids.ccm.lfs/lfs-login/${lfs.version}/slingfeature/slingfeature
+    set ACL for everyone
+        allow   jcr:read    on /login
+    end

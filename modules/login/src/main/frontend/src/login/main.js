@@ -18,16 +18,16 @@
 //
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Slide } from '@material-ui/core';
 import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
 
 class MainPageContainer extends React.Component {
   constructor() {
     super();
+    var queryParams = new URLSearchParams(window.location.search);
 
     this.state = {
-      signInShown: true
+      signInShown: !(queryParams.has("signup") && queryParams.get("signup") === "true")
     }
   }
 
@@ -48,8 +48,6 @@ class MainPageContainer extends React.Component {
 }
 
 export default MainPageContainer;
-
-// const MainElement = <Main />;
 
 ReactDOM.render(
   <MainPageContainer />,

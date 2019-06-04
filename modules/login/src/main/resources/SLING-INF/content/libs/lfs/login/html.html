@@ -1,5 +1,4 @@
-<html>
-<!--
+<!--/*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -16,15 +15,8 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
--->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Login to LFS</title>
-    </head>
-    <body>
-        <div id="main-login-container"></div>
-        <script src="/libs/lfs/resources/loginSignUp.js"></script>
-    </body>
-</html>
+*/-->
+<sly data-sly-resource="${@selectors='header'}"/>
+    <div id="main-login-container"></div>
+    <script src="/libs/lfs/resources/login.js"></script>
+<sly data-sly-resource="${@selectors='footer'}"/>
