@@ -663,32 +663,10 @@
     <profile>
       <!-- Use this ( mvn install -Pskip-webpack ) when trying to get a quicker test build, without (re)installing any node dependencies. -->
       <id>skip-webpack</id>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>com.github.eirslett</groupId>
-              <artifactId>frontend-maven-plugin</artifactId>
-              <version>1.7.6</version>
-                <!-- Do not run npm or webpack -->
-              <executions>
-                <execution>
-                  <id>install node and yarn</id>
-                  <phase>none</phase>
-                </execution>
-                <execution>
-                  <id>yarn install</id>
-                  <phase>none</phase>
-                </execution>
-                <execution>
-                  <id>webpack</id>
-                  <phase>none</phase>
-                </execution>
-              </executions>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
+      <properties>
+        <skip.yarn>true</skip.yarn>
+        <skip.webpack>true</skip.webpack>
+      </properties>
     </profile>
 
     <profile>
