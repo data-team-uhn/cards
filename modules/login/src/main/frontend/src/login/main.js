@@ -4,6 +4,9 @@ import Slide from '@material-ui/core/Slide';
 import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
 
+import Dialog from '@material-ui/core/Dialog';
+
+
 class MainPageContainer extends React.Component {
   constructor() {
     super();
@@ -28,8 +31,24 @@ class MainPageContainer extends React.Component {
     );
   }
 }
+/*
+class loginDialogue extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      signInShown: this.props.showSignIn,
+      open: 
+    }
+  }
 
-export default MainPageContainer;
+  render () {
+    return(
+
+    );
+  }
+}
+*/
+//export default MainPageContainer;
 
 // const MainElement = <Main />;
 
