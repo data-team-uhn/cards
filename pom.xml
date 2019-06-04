@@ -504,19 +504,19 @@
           <artifactId>frontend-maven-plugin</artifactId>
           <version>1.7.6</version>
           <executions>
-            <!-- Installs NodeJS and NPM locally -->
+            <!-- Installs NodeJS and Yarn locally -->
             <execution>
-              <id>install node and npm</id>
+              <id>install node and yarn</id>
               <goals>
-                <goal>install-node-and-npm</goal>
+                <goal>install-node-and-yarn</goal>
               </goals>
               <phase>initialize</phase>
             </execution>
-            <!-- Brings in the dependencies using npm -->
+            <!-- Brings in the dependencies using yarn -->
             <execution>
-              <id>npm install</id>
+              <id>yarn install</id>
               <goals>
-                <goal>npm</goal>
+                <goal>yarn</goal>
               </goals>
             </execution>
             <!-- Runs webpack to compile the JS source code -->
@@ -529,6 +529,7 @@
           </executions>
           <configuration>
             <nodeVersion>v12.2.0</nodeVersion>
+            <yarnVersion>v1.16.0</yarnVersion>
             <workingDirectory>src/main/frontend</workingDirectory>
           </configuration>
         </plugin>
