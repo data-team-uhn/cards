@@ -1,4 +1,4 @@
-<%--
+<!--/*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -15,17 +15,12 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
---%>
-<%
-// This script is used whenever there's no explicit extension in the URL,
-// such as http://localhost:8080/ or http://localhost:8080/content (thus "null"),
-// and the HTTP method is GET (thus null.get).
-// For security, HTL doesn't allow calling methods with arguments,
-// so the more powerful ESP language must be used (thus null.GET.esp).
-
-// Sling automatically adds a content type based on the extension, but since this has no extension we must explicitly add the response ContentType.
-response.setContentType('text/html');
-
-// Include the html displayer for this resource.
-sling.include(resource + '.html');
-%>
+*/-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${properties.title}</title>
+  </head>
+  <body>

@@ -32,6 +32,7 @@
 
   <modules>
     <module>startup-customization</module>
+    <module>commons</module>
     <module>homepage</module>
     <module>data-entry</module>
     <module>ldap-support</module>
