@@ -661,8 +661,8 @@
     </profile>
 
     <profile>
-      <!-- Use this ( mvn install -Pskip-npm ) when trying to get a quicker test build, without (re)installing any node dependencies. -->
-      <id>skip-npm</id>
+      <!-- Use this ( mvn install -Pskip-webpack ) when trying to get a quicker test build, without (re)installing any node dependencies. -->
+      <id>skip-webpack</id>
       <build>
         <pluginManagement>
           <plugins>
@@ -673,11 +673,11 @@
                 <!-- Do not run npm or webpack -->
               <executions>
                 <execution>
-                  <id>install node and npm</id>
+                  <id>install node and yarn</id>
                   <phase>none</phase>
                 </execution>
                 <execution>
-                  <id>npm install</id>
+                  <id>yarn install</id>
                   <phase>none</phase>
                 </execution>
                 <execution>
