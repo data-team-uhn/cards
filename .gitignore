@@ -48,6 +48,6 @@ overlays
 **/src/main/frontend/dist/
 **/src/main/frontend/package-lock.json
 
-#Running instance
+# Running instance
 /sling/
 /distribution/sling/
