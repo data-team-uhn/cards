@@ -1,6 +1,6 @@
 # LFS Data Core based on Apache Sling
 
-## Prerequisits:
+## Prerequisites:
 * Java 1.8+
 * Maven 3.3+
 

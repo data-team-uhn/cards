@@ -20,9 +20,6 @@
 # This is the OAK feature, the actual JCR implementation used for storing data.
 [feature name=oak]
 
-[variables]
-    oak.version=1.8.8
-
 # JAAS (Java Authentication and Authorization Service) integration into Apache Felix
 [artifacts startLevel=10]
     org.apache.felix/org.apache.felix.jaas/1.0.2

@@ -48,5 +48,6 @@ overlays
 **/src/main/frontend/dist/
 **/src/main/frontend/package-lock.json
 
-#Automatically generated Sling folder
-sling/
+# Running instance
+/sling/
+/distribution/sling/
