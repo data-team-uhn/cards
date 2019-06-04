@@ -31,11 +31,13 @@ import sidebarRoutes from './routes';
 import { withStyles } from '@material-ui/core/styles';
 import { Router, Route, Switch, Redirect } from "react-router-dom";
 import { createBrowserHistory } from "history";
+// import PhenotipsLogo from "../../../../../media/SLING-INF/content/libs/lfs/resources/phenotips-logo.png";
 
 const styles = {
   drawerPaper: {
     color: "white",
     backgroundColor: "#141414ff",
+    backgroundImage: "url(/libs/lfs/resources/cancer-cells.jpg)",
     backgroundSize: "cover",
     backgroundPosition: "center center",
   },
@@ -62,12 +64,13 @@ class Main extends React.Component {
         routes={ sidebarRoutes }
         layout="/Sidebar"
         path="/Sidebar"
-        icon={ HomeIcon }
         rtlActive={ false }
         name="asdf" // Unsure what this is used for
         open={ true }
         onClose={ this.handleDrawerToggle }
         classes={ classes }
+        logoImage="/libs/lfs/resources/phenotips-logo.png"
+        logoLink="/"
         image="/libs/lfs/resources/cancer-cells.jpg"
         {...rest}
         ></Sidebar>
