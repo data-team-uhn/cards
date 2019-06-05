@@ -145,7 +145,7 @@ function HomePage(props) {
         </Grid>
       </div>
 
-      {window.Sling.getSessionInfo() === nulll || window.Sling.getSessionInfo().userID !== 'anonymous' ? <p> Logged in!</p> : <p>Logged Out </p>}
+      {window.Sling.getSessionInfo() === null || window.Sling.getSessionInfo().userID !== 'anonymous' ? <p> Logged in!</p> : <p>Logged Out </p>}
       <div className={classNames(classes.layout, classes.cardGrid)}>
         <Grid container spacing={40}>
           <Grid item sm={6} md={4} lg={3}>
