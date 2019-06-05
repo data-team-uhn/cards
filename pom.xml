@@ -667,25 +667,67 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-clean-plugin</artifactId>
-              <!-- Delete the running instance when cleaning -->
-              <configuration>
-                <filesets>
-                  <fileset>
-                    <directory>${basedir}</directory>
-                    <includes>
-                      <include>sling/**</include>
-                    </includes>
-                  </fileset>
-                </filesets>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-clean-plugin</artifactId>
+            <!-- Delete the running instance when cleaning -->
+            <executions>
+              <execution>
+                <id>clean-instance</id>
+                <phase>clean</phase>
+                <goals>
+                  <goal>clean</goal>
+                </goals>
+                <configuration>
+                  <filesets>
+                    <fileset>
+                      <directory>sling/</directory>
+                    </fileset>
+                  </filesets>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!-- Node resources are like binary dependencies, so they should be cleaned as well. However, re-downloading Node and its modules for every build is pointless, thus cleaning them is optional. -->
+      <id>clean-node</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-clean-plugin</artifactId>
+            <!-- Delete node files when cleaning -->
+            <executions>
+              <execution>
+                <id>clean-node</id>
+                <phase>clean</phase>
+                <goals>
+                  <goal>clean</goal>
+                </goals>
+                <configuration>
+                  <filesets>
+                    <fileset>
+                      <directory>src/main/frontend/</directory>
+                      <includes>
+                        <include>node/</include>
+                        <include>node_modules/</include>
+                        <include>yarn.lock</include>
+                      </includes>
+                    </fileset>
+                  </filesets>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
       </build>
     </profile>
 
