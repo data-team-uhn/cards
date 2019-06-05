@@ -661,6 +661,16 @@
     </profile>
 
     <profile>
+      <!-- Use this ( mvn install -Pskip-webpack ) when trying to get a quicker test build, without (re)installing any node dependencies. -->
+      <id>skip-webpack</id>
+      <properties>
+        <skip.installyarn>true</skip.installyarn>
+        <skip.yarn>true</skip.yarn>
+        <skip.webpack>true</skip.webpack>
+      </properties>
+    </profile>
+
+    <profile>
       <!-- By default the sling running instance is also cleaned. To disable this, use `mvn install -P-clean-instance` -->
       <id>clean-instance</id>
       <activation>
