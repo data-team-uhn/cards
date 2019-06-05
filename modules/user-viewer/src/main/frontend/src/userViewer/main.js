@@ -511,6 +511,6 @@ class UserBoard extends React.Component {
   }
 }
 
-export default withStyles (styles) (UserBoard);
+export default withStyles(styles)(UserBoard);
 
 ReactDOM.render(<UserBoard/>, document.getElementById('user-board'));

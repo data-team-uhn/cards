@@ -24,7 +24,26 @@
         <title>LFS Users</title>
     </head>
     <body>
-        <div id="user-board"></div>
-        <script src="/libs/lfs/resources/userViewer.js"></script>
+        <script src="/system/sling.js"></script>
+        <div id="main-container"></div>
+        <script src="/libs/lfs/resources/index.js"></script>
+
+        <h1>Session</h1>
+        <h2 id="Login"><a href="/system/sling/login.html" title="Login to Apache Sling">Login</a> (admin:admin)</h2>
+        <h2 id="Logout"><a href="/system/sling/logout" title="Logout of Apache Sling">Logout,</a> </h2>
+
+        <script>
+            var info = Sling.getSessionInfo();
+            var login = document.querySelector('#Login');
+            var logout = document.querySelector('#Logout');
+            console.log(info.userId);
+            if (info.userID !== 'anonymous') {
+                login.style.display = 'none';
+                logout.style.display = 'block';
+                logout.insertAdjacentHTML('beforeend', info.userID);
+            } else {
+                logout.style.display = 'none';
+            }
+        </script>
     </body>
 </html>
