@@ -468,6 +468,14 @@
           <artifactId>maven-clean-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
           <version>3.1.0</version>
+          <!-- Delete the transpiled fronted code -->
+          <configuration>
+            <filesets>
+              <fileset>
+                <directory>src/main/frontend/dist/</directory>
+              </fileset>
+            </filesets>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
