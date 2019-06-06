@@ -32,4 +32,25 @@
   // Attributes:
   query
 
-  // We don't define any properties or subchildren
+  // Properties:
+  // Hardcode the resource type
+  - sling:resourceType (STRING) = "lfs/dataEntry" mandatory autocreated protected
+  // Hardcode the resource supertype: a dataEntry is a resource
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  // Each data entry has a name and a value (proof-of-concept properties)
+  - name (STRING) = "testname" mandatory autocreated
+  - value (STRING) = "testvalue" mandatory autocreated
+
+//-----------------------------------------------------------------------------
+// Nodetype for homepage to display/create/edit data entries
+[lfs:dataEntryViewer] > sling:Folder
+  // Attributes:
+  query
+
+  // Properties:
+  // Hardcode the resource type
+  - sling:resourceType (STRING) = "lfs/dataEntryViewer" mandatory autocreated protected
+  // Hardcode the resource supertype: the dataEntryViewer is a resource
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  // Set a default title
+  - title (String) = "LFS data entries" mandatory autocreated

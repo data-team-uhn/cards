@@ -150,7 +150,6 @@
 
     <enforcer.skip>false</enforcer.skip>
     <checkstyle.skip>false</checkstyle.skip>
-    <license.skip>false</license.skip>
     <dependencyCheck.skip>false</dependencyCheck.skip>
     <coverage.instructionRatio>1.00</coverage.instructionRatio>
   </properties>
@@ -345,6 +344,45 @@
           <skip>${enforcer.skip}</skip>
         </configuration>
       </plugin>
+
+      <!-- Check that each source file has the right license header. -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.13</version>
+        <configuration>
+          <excludes combine.children="append">
+            <!-- Used by maven-remote-resources-plugin -->
+            <exclude>src/main/appended-resources/META-INF/*</exclude>
+            <!-- Don't check anything in target -->
+            <exclude>**/target/**</exclude>
+            <!-- Exclude frontend generated code -->
+            <exclude>**/frontend/node/**</exclude>
+            <exclude>**/frontend/node_modules/**</exclude>
+            <exclude>**/frontend/dist/**</exclude>
+            <exclude>**/webpack.config.js</exclude>
+            <exclude>**/yarn.lock</exclude>
+            <!-- Exclude JSON files since comments are not supported -->
+            <exclude>**/*.json</exclude>
+            <!-- Documentation files in markdown format -->
+            <exclude>**/*.md</exclude>
+            <!-- Ignore "hidden" files and folders -->
+            <exclude>**/.*</exclude>
+            <exclude>**/.*/**</exclude>
+            <!-- bnd -->
+            <exclude>bnd.bnd</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>rat-check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -468,6 +506,14 @@
           <artifactId>maven-clean-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
           <version>3.1.0</version>
+          <!-- Delete the transpiled fronted code -->
+          <configuration>
+            <filesets>
+              <fileset>
+                <directory>src/main/frontend/dist/</directory>
+              </fileset>
+            </filesets>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -504,19 +550,19 @@
           <artifactId>frontend-maven-plugin</artifactId>
           <version>1.7.6</version>
           <executions>
-            <!-- Installs NodeJS and NPM locally -->
+            <!-- Installs NodeJS and Yarn locally -->
             <execution>
-              <id>install node and npm</id>
+              <id>install node and yarn</id>
               <goals>
-                <goal>install-node-and-npm</goal>
+                <goal>install-node-and-yarn</goal>
               </goals>
               <phase>initialize</phase>
             </execution>
-            <!-- Brings in the dependencies using npm -->
+            <!-- Brings in the dependencies using yarn -->
             <execution>
-              <id>npm install</id>
+              <id>yarn install</id>
               <goals>
-                <goal>npm</goal>
+                <goal>yarn</goal>
               </goals>
             </execution>
             <!-- Runs webpack to compile the JS source code -->
@@ -529,6 +575,7 @@
           </executions>
           <configuration>
             <nodeVersion>v12.2.0</nodeVersion>
+            <yarnVersion>v1.16.0</yarnVersion>
             <workingDirectory>src/main/frontend</workingDirectory>
           </configuration>
         </plugin>
@@ -654,8 +701,18 @@
         <checkstyle.skip>true</checkstyle.skip>
         <jacoco.skip>true</jacoco.skip>
         <skipTests>true</skipTests>
-        <license.skip>true</license.skip>
+        <rat.skip>true</rat.skip>
         <dependencyCheck.skip>true</dependencyCheck.skip>
+      </properties>
+    </profile>
+
+    <profile>
+      <!-- Use this ( mvn install -Pskip-webpack ) when trying to get a quicker test build, without (re)installing any node dependencies. -->
+      <id>skip-webpack</id>
+      <properties>
+        <skip.installyarn>true</skip.installyarn>
+        <skip.yarn>true</skip.yarn>
+        <skip.webpack>true</skip.webpack>
       </properties>
     </profile>
 
@@ -666,25 +723,67 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-clean-plugin</artifactId>
-              <!-- Delete the running instance when cleaning -->
-              <configuration>
-                <filesets>
-                  <fileset>
-                    <directory>${basedir}</directory>
-                    <includes>
-                      <include>sling/**</include>
-                    </includes>
-                  </fileset>
-                </filesets>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-clean-plugin</artifactId>
+            <!-- Delete the running instance when cleaning -->
+            <executions>
+              <execution>
+                <id>clean-instance</id>
+                <phase>clean</phase>
+                <goals>
+                  <goal>clean</goal>
+                </goals>
+                <configuration>
+                  <filesets>
+                    <fileset>
+                      <directory>sling/</directory>
+                    </fileset>
+                  </filesets>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!-- Node resources are like binary dependencies, so they should be cleaned as well. However, re-downloading Node and its modules for every build is pointless, thus cleaning them is optional. -->
+      <id>clean-node</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-clean-plugin</artifactId>
+            <!-- Delete node files when cleaning -->
+            <executions>
+              <execution>
+                <id>clean-node</id>
+                <phase>clean</phase>
+                <goals>
+                  <goal>clean</goal>
+                </goals>
+                <configuration>
+                  <filesets>
+                    <fileset>
+                      <directory>src/main/frontend/</directory>
+                      <includes>
+                        <include>node/</include>
+                        <include>node_modules/</include>
+                        <include>yarn.lock</include>
+                      </includes>
+                    </fileset>
+                  </filesets>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
       </build>
     </profile>
 
@@ -752,6 +851,9 @@
         By default it connects to http://localhost:8080 with admin:admin.
         To specify a different password, use `-Dsling.password=newPassword`
         To specify a different URL, use `-Dsling.url=https://lfs.server:8443/system/console` (the URL must end with `/system/console` to work properly)
+
+        TL;DR:
+        mvn install -PautoInstallBundle
     -->
     <profile>
       <id>autoInstallBundle</id>
@@ -775,6 +877,17 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+
+    <!-- Integration tests shouldn't be run for every build, they need to be explicitly triggered using this profile: `mvn install -PintegrationTests` -->
+    <profile>
+      <id>integrationTests</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>tests</module>
+      </modules>
     </profile>
   </profiles>
 

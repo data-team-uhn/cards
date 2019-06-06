@@ -19,3 +19,31 @@
 
 # The LFS homepage
 [feature name=lfs-dataentry]
+
+[:repoinit]
+    # Data entry
+    create path (sling:Folder) /db
+    create path (lfs:dataEntryViewer) /view
+
+    # Testing users
+    create path (lfs:dataEntry) /db/dummy1
+    create path (lfs:dataEntry) /db/dummy2
+    create user test_user with password testing
+
+    # Allow all users to read from the database and one of the nodes
+    set ACL for everyone
+        allow   jcr:read    on /view
+        allow   jcr:read    on /db
+        allow   jcr:read    on /db/dummy1
+        deny    jcr:read    on /db/dummy2
+    end
+
+    # Allow test_user to add new data
+    set ACL for test_user
+        allow   jcr:addChildNodes       on /db
+        allow   jcr:modifyProperties    on /db
+        allow   jcr:nodeTypeManagement  on /db
+        allow   jcr:read    on /db/dummy2
+        allow   jcr:write   on /db/dummy1
+        allow   jcr:write   on /db/dummy2
+    end

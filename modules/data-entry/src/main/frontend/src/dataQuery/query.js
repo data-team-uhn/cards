@@ -20,18 +20,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
-import CameraIcon from '@material-ui/icons/PhotoCamera';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -85,8 +80,8 @@ const styles = theme => ({
   },
 });
 
-{/* Stateless component for placeholder cards */}
-function PlaceHolderCard(props) {
+{/* Component for dataView cards */}
+function DataViewCard(props) {
   const { classes } = props;
 
   return (
@@ -100,10 +95,10 @@ function PlaceHolderCard(props) {
           />
           <CardContent className={classes.cardContent}>
             <Typography gutterBottom variant="h5" component="h2">
-              Heading
+              {props.dataName}
             </Typography>
             <Typography>
-              This is a media card. You can use this section to describe the content.
+              {props.dataProps}
             </Typography>
           </CardContent>
           <CardActions>
@@ -118,93 +113,27 @@ function PlaceHolderCard(props) {
       </Grid>
     </React.Fragment>
   );
-}
+  }
 
-const PlaceHolderCardComponent = withStyles(styles)(PlaceHolderCard);
+  const DataViewCardComponent = withStyles(styles)(DataViewCard);
 
+{/* Functional component without state. Fine for homepage */}
 function HomePage(props) {
   const { classes } = props;
 
+  const items = props.elements.split(",");
+  const components = items.map(cardData => {
+    var cardDataList = cardData.split("|");
+    return <DataViewCardComponent key={cardDataList[0]} dataName={cardDataList[0]} dataProps={cardDataList[1]} />;
+    });
+
   return (
     <React.Fragment>
-      {/* Override <body> and <html> tags with Material UI default css
-            - Remove margins, default background color applied */}
-      <CssBaseline />
-
-      {/* Blank navbar */}
-      <AppBar position="static" className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="h6" color="inherit" noWrap>
-            LFS Repository
-          </Typography>
-        </Toolbar>
-      </AppBar>
-
-      {/* Main Page */}
-      <div className={classes.mainContent}>
-        <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-          LFS
-        </Typography>
-        <Typography variant="h6" align="center" color="textSecondary" paragraph>
-          A data gathering initiative for patients with <Link href="https://en.wikipedia.org/wiki/Li%E2%80%93Fraumeni_syndrome">Li–Fraumeni syndrome</Link>.
-        </Typography>
-
-        <Grid container spacing={16} justify="center">
-          <Grid item>
-            <Button variant="contained" href="login.html" color="primary">
-              Login
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button variant="outlined" href="login.html" color="primary">
-              Sign Up
-            </Button>
-          </Grid>
-        </Grid>
-      </div>
-
-      {window.Sling.getSessionInfo() === null || window.Sling.getSessionInfo().userID !== 'anonymous' ? <p> Logged in!</p> : <p>Logged Out </p>}
       <div className={classNames(classes.layout, classes.cardGrid)}>
         <Grid container spacing={40}>
-          <Grid item sm={6} md={4} lg={3}>
-            <Card className={classes.card}>
-              <CardContent>
-                <Typography variant="h5"> Some Dev Links </Typography>
-                <Typography variant="h6">
-                  <ul>
-                    <li><Link href="../bin/browser.html"> JCR Content Browser </Link></li>
-                    <li><Link href="../system/console/bundles"> System Console </Link></li>
-                    <li><Link href="../system/console/configMgr"> System Configuration </Link></li>
-                  </ul>
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item sm={6} md={4} lg={3}>
-            <Card className={classes.card}>
-              <CardContent>
-                <Typography variant="h5"> Data entries </Typography>
-                <Typography variant="h6">
-                  <ul>
-                    <li><Link href="/view"> See all data entries </Link></li>
-                  </ul>
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+          {components}
         </Grid>
       </div>
-
-      {/* Footer */}
-      <footer className={classes.footer}>
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer - Some Sling Magic below
-        </Typography>
-        <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
-          These admin tools will significantly change this page.
-        </Typography>
-      </footer>
-      {/* End footer */}
     </React.Fragment>
   );
 }
@@ -214,11 +143,9 @@ HomePage.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-PlaceHolderCard.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
 // export default withStyles(styles)(Album);
 const HomePageComponent = withStyles(styles)(HomePage);
 
-ReactDOM.render(<HomePageComponent />, document.querySelector('#main-container'));
+// ReactDOM.render(HomePageComponent, document.getElementById('query_display'));
+const element = document.querySelector('#querydisplay');
+ReactDOM.render(<HomePageComponent elements={element.getAttribute('elements')}/>, element);

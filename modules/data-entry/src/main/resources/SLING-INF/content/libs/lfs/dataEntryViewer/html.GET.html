@@ -1,0 +1,60 @@
+<!--/*
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+*/-->
+<sly data-sly-resource="${@selectors='header'}"/>
+        <div id="main-container"></div>
+
+        <!-- Display all available dataEntry nodes -->
+        <div data-sly-use.query="nodeQuery.js">
+            <div id="querydisplay" elements="${query.results}"> </div>
+        </div>
+
+        <!-- Create/edit queries -->
+        <h2>Create a new node with the following:</h2>
+        <form name="submitForm" onsubmit="return dataQuery.redirect();" target="hidden-form">
+            Name: <input type="text" name="name" value=""><br />
+            Value: <input type="text" name="value" value=""><br />
+            <input type="submit" value="Create/Edit">
+        </form>
+
+        <h2 id="Login"><a href="/system/sling/login.html" title="Login to Apache Sling">Login</a> (admin:admin)</h2>
+        <h2 id="Logout"><a href="/system/sling/logout" title="Logout of Apache Sling">Logout,</a> </h2>
+
+        <script src="/system/sling.js"></script>
+        <script>
+            var info = Sling.getSessionInfo();
+            var login = document.querySelector('#Login');
+            var logout = document.querySelector('#Logout');
+            if (info.userID !== 'anonymous') {
+                login.style.display = 'none';
+                logout.style.display = 'block';
+                logout.insertAdjacentHTML('beforeend', info.userID);
+            } else {
+                logout.style.display = 'none';
+            }
+        </script>
+
+        <!-- Use React to prettify page -->
+        <script src="/libs/lfs/resources/showQuery.js"></script>
+
+        <!-- Call our library after React to prevent the Module from failing to export -->
+        <script src="/libs/lfs/resources/redirect.js"></script>
+
+        <!-- iframe to silence submitForm submission -->
+        <IFRAME style="display:none" name="hidden-form"></IFRAME>
+<sly data-sly-resource="${@selectors='footer'}"/>

@@ -16,19 +16,26 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from 'react';
-import ReactDOM from 'react-dom';
-import PrimarySearchAppBar from '../navbar/navbarMain';
+// Locate all visible lfs:dataEntry nodes
+use(function(){
+  var query = resolver.findResources("select * from [lfs:dataEntry] as n", "JCR-SQL2");
 
-class MainSplashPageContainer extends React.Component {
-    render () {
-        return (
-            <PrimarySearchAppBar></PrimarySearchAppBar>
-        );
+  // Dump our iterator into a list of strings
+  var nodeNames = [];
+  while (query.hasNext()) {
+    var resource = query.next();
+    var stringOut = resource.getPath() + "|";
+
+    // Create a comma-delimited list of entries for each property
+    var propIterator = resource.properties.keySet().iterator();
+    while (propIterator.hasNext()) {
+      var key = propIterator.next();
+      stringOut += key + ' ' + resource.properties[key]+"\n";
     }
-}
+    nodeNames.push(stringOut);
+  }
 
-ReactDOM.render (
-    <MainSplashPageContainer />,
-    document.getElementById("navbar-container")
-);
+  return {
+    results: nodeNames
+  };
+});
