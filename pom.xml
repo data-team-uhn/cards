@@ -150,7 +150,6 @@
 
     <enforcer.skip>false</enforcer.skip>
     <checkstyle.skip>false</checkstyle.skip>
-    <license.skip>false</license.skip>
     <dependencyCheck.skip>false</dependencyCheck.skip>
     <coverage.instructionRatio>1.00</coverage.instructionRatio>
   </properties>
@@ -344,6 +343,45 @@
         <configuration>
           <skip>${enforcer.skip}</skip>
         </configuration>
+      </plugin>
+
+      <!-- Check that each source file has the right license header. -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.13</version>
+        <configuration>
+          <excludes combine.children="append">
+            <!-- Used by maven-remote-resources-plugin -->
+            <exclude>src/main/appended-resources/META-INF/*</exclude>
+            <!-- Don't check anything in target -->
+            <exclude>**/target/**</exclude>
+            <!-- Exclude frontend generated code -->
+            <exclude>**/frontend/node/**</exclude>
+            <exclude>**/frontend/node_modules/**</exclude>
+            <exclude>**/frontend/dist/**</exclude>
+            <exclude>**/webpack.config.js</exclude>
+            <exclude>**/yarn.lock</exclude>
+            <!-- Exclude JSON files since comments are not supported -->
+            <exclude>**/*.json</exclude>
+            <!-- Documentation files in markdown format -->
+            <exclude>**/*.md</exclude>
+            <!-- Ignore "hidden" files and folders -->
+            <exclude>**/.*</exclude>
+            <exclude>**/.*/**</exclude>
+            <!-- bnd -->
+            <exclude>bnd.bnd</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>rat-check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
     <pluginManagement>
@@ -655,7 +693,7 @@
         <checkstyle.skip>true</checkstyle.skip>
         <jacoco.skip>true</jacoco.skip>
         <skipTests>true</skipTests>
-        <license.skip>true</license.skip>
+        <rat.skip>true</rat.skip>
         <dependencyCheck.skip>true</dependencyCheck.skip>
       </properties>
     </profile>
