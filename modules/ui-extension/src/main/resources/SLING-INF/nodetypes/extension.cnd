@@ -25,7 +25,7 @@
 // UI Extension base nodetype
 //
 //-----------------------------------------------------------------------------
-[lfs:extension] > nt:file, sling:Resource, mix:referenceable
+[lfs:Extension] > nt:file, sling:Resource, mix:referenceable
 
   // Properties:
   // The ID to the extension point that contains rendering code
@@ -36,4 +36,4 @@
   - lfs:defaultOrder (LONG) = "0" mandatory autocreated
   - lfs:defaultDisabled (BOOLEAN) = "false" mandatory autocreated
   // Hardcode the resource type
-  - sling:resourceType (STRING) = "lfs/Homepage" mandatory autocreated protected
+  - sling:resourceType (STRING) = "lfs/Extension" mandatory autocreated protected
