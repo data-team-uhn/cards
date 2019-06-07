@@ -34,9 +34,9 @@
     <module>startup-customization</module>
     <module>commons</module>
     <module>ui-extension</module>
+    <module>login</module>
     <module>homepage</module>
     <module>data-entry</module>
     <module>ldap-support</module>
-    <module>login</module>
   </modules>
 </project>

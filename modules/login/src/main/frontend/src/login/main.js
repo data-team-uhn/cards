@@ -18,16 +18,19 @@
 //
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Slide from '@material-ui/core/Slide';
+import Button from '@material-ui/core/Button'
 import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
+import Dialog from '@material-ui/core/Dialog';
 
 class MainPageContainer extends React.Component {
-  constructor() {
-    super();
-    var queryParams = new URLSearchParams(window.location.search);
+  constructor(props) {
+    super(props);
 
     this.state = {
-      signInShown: !(queryParams.has("signup") && queryParams.get("signup") === "true")
+      signInShown: true,
+      show: false
     }
   }
 
@@ -38,10 +41,27 @@ class MainPageContainer extends React.Component {
     }));
   }
 
+  handleOpen() {
+    this.setState({show: true});
+  }
+
+  handleClose() {
+    this.setState({show: false});
+  }
+
   render () {
     return (
       <div>
-        {this.state.signInShown ? <SignIn swapForm={this.handleSwap} /> : <SignUpForm swapForm={this.handleSwap} />}
+        <Dialog
+          open={this.state.show}
+          onClose={() => this.handleClose()}
+        >
+          {this.state.signInShown ? <SignIn swapForm={this.handleSwap} /> : <SignUpForm swapForm={this.handleSwap} />}
+          <Button onClick={()=>this.handleClose()}>Close</Button>
+          {document.getElementById('login-main-button').addEventListener('click', () => {this.setState({signInShown: true}); this.handleOpen();})}
+          {document.getElementById('signup-main-button').addEventListener('click', () => {this.setState({signInShown: false}); this.handleOpen();})}
+        </Dialog>
+        
       </div>
     );
   }
@@ -49,7 +69,4 @@ class MainPageContainer extends React.Component {
 
 export default MainPageContainer;
 
-ReactDOM.render(
-  <MainPageContainer />,
-  document.getElementById('main-login-container')
-);
+ReactDOM.render(<MainPageContainer/>, document.getElementById('main-login-container'));
