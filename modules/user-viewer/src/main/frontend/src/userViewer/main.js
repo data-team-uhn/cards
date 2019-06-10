@@ -465,9 +465,9 @@ class UserBoard extends React.Component {
             <Typography gutterBottom variant="h5" component="h2">
               User Current: {this.state.currentUser}
             </Typography>
-            <Typography>Admin status: {this.state.admin=== true ? "true" : "false"}</Typography>
+            {/*<Typography>Admin status: {this.state.admin=== true ? "true" : "false"}</Typography>*/}
             <Typography>System user status: {this.state.systemUser=== true ? "true" : "false"}</Typography>
-            <Typography>Disabled: {this.state.disabled=== true ? "true" : "false"}</Typography>
+            {/*<Typography>Disabled: {this.state.disabled=== true ? "true" : "false"}</Typography>*/}
             <Typography>Path: {this.state.path}</Typography>
           </CardContent>
           <CardActions>
