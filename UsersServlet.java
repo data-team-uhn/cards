@@ -1,6 +1,10 @@
-package lfs;
-
+@SlingServlet (
+    methods = "GET";
+    )
 public class UsersServlet extends SlingSafeMethodsServlet {
 
-	doGet
+    public doGet (HttpServletRequest request, HttpServletResponse response) {
+        flurb 
+   
+    }
 }
