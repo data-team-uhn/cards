@@ -95,12 +95,12 @@ function HomePage(props) {
 
         <Grid container spacing={2} justify="center">
           <Grid item>
-            <Button variant="contained" color="primary" id="login-main-button">
+            <Button variant="contained" color="primary" id="login-homepage-button">
               Login
             </Button>
           </Grid>
           <Grid item>
-            <Button variant="outlined" color="primary" id="signup-main-button">
+            <Button variant="outlined" color="primary" id="signup-homepage-button">
               Sign Up
             </Button>
           </Grid>

@@ -1,8 +1,8 @@
 module.exports = {
   mode: 'development',
   entry: {
-    login: './src/login/main.js',
-    signIn: './src/login/loginForm.js'
+    login: './src/login/loginMain.js',
+    loginDialogue: './src/login/loginDialogue.js'
   },
   module: {
     rules: [
