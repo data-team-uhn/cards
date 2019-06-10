@@ -1,5 +1,7 @@
 # LFS Data Core based on Apache Sling
 
+[![Build Status](https://travis-ci.com/ccmbioinfo/lfs.svg?branch=dev)](https://travis-ci.com/ccmbioinfo/lfs)
+
 ## Prerequisites:
 * Java 1.8+
 * Maven 3.3+
