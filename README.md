@@ -7,7 +7,7 @@
 * Maven 3.3+
 
 ## Build:
-`mvn clean install`
+`mvn clean install -PintegrationTests`
 
 Additional options include:
 
