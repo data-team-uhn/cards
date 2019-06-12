@@ -1,5 +1,10 @@
 import java.io.IOException;
-import java.io.PrintWriter;
+//import java.io.PrintWriter;
+import java.io.Writer;
+
+import javax.json.JsonException;
+import javax.json.stream.JsonGenerator;
+import javax.json.Json;
 
 import javax.servlet.*;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
@@ -38,8 +43,9 @@ public class UsersServlet extends SlingSafeMethodsServlet {
 	public void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		
-		response.setContentType("application/json;charset=UTF-8");
-		PrintWriter out = response.getWriter();
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		Writer out = response.getWriter();
 
 		try {
 			String filter = request.getParameter("filter");
@@ -53,24 +59,33 @@ public class UsersServlet extends SlingSafeMethodsServlet {
 			PrincipalIterator userIterator = userManager.findPrincipals(filter, true, 3, offset, limit);
 			// for the int parameter, use: 1 for non-group principals only, 2 for group principals only, 3 for all
 
-			out.println("<html>");
-			out.println("<head>");
-			out.println("<title>User principal list. </title>");
-			out.println("<body>");
+			// Test Json Generation
+			/*
+			final JsonGenerator w = Json.createGenerator(out);
+			w.writeStartObject();
+			
+			w.write("Hello", "Hello");
+			w.writeEnd();
+			w.flush();
+			*/
+			
+			// Method 1: obtain members using methods
+			
+			final JsonGenerator w = Json.createGenerator(out);
+			w.writeStartObject();
+
 
 			while (userIterator.hasNext()) {
-				Principal currentPrincipal = (Principal) userIterator.next();
-				out.println("<p>" + currentPrincipal.getName() + "</p>");
-				if (currentPrincipal.getClass() == ItemBasedPrincipal.class) {
+                Principal currentPrincipal = (Principal) userIterator.next();
+                if (currentPrincipal.getClass() == ItemBasedPrincipal.class) {
 
 				}
 			}
-
-			out.println("</body>");
-			out.println("</html>");
-
+			
+			// Method 2: generate json using json renderer
 
 		} finally {
+			//w.close();
 			out.close();
 		}
 	}
