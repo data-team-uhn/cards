@@ -32,5 +32,6 @@
 
     # UI modules
     ca.sickkids.ccm.lfs/lfs-commons/${lfs.version}/slingfeature/slingfeature
+    ca.sickkids.ccm.lfs/lfs-uiextension/${lfs.version}/
     ca.sickkids.ccm.lfs/lfs-homepage/${lfs.version}/slingfeature/slingfeature
     ca.sickkids.ccm.lfs/lfs-dataentry/${lfs.version}/slingfeature/slingfeature

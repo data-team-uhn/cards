@@ -22,20 +22,28 @@
 
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-parent</artifactId>
+    <artifactId>lfs-modules</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-modules</artifactId>
-  <packaging>pom</packaging>
-  <name>LFS Modules</name>
+  <artifactId>lfs-uiextension</artifactId>
+  <packaging>bundle</packaging>
+  <name>LFS - UI extension base</name>
 
-  <modules>
-    <module>startup-customization</module>
-    <module>commons</module>
-    <module>ui-extension</module>
-    <module>homepage</module>
-    <module>data-entry</module>
-    <module>ldap-support</module>
-  </modules>
+  <build>
+    <plugins>
+      <!-- This is an OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <!-- Initial content to be loaded on bundle installation -->
+            <Sling-Nodetypes>SLING-INF/nodetypes/extension.cnd</Sling-Nodetypes>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
