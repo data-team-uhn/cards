@@ -22,6 +22,15 @@ module.exports = {
     library: 'dataQuery',
     filename: '[name].js'
   },
+  externals: [
+    {
+      "react": "React",
+      "react-dom": "ReactDOM",
+      "lodash": "lodash",
+      "prop-types": "PropTypes",
+      "@material-ui/core": "window['material-ui']"
+    },
+  ],
   devServer: {
     contentBase: './dist'
   }

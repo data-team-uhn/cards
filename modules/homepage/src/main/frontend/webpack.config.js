@@ -23,6 +23,18 @@ module.exports = {
     publicPath: '/',
     filename: '[name].js'
   },
+  externals: [
+    {
+      "react": "React",
+      "react-dom": "ReactDOM",
+      "formik": "Formik",
+      "yup": "yup",
+      "lodash": "lodash",
+      "prop-types": "PropTypes",
+      "jss": "jss",
+      "@material-ui/core": "window['material-ui']"
+    },
+  ],
   devServer: {
     contentBase: './dist'
   }

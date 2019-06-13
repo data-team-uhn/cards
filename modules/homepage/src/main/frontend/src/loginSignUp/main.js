@@ -18,7 +18,7 @@
 //
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Slide from '@material-ui/core/Slide';
+import { Slide } from '@material-ui/core';
 import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
 

@@ -17,16 +17,9 @@
 //  under the License.
 //
 import React, { useState } from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import withStyles from '@material-ui/core/styles/withStyles';
-import Icon from '@material-ui/core/Icon';
+import { Avatar, Button, Paper, Typography, Icon, TextField, Tooltip, withStyles } from '@material-ui/core';
 import { Formik } from "formik";
 import * as Yup from "yup";
-import TextField from '@material-ui/core/TextField';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import UsernameTakenDialog from './ErrorDialogues';
 
