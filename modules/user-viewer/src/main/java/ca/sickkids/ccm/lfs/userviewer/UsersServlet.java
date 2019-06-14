@@ -27,11 +27,9 @@ import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
-import org.apache.jackrabbit.api.security.authorization.PrincipalSetPolicy;
 import org.apache.jackrabbit.api.security.principal.PrincipalIterator;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
 import org.apache.jackrabbit.oak.spi.security.principal.PrincipalManagerImpl;
-import org.apache.jackrabbit.oak.spi.security.principal.PrincipalQueryManager;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -80,43 +78,35 @@ public class UsersServlet extends SlingSafeMethodsServlet
 
             Session session = request.getResourceResolver().adaptTo(Session.class);
 
-            if (session != null)
-            {
+            if (session != null) {
                 PrincipalIterator principals = null;
                 try {
-                    PrincipalManager principalManager =  AccessControlUtil.getPrincipalManager(session);
-                    if (principalManager instanceof PrincipalManagerImpl)
-                    {
+                    PrincipalManager principalManager = AccessControlUtil.getPrincipalManager(session);
+                    if (principalManager instanceof PrincipalManagerImpl) {
                         PrincipalManagerImpl ImplprincipalManager = (PrincipalManagerImpl) principalManager;
-                        principals = ImplprincipalManager.findPrincipals(filter,true, 3, offset, limit);
-                    }
-                    else
-                    {
+                        principals = ImplprincipalManager.findPrincipals(filter, true, 3, offset, limit);
+                    } else {
                         principals = principalManager.findPrincipals(filter, 3);
                     }
 
-                    if (principals != null)
-                    {
+                    if (principals != null) {
                         while (principals.hasNext()) {
                             Principal currentPrincipal = principals.nextPrincipal();
                         }
                     }
 
-
                 } catch (RepositoryException re) {
                     throw new SlingException("Error obtaining list of principals", re);
                 }
-            }
-            else {
+            } else {
                 final JsonGenerator w = Json.createGenerator(out);
                 w.writeStartObject();
                 w.writeEnd();
                 w.flush();
                 w.close();
-                System.out.println("Null session detected. Could not find list of principals.")
+                System.out.println("Null session detected. Could not find list of principals.");
 
             }
-
 
             /*
              * final JsonGenerator w = Json.createGenerator(out); w.writeStartObject(); w.write("Hello", "Hello");
