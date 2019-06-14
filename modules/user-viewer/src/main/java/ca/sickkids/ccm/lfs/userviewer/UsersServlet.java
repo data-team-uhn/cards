@@ -18,15 +18,25 @@ package ca.sickkids.ccm.lfs.userviewer;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.security.Principal;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
+import org.apache.jackrabbit.api.security.authorization.PrincipalSetPolicy;
+import org.apache.jackrabbit.api.security.principal.PrincipalIterator;
+import org.apache.jackrabbit.api.security.principal.PrincipalManager;
+import org.apache.jackrabbit.oak.spi.security.principal.PrincipalManagerImpl;
+import org.apache.jackrabbit.oak.spi.security.principal.PrincipalQueryManager;
+import org.apache.sling.api.SlingException;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.jcr.base.util.AccessControlUtil;
 import org.apache.sling.servlets.annotations.SlingServletPaths;
 import org.osgi.service.component.annotations.Component;
 
@@ -63,22 +73,56 @@ public class UsersServlet extends SlingSafeMethodsServlet
         Writer out = response.getWriter();
 
         try {
-            /*
-             * String filter = request.getParameter("filter"); long limit =
-             * getLongValueOrDefault(request.getParameter("limit"), 10); long offset =
-             * getLongValueOrDefault(request.getParameter("offset"), 0); PrincipalProvider provider =
-             * EmptyPrincipalProvider.INSTANCE; PrincipalManagerImpl userManager = new PrincipalManagerImpl(provider);
-             * PrincipalIterator userIterator = userManager.findPrincipals(filter, true, 3, offset, limit); // for the
-             * int parameter, use: 1 for non-group principals only, 2 for group principals only, 3 for all
-             */
-            // Test Json Generation
-            final JsonGenerator w = Json.createGenerator(out);
-            w.writeStartObject();
 
-            w.write("Hello", "Hello");
-            w.writeEnd();
-            w.flush();
-            w.close();
+            String filter = request.getParameter("filter");
+            long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
+            long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
+
+            Session session = request.getResourceResolver().adaptTo(Session.class);
+
+            if (session != null)
+            {
+                PrincipalIterator principals = null;
+                try {
+                    PrincipalManager principalManager =  AccessControlUtil.getPrincipalManager(session);
+                    if (principalManager instanceof PrincipalManagerImpl)
+                    {
+                        PrincipalManagerImpl ImplprincipalManager = (PrincipalManagerImpl) principalManager;
+                        principals = ImplprincipalManager.findPrincipals(filter,true, 3, offset, limit);
+                    }
+                    else
+                    {
+                        principals = principalManager.findPrincipals(filter, 3);
+                    }
+
+                    if (principals != null)
+                    {
+                        while (principals.hasNext()) {
+                            Principal currentPrincipal = principals.nextPrincipal();
+                        }
+                    }
+
+
+                } catch (RepositoryException re) {
+                    throw new SlingException("Error obtaining list of principals", re);
+                }
+            }
+            else {
+                final JsonGenerator w = Json.createGenerator(out);
+                w.writeStartObject();
+                w.writeEnd();
+                w.flush();
+                w.close();
+                System.out.println("Null session detected. Could not find list of principals.")
+
+            }
+
+
+            /*
+             * final JsonGenerator w = Json.createGenerator(out); w.writeStartObject(); w.write("Hello", "Hello");
+             * w.writeEnd(); w.flush(); w.close();
+             */
+
         } finally {
             out.close();
         }
