@@ -98,9 +98,9 @@ function DataViewCard(props) {
       </Grid>
     </React.Fragment>
   );
-  }
+}
 
-  const DataViewCardComponent = withStyles(styles)(DataViewCard);
+const DataViewCardComponent = withStyles(styles)(DataViewCard);
 
 {/* Functional component without state. Fine for homepage */}
 function HomePage(props) {
