@@ -27,11 +27,10 @@ import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
-import org.apache.jackrabbit.api.security.authorization.PrincipalSetPolicy;
+import org.apache.jackrabbit.api.security.principal.ItemBasedPrincipal;
 import org.apache.jackrabbit.api.security.principal.PrincipalIterator;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
 import org.apache.jackrabbit.oak.spi.security.principal.PrincipalManagerImpl;
-import org.apache.jackrabbit.oak.spi.security.principal.PrincipalQueryManager;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -51,6 +50,8 @@ public class UsersServlet extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -1985122718411056384L;
 
+    private boolean testMode = true;
+
     private long getLongValueOrDefault(String stringValue, long defaultValue)
     {
         long value = defaultValue;
@@ -64,67 +65,79 @@ public class UsersServlet extends SlingSafeMethodsServlet
         return value;
     }
 
+    private void writeBlankJson(JsonGenerator jsonGen)
+    {
+        jsonGen.writeStartObject();
+        jsonGen.writeEnd();
+        jsonGen.flush();
+    }
+
+    private void writeUsers(JsonGenerator jsonGen, Session session, String filter, long limit, long offset)
+    {
+        PrincipalIterator principals = null;
+        try {
+            PrincipalManager principalManager = AccessControlUtil.getPrincipalManager(session);
+            if (principalManager instanceof PrincipalManagerImpl) {
+                PrincipalManagerImpl pmi = (PrincipalManagerImpl) principalManager;
+                principals = pmi.findPrincipals(filter, true, 3, offset, limit);
+            } else {
+                principals = principalManager.findPrincipals(filter, 3);
+            }
+
+            if (principals != null) {
+                jsonGen.writeStartArray();
+                while (principals.hasNext()) {
+                    Principal currentPrincipal = principals.nextPrincipal();
+                    // jsonGen.write(currentPrincipal);
+                    jsonGen.writeStartObject(currentPrincipal.getName());
+                    jsonGen.write("name", currentPrincipal.getName());
+                    jsonGen.write("string", currentPrincipal.toString());
+                    if (currentPrincipal instanceof ItemBasedPrincipal) {
+                        jsonGen.write("path", ((ItemBasedPrincipal) currentPrincipal).getPath());
+                    }
+                    jsonGen.writeEnd();
+                }
+                jsonGen.writeEnd();
+
+            }
+            // response.getWriter().write(out.toString());
+
+        } catch (RepositoryException re) {
+            writeBlankJson(jsonGen);
+            throw new SlingException("Error obtaining list of principals", re);
+        }
+    }
+
     @Override
     public void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
         throws ServletException, IOException
     {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+
+        String filter = request.getParameter("filter");
+        long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
+        long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
+        Session session = request.getResourceResolver().adaptTo(Session.class);
+
         Writer out = response.getWriter();
-
+        JsonGenerator jsonGen = Json.createGenerator(out);
         try {
+            if (session != null) {
+                writeUsers(jsonGen, session, filter, limit, offset);
 
-            String filter = request.getParameter("filter");
-            long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
-            long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
-
-            Session session = request.getResourceResolver().adaptTo(Session.class);
-
-            if (session != null)
-            {
-                PrincipalIterator principals = null;
-                try {
-                    PrincipalManager principalManager =  AccessControlUtil.getPrincipalManager(session);
-                    if (principalManager instanceof PrincipalManagerImpl)
-                    {
-                        PrincipalManagerImpl ImplprincipalManager = (PrincipalManagerImpl) principalManager;
-                        principals = ImplprincipalManager.findPrincipals(filter,true, 3, offset, limit);
-                    }
-                    else
-                    {
-                        principals = principalManager.findPrincipals(filter, 3);
-                    }
-
-                    if (principals != null)
-                    {
-                        while (principals.hasNext()) {
-                            Principal currentPrincipal = principals.nextPrincipal();
-                        }
-                    }
-
-
-                } catch (RepositoryException re) {
-                    throw new SlingException("Error obtaining list of principals", re);
-                }
+            } else {
+                writeBlankJson(jsonGen);
+                // System.out.println("Null session detected. Could not find list of principals.");
             }
-            else {
-                final JsonGenerator w = Json.createGenerator(out);
-                w.writeStartObject();
-                w.writeEnd();
-                w.flush();
-                w.close();
-                System.out.println("Null session detected. Could not find list of principals.")
-
-            }
-
-
-            /*
-             * final JsonGenerator w = Json.createGenerator(out); w.writeStartObject(); w.write("Hello", "Hello");
-             * w.writeEnd(); w.flush(); w.close();
-             */
-
         } finally {
+            jsonGen.close();
             out.close();
         }
+
     }
+    /*
+     * final JsonGenerator w = Json.createGenerator(out); w.writeStartObject(); w.write("Hello", "Hello"); w.writeEnd();
+     * w.flush(); w.close();
+     */
 }
