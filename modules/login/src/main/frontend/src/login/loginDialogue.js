@@ -30,6 +30,8 @@ class DialogueLoginContainer extends React.Component {
       signInShown: true,
       show: false
     }
+    {document.getElementById('login-homepage-button') && document.getElementById('login-homepage-button').addEventListener('click', () => {this.setState({signInShown: true}); this.handleOpen();})}
+    {document.getElementById('signup-homepage-button') && document.getElementById('signup-homepage-button').addEventListener('click', () => {this.setState({signInShown: false}); this.handleOpen();})}
   }
 
   handleOpen() {
@@ -55,8 +57,6 @@ class DialogueLoginContainer extends React.Component {
       >
         {this.state.signInShown ? <SignIn swapForm={this.handleSwap} /> : <SignUpForm swapForm={this.handleSwap} />}
         <Button onClick={()=>this.handleClose()}>Close</Button>
-        {document.getElementById('login-homepage-button').addEventListener('click', () => {this.setState({signInShown: true}); this.handleOpen();})}
-        {document.getElementById('signup-homepage-button').addEventListener('click', () => {this.setState({signInShown: false}); this.handleOpen();})}
       </Dialog>
     );
   }
