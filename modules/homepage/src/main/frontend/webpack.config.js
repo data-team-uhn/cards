@@ -28,11 +28,10 @@ module.exports = {
       "react": "React",
       "react-dom": "ReactDOM",
       "formik": "Formik",
-      "yup": "yup",
       "lodash": "lodash",
       "prop-types": "PropTypes",
       "jss": "jss",
-      "@material-ui/core": "window['material-ui']"
+      "@material-ui/core": "MaterialUI"
     },
   ],
   devServer: {

@@ -28,7 +28,7 @@ module.exports = {
       "react-dom": "ReactDOM",
       "lodash": "lodash",
       "prop-types": "PropTypes",
-      "@material-ui/core": "window['material-ui']"
+      "@material-ui/core": "MaterialUI"
     },
   ],
   devServer: {
