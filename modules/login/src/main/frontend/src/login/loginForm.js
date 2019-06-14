@@ -65,11 +65,10 @@ class SignIn extends React.Component {
       }
     })
     .then((response) => {
-      alert("You have successfully logged in!");
+      window.location.reload();
       this.setState({failedLogin: false});
     })
     .catch((error)=>{
-      alert("Failed to log in.");
       this.setState({failedLogin: true});
     });
   }
