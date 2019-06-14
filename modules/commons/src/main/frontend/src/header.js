@@ -41,6 +41,22 @@ class GlobalHeader extends React.Component {
           <Typography variant="h6" color="inherit" noWrap className={this.props.classes.title}>
             <Link href="/" variant="inherit" color="inherit" underline="none">LFS Repository</Link>
           </Typography>
+          {this.state.loggedIn ?
+
+          <Typography variant="h6" align="right" color="inherit">{window.Sling.getSessionInfo().userID} <Link href="/system/sling/logout" color="inherit"><Button variant="contained">Sign Out</Button></Link></Typography>
+
+          :
+
+          <ButtonGroup variant="contained" size="small">
+            <Button color="primary" id="login-homepage-button">
+              Login
+            </Button>
+            <Button id="signup-homepage-button">
+              Sign Up
+            </Button>
+          </ButtonGroup>
+
+        }
         </Toolbar>
       </AppBar>
     );

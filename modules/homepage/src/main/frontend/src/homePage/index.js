@@ -86,27 +86,6 @@ function HomePage(props) {
         <Typography variant="h6" align="center" color="textSecondary" paragraph>
           A data gathering initiative for patients with <Link href="https://en.wikipedia.org/wiki/Li%E2%80%93Fraumeni_syndrome">Li–Fraumeni syndrome</Link>.
         </Typography>
-
-        {window.Sling.getSessionInfo() === null || window.Sling.getSessionInfo().userID !== 'anonymous' ?
-
-        <Typography variant="h6" align="center" color="textSecondary"> Welcome to LFS, {window.Sling.getSessionInfo().userID}.</Typography>
-
-        :
-
-        <Grid container spacing={2} justify="center">
-          <Grid item>
-            <Button variant="contained" color="primary" id="login-homepage-button">
-              Login
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button variant="outlined" color="primary" id="signup-homepage-button">
-              Sign Up
-            </Button>
-          </Grid>
-        </Grid>
-
-        }
       </div>
 
       <div className={classNames(classes.layout, classes.cardGrid)}>
