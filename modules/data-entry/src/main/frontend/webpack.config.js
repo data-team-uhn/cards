@@ -29,9 +29,6 @@ module.exports = {
       "lodash": "lodash",
       "prop-types": "PropTypes",
       "@material-ui/core": "MaterialUI"
-    },
-  ],
-  devServer: {
-    contentBase: './dist'
-  }
+    }
+  ]
 };
