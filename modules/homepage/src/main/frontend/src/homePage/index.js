@@ -20,7 +20,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { AppBar, Button, Card, CardContent, CssBaseline, Grid, Toolbar, Typography, Link, withStyles } from '@material-ui/core';
+import { Button, Card, CardContent, CssBaseline, Grid, Typography, Link, withStyles } from '@material-ui/core';
 
 const styles = theme => ({
   appBar: {
@@ -78,15 +78,6 @@ function HomePage(props) {
             - Remove margins, default background color applied */}
       <CssBaseline />
 
-      {/* Blank navbar */}
-      <AppBar position="static" className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="h6" color="inherit" noWrap>
-            LFS Repository
-          </Typography>
-        </Toolbar>
-      </AppBar>
-
       {/* Main Page */}
       <div className={classes.mainContent}>
         <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
@@ -95,7 +86,7 @@ function HomePage(props) {
         <Typography variant="h6" align="center" color="textSecondary" paragraph>
           A data gathering initiative for patients with <Link href="https://en.wikipedia.org/wiki/Li%E2%80%93Fraumeni_syndrome">Li–Fraumeni syndrome</Link>.
         </Typography>
-        <Grid container spacing={16} justify="center">
+        <Grid container spacing={2} justify="center">
           <Grid item>
             <Button variant="contained" href="../content/slingshot.html" color="primary">
               Login
@@ -139,17 +130,6 @@ function HomePage(props) {
           </Grid>
         </Grid>
       </div>
-
-      {/* Footer */}
-      <footer className={classes.footer}>
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer - Some Sling Magic below
-        </Typography>
-        <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
-          These admin tools will significantly change this page.
-        </Typography>
-      </footer>
-      {/* End footer */}
     </React.Fragment>
   );
 }
