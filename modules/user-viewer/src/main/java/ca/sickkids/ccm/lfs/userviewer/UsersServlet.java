@@ -48,6 +48,7 @@ import org.osgi.service.component.annotations.Component;
 public class UsersServlet extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -1985122718411056384L;
+    private boolean testMode = true;
 
     private long getLongValueOrDefault(String stringValue, long defaultValue)
     {
@@ -70,7 +71,8 @@ public class UsersServlet extends SlingSafeMethodsServlet
         response.setCharacterEncoding("UTF-8");
         Writer out = response.getWriter();
 
-        try {
+        if (!testMode) {
+        	try {
 
             String filter = request.getParameter("filter");
             long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
@@ -88,14 +90,27 @@ public class UsersServlet extends SlingSafeMethodsServlet
                     } else {
                         principals = principalManager.findPrincipals(filter, 3);
                     }
-
-                    if (principals != null) {
-                        while (principals.hasNext()) {
-                            Principal currentPrincipal = principals.nextPrincipal();
-                        }
+                    
+                    try (JsonGenerator jsonGen = Json.createGenerator(out))
+                    {
+                    	if(principals != null) 
+                    	{
+                    		while(principals.hasNext()) 
+                    		{
+                    			Principal currentPrincipal = principals.nextPrincipal();
+                    			jsonGen.write(currentPrincipal);
+                    		}
+                    		
+                    	}
+                    	response.getWriter().write(out.toString());
                     }
 
                 } catch (RepositoryException re) {
+                	final JsonGenerator w = Json.createGenerator(out);
+                	w.writeStartObject();
+                	w.riteEnd();
+                	w.flush();
+                	w.close();
                     throw new SlingException("Error obtaining list of principals", re);
                 }
             } else {
@@ -105,8 +120,17 @@ public class UsersServlet extends SlingSafeMethodsServlet
                 w.flush();
                 w.close();
                 System.out.println("Null session detected. Could not find list of principals.");
-
             }
+        } else
+        {
+        	final JsonGenerator w = Json.createGenerator(out);
+            w.writeStartObject();
+            w.writeEnd();
+            w.flush();
+            w.close();
+        }
+        
+        
 
             /*
              * final JsonGenerator w = Json.createGenerator(out); w.writeStartObject(); w.write("Hello", "Hello");
