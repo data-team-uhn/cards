@@ -91,9 +91,7 @@ class SignIn extends React.Component {
 
           {this.state.failedLogin && <Typography component="h2">An invalid username or password has been entered.</Typography>}
 
-          <form className={classes.form} onSubmit={(event)=>{event.preventDefault(); this.submitLogin();}} method="POST" action={this.loginValidationPOSTPath()}>
-            <input type="hidden" name="resource" value={this.loginRedirectPath()} />
-            <input type="hidden" name="j_validate" value={true}/>
+          <form className={classes.form} onSubmit={(event)=>{event.preventDefault(); this.submitLogin();}} >
 
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="j_username">Username</InputLabel>
