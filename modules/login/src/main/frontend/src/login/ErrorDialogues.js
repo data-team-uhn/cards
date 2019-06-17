@@ -25,11 +25,11 @@ function Transition(props) {
 
 class UsernameTakenDialog extends React.Component {
   state = {
-    open: true,
+    opened: true,
   };
 
   handleClose = () => {
-    this.setState({ open: false });
+    this.setState({ opened: false });
   };
 
   render() {
@@ -44,7 +44,7 @@ class UsernameTakenDialog extends React.Component {
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogTitle id="alert-dialog-slide-title">
-            {"Error in creating user."}
+            Error in creating user.
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">

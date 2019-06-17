@@ -283,7 +283,6 @@ class SignUpForm extends React.Component {
     });
 
     // Hooks only work inside functional components
-
     return (
       <React.Fragment>
         {(this.state.usernameError) &&
@@ -292,8 +291,8 @@ class SignUpForm extends React.Component {
         <div className={classes.main}>
           <Paper elevation={1} className={classes.paper}>
             <Typography component="h1" variant="h5">
-              Sign Up Form
-      </Typography>
+              Sign Up
+            </Typography>
             <Avatar className={classes.avatar}>
               <Icon>group_add</Icon>
             </Avatar>
@@ -306,7 +305,7 @@ class SignUpForm extends React.Component {
             />
             <Typography>
               Already have an account?
-      </Typography>
+            </Typography>
             <Button
               fullWidth
               variant="contained"
@@ -314,7 +313,7 @@ class SignUpForm extends React.Component {
               onClick={this.props.swapForm}
             >
               Sign In
-      </Button>
+            </Button>
           </Paper>
         </div>
       </React.Fragment>

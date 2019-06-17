@@ -28,22 +28,22 @@ class DialogueLoginContainer extends React.Component {
 
     this.state = {
       signInShown: true,
-      show: false
+      opened: false
     }
     {document.getElementById('login-homepage-button') && document.getElementById('login-homepage-button').addEventListener('click', () => {this.setState({signInShown: true}); this.handleOpen();})}
     {document.getElementById('signup-homepage-button') && document.getElementById('signup-homepage-button').addEventListener('click', () => {this.setState({signInShown: false}); this.handleOpen();})}
   }
 
   handleOpen() {
-    this.setState({show: true});
+    this.setState({opened: true});
   }
 
   handleClose() {
-    this.setState({show: false});
+    this.setState({opened: false});
   }
 
-   // Toggle between sign in and sign up
-   handleSwap = () => {
+  // Toggle between sign in and sign up
+  handleSwap = () => {
     this.setState(prevState => ({
       signInShown: !prevState.signInShown,
     }));
@@ -52,7 +52,7 @@ class DialogueLoginContainer extends React.Component {
   render () {
     return (
       <Dialog
-        open={this.state.show}
+        open={this.state.opened}
         onClose={() => this.handleClose()}
       >
         {this.state.signInShown ? <SignIn swapForm={this.handleSwap} /> : <SignUpForm swapForm={this.handleSwap} />}

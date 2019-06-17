@@ -35,11 +35,11 @@ class SignIn extends React.Component {
     };
   }
 
-  loginRedirectPath = () => {
+  loginRedirectPath() {
     return "/";
   };
 
-  loginValidationPOSTPath = () => {
+  loginValidationPOSTPath() {
     return "/j_security_check";
   };
 
@@ -49,12 +49,12 @@ class SignIn extends React.Component {
     }));
   }
 
-  submitLogin () {
+  submitLogin() {
     axios({
       method: 'POST',
       url: '/j_security_check',
       headers: {
-        'content-type':'application/x-www-form-urlencoded;charset=utf-8'
+        'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
       },
       dataType: "text",
       params: {
@@ -73,7 +73,7 @@ class SignIn extends React.Component {
     });
   }
 
-  render () {
+  render() {
     const { classes } = this.props;
     const { passwordIsMasked } = this.state;
 
