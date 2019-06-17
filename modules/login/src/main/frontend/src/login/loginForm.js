@@ -18,7 +18,7 @@
 //
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Button, CssBaseline, FormControl, Input, InputLabel, Paper, Typography, withStyles, InputAdornment, IconButton, Tooltip, Icon } from '@material-ui/core';
+import { Avatar, Button, CssBaseline, FormControl, Input, InputLabel, Paper, Typography, withStyles, InputAdornment, IconButton, Tooltip, Icon, SvgIcon } from '@material-ui/core';
 import axios from 'axios';
 import styles from "../styling/styles";
 
@@ -82,8 +82,7 @@ class SignIn extends React.Component {
         <CssBaseline />
         <Paper className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
           <Avatar className={classes.avatar}>
-            {/*<LockOutlinedIcon />*/}
-            <Icon>lock</Icon>
+            <SvgIcon><path d="M10,17V14H3V10H10V7L15,12L10,17M10,2H19C20.1,2 21,2.9 21,4V20C21,21.1 20.1,22 19,22H10C8.9,22 8,21.1 8,20V18H10V20H19V4H10V6H8V4C8,2.9 8.9,2 10,2Z"/></SvgIcon>
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
@@ -133,10 +132,10 @@ class SignIn extends React.Component {
           <Button
             fullWidth
             variant="contained"
-            color="secondary"
+            color="default"
             onClick={this.props.swapForm}
           >
-            Register
+            <Icon className={classes.buttonIcon}>person_add</Icon> Register
           </Button>
         </Paper>
       </main>

@@ -38,6 +38,9 @@ const styles = theme => ({
     marginTop: theme.spacing(10),
     marginBottom: theme.spacing(2),
   },
+  buttonIcon: {
+    marginRight: theme.spacing(1),
+  },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
