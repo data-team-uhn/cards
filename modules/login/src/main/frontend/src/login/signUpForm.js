@@ -67,7 +67,7 @@ class FormFields extends React.Component {
           onChange={change.bind(null, "email")}
           className={classes.form}
           required
-
+          autoFocus
         />
         <TextField
           id="username"
@@ -80,8 +80,6 @@ class FormFields extends React.Component {
           fullWidth
           className={classes.form}
           required
-          autoFocus
-
         />
         <TextField
           id="password"
