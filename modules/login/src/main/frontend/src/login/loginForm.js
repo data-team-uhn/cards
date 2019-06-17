@@ -36,7 +36,8 @@ class SignIn extends React.Component {
   }
 
   loginRedirectPath() {
-    return "/";
+    const currentPath = window.location.pathname.startsWith("/login") ? "/" : window.location.pathname;
+    return new URLSearchParams(window.location.search).get("resource") || currentPath;
   };
 
   loginValidationPOSTPath() {
@@ -65,7 +66,7 @@ class SignIn extends React.Component {
       }
     })
     .then((response) => {
-      window.location.reload();
+      window.location = this.loginRedirectPath();
       this.setState({failedLogin: false});
     })
     .catch((error)=>{
