@@ -47,6 +47,12 @@ class GlobalHeader extends React.Component {
 
           :
 
+          window.location.pathname.startsWith('/login') ?
+
+          ''
+
+          :
+          <>
           <ButtonGroup variant="contained" size="small">
             <Button color="primary" id="login-homepage-button">
               Login
