@@ -35,7 +35,7 @@ class FormFields extends React.Component {
     const { classes } = this.props;
 
     const {
-      values: { name, email, password, confirmPassword },
+      values: { username, email, password, confirmPassword },
       errors,
       touched,
       handleSubmit,
@@ -57,20 +57,6 @@ class FormFields extends React.Component {
         className={classes.form}
       >
         <TextField
-          id="name"
-          name="name"
-          helperText={touched.name ? errors.name : ""}
-          error={touched.name && Boolean(errors.name)}
-          label="Name"
-          value={name}
-          onChange={change.bind(null, "name")}
-          fullWidth
-          className={classes.form}
-          required
-          autoFocus
-
-        />
-        <TextField
           id="email"
           name="email"
           helperText={touched.email ? errors.email : ""}
@@ -81,6 +67,20 @@ class FormFields extends React.Component {
           onChange={change.bind(null, "email")}
           className={classes.form}
           required
+
+        />
+        <TextField
+          id="username"
+          name="username"
+          helperText={touched.username ? errors.username : ""}
+          error={touched.username && Boolean(errors.username)}
+          label="Username"
+          value={username}
+          onChange={change.bind(null, "username")}
+          fullWidth
+          className={classes.form}
+          required
+          autoFocus
 
         />
         <TextField
@@ -191,7 +191,7 @@ class SignUpForm extends React.Component {
   }
 
   // submit function
-  submitValues({ name, email, confirmPassword, password }) {
+  submitValues({ username, email, confirmPassword, password }) {
     // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
     function handleErrors(response) {
       if (!response.ok) {
@@ -204,7 +204,7 @@ class SignUpForm extends React.Component {
     // We need to do this because sling does not accept JSON, need
     //  url encoded data
     let formData = new FormData();
-    formData.append(":name", name);
+    formData.append(":name", username);
     formData.append('pwd', password);
     formData.append('pwdConfirm', confirmPassword);
     formData.append('email', email);
@@ -222,7 +222,7 @@ class SignUpForm extends React.Component {
     })
       .then(handleErrors) // Handle errors first
       .then(() => {
-        this.signIn(name, password);
+        this.signIn(username, password);
       })
       .catch(error => {
         this.setState({
@@ -233,14 +233,14 @@ class SignUpForm extends React.Component {
 
   render() {
     const { classes, selfContained } = this.props;
-    const values = { name: "", email: "", confirmPassword: "", password: "" };
+    const values = { username: "", email: "", confirmPassword: "", password: "" };
 
     const validationSchema = Yup.object({
-      name: Yup.string("Enter a name")
-        .required("Name is required"),
       email: Yup.string("Enter your email")
         .email("Enter a valid email")
         .required("Email is required"),
+      username: Yup.string("Enter a username")
+        .required("The username is required"),
       password: Yup.string("")
         .min(8, "Password must contain at least 8 characters")
         .required("Enter your password"),
