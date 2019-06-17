@@ -18,7 +18,7 @@
 //
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Button, CssBaseline, FormControl, FormControlLabel, Checkbox, Input, InputLabel, Paper, Typography, withStyles, InputAdornment, IconButton, Tooltip, Icon } from '@material-ui/core';
+import { Avatar, Button, CssBaseline, FormControl, Input, InputLabel, Paper, Typography, withStyles, InputAdornment, IconButton, Tooltip, Icon } from '@material-ui/core';
 import axios from 'axios';
 import styles from "../styling/styles";
 
@@ -117,10 +117,6 @@ class SignIn extends React.Component {
               }
              />
             </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
