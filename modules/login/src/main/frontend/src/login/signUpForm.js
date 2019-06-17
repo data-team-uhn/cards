@@ -203,7 +203,7 @@ class SignUpForm extends React.Component {
     // Build formData object.
     // We need to do this because sling does not accept JSON, need
     //  url encoded data
-    let formData = new FormData();
+    let formData = new URLSearchParams();
     formData.append(":name", username);
     formData.append('pwd', password);
     formData.append('pwdConfirm', confirmPassword);
@@ -212,14 +212,15 @@ class SignUpForm extends React.Component {
     // Important note about native fetch, it does not reject failed
     // HTTP codes, it'll only fail when network error
     // Therefore, you must handle the error code yourself.
-    fetch('/system/userManager/user.create.html', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        // 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-      },
-      body: formData
-    })
+    fetch('/system/userManager/user.create.html',
+      {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData
+      })
       .then(handleErrors) // Handle errors first
       .then(() => {
         this.signIn(username, password);
