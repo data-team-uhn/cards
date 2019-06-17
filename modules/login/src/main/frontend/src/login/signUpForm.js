@@ -172,6 +172,24 @@ class SignUpForm extends React.Component {
     });
   }
 
+  signIn(username, password) {
+    let formData = new URLSearchParams();
+    formData.append("j_username", username);
+    formData.append("j_password", password);
+    formData.append("j_validate", true);
+    fetch('/j_security_check',
+      {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
+    ).then(() => {
+      window.location = new URLSearchParams(window.location.search).get('resource') || '/';
+    });
+  }
+
   // submit function
   submitValues({ name, email, confirmPassword, password }) {
     // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
@@ -203,8 +221,8 @@ class SignUpForm extends React.Component {
       body: formData
     })
       .then(handleErrors) // Handle errors first
-      .then(function (response) {
-        alert("Created user!");
+      .then(() => {
+        this.signIn(name, password);
       })
       .catch(error => {
         this.setState({
