@@ -61,11 +61,20 @@ class GlobalHeader extends React.Component {
               Sign Up
             </Button>
           </ButtonGroup>
-
+          <div id="dialogue-login-container"></div>
+          </>
         }
         </Toolbar>
       </AppBar>
     );
+  }
+
+  componentDidMount () {
+    if (!this.state.loggedIn && !window.location.pathname.startsWith('/login')) {
+      const script = document.createElement("script");
+      script.src = "/libs/lfs/resources/loginDialogue.js";
+      document.body.appendChild(script);
+    }
   }
 }
 
