@@ -14,6 +14,22 @@ import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js"
 import dashboardStyle from "./dashboardStyle.jsx";
 
 class Dashboard extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      title: "Patients",
+      subtitle: "?!!",
+      columnNames: ["ID", "Name", "TP53 status"],
+      data: [
+        ["1", "Alice", "WT"],
+        ["2", "Bob", "WT"],
+        ["3", "Charlie", "LOF"],
+        ["4", "Eve", "NULL"]
+      ]
+    };
+  }
+
   state = {
     value: 0
   };
@@ -32,21 +48,14 @@ class Dashboard extends React.Component {
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="warning">
-                <h4 className={classes.cardTitleWhite}>Patients</h4>
-                <p className={classes.cardCategoryWhite}>
-                  ?!!
-                </p>
+                <h4 className={classes.cardTitleWhite}>{this.state.title}</h4>
+                <p className={classes.cardCategoryWhite}>{this.state.subtitle}</p>
               </CardHeader>
               <CardBody>
                 <Table
                   tableHeaderColor="warning"
-                  tableHead={["ID", "Name", "TP53 status"]}
-                  tableData={[
-                    ["1", "Alice", "WT"],
-                    ["2", "Bob", "WT"],
-                    ["3", "Charlie", "LOF"],
-                    ["4", "Eve", "NULL"]
-                  ]}
+                  tableHead={this.state.columnNames}
+                  tableData={this.state.data}
                 />
               </CardBody>
             </Card>
