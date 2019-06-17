@@ -29,11 +29,14 @@ const styles = theme => ({
     },
   },
   paper: {
-    marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
+  },
+  selfContained: {
+    marginTop: theme.spacing(10),
+    marginBottom: theme.spacing(2),
   },
   avatar: {
     margin: theme.spacing(1),

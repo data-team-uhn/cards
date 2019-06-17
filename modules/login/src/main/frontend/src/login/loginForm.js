@@ -23,7 +23,7 @@ import axios from 'axios';
 import styles from "../styling/styles";
 
 class SignIn extends React.Component {
-  constructor(props) {
+  constructor(props, selfContained) {
     super(props);
 
     this.state = {
@@ -74,13 +74,13 @@ class SignIn extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, selfContained } = this.props;
     const { passwordIsMasked } = this.state;
 
     return (
       <main className={classes.main}>
         <CssBaseline />
-        <Paper className={classes.paper}>
+        <Paper className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
           <Avatar className={classes.avatar}>
             {/*<LockOutlinedIcon />*/}
             <Icon>lock</Icon>

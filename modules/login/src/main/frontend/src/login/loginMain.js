@@ -40,7 +40,7 @@ class MainLoginContainer extends React.Component {
   render () {
     return (
       <div>
-          {this.state.signInShown ? <SignIn swapForm={this.handleSwap} /> : <SignUpForm swapForm={this.handleSwap} />}
+        {this.state.signInShown ? <SignIn swapForm={this.handleSwap} selfContained /> : <SignUpForm swapForm={this.handleSwap} selfContained />}
       </div>
     );
   }

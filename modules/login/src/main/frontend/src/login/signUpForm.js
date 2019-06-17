@@ -265,7 +265,7 @@ class SignUpForm extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, selfContained } = this.props;
     const values = { name: "", email: "", confirmPassword: "", password: "" };
 
     const validationSchema = Yup.object({
@@ -289,7 +289,7 @@ class SignUpForm extends React.Component {
           <UsernameTakenDialog handleClose={this.hideError} ></UsernameTakenDialog>
         }
         <div className={classes.main}>
-          <Paper elevation={1} className={classes.paper}>
+          <Paper elevation={1} className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
             <Typography component="h1" variant="h5">
               Sign Up
             </Typography>
