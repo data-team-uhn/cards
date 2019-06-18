@@ -54,3 +54,269 @@
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
   // Set a default title
   - title (String) = "LFS data entries" mandatory autocreated
+
+//-----------------------------------------------------------------------------
+//
+// Questions
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// This defines predefined choices for answering a question.
+// Used only as children of a lfs:Question node.
+[lfs:AnswerOption] > sling:Folder
+  // Attributes
+
+  // We can use an option in a query
+  query
+  // The main sub-item of an answer option is its label
+  primaryitem label
+  // Properties
+
+  // Hardcode the resource supertype: each question is a resource
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // The text of this option displayed to the user.
+  // This is not the value that gets stored when it is selected for an aswer, the next property is.
+  // Mandatory, every option needs a text
+  - label (string) mandatory
+
+  // An optional longer explanation for the option.
+  // If present, a help icon will be displayed next to the label, and hovering/clicking it will display this help text.
+  - help (string)
+
+  // The value to store internally when this option is selected.
+  // Separating the label from the stored value allows relabeling options without having to update all existing answers.
+  - value (string) mandatory
+
+  // We don't define any subchildren.
+
+//-----------------------------------------------------------------------------
+// This is the definition of a question.
+[lfs:Question] > sling:Folder
+  // Attributes
+
+  // We can use questions in a query
+  query
+  // The main sub-item of a question is its text
+  primaryitem text
+
+  // Properties
+
+  // Hardcode the resource supertype: each question is a resource
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // The text of the question
+  // Mandatory, every question needs a text
+  - text (string) mandatory
+
+  // An optional longer explanation/description for the question.
+  // If present, it will be displayed right under the question text.
+  - description (string)
+
+  // Is answering this question mandatory?
+  // Even if this is set to false, setting a value to minAnswers can still make the question mandatory.
+  // Similarly, if minAnswers is 0, setting this to true doesn't have any effect.
+  - mandatory (boolean) = false autocreated
+
+  // Are multiple answers permitted?
+  - multiple (boolean) = false autocreated
+
+  // Minimum selected answers, if this is a multiple-answer question
+  // 0 or negative values means no minimum
+  - minAnswers (long) = 0 autocreated
+
+  // Maximum selected answers, if this is a multiple-answer question
+  // 0 or negative values means no maximum
+  - maxAnswers (long) = 0 autocreated
+
+  // How are the answer options displayed
+  // The possible values are not limited, since support for new display modes can be added by other modules,
+  // but at least the following are supported:
+  // - none: the question is not displayed at all in the frontend
+  // - hidden: the question is hidden, but it may be auto-filled by other means, such as javascript, data import, or dynamic computation
+  // - input: a simple input field where the user can type an answer
+  // - list: a list of options that the user can choose from
+  // - list+input: a list of options, plus an "other" input where the user can add a non-standard answer
+  - displayMode (string) = 'input' autocreated
+
+  // Which type of data is being recorded
+  // The possible values are not limited, since support for new data types can be added by other modules,
+  // but at least the following are supported:
+  // - text: simple text, either from a list of predefined options, or free text entered by the user
+  // - long, double, decimal: a number
+  // - date: a date, with optional time
+  // - boolean: a yes/no answer
+  // - vocabulary: a term from a vocabulary
+  // - computed: a derived value automatically computed based on a formula applied on other values in the questionaire
+  // The answer type can be further refined with the following properties
+  - dataType (string) mandatory
+
+  // For text answers, a regular expression that can restrict/validate the allowed answers.
+  - validationRegexp (string)
+
+  // For numeric answers, the minimum and maximum allowed values
+  - minValue (double)
+  - maxValue (double)
+
+  // For date answers, the format in which to display (and accept as input) the date.
+  // This is a SimpleDateFormat compatible string.
+  - dateFormat (string)
+
+  // For vocabulary answers, the source vocabulary (or category of vocabularies) in which to search.
+  // A simple label like "MONDO", or a value prefixed by "vocabulary:" such as "vocabulary:MONDO" identifies a specific vocabulary.
+  // A value prefixed by "category:" such as "category:diseases" identifies a vocabulary category.
+  - sourceVocabulary (string)
+
+  // For vocabulary answers, an extra filter to apply to the query, which can be used, for example,
+  // to restrict results to a specific subbrach, or a specific type of terms.
+  // If defined, this must be a valid solr query that can be placed in the "fq" field.
+  - vocabularyFilter (string)
+
+  // Since not all properties are mandatory, customizing a question requires defining only
+  // the properties of interest.
+  //
+  // Note that the node type does not prevent adding other properties not defined above,
+  // so for a custom question type needing other customization options it is enough to
+  // simply add new properties.
+
+  // Children
+
+  // The list of options displayed to the user.
+  // This applies mostly to text answers, but can also be used for the other answer types as well, for example as a list of dates to choose from, or a list of numbers, or a list of vocabulary terms.
+  + * (lfs:AnswerOption)
+
+//-----------------------------------------------------------------------------
+// A template is a collection of questions.
+[lfs:Template] > sling:Folder
+  // Attributes
+
+  // We can use templates in a query
+  query
+  // The main sub-item of a template is its label
+  primaryitem label
+
+  // Properties
+
+  // Hardcode the resource supertype: each template is a resource
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A label for this template. Optional, it is possible not to have a label.
+  // If present, it will be displayed to the user above the questions.
+  - label (string)
+
+  // An optional longer description for this template.
+  // If present, it will be displayed to the user between the label and questions.
+  - description (string)
+
+  // Can this template be repeated?
+  - recurrent (boolean) = false autocreated
+
+  // The questions that make up this template, as a list of references to lfs:Question nodes.
+  // Mandatory, every template needs at least one question
+  // No full text search, since it's just a non-textual reference
+  - questions (reference) multiple mandatory nofulltext
+
+//-----------------------------------------------------------------------------
+// A questionnaire is a collection of templates.
+[lfs:Questionnaire] > sling:Folder
+  // Attributes
+
+  // We can use questionnaires in a query
+  query
+  // The main sub-item of a template is its title
+  primaryitem title
+
+  // Properties
+
+  // Hardcode the resource supertype: each questionnaire is a resource
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A label for this questionnaire.
+  // Mandatory, each questionnaire should have a label.
+  - label (string) mandatory
+
+  // An optional longer description for this questionnaire.
+  // If present, it will be displayed to the user between the label and the templates.
+  - description (string)
+
+  // The templates that make up this questionnaire, as a list of references to lfs:Template nodes.
+  // Mandatory, every questionnaire needs at least one template.
+  // No full text search, since it's just a non-textual reference
+  - templates (reference) multiple mandatory nofulltext
+
+//-----------------------------------------------------------------------------
+//
+// Answers
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Base nodetype for structured answers.
+// Answers will be used as child nodes of a record, one node per answer.
+// This means that for a given question, the answer may either:
+// - not exist, if the question isn't answered yet
+// - have a single child node referencing that question, if the question expects a single choice
+// - have multiple child nodes referencing that question, if it allows more than one choice, one node for each answer
+// - have multiple child nodes referencing that question AND an identifier for the question instance,
+//   if the question can be repeated, for example a question that must be answered for each relative,
+//   or for each occurrence of an event
+// The name of each answer node is not relevant and will be automatically generated, only the reference to the question matters.
+// The meaning of an answer is defined by the question, so most of the display properties are defined in the question, not in the answer.
+// In other words, an Answer node is just simple storage.
+[lfs:Answer] > sling:Folder
+  // Attributes
+
+  // This is an abstract node type, specific answer types must be defined
+  abstract
+  // Even though we don't expect child nodes for an answer, let's assume they will need to be orderable
+  orderable
+  // We can use answers in a query
+  query
+  // The main sub-item of an answer is its value
+  primaryitem value
+
+  // Properties
+
+  // Hardcode the resource supertype: each answer is a resource
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A reference to the question being answered
+  // Mandatory, every answer needs a question
+  // No full text search, since it's just a non-textual reference
+  - question (reference) mandatory nofulltext
+
+  // An optional additional identifier for the question being answered, in case of questions allowing more than one answer
+  - questionInstanceLabel (string)
+
+  // The value, undefined yet, must be properly typed by the concrete subtypes
+  - value (undefined)
+
+  // We don't define any subchildren.
+
+
+//-----------------------------------------------------------------------------
+// Yes/No
+[lfs:BooleanAnswer] > lfs:Answer
+  - value (boolean)
+
+//-----------------------------------------------------------------------------
+// Plain text
+[lfs:TextAnswer] > lfs:Answer
+  - value (string)
+
+//-----------------------------------------------------------------------------
+// Whole numbers
+[lfs:LongAnswer] > lfs:Answer
+  - value (long)
+
+//-----------------------------------------------------------------------------
+// Real numbers, stored as lossy "double" values
+// Should not be used to store values where precision is paramount, see DecimalAnswer instead
+[lfs:DoubleAnswer] > lfs:Answer
+  - value (double)
+
+//-----------------------------------------------------------------------------
+// Decimal numbers, guaranteed to store the exact value entered
+[lfs:DecimalAnswer] > lfs:Answer
+  - value (decimal)
