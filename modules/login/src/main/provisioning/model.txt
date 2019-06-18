@@ -30,4 +30,4 @@
 #This configures the default login page for the sling form based authentication handler
 [configurations]
     org.apache.sling.auth.form.FormAuthenticationHandler
-        form.login.form="/login.html"
+        form.login.form="/login"
