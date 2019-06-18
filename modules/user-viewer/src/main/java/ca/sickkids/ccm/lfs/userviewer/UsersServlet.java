@@ -30,7 +30,6 @@ import javax.servlet.ServletException;
 import org.apache.jackrabbit.api.security.principal.ItemBasedPrincipal;
 import org.apache.jackrabbit.api.security.principal.PrincipalIterator;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
-import org.apache.jackrabbit.oak.spi.security.principal.PrincipalManagerImpl;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -72,17 +71,12 @@ public class UsersServlet extends SlingSafeMethodsServlet
         jsonGen.flush();
     }
 
-    private void writeUsers(JsonGenerator jsonGen, Session session, String filter, long limit, long offset)
+    private void writeUsers(JsonGenerator jsonGen, Session session, String filter/*, long limit, long offset*/)
     {
         PrincipalIterator principals = null;
         try {
             PrincipalManager principalManager = AccessControlUtil.getPrincipalManager(session);
-            if (principalManager instanceof PrincipalManagerImpl) {
-                PrincipalManagerImpl pmi = (PrincipalManagerImpl) principalManager;
-                principals = pmi.findPrincipals(filter, true, 3, offset, limit);
-            } else {
-                principals = principalManager.findPrincipals(filter, 3);
-            }
+            principals = principalManager.findPrincipals(filter, 3);
 
             if (principals != null) {
                 jsonGen.writeStartArray();
@@ -114,18 +108,15 @@ public class UsersServlet extends SlingSafeMethodsServlet
     {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-
         String filter = request.getParameter("filter");
-        long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
-        long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
+        //long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
+        //long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
         Session session = request.getResourceResolver().adaptTo(Session.class);
-
         Writer out = response.getWriter();
         JsonGenerator jsonGen = Json.createGenerator(out);
         try {
             if (session != null) {
-                writeUsers(jsonGen, session, filter, limit, offset);
-
+                writeUsers(jsonGen, session, filter);
             } else {
                 writeBlankJson(jsonGen);
                 // System.out.println("Null session detected. Could not find list of principals.");
