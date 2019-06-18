@@ -64,8 +64,11 @@ class SignIn extends React.Component {
       }
     )
     .then((response) => {
-      window.location = this.loginRedirectPath();
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
       this.setState({failedLogin: false});
+      window.location = this.loginRedirectPath();
     })
     .catch((error) => {
       this.setState({failedLogin: true});
