@@ -19,7 +19,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Avatar, Button, CssBaseline, FormControl, Input, InputLabel, Paper, Typography, withStyles, InputAdornment, IconButton, Tooltip, Icon, SvgIcon } from '@material-ui/core';
-import axios from 'axios';
 import styles from "../styling/styles";
 
 class SignIn extends React.Component {
@@ -51,25 +50,24 @@ class SignIn extends React.Component {
   }
 
   submitLogin() {
-    axios({
-      method: 'POST',
-      url: '/j_security_check',
-      headers: {
-        'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
-      },
-      dataType: "text",
-      params: {
-        j_username: this.state.username,
-        j_password: this.state.password,
-        j_validate: true,
-        resource: "/content.html"
+    fetch('/j_security_check',
+      {
+        method: 'POST',
+        body: new URLSearchParams({
+          "j_username": this.state.username,
+          "j_password": this.state.password,
+          "j_validate": true
+        }),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       }
-    })
+    )
     .then((response) => {
       window.location = this.loginRedirectPath();
       this.setState({failedLogin: false});
     })
-    .catch((error)=>{
+    .catch((error) => {
       this.setState({failedLogin: true});
     });
   }

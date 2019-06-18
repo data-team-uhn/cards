@@ -171,14 +171,14 @@ class SignUpForm extends React.Component {
   }
 
   signIn(username, password) {
-    let formData = new URLSearchParams();
-    formData.append("j_username", username);
-    formData.append("j_password", password);
-    formData.append("j_validate", true);
     fetch('/j_security_check',
       {
         method: 'POST',
-        body: formData,
+        body: new URLSearchParams({
+          "j_username": username,
+          "j_password": password,
+          "j_validate": true
+        }),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
