@@ -118,7 +118,22 @@ const dropdownStyle = theme => ({
       color: whiteColor,
       ...primaryBoxShadow
     }
-  }
+  },
+  searchButton: {
+    [theme.breakpoints.down("sm")]: {
+      top: "-50px !important",
+      marginRight: "22px",
+      float: "right"
+    }
+  },
+  margin: {
+    zIndex: "4",
+    margin: "0"
+  },
+  searchIcon: {
+    width: "17px",
+    zIndex: "4"
+  },
 });
 
 export default dropdownStyle;
