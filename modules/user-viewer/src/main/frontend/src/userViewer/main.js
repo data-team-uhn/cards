@@ -16,6 +16,10 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
+<<<<<<< HEAD
+=======
+
+>>>>>>> eb8bfaacc83fabe434bd830934580835fc438ee3
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
