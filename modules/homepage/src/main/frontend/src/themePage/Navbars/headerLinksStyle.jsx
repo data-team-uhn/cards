@@ -11,7 +11,7 @@ const headerLinksStyle = theme => ({
   ...dropdownStyle(theme),
   search: {
     "& > div": {
-      marginTop: "0"
+      marginTop: "16px"
     },
     [theme.breakpoints.down("sm")]: {
       margin: "10px 15px !important",
