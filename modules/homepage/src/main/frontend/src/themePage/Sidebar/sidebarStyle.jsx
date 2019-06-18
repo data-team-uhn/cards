@@ -105,8 +105,8 @@ import {
       marginRight: "15px"
     },
     img: {
-      width: "35px",
-      top: "22px",
+      width: "32px",
+      top: "19px",
       position: "absolute",
       verticalAlign: "middle",
       border: "0"
