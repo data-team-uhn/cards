@@ -52,6 +52,11 @@ const styles = theme => ({
   submit: {
     marginTop: theme.spacing(3),
   },
+  errorMessage: {
+    background: theme.palette.error.dark,
+    padding: theme.spacing(1, 2),
+    color: theme.palette.error.contrastText,
+  }
 });
 
 export default styles;
