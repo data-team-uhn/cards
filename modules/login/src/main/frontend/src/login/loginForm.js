@@ -90,7 +90,7 @@ class SignIn extends React.Component {
             Sign in
           </Typography>
 
-          {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>An invalid username or password has been entered.</Typography>}
+          {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>Invalid username or password</Typography>}
 
           <form className={classes.form} onSubmit={(event)=>{event.preventDefault(); this.submitLogin();}} >
 
