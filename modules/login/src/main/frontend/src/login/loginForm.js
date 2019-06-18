@@ -18,48 +18,90 @@
 //
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Button, CssBaseline, FormControl, FormControlLabel, Checkbox, Input, InputLabel, Paper, Typography, withStyles, InputAdornment, IconButton, Tooltip, Icon } from '@material-ui/core';
+import { Avatar, Button, CssBaseline, FormControl, Input, InputLabel, Paper, Typography, withStyles, InputAdornment, IconButton, Tooltip, Icon, SvgIcon } from '@material-ui/core';
 import styles from "../styling/styles";
 
 class SignIn extends React.Component {
-  constructor(props) {
+  constructor(props, selfContained) {
     super(props);
 
     this.state = {
       passwordIsMasked: false,
+      failedLogin: false,
+
+      username: "",
+      password: ""
     };
   }
+
+  loginRedirectPath() {
+    const currentPath = window.location.pathname.startsWith("/login") ? "/" : window.location.pathname;
+    return new URLSearchParams(window.location.search).get("resource") || currentPath;
+  };
+
+  loginValidationPOSTPath() {
+    return "/j_security_check";
+  };
 
   togglePasswordMask = () => {
     this.setState(prevState => ({
       passwordIsMasked: !prevState.passwordIsMasked,
     }));
-  };
+  }
 
-  render () {
-    const { classes } = this.props;
+  submitLogin() {
+    fetch('/j_security_check',
+      {
+        method: 'POST',
+        body: new URLSearchParams({
+          "j_username": this.state.username,
+          "j_password": this.state.password,
+          "j_validate": true
+        }),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
+    )
+    .then((response) => {
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      this.setState({failedLogin: false});
+      window.location = this.loginRedirectPath();
+    })
+    .catch((error) => {
+      this.setState({failedLogin: true});
+    });
+  }
+
+  render() {
+    const { classes, selfContained } = this.props;
     const { passwordIsMasked } = this.state;
-  
+
     return (
       <main className={classes.main}>
         <CssBaseline />
-        <Paper className={classes.paper}>
+        <Paper className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
           <Avatar className={classes.avatar}>
-            {/*<LockOutlinedIcon />*/}
-            <Icon>lock</Icon>
+            <SvgIcon><path d="M10,17V14H3V10H10V7L15,12L10,17M10,2H19C20.1,2 21,2.9 21,4V20C21,21.1 20.1,22 19,22H10C8.9,22 8,21.1 8,20V18H10V20H19V4H10V6H8V4C8,2.9 8.9,2 10,2Z"/></SvgIcon>
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form} method="POST" action={loginValidationPOSTPath}>
-            <input type="hidden" name="resource" value={loginRedirectPath} />
+
+          {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>An invalid username or password has been entered.</Typography>}
+
+          <form className={classes.form} onSubmit={(event)=>{event.preventDefault(); this.submitLogin();}} >
+
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="j_username">Username</InputLabel>
-              <Input id="j_username" name="j_username" autoComplete="email" autoFocus />
+              <Input id="j_username" name="j_username" autoComplete="email" autoFocus onChange={(event) => {this.setState({username: event.target.value});}}/>
             </FormControl>
+
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="j_password">Password</InputLabel>
-              <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password"
+              <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" onChange={(event) => {this.setState({password: event.target.value});}}
                 endAdornment={
                 <InputAdornment position="end">
                   <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>
@@ -74,10 +116,6 @@ class SignIn extends React.Component {
               }
              />
             </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
@@ -94,10 +132,10 @@ class SignIn extends React.Component {
           <Button
             fullWidth
             variant="contained"
-            color="secondary"
+            color="default"
             onClick={this.props.swapForm}
           >
-            Register
+            <Icon className={classes.buttonIcon}>person_add</Icon> Register
           </Button>
         </Paper>
       </main>

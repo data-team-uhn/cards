@@ -29,11 +29,17 @@ const styles = theme => ({
     },
   },
   paper: {
-    marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
+  },
+  selfContained: {
+    marginTop: theme.spacing(10),
+    marginBottom: theme.spacing(2),
+  },
+  buttonIcon: {
+    marginRight: theme.spacing(1),
   },
   avatar: {
     margin: theme.spacing(1),
@@ -46,6 +52,11 @@ const styles = theme => ({
   submit: {
     marginTop: theme.spacing(3),
   },
+  errorMessage: {
+    background: theme.palette.error.dark,
+    padding: theme.spacing(1, 2),
+    color: theme.palette.error.contrastText,
+  }
 });
 
 export default styles;

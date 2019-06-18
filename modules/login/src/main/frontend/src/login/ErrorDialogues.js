@@ -19,21 +19,17 @@
 import React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Slide } from '@material-ui/core';
 
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 class UsernameTakenDialog extends React.Component {
   state = {
-    open: true,
+    opened: true,
   };
 
-  // handleClickOpen = () => {
-  //   this.setState({ open: true });
-  // };
-
   handleClose = () => {
-    this.setState({ open: false });
+    this.setState({ opened: false });
   };
 
   render() {
@@ -48,7 +44,7 @@ class UsernameTakenDialog extends React.Component {
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogTitle id="alert-dialog-slide-title">
-            {"Error in creating user."}
+            Error in creating user.
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">

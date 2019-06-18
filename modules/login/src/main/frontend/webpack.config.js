@@ -1,9 +1,8 @@
 module.exports = {
   mode: 'development',
   entry: {
-    navbar: './src/navbar/navbarMain.js',
-    userSplash: './src/userSplash/userSplashPage.js',
-    index: './src/homePage/index.js'
+    login: './src/login/loginMain.js',
+    loginDialogue: './src/login/loginDialogue.js'
   },
   module: {
     rules: [

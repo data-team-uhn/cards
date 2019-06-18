@@ -16,8 +16,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from 'react';
-import { Avatar, Button, Paper, Typography, Icon, TextField, Tooltip, withStyles } from '@material-ui/core';
+import React from 'react';
+import { Avatar, Button, Paper, Typography, Icon, SvgIcon, TextField, Tooltip, withStyles } from '@material-ui/core';
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -28,7 +28,6 @@ import styles from "../styling/styles";
 class FormFields extends React.Component {
   constructor(props) {
     super(props);
-
   }
 
   render() {
@@ -36,7 +35,7 @@ class FormFields extends React.Component {
     const { classes } = this.props;
 
     const {
-      values: { name, email, password, confirmPassword },
+      values: { username, email, password, confirmPassword },
       errors,
       touched,
       handleSubmit,
@@ -58,20 +57,6 @@ class FormFields extends React.Component {
         className={classes.form}
       >
         <TextField
-          id="name"
-          name="name"
-          helperText={touched.name ? errors.name : ""}
-          error={touched.name && Boolean(errors.name)}
-          label="Name"
-          value={name}
-          onChange={change.bind(null, "name")}
-          fullWidth
-          className={classes.form}
-          required
-          autoFocus
-
-        />
-        <TextField
           id="email"
           name="email"
           helperText={touched.email ? errors.email : ""}
@@ -82,7 +67,19 @@ class FormFields extends React.Component {
           onChange={change.bind(null, "email")}
           className={classes.form}
           required
-
+          autoFocus
+        />
+        <TextField
+          id="username"
+          name="username"
+          helperText={touched.username ? errors.username : ""}
+          error={touched.username && Boolean(errors.username)}
+          label="Username"
+          value={username}
+          onChange={change.bind(null, "username")}
+          fullWidth
+          className={classes.form}
+          required
         />
         <TextField
           id="password"
@@ -112,9 +109,9 @@ class FormFields extends React.Component {
           required
 
         />
-        {!isValid ? 
+        {!isValid ?
           // Render hover over and button
-          <React.Fragment> 
+          <React.Fragment>
             <Tooltip title="You must fill in all fields.">
               <div>
                 <Button
@@ -129,7 +126,7 @@ class FormFields extends React.Component {
                 </Button>
               </div>
             </Tooltip>
-          </React.Fragment> : 
+          </React.Fragment> :
           // Else just render the button
           <Button
           type="submit"
@@ -147,7 +144,6 @@ class FormFields extends React.Component {
   }
 }
 
-// export default withStyles(styles)(InputForm);
 const FormFieldsComponent = withStyles(styles)(FormFields);
 
 class SignUpForm extends React.Component {
@@ -160,61 +156,42 @@ class SignUpForm extends React.Component {
     this.displayError = this.displayError.bind(this);
     this.submitValues = this.submitValues.bind(this);
     this.hideError = this.hideError.bind(this);
-    this.updateResource = this.updateResource.bind(this);
   }
 
   displayError() {
     this.setState({
       usernameError: true
-    }, () => { console.log("State has changed"); });
+    });
   }
 
   hideError() {
     this.setState({
       usernameError: false
-    }, () => { console.log("Error has been hidden"); });
+    });
   }
 
-  //  componentDidUpdate() {
-  //   const { errors } = this.props;
-
-  //   this.form.setErrors(errors);
-  // }
-
-  // Hacky way to update resource for Sling User so that we
-  // are able to render the page
-  // Equivalent to: curl -F "resourceType=slingshot/User" http://admin:admin@localhost:8080/content/slingshot/users/slingshot15
-  updateResource(username) {
-    let url2 = "/content/slingshot/users/" + username;
-    let formData2 = new formData();
-    formData.append("sling:resource", "slingshot/User");
-
-    fetch(url2, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Basic ' + btoa('admin:admin'),
-      },
-      body: formData2
-    })
-    .then(function (response) {
-      console.log("Node has been changed");
-    })
-    .catch(function (error) {
-      console.log("Node has NOT been changed");
-    }); // Not sure why .bind(this) is needed here, setState will not work otherwise.
+  signIn(username, password) {
+    fetch('/j_security_check',
+      {
+        method: 'POST',
+        body: new URLSearchParams({
+          "j_username": username,
+          "j_password": password,
+          "j_validate": true
+        }),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
+    ).then(() => {
+      window.location = new URLSearchParams(window.location.search).get('resource') || '/';
+    });
   }
 
   // submit function
-  submitValues({ name, email, confirmPassword, password }) {
-    console.log({ name, email, confirmPassword, password });
-
-    // Use native fetch, sort like the XMLHttpRequest so 
-    //  no need for other libraries.
+  submitValues({ username, email, confirmPassword, password }) {
+    // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
     function handleErrors(response) {
-      if (response.status == 500) {
-        console.log('Detected 500 response');
-      }
       if (!response.ok) {
         throw Error(response.statusText);
       }
@@ -224,8 +201,8 @@ class SignUpForm extends React.Component {
     // Build formData object.
     // We need to do this because sling does not accept JSON, need
     //  url encoded data
-    let formData = new FormData();
-    formData.append(":name", name);
+    let formData = new URLSearchParams();
+    formData.append(":name", username);
     formData.append('pwd', password);
     formData.append('pwdConfirm', confirmPassword);
     formData.append('email', email);
@@ -233,57 +210,36 @@ class SignUpForm extends React.Component {
     // Important note about native fetch, it does not reject failed
     // HTTP codes, it'll only fail when network error
     // Therefore, you must handle the error code yourself.
-    fetch('/system/userManager/user.create.html', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        // 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-      },
-      body: formData
-    })
-      .then(handleErrors) // Handle errors first
-      .then(function (response) {
-        // updateResource(name);
-        // this.updateResource(name);
-        alert("Created user!");
+    fetch('/system/userManager/user.create.html',
+      {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData
       })
-      .catch(function (error) {
-        // alert("Error creating user. Check console.");
+      .then(handleErrors) // Handle errors first
+      .then(() => {
+        this.signIn(username, password);
+      })
+      .catch(error => {
         this.setState({
           usernameError: true
-        }, () => { console.log("State has changed"); });
-      }.bind(this)); // Not sure why .bind(this) is needed here, setState will not work otherwise.
-
-    let url2 = "/content/slingshot/users/" + name;
-    let formData2 = new FormData();
-    formData2.append("sling:resourceType", "slingshot/User");
-
-    fetch(url2, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Basic ' + btoa('admin:admin'),
-      },
-      body: formData2
-    })
-    .then(function (response) {
-      console.log("Node has been changed");
-    })
-    .catch(function (error) {
-      console.log("Node has NOT been changed");
-    }); 
+        });
+      });
   }
 
   render() {
-    const { classes } = this.props;
-    const values = { name: "", email: "", confirmPassword: "", password: "" };
+    const { classes, selfContained } = this.props;
+    const values = { username: "", email: "", confirmPassword: "", password: "" };
 
     const validationSchema = Yup.object({
-      name: Yup.string("Enter a name")
-        .required("Name is required"),
       email: Yup.string("Enter your email")
         .email("Enter a valid email")
         .required("Email is required"),
+      username: Yup.string("Enter a username")
+        .required("The username is required"),
       password: Yup.string("")
         .min(8, "Password must contain at least 8 characters")
         .required("Enter your password"),
@@ -293,40 +249,37 @@ class SignUpForm extends React.Component {
     });
 
     // Hooks only work inside functional components
-    // const formikRef = React.useRef();
-
     return (
       <React.Fragment>
         {(this.state.usernameError) &&
           <UsernameTakenDialog handleClose={this.hideError} ></UsernameTakenDialog>
         }
         <div className={classes.main}>
-          <Paper elevation={1} className={classes.paper}>
+          <Paper elevation={1} className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
             <Typography component="h1" variant="h5">
-              Sign Up Form
-      </Typography>
+              Sign Up
+            </Typography>
             <Avatar className={classes.avatar}>
-              <Icon>group_add</Icon>
+              <Icon>person_add</Icon>
             </Avatar>
             <Formik
               render={props => <FormFieldsComponent {...props} />}
               initialValues={values}
               validationSchema={validationSchema}
               onSubmit={this.submitValues}
-              //  ref={formikRef}
               ref={el => (this.form = el)}
             />
             <Typography>
               Already have an account?
-      </Typography>
+            </Typography>
             <Button
               fullWidth
               variant="contained"
-              color="secondary"
+              color="default"
               onClick={this.props.swapForm}
             >
-              Sign In
-      </Button>
+              <SvgIcon className={classes.buttonIcon}><path d="M10,17V14H3V10H10V7L15,12L10,17M10,2H19C20.1,2 21,2.9 21,4V20C21,21.1 20.1,22 19,22H10C8.9,22 8,21.1 8,20V18H10V20H19V4H10V6H8V4C8,2.9 8.9,2 10,2Z"/></SvgIcon> Sign In
+            </Button>
           </Paper>
         </div>
       </React.Fragment>
@@ -335,4 +288,3 @@ class SignUpForm extends React.Component {
 }
 
 export default withStyles(styles)(SignUpForm);
-  // const InputFormComponent = withStyles(styles)(InputForm);

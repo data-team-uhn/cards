@@ -86,18 +86,6 @@ function HomePage(props) {
         <Typography variant="h6" align="center" color="textSecondary" paragraph>
           A data gathering initiative for patients with <Link href="https://en.wikipedia.org/wiki/Li%E2%80%93Fraumeni_syndrome">Li–Fraumeni syndrome</Link>.
         </Typography>
-        <Grid container spacing={2} justify="center">
-          <Grid item>
-            <Button variant="contained" href="../content/slingshot.html" color="primary">
-              Login
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button variant="outlined" href="../content/slingshot.html" color="primary">
-              Sign Up
-            </Button>
-          </Grid>
-        </Grid>
       </div>
 
       <div className={classNames(classes.layout, classes.cardGrid)}>
@@ -139,7 +127,6 @@ HomePage.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-// export default withStyles(styles)(Album);
 const HomePageComponent = withStyles(styles)(HomePage);
 
 ReactDOM.render(<HomePageComponent />, document.querySelector('#main-container'));

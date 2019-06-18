@@ -18,17 +18,28 @@
 //
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Slide } from '@material-ui/core';
 import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
+import { Button, Dialog } from '@material-ui/core';
 
-class MainPageContainer extends React.Component {
-  constructor() {
-    super();
+class DialogueLoginContainer extends React.Component {
+  constructor(props) {
+    super(props);
 
     this.state = {
-      signInShown: true
+      signInShown: true,
+      opened: false
     }
+    {document.getElementById('login-homepage-button') && document.getElementById('login-homepage-button').addEventListener('click', () => {this.setState({signInShown: true}); this.handleOpen();})}
+    {document.getElementById('signup-homepage-button') && document.getElementById('signup-homepage-button').addEventListener('click', () => {this.setState({signInShown: false}); this.handleOpen();})}
+  }
+
+  handleOpen() {
+    this.setState({opened: true});
+  }
+
+  handleClose() {
+    this.setState({opened: false});
   }
 
   // Toggle between sign in and sign up
@@ -40,16 +51,17 @@ class MainPageContainer extends React.Component {
 
   render () {
     return (
-      <div>
+      <Dialog
+        open={this.state.opened}
+        onClose={() => this.handleClose()}
+      >
         {this.state.signInShown ? <SignIn swapForm={this.handleSwap} /> : <SignUpForm swapForm={this.handleSwap} />}
-      </div>
+        <Button onClick={()=>this.handleClose()}>Close</Button>
+      </Dialog>
     );
   }
 }
 
-// const MainElement = <Main />;
+export default DialogueLoginContainer;
 
-ReactDOM.render(
-  <MainPageContainer />,
-  document.getElementById('main-login-container')
-);
+ReactDOM.render(<DialogueLoginContainer/>, document.getElementById('dialogue-login-container'));
