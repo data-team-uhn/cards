@@ -13,8 +13,8 @@ import Poppers from "@material-ui/core/Popper";
 // @material-ui/icons
 import Person from "@material-ui/icons/Person";
 import Notifications from "@material-ui/icons/Notifications";
-import Dashboard from "@material-ui/icons/Dashboard";
 import Search from "@material-ui/icons/Search";
+import ExitToApp from "@material-ui/icons/ExitToApp";
 // core components
 import CustomInput from "material-dashboard-react/dist/components/CustomInput/CustomInput.js";
 import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
@@ -58,18 +58,6 @@ class HeaderLinks extends React.Component {
             <Search />
           </Button>
         </div>
-        <Button
-          color={window.innerWidth > 959 ? "transparent" : "white"}
-          justIcon={window.innerWidth > 959}
-          simple={!(window.innerWidth > 959)}
-          aria-label="Dashboard"
-          className={classes.buttonLink}
-        >
-          <Dashboard className={classes.icons} />
-          <Hidden mdUp implementation="css">
-            <p className={classes.linkText}>Dashboard</p>
-          </Hidden>
-        </Button>
         <div className={classes.manager}>
           <Button
             buttonRef={node => {
@@ -159,6 +147,19 @@ class HeaderLinks extends React.Component {
           className={classes.buttonLink}
         >
           <Person className={classes.icons} />
+          <Hidden mdUp implementation="css">
+            <p className={classes.linkText}>Profile</p>
+          </Hidden>
+        </Button>
+        <Button
+          color={window.innerWidth > 959 ? "transparent" : "white"}
+          justIcon={window.innerWidth > 959}
+          simple={!(window.innerWidth > 959)}
+          aria-label="Log out"
+          className={classes.buttonLink}
+          href="/system/sling/logout"
+        >
+          <ExitToApp className={classes.icons} />
           <Hidden mdUp implementation="css">
             <p className={classes.linkText}>Profile</p>
           </Hidden>
