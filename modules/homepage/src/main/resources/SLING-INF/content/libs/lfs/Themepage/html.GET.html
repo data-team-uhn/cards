@@ -36,6 +36,12 @@
     <script src="/system/sling.js"></script>
   </head>
   <body>
+    <script>
+      // Redirect to /login if the user is not logged in
+      if (window.Sling.getSessionInfo() === null || window.Sling.getSessionInfo().userID === 'anonymous') {
+        window.location = "/login.html";
+      }
+    </script>
     <div id="main-container"></div>
     <script src="/libs/lfs/resources/themeindex.js"></script>
   </body>
