@@ -38,10 +38,8 @@ class HeaderLinks extends React.Component {
   };
 
   render() {
-    const { classes, theme } = this.props;
+    const { classes } = this.props;
     const { open } = this.state;
-    //const theme = useTheme();
-    //const shrink = useMediaQuery(theme.breakpoints.up('md'));
     const expand = window.innerWidth > 959;
 
     return (
