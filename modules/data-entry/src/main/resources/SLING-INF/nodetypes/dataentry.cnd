@@ -124,11 +124,11 @@
 
   // Minimum selected answers, if this is a multiple-answer question
   // 0 or negative values means no minimum
-  - minAnswers (long) = 0 autocreated
+  - minAnswers (long) = '0' autocreated
 
   // Maximum selected answers, if this is a multiple-answer question
   // 0 or negative values means no maximum
-  - maxAnswers (long) = 0 autocreated
+  - maxAnswers (long) = '0' autocreated
 
   // How are the answer options displayed
   // The possible values are not limited, since support for new display modes can be added by other modules,
