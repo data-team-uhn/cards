@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { Assignment, Dashboard, Pets, Settings, Subtitles } from '@material-ui/icons';
+import { AccountBox, Assignment, Dashboard, Pets, Settings, Subtitles } from '@material-ui/icons';
 
 import DashboardPage from "./Dashboard/dashboard.jsx";
 
@@ -50,6 +50,14 @@ var sidebarRoutes = [
       name: "Variants",
       rtlName: "rtl:Variants",
       icon: Subtitles,
+      component: "",
+      layout: ""
+    },
+    {
+      path: "/userpage.html",
+      name: "User Profile",
+      rtlName: "rtl:userprofile",
+      icon: AccountBox,
       component: "",
       layout: ""
     },
