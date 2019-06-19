@@ -61,6 +61,7 @@ class Dashboard extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
+        <div id="footer-container"></div>
       </div>
     );
   }
