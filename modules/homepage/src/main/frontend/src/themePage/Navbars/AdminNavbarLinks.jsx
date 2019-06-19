@@ -38,8 +38,12 @@ class HeaderLinks extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, theme } = this.props;
     const { open } = this.state;
+    //const theme = useTheme();
+    //const shrink = useMediaQuery(theme.breakpoints.up('md'));
+    const expand = window.innerWidth > 959;
+
     return (
       <div>
         <div className={classes.searchWrapper}>
@@ -63,9 +67,9 @@ class HeaderLinks extends React.Component {
             buttonRef={node => {
               this.anchorEl = node;
             }}
-            color={window.innerWidth > 959 ? "transparent" : "white"}
-            justIcon={window.innerWidth > 959}
-            simple={!(window.innerWidth > 959)}
+            color={expand ? "transparent" : "white"}
+            justIcon={expand}
+            simple={!(expand)}
             aria-owns={open ? "menu-list-grow" : null}
             aria-haspopup="true"
             onClick={this.handleToggle}
@@ -140,9 +144,9 @@ class HeaderLinks extends React.Component {
           </Poppers>
         </div>
         <Button
-          color={window.innerWidth > 959 ? "transparent" : "white"}
-          justIcon={window.innerWidth > 959}
-          simple={!(window.innerWidth > 959)}
+          color={expand ? "transparent" : "white"}
+          justIcon={expand}
+          simple={!(expand)}
           aria-label="Person"
           className={classes.buttonLink}
         >
@@ -152,12 +156,13 @@ class HeaderLinks extends React.Component {
           </Hidden>
         </Button>
         <Button
-          color={window.innerWidth > 959 ? "transparent" : "white"}
-          justIcon={window.innerWidth > 959}
-          simple={!(window.innerWidth > 959)}
+          color={expand ? "transparent" : "white"}
+          justIcon={expand}
+          simple={!(expand)}
           aria-label="Log out"
           className={classes.buttonLink}
           href="/system/sling/logout"
+          title="Log out"
         >
           <ExitToApp className={classes.icons} />
           <Hidden mdUp implementation="css">
