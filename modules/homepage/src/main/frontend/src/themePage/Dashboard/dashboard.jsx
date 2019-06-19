@@ -10,23 +10,41 @@ import Table from "material-dashboard-react/dist/components/Table/Table.js";
 import Card from "material-dashboard-react/dist/components/Card/Card.js";
 import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
 import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
-
+// Moment
+import moment from 'moment';
 import dashboardStyle from "./dashboardStyle.jsx";
+
+function _parseDate(date, formatString){
+  var dateObj = moment(date);
+  if (dateObj.isValid()) {
+    return dateObj.format(formatString)
+  }
+  return "";
+};
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
+    // Find all relevant nodes
+    var contentNodes = window.Sling.getContent("/content/forms", 1, "");
+    const patientData = [];
+    for (var id in contentNodes) {
+      var patient = contentNodes[id];
+      if (patient["Disease"] !== "LFS")
+        continue;
+      var truncatedDOB = _parseDate(patient["Date of birth"], "YYYY-MM");
+      var truncatedFollowUp = _parseDate(patient["Last follow-up"], "YYYY-MM-DD");
+      var truncatedRegister = _parseDate(patient["Date registered"], "YYYY-MM-DD");
+      patientData.push([patient["Patient ID"], truncatedDOB, truncatedFollowUp,
+              truncatedRegister, patient["Sex"], patient["Tumor"], patient["Maternal Ethnicity"], patient["Paternal Ethnicity"]]);
+    }
+
     this.state = {
-      title: "Patients",
-      subtitle: "?!!",
-      columnNames: ["ID", "Name", "TP53 status"],
-      data: [
-        ["1", "Alice", "WT"],
-        ["2", "Bob", "WT"],
-        ["3", "Charlie", "LOF"],
-        ["4", "Eve", "NULL"]
-      ]
+      title: "LFS Patients",
+      subtitle: "",
+      columnNames: ["ID", "Date of Birth", "Last Followup", "Date Registered", "Sex", "Tumour", "Maternal Ethnicity", "Paternal Ethnicity"],
+      data: patientData
     };
   }
 
