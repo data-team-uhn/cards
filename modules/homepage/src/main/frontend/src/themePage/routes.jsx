@@ -22,7 +22,7 @@ import DashboardPage from "./Dashboard/dashboard.jsx";
 
 var sidebarRoutes = [
     {
-      path: "/themepage.html",
+      path: "/content",
       name: "Dashboard",
       rtlName: "rtl:Dashboard",
       icon: Dashboard,
