@@ -83,7 +83,7 @@ public class UsersServlet extends SlingSafeMethodsServlet
                 while (principals.hasNext()) {
                     Principal currentPrincipal = principals.nextPrincipal();
                     // jsonGen.write(currentPrincipal);
-                    jsonGen.writeStartObject(currentPrincipal.getName());
+                    jsonGen.writeStartObject();
                     jsonGen.write("name", currentPrincipal.getName());
                     jsonGen.write("string", currentPrincipal.toString());
                     if (currentPrincipal instanceof ItemBasedPrincipal) {
@@ -92,8 +92,13 @@ public class UsersServlet extends SlingSafeMethodsServlet
                     jsonGen.writeEnd();
                 }
                 jsonGen.writeEnd();
-
+            } else {
+                jsonGen.writeStartObject();
+                jsonGen.write("Status", "No session");
+                jsonGen.writeEnd();
+                jsonGen.flush();
             }
+
             // response.getWriter().write(out.toString());
 
         } catch (RepositoryException re) {
