@@ -39,6 +39,7 @@
     "formik-material-fields": "0.0.4",
     "history": "^4.9.0",
     "material-dashboard-react": "1.6.0",
+    "moment": "^2.24.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.1",
