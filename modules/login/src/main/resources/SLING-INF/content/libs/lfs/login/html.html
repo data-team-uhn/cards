@@ -16,7 +16,24 @@
   specific language governing permissions and limitations
   under the License.
 */-->
-<sly data-sly-resource="${@selectors='header'}"/>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${properties.title}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <script crossorigin src="https://unpkg.com/prop-types@15.6.2/prop-types.js"></script>
+    <script crossorigin src="https://unpkg.com/jss@9.8.7/dist/jss.js"></script>
+    <script crossorigin src="https://unpkg.com/react@16.8.4/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16.8.4/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@material-ui/core@4.1.1/umd/material-ui.development.js"></script>
+    <script crossorigin src="https://unpkg.com/lodash@4.17.11/lodash.js"></script>
+    <script crossorigin src="https://unpkg.com/formik@1.5.4/dist/formik.umd.development.js"></script>
+    <script src="/system/sling.js"></script>
+  </head>
+  <body>
     <div id="main-login-container"></div>
     <script src="/libs/lfs/resources/login.js"></script>
-<sly data-sly-resource="${@selectors='footer'}"/>
+  </body>
+</html>
