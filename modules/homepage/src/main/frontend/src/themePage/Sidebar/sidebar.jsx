@@ -4,10 +4,23 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 // @material-ui/core components
+<<<<<<< HEAD
 import { withStyles } from "@material-ui/core/styles";
 import { Drawer, Hidden, List, ListItem, ListItemText } from "@material-ui/core";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
+=======
+import withStyles from "@material-ui/core/styles/withStyles";
+import Drawer from "@material-ui/core/Drawer";
+import Hidden from "@material-ui/core/Hidden";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Icon from "@material-ui/core/Icon";
+
+import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
+import RTLNavbarLinks from "../Navbars/RTLNavbarLinks.jsx";
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
 import sidebarStyle from "./sidebarStyle.jsx";
 
 const Sidebar = ({ ...props }) => {
@@ -51,12 +64,37 @@ const Sidebar = ({ ...props }) => {
             key={key}
           >
             <ListItem button className={classes.itemLink + listItemClasses}>
+<<<<<<< HEAD
               <prop.icon
                   className={classNames(classes.itemIcon, whiteFontClasses)}
                 />
               <ListItemText
                 primary={prop.name}
                 className={classNames(classes.itemText, whiteFontClasses)}
+=======
+              {typeof prop.icon === "string" ? (
+                <Icon
+                  className={classNames(classes.itemIcon, whiteFontClasses, {
+                    [classes.itemIconRTL]: props.rtlActive
+                  })}
+                >
+                  {prop.icon}
+                </Icon>
+              ) : (
+                <prop.icon
+                  className={classNames(classes.itemIcon, whiteFontClasses, {
+                    [classes.itemIconRTL]: props.rtlActive
+                  })}
+                />
+              )}
+              <ListItemText
+                primary={
+                  props.rtlActive ? prop.rtlName : prop.name
+                }
+                className={classNames(classes.itemText, whiteFontClasses, {
+                  [classes.itemTextRTL]: props.rtlActive
+                })}
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
                 disableTypography={true}
               />
             </ListItem>
@@ -70,8 +108,15 @@ const Sidebar = ({ ...props }) => {
   var brand = (
     <div className={classes.logo}>
       <a
+<<<<<<< HEAD
         href="/"
         className={classes.logoLink}
+=======
+        href="https://phenotips.org/"
+        className={classNames(classes.logoLink, {
+          [classes.logoLinkRTL]: props.rtlActive
+        })}
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
       >
         <div className={classes.logoImage}>
           <img src={logoImage} alt="logo" className={classes.img} />
@@ -84,6 +129,7 @@ const Sidebar = ({ ...props }) => {
   // Use different implementations depending on the screen size
   return (
     <div>
+<<<<<<< HEAD
       {/* Render ourselves at the top right of the content page */}
       <Hidden mdUp implementation="css">
         <Drawer
@@ -91,6 +137,18 @@ const Sidebar = ({ ...props }) => {
           anchor="right"
           open={props.open}
           classes={{paper: classes.drawerPaper}}
+=======
+      <Hidden mdUp implementation="css">
+        <Drawer
+          variant="temporary"
+          anchor={props.rtlActive ? "left" : "right"}
+          open={props.open}
+          classes={{
+            paper: classNames(classes.drawerPaper, {
+              [classes.drawerPaperRTL]: props.rtlActive
+            })
+          }}
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
           onClose={props.handleDrawerToggle}
           ModalProps={{
             keepMounted: true // Better open performance on mobile.
@@ -98,7 +156,11 @@ const Sidebar = ({ ...props }) => {
         >
           {brand}
           <div className={classes.sidebarWrapper}>
+<<<<<<< HEAD
             <AdminNavbarLinks />
+=======
+            {props.rtlActive ? <RTLNavbarLinks /> : <AdminNavbarLinks />}
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
             {links}
           </div>
           {image !== undefined ? (
@@ -109,6 +171,7 @@ const Sidebar = ({ ...props }) => {
           ) : null}
         </Drawer>
       </Hidden>
+<<<<<<< HEAD
       {/* Render ourselves at the top of the sidebar */}
       <Hidden smDown implementation="css">
         <Drawer
@@ -116,6 +179,18 @@ const Sidebar = ({ ...props }) => {
           variant="permanent"
           open
           classes={{paper: classes.drawerPaper}}
+=======
+      <Hidden smDown implementation="css">
+        <Drawer
+          anchor={props.rtlActive ? "right" : "left"}
+          variant="permanent"
+          open
+          classes={{
+            paper: classNames(classes.drawerPaper, {
+              [classes.drawerPaperRTL]: props.rtlActive
+            })
+          }}
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
         >
           {brand}
           <div className={classes.sidebarWrapper}>{links}</div>

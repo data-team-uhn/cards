@@ -8,7 +8,12 @@ import {
 const appStyle = theme => ({
   wrapper: {
     position: "relative",
+<<<<<<< HEAD
     top: "0"
+=======
+    top: "0",
+    height: "100vh"
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
   },
   mainPanel: {
     [theme.breakpoints.up("md")]: {
@@ -24,7 +29,12 @@ const appStyle = theme => ({
   },
   content: {
     marginTop: "70px",
+<<<<<<< HEAD
     padding: "30px 15px"
+=======
+    padding: "30px 15px",
+    minHeight: "calc(100vh - 123px)"
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
   },
   container,
   map: {

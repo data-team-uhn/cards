@@ -22,43 +22,81 @@ import DashboardPage from "./Dashboard/dashboard.jsx";
 
 var sidebarRoutes = [
     {
+<<<<<<< HEAD
       path: "/dashboard.html",
       name: "Dashboard",
       icon: Dashboard,
       component: DashboardPage,
       layout: "/content.html"
+=======
+      path: "/themepage.html",
+      name: "Dashboard",
+      rtlName: "rtl:Dashboard",
+      icon: Dashboard,
+      component: DashboardPage,
+      layout: ""
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
     },
     {
       path: "/view.html",
       name: "Patients",
+<<<<<<< HEAD
       icon: Assignment,
       component: "",
       layout: "/content.html"
+=======
+      rtlName: "rtl:Patients",
+      icon: Assignment,
+      component: "",
+      layout: ""
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
     },
     {
       path: "/modelorganisms.html",
       name: "Model Organisms",
+<<<<<<< HEAD
       icon: Pets,
       component: "",
       layout: "/content.html"
+=======
+      rtlName: "rtl:ModelOrganisms",
+      icon: Pets,
+      component: "",
+      layout: ""
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
     },
     {
       path: "/variants.html",
       name: "Variants",
+<<<<<<< HEAD
       icon: Subtitles,
       component: "",
       layout: "/content.html"
+=======
+      rtlName: "rtl:Variants",
+      icon: Subtitles,
+      component: "",
+      layout: ""
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
     },
     {
       path: "/userpage.html",
       name: "User Profile",
+<<<<<<< HEAD
       icon: AccountBox,
       component: "",
       layout: "/content.html"
+=======
+      rtlName: "rtl:userprofile",
+      icon: AccountBox,
+      component: "",
+      layout: ""
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
     },
     {
       path: "/admin.html",
       name: "Administration",
+<<<<<<< HEAD
       icon: Settings,
       component: "",
       layout: "/content.html"
@@ -133,3 +171,16 @@ const contentNodes = JSON.parse(text);
 
 export default sidebarRoutes
 export { loadRemoteComponents, loadRemoteIcons, contentNodes }
+=======
+      rtlName: "rtl:Admin",
+      icon: Settings,
+      component: "",
+      layout: ""
+    },
+];
+
+// TODO:Find all findable JCR nodes and add them to the available routes
+
+
+export default sidebarRoutes
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users

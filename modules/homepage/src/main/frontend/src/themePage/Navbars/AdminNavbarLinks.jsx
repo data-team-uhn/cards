@@ -2,10 +2,26 @@
 import React from "react";
 import classNames from "classnames";
 // @material-ui/core components
+<<<<<<< HEAD
 import { withStyles } from "@material-ui/core/styles";
 import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, Hidden, Popper } from "@material-ui/core";
 // @material-ui/icons
 import { Person, Notifications, Search, ExitToApp } from "@material-ui/icons";
+=======
+import withStyles from "@material-ui/core/styles/withStyles";
+import MenuItem from "@material-ui/core/MenuItem";
+import MenuList from "@material-ui/core/MenuList";
+import Grow from "@material-ui/core/Grow";
+import Paper from "@material-ui/core/Paper";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Hidden from "@material-ui/core/Hidden";
+import Poppers from "@material-ui/core/Popper";
+// @material-ui/icons
+import Person from "@material-ui/icons/Person";
+import Notifications from "@material-ui/icons/Notifications";
+import Search from "@material-ui/icons/Search";
+import ExitToApp from "@material-ui/icons/ExitToApp";
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
 // core components
 import CustomInput from "material-dashboard-react/dist/components/CustomInput/CustomInput.js";
 import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
@@ -16,6 +32,7 @@ class HeaderLinks extends React.Component {
   state = {
     open: false
   };
+<<<<<<< HEAD
 
   // Placeholder function for clicking on a notification
   placeholderDoNothing = () => {
@@ -52,6 +69,13 @@ class HeaderLinks extends React.Component {
 
   // Event handler for clicking away from notifications while it is open
   closeNotifications = event => {
+=======
+  handleToggle = () => {
+    this.setState(state => ({ open: !state.open }));
+  };
+
+  handleClose = event => {
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
     if (this.anchorEl.contains(event.target)) {
       return;
     }
@@ -60,6 +84,7 @@ class HeaderLinks extends React.Component {
   };
 
   render() {
+<<<<<<< HEAD
     const { classes } = this.props;
     const { open } = this.state;
     const notifications = this.getNotifications(classes.dropdownItem);
@@ -72,6 +97,16 @@ class HeaderLinks extends React.Component {
     return (
       <div>
         {/* Searchbar */}
+=======
+    const { classes, theme } = this.props;
+    const { open } = this.state;
+    //const theme = useTheme();
+    //const shrink = useMediaQuery(theme.breakpoints.up('md'));
+    const expand = window.innerWidth > 959;
+
+    return (
+      <div>
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
         <div className={classes.searchWrapper}>
           <CustomInput
             formControlProps={{
@@ -88,8 +123,11 @@ class HeaderLinks extends React.Component {
             <Search />
           </Button>
         </div>
+<<<<<<< HEAD
 
         {/* Notifications */}
+=======
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
         <div className={classes.manager}>
           <Button
             buttonRef={node => {
@@ -100,6 +138,7 @@ class HeaderLinks extends React.Component {
             simple={!(expand)}
             aria-owns={open ? "menu-list-grow" : null}
             aria-haspopup="true"
+<<<<<<< HEAD
             onClick={this.toggleNotifications}
             className={classes.buttonLink}
           >
@@ -112,6 +151,20 @@ class HeaderLinks extends React.Component {
             </Hidden>
           </Button>
           <Popper
+=======
+            onClick={this.handleToggle}
+            className={classes.buttonLink}
+          >
+            <Notifications className={classes.icons} />
+            <span className={classes.notifications}>5</span>
+            <Hidden mdUp implementation="css">
+              <p onClick={this.handleClick} className={classes.linkText}>
+                Notification
+              </p>
+            </Hidden>
+          </Button>
+          <Poppers
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
             open={open}
             anchorEl={this.anchorEl}
             transition
@@ -119,7 +172,11 @@ class HeaderLinks extends React.Component {
             className={
               classNames({ [classes.popperClose]: !open }) +
               " " +
+<<<<<<< HEAD
               classes.popperNav
+=======
+              classes.pooperNav
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
             }
           >
             {({ TransitionProps, placement }) => (
@@ -132,18 +189,58 @@ class HeaderLinks extends React.Component {
                 }}
               >
                 <Paper>
+<<<<<<< HEAD
                   <ClickAwayListener onClickAway={this.closeNotifications}>
                     <MenuList role="menu">
                       {notifications}
+=======
+                  <ClickAwayListener onClickAway={this.handleClose}>
+                    <MenuList role="menu">
+                      <MenuItem
+                        onClick={this.handleClose}
+                        className={classes.dropdownItem}
+                      >
+                        Mike John responded to your email
+                      </MenuItem>
+                      <MenuItem
+                        onClick={this.handleClose}
+                        className={classes.dropdownItem}
+                      >
+                        You have 5 new tasks
+                      </MenuItem>
+                      <MenuItem
+                        onClick={this.handleClose}
+                        className={classes.dropdownItem}
+                      >
+                        You're now friend with Andrew
+                      </MenuItem>
+                      <MenuItem
+                        onClick={this.handleClose}
+                        className={classes.dropdownItem}
+                      >
+                        Another Notification
+                      </MenuItem>
+                      <MenuItem
+                        onClick={this.handleClose}
+                        className={classes.dropdownItem}
+                      >
+                        Another One
+                      </MenuItem>
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
                     </MenuList>
                   </ClickAwayListener>
                 </Paper>
               </Grow>
             )}
+<<<<<<< HEAD
           </Popper>
         </div>
 
         {/* Profile */}
+=======
+          </Poppers>
+        </div>
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
         <Button
           color={expand ? "transparent" : "white"}
           justIcon={expand}
@@ -156,8 +253,11 @@ class HeaderLinks extends React.Component {
             <p className={classes.linkText}>Profile</p>
           </Hidden>
         </Button>
+<<<<<<< HEAD
 
         {/* Log out */}
+=======
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
         <Button
           color={expand ? "transparent" : "white"}
           justIcon={expand}
@@ -169,7 +269,11 @@ class HeaderLinks extends React.Component {
         >
           <ExitToApp className={classes.icons} />
           <Hidden mdUp implementation="css">
+<<<<<<< HEAD
             <p className={classes.linkText}>Log out</p>
+=======
+            <p className={classes.linkText}>Profile</p>
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
           </Hidden>
         </Button>
       </div>
@@ -177,4 +281,8 @@ class HeaderLinks extends React.Component {
   }
 }
 
+<<<<<<< HEAD
 export default withStyles(headerLinksStyle, {withTheme: true})(HeaderLinks);
+=======
+export default withStyles(headerLinksStyle)(HeaderLinks);
+>>>>>>> 78bff40... LFS-34: UI for adding/removing users
