@@ -61,8 +61,8 @@ public class HomepageIT
             }
         };
 
-        // Poll every 200 milliseconds for at most 10 seconds
-        p.poll(10000, 200);
+        // Poll every 200 milliseconds for at most 60 seconds
+        p.poll(60000, 200);
     }
 
     @Test

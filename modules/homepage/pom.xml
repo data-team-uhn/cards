@@ -45,7 +45,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Include-Resource>src/main/frontend/dist/,{maven-resources}</Include-Resource>
+            <Include-Resource>src/main/frontend/dist/,{maven-resources},media/</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/homepage.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
@@ -70,6 +70,22 @@
             <type>jar</type>
             <startLevel>5</startLevel>
           </attach>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.13</version>
+        <configuration>
+          <excludes combine.children="append">
+            <!-- Ignore files from material-dashboard-react, as they're under their own license -->
+            <exclude>**/Dashboard/**</exclude>
+            <exclude>**/Navbars/**</exclude>
+            <exclude>**/Sidebar/**</exclude>
+            <exclude>**/themePage/themeStyle.jsx</exclude>
+            <exclude>**/themePage/indexStyle.jsx</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>

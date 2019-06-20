@@ -22,9 +22,12 @@
 
 [:repoinit]
     create path (lfs:login) /login
-    create path (sling:Folder) /libs/lfs/resources
 
     set ACL for everyone
         allow   jcr:read    on /login
-        allow   jcr:read    on /libs/lfs/resources
     end
+
+#This configures the default login page for the sling form based authentication handler
+[configurations]
+    org.apache.sling.auth.form.FormAuthenticationHandler
+        form.login.form="/login"

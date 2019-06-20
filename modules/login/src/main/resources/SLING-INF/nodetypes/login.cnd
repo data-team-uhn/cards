@@ -27,10 +27,14 @@
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// Simple nodetype for identifying the homepage.
+// Simple nodetype for identifying the login page.
 [lfs:login] > sling:Folder
-  // Attributes:
-  // We can use the homepage in a query
-  query
+  // No attributes
 
-  // We don't define any properties or subchildren
+  // Properties:
+  // Hardcode the resource type
+  - sling:resourceType (STRING) = "lfs/login" mandatory autocreated protected
+  // Hardcode the resource supertype: the login page is a resource
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  // Set a default title
+  - title (String) = "Log in" mandatory autocreated

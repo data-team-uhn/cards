@@ -32,23 +32,6 @@
             <input type="submit" value="Create/Edit">
         </form>
 
-        <h2 id="Login"><a href="/system/sling/login.html" title="Login to Apache Sling">Login</a> (admin:admin)</h2>
-        <h2 id="Logout"><a href="/system/sling/logout" title="Logout of Apache Sling">Logout,</a> </h2>
-
-        <script src="/system/sling.js"></script>
-        <script>
-            var info = Sling.getSessionInfo();
-            var login = document.querySelector('#Login');
-            var logout = document.querySelector('#Logout');
-            if (info.userID !== 'anonymous') {
-                login.style.display = 'none';
-                logout.style.display = 'block';
-                logout.insertAdjacentHTML('beforeend', info.userID);
-            } else {
-                logout.style.display = 'none';
-            }
-        </script>
-
         <!-- Use React to prettify page -->
         <script src="/libs/lfs/resources/showQuery.js"></script>
 

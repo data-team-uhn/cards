@@ -28,7 +28,7 @@
 
   <artifactId>lfs-login</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Login</name>
+  <name>LFS - Singup and Login</name>
 
   <build>
     <plugins>
@@ -49,10 +49,9 @@
             <Sling-Nodetypes>SLING-INF/nodetypes/login.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>
-              SLING-INF/content/login;overwrite:=true;path:=/login;maven:mount:=false,
-              SLING-INF/content/libs/lfs/login;overwrite:=true;path:=/libs/lfs/login
-              ;maven:mount:=true,
-              SLING-INF/content/libs/lfs/resources;overwrite:=true;path:=/libs/lfs/resources;maven:mount:=true
+              SLING-INF/content/login;overwrite:=true;path:=/login,
+              SLING-INF/content/libs/lfs/login;overwrite:=true;path:=/libs/lfs/login,
+              SLING-INF/content/libs/lfs/resources;path:=/libs/lfs/resources
             </Sling-Initial-Content>
           </instructions>
         </configuration>
@@ -73,7 +72,7 @@
           <!-- This will automatically add an [artifacts] entry with the jar produced by this module in the provisioning file -->
           <attach>
             <type>jar</type>
-            <startLevel>5</startLevel>
+            <startLevel>6</startLevel>
           </attach>
         </configuration>
       </plugin>

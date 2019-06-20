@@ -4,7 +4,7 @@ module.exports = {
     navbar: './src/navbar/navbarMain.js',
     userSplash: './src/userSplash/userSplashPage.js',
     index: './src/homePage/index.js',
-    //userBoard:'./src/userBoard/userBoard.js'
+    themeindex: './src/themePage/index.jsx'
   },
   module: {
     rules: [
@@ -23,7 +23,15 @@ module.exports = {
     publicPath: '/',
     filename: '[name].js'
   },
-  devServer: {
-    contentBase: './dist'
-  }
+  externals: [
+    {
+      "react": "React",
+      "react-dom": "ReactDOM",
+      "formik": "Formik",
+      "lodash": "lodash",
+      "prop-types": "PropTypes",
+      "jss": "jss",
+      "@material-ui/core": "MaterialUI"
+    }
+  ]
 };
