@@ -16,33 +16,7 @@
   specific language governing permissions and limitations
   under the License.
 */-->
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Welcome to LFS</title>
-    </head>
-    <body>
+<sly data-sly-resource="${@selectors='header'}"/>
         <div id="main-container"></div>
         <script src="/libs/lfs/resources/index.js"></script>
-
-        <h1>Session</h1>
-        <h2 id="Login"><a href="/system/sling/login.html" title="Login to Apache Sling">Login</a> (admin:admin)</h2>
-        <h2 id="Logout"><a href="/system/sling/logout" title="Logout of Apache Sling">Logout,</a> </h2>
-
-        <script src="/system/sling.js"></script>
-        <script>
-            var info = Sling.getSessionInfo();
-            var login = document.querySelector('#Login');
-            var logout = document.querySelector('#Logout');
-            if (info.userID !== 'anonymous') {
-                login.style.display = 'none';
-                logout.style.display = 'block';
-                logout.insertAdjacentHTML('beforeend', info.userID);
-            } else {
-                logout.style.display = 'none';
-            }
-        </script>
-    </body>
-</html>
+<sly data-sly-resource="${@selectors='footer'}"/>

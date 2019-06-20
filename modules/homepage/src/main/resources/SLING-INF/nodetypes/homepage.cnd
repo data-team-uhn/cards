@@ -33,4 +33,10 @@
   // We can use the homepage in a query
   query
 
-  // We don't define any properties or subchildren
+  // Properties:
+  // Hardcode the resource type
+  - sling:resourceType (STRING) = "lfs/Homepage" mandatory autocreated protected
+  // Hardcode the resource supertype: the Homepage is a resource
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  // Set a default title
+  - title (String) = "Welcome to LFS" mandatory autocreated
