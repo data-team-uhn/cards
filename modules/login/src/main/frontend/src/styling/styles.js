@@ -51,11 +51,27 @@ const styles = theme => ({
   },
   submit: {
     marginTop: theme.spacing(3),
+    backgroundColor: "#00acc1",
+    color: "#ffffff"
+  },
+  register: {
+    backgroundColor: "#999999",
+    color: "#ffffff"
   },
   errorMessage: {
     background: theme.palette.error.dark,
     padding: theme.spacing(1, 2),
     color: theme.palette.error.contrastText,
+  },
+  cardTitle: {
+    marginTop: "0px",
+    marginBottom: "0px",
+    display: "inline-block"
+  },
+  cardSubtitle: {
+    display: "inline-block",
+    padding: "0px",
+    float: "right"
   }
 });
 
