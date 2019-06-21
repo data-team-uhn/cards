@@ -53,17 +53,6 @@ import {
         ...transition
       }
     },
-    drawerPaperRTL: {
-      [theme.breakpoints.up("md")]: {
-        left: "auto !important",
-        right: "0 !important"
-      },
-      // At small size and lower, switch to being on the opposite side of the screen
-      [theme.breakpoints.down("sm")]: {
-        left: "0  !important",
-        right: "auto !important"
-      }
-    },
     logo: {
       position: "relative",
       padding: "15px 15px",
@@ -93,9 +82,6 @@ import {
       "&,&:hover": {
         color: whiteColor
       }
-    },
-    logoLinkRTL: {
-      textAlign: "right"
     },
     logoImage: {
       width: "30px",
@@ -171,20 +157,12 @@ import {
       verticalAlign: "middle",
       color: "rgba(" + hexToRgb(whiteColor) + ", 0.8)"
     },
-    itemIconRTL: {
-      marginRight: "3px",
-      marginLeft: "15px",
-      float: "right"
-    },
     itemText: {
       ...defaultFont,
       margin: "0",
       lineHeight: "30px",
       fontSize: "14px",
       color: whiteColor
-    },
-    itemTextRTL: {
-      textAlign: "right"
     },
     whiteFont: {
       color: whiteColor
