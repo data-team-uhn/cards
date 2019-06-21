@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core/styles";
-// core components
+// material-dashboard-react
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
 import Table from "material-dashboard-react/dist/components/Table/Table.js";

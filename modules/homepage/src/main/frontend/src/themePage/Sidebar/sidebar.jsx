@@ -56,21 +56,11 @@ const Sidebar = ({ ...props }) => {
             key={key}
           >
             <ListItem button className={classes.itemLink + listItemClasses}>
-              {typeof prop.icon === "string" ? (
-                <Icon
-                  className={classNames(classes.itemIcon, whiteFontClasses)}
-                >
-                  {prop.icon}
-                </Icon>
-              ) : (
-                <prop.icon
+              <prop.icon
                   className={classNames(classes.itemIcon, whiteFontClasses)}
                 />
-              )}
               <ListItemText
-                primary={
-                  prop.name
-                }
+                primary={prop.name}
                 className={classNames(classes.itemText, whiteFontClasses)}
                 disableTypography={true}
               />
