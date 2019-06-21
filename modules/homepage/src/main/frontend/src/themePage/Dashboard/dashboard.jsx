@@ -27,7 +27,8 @@ class Dashboard extends React.Component {
     super(props);
 
     // Find all relevant nodes
-    var contentNodes = window.Sling.getContent("/content/forms", 1, "");
+    var text = window.Sling.httpGet("/query?query=select%20*%20from%20[lfs:Form]").responseText;
+    var contentNodes = JSON.parse(text);
     const patientData = [];
     for (var id in contentNodes) {
       var patient = contentNodes[id];
