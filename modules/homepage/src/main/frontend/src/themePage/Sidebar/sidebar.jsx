@@ -13,7 +13,6 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Icon from "@material-ui/core/Icon";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
-import RTLNavbarLinks from "../Navbars/RTLNavbarLinks.jsx";
 import sidebarStyle from "./sidebarStyle.jsx";
 
 const Sidebar = ({ ...props }) => {
@@ -59,26 +58,20 @@ const Sidebar = ({ ...props }) => {
             <ListItem button className={classes.itemLink + listItemClasses}>
               {typeof prop.icon === "string" ? (
                 <Icon
-                  className={classNames(classes.itemIcon, whiteFontClasses, {
-                    [classes.itemIconRTL]: props.rtlActive
-                  })}
+                  className={classNames(classes.itemIcon, whiteFontClasses)}
                 >
                   {prop.icon}
                 </Icon>
               ) : (
                 <prop.icon
-                  className={classNames(classes.itemIcon, whiteFontClasses, {
-                    [classes.itemIconRTL]: props.rtlActive
-                  })}
+                  className={classNames(classes.itemIcon, whiteFontClasses)}
                 />
               )}
               <ListItemText
                 primary={
-                  props.rtlActive ? prop.rtlName : prop.name
+                  prop.name
                 }
-                className={classNames(classes.itemText, whiteFontClasses, {
-                  [classes.itemTextRTL]: props.rtlActive
-                })}
+                className={classNames(classes.itemText, whiteFontClasses)}
                 disableTypography={true}
               />
             </ListItem>
@@ -93,9 +86,7 @@ const Sidebar = ({ ...props }) => {
     <div className={classes.logo}>
       <a
         href="https://phenotips.org/"
-        className={classNames(classes.logoLink, {
-          [classes.logoLinkRTL]: props.rtlActive
-        })}
+        className={classes.logoLink}
       >
         <div className={classes.logoImage}>
           <img src={logoImage} alt="logo" className={classes.img} />
@@ -111,13 +102,9 @@ const Sidebar = ({ ...props }) => {
       <Hidden mdUp implementation="css">
         <Drawer
           variant="temporary"
-          anchor={props.rtlActive ? "left" : "right"}
+          anchor="right"
           open={props.open}
-          classes={{
-            paper: classNames(classes.drawerPaper, {
-              [classes.drawerPaperRTL]: props.rtlActive
-            })
-          }}
+          classes={{paper: classes.drawerPaper}}
           onClose={props.handleDrawerToggle}
           ModalProps={{
             keepMounted: true // Better open performance on mobile.
@@ -125,7 +112,7 @@ const Sidebar = ({ ...props }) => {
         >
           {brand}
           <div className={classes.sidebarWrapper}>
-            {props.rtlActive ? <RTLNavbarLinks /> : <AdminNavbarLinks />}
+            <AdminNavbarLinks />
             {links}
           </div>
           {image !== undefined ? (
@@ -138,14 +125,10 @@ const Sidebar = ({ ...props }) => {
       </Hidden>
       <Hidden smDown implementation="css">
         <Drawer
-          anchor={props.rtlActive ? "right" : "left"}
+          anchor="left"
           variant="permanent"
           open
-          classes={{
-            paper: classNames(classes.drawerPaper, {
-              [classes.drawerPaperRTL]: props.rtlActive
-            })
-          }}
+          classes={{paper: classes.drawerPaper}}
         >
           {brand}
           <div className={classes.sidebarWrapper}>{links}</div>
