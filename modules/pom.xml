@@ -38,5 +38,6 @@
     <module>homepage</module>
     <module>data-entry</module>
     <module>ldap-support</module>
+    <module>utils</module>
   </modules>
 </project>
