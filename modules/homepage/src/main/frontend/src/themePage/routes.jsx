@@ -19,6 +19,7 @@
 import { AccountBox, Assignment, Dashboard, Pets, Settings, Subtitles } from '@material-ui/icons';
 
 import DashboardPage from "./Dashboard/dashboard.jsx";
+import Userboard from "./Userboard/Userboard.jsx"
 
 var sidebarRoutes = [
     {
@@ -89,7 +90,7 @@ var sidebarRoutes = [
 =======
       rtlName: "rtl:userprofile",
       icon: AccountBox,
-      component: "",
+      component: Userboard,
       layout: ""
 >>>>>>> 78bff40... LFS-34: UI for adding/removing users
     },
