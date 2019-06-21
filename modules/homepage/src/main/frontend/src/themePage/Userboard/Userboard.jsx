@@ -22,14 +22,21 @@ import PropTypes from "prop-types"
 import  {withStyles} from "@material-ui/core/styles";
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
+import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
+import Table from "material-dashboard-react/dist/components/Table/Table.js";
+import Card from "material-dashboard-react/dist/components/Card/Card.js";
+import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
+import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
 
 class Userboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       columnNames: ["User"],
-      userNames: []
+      userNames: [[""]]
     };
+
+    this.title = "Users";
   }
 
   handleLoadUsers () {
@@ -47,7 +54,7 @@ class Userboard extends React.Component {
       console.log(JSON.stringify(data));
       var names = [];
       for (var name in data){
-        names.push(name);
+        names.push([name]);
       }
       console.log(names);
       this.setState({userNames: names});
@@ -68,11 +75,25 @@ class Userboard extends React.Component {
     return (
       <div>
         <GridContainer>
-          <Card></Card>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <CardHeader>
+                <h4>{this.title}</h4>
+              </CardHeader>
+              <CardBody>
+                <Table 
+                  tableHeaderColor="warning"
+                  tableHead={this.state.columnNames}
+                  tableData={this.state.userNames}
+                />
+              </CardBody>
+            </Card>
+          </GridItem>
+          
         </GridContainer>
       </div>
     )
   }
-
-
 }
+
+export default Userboard
