@@ -24,9 +24,9 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-userslistservlet</artifactId>
+  <artifactId>lfs-principals</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Users List Servlet</name>
+  <name>LFS - Principals management</name>
 
   <build>
     <plugins>

@@ -39,6 +39,6 @@
     <module>data-entry</module>
     <module>ldap-support</module>
     <module>utils</module>
-    <module>users-list-servlet</module>
+    <module>principals</module>
   </modules>
 </project>
