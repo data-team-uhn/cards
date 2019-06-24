@@ -60,6 +60,26 @@ class Main extends React.Component {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
 
+  // Close the mobile menu if the window size changes
+  // so that the mobile menu is out of place
+  autoCloseMobileMenus = event => {
+    // TODO: Move this magic number and the one in AdminNavbarLinks elsewhere
+    console.log(window.innerWidth);
+    if (window.innerWidth > 959) {
+      this.setState({ mobileOpen: false });
+    }
+  }
+
+  // Register autoCloseMobileMenus to itself being mounted
+  componentDidMount() {
+    window.addEventListener("resize", this.autoCloseMobileMenus);
+  };
+
+  // Deregister autoCloseMobileMenus if it is no longer mounted
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.autoCloseMobileMenus);
+  };
+
   render() {
     const { classes, ...rest } = this.props;
 
