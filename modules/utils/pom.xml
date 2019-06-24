@@ -25,7 +25,7 @@
   </parent>
   
   <artifactId>lfs-utils</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <packaging>bundle</packaging>
   <name>LFS - Utilities</name>
   
   <build>
@@ -51,27 +51,36 @@
   
   
   <dependencies>
-  	<dependency>
-  		<groupId>org.apache.sling</groupId>
-  		<artifactId>org.apache.sling.api</artifactId>
-  		<version>2.20.0</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>javax.json</groupId>
-  		<artifactId>javax.json-api</artifactId>
-  		<version>1.1.4</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.osgi</groupId>
-  		<artifactId>
-  			org.osgi.service.component.annotations
-  		</artifactId>
-  		<version>1.4.0</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>javax.jcr</groupId>
-  		<artifactId>jcr</artifactId>
-  		<version>2.0</version>
-  	</dependency>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.api</artifactId>
+      <version>2.8.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.json</groupId>
+      <artifactId>javax.json-api</artifactId>
+      <version>1.1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.component.annotations</artifactId>
+      <version>1.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.jcr</groupId>
+      <artifactId>jcr</artifactId>
+      <version>2.0</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.servlets.annotations</artifactId>
+      <version>1.2.4</version>
+    </dependency>
   </dependencies>
 </project>

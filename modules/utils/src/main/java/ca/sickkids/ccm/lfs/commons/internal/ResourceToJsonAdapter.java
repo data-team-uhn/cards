@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package ca.sickkids.ccm.lfs.commons.internal;
+package main.java.ca.sickkids.ccm.lfs.commons.internal;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -44,20 +44,24 @@ import org.osgi.service.component.annotations.Component;
  * @version $Id$
  */
 
-@Component(
-    service = { AdapterFactory.class },
+@Component(service = { AdapterFactory.class },
+    /*
+     * property = { AdapterFactory.ADAPTABLE_CLASSES + "=org.apache.sling.api.resource.Resource",
+     * AdapterFactory.ADAPTER_CLASSES + "=javax.json.JsonObject" }
+     */
     property = {
-        AdapterFactory.ADAPTABLE_CLASSES + "=org.apache.sling.api.resource.Resource",
-        AdapterFactory.ADAPTER_CLASSES + "=javax.json.JsonObject"
-    }
-)
+    "adaptables=org.apache.sling.api.resource.Resource",
+    "adapters=javax.json.JsonObject"
+    })
 
 public class ResourceToJsonAdapter
     implements AdapterFactory
 {
+    private boolean reachProperty;
+
     @Override
     @SuppressWarnings("unchecked")
-    public <AdapterType> AdapterType getAdapter(Object adaptable, Class<AdapterType> type)
+    public <A> A getAdapter(Object adaptable, Class<A> type)
     {
         Resource resource = (Resource) adaptable;
         if (resource != null) {
@@ -70,14 +74,15 @@ public class ResourceToJsonAdapter
 
             valuemap.forEach(biconsumer);
 
+            objectbuilder.add("reachedProperty", this.reachProperty);
             JsonObject jsonobject = objectbuilder.build();
 
-            return (AdapterType) jsonobject;
+            return (A) jsonobject;
         }
         return null;
     }
 
-    @SuppressWarnings("PMD.CyclomaticComplexity")
+    @SuppressWarnings("checkstyle:cyclomaticcomplexity")
     private void addObjectField(JsonObjectBuilder objectbuilder, String name, Object obj)
     {
         if (obj == null) {
@@ -88,6 +93,8 @@ public class ResourceToJsonAdapter
             objectbuilder.add(name, (int) obj);
         } else if (obj instanceof Long) {
             objectbuilder.add(name, (long) obj);
+        } else if (obj instanceof Double) {
+            objectbuilder.add(name, (double) obj);
         } else if (obj instanceof Boolean) {
             objectbuilder.add(name, (boolean) obj);
         } else if (obj instanceof String) {
@@ -110,6 +117,7 @@ public class ResourceToJsonAdapter
 
     private void addObjectFieldProperty(JsonObjectBuilder objectbuilder, String name, Property obj)
     {
+        this.reachProperty = true;
         try {
             Value value = obj.getValue();
             int type = obj.getType();
@@ -142,6 +150,7 @@ public class ResourceToJsonAdapter
         }
     }
 
+    @SuppressWarnings("checkstyle:cyclomaticcomplexity")
     private void addArrayField(JsonArrayBuilder arraybuilder, Object obj)
     {
         if (obj == null) {
@@ -152,6 +161,8 @@ public class ResourceToJsonAdapter
             arraybuilder.add((int) obj);
         } else if (obj instanceof Long) {
             arraybuilder.add((long) obj);
+        } else if (obj instanceof Double) {
+            arraybuilder.add((double) obj);
         } else if (obj instanceof Boolean) {
             arraybuilder.add((boolean) obj);
         } else if (obj instanceof String) {
@@ -174,6 +185,7 @@ public class ResourceToJsonAdapter
 
     private void addArrayFieldProperty(JsonArrayBuilder arraybuilder, Property obj)
     {
+        this.reachProperty = true;
         try {
             Value value = obj.getValue();
             int type = obj.getType();

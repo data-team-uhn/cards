@@ -40,6 +40,18 @@
   // Each data entry has a name and a value (proof-of-concept properties)
   - name (STRING) = "testname" mandatory autocreated
   - value (STRING) = "testvalue" mandatory autocreated
+  - secondvalue (STRING) = "lagrange", "lobachevsky" multiple
+  - thirdvalue (DOUBLE) = 323.214, 124.5345 multiple
+  - fourthvalue (BOOLEAN) multiple
+  - fifthvalue (REFERENCE) multiple
+  - poincarre (DATE) multiple
+  - cauchy (REFERENCE) multiple
+  - laplace (PATH) multiple
+  - sylvester (BINARY) multiple
+  - dirichlet (LONG) multiple
+  - bernoulli (DECIMAL)
+  - flube (WEAKREFERENCE)
+  - cantor (URI)
 
 //-----------------------------------------------------------------------------
 // Nodetype for homepage to display/create/edit data entries
