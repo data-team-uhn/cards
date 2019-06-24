@@ -27,18 +27,17 @@ import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
 import IndexStyle from "./indexStyle.jsx";
 
+// Generate the switch/routes for our router to render components
 const switchRoutes = (
   <Switch>
     {sidebarRoutes.map((prop, key) => {
-      if (prop.layout === "") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
-      }
+      return (
+        <Route
+          path={prop.path}
+          component={prop.component}
+          key={key}
+        />
+      );
     })}
   </Switch>
 );
@@ -63,19 +62,15 @@ class Main extends React.Component {
   // Close the mobile menu if the window size changes
   // so that the mobile menu is out of place
   autoCloseMobileMenus = event => {
-    // TODO: Move this magic number and the one in AdminNavbarLinks elsewhere
-    console.log(window.innerWidth);
-    if (window.innerWidth > 959) {
+    if (window.innerWidth >= this.props.theme.breakpoints.values.md) {
       this.setState({ mobileOpen: false });
     }
   }
 
-  // Register autoCloseMobileMenus to itself being mounted
+  // Register/unregister autoCloseMobileMenus to window resizing
   componentDidMount() {
     window.addEventListener("resize", this.autoCloseMobileMenus);
   };
-
-  // Deregister autoCloseMobileMenus if it is no longer mounted
   componentWillUnmount() {
     window.removeEventListener("resize", this.autoCloseMobileMenus);
   };
@@ -92,18 +87,19 @@ class Main extends React.Component {
           image={this.state.image}
           handleDrawerToggle={this.handleDrawerToggle}
           open={this.state.mobileOpen}
-          color={ "blue" }
+          color={"blue"}
           {...rest}
         />
         <div className={classes.mainPanel} ref="mainPanel">
-          <div className={classes.content}>
-            <div className={classes.container}>{switchRoutes}</div>
-          </div>
           <Navbar
-            routes={ sidebarRoutes }
+            routes={sidebarRoutes}
             handleDrawerToggle={this.handleDrawerToggle}
             {...rest}
           />
+          <div className={classes.content}>
+            <div className={classes.container}>{switchRoutes}</div>
+          </div>
+          <div id="footer-container"></div>
         </div>
       </div>
     );
@@ -113,7 +109,7 @@ class Main extends React.Component {
 Main.propTypes = {
   classes: PropTypes.object.isRequired
 };
-const MainComponent = (withStyles(IndexStyle)(Main));
+const MainComponent = (withStyles(IndexStyle, {withTheme: true})(Main));
 
 const hist = createBrowserHistory();
 ReactDOM.render(

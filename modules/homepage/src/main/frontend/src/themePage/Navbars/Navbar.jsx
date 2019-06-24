@@ -17,32 +17,38 @@ import Button from "material-dashboard-react/dist/components/CustomButtons/Butto
 import headerStyle from "./headerStyle.jsx";
 
 function Header({ ...props }) {
+  // Create the "brand", i.e. the route taken to get to the current page
+  // (Usually displayed at the top left)
   function makeBrand() {
     var name;
     props.routes.map((prop, key) => {
-      if (prop.layout + prop.path === props.location.pathname) {
+      if (prop.path === props.location.pathname) {
         name = prop.name;
       }
       return null;
     });
     return name;
   }
+
   const { classes, color } = props;
   const appBarClasses = classNames({
     [" " + classes[color]]: color
   });
+
   return (
     <AppBar className={classes.appBar + appBarClasses}>
       <Toolbar className={classes.container}>
+        {/* Here we create navbar brand, based on route name */}
         <div className={classes.flex}>
-          {/* Here we create navbar brand, based on route name */}
           <Button color="transparent" href="#" className={classes.title}>
             {makeBrand()}
           </Button>
         </div>
+        {/* While the screen is wide enough, display the navbar at the topright */}
         <Hidden smDown implementation="css">
           <AdminNavbarLinks />
         </Hidden>
+        {/* While the screen is too narrow, display the mini sidebar control */}
         <Hidden mdUp implementation="css">
           <IconButton
             color="inherit"

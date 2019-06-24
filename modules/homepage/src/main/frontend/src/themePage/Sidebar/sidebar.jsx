@@ -10,7 +10,6 @@ import Hidden from "@material-ui/core/Hidden";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import Icon from "@material-ui/core/Icon";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 import sidebarStyle from "./sidebarStyle.jsx";
@@ -39,18 +38,18 @@ const Sidebar = ({ ...props }) => {
           });
         } else {
           listItemClasses = classNames({
-            [" " + classes[color]]: activeRoute(prop.layout + prop.path)
+            [" " + classes[color]]: activeRoute(prop.path)
           });
         }
         const whiteFontClasses = classNames({
-          [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
+          [" " + classes.whiteFont]: activeRoute(prop.path)
         });
 
         // Handle prop.icon being either a class or the name of an icon class
         // NavLink allows us to set styles iff the link's URL matches the current URL
         return (
           <NavLink
-            to={prop.layout + prop.path}
+            to={prop.path}
             className={adminButton + classes.item}
             activeClassName="active"
             key={key}
@@ -89,6 +88,7 @@ const Sidebar = ({ ...props }) => {
   // Use different implementations depending on the screen size
   return (
     <div>
+      {/* Render ourselves at the top right of the content page */}
       <Hidden mdUp implementation="css">
         <Drawer
           variant="temporary"
@@ -113,6 +113,7 @@ const Sidebar = ({ ...props }) => {
           ) : null}
         </Drawer>
       </Hidden>
+      {/* Render ourselves at the top of the sidebar */}
       <Hidden smDown implementation="css">
         <Drawer
           anchor="left"
