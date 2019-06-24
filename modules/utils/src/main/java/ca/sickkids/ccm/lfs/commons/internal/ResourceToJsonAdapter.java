@@ -21,6 +21,8 @@ package main.java.ca.sickkids.ccm.lfs.commons.internal;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 import java.util.function.BiConsumer;
 
 import javax.jcr.Property;
@@ -103,6 +105,11 @@ public class ResourceToJsonAdapter
             objectbuilder.add(name, (BigDecimal) obj);
         } else if (obj instanceof BigInteger) {
             objectbuilder.add(name, (BigInteger) obj);
+        } else if (obj instanceof GregorianCalendar) {
+            GregorianCalendar calendar = (GregorianCalendar) obj;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ss.SSSXXX");
+            sdf.setTimeZone(calendar.getTimeZone());
+            objectbuilder.add(name, sdf.format(calendar.getTime()));
         } else if (obj instanceof Object[]) {
             Object[] objarray = (Object[]) obj;
             JsonArrayBuilder arraybuilder = Json.createArrayBuilder();
@@ -171,6 +178,11 @@ public class ResourceToJsonAdapter
             arraybuilder.add((BigDecimal) obj);
         } else if (obj instanceof BigInteger) {
             arraybuilder.add((BigInteger) obj);
+        } else if (obj instanceof GregorianCalendar) {
+            GregorianCalendar calendar = (GregorianCalendar) obj;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ss.SSSXXX");
+            sdf.setTimeZone(calendar.getTimeZone());
+            arraybuilder.add(sdf.format(calendar.getTime()));
         } else if (obj instanceof Object[]) {
             Object[] objarray = (Object[]) obj;
             JsonArrayBuilder nestedarraybuilder = Json.createArrayBuilder();
