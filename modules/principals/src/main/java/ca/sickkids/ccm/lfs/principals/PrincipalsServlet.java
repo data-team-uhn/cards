@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.userslistservlet;
+package ca.sickkids.ccm.lfs.principals;
 
 import java.io.IOException;
 import java.io.Writer;
