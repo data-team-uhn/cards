@@ -90,18 +90,21 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
         @Override
         public <T> void build(QueryBuilder<T> builder)
         {
-            if (StringUtils.isNotBlank(this.filter)) {
-                // Full text search in the principal's node
-                builder.setCondition(builder.contains(".", this.filter));
-            }
+            T condition = null;
             // Ignore system users
             // TODO Maybe this should be optional?
             try {
-                builder.setCondition(builder.not(
-                    builder.eq("@jcr:primaryType", this.session.getValueFactory().createValue("rep:SystemUser"))));
+                condition = builder.not(
+                    builder.eq("@jcr:primaryType", this.session.getValueFactory().createValue("rep:SystemUser")));
             } catch (RepositoryException e) {
                 // This really shouldn't happen
             }
+            // Apply the requested filter
+            if (StringUtils.isNotBlank(this.filter)) {
+                // Full text search in the principal's node
+                condition = builder.and(condition, builder.contains(".", this.filter));
+            }
+            builder.setCondition(condition);
             // What type of principal to include
             builder.setSelector(this.type.getAuthorizableClass());
             // Pagination parameters
