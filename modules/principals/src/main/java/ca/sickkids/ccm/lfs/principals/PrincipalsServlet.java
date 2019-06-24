@@ -21,6 +21,7 @@ package ca.sickkids.ccm.lfs.principals;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -143,9 +144,14 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
                     default:
                         type = AuthorizableType.AUTHORIZABLE;
                 }
-                writePrincipals(jsonGen, queryPrincipals((JackrabbitSession) session, type, filter, offset, limit),
-                    request.getRequestURL().substring(0, request.getRequestURL().indexOf("/", 9))
-                        + request.getContextPath());
+                jsonGen.writeStartObject();
+                long matchingPrincipals =
+                    writePrincipals(jsonGen, queryPrincipals((JackrabbitSession) session, type, filter, offset, limit),
+                        request.getRequestURL().substring(0, request.getRequestURL().indexOf("/", 9))
+                            + request.getContextPath());
+                writeSummary(jsonGen, request, filter, offset, limit, matchingPrincipals,
+                    sizeOf(queryPrincipals((JackrabbitSession) session, type, filter, 0, Long.MAX_VALUE)));
+                jsonGen.writeEnd().flush();
             }
         } catch (RepositoryException e) {
             this.logger.log(LogService.LOG_ERROR, "Failed to query the repository for principals: " + e.getMessage());
@@ -172,18 +178,49 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
     }
 
     /**
+     * Write metadata about the request and response. This includes the request parameters, the number of returned and
+     * total matching principals, and pagination links.
+     *
+     * @param jsonGen the JSON generator where the results should be serialized
+     * @param request the current request
+     * @param filter the requested filter, may be {@code null}
+     * @param offset the requested offset, may be the default value of {0}
+     * @param limit the requested limit, may be the default value of {10}
+     * @param returnedPrincipals the number of matching principals included in the response, may be {@code 0} if no
+     *            principals were returned
+     * @param totalMatchingPrincipals the total number of accessible principals matching the request filters, may be
+     *            {@code 0} if no principals match the filters, or the current user cannot access the principals
+     */
+    private void writeSummary(final JsonGenerator jsonGen, final SlingHttpServletRequest request, final String filter,
+        final long offset, final long limit, final long returnedPrincipals, final long totalMatchingPrincipals)
+    {
+        jsonGen.write("req", request.getParameter("req"));
+        jsonGen.write("filter", filter);
+        jsonGen.write("offset", offset);
+        jsonGen.write("limit", limit);
+        jsonGen.write("returnedrows", returnedPrincipals);
+        jsonGen.write("totalrows", totalMatchingPrincipals);
+    }
+
+    /**
      * Serialize a list of authorizables as JSON.
      *
      * @param jsonGen the JSON generator where the results should be serialized
      * @param principals the list of authorizables to serialize
      * @param urlPrefix an URL prefix for the server, used for computing an URL for accessing a principal
+     * @return the number of principals included in the response
      */
-    private void writePrincipals(final JsonGenerator jsonGen, final Iterator<Authorizable> principals,
+    private long writePrincipals(final JsonGenerator jsonGen, final Iterator<Authorizable> principals,
         final String urlPrefix)
     {
-        jsonGen.writeStartArray();
-        principals.forEachRemaining(authorizable -> writeAuthorizable(jsonGen, authorizable, urlPrefix));
-        jsonGen.writeEnd().flush();
+        jsonGen.writeStartArray("rows");
+        AtomicLong counter = new AtomicLong();
+        principals.forEachRemaining(authorizable -> {
+            writeAuthorizable(jsonGen, authorizable, urlPrefix);
+            counter.incrementAndGet();
+        });
+        jsonGen.writeEnd();
+        return counter.get();
     }
 
     /**
