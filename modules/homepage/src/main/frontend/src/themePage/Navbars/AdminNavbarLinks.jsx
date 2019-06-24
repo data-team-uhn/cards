@@ -25,11 +25,42 @@ class HeaderLinks extends React.Component {
   state = {
     open: false
   };
-  handleToggle = () => {
+
+  // Placeholder function for clicking on a notification
+  placeholderDoNothing = () => {
+    console.log("test");
+  }
+
+  // Obtain notifications, then returns list of <MenuItem>s
+  getNotifications = (dropdownClass) => {
+    // TODO: obtain notifications dynamically
+    const notifications = {
+      "New notification 1": this.placeholderDoNothing,
+      "New notification 2": this.placeholderDoNothing
+    };
+
+    const retVal = [];
+    for (var key in notifications) {
+      retVal.push(
+        <MenuItem
+          onClick={notifications[key]}
+          className={dropdownClass}
+          key={key}
+        >
+          {key}
+        </MenuItem>
+      );
+    }
+    return retVal;
+  }
+
+  // Event handler for clicking on the notifications
+  toggleNotifications = () => {
     this.setState(state => ({ open: !state.open }));
   };
 
-  handleClose = event => {
+  // Event handler for clicking away from notifications while it is open
+  closeNotifications = event => {
     if (this.anchorEl.contains(event.target)) {
       return;
     }
@@ -40,10 +71,16 @@ class HeaderLinks extends React.Component {
   render() {
     const { classes } = this.props;
     const { open } = this.state;
-    const expand = window.innerWidth > 959;
+    const notifications = this.getNotifications(classes.dropdownItem);
+
+    // When the screen is larger than "MdUp" size, we alter some menu items
+    // so that they show up white in the sidebar (rather than black on the
+    // main page)
+    const expand = window.innerWidth >= this.props.theme.breakpoints.values.md;
 
     return (
       <div>
+        {/* Searchbar */}
         <div className={classes.searchWrapper}>
           <CustomInput
             formControlProps={{
@@ -60,6 +97,8 @@ class HeaderLinks extends React.Component {
             <Search />
           </Button>
         </div>
+
+        {/* Notifications */}
         <div className={classes.manager}>
           <Button
             buttonRef={node => {
@@ -70,14 +109,14 @@ class HeaderLinks extends React.Component {
             simple={!(expand)}
             aria-owns={open ? "menu-list-grow" : null}
             aria-haspopup="true"
-            onClick={this.handleToggle}
+            onClick={this.toggleNotifications}
             className={classes.buttonLink}
           >
             <Notifications className={classes.icons} />
-            <span className={classes.notifications}>5</span>
+            <span className={classes.notifications}>{notifications.length}</span>
             <Hidden mdUp implementation="css">
               <p onClick={this.handleClick} className={classes.linkText}>
-                Notification
+                Notifications
               </p>
             </Hidden>
           </Button>
@@ -102,38 +141,9 @@ class HeaderLinks extends React.Component {
                 }}
               >
                 <Paper>
-                  <ClickAwayListener onClickAway={this.handleClose}>
+                  <ClickAwayListener onClickAway={this.closeNotifications}>
                     <MenuList role="menu">
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        Mike John responded to your email
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        You have 5 new tasks
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        You're now friend with Andrew
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        Another Notification
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        Another One
-                      </MenuItem>
+                      {notifications}
                     </MenuList>
                   </ClickAwayListener>
                 </Paper>
@@ -141,6 +151,8 @@ class HeaderLinks extends React.Component {
             )}
           </Poppers>
         </div>
+
+        {/* Profile */}
         <Button
           color={expand ? "transparent" : "white"}
           justIcon={expand}
@@ -153,6 +165,8 @@ class HeaderLinks extends React.Component {
             <p className={classes.linkText}>Profile</p>
           </Hidden>
         </Button>
+
+        {/* Log out */}
         <Button
           color={expand ? "transparent" : "white"}
           justIcon={expand}
@@ -164,7 +178,7 @@ class HeaderLinks extends React.Component {
         >
           <ExitToApp className={classes.icons} />
           <Hidden mdUp implementation="css">
-            <p className={classes.linkText}>Profile</p>
+            <p className={classes.linkText}>Log out</p>
           </Hidden>
         </Button>
       </div>
@@ -172,4 +186,4 @@ class HeaderLinks extends React.Component {
   }
 }
 
-export default withStyles(headerLinksStyle)(HeaderLinks);
+export default withStyles(headerLinksStyle, {withTheme: true})(HeaderLinks);

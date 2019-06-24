@@ -4,8 +4,6 @@ import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core/styles";
 // material-dashboard-react
-import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
-import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
 import Table from "material-dashboard-react/dist/components/Table/Table.js";
 import Card from "material-dashboard-react/dist/components/Card/Card.js";
 import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
@@ -14,6 +12,8 @@ import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js"
 import moment from 'moment';
 import dashboardStyle from "./dashboardStyle.jsx";
 
+// Convert a date into the given format string
+// If the date is invalid (usually because it is missing), return ""
 function _parseDate(date, formatString){
   var dateObj = moment(date);
   if (dateObj.isValid()) {
@@ -22,23 +22,28 @@ function _parseDate(date, formatString){
   return "";
 };
 
+// Find all patient data forms, and extract the given data
+function getPatientData(){
+  var contentNodes = window.Sling.getContent("/content/forms", 1, "");
+  var patientData = [];
+  for (var id in contentNodes) {
+    var patient = contentNodes[id];
+    if (patient["Disease"] !== "LFS")
+      continue;
+    var truncatedDOB = _parseDate(patient["Date of birth"], "YYYY-MM");
+    var truncatedFollowUp = _parseDate(patient["Last follow-up"], "YYYY-MM-DD");
+    var truncatedRegister = _parseDate(patient["Date registered"], "YYYY-MM-DD");
+    patientData.push([patient["Patient ID"], truncatedDOB, truncatedFollowUp,
+            truncatedRegister, patient["Sex"], patient["Tumor"], patient["Maternal Ethnicity"], patient["Paternal Ethnicity"]]);
+  }
+  return patientData;
+}
+
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
-    // Find all relevant nodes
-    var contentNodes = window.Sling.getContent("/content/forms", 1, "");
-    const patientData = [];
-    for (var id in contentNodes) {
-      var patient = contentNodes[id];
-      if (patient["Disease"] !== "LFS")
-        continue;
-      var truncatedDOB = _parseDate(patient["Date of birth"], "YYYY-MM");
-      var truncatedFollowUp = _parseDate(patient["Last follow-up"], "YYYY-MM-DD");
-      var truncatedRegister = _parseDate(patient["Date registered"], "YYYY-MM-DD");
-      patientData.push([patient["Patient ID"], truncatedDOB, truncatedFollowUp,
-              truncatedRegister, patient["Sex"], patient["Tumor"], patient["Maternal Ethnicity"], patient["Paternal Ethnicity"]]);
-    }
+    const patientData = getPatientData();
 
     this.state = {
       title: "LFS Patients",
@@ -48,38 +53,23 @@ class Dashboard extends React.Component {
     };
   }
 
-  state = {
-    value: 0
-  };
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
-
-  handleChangeIndex = index => {
-    this.setState({ value: index });
-  };
   render() {
     const { classes } = this.props;
     return (
       <div>
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={12}>
-            <Card>
-              <CardHeader color="warning">
-                <h4 className={classes.cardTitleWhite}>{this.state.title}</h4>
-                <p className={classes.cardCategoryWhite}>{this.state.subtitle}</p>
-              </CardHeader>
-              <CardBody>
-                <Table
-                  tableHeaderColor="warning"
-                  tableHead={this.state.columnNames}
-                  tableData={this.state.data}
-                />
-              </CardBody>
-            </Card>
-          </GridItem>
-        </GridContainer>
-        <div id="footer-container"></div>
+        <Card>
+          <CardHeader color="warning">
+            <h4 className={classes.cardTitleWhite}>{this.state.title}</h4>
+            <p className={classes.cardCategoryWhite}>{this.state.subtitle}</p>
+          </CardHeader>
+          <CardBody>
+            <Table
+              tableHeaderColor="warning"
+              tableHead={this.state.columnNames}
+              tableData={this.state.data}
+            />
+          </CardBody>
+        </Card>
       </div>
     );
   }
