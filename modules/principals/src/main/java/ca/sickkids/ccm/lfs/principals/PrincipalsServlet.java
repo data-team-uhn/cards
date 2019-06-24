@@ -66,6 +66,9 @@ import org.osgi.service.log.LogService;
 @SlingServletPaths(value = { "/home.json", "/home/users.json", "/home/groups.json" })
 public class PrincipalsServlet extends SlingSafeMethodsServlet
 {
+    /**
+     * Creates a query for principals matching the request parameters.
+     */
     private static final class FilteredPrincipalsQuery implements Query
     {
         private final JackrabbitSession session;
@@ -145,9 +148,10 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
                         type = AuthorizableType.AUTHORIZABLE;
                 }
                 jsonGen.writeStartObject();
+                // The magic number 8 is the prefix length for the protocol, https://
                 long matchingPrincipals =
                     writePrincipals(jsonGen, queryPrincipals((JackrabbitSession) session, type, filter, offset, limit),
-                        request.getRequestURL().substring(0, request.getRequestURL().indexOf("/", 9))
+                        request.getRequestURL().substring(0, request.getRequestURL().indexOf("/", 8))
                             + request.getContextPath());
                 writeSummary(jsonGen, request, filter, offset, limit, matchingPrincipals,
                     sizeOf(queryPrincipals((JackrabbitSession) session, type, filter, 0, Long.MAX_VALUE)));
