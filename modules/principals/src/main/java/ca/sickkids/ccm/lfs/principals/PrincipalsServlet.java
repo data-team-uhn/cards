@@ -192,11 +192,22 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
     {
         jsonGen.writeStartObject();
         try {
+            jsonGen.write("name", authorizable.getID());
+            jsonGen.write("principalName", authorizable.getPrincipal().getName());
+            jsonGen.write("type", authorizable.isGroup() ? "group" : "user");
+            jsonGen.writeStartArray("declaredMemberOf");
+            authorizable.declaredMemberOf().forEachRemaining(g -> writeGroupSummary(jsonGen, g));
+            jsonGen.writeEnd();
+            jsonGen.writeStartArray("memberOf");
+            authorizable.memberOf().forEachRemaining(g -> writeGroupSummary(jsonGen, g));
+            jsonGen.writeEnd();
+            jsonGen.write("path", authorizable.getPath());
             if (authorizable instanceof User) {
                 writeUser(jsonGen, (User) authorizable);
             } else if (authorizable instanceof Group) {
                 writeGroup(jsonGen, (Group) authorizable);
             }
+            writeProperties(jsonGen, authorizable);
         } catch (RepositoryException e) {
             jsonGen.write("error", e.getMessage());
         }
@@ -212,23 +223,12 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
      */
     private void writeUser(final JsonGenerator jsonGen, final User user) throws RepositoryException
     {
-        jsonGen.write("name", user.getID());
-        jsonGen.write("type", "user");
-        jsonGen.write("principalName", user.getPrincipal().getName());
         jsonGen.write("isAdmin", user.isAdmin());
         jsonGen.write("isDisabled", user.isDisabled());
         if (user.isDisabled()) {
             jsonGen.write("disabledReason", user.getDisabledReason());
         }
         jsonGen.write("isSystem", user.isSystemUser());
-        jsonGen.writeStartArray("declaredMemberOf");
-        user.declaredMemberOf().forEachRemaining(g -> writeGroupSummary(jsonGen, g));
-        jsonGen.writeEnd();
-        jsonGen.writeStartArray("memberOf");
-        user.memberOf().forEachRemaining(g -> writeGroupSummary(jsonGen, g));
-        jsonGen.writeEnd();
-        jsonGen.write("path", user.getPath());
-        writeProperties(jsonGen, user);
     }
 
     /**
@@ -240,19 +240,8 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
      */
     private void writeGroup(final JsonGenerator jsonGen, final Group group) throws RepositoryException
     {
-        jsonGen.write("name", group.getID());
-        jsonGen.write("type", "group");
-        jsonGen.write("principalName", group.getPrincipal().getName());
-        jsonGen.writeStartArray("declaredMemberOf");
-        group.declaredMemberOf().forEachRemaining(g -> writeGroupSummary(jsonGen, g));
-        jsonGen.writeEnd();
-        jsonGen.writeStartArray("memberOf");
-        group.memberOf().forEachRemaining(g -> writeGroupSummary(jsonGen, g));
-        jsonGen.writeEnd();
-        jsonGen.write("path", group.getPath());
         jsonGen.write("members", sizeOf(group.getMembers()));
         jsonGen.write("declaredMembers", sizeOf(group.getDeclaredMembers()));
-        writeProperties(jsonGen, group);
     }
 
     /**
