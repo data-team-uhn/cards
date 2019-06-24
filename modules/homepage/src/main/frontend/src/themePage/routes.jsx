@@ -24,54 +24,39 @@ var sidebarRoutes = [
     {
       path: "/content",
       name: "Dashboard",
-      rtlName: "rtl:Dashboard",
       icon: Dashboard,
-      component: DashboardPage,
-      layout: ""
+      component: DashboardPage
     },
     {
       path: "/view.html",
       name: "Patients",
-      rtlName: "rtl:Patients",
       icon: Assignment,
-      component: "",
-      layout: ""
+      component: ""
     },
     {
       path: "/modelorganisms.html",
       name: "Model Organisms",
-      rtlName: "rtl:ModelOrganisms",
       icon: Pets,
-      component: "",
-      layout: ""
+      component: ""
     },
     {
       path: "/variants.html",
       name: "Variants",
-      rtlName: "rtl:Variants",
       icon: Subtitles,
-      component: "",
-      layout: ""
+      component: ""
     },
     {
       path: "/userpage.html",
       name: "User Profile",
-      rtlName: "rtl:userprofile",
       icon: AccountBox,
-      component: "",
-      layout: ""
+      component: ""
     },
     {
       path: "/admin.html",
       name: "Administration",
-      rtlName: "rtl:Admin",
       icon: Settings,
-      component: "",
-      layout: ""
+      component: ""
     },
 ];
-
-// TODO:Find all findable JCR nodes and add them to the available routes
-
 
 export default sidebarRoutes
