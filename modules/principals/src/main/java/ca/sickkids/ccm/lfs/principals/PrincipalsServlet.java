@@ -143,7 +143,9 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
                     default:
                         type = AuthorizableType.AUTHORIZABLE;
                 }
-                writePrincipals(jsonGen, queryPrincipals((JackrabbitSession) session, type, filter, offset, limit));
+                writePrincipals(jsonGen, queryPrincipals((JackrabbitSession) session, type, filter, offset, limit),
+                    request.getRequestURL().substring(0, request.getRequestURL().indexOf("/", 9))
+                        + request.getContextPath());
             }
         } catch (RepositoryException e) {
             this.logger.log(LogService.LOG_ERROR, "Failed to query the repository for principals: " + e.getMessage());
@@ -174,11 +176,13 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
      *
      * @param jsonGen the JSON generator where the results should be serialized
      * @param principals the list of authorizables to serialize
+     * @param urlPrefix an URL prefix for the server, used for computing an URL for accessing a principal
      */
-    private void writePrincipals(final JsonGenerator jsonGen, final Iterator<Authorizable> principals)
+    private void writePrincipals(final JsonGenerator jsonGen, final Iterator<Authorizable> principals,
+        final String urlPrefix)
     {
         jsonGen.writeStartArray();
-        principals.forEachRemaining(authorizable -> writeAuthorizable(jsonGen, authorizable));
+        principals.forEachRemaining(authorizable -> writeAuthorizable(jsonGen, authorizable, urlPrefix));
         jsonGen.writeEnd().flush();
     }
 
@@ -187,8 +191,9 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
      *
      * @param jsonGen the JSON generator where the results should be serialized
      * @param authorizable the authorizable to serialize
+     * @param urlPrefix an URL prefix for the server, used for computing an URL for accessing the principal
      */
-    private void writeAuthorizable(final JsonGenerator jsonGen, final Authorizable authorizable)
+    private void writeAuthorizable(final JsonGenerator jsonGen, final Authorizable authorizable, final String urlPrefix)
     {
         jsonGen.writeStartObject();
         try {
@@ -202,6 +207,7 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
             authorizable.memberOf().forEachRemaining(g -> writeGroupSummary(jsonGen, g));
             jsonGen.writeEnd();
             jsonGen.write("path", authorizable.getPath());
+            jsonGen.write("href", urlPrefix + authorizable.getPath());
             if (authorizable instanceof User) {
                 writeUser(jsonGen, (User) authorizable);
             } else if (authorizable instanceof Group) {
