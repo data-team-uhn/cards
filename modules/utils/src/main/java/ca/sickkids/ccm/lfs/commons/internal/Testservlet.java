@@ -22,7 +22,6 @@ package main.java.ca.sickkids.ccm.lfs.commons.internal;
 import java.io.IOException;
 import java.io.Writer;
 
-import javax.jcr.Session;
 import javax.json.JsonObject;
 import javax.servlet.Servlet;
 
@@ -52,7 +51,6 @@ public class Testservlet extends SlingSafeMethodsServlet
     @Override
     public void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException
     {
-        Session session = request.getResourceResolver().adaptTo(Session.class);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
