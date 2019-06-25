@@ -85,26 +85,17 @@ public class ResourceToJsonAdapter
         if (obj == null) {
             objectbuilder.addNull(name);
         } else if (obj instanceof Object[]) {
-            Object[] objarray = (Object[]) obj;
-            JsonArrayBuilder arraybuilder = Json.createArrayBuilder();
-            for (Object o : objarray) {
-                addArrayElement(arraybuilder, o);
-            }
-            objectbuilder.add(name, arraybuilder);
-        } else if (obj instanceof String) {
-            objectbuilder.add(name, (String) obj);
-        } else if (obj.getClass().isPrimitive()) {
-            addPrimitive(objectbuilder, name, obj);
-        } else if (obj instanceof BigDecimal) {
-            objectbuilder.add(name, (BigDecimal) obj);
-        } else if (obj instanceof BigInteger) {
-            objectbuilder.add(name, (BigInteger) obj);
+            addArray(objectbuilder, name, obj);
         } else if (obj instanceof GregorianCalendar) {
             addGregorianCalendar(objectbuilder, name, obj);
         } else if (obj instanceof InputStream) {
             addInputStream(objectbuilder, name, obj);
+        } else if (obj instanceof BigDecimal) {
+            objectbuilder.add(name, (BigDecimal) obj);
+        } else if (obj instanceof BigInteger) {
+            objectbuilder.add(name, (BigInteger) obj);
         } else {
-            objectbuilder.add(name, obj.toString());
+            addPrimitive(objectbuilder, name, obj);
         }
     }
 
@@ -113,28 +104,25 @@ public class ResourceToJsonAdapter
         if (obj == null) {
             arraybuilder.addNull();
         } else if (obj instanceof Object[]) {
-            Object[] objarray = (Object[]) obj;
-            JsonArrayBuilder nestedarraybuilder = Json.createArrayBuilder();
-            for (Object o : objarray) {
-                addArrayElement(nestedarraybuilder, o);
-            }
-            arraybuilder.add(arraybuilder);
-        } else if (obj instanceof String) {
-            arraybuilder.add((String) obj);
-        } else if (obj.getClass().isPrimitive()) {
-            addPrimitive(arraybuilder, obj);
-        } else if (obj instanceof BigDecimal) {
-            arraybuilder.add((BigDecimal) obj);
-        } else if (obj instanceof BigInteger) {
-            arraybuilder.add((BigInteger) obj);
+            addArray(arraybuilder, obj);
         } else if (obj instanceof GregorianCalendar) {
             addGregorianCalendar(arraybuilder, obj);
         } else if (obj instanceof InputStream) {
             addInputStream(arraybuilder, obj);
+        } else if (obj instanceof BigDecimal) {
+            arraybuilder.add((BigDecimal) obj);
+        } else if (obj instanceof BigInteger) {
+            arraybuilder.add((BigInteger) obj);
         } else {
-            arraybuilder.add(obj.toString());
+            addPrimitive(arraybuilder, obj);
         }
     }
+
+    /*
+     * private void addPrimitive(JsonObjectBuilder objectbuilder, String name, Object obj) { else {
+     * objectbuilder.add(name, obj.toString()); } } private void addPrimitive(JsonArrayBuilder arraybuilder, Object obj)
+     * { else { arraybuilder.add(obj.toString()); } }
+     */
 
     private void addPrimitive(JsonObjectBuilder objectbuilder, String name, Object obj)
     {
@@ -164,6 +152,26 @@ public class ResourceToJsonAdapter
         } else {
             arraybuilder.add(obj.toString());
         }
+    }
+
+    private void addArray(JsonObjectBuilder objectbuilder, String name, Object obj)
+    {
+        Object[] objarray = (Object[]) obj;
+        JsonArrayBuilder arraybuilder = Json.createArrayBuilder();
+        for (Object o : objarray) {
+            addArrayElement(arraybuilder, o);
+        }
+        objectbuilder.add(name, arraybuilder);
+    }
+
+    private void addArray(JsonArrayBuilder arraybuilder, Object obj)
+    {
+        Object[] objarray = (Object[]) obj;
+        JsonArrayBuilder nestedarraybuilder = Json.createArrayBuilder();
+        for (Object o : objarray) {
+            addArrayElement(nestedarraybuilder, o);
+        }
+        arraybuilder.add(arraybuilder);
     }
 
     private void addInputStream(JsonObjectBuilder objectbuilder, String name, Object obj)
