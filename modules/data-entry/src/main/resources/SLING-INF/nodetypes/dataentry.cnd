@@ -258,9 +258,9 @@
   // Hardcode the resource supertype: each questionnaire is a resource
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
 
-  // A label for this questionnaire.
+  // A title for this questionnaire.
   // Mandatory, each questionnaire should have a label.
-  - label (string) mandatory
+  - title (string) mandatory
 
   // An optional longer description for this questionnaire.
   // If present, it will be displayed to the user between the label and the sections.
