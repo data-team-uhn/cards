@@ -167,7 +167,7 @@
   // - vocabulary: a term from a vocabulary
   // - computed: a derived value automatically computed based on a formula applied on other values in the questionaire
   // The answer type can be further refined with the following properties
-  - dataType (string) mandatory
+  - dataType (string) = 'text' mandatory autocreated
 
   // For text answers, a regular expression that can restrict/validate the allowed answers.
   - validationRegexp (string)
