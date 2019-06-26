@@ -59,7 +59,7 @@ public class Testservlet extends SlingSafeMethodsServlet
         try {
             Resource r = request.getResourceResolver()
                 .getResource("/db/dummy2");
-            ResourceToJsonAdapter adapter = new ResourceToJsonAdapter();
+            ResourceToJsonAdapterFactory adapter = new ResourceToJsonAdapterFactory();
             JsonObject resp = adapter.getAdapter(r, JsonObject.class);
 
             out.write(resp.toString());

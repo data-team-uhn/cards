@@ -40,22 +40,19 @@ import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * Adapter to adapt resources to Json.
+ * AdapterFactory that converts Apache Sling resources to JsonObjects.
  *
  * @version $Id$
  */
 
 @Component(service = { AdapterFactory.class },
-    /*
-     * property = { AdapterFactory.ADAPTABLE_CLASSES + "=org.apache.sling.api.resource.Resource",
-     * AdapterFactory.ADAPTER_CLASSES + "=javax.json.JsonObject" }
-     */
+
     property = {
     "adaptables=org.apache.sling.api.resource.Resource",
     "adapters=javax.json.JsonObject"
     })
 
-public class ResourceToJsonAdapter
+public class ResourceToJsonAdapterFactory
     implements AdapterFactory
 {
     @Override
@@ -85,12 +82,16 @@ public class ResourceToJsonAdapter
         if (obj == null) {
             objectbuilder.addNull(name);
         } else if (obj instanceof Object[]) {
+            // For multi-value properties
             addArray(objectbuilder, name, obj);
         } else if (obj instanceof GregorianCalendar) {
+            // Corresponding to JCR DATE property
             addGregorianCalendar(objectbuilder, name, obj);
         } else if (obj instanceof InputStream) {
+            // Corresponding to JCR BINARY property
             addInputStream(objectbuilder, name, obj);
         } else if (obj instanceof BigDecimal) {
+            // Corresponding to JCR DECIMAL property
             objectbuilder.add(name, (BigDecimal) obj);
         } else if (obj instanceof BigInteger) {
             objectbuilder.add(name, (BigInteger) obj);
@@ -104,12 +105,16 @@ public class ResourceToJsonAdapter
         if (obj == null) {
             arraybuilder.addNull();
         } else if (obj instanceof Object[]) {
+            // For multip-value poperties
             addArray(arraybuilder, obj);
         } else if (obj instanceof GregorianCalendar) {
+            // Corresponding to JCR DATE property
             addGregorianCalendar(arraybuilder, obj);
         } else if (obj instanceof InputStream) {
+            // Corresponding to JCR BINARY property
             addInputStream(arraybuilder, obj);
         } else if (obj instanceof BigDecimal) {
+            // Corresponding to JCR DECIMAL property
             arraybuilder.add((BigDecimal) obj);
         } else if (obj instanceof BigInteger) {
             arraybuilder.add((BigInteger) obj);
@@ -118,12 +123,7 @@ public class ResourceToJsonAdapter
         }
     }
 
-    /*
-     * private void addPrimitive(JsonObjectBuilder objectbuilder, String name, Object obj) { else {
-     * objectbuilder.add(name, obj.toString()); } } private void addPrimitive(JsonArrayBuilder arraybuilder, Object obj)
-     * { else { arraybuilder.add(obj.toString()); } }
-     */
-
+    // for object
     private void addPrimitive(JsonObjectBuilder objectbuilder, String name, Object obj)
     {
         if (obj instanceof Boolean) {
@@ -139,6 +139,7 @@ public class ResourceToJsonAdapter
         }
     }
 
+    // for array
     private void addPrimitive(JsonArrayBuilder arraybuilder, Object obj)
     {
         if (obj instanceof Boolean) {
@@ -154,6 +155,7 @@ public class ResourceToJsonAdapter
         }
     }
 
+    // for object
     private void addArray(JsonObjectBuilder objectbuilder, String name, Object obj)
     {
         Object[] objarray = (Object[]) obj;
@@ -164,6 +166,7 @@ public class ResourceToJsonAdapter
         objectbuilder.add(name, arraybuilder);
     }
 
+    // for array
     private void addArray(JsonArrayBuilder arraybuilder, Object obj)
     {
         Object[] objarray = (Object[]) obj;
@@ -174,6 +177,7 @@ public class ResourceToJsonAdapter
         arraybuilder.add(arraybuilder);
     }
 
+    // for object
     private void addInputStream(JsonObjectBuilder objectbuilder, String name, Object obj)
     {
         try {
@@ -184,6 +188,7 @@ public class ResourceToJsonAdapter
         }
     }
 
+    // for array
     private void addInputStream(JsonArrayBuilder arraybuilder, Object obj)
     {
         try {
@@ -194,18 +199,22 @@ public class ResourceToJsonAdapter
         }
     }
 
+    // for object
     private void addGregorianCalendar(JsonObjectBuilder objectbuilder, String name, Object obj)
     {
         GregorianCalendar calendar = (GregorianCalendar) obj;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(calendar.getTimeZone());
         objectbuilder.add(name, sdf.format(calendar.getTime()));
     }
 
+    // for array
     private void addGregorianCalendar(JsonArrayBuilder arraybuilder, Object obj)
     {
         GregorianCalendar calendar = (GregorianCalendar) obj;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(calendar.getTimeZone());
         arraybuilder.add(sdf.format(calendar.getTime()));
     }
