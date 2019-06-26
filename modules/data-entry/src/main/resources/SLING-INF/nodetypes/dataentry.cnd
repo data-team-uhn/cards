@@ -67,7 +67,7 @@
 //-----------------------------------------------------------------------------
 // This defines predefined choices for answering a question.
 // Used only as children of a lfs:Question node.
-[lfs:AnswerOption] > sling:Folder
+[lfs:AnswerOption] > sling:Folder, mix:referenceable
   // Attributes
 
   // The list of suboptions is orderable
@@ -104,7 +104,7 @@
 
 //-----------------------------------------------------------------------------
 // This is the definition of a question.
-[lfs:Question] > sling:Folder
+[lfs:Question] > sling:Folder, mix:referenceable
   // Attributes
 
   // The list of answer options is orderable
@@ -205,7 +205,7 @@
 
 //-----------------------------------------------------------------------------
 // A section is a collection of questions.
-[lfs:Section] > sling:Folder
+[lfs:Section] > sling:Folder, mix:referenceable
   // Attributes
 
   // The list of subsections and questions is orderable
@@ -241,7 +241,7 @@
 
 //-----------------------------------------------------------------------------
 // A questionnaire is a collection of sections and questions
-[lfs:Questionnaire] > sling:Folder
+[lfs:Questionnaire] > sling:Folder, mix:referenceable
   // Attributes
 
   // The list of sections and questions is orderable
@@ -399,7 +399,7 @@
 
 //-----------------------------------------------------------------------------
 // Forms: a filled in questionnaire.
-[lfs:Form] > sling:Folder
+[lfs:Form] > sling:Folder, mix:referenceable
   // Attributes
 
   // The answers in a form must be orderable
@@ -460,7 +460,7 @@
 
 //-----------------------------------------------------------------------------
 // Subjects: the description of a subject.
-[lfs:Subject] > sling:Folder
+[lfs:Subject] > sling:Folder, mix:referenceable
   // Attributes
 
   // We can use subjects in a query
