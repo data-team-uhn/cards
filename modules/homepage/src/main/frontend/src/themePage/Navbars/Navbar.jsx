@@ -12,17 +12,18 @@ import Hidden from "@material-ui/core/Hidden";
 import Menu from "@material-ui/icons/Menu";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
-import RTLNavbarLinks from "./RTLNavbarLinks.jsx";
 import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
 
 import headerStyle from "./headerStyle.jsx";
 
 function Header({ ...props }) {
+  // Create the "brand", i.e. the route taken to get to the current page
+  // (Usually displayed at the top left)
   function makeBrand() {
     var name;
     props.routes.map((prop, key) => {
-      if (prop.layout + prop.path === props.location.pathname) {
-        name = props.rtlActive ? prop.rtlName : prop.name;
+      if (prop.path === props.location.pathname) {
+        name = prop.name;
       }
       return null;
     });
@@ -32,18 +33,21 @@ function Header({ ...props }) {
   const appBarClasses = classNames({
     [" " + classes[color]]: color
   });
+
   return (
     <AppBar className={classes.appBar + appBarClasses}>
       <Toolbar className={classes.container}>
+        {/* Here we create navbar brand, based on route name */}
         <div className={classes.flex}>
-          {/* Here we create navbar brand, based on route name */}
           <Button color="transparent" href="#" className={classes.title}>
             {makeBrand()}
           </Button>
         </div>
+        {/* While the screen is wide enough, display the navbar at the topright */}
         <Hidden smDown implementation="css">
-          {props.rtlActive ? <RTLNavbarLinks /> : <AdminNavbarLinks />}
+          <AdminNavbarLinks />
         </Hidden>
+        {/* While the screen is too narrow, display the mini sidebar control */}
         <Hidden mdUp implementation="css">
           <IconButton
             color="inherit"
