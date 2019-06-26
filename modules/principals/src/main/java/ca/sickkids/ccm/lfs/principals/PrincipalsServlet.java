@@ -149,12 +149,13 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
                 }
                 jsonGen.writeStartObject();
                 // The magic number 8 is the prefix length for the protocol, https://
-                long matchingPrincipals =
-                    writePrincipals(jsonGen, queryPrincipals((JackrabbitSession) session, type, filter, offset, limit),
+                long[] principalCounts =
+                    writePrincipals(jsonGen,
+                        queryPrincipals((JackrabbitSession) session, type, filter, 0, Long.MAX_VALUE),
                         request.getRequestURL().substring(0, request.getRequestURL().indexOf("/", 8))
-                            + request.getContextPath());
-                writeSummary(jsonGen, request, filter, offset, limit, matchingPrincipals,
-                    sizeOf(queryPrincipals((JackrabbitSession) session, type, filter, 0, Long.MAX_VALUE)));
+                            + request.getContextPath(), offset, limit);
+                writeSummary(jsonGen, request, filter, offset, limit,
+                    principalCounts[0], principalCounts[1]);
                 jsonGen.writeEnd().flush();
             }
         } catch (RepositoryException e) {
@@ -214,17 +215,49 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
      * @param urlPrefix an URL prefix for the server, used for computing an URL for accessing a principal
      * @return the number of principals included in the response
      */
-    private long writePrincipals(final JsonGenerator jsonGen, final Iterator<Authorizable> principals,
-        final String urlPrefix)
+    private long[] writePrincipals(final JsonGenerator jsonGen, final Iterator<Authorizable> principals,
+        final String urlPrefix, final long offset, final long limit)
     {
-        jsonGen.writeStartArray("rows");
+        long[] principalCount = new long[2];
+        principalCount[0] = 0;
+
+        long offsetCounter = offset < 0 ? 0 : offset;
+        long limitCounter = limit < 0 ? 0 : limit;
+        boolean returnRows = false;
+
         AtomicLong counter = new AtomicLong();
-        principals.forEachRemaining(authorizable -> {
-            writeAuthorizable(jsonGen, authorizable, urlPrefix);
+
+        if (offsetCounter == 0) {
+            returnRows = true;
+            jsonGen.writeStartArray("rows");
+        }
+
+        while (principals.hasNext()) {
+            Authorizable authorizable = principals.next();
+            if (offsetCounter > 0) {
+                --offsetCounter;
+            } else {
+                if (offsetCounter == 0 && limitCounter > 0) {
+                    if (!returnRows) {
+                        returnRows = true;
+                        jsonGen.writeStartArray("rows");
+                    }
+                    writeAuthorizable(jsonGen, authorizable, urlPrefix);
+                    --limitCounter;
+                    ++principalCount[0];
+                }
+            }
+
             counter.incrementAndGet();
-        });
-        jsonGen.writeEnd();
-        return counter.get();
+        }
+
+        if (returnRows) {
+            jsonGen.writeEnd();
+        }
+
+        principalCount[1] = counter.get();
+
+        return principalCount;
     }
 
     /**
