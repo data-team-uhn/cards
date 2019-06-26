@@ -85,7 +85,7 @@
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
 
   // The text of this option displayed to the user.
-  // This is not the value that gets stored when it is selected for an aswer, the next property is.
+  // This is not the value that gets stored when it is selected for an aswer, the "value" property is.
   // Mandatory, every option needs a text
   - label (string) mandatory
 
@@ -152,6 +152,7 @@
   // - none: the question is not displayed at all in the frontend
   // - hidden: the question is hidden, but it may be auto-filled by other means, such as javascript, data import, or dynamic computation
   // - input: a simple input field where the user can type an answer
+  // - textbox: a large textbox for longer strings
   // - list: a list of options that the user can choose from
   // - list+input: a list of options, plus an "other" input where the user can add a non-standard answer
   - displayMode (string) = 'input' autocreated
