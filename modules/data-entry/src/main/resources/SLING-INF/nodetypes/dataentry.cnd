@@ -417,7 +417,7 @@
   // A reference to the questionnaire being filled in
   // Mandatory, every form has a questionnaire
   // No full text search, since it's just a non-textual reference
-  - questionnaire (reference) nofulltext
+  - questionnaire (reference) mandatory nofulltext
 
   // A reference to the subject that this form is (primarily) about
   // Although recommended to have a subject, this is optional for now
