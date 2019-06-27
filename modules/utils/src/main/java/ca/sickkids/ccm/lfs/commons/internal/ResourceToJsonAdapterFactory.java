@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package main.java.ca.sickkids.ccm.lfs.commons.internal;
+package ca.sickkids.ccm.lfs.commons.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 import java.util.function.BiConsumer;
 
 import javax.json.Json;
@@ -84,9 +84,9 @@ public class ResourceToJsonAdapterFactory
         } else if (obj instanceof Object[]) {
             // For multi-value properties
             addArray(objectbuilder, name, obj);
-        } else if (obj instanceof GregorianCalendar) {
+        } else if (obj instanceof Calendar) {
             // Corresponding to JCR DATE property
-            addGregorianCalendar(objectbuilder, name, obj);
+            addCalendar(objectbuilder, name, obj);
         } else if (obj instanceof InputStream) {
             // Corresponding to JCR BINARY property
             addInputStream(objectbuilder, name, obj);
@@ -107,9 +107,9 @@ public class ResourceToJsonAdapterFactory
         } else if (obj instanceof Object[]) {
             // For multip-value poperties
             addArray(arraybuilder, obj);
-        } else if (obj instanceof GregorianCalendar) {
+        } else if (obj instanceof Calendar) {
             // Corresponding to JCR DATE property
-            addGregorianCalendar(arraybuilder, obj);
+            addCalendar(arraybuilder, obj);
         } else if (obj instanceof InputStream) {
             // Corresponding to JCR BINARY property
             addInputStream(arraybuilder, obj);
@@ -200,9 +200,9 @@ public class ResourceToJsonAdapterFactory
     }
 
     // for object
-    private void addGregorianCalendar(JsonObjectBuilder objectbuilder, String name, Object obj)
+    private void addCalendar(JsonObjectBuilder objectbuilder, String name, Object obj)
     {
-        GregorianCalendar calendar = (GregorianCalendar) obj;
+        Calendar calendar = (Calendar) obj;
         // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(calendar.getTimeZone());
@@ -210,9 +210,9 @@ public class ResourceToJsonAdapterFactory
     }
 
     // for array
-    private void addGregorianCalendar(JsonArrayBuilder arraybuilder, Object obj)
+    private void addCalendar(JsonArrayBuilder arraybuilder, Object obj)
     {
-        GregorianCalendar calendar = (GregorianCalendar) obj;
+        Calendar calendar = (Calendar) obj;
         // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(calendar.getTimeZone());
