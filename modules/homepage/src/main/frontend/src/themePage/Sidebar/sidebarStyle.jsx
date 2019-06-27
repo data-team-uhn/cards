@@ -54,6 +54,7 @@ import {
       }
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     drawerPaperRTL: {
       [theme.breakpoints.up("md")]: {
@@ -67,6 +68,8 @@ import {
       }
     },
 >>>>>>> 78bff40... LFS-34: UI for adding/removing users
+=======
+>>>>>>> ed391da... LFS-34: UI for user management
     logo: {
       position: "relative",
       padding: "15px 15px",
@@ -98,11 +101,14 @@ import {
       }
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     logoLinkRTL: {
       textAlign: "right"
     },
 >>>>>>> 78bff40... LFS-34: UI for adding/removing users
+=======
+>>>>>>> ed391da... LFS-34: UI for user management
     logoImage: {
       width: "30px",
       display: "inline-block",
@@ -178,6 +184,7 @@ import {
       color: "rgba(" + hexToRgb(whiteColor) + ", 0.8)"
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     itemIconRTL: {
       marginRight: "3px",
@@ -185,6 +192,8 @@ import {
       float: "right"
     },
 >>>>>>> 78bff40... LFS-34: UI for adding/removing users
+=======
+>>>>>>> ed391da... LFS-34: UI for user management
     itemText: {
       ...defaultFont,
       margin: "0",
@@ -193,11 +202,14 @@ import {
       color: whiteColor
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     itemTextRTL: {
       textAlign: "right"
     },
 >>>>>>> 78bff40... LFS-34: UI for adding/removing users
+=======
+>>>>>>> ed391da... LFS-34: UI for user management
     whiteFont: {
       color: whiteColor
     },
