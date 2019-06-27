@@ -17,11 +17,11 @@
 //  under the License.
 //
 import PropTypes from 'prop-types';
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 import Sidebar from "./Sidebar/sidebar"
-import sidebarRoutes from './routes';
-import { withStyles } from '@material-ui/core';
+import sidebarRoutes, { loadRemoteComponents, loadRemoteIcons, contentNodes } from './routes';
+import { withStyles } from '@material-ui/core/styles';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
@@ -51,7 +51,8 @@ class Main extends React.Component {
       color: "blue",
       hasImage: true,
       fixedClasses: "dropdown show",
-      mobileOpen: false
+      mobileOpen: false,
+      routes: sidebarRoutes
     };
   }
 
@@ -68,11 +69,52 @@ class Main extends React.Component {
   }
 
   // Register/unregister autoCloseMobileMenus to window resizing
-  componentDidMount() {
-    window.addEventListener("resize", this.autoCloseMobileMenus);
-  };
   componentWillUnmount() {
     window.removeEventListener("resize", this.autoCloseMobileMenus);
+  }
+
+  _loadIcon = (data, icon) => {
+    data.icon = loadJS(icon)
+  }
+
+  _buildSidebar = (uixData) => {
+    var routes = sidebarRoutes.slice();
+    for (var id in uixData) {
+      var uixDatum = uixData[id];
+      routes.push({
+        path: uixDatum.path,
+        name: uixDatum.name,
+        icon: uixDatum.icon,
+        component: uixDatum.reactComponent,
+        rtlName: "rtl:test",
+        layout: "/content.html"
+      });
+    }
+    this.setState({routes: routes});
+  };
+
+  componentDidMount() {
+    window.addEventListener("resize", this.autoCloseMobileMenus);
+    loadRemoteComponents(contentNodes)
+    .then(loadRemoteIcons)
+    .then(this._buildSidebar)
+    .catch(function(err) {
+      console.log("Something went wrong: " + err);
+    });
+  };
+
+  switchRoutes = (routes) => {
+    return (<Switch>
+      {routes.map((prop, key) => {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+          />
+        );
+      })}
+    </Switch>)
   };
 
   render() {
@@ -80,27 +122,28 @@ class Main extends React.Component {
 
     return (
       <div className={classes.wrapper}>
-        <Sidebar
-          routes={sidebarRoutes}
-          logoText={"LFS Data Core"}
-          logoImage={"/libs/lfs/resources/lfs-logo-tmp-cyan.png"}
-          image={this.state.image}
-          handleDrawerToggle={this.handleDrawerToggle}
-          open={this.state.mobileOpen}
-          color={"blue"}
-          {...rest}
-        />
-        <div className={classes.mainPanel} ref="mainPanel">
-          <Navbar
-            routes={sidebarRoutes}
-            handleDrawerToggle={this.handleDrawerToggle}
+        <Suspense fallback={<div>Loading...</div>}>
+          <Sidebar
+            routes={this.state.routes}
+            logoText={"LFS Data Core"}
+            logoImage={"/libs/lfs/resources/lfs-logo-tmp-cyan.png"}
+            image={this.state.image}
+            handleDrawerToggle={this.handleDrawxerToggle}
+            open={this.state.mobileOpen}
+            color={ "blue" }
             {...rest}
           />
-          <div className={classes.content}>
-            <div className={classes.container}>{switchRoutes}</div>
+          <div className={classes.mainPanel} ref="mainPanel">
+            <div className={classes.content}>
+              <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
+            </div>
+            <Navbar
+              routes={ this.state.routes }
+              handleDrawerToggle={this.handleDrawerToggle}
+              {...rest}
+            />
           </div>
-          <div id="footer-container"></div>
-        </div>
+        </Suspense>
       </div>
     );
   }
