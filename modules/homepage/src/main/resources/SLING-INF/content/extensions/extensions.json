@@ -1,0 +1,15 @@
+{
+    "Dashboard": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "/libs/lfs/resources/dashboard.js",
+        "lfs:extensionName": "TestDashboard",
+        "lfs:defaultOrder": "0",
+        "lfs:defaultDisabled": "false",
+        "lfs:icon": "/libs/lfs/resources/dashboardIcon.js",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "test",
+            "jcr:mimeType": "text/html"
+        }
+    }
+}

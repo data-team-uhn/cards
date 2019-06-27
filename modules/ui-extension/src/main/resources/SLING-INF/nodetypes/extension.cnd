@@ -32,6 +32,8 @@
   - lfs:extensionPointId (STRING) mandatory
   // The name of the extension
   - lfs:extensionName (STRING) mandatory
+  // URL to the icon for the Sidebar
+  - lfs:icon (STRING)
   // The order that this should appear on the page
   - lfs:defaultOrder (LONG) = "0" mandatory autocreated
   - lfs:defaultDisabled (BOOLEAN) = "false" mandatory autocreated

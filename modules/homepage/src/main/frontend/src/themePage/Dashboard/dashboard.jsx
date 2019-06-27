@@ -79,4 +79,7 @@ Dashboard.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
+const testDashboard = withStyles(dashboardStyle)(Dashboard);
+
 export default withStyles(dashboardStyle)(Dashboard);
+export { testDashboard };

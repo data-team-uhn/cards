@@ -1,7 +1,9 @@
 module.exports = {
   mode: 'development',
   entry: {
-    themeindex: './src/themePage/index.jsx'
+    themeindex: './src/themePage/index.jsx',
+    dashboard: './src/themePage/Dashboard/dashboard.jsx',
+    dashboardIcon: './node_modules/@material-ui/icons/Dashboard.js'
   },
   module: {
     rules: [
