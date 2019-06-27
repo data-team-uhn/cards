@@ -21,7 +21,6 @@ package ca.sickkids.ccm.lfs.principals;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicLong;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -210,52 +209,44 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
     /**
      * Serialize a list of authorizables as JSON.
      *
+     * For the purposes of the servlet, it is intended that a query for all of the principals matching the filter to be
+     * made using this servlet so that the total number of matching principals can be recorded for pagination purposes.
+     * The method will only write the Authorizables that are allowed by the offset and limit to the JSON however.
+     *
      * @param jsonGen the JSON generator where the results should be serialized
      * @param principals the list of authorizables to serialize
      * @param urlPrefix an URL prefix for the server, used for computing an URL for accessing a principal
-     * @return the number of principals included in the response
+     * @param offset the requested offset, may be the default vlaue of {0}
+     * @param limit the requested limit, may be the default value of {10}
+     * @return a long array of length 2 where the element at index [0] is the number of matching principals included
+     *            in the response, and the element at index [1] is the total number of accessible principals
+     *            matching the requested filters
      */
     private long[] writePrincipals(final JsonGenerator jsonGen, final Iterator<Authorizable> principals,
         final String urlPrefix, final long offset, final long limit)
     {
         long[] principalCount = new long[2];
         principalCount[0] = 0;
+        principalCount[1] = 0;
 
         long offsetCounter = offset < 0 ? 0 : offset;
         long limitCounter = limit < 0 ? 0 : limit;
-        boolean returnRows = false;
 
-        AtomicLong counter = new AtomicLong();
-
-        if (offsetCounter == 0) {
-            returnRows = true;
-            jsonGen.writeStartArray("rows");
-        }
+        jsonGen.writeStartArray("rows");
 
         while (principals.hasNext()) {
             Authorizable authorizable = principals.next();
             if (offsetCounter > 0) {
                 --offsetCounter;
-            } else {
-                if (offsetCounter == 0 && limitCounter > 0) {
-                    if (!returnRows) {
-                        returnRows = true;
-                        jsonGen.writeStartArray("rows");
-                    }
-                    writeAuthorizable(jsonGen, authorizable, urlPrefix);
-                    --limitCounter;
-                    ++principalCount[0];
-                }
+            } else if (limitCounter > 0) {
+                writeAuthorizable(jsonGen, authorizable, urlPrefix);
+                --limitCounter;
+                ++principalCount[0];
             }
-
-            counter.incrementAndGet();
+            ++principalCount[1];
         }
 
-        if (returnRows) {
-            jsonGen.writeEnd();
-        }
-
-        principalCount[1] = counter.get();
+        jsonGen.writeEnd();
 
         return principalCount;
     }
