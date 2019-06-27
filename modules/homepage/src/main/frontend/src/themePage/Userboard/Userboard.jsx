@@ -21,7 +21,8 @@ import PropTypes from "prop-types";
 
 import  {withStyles} from "@material-ui/core/styles";
 
-//import Button from '@material-ui/core';
+import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
+
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
@@ -39,6 +40,8 @@ class Userboard extends React.Component {
     this.state = {
       columnNames: ["User"],
       userNames: [[]],
+      groupColumnNames: ["Groups"],
+      groupNames: [[]],
       currentUserName: "",
       newUserName: "",
       newUserPwd: "",
@@ -74,8 +77,33 @@ class Userboard extends React.Component {
     });
   }
 
+  handleLoadGroups () {
+    fetch("http://localhost:8080/system/userManager/group.tidy.1.json",
+      {
+        method: 'GET',
+        headers: {
+          'Authorization' : 'Basic' + btoa('admin:admin')
+        }
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      var groups = [];
+      for (var group in data) {
+        groups.push([group]);
+      }
+      this.setState({groupNames: groups});
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
+
+
   componentWillMount () {
     this.handleLoadUsers();
+    this.handleLoadGroups();
   }
 
   handleCreateUser() {
@@ -118,6 +146,11 @@ class Userboard extends React.Component {
                   tableHead={this.state.columnNames}
                   tableData={this.state.userNames}
                 />
+                <Table
+                  tableHeaderColor="warning"
+                  tableHead={this.state.groupColumnNames}
+                  tableData={this.state.groupNames}
+                />
               </CardBody>
             </Card>
           </GridItem>
@@ -133,67 +166,47 @@ class Userboard extends React.Component {
 
         <Card>
           <GridContainer>
-                <GridItem xs={12} sm={12} md={3}>
-                  <CustomInput
-                    labelText="Username"
-                    id="username"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={6}>
-                  <CustomInput
-                    labelText="Password"
-                    id="password"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={6}>
-                  <CustomInput
-                    labelText="Confirm Password"
-                    id="password-confirm"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="City"
-                    id="city"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Postal Code"
-                    id="postal-code"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-          <CardFooter>
-            <button>Submit</button>
-          </CardFooter>
-        </Card>
+            <GridItem xs={12} sm={12} md={3}>
+              <CustomInput
+                labelText="Username"
+                id="username"
+                formControlProps={{
+                  fullWidth: true
+                }}
+                onChange={(event)=>{this.setState({newUserName: event.target.value})}}
+              />
+            </GridItem>
+          </GridContainer>
+            <GridContainer>
+              <GridItem xs={12} sm={12} md={6}>
+                <CustomInput
+                  labelText="Password"
+                  id="password"
+                  formControlProps={{
+                    fullWidth: true
+                  }}
+                  onChange={(event) => {this.setState({newUserPwd: event.target.value}); console.log(changes);}}
+                />
+              </GridItem>
+              <GridItem xs={12} sm={12} md={6}>
+                <CustomInput
+                  labelText="Confirm Password"
+                  id="password-confirm"
+                  formControlProps={{
+                    fullWidth: true
+                  }}
+                  onChange={(event)=>{this.setState({newUserPwdConfirm: event.target.value}); console.log("Changed");}}
+                />
+              </GridItem>
+            </GridContainer>
             
-
-
-
+          <CardFooter>
+            <Button onClick={() => this.handleCreateUser()}>Submit</Button>
+          </CardFooter>
+        </Card>          
       </div>
-    )
+    );
   }
 }
 
-export default Userboard
+export default Userboard;
