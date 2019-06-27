@@ -53,20 +53,6 @@ import {
         ...transition
       }
     },
-<<<<<<< HEAD
-    drawerPaperRTL: {
-      [theme.breakpoints.up("md")]: {
-        left: "auto !important",
-        right: "0 !important"
-      },
-      // At small size and lower, switch to being on the opposite side of the screen
-      [theme.breakpoints.down("sm")]: {
-        left: "0  !important",
-        right: "auto !important"
-      }
-    },
-=======
->>>>>>> LFS-83
     logo: {
       position: "relative",
       padding: "15px 15px",
@@ -97,12 +83,6 @@ import {
         color: whiteColor
       }
     },
-<<<<<<< HEAD
-    logoLinkRTL: {
-      textAlign: "right"
-    },
-=======
->>>>>>> LFS-83
     logoImage: {
       width: "30px",
       display: "inline-block",
@@ -177,14 +157,6 @@ import {
       verticalAlign: "middle",
       color: "rgba(" + hexToRgb(whiteColor) + ", 0.8)"
     },
-<<<<<<< HEAD
-    itemIconRTL: {
-      marginRight: "3px",
-      marginLeft: "15px",
-      float: "right"
-    },
-=======
->>>>>>> LFS-83
     itemText: {
       ...defaultFont,
       margin: "0",
@@ -192,12 +164,6 @@ import {
       fontSize: "14px",
       color: whiteColor
     },
-<<<<<<< HEAD
-    itemTextRTL: {
-      textAlign: "right"
-    },
-=======
->>>>>>> LFS-83
     whiteFont: {
       color: whiteColor
     },

@@ -19,6 +19,7 @@
 import { AccountBox, Assignment, Dashboard, Pets, Settings, Subtitles } from '@material-ui/icons';
 
 import DashboardPage from "./Dashboard/dashboard.jsx";
+import Userboard from "./Userboard/Userboard.jsx"
 
 var sidebarRoutes = [
     {
@@ -49,7 +50,7 @@ var sidebarRoutes = [
       path: "/userpage.html",
       name: "User Profile",
       icon: AccountBox,
-      component: ""
+      component: Userboard
     },
     {
       path: "/admin.html",

@@ -17,9 +17,11 @@
 
 import React from "react";
 
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
 import  {withStyles} from "@material-ui/core/styles";
+
+//import Button from '@material-ui/core';
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
@@ -27,13 +29,20 @@ import Table from "material-dashboard-react/dist/components/Table/Table.js";
 import Card from "material-dashboard-react/dist/components/Card/Card.js";
 import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
 import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
+import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter"
+//import { Avatar } from "@material-ui/core";
+import CustomInput from "material-dashboard-react/dist/components/CustomInput/CustomInput.js";
 
 class Userboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       columnNames: ["User"],
-      userNames: [[""]]
+      userNames: [[]],
+      currentUserName: "",
+      newUserName: "",
+      newUserPwd: "",
+      newUserPwdConfirm: ""
     };
 
     this.title = "Users";
@@ -54,7 +63,7 @@ class Userboard extends React.Component {
       console.log(JSON.stringify(data));
       var names = [];
       for (var name in data){
-        names.push([name]);
+        names.push([name, <button onClick={() => {this.setState({currentUserName: name});}}>Select</button>]);
       }
       console.log(names);
       this.setState({userNames: names});
@@ -69,11 +78,34 @@ class Userboard extends React.Component {
     this.handleLoadUsers();
   }
 
+  handleCreateUser() {
+    let formData = new FormData();
+    formData.append(':name', this.state.newUserName);
+    formData.append('pwd', this.state.newUserPwd);
+    formData.append('pwdConfirm', this.state.newUserPwdConfirm);
+
+    console.log(formData);
+
+    let url = "http://localhost:8080/system/userManager/user.create.html";
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic' + btoa('admin:admin')
+      },
+      body:formData  
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
   render() {
     const { classes } = this.props;
 
     return (
       <div>
+        <p>{this.state.currentUserName}</p>
         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
             <Card>
@@ -90,7 +122,75 @@ class Userboard extends React.Component {
             </Card>
           </GridItem>
           
+          <GridItem >
+            <Card>
+
+            </Card>
+          </GridItem>
+
+
         </GridContainer>
+
+        <Card>
+          <GridContainer>
+                <GridItem xs={12} sm={12} md={3}>
+                  <CustomInput
+                    labelText="Username"
+                    id="username"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                  />
+                </GridItem>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={6}>
+                  <CustomInput
+                    labelText="Password"
+                    id="password"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={6}>
+                  <CustomInput
+                    labelText="Confirm Password"
+                    id="password-confirm"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="City"
+                    id="city"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                  />
+                </GridItem>
+
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Postal Code"
+                    id="postal-code"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
+          <CardFooter>
+            <button>Submit</button>
+          </CardFooter>
+        </Card>
+            
+
+
+
       </div>
     )
   }
