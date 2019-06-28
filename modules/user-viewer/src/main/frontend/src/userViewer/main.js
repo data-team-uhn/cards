@@ -175,6 +175,7 @@ class DeleteUserDialogue extends React.Component {
 
 
 // Experimental Dialogue
+/*
 class TestPopup extends React.Component {
   constructor(props) {
     super(props);
@@ -204,7 +205,7 @@ class TestPopup extends React.Component {
     );
   }
 }
-
+*/
 
 class UserBoard extends React.Component {
   constructor (props) {
@@ -442,9 +443,11 @@ class UserBoard extends React.Component {
     return (
       <React.Fragment>
         {/* Blank navbar */}
-       {this.state.deployPopup && 
-          <TestPopup handleClose={() => this.hidePopup()}></TestPopup>
+       {/*this.state.deployPopup && 
+       
+          <TestPopup handleClose={() => this.hidePopup()}></TestPopup>*/
         }
+        
 
         <AppBar position="static">
           <Toolbar>
