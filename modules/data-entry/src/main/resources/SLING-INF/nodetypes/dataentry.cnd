@@ -86,8 +86,8 @@
 
   // The text of this option displayed to the user.
   // This is not the value that gets stored when it is selected for an aswer, the "value" property is.
-  // Mandatory, every option needs a label.
-  - label (string) mandatory
+  // Optional, if the label is missing, the "value" is used instead.
+  - label (string)
 
   // An optional longer explanation for the answer option.
   // If present, a help icon will be displayed next to the label, and hovering/clicking it will display this help text.
