@@ -21,7 +21,7 @@ import PropTypes from "prop-types";
 
 import  {withStyles} from "@material-ui/core/styles";
 
-import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
+//import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
 
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
@@ -34,6 +34,82 @@ import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter
 //import { Avatar } from "@material-ui/core";
 import CustomInput from "material-dashboard-react/dist/components/CustomInput/CustomInput.js";
 
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+
+import userboardStyle from './userboardStyle.jsx';
+
+class CreateUserDialogue extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      newName: "",
+      newPwd: "",
+      newPwdConfirm: ""
+    };
+
+  }
+  handleCreateUser() {
+    let formData = new FormData();
+    formData.append(':name', this.state.newName);
+    formData.append('pwd', this.state.newPwd);
+    formData.append('pwdConfirm', this.state.newPwdConfirm);
+
+    console.log(formData);
+
+    let url = "http://localhost:8080/system/userManager/user.create.html";
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic' + btoa('admin:admin')
+      },
+      body:formData  
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
+
+  render(){
+    return(
+      <Dialog
+        open= {true}
+        onClose= {() => this.props.handleClose()}
+      >
+        <DialogTitle>Title</DialogTitle>
+        <DialogContent>
+        <form
+          onSubmit={()=>this.handleCreateUser()}
+        >
+          <label>
+            Name
+            <textarea value={this.state.newName} onChange={(event) => {this.setState({newName: event.target.value})}}></textarea>
+          </label>
+          <label>
+            Password
+            <textarea value={this.state.newPwd} onChange={(event) => {this.setState({newPwd: event.target.value})}}></textarea>
+          </label>
+          <label>
+            Confirm Password
+            <textarea value={this.state.newPwdConfirm} onChange={(event) => {this.setState({newPwdConfirm: event.target.value})}}></textarea>
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.handleClose()}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+}
+
+
 class Userboard extends React.Component {
   constructor(props) {
     super(props);
@@ -43,12 +119,16 @@ class Userboard extends React.Component {
       groupColumnNames: ["Groups"],
       groupNames: [[]],
       currentUserName: "",
-      newUserName: "",
-      newUserPwd: "",
-      newUserPwdConfirm: ""
+      deployCreateUser: false
     };
+  }
 
-    this.title = "Users";
+  hideCreateUser () {
+    this.setState({deployCreateUser: false});
+  }
+
+  showCreateUser () {
+    this.setState({deployCreateUser: true});
   }
 
   handleLoadUsers () {
@@ -66,7 +146,7 @@ class Userboard extends React.Component {
       console.log(JSON.stringify(data));
       var names = [];
       for (var name in data){
-        names.push([name, <button onClick={() => {this.setState({currentUserName: name});}}>Select</button>]);
+        names.push([name]);
       }
       console.log(names);
       this.setState({userNames: names});
@@ -106,46 +186,35 @@ class Userboard extends React.Component {
     this.handleLoadGroups();
   }
 
-  handleCreateUser() {
-    let formData = new FormData();
-    formData.append(':name', this.state.newUserName);
-    formData.append('pwd', this.state.newUserPwd);
-    formData.append('pwdConfirm', this.state.newUserPwdConfirm);
-
-    console.log(formData);
-
-    let url = "http://localhost:8080/system/userManager/user.create.html";
-
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Basic' + btoa('admin:admin')
-      },
-      body:formData  
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+  
 
   render() {
     const { classes } = this.props;
 
     return (
       <div>
-        <p>{this.state.currentUserName}</p>
+        {this.state.deployCreateUser && <CreateUserDialogue handleClose={() => this.hideCreateUser()}></CreateUserDialogue>}
         <GridContainer>
-          <GridItem xs={12} sm={12} md={12}>
+          <GridItem xs={12} sm={12} md={7}>
             <Card>
-              <CardHeader>
-                <h4>{this.title}</h4>
+              <CardHeader color="warning">
+                <h4 className={classes.cardTitleWhite}>Users</h4>
               </CardHeader>
               <CardBody>
+                <Button onClick={() => this.showCreateUser()}>Create New User</Button>
                 <Table 
                   tableHeaderColor="warning"
                   tableHead={this.state.columnNames}
                   tableData={this.state.userNames}
                 />
+              </CardBody>
+            </Card>
+
+            <Card>
+              <CardHeader color="warning">
+                <h4 className={classes.cardTitleWhite}>Groups</h4>
+              </CardHeader>
+              <CardBody>
                 <Table
                   tableHeaderColor="warning"
                   tableHead={this.state.groupColumnNames}
@@ -155,15 +224,15 @@ class Userboard extends React.Component {
             </Card>
           </GridItem>
           
-          <GridItem >
+          <GridItem xs={12} sm={12} md={5}>
             <Card>
-
+              <CardBody>
+                Hadfkljasfl
+              </CardBody>
             </Card>
           </GridItem>
-
-
         </GridContainer>
-
+{/*
         <Card>
           <GridContainer>
             <GridItem xs={12} sm={12} md={3}>
@@ -203,10 +272,10 @@ class Userboard extends React.Component {
           <CardFooter>
             <Button onClick={() => this.handleCreateUser()}>Submit</Button>
           </CardFooter>
-        </Card>          
+                </Card>  */}        
       </div>
     );
   }
 }
 
-export default Userboard;
+export default withStyles (userboardStyle)(Userboard);
