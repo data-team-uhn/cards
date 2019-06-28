@@ -131,21 +131,22 @@
   // If present, it will be displayed right under the question text.
   - description (string)
 
-  // Is answering this question mandatory?
-  // Even if this is set to false, setting a value to "minAnswers" can still make the question mandatory.
-  // Similarly, if "multiple" is true and "minAnswers" is 0, setting this to true doesn't have any effect.
-  - mandatory (boolean) = false autocreated
-
-  // Are multiple answers permitted?
-  - multiple (boolean) = false autocreated
-
-  // Minimum selected answers, if this is a multiple-answer question.
-  // 0 or negative values means no minimum
+  // The minimum number of answers that must be selected.
+  // 0 or negative values means no minimum.
+  // If a strictly positive number is set, then the question becomes mandatory.
   - minAnswers (long) = '0' autocreated
 
-  // Maximum selected answers, if this is a multiple-answer question.
-  // 0 or negative values means no maximum
+  // The maximum number of answers that can be selected.
+  // 0 or negative values means no maximum.
   - maxAnswers (long) = '0' autocreated
+
+  // Mimimum and maximum answers that must be selected define how a question can be answered.
+  // The default is (-, -), no mimimum and no maximum, which means that any number of options can be selected -- optional checkboxes.
+  // (-, 1) means that at most one option can be selected, making the question an optional list to chose from -- optional radio boxes.
+  // (1, -) makes the question mandatory, at least one answer must be selected -- mandatory checkboxes.
+  // (1, 1) makes the question mandatory, exactly one option must be selected -- mandatory radio boxes.
+  // (N, -), where N > 1, makes this a list of checkboxes, and at least N must be checked.
+  // (N, M), where 1 < N <= M, makes this a list of checkboxes, and between N and M must be checked.
 
   // How are the answer options displayed?
   // The possible values are not limited, since support for new display modes can be added by other modules,
