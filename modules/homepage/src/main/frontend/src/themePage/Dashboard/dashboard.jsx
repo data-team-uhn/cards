@@ -4,6 +4,10 @@ import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core/styles";
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7527ef0... LFS-34: User Management Page
 // material-dashboard-react
 =======
 // core components
