@@ -110,6 +110,49 @@ export class CreateUserDialogue extends React.Component {
       );
     }
   }
+
+  export class DeleteUserDialogue extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+
+      handleDeleteUser (name) {
+        let url = "http://localhost:8080/system/userManager/user/"+name+".delete.html";
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization' : 'Basic' + btoa('admin:admin')
+          }
+        })
+        .catch((error) => {
+          if(error.getElementById("Status")===404) {
+            console.log("missing user 404");
+          }
+          else {
+            console.log("other error 505");
+          }
+          console.log(error);
+        })
+      }
+
+    render() {
+      return (
+        <Dialog
+          open={true}
+          onClose={(event) =>{event.preventDefault(); this.props.handleClose();}}
+        >
+          <DialogTitle>Delete {this.props.name}</DialogTitle>
+          <DialogContent>
+              Are you sure you want to delete {this.props.name}?
+          </DialogContent>
+          <DialogActions>
+           <Button onClick={() => this.handleDeleteUser(this.props.name)}>Delete</Button>
+           <Button onClick={() => this.props.handleClose()}>Cancel</Button>
+          </DialogActions>
+        </Dialog>
+      );
+    }
+  }
   
   export class CreateGroupDialogue extends React.Component {
     constructor(props) {
@@ -175,3 +218,48 @@ export class CreateUserDialogue extends React.Component {
       );
     }
   }
+
+export class DeleteGroupDialogue extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  handleDeleteGroup () {
+    let url = "http://localhost:8080/system/userManager/group/"+this.props.name+".delete.html";
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization':'Basic' + btoa('admin:admin')
+        }
+      }
+    )
+    .catch((error) => {
+        if(error.getElementById("Status")===404) {
+          console.log("missing group 404");
+        }
+        else {
+          console.log("other error 505");
+        }
+        console.log(error);
+      })
+  }
+
+  render() {
+    return(
+      <Dialog
+        open={true}
+        onClose={(event) => {event.preventDefault(); this.props.handleClose();}}
+      >
+        <DialogTitle>Delete {this.props.name}</DialogTitle>
+        <DialogContent>
+            Are you sure you want to delete group {this.props.name}?
+          <Button onClick={() => this.handleDeleteGroup(this.props.name)}>Delete</Button>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.handleClose()}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+}
