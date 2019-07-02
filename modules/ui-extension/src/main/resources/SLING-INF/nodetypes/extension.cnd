@@ -30,6 +30,8 @@
   // Properties:
   // The ID to the extension point that contains rendering code
   - lfs:extensionPointId (STRING) mandatory
+  // The URL to the extension point that contains rendering code
+  - lfs:extensionRenderURL (STRING)
   // The name of the extension
   - lfs:extensionName (STRING) mandatory
   // URL to the icon for the Sidebar
