@@ -103,9 +103,10 @@ var loadRemoteComponent = function(component) {
       if(request.status >= 200 && request.status < 400) {
         var remoteComponentSrc = request.responseText;
         var returnVal = window.eval(remoteComponentSrc);
+        console.log(returnVal.default);
         return resolve({
           reactComponent: returnVal.default,
-          path: component["lfs:extensionPointId"],
+          path: component["lfs:extensionRenderURL"],
           name: component["lfs:extensionName"],
           iconUrl: component["lfs:icon"]
         });
@@ -114,7 +115,7 @@ var loadRemoteComponent = function(component) {
       }
     };
 
-    request.open('GET', component['lfs:extensionPointId']);
+    request.open('GET', component['lfs:extensionRenderURL']);
     request.send();
   });
 };
