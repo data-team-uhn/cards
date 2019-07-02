@@ -39,6 +39,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import TextField from '@material-ui/core/TextField';
 
 import userboardStyle from './userboardStyle.jsx';
 
@@ -50,8 +51,8 @@ class CreateUserDialogue extends React.Component {
       newPwd: "",
       newPwdConfirm: ""
     };
-
   }
+
   handleCreateUser() {
     let formData = new FormData();
     formData.append(':name', this.state.newName);
@@ -74,41 +75,123 @@ class CreateUserDialogue extends React.Component {
     });
   }
 
-
   render(){
     return(
       <Dialog
         open= {true}
-        onClose= {() => this.props.handleClose()}
+        onClose= {(event) => {event.preventDefault(); this.props.handleClose();}}
       >
-        <DialogTitle>Title</DialogTitle>
+        <DialogTitle>Create New User</DialogTitle>
         <DialogContent>
         <form
           onSubmit={()=>this.handleCreateUser()}
         >
-          <label>
-            Name
-            <textarea value={this.state.newName} onChange={(event) => {this.setState({newName: event.target.value})}}></textarea>
-          </label>
-          <label>
-            Password
-            <textarea value={this.state.newPwd} onChange={(event) => {this.setState({newPwd: event.target.value})}}></textarea>
-          </label>
-          <label>
-            Confirm Password
-            <textarea value={this.state.newPwdConfirm} onChange={(event) => {this.setState({newPwdConfirm: event.target.value})}}></textarea>
-          </label>
-          <input type="submit" value="Submit" />
+          <GridContainer>
+            <GridItem xs={12} sm={12} md={4}>
+              <TextField
+                id="name"
+                name="name"
+                label="Name"
+                onChange={(event) => {this.setState({newName: event.target.value});}}
+              />
+            </GridItem>
+            <GridItem xs={12} sm={12} md={4} >
+              <TextField
+                id="password"
+                name="password"
+                label="Password"
+                onChange={(event) => {this.setState({newName: event.target.value});}}
+              />
+            </GridItem>
+            <GridItem xs={12} sm={12} md={4}>
+              <TextField
+                id="passwordconfirm"
+                name="passwordconfirm"
+                label="Confirm Password"
+                onChange={(event) => {this.setState({newName: event.target.value});}}
+              />
+            </GridItem>
+          </GridContainer>
+          <Button
+            type = "submit"
+          >
+            Create User
+          </Button>
         </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => this.handleClose()}>Close</Button>
+          <Button onClick={() => this.props.handleClose()}>Close</Button>
         </DialogActions>
       </Dialog>
     );
   }
 }
 
+class CreateGroupDialogue extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state={
+      newName: ""
+    };
+  }
+
+  handleCreateGroup() {
+    let formData = new FormData();
+    formData.append(':name', this.state.newName);
+
+    let url = "http://localhost:8080/system/userManager/group.create.json";
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic' + btoa('admin:admin')
+      },
+      body: formData
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
+
+  render() {
+    return(
+      <Dialog
+        open = {true}
+        onClose = {() => this.props.handleClose()}
+      >
+        <DialogTitle>Create New Group</DialogTitle>
+        <DialogContent>
+          <form
+            onSubmit = {() => this.handleCreateGroup()}
+          >
+            <GridContainer>
+              <GridItem>
+                <TextField
+                  id = "name"
+                  name = "name"
+                  label = "Name"
+                  onChange = {(event) => {this.setState({newName: event.target.value});}}
+                />
+              </GridItem>
+            </GridContainer>
+            <Button 
+              type = "submit"
+            >
+              Create Group
+            </Button>
+          </form>
+          
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.props.handleClose()}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+}
 
 class Userboard extends React.Component {
   constructor(props) {
@@ -119,7 +202,8 @@ class Userboard extends React.Component {
       groupColumnNames: ["Groups"],
       groupNames: [[]],
       currentUserName: "",
-      deployCreateUser: false
+      deployCreateUser: false,
+      deployCreateGroup: false
     };
   }
 
@@ -129,6 +213,14 @@ class Userboard extends React.Component {
 
   showCreateUser () {
     this.setState({deployCreateUser: true});
+  }
+
+  hideCreateGroup () {
+    this.setState({deployCreateGroup: false});
+  }
+
+  showCreateGroup () {
+    this.setState({deployCreateGroup: true});
   }
 
   handleLoadUsers () {
@@ -194,6 +286,7 @@ class Userboard extends React.Component {
     return (
       <div>
         {this.state.deployCreateUser && <CreateUserDialogue handleClose={() => this.hideCreateUser()}></CreateUserDialogue>}
+        {this.state.deployCreateGroup && <CreateGroupDialogue handleClose={() => this.hideCreateGroup()}></CreateGroupDialogue>}
         <GridContainer>
           <GridItem xs={12} sm={12} md={7}>
             <Card>
@@ -215,6 +308,7 @@ class Userboard extends React.Component {
                 <h4 className={classes.cardTitleWhite}>Groups</h4>
               </CardHeader>
               <CardBody>
+                <Button onClick={() => this.showCreateGroup()}>Create New Group</Button>
                 <Table
                   tableHeaderColor="warning"
                   tableHead={this.state.groupColumnNames}
