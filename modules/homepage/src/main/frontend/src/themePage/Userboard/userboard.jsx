@@ -26,7 +26,8 @@ import  {withStyles} from "@material-ui/core/styles";
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
-import Table from "material-dashboard-react/dist/components/Table/Table.js";
+//import Table from "material-dashboard-react/dist/components/Table/Table.js";
+
 import Card from "material-dashboard-react/dist/components/Card/Card.js";
 import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
 import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
@@ -35,8 +36,12 @@ import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter
 import CustomInput from "material-dashboard-react/dist/components/CustomInput/CustomInput.js";
 
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import userboardStyle from './userboardStyle.jsx';
 
@@ -46,14 +51,16 @@ class Userboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      columnNames: ["User"],
-      userNames: [[]],
-      groupColumnNames: ["Groups"],
-      groupNames: [[]],
+      userNames: [],
+      groupNames: [],
       currentUserName: "",
+      currentGroupName: "",
       deployCreateUser: false,
-      deployCreateGroup: false
+      deployCreateGroup: false,
     };
+
+    this.userColumnNames = [{id: "name", label: "User Names"}];
+    this.groupColumnNames = [{id: "name", label: "Group Names"}];
   }
 
   hideCreateUser () {
@@ -72,6 +79,10 @@ class Userboard extends React.Component {
     this.setState({deployCreateGroup: true});
   }
 
+  addName (name) {
+    return {name}
+  }
+
   handleLoadUsers () {
     fetch("http://"+"localhost:8080"+"/system/userManager/user.1.json", 
       {
@@ -86,8 +97,8 @@ class Userboard extends React.Component {
     .then((data) => {
       console.log(JSON.stringify(data));
       var names = [];
-      for (var name in data){
-        names.push([name]);
+      for (var username in data){
+        names.push(this.addName(username));
       }
       console.log(names);
       this.setState({userNames: names});
@@ -96,6 +107,10 @@ class Userboard extends React.Component {
     .catch((error) => {
       console.log(error);
     });
+  }
+
+  addGroup (name) {
+    return {name};
   }
 
   handleLoadGroups () {
@@ -112,7 +127,7 @@ class Userboard extends React.Component {
     .then((data) => {
       var groups = [];
       for (var group in data) {
-        groups.push([group]);
+        groups.push(this.addGroup(group));
       }
       this.setState({groupNames: groups});
     })
@@ -124,6 +139,14 @@ class Userboard extends React.Component {
   componentWillMount () {
     this.handleLoadUsers();
     this.handleLoadGroups();
+  }
+
+  handleUserRowClick(event, name) {
+    this.setState({currentUserName: name});
+  }
+
+  handleGroupRowClick(event, name) {
+    this.setState({currentGroupName: name});
   }
 
   render() {
@@ -141,38 +164,99 @@ class Userboard extends React.Component {
               </CardHeader>
               <CardBody>
                 <Button onClick={() => this.showCreateUser()}>Create New User</Button>
-                <Table 
-                  tableHeaderColor="warning"
-                  tableHead={this.state.columnNames}
-                  tableData={this.state.userNames}
-                />
+                <Table> 
+                  <TableHead>
+                    <TableRow>
+                      {this.userColumnNames.map(
+                        row => (
+                          <TableCell
+                            key = {row.id}
+                          >
+                            {row.label}
+                          </TableCell>
+                        )
+                      )}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {this.state.userNames.map(
+                      (row, index) => (
+                        <TableRow
+                          onClick={(event) => this.handleUserRowClick(event, row.name)}
+                          aria-checkted={row.name === this.state.currentUserName ? true: false}
+                          key = {row.name}
+                          selected={row.name === this.state.currentUserName ? true:false}
+                        >
+                          <TableCell>
+                            <Checkbox
+                              checked = {row.name === this.state.currentUserName ? true:false}
+                            />
+                          </TableCell>
+                          <TableCell>{row.name}</TableCell>
+                        </TableRow>
+                      )
+                    )}
+                  </TableBody>
+                </Table>
               </CardBody>
             </Card>
+          </GridItem>
+          <GridItem xs={12} sm={12} md={5}>
+            <Card>
+              <CardBody>
+                User Name: {this.state.currentUserName}
+              </CardBody>
+            </Card>
+          </GridItem>
+        </GridContainer>
 
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={7}>
             <Card>
               <CardHeader color="warning">
                 <h4 className={classes.cardTitleWhite}>Groups</h4>
               </CardHeader>
               <CardBody>
                 <Button onClick={() => this.showCreateGroup()}>Create New Group</Button>
-                <Table
-                  tableHeaderColor="warning"
-                  tableHead={this.state.groupColumnNames}
-                  tableData={this.state.groupNames}
-                />
+                <Table>
+                  <TableHead>
+                    {this.groupColumnNames.map(
+                      row => (
+                        <TableCell
+                          key = {row.id}
+                        >
+                          {row.label}
+                        </TableCell>
+                      )
+                    )}
+                  </TableHead>
+                  <TableBody>
+                  {this.state.groupNames.map(
+                      (row, index) => (
+                        <TableRow
+                          onClick={(event) => this.handleGroupRowClick(event, row.name)}
+                          aria-checkted={row.name === this.state.currentGroupName ? true: false}
+                          key = {row.name}
+                          selected={row.name === this.state.currentGroupName ? true:false}
+                        >
+                          <TableCell>
+                            <Checkbox
+                              checked = {row.name === this.state.currentGroupName ? true:false}
+                            />
+                          </TableCell>
+                          <TableCell>{row.name}</TableCell>
+                        </TableRow>
+                      )
+                    )}
+                  </TableBody>
+                </Table>
               </CardBody>
             </Card>
           </GridItem>
-          
           <GridItem xs={12} sm={12} md={5}>
             <Card>
               <CardBody>
-                Hadfkljasfl
-              </CardBody>
-            </Card>
-            <Card>
-              <CardBody>
-                djafkldjasfkljasfl
+                Group Name: {this.state.currentGroupName}
               </CardBody>
             </Card>
           </GridItem>
