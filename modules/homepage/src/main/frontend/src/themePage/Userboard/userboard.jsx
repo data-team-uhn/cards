@@ -35,163 +35,12 @@ import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter
 import CustomInput from "material-dashboard-react/dist/components/CustomInput/CustomInput.js";
 
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
+import TableBody from '@material-ui/core/TableBody';
 
 import userboardStyle from './userboardStyle.jsx';
 
-class CreateUserDialogue extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      newName: "",
-      newPwd: "",
-      newPwdConfirm: ""
-    };
-  }
-
-  handleCreateUser() {
-    let formData = new FormData();
-    formData.append(':name', this.state.newName);
-    formData.append('pwd', this.state.newPwd);
-    formData.append('pwdConfirm', this.state.newPwdConfirm);
-
-    console.log(formData);
-
-    let url = "http://localhost:8080/system/userManager/user.create.html";
-
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Basic' + btoa('admin:admin')
-      },
-      body:formData  
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-
-  render(){
-    return(
-      <Dialog
-        open= {true}
-        onClose= {(event) => {event.preventDefault(); this.props.handleClose();}}
-      >
-        <DialogTitle>Create New User</DialogTitle>
-        <DialogContent>
-        <form
-          onSubmit={()=>this.handleCreateUser()}
-        >
-          <GridContainer>
-            <GridItem xs={12} sm={12} md={4}>
-              <TextField
-                id="name"
-                name="name"
-                label="Name"
-                onChange={(event) => {this.setState({newName: event.target.value});}}
-              />
-            </GridItem>
-            <GridItem xs={12} sm={12} md={4} >
-              <TextField
-                id="password"
-                name="password"
-                label="Password"
-                onChange={(event) => {this.setState({newName: event.target.value});}}
-              />
-            </GridItem>
-            <GridItem xs={12} sm={12} md={4}>
-              <TextField
-                id="passwordconfirm"
-                name="passwordconfirm"
-                label="Confirm Password"
-                onChange={(event) => {this.setState({newName: event.target.value});}}
-              />
-            </GridItem>
-          </GridContainer>
-          <Button
-            type = "submit"
-          >
-            Create User
-          </Button>
-        </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => this.props.handleClose()}>Close</Button>
-        </DialogActions>
-      </Dialog>
-    );
-  }
-}
-
-class CreateGroupDialogue extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state={
-      newName: ""
-    };
-  }
-
-  handleCreateGroup() {
-    let formData = new FormData();
-    formData.append(':name', this.state.newName);
-
-    let url = "http://localhost:8080/system/userManager/group.create.json";
-
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Basic' + btoa('admin:admin')
-      },
-      body: formData
-    })
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
-  }
-
-  render() {
-    return(
-      <Dialog
-        open = {true}
-        onClose = {() => this.props.handleClose()}
-      >
-        <DialogTitle>Create New Group</DialogTitle>
-        <DialogContent>
-          <form
-            onSubmit = {() => this.handleCreateGroup()}
-          >
-            <GridContainer>
-              <GridItem>
-                <TextField
-                  id = "name"
-                  name = "name"
-                  label = "Name"
-                  onChange = {(event) => {this.setState({newName: event.target.value});}}
-                />
-              </GridItem>
-            </GridContainer>
-            <Button 
-              type = "submit"
-            >
-              Create Group
-            </Button>
-          </form>
-          
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => this.props.handleClose()}>Close</Button>
-        </DialogActions>
-      </Dialog>
-    );
-  }
-}
+import {CreateUserDialogue, CreateGroupDialogue} from './userboardDialogues.jsx';
 
 class Userboard extends React.Component {
   constructor(props) {
@@ -272,13 +121,10 @@ class Userboard extends React.Component {
     })
   }
 
-
   componentWillMount () {
     this.handleLoadUsers();
     this.handleLoadGroups();
   }
-
-  
 
   render() {
     const { classes } = this.props;
@@ -324,49 +170,14 @@ class Userboard extends React.Component {
                 Hadfkljasfl
               </CardBody>
             </Card>
+            <Card>
+              <CardBody>
+                djafkldjasfkljasfl
+              </CardBody>
+            </Card>
           </GridItem>
         </GridContainer>
-{/*
-        <Card>
-          <GridContainer>
-            <GridItem xs={12} sm={12} md={3}>
-              <CustomInput
-                labelText="Username"
-                id="username"
-                formControlProps={{
-                  fullWidth: true
-                }}
-                onChange={(event)=>{this.setState({newUserName: event.target.value})}}
-              />
-            </GridItem>
-          </GridContainer>
-            <GridContainer>
-              <GridItem xs={12} sm={12} md={6}>
-                <CustomInput
-                  labelText="Password"
-                  id="password"
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  onChange={(event) => {this.setState({newUserPwd: event.target.value}); console.log(changes);}}
-                />
-              </GridItem>
-              <GridItem xs={12} sm={12} md={6}>
-                <CustomInput
-                  labelText="Confirm Password"
-                  id="password-confirm"
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  onChange={(event)=>{this.setState({newUserPwdConfirm: event.target.value}); console.log("Changed");}}
-                />
-              </GridItem>
-            </GridContainer>
-            
-          <CardFooter>
-            <Button onClick={() => this.handleCreateUser()}>Submit</Button>
-          </CardFooter>
-                </Card>  */}        
+        
       </div>
     );
   }
