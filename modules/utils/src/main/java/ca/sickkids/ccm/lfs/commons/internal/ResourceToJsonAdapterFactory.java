@@ -65,9 +65,9 @@ public class ResourceToJsonAdapterFactory
         }
         Resource resource = (Resource) adaptable;
         ValueMap valuemap = resource.getValueMap();
-        JsonObjectBuilder objectbuilder = Json.createObjectBuilder();
-        valuemap.forEach((key, value) -> addObject(objectbuilder, key, value));
-        return type.cast(objectbuilder.build());
+        JsonObjectBuilder result = Json.createObjectBuilder();
+        valuemap.forEach((key, value) -> addObject(result, key, value));
+        return type.cast(result.build());
     }
 
     private void addObject(JsonObjectBuilder objectBuilder, String name, Object value)
