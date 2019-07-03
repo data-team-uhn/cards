@@ -26,14 +26,12 @@ import  {withStyles} from "@material-ui/core/styles";
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
-//import Table from "material-dashboard-react/dist/components/Table/Table.js";
 
 import Card from "material-dashboard-react/dist/components/Card/Card.js";
 import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
 import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
 import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter"
 //import { Avatar } from "@material-ui/core";
-import CustomInput from "material-dashboard-react/dist/components/CustomInput/CustomInput.js";
 
 import Button from '@material-ui/core/Button';
 import Table from '@material-ui/core/Table';
@@ -169,11 +167,19 @@ class Userboard extends React.Component {
   }
 
   handleUserRowClick(event, name) {
-    this.setState({currentUserName: name});
+    if (name === this.state.currentUserName) {
+      this.setState({currentUserName: ""});
+    } else {
+      this.setState({currentUserName: name});
+    }
   }
 
   handleGroupRowClick(event, name) {
-    this.setState({currentGroupName: name});
+    if (name === this.state.currentGroupName) {
+      this.setState({currentGroupName: ""});
+    } else {
+      this.setState({currentGroupName: name});
+    }
   }
 
   render() {
@@ -235,8 +241,10 @@ class Userboard extends React.Component {
             <Card>
               <CardBody>
                 User Name: {this.state.currentUserName}
-                <Button onClick={() => this.showDeleteUser()}>Delete User</Button>
-                <Button onClick={() => this.showChangeUserPassword()}>Change Password</Button>
+                <GridContainer>
+                  <Button onClick={() => this.showDeleteUser()}>Delete User</Button>
+                  <Button onClick={() => this.showChangeUserPassword()}>Change Password</Button>
+                </GridContainer>
               </CardBody>
             </Card>
           </GridItem>
@@ -289,7 +297,9 @@ class Userboard extends React.Component {
             <Card>
               <CardBody>
                 Group Name: {this.state.currentGroupName}
-                <Button onClick={() => this.showDeleteGroup()}>Delete Group</Button>
+                <GridContainer>
+                  <Button onClick={() => this.showDeleteGroup()}>Delete Group</Button>
+                </GridContainer> 
               </CardBody>
             </Card>
           </GridItem>
