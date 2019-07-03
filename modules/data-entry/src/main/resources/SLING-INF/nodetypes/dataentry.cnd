@@ -54,3 +54,457 @@
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
   // Set a default title
   - title (String) = "LFS data entries" mandatory autocreated
+
+//-----------------------------------------------------------------------------
+//
+// Questionnaires: the definition of forms to be filled in.
+//
+// A questionnaire consists of one or more questions or sections,
+// and sections in turn consist of one or more questions or subsections.
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// This defines predefined choices for answering a question.
+// Used only as children of a lfs:Question node.
+[lfs:AnswerOption] > sling:Folder, mix:referenceable
+  // Attributes
+
+  // The list of suboptions is orderable.
+  orderable
+  // We can use an option in a query.
+  query
+  // The main sub-item of an answer option is its label.
+  primaryitem label
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/AnswerOption" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each question is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // The text of this option displayed to the user.
+  // This is not the value that gets stored when it is selected for an aswer, the "value" property is.
+  // Optional, if the label is missing, the "value" is used instead.
+  - label (string)
+
+  // An optional longer explanation for the answer option.
+  // If present, a help icon will be displayed next to the label, and hovering/clicking it will display this help text.
+  - help (string)
+
+  // The value to store internally when this option is selected.
+  // Separating the label from the stored value allows relabeling options without having to update all existing answers.
+  // Mandatory, every option needs a stored value.
+  - value (string) mandatory
+
+  // Children
+
+  // Answer options can be hierarchical, so an option may have suboptions.
+  + * (lfs:AnswerOption) = lfs:AnswerOption
+
+//-----------------------------------------------------------------------------
+// This is the definition of a question.
+[lfs:Question] > sling:Folder, mix:referenceable
+  // Attributes
+
+  // The list of answer options is orderable.
+  orderable
+  // We can use questions in a query.
+  query
+  // The main sub-item of a question is its text.
+  primaryitem text
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Question" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each question is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // The text of the question.
+  // Mandatory, every question needs a text
+  - text (string) mandatory
+
+  // An optional longer explanation/description for the question.
+  // If present, it will be displayed right under the question text.
+  - description (string)
+
+  // The minimum number of answers that must be selected.
+  // 0 or negative values means no minimum.
+  // If a strictly positive number is set, then the question becomes mandatory.
+  - minAnswers (long) = '0' autocreated
+
+  // The maximum number of answers that can be selected.
+  // 0 or negative values means no maximum.
+  - maxAnswers (long) = '0' autocreated
+
+  // Mimimum and maximum answers that must be selected define how a question can be answered.
+  // The default is (-, -), no mimimum and no maximum, which means that any number of options can be selected -- optional checkboxes.
+  // (-, 1) means that at most one option can be selected, making the question an optional list to chose from -- optional radio boxes.
+  // (1, -) makes the question mandatory, at least one answer must be selected -- mandatory checkboxes.
+  // (1, 1) makes the question mandatory, exactly one option must be selected -- mandatory radio boxes.
+  // (N, -), where N > 1, makes this a list of checkboxes, and at least N must be checked.
+  // (N, M), where 1 < N <= M, makes this a list of checkboxes, and between N and M must be checked.
+
+  // How are the answer options displayed?
+  // The possible values are not limited, since support for new display modes can be added by other modules,
+  // but at least the following are supported:
+  // - none: the question is not displayed at all in the frontend
+  // - hidden: the question is hidden, but it may be auto-filled by other means, such as javascript, data import, or dynamic computation
+  // - input: a simple input field where the user can type an answer
+  // - textbox: a large textbox for longer strings
+  // - list: a list of options that the user can choose from
+  // - list+input: a list of options, plus an "other" input where the user can add a non-standard answer
+  - displayMode (string) = 'input' autocreated
+
+  // Which type of data is being recorded?
+  // The possible values are not limited, since support for new data types can be added by other modules,
+  // but at least the following are supported:
+  // - text: simple text, either from a list of predefined options, or free text entered by the user
+  // - long, double, decimal: a number
+  // - date: a date, with optional time
+  // - boolean: a yes/no answer
+  // - vocabulary: a term from a vocabulary
+  // - computed: a derived value automatically computed based on a formula applied on other values in the questionaire
+  // The answer type can be further refined with the following properties
+  - dataType (string) = 'text' mandatory autocreated
+
+  // For text answers, a regular expression that can restrict/validate the allowed answers.
+  - validationRegexp (string)
+
+  // For numeric answers, the minimum and maximum allowed values
+  - minValue (double)
+  - maxValue (double)
+
+  // For date answers, the format in which to display (and accept as input) the date.
+  // This is a SimpleDateFormat compatible string.
+  - dateFormat (string)
+
+  // For vocabulary answers, the source vocabulary (or category of vocabularies) in which to search.
+  // A simple label like "MONDO", or a value prefixed by "vocabulary:" such as "vocabulary:MONDO" identifies a specific vocabulary.
+  // A value prefixed by "category:" such as "category:diseases" identifies a vocabulary category.
+  - sourceVocabulary (string)
+
+  // For vocabulary answers, an extra filter to apply to the query, which can be used, for example,
+  // to restrict results to a specific sub-branch, or a specific type of terms.
+  // If defined, this must be a valid solr query that can be placed in the "fq" field.
+  - vocabularyFilter (string)
+
+  // Since not all properties are mandatory, customizing a question requires defining only
+  // the properties of interest.
+  //
+  // Note that the node type does not prevent adding other properties not defined above,
+  // so for a custom question type needing other customization options it is enough to
+  // simply add new properties.
+
+  // Children
+
+  // The list of predefined options displayed to the user.
+  // This applies mostly to text answers, but can also be used for the other answer types as well, for example as a list of dates to choose from, or a list of numbers, or a list of vocabulary terms.
+  + * (lfs:AnswerOption) = lfs:AnswerOption
+
+//-----------------------------------------------------------------------------
+// A section is a collection of questions.
+[lfs:Section] > sling:Folder, mix:referenceable
+  // Attributes
+
+  // The list of subsections and questions is orderable.
+  orderable
+  // We can use sections in a query.
+  query
+  // The main sub-item of a section is its label.
+  primaryitem label
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Section" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each section is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A label for this section. Optional, it is possible not to have a label.
+  // If present, it will be displayed to the user above the questions.
+  - label (string)
+
+  // An optional longer description for this section.
+  // If present, it will be displayed to the user between the label and the questions.
+  - description (string)
+
+  // Can this section be repeated?
+  - recurrent (boolean) = false autocreated
+
+  // Children
+
+  // The questions and sub-sections that make up this section.
+  + * (lfs:Question, lfs:Section) = lfs:Question
+
+//-----------------------------------------------------------------------------
+// A questionnaire is a collection of sections and questions.
+[lfs:Questionnaire] > sling:Folder, mix:referenceable, mix:versionable
+  // Attributes
+
+  // The list of sections and questions is orderable.
+  orderable
+  // We can use questionnaires in a query.
+  query
+  // The main sub-item of a questionnaire is its title.
+  primaryitem title
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Questionnaire" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each questionnaire is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A title for this questionnaire.
+  // Mandatory, each questionnaire must have a title.
+  - title (string) mandatory
+
+  // An optional longer description for this questionnaire.
+  // If present, it will be displayed to the user between the label and the sections.
+  - description (string)
+
+  // Children
+
+  // The sections and standalone questions that make up this questionnaire.
+  + * (lfs:Section, lfs:Question) = lfs:Section
+
+//-----------------------------------------------------------------------------
+// The homepage for the questionnaires space.
+[lfs:QuestionnairesHomepage] > sling:Folder
+  // Attributes:
+
+  // We can use this homepage in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/QuestionnairesHomepage" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the QuestionnairesHomepage is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // Set a default title.
+  - title (String) = "Questionnaires" mandatory autocreated
+
+//-----------------------------------------------------------------------------
+//
+// Forms: instances of filled in questionnaires.
+//
+// A form consists of one or more answers.
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Base nodetype for structured answers.
+// Answers will be used as child nodes of a record, one node per answer.
+// This means that for a given question, the answer may either:
+// - not exist, if the question isn't answered yet
+// - have a single child node referencing that question, if the question expects a single choice
+// - have multiple child nodes referencing that question, if it allows more than one choice, one node for each answer
+// - have multiple child nodes referencing that question AND an identifier for the question instance,
+//   if the question can be repeated, for example a question that must be answered for each relative,
+//   or for each occurrence of an event
+// The name of each answer node is not relevant and will be automatically generated, only the reference to the question matters.
+// The meaning of an answer is defined by the question, so most of the display properties are defined in the question, not in the answer.
+// In other words, an Answer node is just simple storage.
+[lfs:Answer] > sling:Folder
+  // Attributes
+
+  // This is an abstract node type, specific answer types must be defined.
+  abstract
+  // Even though we don't expect child nodes for an answer, let's assume they will need to be orderable.
+  orderable
+  // We can use answers in a query.
+  query
+  // The main sub-item of an answer is its value.
+  primaryitem value
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each answer is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A reference to the question being answered.
+  // Mandatory, every answer needs a question.
+  // No full text search, since it's just a non-textual reference.
+  - question (reference) mandatory nofulltext
+
+  // An optional additional identifier for the question being answered, in case of questions allowing more than one answer.
+  - questionInstanceLabel (string)
+
+  // The value, undefined yet, must be properly typed by the concrete subtypes.
+  - value (undefined)
+
+  // We don't define any subchildren.
+
+//-----------------------------------------------------------------------------
+// Yes/No
+[lfs:BooleanAnswer] > lfs:Answer
+  - value (boolean)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/BooleanAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
+// Plain text
+[lfs:TextAnswer] > lfs:Answer
+  - value (string)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/TextAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
+// Whole numbers
+[lfs:LongAnswer] > lfs:Answer
+  - value (long)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/LongAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
+// Real numbers, stored as lossy "double" values.
+// Should not be used to store values where precision is paramount, see DecimalAnswer instead.
+[lfs:DoubleAnswer] > lfs:Answer
+  - value (double)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/DoubleAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
+// Decimal numbers, guaranteed to store the exact value entered.
+[lfs:DecimalAnswer] > lfs:Answer
+  - value (decimal)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/DecimalAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
+// Forms: a filled in questionnaire.
+[lfs:Form] > sling:Folder, mix:referenceable, mix:versionable
+  // Attributes
+
+  // The answers in a form must be orderable.
+  orderable
+  // We can use forms in a query.
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Form" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each form is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A reference to the questionnaire being filled in.
+  // Mandatory, every form has a questionnaire.
+  // No full text search, since it's just a non-textual reference.
+  - questionnaire (reference) mandatory nofulltext
+
+  // A reference to the subject that this form is (primarily) about.
+  // Although recommended to have a subject, this is optional for now.
+  - subject (reference) nofulltext
+
+  // Children
+
+  // The answers recorded in this form.
+  + * (lfs:Answer)
+
+//-----------------------------------------------------------------------------
+// The homepage for the Forms space.
+[lfs:FormsHomepage] > sling:Folder
+  // Attributes:
+
+  // We can use this homepage in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/FormsHomepage" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the FormsHomepage is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // Set a default title.
+  - title (String) = "Data" mandatory autocreated
+
+  // Children
+
+  // The list of forms.
+  + * (lfs:Form) = lfs:Form
+
+//-----------------------------------------------------------------------------
+//
+// Subjects: entities about which data is collected.
+// For example: persons, tissue samples, model organisms, individual animals...
+//
+// There is not much to collect in a subject directly, since most of the data will come from forms.
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Subjects: the description of a subject.
+[lfs:Subject] > sling:Folder, mix:referenceable, mix:versionable
+  // Attributes
+
+  // We can use subjects in a query.
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Subject" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each subject is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A main identifier for the subject.
+  // Each subject has an internal unique identifier, but most subjects should also have
+  // a main identifier, such as a MRN.
+  // Additional identifiers may be defined in forms.
+  - identifier (STRING)
+
+//-----------------------------------------------------------------------------
+// The homepage for the Subjects space.
+[lfs:SubjectsHomepage] > sling:Folder
+  // Attributes:
+
+  // We can use this homepage in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/SubjectsHomepage" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the SubjectsHomepage is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // Set a default title.
+  - title (String) = "Subjects" mandatory autocreated
