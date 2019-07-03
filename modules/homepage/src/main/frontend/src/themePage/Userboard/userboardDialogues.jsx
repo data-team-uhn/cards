@@ -27,6 +27,13 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import Checkbox from '@material-ui/core/Checkbox'
+
 export class CreateUserDialogue extends React.Component {
     constructor(props) {
       super(props);
@@ -71,7 +78,7 @@ export class CreateUserDialogue extends React.Component {
             onSubmit={()=>this.handleCreateUser()}
           >
             <GridContainer>
-              <GridItem>
+              <GridItem xs={4} sm={4} md={4}>
                 <TextField
                   id="name"
                   name="name"
@@ -79,7 +86,7 @@ export class CreateUserDialogue extends React.Component {
                   onChange={(event) => {this.setState({newName: event.target.value});}}
                 />
               </GridItem>
-              <GridItem >
+              <GridItem xs={4} sm={4} md={4}>
                 <TextField
                   id="password"
                   name="password"
@@ -87,7 +94,7 @@ export class CreateUserDialogue extends React.Component {
                   onChange={(event) => {this.setState({newPwd: event.target.value});}}
                 />
               </GridItem>
-              <GridItem >
+              <GridItem xs={4} sm={4} md={4}>
                 <TextField
                   id="passwordconfirm"
                   name="passwordconfirm"
@@ -205,7 +212,7 @@ export class CreateUserDialogue extends React.Component {
               onSubmit={() => this.handlePasswordChange()}
             >
               <GridContainer>
-                <GridItem>
+                <GridItem xs={4} sm={4} md={4}>
                   <TextField
                     id= "oldpwd"
                     name="oldpwd"
@@ -213,7 +220,7 @@ export class CreateUserDialogue extends React.Component {
                     onChange={(event) => {this.setState({oldPwd: event.target.value});}}
                   />
                 </GridItem>
-                <GridItem>
+                <GridItem xs={4} sm={4} md={4}>
                   <TextField
                     id = "newpwd"
                     name="newpwd"
@@ -221,7 +228,7 @@ export class CreateUserDialogue extends React.Component {
                     onChange={(event) => {this.setState({newPwd: event.target.value});}}
                   />
                 </GridItem>
-                <GridItem>
+                <GridItem xs={10} sm={10} md={10}>
                   <TextField
                     id="newpwdconfirm"
                     name="newpwdconfirm"
@@ -354,3 +361,127 @@ export class DeleteGroupDialogue extends React.Component {
     );
   }
 }
+/*
+export class AddUserToGroupDialogue extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      userNames: [],
+      selectedUsers: []
+    }
+  }
+
+  addName (name) {
+    return {name}
+  }
+
+  handleLoadUsers () {
+    fetch("http://"+"localhost:8080"+"/system/userManager/user.1.json", 
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Basic ' + btoa('admin:admin')
+        }
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      var names = [];
+      for (var username in data){
+        names.push(this.addName(username));
+      }
+      this.setState({userNames: names});
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
+  handleAddUsers () {
+    let url = "http://localhost:8080/system/userManager/group/" + this.props.name + ".update.html";
+
+    let formData = new FormData();
+    for (var user in this.state.selectedUsers) {
+      formData.append(':member', user);
+    }
+
+    fetch(url,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization' : 'Basic' + btoa('admin:admin')
+        },
+        body: formData
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  }
+
+  componentWillMount () {
+    this.handleLoadUsers();
+  }
+
+  handleSelectRowClick(event, row) {
+    let chosens = this.state.selectedUsers;
+
+    
+  }
+
+  handleDeselectRowClick(event, row) {
+
+  }
+
+  render () {
+    <Dialog>
+      <DialogTitle>
+        Add Users to Group
+      </DialogTitle>
+      <DialogContent>
+        <Table>
+          <TableHead>
+          </TableHead>
+          <TableBody>
+            {
+              this.state.userNames.map(
+                (row, index) => (
+                  <TableRow>
+                    <TableCell>
+                      <Checkbox
+                        checked = {row.checked}
+                      />
+                    </TableCell>
+                    <TableCell>{row.name}</TableCell>
+                  </TableRow>
+                )
+              )
+            }
+          </TableBody>
+        </Table>
+      </DialogContent>
+      <DialogActions>
+
+      </DialogActions>
+    </Dialog>
+  }
+}
+
+export class DeleteUserToGroupDialogue extends React.Component {
+  constructor (props) {
+
+  }
+}
+
+dictionary spellcheck
+
+sendemail ajax
+
+asking based on backrground; short, back tecnical algorithmic, 
+
+2math 2quator , 4 bridge time question
+
+scoping & boolean logic
+linked lists
+*/
