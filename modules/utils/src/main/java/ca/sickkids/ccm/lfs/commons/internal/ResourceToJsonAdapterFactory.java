@@ -36,6 +36,8 @@ import org.apache.sling.api.adapter.AdapterFactory;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * AdapterFactory that converts Apache Sling resources to JsonObjects.
@@ -53,6 +55,8 @@ import org.osgi.service.component.annotations.Component;
 public class ResourceToJsonAdapterFactory
     implements AdapterFactory
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceToJsonAdapterFactory.class);
+
     @Override
     public <A> A getAdapter(Object adaptable, Class<A> type)
     {
@@ -143,8 +147,7 @@ public class ResourceToJsonAdapterFactory
         try {
             objectBuilder.add(name, IOUtils.toString(value, StandardCharsets.UTF_8));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.warn("Failed to read InputStream: {}", e.getMessage(), e);
         }
     }
 
@@ -154,8 +157,7 @@ public class ResourceToJsonAdapterFactory
         try {
             arrayBuilder.add(IOUtils.toString(value, StandardCharsets.UTF_8));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.warn("Failed to read InputStream: {}", e.getMessage(), e);
         }
     }
 
