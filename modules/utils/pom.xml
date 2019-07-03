@@ -22,22 +22,48 @@
 
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-parent</artifactId>
+    <artifactId>lfs-modules</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-modules</artifactId>
-  <packaging>pom</packaging>
-  <name>LFS Modules</name>
+  <artifactId>lfs-utils</artifactId>
+  <packaging>bundle</packaging>
+  <name>LFS - Utilities</name>
 
-  <modules>
-    <module>startup-customization</module>
-    <module>commons</module>
-    <module>ui-extension</module>
-    <module>login</module>
-    <module>homepage</module>
-    <module>data-entry</module>
-    <module>ldap-support</module>
-    <module>utils</module>
-  </modules>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.api</artifactId>
+      <version>2.8.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.json</groupId>
+      <artifactId>javax.json-api</artifactId>
+      <version>1.1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.component.annotations</artifactId>
+      <version>1.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+  </dependencies>
 </project>
