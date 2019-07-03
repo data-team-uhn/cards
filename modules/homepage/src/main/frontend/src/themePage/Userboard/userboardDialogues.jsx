@@ -84,7 +84,7 @@ export class CreateUserDialogue extends React.Component {
                   id="password"
                   name="password"
                   label="Password"
-                  onChange={(event) => {this.setState({newName: event.target.value});}}
+                  onChange={(event) => {this.setState({newPwd: event.target.value});}}
                 />
               </GridItem>
               <GridItem >
@@ -92,7 +92,7 @@ export class CreateUserDialogue extends React.Component {
                   id="passwordconfirm"
                   name="passwordconfirm"
                   label="Confirm Password"
-                  onChange={(event) => {this.setState({newName: event.target.value});}}
+                  onChange={(event) => {this.setState({newPwdConfirm: event.target.value});}}
                 />
               </GridItem>
             </GridContainer>
@@ -148,6 +148,97 @@ export class CreateUserDialogue extends React.Component {
           <DialogActions>
            <Button onClick={() => this.handleDeleteUser(this.props.name)}>Delete</Button>
            <Button onClick={() => this.props.handleClose()}>Cancel</Button>
+          </DialogActions>
+        </Dialog>
+      );
+    }
+  }
+
+  export class ChangeUserPasswordDialogue extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        oldPwd: "",
+        newPwd: "",
+        newPwdConfirm: ""
+      }
+    }
+
+    handlePasswordChange(name) {
+      let formData = new FormData();
+      formData.append('oldPwd', this.state.oldPwd);
+      formData.append('newPwd', this.state.newPwd);
+      formData.append('newPwdConfirm', this.state.newPwdConfirm);
+      let url = "http://localhost:8080/system/userManager/user/" + this.props.name + ".changePassword.html";
+    
+      console.log(formData);
+      fetch (url, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Basic' + btoa('admin:admin')
+        },
+        body: formData
+      })
+      .then(() =>{
+        //alert("Password has been changed");
+      })
+      .catch ((error) =>{
+        if(error.getElementById("Status")===404) {
+          console.log("missing user 404");
+        }
+        else {
+          console.log("other error 505");
+        }
+        console.log(error);
+      });
+    }
+
+    render () {
+      return(
+        <Dialog
+          open = {true}
+          onClose={() => this.props.handleClose()}
+        >
+          <DialogTitle>Change User Password</DialogTitle>
+          <DialogContent>
+            <form
+              onSubmit={() => this.handlePasswordChange()}
+            >
+              <GridContainer>
+                <GridItem>
+                  <TextField
+                    id= "oldpwd"
+                    name="oldpwd"
+                    label="Old Password"
+                    onChange={(event) => {this.setState({oldPwd: event.target.value});}}
+                  />
+                </GridItem>
+                <GridItem>
+                  <TextField
+                    id = "newpwd"
+                    name="newpwd"
+                    label="New Password"
+                    onChange={(event) => {this.setState({newPwd: event.target.value});}}
+                  />
+                </GridItem>
+                <GridItem>
+                  <TextField
+                    id="newpwdconfirm"
+                    name="newpwdconfirm"
+                    label="Confirm New Password"
+                    onChange={(event) => {this.setState({newPwdConfirm: event.target.value});}}
+                  />
+                </GridItem>  
+              </GridContainer>
+              <Button
+                type="submit"
+              >
+                Change User Password
+              </Button>
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.props.handleClose()}>Close</Button>
           </DialogActions>
         </Dialog>
       );
