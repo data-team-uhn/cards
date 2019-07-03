@@ -29,7 +29,6 @@ import java.util.Calendar;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import org.apache.commons.io.IOUtils;
@@ -55,7 +54,6 @@ public class ResourceToJsonAdapterFactory
     implements AdapterFactory
 {
     @Override
-    @SuppressWarnings("unchecked")
     public <A> A getAdapter(Object adaptable, Class<A> type)
     {
         if (adaptable == null) {
@@ -65,8 +63,7 @@ public class ResourceToJsonAdapterFactory
         ValueMap valuemap = resource.getValueMap();
         JsonObjectBuilder objectbuilder = Json.createObjectBuilder();
         valuemap.forEach((key, value) -> addObject(objectbuilder, key, value));
-        JsonObject jsonobject = objectbuilder.build();
-        return (A) jsonobject;
+        return type.cast(objectbuilder.build());
     }
 
     private void addObject(JsonObjectBuilder objectBuilder, String name, Object value)
