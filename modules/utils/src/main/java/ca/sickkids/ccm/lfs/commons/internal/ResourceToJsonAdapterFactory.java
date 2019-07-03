@@ -145,7 +145,8 @@ public class ResourceToJsonAdapterFactory
     private void addInputStream(JsonObjectBuilder objectBuilder, String name, InputStream value)
     {
         try {
-            objectBuilder.add(name, IOUtils.toString(value, StandardCharsets.UTF_8));
+            // We're supposed to be transforming raw bytes into an Unicode string; ISO 8859-1 is a subset of Unicode
+            objectBuilder.add(name, IOUtils.toString(value, StandardCharsets.ISO_8859_1));
         } catch (IOException e) {
             LOGGER.warn("Failed to read InputStream: {}", e.getMessage(), e);
         }
@@ -155,7 +156,8 @@ public class ResourceToJsonAdapterFactory
     private void addInputStream(JsonArrayBuilder arrayBuilder, InputStream value)
     {
         try {
-            arrayBuilder.add(IOUtils.toString(value, StandardCharsets.UTF_8));
+            // We're supposed to be transforming raw bytes into an Unicode string; ISO 8859-1 is a subset of Unicode
+            arrayBuilder.add(IOUtils.toString(value, StandardCharsets.ISO_8859_1));
         } catch (IOException e) {
             LOGGER.warn("Failed to read InputStream: {}", e.getMessage(), e);
         }
