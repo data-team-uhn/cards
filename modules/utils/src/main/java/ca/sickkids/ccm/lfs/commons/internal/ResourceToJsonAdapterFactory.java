@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package ca.sickkids.ccm.lfs.commons.internal;
 
 import java.io.IOException;
@@ -44,14 +43,11 @@ import org.slf4j.LoggerFactory;
  *
  * @version $Id$
  */
-
 @Component(service = { AdapterFactory.class },
-
     property = {
-    "adaptables=org.apache.sling.api.resource.Resource",
-    "adapters=javax.json.JsonObject"
-    })
-
+        "adaptables=org.apache.sling.api.resource.Resource",
+        "adapters=javax.json.JsonObject"
+})
 public class ResourceToJsonAdapterFactory
     implements AdapterFactory
 {
