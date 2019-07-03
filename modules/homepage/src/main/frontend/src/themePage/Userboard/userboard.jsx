@@ -45,7 +45,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 import userboardStyle from './userboardStyle.jsx';
 
-import {CreateUserDialogue, CreateGroupDialogue} from './userboardDialogues.jsx';
+import {CreateUserDialogue, DeleteUserDialogue, ChangeUserPasswordDialogue, CreateGroupDialogue, DeleteGroupDialogue} from './userboardDialogues.jsx';
 
 class Userboard extends React.Component {
   constructor(props) {
@@ -56,7 +56,10 @@ class Userboard extends React.Component {
       currentUserName: "",
       currentGroupName: "",
       deployCreateUser: false,
+      deployDeleteUser: false,
+      deployChangeUserPassword: false,
       deployCreateGroup: false,
+      deployDeleteGroup: false,
     };
 
     this.userColumnNames = [{id: "name", label: "User Names"}];
@@ -71,12 +74,36 @@ class Userboard extends React.Component {
     this.setState({deployCreateUser: true});
   }
 
+  hideDeleteUser () {
+    this.setState({deployDeleteUser: false});
+  }
+
+  showDeleteUser () {
+    this.setState({deployDeleteUser: true});
+  }
+
+  hideChangeUserPassword () {
+    this.setState({deployChangeUserPassword: false});
+  }
+
+  showChangeUserPassword () {
+    this.setState({deployChangeUserPassword: true});
+  }
+ 
   hideCreateGroup () {
     this.setState({deployCreateGroup: false});
   }
 
   showCreateGroup () {
     this.setState({deployCreateGroup: true});
+  }
+
+  hideDeleteGroup () {
+    this.setState({deployDeleteGroup: false});
+  }
+
+  showDeleteGroup () {
+    this.setState({deployDeleteGroup: true});
   }
 
   addName (name) {
@@ -155,7 +182,10 @@ class Userboard extends React.Component {
     return (
       <div>
         {this.state.deployCreateUser && <CreateUserDialogue handleClose={() => this.hideCreateUser()}></CreateUserDialogue>}
+        {this.state.deployDeleteUser && <DeleteUserDialogue handleClose={() => this.hideDeleteUser()} name={this.state.currentUserName}></DeleteUserDialogue>}
+        {this.state.deployChangeUserPassword && <ChangeUserPasswordDialogue handleClose={() => this.hideChangeUserPassword()} name={this.state.currentUserName}></ChangeUserPasswordDialogue>}
         {this.state.deployCreateGroup && <CreateGroupDialogue handleClose={() => this.hideCreateGroup()}></CreateGroupDialogue>}
+        {this.state.deployDeleteGroup && <DeleteGroupDialogue handleClose={() => this.hideDeleteGroup()} name={this.state.currentGroupName}></DeleteGroupDialogue>}
         <GridContainer>
           <GridItem xs={12} sm={12} md={7}>
             <Card>
@@ -205,6 +235,8 @@ class Userboard extends React.Component {
             <Card>
               <CardBody>
                 User Name: {this.state.currentUserName}
+                <Button onClick={() => this.showDeleteUser()}>Delete User</Button>
+                <Button onClick={() => this.showChangeUserPassword()}>Change Password</Button>
               </CardBody>
             </Card>
           </GridItem>
@@ -257,6 +289,7 @@ class Userboard extends React.Component {
             <Card>
               <CardBody>
                 Group Name: {this.state.currentGroupName}
+                <Button onClick={() => this.showDeleteGroup()}>Delete Group</Button>
               </CardBody>
             </Card>
           </GridItem>
