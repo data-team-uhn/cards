@@ -87,6 +87,7 @@ public class ResourceToJsonAdapterFactory
             // Corresponding to JCR DECIMAL property
             objectBuilder.add(name, (BigDecimal) value);
         } else if (value instanceof BigInteger) {
+            // Also corresponding to JCR DECIMAL property
             objectBuilder.add(name, (BigInteger) value);
         } else {
             addPrimitive(objectBuilder, name, value);
@@ -117,6 +118,7 @@ public class ResourceToJsonAdapterFactory
             // Corresponding to JCR DECIMAL property
             arrayBuilder.add((BigDecimal) value);
         } else if (value instanceof BigInteger) {
+            // Also corresponding to JCR DECIMAL property
             arrayBuilder.add((BigInteger) value);
         } else {
             addPrimitive(arrayBuilder, value);
@@ -126,7 +128,7 @@ public class ResourceToJsonAdapterFactory
     // for object
     private void addCalendar(JsonObjectBuilder objectBuilder, String name, Calendar value)
     {
-        // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
+        // Use the ISO 8601 date+time format
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(value.getTimeZone());
         objectBuilder.add(name, sdf.format(value.getTime()));
@@ -135,7 +137,7 @@ public class ResourceToJsonAdapterFactory
     // for array
     private void addCalendar(JsonArrayBuilder arrayBuilder, Calendar value)
     {
-        // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
+        // Use the ISO 8601 date+time format
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(value.getTimeZone());
         arrayBuilder.add(sdf.format(value.getTime()));
