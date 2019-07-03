@@ -77,97 +77,97 @@ public class ResourceToJsonAdapterFactory
         return null;
     }
 
-    private void addObject(JsonObjectBuilder objectbuilder, String name, Object obj)
+    private void addObject(JsonObjectBuilder objectBuilder, String name, Object value)
     {
-        if (obj == null) {
-            objectbuilder.addNull(name);
-        } else if (obj instanceof Object[]) {
+        if (value == null) {
+            objectBuilder.addNull(name);
+        } else if (value instanceof Object[]) {
             // For multi-value properties
-            addArray(objectbuilder, name, obj);
-        } else if (obj instanceof Calendar) {
+            addArray(objectBuilder, name, value);
+        } else if (value instanceof Calendar) {
             // Corresponding to JCR DATE property
-            addCalendar(objectbuilder, name, obj);
-        } else if (obj instanceof InputStream) {
+            addCalendar(objectBuilder, name, value);
+        } else if (value instanceof InputStream) {
             // Corresponding to JCR BINARY property
-            addInputStream(objectbuilder, name, obj);
-        } else if (obj instanceof BigDecimal) {
+            addInputStream(objectBuilder, name, value);
+        } else if (value instanceof BigDecimal) {
             // Corresponding to JCR DECIMAL property
-            objectbuilder.add(name, (BigDecimal) obj);
-        } else if (obj instanceof BigInteger) {
-            objectbuilder.add(name, (BigInteger) obj);
+            objectBuilder.add(name, (BigDecimal) value);
+        } else if (value instanceof BigInteger) {
+            objectBuilder.add(name, (BigInteger) value);
         } else {
-            addPrimitive(objectbuilder, name, obj);
+            addPrimitive(objectBuilder, name, value);
         }
     }
 
-    private void addArrayElement(JsonArrayBuilder arraybuilder, Object obj)
+    private void addArrayElement(JsonArrayBuilder arrayBuilder, Object value)
     {
-        if (obj == null) {
-            arraybuilder.addNull();
-        } else if (obj instanceof Calendar) {
+        if (value == null) {
+            arrayBuilder.addNull();
+        } else if (value instanceof Calendar) {
             // Corresponding to JCR DATE property
-            addCalendar(arraybuilder, obj);
-        } else if (obj instanceof InputStream) {
+            addCalendar(arrayBuilder, value);
+        } else if (value instanceof InputStream) {
             // Corresponding to JCR BINARY property
-            addInputStream(arraybuilder, obj);
-        } else if (obj instanceof BigDecimal) {
+            addInputStream(arrayBuilder, value);
+        } else if (value instanceof BigDecimal) {
             // Corresponding to JCR DECIMAL property
-            arraybuilder.add((BigDecimal) obj);
-        } else if (obj instanceof BigInteger) {
-            arraybuilder.add((BigInteger) obj);
+            arrayBuilder.add((BigDecimal) value);
+        } else if (value instanceof BigInteger) {
+            arrayBuilder.add((BigInteger) value);
         } else {
-            addPrimitive(arraybuilder, obj);
+            addPrimitive(arrayBuilder, value);
         }
     }
 
     // for object
-    private void addPrimitive(JsonObjectBuilder objectbuilder, String name, Object obj)
+    private void addPrimitive(JsonObjectBuilder objectBuilder, String name, Object value)
     {
-        if (obj instanceof Boolean) {
-            objectbuilder.add(name, (boolean) obj);
-        } else if (obj instanceof Integer) {
-            objectbuilder.add(name, (int) obj);
-        } else if (obj instanceof Long) {
-            objectbuilder.add(name, (long) obj);
-        } else if (obj instanceof Double) {
-            objectbuilder.add(name, (double) obj);
+        if (value instanceof Boolean) {
+            objectBuilder.add(name, (boolean) value);
+        } else if (value instanceof Integer) {
+            objectBuilder.add(name, (int) value);
+        } else if (value instanceof Long) {
+            objectBuilder.add(name, (long) value);
+        } else if (value instanceof Double) {
+            objectBuilder.add(name, (double) value);
         } else {
-            objectbuilder.add(name, obj.toString());
+            objectBuilder.add(name, value.toString());
         }
     }
 
     // for array
-    private void addPrimitive(JsonArrayBuilder arraybuilder, Object obj)
+    private void addPrimitive(JsonArrayBuilder arrayBuilder, Object value)
     {
-        if (obj instanceof Boolean) {
-            arraybuilder.add((boolean) obj);
-        } else if (obj instanceof Integer) {
-            arraybuilder.add((int) obj);
-        } else if (obj instanceof Long) {
-            arraybuilder.add((long) obj);
-        } else if (obj instanceof Double) {
-            arraybuilder.add((double) obj);
+        if (value instanceof Boolean) {
+            arrayBuilder.add((boolean) value);
+        } else if (value instanceof Integer) {
+            arrayBuilder.add((int) value);
+        } else if (value instanceof Long) {
+            arrayBuilder.add((long) value);
+        } else if (value instanceof Double) {
+            arrayBuilder.add((double) value);
         } else {
-            arraybuilder.add(obj.toString());
+            arrayBuilder.add(value.toString());
         }
     }
 
     // for object
-    private void addArray(JsonObjectBuilder objectbuilder, String name, Object obj)
+    private void addArray(JsonObjectBuilder objectBuilder, String name, Object values)
     {
-        Object[] objarray = (Object[]) obj;
-        JsonArrayBuilder arraybuilder = Json.createArrayBuilder();
+        Object[] objarray = (Object[]) values;
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for (Object o : objarray) {
-            addArrayElement(arraybuilder, o);
+            addArrayElement(arrayBuilder, o);
         }
-        objectbuilder.add(name, arraybuilder);
+        objectBuilder.add(name, arrayBuilder);
     }
 
     // for object
-    private void addInputStream(JsonObjectBuilder objectbuilder, String name, Object obj)
+    private void addInputStream(JsonObjectBuilder objectBuilder, String name, Object value)
     {
         try {
-            objectbuilder.add(name, IOUtils.toString((InputStream) obj, StandardCharsets.UTF_8));
+            objectBuilder.add(name, IOUtils.toString((InputStream) value, StandardCharsets.UTF_8));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -175,10 +175,10 @@ public class ResourceToJsonAdapterFactory
     }
 
     // for array
-    private void addInputStream(JsonArrayBuilder arraybuilder, Object obj)
+    private void addInputStream(JsonArrayBuilder arrayBuilder, Object value)
     {
         try {
-            arraybuilder.add(IOUtils.toString((InputStream) obj, StandardCharsets.UTF_8));
+            arrayBuilder.add(IOUtils.toString((InputStream) value, StandardCharsets.UTF_8));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -186,22 +186,22 @@ public class ResourceToJsonAdapterFactory
     }
 
     // for object
-    private void addCalendar(JsonObjectBuilder objectbuilder, String name, Object obj)
+    private void addCalendar(JsonObjectBuilder objectBuilder, String name, Object value)
     {
-        Calendar calendar = (Calendar) obj;
+        Calendar calendar = (Calendar) value;
         // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(calendar.getTimeZone());
-        objectbuilder.add(name, sdf.format(calendar.getTime()));
+        objectBuilder.add(name, sdf.format(calendar.getTime()));
     }
 
     // for array
-    private void addCalendar(JsonArrayBuilder arraybuilder, Object obj)
+    private void addCalendar(JsonArrayBuilder arrayBuilder, Object value)
     {
-        Calendar calendar = (Calendar) obj;
+        Calendar calendar = (Calendar) value;
         // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(calendar.getTimeZone());
-        arraybuilder.add(sdf.format(calendar.getTime()));
+        arrayBuilder.add(sdf.format(calendar.getTime()));
     }
 }
