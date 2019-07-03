@@ -100,6 +100,17 @@ public class ResourceToJsonAdapterFactory
         }
     }
 
+    // for object
+    private void addArray(JsonObjectBuilder objectBuilder, String name, Object values)
+    {
+        Object[] objarray = (Object[]) values;
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (Object o : objarray) {
+            addArrayElement(arrayBuilder, o);
+        }
+        objectBuilder.add(name, arrayBuilder);
+    }
+
     private void addArrayElement(JsonArrayBuilder arrayBuilder, Object value)
     {
         if (value == null) {
@@ -117,6 +128,48 @@ public class ResourceToJsonAdapterFactory
             arrayBuilder.add((BigInteger) value);
         } else {
             addPrimitive(arrayBuilder, value);
+        }
+    }
+
+    // for object
+    private void addCalendar(JsonObjectBuilder objectBuilder, String name, Object value)
+    {
+        Calendar calendar = (Calendar) value;
+        // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        sdf.setTimeZone(calendar.getTimeZone());
+        objectBuilder.add(name, sdf.format(calendar.getTime()));
+    }
+
+    // for array
+    private void addCalendar(JsonArrayBuilder arrayBuilder, Object value)
+    {
+        Calendar calendar = (Calendar) value;
+        // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        sdf.setTimeZone(calendar.getTimeZone());
+        arrayBuilder.add(sdf.format(calendar.getTime()));
+    }
+
+    // for object
+    private void addInputStream(JsonObjectBuilder objectBuilder, String name, Object value)
+    {
+        try {
+            objectBuilder.add(name, IOUtils.toString((InputStream) value, StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    // for array
+    private void addInputStream(JsonArrayBuilder arrayBuilder, Object value)
+    {
+        try {
+            arrayBuilder.add(IOUtils.toString((InputStream) value, StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
@@ -150,58 +203,5 @@ public class ResourceToJsonAdapterFactory
         } else {
             arrayBuilder.add(value.toString());
         }
-    }
-
-    // for object
-    private void addArray(JsonObjectBuilder objectBuilder, String name, Object values)
-    {
-        Object[] objarray = (Object[]) values;
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        for (Object o : objarray) {
-            addArrayElement(arrayBuilder, o);
-        }
-        objectBuilder.add(name, arrayBuilder);
-    }
-
-    // for object
-    private void addInputStream(JsonObjectBuilder objectBuilder, String name, Object value)
-    {
-        try {
-            objectBuilder.add(name, IOUtils.toString((InputStream) value, StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    // for array
-    private void addInputStream(JsonArrayBuilder arrayBuilder, Object value)
-    {
-        try {
-            arrayBuilder.add(IOUtils.toString((InputStream) value, StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    // for object
-    private void addCalendar(JsonObjectBuilder objectBuilder, String name, Object value)
-    {
-        Calendar calendar = (Calendar) value;
-        // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(calendar.getTimeZone());
-        objectBuilder.add(name, sdf.format(calendar.getTime()));
-    }
-
-    // for array
-    private void addCalendar(JsonArrayBuilder arrayBuilder, Object value)
-    {
-        Calendar calendar = (Calendar) value;
-        // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(calendar.getTimeZone());
-        arrayBuilder.add(sdf.format(calendar.getTime()));
     }
 }
