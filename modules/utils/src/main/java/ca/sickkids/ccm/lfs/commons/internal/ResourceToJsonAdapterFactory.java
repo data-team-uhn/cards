@@ -72,13 +72,13 @@ public class ResourceToJsonAdapterFactory
             objectBuilder.addNull(name);
         } else if (value instanceof Object[]) {
             // For multi-value properties
-            addArray(objectBuilder, name, value);
+            addArray(objectBuilder, name, (Object[]) value);
         } else if (value instanceof Calendar) {
             // Corresponding to JCR DATE property
-            addCalendar(objectBuilder, name, value);
+            addCalendar(objectBuilder, name, (Calendar) value);
         } else if (value instanceof InputStream) {
             // Corresponding to JCR BINARY property
-            addInputStream(objectBuilder, name, value);
+            addInputStream(objectBuilder, name, (InputStream) value);
         } else if (value instanceof BigDecimal) {
             // Corresponding to JCR DECIMAL property
             objectBuilder.add(name, (BigDecimal) value);
@@ -90,11 +90,10 @@ public class ResourceToJsonAdapterFactory
     }
 
     // for object
-    private void addArray(JsonObjectBuilder objectBuilder, String name, Object values)
+    private void addArray(JsonObjectBuilder objectBuilder, String name, Object[] values)
     {
-        Object[] objarray = (Object[]) values;
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        for (Object o : objarray) {
+        for (Object o : values) {
             addArrayElement(arrayBuilder, o);
         }
         objectBuilder.add(name, arrayBuilder);
@@ -106,10 +105,10 @@ public class ResourceToJsonAdapterFactory
             arrayBuilder.addNull();
         } else if (value instanceof Calendar) {
             // Corresponding to JCR DATE property
-            addCalendar(arrayBuilder, value);
+            addCalendar(arrayBuilder, (Calendar) value);
         } else if (value instanceof InputStream) {
             // Corresponding to JCR BINARY property
-            addInputStream(arrayBuilder, value);
+            addInputStream(arrayBuilder, (InputStream) value);
         } else if (value instanceof BigDecimal) {
             // Corresponding to JCR DECIMAL property
             arrayBuilder.add((BigDecimal) value);
@@ -121,30 +120,28 @@ public class ResourceToJsonAdapterFactory
     }
 
     // for object
-    private void addCalendar(JsonObjectBuilder objectBuilder, String name, Object value)
+    private void addCalendar(JsonObjectBuilder objectBuilder, String name, Calendar value)
     {
-        Calendar calendar = (Calendar) value;
         // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(calendar.getTimeZone());
-        objectBuilder.add(name, sdf.format(calendar.getTime()));
+        sdf.setTimeZone(value.getTimeZone());
+        objectBuilder.add(name, sdf.format(value.getTime()));
     }
 
     // for array
-    private void addCalendar(JsonArrayBuilder arrayBuilder, Object value)
+    private void addCalendar(JsonArrayBuilder arrayBuilder, Calendar value)
     {
-        Calendar calendar = (Calendar) value;
         // format date as year-month-day 'T' hours:minutes:seconds.milliseconds-timezone
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(calendar.getTimeZone());
-        arrayBuilder.add(sdf.format(calendar.getTime()));
+        sdf.setTimeZone(value.getTimeZone());
+        arrayBuilder.add(sdf.format(value.getTime()));
     }
 
     // for object
-    private void addInputStream(JsonObjectBuilder objectBuilder, String name, Object value)
+    private void addInputStream(JsonObjectBuilder objectBuilder, String name, InputStream value)
     {
         try {
-            objectBuilder.add(name, IOUtils.toString((InputStream) value, StandardCharsets.UTF_8));
+            objectBuilder.add(name, IOUtils.toString(value, StandardCharsets.UTF_8));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -152,10 +149,10 @@ public class ResourceToJsonAdapterFactory
     }
 
     // for array
-    private void addInputStream(JsonArrayBuilder arrayBuilder, Object value)
+    private void addInputStream(JsonArrayBuilder arrayBuilder, InputStream value)
     {
         try {
-            arrayBuilder.add(IOUtils.toString((InputStream) value, StandardCharsets.UTF_8));
+            arrayBuilder.add(IOUtils.toString(value, StandardCharsets.UTF_8));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
