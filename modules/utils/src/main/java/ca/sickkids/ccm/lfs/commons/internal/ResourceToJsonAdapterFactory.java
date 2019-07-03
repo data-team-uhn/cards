@@ -104,9 +104,6 @@ public class ResourceToJsonAdapterFactory
     {
         if (obj == null) {
             arraybuilder.addNull();
-        } else if (obj instanceof Object[]) {
-            // For multip-value poperties
-            addArray(arraybuilder, obj);
         } else if (obj instanceof Calendar) {
             // Corresponding to JCR DATE property
             addCalendar(arraybuilder, obj);
@@ -164,17 +161,6 @@ public class ResourceToJsonAdapterFactory
             addArrayElement(arraybuilder, o);
         }
         objectbuilder.add(name, arraybuilder);
-    }
-
-    // for array
-    private void addArray(JsonArrayBuilder arraybuilder, Object obj)
-    {
-        Object[] objarray = (Object[]) obj;
-        JsonArrayBuilder nestedarraybuilder = Json.createArrayBuilder();
-        for (Object o : objarray) {
-            addArrayElement(nestedarraybuilder, o);
-        }
-        arraybuilder.add(arraybuilder);
     }
 
     // for object
