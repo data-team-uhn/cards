@@ -26,7 +26,6 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.function.BiConsumer;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -65,15 +64,8 @@ public class ResourceToJsonAdapterFactory
         Resource resource = (Resource) adaptable;
         ValueMap valuemap = resource.getValueMap();
         JsonObjectBuilder objectbuilder = Json.createObjectBuilder();
-
-        BiConsumer<String, Object> biconsumer = (key, value) -> {
-            addObject(objectbuilder, key, value);
-        };
-
-        valuemap.forEach(biconsumer);
-
+        valuemap.forEach((key, value) -> addObject(objectbuilder, key, value));
         JsonObject jsonobject = objectbuilder.build();
-
         return (A) jsonobject;
     }
 
