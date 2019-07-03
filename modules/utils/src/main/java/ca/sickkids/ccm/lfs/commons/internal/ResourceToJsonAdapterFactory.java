@@ -59,22 +59,22 @@ public class ResourceToJsonAdapterFactory
     @SuppressWarnings("unchecked")
     public <A> A getAdapter(Object adaptable, Class<A> type)
     {
-        Resource resource = (Resource) adaptable;
-        if (resource != null) {
-            ValueMap valuemap = resource.getValueMap();
-            JsonObjectBuilder objectbuilder = Json.createObjectBuilder();
-
-            BiConsumer<String, Object> biconsumer = (key, value) -> {
-                addObject(objectbuilder, key, value);
-            };
-
-            valuemap.forEach(biconsumer);
-
-            JsonObject jsonobject = objectbuilder.build();
-
-            return (A) jsonobject;
+        if (adaptable == null) {
+            return null;
         }
-        return null;
+        Resource resource = (Resource) adaptable;
+        ValueMap valuemap = resource.getValueMap();
+        JsonObjectBuilder objectbuilder = Json.createObjectBuilder();
+
+        BiConsumer<String, Object> biconsumer = (key, value) -> {
+            addObject(objectbuilder, key, value);
+        };
+
+        valuemap.forEach(biconsumer);
+
+        JsonObject jsonobject = objectbuilder.build();
+
+        return (A) jsonobject;
     }
 
     private void addObject(JsonObjectBuilder objectBuilder, String name, Object value)
