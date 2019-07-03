@@ -3,11 +3,13 @@ import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core/styles";
-// material-dashboard-react
-import Table from "material-dashboard-react/dist/components/Table/Table.js";
-import Card from "material-dashboard-react/dist/components/Card/Card.js";
-import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
-import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
+// core components
+import GridItem from "../MaterialDashboardReact/Grid/GridItem.jsx";
+import GridContainer from "../MaterialDashboardReact/Grid/GridContainer.jsx";
+import Table from "../MaterialDashboardReact/Table/Table.jsx";
+import Card from "../MaterialDashboardReact/Card/Card.jsx";
+import CardHeader from "../MaterialDashboardReact/Card/CardHeader.jsx";
+import CardBody from "../MaterialDashboardReact/Card/CardBody.jsx";
 // Moment
 import moment from 'moment';
 import dashboardStyle from "./dashboardStyle.jsx";
