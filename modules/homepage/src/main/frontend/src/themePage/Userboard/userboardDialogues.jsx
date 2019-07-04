@@ -361,7 +361,7 @@ export class DeleteGroupDialogue extends React.Component {
     );
   }
 }
-/*
+
 export class AddUserToGroupDialogue extends React.Component {
   constructor (props) {
     super(props);
@@ -402,9 +402,16 @@ export class AddUserToGroupDialogue extends React.Component {
     let url = "http://localhost:8080/system/userManager/group/" + this.props.name + ".update.html";
 
     let formData = new FormData();
-    for (var user in this.state.selectedUsers) {
-      formData.append(':member', user);
+    console.log(this.state.selectedUsers);
+
+    var i;
+    for (i = 0; i < this.state.selectedUsers.length; ++i) {
+      formData.append(':member', this.state.selectedUsers[i].name);
     }
+
+    console.log(this.state.selectedUsers[0]);
+
+    console.log(formData);
 
     fetch(url,
       {
@@ -417,7 +424,161 @@ export class AddUserToGroupDialogue extends React.Component {
     .catch((error) => {
       console.log(error);
     });
+  }
 
+  componentWillMount () {
+    this.handleLoadUsers();
+  }
+
+  // TODO - find more efficient way to add and remove users from list
+  handleSelectRowClick(event, row) {
+    let chosens = this.state.selectedUsers;
+    if (chosens.indexOf(row) == -1)
+    {
+      chosens.push(this.addName(row));
+      this.setState({selectedUsers: chosens});
+    }
+    console.log(this.state.selectedUsers);    
+  }
+
+  handleDeselectRowClick(event, row) {
+    let chosens = this.state.selectedUsers;
+    chosens.splice(chosens.indexOf(row), 1);
+    this.setState({selectedUsers: chosens});
+    console.log(this.state.selectedUsers);
+  }
+
+  render () {
+    return(
+      <Dialog
+      open={true}
+      onClose={() => this.props.handleClose()}
+      > 
+      <DialogTitle>
+        Add Users to Group
+      </DialogTitle>
+      <DialogContent>
+        <GridContainer>
+          <GridItem  xs={12} sm={12} md ={6}>
+            <Table>
+              <TableHead>
+                <TableRow>Users</TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  this.state.userNames.map(
+                    (row, index) => (
+                      <TableRow
+                        onClick={(event) => this.handleSelectRowClick(event, row.name)}
+                        index={row.name}
+                      >
+                        <TableCell>{row.name}</TableCell>
+                      </TableRow>
+                    )
+                  )
+                  }
+              </TableBody>
+            </Table>
+          </GridItem>
+          <GridItem  xs={12} sm={12} md ={6}>
+            <Table>
+              <TableHead>
+                <TableRow>Selected Users</TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  this.state.selectedUsers.map(
+                    (row, index) => (
+                      <TableRow
+                        onClick={(event) => this.handleDeselectRowClick(event, row.name)}
+                        index={row.name}
+                      >
+                        <TableCell>{row.name}</TableCell>
+                      </TableRow>
+                    )
+                  )
+                }
+              </TableBody>
+            </Table>
+          </GridItem>
+        </GridContainer>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => this.handleAddUsers()}>Submit</Button>
+        <Button onClick={() => this.props.handleClose()}>Cancel</Button>
+      </DialogActions>
+    </Dialog>
+    
+    );
+  }
+}
+
+export class RemoveUserFromGroupDialogue extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      groupUsers: [],
+      selectedUsers: []
+    };
+  }
+
+  addName (name) {
+    return {name}
+  }
+
+  handleLoadUsers () {
+    fetch("http://localhost:8080/system/userManager/group/"+this.props.name+".1.json", 
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Basic ' + btoa('admin:admin')
+        }
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      var names = [];
+      var i;
+      for (i = 0; i < data.members.length; ++i){
+        let username = data.members[i];
+        username = username.substring(25);
+        names.push(this.addName(username));
+        console.log(data.members[i]);
+      }
+      this.setState({groupUsers: names});
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
+  handleRemoveUsers () {
+    let url = "http://localhost:8080/system/userManager/group/" + this.props.name + ".update.html";
+
+    let formData = new FormData();
+    console.log(this.state.selectedUsers);
+
+    var i;
+    for (i = 0; i < this.state.selectedUsers.length; ++i) {
+      formData.append(':member@Delete', this.state.selectedUsers[i].name);
+    }
+
+    console.log(this.state.selectedUsers[0]);
+
+    console.log(formData);
+
+    fetch(url,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization' : 'Basic' + btoa('admin:admin')
+        },
+        body: formData
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   componentWillMount () {
@@ -426,62 +587,83 @@ export class AddUserToGroupDialogue extends React.Component {
 
   handleSelectRowClick(event, row) {
     let chosens = this.state.selectedUsers;
-
-    
+    if (chosens.indexOf(row) == -1)
+    {
+      chosens.push(this.addName(row));
+      this.setState({selectedUsers: chosens});
+    }
+    console.log(this.state.selectedUsers);
   }
 
   handleDeselectRowClick(event, row) {
-
+    let chosens = this.state.selectedUsers;
+    chosens.splice(chosens.indexOf(row), 1);
+    this.setState({selectedUsers: chosens});
+    console.log(this.state.selectedUsers);
   }
 
   render () {
-    <Dialog>
+    return(
+      <Dialog
+      open={true}
+      onClose={() => this.props.handleClose()}
+      > 
       <DialogTitle>
-        Add Users to Group
+        Remove users from group {this.props.name}
       </DialogTitle>
       <DialogContent>
-        <Table>
-          <TableHead>
-          </TableHead>
-          <TableBody>
-            {
-              this.state.userNames.map(
-                (row, index) => (
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox
-                        checked = {row.checked}
-                      />
-                    </TableCell>
-                    <TableCell>{row.name}</TableCell>
-                  </TableRow>
-                )
-              )
-            }
-          </TableBody>
-        </Table>
+        <GridContainer>
+          <GridItem  xs={12} sm={12} md ={6}>
+            <Table>
+              <TableHead>
+                <TableRow>Users in {this.props.name}</TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  this.state.groupUsers.map(
+                    (row, index) => (
+                      <TableRow
+                        onClick={(event) => this.handleSelectRowClick(event, row.name)}
+                        index={row.name}
+                        key={row.name}
+                      >
+                        <TableCell>{row.name}</TableCell>
+                      </TableRow>
+                    )
+                  )
+                  }
+              </TableBody>
+            </Table>
+          </GridItem>
+          <GridItem  xs={12} sm={12} md ={6}>
+            <Table>
+              <TableHead>
+                <TableRow>Selected Users</TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  this.state.selectedUsers.map(
+                    (row, index) => (
+                      <TableRow
+                        onClick={(event) => this.handleDeselectRowClick(event, row.name)}
+                        index={row.name}
+                        key={row.name}
+                      >
+                        <TableCell>{row.name}</TableCell>
+                      </TableRow>
+                    )
+                  )
+                }
+              </TableBody>
+            </Table>
+          </GridItem>
+        </GridContainer>
       </DialogContent>
       <DialogActions>
-
+        <Button onClick={() => this.handleRemoveUsers()}>Submit</Button>
+        <Button onClick={() => this.props.handleClose()}>Cancel</Button>
       </DialogActions>
     </Dialog>
+    );
   }
 }
-
-export class DeleteUserToGroupDialogue extends React.Component {
-  constructor (props) {
-
-  }
-}
-
-dictionary spellcheck
-
-sendemail ajax
-
-asking based on backrground; short, back tecnical algorithmic, 
-
-2math 2quator , 4 bridge time question
-
-scoping & boolean logic
-linked lists
-*/

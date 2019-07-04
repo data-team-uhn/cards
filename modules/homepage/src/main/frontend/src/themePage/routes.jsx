@@ -51,7 +51,7 @@ var sidebarRoutes = [
       layout: "/content.html"
     },
     {
-      path: "/#/userpage",
+      path: "/userpage",
       name: "User Profile",
       icon: AccountBox,
       component: "",
