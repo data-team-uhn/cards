@@ -49,10 +49,16 @@ class Userboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userNames: [],
-      groupNames: [],
+      users: [],
+      groups: [],
       currentUserName: "",
+      currentUserIndex: -1,
+      returnedUserRows: 0,
+      totalUserRows: 0,
       currentGroupName: "",
+      currentGroupIndex: -1,
+      returnedGroupRows: 0,
+      totalGroupRows: 0,
       deployCreateUser: false,
       deployDeleteUser: false,
       deployChangeUserPassword: false,
@@ -122,12 +128,8 @@ class Userboard extends React.Component {
     this.setState({deployRemoveGroupUsers: true});
   }
 
-  addName (name) {
-    return {name}
-  }
-
   handleLoadUsers () {
-    fetch("http://"+"localhost:8080"+"/system/userManager/user.1.json", 
+    fetch("http://localhost:8080/home/users.json", 
       {
         method: 'GET',
         headers: {
@@ -138,14 +140,19 @@ class Userboard extends React.Component {
       return response.json();
     })
     .then((data) => {
+      /*
       console.log(JSON.stringify(data));
       var names = [];
       for (var username in data){
         names.push(this.addName(username));
       }
       console.log(names);
-      this.setState({userNames: names});
-      
+      */
+      //console.log(data.rows);
+      this.setState({returnedUserRows: data.returnedrows});
+      this.setState({totalUserRows: data.totalrows});
+      this.setState({users: data.rows});
+      console.log(this.state.users); console.log(data.rows);
     })
     .catch((error) => {
       console.log(error);
@@ -157,7 +164,8 @@ class Userboard extends React.Component {
   }
 
   handleLoadGroups () {
-    fetch("http://localhost:8080/system/userManager/group.tidy.1.json",
+    let url = "http://localhost:8080/home/groups.json"
+    fetch(url,
       {
         method: 'GET',
         headers: {
@@ -168,11 +176,10 @@ class Userboard extends React.Component {
       return response.json();
     })
     .then((data) => {
-      var groups = [];
-      for (var group in data) {
-        groups.push(this.addGroup(group));
-      }
-      this.setState({groupNames: groups});
+      
+      this.setState({returnedGroupRows: data.returnedrows});
+      this.setState({totalGroupRows: data.totalrows});
+      this.setState({groups: data.rows});
     })
     .catch((error) => {
       console.log(error);
@@ -184,19 +191,24 @@ class Userboard extends React.Component {
     this.handleLoadGroups();
   }
 
-  handleUserRowClick(event, name) {
-    if (name === this.state.currentUserName) {
+  handleUserRowClick(index, name) {
+    if (index === this.state.currentUserIndex) {
       this.setState({currentUserName: ""});
+      this.setState({currentUserIndex: -1});
     } else {
+      this.setState({currentUserIndex: index});
+      //let currentName = this.state.users[index].name;
       this.setState({currentUserName: name});
     }
   }
 
-  handleGroupRowClick(event, name) {
-    if (name === this.state.currentGroupName) {
+  handleGroupRowClick(index, name) {
+    if (index === this.state.currentGroupIndex) {
       this.setState({currentGroupName: ""});
+      this.setState({currentGroupIndex: -1});
     } else {
       this.setState({currentGroupName: name});
+      this.setState({currentGroupIndex: index});
     }
   }
 
@@ -235,17 +247,17 @@ class Userboard extends React.Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {this.state.userNames.map(
+                    {this.state.users.map(
                       (row, index) => (
                         <TableRow
-                          onClick={(event) => this.handleUserRowClick(event, row.name)}
+                          onClick={(event) => this.handleUserRowClick(index, row.name)}
                           aria-checked={row.name === this.state.currentUserName ? true: false}
                           key = {row.name}
                           selected={row.name === this.state.currentUserName ? true:false}
                         >
                           <TableCell>
                             <Checkbox
-                              checked = {row.name === this.state.currentUserName ? true:false}
+                              checked = {row.index === this.state.currentUserIndex? true:false}
                             />
                           </TableCell>
                           <TableCell>{row.name}</TableCell>
@@ -260,10 +272,40 @@ class Userboard extends React.Component {
           <GridItem xs={12} sm={12} md={5}>
             <Card>
               <CardBody>
-                User Name: {this.state.currentUserName}
+              {
+                this.state.currentUserIndex < 0 ? 
+                <div>
+                  <h1>No user selected.</h1>
+                </div>
+                
+                :
+                <div>
+                  <h1>User Name: {this.state.users[this.state.currentUserIndex].name}</h1>
+                  <h3>Principal Name: {this.state.users[this.state.currentUserIndex].principalName}</h3>
+                  <h3>Path: {this.state.users[this.state.currentUserIndex].path}</h3>
+                  <h3>Admin Status: {this.state.users[this.state.currentUserIndex].isAdmin ? "True" : "False"}</h3>
+                  <h3>Disabled: {this.state.users[this.state.currentUserIndex].isDisabled ? "True" : "False"}</h3>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Groups</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {this.state.users[this.state.currentUserIndex].memberOf.map(
+                        (row) => (
+                          <TableRow>
+                            <TableCell>{row.name}</TableCell>
+                          </TableRow>
+                        )
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              }
                 <GridContainer>
-                  <Button onClick={() => this.showDeleteUser()} disabled={this.state.currentUserName === "" ? true:false}>Delete User</Button>
-                  <Button onClick={() => this.showChangeUserPassword()} disabled={this.state.currentUserName === "" ? true:false}>Change Password</Button>
+                  <Button onClick={() => this.showDeleteUser()} disabled={this.state.currentUserIndex < 0 ? true:false}>Delete User</Button>
+                  <Button onClick={() => this.showChangeUserPassword()} disabled={this.state.currentUserIndex < 0 ? true:false}>Change Password</Button>
                 </GridContainer>
               </CardBody>
             </Card>
@@ -293,10 +335,10 @@ class Userboard extends React.Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                  {this.state.groupNames.map(
+                  {this.state.groups.map(
                       (row, index) => (
                         <TableRow
-                          onClick={(event) => this.handleGroupRowClick(event, row.name)}
+                          onClick={(event) => this.handleGroupRowClick(index, row.name)}
                           aria-checked={row.name === this.state.currentGroupName ? true: false}
                           key = {row.name}
                           selected={row.name === this.state.currentGroupName ? true:false}
@@ -318,7 +360,20 @@ class Userboard extends React.Component {
           <GridItem xs={12} sm={12} md={5}>
             <Card>
               <CardBody>
-                Group Name: {this.state.currentGroupName}
+                {
+                  this.state.currentGroupIndex < 0 ?
+                  <div>
+                    <h1>No group selected.</h1>
+                  </div>
+                  :
+                  <div>
+                    <h1>Group Name: {this.state.groups[this.state.currentGroupIndex].name}</h1>
+                    <h3>Principal Name: {this.state.groups[this.state.currentGroupIndex].principalName}</h3>
+                    <h3>Path: {this.state.groups[this.state.currentGroupIndex].path}</h3>
+                    <h3>Members: {this.state.groups[this.state.currentGroupIndex].members}</h3>
+                    <h3>Declared Members: {this.state.groups[this.state.currentGroupIndex].declaredMembers}</h3>
+                  </div>
+                }
                 <GridContainer>
                   <Button onClick={() => this.showDeleteGroup()} disabled={this.state.currentGroupName === "" ? true:false}>Delete Group</Button>
                   <Button onClick={() => this.showAddGroupUsers()} disabled={this.state.currentGroupName === "" ? true:false}>Add User to Group</Button>
