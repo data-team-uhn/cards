@@ -206,7 +206,7 @@ export class CreateUserDialogue extends React.Component {
           open = {true}
           onClose={() => this.props.handleClose()}
         >
-          <DialogTitle>Change User Password</DialogTitle>
+          <DialogTitle>Change User Password of {this.props.name}</DialogTitle>
           <DialogContent>
             <form
               onSubmit={() => this.handlePasswordChange()}
