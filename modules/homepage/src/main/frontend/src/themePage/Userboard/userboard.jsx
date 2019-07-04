@@ -43,7 +43,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 import userboardStyle from './userboardStyle.jsx';
 
-import {CreateUserDialogue, DeleteUserDialogue, ChangeUserPasswordDialogue, CreateGroupDialogue, DeleteGroupDialogue} from './userboardDialogues.jsx';
+import {CreateUserDialogue, DeleteUserDialogue, ChangeUserPasswordDialogue, CreateGroupDialogue, DeleteGroupDialogue, AddUserToGroupDialogue, RemoveUserFromGroupDialogue} from './userboardDialogues.jsx';
 
 class Userboard extends React.Component {
   constructor(props) {
@@ -58,6 +58,8 @@ class Userboard extends React.Component {
       deployChangeUserPassword: false,
       deployCreateGroup: false,
       deployDeleteGroup: false,
+      deployAddGroupUsers: false,
+      deployRemoveGroupUsers: false
     };
 
     this.userColumnNames = [{id: "name", label: "User Names"}];
@@ -102,6 +104,22 @@ class Userboard extends React.Component {
 
   showDeleteGroup () {
     this.setState({deployDeleteGroup: true});
+  }
+
+  hideAddGroupUsers () {
+    this.setState({deployAddGroupUsers: false});
+  }
+
+  showAddGroupUsers () {
+    this.setState({deployAddGroupUsers: true});
+  }
+
+  hideRemoveGroupUsers () {
+    this.setState({deployRemoveGroupUsers: false});
+  }
+
+  showRemoveGroupUsers () {
+    this.setState({deployRemoveGroupUsers: true});
   }
 
   addName (name) {
@@ -192,6 +210,8 @@ class Userboard extends React.Component {
         {this.state.deployChangeUserPassword && <ChangeUserPasswordDialogue handleClose={() => this.hideChangeUserPassword()} name={this.state.currentUserName}></ChangeUserPasswordDialogue>}
         {this.state.deployCreateGroup && <CreateGroupDialogue handleClose={() => this.hideCreateGroup()}></CreateGroupDialogue>}
         {this.state.deployDeleteGroup && <DeleteGroupDialogue handleClose={() => this.hideDeleteGroup()} name={this.state.currentGroupName}></DeleteGroupDialogue>}
+        {this.state.deployAddGroupUsers && <AddUserToGroupDialogue handleClose={()=>this.hideAddGroupUsers()} name={this.state.currentGroupName}></AddUserToGroupDialogue>}
+        {this.state.deployRemoveGroupUsers && <RemoveUserFromGroupDialogue handleClose={()=>this.hideRemoveGroupUsers()} name={this.state.currentGroupName}></RemoveUserFromGroupDialogue>}
         <GridContainer>
           <GridItem xs={12} sm={12} md={7}>
             <Card>
@@ -219,7 +239,7 @@ class Userboard extends React.Component {
                       (row, index) => (
                         <TableRow
                           onClick={(event) => this.handleUserRowClick(event, row.name)}
-                          aria-checkted={row.name === this.state.currentUserName ? true: false}
+                          aria-checked={row.name === this.state.currentUserName ? true: false}
                           key = {row.name}
                           selected={row.name === this.state.currentUserName ? true:false}
                         >
@@ -242,8 +262,8 @@ class Userboard extends React.Component {
               <CardBody>
                 User Name: {this.state.currentUserName}
                 <GridContainer>
-                  <Button onClick={() => this.showDeleteUser()}>Delete User</Button>
-                  <Button onClick={() => this.showChangeUserPassword()}>Change Password</Button>
+                  <Button onClick={() => this.showDeleteUser()} disabled={this.state.currentUserName === "" ? true:false}>Delete User</Button>
+                  <Button onClick={() => this.showChangeUserPassword()} disabled={this.state.currentUserName === "" ? true:false}>Change Password</Button>
                 </GridContainer>
               </CardBody>
             </Card>
@@ -260,22 +280,24 @@ class Userboard extends React.Component {
                 <Button onClick={() => this.showCreateGroup()}>Create New Group</Button>
                 <Table>
                   <TableHead>
-                    {this.groupColumnNames.map(
-                      row => (
-                        <TableCell
-                          key = {row.id}
-                        >
-                          {row.label}
-                        </TableCell>
-                      )
-                    )}
+                    <TableRow>
+                      {this.groupColumnNames.map(
+                        row => (
+                          <TableCell
+                            key = {row.id}
+                          >
+                            {row.label}
+                          </TableCell>
+                        )
+                      )}
+                    </TableRow>
                   </TableHead>
                   <TableBody>
                   {this.state.groupNames.map(
                       (row, index) => (
                         <TableRow
                           onClick={(event) => this.handleGroupRowClick(event, row.name)}
-                          aria-checkted={row.name === this.state.currentGroupName ? true: false}
+                          aria-checked={row.name === this.state.currentGroupName ? true: false}
                           key = {row.name}
                           selected={row.name === this.state.currentGroupName ? true:false}
                         >
@@ -298,7 +320,9 @@ class Userboard extends React.Component {
               <CardBody>
                 Group Name: {this.state.currentGroupName}
                 <GridContainer>
-                  <Button onClick={() => this.showDeleteGroup()}>Delete Group</Button>
+                  <Button onClick={() => this.showDeleteGroup()} disabled={this.state.currentGroupName === "" ? true:false}>Delete Group</Button>
+                  <Button onClick={() => this.showAddGroupUsers()} disabled={this.state.currentGroupName === "" ? true:false}>Add User to Group</Button>
+                  <Button onClick={() => this.showRemoveGroupUsers()} disabled={this.state.currentGroupName === "" ? true:false}>Remove User from Group</Button>
                 </GridContainer> 
               </CardBody>
             </Card>
