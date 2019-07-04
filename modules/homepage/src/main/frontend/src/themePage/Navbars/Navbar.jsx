@@ -3,10 +3,10 @@ import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 // @material-ui/core components
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core";
 import { AppBar, Toolbar, IconButton, Hidden } from "@material-ui/core";
 // @material-ui/icons
-import Menu from "@material-ui/icons/Menu";
+import { Menu } from "@material-ui/icons";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
 import Button from "../MaterialDashboardReact/CustomButtons/Button.jsx";

@@ -2,7 +2,7 @@
 import React from "react";
 import classNames from "classnames";
 // @material-ui/core components
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core";
 import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, Hidden, Popper } from "@material-ui/core";
 // @material-ui/icons
 import { Person, Notifications, Search, ExitToApp } from "@material-ui/icons";
@@ -131,7 +131,7 @@ class HeaderLinks extends React.Component {
                     placement === "bottom" ? "center top" : "center bottom"
                 }}
               >
-                <Paper>
+              <Paper elevation={2}>
                   <ClickAwayListener onClickAway={this.closeNotifications}>
                     <MenuList role="menu">
                       {notifications}

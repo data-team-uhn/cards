@@ -4,7 +4,7 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 // @material-ui/core components
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core";
 import { Drawer, Hidden, List, ListItem, ListItemText } from "@material-ui/core";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";

@@ -6,7 +6,21 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'themeindex']: './src/themePage/index.jsx'
+    [module_name + 'themeindex']: './src/themePage/index.jsx',
+    [module_name + 'dashboard']: './src/themePage/Dashboard/dashboard.jsx',
+    [module_name + 'dashboardIcon']: '@material-ui/icons/Dashboard.js',
+    [module_name + 'vendor']: ['@material-ui/styles']
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          chunks: "all",
+          name: "vendor"
+        }
+      }
+    }
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -39,7 +53,7 @@ module.exports = {
       "lodash": "lodash",
       "prop-types": "PropTypes",
       "jss": "jss",
-      "@material-ui/core": "window['material-ui']"
+      "@material-ui/core": "MaterialUI"
     }
   ]
 };

@@ -5,8 +5,8 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 
 // material-ui components
-import withStyles from "@material-ui/core/styles/withStyles";
-import Button from "@material-ui/core/Button";
+import { withStyles } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 
 import buttonStyle from "./buttonStyle.jsx";
 function RegularButton({ ...props }) {

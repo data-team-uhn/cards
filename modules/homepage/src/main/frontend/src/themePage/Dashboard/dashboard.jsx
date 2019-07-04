@@ -2,10 +2,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core";
 // core components
-import GridItem from "../MaterialDashboardReact/Grid/GridItem.jsx";
-import GridContainer from "../MaterialDashboardReact/Grid/GridContainer.jsx";
 import Table from "../MaterialDashboardReact/Table/Table.jsx";
 import Card from "../MaterialDashboardReact/Card/Card.jsx";
 import CardHeader from "../MaterialDashboardReact/Card/CardHeader.jsx";

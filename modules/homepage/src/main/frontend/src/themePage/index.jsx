@@ -21,7 +21,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Sidebar from "./Sidebar/sidebar"
 import sidebarRoutes from './routes';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
