@@ -47,9 +47,10 @@ var sidebarRoutes = [
       component: ""
     },
     {
-      path: "/#/userpage",
+      path: "/userpage",
       name: "User Profile",
       icon: AccountBox,
+      component: Userboard
     },
     {
       path: "/admin.html",
