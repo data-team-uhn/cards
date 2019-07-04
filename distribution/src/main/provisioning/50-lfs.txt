@@ -30,6 +30,9 @@
     # Add support for external authenticators
     ca.sickkids.ccm.lfs/lfs-ldap-support/${lfs.version}/slingfeature
 
+    # Common Utilities
+    ca.sickkids.ccm.lfs/lfs-utils/${lfs.version}
+
     # UI modules
     ca.sickkids.ccm.lfs/lfs-commons/${lfs.version}/slingfeature/slingfeature
     ca.sickkids.ccm.lfs/lfs-uiextension/${lfs.version}/
@@ -37,3 +40,4 @@
     ca.sickkids.ccm.lfs/lfs-dataentry/${lfs.version}/slingfeature/slingfeature
     ca.sickkids.ccm.lfs/lfs-login/${lfs.version}/slingfeature/slingfeature
     ca.sickkids.ccm.lfs/lfs-userviewer/${lfs.version}/slingfeature/slingfeature
+    ca.sickkids.ccm.lfs/lfs-principals/${lfs.version}
