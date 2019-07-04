@@ -74,7 +74,7 @@ const Sidebar = ({ ...props }) => {
   var brand = (
     <div className={classes.logo}>
       <a
-        href="https://phenotips.org/"
+        href="/"
         className={classes.logoLink}
       >
         <div className={classes.logoImage}>
