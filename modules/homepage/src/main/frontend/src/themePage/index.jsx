@@ -115,8 +115,9 @@ const hist = createBrowserHistory();
 ReactDOM.render(
   <Router history={hist}>
     <Switch>
-      <Route path="/" component={MainComponent} />
-      <Redirect from="/" to="/content/dashboard.html" />
+      <Route path="/content.html/" component={MainComponent} />
+      <Redirect from="/" to="/content.html/dashboard.html"/>
+      <Redirect from="/content" to="/content.html/dashboard.html" />
     </Switch>
   </Router>,
   document.querySelector('#main-container')
