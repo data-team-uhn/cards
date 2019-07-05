@@ -29,8 +29,6 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.scripting.sightly.pojo.Use;
 
-// import com.google.gson.Gson;
-
 /**
  * Base class for UI extensions.
  * @version $Id$
