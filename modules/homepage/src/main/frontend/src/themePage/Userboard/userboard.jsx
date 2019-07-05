@@ -27,6 +27,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
+import TableFooter from '@material-ui/core/TableFooter';
+import TablePagination from '@material-ui/core/TablePagination';
 import Checkbox from '@material-ui/core/Checkbox';
 import Hidden from '@material-ui/core/Hidden';
 
@@ -34,6 +36,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+
+import TextField from '@material-ui/core/TextField';
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
@@ -53,6 +57,7 @@ class Userboard extends React.Component {
     this.state = {
       users: [],
       groups: [],
+      userFilter: "",
 
       currentUserName: "",
       currentUserIndex: -1,
@@ -80,19 +85,18 @@ class Userboard extends React.Component {
   }
 
   handleLoadUsers (filter, offset, limit) {
-    let url = "http://localhost:8080/home/users.json"
-    let formData = new FormData();
+    let url = new URL("http://localhost:8080/home/users.json");
 
     if (filter !== null) {
-      formData.append('filter', filter);
+      url.searchParams.append('filter', filter);
     }
 
     if (offset !== null) {
-      formData.append('offset', offset);
+      url.searchParams.append('offset', offset);
     }
 
     if (limit !== null) {
-      formData.append('limit', limit);
+      url.searchParams.append('limit', limit);
     }
 
     fetch(url,
@@ -101,7 +105,6 @@ class Userboard extends React.Component {
         headers: {
           'Authorization': 'Basic ' + btoa('admin:admin')
         },
-        body: formData
     })
     .then((response) => {
       return response.json();
@@ -163,6 +166,18 @@ class Userboard extends React.Component {
       this.setState({currentGroupName: name});
       this.setState({currentGroupIndex: index});
     }
+  }
+
+  handleMobileUserRowClick (index,name) {
+    this.setState({currentUserName: name});
+    this.setState({currentUserIndex: index});
+    this.setState({deployMobileUserDialog: true});
+  }
+
+  handleMobileGroupRowClick (index, name) {
+    this.setState({currentGroupName: name});
+    this.setState({currentGroupIndex: index});
+    this.setState({deployMobileGroupDialog: true});
   }
 
   render() {
@@ -265,8 +280,15 @@ class Userboard extends React.Component {
               </CardHeader>
               <CardBody>
                 <Button onClick={() => {this.setState({deployCreateUser: true});}}>Create New User</Button>
-                <form>
-                  <Input></Input>
+                <form
+                  onSubmit={() => {this.handleLoadUsers(filter, null, null);}}
+                >
+                  <TextField
+                    id="user-filter"
+                    name="user-filter"
+                    label="Search User"
+                    onChange={(event) => {this.setState({userFilter: event.target.value});}}
+                  />
                 </form>
                 <Table> 
                   <TableHead>
@@ -285,24 +307,50 @@ class Userboard extends React.Component {
                   <TableBody>
                     {this.state.users.map(
                       (row, index) => (
-                        <TableRow
-                          onClick={(event) => {this.handleUserRowClick(index, row.name); this.setState({deployMobileUserDialog: true});}}
-                          aria-checked={index === this.state.currentUserIndex ? true:false}
-                          key = {row.name}
-                          selected={index === this.state.currentUserIndex ? true:false}
-                        >
-                          <TableCell>
-                            <Hidden smDown implementation="css">
-                              <Checkbox
-                                checked = {index === this.state.currentUserIndex ? true:false}
-                              />
-                            </Hidden>
-                            {row.name}
-                          </TableCell>
-                        </TableRow>
+                        <div>
+                          <Hidden smDown implementation="css">
+                            <TableRow
+                              onClick={(event) => {this.handleUserRowClick(index, row.name);}}
+                              aria-checked={index === this.state.currentUserIndex ? true:false}
+                              key = {row.name}
+                              selected={index === this.state.currentUserIndex ? true:false}
+                            >
+                              <TableCell>
+                                  <Checkbox
+                                    checked = {index === this.state.currentUserIndex ? true:false}
+                                  />
+                                {row.name}
+                              </TableCell>
+                            </TableRow>
+                          </Hidden>
+
+                          <Hidden mdUp implementation="css">
+                            <TableRow
+                              onClick={(event) => {this.handleMobileUserRowClick(index, row.name);}}
+                              aria-checked={index === this.state.currentUserIndex ? true:false}
+                              key = {row.name}
+                              selected={index === this.state.currentUserIndex ? true:false}
+                            >
+                              <TableCell>
+                                {row.name}
+                              </TableCell>
+                            </TableRow>
+                          </Hidden>
+                        </div>
                       )
                     )}
                   </TableBody>
+                  <TableFooter>
+                    <TableRow>{/*
+                      <TablePagination
+                        rowsPerPageOptions={[3, 10]}
+                        colSpan={1}
+                        count={this.state.totalUserRows}
+                        page=
+                        onChangePage={}
+                      />*/}
+                    </TableRow>
+                  </TableFooter>
                 </Table>
               </CardBody>
             </Card>
@@ -381,21 +429,35 @@ class Userboard extends React.Component {
                   <TableBody>
                   {this.state.groups.map(
                       (row, index) => (
-                        <TableRow
-                          onClick={(event) => {this.handleGroupRowClick(index, row.name); this.setState({deployMobileGroupDialog: true});}}
-                          aria-checked={index === this.state.currentGroupIndex ? true : false}
-                          key = {row.name}
-                          selected={index === this.state.currentGroupIndex ? true : false}
-                        >
-                          <TableCell>
-                            <Hidden smDown implementation="css">
-                              <Checkbox
-                                checked = {index === this.state.currentGroupIndex ? true : false}
-                              />
-                            </Hidden>
-                            {row.name}
-                          </TableCell>
-                        </TableRow>
+                        <div>
+                          <Hidden smDown implementation="css">
+                            <TableRow
+                              onClick={(event) => {this.handleGroupRowClick(index, row.name);}}
+                              aria-checked={index === this.state.currentGroupIndex ? true : false}
+                              key = {row.name}
+                              selected={index === this.state.currentGroupIndex ? true : false}
+                            >
+                              <TableCell>
+                                  <Checkbox
+                                    checked = {index === this.state.currentGroupIndex ? true : false}
+                                  />
+                                {row.name}
+                              </TableCell>
+                            </TableRow>
+                          </Hidden>
+                          <Hidden mdUp implementation="css">
+                            <TableRow
+                              onClick={(event) => {this.handleMobileGroupRowClick(index, row.name);}}
+                              aria-checked={index === this.state.currentGroupIndex ? true : false}
+                              key = {row.name}
+                              selected={index === this.state.currentGroupIndex ? true : false}
+                            >
+                              <TableCell>
+                                {row.name}
+                              </TableCell>
+                            </TableRow>
+                          </Hidden>
+                        </div>
                       )
                     )}
                   </TableBody>
