@@ -31,7 +31,7 @@ module.exports = {
       "lodash": "lodash",
       "prop-types": "PropTypes",
       "jss": "jss",
-      "@material-ui/core": "MaterialUI"
+      "@material-ui/core": "window['material-ui']"
     }
   ]
 };
