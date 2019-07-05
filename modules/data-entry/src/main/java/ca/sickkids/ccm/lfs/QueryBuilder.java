@@ -59,24 +59,6 @@ public class QueryBuilder implements Use
     }
 
     /**
-     * Convert a javax.script.Bindings to a JSON string.
-     * Required due to StackOverflows generated when Bindings contains
-     * anything self-referential.
-     * @param bindings A javax.script.Bindings object
-     * @return The JSON representation of the given bindings
-     */
-    private String bindingsToJson(Bindings bindings)
-    {
-        StringBuilder builder = new StringBuilder("{\n");
-        for (Map.Entry<String, Object> entry : bindings.entrySet())
-        {
-            builder.append(entry.getKey() + ":" + entry.getValue().toString() + "\n");
-        }
-        builder.append("}");
-        return builder.toString();
-    }
-
-    /**
      * Finds content matching the given query.
      * @param query A Java_JCR2 query
      * @return The child jcr:content node if found, or null
@@ -115,15 +97,6 @@ public class QueryBuilder implements Use
         }
         builder.append("]");
         return builder.toString();
-    }
-
-    /**
-     * Get all nodes with type lfs:Extension.
-     * @return An iterator over all extensions.
-     */
-    public Iterator<Resource> getExtensions()
-    {
-        return this.resourceResolver.findResources("select * from [lfs:Extension] as n", "JCR-SQL2");
     }
 
     /**
