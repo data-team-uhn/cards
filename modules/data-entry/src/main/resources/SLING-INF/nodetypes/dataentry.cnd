@@ -64,10 +64,10 @@
   // Properties:
   // Hardcode the resource type
   - sling:resourceType (STRING) = "lfs/dataQuery" mandatory autocreated protected
-  // Hardcode the resource supertype: the dataEntryViewer is a resource
+  // Hardcode the resource supertype: the dataQuery is a resource
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
   // Set a default title
-  - title (String) = "LFS data entries" mandatory autocreated
+  - title (String) = "LFS query" mandatory autocreated
 
 //-----------------------------------------------------------------------------
 //
