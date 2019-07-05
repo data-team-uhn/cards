@@ -19,6 +19,8 @@ package ca.sickkids.ccm.lfs;
 import java.util.Iterator;
 
 import javax.jcr.RepositoryException;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.script.Bindings;
 
@@ -64,24 +66,14 @@ public class QueryBuilder implements Use
      */
     private String findContent(String query) throws RepositoryException
     {
-        StringBuilder builder = new StringBuilder("[\n");
         Iterator<Resource> results = this.resourceResolver.findResources(query, "JCR-SQL2");
+        JsonArrayBuilder builder = Json.createArrayBuilder();
         while (results.hasNext())
         {
-            builder.append("\t");
             Resource result = results.next();
-            builder.append(result.adaptTo(JsonObject.class).toString());
-
-            // Add the comma if there's another entry after this
-            if (results.hasNext())
-            {
-                builder.append(",\n");
-            } else {
-                builder.append("\n");
-            }
+            builder.add(result.adaptTo(JsonObject.class));
         }
-        builder.append("]");
-        return builder.toString();
+        return builder.build().toString();
     }
 
     /**
