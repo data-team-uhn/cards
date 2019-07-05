@@ -34,18 +34,18 @@ const Sidebar = ({ ...props }) => {
           });
         } else {
           listItemClasses = classNames({
-            [" " + classes[color]]: activeRoute(prop.path)
+            [" " + classes[color]]: activeRoute(prop.layout + prop.path)
           });
         }
         const whiteFontClasses = classNames({
-          [" " + classes.whiteFont]: activeRoute(prop.path)
+          [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
         });
 
         // Handle prop.icon being either a class or the name of an icon class
         // NavLink allows us to set styles iff the link's URL matches the current URL
         return (
           <NavLink
-            to={prop.path}
+            to={prop.layout + prop.path}
             className={adminButton + classes.item}
             activeClassName="active"
             key={key}

@@ -33,7 +33,7 @@ const switchRoutes = (
     {sidebarRoutes.map((prop, key) => {
       return (
         <Route
-          path={prop.path}
+          path={prop.layout + prop.path}
           component={prop.component}
           key={key}
         />
@@ -116,7 +116,7 @@ ReactDOM.render(
   <Router history={hist}>
     <Switch>
       <Route path="/" component={MainComponent} />
-      <Redirect from="/" to="/content" />
+      <Redirect from="/" to="/content/dashboard.html" />
     </Switch>
   </Router>,
   document.querySelector('#main-container')
