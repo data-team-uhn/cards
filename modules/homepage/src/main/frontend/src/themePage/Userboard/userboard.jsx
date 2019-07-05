@@ -28,6 +28,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import Checkbox from '@material-ui/core/Checkbox';
+import Hidden from '@material-ui/core/Hidden';
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
@@ -64,21 +70,38 @@ class Userboard extends React.Component {
       deployCreateGroup: false,
       deployDeleteGroup: false,
       deployAddGroupUsers: false,
-      deployRemoveGroupUsers: false
+      deployRemoveGroupUsers: false,
+      deployMobileUserDialog: false,
+      deployMobileGroupDialog: false
     };
 
     this.userColumnNames = [{id: "name", label: "User Names"}];
     this.groupColumnNames = [{id: "name", label: "Group Names"}];
   }
 
-  handleLoadUsers () {
+  handleLoadUsers (filter, offset, limit) {
     let url = "http://localhost:8080/home/users.json"
+    let formData = new FormData();
+
+    if (filter !== null) {
+      formData.append('filter', filter);
+    }
+
+    if (offset !== null) {
+      formData.append('offset', offset);
+    }
+
+    if (limit !== null) {
+      formData.append('limit', limit);
+    }
+
     fetch(url,
       {
         method: 'GET',
         headers: {
           'Authorization': 'Basic ' + btoa('admin:admin')
-        }
+        },
+        body: formData
     })
     .then((response) => {
       return response.json();
@@ -118,7 +141,7 @@ class Userboard extends React.Component {
   }
 
   componentWillMount () {
-    this.handleLoadUsers();
+    this.handleLoadUsers(null, null, null);
     this.handleLoadGroups();
   }
 
@@ -156,66 +179,21 @@ class Userboard extends React.Component {
         {this.state.deployAddGroupUsers && <AddUserToGroupDialogue handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName}/>}
         {this.state.deployRemoveGroupUsers && <RemoveUserFromGroupDialogue handleClose={() => {this.setState({deployRemoveGroupUsers: false});}} name={this.state.currentGroupName}/>}
         
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={5}>
-            <Card>
-              <CardHeader color="warning">
-                <h4 className={classes.cardTitleWhite}>Users</h4>
-              </CardHeader>
-              <CardBody>
-                <Button onClick={() => {this.setState({deployCreateUser: true});}}>Create New User</Button>
-                <Table> 
-                  <TableHead>
-                    <TableRow>
-                      {this.userColumnNames.map(
-                        row => (
-                          <TableCell
-                            key = {row.id}
-                          >
-                            {row.label}
-                          </TableCell>
-                        )
-                      )}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {this.state.users.map(
-                      (row, index) => (
-                        <TableRow
-                          onClick={(event) => this.handleUserRowClick(index, row.name)}
-                          aria-checked={index === this.state.currentUserIndex ? true:false}
-                          key = {row.name}
-                          selected={index === this.state.currentUserIndex ? true:false}
-                        >
-                          <TableCell>
-                            <Checkbox
-                              checked = {index === this.state.currentUserIndex ? true:false}
-                            />
-                            {row.name}
-                          </TableCell>
-                        </TableRow>
-                      )
-                    )}
-                  </TableBody>
-                </Table>
-              </CardBody>
-            </Card>
-          </GridItem>
-          <GridItem xs={12} sm={12} md={7}>
+        <Hidden mdUp implementation="css">
+          <Dialog
+            open={this.state.deployMobileUserDialog}
+            onClose={() => {this.setState({deployMobileUserDialog: false});}}
+          >
             <Card>
               <CardHeader color = "success">
-                <h4></h4>
+                {
+                  this.state.currentUserIndex >= 0 && <h4 className={classes.cardTitleWhite}>User: {this.state.users[this.state.currentUserIndex].name}</h4>
+                }
               </CardHeader>
               <CardBody>
               {
-                this.state.currentUserIndex < 0 ? 
+                this.state.currentUserIndex >= 0 &&
                 <div>
-                  <h1>No user selected.</h1>
-                </div>
-                
-                :
-                <div>
-                  <h1>User Name: {this.state.users[this.state.currentUserIndex].name}</h1>
                   <h3>Principal Name: {this.state.users[this.state.currentUserIndex].principalName}</h3>
                   <h3>Path: {this.state.users[this.state.currentUserIndex].path}</h3>
                   <h3>Admin Status: {this.state.users[this.state.currentUserIndex].isAdmin ? "True" : "False"}</h3>
@@ -243,9 +221,138 @@ class Userboard extends React.Component {
                 <GridContainer>
                   <Button onClick={() => {this.setState({deployDeleteUser: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Delete User</Button>
                   <Button onClick={() => {this.setState({deployChangeUserPassword: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Change Password</Button>
+                  <Button onClick={() => {this.setState({deployMobileUserDialog: false});}}>Close</Button>
                 </GridContainer>
               </CardBody>
             </Card>
+          </Dialog>
+
+          <Dialog
+            open={this.state.deployMobileGroupDialog}
+            onClose={() =>{this.setState({deployMobileGroupDialog: false});}}
+          >
+            <Card>
+              <CardHeader color="success">
+                <h4></h4>
+              </CardHeader>
+              <CardBody>
+                {
+                  this.state.currentGroupIndex >= 0 &&
+                  <div>
+                    <h1>Group Name: {this.state.groups[this.state.currentGroupIndex].name}</h1>
+                    <h3>Principal Name: {this.state.groups[this.state.currentGroupIndex].principalName}</h3>
+                    <h3>Path: {this.state.groups[this.state.currentGroupIndex].path}</h3>
+                    <h3>Members: {this.state.groups[this.state.currentGroupIndex].members}</h3>
+                    <h3>Declared Members: {this.state.groups[this.state.currentGroupIndex].declaredMembers}</h3>
+                  </div>
+                }
+                <GridContainer>
+                  <Button onClick={() => {this.setState({deployDeleteGroup: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Delete Group</Button>
+                  <Button onClick={() => {this.setState({deployAddGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Add User to Group</Button>
+                  <Button onClick={() => {this.setState({deployRemoveGroupUsers: false});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Remove User from Group</Button>
+                </GridContainer>
+              </CardBody>
+            </Card>
+          </Dialog>
+        </Hidden>
+
+
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={5}>
+            <Card>
+              <CardHeader color="warning">
+                <h4 className={classes.cardTitleWhite}>Users</h4>
+              </CardHeader>
+              <CardBody>
+                <Button onClick={() => {this.setState({deployCreateUser: true});}}>Create New User</Button>
+                <form>
+                  <Input></Input>
+                </form>
+                <Table> 
+                  <TableHead>
+                    <TableRow>
+                      {this.userColumnNames.map(
+                        row => (
+                          <TableCell
+                            key = {row.id}
+                          >
+                            {row.label}
+                          </TableCell>
+                        )
+                      )}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {this.state.users.map(
+                      (row, index) => (
+                        <TableRow
+                          onClick={(event) => {this.handleUserRowClick(index, row.name); this.setState({deployMobileUserDialog: true});}}
+                          aria-checked={index === this.state.currentUserIndex ? true:false}
+                          key = {row.name}
+                          selected={index === this.state.currentUserIndex ? true:false}
+                        >
+                          <TableCell>
+                            <Hidden smDown implementation="css">
+                              <Checkbox
+                                checked = {index === this.state.currentUserIndex ? true:false}
+                              />
+                            </Hidden>
+                            {row.name}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    )}
+                  </TableBody>
+                </Table>
+              </CardBody>
+            </Card>
+          </GridItem>
+          <GridItem xs={12} sm={12} md={7}>
+            <Hidden smDown implementation="css">
+              <Card>
+                <CardHeader color = "success">
+                  {
+                    this.state.currentUserIndex < 0 ?
+                    <h4 className={classes.cardTitleWhite}>No users selected.</h4>
+                    :
+                    <h4 className={classes.cardTitleWhite}>User: {this.state.users[this.state.currentUserIndex].name}</h4>
+                  }
+                </CardHeader>
+                <CardBody>
+                {
+                  this.state.currentUserIndex >= 0 &&
+                  <div>
+                    <h3>Principal Name: {this.state.users[this.state.currentUserIndex].principalName}</h3>
+                    <h3>Path: {this.state.users[this.state.currentUserIndex].path}</h3>
+                    <h3>Admin Status: {this.state.users[this.state.currentUserIndex].isAdmin ? "True" : "False"}</h3>
+                    <h3>Disabled: {this.state.users[this.state.currentUserIndex].isDisabled ? "True" : "False"}</h3>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Groups</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {this.state.users[this.state.currentUserIndex].memberOf.map(
+                          (row) => (
+                            <TableRow
+                              key = {row.name}
+                            >
+                              <TableCell>{row.name}</TableCell>
+                            </TableRow>
+                          )
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                }
+                  <GridContainer>
+                    <Button onClick={() => {this.setState({deployDeleteUser: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Delete User</Button>
+                    <Button onClick={() => {this.setState({deployChangeUserPassword: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Change Password</Button>
+                  </GridContainer>
+                </CardBody>
+              </Card>
+            </Hidden>
           </GridItem>
         </GridContainer>
 
@@ -275,15 +382,17 @@ class Userboard extends React.Component {
                   {this.state.groups.map(
                       (row, index) => (
                         <TableRow
-                          onClick={(event) => this.handleGroupRowClick(index, row.name)}
+                          onClick={(event) => {this.handleGroupRowClick(index, row.name); this.setState({deployMobileGroupDialog: true});}}
                           aria-checked={index === this.state.currentGroupIndex ? true : false}
                           key = {row.name}
                           selected={index === this.state.currentGroupIndex ? true : false}
                         >
                           <TableCell>
-                            <Checkbox
-                              checked = {index === this.state.currentGroupIndex ? true : false}
-                            />
+                            <Hidden smDown implementation="css">
+                              <Checkbox
+                                checked = {index === this.state.currentGroupIndex ? true : false}
+                              />
+                            </Hidden>
                             {row.name}
                           </TableCell>
                         </TableRow>
@@ -295,32 +404,34 @@ class Userboard extends React.Component {
             </Card>
           </GridItem>
           <GridItem xs={12} sm={12} md={7}>
-            <Card>
-              <CardHeader color="success">
-                <h4></h4>
-              </CardHeader>
-              <CardBody>
-                {
-                  this.state.currentGroupIndex < 0 ?
-                  <div>
-                    <h1>No group selected.</h1>
-                  </div>
-                  :
-                  <div>
-                    <h1>Group Name: {this.state.groups[this.state.currentGroupIndex].name}</h1>
-                    <h3>Principal Name: {this.state.groups[this.state.currentGroupIndex].principalName}</h3>
-                    <h3>Path: {this.state.groups[this.state.currentGroupIndex].path}</h3>
-                    <h3>Members: {this.state.groups[this.state.currentGroupIndex].members}</h3>
-                    <h3>Declared Members: {this.state.groups[this.state.currentGroupIndex].declaredMembers}</h3>
-                  </div>
-                }
-                <GridContainer>
-                  <Button onClick={() => {this.setState({deployDeleteGroup: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Delete Group</Button>
-                  <Button onClick={() => {this.setState({deployAddGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Add User to Group</Button>
-                  <Button onClick={() => {this.setState({deployRemoveGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Remove User from Group</Button>
-                </GridContainer> 
-              </CardBody>
-            </Card>
+            <Hidden smDown implementation="css">
+              <Card>
+                <CardHeader color="success">
+                  <h4></h4>
+                </CardHeader>
+                <CardBody>
+                  {
+                    this.state.currentGroupIndex < 0 ?
+                    <div>
+                      <h1>No group selected.</h1>
+                    </div>
+                    :
+                    <div>
+                      <h1>Group Name: {this.state.groups[this.state.currentGroupIndex].name}</h1>
+                      <h3>Principal Name: {this.state.groups[this.state.currentGroupIndex].principalName}</h3>
+                      <h3>Path: {this.state.groups[this.state.currentGroupIndex].path}</h3>
+                      <h3>Members: {this.state.groups[this.state.currentGroupIndex].members}</h3>
+                      <h3>Declared Members: {this.state.groups[this.state.currentGroupIndex].declaredMembers}</h3>
+                    </div>
+                  }
+                  <GridContainer>
+                    <Button onClick={() => {this.setState({deployDeleteGroup: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Delete Group</Button>
+                    <Button onClick={() => {this.setState({deployAddGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Add User to Group</Button>
+                    <Button onClick={() => {this.setState({deployRemoveGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Remove User from Group</Button>
+                  </GridContainer>
+                </CardBody>
+              </Card>
+            </Hidden>
           </GridItem>
         </GridContainer>
       </div>
@@ -329,14 +440,3 @@ class Userboard extends React.Component {
 }
 
 export default withStyles (userboardStyle)(Userboard);
-
-
-/*
-      console.log(JSON.stringify(data));
-      var names = [];
-      for (var username in data){
-        names.push(this.addName(username));
-      }
-      console.log(names);
-      */
-      //console.log(data.rows);
