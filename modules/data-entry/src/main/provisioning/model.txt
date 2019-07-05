@@ -25,10 +25,9 @@
     org.apache.sling/org.apache.sling.scripting.sightly/1.1.2-1.4.0
     org.apache.sling/org.apache.sling.scripting.sightly.runtime/1.1.0-1.4.0
     org.apache.sling/org.apache.sling.api/2.18.4
-    org.json/json/20180813
+    javax.json/javax.json-api/1.1.4
     javax.jcr/jcr/2.0
     javax.servlet/javax.servlet-api/3.1.0
-    # com.google.code.gson/gson/2.2.2
 
 [:repoinit]
     # Data entry

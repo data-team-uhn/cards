@@ -17,12 +17,11 @@
 package ca.sickkids.ccm.lfs;
 
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.jcr.RepositoryException;
+import javax.json.JsonObject;
 import javax.script.Bindings;
 
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -69,30 +68,16 @@ public class QueryBuilder implements Use
         Iterator<Resource> results = this.resourceResolver.findResources(query, "JCR-SQL2");
         while (results.hasNext())
         {
-            builder.append("\t{\n");
+            builder.append("\t");
             Resource result = results.next();
-            Map<String, Object> valueMap = result.getValueMap();
-            boolean firstEntry = true;
-            for (Map.Entry<String, Object> entry : valueMap.entrySet())
-            {
-                // Add a , onto the previous line, if this is the second property or later
-                if (!firstEntry)
-                {
-                    builder.append(",\n");
-                }
-                firstEntry = false;
-
-                // Convert this property into a string
-                String entryJson = StringEscapeUtils.escapeJson(entry.getValue().toString());
-                builder.append("\t\t\"" + entry.getKey() + "\": \"" + entryJson + "\"");
-            }
+            builder.append(result.adaptTo(JsonObject.class).toString());
 
             // Add the comma if there's another entry after this
             if (results.hasNext())
             {
-                builder.append("\n\t},\n");
+                builder.append(",\n");
             } else {
-                builder.append("\n\t}\n");
+                builder.append("\n");
             }
         }
         builder.append("]");
