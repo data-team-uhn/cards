@@ -2,19 +2,10 @@
 import React from "react";
 import classNames from "classnames";
 // @material-ui/core components
-import withStyles from "@material-ui/core/styles/withStyles";
-import MenuItem from "@material-ui/core/MenuItem";
-import MenuList from "@material-ui/core/MenuList";
-import Grow from "@material-ui/core/Grow";
-import Paper from "@material-ui/core/Paper";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Hidden from "@material-ui/core/Hidden";
-import Poppers from "@material-ui/core/Popper";
+import { withStyles } from "@material-ui/core/styles";
+import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, Hidden, Popper } from "@material-ui/core";
 // @material-ui/icons
-import Person from "@material-ui/icons/Person";
-import Notifications from "@material-ui/icons/Notifications";
-import Search from "@material-ui/icons/Search";
-import ExitToApp from "@material-ui/icons/ExitToApp";
+import { Person, Notifications, Search, ExitToApp } from "@material-ui/icons";
 // core components
 import CustomInput from "material-dashboard-react/dist/components/CustomInput/CustomInput.js";
 import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
@@ -120,7 +111,7 @@ class HeaderLinks extends React.Component {
               </p>
             </Hidden>
           </Button>
-          <Poppers
+          <Popper
             open={open}
             anchorEl={this.anchorEl}
             transition
@@ -149,7 +140,7 @@ class HeaderLinks extends React.Component {
                 </Paper>
               </Grow>
             )}
-          </Poppers>
+          </Popper>
         </div>
 
         {/* Profile */}
