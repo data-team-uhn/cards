@@ -433,9 +433,9 @@ export class AddUserToGroupDialogue extends React.Component {
   // TODO - find more efficient way to add and remove users from list
   handleSelectRowClick(event, row) {
     let chosens = this.state.selectedUsers;
-    if (chosens.indexOf(row) == -1)
+    if (chosens.indexOf(row) === -1)
     {
-      chosens.push(this.addName(row));
+      chosens.push(row);
       this.setState({selectedUsers: chosens});
     }
     console.log(this.state.selectedUsers);    
@@ -462,14 +462,16 @@ export class AddUserToGroupDialogue extends React.Component {
           <GridItem  xs={12} sm={12} md ={6}>
             <Table>
               <TableHead>
-                <TableRow>Users</TableRow>
+                <TableRow>
+                  <TableCell>Users</TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {
                   this.state.userNames.map(
                     (row, index) => (
                       <TableRow
-                        onClick={(event) => this.handleSelectRowClick(event, row.name)}
+                        onClick={(event) => this.handleSelectRowClick(event, row)}
                         index={row.name}
                       >
                         <TableCell>{row.name}</TableCell>
@@ -483,15 +485,18 @@ export class AddUserToGroupDialogue extends React.Component {
           <GridItem  xs={12} sm={12} md ={6}>
             <Table>
               <TableHead>
-                <TableRow>Selected Users</TableRow>
+                <TableRow>
+                  <TableCell>Users to Add</TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {
                   this.state.selectedUsers.map(
                     (row, index) => (
                       <TableRow
-                        onClick={(event) => this.handleDeselectRowClick(event, row.name)}
+                        onClick={(event) => this.handleDeselectRowClick(event, row)}
                         index={row.name}
+                        key={row.name}
                       >
                         <TableCell>{row.name}</TableCell>
                       </TableRow>
@@ -587,9 +592,11 @@ export class RemoveUserFromGroupDialogue extends React.Component {
 
   handleSelectRowClick(event, row) {
     let chosens = this.state.selectedUsers;
-    if (chosens.indexOf(row) == -1)
+    console.log(chosens.indexOf(row));
+
+    if (chosens.indexOf(row) === -1)
     {
-      chosens.push(this.addName(row));
+      chosens.push(row);
       this.setState({selectedUsers: chosens});
     }
     console.log(this.state.selectedUsers);
@@ -597,6 +604,7 @@ export class RemoveUserFromGroupDialogue extends React.Component {
 
   handleDeselectRowClick(event, row) {
     let chosens = this.state.selectedUsers;
+    console.log(row);
     chosens.splice(chosens.indexOf(row), 1);
     this.setState({selectedUsers: chosens});
     console.log(this.state.selectedUsers);
@@ -616,14 +624,18 @@ export class RemoveUserFromGroupDialogue extends React.Component {
           <GridItem  xs={12} sm={12} md ={6}>
             <Table>
               <TableHead>
-                <TableRow>Users in {this.props.name}</TableRow>
+                <TableRow>
+                  <TableCell>
+                    Users in {this.props.name}
+                  </TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {
                   this.state.groupUsers.map(
                     (row, index) => (
                       <TableRow
-                        onClick={(event) => this.handleSelectRowClick(event, row.name)}
+                        onClick={(event) => this.handleSelectRowClick(event, row)}
                         index={row.name}
                         key={row.name}
                       >
@@ -638,7 +650,11 @@ export class RemoveUserFromGroupDialogue extends React.Component {
           <GridItem  xs={12} sm={12} md ={6}>
             <Table>
               <TableHead>
-                <TableRow>Selected Users</TableRow>
+                <TableRow>
+                  <TableCell>
+                    Users to Remove
+                  </TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {
