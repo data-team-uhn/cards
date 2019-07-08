@@ -248,13 +248,14 @@ class Userboard extends React.Component {
           >
             <Card>
               <CardHeader color="success">
-                <h4></h4>
+                {
+                  this.state.currentGroupIndex >= 0 && <h4 className={classes.cardTitleWhite}>Group: {this.state.groups[this.state.currentGroupIndex].name}</h4>
+                }
               </CardHeader>
               <CardBody>
                 {
                   this.state.currentGroupIndex >= 0 &&
                   <div>
-                    <h1>Group Name: {this.state.groups[this.state.currentGroupIndex].name}</h1>
                     <h3>Principal Name: {this.state.groups[this.state.currentGroupIndex].principalName}</h3>
                     <h3>Path: {this.state.groups[this.state.currentGroupIndex].path}</h3>
                     <h3>Members: {this.state.groups[this.state.currentGroupIndex].members}</h3>
@@ -281,7 +282,7 @@ class Userboard extends React.Component {
               <CardBody>
                 <Button onClick={() => {this.setState({deployCreateUser: true});}}>Create New User</Button>
                 <form
-                  onSubmit={() => {this.handleLoadUsers(filter, null, null);}}
+                  onSubmit={() => {this.handleLoadUsers(filter, null, null); window.location = "http://localhost:8080/content";}}
                 >
                   <TextField
                     id="user-filter"
@@ -339,18 +340,18 @@ class Userboard extends React.Component {
                         </div>
                       )
                     )}
-                  </TableBody>
+                  </TableBody>{/*
                   <TableFooter>
-                    <TableRow>{/*
+                    <TableRow>
                       <TablePagination
                         rowsPerPageOptions={[3, 10]}
                         colSpan={1}
                         count={this.state.totalUserRows}
                         page=
                         onChangePage={}
-                      />*/}
+                      />
                     </TableRow>
-                  </TableFooter>
+                  </TableFooter>*/}
                 </Table>
               </CardBody>
             </Card>
@@ -469,7 +470,12 @@ class Userboard extends React.Component {
             <Hidden smDown implementation="css">
               <Card>
                 <CardHeader color="success">
-                  <h4></h4>
+                  {
+                    this.state.currentGroupIndex < 0 ?
+                    <h4 className={classes.cardTitleWhite}>No group selected.</h4>
+                    :
+                    <h4 className={classes.cardTitleWhite}>Group Name: {this.state.groups[this.state.currentGroupIndex].name}</h4>
+                  }
                 </CardHeader>
                 <CardBody>
                   {
@@ -479,7 +485,6 @@ class Userboard extends React.Component {
                     </div>
                     :
                     <div>
-                      <h1>Group Name: {this.state.groups[this.state.currentGroupIndex].name}</h1>
                       <h3>Principal Name: {this.state.groups[this.state.currentGroupIndex].principalName}</h3>
                       <h3>Path: {this.state.groups[this.state.currentGroupIndex].path}</h3>
                       <h3>Members: {this.state.groups[this.state.currentGroupIndex].members}</h3>
