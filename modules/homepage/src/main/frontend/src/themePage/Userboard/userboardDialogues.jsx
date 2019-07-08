@@ -20,19 +20,7 @@ import React from "react";
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
 
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import TextField from '@material-ui/core/TextField';
-
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import Checkbox from '@material-ui/core/Checkbox'
+import {Button ,Dialog, DialogTitle, DialogActions, DialogContent, TextField, Table, TableBody, TableHead, TableRow, TableCell} from "@material-ui/core";
 
 export class CreateUserDialogue extends React.Component {
     constructor(props) {
@@ -472,7 +460,8 @@ export class AddUserToGroupDialogue extends React.Component {
                     (row, index) => (
                       <TableRow
                         onClick={(event) => this.handleSelectRowClick(event, row)}
-                        index={row.name}
+                        key={row.name}
+                      
                       >
                         <TableCell>{row.name}</TableCell>
                       </TableRow>
@@ -495,7 +484,6 @@ export class AddUserToGroupDialogue extends React.Component {
                     (row, index) => (
                       <TableRow
                         onClick={(event) => this.handleDeselectRowClick(event, row)}
-                        index={row.name}
                         key={row.name}
                       >
                         <TableCell>{row.name}</TableCell>
@@ -636,7 +624,6 @@ export class RemoveUserFromGroupDialogue extends React.Component {
                     (row, index) => (
                       <TableRow
                         onClick={(event) => this.handleSelectRowClick(event, row)}
-                        index={row.name}
                         key={row.name}
                       >
                         <TableCell>{row.name}</TableCell>
@@ -662,7 +649,6 @@ export class RemoveUserFromGroupDialogue extends React.Component {
                     (row, index) => (
                       <TableRow
                         onClick={(event) => this.handleDeselectRowClick(event, row.name)}
-                        index={row.name}
                         key={row.name}
                       >
                         <TableCell>{row.name}</TableCell>
