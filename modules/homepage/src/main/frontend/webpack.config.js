@@ -1,9 +1,6 @@
 module.exports = {
   mode: 'development',
   entry: {
-    navbar: './src/navbar/navbarMain.js',
-    userSplash: './src/userSplash/userSplashPage.js',
-    index: './src/homePage/index.js',
     themeindex: './src/themePage/index.jsx'
   },
   module: {
@@ -31,7 +28,7 @@ module.exports = {
       "lodash": "lodash",
       "prop-types": "PropTypes",
       "jss": "jss",
-      "@material-ui/core": "MaterialUI"
+      "@material-ui/core": "window['material-ui']"
     }
   ]
 };

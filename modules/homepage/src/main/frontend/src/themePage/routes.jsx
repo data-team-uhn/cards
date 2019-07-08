@@ -19,44 +19,49 @@
 import { AccountBox, Assignment, Dashboard, Pets, Settings, Subtitles } from '@material-ui/icons';
 
 import DashboardPage from "./Dashboard/dashboard.jsx";
-import Userboard from "./Userboard/userboard.jsx";
 
 var sidebarRoutes = [
     {
-      path: "/content",
+      path: "/dashboard.html",
       name: "Dashboard",
       icon: Dashboard,
       component: DashboardPage,
+      layout: "/content.html"
     },
     {
       path: "/view.html",
       name: "Patients",
       icon: Assignment,
-      component: ""
+      component: "",
+      layout: "/content.html"
     },
     {
       path: "/modelorganisms.html",
       name: "Model Organisms",
       icon: Pets,
-      component: ""
+      component: "",
+      layout: "/content.html"
     },
     {
       path: "/variants.html",
       name: "Variants",
       icon: Subtitles,
-      component: ""
+      component: "",
+      layout: "/content.html"
     },
     {
-      path: "/userpage",
+      path: "/userpage.html",
       name: "User Profile",
       icon: AccountBox,
-      component: Userboard
+      component: "",
+      layout: "/content.html"
     },
     {
       path: "/admin.html",
       name: "Administration",
       icon: Settings,
-      component: ""
+      component: "",
+      layout: "/content.html"
     },
 ];
 

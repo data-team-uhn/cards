@@ -33,7 +33,7 @@ const switchRoutes = (
     {sidebarRoutes.map((prop, key) => {
       return (
         <Route
-          path={prop.path}
+          path={prop.layout + prop.path}
           component={prop.component}
           key={key}
         />
@@ -115,8 +115,9 @@ const hist = createBrowserHistory();
 ReactDOM.render(
   <Router history={hist}>
     <Switch>
-      <Route path="/" component={MainComponent} />
-      <Redirect from="/" to="/content" />
+      <Route path="/content.html/" component={MainComponent} />
+      <Redirect from="/" to="/content.html/dashboard.html"/>
+      <Redirect from="/content" to="/content.html/dashboard.html" />
     </Switch>
   </Router>,
   document.querySelector('#main-container')

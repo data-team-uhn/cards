@@ -21,7 +21,7 @@
 [feature name=lfs-homepage]
 
 [:repoinit]
-    create path (lfs:Themepage) /content
+    create path (lfs:Homepage) /content
     create path (sling:Folder) /libs/lfs/resources
 
     set ACL for everyone
