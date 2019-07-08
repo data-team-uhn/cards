@@ -65,8 +65,8 @@ class Userboard extends React.Component {
       deployMobileGroupDialog: false
     };
 
-    this.userColumnNames = [{id: "name", label: "User Names"}];
-    this.groupColumnNames = [{id: "name", label: "Group Names"}];
+    //this.userColumnNames = [{id: "name", label: "User Names"}];
+    //this.groupColumnNames = [{id: "name", label: "Group Names"}];
   }
 
   clearSelectedUser () {
@@ -230,17 +230,25 @@ class Userboard extends React.Component {
             <Card>
               <CardHeader color = "success">
                 {
-                  this.state.currentUserIndex >= 0 && <h4 className={classes.cardTitleWhite}>User: {this.state.users[this.state.currentUserIndex].name}</h4>
+                  this.state.currentUserIndex >= 0 && <h2 className={classes.cardTitleWhite}>{this.state.users[this.state.currentUserIndex].name}</h2>
                 }
               </CardHeader>
               <CardBody>
               {
                 this.state.currentUserIndex >= 0 &&
                 <div>
-                  <h3>Principal Name: {this.state.users[this.state.currentUserIndex].principalName}</h3>
-                  <h3>Path: {this.state.users[this.state.currentUserIndex].path}</h3>
-                  <h3>Admin Status: {this.state.users[this.state.currentUserIndex].isAdmin ? "True" : "False"}</h3>
-                  <h3>Disabled: {this.state.users[this.state.currentUserIndex].isDisabled ? "True" : "False"}</h3>
+                  <p className={classes.cardCategory}>Principal Name</p>
+                  <h3 className={classes.cardTitle}>{this.state.users[this.state.currentUserIndex].principalName}</h3>
+
+                  <p className={classes.cardCategory}>Path</p>
+                  <h3 className={classes.cardTitle}>{this.state.users[this.state.currentUserIndex].path}</h3>
+
+                  <p className={classes.cardCategory}>Admin Status</p>
+                  <h3 className={classes.cardTitle}>{this.state.users[this.state.currentUserIndex].isAdmin ? "True" : "False"}</h3>
+
+                  <p className={classes.cardCategory}>Disabled</p>
+                  <h3 className={classes.cardTitle}>{this.state.users[this.state.currentUserIndex].isDisabled ? "True" : "False"}</h3>
+
                   <Table>
                     <TableHead>
                       <TableRow>
@@ -277,23 +285,31 @@ class Userboard extends React.Component {
             <Card>
               <CardHeader color="success">
                 {
-                  this.state.currentGroupIndex >= 0 && <h4 className={classes.cardTitleWhite}>Group: {this.state.groups[this.state.currentGroupIndex].name}</h4>
+                  this.state.currentGroupIndex >= 0 && <h2 className={classes.cardTitleWhite}>{this.state.groups[this.state.currentGroupIndex].name}</h2>
                 }
               </CardHeader>
               <CardBody>
                 {
                   this.state.currentGroupIndex >= 0 &&
                   <div>
-                    <h3>Principal Name: {this.state.groups[this.state.currentGroupIndex].principalName}</h3>
-                    <h3>Path: {this.state.groups[this.state.currentGroupIndex].path}</h3>
-                    <h3>Members: {this.state.groups[this.state.currentGroupIndex].members}</h3>
-                    <h3>Declared Members: {this.state.groups[this.state.currentGroupIndex].declaredMembers}</h3>
+                    <p className={classes.cardCategory}>Principal Name</p>
+                    <h3 className={classes.cardTitle}> {this.state.groups[this.state.currentGroupIndex].principalName}</h3>
+
+                    <p className={classes.cardCategory}>Path</p>
+                    <h3 className={classes.cardTitle}>{this.state.groups[this.state.currentGroupIndex].path}</h3>
+
+                    <p className={classes.cardCategory}>Members</p>
+                    <h3 className={classes.cardTitle}>{this.state.groups[this.state.currentGroupIndex].members}</h3>
+
+                    <p className={classes.cardCategory}>Declared Members</p>
+                    <h3 className={classes.cardTitle}>{this.state.groups[this.state.currentGroupIndex].declaredMembers}</h3>
                   </div>
                 }
                 <GridContainer>
                   <Button onClick={() => {this.setState({deployDeleteGroup: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Delete Group</Button>
                   <Button onClick={() => {this.setState({deployAddGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Add User to Group</Button>
-                  <Button onClick={() => {this.setState({deployRemoveGroupUsers: false});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Remove User from Group</Button>
+                  <Button onClick={() => {this.setState({deployRemoveGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Remove User from Group</Button>
+                  <Button onClick={() => {this.setState({deployMobileGroupDialog: false});}}>Close</Button>
                 </GridContainer>
               </CardBody>
             </Card>
@@ -319,24 +335,25 @@ class Userboard extends React.Component {
                     onChange={(event) => {this.setState({userFilter: event.target.value});}}
                   />
                 </form>
-                <Table> 
-                  <TableHead>
-                    <TableRow>
-                      {this.userColumnNames.map(
-                        row => (
-                          <TableCell
-                            key = {row.id}
-                          >
-                            {row.label}
-                          </TableCell>
-                        )
-                      )}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {this.state.users.map(
-                      (row, index) => (
-                        <Hidden smDown implementation="css">
+                <Hidden smDown implementation="css">
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        {/*this.userColumnNames.map(
+                          row => (
+                            <TableCell
+                              key = {row.id}
+                            >
+                              {row.label}
+                            </TableCell>
+                          )
+                          )*/}
+                        <TableCell>User Names</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {this.state.users.map(
+                        (row, index) => (
                           <TableRow
                             onClick={(event) => {this.handleUserRowClick(index, row.name);}}
                             aria-checked={index === this.state.currentUserIndex ? true:false}
@@ -350,13 +367,42 @@ class Userboard extends React.Component {
                               {row.name}
                             </TableCell>
                           </TableRow>
-                        </Hidden>
-                      )
-                    )}
-
-                    {this.state.users.map(
-                      (row, index) => (
-                        <Hidden mdUp implementation="css">
+                        )
+                      )}
+                    </TableBody>
+                    {/*
+                    <TableFooter>
+                      <TableRow>
+                        <TablePagination
+                          rowsPerPageOptions={[3, 10]}
+                          colSpan={1}
+                          count={this.state.totalUserRows}
+                          page=
+                          onChangePage={}
+                        />
+                      </TableRow>
+                    </TableFooter>*/}
+                  </Table>
+                </Hidden>
+                <Hidden mdUp implementation="css">
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        {/*this.userColumnNames.map(
+                          row => (
+                            <TableCell
+                              key = {row.id}
+                            >
+                              {row.label}
+                            </TableCell>
+                          )
+                          )*/}
+                        <TableCell>User Names</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {this.state.users.map(
+                        (row, index) => (
                           <TableRow
                             onClick={(event) => {this.handleMobileUserRowClick(index, row.name);}}
                             aria-checked={index === this.state.currentUserIndex ? true:false}
@@ -367,22 +413,11 @@ class Userboard extends React.Component {
                               {row.name}
                             </TableCell>
                           </TableRow>
-                        </Hidden>
-                      )
-                    )}
-                  </TableBody>{/*
-                  <TableFooter>
-                    <TableRow>
-                      <TablePagination
-                        rowsPerPageOptions={[3, 10]}
-                        colSpan={1}
-                        count={this.state.totalUserRows}
-                        page=
-                        onChangePage={}
-                      />
-                    </TableRow>
-                  </TableFooter>*/}
-                </Table>
+                        )
+                      )}
+                    </TableBody>
+                  </Table>
+                </Hidden>
               </CardBody>
             </Card>
           </GridItem>
@@ -392,19 +427,27 @@ class Userboard extends React.Component {
                 <CardHeader color = "success">
                   {
                     this.state.currentUserIndex < 0 ?
-                    <h4 className={classes.cardTitleWhite}>No users selected.</h4>
+                    <h2 className={classes.cardTitleWhite}>No users selected.</h2>
                     :
-                    <h4 className={classes.cardTitleWhite}>User: {this.state.users[this.state.currentUserIndex].name}</h4>
+                    <h2 className={classes.cardTitleWhite}>{this.state.users[this.state.currentUserIndex].name}</h2>
                   }
                 </CardHeader>
                 <CardBody>
                 {
                   this.state.currentUserIndex >= 0 &&
                   <div>
-                    <h3>Principal Name: {this.state.users[this.state.currentUserIndex].principalName}</h3>
-                    <h3>Path: {this.state.users[this.state.currentUserIndex].path}</h3>
-                    <h3>Admin Status: {this.state.users[this.state.currentUserIndex].isAdmin ? "True" : "False"}</h3>
-                    <h3>Disabled: {this.state.users[this.state.currentUserIndex].isDisabled ? "True" : "False"}</h3>
+                    <p className={classes.cardCategory}>Principal Name</p>
+                    <h3 className={classes.cardTitle}>{this.state.users[this.state.currentUserIndex].principalName}</h3>
+
+                    <p className={classes.cardCategory}>Path</p>
+                    <h3 className={classes.cardTitle}>{this.state.users[this.state.currentUserIndex].path}</h3>
+
+                    <p className={classes.cardCategory}>Admin Status</p>
+                    <h3 className={classes.cardTitle}>{this.state.users[this.state.currentUserIndex].isAdmin ? "True" : "False"}</h3>
+ 
+                    <p className={classes.cardCategory}>Disabled</p>
+                    <h3 className={classes.cardTitle}>{this.state.users[this.state.currentUserIndex].isDisabled ? "True" : "False"}</h3>
+
                     <Table>
                       <TableHead>
                         <TableRow>
@@ -453,44 +496,62 @@ class Userboard extends React.Component {
                     onChange={(event) => {this.setState({groupFilter: event.target.value});}}
                   />
                 </form>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      {this.groupColumnNames.map(
-                        row => (
-                          <TableCell
-                            key = {row.id}
-                          >
-                            {row.label}
-                          </TableCell>
-                        )
-                      )}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {this.state.groups.map(
-                      (row, index) => (
-                        <Hidden smDown implementation="css">
-                          <TableRow
-                            onClick={(event) => {this.handleGroupRowClick(index, row.name);}}
-                            aria-checked={index === this.state.currentGroupIndex ? true : false}
-                            key = {row.name}
-                            selected={index === this.state.currentGroupIndex ? true : false}
-                          >
-                            <TableCell>
-                                <Checkbox
-                                  checked = {index === this.state.currentGroupIndex ? true : false}
-                                />
-                              {row.name}
+                <Hidden smDown implementation="css">
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        {/*this.groupColumnNames.map(
+                          row => (
+                            <TableCell
+                              key = {row.id}
+                            >
+                              {row.label}
                             </TableCell>
-                          </TableRow>
-                        </Hidden>
-                      )
-                    )}
-
-                    {this.state.groups.map(
-                      (row, index) => (
-                        <Hidden mdUp implementation="css">
+                          )
+                          )*/}
+                        <TableCell>Group Names</TableCell>
+                      </TableRow>
+                      </TableHead>
+                        <TableBody>
+                          {this.state.groups.map(
+                            (row, index) => (
+                              <TableRow
+                                onClick={(event) => {this.handleGroupRowClick(index, row.name);}}
+                                aria-checked={index === this.state.currentGroupIndex ? true : false}
+                                key = {row.name}
+                                selected={index === this.state.currentGroupIndex ? true : false}
+                              >
+                                <TableCell>
+                                    <Checkbox
+                                      checked = {index === this.state.currentGroupIndex ? true : false}
+                                    />
+                                  {row.name}
+                                </TableCell>
+                              </TableRow>
+                            )
+                          )}
+                        </TableBody>
+                  </Table>
+                </Hidden>
+                <Hidden mdUp implementation="css">
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        {/*this.groupColumnNames.map(
+                          row => (
+                            <TableCell
+                              key = {row.id}
+                            >
+                              {row.label}
+                            </TableCell>
+                          )
+                          )*/}
+                        <TableCell>Group Names</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {this.state.groups.map(
+                        (row, index) => (
                           <TableRow
                             onClick={(event) => {this.handleMobileGroupRowClick(index, row.name);}}
                             aria-checked={index === this.state.currentGroupIndex ? true : false}
@@ -501,11 +562,11 @@ class Userboard extends React.Component {
                               {row.name}
                             </TableCell>
                           </TableRow>
-                        </Hidden>
-                      )
-                    )}
-                  </TableBody>
-                </Table>
+                        )
+                      )}
+                    </TableBody>
+                  </Table>
+                </Hidden>
               </CardBody>
             </Card>
           </GridItem>
@@ -515,19 +576,26 @@ class Userboard extends React.Component {
                 <CardHeader color="success">
                   {
                     this.state.currentGroupIndex < 0 ?
-                    <h4 className={classes.cardTitleWhite}>No group selected.</h4>
+                    <h2 className={classes.cardTitleWhite}>No group selected.</h2>
                     :
-                    <h4 className={classes.cardTitleWhite}>Group Name: {this.state.groups[this.state.currentGroupIndex].name}</h4>
+                    <h2 className={classes.cardTitleWhite}>{this.state.groups[this.state.currentGroupIndex].name}</h2>
                   }
                 </CardHeader>
                 <CardBody>
                   {
                     this.state.currentGroupIndex >= 0 &&
                     <div>
-                      <h3>Principal Name: {this.state.groups[this.state.currentGroupIndex].principalName}</h3>
-                      <h3>Path: {this.state.groups[this.state.currentGroupIndex].path}</h3>
-                      <h3>Members: {this.state.groups[this.state.currentGroupIndex].members}</h3>
-                      <h3>Declared Members: {this.state.groups[this.state.currentGroupIndex].declaredMembers}</h3>
+                      <p className={classes.cardCategory}>Principal Name</p>
+                      <h3 className={classes.cardTitle}>{this.state.groups[this.state.currentGroupIndex].principalName}</h3>
+
+                      <p className={classes.cardCategory}>Path</p>
+                      <h3 className={classes.cardTitle}>{this.state.groups[this.state.currentGroupIndex].path}</h3>
+
+                      <p className={classes.cardCategory}>Members</p>
+                      <h3 className={classes.cardTitle}>{this.state.groups[this.state.currentGroupIndex].members}</h3>
+
+                      <p className={classes.cardCategory}>Declared Members</p>
+                      <h3 className={classes.cardTitle}>{this.state.groups[this.state.currentGroupIndex].declaredMembers}</h3>
                     </div>
                   }
                   <GridContainer>
