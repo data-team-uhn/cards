@@ -54,7 +54,7 @@ var sidebarRoutes = [
       path: "/userpage",
       name: "User Profile",
       icon: AccountBox,
-      component: "",
+      component: Userboard,
       layout: "/content.html"
     },
     {

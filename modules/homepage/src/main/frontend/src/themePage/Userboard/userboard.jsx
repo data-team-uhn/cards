@@ -21,23 +21,7 @@ import PropTypes from "prop-types";
 
 import  {withStyles} from "@material-ui/core/styles";
 
-import Button from '@material-ui/core/Button';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import TableFooter from '@material-ui/core/TableFooter';
-import TablePagination from '@material-ui/core/TablePagination';
-import Checkbox from '@material-ui/core/Checkbox';
-import Hidden from '@material-ui/core/Hidden';
-
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-
-import TextField from '@material-ui/core/TextField';
+import {Button, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Checkbox, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core"
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
@@ -57,7 +41,8 @@ class Userboard extends React.Component {
     this.state = {
       users: [],
       groups: [],
-      userFilter: "",
+      userFilter: null,
+      groupFilter: null,
 
       currentUserName: "",
       currentUserIndex: -1,
@@ -84,10 +69,32 @@ class Userboard extends React.Component {
     this.groupColumnNames = [{id: "name", label: "Group Names"}];
   }
 
+  clearSelectedUser () {
+    this.setState(
+      {
+        currentUserName: "",
+        currentUserIndex: -1,
+        returnedUserRows: 0,
+        totalUserRows: 0
+      }
+    );
+  }
+
+  clearSelectedGroup () {
+    this.setState(
+      {
+        currentGroupName: "",
+        currentGroupIndex: -1,
+        returnedGroupRows: 0,
+        totalGroupRows: 0
+      }
+    );
+  }
+
   handleLoadUsers (filter, offset, limit) {
     let url = new URL("http://localhost:8080/home/users.json");
 
-    if (filter !== null) {
+    if (filter !== null && filter !== "") {
       url.searchParams.append('filter', filter);
     }
 
@@ -110,18 +117,35 @@ class Userboard extends React.Component {
       return response.json();
     })
     .then((data) => {
-      this.setState({returnedUserRows: data.returnedrows});
-      this.setState({totalUserRows: data.totalrows});
-      this.setState({users: data.rows});
-      //console.log(this.state.users); console.log(data.rows);
+      this.clearSelectedUser();
+      this.setState(
+        {
+          returnedUserRows: data.returnedrows, 
+          totalUserRows: data.totalrows,
+          users: data.rows
+        }
+      );
     })
     .catch((error) => {
       console.log(error);
     });
   }
 
-  handleLoadGroups () {
-    let url = "http://localhost:8080/home/groups.json"
+  handleLoadGroups (filter, offset, limit) {
+    let url = new URL ("http://localhost:8080/home/groups.json");
+
+    if (filter !== null && filter !== "") {
+      url.searchParams.append('filter', filter);
+    }
+
+    if (offset !== null) {
+      url.searchParams.append('offset', offset);
+    }
+
+    if (limit !== null) {
+      url.searchParams.append('limit', limit);
+    }
+
     fetch(url,
       {
         method: 'GET',
@@ -133,10 +157,14 @@ class Userboard extends React.Component {
       return response.json();
     })
     .then((data) => {
-      
-      this.setState({returnedGroupRows: data.returnedrows});
-      this.setState({totalGroupRows: data.totalrows});
-      this.setState({groups: data.rows});
+      this.clearSelectedGroup();
+      this.setState(
+        {
+          returnedGroupRows: data.returnedrows,
+          totalGroupRows: data.totalrows,
+          groups: data.rows
+        }
+      );
     })
     .catch((error) => {
       console.log(error);
@@ -145,7 +173,7 @@ class Userboard extends React.Component {
 
   componentWillMount () {
     this.handleLoadUsers(null, null, null);
-    this.handleLoadGroups();
+    this.handleLoadGroups(null, null, null);
   }
 
   handleUserRowClick(index, name) {
@@ -282,7 +310,7 @@ class Userboard extends React.Component {
               <CardBody>
                 <Button onClick={() => {this.setState({deployCreateUser: true});}}>Create New User</Button>
                 <form
-                  onSubmit={() => {this.handleLoadUsers(filter, null, null); window.location = "http://localhost:8080/content";}}
+                  onSubmit={(event) => { event.preventDefault(); this.handleLoadUsers(this.state.userFilter, null, null);}}
                 >
                   <TextField
                     id="user-filter"
@@ -308,36 +336,38 @@ class Userboard extends React.Component {
                   <TableBody>
                     {this.state.users.map(
                       (row, index) => (
-                        <div>
-                          <Hidden smDown implementation="css">
-                            <TableRow
-                              onClick={(event) => {this.handleUserRowClick(index, row.name);}}
-                              aria-checked={index === this.state.currentUserIndex ? true:false}
-                              key = {row.name}
-                              selected={index === this.state.currentUserIndex ? true:false}
-                            >
-                              <TableCell>
-                                  <Checkbox
-                                    checked = {index === this.state.currentUserIndex ? true:false}
-                                  />
-                                {row.name}
-                              </TableCell>
-                            </TableRow>
-                          </Hidden>
+                        <Hidden smDown implementation="css">
+                          <TableRow
+                            onClick={(event) => {this.handleUserRowClick(index, row.name);}}
+                            aria-checked={index === this.state.currentUserIndex ? true:false}
+                            key = {row.name}
+                            selected={index === this.state.currentUserIndex ? true:false}
+                          >
+                            <TableCell>
+                                <Checkbox
+                                  checked = {index === this.state.currentUserIndex ? true:false}
+                                />
+                              {row.name}
+                            </TableCell>
+                          </TableRow>
+                        </Hidden>
+                      )
+                    )}
 
-                          <Hidden mdUp implementation="css">
-                            <TableRow
-                              onClick={(event) => {this.handleMobileUserRowClick(index, row.name);}}
-                              aria-checked={index === this.state.currentUserIndex ? true:false}
-                              key = {row.name}
-                              selected={index === this.state.currentUserIndex ? true:false}
-                            >
-                              <TableCell>
-                                {row.name}
-                              </TableCell>
-                            </TableRow>
-                          </Hidden>
-                        </div>
+                    {this.state.users.map(
+                      (row, index) => (
+                        <Hidden mdUp implementation="css">
+                          <TableRow
+                            onClick={(event) => {this.handleMobileUserRowClick(index, row.name);}}
+                            aria-checked={index === this.state.currentUserIndex ? true:false}
+                            key = {row.name}
+                            selected={index === this.state.currentUserIndex ? true:false}
+                          >
+                            <TableCell>
+                              {row.name}
+                            </TableCell>
+                          </TableRow>
+                        </Hidden>
                       )
                     )}
                   </TableBody>{/*
@@ -413,6 +443,16 @@ class Userboard extends React.Component {
               </CardHeader>
               <CardBody>
                 <Button onClick={() => {this.setState({deployCreateGroup: true});}}>Create New Group</Button>
+                <form
+                  onSubmit={(event) => { event.preventDefault(); this.handleLoadGroups(this.state.groupFilter, null, null);}}
+                >
+                  <TextField
+                    id="group-filter"
+                    name="group-filter"
+                    label="Search Group"
+                    onChange={(event) => {this.setState({groupFilter: event.target.value});}}
+                  />
+                </form>
                 <Table>
                   <TableHead>
                     <TableRow>
@@ -428,37 +468,40 @@ class Userboard extends React.Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                  {this.state.groups.map(
+                    {this.state.groups.map(
                       (row, index) => (
-                        <div>
-                          <Hidden smDown implementation="css">
-                            <TableRow
-                              onClick={(event) => {this.handleGroupRowClick(index, row.name);}}
-                              aria-checked={index === this.state.currentGroupIndex ? true : false}
-                              key = {row.name}
-                              selected={index === this.state.currentGroupIndex ? true : false}
-                            >
-                              <TableCell>
-                                  <Checkbox
-                                    checked = {index === this.state.currentGroupIndex ? true : false}
-                                  />
-                                {row.name}
-                              </TableCell>
-                            </TableRow>
-                          </Hidden>
-                          <Hidden mdUp implementation="css">
-                            <TableRow
-                              onClick={(event) => {this.handleMobileGroupRowClick(index, row.name);}}
-                              aria-checked={index === this.state.currentGroupIndex ? true : false}
-                              key = {row.name}
-                              selected={index === this.state.currentGroupIndex ? true : false}
-                            >
-                              <TableCell>
-                                {row.name}
-                              </TableCell>
-                            </TableRow>
-                          </Hidden>
-                        </div>
+                        <Hidden smDown implementation="css">
+                          <TableRow
+                            onClick={(event) => {this.handleGroupRowClick(index, row.name);}}
+                            aria-checked={index === this.state.currentGroupIndex ? true : false}
+                            key = {row.name}
+                            selected={index === this.state.currentGroupIndex ? true : false}
+                          >
+                            <TableCell>
+                                <Checkbox
+                                  checked = {index === this.state.currentGroupIndex ? true : false}
+                                />
+                              {row.name}
+                            </TableCell>
+                          </TableRow>
+                        </Hidden>
+                      )
+                    )}
+
+                    {this.state.groups.map(
+                      (row, index) => (
+                        <Hidden mdUp implementation="css">
+                          <TableRow
+                            onClick={(event) => {this.handleMobileGroupRowClick(index, row.name);}}
+                            aria-checked={index === this.state.currentGroupIndex ? true : false}
+                            key = {row.name}
+                            selected={index === this.state.currentGroupIndex ? true : false}
+                          >
+                            <TableCell>
+                              {row.name}
+                            </TableCell>
+                          </TableRow>
+                        </Hidden>
                       )
                     )}
                   </TableBody>
@@ -479,11 +522,7 @@ class Userboard extends React.Component {
                 </CardHeader>
                 <CardBody>
                   {
-                    this.state.currentGroupIndex < 0 ?
-                    <div>
-                      <h1>No group selected.</h1>
-                    </div>
-                    :
+                    this.state.currentGroupIndex >= 0 &&
                     <div>
                       <h3>Principal Name: {this.state.groups[this.state.currentGroupIndex].principalName}</h3>
                       <h3>Path: {this.state.groups[this.state.currentGroupIndex].path}</h3>
