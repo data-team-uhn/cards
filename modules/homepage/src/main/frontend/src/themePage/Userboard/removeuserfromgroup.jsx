@@ -165,7 +165,7 @@ class RemoveUserFromGroupDialogue extends React.Component {
                     this.state.selectedUsers.map(
                       (row, index) => (
                         <TableRow
-                          onClick={(event) => this.handleDeselectRowClick(event, row.name)}
+                          onClick={(event) => this.handleDeselectRowClick(event, row)}
                           key={row.name}
                         >
                           <TableCell>{row.name}</TableCell>
