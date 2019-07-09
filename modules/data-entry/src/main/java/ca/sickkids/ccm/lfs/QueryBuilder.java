@@ -30,37 +30,44 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.scripting.sightly.pojo.Use;
 
 /**
- * Base class for UI extensions.
+ * A HTL Use-API that can run a JCR query and output the results as JSON. The query to execute is taken from the request
+ * parameter {@code query}, and must be in the JCR-SQL2 syntax. To use this API, simply place the following code in a
+ * HTL file:
+ *
+ * <p><tt>
+ * &lt;sly data-sly-use.query="ca.sickkids.ccm.lfs.QueryBuilder"&gt;${query.content @ context='unsafe'}&lt;/sly&gt;
+ * </tt></p>
+ *
+ * <p>Or, send a HTTP request to {@code /query?query=select%20*%20from%20[lfs:Form]}.</p>
+ *
  * @version $Id$
  */
 public class QueryBuilder implements Use
 {
     private String content;
+
     private ResourceResolver resourceResolver;
+
     private SlingHttpServletRequest request;
 
-    /**
-     * Initializer from base Use class.
-     */
     @Override
     public void init(Bindings bindings)
     {
         this.request = (SlingHttpServletRequest) bindings.get("request");
         this.resourceResolver = (ResourceResolver) bindings.get("resolver");
 
-        try
-        {
+        try {
             this.content = findContent(this.request.getRequestParameter("query").getString());
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             this.content = "Unknown error: " + e.fillInStackTrace();
         }
     }
 
     /**
      * Finds content matching the given query.
-     * @param query A Java_JCR2 query
-     * @return The child jcr:content node if found, or null
+     *
+     * @param query a JCR_SQL2 query
+     * @return the content matching the query
      */
     private String findContent(String query) throws RepositoryException
     {
@@ -75,8 +82,9 @@ public class QueryBuilder implements Use
     }
 
     /**
-     * Get the content for this node.
-     * @return The content for this node.
+     * Get the results of the query as a JSON array.
+     *
+     * @return a JsonArray with all the content matching the query
      */
     public String getContent()
     {
