@@ -22,7 +22,7 @@ import PropTypes from "prop-types";
 import  {withStyles} from "@material-ui/core/styles";
 
 import {Button, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Checkbox, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField, IconButton} from "@material-ui/core"
-import {FirstPageIcon, KeyboardArrowLeft, KeyboardArrowRigth, LastPageIcon} from "@material-ui/icons";
+import {FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage} from "@material-ui/icons"
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
@@ -36,6 +36,133 @@ import userboardStyle from './userboardStyle.jsx';
 import CreateUserDialogue from "./createuserdialogue.jsx";
 import DeleteUserDialogue from "./deleteuserdialogue.jsx"; 
 import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx"; 
+/*
+const useStyles1 = makeStyles(theme => ({
+  root: {
+    flexShrink: 0,
+    color: theme.palette.text.secondary,
+    marginLeft: theme.spacing(2.5),
+  },
+}));
+*/
+
+class DialogueActions extends React.Component {
+  handleFirstPage = (event) => {
+    this.props.onChangePage(event, 0);
+  }
+
+  handleNextPage = (event) => {
+    if (this.props.page < Math.ceil(this.props.count/this.props.rowsPerPage) - 1) {
+      this.props.onChangePage(event, this.props.page + 1);
+    }
+  }
+
+  handlePrevPage = (event) => {
+    if (this.props.page > 0) {
+      this.props.onChangePage(event, this.props.page - 1);
+    }
+  }
+
+  handleLastPage = (event) => {
+    this.props.onChangePage(event, Math.max(0, Math.ceil(this.props.count/this.props.rowsPerPage) - 1));
+  }
+
+    //const classes = useStyles1();
+  render () {
+    const {count, page, rowsPerPage} = this.props;
+
+    return (
+      <div >
+        <IconButton
+          onClick={this.handleFirstPage}
+          disabled={page === 0}
+        >
+          <FirstPage/>
+        </IconButton>
+        <IconButton
+          onClick={this.handlePrevPage} 
+          disabled={page === 0}
+        >
+          <KeyboardArrowLeft/>
+        </IconButton>
+        <IconButton
+          onClick={this.handleNextPage}
+          disabled={page >= Math.ceil(count / rowsPerPage) -1}
+        >
+          <KeyboardArrowRight/>
+        </IconButton>
+        <IconButton
+          onClick={this.handleLastPage}
+          disabled={page >= Math.ceil(count / rowsPerPage) -1}
+        >
+          <LastPage/>
+        </IconButton>
+      </div>
+    );
+  }
+  
+}
+/*DialogueActions = (props) => {
+  const {count, page, rowsPerPage, onChangePage} = props;
+
+  handleFirstPage= (event) => {
+    onChangePage(event, 0);
+  }
+
+  handleNextPage= (event) => {
+    if (page < Math.ceil(count/rowsPerPage) - 1) {
+      onChangePage(event, page + 1);
+    }
+  }
+
+  handlePrevPage = (event) => {
+    if (page > 0) {
+      onChangePage(event, page - 1);
+    }
+  }
+
+  handleLastPage = (event) => {
+    onChangePage(event, Math.max(0, Math.ceil(count/rowsPerPage) - 1));
+  }
+
+    //const classes = useStyles1();
+  return (
+    <div >
+      <IconButton
+        onClick={handleFirstPage}
+        disabled={page === 0}
+      >
+        <FirstPageIcon/>
+      </IconButton>
+      <IconButton
+        onClick={handlePrevPage} 
+        disabled={page === 0}
+      >
+        <KeyboardArrowLeft/>
+      </IconButton>
+      <IconButton
+        onClick={handleNextPage}
+        disabled={page >= Math.ceil(count / rowsPerPage) -1}
+      >
+        <KeyboardArrowRight/>
+      </IconButton>
+      <IconButton
+        onClick={handleLastPage}
+        disabled={page >= Math.ceil(count / rowsPerPage) -1}
+      >
+        <LastPageIcon/>
+      </IconButton>
+    </div>
+  );
+  
+}*/
+
+DialogueActions.propTypes = {
+  count: PropTypes.number.isRequired,
+  onChangePage: PropTypes.func.isRequired,
+  page: PropTypes.number.isRequired,
+  rowsPerPage: PropTypes.number.isRequired,
+};
 
 class UsersManager extends React.Component {
   constructor(props) {
@@ -49,7 +176,7 @@ class UsersManager extends React.Component {
       returnedUserRows: 0,
       totalUserRows: 0,
       
-      userPaginationLimit: 10,
+      userPaginationLimit: 5,
       userPageNumber: 0,
 
       deployCreateUser: false,
@@ -111,7 +238,7 @@ class UsersManager extends React.Component {
   }
 
   componentWillMount () {
-    this.handleLoadUsers(null, null, null);
+    this.handleLoadUsers(null, 0, this.state.userPaginationLimit);
   }
 
   handleUserRowClick(index, name) {
@@ -129,24 +256,75 @@ class UsersManager extends React.Component {
     this.setState({currentUserIndex: index});
     this.setState({deployMobileUserDialog: true});
   }
-/*
-  loadFirstPage() {
-    this.setState({})
+
+  abstractHandleLoadUsers(page) {
+    console.log("adlsfkjasd;f");
+    //
+    //this.handleLoadUsers(this.state.userFilter, page * this.state.userPaginationLimit, this.state.userPaginationLimit);
   }
 
-  loadNextPage() {
-
+  handleChangePage (event, page) {
+    console.log("kldfjlasf");
+    this.setState({userPageNumber: page});
+    this.abstractHandleLoadUsers(page);
   }
 
-  TablePaginationActions() {
+  handleChangeRowsPerPage (event) {
+    //this.setState({userPaginationLimit: parseInt(event.target.value, 10)});
+  }
+
+/*  handleFirstPage() {
+    onChangePage(0);
+  }
+
+  handleNextPage() {
+    if (this.state.userPageNumber < Math.ceil(this.state.totalUserRows/this.state.userPaginationLimit) - 1) {
+      onChangePage(this.state.userPageNumber + 1);
+    }
+  }
+
+  handlePrevPage () {
+    if (this.state.userPageNumber > 0) {
+      onChangePage(this.state.userPageNumber- 1);
+    }
+  }
+
+  handleLastPage () {
+    onChangePage(Math.ceil(this.state.totalUserRows/this.state.userPaginationLimit) - 1);
+  }
+  
+  DialogueActions (props)
+  {
+  
     return (
       <div>
         <IconButton
-          onClick={() => this.handleLoadUsers(this.state.userFilter, this.state., this.state.userPaginationLimit)}
-          dis
-        />
+          onClick={() => this.handleFirstPage()}
+          //disabled={this.state.userPageNumber === 0}
+        >
+          <FirstPageIcon/>
+        </IconButton>
+        <IconButton
+          onClick={() => this.handlePrevPage()} 
+          //disabled={this.state.userPageNumber === 0}
+        >
+          <KeyboardArrowLeft/>
+        </IconButton>
+        <IconButton
+          onClick={() => this.handleNextPage()}
+          //disabled={this.state.userPageNumber >= Math.ceil(this.state.totalUserRows / this.state.userPaginationLimit) -1}
+        >
+          <KeyboardArrowRight/>
+        </IconButton>
+        <IconButton
+          onClick={() => this.handleLastPage()}
+          //disabled={this.state.userPageNumber >= Math.ceil(this.state.totalUserRows / this.state.userPaginationLimit) -1}
+        >
+          <LastPageIcon/>
+        </IconButton>
       </div>
     );
+  
   }
 */
   render() {
@@ -270,18 +448,25 @@ class UsersManager extends React.Component {
                         )
                       )}
                     </TableBody>
-                    {/*
+                    
                     <TableFooter>
                       <TableRow>
                         <TablePagination
-                          rowsPerPageOptions={[3, 10]}
+                          rowsPerPageOptions={[5, 10]}
                           colSpan={1}
                           count={this.state.totalUserRows}
-                          page=
-                          onChangePage={}
+                          rowsPerPage={this.state.userPaginationLimit}
+                          page={this.state.userPageNumber}
+                          SelectProps={{
+                            inputProps: { 'aria-label': 'Rows per page' },
+                            native: true,
+                          }}
+                          onChangePage={() => this.handleChangePage()}
+                          onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                          ActionsComponent={DialogueActions}
                         />
                       </TableRow>
-                    </TableFooter>*/}
+                    </TableFooter>
                   </Table>
                 </Hidden>
                 <Hidden mdUp implementation="css">
