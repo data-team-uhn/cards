@@ -20,10 +20,19 @@
 # The LFS homepage
 [feature name=lfs-dataentry]
 
+[artifacts]
+    org.apache.sling/org.apache.sling.scripting.sightly/1.1.2-1.4.0
+    org.apache.sling/org.apache.sling.scripting.sightly.runtime/1.1.0-1.4.0
+    org.apache.sling/org.apache.sling.api/2.18.4
+    javax.json/javax.json-api/1.1.4
+    javax.jcr/jcr/2.0
+    javax.servlet/javax.servlet-api/3.1.0
+
 [:repoinit]
     # Data entry
     create path (sling:Folder) /db
     create path (lfs:dataEntryViewer) /view
+    create path (lfs:dataQuery) /query
 
     # Testing users
     create path (lfs:dataEntry) /db/dummy1
@@ -34,6 +43,7 @@
     set ACL for everyone
         allow   jcr:read    on /view
         allow   jcr:read    on /db
+        allow   jcr:read    on /query
         allow   jcr:read    on /db/dummy1
         deny    jcr:read    on /db/dummy2
     end

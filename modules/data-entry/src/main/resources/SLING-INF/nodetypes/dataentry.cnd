@@ -56,6 +56,20 @@
   - title (String) = "LFS data entries" mandatory autocreated
 
 //-----------------------------------------------------------------------------
+// Nodetype for data query handling
+[lfs:dataQuery] > sling:Folder
+  // Attributes:
+  query
+
+  // Properties:
+  // Hardcode the resource type
+  - sling:resourceType (STRING) = "lfs/dataQuery" mandatory autocreated protected
+  // Hardcode the resource supertype: the dataQuery is a resource
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  // Set a default title
+  - title (String) = "LFS query" mandatory autocreated
+
+//-----------------------------------------------------------------------------
 //
 // Questionnaires: the definition of forms to be filled in.
 //
