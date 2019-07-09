@@ -27,21 +27,6 @@ import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
 import IndexStyle from "./indexStyle.jsx";
 
-// Generate the switch/routes for our router to render components
-const switchRoutes = (
-  <Switch>
-    {sidebarRoutes.map((prop, key) => {
-      return (
-        <Route
-          path={prop.layout + prop.path}
-          component={prop.component}
-          key={key}
-        />
-      );
-    })}
-  </Switch>
-);
-
 class Main extends React.Component {
   constructor(props) {
     super(props);
