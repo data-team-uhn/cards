@@ -129,26 +129,7 @@ class GroupsManager extends React.Component {
     this.setState({currentGroupIndex: index});
     this.setState({deployMobileGroupDialog: true});
   }
-/*
-  loadFirstPage() {
-    this.setState({})
-  }
 
-  loadNextPage() {
-
-  }
-
-  TablePaginationActions() {
-    return (
-      <div>
-        <IconButton
-          onClick={() => this.handleLoadUsers(this.state.userFilter, this.state., this.state.userPaginationLimit)}
-          dis
-        />
-      </div>
-    );
-  }
-*/
   render() {
     const { classes } = this.props;
 
