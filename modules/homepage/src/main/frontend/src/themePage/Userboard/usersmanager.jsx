@@ -71,7 +71,7 @@ class DialogueActions extends React.Component {
     const {count, page, rowsPerPage} = this.props;
 
     return (
-      <div >
+      <div>
         <IconButton
           onClick={this.handleFirstPage}
           disabled={page === 0}
@@ -99,7 +99,6 @@ class DialogueActions extends React.Component {
       </div>
     );
   }
-  
 }
 
 DialogueActions.propTypes = {
@@ -223,7 +222,7 @@ class UsersManager extends React.Component {
   }
 
   handleChangeRowsPerPage (event) {
-    this.handleLoadUsers(this.state.userFilter, 0 * parseInt(event.target.value, 10), parseInt(event.target.value, 10));
+    this.handleLoadUsers(this.state.userFilter, 0, parseInt(event.target.value, 10));
     this.setState(
       {
         userPaginationLimit: parseInt(event.target.value, 10),
@@ -352,6 +351,12 @@ class UsersManager extends React.Component {
                           </TableRow>
                         )
                       )}
+                      {
+                        this.state.returnedUserRows < this.state.userPaginationLimit &&
+                        <TableRow style={{height: 48 * (this.state.userPaginationLimit - this.state.returnedUserRows)}}>
+                          <TableCell colSpan={1}/>
+                        </TableRow>
+                      }
                     </TableBody>
                     
                     <TableFooter>
@@ -405,7 +410,31 @@ class UsersManager extends React.Component {
                           </TableRow>
                         )
                       )}
+                      {
+                        this.state.returnedUserRows < this.state.userPaginationLimit &&
+                        <TableRow style={{height: 48 * (this.state.userPaginationLimit - this.state.returnedUserRows)}}>
+                          <TableCell colSpan={1}/>
+                        </TableRow>
+                      }
                     </TableBody>
+                    <TableFooter>
+                      <TableRow>
+                        <TablePagination
+                          rowsPerPageOptions={[5, 10]}
+                          colSpan={1}
+                          count={this.state.totalUserRows}
+                          rowsPerPage={this.state.userPaginationLimit}
+                          page={this.state.userPageNumber}
+                          SelectProps={{
+                            inputProps: { 'aria-label': 'Rows per page' },
+                            native: true,
+                          }}
+                          onChangePage={this.handleChangePage}
+                          onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                          ActionsComponent={DialogueActions}
+                        />
+                      </TableRow>
+                    </TableFooter>
                   </Table>
                 </Hidden>
               </CardBody>
