@@ -67,7 +67,6 @@ class DialogueActions extends React.Component {
     this.props.onChangePage(event, Math.max(0, Math.ceil(this.props.count/this.props.rowsPerPage) - 1));
   }
 
-    //const classes = useStyles1();
   render () {
     const {count, page, rowsPerPage} = this.props;
 
@@ -102,60 +101,6 @@ class DialogueActions extends React.Component {
   }
   
 }
-/*DialogueActions = (props) => {
-  const {count, page, rowsPerPage, onChangePage} = props;
-
-  handleFirstPage= (event) => {
-    onChangePage(event, 0);
-  }
-
-  handleNextPage= (event) => {
-    if (page < Math.ceil(count/rowsPerPage) - 1) {
-      onChangePage(event, page + 1);
-    }
-  }
-
-  handlePrevPage = (event) => {
-    if (page > 0) {
-      onChangePage(event, page - 1);
-    }
-  }
-
-  handleLastPage = (event) => {
-    onChangePage(event, Math.max(0, Math.ceil(count/rowsPerPage) - 1));
-  }
-
-    //const classes = useStyles1();
-  return (
-    <div >
-      <IconButton
-        onClick={handleFirstPage}
-        disabled={page === 0}
-      >
-        <FirstPageIcon/>
-      </IconButton>
-      <IconButton
-        onClick={handlePrevPage} 
-        disabled={page === 0}
-      >
-        <KeyboardArrowLeft/>
-      </IconButton>
-      <IconButton
-        onClick={handleNextPage}
-        disabled={page >= Math.ceil(count / rowsPerPage) -1}
-      >
-        <KeyboardArrowRight/>
-      </IconButton>
-      <IconButton
-        onClick={handleLastPage}
-        disabled={page >= Math.ceil(count / rowsPerPage) -1}
-      >
-        <LastPageIcon/>
-      </IconButton>
-    </div>
-  );
-  
-}*/
 
 DialogueActions.propTypes = {
   count: PropTypes.number.isRequired,
@@ -184,15 +129,18 @@ class UsersManager extends React.Component {
       deployChangeUserPassword: false,
       deployMobileUserDialog: false,
     };
+
+    this.handleChangePage = this.handleChangePage.bind(this);
+    this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
   }
+
+ 
 
   clearSelectedUser () {
     this.setState(
       {
         currentUserName: "",
         currentUserIndex: -1,
-        returnedUserRows: 0,
-        totalUserRows: 0
       }
     );
   }
@@ -228,7 +176,7 @@ class UsersManager extends React.Component {
         {
           returnedUserRows: data.returnedrows, 
           totalUserRows: data.totalrows,
-          users: data.rows
+          users: data.rows,
         }
       );
     })
@@ -243,90 +191,47 @@ class UsersManager extends React.Component {
 
   handleUserRowClick(index, name) {
     if (index === this.state.currentUserIndex) {
-      this.setState({currentUserName: ""});
-      this.setState({currentUserIndex: -1});
+      this.setState(
+        {
+          currentUserName: "",
+          currentUserIndex: -1
+        }
+      );
     } else {
-      this.setState({currentUserName: name});
-      this.setState({currentUserIndex: index});
+      this.setState(
+        {
+          currentUserName: name,
+          currentUserIndex: index
+        }
+      );
     }
   }
 
   handleMobileUserRowClick (index,name) {
-    this.setState({currentUserName: name});
-    this.setState({currentUserIndex: index});
-    this.setState({deployMobileUserDialog: true});
-  }
-
-  abstractHandleLoadUsers(page) {
-    console.log("adlsfkjasd;f");
-    //
-    //this.handleLoadUsers(this.state.userFilter, page * this.state.userPaginationLimit, this.state.userPaginationLimit);
+    this.setState(
+      {
+        currentUserName: name,
+        currentUserIndex: index,
+        deployMobileUserDialog: true
+      }
+    );
   }
 
   handleChangePage (event, page) {
-    console.log("kldfjlasf");
+    this.handleLoadUsers(this.state.userFilter, page * this.state.userPaginationLimit, this.state.userPaginationLimit);
     this.setState({userPageNumber: page});
-    this.abstractHandleLoadUsers(page);
   }
 
   handleChangeRowsPerPage (event) {
-    //this.setState({userPaginationLimit: parseInt(event.target.value, 10)});
-  }
-
-/*  handleFirstPage() {
-    onChangePage(0);
-  }
-
-  handleNextPage() {
-    if (this.state.userPageNumber < Math.ceil(this.state.totalUserRows/this.state.userPaginationLimit) - 1) {
-      onChangePage(this.state.userPageNumber + 1);
-    }
-  }
-
-  handlePrevPage () {
-    if (this.state.userPageNumber > 0) {
-      onChangePage(this.state.userPageNumber- 1);
-    }
-  }
-
-  handleLastPage () {
-    onChangePage(Math.ceil(this.state.totalUserRows/this.state.userPaginationLimit) - 1);
-  }
-  
-  DialogueActions (props)
-  {
-  
-    return (
-      <div>
-        <IconButton
-          onClick={() => this.handleFirstPage()}
-          //disabled={this.state.userPageNumber === 0}
-        >
-          <FirstPageIcon/>
-        </IconButton>
-        <IconButton
-          onClick={() => this.handlePrevPage()} 
-          //disabled={this.state.userPageNumber === 0}
-        >
-          <KeyboardArrowLeft/>
-        </IconButton>
-        <IconButton
-          onClick={() => this.handleNextPage()}
-          //disabled={this.state.userPageNumber >= Math.ceil(this.state.totalUserRows / this.state.userPaginationLimit) -1}
-        >
-          <KeyboardArrowRight/>
-        </IconButton>
-        <IconButton
-          onClick={() => this.handleLastPage()}
-          //disabled={this.state.userPageNumber >= Math.ceil(this.state.totalUserRows / this.state.userPaginationLimit) -1}
-        >
-          <LastPageIcon/>
-        </IconButton>
-      </div>
+    this.handleLoadUsers(this.state.userFilter, 0 * parseInt(event.target.value, 10), parseInt(event.target.value, 10));
+    this.setState(
+      {
+        userPaginationLimit: parseInt(event.target.value, 10),
+        userPageNumber: 0
+      }
     );
-  
   }
-*/
+
   render() {
     const { classes } = this.props;
 
@@ -396,7 +301,7 @@ class UsersManager extends React.Component {
 
 
         <GridContainer>
-          <GridItem xs={12} sm={12} md={5}>
+          <GridItem xs={12} sm={12} md={6}>
             <Card>
               <CardHeader color="warning">
                 <h4 className={classes.cardTitleWhite}>Users</h4>
@@ -404,7 +309,7 @@ class UsersManager extends React.Component {
               <CardBody>
                 <Button onClick={() => {this.setState({deployCreateUser: true});}}>Create New User</Button>
                 <form
-                  onSubmit={(event) => { event.preventDefault(); this.handleLoadUsers(this.state.userFilter, null, null);}}
+                  onSubmit={(event) => { event.preventDefault(); this.handleLoadUsers(this.state.userFilter, 0, this.state.userPaginationLimit); this.setState({userPageNumber: 0});}}
                 >
                   <TextField
                     id="user-filter"
@@ -461,7 +366,7 @@ class UsersManager extends React.Component {
                             inputProps: { 'aria-label': 'Rows per page' },
                             native: true,
                           }}
-                          onChangePage={() => this.handleChangePage()}
+                          onChangePage={this.handleChangePage}
                           onChangeRowsPerPage={this.handleChangeRowsPerPage}
                           ActionsComponent={DialogueActions}
                         />
@@ -506,7 +411,7 @@ class UsersManager extends React.Component {
               </CardBody>
             </Card>
           </GridItem>
-          <GridItem xs={12} sm={12} md={7}>
+          <GridItem xs={12} sm={12} md={6}>
             <Hidden smDown implementation="css">
               <Card>
                 <CardHeader color = "success">

@@ -79,7 +79,7 @@ class ChangeUserPasswordDialogue extends React.Component {
                                     name="oldpwd"
                                     label="Old Password"
                                     onChange={(event) => { this.setState({ oldPwd: event.target.value }); }}
-                                    autofocus
+                                    autoFocus
                                 />
                             </GridItem>
                             <GridItem xs={12} sm={12} md={12}>
