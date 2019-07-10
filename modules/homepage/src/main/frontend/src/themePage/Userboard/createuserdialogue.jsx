@@ -75,7 +75,7 @@ class CreateUserDialogue extends React.Component {
                                     name="name"
                                     label="Name"
                                     onChange={(event) => { this.setState({ newName: event.target.value }); }}
-                                    autofocus
+                                    autoFocus
                                 />
                             </GridItem>
                             <GridItem xs={12} sm={12} md={12}>
