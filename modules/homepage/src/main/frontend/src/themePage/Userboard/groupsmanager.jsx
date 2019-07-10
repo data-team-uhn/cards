@@ -22,7 +22,7 @@ import PropTypes from "prop-types";
 import  {withStyles} from "@material-ui/core/styles";
 
 import {Button, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Checkbox, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField, IconButton} from "@material-ui/core"
-import {FirstPageIcon, KeyboardArrowLeft, KeyboardArrowRigth, LastPageIcon} from "@material-ui/icons";
+import {FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage} from "@material-ui/icons";
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
@@ -38,6 +38,60 @@ import DeleteGroupDialogue from "./deletegroupdialogue.jsx";
 import AddUserToGroupDialogue from "./addusertogroupdialogue.jsx";
 import RemoveUserFromGroupDialogue from "./removeuserfromgroup.jsx";
 
+class DialogueActions extends React.Component {
+  handleFirstPage = (event) => {
+    this.props.onChangePage(event, 0);
+  }
+
+  handleNextPage = (event) => {
+    if (this.props.page < Math.ceil(this.props.count/this.props.rowsPerPage) - 1) {
+      this.props.onChangePage(event, this.props.page + 1);
+    }
+  }
+
+  handlePrevPage = (event) => {
+    if (this.props.page > 0) {
+      this.props.onChangePage(event, this.props.page - 1);
+    }
+  }
+
+  handleLastPage = (event) => {
+    this.props.onChangePage(event, Math.max(0, Math.ceil(this.props.count/this.props.rowsPerPage) - 1));
+  }
+
+  render () {
+    const {count, page, rowsPerPage} = this.props;
+
+    return (
+      <div>
+        <IconButton
+          onClick={this.handleFirstPage}
+          disabled={page === 0}
+        >
+          <FirstPage/>
+        </IconButton>
+        <IconButton
+          onClick={this.handlePrevPage} 
+          disabled={page === 0}
+        >
+          <KeyboardArrowLeft/>
+        </IconButton>
+        <IconButton
+          onClick={this.handleNextPage}
+          disabled={page >= Math.ceil(count / rowsPerPage) -1}
+        >
+          <KeyboardArrowRight/>
+        </IconButton>
+        <IconButton
+          onClick={this.handleLastPage}
+          disabled={page >= Math.ceil(count / rowsPerPage) -1}
+        >
+          <LastPage/>
+        </IconButton>
+      </div>
+    );
+  }
+}
 
 class GroupsManager extends React.Component {
   constructor(props) { 
@@ -51,12 +105,18 @@ class GroupsManager extends React.Component {
       returnedGroupRows: 0,
       totalGroupRows: 0,
 
+      groupPaginationLimit: 5,
+      groupPageNumber: 0,
+
       deployCreateGroup: false,
       deployDeleteGroup: false,
       deployAddGroupUsers: false,
       deployRemoveGroupUsers: false,
       deployMobileGroupDialog: false
     };
+
+    this.handleChangePage = this.handleChangePage.bind(this);
+    this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
   }
 
   clearSelectedGroup () {
@@ -64,8 +124,6 @@ class GroupsManager extends React.Component {
       {
         currentGroupName: "",
         currentGroupIndex: -1,
-        returnedGroupRows: 0,
-        totalGroupRows: 0
       }
     );
   }
@@ -111,23 +169,50 @@ class GroupsManager extends React.Component {
   }
 
   componentWillMount () {
-    this.handleLoadGroups(null, null, null);
+    this.handleLoadGroups(null, 0, this.state.groupPaginationLimit);
   }
 
   handleGroupRowClick(index, name) {
     if (index === this.state.currentGroupIndex) {
-      this.setState({currentGroupName: ""});
-      this.setState({currentGroupIndex: -1});
+      this.setState(
+        {
+          currentGroupName: "",
+          currentGroupIndex: -1
+        }
+      );
     } else {
-      this.setState({currentGroupName: name});
-      this.setState({currentGroupIndex: index});
+      this.setState(
+        {
+          currentGroupName: name,
+          currentGroupIndex: index
+        }
+      );
     }
   }
 
   handleMobileGroupRowClick (index, name) {
-    this.setState({currentGroupName: name});
-    this.setState({currentGroupIndex: index});
-    this.setState({deployMobileGroupDialog: true});
+    this.setState(
+      {
+        currentGroupName: name,
+        currentGroupIndex: index,
+        deployMobileGroupDialog: true
+      }
+    );
+  }
+
+  handleChangePage (event, page) {
+    this.handleLoadGroups(this.state.groupFilter, page * this.state.groupPaginationLimit, this.state.groupPaginationLimit);
+    this.setState({groupPageNumber: page});
+  }
+
+  handleChangeRowsPerPage (event) {
+    this.handleLoadGroups(this.state.groupFilter, 0, parseInt(event.target.value, 10));
+    this.setState(
+      {
+        userPaginationLimit: parseInt(event.target.value, 10),
+        userPageNumber: 0
+      }
+    );
   }
 
   render() {
@@ -212,26 +297,44 @@ class GroupsManager extends React.Component {
                           )*/}
                         <TableCell>Group Names</TableCell>
                       </TableRow>
-                      </TableHead>
-                        <TableBody>
-                          {this.state.groups.map(
-                            (row, index) => (
-                              <TableRow
-                                onClick={(event) => {this.handleGroupRowClick(index, row.name);}}
-                                aria-checked={index === this.state.currentGroupIndex ? true : false}
-                                key = {row.name}
-                                selected={index === this.state.currentGroupIndex ? true : false}
-                              >
-                                <TableCell>
-                                    <Checkbox
-                                      checked = {index === this.state.currentGroupIndex ? true : false}
-                                    />
-                                  {row.name}
-                                </TableCell>
-                              </TableRow>
-                            )
-                          )}
-                        </TableBody>
+                    </TableHead>
+                    <TableBody>
+                      {this.state.groups.map(
+                        (row, index) => (
+                          <TableRow
+                            onClick={(event) => {this.handleGroupRowClick(index, row.name);}}
+                            aria-checked={index === this.state.currentGroupIndex ? true : false}
+                            key = {row.name}
+                            selected={index === this.state.currentGroupIndex ? true : false}
+                          >
+                            <TableCell>
+                                <Checkbox
+                                  checked = {index === this.state.currentGroupIndex ? true : false}
+                                />
+                              {row.name}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      )}
+                    </TableBody>
+                    <TableFooter>
+                      <TableRow>
+                        <TablePagination
+                          rowsPerPageOptions={[5, 10]}
+                          colSpan={1}
+                          count={this.state.totalGroupRows}
+                          rowsPerPage={this.state.groupPaginationLimit}
+                          page={this.state.groupPageNumber}
+                          SelectProps={{
+                            inputProps: { 'aria-label': 'Rows per page' },
+                            native: true,
+                          }}
+                          onChangePage={this.handleChangePage}
+                          onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                          ActionsComponent={DialogueActions}
+                        />
+                      </TableRow>
+                    </TableFooter>   
                   </Table>
                 </Hidden>
                 <Hidden mdUp implementation="css">
@@ -266,6 +369,24 @@ class GroupsManager extends React.Component {
                         )
                       )}
                     </TableBody>
+                    <TableFooter>
+                      <TableRow>
+                        <TablePagination
+                          rowsPerPageOptions={[5, 10]}
+                          colSpan={1}
+                          count={this.state.totalGroupRows}
+                          rowsPerPage={this.state.groupPaginationLimit}
+                          page={this.state.groupPageNumber}
+                          SelectProps={{
+                            inputProps: { 'aria-label': 'Rows per page' },
+                            native: true,
+                          }}
+                          onChangePage={this.handleChangePage}
+                          onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                          ActionsComponent={DialogueActions}
+                        />
+                      </TableRow>
+                    </TableFooter>
                   </Table>
                 </Hidden>
               </CardBody>
