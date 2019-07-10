@@ -70,7 +70,7 @@ class CreateGroupDialogue extends React.Component {
                                     name="name"
                                     label="Name"
                                     onChange={(event) => { this.setState({ newName: event.target.value }); }}
-                                    autofocus
+                                    autoFocus
                                 />
                             </GridItem>
                         </GridContainer>
