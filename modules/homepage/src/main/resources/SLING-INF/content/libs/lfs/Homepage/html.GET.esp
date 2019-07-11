@@ -23,7 +23,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${properties.title}</title>
+    <title><%= currentNode.title %></title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <script crossorigin src="https://unpkg.com/prop-types@15.6.2/prop-types.js"></script>
     <script crossorigin src="https://unpkg.com/jss@9.8.7/dist/jss.js"></script>
@@ -43,6 +43,6 @@
       }
     </script>
     <div id="main-container"></div>
-    <script src="/libs/lfs/resources/themeindex.js"></script>
+    <script src="/libs/lfs/resources/<%=resolver.getResource("/libs/lfs/resources/homepage").properties["themeindex.js"] %>"></script>
   </body>
 </html>
