@@ -21,92 +21,22 @@ import PropTypes from "prop-types";
 
 import  {withStyles} from "@material-ui/core/styles";
 
-import {Button, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Checkbox, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField, IconButton} from "@material-ui/core"
-import {FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage} from "@material-ui/icons"
+import {Button, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Checkbox, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core";
+
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
 import Card from "material-dashboard-react/dist/components/Card/Card.js";
 import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
 import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
-import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter"
+import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter";
 //import { Avatar } from "@material-ui/core";
 
 import userboardStyle from './userboardStyle.jsx';
 import CreateUserDialogue from "./createuserdialogue.jsx";
 import DeleteUserDialogue from "./deleteuserdialogue.jsx"; 
 import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx"; 
-/*
-const useStyles1 = makeStyles(theme => ({
-  root: {
-    flexShrink: 0,
-    color: theme.palette.text.secondary,
-    marginLeft: theme.spacing(2.5),
-  },
-}));
-*/
-
-class DialogueActions extends React.Component {
-  handleFirstPage = (event) => {
-    this.props.onChangePage(event, 0);
-  }
-
-  handleNextPage = (event) => {
-    if (this.props.page < Math.ceil(this.props.count/this.props.rowsPerPage) - 1) {
-      this.props.onChangePage(event, this.props.page + 1);
-    }
-  }
-
-  handlePrevPage = (event) => {
-    if (this.props.page > 0) {
-      this.props.onChangePage(event, this.props.page - 1);
-    }
-  }
-
-  handleLastPage = (event) => {
-    this.props.onChangePage(event, Math.max(0, Math.ceil(this.props.count/this.props.rowsPerPage) - 1));
-  }
-
-  render () {
-    const {count, page, rowsPerPage} = this.props;
-
-    return (
-      <div>
-        <IconButton
-          onClick={this.handleFirstPage}
-          disabled={page === 0}
-        >
-          <FirstPage/>
-        </IconButton>
-        <IconButton
-          onClick={this.handlePrevPage} 
-          disabled={page === 0}
-        >
-          <KeyboardArrowLeft/>
-        </IconButton>
-        <IconButton
-          onClick={this.handleNextPage}
-          disabled={page >= Math.ceil(count / rowsPerPage) -1}
-        >
-          <KeyboardArrowRight/>
-        </IconButton>
-        <IconButton
-          onClick={this.handleLastPage}
-          disabled={page >= Math.ceil(count / rowsPerPage) -1}
-        >
-          <LastPage/>
-        </IconButton>
-      </div>
-    );
-  }
-}
-
-DialogueActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onChangePage: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-};
+import PaginationActions from "./paginationactions.jsx";
 
 class UsersManager extends React.Component {
   constructor(props) {
@@ -373,7 +303,7 @@ class UsersManager extends React.Component {
                           }}
                           onChangePage={this.handleChangePage}
                           onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                          ActionsComponent={DialogueActions}
+                          ActionsComponent={PaginationActions}
                         />
                       </TableRow>
                     </TableFooter>
@@ -431,7 +361,7 @@ class UsersManager extends React.Component {
                           }}
                           onChangePage={this.handleChangePage}
                           onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                          ActionsComponent={DialogueActions}
+                          ActionsComponent={PaginationActions}
                         />
                       </TableRow>
                     </TableFooter>
