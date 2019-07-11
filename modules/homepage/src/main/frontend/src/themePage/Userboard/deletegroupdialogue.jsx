@@ -29,11 +29,10 @@ class DeleteGroupDialogue extends React.Component {
 
         fetch(url, {
             method: 'POST',
-            headers: {
-                'Authorization': 'Basic' + btoa('admin:admin')
-            }
+            credentials: 'include'
         })
             .then(() => {
+                this.props.reload();
                 this.props.handleClose();
             })
             .catch((error) => {
@@ -50,7 +49,7 @@ class DeleteGroupDialogue extends React.Component {
     render() {
         return (
             <Dialog
-                open={true}
+                open={this.props.isOpen}
                 onClose={() => this.props.handleClose()}
             >
                 <DialogTitle>Delete {this.props.name}</DialogTitle>

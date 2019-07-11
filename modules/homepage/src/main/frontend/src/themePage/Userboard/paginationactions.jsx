@@ -15,7 +15,7 @@
   under the License.
 */
 import PropTypes from "prop-types";
-import {IconButton} from "@material-ui/core";
+import {Hidden, IconButton} from "@material-ui/core";
 import {FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage} from "@material-ui/icons";
 
 class PaginationActions extends React.Component {
@@ -43,7 +43,7 @@ class PaginationActions extends React.Component {
       const {count, page, rowsPerPage} = this.props;
   
       return (
-        <div style={{flexShrink: 0}} >
+        <div style={{flexShrink: 0}}>
           <IconButton
             onClick={this.handleFirstPage}
             disabled={page === 0}

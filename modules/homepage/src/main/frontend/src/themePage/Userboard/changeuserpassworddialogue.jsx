@@ -42,9 +42,7 @@ class ChangeUserPasswordDialogue extends React.Component {
         console.log(formData);
         fetch(url, {
             method: 'POST',
-            headers: {
-                'Authorization': 'Basic' + btoa('admin:admin')
-            },
+            credentials: 'include',
             body: formData
         })
             .then(() => {
@@ -64,7 +62,7 @@ class ChangeUserPasswordDialogue extends React.Component {
     render() {
         return (
             <Dialog
-                open={true}
+                open={this.props.isOpen}
                 onClose={() => this.props.handleClose()}
             >
                 <DialogTitle>Change User Password of {this.props.name}</DialogTitle>
