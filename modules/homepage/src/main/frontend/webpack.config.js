@@ -8,19 +8,7 @@ module.exports = {
   entry: {
     [module_name + 'themeindex']: './src/themePage/index.jsx',
     [module_name + 'dashboard']: './src/themePage/Dashboard/dashboard.jsx',
-    [module_name + 'dashboardIcon']: '@material-ui/icons/Dashboard.js',
-    [module_name + 'vendor']: ['@material-ui/styles']
-  },
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          chunks: "all",
-          name: "vendor"
-        }
-      }
-    }
+    [module_name + 'dashboardIcon']: '@material-ui/icons/Dashboard.js'
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -47,6 +35,7 @@ module.exports = {
   },
   externals: [
     {
+      "moment": "moment",
       "react": "React",
       "react-dom": "ReactDOM",
       "formik": "Formik",
