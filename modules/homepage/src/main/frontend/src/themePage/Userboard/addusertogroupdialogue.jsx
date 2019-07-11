@@ -76,9 +76,7 @@ class AddUserToGroupDialogue extends React.Component {
         fetch(url,
             {
                 method: 'POST',
-                headers: {
-                    'Authorization': 'Basic' + btoa('admin:admin')
-                },
+                credentials: 'include',
                 body: formData
             })
             .then(() => {
@@ -113,7 +111,7 @@ class AddUserToGroupDialogue extends React.Component {
     render() {
         return (
             <Dialog
-                open={true}
+                open={this.props.isOpen}
                 onClose={() => this.props.handleClose()}
             >
                 <DialogTitle>

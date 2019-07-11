@@ -39,9 +39,7 @@ class RemoveUserFromGroupDialogue extends React.Component {
     fetch("http://localhost:8080/system/userManager/group/" + this.props.name + ".1.json",
       {
         method: 'GET',
-        headers: {
-          'Authorization': 'Basic ' + btoa('admin:admin')
-        }
+        credentials: 'include'
       })
       .then((response) => {
         return response.json();
@@ -79,9 +77,7 @@ class RemoveUserFromGroupDialogue extends React.Component {
     fetch(url,
       {
         method: 'POST',
-        headers: {
-          'Authorization': 'Basic' + btoa('admin:admin')
-        },
+        credentials: 'include',
         body: formData
       })
       .then(() => {
@@ -118,7 +114,7 @@ class RemoveUserFromGroupDialogue extends React.Component {
   render() {
     return (
       <Dialog
-        open={true}
+        open={this.props.isOpen}
         onClose={() => this.props.handleClose()}
       >
         <DialogTitle>

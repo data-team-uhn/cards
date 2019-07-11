@@ -160,15 +160,27 @@ class GroupsManager extends React.Component {
     );
   }
 
+  handleReload () {
+    this.handleLoadGroups(this.state.groupFilter, this.state.groupPageNumber * this.state.groupPaginationLimit, this.state.groupPaginationLimit);
+  }
+
+  handleReloadAfterDelete () {
+    if (this.state.groupPageNumber > 1 && this.state.groupPageNumber >= Math.ceil(this.state.totalGroupRows / this.state.groupPaginationLimit) - 1 && this.state.totalGroupRows % this.state.groupPaginationLimit === 1 ) {
+      this.handleLoadGroups(this.state.groupFilter, (this.state.groupPageNumber - 1) * this.state.groupPaginationLimit, this.state.groupPaginationLimit);
+    } else {
+      this.handleLoadGroups(this.state.groupFilter, this.state.groupPageNumber * this.state.groupPaginationLimit, this.state.groupPaginationLimit);
+    }
+  }
+
   render() {
     const { classes } = this.props;
 
     return (
       <div>
-        {this.state.deployCreateGroup && <CreateGroupDialogue handleClose={() => {this.setState({deployCreateGroup: false});}}/>}
-        {this.state.deployDeleteGroup && <DeleteGroupDialogue handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName}/>}
-        {this.state.deployAddGroupUsers && <AddUserToGroupDialogue handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName}/>}
-        {this.state.deployRemoveGroupUsers && <RemoveUserFromGroupDialogue handleClose={() => {this.setState({deployRemoveGroupUsers: false});}} name={this.state.currentGroupName}/>}
+        <CreateGroupDialogue isOpen={this.state.deployCreateGroup} handleClose={() => {this.setState({deployCreateGroup: false});}} reload={() => this.handleReload()}/>
+        <DeleteGroupDialogue isOpen={this.state.deployDeleteGroup} handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName} reload={() => this.handleReloadAfterDelete()}/>
+        <AddUserToGroupDialogue isOpen={this.state.deployAddGroupUsers} handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName}/>
+        <RemoveUserFromGroupDialogue isOpen={this.state.deployRemoveGroupUsers} handleClose={() => {this.setState({deployRemoveGroupUsers: false});}} name={this.state.currentGroupName}/>
         
         <Hidden mdUp implementation="css">
           <Dialog
