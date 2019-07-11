@@ -27,20 +27,20 @@ class DeleteUserDialogue extends React.Component {
         let url = "http://localhost:8080/system/userManager/user/" + name + ".delete.html";
         fetch(url, {
             method: 'POST',
-            headers: {
-                'Authorization': 'Basic' + btoa('admin:admin')
-            }
+            credentials: 'include'
         })
             .then(() => {
+                this.props.reload();
                 this.props.handleClose();
             })
             .catch((error) => {
+                /*
                 if (error.getElementById("Status") === 404) {
                     console.log("missing user 404");
                 }
                 else {
                     console.log("other error 505");
-                }
+                }*/
                 console.log(error);
             });
     }
@@ -48,7 +48,7 @@ class DeleteUserDialogue extends React.Component {
     render() {
         return (
             <Dialog
-                open={true}
+                open={this.props.isOpen}
                 onClose={() => this.props.handleClose()}
             >
                 <DialogTitle>Delete {this.props.name}</DialogTitle>

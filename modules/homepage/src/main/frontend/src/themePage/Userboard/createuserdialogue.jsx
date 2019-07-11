@@ -44,12 +44,11 @@ class CreateUserDialogue extends React.Component {
 
         fetch(url, {
             method: 'POST',
-            headers: {
-                'Authorization': 'Basic' + btoa('admin:admin')
-            },
+            credentials: 'include',
             body: formData
         })
             .then(() => {
+                this.props.reload();
                 this.props.handleClose();
             })
             .catch((error) => {

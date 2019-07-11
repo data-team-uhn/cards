@@ -92,9 +92,7 @@ class UsersManager extends React.Component {
     fetch(url,
       {
         method: 'GET',
-        headers: {
-          'Authorization': 'Basic ' + btoa('admin:admin')
-        },
+        credentials: 'include'
     })
     .then((response) => {
       return response.json();
@@ -108,6 +106,7 @@ class UsersManager extends React.Component {
           users: data.rows,
         }
       );
+      console.log(data.rows);
     })
     .catch((error) => {
       console.log(error);
@@ -161,15 +160,26 @@ class UsersManager extends React.Component {
     );
   }
 
+  handleReload() {
+    this.handleLoadUsers(this.state.userFilter, this.state.userPageNumber * this.state.userPaginationLimit, this.state.userPaginationLimit);
+  }
+
+  handleReloadAfterDelete () {
+    if ( this.state.userPageNumber > 1 && this.state.userPageNumber >= Math.ceil(this.state.totalUserRows / this.state.userPaginationLimit) - 1 && this.state.totalUserRows % this.state.userPaginationLimit === 1) {
+      this.handleLoadUsers(this.state.userFilter, (this.state.userPageNumber - 1) * this.state.userPaginationLimit, this.state.userPaginationLimit);
+    } else {
+      this.handleLoadUsers(this.state.userFilter, this.state.userPageNumber * this.state.userPaginationLimit, this.state.userPaginationLimit);
+    }
+  }
+
   render() {
     const { classes } = this.props;
 
     return (
       <div>
-        
-        {<CreateUserDialogue isOpen={this.state.deployCreateUser} handleClose={() => {this.setState({deployCreateUser: false});}}/>}
-        {this.state.deployDeleteUser && <DeleteUserDialogue handleClose={() => {this.setState({deployDeleteUser: false});}} name={this.state.currentUserName}/>}
-        {this.state.deployChangeUserPassword && <ChangeUserPasswordDialogue handleClose={() => {this.setState({deployChangeUserPassword: false});}} name={this.state.currentUserName}/>}
+        <CreateUserDialogue isOpen={this.state.deployCreateUser} handleClose={() => {this.setState({deployCreateUser: false});}} reload={() => this.handleReload()}/>
+        <DeleteUserDialogue isOpen={this.state.deployDeleteUser} handleClose={() => {this.setState({deployDeleteUser: false});}} name={this.state.currentUserName} reload={() => this.handleReloadAfterDelete()}/>
+        <ChangeUserPasswordDialogue isOpen={this.state.deployChangeUserPassword} handleClose={() => {this.setState({deployChangeUserPassword: false});}} name={this.state.currentUserName}/>
                 
         <Hidden mdUp implementation="css">
           <Dialog

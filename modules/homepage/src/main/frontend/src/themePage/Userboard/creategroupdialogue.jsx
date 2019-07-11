@@ -38,12 +38,11 @@ class CreateGroupDialogue extends React.Component {
 
         fetch(url, {
             method: 'POST',
-            headers: {
-                'Authorization': 'Basic' + btoa('admin:admin')
-            },
+            credentials: 'include',
             body: formData
         })
         .then((response) => {
+            this.props.reload();
             this.props.handleClose();
             console.log(response);
         })
@@ -55,7 +54,7 @@ class CreateGroupDialogue extends React.Component {
     render() {
         return (
             <Dialog
-                open={true}
+                open={this.props.isOpen}
                 onClose={() => this.props.handleClose()}
             >
                 <DialogTitle>Create New Group</DialogTitle>
