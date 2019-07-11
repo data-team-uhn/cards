@@ -21,15 +21,14 @@ import PropTypes from "prop-types";
 
 import  {withStyles} from "@material-ui/core/styles";
 
-import {Button, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Checkbox, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField, IconButton} from "@material-ui/core"
-import {FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage} from "@material-ui/icons";
+import {Button, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Checkbox, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core";
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
 import Card from "material-dashboard-react/dist/components/Card/Card.js";
 import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
 import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
-import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter"
+import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter";
 //import { Avatar } from "@material-ui/core";
 
 import userboardStyle from './userboardStyle.jsx';
@@ -37,61 +36,7 @@ import CreateGroupDialogue from "./creategroupdialogue.jsx";
 import DeleteGroupDialogue from "./deletegroupdialogue.jsx"; 
 import AddUserToGroupDialogue from "./addusertogroupdialogue.jsx";
 import RemoveUserFromGroupDialogue from "./removeuserfromgroup.jsx";
-
-class DialogueActions extends React.Component {
-  handleFirstPage = (event) => {
-    this.props.onChangePage(event, 0);
-  }
-
-  handleNextPage = (event) => {
-    if (this.props.page < Math.ceil(this.props.count/this.props.rowsPerPage) - 1) {
-      this.props.onChangePage(event, this.props.page + 1);
-    }
-  }
-
-  handlePrevPage = (event) => {
-    if (this.props.page > 0) {
-      this.props.onChangePage(event, this.props.page - 1);
-    }
-  }
-
-  handleLastPage = (event) => {
-    this.props.onChangePage(event, Math.max(0, Math.ceil(this.props.count/this.props.rowsPerPage) - 1));
-  }
-
-  render () {
-    const {count, page, rowsPerPage} = this.props;
-
-    return (
-      <div>
-        <IconButton
-          onClick={this.handleFirstPage}
-          disabled={page === 0}
-        >
-          <FirstPage/>
-        </IconButton>
-        <IconButton
-          onClick={this.handlePrevPage} 
-          disabled={page === 0}
-        >
-          <KeyboardArrowLeft/>
-        </IconButton>
-        <IconButton
-          onClick={this.handleNextPage}
-          disabled={page >= Math.ceil(count / rowsPerPage) -1}
-        >
-          <KeyboardArrowRight/>
-        </IconButton>
-        <IconButton
-          onClick={this.handleLastPage}
-          disabled={page >= Math.ceil(count / rowsPerPage) -1}
-        >
-          <LastPage/>
-        </IconButton>
-      </div>
-    );
-  }
-}
+import PaginationActions from "./paginationactions.jsx";
 
 class GroupsManager extends React.Component {
   constructor(props) { 
@@ -209,8 +154,8 @@ class GroupsManager extends React.Component {
     this.handleLoadGroups(this.state.groupFilter, 0, parseInt(event.target.value, 10));
     this.setState(
       {
-        userPaginationLimit: parseInt(event.target.value, 10),
-        userPageNumber: 0
+        groupPaginationLimit: parseInt(event.target.value, 10),
+        groupPageNumber: 0
       }
     );
   }
@@ -265,7 +210,7 @@ class GroupsManager extends React.Component {
         </Hidden>
 
         <GridContainer>
-          <GridItem xs={12} sm={12} md={5}>
+          <GridItem xs={12} sm={12} md={6}>
             <Card>
               <CardHeader color="warning">
                 <h4 className={classes.cardTitleWhite}>Groups</h4>
@@ -273,7 +218,7 @@ class GroupsManager extends React.Component {
               <CardBody>
                 <Button onClick={() => {this.setState({deployCreateGroup: true});}}>Create New Group</Button>
                 <form
-                  onSubmit={(event) => { event.preventDefault(); this.handleLoadGroups(this.state.groupFilter, null, null);}}
+                  onSubmit={(event) => { event.preventDefault(); this.handleLoadGroups(this.state.groupFilter, 0, this.state.groupPaginationLimit); this.setState({groupPageNumber: 0});}}
                 >
                   <TextField
                     id="group-filter"
@@ -316,6 +261,13 @@ class GroupsManager extends React.Component {
                           </TableRow>
                         )
                       )}
+
+                      {
+                        this.state.returnedGroupRows < this.state.groupPaginationLimit &&
+                        <TableRow style={{height: 48 * (this.state.groupPaginationLimit - this.state.returnedGroupRows)}}>
+                          <TableCell colSpan={1}/>
+                        </TableRow>
+                      }
                     </TableBody>
                     <TableFooter>
                       <TableRow>
@@ -331,7 +283,7 @@ class GroupsManager extends React.Component {
                           }}
                           onChangePage={this.handleChangePage}
                           onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                          ActionsComponent={DialogueActions}
+                          ActionsComponent={PaginationActions}
                         />
                       </TableRow>
                     </TableFooter>   
@@ -368,6 +320,13 @@ class GroupsManager extends React.Component {
                           </TableRow>
                         )
                       )}
+
+                      {
+                        this.state.returnedGroupRows < this.state.groupPaginationLimit &&
+                        <TableRow style={{height: 48 * (this.state.groupPaginationLimit - this.state.returnedGroupRows)}}>
+                          <TableCell colSpan={1}/>
+                        </TableRow>
+                      }
                     </TableBody>
                     <TableFooter>
                       <TableRow>
@@ -383,7 +342,7 @@ class GroupsManager extends React.Component {
                           }}
                           onChangePage={this.handleChangePage}
                           onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                          ActionsComponent={DialogueActions}
+                          ActionsComponent={PaginationActions}
                         />
                       </TableRow>
                     </TableFooter>
@@ -392,7 +351,7 @@ class GroupsManager extends React.Component {
               </CardBody>
             </Card>
           </GridItem>
-          <GridItem xs={12} sm={12} md={7}>
+          <GridItem xs={12} sm={12} md={6}>
             <Hidden smDown implementation="css">
               <Card>
                 <CardHeader color="success">
