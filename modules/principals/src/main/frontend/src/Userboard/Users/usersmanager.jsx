@@ -32,11 +32,11 @@ import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js"
 import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter";
 //import { Avatar } from "@material-ui/core";
 
-import userboardStyle from './userboardStyle.jsx';
+import userboardStyle from '../userboardStyle.jsx';
 import CreateUserDialogue from "./createuserdialogue.jsx";
 import DeleteUserDialogue from "./deleteuserdialogue.jsx"; 
 import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx"; 
-import PaginationActions from "./paginationactions.jsx";
+import PaginationActions from "../paginationactions.jsx";
 
 class UsersManager extends React.Component {
   constructor(props) {
