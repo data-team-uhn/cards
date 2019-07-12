@@ -1,9 +1,18 @@
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
+
 module.exports = {
   mode: 'development',
   entry: {
     redirect: './src/dataQuery/redirect.js',
     showQuery: './src/dataQuery/query.js'
   },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new WebpackAssetsManifest({
+      output: "data-entry.json"
+    })
+  ],
   module: {
     rules: [
       {
@@ -20,7 +29,7 @@ module.exports = {
     path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
     publicPath: '/',
     library: 'dataQuery',
-    filename: '[name].js'
+    filename: '[name].[contenthash].js'
   },
   externals: [
     {

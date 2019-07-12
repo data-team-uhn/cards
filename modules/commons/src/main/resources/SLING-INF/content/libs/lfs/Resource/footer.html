@@ -17,6 +17,8 @@
   under the License.
 */-->
     <div id="footer-container"></div>
-    <script src="/libs/lfs/resources/footer.js"></script>
+    <sly data-sly-use.commonslib="/libs/lfs/resources/commons">
+      <script src="/libs/lfs/resources/${commonslib['footer.js']}"></script>
+    </sly>
   </body>
 </html>

@@ -34,4 +34,6 @@
   </head>
   <body>
     <div id="header-container"></div>
-    <script src="/libs/lfs/resources/header.js"></script>
+    <sly data-sly-use.commonslib="/libs/lfs/resources/commons">
+      <script src="/libs/lfs/resources/${commonslib['header.js']}"></script>
+    </sly>

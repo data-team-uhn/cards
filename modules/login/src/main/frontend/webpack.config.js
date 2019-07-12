@@ -1,9 +1,18 @@
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
+
 module.exports = {
   mode: 'development',
   entry: {
     login: './src/login/loginMain.js',
     loginDialogue: './src/login/loginDialogue.js'
   },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new WebpackAssetsManifest({
+      output: "login.json"
+    })
+  ],
   module: {
     rules: [
       {
@@ -19,7 +28,7 @@ module.exports = {
   output: {
     path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
     publicPath: '/',
-    filename: '[name].js'
+    filename: '[name].[contenthash].js'
   },
   externals: [
     {
