@@ -19,7 +19,7 @@
 import { AccountBox, Assignment, Dashboard, Pets, Settings, Subtitles } from '@material-ui/icons';
 
 import DashboardPage from "./Dashboard/dashboard.jsx";
-import Userboard from "./Userboard/userboard.jsx";
+import Userboard from "/libs/lfs/resources/userboard.jsx";
 
 var sidebarRoutes = [
     {

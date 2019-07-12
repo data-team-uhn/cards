@@ -1,0 +1,15 @@
+{
+    "Userboard" : {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "ContentExtension",
+        "lfs:extensionName": "Userboard",
+        "lfs:defaultOrder": "0",
+        "lfs:defaultDisabled": "false",
+        "lfs:extensionRencerURL": "/libs/lfs/resources/userboard.js",
+        "jcr:content": {
+            "jcr:primaryType":"nt:resource",
+            "jcr:data":"test",
+            "jcr:mimeType": "text/html"
+        }
+    }
+}
