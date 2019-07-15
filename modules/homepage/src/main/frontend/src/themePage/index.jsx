@@ -17,44 +17,16 @@
 //  under the License.
 //
 import PropTypes from 'prop-types';
-<<<<<<< HEAD
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 import Sidebar from "./Sidebar/sidebar"
 import sidebarRoutes, { loadRemoteComponents, loadRemoteIcons, contentNodes } from './routes';
 import { withStyles } from '@material-ui/core/styles';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
-=======
-import React from "react";
-import ReactDOM from "react-dom";
-import Sidebar from "./Sidebar/sidebar"
-import sidebarRoutes from './routes';
-import { withStyles } from '@material-ui/core/styles';
-import { Router, Route, Switch } from "react-router-dom";
->>>>>>> 78bff40... LFS-34: UI for adding/removing users
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
 import IndexStyle from "./indexStyle.jsx";
 
-<<<<<<< HEAD
-=======
-const switchRoutes = (
-  <Switch>
-    {sidebarRoutes.map((prop, key) => {
-      if (prop.layout === "") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
-      }
-    })}
-  </Switch>
-);
-
->>>>>>> 78bff40... LFS-34: UI for adding/removing users
 class Main extends React.Component {
   constructor(props) {
     super(props);
@@ -64,12 +36,8 @@ class Main extends React.Component {
       color: "blue",
       hasImage: true,
       fixedClasses: "dropdown show",
-<<<<<<< HEAD
       mobileOpen: false,
       routes: sidebarRoutes
-=======
-      mobileOpen: false
->>>>>>> 78bff40... LFS-34: UI for adding/removing users
     };
   }
 
@@ -77,7 +45,6 @@ class Main extends React.Component {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
 
-<<<<<<< HEAD
   // Close the mobile menu if the window size changes
   // so that the mobile menu is out of place
   autoCloseMobileMenus = event => {
@@ -135,14 +102,11 @@ class Main extends React.Component {
     </Switch>)
   };
 
-=======
->>>>>>> 78bff40... LFS-34: UI for adding/removing users
   render() {
     const { classes, ...rest } = this.props;
 
     return (
       <div className={classes.wrapper}>
-<<<<<<< HEAD
         <Suspense fallback={<div>Loading...</div>}>
           <Sidebar
             routes={this.state.routes}
@@ -165,28 +129,6 @@ class Main extends React.Component {
             />
           </div>
         </Suspense>
-=======
-        <Sidebar
-          routes={sidebarRoutes}
-          logoText={"LFS Data Core"}
-          logoImage={"/libs/lfs/resources/lfs-logo-tmp-cyan.png"}
-          image={this.state.image}
-          handleDrawerToggle={this.handleDrawerToggle}
-          open={this.state.mobileOpen}
-          color={ "blue" }
-          {...rest}
-        />
-        <div className={classes.mainPanel} ref="mainPanel">
-          <div className={classes.content}>
-            <div className={classes.container}>{switchRoutes}</div>
-          </div>
-          <Navbar
-            routes={ sidebarRoutes }
-            handleDrawerToggle={this.handleDrawerToggle}
-            {...rest}
-          />
-        </div>
->>>>>>> 78bff40... LFS-34: UI for adding/removing users
       </div>
     );
   }
@@ -195,23 +137,15 @@ class Main extends React.Component {
 Main.propTypes = {
   classes: PropTypes.object.isRequired
 };
-<<<<<<< HEAD
 const MainComponent = (withStyles(IndexStyle, {withTheme: true})(Main));
-=======
-const MainComponent = (withStyles(IndexStyle)(Main));
->>>>>>> 78bff40... LFS-34: UI for adding/removing users
 
 const hist = createBrowserHistory();
 ReactDOM.render(
   <Router history={hist}>
     <Switch>
-<<<<<<< HEAD
       <Route path="/content.html/" component={MainComponent} />
       <Redirect from="/" to="/content.html/dashboard.html"/>
       <Redirect from="/content" to="/content.html/dashboard.html" />
-=======
-      <Route path="/" component={MainComponent} />
->>>>>>> 78bff40... LFS-34: UI for adding/removing users
     </Switch>
   </Router>,
   document.querySelector('#main-container')

@@ -51,11 +51,7 @@ const dropdownStyle = theme => ({
       color: "black"
     }
   },
-<<<<<<< HEAD
   popperNav: {
-=======
-  pooperNav: {
->>>>>>> 78bff40... LFS-34: UI for adding/removing users
     [theme.breakpoints.down("sm")]: {
       position: "static !important",
       left: "unset !important",

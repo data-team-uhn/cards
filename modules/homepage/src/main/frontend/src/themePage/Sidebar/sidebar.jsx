@@ -59,28 +59,6 @@ const Sidebar = ({ ...props }) => {
               <ListItemText
                 primary={prop.name}
                 className={classNames(classes.itemText, whiteFontClasses)}
-              {typeof prop.icon === "string" ? (
-                <Icon
-                  className={classNames(classes.itemIcon, whiteFontClasses, {
-                    [classes.itemIconRTL]: props.rtlActive
-                  })}
-                >
-                  {prop.icon}
-                </Icon>
-              ) : (
-                <prop.icon
-                  className={classNames(classes.itemIcon, whiteFontClasses, {
-                    [classes.itemIconRTL]: props.rtlActive
-                  })}
-                />
-              )}
-              <ListItemText
-                primary={
-                  props.rtlActive ? prop.rtlName : prop.name
-                }
-                className={classNames(classes.itemText, whiteFontClasses, {
-                  [classes.itemTextRTL]: props.rtlActive
-                })}
                 disableTypography={true}
               />
             </ListItem>

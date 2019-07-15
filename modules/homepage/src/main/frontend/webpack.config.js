@@ -3,7 +3,7 @@ module.exports = {
   entry: {
     themeindex: './src/themePage/index.jsx',
     dashboard: './src/themePage/Dashboard/dashboard.jsx',
-    dashboardIcon: '@material-ui/icons/Dashboard.js'.
+    dashboardIcon: '@material-ui/icons/Dashboard.js',
   },
   module: {
     rules: [

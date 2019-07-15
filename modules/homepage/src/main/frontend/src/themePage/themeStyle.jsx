@@ -264,10 +264,6 @@ const cardLink = {
 
 export {
   hexToRgb,
-<<<<<<< HEAD
-=======
-  //variables
->>>>>>> 78bff40... LFS-34: UI for adding/removing users
   drawerWidth,
   transition,
   container,
