@@ -113,7 +113,7 @@ class Main extends React.Component {
             logoText={"LFS Data Core"}
             logoImage={"/libs/lfs/resources/lfs-logo-tmp-cyan.png"}
             image={this.state.image}
-            handleDrawerToggle={this.handleDrawxerToggle}
+            handleDrawerToggle={this.handleDrawerToggle}
             open={this.state.mobileOpen}
             color={ "blue" }
             {...rest}
