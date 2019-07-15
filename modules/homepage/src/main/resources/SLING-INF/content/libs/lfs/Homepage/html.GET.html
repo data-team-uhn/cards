@@ -34,7 +34,6 @@
     <script crossorigin src="https://unpkg.com/@material-ui/core@4.2.0/umd/material-ui.development.js"></script>
     <script crossorigin src="https://unpkg.com/lodash@4.17.11/lodash.js"></script>
     <script crossorigin src="https://unpkg.com/formik@1.5.7/dist/formik.umd.development.js"></script>
-    <script src="/libs/lfs/resources/vendor.js"></script>
     <script src="/system/sling.js"></script>
   </head>
   <body>
@@ -48,5 +47,4 @@
     <sly data-sly-use.assets="/libs/lfs/resources/assets">
       <script src="/libs/lfs/resources/${assets['lfs-homepage.themeindex.js']}"></script>
     </sly>
-  </body>
-</html>
+<sly data-sly-resource="${@selectors='footer'}"/>
