@@ -37,6 +37,7 @@
     <module>login</module>
     <module>homepage</module>
     <module>data-entry</module>
+    <module>user-viewer</module>
     <module>ldap-support</module>
     <module>utils</module>
     <module>principals</module>

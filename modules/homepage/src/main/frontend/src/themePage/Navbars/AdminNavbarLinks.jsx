@@ -2,12 +2,10 @@
 import React from "react";
 import classNames from "classnames";
 // @material-ui/core components
-
 import { withStyles } from "@material-ui/core/styles";
 import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, Hidden, Popper } from "@material-ui/core";
 // @material-ui/icons
 import { Person, Notifications, Search, ExitToApp } from "@material-ui/icons";
-
 // core components
 import CustomInput from "material-dashboard-react/dist/components/CustomInput/CustomInput.js";
 import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
@@ -54,7 +52,6 @@ class HeaderLinks extends React.Component {
 
   // Event handler for clicking away from notifications while it is open
   closeNotifications = event => {
-
     if (this.anchorEl.contains(event.target)) {
       return;
     }
@@ -180,4 +177,3 @@ class HeaderLinks extends React.Component {
 }
 
 export default withStyles(headerLinksStyle, {withTheme: true})(HeaderLinks);
-

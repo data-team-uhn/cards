@@ -4,12 +4,10 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 // @material-ui/core components
-
 import { withStyles } from "@material-ui/core/styles";
 import { Drawer, Hidden, List, ListItem, ListItemText } from "@material-ui/core";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
-
 import sidebarStyle from "./sidebarStyle.jsx";
 
 const Sidebar = ({ ...props }) => {
@@ -36,18 +34,18 @@ const Sidebar = ({ ...props }) => {
           });
         } else {
           listItemClasses = classNames({
-            [" " + classes[color]]: activeRoute(prop.path)
+            [" " + classes[color]]: activeRoute(prop.layout + prop.path)
           });
         }
         const whiteFontClasses = classNames({
-          [" " + classes.whiteFont]: activeRoute(prop.path)
+          [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
         });
 
         // Handle prop.icon being either a class or the name of an icon class
         // NavLink allows us to set styles iff the link's URL matches the current URL
         return (
           <NavLink
-            to={prop.path}
+            to={prop.layout + prop.path}
             className={adminButton + classes.item}
             activeClassName="active"
             key={key}
@@ -88,7 +86,6 @@ const Sidebar = ({ ...props }) => {
   // Use different implementations depending on the screen size
   return (
     <div>
-
       {/* Render ourselves at the top right of the content page */}
       <Hidden mdUp implementation="css">
         <Drawer
@@ -107,9 +104,7 @@ const Sidebar = ({ ...props }) => {
         >
           {brand}
           <div className={classes.sidebarWrapper}>
-
-            {props.rtlActive ? <RTLNavbarLinks /> : <AdminNavbarLinks />}
-
+            <AdminNavbarLinks />
             {links}
           </div>
           {image !== undefined ? (
