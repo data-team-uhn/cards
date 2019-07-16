@@ -41,5 +41,6 @@
     <module>ldap-support</module>
     <module>utils</module>
     <module>principals</module>
+    <module>thesaurus</module>
   </modules>
 </project>
