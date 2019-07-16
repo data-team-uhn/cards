@@ -1,0 +1,16 @@
+{
+    "Thesaurus": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "ThesaurusExtension",
+        "lfs:extensionName": "Patients",
+        "lfs:defaultOrder": "0",
+        "lfs:defaultDisabled": "false",
+        "lfs:icon": "/libs/lfs/resources/thesaurusquery.js",
+        "lfs:extensionRenderURL": "/libs/lfs/resources/dashboard.js",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "test",
+            "jcr:mimeType": "text/html"
+        }
+    }
+}
