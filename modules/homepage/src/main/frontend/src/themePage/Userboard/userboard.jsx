@@ -17,8 +17,8 @@
 
 import React from "react";
 
-import UsersManager from "./usersmanager.jsx";
-import GroupsManager from "./groupsmanager.jsx";
+import UsersManager from "./Users/usersmanager.jsx";
+import GroupsManager from "./Groups/groupsmanager.jsx";
 
 
 class Userboard extends React.Component {

@@ -31,12 +31,12 @@ import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js"
 import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter";
 //import { Avatar } from "@material-ui/core";
 
-import userboardStyle from './userboardStyle.jsx';
+import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";
 import DeleteGroupDialogue from "./deletegroupdialogue.jsx"; 
 import AddUserToGroupDialogue from "./addusertogroupdialogue.jsx";
 import RemoveUserFromGroupDialogue from "./removeuserfromgroup.jsx";
-import PaginationActions from "./paginationactions.jsx";
+import PaginationActions from "../paginationactions.jsx";
 
 class GroupsManager extends React.Component {
   constructor(props) { 
