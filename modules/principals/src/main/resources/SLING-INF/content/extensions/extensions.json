@@ -1,0 +1,16 @@
+{
+    "PrincipalsUserboard": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "PrincipalsUserboard",
+        "lfs:extensionName": "PrincipalsUserboard",
+        "lfs:defaultOrder": "2",
+        "lfs:defaultDisabled": "false",
+        "lfs:icon": "/libs/lfs/resources/userboardIcon.js",
+        "lfs:extensionRenderURL": "/libs/lfs/resources/userboard.js",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "test",
+            "jcr:mimeType": "text/html"
+        }
+    }
+}
