@@ -522,3 +522,34 @@
 
   // Set a default title.
   - title (String) = "Subjects" mandatory autocreated
+
+//-----------------------------------------------------------------------------
+//
+//
+//
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// The homepage for the Vocabularies space.
+[lfs:VocabulariesHomepage] > sling:Folder
+  // Attributes:
+
+  // We can use this homepage in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/VocabulariesHomepage" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the VocabulariesHomepage is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // Set a default title.
+  - title (string) = "Vocabularies" mandatory autocreated
+
+  // Children
+
+  // The vocabulary nodes indexed by the homepage are its children.
+  + * (lfs:Vocabulary) = lfs:Vocabulary
