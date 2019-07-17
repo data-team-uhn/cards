@@ -44,7 +44,10 @@
         <configuration>
           <instructions>
             <Include-Resource>src/main/frontend/dist,{maven-resources}</Include-Resource>
-            <Sling-Initial-Content>SLING-INF/content/extensions</Sling-Initial-Content>
+            <Sling-Initial-Content>
+              SLING-INF/content/extensions,
+              SLING-INF/content/libs/lfs/resources;path:=/libs/lfs/resources
+            </Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

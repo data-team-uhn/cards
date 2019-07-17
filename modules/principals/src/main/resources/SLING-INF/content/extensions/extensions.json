@@ -1,9 +1,9 @@
 {
-    "PrincipalsUserboard": {
+    "Userpage": {
         "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "PrincipalsUserboard",
-        "lfs:extensionName": "PrincipalsUserboard",
-        "lfs:defaultOrder": "2",
+        "lfs:extensionPointId": "userpage.html",
+        "lfs:extensionName": "User Profile",
+        "lfs:defaultOrder": "1",
         "lfs:defaultDisabled": "false",
         "lfs:icon": "/libs/lfs/resources/userboardIcon.js",
         "lfs:extensionRenderURL": "/libs/lfs/resources/userboard.js",
