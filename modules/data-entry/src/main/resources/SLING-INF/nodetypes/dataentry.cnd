@@ -429,6 +429,17 @@
   - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
+// Vocabulary identifiers, stored as strings.
+[lfs:VocabularyAnswer] > lfs:Answer
+  - value (string)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/VocabularyAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
 // Forms: a filled in questionnaire.
 [lfs:Form] > sling:Folder, mix:referenceable, mix:versionable
   // Attributes
