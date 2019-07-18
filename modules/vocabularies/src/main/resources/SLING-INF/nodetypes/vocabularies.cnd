@@ -22,15 +22,19 @@
 
 //-----------------------------------------------------------------------------
 //
+// Vocabularies: instances of relevant terminology vocabularies.
 //
-//
+// A vocabulary consists of a list of terms.
 //
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// 
-[lfs:VocabularyTerm] > sling:Folder
+// VocabularyTerm: a term in a vocabulary.
+[lfs:VocabularyTerm] > nt:base, mix:referenceable, mix:versionable
   // Attributes:
+
+  // We can use vocabulary terms in a query.
+  query
 
   // Properties:
 
@@ -40,25 +44,31 @@
   // Hardcode the resource supertype: the VocabularyTerm is a resource.
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected 
 
-  // Identifier for the term
+  // Identifier for the term.
   - identifier (STRING) mandatory
 
-  // Term Label (i.e. name)
+  // Label or name for the term.
   - label (STRING) mandatory
 
-  // Description of the term
-  - description (STRING) mandatory
+  // Optional description of the term.
+  - description (STRING)
 
-  // List of synonyms for the term
+  // Optional list of synonyms for the term.
   - synonyms (STRING) multiple
 
-  // List of parents of the term
+  // Optional list of parents of the term.
   - parents (STRING) multiple
 
 //-----------------------------------------------------------------------------
-//
-[lfs:Vocabulary] > sling:Folder
+// Vocabulary: a vocabulary of terms with VocabularyTerm nodes as children.
+[lfs:Vocabulary] > sling:Folder, mix:referenceable, mix:versionable
   // Attributes:
+
+  // The list of vocabulary terms is orderable.
+  orderable
+
+  // We can use vocabularies a query.
+  query
 
   // Properties:
 
@@ -68,13 +78,13 @@
   // Hardcode the resource supertype: the Vocabulary is a resource.
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
 
-  // Identifier code of vocabulary.
+  // Identifier for the vocabulary.
   - identifier (STRING) mandatory
 
   // Vocabulary name.
   - name (STRING) mandatory
 
-  // Aliases of vocabulary.
+  // Optional aliases of vocabulary.
   - aliases (STRING) multiple
 
   // Source file of vocabulary.
@@ -83,15 +93,15 @@
   // Version of vocabulary.
   - version (STRING) mandatory
 
-  // Website associated with vocabulary.
-  - website (STRING) mandatory
+  // Optional website associated with vocabulary.
+  - website (STRING)
 
-  // Citation for vocabulary.
-  - citation (STRING) mandatory
+  // Optional citation for vocabulary.
+  - citation (STRING)
 
   // Children
 
-  // 
+  // The terms that make up the vocabulary.
   + * (lfs:VocabularyTerm) = lfs:VocabularyTerm 
 
 //-----------------------------------------------------------------------------
@@ -117,4 +127,3 @@
 
   // The vocabulary nodes indexed by the homepage are its children.
   + * (lfs:Vocabulary) = lfs:Vocabulary
-
