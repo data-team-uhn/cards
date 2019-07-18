@@ -1,0 +1,132 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one
+//  or more contributor license agreements.  See the NOTICE file
+//  distributed with this work for additional information
+//  regarding copyright ownership.  The ASF licenses this file
+//  to you under the Apache License, Version 2.0 (the
+//  "License"); you may not use this file except in compliance
+//  with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing,
+//  software distributed under the License is distributed on an
+//  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+//  KIND, either express or implied.  See the License for the
+//  specific language governing permissions and limitations
+//  under the License.
+//
+
+<sling = 'http://sling.apache.org/jcr/sling/1.0'>
+<lfs = 'https://lfs.ccm.sickkids.ca/'>
+
+//-----------------------------------------------------------------------------
+//
+// Vocabularies: instances of relevant terminology vocabularies.
+//
+// A vocabulary consists of a list of terms.
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// VocabularyTerm: a term in a vocabulary.
+[lfs:VocabularyTerm] > nt:base, mix:referenceable, mix:versionable
+  // Attributes:
+
+  // We can use vocabulary terms in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/VocabularyTerm" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the VocabularyTerm is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected 
+
+  // Identifier for the term.
+  - identifier (STRING) mandatory
+
+  // Label or name for the term.
+  - label (STRING) mandatory
+
+  // Optional description of the term.
+  - description (STRING)
+
+  // Optional list of synonyms for the term.
+  - synonyms (STRING) multiple
+
+  // Optional list of parents of the term.
+  - parents (STRING) multiple
+
+  // Optional recursive collection of parents.
+  - ancestors (STRING) multiple
+
+//-----------------------------------------------------------------------------
+// Vocabulary: a vocabulary of terms with VocabularyTerm nodes as children.
+[lfs:Vocabulary] > sling:Folder, mix:referenceable, mix:versionable
+  // Attributes:
+
+  // The list of vocabulary terms is orderable.
+  orderable
+
+  // We can use vocabularies a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Vocabulary" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the Vocabulary is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // Identifier for the vocabulary.
+  - identifier (STRING) mandatory
+
+  // Vocabulary name.
+  - name (STRING) mandatory
+
+  // Optional aliases of vocabulary.
+  - aliases (STRING) multiple
+
+  // Source file of vocabulary.
+  - source (STRING) mandatory
+
+  // Version of vocabulary.
+  - version (STRING) mandatory
+
+  // Optional website associated with vocabulary.
+  - website (STRING)
+
+  // Optional citation for vocabulary.
+  - citation (STRING)
+
+  // Children
+
+  // The terms that make up the vocabulary.
+  + * (lfs:VocabularyTerm) = lfs:VocabularyTerm 
+
+//-----------------------------------------------------------------------------
+// The homepage for the Vocabularies space.
+[lfs:VocabulariesHomepage] > sling:Folder
+  // Attributes:
+
+  // We can use this homepage in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/VocabulariesHomepage" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the VocabulariesHomepage is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // Set a default title.
+  - title (string) = "Vocabularies" mandatory autocreated
+
+  // Children
+
+  // The vocabulary nodes indexed by the homepage are its children.
+  + * (lfs:Vocabulary) = lfs:Vocabulary
