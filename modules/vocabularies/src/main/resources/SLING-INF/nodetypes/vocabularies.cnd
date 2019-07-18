@@ -59,6 +59,9 @@
   // Optional list of parents of the term.
   - parents (STRING) multiple
 
+  // Optional recursive collection of parents.
+  - ancestors (STRING) multiple
+
 //-----------------------------------------------------------------------------
 // Vocabulary: a vocabulary of terms with VocabularyTerm nodes as children.
 [lfs:Vocabulary] > sling:Folder, mix:referenceable, mix:versionable
