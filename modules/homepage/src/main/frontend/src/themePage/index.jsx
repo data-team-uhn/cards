@@ -58,10 +58,6 @@ class Main extends React.Component {
     window.removeEventListener("resize", this.autoCloseMobileMenus);
   }
 
-  _loadIcon = (data, icon) => {
-    data.icon = loadJS(icon)
-  }
-
   _buildSidebar = (uixData) => {
     var routes = sidebarRoutes.slice();
     for (var id in uixData) {
