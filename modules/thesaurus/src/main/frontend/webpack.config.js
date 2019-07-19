@@ -1,7 +1,8 @@
 module.exports = {
   mode: 'development',
   entry: {
-    thesaurusquery: './src/query/index.jsx'
+    thesaurusQuery: './src/query/query.jsx',
+    thesaurusIcon: '@material-ui/icons/AccountBox.js'
   },
   module: {
     rules: [

@@ -74,6 +74,19 @@
           </attach>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.13</version>
+        <configuration>
+          <excludes combine.children="append">
+            <!-- Ignore files from material-dashboard-react, as they're under their own license -->
+            <exclude>**/query/queryStyle.jsx</exclude>
+            <exclude>**/query/dropdownStyle.jsx</exclude>
+            <exclude>**/themeStyle.jsx</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>
