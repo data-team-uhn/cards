@@ -129,6 +129,21 @@ const thesaurusStyle = theme => ({
   },
   popperInfoOnTop: {
     zIndex: "1401 !important",
+  },
+  suggestionProgress: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -25,
+    marginLeft: -25
+  },
+  searchWrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+    display: 'inline-block',
+  },
+  infoDataSource: {
+    color: "#0089DC"
   }
 });
 
