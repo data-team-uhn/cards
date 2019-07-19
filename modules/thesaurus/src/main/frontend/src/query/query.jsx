@@ -21,7 +21,7 @@ import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core/styles";
-import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, Popper, Typography } from "@material-ui/core"
+import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, CircularProgress, Popper, Typography } from "@material-ui/core"
 // material-dashboard-
 import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
 import Card from "material-dashboard-react/dist/components/Card/Card.js";
@@ -43,8 +43,10 @@ class Thesaurus extends React.Component {
       title: "LFS Patients",
       subtitle: "",
       suggestions: [],
+      suggestionsLoading: false,
       suggestionsVisible: false,
       termInfoVisible: false,
+      lookupTimer: null,
       // Strings used by the info box
       infoID: "",
       infoName: "",
@@ -54,10 +56,6 @@ class Thesaurus extends React.Component {
       infoAnchor: null,
       buttonRefs: {},
     };
-  }
-
-  doNothing = (event) => {
-    console.log("Clicked");
   }
 
   showInfo = (event, data) => {
@@ -97,7 +95,6 @@ class Thesaurus extends React.Component {
       }
     };
     xhr.send();
-    console.log(URL);
   }
 
   showSuggestions = (event, data) => {
@@ -130,21 +127,20 @@ class Thesaurus extends React.Component {
             );
         });
 
-        console.log(suggestions);
-
         this.setState({
           suggestions: suggestions,
           suggestionsVisible: true,
+          suggestionsLoading: false,
         });
     } else {
       console.log("Error: thesaurus lookup failed with code " + event.ToString());
     }
   }
 
-  queryInput = (event) => {
-    var URL = "https://services.phenotips.org/rest/vocabularies/hpo/suggest?input=" + event.target.value;
-
+  queryInput = (input) => {
+    var URL = "https://services.phenotips.org/rest/vocabularies/hpo/suggest?input=" + input;
     var xhr = window.Sling.getXHR();
+
     xhr.open('GET', URL, true);
     xhr.responseType = 'json';
     xhr.onload = () => {
@@ -157,10 +153,26 @@ class Thesaurus extends React.Component {
     };
     xhr.send();
 
-    // Hide the infobox
+    // Hide the infobox and stop the timer
     this.setState({
+      suggestionsLoading: true,
       termInfoVisible: false,
+      lookupTimer: null,
     });
+  }
+
+  // Lookup the search term after a short interval
+  // This will reset the interval if called before the interval hangs up
+  delayLookup = (event) => {
+    if (this.state.lookupTimer !== null) {
+      clearTimeout(this.state.lookupTimer);
+    }
+
+    this.setState({
+      lookupTimer: setTimeout(this.queryInput, 500, event.target.value),
+      suggestionsVisible: true,
+      suggestions: [],
+    })
   }
 
   // Event handler for clicking away from the autocomplete while it is open
@@ -205,15 +217,24 @@ class Thesaurus extends React.Component {
                   inputProps: {
                     "aria-label": "Search"
                   },
-                  onChange: this.queryInput,
+                  onChange: this.delayLookup,
                   inputRef: node => {
                     this.anchorEl = node;
                   },
                 }}
               />
-              <Button color="white" aria-label="edit" justIcon round>
-                <Search />
-              </Button>
+              <div className={classes.searchWrapper}>
+                <Button
+                  color="white"
+                  aria-label="edit"
+                  justIcon
+                  round
+                  onClick={() => this.queryInput(this.anchorEl.value)}
+                >
+                  <Search />
+                </Button>
+                {this.state.suggestionsLoading ? <CircularProgress size={50} className={classes.suggestionProgress} /> : ""}
+              </div>
             </div>
           </CardBody>
         </Card>
@@ -271,23 +292,31 @@ class Thesaurus extends React.Component {
                 <Paper className={classes.infoPaper}>
                   <ClickAwayListener onClickAway={this.closeInfo}>
                     <div>
-                      <Typography inline className={classes.infoIDTypography}>{this.state.infoID}</Typography>
+                      <a
+                        href="http://human-phenotype-ontology.github.io/"
+                        target="_blank"
+                        title="The Human Phenotype Ontology project: linking molecular biology and disease through phenotype data. Sebastian Köhler, Sandra C Doelken, Christopher J. Mungall, Sebastian Bauer, Helen V. Firth, et al. Nucl. Acids Res. (1 January 2014) 42 (D1): D966-D974 doi:10.1093/nar/gkt1026. Current version: releases/2018-10-09"
+                      >
+                        <Typography className={classes.infoDataSource}>The Human Phenotype Ontology (HPO)</Typography>
+                      </a>
+                      <Typography inline className={classes.infoIDTypography}>{this.state.infoID} </Typography>
+                      <Typography inline className={classes.infoIDTypography}>{this.state.infoID} </Typography>
                       <Typography inline className={classes.infoName}>{this.state.infoName}</Typography> <br />
                       <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography> <br />
-                      {this.state.infoAlsoKnownAs.length === 0 ? "" : (
+                      {this.state.infoAlsoKnownAs.length > 0 && (
                         <div>
                           <Typography className={classes.infoHeader}>Also known as</Typography> <br />
                           {this.state.infoAlsoKnownAs.map((name, index) => {
-                            return (<Typography className={classes.infoAlsoKnownAs} key={name}>
-                                      {name} <br />
+                            return (<Typography className={classes.infoAlsoKnownAs} key={index}>
+                                      {name}
                                     </Typography>
                             );
                           })} <br />
                         </div>
                       )}
-                      {this.state.infoTypeOf === "" ? "" : (
+                      {this.state.infoTypeOf !== "" && (
                         <div>
-                          <Typography className={classes.infoHeader}>is a type of</Typography> <br />
+                          <Typography className={classes.infoHeader}>Is a type of</Typography> <br />
                           <Typography className={classes.infoTypeOf}>{this.state.infoTypeOf}</Typography> <br />
                         </div>
                       )}
