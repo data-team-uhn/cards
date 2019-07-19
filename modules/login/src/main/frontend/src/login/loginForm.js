@@ -19,6 +19,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Avatar, Button, CssBaseline, FormControl, Input, InputLabel, Paper, Typography, withStyles, InputAdornment, IconButton, Tooltip, Icon, SvgIcon } from '@material-ui/core';
+// core components
+import Card from "material-dashboard-react/dist/components/Card/Card.js";
+import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
+import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
 import styles from "../styling/styles";
 
 class SignIn extends React.Component {
@@ -82,62 +86,61 @@ class SignIn extends React.Component {
     return (
       <main className={classes.main}>
         <CssBaseline />
-        <Paper className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
-          <Avatar className={classes.avatar}>
-            <SvgIcon><path d="M10,17V14H3V10H10V7L15,12L10,17M10,2H19C20.1,2 21,2.9 21,4V20C21,21.1 20.1,22 19,22H10C8.9,22 8,21.1 8,20V18H10V20H19V4H10V6H8V4C8,2.9 8.9,2 10,2Z"/></SvgIcon>
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
+        <Card>
+          <CardHeader color="info">
+            <h4 className={classes.cardTitle}>LFS Data Core</h4>
+            <span className={classes.cardSubtitle}>Sign in</span>
+          </CardHeader>
+          <CardBody>
 
-          {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>Invalid username or password</Typography>}
+            {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>Invalid username or password</Typography>}
 
-          <form className={classes.form} onSubmit={(event)=>{event.preventDefault(); this.submitLogin();}} >
+            <form className={classes.form} onSubmit={(event)=>{event.preventDefault(); this.submitLogin();}} >
 
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="j_username">Username</InputLabel>
-              <Input id="j_username" name="j_username" autoComplete="email" autoFocus onChange={(event) => {this.setState({username: event.target.value});}}/>
-            </FormControl>
+              <FormControl margin="normal" required fullWidth>
+                <InputLabel htmlFor="j_username">Username</InputLabel>
+                <Input id="j_username" name="j_username" autoComplete="email" autoFocus onChange={(event) => {this.setState({username: event.target.value});}}/>
+              </FormControl>
 
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="j_password">Password</InputLabel>
-              <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" onChange={(event) => {this.setState({password: event.target.value});}}
-                endAdornment={
-                <InputAdornment position="end">
-                  <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>
-                    <IconButton
-                      aria-label="Toggle password visibility"
-                      onClick={this.togglePasswordMask}
-                    >
-                      {this.state.passwordIsMasked ? <Icon>visibility</Icon> : <Icon >visibility_off</Icon>}
-                    </IconButton>
-                  </Tooltip>
-                </InputAdornment>
-              }
-             />
-            </FormControl>
+              <FormControl margin="normal" required fullWidth>
+                <InputLabel htmlFor="j_password">Password</InputLabel>
+                <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" onChange={(event) => {this.setState({password: event.target.value});}}
+                  endAdornment={
+                  <InputAdornment position="end">
+                    <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>
+                      <IconButton
+                        aria-label="Toggle password visibility"
+                        onClick={this.togglePasswordMask}
+                      >
+                        {this.state.passwordIsMasked ? <Icon>visibility</Icon> : <Icon >visibility_off</Icon>}
+                      </IconButton>
+                    </Tooltip>
+                  </InputAdornment>
+                }
+              />
+              </FormControl>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                className={classes.submit}
+              >
+                Sign in
+              </Button>
+            </form>
+            <Typography>
+              Don't have an account?
+            </Typography>
             <Button
-              type="submit"
               fullWidth
               variant="contained"
-              color="primary"
-              className={classes.submit}
+              onClick={this.props.swapForm}
+              className={classes.register}
             >
-              Sign in
+              <Icon className={classes.buttonIcon}>person_add</Icon> Register
             </Button>
-          </form>
-          <Typography>
-            Don't have an account?
-          </Typography>
-          <Button
-            fullWidth
-            variant="contained"
-            color="default"
-            onClick={this.props.swapForm}
-          >
-            <Icon className={classes.buttonIcon}>person_add</Icon> Register
-          </Button>
-        </Paper>
+          </CardBody>
+        </Card>
       </main>
     );
   }
