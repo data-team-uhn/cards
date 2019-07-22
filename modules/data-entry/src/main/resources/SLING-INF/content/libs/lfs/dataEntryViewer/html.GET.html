@@ -33,11 +33,11 @@
         </form>
 
         <!-- Use React to prettify page -->
-        <sly data-sly-use.dataentrylib="/libs/lfs/resources/data-entry">
-        <script src="/libs/lfs/resources/${dataentrylib['showQuery.js']}"></script>
+        <sly data-sly-use.assets="/libs/lfs/resources/assets">
+        <script src="/libs/lfs/resources/${assets['showQuery.js']}"></script>
 
         <!-- Call our library after React to prevent the Module from failing to export -->
-        <script src="/libs/lfs/resources/${dataentrylib['redirect.js']}"></script>
+        <script src="/libs/lfs/resources/${assets['redirect.js']}"></script>
         </sly>
 
         <!-- iframe to silence submitForm submission -->

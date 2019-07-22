@@ -72,9 +72,9 @@ class GlobalHeader extends React.Component {
   componentDidMount () {
     if (!this.state.loggedIn && !window.location.pathname.startsWith('/login')) {
       // Determine the location of the loginDialogue script
-      var loginLib = window.Sling.getContent("/libs/lfs/resources/login.json", 1, "");
+      var assets = window.Sling.getContent("/libs/lfs/resources/assets.json", 1, "");
       const script = document.createElement("script");
-      script.src = "/libs/lfs/resources/" + loginLib["loginDialogue.js"];
+      script.src = "/libs/lfs/resources/" + assets["loginDialogue.js"];
       document.body.appendChild(script);
     }
   }

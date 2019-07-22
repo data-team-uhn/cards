@@ -10,7 +10,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new WebpackAssetsManifest({
-      output: "commons.json"
+      output: "assets.json"
     })
   ],
   module: {

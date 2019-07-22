@@ -9,7 +9,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new WebpackAssetsManifest({
-      output: "homepage.json"
+      output: "assets.json"
     })
   ],
   module: {
