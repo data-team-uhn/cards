@@ -43,6 +43,8 @@
       }
     </script>
     <div id="main-container"></div>
-    <script src="/libs/lfs/resources/themeindex.js"></script>
+    <sly data-sly-use.assets="/libs/lfs/resources/assets">
+      <script src="/libs/lfs/resources/${assets['lfs-homepage.themeindex.js']}"></script>
+    </sly>
   </body>
 </html>
