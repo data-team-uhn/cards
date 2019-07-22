@@ -1,13 +1,13 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
-module_name = require("./package.json").name;
+module_name = require("./package.json").name + ".";
 
 module.exports = {
   mode: 'development',
   entry: {
-    footer: './src/footer.js',
-    header: './src/header.js'
+    [module_name + 'footer']: './src/footer.js',
+    [module_name + 'header']: './src/header.js'
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -30,7 +30,7 @@ module.exports = {
   output: {
     path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
     publicPath: '/',
-    filename: module_name + '.[name].[contenthash].js'
+    filename: '[name].[contenthash].js'
   },
   externals: [
     {
