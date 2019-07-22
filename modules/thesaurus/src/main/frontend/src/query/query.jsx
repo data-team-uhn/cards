@@ -32,6 +32,7 @@ import CustomInput from "material-dashboard-react/dist/components/CustomInput/Cu
 import Search from "@material-ui/icons/Search";
 import Info from "@material-ui/icons/Info";
 
+import BrowseDialog from "./browse.jsx";
 
 import thesaurusStyle from "./queryStyle.jsx";
 
@@ -47,6 +48,8 @@ class Thesaurus extends React.Component {
       suggestionsVisible: false,
       termInfoVisible: false,
       lookupTimer: null,
+      browseDialogOpen: false,
+      browseID: "",
       // Strings used by the info box
       infoID: "",
       infoName: "",
@@ -67,12 +70,16 @@ class Thesaurus extends React.Component {
         synonym = data["synonym"];
       }
 
+      const typeOf = data["parents"].map((parent, index) => {
+        return parent["name_translated"];
+      })
+
       this.setState({
         infoID: data["id"],
         infoName: data["name_translated"],
         infoDefinition: data["def_translated"],
         infoAlsoKnownAs: synonym,
-        infoTypeOf: data["parents"][0]["name_translated"],  // TODO: Multiple parents?
+        infoTypeOf: typeOf,
         infoAnchor: this.state.buttonRefs[data["id"]],
         termInfoVisible: true,
       });
@@ -97,6 +104,10 @@ class Thesaurus extends React.Component {
     xhr.send();
   }
 
+  registerInfoButton = (id, node) => {
+    this.state.buttonRefs[id] = node;
+  }
+
   showSuggestions = (event, data) => {
     if (event === null) {
         // Show suggestions
@@ -111,7 +122,7 @@ class Thesaurus extends React.Component {
               {element["name"]}
               <Button
                 buttonRef={node => {
-                  this.state.buttonRefs[element["id"]] = node;
+                  this.registerInfoButton(element["id"], node);
                 }}
                 color="info"
                 justIcon={true}
@@ -195,6 +206,31 @@ class Thesaurus extends React.Component {
 
     this.setState({ termInfoVisible: false });
   };
+
+  openDialog = event => {
+    this.setState({
+      browseDialogOpen: true,
+      browseID: this.state.infoID,
+    })
+  }
+
+  closeDialog = () => {
+    this.setState({
+      browseDialogOpen: false,
+    })
+  }
+
+  changeInfoID = (id) => {
+    this.setState({
+      infoID: id
+    });
+  };
+
+  changeBrowseID = (id) => {
+    this.setState({
+      browseID: id,
+    })
+  }
 
   render() {
     const { classes } = this.props;
@@ -300,7 +336,6 @@ class Thesaurus extends React.Component {
                         <Typography className={classes.infoDataSource}>The Human Phenotype Ontology (HPO)</Typography>
                       </a>
                       <Typography inline className={classes.infoIDTypography}>{this.state.infoID} </Typography>
-                      <Typography inline className={classes.infoIDTypography}>{this.state.infoID} </Typography>
                       <Typography inline className={classes.infoName}>{this.state.infoName}</Typography> <br />
                       <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography> <br />
                       {this.state.infoAlsoKnownAs.length > 0 && (
@@ -317,9 +352,17 @@ class Thesaurus extends React.Component {
                       {this.state.infoTypeOf !== "" && (
                         <div>
                           <Typography className={classes.infoHeader}>Is a type of</Typography> <br />
-                          <Typography className={classes.infoTypeOf}>{this.state.infoTypeOf}</Typography> <br />
+                          {this.state.infoTypeOf.map((name, index) => {
+                            return (<Typography className={classes.infoTypeOf} key={index}>
+                                      {name}
+                                    </Typography>
+                            );
+                          })}
                         </div>
                       )}
+                      {!this.state.browseDialogOpen && <Button onClick={this.openDialog}>
+                        See more
+                      </Button>}
                     </div>
                   </ClickAwayListener>
                 </Paper>
@@ -327,6 +370,16 @@ class Thesaurus extends React.Component {
             </Grow>
           )}
         </Popper>
+        { /* Browse dialog box */}
+        <BrowseDialog
+          open={this.state.browseDialogOpen}
+          term={this.state.browseID}
+          changeid={this.changeBrowseID}
+          changeinfoid={this.changeInfoID}
+          onClose={this.closeDialog}
+          registerinfo={this.registerInfoButton}
+          getinfo={this.getInfo}
+          />
       </div>
     );
   }
