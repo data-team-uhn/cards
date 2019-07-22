@@ -1,6 +1,8 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
+module_name = require("./package.json").name;
+
 module.exports = {
   mode: 'development',
   entry: {
@@ -29,7 +31,7 @@ module.exports = {
     path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
     publicPath: '/',
     library: 'dataQuery',
-    filename: '[name].[contenthash].js'
+    filename: module_name + '.[name].[contenthash].js'
   },
   externals: [
     {
