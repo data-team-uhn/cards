@@ -257,6 +257,12 @@ class Thesaurus extends React.Component {
                   inputRef: node => {
                     this.anchorEl = node;
                   },
+                  onKeyPress: (event) => {
+                    if (event.key == 'Enter') {
+                      this.queryInput(this.anchorEl.value);
+                    }
+                  },
+                  onFocus: this.delayLookup,
                 }}
               />
               <div className={classes.searchWrapper}>
