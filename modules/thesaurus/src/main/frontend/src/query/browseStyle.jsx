@@ -16,12 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import {
-    successColor,
-    whiteColor,
-    grayColor,
-    hexToRgb
-  } from "../themeStyle.jsx";
 
 import dropdownStyle from "./dropdownStyle.jsx";
 
@@ -30,8 +24,24 @@ const browseStyle = theme => ({
     dialog: {
       padding: theme.spacing(1),
     },
+    headbar: {
+      backgroundColor: "#000000",
+      color: "#FFFFFF",
+    },
+    closeButton: {
+      float: "right",
+      height: "100%",
+      padding: "0px",
+      fontSize: "10px",
+    },
+    headbarText: {
+      display: "inline",
+      color: "#FFFFFF",
+      paddingLeft: "10px",
+      paddingTop: "5px",
+    },
     browseitem: {
-      margin: theme.spacing(1),
+      margin: "0px",
       padding: "0px",
       textTransform: "none",
     },
@@ -41,24 +51,46 @@ const browseStyle = theme => ({
     infoName: {
       color: "#000000",
     },
+    infoButton: {
+      width: "20px",
+    },
     treeRoot: {
-      display: "inline",
+      display: "block",
+      paddingTop: theme.spacing(1),
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
       "& div::before": {
-        content: '"┌"'
+        content: '"┌"',
+      },
+      "& div:nth-child(n+2):before": {
+        content: '"├"',
       }
     },
     treeNode: {
-      "& div::before": {
-        content: '"└─"'
-      }
-    },
-    childrenNodes: {
-      "& div::before": {
-        content: '"└──"'
-      }
+      paddingLeft: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
     },
     branch: {
-      display: "inline",
+      display: "block",
+      paddingRight: theme.spacing(1),
+      "&:not(:last-child)::before": {
+        content: '"├─"',
+      },
+      "&::before": {
+        content: '"└─"',
+      },
+    },
+    childDiv: {
+      marginLeft: "22px",
+    },
+    arrowDiv: {
+      width: "10px",
+    },
+    hiddenDiv: {
+      display: "none",
+    },
+    boldedName: {
+      fontWeight: "bold",
     },
 });
 
