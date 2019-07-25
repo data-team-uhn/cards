@@ -9,37 +9,25 @@
 =========================================================
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-import {
-  drawerWidth,
-  transition,
-  container
-} from "./themeStyle.jsx";
+import React from "react";
+// @material-ui/core components
+import { withStyles } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
-const appStyle = theme => ({
-  wrapper: {
-    position: "relative",
-    top: "0"
-  },
-  mainPanel: {
-    [theme.breakpoints.up("md")]: {
-      width: `calc(100% - ${drawerWidth}px)`
-    },
-    overflow: "auto",
-    position: "relative",
-    float: "right",
-    ...transition,
-    maxHeight: "100%",
-    width: "100%",
-    overflowScrolling: "touch"
-  },
-  content: {
-    marginTop: "70px",
-    padding: "30px 15px"
-  },
-  container,
-  map: {
-    marginTop: "70px"
+const style = {
+  grid: {
+    margin: "0 -15px !important",
+    width: "unset"
   }
-});
+};
 
-export default appStyle;
+function GridContainer(props) {
+  const { classes, children, ...rest } = props;
+  return (
+    <Grid container {...rest} className={classes.grid}>
+      {children}
+    </Grid>
+  );
+}
+
+export default withStyles(style)(GridContainer);

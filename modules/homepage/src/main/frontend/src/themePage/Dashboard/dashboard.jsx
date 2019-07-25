@@ -1,13 +1,23 @@
-// Taken from https://www.creative-tim.com/product/material-dashboard-react
+/*!
+=========================================================
+* Material Dashboard React - v1.7.0
+=========================================================
+* Product Page: https://www.creative-tim.com/product/material-dashboard-react
+* Copyright 2019 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://github.com/creativetimofficial/material-dashboard-react/blob/master/LICENSE.md)
+* Coded by Creative Tim
+=========================================================
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/
 import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
-import { withStyles } from "@material-ui/core/styles";
-// material-dashboard-react
-import Table from "material-dashboard-react/dist/components/Table/Table.js";
-import Card from "material-dashboard-react/dist/components/Card/Card.js";
-import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
-import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
+import { withStyles } from "@material-ui/core";
+// core components
+import Table from "../MaterialDashboardReact/Table/Table.jsx";
+import Card from "../MaterialDashboardReact/Card/Card.jsx";
+import CardHeader from "../MaterialDashboardReact/Card/CardHeader.jsx";
+import CardBody from "../MaterialDashboardReact/Card/CardBody.jsx";
 // Moment
 import moment from 'moment';
 import dashboardStyle from "./dashboardStyle.jsx";

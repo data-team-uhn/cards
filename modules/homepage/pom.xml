@@ -83,6 +83,7 @@
             <exclude>**/Dashboard/**</exclude>
             <exclude>**/Navbars/**</exclude>
             <exclude>**/Sidebar/**</exclude>
+            <exclude>**/MaterialDashboardReact/**</exclude>
             <exclude>**/themePage/themeStyle.jsx</exclude>
             <exclude>**/themePage/indexStyle.jsx</exclude>
           </excludes>

@@ -6,7 +6,8 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'themeindex']: './src/themePage/index.jsx'
+    [module_name + 'themeindex']: './src/themePage/index.jsx',
+    [module_name + 'dashboard']: './src/themePage/Dashboard/dashboard.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -33,13 +34,15 @@ module.exports = {
   },
   externals: [
     {
+      "moment": "moment",
       "react": "React",
       "react-dom": "ReactDOM",
+      "react-router-dom": "ReactRouterDOM",
       "formik": "Formik",
       "lodash": "lodash",
       "prop-types": "PropTypes",
       "jss": "jss",
-      "@material-ui/core": "window['material-ui']"
+      "@material-ui/core": "MaterialUI"
     }
   ]
 };

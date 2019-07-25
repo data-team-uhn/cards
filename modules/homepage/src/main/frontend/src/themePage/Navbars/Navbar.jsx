@@ -1,15 +1,25 @@
-// Taken from https://www.creative-tim.com/product/material-dashboard-react
+/*!
+=========================================================
+* Material Dashboard React - v1.7.0
+=========================================================
+* Product Page: https://www.creative-tim.com/product/material-dashboard-react
+* Copyright 2019 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://github.com/creativetimofficial/material-dashboard-react/blob/master/LICENSE.md)
+* Coded by Creative Tim
+=========================================================
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/
 import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 // @material-ui/core components
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core";
 import { AppBar, Toolbar, IconButton, Hidden } from "@material-ui/core";
 // @material-ui/icons
-import Menu from "@material-ui/icons/Menu";
+import { Menu } from "@material-ui/icons";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
-import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
+import Button from "../MaterialDashboardReact/CustomButtons/Button.jsx";
 
 import headerStyle from "./headerStyle.jsx";
 

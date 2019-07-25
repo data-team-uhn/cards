@@ -9,37 +9,20 @@
 =========================================================
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-import {
-  drawerWidth,
-  transition,
-  container
-} from "./themeStyle.jsx";
-
-const appStyle = theme => ({
-  wrapper: {
-    position: "relative",
-    top: "0"
+const cardBodyStyle = {
+  cardBody: {
+    padding: "0.9375rem 20px",
+    flex: "1 1 auto",
+    WebkitBoxFlex: "1",
+    position: "relative"
   },
-  mainPanel: {
-    [theme.breakpoints.up("md")]: {
-      width: `calc(100% - ${drawerWidth}px)`
-    },
-    overflow: "auto",
-    position: "relative",
-    float: "right",
-    ...transition,
-    maxHeight: "100%",
-    width: "100%",
-    overflowScrolling: "touch"
+  cardBodyPlain: {
+    paddingLeft: "5px",
+    paddingRight: "5px"
   },
-  content: {
-    marginTop: "70px",
-    padding: "30px 15px"
-  },
-  container,
-  map: {
-    marginTop: "70px"
+  cardBodyProfile: {
+    marginTop: "15px"
   }
-});
+};
 
-export default appStyle;
+export default cardBodyStyle;
