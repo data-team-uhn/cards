@@ -50,29 +50,27 @@ const browseStyle = theme => ({
     },
     infoName: {
       color: "#000000",
+      whiteSpace: "normal", // Enable line wrapping
     },
     infoButton: {
       width: "20px",
     },
+    treeContainer: {
+      padding: theme.spacing(2),
+    },
     treeRoot: {
       display: "block",
-      paddingTop: theme.spacing(1),
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-      "& div::before": {
+      "& >div::before": {
         content: '"┌"',
       },
-      "& div:nth-child(n+2):before": {
+      "& >div:nth-child(n+2):before": {
         content: '"├"',
       }
     },
     treeNode: {
-      paddingLeft: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
     },
     branch: {
       display: "block",
-      paddingRight: theme.spacing(1),
       "&:not(:last-child)::before": {
         content: '"├─"',
       },
@@ -84,7 +82,9 @@ const browseStyle = theme => ({
       marginLeft: "22px",
     },
     arrowDiv: {
-      width: "10px",
+      width: "0.8em",
+      display: "inline-block",
+      align: "center",
     },
     hiddenDiv: {
       display: "none",
