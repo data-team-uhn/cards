@@ -38,6 +38,7 @@ module.exports = {
       "moment": "moment",
       "react": "React",
       "react-dom": "ReactDOM",
+      "react-router-dom": "ReactRouterDOM",
       "formik": "Formik",
       "lodash": "lodash",
       "prop-types": "PropTypes",
