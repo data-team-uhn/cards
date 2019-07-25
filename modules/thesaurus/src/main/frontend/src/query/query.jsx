@@ -84,7 +84,7 @@ class Thesaurus extends React.Component {
         termInfoVisible: true,
       });
     } else {
-      console.log("Error: term lookup failed with code " + event.ToString());
+      console.log("Error: term lookup failed with code " + event);
     }
   }
 
@@ -144,11 +144,20 @@ class Thesaurus extends React.Component {
           suggestionsLoading: false,
         });
     } else {
-      console.log("Error: thesaurus lookup failed with code " + event.ToString());
+      console.log("Error: thesaurus lookup failed with code " + event);
     }
   }
 
   queryInput = (input) => {
+    if (input === "") {
+      // Empty input: do not query
+      this.setState({
+        suggestionsLoading: false,
+        termInfoVisible: false,
+        lookupTimer: null,
+      });
+      return;
+    }
     var URL = "https://services.phenotips.org/rest/vocabularies/hpo/suggest?input=" + input;
     var xhr = window.Sling.getXHR();
 
