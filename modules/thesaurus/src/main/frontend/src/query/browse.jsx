@@ -80,7 +80,7 @@ class BrowseDialog extends React.Component {
       this.state.childNodes[parent] = data["rows"].map((row, index) => {
         // We also need to determine if this child has children of its own
         MakeChildrenFindingRequest(row["id"], (status, data) => {this.checkForChildren(status, data, id)});
-        return this.constructBranch(id, row["name_translated"], true, false, false);
+        return this.constructBranch(row["id"], row["name"], true, false, false);
       });
     } else {
       console.log("Error: term lookup failed with code " + event.ToString());
@@ -99,12 +99,12 @@ class BrowseDialog extends React.Component {
 
       // Construct parent elements
       const parentBranches = currentNodeData["parents"].map((row, index) => {
-        return this.constructBranch(row["id"], row["name_translated"], false, false, false);
+        return this.constructBranch(row["id"], row["name"], false, false, false);
       });
 
       this.setState({
         parentNode: parentBranches,
-        currentNode: this.constructBranch(currentNodeData["id"], currentNodeData["name_translated"], true, true, true),
+        currentNode: this.constructBranch(id, currentNodeData["name"], true, true, true),
         lastKnownTerm: id,
       })
     } else {
