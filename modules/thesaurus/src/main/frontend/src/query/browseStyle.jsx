@@ -22,8 +22,10 @@ import dropdownStyle from "./dropdownStyle.jsx";
 const browseStyle = theme => ({
     ...dropdownStyle(theme),
     dialog: {
+      // The dialogue appears in the wrong location without the following
       padding: theme.spacing(1),
     },
+    // Top part of the dialog
     headbar: {
       backgroundColor: "#000000",
       color: "#FFFFFF",
@@ -40,11 +42,7 @@ const browseStyle = theme => ({
       paddingLeft: "10px",
       paddingTop: "5px",
     },
-    browseitem: {
-      margin: "0px",
-      padding: "0px",
-      textTransform: "none",
-    },
+    // Info box components
     infoDataSource: {
       color: "#0089DC",
     },
@@ -58,6 +56,7 @@ const browseStyle = theme => ({
     treeContainer: {
       padding: theme.spacing(2),
     },
+    // Tree components
     treeRoot: {
       display: "block",
       "& >div::before": {
@@ -68,6 +67,8 @@ const browseStyle = theme => ({
       }
     },
     treeNode: {
+      // Nothing in here for now, but this is here in case we
+      // want to apply themes in the future
     },
     branch: {
       display: "block",
@@ -77,6 +78,12 @@ const browseStyle = theme => ({
       "&::before": {
         content: '"└─"',
       },
+    },
+    // Components of the browser list items
+    browseitem: {
+      margin: "0px",
+      padding: "0px",
+      textTransform: "none",
     },
     childDiv: {
       marginLeft: "22px",

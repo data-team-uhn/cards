@@ -33,8 +33,8 @@ import Search from "@material-ui/icons/Search";
 import Info from "@material-ui/icons/Info";
 
 import BrowseDialog from "./browse.jsx";
-
 import thesaurusStyle from "./queryStyle.jsx";
+import { MakeRequest } from "./util.jsx";
 
 class Thesaurus extends React.Component {
   constructor(props) {
@@ -61,6 +61,7 @@ class Thesaurus extends React.Component {
     };
   }
 
+  // callback for getInfo to populate info box
   showInfo = (event, data) => {
     if (event === null) {
       // Use an empty array instead of null if this element has no synonyms
@@ -88,29 +89,21 @@ class Thesaurus extends React.Component {
     }
   }
 
+  // Grab information about the given ID and populate the info box
   getInfo = (id) => {
     var URL = "https://services.phenotips.org/rest/vocabularies/hpo/" + id;
-    var xhr = window.Sling.getXHR();
-    xhr.open('GET', URL, true);
-    xhr.responseType = 'json';
-    xhr.onload = () => {
-      var status = xhr.status;
-      if (status === 200) {
-        this.showInfo(null, xhr.response);
-      } else {
-        this.showInfo(status, xhr.response);
-      }
-    };
-    xhr.send();
+    MakeRequest(URL, this.showInfo);
   }
 
+  // Register a button reference that the info box can use to align itself to
   registerInfoButton = (id, node) => {
     this.state.buttonRefs[id] = node;
   }
 
+  // Callback for queryInput to populate the suggestions bar
   showSuggestions = (event, data) => {
     if (event === null) {
-        // Show suggestions
+        // Populate this.state.suggestions
         var suggestions = [];
 
         data["rows"].forEach((element) => {
@@ -148,9 +141,10 @@ class Thesaurus extends React.Component {
     }
   }
 
+  // Grab suggestions for the given input
   queryInput = (input) => {
+    // Empty input? Do not query
     if (input === "") {
-      // Empty input: do not query
       this.setState({
         suggestionsLoading: false,
         termInfoVisible: false,
@@ -158,20 +152,10 @@ class Thesaurus extends React.Component {
       });
       return;
     }
-    var URL = "https://services.phenotips.org/rest/vocabularies/hpo/suggest?input=" + input;
-    var xhr = window.Sling.getXHR();
 
-    xhr.open('GET', URL, true);
-    xhr.responseType = 'json';
-    xhr.onload = () => {
-      var status = xhr.status;
-      if (status === 200) {
-        this.showSuggestions(null, xhr.response);
-      } else {
-        this.showSuggestions(status, xhr.response);
-      }
-    };
-    xhr.send();
+    // Grab suggestions
+    var URL = "https://services.phenotips.org/rest/vocabularies/hpo/suggest?input=" + input;
+    MakeRequest(URL, this.showSuggestions);
 
     // Hide the infobox and stop the timer
     this.setState({
