@@ -17,7 +17,7 @@
 #  under the License.
 #
 
-# Vocabularies used by LFS 
+# Vocabularies used by LFS
 [feature name=lfs-vocabularies]
 
 [:repoinit]
