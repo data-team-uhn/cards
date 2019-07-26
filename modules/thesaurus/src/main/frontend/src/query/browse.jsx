@@ -27,6 +27,8 @@ import Button from "material-dashboard-react/dist/components/CustomButtons/Butto
 import BrowseListChild from "./browseListChild.jsx";
 import BrowseTheme from "./browseStyle.jsx";
 
+import { MakeRequest, MakeChildrenFindingRequest } from "./util.jsx";
+
 class BrowseDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -71,28 +73,13 @@ class BrowseDialog extends React.Component {
     }
   }
 
+  // Callback from an onload to generate child nodes in state.childNodes
   rebuildChildren = (event, data, parent) => {
     if (event === null) {
       // We have the children of our parent
       this.state.childNodes[parent] = data["rows"].map((row, index) => {
         // We also need to determine if this child has children of its own
-        var id = row["id"];
-        var escapedId = id.replace(":", "%5C%3A");
-        this.state.hasChildren[id] = false;
-        var URL = "https://services.phenotips.org/rest/vocabularies/hpo/suggest?sort=nameSort%20asc&maxResults=10000&input=" + id
-          + "&customFilter=is_a:" + escapedId;
-        var xhr = window.Sling.getXHR();
-        xhr.open('GET', URL, true);
-        xhr.responseType = 'json';
-        xhr.onload = () => {
-          var status = xhr.status;
-          if (status === 200) {
-            this.checkForChildren(null, xhr.response, id);
-          } else {
-            this.checkForChildren(status, xhr.response, id);
-          }
-        };
-        xhr.send();
+        MakeChildrenFindingRequest(row["id"], (status, data) => {this.checkForChildren(status, data, id)});
         return this.constructBranch(id, row["name_translated"], true, false, false);
       });
     } else {
@@ -100,49 +87,39 @@ class BrowseDialog extends React.Component {
     }
   }
 
+  // Callback from an onload to generate the tree from a /suggest query about the parent
   rebuildTree = (event, data) => {
     if (event === null) {
       // We have the node we're looking at, and its parent.
       var currentNodeData = data["rows"][0];
       var id = currentNodeData["id"];
-      var escapedId = id.replace(":", "%5C%3A");
 
-      // Next, look up every child of this node
-      var URL = "https://services.phenotips.org/rest/vocabularies/hpo/suggest?sort=nameSort%20asc&maxResults=10000&input=" + id
-              + "&customFilter=is_a:" + escapedId;
-      var xhr = window.Sling.getXHR();
-      xhr.open('GET', URL, true);
-      xhr.responseType = 'json';
-      xhr.onload = () => {
-        var status = xhr.status;
-        if (status === 200) {
-          this.rebuildChildren(null, xhr.response, id);
-        } else {
-          this.rebuildChildren(status, xhr.response, id);
-        }
-      };
-      xhr.send();
+      // Look up every child of this node
+      MakeChildrenFindingRequest(id, (status, data) => {this.rebuildChildren(status, data, id)});
 
+      // Construct parent elements
       const parentBranches = currentNodeData["parents"].map((row, index) => {
         return this.constructBranch(row["id"], row["name_translated"], false, false, false);
       });
 
       this.setState({
         parentNode: parentBranches,
-        currentNode: this.constructBranch(currentNodeData["id"], currentNodeData["name_translated"], true, true, true),        lastKnownTerm: id,
+        currentNode: this.constructBranch(currentNodeData["id"], currentNodeData["name_translated"], true, true, true),
+        lastKnownTerm: id,
       })
     } else {
       console.log("Error: initial term lookup failed with code " + event.ToString());
     }
   }
 
-  getSuggestions = (id) => {
+  // Get suggestions and rebuild the browser tree for the given input
+  rebuildBrowser = (id) => {
     // Do not re-grab suggestions for the same term
     if (id === this.state.lastKnownTerm) {
       return;
     }
 
-    // If we are empty, remove everything
+    // If the search is empty, remove every component
     if (id === "" || id === null) {
       this.setState({
         parentNode: null,
@@ -154,31 +131,15 @@ class BrowseDialog extends React.Component {
       return;
     }
 
+    // Create the XHR request
     var URL = "https://services.phenotips.org/rest/vocabularies/hpo/suggest?sort=nameSort%20asc&maxResults=10000&input=" + id;
-
-    var xhr = window.Sling.getXHR();
-    xhr.open('GET', URL, true);
-    xhr.responseType = 'json';
-    xhr.onload = () => {
-      // Immediately refresh lastKnownTerm to prevent infinite loops
-      this.setState({
-        lastKnownTerm: id,
-      })
-
-      var status = xhr.status;
-      if (status === 200) {
-        this.rebuildTree(null, xhr.response);
-      } else {
-        this.rebuildTree(status, xhr.response);
-      }
-    };
-    xhr.send();
+    MakeRequest(URL, this.rebuildTree);
   }
 
   render() {
     const { classes, term, changeid, registerinfo, getinfo, changeinfoid, onClose, ...rest } = this.props;
     const fullscreen = false;
-    this.getSuggestions(term);
+    this.rebuildBrowser(term);
 
     return (
       <Dialog
