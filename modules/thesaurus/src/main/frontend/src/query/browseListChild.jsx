@@ -27,6 +27,7 @@ import Button from "material-dashboard-react/dist/components/CustomButtons/Butto
 import Info from "@material-ui/icons/Info";
 
 import BrowseTheme from "./browseStyle.jsx";
+import { MakeChildrenFindingRequest } from "./util.jsx";
 
 class ListChild extends React.Component {
   constructor(props) {
@@ -41,6 +42,8 @@ class ListChild extends React.Component {
     };
   }
 
+  // Callback for a /suggest call for children of this element
+  // Update this.state.children with children elements
   updateWithChildren = (event, data) => {
     if (event === null) {
       var children = data["rows"].map((row, index) => {
@@ -65,6 +68,7 @@ class ListChild extends React.Component {
     }
   }
 
+  // Send a query to load the children of this node
   loadChildren = () => {
     // Prevent ourselves from loading children if we've already loaded children
     if (this.state.loadedChildren || !this.state.hasChildren) {
@@ -72,24 +76,11 @@ class ListChild extends React.Component {
     }
 
     // Determine the children of this node
-    var id = this.props.id;
-    var escapedId = id.replace(":", "%5C%3A");
-    var URL = "https://services.phenotips.org/rest/vocabularies/hpo/suggest?sort=nameSort%20asc&maxResults=10000&input=" + id
-            + "&customFilter=is_a:" + escapedId;
-    var xhr = window.Sling.getXHR();
-    xhr.open('GET', URL, true);
-    xhr.responseType = 'json';
-    xhr.onload = () => {
-      var status = xhr.status;
-      if (status === 200) {
-        this.updateWithChildren(null, xhr.response);
-      } else {
-        this.updateWithChildren(status, xhr.response);
-      }
-    };
-    xhr.send();
+    MakeChildrenFindingRequest(this.props.id, this.updateWithChildren);
   }
 
+  // Callback from checkForChildren to update whether or not this node has children
+  // This does not recreate the child elements
   updateChildrenStatus = (event, data) => {
     if (event === null) {
       this.setState({
@@ -108,22 +99,7 @@ class ListChild extends React.Component {
     }
 
     // Determine if this node has children
-    var id = this.props.id;
-    var escapedId = id.replace(":", "%5C%3A");
-    var URL = "https://services.phenotips.org/rest/vocabularies/hpo/suggest?sort=nameSort%20asc&maxResults=10000&input=" + id
-            + "&customFilter=is_a:" + escapedId;
-    var xhr = window.Sling.getXHR();
-    xhr.open('GET', URL, true);
-    xhr.responseType = 'json';
-    xhr.onload = () => {
-      var status = xhr.status;
-      if (status === 200) {
-        this.updateChildrenStatus(null, xhr.response);
-      } else {
-        this.updateChildrenStatus(status, xhr.response);
-      }
-    };
-    xhr.send();
+    MakeChildrenFindingRequest(this.props.id, this.updateChildrenStatus);
   }
 
   render() {
