@@ -81,6 +81,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;*/
 public class VocabularyIndexerServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -2156160697967947088L;
+    private static final String TEMP_ZIP_FILE_NAME = "ncit";
 
     @Reference
     private LogService logger;
@@ -90,6 +91,7 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         throws IOException
     {
         loadNCIT();
+        deleteTempZipFile();
     }
 
     private void loadNCIT()
@@ -106,8 +108,8 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
             httpresponse = httpclient.execute(httpget);
 
             if (httpresponse.getStatusLine().getStatusCode() < 400) {
-                File.createTempFile("ncit", ".zip");
-                FileOutputStream fileOutput = new FileOutputStream("./ncit.zip");
+                File.createTempFile(TEMP_ZIP_FILE_NAME, ".zip");
+                FileOutputStream fileOutput = new FileOutputStream("./" + TEMP_ZIP_FILE_NAME + ".zip");
 
                 httpresponse.getEntity().writeTo(fileOutput);
 
@@ -127,6 +129,12 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
             this.logger.log(LogService.LOG_ERROR, "Failed to load NCIT: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private static void deleteTempZipFile()
+    {
+        File tempfile = new File("./" + TEMP_ZIP_FILE_NAME + ".zip");
+        tempfile.delete();
     }
 }
 
