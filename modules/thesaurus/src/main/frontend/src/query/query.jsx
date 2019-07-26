@@ -72,13 +72,13 @@ class Thesaurus extends React.Component {
       }
 
       const typeOf = data["parents"].map((parent, index) => {
-        return parent["name_translated"];
+        return parent["name"];
       })
 
       this.setState({
         infoID: data["id"],
-        infoName: data["name_translated"],
-        infoDefinition: data["def_translated"],
+        infoName: data["name"],
+        infoDefinition: data["def"],
         infoAlsoKnownAs: synonym,
         infoTypeOf: typeOf,
         infoAnchor: this.state.buttonRefs[data["id"]],
