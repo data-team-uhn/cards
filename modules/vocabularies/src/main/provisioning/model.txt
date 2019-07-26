@@ -22,9 +22,9 @@
 
 [:repoinit]
     # Vocabularies Homepage
-    create path (lfs:VocabulariesHomepage) /content/Vocabularies
+    create path (lfs:VocabulariesHomepage) /Vocabularies
 
     set ACL for everyone
-        allow   jcr:read    on /content/Vocabularies
+        allow   jcr:read    on /Vocabularies
     end
 
