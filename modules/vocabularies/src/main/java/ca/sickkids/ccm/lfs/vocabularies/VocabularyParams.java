@@ -20,89 +20,83 @@
 package ca.sickkids.ccm.lfs.vocabularies;
 
 /**
- * 
  * Container class to hold VocabularyIndexerServlet parameters.
  * @version $Id$
  *
  */
 
-public class VocabularyParams 
+public class VocabularyParams
 {
+}
+/*
     public String identifier;
     public String source;
     public String name;
     public String version;
     public String website;
     public String citation;
-	
-    public VocabularyParams (String identifier, String source, String name, String version, String website, String citation) 
-	{
-		this.identifier = identifier;
-		this.source = source;
-		this.name = name;
-		this.version = version;
-		this.website = website;
-		this.citation = citation;
 
-		if (this.identifier == null) {
-			this.identifier = "";
-		}
+    public VocabularyParams (String identifier, String source, String name, String version, String website
+    , String citation)
+    {
+        this.identifier = identifier;
+        this.source = source;
+        this.name = name;
+        this.version = version;
+        this.website = website;
+        this.citation = citation;
 
-		if (this.source == null) {
-			this.source = "";
-		}
+        if (this.identifier == null) {
+            this.identifier = "";
+        }
 
-		if (this.name == null) {
-			this.name = "";
-		}
+        if (this.source == null) {
+            this.source = "";
+        }
 
-		if (this.version == null) {
-			this.version = "";
-		}
+        if (this.name == null) {
+            this.name = "";
+        }
 
-		if (this.website == null) {
-			this.website = "";
-		}
-		
-		if (this.citation == null) {
-			this.citation = "";
-		}
-	}
-	/*
-	public void setDefaultVersion () {
-		if (version == null || version == "") {
-			this.version = 
-		}
-	}
-	
-	public void */
-	public boolean hasIdentifier () 
+        if (this.version == null) {
+            this.version = "";
+        }
+
+        if (this.website == null) {
+            this.website = "";
+        }
+
+        if (this.citation == null) {
+            this.citation = "";
+        }
+    }
+
+    public boolean hasIdentifier ()
     {
         return this.identifier == "" || this.identifier == null ? true : false;
     }
 
-	public boolean hasSource() 
-	{
+    public boolean hasSource()
+    {
         return this.source == "" || this.source == null ? true : false;
     }
 
-	public boolean hasName () 
+    public boolean hasName ()
     {
         return this.name == "" || this.name == null ? true : false;
     }
 
-	public boolean hasVersion () 
+    public boolean hasVersion ()
     {
         return this.version == "" || this.version == null ? true : false;
     }
 
-	public boolean hasWebsite () 
+    public boolean hasWebsite ()
     {
         return this.website.contentEquals("") || this.website.contentEquals(null) ? true : false;
     }
 
-	public boolean hasCitation () 
+    public boolean hasCitation ()
     {
         return this.citation.contentEquals("")|| this.citation.contentEquals(null) ? true : false;
-    }
-}
+    }*/
