@@ -22,6 +22,7 @@ package ca.sickkids.ccm.lfs.vocabularies;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 //import java.io.OutputStream;
 //import java.io.Writer;
 //import java.util.Collection;
@@ -29,13 +30,14 @@ import java.io.IOException;
 //import java.util.zip.ZipOutputStream;
 //import javax.jcr.Repository;
 //import javax.jcr.Session;
-//import javax.jcr.Node;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.servlet.Servlet;
 //import javax.jcr.RepositoryException;
 //import javax.json.Json;
 //import javax.json.JsonReader;
 //import javax.json.JsonObject;
 //import javax.json.stream.JsonGenerator;
-import javax.servlet.Servlet;
 /*
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -91,7 +93,11 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         throws IOException
     {
         loadNCIT();
+
+        Node vocabulariesHomepage = request.getResource().adaptTo(Node.class);
+        createNCITVocabularyNode(vocabulariesHomepage);
         deleteTempZipFile();
+        saveSession(vocabulariesHomepage);
     }
 
     private void loadNCIT()
@@ -124,17 +130,37 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
             }
         } catch (ClientProtocolException e) {
             this.logger.log(LogService.LOG_ERROR, "Failed to load NCIT: " + e.getMessage());
-            e.printStackTrace();
         } catch (IOException e) {
             this.logger.log(LogService.LOG_ERROR, "Failed to load NCIT: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
-    private static void deleteTempZipFile()
+    private void createNCITVocabularyNode(Node vocabulariesHomepage)
+    {
+        try {
+            Node vocabularyNode = vocabulariesHomepage.addNode("./ncit", "lfs:Vocabulary");
+            vocabularyNode.setProperty("identifier", "ncit");
+            vocabularyNode.setProperty("name", "National Cancer Institute Thesaurus");
+            vocabularyNode.setProperty("source", "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/");
+            vocabularyNode.setProperty("version", "19.05d");
+            vocabularyNode.setProperty("website", "https://ncit.nci.nih.gov/ncitbrowser/");
+        } catch (RepositoryException e) {
+            this.logger.log(LogService.LOG_ERROR, "Failed to create Vocabulary node:" + e.getMessage());
+        }
+    }
+
+    private void deleteTempZipFile()
     {
         File tempfile = new File("./" + TEMP_ZIP_FILE_NAME + ".zip");
         tempfile.delete();
+    }
+
+    private void saveSession (Node vocabulariesHomepage) {
+        try {
+            vocabulariesHomepage.getSession().save();
+        } catch (RepositoryException e) {
+            this.logger.log(LogService.LOG_ERROR, "Failed to save session: " + e.getMessage());
+        }
     }
 }
 
