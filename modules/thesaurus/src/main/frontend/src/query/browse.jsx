@@ -27,7 +27,7 @@ import Button from "material-dashboard-react/dist/components/CustomButtons/Butto
 import BrowseListChild from "./browseListChild.jsx";
 import BrowseTheme from "./browseStyle.jsx";
 
-import { MakeRequest, MakeChildrenFindingRequest } from "./util.jsx";
+import { REST_URL, MakeRequest, MakeChildrenFindingRequest } from "./util.jsx";
 
 class BrowseDialog extends React.Component {
   constructor(props) {
@@ -132,7 +132,7 @@ class BrowseDialog extends React.Component {
     }
 
     // Create the XHR request
-    var URL = "https://services.phenotips.org/rest/vocabularies/hpo/suggest?sort=nameSort%20asc&maxResults=10000&input=" + id;
+    var URL = REST_URL + `/hpo/suggest?sort=nameSort%20asc&maxResults=10000&input=${id}`;
     MakeRequest(URL, this.rebuildTree);
   }
 
