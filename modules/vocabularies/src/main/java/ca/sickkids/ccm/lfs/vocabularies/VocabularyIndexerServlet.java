@@ -19,14 +19,19 @@
  */
 package ca.sickkids.ccm.lfs.vocabularies;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
-
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.zip.ZipInputStream;
 //import java.io.OutputStream;
 //import java.io.Writer;
 //import java.util.Collection;
-//import java.util.HashSet;
 //import java.util.zip.ZipOutputStream;
 //import javax.jcr.Repository;
 //import javax.jcr.Session;
@@ -38,12 +43,12 @@ import javax.servlet.Servlet;
 //import javax.json.JsonReader;
 //import javax.json.JsonObject;
 //import javax.json.stream.JsonGenerator;
-/*
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.csv.QuoteMode;
-import org.apache.commons.lang3.StringUtils;*/
+//import org.apache.commons.csv.QuoteMode;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -84,6 +89,11 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -2156160697967947088L;
     private static final String TEMP_ZIP_FILE_NAME = "ncit";
+    private static final int NCIT_FLAT_IDENTIFIER_COLUMN = 0;
+    private static final int NCIT_FLAT_PARENTS_COLUMN = 2;
+    private static final int NCIT_FLAT_SYNONYMS_COLUMN = 3;
+    private static final int NCIT_FLAT_DESCRIPTION_COLUMN = 4;
+    private static final int NCIT_FLAT_LABEL_COLUMN = 5;
 
     @Reference
     private LogService logger;
@@ -93,9 +103,9 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         throws IOException
     {
         loadNCIT();
-
         Node vocabulariesHomepage = request.getResource().adaptTo(Node.class);
         createNCITVocabularyNode(vocabulariesHomepage);
+        parseNCIT(vocabulariesHomepage);
         deleteTempZipFile();
         saveSession(vocabulariesHomepage);
     }
@@ -149,13 +159,151 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         }
     }
 
+    private void parseNCIT (Node vocabulariesHomepage)
+         throws IOException
+    {
+        HashMap<String, String[]> parentsMap = returnParentMap();
+
+        FileInputStream fileInputStream = new FileInputStream("./ncit.zip");
+        ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
+
+        zipInputStream.getNextEntry();
+        InputStreamReader inputStreamReader = new InputStreamReader(zipInputStream);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+        CSVParser csvParser = CSVParser.parse(bufferedReader, CSVFormat.TDF.withQuote(null));
+
+        Iterator<CSVRecord> csvIterator = csvParser.iterator();
+ 
+        try {
+            Node vocabularyNode = vocabulariesHomepage.getNode("./ncit");
+            while (csvIterator.hasNext()) {
+                CSVRecord row = csvIterator.next();
+
+                String identifier = row.get(NCIT_FLAT_IDENTIFIER_COLUMN);
+                String description = row.get(NCIT_FLAT_DESCRIPTION_COLUMN);
+
+                String synonymString = row.get(NCIT_FLAT_SYNONYMS_COLUMN);
+                String[] synonymsArray = synonymString.split("\\|");
+
+                // Make the first synonym of the term the default label if no label is supplied by the term
+                String defaultLabel = synonymsArray[0];
+
+                // The actual label supplied by the term
+                String suppliedLabel = row.get(NCIT_FLAT_LABEL_COLUMN);
+
+                String label = StringUtils.defaultIfBlank( suppliedLabel, defaultLabel);
+
+                String[] parentsArray = parentsMap.get(identifier);
+                String[] ancestorsArray = computeAncestors(parentsMap, identifier);
+
+                createNCITVocabularyTermNode(vocabularyNode, identifier, label, description, synonymsArray, parentsArray, ancestorsArray);
+            }
+        } catch (RepositoryException e) {
+            this.logger.log(LogService.LOG_ERROR, "Failed to access Vocabulary node:" + e.getMessage());
+        }
+
+        csvParser.close();
+        bufferedReader.close();
+        inputStreamReader.close();
+        zipInputStream.close();
+        fileInputStream.close();
+    }
+
+    private HashMap<String, String[]> returnParentMap()
+        throws IOException
+    {
+        FileInputStream fileInputStream = new FileInputStream("./ncit.zip");
+        ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
+
+        zipInputStream.getNextEntry();
+        InputStreamReader inputStreamReader = new InputStreamReader(zipInputStream);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+        CSVParser csvParser = CSVParser.parse(bufferedReader, CSVFormat.TDF.withQuote(null));
+
+        Iterator<CSVRecord> csvIterator = csvParser.iterator();
+
+        HashMap<String, String[]> parents = new HashMap<String, String[]>();
+
+        while (csvIterator.hasNext()) {
+            CSVRecord row = csvIterator.next();
+
+            String identifier = row.get(NCIT_FLAT_IDENTIFIER_COLUMN);
+
+            String parentString = row.get(NCIT_FLAT_PARENTS_COLUMN);
+            String[] parentArray = parentString.split("\\|");
+
+            if (parentArray[0].contentEquals("")) {
+                parents.put(identifier, new String[0]);
+            } else {
+                parents.put(identifier, parentArray);
+            }
+        }
+
+        csvParser.close();
+        bufferedReader.close();
+        inputStreamReader.close();
+        zipInputStream.close();
+        fileInputStream.close();
+
+        return parents;
+    }
+
+    public String[] computeAncestors(HashMap<String, String[]> parentsMap, String identifier)
+    {
+        HashSet<String> termAncestorSet = new HashSet<String>();
+        String[] parentArray = parentsMap.get(identifier);
+        if (parentArray != null && parentArray.length > 0) {
+            for (String parentIdentifier : parentArray) 
+            {
+                termAncestorSet.add(parentIdentifier);
+                termAncestorSet.addAll(recursiveComputeAncestors(parentsMap, parentIdentifier));
+            }
+        }
+
+        return termAncestorSet.toArray(new String[0]);
+    }
+    
+    public HashSet<String> recursiveComputeAncestors(HashMap<String, String[]> parentsMap, String identifier)
+    {
+        HashSet<String> termAncestorSet = new HashSet<String>();
+        String[] parentArray = parentsMap.get(identifier);
+        if (parentArray != null && parentArray.length > 0) {
+            for (String parentIdentifier : parentArray) 
+            {
+                termAncestorSet.add(parentIdentifier);
+                termAncestorSet.addAll(recursiveComputeAncestors(parentsMap, parentIdentifier));
+            }
+        }
+
+        return termAncestorSet;
+    }
+
+    private void createNCITVocabularyTermNode(Node vocabularyNode, String identifier, String label,
+        String description, String[] synonyms, String[] parents, String[] ancestors)
+    {
+        try {
+            Node vocabularyTermNode = vocabularyNode.addNode("./" + identifier, "lfs:VocabularyTerm");
+            vocabularyTermNode.setProperty("identifier", identifier);
+            vocabularyTermNode.setProperty("label", label);
+            vocabularyTermNode.setProperty("description", description);
+            vocabularyTermNode.setProperty("synonyms", synonyms);
+            vocabularyTermNode.setProperty("parents", parents);
+            vocabularyTermNode.setProperty("ancestors", ancestors);
+        } catch (RepositoryException e) {
+            this.logger.log(LogService.LOG_ERROR, "Failed to create VocabularyTerm node:" + e.getMessage());
+        }
+    }
+
     private void deleteTempZipFile()
     {
         File tempfile = new File("./" + TEMP_ZIP_FILE_NAME + ".zip");
         tempfile.delete();
     }
 
-    private void saveSession (Node vocabulariesHomepage) {
+    private void saveSession (Node vocabulariesHomepage)
+    {
         try {
             vocabulariesHomepage.getSession().save();
         } catch (RepositoryException e) {
