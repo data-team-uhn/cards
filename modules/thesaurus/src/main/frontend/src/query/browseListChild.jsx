@@ -49,7 +49,7 @@ class ListChild extends React.Component {
       var children = data["rows"].map((row, index) => {
         return (<BrowseListChild
                   id={row["id"]}
-                  name={row["name_translated"]}
+                  name={row["name"]}
                   changeid={this.props.changeid}
                   registerinfo={this.props.registerinfo}
                   getinfo={this.props.getinfo}
