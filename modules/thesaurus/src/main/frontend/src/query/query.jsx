@@ -34,7 +34,7 @@ import Info from "@material-ui/icons/Info";
 
 import BrowseDialog from "./browse.jsx";
 import thesaurusStyle from "./queryStyle.jsx";
-import { MakeRequest } from "./util.jsx";
+import { REST_URL, MakeRequest } from "./util.jsx";
 
 class Thesaurus extends React.Component {
   constructor(props) {
@@ -91,7 +91,7 @@ class Thesaurus extends React.Component {
 
   // Grab information about the given ID and populate the info box
   getInfo = (id) => {
-    var URL = "https://services.phenotips.org/rest/vocabularies/hpo/" + id;
+    var URL = `${REST_URL}/hpo/${id}`;
     MakeRequest(URL, this.showInfo);
   }
 
@@ -154,7 +154,8 @@ class Thesaurus extends React.Component {
     }
 
     // Grab suggestions
-    var URL = "https://services.phenotips.org/rest/vocabularies/hpo/suggest?input=" + input;
+    input = encodeURIComponent(input);
+    var URL = `${REST_URL}/hpo/suggest?input=${input}`;
     MakeRequest(URL, this.showSuggestions);
 
     // Hide the infobox and stop the timer

@@ -17,6 +17,9 @@
 //  under the License.
 //
 
+// Do not place an ending / in the URL below
+export const REST_URL = "https://services.phenotips.org/rest/vocabularies";
+
 // Make a request for a json file, calling callback with parameters (xhr status, json data)
 export function MakeRequest(URL, callback) {
     var xhr = window.Sling.getXHR();
@@ -31,8 +34,9 @@ export function MakeRequest(URL, callback) {
 
 // Find children of a node by id, calling callback with parameters (xhr status, json data)
 export function MakeChildrenFindingRequest(id, callback) {
-    var escapedId = id.replace(":", "%5C%3A");
-    var URL = "https://services.phenotips.org/rest/vocabularies/hpo/suggest?sort=nameSort%20asc&maxResults=10000&input=" + id
-        + "&customFilter=is_a:" + escapedId;
+    var escapedId = id.replace(":", "\\:"); // URI Escape the : from HP: for SolR
+    var customFilter = encodeURIComponent(`is_a:${escapedId}`);
+    id = encodeURIComponent(id);
+    var URL = `${REST_URL}/hpo/suggest?sort=nameSort%20asc&maxResults=10000&input=${id}&customFilter=${customFilter}`;
     MakeRequest(URL, callback);
 }
