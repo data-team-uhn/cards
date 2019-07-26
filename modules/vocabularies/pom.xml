@@ -67,7 +67,13 @@
   </build>
 
   <dependencies>
-    <!-- >
+
+    <dependency>
+      <groupId>javax.jcr</groupId>
+      <artifactId>jcr</artifactId>
+      <version>2.0</version>
+    </dependency>
+        <!-- >
     <dependency>
       <groupId>javax.json</groupId>
       <artifactId>javax.json-api</artifactId>
