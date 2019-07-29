@@ -215,6 +215,8 @@ class Thesaurus extends React.Component {
   closeDialog = () => {
     this.setState({
       browseDialogOpen: false,
+      suggestionsVisible: false,
+      termInfoVisible: false,
     })
   }
 
