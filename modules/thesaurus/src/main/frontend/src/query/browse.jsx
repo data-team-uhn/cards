@@ -38,8 +38,6 @@ class VocabularyBrowser extends React.Component {
       lastKnownTerm: "",
       parentNode: null,
       currentNode: null,
-      childNodes: {},
-      childTermsToLookup: [],
     };
   }
 
@@ -61,28 +59,12 @@ class VocabularyBrowser extends React.Component {
     );
   }
 
-  // Callback from an onload to generate child nodes in state.childNodes
-  rebuildChildren = (event, data, parent) => {
-    if (event === null) {
-      // We have the children of our parent
-      this.state.childNodes[parent] = data["rows"].map((row, index) => {
-        // We also need to determine if this child has children of its own
-        return this.constructBranch(row["id"], row["name"], true, false, false);
-      });
-    } else {
-      console.log("Error: term lookup failed with code " + event.ToString());
-    }
-  }
-
   // Callback from an onload to generate the tree from a /suggest query about the parent
   rebuildTree = (event, data) => {
     if (event === null) {
       // We have the node we're looking at, and its parent.
       var currentNodeData = data["rows"][0];
       var id = currentNodeData["id"];
-
-      // Look up every child of this node
-      MakeChildrenFindingRequest(id, (status, data) => {this.rebuildChildren(status, data, id)});
 
       // Construct parent elements, if they exist
       var parentBranches = null;
@@ -114,8 +96,6 @@ class VocabularyBrowser extends React.Component {
       this.setState({
         parentNode: null,
         currentNode: null,
-        childNodes: {},
-        childTermsToLookup: [],
         lastKnownTerm: id,
       })
       return;
