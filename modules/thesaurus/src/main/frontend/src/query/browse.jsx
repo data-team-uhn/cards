@@ -79,7 +79,7 @@ class BrowseDialog extends React.Component {
       // We have the children of our parent
       this.state.childNodes[parent] = data["rows"].map((row, index) => {
         // We also need to determine if this child has children of its own
-        MakeChildrenFindingRequest(row["id"], (status, data) => {this.checkForChildren(status, data, id)});
+        MakeChildrenFindingRequest(row["id"], (status, data) => {this.checkForChildren(status, data, row["id"])});
         return this.constructBranch(row["id"], row["name"], true, false, false);
       });
     } else {
@@ -98,9 +98,12 @@ class BrowseDialog extends React.Component {
       MakeChildrenFindingRequest(id, (status, data) => {this.rebuildChildren(status, data, id)});
 
       // Construct parent elements
-      const parentBranches = currentNodeData["parents"].map((row, index) => {
-        return this.constructBranch(row["id"], row["name"], false, false, false);
-      });
+      var parentBranches = null;
+      if (currentNodeData["parents"] !== null) {
+        parentBranches = currentNodeData["parents"].map((row, index) => {
+          return this.constructBranch(row["id"], row["name"], false, false, false);
+        });
+      }
 
       this.setState({
         parentNode: parentBranches,
