@@ -337,8 +337,17 @@ class Thesaurus extends React.Component {
                         target="_blank"
                         title="The Human Phenotype Ontology project: linking molecular biology and disease through phenotype data. Sebastian Köhler, Sandra C Doelken, Christopher J. Mungall, Sebastian Bauer, Helen V. Firth, et al. Nucl. Acids Res. (1 January 2014) 42 (D1): D966-D974 doi:10.1093/nar/gkt1026. Current version: releases/2018-10-09"
                       >
-                        <Typography className={classes.infoDataSource}>The Human Phenotype Ontology (HPO)</Typography>
+                        <Typography inline className={classes.infoDataSource}>The Human Phenotype Ontology (HPO)</Typography>
                       </a>
+                      <Button
+                        className={classes.closeButton}
+                        onClick={this.closeInfo}
+                        variant="outlined"
+                        justIcon={true}
+                        simple={true}
+                      >
+                        x
+                      </Button>
                       <Typography inline className={classes.infoIDTypography}>{this.state.infoID} </Typography>
                       <Typography inline className={classes.infoName}>{this.state.infoName}</Typography> <br />
                       <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography> <br />

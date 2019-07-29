@@ -20,6 +20,13 @@ import dropdownStyle from "./dropdownStyle.jsx";
 
 const thesaurusStyle = theme => ({
   ...dropdownStyle(theme),
+  closeButton: {
+    float: "right",
+    height: "100%",
+    padding: "0px",
+    fontSize: "10px",
+    color: grayColor[0],
+  },
   successText: {
     color: successColor[0]
   },
