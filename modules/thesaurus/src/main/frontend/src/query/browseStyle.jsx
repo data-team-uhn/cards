@@ -60,10 +60,10 @@ const browseStyle = theme => ({
     treeRoot: {
       display: "block",
       "& >div::before": {
-        content: '"┌"',
-      },
-      "& >div:nth-child(n+2):before": {
         content: '"├"',
+      },
+      "& >div:first-child:before": {
+        content: '"┌"',
       }
     },
     treeNode: {
@@ -72,10 +72,10 @@ const browseStyle = theme => ({
     },
     branch: {
       display: "block",
-      "&:not(:last-child)::before": {
+      "&::before": {
         content: '"├─"',
       },
-      "&::before": {
+      "&:last-child::before": {
         content: '"└─"',
       },
     },
