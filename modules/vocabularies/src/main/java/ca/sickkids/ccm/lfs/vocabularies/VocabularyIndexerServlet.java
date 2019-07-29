@@ -23,16 +23,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipInputStream;
 //import java.io.OutputStream;
 //import java.io.Writer;
 //import java.util.Collection;
-//import java.util.zip.ZipOutputStream;
+//import java.util.zipOutputStream;
 //import javax.jcr.Repository;
 //import javax.jcr.Session;
 import javax.jcr.Node;
@@ -47,7 +49,6 @@ import javax.servlet.Servlet;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-//import org.apache.commons.csv.QuoteMode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -62,6 +63,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 
+//import org.apache.commons.csv.QuoteMode;
 /*import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -88,7 +90,9 @@ import org.apache.jena.util.iterator.ExtendedIterator;*/
 public class VocabularyIndexerServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -2156160697967947088L;
-    private static final String TEMP_ZIP_FILE_NAME = "ncit";
+    private static final String VOCABULARY_NAME = "ncit";
+    private static final String DIRECTORY_PREFIX = "./";
+    private static final String ZIP_SUFFIX = ".zip";
     private static final int NCIT_FLAT_IDENTIFIER_COLUMN = 0;
     private static final int NCIT_FLAT_PARENTS_COLUMN = 2;
     private static final int NCIT_FLAT_SYNONYMS_COLUMN = 3;
@@ -102,12 +106,26 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
     public void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
         throws IOException
     {
-        loadNCIT();
         Node vocabulariesHomepage = request.getResource().adaptTo(Node.class);
+        clearVocabularyNode(vocabulariesHomepage);
+        loadNCIT();
         createNCITVocabularyNode(vocabulariesHomepage);
         parseNCIT(vocabulariesHomepage);
         deleteTempZipFile();
         saveSession(vocabulariesHomepage);
+    }
+
+    private void clearVocabularyNode(Node vocabulariesHomepage)
+    {
+        try {
+            if (vocabulariesHomepage.hasNode(VOCABULARY_NAME)) {
+                Node target = vocabulariesHomepage.getNode(VOCABULARY_NAME);
+                target.remove();
+            }
+        } catch (RepositoryException e) {
+            this.logger.log(LogService.LOG_ERROR, "Failed to delete existing Vocabulary node:"
+                 + e.getMessage());
+        }
     }
 
     private void loadNCIT()
@@ -124,8 +142,8 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
             httpresponse = httpclient.execute(httpget);
 
             if (httpresponse.getStatusLine().getStatusCode() < 400) {
-                File.createTempFile(TEMP_ZIP_FILE_NAME, ".zip");
-                FileOutputStream fileOutput = new FileOutputStream("./" + TEMP_ZIP_FILE_NAME + ".zip");
+                File.createTempFile(VOCABULARY_NAME, ZIP_SUFFIX);
+                FileOutputStream fileOutput = new FileOutputStream(DIRECTORY_PREFIX + VOCABULARY_NAME + ZIP_SUFFIX);
 
                 httpresponse.getEntity().writeTo(fileOutput);
 
@@ -148,7 +166,7 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
     private void createNCITVocabularyNode(Node vocabulariesHomepage)
     {
         try {
-            Node vocabularyNode = vocabulariesHomepage.addNode("./ncit", "lfs:Vocabulary");
+            Node vocabularyNode = vocabulariesHomepage.addNode(DIRECTORY_PREFIX + VOCABULARY_NAME, "lfs:Vocabulary");
             vocabularyNode.setProperty("identifier", "ncit");
             vocabularyNode.setProperty("name", "National Cancer Institute Thesaurus");
             vocabularyNode.setProperty("source", "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/");
@@ -159,12 +177,12 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         }
     }
 
-    private void parseNCIT (Node vocabulariesHomepage)
+    private void parseNCIT(Node vocabulariesHomepage)
          throws IOException
     {
-        HashMap<String, String[]> parentsMap = returnParentMap();
+        Map<String, String[]> parentsMap = returnParentMap();
 
-        FileInputStream fileInputStream = new FileInputStream("./ncit.zip");
+        FileInputStream fileInputStream = new FileInputStream(DIRECTORY_PREFIX + VOCABULARY_NAME + ZIP_SUFFIX);
         ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
 
         zipInputStream.getNextEntry();
@@ -174,9 +192,9 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         CSVParser csvParser = CSVParser.parse(bufferedReader, CSVFormat.TDF.withQuote(null));
 
         Iterator<CSVRecord> csvIterator = csvParser.iterator();
- 
+
         try {
-            Node vocabularyNode = vocabulariesHomepage.getNode("./ncit");
+            Node vocabularyNode = vocabulariesHomepage.getNode(VOCABULARY_NAME);
             while (csvIterator.hasNext()) {
                 CSVRecord row = csvIterator.next();
 
@@ -192,12 +210,13 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
                 // The actual label supplied by the term
                 String suppliedLabel = row.get(NCIT_FLAT_LABEL_COLUMN);
 
-                String label = StringUtils.defaultIfBlank( suppliedLabel, defaultLabel);
+                String label = StringUtils.defaultIfBlank(suppliedLabel, defaultLabel);
 
                 String[] parentsArray = parentsMap.get(identifier);
                 String[] ancestorsArray = computeAncestors(parentsMap, identifier);
 
-                createNCITVocabularyTermNode(vocabularyNode, identifier, label, description, synonymsArray, parentsArray, ancestorsArray);
+                createNCITVocabularyTermNode(vocabularyNode, identifier, label, description, synonymsArray,
+                    parentsArray, ancestorsArray);
             }
         } catch (RepositoryException e) {
             this.logger.log(LogService.LOG_ERROR, "Failed to access Vocabulary node:" + e.getMessage());
@@ -210,10 +229,10 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         fileInputStream.close();
     }
 
-    private HashMap<String, String[]> returnParentMap()
+    private Map<String, String[]> returnParentMap()
         throws IOException
     {
-        FileInputStream fileInputStream = new FileInputStream("./ncit.zip");
+        FileInputStream fileInputStream = new FileInputStream(DIRECTORY_PREFIX + VOCABULARY_NAME + ZIP_SUFFIX);
         ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
 
         zipInputStream.getNextEntry();
@@ -224,7 +243,7 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
 
         Iterator<CSVRecord> csvIterator = csvParser.iterator();
 
-        HashMap<String, String[]> parents = new HashMap<String, String[]>();
+        Map<String, String[]> parents = new HashMap<String, String[]>();
 
         while (csvIterator.hasNext()) {
             CSVRecord row = csvIterator.next();
@@ -250,12 +269,12 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         return parents;
     }
 
-    public String[] computeAncestors(HashMap<String, String[]> parentsMap, String identifier)
+    private String[] computeAncestors(Map<String, String[]> parentsMap, String identifier)
     {
-        HashSet<String> termAncestorSet = new HashSet<String>();
+        Set<String> termAncestorSet = new HashSet<String>();
         String[] parentArray = parentsMap.get(identifier);
         if (parentArray != null && parentArray.length > 0) {
-            for (String parentIdentifier : parentArray) 
+            for (String parentIdentifier : parentArray)
             {
                 termAncestorSet.add(parentIdentifier);
                 termAncestorSet.addAll(recursiveComputeAncestors(parentsMap, parentIdentifier));
@@ -264,13 +283,13 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
 
         return termAncestorSet.toArray(new String[0]);
     }
-    
-    public HashSet<String> recursiveComputeAncestors(HashMap<String, String[]> parentsMap, String identifier)
+
+    private Set<String> recursiveComputeAncestors(Map<String, String[]> parentsMap, String identifier)
     {
-        HashSet<String> termAncestorSet = new HashSet<String>();
+        Set<String> termAncestorSet = new HashSet<String>();
         String[] parentArray = parentsMap.get(identifier);
         if (parentArray != null && parentArray.length > 0) {
-            for (String parentIdentifier : parentArray) 
+            for (String parentIdentifier : parentArray)
             {
                 termAncestorSet.add(parentIdentifier);
                 termAncestorSet.addAll(recursiveComputeAncestors(parentsMap, parentIdentifier));
@@ -284,7 +303,7 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         String description, String[] synonyms, String[] parents, String[] ancestors)
     {
         try {
-            Node vocabularyTermNode = vocabularyNode.addNode("./" + identifier, "lfs:VocabularyTerm");
+            Node vocabularyTermNode = vocabularyNode.addNode(DIRECTORY_PREFIX + identifier, "lfs:VocabularyTerm");
             vocabularyTermNode.setProperty("identifier", identifier);
             vocabularyTermNode.setProperty("label", label);
             vocabularyTermNode.setProperty("description", description);
@@ -298,11 +317,11 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
 
     private void deleteTempZipFile()
     {
-        File tempfile = new File("./" + TEMP_ZIP_FILE_NAME + ".zip");
+        File tempfile = new File(DIRECTORY_PREFIX + VOCABULARY_NAME + ZIP_SUFFIX);
         tempfile.delete();
     }
 
-    private void saveSession (Node vocabulariesHomepage)
+    private void saveSession(Node vocabulariesHomepage)
     {
         try {
             vocabulariesHomepage.getSession().save();

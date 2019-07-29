@@ -20,6 +20,10 @@
 # Vocabularies used by LFS
 [feature name=lfs-vocabularies]
 
+[artifacts]
+    org.apache.commons/commons-csv/1.6
+    org.apache.commons/commons-lang3/3.9
+
 [:repoinit]
     # Vocabularies Homepage
     create path (lfs:VocabulariesHomepage) /Vocabularies
