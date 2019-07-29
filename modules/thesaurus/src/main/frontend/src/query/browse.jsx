@@ -84,9 +84,9 @@ class VocabularyBrowser extends React.Component {
       // Look up every child of this node
       MakeChildrenFindingRequest(id, (status, data) => {this.rebuildChildren(status, data, id)});
 
-      // Construct parent elements
+      // Construct parent elements, if they exist
       var parentBranches = null;
-      if (currentNodeData["parents"] !== null) {
+      if (currentNodeData["parents"] !== undefined) {
         parentBranches = currentNodeData["parents"].map((row, index) => {
           return this.constructBranch(row["id"], row["name"], false, false, false);
         });
