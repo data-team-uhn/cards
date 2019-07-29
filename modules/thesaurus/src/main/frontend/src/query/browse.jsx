@@ -40,8 +40,6 @@ class BrowseDialog extends React.Component {
       currentNode: null,
       childNodes: {},
       childTermsToLookup: [],
-      hasChildren: {},
-      isExpanded: {},
     };
   }
 
@@ -63,23 +61,12 @@ class BrowseDialog extends React.Component {
     );
   }
 
-  // Check for children of children elements
-  checkForChildren = (event, data, parent) => {
-    if (event === null) {
-      this.state.hasChildren[parent] = (data["rows"].length > 0);
-      this.forceUpdate();
-    } else {
-      console.log("Error: children lookup failed with code " + event.ToString());
-    }
-  }
-
   // Callback from an onload to generate child nodes in state.childNodes
   rebuildChildren = (event, data, parent) => {
     if (event === null) {
       // We have the children of our parent
       this.state.childNodes[parent] = data["rows"].map((row, index) => {
         // We also need to determine if this child has children of its own
-        MakeChildrenFindingRequest(row["id"], (status, data) => {this.checkForChildren(status, data, row["id"])});
         return this.constructBranch(row["id"], row["name"], true, false, false);
       });
     } else {
