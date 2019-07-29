@@ -29,7 +29,7 @@ import BrowseTheme from "./browseStyle.jsx";
 
 import { REST_URL, MakeRequest, MakeChildrenFindingRequest } from "./util.jsx";
 
-class BrowseDialog extends React.Component {
+class VocabularyBrowser extends React.Component {
   constructor(props) {
     super(props);
 
@@ -163,8 +163,8 @@ class BrowseDialog extends React.Component {
   }
 }
 
-BrowseDialog.propTypes = {
+VocabularyBrowser.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(BrowseTheme)(BrowseDialog);
+export default withStyles(BrowseTheme)(VocabularyBrowser);

@@ -32,7 +32,7 @@ import CustomInput from "material-dashboard-react/dist/components/CustomInput/Cu
 import Search from "@material-ui/icons/Search";
 import Info from "@material-ui/icons/Info";
 
-import BrowseDialog from "./browse.jsx";
+import VocabularyBrowser from "./browse.jsx";
 import thesaurusStyle from "./queryStyle.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
 
@@ -48,7 +48,7 @@ class Thesaurus extends React.Component {
       suggestionsVisible: false,
       termInfoVisible: false,
       lookupTimer: null,
-      browseDialogOpen: false,
+      vocabularyBrowserOpen: false,
       browseID: "",
       // Strings used by the info box
       infoID: "",
@@ -207,14 +207,14 @@ class Thesaurus extends React.Component {
 
   openDialog = event => {
     this.setState({
-      browseDialogOpen: true,
+      vocabularyBrowserOpen: true,
       browseID: this.state.infoID,
     })
   }
 
   closeDialog = () => {
     this.setState({
-      browseDialogOpen: false,
+      vocabularyBrowserOpen: false,
       suggestionsVisible: false,
       termInfoVisible: false,
     })
@@ -375,7 +375,7 @@ class Thesaurus extends React.Component {
                           })}
                         </div>
                       )}
-                      {!this.state.browseDialogOpen && <Button onClick={this.openDialog}>
+                      {!this.state.vocabularyBrowserOpen && <Button onClick={this.openDialog}>
                         See more
                       </Button>}
                     </div>
@@ -386,8 +386,8 @@ class Thesaurus extends React.Component {
           )}
         </Popper>
         { /* Browse dialog box */}
-        <BrowseDialog
-          open={this.state.browseDialogOpen}
+        <VocabularyBrowser
+          open={this.state.vocabularyBrowserOpen}
           term={this.state.browseID}
           changeid={this.changeBrowseID}
           changeinfoid={this.changeInfoID}
