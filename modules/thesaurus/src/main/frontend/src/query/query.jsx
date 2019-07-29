@@ -48,7 +48,7 @@ class Thesaurus extends React.Component {
       suggestionsVisible: false,
       termInfoVisible: false,
       lookupTimer: null,
-      vocabularyBrowserOpen: false,
+      browserOpened: false,
       browseID: "",
       // Strings used by the info box
       infoID: "",
@@ -207,14 +207,14 @@ class Thesaurus extends React.Component {
 
   openDialog = event => {
     this.setState({
-      vocabularyBrowserOpen: true,
+      browserOpened: true,
       browseID: this.state.infoID,
     })
   }
 
   closeDialog = () => {
     this.setState({
-      vocabularyBrowserOpen: false,
+      browserOpened: false,
       suggestionsVisible: false,
       termInfoVisible: false,
     })
@@ -375,7 +375,7 @@ class Thesaurus extends React.Component {
                           })}
                         </div>
                       )}
-                      {!this.state.vocabularyBrowserOpen && <Button onClick={this.openDialog}>
+                      {!this.state.browserOpened && <Button onClick={this.openDialog}>
                         See more
                       </Button>}
                     </div>
@@ -387,13 +387,12 @@ class Thesaurus extends React.Component {
         </Popper>
         { /* Browse dialog box */}
         <VocabularyBrowser
-          open={this.state.vocabularyBrowserOpen}
+          open={this.state.browserOpened}
           term={this.state.browseID}
-          changeid={this.changeBrowseID}
-          changeinfoid={this.changeInfoID}
+          changeId={this.changeBrowseID}
           onClose={this.closeDialog}
-          registerinfo={this.registerInfoButton}
-          getinfo={this.getInfo}
+          registerInfo={this.registerInfoButton}
+          getInfo={this.getInfo}
           />
       </div>
     );

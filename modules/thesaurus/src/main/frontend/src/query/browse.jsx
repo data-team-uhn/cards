@@ -49,13 +49,13 @@ class VocabularyBrowser extends React.Component {
       <BrowseListChild
         id={id}
         name={name}
-        changeid={this.props.changeid}
-        registerinfo={this.props.registerinfo}
-        getinfo={this.props.getinfo}
+        changeId={this.props.changeId}
+        registerInfo={this.props.registerInfo}
+        getInfo={this.props.getInfo}
         expands={ischildnode}
-        defaultopen={defaultexpanded}
+        defaultOpen={defaultexpanded}
         key={id}
-        headnode={!ischildnode}
+        headNode={!ischildnode}
         bolded={bolded}
       />
     );
@@ -102,7 +102,7 @@ class VocabularyBrowser extends React.Component {
     }
   }
 
-  // Get suggestions and rebuild the browser tree for the given input
+  // Rebuild the browser tree centered around the given term.
   rebuildBrowser = (id) => {
     // Do not re-grab suggestions for the same term
     if (id === this.state.lastKnownTerm) {
@@ -122,12 +122,12 @@ class VocabularyBrowser extends React.Component {
     }
 
     // Create the XHR request
-    var URL = REST_URL + `/hpo/suggest?sort=nameSort%20asc&maxResults=10000&input=${id}`;
+    var URL = REST_URL + `/hpo/suggest?sort=nameSort%20asc&maxResults=1&input=${id}`;
     MakeRequest(URL, this.rebuildTree);
   }
 
   render() {
-    const { classes, term, changeid, registerinfo, getinfo, changeinfoid, onClose, ...rest } = this.props;
+    const { classes, term, changeId, registerInfo, getInfo, onClose, ...rest } = this.props;
     const fullscreen = false;
     this.rebuildBrowser(term);
 

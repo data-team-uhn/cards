@@ -38,7 +38,7 @@ class ListChild extends React.Component {
       checkedForChildren: false,
       hasChildren: false,
       children: [],
-      expanded: props.defaultopen,
+      expanded: props.defaultOpen,
     };
   }
 
@@ -50,13 +50,13 @@ class ListChild extends React.Component {
         return (<BrowseListChild
                   id={row["id"]}
                   name={row["name"]}
-                  changeid={this.props.changeid}
-                  registerinfo={this.props.registerinfo}
-                  getinfo={this.props.getinfo}
+                  changeId={this.props.changeId}
+                  registerInfo={this.props.registerInfo}
+                  getInfo={this.props.getInfo}
                   expands={true}
-                  defaultopen={false}
+                  defaultOpen={false}
                   key={index}
-                  headnode={false}
+                  headNode={false}
                 />);
       })
       this.setState({
@@ -103,7 +103,7 @@ class ListChild extends React.Component {
   }
 
   render() {
-    const { classes, id, name, changeid, registerinfo, getinfo, expands, headnode, bolded } = this.props;
+    const { classes, id, name, changeId, registerInfo, getInfo, expands, headNode, bolded } = this.props;
     if (expands) {
       this.checkForChildren();
       if (this.state.expanded) {
@@ -112,7 +112,7 @@ class ListChild extends React.Component {
     }
 
     return(
-      <div key={id} className={headnode ? "" : classes.branch}>
+      <div key={id} className={headNode ? "" : classes.branch}>
         {/* Expand button ▼ */}
         <div className={classes.arrowDiv}>
           {(expands && this.state.hasChildren) ?
@@ -131,7 +131,7 @@ class ListChild extends React.Component {
 
         {/* Listitem button */}
         <Button
-          onClick={() => changeid(id)}
+          onClick={() => changeId(id)}
           variant="text"
           simple={true}
           color="info"
@@ -143,11 +143,11 @@ class ListChild extends React.Component {
 
         {/* Button to open info page */}
         <Button
-          buttonRef={(node) => {registerinfo(id, node)}}
+          buttonRef={(node) => {registerInfo(id, node)}}
           color="info"
           justIcon={true}
           simple={true}
-          onClick={() => {getinfo(id)}}
+          onClick={() => {getInfo(id)}}
           className={classes.buttonLink + " " + classes.infoButton}
         >
           <Info color="primary" fontSize="18px"/>
