@@ -97,7 +97,11 @@ class Thesaurus extends React.Component {
 
   // Register a button reference that the info box can use to align itself to
   registerInfoButton = (id, node) => {
-    this.state.buttonRefs[id] = node;
+    // List items getting deleted will overwrite new browser button refs, so
+    // we must ignore deregistration events
+    if (node != null) {
+      this.state.buttonRefs[id] = node;
+    }
   }
 
   // Callback for queryInput to populate the suggestions bar
