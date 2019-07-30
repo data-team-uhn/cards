@@ -39,7 +39,7 @@
           <instructions>
             <Sling-Nodetypes>SLING-INF/nodetypes/vocabularies.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
-            <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/;ignoreImportProviders:="zip"</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
@@ -63,23 +63,31 @@
           </attach>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.13</version>
+        <configuration>
+          <excludes combine.children="append">
+            <exclude>**/SLING-INF/content/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
   <dependencies>
-
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
       <version>2.0</version>
     </dependency>
-        <!-- >
     <dependency>
       <groupId>javax.json</groupId>
       <artifactId>javax.json-api</artifactId>
       <version>1.1.4</version>
     </dependency>
-    <-->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -91,11 +99,10 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient-osgi</artifactId>
       <version>4.5.6</version>
-    </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-      <version>4.4.10</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
+      <version>1.6</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -103,9 +110,19 @@
       <version>3.9</version>
     </dependency>
     <dependency>
+     <groupId>org.apache.httpcomponents</groupId>
+     <artifactId>httpclient-osgi</artifactId>
+     <version>4.5.6</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
       <version>4.4.10</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>jackrabbit-jcr-commons</artifactId>
+      <version>2.19.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
@@ -116,6 +133,13 @@
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.servlets.annotations</artifactId>
       <version>1.2.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
