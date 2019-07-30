@@ -29,6 +29,7 @@ const browseStyle = theme => ({
     headbar: {
       backgroundColor: "#000000",
       color: "#FFFFFF",
+      padding: theme.spacing(0),
     },
     closeButton: {
       float: "right",
