@@ -117,7 +117,19 @@ class ListChild extends React.Component {
         <div className={classes.arrowDiv}>
           {(expands && this.state.hasChildren) ?
             <Button
-              onClick={() => {this.setState({expanded: !this.state.expanded})}}
+              onClick={() => {
+                // Prevent a race condition when rapidly opening/closing
+                // by loading children here, and stopping it from loading
+                // children again
+                if (!this.state.loadedChildren) {
+                  this.loadChildren();
+                }
+
+                this.setState({
+                  expanded: !this.state.expanded,
+                  loadedChildren: true,
+                });
+              }}
               variant="text"
               simple={true}
               color="info"
