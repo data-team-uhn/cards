@@ -62,8 +62,8 @@ class Thesaurus extends React.Component {
   }
 
   // callback for getInfo to populate info box
-  showInfo = (event, data) => {
-    if (event === null) {
+  showInfo = (status, data) => {
+    if (status === null) {
       // Use an empty array instead of null if this element has no synonyms
       var synonym = [];
       if ("synonym" in data)
@@ -85,7 +85,7 @@ class Thesaurus extends React.Component {
         termInfoVisible: true,
       });
     } else {
-      console.log("Error: term lookup failed with code " + event);
+      console.log("Error: term lookup failed with code " + status);
     }
   }
 
@@ -105,8 +105,8 @@ class Thesaurus extends React.Component {
   }
 
   // Callback for queryInput to populate the suggestions bar
-  showSuggestions = (event, data) => {
-    if (event === null) {
+  showSuggestions = (status, data) => {
+    if (status === null) {
         // Populate this.state.suggestions
         var suggestions = [];
 
@@ -141,7 +141,7 @@ class Thesaurus extends React.Component {
           suggestionsLoading: false,
         });
     } else {
-      console.log("Error: thesaurus lookup failed with code " + event);
+      console.log("Error: thesaurus lookup failed with code " + status);
     }
   }
 
@@ -172,13 +172,13 @@ class Thesaurus extends React.Component {
 
   // Lookup the search term after a short interval
   // This will reset the interval if called before the interval hangs up
-  delayLookup = (event) => {
+  delayLookup = (status) => {
     if (this.state.lookupTimer !== null) {
       clearTimeout(this.state.lookupTimer);
     }
 
     this.setState({
-      lookupTimer: setTimeout(this.queryInput, 500, event.target.value),
+      lookupTimer: setTimeout(this.queryInput, 500, status.target.value),
       suggestionsVisible: true,
       suggestions: [],
     })
@@ -197,7 +197,7 @@ class Thesaurus extends React.Component {
   };
 
   // Event handler for clicking away from the info window while it is open
-  closeInfo = event => {
+  closeInfo = (event) => {
     if (this.anchorEl.contains(event.target)) {
       return;
     }
@@ -205,7 +205,7 @@ class Thesaurus extends React.Component {
     this.setState({ termInfoVisible: false });
   };
 
-  openDialog = event => {
+  openDialog = () => {
     this.setState({
       browserOpened: true,
       browseID: this.state.infoID,
