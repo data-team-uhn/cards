@@ -20,7 +20,7 @@ import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core/styles";
-import { Dialog, Typography } from '@material-ui/core';
+import { Dialog, DialogContent, DialogTitle, Typography } from '@material-ui/core';
 // material-dashboard-react
 import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
 
@@ -117,7 +117,7 @@ class VocabularyBrowser extends React.Component {
         onClose={onClose}
         {...rest}
       >
-        <div className={classes.headbar}>
+        <DialogTitle className={classes.headbar}>
           <Typography inline className={classes.headbarText}>Related terms</Typography>
           <Button
             className={classes.closeButton}
@@ -128,15 +128,15 @@ class VocabularyBrowser extends React.Component {
           >
             x
           </Button>
-        </div>
-        <div className={classes.treeContainer}>
+        </DialogTitle>
+        <DialogContent className={classes.treeContainer}>
           <div className={classes.treeRoot}>
             {this.state.parentNode}
           </div>
           <div className={classes.treeNode}>
             {this.state.currentNode}
           </div>
-        </div>
+        </DialogContent>
       </Dialog>
     );
   }
