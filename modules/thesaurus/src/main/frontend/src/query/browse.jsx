@@ -34,7 +34,6 @@ class VocabularyBrowser extends React.Component {
     super(props);
 
     this.state = {
-      title: "Term browser",
       lastKnownTerm: "",
       parentNode: null,
       currentNode: null,
@@ -60,8 +59,8 @@ class VocabularyBrowser extends React.Component {
   }
 
   // Callback from an onload to generate the tree from a /suggest query about the parent
-  rebuildTree = (event, data) => {
-    if (event === null) {
+  rebuildTree = (status, data) => {
+    if (status === null) {
       // We have the node we're looking at, and its parent.
       var currentNodeData = data["rows"][0];
       var id = currentNodeData["id"];
@@ -80,7 +79,7 @@ class VocabularyBrowser extends React.Component {
         lastKnownTerm: id,
       })
     } else {
-      console.log("Error: initial term lookup failed with code " + event.ToString());
+      console.log("Error: initial term lookup failed with code " + status.ToString());
     }
   }
 

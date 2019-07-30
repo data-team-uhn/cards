@@ -44,8 +44,8 @@ class ListChild extends React.Component {
 
   // Callback for a /suggest call for children of this element
   // Update this.state.children with children elements
-  updateWithChildren = (event, data) => {
-    if (event === null) {
+  updateWithChildren = (status, data) => {
+    if (status === null) {
       var children = data["rows"].map((row, index) => {
         return (<BrowseListChild
                   id={row["id"]}
@@ -64,7 +64,7 @@ class ListChild extends React.Component {
         children: children,
       });
     } else {
-      console.log("Error: children lookup failed with code " + event.ToString());
+      console.log("Error: children lookup failed with code " + status.ToString());
     }
   }
 
@@ -81,14 +81,14 @@ class ListChild extends React.Component {
 
   // Callback from checkForChildren to update whether or not this node has children
   // This does not recreate the child elements
-  updateChildrenStatus = (event, data) => {
-    if (event === null) {
+  updateChildrenStatus = (status, data) => {
+    if (status === null) {
       this.setState({
         hasChildren: (data["rows"].length > 0),
         checkedForChildren: true,
       });
     } else {
-      console.log("Error: children lookup failed with code " + event.ToString());
+      console.log("Error: children lookup failed with code " + status.ToString());
     }
   }
 
