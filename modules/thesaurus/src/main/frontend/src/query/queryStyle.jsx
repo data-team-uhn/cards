@@ -144,6 +144,9 @@ const thesaurusStyle = theme => ({
     marginTop: -25,
     marginLeft: -25
   },
+  errorSnack: {
+    backgroundColor: theme.palette.error.dark,
+  },
   searchWrapper: {
     margin: theme.spacing(1),
     position: 'relative',

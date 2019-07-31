@@ -54,6 +54,7 @@ class VocabularyBrowser extends React.Component {
         key={id}
         headNode={!ischildnode}
         bolded={bolded}
+        onError={this.props.onError}
       />
     );
   }
@@ -79,7 +80,7 @@ class VocabularyBrowser extends React.Component {
         lastKnownTerm: id,
       })
     } else {
-      console.log("Error: initial term lookup failed with code " + status.ToString());
+      this.props.onError("Error: initial term lookup failed with code " + status);
     }
   }
 
@@ -106,7 +107,7 @@ class VocabularyBrowser extends React.Component {
   }
 
   render() {
-    const { classes, term, changeId, registerInfo, getInfo, onClose, ...rest } = this.props;
+    const { classes, term, changeId, registerInfo, getInfo, onClose, onError, ...rest } = this.props;
     const fullscreen = false;
     this.rebuildBrowser(term);
 
