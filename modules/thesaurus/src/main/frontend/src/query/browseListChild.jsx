@@ -44,61 +44,6 @@ class ListChild extends React.Component {
     };
   }
 
-  // Update this.state.children with children elements
-  loadChildren = (data) => {
-    // Prevent ourselves from loading children if we've already loaded children
-    if (this.state.loadedChildren || !this.state.hasChildren) {
-      return;
-    }
-
-    var children = data.map((row, index) => {
-      return (<BrowseListChild
-                id={row["id"]}
-                name={row["name"]}
-                changeId={this.props.changeId}
-                registerInfo={this.props.registerInfo}
-                getInfo={this.props.getInfo}
-                expands={true}
-                defaultOpen={false}
-                key={index}
-                headNode={false}
-                onError={this.props.onError}
-              />);
-    });
-    this.setState({
-      loadedChildren: true,
-      children: children,
-    });
-  }
-
-  // Callback from checkForChildren to update whether or not this node has children
-  // This does not recreate the child elements
-  updateChildrenStatus = (status, data) => {
-    if (status === null) {
-      this.setState({
-        hasChildren: (data["rows"].length > 0),
-        childrenData: (data["rows"]),
-        checkedForChildren: true,
-        currentlyLoading: false,
-      });
-      if (this.state.expanded && !this.state.loadedChildren) {
-        this.loadChildren(data["rows"]);
-      }
-    } else {
-      this.props.onError("Error: children lookup failed with code " + status);
-    }
-  }
-
-  checkForChildren = () => {
-    // Prevent ourselves for checking for children if we've already checked for children
-    if (this.state.checkedForChildren) {
-      return;
-    }
-
-    // Determine if this node has children
-    MakeChildrenFindingRequest(this.props.id, this.updateChildrenStatus);
-  }
-
   render() {
     const { classes, id, name, changeId, registerInfo, getInfo, expands, headNode, bolded, onError } = this.props;
     if (expands) {
@@ -168,6 +113,61 @@ class ListChild extends React.Component {
         <div className={classes.childDiv + ((expands && this.state.expanded) ? " " : (" " + classes.hiddenDiv)) }> {this.state.children} </div>
       </div>
     );
+  }
+
+  checkForChildren = () => {
+    // Prevent ourselves for checking for children if we've already checked for children
+    if (this.state.checkedForChildren) {
+      return;
+    }
+
+    // Determine if this node has children
+    MakeChildrenFindingRequest(this.props.id, this.updateChildrenStatus);
+  }
+
+  // Callback from checkForChildren to update whether or not this node has children
+  // This does not recreate the child elements
+  updateChildrenStatus = (status, data) => {
+    if (status === null) {
+      this.setState({
+        hasChildren: (data["rows"].length > 0),
+        childrenData: (data["rows"]),
+        checkedForChildren: true,
+        currentlyLoading: false,
+      });
+      if (this.state.expanded && !this.state.loadedChildren) {
+        this.loadChildren(data["rows"]);
+      }
+    } else {
+      this.props.onError("Error: children lookup failed with code " + status);
+    }
+  }
+
+  // Update this.state.children with children elements
+  loadChildren = (data) => {
+    // Prevent ourselves from loading children if we've already loaded children
+    if (this.state.loadedChildren || !this.state.hasChildren) {
+      return;
+    }
+
+    var children = data.map((row, index) => {
+      return (<BrowseListChild
+                id={row["id"]}
+                name={row["name"]}
+                changeId={this.props.changeId}
+                registerInfo={this.props.registerInfo}
+                getInfo={this.props.getInfo}
+                expands={true}
+                defaultOpen={false}
+                key={index}
+                headNode={false}
+                onError={this.props.onError}
+              />);
+    });
+    this.setState({
+      loadedChildren: true,
+      children: children,
+    });
   }
 }
 

@@ -27,7 +27,7 @@ import Button from "material-dashboard-react/dist/components/CustomButtons/Butto
 import BrowseListChild from "./browseListChild.jsx";
 import BrowseTheme from "./browseStyle.jsx";
 
-import { REST_URL, MakeRequest, MakeChildrenFindingRequest } from "./util.jsx";
+import { REST_URL, MakeRequest } from "./util.jsx";
 
 class VocabularyBrowser extends React.Component {
   constructor(props) {
@@ -38,72 +38,6 @@ class VocabularyBrowser extends React.Component {
       parentNode: null,
       currentNode: null,
     };
-  }
-
-  // Construct a branch element for rendering
-  constructBranch = (id, name, ischildnode, defaultexpanded, bolded) => {
-    return(
-      <BrowseListChild
-        id={id}
-        name={name}
-        changeId={this.props.changeId}
-        registerInfo={this.props.registerInfo}
-        getInfo={this.props.getInfo}
-        expands={ischildnode}
-        defaultOpen={defaultexpanded}
-        key={id}
-        headNode={!ischildnode}
-        bolded={bolded}
-        onError={this.props.onError}
-      />
-    );
-  }
-
-  // Callback from an onload to generate the tree from a /suggest query about the parent
-  rebuildTree = (status, data) => {
-    if (status === null) {
-      // We have the node we're looking at, and its parent.
-      var currentNodeData = data["rows"][0];
-      var id = currentNodeData["id"];
-
-      // Construct parent elements, if they exist
-      var parentBranches = null;
-      if (currentNodeData["parents"] !== undefined) {
-        parentBranches = currentNodeData["parents"].map((row, index) => {
-          return this.constructBranch(row["id"], row["name"], false, false, false);
-        });
-      }
-
-      this.setState({
-        parentNode: parentBranches,
-        currentNode: this.constructBranch(id, currentNodeData["name"], true, true, true),
-        lastKnownTerm: id,
-      })
-    } else {
-      this.props.onError("Error: initial term lookup failed with code " + status);
-    }
-  }
-
-  // Rebuild the browser tree centered around the given term.
-  rebuildBrowser = (id) => {
-    // Do not re-grab suggestions for the same term
-    if (id === this.state.lastKnownTerm) {
-      return;
-    }
-
-    // If the search is empty, remove every component
-    if (id === "" || id === null) {
-      this.setState({
-        parentNode: null,
-        currentNode: null,
-        lastKnownTerm: id,
-      })
-      return;
-    }
-
-    // Create the XHR request
-    var URL = REST_URL + `/hpo/suggest?sort=nameSort%20asc&maxResults=1&input=${id}`;
-    MakeRequest(URL, this.rebuildTree);
   }
 
   render() {
@@ -140,6 +74,72 @@ class VocabularyBrowser extends React.Component {
           </div>
         </DialogContent>
       </Dialog>
+    );
+  }
+
+  // Rebuild the browser tree centered around the given term.
+  rebuildBrowser = (id) => {
+    // Do not re-grab suggestions for the same term
+    if (id === this.state.lastKnownTerm) {
+      return;
+    }
+
+    // If the search is empty, remove every component
+    if (id === "" || id === null) {
+      this.setState({
+        parentNode: null,
+        currentNode: null,
+        lastKnownTerm: id,
+      })
+      return;
+    }
+
+    // Create the XHR request
+    var URL = REST_URL + `/hpo/suggest?sort=nameSort%20asc&maxResults=1&input=${id}`;
+    MakeRequest(URL, this.rebuildTree);
+  }
+
+  // Callback from an onload to generate the tree from a /suggest query about the parent
+  rebuildTree = (status, data) => {
+    if (status === null) {
+      // We have the node we're looking at, and its parent.
+      var currentNodeData = data["rows"][0];
+      var id = currentNodeData["id"];
+
+      // Construct parent elements, if they exist
+      var parentBranches = null;
+      if (currentNodeData["parents"] !== undefined) {
+        parentBranches = currentNodeData["parents"].map((row, index) => {
+          return this.constructBranch(row["id"], row["name"], false, false, false);
+        });
+      }
+
+      this.setState({
+        parentNode: parentBranches,
+        currentNode: this.constructBranch(id, currentNodeData["name"], true, true, true),
+        lastKnownTerm: id,
+      })
+    } else {
+      this.props.onError("Error: initial term lookup failed with code " + status);
+    }
+  }
+
+  // Construct a branch element for rendering
+  constructBranch = (id, name, ischildnode, defaultexpanded, bolded) => {
+    return(
+      <BrowseListChild
+        id={id}
+        name={name}
+        changeId={this.props.changeId}
+        registerInfo={this.props.registerInfo}
+        getInfo={this.props.getInfo}
+        expands={ischildnode}
+        defaultOpen={defaultexpanded}
+        key={id}
+        headNode={!ischildnode}
+        bolded={bolded}
+        onError={this.props.onError}
+      />
     );
   }
 }
