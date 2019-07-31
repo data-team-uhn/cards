@@ -62,6 +62,7 @@ class ListChild extends React.Component {
                 defaultOpen={false}
                 key={index}
                 headNode={false}
+                onError={this.props.onError}
               />);
     });
     this.setState({
@@ -84,7 +85,7 @@ class ListChild extends React.Component {
         this.loadChildren(data["rows"]);
       }
     } else {
-      console.log("Error: children lookup failed with code " + status.ToString());
+      this.props.onError("Error: children lookup failed with code " + status);
     }
   }
 
@@ -99,7 +100,7 @@ class ListChild extends React.Component {
   }
 
   render() {
-    const { classes, id, name, changeId, registerInfo, getInfo, expands, headNode, bolded } = this.props;
+    const { classes, id, name, changeId, registerInfo, getInfo, expands, headNode, bolded, onError } = this.props;
     if (expands) {
       this.checkForChildren();
     }
