@@ -20,7 +20,7 @@ import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core/styles";
-import { Typography } from '@material-ui/core';
+import { CircularProgress, Typography } from '@material-ui/core';
 // material-dashboard-react
 import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
 // @material-ui/icons
@@ -34,49 +34,40 @@ class ListChild extends React.Component {
     super(props);
 
     this.state = {
+      currentlyLoading: true,
       loadedChildren: false,
       checkedForChildren: false,
       hasChildren: false,
+      childrenData: null,
       children: [],
       expanded: props.defaultOpen,
     };
   }
 
-  // Callback for a /suggest call for children of this element
   // Update this.state.children with children elements
-  updateWithChildren = (status, data) => {
-    if (status === null) {
-      var children = data["rows"].map((row, index) => {
-        return (<BrowseListChild
-                  id={row["id"]}
-                  name={row["name"]}
-                  changeId={this.props.changeId}
-                  registerInfo={this.props.registerInfo}
-                  getInfo={this.props.getInfo}
-                  expands={true}
-                  defaultOpen={false}
-                  key={index}
-                  headNode={false}
-                />);
-      })
-      this.setState({
-        loadedChildren: true,
-        children: children,
-      });
-    } else {
-      console.log("Error: children lookup failed with code " + status.ToString());
-    }
-  }
-
-  // Send a query to load the children of this node
-  loadChildren = () => {
+  loadChildren = (data) => {
     // Prevent ourselves from loading children if we've already loaded children
     if (this.state.loadedChildren || !this.state.hasChildren) {
       return;
     }
 
-    // Determine the children of this node
-    MakeChildrenFindingRequest(this.props.id, this.updateWithChildren);
+    var children = data.map((row, index) => {
+      return (<BrowseListChild
+                id={row["id"]}
+                name={row["name"]}
+                changeId={this.props.changeId}
+                registerInfo={this.props.registerInfo}
+                getInfo={this.props.getInfo}
+                expands={true}
+                defaultOpen={false}
+                key={index}
+                headNode={false}
+              />);
+    });
+    this.setState({
+      loadedChildren: true,
+      children: children,
+    });
   }
 
   // Callback from checkForChildren to update whether or not this node has children
@@ -85,8 +76,13 @@ class ListChild extends React.Component {
     if (status === null) {
       this.setState({
         hasChildren: (data["rows"].length > 0),
+        childrenData: (data["rows"]),
         checkedForChildren: true,
+        currentlyLoading: false,
       });
+      if (this.state.expanded && !this.state.loadedChildren) {
+        this.loadChildren(data["rows"]);
+      }
     } else {
       console.log("Error: children lookup failed with code " + status.ToString());
     }
@@ -106,9 +102,6 @@ class ListChild extends React.Component {
     const { classes, id, name, changeId, registerInfo, getInfo, expands, headNode, bolded } = this.props;
     if (expands) {
       this.checkForChildren();
-      if (this.state.expanded) {
-        this.loadChildren();
-      }
     }
 
     return(
@@ -122,7 +115,7 @@ class ListChild extends React.Component {
                 // by loading children here, and stopping it from loading
                 // children again
                 if (!this.state.loadedChildren) {
-                  this.loadChildren();
+                  this.loadChildren(this.state.childrenData);
                 }
 
                 this.setState({
@@ -137,6 +130,10 @@ class ListChild extends React.Component {
               >
               {this.state.expanded ? "▼" : "▶"}
             </Button>
+            : ""
+          }
+          {(expands && this.state.currentlyLoading) ?
+            <CircularProgress size={10} />
             : ""
           }
         </div>
