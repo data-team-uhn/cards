@@ -115,6 +115,7 @@ class VocabularyBrowser extends React.Component {
         fullscreen={fullscreen.toString()}
         className={classes.dialog}
         onClose={onClose}
+        classes={{paper: classes.dialogPaper}}
         {...rest}
       >
         <DialogTitle className={classes.headbar}>
