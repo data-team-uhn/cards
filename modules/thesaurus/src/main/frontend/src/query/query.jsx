@@ -21,7 +21,7 @@ import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core/styles";
-import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, CircularProgress, Popper, Typography } from "@material-ui/core"
+import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, CircularProgress, Popper, Snackbar, SnackbarContent, Typography } from "@material-ui/core"
 // material-dashboard-
 import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
 import Card from "material-dashboard-react/dist/components/Card/Card.js";
@@ -85,7 +85,7 @@ class Thesaurus extends React.Component {
         termInfoVisible: true,
       });
     } else {
-      console.log("Error: term lookup failed with code " + status);
+      this.logError("Error: term lookup failed with code " + status);
     }
   }
 
@@ -141,7 +141,7 @@ class Thesaurus extends React.Component {
           suggestionsLoading: false,
         });
     } else {
-      console.log("Error: thesaurus lookup failed with code " + status);
+      this.logError("Error: Thesaurus lookup failed with code " + status);
     }
   }
 
@@ -229,6 +229,13 @@ class Thesaurus extends React.Component {
   changeBrowseID = (id) => {
     this.setState({
       browseID: id,
+    })
+  }
+
+  logError = (message) => {
+    this.setState({
+      snackbarVisible: true,
+      snackbarMessage: message,
     })
   }
 
@@ -392,9 +399,27 @@ class Thesaurus extends React.Component {
           term={this.state.browseID}
           changeId={this.changeBrowseID}
           onClose={this.closeDialog}
+          onError={this.logError}
           registerInfo={this.registerInfoButton}
           getInfo={this.getInfo}
           />
+        { /* Error snackbar */}
+        <Snackbar
+          open={this.state.snackbarVisible}
+          onClose={() => {this.setState({snackbarVisible: false});}}
+          autoHideDuration={6000}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          variant="error"
+          >
+            <SnackbarContent
+              className={classes.errorSnack}
+              variant="error"
+              message={this.state.snackbarMessage}
+            />
+          </Snackbar>
       </div>
     );
   }
