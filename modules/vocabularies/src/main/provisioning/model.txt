@@ -30,6 +30,8 @@
 
     set ACL for everyone
         allow   jcr:read    on /Vocabularies
+        allow   jcr:read    on /testcase.txt
+        allow   jcr:read    on /testcase.zip
     end
 
 [artifacts]
