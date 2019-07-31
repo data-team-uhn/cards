@@ -25,6 +25,10 @@ const browseStyle = theme => ({
       // The dialogue appears in the wrong location without the following
       padding: theme.spacing(1),
     },
+    dialogPaper: {
+      top: "0px",
+      position: "absolute",
+    },
     // Top part of the dialog
     headbar: {
       backgroundColor: "#000000",
