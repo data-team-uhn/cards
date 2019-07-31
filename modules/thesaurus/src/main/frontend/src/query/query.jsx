@@ -350,6 +350,7 @@ class Thesaurus extends React.Component {
                       >
                         x
                       </Button>
+                      <br />
                       <Typography inline className={classes.infoIDTypography}>{this.state.infoID} </Typography>
                       <Typography inline className={classes.infoName}>{this.state.infoName}</Typography> <br />
                       <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography> <br />
