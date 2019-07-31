@@ -162,7 +162,7 @@ class ListChild extends React.Component {
           onClick={() => {getInfo(id)}}
           className={classes.buttonLink + " " + classes.infoButton}
         >
-          <Info color="primary" fontSize="18px"/>
+          <Info color="primary" fontSize="small" className={classes.infoButton}/>
         </Button>
         <br />
 

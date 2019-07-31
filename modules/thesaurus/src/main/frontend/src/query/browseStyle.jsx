@@ -40,6 +40,7 @@ const browseStyle = theme => ({
       height: "100%",
       padding: "0px",
       fontSize: "10px",
+      color: "#00ACC1",
     },
     headbarText: {
       display: "inline",
@@ -49,7 +50,7 @@ const browseStyle = theme => ({
     },
     // Info box components
     infoDataSource: {
-      color: "#0089DC",
+      color: "#00ACC1",
     },
     infoName: {
       color: "#000000",
@@ -57,6 +58,7 @@ const browseStyle = theme => ({
     },
     infoButton: {
       width: "20px",
+      color: "#00ACC1",
     },
     treeContainer: {
       padding: theme.spacing(2),
@@ -89,6 +91,7 @@ const browseStyle = theme => ({
       margin: "0px",
       padding: "0px",
       textTransform: "none",
+      color: "#00ACC1",
     },
     childDiv: {
       marginLeft: "22px",
