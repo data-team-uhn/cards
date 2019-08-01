@@ -65,9 +65,22 @@ var sidebarRoutes = [
     },
 ];
 
+const ASSET_PREFIX="asset:";
+// Parse out asset URLs
+var parseAssetURL = function(url) {
+  if (!url.startsWith(ASSET_PREFIX)) {
+    return url;
+  }
+
+  var asset_id = url.slice(ASSET_PREFIX.length);
+  var assets = window.Sling.getContent("/libs/lfs/resources/assets.json", 1, "");
+  return "/libs/lfs/resources/" + assets[asset_id];
+}
+
 var loadRemoteIcon = function(uixDatum) {
   return new Promise(function(resolve, reject) {
     var request = new XMLHttpRequest();
+    var url = parseAssetURL(uixDatum.iconUrl);
 
     request.onload = function() {
       if(request.status >= 200 && request.status < 400) {
@@ -80,7 +93,7 @@ var loadRemoteIcon = function(uixDatum) {
       }
     };
 
-    request.open('GET', uixDatum.iconUrl);
+    request.open('GET', url);
     request.send();
   });
 }
@@ -98,6 +111,7 @@ var loadRemoteIcons = function(uixData) {
 var loadRemoteComponent = function(component) {
   return new Promise(function(resolve, reject) {
     var request = new XMLHttpRequest();
+    var url = parseAssetURL(component['lfs:extensionRenderURL']);
 
     request.onload = function() {
       if(request.status >= 200 && request.status < 400) {
@@ -114,7 +128,7 @@ var loadRemoteComponent = function(component) {
       }
     };
 
-    request.open('GET', component['lfs:extensionRenderURL']);
+    request.open('GET', url);
     request.send();
   });
 };
