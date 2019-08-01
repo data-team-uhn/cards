@@ -182,7 +182,7 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         String source;
         HttpGet httpget;
         if (test != null && "true".equalsIgnoreCase(test)) {
-            source = "http://localhost:8080/testcase.zip";
+            source = "http://localhost:8080/tests/flat_NCIT_type_testcase.zip";
         } else {
             source = "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".FLAT.zip";
         }
