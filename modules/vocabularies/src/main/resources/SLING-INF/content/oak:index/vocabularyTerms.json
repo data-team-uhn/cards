@@ -1,0 +1,61 @@
+{
+    "jcr:primaryType": "oak:QueryIndexDefinition",
+    "type": "lucene",
+    "compatVersion": 2,
+    "async": "async",
+    "evaluatePathRestrictions": true,
+    "includedPaths": "/Vocabularies",
+    "indexRules" : {
+        "lfs:VocabularyTerm" : {
+            "properties": {
+                "identifier": {
+                    "analyzed": true,
+                    "boost": 100,
+                    "nodeScopeIndex":true,
+                    "useInExcerpt": true,
+                    "ordered": true,
+                    "propertyIndex": true
+                },
+                "label": {
+                    "analyzed": true,
+                    "boost": 500,
+                    "nodeScopeIndex": true,
+                    "useInExcerpt": true,
+                    "ordered": true,
+                    "propertyIndex": true
+                },
+                "synonyms": {
+                    "analyzed": true,
+                    "boost": 30,
+                    "nodeScopeIndex": true,
+                    "useInExcerpt": true
+                },
+                "description": {
+                    "analyzed": true,
+                    "boost": 10,
+                    "nodeScopeIndex": true,
+                    "useInExcerpt": true
+                },
+                "parents": {
+                    "analyzed": false,
+                    "propertyIndex": true,
+                    "nodeScopeIndex": false,
+                    "useInExcerpt": false
+                },
+                "ancestors": {
+                    "analyzed": false,
+                    "propertyIndex": true,
+                    "nodeScopeIndex": false,
+                    "useInExcerpt": false
+                },
+                "others": {
+                    "name": "^[^\/]*$",
+                    "isRegexp": true,
+                    "analyzed": true,
+                    "nodeScopeIndex": true,
+                    "useInExcerpt": false
+                }
+            }
+        }
+    }
+}

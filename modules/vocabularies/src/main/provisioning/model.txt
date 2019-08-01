@@ -27,11 +27,11 @@
 [:repoinit]
     # Vocabularies Homepage
     create path (lfs:VocabulariesHomepage) /Vocabularies
+    create path (sling:Folder)             /tests
 
     set ACL for everyone
         allow   jcr:read    on /Vocabularies
-        allow   jcr:read    on /testcase.txt
-        allow   jcr:read    on /testcase.zip
+        allow   jcr:read    on /tests
     end
 
 [artifacts]
