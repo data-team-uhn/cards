@@ -21,7 +21,8 @@ import PropTypes from "prop-types";
 
 import  {withStyles} from "@material-ui/core/styles";
 
-import {Button, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Checkbox, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core";
+import {Button, IconButton, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Checkbox, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core";
+import {Search} from "@material-ui/icons";
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
@@ -118,21 +119,12 @@ class GroupsManager extends React.Component {
   }
 
   handleGroupRowClick(index, name) {
-    if (index === this.state.currentGroupIndex) {
-      this.setState(
-        {
-          currentGroupName: "",
-          currentGroupIndex: -1
-        }
-      );
-    } else {
-      this.setState(
-        {
-          currentGroupName: name,
-          currentGroupIndex: index
-        }
-      );
-    }
+    this.setState(
+      {
+        currentGroupName: name,
+        currentGroupIndex: index
+      }
+    );
   }
 
   handleMobileGroupRowClick (index, name) {
@@ -238,6 +230,11 @@ class GroupsManager extends React.Component {
                     label="Search Group"
                     onChange={(event) => {this.setState({groupFilter: event.target.value});}}
                   />
+                  <IconButton
+                    type="submit"
+                  >
+                    <Search/>
+                  </IconButton>
                 </form>
                 <Hidden smDown implementation="css">
                   <Table>
@@ -265,9 +262,6 @@ class GroupsManager extends React.Component {
                             selected={index === this.state.currentGroupIndex ? true : false}
                           >
                             <TableCell>
-                                <Checkbox
-                                  checked = {index === this.state.currentGroupIndex ? true : false}
-                                />
                               {row.name}
                             </TableCell>
                           </TableRow>

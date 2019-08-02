@@ -58,7 +58,7 @@ class DeleteGroupDialogue extends React.Component {
           </DialogContent>
                 <DialogActions>
                     <Button onClick={() => this.handleDeleteGroup(this.props.name)}>Delete</Button>
-                    <Button onClick={() => this.props.handleClose()}>Close</Button>
+                    <Button onClick={() => this.props.handleClose()}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         );

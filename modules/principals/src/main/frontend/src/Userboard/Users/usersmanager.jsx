@@ -21,8 +21,8 @@ import PropTypes from "prop-types";
 
 import  {withStyles} from "@material-ui/core/styles";
 
-import {Button, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Checkbox, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core";
-
+import {Button, IconButton, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core";
+import {Search} from "@material-ui/icons";
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
@@ -118,21 +118,12 @@ class UsersManager extends React.Component {
   }
 
   handleUserRowClick(index, name) {
-    if (index === this.state.currentUserIndex) {
-      this.setState(
-        {
-          currentUserName: "",
-          currentUserIndex: -1
-        }
-      );
-    } else {
-      this.setState(
-        {
-          currentUserName: name,
-          currentUserIndex: index
-        }
-      );
-    }
+    this.setState(
+      {
+        currentUserName: name,
+        currentUserIndex: index
+      }
+    );
   }
 
   handleMobileUserRowClick (index,name) {
@@ -229,15 +220,14 @@ class UsersManager extends React.Component {
                 </div>
               }
                 <GridContainer>
-                  <Button onClick={() => {this.setState({deployDeleteUser: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Delete User</Button>
-                  <Button onClick={() => {this.setState({deployChangeUserPassword: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Change Password</Button>
-                  <Button onClick={() => {this.setState({deployMobileUserDialog: false});}}>Close</Button>
+                  <Button variant="contained" onClick={() => {this.setState({deployDeleteUser: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Delete User</Button>
+                  <Button variant="contained" onClick={() => {this.setState({deployChangeUserPassword: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Change Password</Button>
+                  <Button variant="contained" onClick={() => {this.setState({deployMobileUserDialog: false});}}>Close</Button>
                 </GridContainer>
               </CardBody>
             </Card>
           </Dialog>
         </Hidden>
-
 
         <GridContainer>
           <GridItem xs={12} sm={12} md={6}>
@@ -246,7 +236,7 @@ class UsersManager extends React.Component {
                 <h4 className={classes.cardTitleWhite}>Users</h4>
               </CardHeader>
               <CardBody>
-                <Button onClick={() => {this.setState({deployCreateUser: true});}}>Create New User</Button>
+                <Button  variant="contained" onClick={() => {this.setState({deployCreateUser: true});}}>Create New User</Button>
                 <form
                   onSubmit={(event) => { event.preventDefault(); this.handleLoadUsers(this.state.userFilter, 0, this.state.userPaginationLimit); this.setState({userPageNumber: 0});}}
                 >
@@ -256,6 +246,11 @@ class UsersManager extends React.Component {
                     label="Search User"
                     onChange={(event) => {this.setState({userFilter: event.target.value});}}
                   />
+                  <IconButton
+                    type="submit"
+                  >
+                    <Search/>
+                  </IconButton>
                 </form>
                 <Hidden smDown implementation="css">
                   <Table>
@@ -283,9 +278,6 @@ class UsersManager extends React.Component {
                             selected={index === this.state.currentUserIndex ? true:false}
                           >
                             <TableCell>
-                                <Checkbox
-                                  checked = {index === this.state.currentUserIndex ? true:false}
-                                />
                               {row.name}
                             </TableCell>
                           </TableRow>
@@ -428,8 +420,8 @@ class UsersManager extends React.Component {
                   </div>
                 }
                   <GridContainer>
-                    <Button onClick={() => {this.setState({deployDeleteUser: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Delete User</Button>
-                    <Button onClick={() => {this.setState({deployChangeUserPassword: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Change Password</Button>
+                    <Button variant="contained" onClick={() => {this.setState({deployDeleteUser: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Delete User</Button>
+                    <Button variant="contained" onClick={() => {this.setState({deployChangeUserPassword: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Change Password</Button>
                   </GridContainer>
                 </CardBody>
               </Card>
