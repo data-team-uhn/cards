@@ -20,15 +20,19 @@ package ca.sickkids.ccm.lfs.vocabularies;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Iterator;
 
 import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
-import org.apache.solr.client.solrj.SolrQuery;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
@@ -52,9 +56,17 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
     @Reference
     private LogService logger;
 
+    /** The Resource Resolver for the current request. */
+    private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
+
+    /** The output writer for this request. */
+    private final ThreadLocal<Writer> writer = new ThreadLocal<>();
+
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
+        final ResourceResolver resourceResolver = request.getResourceResolver();
+        this.resolver.set(resourceResolver);
         String suggest = request.getParameter("suggest");
         String query = request.getParameter("query");
 
@@ -69,28 +81,41 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
         }
     }
 
-    private void handleFullTextMatch(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    private void handleFullTextMatch(String suggest, final SlingHttpServletResponse response)
+        throws IOException
     {
-        String suggest = request.getParameter("suggest");
+        final String oakQuery =
+            String.format("select n from [lfs:VocabularyTerm] where contains(*, '%s')",
+                suggest.replace("'", "''"));
+        Iterator<Resource> results = this.resolver.get().findResources(oakQuery, "JCR-SQL2");
 
-        // Grab the suggestions
-        SolrQuery query = new SolrQuery(suggest);
-        this.logger.log(1, "Full text match test");
+        writeResults(response.getWriter(), results);
     }
 
     private void handleLuceneQuery(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
         throws IOException
     {
-        String query = request.getParameter("query");
+        final String oakQuery =
+            String.format("select n from [lfs:VocabularyTerm] where native('lucene', '%s')",
+                query.replace("'", "''"));
+        Iterator<Resource> results = this.resolver.get().findResources(oakQuery, "JCR-SQL2");
 
-        // Grab the query
-        SolrQuery solrQuery = new SolrQuery(query);
-        String solrResponse = solrQuery.getQuery();
-        this.logger.log(1, "Lucene query test");
-        this.logger.log(1, solrResponse);
+        writeResults(response.getWriter(), results);
+    }
 
-        Writer out = response.getWriter();
-        out.write(solrResponse);
+    private void writeResults(Writer out, Iterator<Resource> results)
+        throws IOException
+    {
+        JsonGenerator generator = Json.createGenerator(out);
+        generator.writeStartArray();
+
+        // Turn the suggestions into a writable Json
+        while (results.hasNext()) {
+            Resource suggestion = results.next();
+            generator.write(suggestion.adaptTo(JsonObject.class));
+        }
+
+        generator.writeEnd().flush();
         out.close();
     }
 }
