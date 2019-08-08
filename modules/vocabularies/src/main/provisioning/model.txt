@@ -32,6 +32,5 @@
     org.apache.sling/org.apache.sling.scripting.sightly/1.1.2-1.4.0
     org.apache.sling/org.apache.sling.scripting.sightly.runtime/1.1.0-1.4.0
     org.apache.sling/org.apache.sling.api/2.18.4
-    org.apache.solr/solr-solrj/8.2.0
     javax.json/javax.json-api/1.1.4
     javax.servlet/javax.servlet-api/3.1.0

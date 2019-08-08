@@ -99,11 +99,5 @@
       <version>6.0.0</version>
       <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.apache.solr</groupId>
-      <artifactId>solr-solrj</artifactId>
-      <version>8.2.0</version>
-    </dependency>
   </dependencies>
 </project>
