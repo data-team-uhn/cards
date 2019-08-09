@@ -198,7 +198,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
      */
     private void parseRow(CSVRecord row, boolean patch) throws PersistenceException
     {
-        final Resource form = getForm(row, patch);
+        final Resource form = getOrCreateForm(row, patch);
         row.toMap().forEach((fieldName, fieldValue) -> {
             try {
                 parseAnswer(fieldName, fieldValue, form);
@@ -232,7 +232,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
             return;
         }
 
-        Resource answer = findAnswer(form, question);
+        Resource answer = getOrCreateAnswer(form, question);
         answer.adaptTo(Node.class).setProperty("value", parseAnswerValue(fieldValue, question));
     }
 
@@ -276,7 +276,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @throws RepositoryException if accessing the resource fails due to repository errors
      * @throws PersistenceException if creating a new resource fails due to repository errors
      */
-    private Resource findAnswer(final Resource form, final Node question)
+    private Resource getOrCreateAnswer(final Resource form, final Node question)
         throws RepositoryException, PersistenceException
     {
         final String query =
@@ -404,9 +404,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @return the Resource to use for storing the row
      * @throws PersistenceException if creating a new Resource fails
      */
-    private Resource getForm(final CSVRecord row, boolean patch) throws PersistenceException
+    private Resource getOrCreateForm(final CSVRecord row, boolean patch) throws PersistenceException
     {
-        final Node subject = getSubject(row).adaptTo(Node.class);
+        final Node subject = getOrCreateSubject(row).adaptTo(Node.class);
         Resource result = null;
         if (patch && subject != null) {
             result = findForm(subject);
@@ -457,7 +457,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @return the Resource where the Subject is stored; may be an existing or a newly created resource; may be
      *         {@code null} if a Subject identifier is not present in the row
      */
-    private Resource getSubject(final CSVRecord row)
+    private Resource getOrCreateSubject(final CSVRecord row)
     {
         final String subjectId = findSubjectId(row);
         if (StringUtils.isBlank(subjectId)) {
