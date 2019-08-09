@@ -1,0 +1,17 @@
+{
+    "jcr:primaryType": "lfs:Vocabulary",
+    "identifier": "test",
+    "name": "test",
+    "source": "test",
+    "version": "test",
+    "asdf": {
+        "jcr:primaryType": "lfs:VocabularyTerm",
+        "identifier": "asdftest",
+        "label": "asdftest"
+    },
+    "zxcv": {
+        "jcr:primaryType": "lfs:VocabularyTerm",
+        "identifier": "zxcvtest",
+        "label": "zxcvtest a b c"
+    }
+}

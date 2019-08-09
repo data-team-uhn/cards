@@ -39,6 +39,8 @@
         <configuration>
           <instructions>
             <Sling-Nodetypes>SLING-INF/nodetypes/vocabularies.cnd</Sling-Nodetypes>
+            <!-- Initial content to be loaded on bundle installation -->
+            <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
