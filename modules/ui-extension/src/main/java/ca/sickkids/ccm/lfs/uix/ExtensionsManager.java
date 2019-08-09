@@ -142,8 +142,8 @@ public class ExtensionsManager implements Use
     {
         return this.matchingExtensions.stream()
             .filter(i -> {
-                Boolean b = i.getValueMap().get("lfs:defaultEnabled", Boolean.class);
-                return b == null ? true : b.booleanValue();
+                Boolean b = i.getValueMap().get("lfs:defaultDisabled", Boolean.class);
+                return b == null ? true : !b.booleanValue();
             })
             .collect(Collectors.toList());
     }
