@@ -18,7 +18,7 @@
 #
 
 # The LFS homepage
-[feature name=lfs-uix]
+[feature name=lfs-uiextension]
 
 [artifacts]
     org.apache.commons/commons-lang3/3.8.1
