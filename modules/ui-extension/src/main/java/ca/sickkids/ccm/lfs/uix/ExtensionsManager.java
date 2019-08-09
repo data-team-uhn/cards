@@ -82,10 +82,9 @@ public class ExtensionsManager implements Use
     }
 
     /**
-     * Finds content matching the given query.
+     * Finds all the extensions for the given extension point and collects them in {@link #matchingExtensions}.
      *
-     * @param extensionPointId a JCR_SQL2 query
-     * @return the content matching the query
+     * @param extensionPointId the identifier of an extension point
      */
     private void findExtensions(final String extensionPointId) throws RepositoryException
     {
