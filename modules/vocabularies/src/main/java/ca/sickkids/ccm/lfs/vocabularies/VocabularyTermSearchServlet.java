@@ -38,7 +38,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 
 /**
- * A servlet that queries and performs full text match on vocabulary terms.
+ * A servlet that performs full text match and lucene queries on vocabulary terms.
  *
  * @version $Id %I%$
  */
@@ -56,24 +56,16 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
     @Reference
     private LogService logger;
 
-    /** The Resource Resolver for the current request. */
-    private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
-
-    /** The output writer for this request. */
-    private final ThreadLocal<Writer> writer = new ThreadLocal<>();
-
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
-        final ResourceResolver resourceResolver = request.getResourceResolver();
-        this.resolver.set(resourceResolver);
         String suggest = request.getParameter("suggest");
         String query = request.getParameter("query");
 
         if (suggest != null) {
-            handleFullTextMatch(request, response);
+            handleFullTextQuery(suggest, request.getResourceResolver(), response);
         } else if (query != null) {
-            handleLuceneQuery(request, response);
+            handleLuceneQuery(query, request.getResourceResolver(), response);
         } else {
             Writer out = response.getWriter();
             Json.createGenerator(out).writeStartObject().writeEnd().flush();
@@ -81,28 +73,48 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
         }
     }
 
-    private void handleFullTextMatch(String suggest, final SlingHttpServletResponse response)
-        throws IOException
+    /**
+     * Outputs the results of a full-text query on the given string.
+     *
+     * @param suggest a string to perform full text matching upon
+     * @param resolver the resource resolver to handle the full text match
+     * @param response the response object to write to
+     */
+    private void handleFullTextQuery(String suggest, final ResourceResolver resolver,
+        final SlingHttpServletResponse response) throws IOException
     {
         final String oakQuery =
-            String.format("select n from [lfs:VocabularyTerm] where contains(*, '%s')",
+            String.format("select * from [lfs:VocabularyTerm] where contains(*, '%s')",
                 suggest.replace("'", "''"));
-        Iterator<Resource> results = this.resolver.get().findResources(oakQuery, "JCR-SQL2");
+        Iterator<Resource> results = resolver.findResources(oakQuery, "JCR-SQL2");
 
         writeResults(response.getWriter(), results);
     }
 
-    private void handleLuceneQuery(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
-        throws IOException
+    /**
+     * Outputs the results of executing the given Lucene query.
+     *
+     * @param query the Lucene query to execute
+     * @param resolver the resource resolver to handle the query
+     * @param response the response object to write to
+     */
+    private void handleLuceneQuery(String query, final ResourceResolver resolver,
+        final SlingHttpServletResponse response) throws IOException
     {
         final String oakQuery =
-            String.format("select n from [lfs:VocabularyTerm] where native('lucene', '%s')",
+            String.format("select * from [lfs:VocabularyTerm] where native('lucene', '%s')",
                 query.replace("'", "''"));
-        Iterator<Resource> results = this.resolver.get().findResources(oakQuery, "JCR-SQL2");
+        Iterator<Resource> results = resolver.findResources(oakQuery, "JCR-SQL2");
 
         writeResults(response.getWriter(), results);
     }
 
+    /**
+     * Outputs the given resources as a JSON array.
+     *
+     * @param out the writer to output to
+     * @param response the resources to output
+     */
     private void writeResults(Writer out, Iterator<Resource> results)
         throws IOException
     {
