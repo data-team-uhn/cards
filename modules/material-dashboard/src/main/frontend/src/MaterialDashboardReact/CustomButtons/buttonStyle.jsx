@@ -20,7 +20,7 @@ import {
   whiteColor,
   blackColor,
   hexToRgb
-} from "../../themeStyle.jsx";
+} from "../themeStyle.jsx";
 
 const buttonStyle = {
   button: {
