@@ -14,10 +14,7 @@ import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core";
 // core components
-import Table from "MaterialDashboardReact/Table/Table";
-import Card from "MaterialDashboardReact/Card/Card";
-import CardHeader from "MaterialDashboardReact/Card/CardHeader";
-import CardBody from "MaterialDashboardReact/Card/CardBody";
+import {Card, CardHeader, CardBody, Table} from "MaterialDashboardReact";
 // Moment
 import moment from 'moment';
 import dashboardStyle from "./dashboardStyle.jsx";

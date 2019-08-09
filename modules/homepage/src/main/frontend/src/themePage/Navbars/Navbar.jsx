@@ -19,7 +19,7 @@ import { AppBar, Toolbar, IconButton, Hidden } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
-import Button from "MaterialDashboardReact/CustomButtons/Button";
+import { Button } from "MaterialDashboardReact";
 
 import headerStyle from "./headerStyle.jsx";
 

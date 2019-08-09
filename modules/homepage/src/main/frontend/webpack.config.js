@@ -43,12 +43,7 @@ module.exports = {
       "prop-types": "PropTypes",
       "jss": "jss",
       "@material-ui/core": "MaterialUI",
-      "MaterialDashboardReact/Card/Card": "window['MaterialDashboard-lfs-material-dashboard.card'].default",
-      "MaterialDashboardReact/Card/CardHeader": "window['MaterialDashboard-lfs-material-dashboard.cardHeader'].default",
-      "MaterialDashboardReact/Card/CardBody": "window['MaterialDashboard-lfs-material-dashboard.cardBody'].default",
-      "MaterialDashboardReact/CustomButtons/Button": "window['MaterialDashboard-lfs-material-dashboard.button'].default",
-      "MaterialDashboardReact/CustomInput/CustomInput": "window['MaterialDashboard-lfs-material-dashboard.customInput'].default",
-      "MaterialDashboardReact/Table/Table": "window['MaterialDashboard-lfs-material-dashboard.table'].default",
+      "MaterialDashboardReact": "window['MaterialDashboard']"
     }
   ]
 };
