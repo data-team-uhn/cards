@@ -30,7 +30,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -86,6 +88,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;*/
  */
 @Component (service = {Servlet.class})
 @SlingServletResourceTypes(resourceTypes = {"lfs/VocabulariesHomepage"}, methods = {"POST"})
+@SuppressWarnings("checkstyle:ClassDataAbstractionCoupling")
 public class VocabularyIndexerServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -2156160697967947088L;
@@ -97,6 +100,7 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
     private static final int NCIT_FLAT_SYNONYMS_COLUMN = 3;
     private static final int NCIT_FLAT_DESCRIPTION_COLUMN = 4;
     private static final int NCIT_FLAT_LABEL_COLUMN = 5;
+    private static final String TRUESTRING = "true";
 
     @Reference
     private LogService logger;
@@ -138,17 +142,22 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
     {
         String version = request.getParameter("version");
         String test = request.getParameter("test");
+        String unittest = request.getParameter("unittest");
         Node vocabulariesHomepage = request.getResource().adaptTo(Node.class);
         try {
             clearVocabularyNode(vocabulariesHomepage, test);
-            loadNCIT(version, test);
-            createNCITVocabularyNode(vocabulariesHomepage, version, test);
-            parseNCIT(vocabulariesHomepage, test);
+            if (unittest != null && TRUESTRING.equalsIgnoreCase(unittest)) {
+                unitTestLoadNCIT();
+            } else {
+                loadNCIT(version, test);
+            }
+            Node vocabularyNode = createNCITVocabularyNode(vocabulariesHomepage, version, test);
+            parseNCIT(vocabulariesHomepage, vocabularyNode, test);
             deleteTempZipFile();
             saveSession(vocabulariesHomepage);
             return 0;
         } catch (Exception e) {
-            this.logger.log(LogService.LOG_ERROR, "Failed to parse NCIT flat file.");
+            this.logger.log(LogService.LOG_ERROR, "Failed to parse NCIT flat file." + e.getMessage());
             return 1;
         }
     }
@@ -157,7 +166,7 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         throws RepositoryException
     {
         try {
-            if (test != null && "true".equalsIgnoreCase(test)) {
+            if (test != null && TRUESTRING.equalsIgnoreCase(test)) {
                 if (vocabulariesHomepage.hasNode("flatTestVocabulary")) {
                     Node target = vocabulariesHomepage.getNode("flatTestVocabulary");
                     target.remove();
@@ -181,7 +190,7 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
     {
         String source;
         HttpGet httpget;
-        if (test != null && "true".equalsIgnoreCase(test)) {
+        if (test != null && TRUESTRING.equalsIgnoreCase(test)) {
             source = "http://localhost:8080/tests/flat_NCIT_type_testcase.zip";
         } else {
             source = "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".FLAT.zip";
@@ -224,12 +233,39 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         }
     }
 
-    private void createNCITVocabularyNode(Node vocabulariesHomepage, String version, String test)
+    private void unitTestLoadNCIT()
+        throws IOException
+    {
+        String source = "./flat_NCIT_type_testcase.zip";
+        File.createTempFile(VOCABULARY_NAME, ZIP_SUFFIX);
+        FileOutputStream fileOutputStream = new FileOutputStream(DIRECTORY_PREFIX + VOCABULARY_NAME + ZIP_SUFFIX);
+        ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
+
+        FileInputStream fileInputStream = new FileInputStream(source);
+        ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
+
+        zipInputStream.getNextEntry();
+        try {
+            int c;
+            zipOutputStream.putNextEntry(new ZipEntry("temp.txt"));
+            while ((c = zipInputStream.read()) != -1) {
+                zipOutputStream.write(c);
+            }
+            zipOutputStream.closeEntry();
+        } finally {
+            fileInputStream.close();
+            zipInputStream.close();
+            zipOutputStream.close();
+            fileOutputStream.close();
+        }
+    }
+
+    private Node createNCITVocabularyNode(Node vocabulariesHomepage, String version, String test)
         throws RepositoryException
     {
         try {
             Node vocabularyNode;
-            if (test != null && "true".equalsIgnoreCase(test)) {
+            if (test != null && TRUESTRING.equalsIgnoreCase(test)) {
                 vocabularyNode = vocabulariesHomepage.addNode(DIRECTORY_PREFIX + "flatTestVocabulary",
                     "lfs:Vocabulary");
             } else {
@@ -240,6 +276,7 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
             vocabularyNode.setProperty("source", "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/");
             vocabularyNode.setProperty("version", version);
             vocabularyNode.setProperty("website", "https://ncit.nci.nih.gov/ncitbrowser/");
+            return vocabularyNode;
         } catch (RepositoryException e) {
             String message = "Failed to create Vocabulary node:" + e.getMessage();
             this.logger.log(LogService.LOG_ERROR, message);
@@ -248,12 +285,12 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         }
     }
 
-    private void parseNCIT(Node vocabulariesHomepage, String test)
+    private void parseNCIT(Node vocabulariesHomepage, Node vocabularyNode, String test)
         throws IOException, RepositoryException
     {
         try {
             Map<String, String[]> parentsMap = returnParentMap();
-            createTermNodes(parentsMap, vocabulariesHomepage, test);
+            createTermNodes(parentsMap, vocabulariesHomepage, vocabularyNode, test);
         } catch (RepositoryException e) {
             String message = "Failed to access Vocabulary node:" + e.getMessage();
             this.logger.log(LogService.LOG_ERROR, message);
@@ -267,7 +304,8 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         }
     }
 
-    private void createTermNodes(Map<String, String[]> parentsMap, Node vocabulariesHomepage, String test)
+    private void createTermNodes(Map<String, String[]> parentsMap, Node vocabulariesHomepage,
+        Node vocabularyNode, String test)
         throws IOException, RepositoryException
     {
         FileInputStream fileInputStream = new FileInputStream(DIRECTORY_PREFIX + VOCABULARY_NAME + ZIP_SUFFIX);
@@ -281,12 +319,14 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
 
         Iterator<CSVRecord> csvIterator = csvParser.iterator();
 
-        Node vocabularyNode;
-        if (test != null && "true".equalsIgnoreCase(test)) {
+        //Node vocabularyNode;
+        /*
+        if (test != null && TRUESTRING.equalsIgnoreCase(test)) {
             vocabularyNode = vocabulariesHomepage.getNode("flatTestVocabulary");
         } else {
             vocabularyNode = vocabulariesHomepage.getNode(VOCABULARY_NAME);
         }
+        */
         while (csvIterator.hasNext()) {
             CSVRecord row = csvIterator.next();
 
