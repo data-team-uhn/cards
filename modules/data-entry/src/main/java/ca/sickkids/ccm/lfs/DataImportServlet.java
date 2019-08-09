@@ -182,7 +182,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
                 try {
                     this.parseRow(row, patch);
                 } catch (PersistenceException e) {
-                    // TODO Auto-generated catch block
+                    LOGGER.warn("Failed to import row: {}", e.getMessage());
                 }
             });
         }
