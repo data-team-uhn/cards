@@ -21,7 +21,7 @@ import PropTypes from "prop-types";
 
 import  {withStyles} from "@material-ui/core/styles";
 
-import {Button, IconButton, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Checkbox, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core";
+import {IconButton, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Checkbox, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core";
 import {Search} from "@material-ui/icons";
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
@@ -31,6 +31,7 @@ import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader
 import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
 import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter";
 //import { Avatar } from "@material-ui/core";
+import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";
@@ -180,7 +181,7 @@ class GroupsManager extends React.Component {
             onClose={() =>{this.setState({deployMobileGroupDialog: false});}}
           >
             <Card>
-              <CardHeader color="success">
+              <CardHeader color="warning">
                 {
                   this.state.currentGroupIndex >= 0 && <h2 className={classes.cardTitleWhite}>{this.state.groups[this.state.currentGroupIndex].name}</h2>
                 }
@@ -203,10 +204,10 @@ class GroupsManager extends React.Component {
                   </div>
                 }
                 <GridContainer>
-                  <Button onClick={() => {this.setState({deployDeleteGroup: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Delete Group</Button>
-                  <Button onClick={() => {this.setState({deployAddGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Add User to Group</Button>
-                  <Button onClick={() => {this.setState({deployRemoveGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Remove User from Group</Button>
-                  <Button onClick={() => {this.setState({deployMobileGroupDialog: false});}}>Close</Button>
+                  <Button variant="contained" color="danger" onClick={() => {this.setState({deployDeleteGroup: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Delete Group</Button>
+                  <Button variant="contained" color="success" onClick={() => {this.setState({deployAddGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Add User to Group</Button>
+                  <Button variant="contained" color="danger" onClick={() => {this.setState({deployRemoveGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Remove User from Group</Button>
+                  <Button variant="contained" onClick={() => {this.setState({deployMobileGroupDialog: false});}}>Close</Button>
                 </GridContainer>
               </CardBody>
             </Card>
@@ -220,9 +221,9 @@ class GroupsManager extends React.Component {
                 <h4 className={classes.cardTitleWhite}>Groups</h4>
               </CardHeader>
               <CardBody>
-                <Button onClick={() => {this.setState({deployCreateGroup: true});}}>Create New Group</Button>
+                <Button variant="contained" color="success" onClick={() => {this.setState({deployCreateGroup: true});}}>Create New Group</Button>
                 <form
-                  onSubmit={(event) => { event.preventDefault(); this.handleLoadGroups(this.state.groupFilter, 0, this.state.groupPaginationLimit); this.setState({groupPageNumber: 0});}}
+                  onSubmit={(event) => {event.preventDefault(); this.handleLoadGroups(this.state.groupFilter, 0, this.state.groupPaginationLimit); this.setState({groupPageNumber: 0});}}
                 >
                   <TextField
                     id="group-filter"
@@ -360,7 +361,7 @@ class GroupsManager extends React.Component {
           <GridItem xs={12} sm={12} md={6}>
             <Hidden smDown implementation="css">
               <Card>
-                <CardHeader color="success">
+                <CardHeader color="warning">
                   {
                     this.state.currentGroupIndex < 0 ?
                     <h2 className={classes.cardTitleWhite}>No group selected.</h2>
@@ -386,9 +387,9 @@ class GroupsManager extends React.Component {
                     </div>
                   }
                   <GridContainer>
-                    <Button onClick={() => {this.setState({deployDeleteGroup: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Delete Group</Button>
-                    <Button onClick={() => {this.setState({deployAddGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Add User to Group</Button>
-                    <Button onClick={() => {this.setState({deployRemoveGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Remove User from Group</Button>
+                    <Button variant="contained" color="danger" onClick={() => {this.setState({deployDeleteGroup: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Delete Group</Button>
+                    <Button variant="contained" color="success" onClick={() => {this.setState({deployAddGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Add User to Group</Button>
+                    <Button variant="contained" color="danger" onClick={() => {this.setState({deployRemoveGroupUsers: true});}} disabled={this.state.currentGroupIndex < 0 ? true:false}>Remove User from Group</Button>
                   </GridContainer>
                 </CardBody>
               </Card>

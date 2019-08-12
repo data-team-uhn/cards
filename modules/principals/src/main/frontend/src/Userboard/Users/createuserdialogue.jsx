@@ -16,11 +16,10 @@
 */
 
 import React from "react";
-
+import {Dialog, DialogTitle, DialogActions, DialogContent, TextField } from "@material-ui/core";
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
-
-import { Button, Dialog, DialogTitle, DialogActions, DialogContent, TextField } from "@material-ui/core";
+import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
 
 class CreateUserDialogue extends React.Component {
     constructor(props) {
@@ -95,6 +94,8 @@ class CreateUserDialogue extends React.Component {
                             </GridItem>
                         </GridContainer>
                         <Button
+                            variant="contained"
+                            color="sucess"
                             type="submit"
                         >
                             Create User
@@ -102,7 +103,7 @@ class CreateUserDialogue extends React.Component {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => this.props.handleClose()}>Close</Button>
+                    <Button variant="contained" onClick={() => this.props.handleClose()}>Close</Button>
                 </DialogActions>
             </Dialog>
         );

@@ -19,8 +19,8 @@ import React from "react";
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
 import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
-
-import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Table, TableBody, TableHead, TableRow, TableCell} from "@material-ui/core";
+import {Dialog, DialogTitle, DialogActions, DialogContent, Table, TableBody, TableHead, TableRow, TableCell} from "@material-ui/core";
+import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
 
 class AddUserToGroupDialogue extends React.Component {
     constructor(props) {
@@ -169,8 +169,8 @@ class AddUserToGroupDialogue extends React.Component {
                     </GridContainer>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => this.handleAddUsers()}>Submit</Button>
-                    <Button onClick={() => this.props.handleClose()}>Close</Button>
+                    <Button variant="contained" color="success" onClick={() => this.handleAddUsers()}>Submit</Button>
+                    <Button variant="contained" onClick={() => this.props.handleClose()}>Close</Button>
                 </DialogActions>
             </Dialog>
         );

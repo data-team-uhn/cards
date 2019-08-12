@@ -21,7 +21,7 @@ import PropTypes from "prop-types";
 
 import  {withStyles} from "@material-ui/core/styles";
 
-import {Button, IconButton, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core";
+import {IconButton, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core";
 import {Search} from "@material-ui/icons";
 
 import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
@@ -31,6 +31,7 @@ import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader
 import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
 import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter";
 //import { Avatar } from "@material-ui/core";
+import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateUserDialogue from "./createuserdialogue.jsx";
@@ -62,8 +63,6 @@ class UsersManager extends React.Component {
     this.handleChangePage = this.handleChangePage.bind(this);
     this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
   }
-
- 
 
   clearSelectedUser () {
     this.setState(
@@ -178,7 +177,7 @@ class UsersManager extends React.Component {
             onClose={() => {this.setState({deployMobileUserDialog: false});}}
           >
             <Card>
-              <CardHeader color = "success">
+              <CardHeader color="warning">
                 {
                   this.state.currentUserIndex >= 0 && <h2 className={classes.cardTitleWhite}>{this.state.users[this.state.currentUserIndex].name}</h2>
                 }
@@ -220,8 +219,8 @@ class UsersManager extends React.Component {
                 </div>
               }
                 <GridContainer>
-                  <Button variant="contained" onClick={() => {this.setState({deployDeleteUser: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Delete User</Button>
-                  <Button variant="contained" onClick={() => {this.setState({deployChangeUserPassword: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Change Password</Button>
+                  <Button variant="contained" color="danger" onClick={() => {this.setState({deployDeleteUser: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Delete User</Button>
+                  <Button variant="contained" color= "info" onClick={() => {this.setState({deployChangeUserPassword: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Change Password</Button>
                   <Button variant="contained" onClick={() => {this.setState({deployMobileUserDialog: false});}}>Close</Button>
                 </GridContainer>
               </CardBody>
@@ -236,7 +235,7 @@ class UsersManager extends React.Component {
                 <h4 className={classes.cardTitleWhite}>Users</h4>
               </CardHeader>
               <CardBody>
-                <Button  variant="contained" onClick={() => {this.setState({deployCreateUser: true});}}>Create New User</Button>
+                <Button variant="contained" color="success" onClick={() => {this.setState({deployCreateUser: true});}}>Create New User</Button>
                 <form
                   onSubmit={(event) => { event.preventDefault(); this.handleLoadUsers(this.state.userFilter, 0, this.state.userPaginationLimit); this.setState({userPageNumber: 0});}}
                 >
@@ -375,7 +374,7 @@ class UsersManager extends React.Component {
           <GridItem xs={12} sm={12} md={6}>
             <Hidden smDown implementation="css">
               <Card>
-                <CardHeader color = "success">
+                <CardHeader color="warning">
                   {
                     this.state.currentUserIndex < 0 ?
                     <h2 className={classes.cardTitleWhite}>No user selected.</h2>
@@ -420,8 +419,8 @@ class UsersManager extends React.Component {
                   </div>
                 }
                   <GridContainer>
-                    <Button variant="contained" onClick={() => {this.setState({deployDeleteUser: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Delete User</Button>
-                    <Button variant="contained" onClick={() => {this.setState({deployChangeUserPassword: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Change Password</Button>
+                    <Button variant="contained" color="danger" onClick={() => {this.setState({deployDeleteUser: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Delete User</Button>
+                    <Button variant="contained" color="info" onClick={() => {this.setState({deployChangeUserPassword: true});}} disabled={this.state.currentUserIndex < 0 ? true:false}>Change Password</Button>
                   </GridContainer>
                 </CardBody>
               </Card>

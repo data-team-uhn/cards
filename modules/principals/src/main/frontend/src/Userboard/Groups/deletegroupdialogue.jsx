@@ -16,8 +16,8 @@
 */
 
 import React from "react";
-
-import { Button, Dialog, DialogTitle, DialogActions, DialogContent} from "@material-ui/core";
+import {Dialog, DialogTitle, DialogActions, DialogContent} from "@material-ui/core";
+import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
 
 class DeleteGroupDialogue extends React.Component {
     constructor(props) {
@@ -57,8 +57,8 @@ class DeleteGroupDialogue extends React.Component {
                     Are you sure you want to delete group {this.props.name}?
           </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => this.handleDeleteGroup(this.props.name)}>Delete</Button>
-                    <Button onClick={() => this.props.handleClose()}>Cancel</Button>
+                    <Button variant="contained" color="danger" onClick={() => this.handleDeleteGroup(this.props.name)}>Delete</Button>
+                    <Button variant="contained" onClick={() => this.props.handleClose()}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         );
