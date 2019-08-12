@@ -19,38 +19,31 @@
 
 package ca.sickkids.ccm.lfs.vocabularies;
 
-import java.util.Base64;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 
-import org.apache.http.HttpHeaders;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.HttpConstants;
-
 import org.apache.sling.testing.mock.jcr.MockJcr;
-import org.apache.sling.testing.mock.sling.MockJcrSlingRepository;
 import org.apache.sling.testing.mock.sling.MockSling;
+import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import org.junit.Rule;
-import org.apache.sling.testing.mock.sling.ResourceResolverType;
-//import org.apache.sling.testing.mock.sling.context.SlingContextImpl;
-import org.apache.sling.testing.mock.sling.junit.SlingContext;
-
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.osgi.framework.BundleContext;
 
 import com.google.common.base.Function;
 
@@ -63,72 +56,172 @@ public class VocabularyIndexerServletTest
     @InjectMocks
     private VocabularyIndexerServlet indexServlet;
 
-    @Before
-    public void initialize() throws RepositoryException
-    {
-    }
-
-    
     @Test
     public void testNCITFlatNodes()
         throws Exception
     {
         final Session session = MockJcr.newSession();
-    	context.registerAdapter(Resource.class, Node.class, 
-    			new Function<Resource, Node>() {public Node apply(Resource resource) { 
-    				Node node;
-    				try {
-    					node = session.getNode(resource.getPath());
-    				} catch (Exception e) {
-    					try {
-							node = session.getNode("/");
-						} catch (RepositoryException e1) {
-							node = null;
-						}
-    				}
-    				return node;
-               }});
+        this.context.registerAdapter(Resource.class, Node.class,
+            new Function<Resource, Node>()
+            {
+                public Node apply(Resource resource)
+                {
+                    Node node;
+                    try {
+                        node = session.getNode(resource.getPath());
+                    } catch (Exception e) {
+                        try {
+                            node = session.getNode("/");
+                        } catch (RepositoryException e1) {
+                            node = null;
+                        }
+                    }
+                    return node;
+                }
+            }
+        );
+
         Map<String, Object> props = new HashMap<>();
-        props.put("jcr:primaryType", "lfs:VocabulariesHomepage");/*
-        context.create().resource("/Vocabularies");
-        context.currentResource("/Vocabularies");
- */
+        props.put("jcr:primaryType", "lfs:VocabulariesHomepage");
+
+        BundleContext slingBundleContext = this.context.bundleContext();
+
         MockSlingHttpServletRequest request;
         MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
-        ResourceResolver resourceResolver= MockSling.newResourceResolver(context.bundleContext());
-        
-        Resource root  = resourceResolver.getResource("/");
+        ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
+
+        Resource root = resourceResolver.getResource("/");
         resourceResolver.create(root, "Vocabularies", props);
 
-        request = new MockSlingHttpServletRequest(resourceResolver, context.bundleContext());
+        request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
         request.setResource(resourceResolver.getResource("/Vocabularies"));
         request.setQueryString("source=ncit&test=true&version=19.05d&unittest=true");
         request.setMethod(HttpConstants.METHOD_POST);
-        request.setHeader(HttpHeaders.AUTHORIZATION, "Basic "
-        + Base64.getEncoder().encodeToString("admin:admin".getBytes()));
 
-        indexServlet.doPost(request, response);
+        this.indexServlet.doPost(request, response);
         Node rootNode = request.getResource().adaptTo(Node.class);
-        Node vocabNode = request.getResource().adaptTo(Node.class).getNode("flatTestVocabulary");
-        //Node termNode = vocabNode.getNode("C00001");
-        
-        System.out.println("dfjdks");
-        //Node res = resourceResolver.getResource("/").adaptTo(Node.class).getNode("/Vocabularies");
-        //System.out.println(request.getResource().adaptTo(Node.class).getProperty("jcr:primaryType").getName());
-        
-        //Repository repository = MockJcr.newRepository();
-        //Resource root  = resourceResolver.create(null, "/", null);
-        //Repository repo = context.resourceResolver().resolve("./").adaptTo(Repository.class);
-        /*
-        MockJcrSlingRepository repo = new MockJcrSlingRepository();
-        Session session = repo.login();
-        Node root = session.getRootNode();
-        root.addNode("/Vocabularies", "lfs:VocabulariesHomepage");
-        */
-        //Assert.assertTrue(response.getStatus() < 400);
-        //Assert.assertTrue(response.);
-        //ResourceResolver resourceresolver = MockSling.newResourceResolver(context.bundleContext());
-        //Node root = resourceresolver.getResource("/Vocabularies").adaptTo(Node.class);
-        //Assert.assertFalse(root.hasNode("/Vocabulaires"));
-    }    
+        Node vocabNode = rootNode.getNode("flatTestVocabulary");
+
+        ncitFlatTestVocabularyNode(vocabNode);
+        ncitFlatTestC100005(vocabNode);
+        ncitFlatTestC100008(vocabNode);
+
+    }
+
+    private void ncitFlatTestVocabularyNode(Node flatTestVocabulary)
+        throws Exception
+    {
+        String[] expectedNodes = {"C100000", "C100001", "C100002", "C100003", "C100004", "C100005", "C100006",
+            "C100007", "C100008", "C100009"};
+
+        for (String nodeName : expectedNodes) {
+            Assert.assertTrue(flatTestVocabulary.hasNode(nodeName));
+        }
+
+        Value obtainedNameValue = flatTestVocabulary.getProperty("name").getValue();
+        Assert.assertTrue("National Cancer Institute Thesaurus".compareTo(obtainedNameValue.getString()) == 0);
+
+        Value obtainedVersionValue = flatTestVocabulary.getProperty("version").getValue();
+        Assert.assertTrue("19.05d".compareTo(obtainedVersionValue.getString()) == 0);
+    }
+
+    private void ncitFlatTestC100008(Node flatTestVocabulary)
+        throws Exception
+    {
+        Node c100008 = flatTestVocabulary.getNode("C100008");
+        String actualDescription = "A percutaneous coronary intervention is imperative for a myocardial"
+            + " infarction that presents with ST segment elevation after an unsatisfactory response to a"
+            + " full dose of thrombolytic therapy. (ACC)";
+        Value obtainedDescriptionValue = c100008.getProperty("description").getValue();
+        String obtainedDescription = obtainedDescriptionValue.getString();
+        Assert.assertTrue(actualDescription.compareTo(obtainedDescription) == 0);
+
+        String actualLabel = "Rescue Percutaneous Coronary Intervention for ST Elevation Myocardial "
+            + "Infarction After Failed Full-Dose Thrombolytic Therapy";
+        Value obtainedLabelValue = c100008.getProperty("label").getValue();
+        String obtainedLabel = obtainedLabelValue.getString();
+        Assert.assertTrue(actualLabel.compareTo(obtainedLabel) == 0);
+
+        String[] actualSynonyms = {
+            "Rescue Percutaneous Coronary Intervention for ST Elevation Myocardial Infarction After Failed "
+                + "Full-Dose Thrombolytic Therapy",
+            "RESCUE PERCUTANEOUS CORONARY INTERVENTION (PCI) FOR ST ELEVATION MYOCARDIAL INFARCTION (STEMI) "
+                + "(AFTER FAILED FULL-DOSE THROMBOLYTICS)"
+        };
+        Value[] obtainedSynonymValues = c100008.getProperty("synonyms").getValues();
+        for (int i = 0; i < obtainedSynonymValues.length; i++) {
+            Assert.assertTrue(actualSynonyms[i].compareTo(obtainedSynonymValues[i].getString()) == 0);
+        }
+
+        String[] actualParents = {"C100006", "C100007"};
+        Set<String> actualParentMap = new HashSet<String>();
+        for (String parent : actualParents) {
+            actualParentMap.add(parent);
+        }
+        Value[] obtainedParents = c100008.getProperty("ancestors").getValues();
+        Set<String> obtainedParentMap = new HashSet<String>();
+        for (Value parent : obtainedParents) {
+            obtainedParentMap.add(parent.getString());
+        }
+
+        String[] actualAncestors = {"C100001", "C100002", "C100004", "C100005", "C100006", "C100007"};
+        Set<String> actualAncestorMap = new HashSet<String>();
+        for (String ancestor : actualAncestors) {
+            actualAncestorMap.add(ancestor);
+        }
+        Value[] obtainedAncestors = c100008.getProperty("ancestors").getValues();
+        Set<String> obtainedAncestorMap = new HashSet<String>();
+        for (Value ancestor : obtainedAncestors) {
+            obtainedAncestorMap.add(ancestor.getString());
+        }
+        Assert.assertTrue(actualAncestorMap.equals(obtainedAncestorMap));
+    }
+
+    private void ncitFlatTestC100005(Node flatTestVocabulary)
+        throws Exception
+    {
+        Node c100005 = flatTestVocabulary.getNode("C100005");
+        String actualDescription = "A procedure to evaluate the health of the an individual after "
+            + "receiving a heart transplant. (ACC)";
+        Value obtainedDescriptionValue = c100005.getProperty("description").getValue();
+        String obtainedDescription = obtainedDescriptionValue.getString();
+        Assert.assertTrue(actualDescription.compareTo(obtainedDescription) == 0);
+
+        String actualLabel = "Post-Cardiac Transplant Evaluation";
+        Value obtainedLabelValue = c100005.getProperty("label").getValue();
+        String obtainedLabel = obtainedLabelValue.getString();
+        Assert.assertTrue(actualLabel.compareTo(obtainedLabel) == 0);
+
+        String[] actualSynonyms = {
+            "Post-Cardiac Transplant Evaluation",
+            "POST-CARDIAC TRANSPLANT"
+        };
+        Value[] obtainedSynonymValues = c100005.getProperty("synonyms").getValues();
+        for (int i = 0; i < obtainedSynonymValues.length; i++) {
+            Assert.assertTrue(actualSynonyms[i].compareTo(obtainedSynonymValues[i].getString()) == 0);
+        }
+
+        String[] actualParents = {"C100002"};
+        Set<String> actualParentMap = new HashSet<String>();
+        for (String parent : actualParents) {
+            actualParentMap.add(parent);
+        }
+        Value[] obtainedParents = c100005.getProperty("ancestors").getValues();
+        Set<String> obtainedParentMap = new HashSet<String>();
+        for (Value parent : obtainedParents) {
+            obtainedParentMap.add(parent.getString());
+        }
+
+        String[] actualAncestors = {"C100002"};
+        Set<String> actualAncestorMap = new HashSet<String>();
+        for (String ancestor : actualAncestors) {
+            actualAncestorMap.add(ancestor);
+        }
+        Value[] obtainedAncestors = c100005.getProperty("ancestors").getValues();
+        Set<String> obtainedAncestorMap = new HashSet<String>();
+        for (Value ancestor : obtainedAncestors) {
+            obtainedAncestorMap.add(ancestor.getString());
+        }
+        Assert.assertTrue(actualAncestorMap.equals(obtainedAncestorMap));
+    }
 }
