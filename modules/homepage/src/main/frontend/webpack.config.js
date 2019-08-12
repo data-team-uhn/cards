@@ -8,7 +8,7 @@ module.exports = {
   entry: {
     [module_name + 'themeindex']: './src/themePage/index.jsx',
     [module_name + 'dashboard']: './src/themePage/Dashboard/dashboard.jsx',
-    [module_name + 'dashboardIcon']: './node_modules/@material-ui/icons/Dashboard.js',
+    [module_name + 'dashboardIcon']: '@material-ui/icons/Dashboard.js'
   },
   plugins: [
     new CleanWebpackPlugin(),
