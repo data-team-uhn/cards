@@ -1,10 +1,9 @@
 {
+    "jcr:primaryType": "sling:Folder",
     "Dashboard": {
         "jcr:primaryType": "lfs:Extension",
         "lfs:extensionPointId": "ContentExtension",
         "lfs:extensionName": "TestDashboard",
-        "lfs:defaultOrder": "0",
-        "lfs:defaultDisabled": "false",
         "lfs:icon": "/libs/lfs/resources/dashboardIcon.js",
         "lfs:extensionRenderURL": "/libs/lfs/resources/dashboard.js",
         "jcr:content": {
