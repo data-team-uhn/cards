@@ -28,16 +28,27 @@
 [lfs:Extension] > nt:file, sling:Resource, mix:referenceable
 
   // Properties:
-  // The ID to the extension point that contains rendering code
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Extension" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each extension is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // The ID of the extension point targeted by this extension
   - lfs:extensionPointId (STRING) mandatory
-  // The URL to the extension point that contains rendering code
+
+  // The URL to the script that can render this extension
   - lfs:extensionRenderURL (STRING)
+
   // The name of the extension
   - lfs:extensionName (STRING) mandatory
-  // URL to the icon for the Sidebar
+
+  // Optional icon associated with this extension
   - lfs:icon (STRING)
-  // The order that this should appear on the page
+
+  // The order that this should appear in the list of extensions in the extension point
   - lfs:defaultOrder (LONG) = "0" mandatory autocreated
+
+  // Whether this extension is disabled or not by default
   - lfs:defaultDisabled (BOOLEAN) = "false" mandatory autocreated
-  // Hardcode the resource type
-  - sling:resourceType (STRING) = "lfs/Extension" mandatory autocreated protected
