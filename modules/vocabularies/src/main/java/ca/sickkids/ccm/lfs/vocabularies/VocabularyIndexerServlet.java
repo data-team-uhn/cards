@@ -56,33 +56,7 @@ import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
-//import java.io.OutputStream;
-//import java.util.Collection;
-//import java.util.zipOutputStream;
-//import javax.jcr.Repository;
-//import javax.jcr.Session;
-//import javax.jcr.RepositoryException;
-//import javax.json.JsonReader;
-//import javax.json.JsonObject;
-//import org.apache.commons.csv.QuoteMode;
-/*import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.SolrException;
-import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.common.params.CommonParams;*/
-/*import org.apache.commons.lang3.StringUtils;
-import org.apache.jena.ontology.OntClass;
-import org.apache.jena.ontology.OntModel;
-import org.apache.jena.ontology.OntModelSpec;
-import org.apache.jena.ontology.Ontology;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.util.iterator.ExtendedIterator;*/
-//import ca.sickkids.ccm.lfs.vocabularies.VocabularyParams;
+
 /**
  * @version $Id$
  */
