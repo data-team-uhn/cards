@@ -17,7 +17,7 @@ import {
   primaryCardHeader,
   roseCardHeader,
   grayColor
-} from "../../themeStyle.jsx";
+} from "../themeStyle.jsx";
 
 const cardIconStyle = {
   cardIcon: {

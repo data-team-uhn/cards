@@ -17,8 +17,7 @@ import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, Hidden, Popper } fr
 // @material-ui/icons
 import { Person, Notifications, Search, ExitToApp } from "@material-ui/icons";
 // core components
-import CustomInput from "../MaterialDashboardReact/CustomInput/CustomInput.jsx";
-import Button from "../MaterialDashboardReact/CustomButtons/Button.jsx";
+import {Button, CustomInput} from "MaterialDashboardReact";
 
 import headerLinksStyle from "./headerLinksStyle.jsx";
 

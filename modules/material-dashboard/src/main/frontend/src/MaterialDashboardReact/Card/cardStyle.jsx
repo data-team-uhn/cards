@@ -13,7 +13,7 @@ import {
   blackColor,
   whiteColor,
   hexToRgb
-} from "../../themeStyle.jsx";
+} from "../themeStyle.jsx";
 
 const cardStyle = {
   card: {

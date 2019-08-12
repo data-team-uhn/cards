@@ -408,7 +408,7 @@
             <dependency>
               <groupId>org.phenotips</groupId>
               <artifactId>phenotips-checkstyle-configuration</artifactId>
-              <version>1.10</version>
+              <version>1.11</version>
             </dependency>
           </dependencies>
           <configuration>
@@ -894,5 +894,6 @@
   <modules>
     <module>modules</module>
     <module>distribution</module>
+    <module>questionnaires</module>
   </modules>
 </project>

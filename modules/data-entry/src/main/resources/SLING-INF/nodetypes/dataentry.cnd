@@ -418,6 +418,17 @@
   - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
+// Date and DateTime
+[lfs:DateAnswer] > lfs:Answer
+  - value (date)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/lfs:DateAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
 // Forms: a filled in questionnaire.
 [lfs:Form] > sling:Folder, mix:referenceable, mix:versionable
   // Attributes

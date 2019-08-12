@@ -6,9 +6,7 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'themeindex']: './src/themePage/index.jsx',
-    [module_name + 'dashboard']: './src/themePage/Dashboard/dashboard.jsx',
-    [module_name + 'dashboardIcon']: './node_modules/@material-ui/icons/Dashboard.js',
+    [module_name + 'all']: './src/MaterialDashboardReact/index.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -32,19 +30,18 @@ module.exports = {
     path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
     publicPath: '/',
     filename: '[name].[contenthash].js',
+    library: 'MaterialDashboard',
+    libraryTarget: 'umd'
   },
   externals: [
     {
-      "moment": "moment",
       "react": "React",
       "react-dom": "ReactDOM",
-      "react-router-dom": "ReactRouterDOM",
       "formik": "Formik",
       "lodash": "lodash",
       "prop-types": "PropTypes",
       "jss": "jss",
-      "@material-ui/core": "MaterialUI",
-      "MaterialDashboardReact": "window['MaterialDashboard']"
+      "@material-ui/core": "MaterialUI"
     }
   ]
 };

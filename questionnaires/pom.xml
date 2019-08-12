@@ -26,20 +26,12 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-modules</artifactId>
+  <artifactId>lfs-questionnaires</artifactId>
   <packaging>pom</packaging>
-  <name>LFS Modules</name>
+  <name>LFS Questionnaires</name>
+  <description>A collection of questionnaires.</description>
 
   <modules>
-    <module>startup-customization</module>
-    <module>commons</module>
-    <module>material-dashboard</module>
-    <module>ui-extension</module>
-    <module>login</module>
-    <module>homepage</module>
-    <module>data-entry</module>
-    <module>ldap-support</module>
-    <module>utils</module>
-    <module>principals</module>
+    <module>tissue-metrix</module>
   </modules>
 </project>

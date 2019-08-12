@@ -15,7 +15,7 @@ import {
   successColor,
   grayColor,
   defaultFont
-} from "../../themeStyle.jsx";
+} from "../themeStyle.jsx";
 
 const customInputStyle = {
   disabled: {
