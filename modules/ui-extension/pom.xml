@@ -40,6 +40,7 @@
         <configuration>
           <instructions>
             <!-- Initial content to be loaded on bundle installation -->
+            <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
             <Sling-Nodetypes>SLING-INF/nodetypes/extension.cnd</Sling-Nodetypes>
           </instructions>
         </configuration>
