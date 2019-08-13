@@ -2,7 +2,7 @@
     "jcr:primaryType": "sling:Folder",
     "Dashboard": {
         "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "ContentExtension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
         "lfs:extensionName": "TestDashboard",
         "lfs:icon": "/libs/lfs/resources/dashboardIcon.js",
         "lfs:extensionRenderURL": "/libs/lfs/resources/dashboard.js",
