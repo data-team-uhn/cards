@@ -21,7 +21,7 @@ import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 import Sidebar from "./Sidebar/sidebar"
 import sidebarRoutes, { loadRemoteComponents, loadRemoteIcons, contentNodes } from './routes';
-import { withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";

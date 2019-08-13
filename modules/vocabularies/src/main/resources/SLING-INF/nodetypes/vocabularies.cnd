@@ -105,7 +105,7 @@
   // Children
 
   // The terms that make up the vocabulary.
-  + * (lfs:VocabularyTerm) = lfs:VocabularyTerm 
+  + * (lfs:VocabularyTerm) = lfs:VocabularyTerm
 
 //-----------------------------------------------------------------------------
 // The homepage for the Vocabularies space.
