@@ -1,9 +1,19 @@
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
+module_name = require("./package.json").name + ".";
+
 module.exports = {
   mode: 'development',
   entry: {
-    thesaurusQuery: './src/query/query.jsx',
-    thesaurusIcon: '@material-ui/icons/AccountBox.js'
+    [module_name + 'thesaurusQuery']: './src/query/query.jsx',
+    [module_name + 'thesaurusIcon']: '@material-ui/icons/AccountBox.js'
   },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new WebpackAssetsManifest({
+      output: "assets.json"
+    })
+  ],
   module: {
     rules: [
       {
@@ -19,7 +29,7 @@ module.exports = {
   output: {
     path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
     publicPath: '/',
-    filename: '[name].js'
+    filename: '[name].[contenthash].js',
   },
   externals: [
     {
