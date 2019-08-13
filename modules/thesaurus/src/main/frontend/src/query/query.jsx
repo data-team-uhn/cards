@@ -389,6 +389,8 @@ class Thesaurus extends React.Component {
     this.setState({
       browserOpened: true,
       browseID: this.state.infoID,
+      suggestionsVisible: false,
+      termInfoVisible: false,
     })
   }
 
