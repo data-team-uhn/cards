@@ -1,4 +1,5 @@
 {
+    "jcr:primaryType": "sling:Folder",
     "Thesaurus": {
         "jcr:primaryType": "lfs:Extension",
         "lfs:extensionPointId": "ThesaurusExtension",
@@ -9,7 +10,7 @@
         "lfs:extensionRenderURL": "asset:lfs-thesaurus.thesaurusQuery.js",
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
-            "jcr:data": "test",
+            "jcr:data": "",
             "jcr:mimeType": "text/html"
         }
     }

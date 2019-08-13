@@ -47,10 +47,7 @@
           <instructions>
             <Include-Resource>src/main/frontend/dist/,{maven-resources}</Include-Resource>
             <!-- Initial content to be loaded on bundle installation -->
-            <Sling-Initial-Content>
-              SLING-INF/content/libs/lfs/resources;path:=/libs/lfs/resources,
-              SLING-INF/content/extensions;path:=/extensions
-            </Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
