@@ -293,14 +293,6 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
 
         Iterator<CSVRecord> csvIterator = csvParser.iterator();
 
-        //Node vocabularyNode;
-        /*
-        if (test != null && TRUESTRING.equalsIgnoreCase(test)) {
-            vocabularyNode = vocabulariesHomepage.getNode("flatTestVocabulary");
-        } else {
-            vocabularyNode = vocabulariesHomepage.getNode(VOCABULARY_NAME);
-        }
-        */
         while (csvIterator.hasNext()) {
             CSVRecord row = csvIterator.next();
 
