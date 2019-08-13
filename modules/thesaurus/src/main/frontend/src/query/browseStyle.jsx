@@ -17,10 +17,10 @@
 //  under the License.
 //
 
-import dropdownStyle from "./dropdownStyle.jsx";
+import { DropdownStyle } from "MaterialDashboardReact";
 
 const browseStyle = theme => ({
-    ...dropdownStyle(theme),
+    ...DropdownStyle(theme),
     dialog: {
       // The dialogue appears in the wrong location without the following
       padding: theme.spacing(1),

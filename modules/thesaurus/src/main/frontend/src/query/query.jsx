@@ -22,18 +22,13 @@ import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core/styles";
 import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, CircularProgress, Popper, Snackbar, SnackbarContent, Typography } from "@material-ui/core"
-// material-dashboard-
-import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
-import Card from "material-dashboard-react/dist/components/Card/Card.js";
-import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
-import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
-import CustomInput from "material-dashboard-react/dist/components/CustomInput/CustomInput.js";
+// MaterialDashboardReact
+import { Button, Card, CardHeader, CardBody, CustomInput, ThesaurusStyle } from "MaterialDashboardReact";
 // @material-ui/icons
 import Search from "@material-ui/icons/Search";
 import Info from "@material-ui/icons/Info";
 
 import VocabularyBrowser from "./browse.jsx";
-import thesaurusStyle from "./queryStyle.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
 
 class Thesaurus extends React.Component {
@@ -429,4 +424,4 @@ Thesaurus.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(thesaurusStyle)(Thesaurus);
+export default withStyles(ThesaurusStyle)(Thesaurus);
