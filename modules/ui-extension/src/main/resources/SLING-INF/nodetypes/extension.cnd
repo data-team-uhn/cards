@@ -53,6 +53,11 @@
 //-----------------------------------------------------------------------------
 [lfs:Extension] > nt:file, sling:Resource, mix:referenceable
 
+  // Attributes
+
+  // We can use extensions in a query.
+  query
+
   // Properties:
 
   // Hardcode the resource type.
