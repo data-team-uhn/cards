@@ -40,7 +40,7 @@ import org.osgi.service.log.LogService;
 /**
  * A servlet that performs full text match and lucene queries on vocabulary terms.
  *
- * @version $Id %I%$
+ * @version $Id$
  */
 @Component (service = {Servlet.class})
 @SlingServletResourceTypes(resourceTypes = {"lfs/Vocabulary"}, methods = {"GET"})
