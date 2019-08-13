@@ -23,7 +23,7 @@ import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, CircularProgress, Popper, Snackbar, SnackbarContent, Typography } from "@material-ui/core"
 // MaterialDashboardReact
-import { Button, Card, CardHeader, CardBody, CustomInput, ThesaurusStyle } from "MaterialDashboardReact";
+import { Button, Card, CardHeader, CardBody, CustomInput, QueryStyle } from "MaterialDashboardReact";
 // @material-ui/icons
 import Search from "@material-ui/icons/Search";
 import Info from "@material-ui/icons/Info";
@@ -424,4 +424,4 @@ Thesaurus.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(ThesaurusStyle)(Thesaurus);
+export default withStyles(QueryStyle)(Thesaurus);
