@@ -5,8 +5,8 @@
         "lfs:extensionName": "Patients",
         "lfs:defaultOrder": "0",
         "lfs:defaultDisabled": "false",
-        "lfs:icon": "/libs/lfs/resources/thesaurusIcon.js",
-        "lfs:extensionRenderURL": "/libs/lfs/resources/thesaurusQuery.js",
+        "lfs:icon": "asset:lfs-thesaurus.thesaurusIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-thesaurus.thesaurusQuery.js",
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "test",

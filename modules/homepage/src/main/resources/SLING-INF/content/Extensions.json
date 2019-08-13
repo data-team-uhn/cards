@@ -4,8 +4,8 @@
         "jcr:primaryType": "lfs:Extension",
         "lfs:extensionPointId": "ContentExtension",
         "lfs:extensionName": "TestDashboard",
-        "lfs:icon": "/libs/lfs/resources/dashboardIcon.js",
-        "lfs:extensionRenderURL": "/libs/lfs/resources/dashboard.js",
+        "lfs:icon": "asset:lfs-homepage.dashboardIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-homepage.dashboard.js",
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "test",

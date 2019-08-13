@@ -22,7 +22,7 @@ import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import { CircularProgress, Typography } from '@material-ui/core';
 // material-dashboard-react
-import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
+import { Button } from "MaterialDashboardReact";
 // @material-ui/icons
 import Info from "@material-ui/icons/Info";
 
