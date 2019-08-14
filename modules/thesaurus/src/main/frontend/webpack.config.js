@@ -6,7 +6,8 @@ module.exports = {
   mode: 'development',
   entry: {
     [module_name + 'thesaurusQuery']: './src/query/query.jsx',
-    [module_name + 'thesaurusIcon']: '@material-ui/icons/AccountBox.js'
+    [module_name + 'thesaurusIcon']: '@material-ui/icons/AccountBox.js',
+    [module_name + 'selector']: './src/selector/select.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),

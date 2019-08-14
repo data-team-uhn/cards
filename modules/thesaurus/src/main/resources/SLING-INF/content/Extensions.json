@@ -2,12 +2,26 @@
     "jcr:primaryType": "sling:Folder",
     "Thesaurus": {
         "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "ThesaurusExtension",
+        "lfs:extensionPointId": "lfs/thesaurus/thesaurus/entry",
         "lfs:extensionName": "Patients",
         "lfs:defaultOrder": "0",
         "lfs:defaultDisabled": "false",
         "lfs:icon": "asset:lfs-thesaurus.thesaurusIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-thesaurus.thesaurusQuery.js",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "",
+            "jcr:mimeType": "text/html"
+        }
+    },
+    "Selector": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/thesaurus/selector/entry",
+        "lfs:extensionName": "Thesaurus selector",
+        "lfs:defaultOrder": "0",
+        "lfs:defaultDisabled": "false",
+        "lfs:icon": "asset:lfs-thesaurus.thesaurusIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-thesaurus.selector.js",
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "",

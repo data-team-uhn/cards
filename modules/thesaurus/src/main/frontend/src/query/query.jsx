@@ -53,11 +53,12 @@ class Thesaurus extends React.Component {
       infoTypeOf: "",
       infoAnchor: null,
       buttonRefs: {},
+      vocabulary: props.Vocabulary,
     };
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, onSelect } = this.props;
 
     return (
       <div>
@@ -269,7 +270,7 @@ class Thesaurus extends React.Component {
 
     // Grab suggestions
     input = encodeURIComponent(input);
-    var URL = `${REST_URL}/hpo/suggest?input=${input}`;
+    var URL = `${REST_URL}/${this.props.Vocabulary}/suggest?input=${input}`;
     MakeRequest(URL, this.showSuggestions);
 
     // Hide the infobox and stop the timer
@@ -291,6 +292,7 @@ class Thesaurus extends React.Component {
             <MenuItem
               className={this.props.classes.dropdownItem}
               key={element["name"]}
+              onClick={this.props.onClick}
             >
               {element["name"]}
               <Button
@@ -344,7 +346,7 @@ class Thesaurus extends React.Component {
 
   // Grab information about the given ID and populate the info box
   getInfo = (id) => {
-    var URL = `${REST_URL}/hpo/${id}`;
+    var URL = `${REST_URL}/${this.props.Vocabulary}/${id}`;
     MakeRequest(URL, this.showInfo);
   }
 
@@ -424,6 +426,10 @@ class Thesaurus extends React.Component {
 
 Thesaurus.propTypes = {
     classes: PropTypes.object.isRequired
+};
+
+Thesaurus.defaultProps = {
+  Vocabulary: 'hpo'
 };
 
 export default withStyles(QueryStyle)(Thesaurus);
