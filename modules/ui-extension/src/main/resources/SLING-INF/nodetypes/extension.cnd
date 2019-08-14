@@ -22,18 +22,64 @@
 
 //-----------------------------------------------------------------------------
 //
-// UI Extension base nodetype
+// A User Interface Extension Point (UIXP) defines a place in the UI that accepts extensions
+//
+//-----------------------------------------------------------------------------
+[lfs:ExtensionPoint] > nt:file, sling:Resource, mix:referenceable
+
+  // Attributes
+
+  // We can use extension points in a query.
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/ExtensionPoint" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each UIXP is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // The identifier of this UIXP, which will be referenced by UIX
+  - lfs:extensionPointId (STRING) mandatory
+
+  // A more user-friendly name for this UIXP
+  - lfs:extensionPointName (STRING) mandatory
+
+//-----------------------------------------------------------------------------
+//
+// A User Interface Extension (UIX) defines content that can be automatically placed in a UIXP
 //
 //-----------------------------------------------------------------------------
 [lfs:Extension] > nt:file, sling:Resource, mix:referenceable
 
+  // Attributes
+
+  // We can use extensions in a query.
+  query
+
   // Properties:
-  // The ID to the extension point that contains rendering code
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Extension" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each extension is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // The ID of the extension point targeted by this extension
   - lfs:extensionPointId (STRING) mandatory
+
+  // The URL to the script that can render this extension
+  - lfs:extensionRenderURL (STRING)
+
   // The name of the extension
   - lfs:extensionName (STRING) mandatory
-  // The order that this should appear on the page
+
+  // Optional icon associated with this extension
+  - lfs:icon (STRING)
+
+  // The order that this should appear in the list of extensions in the extension point
   - lfs:defaultOrder (LONG) = "0" mandatory autocreated
+
+  // Whether this extension is disabled or not by default
   - lfs:defaultDisabled (BOOLEAN) = "false" mandatory autocreated
-  // Hardcode the resource type
-  - sling:resourceType (STRING) = "lfs/Extension" mandatory autocreated protected
