@@ -90,7 +90,6 @@ public class VocabularyZipLoader
     public void loadZipLocal(String path, String directory, String fileName)
             throws VocabularyIndexException
     {
-        // String source = "./flat_NCIT_type_testcase.zip";
         try {
             File.createTempFile(fileName, ".zip");
             FileOutputStream fileOutputStream = new FileOutputStream(directory + fileName + ".zip");

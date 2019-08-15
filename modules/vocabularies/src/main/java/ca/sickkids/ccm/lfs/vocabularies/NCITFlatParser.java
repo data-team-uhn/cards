@@ -62,14 +62,14 @@ public class NCITFlatParser implements VocabularyParser
     /**
      * Method called by the VocabularyIndexerServlet parse a NCIT vocabulary from a flat file.
      * Three mandatory parameters are required from the http request sent to the VocabularyIndexerServlet.
-     * <code>"source"</code> - This must be "ncit" in order for this method to be called.
-     * <code>"identifier"</code> - the identifier the NCIT thesaurus instance is to be known by
-     * <code>"version"</code> - the version of the NCIT thesaurus to be indexed
+     * <p><code>"source"</code> - This must be "ncit" in order for this method to be called.</p>
+     * <p><code>"identifier"</code> - the identifier the NCIT thesaurus instance is to be known by.</p>
+     * <p><code>"version"</code> - the version of the NCIT thesaurus to be indexed.</p>
      * There are two optional parameters.
-     * <code>"localpath"</code> - allows downloading of NCIT from a path relative to the
-     * VocabularyIndexerServlet
-     * <code>"httppath"</code>- allows downloading of NCIT from a url other than
-     * "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/"
+     * <p><code>"localpath"</code> - allows downloading of NCIT from a path relative to the
+     * VocabularyIndexerServlet.</p>
+     * <p><code>"httppath"</code>- allows downloading of NCIT from a url other than
+     * "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/".<p>
      * @param request - http request from the VocabularyIndexerServlet
      * @param response - http response from the VocabularyIndexerServlet
      * @param logger - logger from the VocabularyIndexerServlet to log exceptions caught
@@ -120,8 +120,11 @@ public class NCITFlatParser implements VocabularyParser
 
             writeStatusJson(request, response, true, null);
         } catch (Exception e) {
+            deleteTempZipFile();
             writeStatusJson(request, response, false, "NCIT Flat parsing error: " + e.getMessage());
-            logger.log(LogService.LOG_ERROR, "NCIT Flat parsing error: " + e.getMessage());
+            if (logger != null) {
+                logger.log(LogService.LOG_ERROR, "NCIT Flat parsing error: " + e.getMessage());
+            }
         }
     }
 
