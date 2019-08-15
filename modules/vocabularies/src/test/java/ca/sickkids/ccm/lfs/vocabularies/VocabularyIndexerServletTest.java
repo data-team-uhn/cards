@@ -95,7 +95,8 @@ public class VocabularyIndexerServletTest
 
         request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
         request.setResource(resourceResolver.getResource("/Vocabularies"));
-        request.setQueryString("source=ncit&test=true&version=19.05d&unittest=true");
+        request.setQueryString("source=ncit&identifier=flatTestVocabulary&version=19.05d&"
+            + "localpath=./flat_NCIT_type_testcase.zip");
         request.setMethod(HttpConstants.METHOD_POST);
 
         this.indexServlet.doPost(request, response);
