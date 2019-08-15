@@ -19,6 +19,7 @@
 
 package ca.sickkids.ccm.lfs.vocabularies;
 
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -28,6 +29,9 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -57,7 +61,120 @@ public class VocabularyIndexerServletTest
     private VocabularyIndexerServlet indexServlet;
 
     @Test
-    public void testNCITFlatNodes()
+    public void testNoVersionProvided()
+        throws Exception
+    {
+        final Session session = MockJcr.newSession();
+        this.context.registerAdapter(Resource.class, Node.class,
+            new Function<Resource, Node>()
+            {
+                public Node apply(Resource resource)
+                {
+                    Node node;
+                    try {
+                        node = session.getNode(resource.getPath());
+                    } catch (Exception e) {
+                        try {
+                            node = session.getNode("/");
+                        } catch (RepositoryException e1) {
+                            node = null;
+                        }
+                    }
+                    return node;
+                }
+            }
+        );
+
+        Map<String, Object> props = new HashMap<>();
+        props.put("jcr:primaryType", "lfs:VocabulariesHomepage");
+
+        BundleContext slingBundleContext = this.context.bundleContext();
+
+        MockSlingHttpServletRequest request;
+        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
+
+        Resource root = resourceResolver.getResource("/");
+        resourceResolver.create(root, "Vocabularies", props);
+
+        request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
+        request.setResource(resourceResolver.getResource("/Vocabularies"));
+        request.setQueryString("source=ncit&identifier=flatTestVocabulary&"
+            + "localpath=./flat_NCIT_type_testcase.zip");
+        request.setMethod(HttpConstants.METHOD_POST);
+
+        this.indexServlet.doPost(request, response);
+
+        JsonReader reader = Json.createReader(new StringReader(response.getOutputAsString()));
+        JsonObject responseJson = reader.readObject();
+        Assert.assertFalse(responseJson.getBoolean("isSuccessful"));
+        String expectedError = "NCIT FLat parsing error: Mandatory version parameter not provided.";
+        String obtainedError = responseJson.getString("errors");
+        Assert.assertTrue(expectedError.equalsIgnoreCase(obtainedError));
+
+        Node rootNode = request.getResource().adaptTo(Node.class);
+        Assert.assertFalse(rootNode.hasNode("/flatTestvocabulary"));
+    }
+
+    @Test
+    public void testInvalidFileLocation()
+        throws Exception
+    {
+        final Session session = MockJcr.newSession();
+        this.context.registerAdapter(Resource.class, Node.class,
+            new Function<Resource, Node>()
+            {
+                public Node apply(Resource resource)
+                {
+                    Node node;
+                    try {
+                        node = session.getNode(resource.getPath());
+                    } catch (Exception e) {
+                        try {
+                            node = session.getNode("/");
+                        } catch (RepositoryException e1) {
+                            node = null;
+                        }
+                    }
+                    return node;
+                }
+            }
+        );
+
+        Map<String, Object> props = new HashMap<>();
+        props.put("jcr:primaryType", "lfs:VocabulariesHomepage");
+
+        BundleContext slingBundleContext = this.context.bundleContext();
+
+        MockSlingHttpServletRequest request;
+        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
+
+        Resource root = resourceResolver.getResource("/");
+        resourceResolver.create(root, "Vocabularies", props);
+
+        request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
+        request.setResource(resourceResolver.getResource("/Vocabularies"));
+        request.setQueryString("source=ncit&identifier=flatTestVocabulary&version=19.05d&"
+            + "localpath=./someLocation");
+        request.setMethod(HttpConstants.METHOD_POST);
+
+        this.indexServlet.doPost(request, response);
+
+        JsonReader reader = Json.createReader(new StringReader(response.getOutputAsString()));
+        JsonObject responseJson = reader.readObject();
+        Assert.assertFalse(responseJson.getBoolean("isSuccessful"));
+        String expectedError = "NCIT FLat parsing error: Error: Failed to load zip vocabulary locally. "
+            + "./someLocation (No such file or directory)";
+        String obtainedError = responseJson.getString("errors");
+        Assert.assertTrue(expectedError.equalsIgnoreCase(obtainedError));
+
+        Node rootNode = request.getResource().adaptTo(Node.class);
+        Assert.assertFalse(rootNode.hasNode("/flatTestvocabulary"));
+    }
+
+    @Test
+    public void testNCITFlatIndexing()
         throws Exception
     {
         final Session session = MockJcr.newSession();
@@ -106,7 +223,6 @@ public class VocabularyIndexerServletTest
         ncitFlatTestVocabularyNode(vocabNode);
         ncitFlatTestC100005(vocabNode);
         ncitFlatTestC100008(vocabNode);
-
     }
 
     private void ncitFlatTestVocabularyNode(Node flatTestVocabulary)
