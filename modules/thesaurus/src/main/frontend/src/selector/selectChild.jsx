@@ -21,6 +21,7 @@ import PropTypes from "prop-types";
 // @material-ui/core
 import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, CircularProgress, Popper, Snackbar, SnackbarContent, Typography, withStyles } from "@material-ui/core"
 
+// Child element that will be inserted to the target DOM
 class VocabularyChild extends React.Component {
     constructor(props) {
       super(props);

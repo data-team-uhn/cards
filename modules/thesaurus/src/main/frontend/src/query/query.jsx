@@ -288,6 +288,11 @@ class Thesaurus extends React.Component {
         var suggestions = [];
 
         data["rows"].forEach((element) => {
+          // Check for a required ancestor
+          if (!this.hasRequiredAncestor(element["ancestors"])) {
+            return;
+          }
+
           suggestions.push(
             <MenuItem
               className={this.props.classes.dropdownItem}
@@ -321,6 +326,20 @@ class Thesaurus extends React.Component {
     } else {
       this.logError("Error: Thesaurus lookup failed with code " + status);
     }
+  }
+
+  // Check for a required ancestor term (if any) in the given array of ancestors
+  hasRequiredAncestor = (targetAncestors) => {
+    // If there is no required ancestor, return true
+    if (this.props.suggestionCategories === null ||
+      this.props.suggestionCategories === "") {
+      return true;
+    }
+
+    // Check every ancestor for at least one common ancestor
+    return targetAncestors.some((element) => {
+      return this.props.suggestionCategories.contains(element);
+    })
   }
 
   // Event handler for clicking away from the autocomplete while it is open

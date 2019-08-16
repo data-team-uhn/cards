@@ -23,6 +23,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import Thesaurus from "../query/query.jsx";
 import SelectorStyle from "./selectorStyle.jsx";
+import VocabularyChild from "./selectChild.jsx";
 
 class VocabularySelector extends React.Component {
     constructor(props) {
@@ -38,6 +39,8 @@ class VocabularySelector extends React.Component {
         return (
             <Thesaurus
                 onClick = {this.addSelection}
+                suggestionCategories = {suggestionCategories}
+                Vocabulary = {source}
                 {...rest}
             ></Thesaurus>
         );
@@ -48,6 +51,12 @@ class VocabularySelector extends React.Component {
         // Create a new child based on what was clicked
         var selection = event.target.innerText;
         console.log(event.target);
+
+        // Add it to the target
+        var newChild = (
+            <VocabularyChild
+            />);
+        this.props.selectionContainer.appendChild(newChild);
     }
 }
 
@@ -56,6 +65,7 @@ VocabularySelector.propTypes = {
     name: PropTypes.string,
     source: PropTypes.string.isRequired,
     max: PropTypes.number.isRequired,
+    requiredAncestors: PropTypes.array.
 };
 
 VocabularySelector.defaultProps = {
