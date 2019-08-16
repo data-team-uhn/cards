@@ -58,7 +58,7 @@
 [artifacts startLevel=16]
     org.apache.sling/org.apache.sling.jcr.oak.server/1.2.0
 
-# Configuration for authentication and authorization
+# Configuration for authentication and authorization, as well as storage limits
 [configurations]
   org.apache.felix.jaas.Configuration.factory-GuestLoginModule
     jaas.controlFlag="optional"
@@ -94,6 +94,10 @@
     enabledActions=["org.apache.jackrabbit.oak.spi.security.user.action.AccessControlAction"]
     userPrivilegeNames=["jcr:all"]
     groupPrivilegeNames=["jcr:read"]
+
+  # Storage Limit Configuration
+  org.apache.jackrabbit.oak.plugins.document.DocumentNodeStoreService
+    updateLimit="200000"
 
 [configurations runModes=oak_tar]
   org.apache.jackrabbit.oak.segment.SegmentNodeStoreService
