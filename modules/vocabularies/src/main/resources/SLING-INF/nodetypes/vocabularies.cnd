@@ -67,9 +67,6 @@
 [lfs:Vocabulary] > sling:Folder, mix:referenceable, mix:versionable
   // Attributes:
 
-  // The list of vocabulary terms is orderable.
-  orderable
-
   // We can use vocabularies a query.
   query
 
