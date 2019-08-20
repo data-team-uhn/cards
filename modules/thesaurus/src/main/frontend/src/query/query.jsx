@@ -102,6 +102,8 @@ class Thesaurus extends React.Component {
                 </Button>
                 {this.state.suggestionsLoading ? <CircularProgress size={50} className={classes.suggestionProgress} /> : ""}
               </div>
+
+              {this.props.children}
             </div>
           </CardBody>
         </Card>
@@ -220,6 +222,7 @@ class Thesaurus extends React.Component {
           onError={this.logError}
           registerInfo={this.registerInfoButton}
           getInfo={this.getInfo}
+          vocabulary={this.props.Vocabulary}
           />
         { /* Error snackbar */}
         <Snackbar
@@ -268,9 +271,19 @@ class Thesaurus extends React.Component {
       return;
     }
 
+    // Determine if we should add a custom filter
+    var filter = "";
+    if (this.props.suggestionCategories) {
+      filter = "&customFilter=";
+      filter += this.props.suggestionCategories.map((category) => {
+        var escapedId = category.replace(":", "\\:"); // URI Escape the : from HP: for SolR
+        return encodeURIComponent(`term_category:${escapedId}`);
+      }).join("%20OR%20");
+    }
+
     // Grab suggestions
     input = encodeURIComponent(input);
-    var URL = `${REST_URL}/${this.props.Vocabulary}/suggest?input=${input}`;
+    var URL = `${REST_URL}/${this.props.Vocabulary}/suggest?input=${input}${filter}`;
     MakeRequest(URL, this.showSuggestions);
 
     // Hide the infobox and stop the timer
@@ -288,11 +301,6 @@ class Thesaurus extends React.Component {
         var suggestions = [];
 
         data["rows"].forEach((element) => {
-          // Check for a required ancestor
-          if (!this.hasRequiredAncestor(element["ancestors"])) {
-            return;
-          }
-
           suggestions.push(
             <MenuItem
               className={this.props.classes.dropdownItem}
@@ -326,20 +334,6 @@ class Thesaurus extends React.Component {
     } else {
       this.logError("Error: Thesaurus lookup failed with code " + status);
     }
-  }
-
-  // Check for a required ancestor term (if any) in the given array of ancestors
-  hasRequiredAncestor = (targetAncestors) => {
-    // If there is no required ancestor, return true
-    if (this.props.suggestionCategories === null ||
-      this.props.suggestionCategories === "") {
-      return true;
-    }
-
-    // Check every ancestor for at least one common ancestor
-    return targetAncestors.some((element) => {
-      return this.props.suggestionCategories.contains(element);
-    })
   }
 
   // Event handler for clicking away from the autocomplete while it is open

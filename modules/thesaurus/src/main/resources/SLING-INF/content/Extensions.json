@@ -27,5 +27,19 @@
             "jcr:data": "",
             "jcr:mimeType": "text/html"
         }
+    },
+    "TestRig": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/thesaurus/selector/test",
+        "lfs:extensionName": "Thesaurus test rig",
+        "lfs:defaultOrder": "0",
+        "lfs:defaultDisabled": "false",
+        "lfs:icon": "asset:lfs-thesaurus.thesaurusIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-thesaurus.test.js",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "",
+            "jcr:mimeType": "text/html"
+        }
     }
 }

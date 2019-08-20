@@ -17,27 +17,20 @@
 //  under the License.
 //
 import React from "react";
-import PropTypes from "prop-types";
-// @material-ui/core
-import { ListItem, withStyles } from "@material-ui/core"
-import SelectorStyle from "./selectorStyle.jsx"
+import { createPortal } from "react-dom";
 
-// Child element that will be inserted to the target DOM
-class VocabularyChild extends React.Component {
+// Portal-ize the results
+class SelectionResults extends React.Component {
     constructor(props) {
-      super(props);
+        super(props);
     }
 
     render() {
-        return (
-            <ListItem
-                key={this.props.name}
-                onClick={() => {this.props.onClick(this.props.name)}}
-            >
-                {this.props.name}
-            </ListItem>
+        return createPortal(
+            this.props.children,
+            this.props.root
         );
     }
-};
+}
 
-export default withStyles(SelectorStyle)(VocabularyChild);
+export default SelectionResults;

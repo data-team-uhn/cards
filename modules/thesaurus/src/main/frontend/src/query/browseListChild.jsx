@@ -162,6 +162,7 @@ class ListChild extends React.Component {
                 key={index}
                 headNode={false}
                 onError={this.props.onError}
+                vocabulary={this.props.vocabulary}
               />);
     });
     this.setState({
