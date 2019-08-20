@@ -50,6 +50,7 @@ class VocabularyTester extends React.Component {
             <VocabularySelector
               selectionContainer = {this.state.outsideNode}
               suggestionCategories = {["HP:0000951"]}
+              max = "3"
             ></VocabularySelector>
         </div>
         <div
