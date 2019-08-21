@@ -91,6 +91,11 @@ class VocabularySelector extends React.Component {
       return;
     }
 
+    // Also do not add duplicates
+    if (this.state.listChildren.some(element => {return element.props.name == selection})) {
+      return;
+    }
+
     var newChildren;
     if (this.props.max == 1) {
       // If only 1 child is allowed, replace it instead of copying our array
