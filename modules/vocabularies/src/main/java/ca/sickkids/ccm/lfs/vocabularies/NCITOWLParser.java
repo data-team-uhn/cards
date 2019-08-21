@@ -199,6 +199,7 @@ public class NCITOWLParser implements VocabularyParser
             inputStream.getNextEntry();
             OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
             ontModel.read(inputStream, null);
+            inputStream.close();
 
             ExtendedIterator<OntClass> termIterator = ontModel.listNamedClasses();
 
@@ -219,6 +220,9 @@ public class NCITOWLParser implements VocabularyParser
                 createNCITVocabularyTermNode(vocabularyNode, identifier, label, description, synonyms,
                     parents, ancestors);
             }
+
+            termIterator.close();
+            ontModel.close();
         } catch (FileNotFoundException e) {
             String message = "Could not find the temporary OWL zip file for parsing: " + e.getMessage();
             throw new VocabularyIndexException(message, e);
@@ -237,6 +241,7 @@ public class NCITOWLParser implements VocabularyParser
             Statement synonymTerm = allSynonyms.next();
             synonyms.add(synonymTerm.getString());
         }
+        allSynonyms.close();
         return synonyms.toArray(new String[0]);
     }
 
@@ -249,6 +254,7 @@ public class NCITOWLParser implements VocabularyParser
             OntClass ancestorTerm = allAncestors.next();
             ancestors.add(ancestorTerm.getLocalName());
         }
+        allAncestors.close();
         return ancestors.toArray(new String[0]);
     }
 
