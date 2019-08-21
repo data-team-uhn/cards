@@ -40,13 +40,13 @@
                     "useInExcerpt": true
                 },
                 "parents": {
-                    "analyzed": false,
+                    "analyzed": true,
                     "propertyIndex": true,
                     "nodeScopeIndex": false,
                     "useInExcerpt": false
                 },
                 "ancestors": {
-                    "analyzed": false,
+                    "analyzed": true,
                     "propertyIndex": true,
                     "nodeScopeIndex": false,
                     "useInExcerpt": false
