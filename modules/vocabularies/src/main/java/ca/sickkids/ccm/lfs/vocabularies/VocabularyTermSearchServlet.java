@@ -58,6 +58,7 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
     {
         String suggest = request.getParameter("suggest");
         String query = request.getParameter("query");
+        response.setContentType("application/json");
 
         if (suggest != null) {
             handleFullTextQuery(suggest, request.getResourceResolver(), response);
