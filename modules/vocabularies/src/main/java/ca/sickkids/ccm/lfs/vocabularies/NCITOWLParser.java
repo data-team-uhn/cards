@@ -33,6 +33,7 @@ import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
@@ -197,25 +198,47 @@ public class NCITOWLParser implements VocabularyParser
         {
             ZipInputStream inputStream = new ZipInputStream(new FileInputStream(tempFile));
             inputStream.getNextEntry();
+            
+            // Read in NCIT to OntModel using a ZipInputStream
             OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
             ontModel.read(inputStream, null);
             inputStream.close();
 
+            // Instantiate an iterator that returns all of the terms as OntClasses
             ExtendedIterator<OntClass> termIterator = ontModel.listNamedClasses();
 
             while (termIterator.hasNext())
             {
                 OntClass term = termIterator.next();
 
+                // Identifier code is the local name of the term
                 String identifier = term.getLocalName();
-                String label = term.getLabel(null).toString();
 
+                // The definition is the property "P97". The properties are defined before all of the 
+                // terms in the OWL file, and they must be retrieved from the OntModel.
                 Property descriptionProperty = ontModel.getProperty(term.getNameSpace(), "P97");
-                String description = term.getProperty(descriptionProperty).getString();
+                
+                // Then, the property must be passed into the getProperty function in order for the 
+                // statement object representing the property's contents to be obtained.
+                Statement descriptionFromTerm = term.getProperty(descriptionProperty);
+                
+                // This handles the case if the statement is blank or null
+                String description;
+                if (descriptionFromTerm != null) {
+                    description = descriptionFromTerm.getString();
+                } else {
+                    description = "";
+                }
 
                 String[] synonyms = getSynonyms(ontModel, term);
                 String[] parents = getAncestors(term, true);
                 String[] ancestors = getAncestors(term, false);
+                
+                // The label is the term label. The language option is null because "EN" doesn't return 
+                // a correct label.
+                String suppliedLabel = term.getLabel(null);
+                String defaultLabel = synonyms[0];
+                String label = StringUtils.defaultIfBlank(suppliedLabel, defaultLabel);
 
                 createNCITVocabularyTermNode(vocabularyNode, identifier, label, description, synonyms,
                     parents, ancestors);
@@ -232,6 +255,8 @@ public class NCITOWLParser implements VocabularyParser
         }
     }
 
+    // Instantiates an iterator which collects all properties with the name "P90" (i.e. synonym) and 
+    // puts it into a set, which is then converted to an array.
     private String[] getSynonyms(OntModel ontModel, OntClass term)
     {
         Set<String> synonyms = new HashSet<String>();
@@ -245,10 +270,15 @@ public class NCITOWLParser implements VocabularyParser
         return synonyms.toArray(new String[0]);
     }
 
-    private String[] getAncestors(OntClass term, boolean onlyParents)
+    // Instantiates an iterator which collects all the listed ancestors of the term listed in the OWL file
+    // and puts it into a set, which is then converted to an array.
+    
+    // If directAncestor is true, then the iterator returned only direct ancestors (i.e. parents). If it is false
+    // then all ancestors are listed. Ancestors are superclases.
+    private String[] getAncestors(OntClass term, boolean directAncestor)
     {
         Set<String> ancestors = new HashSet<String>();
-        final ExtendedIterator<OntClass> allAncestors = term.listSuperClasses(onlyParents);
+        final ExtendedIterator<OntClass> allAncestors = term.listSuperClasses(directAncestor);
         while (allAncestors.hasNext())
         {
             OntClass ancestorTerm = allAncestors.next();

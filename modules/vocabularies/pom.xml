@@ -126,10 +126,25 @@
       <version>2.18.4</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
-      <version>3.12.0</version>
+       <groupId>org.apache.jena</groupId>
+       <artifactId>jena-osgi</artifactId>
+       <version>3.12.0</version>
+       <type>pom</type>
+     </dependency>
+    <!--  
+    <dependency>
+	<groupId>org.apache.jena</groupId>
+	  <artifactId>jena-osgi</artifactId>
+	  <version>3.12.0</version>
+	  <type>bundle</type>
+    </dependency
+      -->
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <version>5.0.0</version>
     </dependency>
+      
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.servlets.annotations</artifactId>
@@ -178,11 +193,13 @@
       <version>6.0.0</version>
       <scope>provided</scope>
     </dependency>
+    <!--  
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.framework</artifactId>
       <version>1.9.0</version>
     </dependency>
+    -->
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bndlib</artifactId>

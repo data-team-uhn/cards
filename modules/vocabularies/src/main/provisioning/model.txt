@@ -26,6 +26,8 @@
     org.apache.commons/commons-lang3/3.9
     org.apache.sling/org.apache.sling.api/2.18.4
     org.slf4j/slf4j-api/1.7.26
+    org.apache.jena/jena-core/3.11.0
+    org.osgi/org.osgi.core/5.0.0
     javax.json/javax.json-api/1.1.4
     javax.servlet/javax.servlet-api/3.1.0
 
