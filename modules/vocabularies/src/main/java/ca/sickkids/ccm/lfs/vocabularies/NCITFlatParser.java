@@ -38,15 +38,19 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Class allowing parsing of a NCIT vocabulary instance from a flat file and creation of JCR nodes from it.
+ * Concrete subclass of AbstractNCITParser for parsing NCIT in flat file form.
  * @version $Id$
  */
 public class NCITFlatParser extends AbstractNCITParser
 {
     private static final int NCIT_FLAT_IDENTIFIER_COLUMN = 0;
+
     private static final int NCIT_FLAT_PARENTS_COLUMN = 2;
+
     private static final int NCIT_FLAT_SYNONYMS_COLUMN = 3;
+
     private static final int NCIT_FLAT_DESCRIPTION_COLUMN = 4;
+
     private static final int NCIT_FLAT_LABEL_COLUMN = 5;
 
     @Override

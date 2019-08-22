@@ -60,11 +60,8 @@ public class VocabularyIndexerServletTest
     @InjectMocks
     private VocabularyIndexerServlet indexServlet;
 
-    @Test
-    public void testNoVersionProvided()
-        throws Exception
+    public void registerResourceToNodeAdapter(Session session)
     {
-        final Session session = MockJcr.newSession();
         this.context.registerAdapter(Resource.class, Node.class,
             new Function<Resource, Node>()
             {
@@ -84,26 +81,45 @@ public class VocabularyIndexerServletTest
                 }
             }
         );
+    }
+
+    public void makeRequestResource(ResourceResolver resourceResolver)
+        throws Exception
+    {
+        Resource root = resourceResolver.getResource("/");
 
         Map<String, Object> props = new HashMap<>();
         props.put("jcr:primaryType", "lfs:VocabulariesHomepage");
 
-        BundleContext slingBundleContext = this.context.bundleContext();
+        resourceResolver.create(root, "Vocabularies", props);
+    }
 
-        MockSlingHttpServletRequest request;
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+    public void makePost(MockSlingHttpServletRequest request, MockSlingHttpServletResponse response, String params)
+        throws Exception
+    {
+        request.setQueryString(params);
+        request.setMethod(HttpConstants.METHOD_POST);
+        this.indexServlet.doPost(request, response);
+    }
+
+    @Test
+    public void testNoVersionProvided()
+        throws Exception
+    {
+        final Session session = MockJcr.newSession();
+        registerResourceToNodeAdapter(session);
+
+        BundleContext slingBundleContext = this.context.bundleContext();
         ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
 
-        Resource root = resourceResolver.getResource("/");
-        resourceResolver.create(root, "Vocabularies", props);
+        makeRequestResource(resourceResolver);
 
-        request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
+        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
         request.setResource(resourceResolver.getResource("/Vocabularies"));
-        request.setQueryString("source=ncit&identifier=flatTestVocabulary&"
-            + "localpath=./flat_NCIT_type_testcase.zip");
-        request.setMethod(HttpConstants.METHOD_POST);
+        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
 
-        this.indexServlet.doPost(request, response);
+        String requestParams = "source=ncit&identifier=flatTestVocabulary&localpath=./flat_NCIT_type_testcase.zip";
+        makePost(request, response, requestParams);
 
         JsonReader reader = Json.createReader(new StringReader(response.getOutputAsString()));
         JsonObject responseJson = reader.readObject();
@@ -121,45 +137,19 @@ public class VocabularyIndexerServletTest
         throws Exception
     {
         final Session session = MockJcr.newSession();
-        this.context.registerAdapter(Resource.class, Node.class,
-            new Function<Resource, Node>()
-            {
-                public Node apply(Resource resource)
-                {
-                    Node node;
-                    try {
-                        node = session.getNode(resource.getPath());
-                    } catch (Exception e) {
-                        try {
-                            node = session.getNode("/");
-                        } catch (RepositoryException e1) {
-                            node = null;
-                        }
-                    }
-                    return node;
-                }
-            }
-        );
-
-        Map<String, Object> props = new HashMap<>();
-        props.put("jcr:primaryType", "lfs:VocabulariesHomepage");
+        registerResourceToNodeAdapter(session);
 
         BundleContext slingBundleContext = this.context.bundleContext();
-
-        MockSlingHttpServletRequest request;
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
         ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
 
-        Resource root = resourceResolver.getResource("/");
-        resourceResolver.create(root, "Vocabularies", props);
+        makeRequestResource(resourceResolver);
 
-        request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
+        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
         request.setResource(resourceResolver.getResource("/Vocabularies"));
-        request.setQueryString("source=ncit&identifier=flatTestVocabulary&version=19.05d&"
-            + "localpath=./someLocation");
-        request.setMethod(HttpConstants.METHOD_POST);
+        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
 
-        this.indexServlet.doPost(request, response);
+        String requestParams = "source=ncit&identifier=flatTestVocabulary&version=19.05d&localpath=./someLocation";
+        makePost(request, response, requestParams);
 
         JsonReader reader = Json.createReader(new StringReader(response.getOutputAsString()));
         JsonObject responseJson = reader.readObject();
@@ -178,45 +168,21 @@ public class VocabularyIndexerServletTest
         throws Exception
     {
         final Session session = MockJcr.newSession();
-        this.context.registerAdapter(Resource.class, Node.class,
-            new Function<Resource, Node>()
-            {
-                public Node apply(Resource resource)
-                {
-                    Node node;
-                    try {
-                        node = session.getNode(resource.getPath());
-                    } catch (Exception e) {
-                        try {
-                            node = session.getNode("/");
-                        } catch (RepositoryException e1) {
-                            node = null;
-                        }
-                    }
-                    return node;
-                }
-            }
-        );
-
-        Map<String, Object> props = new HashMap<>();
-        props.put("jcr:primaryType", "lfs:VocabulariesHomepage");
+        registerResourceToNodeAdapter(session);
 
         BundleContext slingBundleContext = this.context.bundleContext();
-
-        MockSlingHttpServletRequest request;
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
         ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
 
-        Resource root = resourceResolver.getResource("/");
-        resourceResolver.create(root, "Vocabularies", props);
+        makeRequestResource(resourceResolver);
 
-        request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
+        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
         request.setResource(resourceResolver.getResource("/Vocabularies"));
-        request.setQueryString("source=ncit&identifier=flatTestVocabulary&version=19.05d&"
-            + "localpath=./flat_NCIT_type_testcase.zip");
-        request.setMethod(HttpConstants.METHOD_POST);
+        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
 
-        this.indexServlet.doPost(request, response);
+        String requestParams = "source=ncit&identifier=flatTestVocabulary&version=19.05d&localpath="
+                + "./flat_NCIT_type_testcase.zip";
+        makePost(request, response, requestParams);
+
         Node rootNode = request.getResource().adaptTo(Node.class);
         Node vocabNode = rootNode.getNode("flatTestVocabulary");
 
