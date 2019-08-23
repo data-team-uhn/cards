@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
@@ -208,103 +209,89 @@ public class VocabularyIndexerServletTest
         Assert.assertTrue("19.05d".compareTo(obtainedVersionValue.getString()) == 0);
     }
 
+    private void checkString(Node node, String propertyName, String correctString)
+        throws Exception
+    {
+        Property obtainedProperty = node.getProperty(propertyName);
+        String obtainedString = obtainedProperty.getString();
+
+        Assert.assertTrue(correctString.compareTo(obtainedString) == 0);
+    }
+
+    private void checkStringArray(Node node, String propertyName, String[] correctStringArray)
+        throws Exception
+    {
+        Property obtainedProperty = node.getProperty(propertyName);
+        Value[] obtainedStringValues = obtainedProperty.getValues();
+
+        Assert.assertTrue(obtainedStringValues.length == correctStringArray.length);
+
+        Set<String> correctStringSet = new HashSet<String>();
+        Set<String> obtainedStringSet = new HashSet<String>();
+
+        for (String correctString : correctStringArray)
+        {
+            correctStringSet.add(correctString);
+        }
+
+        for (Value obtainedValue : obtainedStringValues)
+        {
+            obtainedStringSet.add(obtainedValue.getString());
+        }
+
+        Assert.assertTrue(correctStringSet.equals(obtainedStringSet));
+    }
+
     private void ncitFlatTestC100008(Node flatTestVocabulary)
         throws Exception
     {
         Node c100008 = flatTestVocabulary.getNode("C100008");
-        String actualDescription = "A percutaneous coronary intervention is imperative for a myocardial"
+
+        String description = "A percutaneous coronary intervention is imperative for a myocardial"
             + " infarction that presents with ST segment elevation after an unsatisfactory response to a"
             + " full dose of thrombolytic therapy. (ACC)";
-        Value obtainedDescriptionValue = c100008.getProperty("description").getValue();
-        String obtainedDescription = obtainedDescriptionValue.getString();
-        Assert.assertTrue(actualDescription.compareTo(obtainedDescription) == 0);
+        checkString(c100008, "description", description);
 
-        String actualLabel = "Rescue Percutaneous Coronary Intervention for ST Elevation Myocardial "
+        String label = "Rescue Percutaneous Coronary Intervention for ST Elevation Myocardial "
             + "Infarction After Failed Full-Dose Thrombolytic Therapy";
-        Value obtainedLabelValue = c100008.getProperty("label").getValue();
-        String obtainedLabel = obtainedLabelValue.getString();
-        Assert.assertTrue(actualLabel.compareTo(obtainedLabel) == 0);
+        checkString(c100008, "label", label);
 
-        String[] actualSynonyms = {
+        String[] synonyms = {
             "Rescue Percutaneous Coronary Intervention for ST Elevation Myocardial Infarction After Failed "
                 + "Full-Dose Thrombolytic Therapy",
             "RESCUE PERCUTANEOUS CORONARY INTERVENTION (PCI) FOR ST ELEVATION MYOCARDIAL INFARCTION (STEMI) "
                 + "(AFTER FAILED FULL-DOSE THROMBOLYTICS)"
         };
-        Value[] obtainedSynonymValues = c100008.getProperty("synonyms").getValues();
-        for (int i = 0; i < obtainedSynonymValues.length; i++) {
-            Assert.assertTrue(actualSynonyms[i].compareTo(obtainedSynonymValues[i].getString()) == 0);
-        }
+        checkStringArray(c100008, "synonyms", synonyms);
 
-        String[] actualParents = {"C100006", "C100007"};
-        Set<String> actualParentMap = new HashSet<String>();
-        for (String parent : actualParents) {
-            actualParentMap.add(parent);
-        }
-        Value[] obtainedParents = c100008.getProperty("ancestors").getValues();
-        Set<String> obtainedParentMap = new HashSet<String>();
-        for (Value parent : obtainedParents) {
-            obtainedParentMap.add(parent.getString());
-        }
+        String[] parents = {"C100006", "C100007"};
+        checkStringArray(c100008, "parents", parents);
 
-        String[] actualAncestors = {"C100001", "C100002", "C100004", "C100005", "C100006", "C100007"};
-        Set<String> actualAncestorMap = new HashSet<String>();
-        for (String ancestor : actualAncestors) {
-            actualAncestorMap.add(ancestor);
-        }
-        Value[] obtainedAncestors = c100008.getProperty("ancestors").getValues();
-        Set<String> obtainedAncestorMap = new HashSet<String>();
-        for (Value ancestor : obtainedAncestors) {
-            obtainedAncestorMap.add(ancestor.getString());
-        }
-        Assert.assertTrue(actualAncestorMap.equals(obtainedAncestorMap));
+        String[] ancestors = {"C100001", "C100002", "C100004", "C100005", "C100006", "C100007"};
+        checkStringArray(c100008, "ancestors", ancestors);
     }
 
     private void ncitFlatTestC100005(Node flatTestVocabulary)
         throws Exception
     {
         Node c100005 = flatTestVocabulary.getNode("C100005");
-        String actualDescription = "A procedure to evaluate the health of the an individual after "
+        String description = "A procedure to evaluate the health of the an individual after "
             + "receiving a heart transplant. (ACC)";
-        Value obtainedDescriptionValue = c100005.getProperty("description").getValue();
-        String obtainedDescription = obtainedDescriptionValue.getString();
-        Assert.assertTrue(actualDescription.compareTo(obtainedDescription) == 0);
+        checkString(c100005, "description", description);
 
-        String actualLabel = "Post-Cardiac Transplant Evaluation";
-        Value obtainedLabelValue = c100005.getProperty("label").getValue();
-        String obtainedLabel = obtainedLabelValue.getString();
-        Assert.assertTrue(actualLabel.compareTo(obtainedLabel) == 0);
+        String label = "Post-Cardiac Transplant Evaluation";
+        checkString(c100005, "label", label);
 
-        String[] actualSynonyms = {
+        String[] synonyms = {
             "Post-Cardiac Transplant Evaluation",
             "POST-CARDIAC TRANSPLANT"
         };
-        Value[] obtainedSynonymValues = c100005.getProperty("synonyms").getValues();
-        for (int i = 0; i < obtainedSynonymValues.length; i++) {
-            Assert.assertTrue(actualSynonyms[i].compareTo(obtainedSynonymValues[i].getString()) == 0);
-        }
+        checkStringArray(c100005, "synonyms", synonyms);
 
-        String[] actualParents = {"C100002"};
-        Set<String> actualParentMap = new HashSet<String>();
-        for (String parent : actualParents) {
-            actualParentMap.add(parent);
-        }
-        Value[] obtainedParents = c100005.getProperty("ancestors").getValues();
-        Set<String> obtainedParentMap = new HashSet<String>();
-        for (Value parent : obtainedParents) {
-            obtainedParentMap.add(parent.getString());
-        }
+        String[] parents = {"C100002"};
+        checkStringArray(c100005, "parents", parents);
 
-        String[] actualAncestors = {"C100002"};
-        Set<String> actualAncestorMap = new HashSet<String>();
-        for (String ancestor : actualAncestors) {
-            actualAncestorMap.add(ancestor);
-        }
-        Value[] obtainedAncestors = c100005.getProperty("ancestors").getValues();
-        Set<String> obtainedAncestorMap = new HashSet<String>();
-        for (Value ancestor : obtainedAncestors) {
-            obtainedAncestorMap.add(ancestor.getString());
-        }
-        Assert.assertTrue(actualAncestorMap.equals(obtainedAncestorMap));
+        String[] ancestors = {"C100002"};
+        checkStringArray(c100005, "ancestors", ancestors);
     }
 }
