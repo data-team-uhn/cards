@@ -47,6 +47,7 @@ class VocabularySelector extends React.Component {
           suggestionCategories = {suggestionCategories}
           Vocabulary = {source}
           ref = {(ref) => {this.thresaurusRef = ref;}}
+          disabled = {max > 1 && this.state.listChildren.length == max}
           {...rest}
         >
           {

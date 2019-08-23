@@ -31,6 +31,8 @@ import Info from "@material-ui/icons/Info";
 import VocabularyBrowser from "./browse.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
 
+const NO_RESULTS_TEXT = "No results";
+
 class Thesaurus extends React.Component {
   constructor(props) {
     super(props);
@@ -54,6 +56,7 @@ class Thesaurus extends React.Component {
       infoAnchor: null,
       buttonRefs: {},
       vocabulary: props.Vocabulary,
+      noResults: false,
     };
   }
 
@@ -88,6 +91,7 @@ class Thesaurus extends React.Component {
                     }
                   },
                   onFocus: this.delayLookup,
+                  disabled: this.props.disabled,
                 }}
               />
               <div className={classes.searchWrapper}>
@@ -97,6 +101,7 @@ class Thesaurus extends React.Component {
                   justIcon
                   round
                   onClick={() => this.queryInput(this.anchorEl.value)}
+                  disabled={this.props.disabled}
                 >
                   <Search />
                 </Button>
@@ -300,31 +305,44 @@ class Thesaurus extends React.Component {
         // Populate this.state.suggestions
         var suggestions = [];
 
-        data["rows"].forEach((element) => {
+        if (data["rows"].length > 0) {
+          data["rows"].forEach((element) => {
+            suggestions.push(
+              <MenuItem
+                className={this.props.classes.dropdownItem}
+                key={element["id"]}
+                onClick={(e) => {this.props.onClick(element["id"], element["name"]); this.closeDialog();}}
+              >
+                {element["name"]}
+                <Button
+                  buttonRef={node => {
+                    this.registerInfoButton(element["id"], node);
+                  }}
+                  color="info"
+                  justIcon={true}
+                  simple={true}
+                  aria-owns={this.state.termInfoVisible ? "menu-list-grow" : null}
+                  aria-haspopup={true}
+                  onClick={(e) => this.getInfo(element["id"])}
+                  className={this.props.classes.buttonLink}
+                >
+                  <Info color="primary" />
+                </Button>
+              </MenuItem>
+              );
+          });
+        } else {
           suggestions.push(
             <MenuItem
               className={this.props.classes.dropdownItem}
-              key={element["name"]}
+              key={NO_RESULTS_TEXT}
               onClick={this.props.onClick}
+              disabled={true}
             >
-              {element["name"]}
-              <Button
-                buttonRef={node => {
-                  this.registerInfoButton(element["id"], node);
-                }}
-                color="info"
-                justIcon={true}
-                simple={true}
-                aria-owns={this.state.termInfoVisible ? "menu-list-grow" : null}
-                aria-haspopup={true}
-                onClick={(e) => this.getInfo(element["id"])}
-                className={this.props.classes.buttonLink}
-              >
-                <Info color="primary" />
-              </Button>
+              {NO_RESULTS_TEXT}
             </MenuItem>
-            );
-        });
+          )
+        }
 
         this.setState({
           suggestions: suggestions,
