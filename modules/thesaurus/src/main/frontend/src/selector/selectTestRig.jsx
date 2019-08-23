@@ -30,37 +30,35 @@ class VocabularyTester extends React.Component {
     }
   }
 
-  componentDidMount = () => {
-    this.setState({outsideNode: this.outsideRef.current});
+  render() {
+    return(
+      <React.Fragment>
+        <div>
+            Inside div (Skin-related vocab only):
+            <VocabularySelector
+              selectionContainer = {this.state.outsideNode}
+              suggestionCategories = {["HP:0000951"]}
+              defaultSuggestions = {{"abc": "given", "HP:0031840": undefined, "HP:003184z": undefined}}
+              max = {3}
+            ></VocabularySelector>
+        </div>
+        <div
+          ref = {this.outsideRef}
+          onClick = {this.movePortal}
+        >
+          Outside div (click this label to toggle portal):
+        </div>
+      </React.Fragment>
+    );
   }
 
-  debug = () => {
+  // Debug function to move the portal around the DOM
+  movePortal = () => {
     if (typeof this.state.outsideNode === "undefined") {
       this.setState({outsideNode: this.outsideRef.current});
     } else {
       this.setState({outsideNode: undefined});
     }
-  }
-
-  render() {
-    return(
-      <React.Fragment>
-        <div>
-            Inside div:
-            <VocabularySelector
-              selectionContainer = {this.state.outsideNode}
-              suggestionCategories = {["HP:0000951"]}
-              max = "3"
-            ></VocabularySelector>
-        </div>
-        <div
-          ref = {this.outsideRef}
-          onClick = {this.debug}
-        >
-          Outside div (click to toggle mount):
-        </div>
-      </React.Fragment>
-    );
   }
 }
 

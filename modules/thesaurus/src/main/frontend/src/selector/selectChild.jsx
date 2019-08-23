@@ -19,25 +19,64 @@
 import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
-import { ListItem, withStyles } from "@material-ui/core"
+import { Button, Checkbox, ListItem, withStyles } from "@material-ui/core"
+import { Close } from "@material-ui/icons"
 import SelectorStyle from "./selectorStyle.jsx"
 
 // Child element that will be inserted to the target DOM
 class VocabularyChild extends React.Component {
-    constructor(props) {
-      super(props);
-    }
+  constructor(props) {
+    super(props);
 
-    render() {
-        return (
-            <ListItem
-                key={this.props.name}
-                onClick={() => {this.props.onClick(this.props.name)}}
-            >
-                {this.props.name}
-            </ListItem>
-        );
+    this.state = {
+      checked: false,
     }
+  }
+
+  render() {
+    const {name, id, isPreselected, onClick} = this.props;
+    return (
+      <React.Fragment>
+        <ListItem key={name}>
+          { /* This is either a Checkbox if this is a suggestion, or a button otherwise */
+          isPreselected ?
+          (
+            <Checkbox
+              checked={this.state.checked}
+              onChange={() => {onClick(name); this.toggleCheck()}}
+            />
+          ) : (
+            <Button onClick={() => {onClick(name)}}>
+              <Close />
+            </Button>
+          )
+          }
+          {name}
+        </ListItem>
+        {
+          /* Add the hidden inputs if this is a user input selection (i.e. !isPreselected)
+             or if this is a suggestion that is checked */
+          (!isPreselected || this.state.checked) ?
+          (
+          <React.Fragment>
+            <input type="hidden" name="name" value={name} />
+            <input type="hidden" name="id" value={id} />
+          </React.Fragment>
+          ) : ""
+        }
+      </React.Fragment>
+    );
+  }
+
+  toggleCheck = () => {
+    this.setState({checked: !this.state.checked});
+  }
+};
+
+VocabularyChild.defaultProps = {
+  isPreselected: false,
+  source: "hpo",
+  max: 999,
 };
 
 export default withStyles(SelectorStyle)(VocabularyChild);
