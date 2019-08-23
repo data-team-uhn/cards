@@ -34,23 +34,29 @@ import org.osgi.service.log.LogService;
 
 
 /**
+ * Abstract class specifying a vocabulary ontology parser specifically for the National Cancer Institute Thesaurus.
+ * The class implements methods common to parsers for the NCIT, but omits file-type specific methods.
+ * The parser assumes that the resource of the response it is given is a <code>VocabulariesHomepage</code> node
+ * under which the should be stored in the Jackrabbit Oak repository, and obtains
+ * that node by adapting it from a JCR Resource to a JCR Node.
  * @version $Id$
  */
 public abstract class AbstractNCITParser implements VocabularyParser
 {
     /**
-     * Method called by the VocabularyIndexerServlet parse a NCIT vocabulary from a flat file.
-     * Three mandatory parameters are required from the http request sent to the VocabularyIndexerServlet.
-     * <p><code>"source"</code> - This must be "ncit" in order for this method to be called.</p>
-     * <p><code>"identifier"</code> - the identifier the NCIT thesaurus instance is to be known by.</p>
-     * <p><code>"version"</code> - the version of the NCIT thesaurus to be indexed.</p>
+     * Method called by the {@link VocabularyIndexerServlet} to parse a NCIT vocabulary. Specifying the version to
+     * index is mandatory. There are two optional parameters. 
      * There are two optional parameters.
-     * <p><code>"localpath"</code> - allows downloading of NCIT from a path relative to the
-     * VocabularyIndexerServlet.</p>
-     * <p><code>"httppath"</code>- allows downloading of NCIT from a url other than
-     * "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/".<p>
-     * @param request - http request from the VocabularyIndexerServlet
-     * @param response - http response from the VocabularyIndexerServlet
+     * <p>
+     * <code>"localpath"</code> - allows downloading of NCIT from a path relative to the VocabularyIndexerServlet.
+     * </p>
+     * <p>
+     * <code>"httppath"</code>- allows downloading of NCIT from a url other than
+     * "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/".
+     * </p>
+     * 
+     * @param request http request from {@link VocabularyIndexerServlet}
+     * @param response http response from {@link VocabularyIndexerServlet}
      * @param logger - logger from the VocabularyIndexerServlet to log exceptions caught
      * @throws IOException thrown when response Json cannot be written
      */
@@ -191,6 +197,11 @@ public abstract class AbstractNCITParser implements VocabularyParser
         tempfile.delete();
     }
 
+    /**
+     * 
+     * @param vocabulariesHomepage
+     * @throws VocabularyIndexException
+     */
     private void saveSession(Node vocabulariesHomepage)
             throws VocabularyIndexException
     {
@@ -201,10 +212,31 @@ public abstract class AbstractNCITParser implements VocabularyParser
             throw new VocabularyIndexException(message, e);
         }
     }
+    
+    /**
+     *  Parses the temporary NCIT zip file and creates <code>VocabularyTerm</code> nodes for each term which are 
+     *  children of the given <code>Vocabulary</code> node representing the NCIT vocabulary instance.
+     *  Subclasses will have concrete implementations of this method that are specific for their given file types.
+     *  
+     * @param vocabularyNode <code>Vocabulary</code> node which represents the current NCIT instance
+     * @throws VocabularyIndexException thrown when an error occurs with parsing
+     */
 
     abstract void parseNCIT(Node vocabularyNode) throws VocabularyIndexException;
 
+    /**
+     * Returns the directory path that the temporary NCIT zip file that is downloaded will be placed in. 
+     * This abstract class allows different parser implementations to control where they put their 
+     * temporary NCIT zip files are.
+     * @return String directory path that the temporary NCIT zip file will be in
+     */
     abstract String getTempFileDirectory();
 
+    /**
+     * Returns the name that the temporary NCIT zip file to be downloaded is to have. 
+     * This abstract class allows different parser implementations to specify different temporary file names,
+     * which may be useful for avoiding conflicts.
+     * @return String name of the temporary NCIT zip file
+     */
     abstract String getTempFileName();
 }
