@@ -146,12 +146,13 @@ class VocabularySelector extends React.Component {
       newChildren.push((<VocabularyChild name={name} onClick={this.removeSelection} key={id} id={id}></VocabularyChild>));
       this.setState({listChildren: newChildren});
     } else {
-      this.logError("Error: Thesaurus lookup failed with code " + status);
+      console.log("Error: Thesaurus lookup failed with code " + status);
     }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.defaultSuggestions !== this.props.defaultSuggestions) {
+    // Use JSON.stringify to compare the values of defaultSuggestions rather than their refs
+    if (JSON.stringify(prevProps.defaultSuggestions) !== JSON.stringify(this.props.defaultSuggestions)) {
       this.populateDefaults();
     }
   }
