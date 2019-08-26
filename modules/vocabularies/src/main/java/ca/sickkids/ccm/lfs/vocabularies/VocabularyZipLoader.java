@@ -39,15 +39,16 @@ import org.apache.http.impl.client.HttpClientBuilder;
 public class VocabularyZipLoader
 {
     /**
-     * Loads zip file from a url into a temporary zip file.
+     * Loads zip file from a url into a temporary zip file by making a http GET request.
      * @param path - url of the zip file
-     * @param directory - directory in which the temporary zip file is to be loaded
+     * @param directory - directory in which the zip file is to be placed, relative to the VocabularyZipLoader
      * @param fileName - name of the temporary zip file
      * @throws VocabularyIndexException thrown upon failure of zip file to load
      */
     public void loadZipHttp(String path, String directory, String fileName)
             throws VocabularyIndexException
     {
+        // GEt request
         HttpGet httpget = new HttpGet(path);
         httpget.setHeader("Content-Type", "application/json");
 
@@ -55,17 +56,24 @@ public class VocabularyZipLoader
         CloseableHttpResponse httpresponse;
 
         try {
+            // Execute GET request
             httpresponse = httpclient.execute(httpget);
 
             if (httpresponse.getStatusLine().getStatusCode() < 400) {
+                // If the http request is successful
+
+                // Create temporary zip file and an OutputStream for writing content to it
                 File.createTempFile(fileName, ".zip");
                 FileOutputStream fileOutput = new FileOutputStream(directory + fileName + ".zip");
 
+                // Write all of the contents of the request to the OutputStream
                 httpresponse.getEntity().writeTo(fileOutput);
 
+                // Close the client and response
                 httpresponse.close();
                 httpclient.close();
             } else {
+                // If http request is not successful, close the client and response and throw an exception
                 String message = "Failed to load zip: " + httpresponse.getStatusLine().getStatusCode() + " http error";
                 httpresponse.close();
                 httpclient.close();
@@ -81,9 +89,9 @@ public class VocabularyZipLoader
     }
 
     /**
-     * Loads a zip file from a local file location to a temporary zip file.
-     * @param path - location of the local file to be accessed
-     * @param directory - directory in which the temporary zip file is to be loaded
+     * Loads a local zip file to a temporary zip file based on a path relative to the VocabularyZipLoader instance.
+     * @param path - path of the local file to be accessed relative to the VocabularyZipLoader
+     * @param directory - directory in which the zip file is to be placed, relative to the VocabularyZipLoader
      * @param fileName - name of the temporary zip file
      * @throws VocabularyIndexException thrown upon failure of zip file to load
      */
@@ -91,23 +99,33 @@ public class VocabularyZipLoader
             throws VocabularyIndexException
     {
         try {
+            // Create
             File.createTempFile(fileName, ".zip");
+
+            // OutuputStreams for creating the temp file
             FileOutputStream fileOutputStream = new FileOutputStream(directory + fileName + ".zip");
             ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
 
+            // InputStreams for reading the new file
             FileInputStream fileInputStream = new FileInputStream(path);
             ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
 
+            // Set InputStream at first zipped file
             zipInputStream.getNextEntry();
 
             try {
                 int c;
                 zipOutputStream.putNextEntry(new ZipEntry(fileName + ".txt"));
+
+                // While there is still content to read, read in the content and write it to the OutputStream
                 while ((c = zipInputStream.read()) != -1) {
                     zipOutputStream.write(c);
                 }
+
+                // Close ZipEntry
                 zipOutputStream.closeEntry();
             } finally {
+                // Close InputStreams and OutputStreams
                 fileInputStream.close();
                 zipInputStream.close();
                 zipOutputStream.close();
