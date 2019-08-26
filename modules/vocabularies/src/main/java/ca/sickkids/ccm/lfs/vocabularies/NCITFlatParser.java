@@ -43,7 +43,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class NCITFlatParser extends AbstractNCITParser
 {
-	// Column numbers of the properties we want to extract.
+    // Column numbers of the properties we want to extract.
     private static final int IDENTIFIER_COLUMN = 0;
 
     private static final int PARENTS_COLUMN = 2;
@@ -56,7 +56,6 @@ public class NCITFlatParser extends AbstractNCITParser
 
     /**
      * An implementation of the abstract class {@link AbstractNCITParser.getTempFileDirectory}.
-     * Returns the directory in which to place the downloaded temporary NCIT zip file.
      */
     @Override
     String getTempFileDirectory()
@@ -66,7 +65,6 @@ public class NCITFlatParser extends AbstractNCITParser
 
     /**
      * An implementation of the abstract class {@link AbstractNCITParser.getTempFileName}.
-     * Returns the name with which the temporary NCIT zip file should be named.
      */
     @Override
     String getTempFileName()
@@ -76,7 +74,8 @@ public class NCITFlatParser extends AbstractNCITParser
 
     /**
      * An implementation of the abstract class {@link AbstractNCITParser.parseNCIT}.
-     * Parses the temporary NCIT zip file and creates JCR nodes for each term.
+     * Parses the temporary NCIT zip file and creates JCR nodes for each term. All exceptions from the classes that
+     * it uses are handled here.
      * @param vocabularyNode - the <code>Vocabulary</code> node which represents the current NCIT instance to index
      * @throws VocabularyIndexException upon failure to parse vocabulary
      */
@@ -85,9 +84,9 @@ public class NCITFlatParser extends AbstractNCITParser
         throws VocabularyIndexException
     {
         try {
-        	// Extracts term parents the flat file and returns a map of (term, parents) pairs
+            // Extracts term parents the flat file and returns a map of (term, parents) pairs
             Map<String, String[]> parentsMap = returnParentMap();
-            
+
             // Extracts all other properties and creates VocabularyTerm nodes based on them
             createTermNodes(parentsMap, vocabularyNode);
         } catch (RepositoryException e) {
@@ -100,26 +99,26 @@ public class NCITFlatParser extends AbstractNCITParser
     }
 
     /**
-     * Extracts all <code>VocabularyTerm</code> node properties from the NCIT flat file zip and creates
-     * JCR nodes . Ancestors of terms are calculated recursively from the parents.
-     * 
-     * @param parentsMap - 
+     * Extracts all <code>VocabularyTerm</code> node properties from the NCIT flat file zip and creates JCR nodes.
+     * Ancestors of terms are calculated recursively from the parents.
+     * @param parentsMap - a map of (term, parents) pairs where "parents" is an array of parent terms
      * @param vocabularyNode - the <code>Vocabulary</code> node which represents the current NCIT instance to index
-     * @throws IOException - thrown 
-     * @throws RepositoryException thrown 
-     * @throws VocabularyIndexException throw by failure to create appropriate JCR node 
+     * @throws IOException thrown when file input cannot be read
+     * @throws RepositoryException thrown when JCR nodes cannot be created
+     * @throws VocabularyIndexException throw by failure to create appropriate JCR node
      */
     private void createTermNodes(Map<String, String[]> parentsMap, Node vocabularyNode)
         throws IOException, RepositoryException, VocabularyIndexException
     {
-    	// 
+        // Read temporary NCIT
         FileInputStream fileInputStream = new FileInputStream(getTempFileDirectory() + getTempFileName() + ".zip");
         ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
         zipInputStream.getNextEntry();
-        
+
         InputStreamReader inputStreamReader = new InputStreamReader(zipInputStream);
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
+        // NCIT formated with TDF, not standard format. We need withQuote(null) to prevent quotes from being read
         CSVParser csvParser = CSVParser.parse(bufferedReader, CSVFormat.TDF.withQuote(null));
 
         Iterator<CSVRecord> csvIterator = csvParser.iterator();
@@ -131,6 +130,8 @@ public class NCITFlatParser extends AbstractNCITParser
             String description = row.get(DESCRIPTION_COLUMN);
 
             String synonymString = row.get(SYNONYMS_COLUMN);
+
+            // Synonym entry is a String with terms separated by "|" so split the String into a String[]
             String[] synonymsArray = synonymString.split("\\|");
 
             // The first synonym of the term the default label if no label is supplied by the term
@@ -139,13 +140,19 @@ public class NCITFlatParser extends AbstractNCITParser
             String label = StringUtils.defaultIfBlank(suppliedLabel, defaultLabel);
 
             String[] parentsArray = parentsMap.get(identifier);
-            String[] ancestorsArray = computeAncestors(parentsMap, identifier);
+
+            /*
+             *  Ancestors are recursively calculated from parents. Since computeAnestors returns the
+             *  ancestors as a Set<String>, it must be converted to a String[] here.
+             */
+            String[] ancestorsArray = computeAncestors(parentsMap, identifier).toArray(new String[0]);
 
             // This method is a protected method in AbstractNCITParser for creating VocabularyTerm nodes
             createNCITVocabularyTermNode(vocabularyNode, identifier, label, description, synonymsArray,
                 parentsArray, ancestorsArray);
         }
 
+        // Close the parsers, readers, and InputStreams
         csvParser.close();
         bufferedReader.close();
         inputStreamReader.close();
@@ -154,28 +161,28 @@ public class NCITFlatParser extends AbstractNCITParser
     }
 
     /**
-     * 
-     * 
-     * @return
-     * @throws IOException
+     * Returns a HashMap containing a (String, String[]) pair representing (term, parents). This is extracted
+     * from the temporary NCIT zip flat file.
+     * @return a map which stores (term, parent) pairs
+     * @throws IOException thrown when temporary NCIT file cannot be read
      */
     private Map<String, String[]> returnParentMap()
         throws IOException
     {
-    	// InputStream for reading the temporary ncit 
+        // Read temporary NCIT
         FileInputStream fileInputStream = new FileInputStream(getTempFileDirectory() + getTempFileName() + ".zip");
         ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
-        
+
         zipInputStream.getNextEntry();
-        
+
         InputStreamReader inputStreamReader = new InputStreamReader(zipInputStream);
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-        // NCIT formated with TDF, not standard format. We need withQuote(null) to prevent quotes from being read 
+        // NCIT formated with TDF, not standard format. We need withQuote(null) to prevent quotes from being read
         CSVParser csvParser = CSVParser.parse(bufferedReader, CSVFormat.TDF.withQuote(null));
 
         Iterator<CSVRecord> csvIterator = csvParser.iterator();
-        
+
         Map<String, String[]> parents = new HashMap<String, String[]>();
 
         while (csvIterator.hasNext()) {
@@ -184,8 +191,11 @@ public class NCITFlatParser extends AbstractNCITParser
             String identifier = row.get(IDENTIFIER_COLUMN);
 
             String parentString = row.get(PARENTS_COLUMN);
+
+            // Parent entry is a String with terms separated by "|" so split the String into a String[]
             String[] parentArray = parentString.split("\\|");
 
+            // Put a blank array if there are no parents
             if (parentArray[0].contentEquals("")) {
                 parents.put(identifier, new String[0]);
             } else {
@@ -193,6 +203,7 @@ public class NCITFlatParser extends AbstractNCITParser
             }
         }
 
+        // Close the parsers, readers, and InputStreams
         csvParser.close();
         bufferedReader.close();
         inputStreamReader.close();
@@ -202,39 +213,31 @@ public class NCITFlatParser extends AbstractNCITParser
         return parents;
     }
 
-    // TODO Test memoization schemes for recursive ancestor computation
-    private String[] computeAncestors(Map<String, String[]> parentsMap, String identifier)
-    {
-        Set<String> termAncestorSet = new HashSet<String>();
-        String[] parentArray = parentsMap.get(identifier);
-        if (parentArray != null && parentArray.length > 0) {
-            for (String parentIdentifier : parentArray)
-            {
-                termAncestorSet.add(parentIdentifier);
-                termAncestorSet.addAll(recursiveComputeAncestors(parentsMap, parentIdentifier));
-            }
-        }
-
-        return termAncestorSet.toArray(new String[0]);
-    }
-
     /**
-     * Helper method for {@link computeAncestors} 
-     * @param parentsMap - map of parents for each 
-     * @param identifier
-     * @return the anc
+     * Recursively calculates the ancestors of a given term, using the map of parents to accumulate a list
+     * of ancestors. This is returned as a String set.
+     * @param parentsMap - a map of (term, parents) pairs where "parents" is an array of parent terms
+     * @param identifier - identifier of the term
+     * @return a set which stores the ancestors of the given term
      */
-    private Set<String> recursiveComputeAncestors(Map<String, String[]> parentsMap, String identifier)
+    private Set<String> computeAncestors(Map<String, String[]> parentsMap, String identifier)
     {
+        // A set is used instead of an array so that the size need not be initially specified.
         Set<String> termAncestorSet = new HashSet<String>();
+
         String[] parentArray = parentsMap.get(identifier);
+
         if (parentArray != null && parentArray.length > 0) {
             for (String parentIdentifier : parentArray)
             {
+                // Add parent as an ancestor
                 termAncestorSet.add(parentIdentifier);
-                termAncestorSet.addAll(recursiveComputeAncestors(parentsMap, parentIdentifier));
+
+                // Add recursively calculated ancestors of parent
+                termAncestorSet.addAll(computeAncestors(parentsMap, parentIdentifier));
             }
         }
+
         return termAncestorSet;
     }
 }
