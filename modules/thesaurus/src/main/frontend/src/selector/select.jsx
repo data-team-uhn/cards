@@ -210,7 +210,7 @@ VocabularySelector.propTypes = {
 VocabularySelector.defaultProps = {
     name: "VocabularySelector",
     source: "hpo",
-    max: 999,
+    max: 0,
     searchDefault: 'Other (specify here)'
 };
 
