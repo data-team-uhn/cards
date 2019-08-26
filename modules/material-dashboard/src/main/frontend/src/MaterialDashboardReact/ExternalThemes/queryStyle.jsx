@@ -148,7 +148,7 @@ const thesaurusStyle = theme => ({
     backgroundColor: theme.palette.error.dark,
   },
   searchWrapper: {
-    margin: "0px 42px",
+    margin: theme.spacing(0, 0, 0, 6),
     position: 'relative',
     display: 'inline-block',
     paddingBottom: "0px",

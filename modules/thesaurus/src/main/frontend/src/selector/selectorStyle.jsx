@@ -31,16 +31,19 @@ const selectorStyle = theme => ({
         margin: theme.spacing(-1,0),
         fontSize: "10px",
         minWidth: "42px",
-    },
-    deleteIcon: {
-        color: grayColor[8],
-        "&:hover": {
-            color: dangerColor[0],
+        "& svg": {
+            color: grayColor[8],
+            "&:hover": {
+                color: dangerColor[0],
+            }
         }
+    },
+    inputLabel: {
+        paddingLeft: theme.spacing(1),
+        display: "inline-block",
     },
     checkbox: {
         margin: theme.spacing(-2,0),
-        // margin: "-9px 0px"
     },
     selectionList: {
         paddingBottom: "0px",

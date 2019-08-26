@@ -53,6 +53,9 @@ class VocabularyChild extends React.Component {
                 }
                 label={name}
                 className={classes.childFormControl}
+                classes={{
+                  label: classes.inputLabel
+                }}
               />
             ) : (
               <React.Fragment>
@@ -60,10 +63,13 @@ class VocabularyChild extends React.Component {
                   onClick={() => {onClick(id, name)}}
                   className={classes.deleteButton}
                   color="secondary"
+                  title="Delete"
                 >
                   <Close color="action" className={classes.deleteIcon}/>
                 </IconButton>
-                {name}
+                <div class={classes.inputLabel}>
+                  {name}
+                </div>
               </React.Fragment>
             )
             }

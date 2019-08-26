@@ -128,6 +128,19 @@ class Thesaurus extends React.Component {
             + " " + classes.popperListOnTop
           }
           placement = "bottom-start"
+          keepMounted
+          modifiers={{
+            flip: {
+              enabled: false
+            },
+            preventOverflow: {
+              enabled: false,
+              boundariesElement: 'viewport',
+            },
+            hide: {
+              enabled: false
+            },
+          }}
         >
           {({ TransitionProps }) => (
             <Grow
@@ -185,7 +198,7 @@ class Thesaurus extends React.Component {
                         justIcon={true}
                         simple={true}
                       >
-                        x
+                        ×
                       </Button>
                       <br />
                       <Typography inline className={classes.infoIDTypography}>{this.state.infoID} </Typography>
@@ -193,7 +206,7 @@ class Thesaurus extends React.Component {
                       <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography> <br />
                       {this.state.infoAlsoKnownAs.length > 0 && (
                         <div>
-                          <Typography className={classes.infoHeader}>Also known as</Typography> <br />
+                          <Typography className={classes.infoHeader}>Also known as</Typography>
                           {this.state.infoAlsoKnownAs.map((name, index) => {
                             return (<Typography className={classes.infoAlsoKnownAs} key={index}>
                                       {name}
@@ -204,7 +217,7 @@ class Thesaurus extends React.Component {
                       )}
                       {this.state.infoTypeOf !== "" && (
                         <div>
-                          <Typography className={classes.infoHeader}>Is a type of</Typography> <br />
+                          <Typography className={classes.infoHeader}>Is a type of</Typography>
                           {this.state.infoTypeOf.map((name, index) => {
                             return (<Typography className={classes.infoTypeOf} key={index}>
                                       {name}
@@ -213,9 +226,13 @@ class Thesaurus extends React.Component {
                           })}
                         </div>
                       )}
-                      {!this.state.browserOpened && <Button onClick={this.openDialog}>
-                        See more
-                      </Button>}
+                      {!this.state.browserOpened &&
+                      <React.Fragment>
+                        <br />
+                        <Button onClick={this.openDialog}>
+                          See more
+                        </Button>
+                      </React.Fragment>}
                     </div>
                   </ClickAwayListener>
                 </Paper>
@@ -288,7 +305,8 @@ class Thesaurus extends React.Component {
       filter += this.props.suggestionCategories.map((category) => {
         var escapedId = category.replace(":", "\\:"); // URI Escape the : from HP: for SolR
         return encodeURIComponent(`term_category:${escapedId}`);
-      }).join("%20OR%20");
+      }).join(encodeURIComponent(" OR "));
+);
     }
 
     // Grab suggestions
