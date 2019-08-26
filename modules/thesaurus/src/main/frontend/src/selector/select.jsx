@@ -180,7 +180,6 @@ class VocabularySelector extends React.Component {
   removeSelection = (id, name, wasSelected=false) => {
     // Do not remove this element if it is in our default suggestions
     // Instead, just update the number of items selected
-    console.log(this.state.selected)
     if (typeof this.props.defaultSuggestions !== "undefined" && id in this.props.defaultSuggestions) {
       if (wasSelected) {
         this.setState({selected: this.state.selected - 1});

@@ -19,7 +19,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
-import { Checkbox, IconButton, ListItem, withStyles, Typography } from "@material-ui/core"
+import { Checkbox, FormControlLabel, IconButton, ListItem, withStyles, Typography } from "@material-ui/core"
 import { Close } from "@material-ui/icons"
 import SelectorStyle from "./selectorStyle.jsx"
 
@@ -38,27 +38,35 @@ class VocabularyChild extends React.Component {
     return (
       <React.Fragment>
         <ListItem key={name} className={classes.selectionChild}>
-          { /* This is either a Checkbox if this is a suggestion, or a button otherwise */
-          isPreselected ?
-          (
-            <Checkbox
-              checked={this.state.checked}
-              onChange={() => {onClick(id, name, this.state.checked); this.toggleCheck()}}
-              disabled={!this.state.checked && disabled}
-              className={classes.checkbox}
-            />
-          ) : (
-            <IconButton
-              onClick={() => {onClick(id, name)}}
-              className={classes.deleteButton}
-              color="secondary"
-            >
-              <Close color="action" className={classes.deleteIcon}/>
-            </IconButton>
-          )
-          }
           <Typography>
-            {name}
+            { /* This is either a Checkbox if this is a suggestion, or a button otherwise */
+            isPreselected ?
+            (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checked}
+                    onChange={() => {onClick(id, name, this.state.checked); this.toggleCheck()}}
+                    disabled={!this.state.checked && disabled}
+                    className={classes.checkbox}
+                  />
+                }
+                label={name}
+                className={classes.childFormControl}
+              />
+            ) : (
+              <React.Fragment>
+                <IconButton
+                  onClick={() => {onClick(id, name)}}
+                  className={classes.deleteButton}
+                  color="secondary"
+                >
+                  <Close color="action" className={classes.deleteIcon}/>
+                </IconButton>
+                {name}
+              </React.Fragment>
+            )
+            }
           </Typography>
         </ListItem>
         {

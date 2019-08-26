@@ -316,7 +316,12 @@ class Thesaurus extends React.Component {
               <MenuItem
                 className={this.props.classes.dropdownItem}
                 key={element["id"]}
-                onClick={(e) => {this.props.onClick(element["id"], element["name"]); this.closeDialog();}}
+                onClick={(e) => {
+                  if (e.target.localName === "li") {
+                    this.props.onClick(element["id"], element["name"]);
+                    this.closeDialog();
+                  }}
+                }
               >
                 {element["name"]}
                 <Button
