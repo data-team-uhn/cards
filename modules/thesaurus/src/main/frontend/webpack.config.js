@@ -42,7 +42,8 @@ module.exports = {
       "prop-types": "PropTypes",
       "jss": "jss",
       "@material-ui/core": "window['MaterialUI']",
-      "MaterialDashboardReact": "window['MaterialDashboard']"
+      "MaterialDashboardReact": "window['MaterialDashboard']['lfs-material-dashboard.all']",
+      "MaterialDashboardReact/ThemeStyle": "window['MaterialDashboard']['lfs-material-dashboard.themeStyle']"
     }
   ]
 };

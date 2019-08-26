@@ -17,24 +17,30 @@
 //  under the License.
 //
 
+import { dangerColor, grayColor } from "MaterialDashboardReact/ThemeStyle";
+
 const selectorStyle = theme => ({
     selectionChild: {
-        paddingLeft: "0px",
+        paddingLeft: theme.spacing(0),
+    },
+    childFormControl: {
+        marginLeft: theme.spacing(0),
     },
     deleteButton: {
-        padding: "9px 0px",
-        margin: "-9px 0px",
+        padding: theme.spacing(1,0),
+        margin: theme.spacing(-1,0),
         fontSize: "10px",
         minWidth: "42px",
     },
     deleteIcon: {
-        color: "#00000054",
+        color: grayColor[8],
         "&:hover": {
-            color: "#FF0000",
+            color: dangerColor[0],
         }
     },
     checkbox: {
-        margin: "-9px 0px"
+        margin: theme.spacing(-2,0),
+        // margin: "-9px 0px"
     },
     selectionList: {
         paddingBottom: "0px",
