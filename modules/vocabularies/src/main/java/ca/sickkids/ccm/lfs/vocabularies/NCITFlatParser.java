@@ -55,7 +55,7 @@ public class NCITFlatParser extends AbstractNCITParser
     private static final int LABEL_COLUMN = 5;
 
     /**
-     * An implementation of the abstract class {@link AbstractNCITParser.getTempFileDirectory}.
+     * An implementation of the abstract method {@link AbstractNCITParser.getTempFileDirectory}.
      */
     @Override
     String getTempFileDirectory()
@@ -64,7 +64,7 @@ public class NCITFlatParser extends AbstractNCITParser
     }
 
     /**
-     * An implementation of the abstract class {@link AbstractNCITParser.getTempFileName}.
+     * An implementation of the abstract method {@link AbstractNCITParser.getTempFileName}.
      */
     @Override
     String getTempFileName()
@@ -73,7 +73,7 @@ public class NCITFlatParser extends AbstractNCITParser
     }
 
     /**
-     * An implementation of the abstract class {@link AbstractNCITParser.parseNCIT}.
+     * An implementation of the abstract method {@link AbstractNCITParser.parseNCIT}.
      * Parses the temporary NCIT zip file and creates JCR nodes for each term. All exceptions from the classes that
      * it uses are handled here.
      * @param vocabularyNode - the <code>Vocabulary</code> node which represents the current NCIT instance to index
