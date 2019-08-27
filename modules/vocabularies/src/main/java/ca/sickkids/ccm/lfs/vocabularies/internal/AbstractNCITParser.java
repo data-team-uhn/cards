@@ -28,7 +28,8 @@ import javax.jcr.RepositoryException;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.log.LogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
@@ -50,6 +51,8 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
  */
 public abstract class AbstractNCITParser implements VocabularyParser
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNCITParser.class);
+
     @Reference
     protected VocabularyParserUtils utils;
 
@@ -72,9 +75,9 @@ public abstract class AbstractNCITParser implements VocabularyParser
      * @throws IOException thrown when response Json cannot be written
      */
     @Override
-    public void parseVocabulary(SlingHttpServletRequest request, SlingHttpServletResponse response,
-        LogService logger)
-        throws IOException
+    public void parse(final String source, final SlingHttpServletRequest request,
+        final SlingHttpServletResponse response)
+        throws IOException, VocabularyIndexException
     {
         // Obtain relevant request parameters.
         String identifier = request.getParameter("identifier");
@@ -103,21 +106,21 @@ public abstract class AbstractNCITParser implements VocabularyParser
             this.utils.clearVocabularyNode(homepage, identifier);
 
             // Load temporary NCIT zip file. Default location is at https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/
-            String source = "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".FLAT.zip";
+            String sourceLocation = "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".FLAT.zip";
             VocabularyZipLoader zipLoader = new VocabularyZipLoader();
             if (localpath != null) {
-                source = localpath;
+                sourceLocation = localpath;
                 zipLoader.loadZipLocal(localpath, getTempFileDirectory(), getTempFileName());
             } else if (httppath != null) {
-                source = httppath;
+                sourceLocation = httppath;
                 zipLoader.loadZipHttp(httppath, getTempFileDirectory(), getTempFileName());
             } else {
-                zipLoader.loadZipHttp(source, getTempFileDirectory(), getTempFileName());
+                zipLoader.loadZipHttp(sourceLocation, getTempFileDirectory(), getTempFileName());
             }
 
             // Create a new Vocabulary node instance representing this vocabulary instance
             String name = "National Cancer Institute Thesaurus";
-            Node vocabularyNode = createNCITVocabularyNode(homepage, identifier, name, source, version);
+            Node vocabularyNode = createNCITVocabularyNode(homepage, identifier, name, sourceLocation, version);
 
             // Parse the NCIT zip file and create VocabularyTerm node children
             parseNCIT(vocabularyNode);
@@ -138,9 +141,7 @@ public abstract class AbstractNCITParser implements VocabularyParser
             // If parsing fails, delete the temporary zip file and return an error json with the exception message
             deleteTempZipFile(getTempFileDirectory(), getTempFileName());
             this.utils.writeStatusJson(request, response, false, "NCIT Flat parsing error: " + e.getMessage());
-            if (logger != null) {
-                logger.log(LogService.LOG_ERROR, "NCIT Flat parsing error: " + e.getMessage());
-            }
+            LOGGER.error("NCIT Flat parsing error: {}", e.getMessage(), e);
         }
     }
 
