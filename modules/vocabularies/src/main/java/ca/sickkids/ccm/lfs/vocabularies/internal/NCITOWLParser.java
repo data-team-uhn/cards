@@ -63,6 +63,10 @@ public class NCITOWLParser extends AbstractNCITParser
     }
 
     /**
+     * Concrete implementation of the abstract method {@link AbstractNCITParser.parseVocabulary}.
+     * Parses the temporary NCIT zip file and creates JCR nodes for each term.
+     * @param vocabularyNode - the <code>Vocabulary</code> node which represents the current NCIT instance to index
+     * @exception VocabularyIndexException upon failure to parse vocabulary
      */
     @Override
     protected void parseNCIT(final File source, final Node vocabularyNode)
@@ -73,7 +77,7 @@ public class NCITOWLParser extends AbstractNCITParser
             ZipInputStream inputStream = new ZipInputStream(new FileInputStream(source));
             inputStream.getNextEntry();
 
-            // Read in NCIT to OntModel using a ZipInputStream
+            // Create an OntModel to represent the vocabulary and read in the zip file using a ZipInputStream
             OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
             ontModel.read(inputStream, null);
             inputStream.close();
@@ -88,12 +92,16 @@ public class NCITOWLParser extends AbstractNCITParser
                 // Identifier code is the local name of the term
                 String identifier = term.getLocalName();
 
-                // The definition is the property "P97". The properties are defined before all of the
-                // terms in the OWL file, and they must be retrieved from the OntModel.
+                /*
+                 * The code for the definition is "P97". The properties are defined before all of the
+                 * terms in the OWL file, and they must be retrieved from the OntModel.
+                 * Note that the longform name of the property is "DEFINITION".
+                 */
                 Property descriptionProperty = ontModel.getProperty(term.getNameSpace(), "P97");
 
-                // Then, the property must be passed into the getProperty function in order for the
-                // statement object representing the property's contents to be obtained.
+                /*Then, the property must be passed into the getProperty function in order for the
+                 * statement object representing the property's contents to be obtained.
+                 */
                 Statement descriptionFromTerm = term.getProperty(descriptionProperty);
 
                 // This handles the case if the statement is blank or null
@@ -108,16 +116,20 @@ public class NCITOWLParser extends AbstractNCITParser
                 String[] parents = getAncestors(term, true);
                 String[] ancestors = getAncestors(term, false);
 
-                // The label is the term label. The language option is null because "EN" doesn't return
-                // a correct label.
+                /*
+                 * The label is the term label. The language option is null because "EN" doesn't
+                 * return a correct label
+                 */
                 String suppliedLabel = term.getLabel(null);
                 String defaultLabel = synonyms[0];
                 String label = StringUtils.defaultIfBlank(suppliedLabel, defaultLabel);
 
+                // Create VocabularyTerm node as child of vocabularyNode using inherited protected method
                 createNCITVocabularyTermNode(vocabularyNode, identifier, label, description, synonyms,
                     parents, ancestors);
             }
 
+            // Close iterator for terms and OntModel to save memory
             termIterator.close();
             ontModel.close();
         } catch (FileNotFoundException e) {
@@ -129,36 +141,67 @@ public class NCITOWLParser extends AbstractNCITParser
         }
     }
 
-    // Instantiates an iterator which collects all properties with the name "P90" (i.e. synonym) and
-    // puts it into a set, which is then converted to an array.
+    /**
+     * Returns a String array of synonyms for a specified term. This is done by obtaining an iterator that collects
+     * all instances of the property "FULL_SYN" or "P90".
+     * @param ontModel - OntModel representing the vocabulary
+     * @param term - OntClass representing the term
+     * @return String array containing all the synonyms of the term
+     */
     private String[] getSynonyms(OntModel ontModel, OntClass term)
     {
+        /*
+         * A set is used for initial storage so that the number of synonyms does not need to be specified.
+         * This removes order from the list of synonyms.
+         */
         Set<String> synonyms = new HashSet<String>();
+
+        /*
+         * Like the definition, synonyms are properties. The synonym property code is "P90". In order to
+         * find synonyms, the property definition must be first obtained from the OntModel, and then passed
+         * into listProperties in order to obtain an iterator that collects all instances of that property
+         * in the OntClass.
+         */
         final Property synonymProperty = ontModel.getProperty(term.getNameSpace(), "P90");
         final ExtendedIterator<Statement> allSynonyms = term.listProperties(synonymProperty);
+
         while (allSynonyms.hasNext()) {
             Statement synonymTerm = allSynonyms.next();
             synonyms.add(synonymTerm.getString());
         }
         allSynonyms.close();
+
+        // Convert the set to an array and return it
         return synonyms.toArray(new String[0]);
     }
 
-    // Instantiates an iterator which collects all the listed ancestors of the term listed in the OWL file
-    // and puts it into a set, which is then converted to an array.
-
-    // If directAncestor is true, then the iterator returned only direct ancestors (i.e. parents). If it is false
-    // then all ancestors are listed. Ancestors are superclases.
+    /**
+     * Returns a String array of ancestors for a specified term. The method can return only the parents (direct
+     * ancestors) or all of the ancestors. The method obtains an iterator which collects all of the superclasses
+     * of the term directly listed in its OWL definition.
+     * @param term - the OntClass representing the term for which ancestors should be retrieved
+     * @param directAncestor - true if only parents (i.e. direct ancestors) are wanted, false if otherwise
+     * (if all ancestors are wanted)
+     * @return String array containing the identifiers of all specified ancestors
+     */
     private String[] getAncestors(OntClass term, boolean directAncestor)
     {
+        /*
+         *  A set is used for initial storage so that the number of ancestors does not need to be specified.
+         *  This removes order from the list of ancestors.
+         */
         Set<String> ancestors = new HashSet<String>();
+
         final ExtendedIterator<OntClass> allAncestors = term.listSuperClasses(directAncestor);
         while (allAncestors.hasNext())
         {
+            // Obtain the identifier of each ancestor and add it to the set
             OntClass ancestorTerm = allAncestors.next();
             ancestors.add(ancestorTerm.getLocalName());
         }
         allAncestors.close();
+
+        // Convert the set to an array and return it
         return ancestors.toArray(new String[0]);
     }
 }
