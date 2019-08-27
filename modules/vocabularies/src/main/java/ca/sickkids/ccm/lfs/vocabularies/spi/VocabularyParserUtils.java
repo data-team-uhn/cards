@@ -73,7 +73,7 @@ public class VocabularyParserUtils
      * @param request - http request from the VocabularyIndexerServlet
      * @param response - http response from the VocabularyIndexerServlet
      * @param isSuccessful - boolean variable which is true if parsing is successful and false otherwise
-     * @param errors - the error message caught from the exception which is null if there is no error
+     * @param error - the error message caught from the exception which is null if there is no error
      * @throws IOException thrown when json cannot be written
      */
     public void writeStatusJson(final SlingHttpServletRequest request, final SlingHttpServletResponse response,

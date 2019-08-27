@@ -28,6 +28,7 @@ import org.apache.sling.api.SlingHttpServletResponse;
  *
  * @version $Id$
  */
+@SuppressWarnings("checkstyle:RedundantModifier")
 public interface VocabularyParser
 {
     /**
@@ -51,6 +52,7 @@ public interface VocabularyParser
      * @param request HTTP request the original request that trigger the parse, may contain additional parameters that
      *            customize the parsing process
      * @param response HTTP response where the status should be written to
+     * @throws IOException when writing json response fails
      * @throws VocabularyIndexException when parsing the vocabulary or storing the parsed data fail
      */
     void parse(final String source, final SlingHttpServletRequest request, final SlingHttpServletResponse response)
