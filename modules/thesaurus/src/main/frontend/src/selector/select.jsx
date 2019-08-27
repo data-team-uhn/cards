@@ -45,6 +45,7 @@ class VocabularySelector extends React.Component {
 
   render() {
     const {name, source, suggestionCategories, max, selectionContainer, defaultSuggestionIDs, defaultSuggestionNames, classes, ...rest} = this.props;
+    var disabled = max > 1 && this.state.selected >= max;
 
     return (
       <React.Fragment>
@@ -53,7 +54,8 @@ class VocabularySelector extends React.Component {
           suggestionCategories = {suggestionCategories}
           Vocabulary = {source}
           ref = {(ref) => {this.thresaurusRef = ref;}}
-          disabled = {max > 1 && this.state.selected >= max}
+          disabled = {disabled}
+          overrideText = {disabled ? `Please select at most ${max} options.` : undefined }
           {...rest}
         >
           {
@@ -61,7 +63,7 @@ class VocabularySelector extends React.Component {
             typeof selectionContainer === "undefined" &&
             (
               <List className={classes.selectionList}>
-                {this.generateListChildren()}
+                {this.generateListChildren(disabled)}
               </List>
             )
           }
@@ -85,7 +87,7 @@ class VocabularySelector extends React.Component {
 
   /* Since we need to enable/disable children on the fly, we also generate them
       on the fly */
-  generateListChildren = () => {
+  generateListChildren = (disabled) => {
     return this.state.listChildren.map( (childData) => {
       return (
         <VocabularyChild
@@ -93,7 +95,7 @@ class VocabularySelector extends React.Component {
           key={childData[ID_POS]}
           name={childData[NAME_POS]}
           onClick={this.removeSelection}
-          disabled={this.props.max > 1 && this.state.selected >= this.props.max}
+          disabled={disabled}
           isPreselected={childData[IS_PRESELECT_POS]}
         ></VocabularyChild>
       );

@@ -306,7 +306,6 @@ class Thesaurus extends React.Component {
         var escapedId = category.replace(":", "\\:"); // URI Escape the : from HP: for SolR
         return encodeURIComponent(`term_category:${escapedId}`);
       }).join(encodeURIComponent(" OR "));
-);
     }
 
     // Grab suggestions
@@ -482,10 +481,20 @@ class Thesaurus extends React.Component {
       snackbarMessage: message,
     })
   }
+
+  componentDidUpdate(prevProps) {
+    // Check to see if we were disabled/enabled
+    if (this.props.disabled != prevProps.disabled) {
+      // Alter our text to either the override ("Please select at most X options")
+      // or empty it
+      this.anchorEl.value = this.props.disabled ? this.props.overrideText : "";
+    }
+  }
 }
 
 Thesaurus.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    overrideText: PropTypes.string,
 };
 
 Thesaurus.defaultProps = {
