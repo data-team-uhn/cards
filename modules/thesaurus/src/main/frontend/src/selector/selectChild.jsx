@@ -97,8 +97,6 @@ class VocabularyChild extends React.Component {
 
 VocabularyChild.defaultProps = {
   isPreselected: false,
-  source: "hpo",
-  max: 999,
 };
 
 export default withStyles(SelectorStyle)(VocabularyChild);

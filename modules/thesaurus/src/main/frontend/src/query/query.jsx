@@ -134,7 +134,8 @@ class Thesaurus extends React.Component {
               enabled: false
             },
             preventOverflow: {
-              enabled: false,
+              enabled: true,
+              priority: ['left', 'right'],
               boundariesElement: 'viewport',
             },
             hide: {
@@ -184,22 +185,22 @@ class Thesaurus extends React.Component {
                 <Paper className={classes.infoPaper}>
                   <ClickAwayListener onClickAway={this.closeInfo}>
                     <div>
-                      <a
-                        href="http://human-phenotype-ontology.github.io/"
-                        target="_blank"
-                        title="The Human Phenotype Ontology project: linking molecular biology and disease through phenotype data. Sebastian Köhler, Sandra C Doelken, Christopher J. Mungall, Sebastian Bauer, Helen V. Firth, et al. Nucl. Acids Res. (1 January 2014) 42 (D1): D966-D974 doi:10.1093/nar/gkt1026. Current version: releases/2018-10-09"
-                      >
-                        <Typography inline className={classes.infoDataSource}>The Human Phenotype Ontology (HPO)</Typography>
-                      </a>
-                      <Button
-                        className={classes.closeButton}
-                        onClick={this.closeInfo}
-                        variant="outlined"
-                        justIcon={true}
-                        simple={true}
-                      >
-                        ×
-                      </Button>
+                      <Typography inline className={classes.infoDataSource}>
+                        <a
+                          href="http://human-phenotype-ontology.github.io/"
+                          target="_blank"
+                          title="The Human Phenotype Ontology project: linking molecular biology and disease through phenotype data. Sebastian Köhler, Sandra C Doelken, Christopher J. Mungall, Sebastian Bauer, Helen V. Firth, et al. Nucl. Acids Res. (1 January 2014) 42 (D1): D966-D974 doi:10.1093/nar/gkt1026. Current version: releases/2018-10-09"
+                        >
+                            The Human Phenotype Ontology (HPO)
+                        </a>
+                        <Button
+                          className={classes.closeButton}
+                          color="transparent"
+                          onClick={this.closeInfo}
+                        >
+                          ×
+                        </Button>
+                      </Typography>
                       <br />
                       <Typography inline className={classes.infoIDTypography}>{this.state.infoID} </Typography>
                       <Typography inline className={classes.infoName}>{this.state.infoName}</Typography> <br />

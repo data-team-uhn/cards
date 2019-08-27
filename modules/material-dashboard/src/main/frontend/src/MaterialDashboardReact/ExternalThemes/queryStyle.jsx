@@ -19,12 +19,14 @@ import {
 import dropdownStyle from "./dropdownStyle.jsx";
 
 const thesaurusStyle = theme => ({
-  ...dropdownStyle(theme),
+  //...dropdownStyle(theme),
   closeButton: {
     float: "right",
     height: "100%",
     padding: "0px",
-    fontSize: "10px",
+    marginTop: "0px",
+    marginBottom: "0px",
+    fontSize: "12px",
     color: grayColor[0],
   },
   successText: {
@@ -161,10 +163,14 @@ const thesaurusStyle = theme => ({
     marginTop: "0px",
   },
   infoDataSource: {
-    color: "#0089DC"
+    color: "#0089DC",
+    fontSize: "10px",
   },
   searchButton: {
     margin: "0px",
+  },
+  dropdownItem: {
+    whiteSpace: 'normal',
   }
 });
 
