@@ -34,10 +34,11 @@ import ca.sickkids.ccm.lfs.vocabularies.internal.NCITFlatParser;
 
 /**
  * Servlet which handles parsing and JCR node creation for vocabularies.
+ *
  * @version $Id$
  */
-@Component (service = {Servlet.class})
-@SlingServletResourceTypes(resourceTypes = {"lfs/VocabulariesHomepage"}, methods = {"POST"})
+@Component(service = { Servlet.class })
+@SlingServletResourceTypes(resourceTypes = { "lfs/VocabulariesHomepage" }, methods = { "POST" })
 public class VocabularyIndexerServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -2156160697967947088L;
@@ -56,5 +57,3 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         }
     }
 }
-
-

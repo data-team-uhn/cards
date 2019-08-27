@@ -28,22 +28,25 @@ import org.osgi.service.log.LogService;
 
 /**
  * Interface which defines methods required from classes that parse vocabularies.
+ *
  * @version $Id$
  */
 public interface VocabularyParser
 {
     /**
      * General method for handling vocabulary parsing.
+     *
      * @param request - http request from the VocabularyIndexerServlet
      * @param response - http response from the VocabularyIndexerServlet
      * @param logger - logger from the VocabularyIndexerServlet to log exceptions caught
      * @throws IOException thrown when response Json cannot be written
-    */
+     */
     void parseVocabulary(SlingHttpServletRequest request, SlingHttpServletResponse response, LogService logger)
         throws IOException;
 
     /**
      * Remove any previous instances of the vocabulary which is to be parsed and indexed in the JCR repository.
+     *
      * @param homepage - VocabulariesHomepage node instance serving as root for Vocabulary nodes
      * @param name - identifier of the vocabulary which will become its node name
      * @throws VocabularyIndexException thrown when the node cannot be removed
@@ -52,8 +55,9 @@ public interface VocabularyParser
         throws VocabularyIndexException;
 
     /**
-     * Writes a json to the http response consisting of two entries, "isSuccessful" which indicates if the
-     * parsing attempt was successful or not, and "error" which is the error message in case of an error.
+     * Writes a json to the http response consisting of two entries, "isSuccessful" which indicates if the parsing
+     * attempt was successful or not, and "error" which is the error message in case of an error.
+     *
      * @param request - http request for the VocabularyIndexerServlet
      * @param response - http response for the VocabularyIndexerServlet
      * @param isSuccessful - boolean variable which when true indicates success and when false indicates failure

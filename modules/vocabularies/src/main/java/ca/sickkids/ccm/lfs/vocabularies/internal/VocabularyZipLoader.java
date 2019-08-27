@@ -36,19 +36,21 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 
 /**
  * Utility class to load zip files.
+ *
  * @version $Id$
  */
 public class VocabularyZipLoader
 {
     /**
      * Loads zip file from a url into a temporary zip file by making a http GET request.
+     *
      * @param path - url of the zip file
      * @param directory - directory in which the zip file is to be placed, relative to the VocabularyZipLoader
      * @param fileName - name of the temporary zip file
      * @throws VocabularyIndexException thrown upon failure of zip file to load
      */
     public void loadZipHttp(String path, String directory, String fileName)
-            throws VocabularyIndexException
+        throws VocabularyIndexException
     {
         // GEt request
         HttpGet httpget = new HttpGet(path);
@@ -92,13 +94,14 @@ public class VocabularyZipLoader
 
     /**
      * Loads a local zip file to a temporary zip file based on a path relative to the VocabularyZipLoader instance.
+     *
      * @param path - path of the local file to be accessed relative to the VocabularyZipLoader
      * @param directory - directory in which the zip file is to be placed, relative to the VocabularyZipLoader
      * @param fileName - name of the temporary zip file
      * @throws VocabularyIndexException thrown upon failure of zip file to load
      */
     public void loadZipLocal(String path, String directory, String fileName)
-            throws VocabularyIndexException
+        throws VocabularyIndexException
     {
         try {
             // Create

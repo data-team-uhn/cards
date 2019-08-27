@@ -42,8 +42,8 @@ import org.osgi.service.log.LogService;
  *
  * @version $Id$
  */
-@Component (service = {Servlet.class})
-@SlingServletResourceTypes(resourceTypes = {"lfs/Vocabulary"}, methods = {"GET"})
+@Component(service = { Servlet.class })
+@SlingServletResourceTypes(resourceTypes = { "lfs/Vocabulary" }, methods = { "GET" })
 public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -8244429250995709300L;

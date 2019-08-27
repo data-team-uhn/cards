@@ -54,6 +54,7 @@ import com.google.common.base.Function;
 
 /**
  * Unit tests for VocabularyIndexerServlet.
+ *
  * @version $Id$
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -66,8 +67,9 @@ public class VocabularyIndexerServletTest
     private VocabularyIndexerServlet indexServlet;
 
     /**
-     * Registers a {@link org.apache.sling.api.resource.Resource} to {@link javax.jcr.node} adapter.
-     * At present, this does not seem to be fully functional yet.
+     * Registers a {@link org.apache.sling.api.resource.Resource} to {@link javax.jcr.node} adapter. At present, this
+     * does not seem to be fully functional yet.
+     *
      * @param session - MockJcr session used in test
      */
     public void registerResourceToNodeAdapter(Session session)
@@ -76,6 +78,7 @@ public class VocabularyIndexerServletTest
         this.context.registerAdapter(Resource.class, Node.class,
             new Function<Resource, Node>()
             {
+                @Override
                 public Node apply(Resource resource)
                 {
                     // Take in a resource and try to do the following:
@@ -94,13 +97,13 @@ public class VocabularyIndexerServletTest
                     }
                     return node;
                 }
-            }
-        );
+            });
     }
 
     /**
-     * Creates a mock <code>VocabulariesHomepage</code> node <code>/Vocabularies</code> to act as the resource
-     * of the request sent to the {@link VocabularyIndexerServlet}.
+     * Creates a mock <code>VocabulariesHomepage</code> node <code>/Vocabularies</code> to act as the resource of the
+     * request sent to the {@link VocabularyIndexerServlet}.
+     *
      * @param resourceResolver - resource resolver of the MockSling instance
      * @throws Exception thrown if resource cannot be created
      */
@@ -120,6 +123,7 @@ public class VocabularyIndexerServletTest
 
     /**
      * Makes a POST request to an instance of the {@link VocabularyIndexerServlet} using the parameters given.
+     *
      * @param request - mock http request to pass into servlet
      * @param response - mock http response to pass into servlet
      * @param params - parameters that the mock http request is to have
@@ -138,6 +142,7 @@ public class VocabularyIndexerServletTest
 
     /**
      * Tests {@link VocabularyIndexerServlet} response to a request with the mandatory version parameter missing.
+     *
      * @throws Exception when an unexpected response is returned or the request has failed
      */
     @Test
@@ -191,6 +196,7 @@ public class VocabularyIndexerServletTest
 
     /**
      * Tests {@link VocabularyIndexerServlet} response to a request with a nonexistent relative path to a zip file.
+     *
      * @throws Exception when an unexpected response is returned or the request has failed
      */
     @Test
@@ -246,6 +252,7 @@ public class VocabularyIndexerServletTest
     /**
      * Tests {@link VocabularyIndexerServlet} parsing and indexing a locally stored zip of a test vocabulary called
      * flatTestVocabulary. Checks if the resultant nodes that are created in the MockJcr instance are correct.
+     *
      * @throws Exception when an unexpected response is returned or the request has failed
      */
     @Test
@@ -276,7 +283,7 @@ public class VocabularyIndexerServletTest
 
         // Set the request parameters and execute request
         String requestParams = "source=ncit&identifier=flatTestVocabulary&version=19.05d&localpath="
-                + "./flat_NCIT_type_testcase.zip";
+            + "./flat_NCIT_type_testcase.zip";
         makePost(request, response, requestParams);
 
         // Get the root and vocabulary nodes from the request
@@ -294,15 +301,16 @@ public class VocabularyIndexerServletTest
     /**
      * Checks if all of the terms in the test vocabulary have been created as valid nodes by the parsing/indexing
      * process.
+     *
      * @param flatTestVocabulary - <code>Vocabulary</code> node created in the MockJcr instance
-     * @throws Exception if the given <code>VocabularyTerm</code> nodes or the <code>Vocabulary</code> nodes do
-     *     not exist.
+     * @throws Exception if the given <code>VocabularyTerm</code> nodes or the <code>Vocabulary</code> nodes do not
+     *             exist.
      */
     private void ncitFlatTestVocabularyNode(Node flatTestVocabulary)
         throws Exception
     {
-        String[] expectedNodes = {"C100000", "C100001", "C100002", "C100003", "C100004", "C100005", "C100006",
-            "C100007", "C100008", "C100009"};
+        String[] expectedNodes = { "C100000", "C100001", "C100002", "C100003", "C100004", "C100005", "C100006",
+        "C100007", "C100008", "C100009" };
 
         // Check if each expected node exists
         for (String nodeName : expectedNodes) {
@@ -320,6 +328,7 @@ public class VocabularyIndexerServletTest
 
     /**
      * Method which gets a String property from a node and compares it with the correct String value.
+     *
      * @param node - JCR node instance
      * @param propertyName - name of the String property we want to get from the node
      * @param correctString - correct value of the String property
@@ -335,10 +344,11 @@ public class VocabularyIndexerServletTest
     }
 
     /**
-     * Method which gets a String[] property from a node and compares it with the correct String[] value. Only
-     * the contents are compared; the order of the contents does not matter.
-     * The arrays are loaded in to String set instances and these are compared. Since sets are unordered,
-     * it allows the order of the array elements to be neglected.
+     * Method which gets a String[] property from a node and compares it with the correct String[] value. Only the
+     * contents are compared; the order of the contents does not matter. The arrays are loaded in to String set
+     * instances and these are compared. Since sets are unordered, it allows the order of the array elements to be
+     * neglected.
+     *
      * @param node - JCR node instance
      * @param propertyName - name of the String[] property we want to get from the node
      * @param correctStringArray - correct value of the String[] property
@@ -355,16 +365,14 @@ public class VocabularyIndexerServletTest
         Assert.assertTrue(obtainedStringValues.length == correctStringArray.length);
 
         // Load the respective arrays into sets
-        Set<String> correctStringSet = new HashSet<String>();
-        Set<String> obtainedStringSet = new HashSet<String>();
+        Set<String> correctStringSet = new HashSet<>();
+        Set<String> obtainedStringSet = new HashSet<>();
 
-        for (String correctString : correctStringArray)
-        {
+        for (String correctString : correctStringArray) {
             correctStringSet.add(correctString);
         }
 
-        for (Value obtainedValue : obtainedStringValues)
-        {
+        for (Value obtainedValue : obtainedStringValues) {
             // Convert the value to String before putting into set
             obtainedStringSet.add(obtainedValue.getString());
         }
@@ -376,6 +384,7 @@ public class VocabularyIndexerServletTest
     /**
      * Compares the correct values for node C100008 in the test vocabulary to the ones actually generated by the
      * {@link VocabularyIndexerServlet}.
+     *
      * @param flatTestVocabulary - the <code>Vocabulary</code> node generated containing the test vocabulary
      * @throws Exception thrown when node properties don't match correct properties or if properties don't exist
      */
@@ -394,23 +403,24 @@ public class VocabularyIndexerServletTest
         checkString(c100008, "label", label);
 
         String[] synonyms = {
-            "Rescue Percutaneous Coronary Intervention for ST Elevation Myocardial Infarction After Failed "
-                + "Full-Dose Thrombolytic Therapy",
-            "RESCUE PERCUTANEOUS CORONARY INTERVENTION (PCI) FOR ST ELEVATION MYOCARDIAL INFARCTION (STEMI) "
-                + "(AFTER FAILED FULL-DOSE THROMBOLYTICS)"
+        "Rescue Percutaneous Coronary Intervention for ST Elevation Myocardial Infarction After Failed "
+            + "Full-Dose Thrombolytic Therapy",
+        "RESCUE PERCUTANEOUS CORONARY INTERVENTION (PCI) FOR ST ELEVATION MYOCARDIAL INFARCTION (STEMI) "
+            + "(AFTER FAILED FULL-DOSE THROMBOLYTICS)"
         };
         checkStringArray(c100008, "synonyms", synonyms);
 
-        String[] parents = {"C100006", "C100007"};
+        String[] parents = { "C100006", "C100007" };
         checkStringArray(c100008, "parents", parents);
 
-        String[] ancestors = {"C100001", "C100002", "C100004", "C100005", "C100006", "C100007"};
+        String[] ancestors = { "C100001", "C100002", "C100004", "C100005", "C100006", "C100007" };
         checkStringArray(c100008, "ancestors", ancestors);
     }
 
     /**
      * Compares the correct values for node C10000 in the test vocabulary to the ones actually generated by the
      * {@link VocabularyIndexerServlet}.
+     *
      * @param flatTestVocabulary - the <code>Vocabulary</code> node generated containing the test vocabulary
      * @throws Exception thrown when node properties don't match correct properties or if properties don't exist
      */
@@ -426,15 +436,15 @@ public class VocabularyIndexerServletTest
         checkString(c100005, "label", label);
 
         String[] synonyms = {
-            "Post-Cardiac Transplant Evaluation",
-            "POST-CARDIAC TRANSPLANT"
+        "Post-Cardiac Transplant Evaluation",
+        "POST-CARDIAC TRANSPLANT"
         };
         checkStringArray(c100005, "synonyms", synonyms);
 
-        String[] parents = {"C100002"};
+        String[] parents = { "C100002" };
         checkStringArray(c100005, "parents", parents);
 
-        String[] ancestors = {"C100002"};
+        String[] ancestors = { "C100002" };
         checkStringArray(c100005, "ancestors", ancestors);
     }
 }

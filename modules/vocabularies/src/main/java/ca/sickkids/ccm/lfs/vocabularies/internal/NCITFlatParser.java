@@ -41,6 +41,7 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 
 /**
  * Concrete subclass of AbstractNCITParser for parsing NCIT in flat file form.
+ *
  * @version $Id$
  */
 public class NCITFlatParser extends AbstractNCITParser
@@ -75,9 +76,9 @@ public class NCITFlatParser extends AbstractNCITParser
     }
 
     /**
-     * An implementation of the abstract method {@link AbstractNCITParser.parseNCIT}.
-     * Parses the temporary NCIT zip file and creates JCR nodes for each term. All exceptions from the classes that
-     * it uses are handled here.
+     * An implementation of the abstract method {@link AbstractNCITParser.parseNCIT}. Parses the temporary NCIT zip file
+     * and creates JCR nodes for each term. All exceptions from the classes that it uses are handled here.
+     *
      * @param vocabularyNode - the <code>Vocabulary</code> node which represents the current NCIT instance to index
      * @throws VocabularyIndexException upon failure to parse vocabulary
      */
@@ -103,6 +104,7 @@ public class NCITFlatParser extends AbstractNCITParser
     /**
      * Extracts all <code>VocabularyTerm</code> node properties from the NCIT flat file zip and creates JCR nodes.
      * Ancestors of terms are calculated recursively from the parents.
+     *
      * @param parentsMap - a map of (term, parents) pairs where "parents" is an array of parent terms
      * @param vocabularyNode - the <code>Vocabulary</code> node which represents the current NCIT instance to index
      * @throws IOException thrown when file input cannot be read
@@ -144,8 +146,8 @@ public class NCITFlatParser extends AbstractNCITParser
             String[] parentsArray = parentsMap.get(identifier);
 
             /*
-             *  Ancestors are recursively calculated from parents. Since computeAnestors returns the
-             *  ancestors as a Set<String>, it must be converted to a String[] here.
+             * Ancestors are recursively calculated from parents. Since computeAnestors returns the ancestors as a
+             * Set<String>, it must be converted to a String[] here.
              */
             String[] ancestorsArray = computeAncestors(parentsMap, identifier).toArray(new String[0]);
 
@@ -163,8 +165,9 @@ public class NCITFlatParser extends AbstractNCITParser
     }
 
     /**
-     * Returns a HashMap containing a (String, String[]) pair representing (term, parents). This is extracted
-     * from the temporary NCIT zip flat file.
+     * Returns a HashMap containing a (String, String[]) pair representing (term, parents). This is extracted from the
+     * temporary NCIT zip flat file.
+     *
      * @return a map which stores (term, parent) pairs
      * @throws IOException thrown when temporary NCIT file cannot be read
      */
@@ -185,7 +188,7 @@ public class NCITFlatParser extends AbstractNCITParser
 
         Iterator<CSVRecord> csvIterator = csvParser.iterator();
 
-        Map<String, String[]> parents = new HashMap<String, String[]>();
+        Map<String, String[]> parents = new HashMap<>();
 
         while (csvIterator.hasNext()) {
             CSVRecord row = csvIterator.next();
@@ -216,8 +219,9 @@ public class NCITFlatParser extends AbstractNCITParser
     }
 
     /**
-     * Recursively calculates the ancestors of a given term, using the map of parents to accumulate a list
-     * of ancestors. This is returned as a String set.
+     * Recursively calculates the ancestors of a given term, using the map of parents to accumulate a list of ancestors.
+     * This is returned as a String set.
+     *
      * @param parentsMap - a map of (term, parents) pairs where "parents" is an array of parent terms
      * @param identifier - identifier of the term
      * @return a set which stores the ancestors of the given term
@@ -225,13 +229,12 @@ public class NCITFlatParser extends AbstractNCITParser
     private Set<String> computeAncestors(Map<String, String[]> parentsMap, String identifier)
     {
         // A set is used instead of an array so that the size need not be initially specified.
-        Set<String> termAncestorSet = new HashSet<String>();
+        Set<String> termAncestorSet = new HashSet<>();
 
         String[] parentArray = parentsMap.get(identifier);
 
         if (parentArray != null && parentArray.length > 0) {
-            for (String parentIdentifier : parentArray)
-            {
+            for (String parentIdentifier : parentArray) {
                 // Add parent as an ancestor
                 termAncestorSet.add(parentIdentifier);
 
