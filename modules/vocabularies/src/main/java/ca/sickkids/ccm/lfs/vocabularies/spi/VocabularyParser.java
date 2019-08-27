@@ -31,6 +31,20 @@ import org.apache.sling.api.SlingHttpServletResponse;
 public interface VocabularyParser
 {
     /**
+     * Checks whether the given source is parsable by this vocabulary. This only checks the format of the source value,
+     * for a theoretical ability to parse the data. It does not check the actual data indicated by the source, so even
+     * if this method returns {@code true}, the actual data may be corrupted, or in a newer or older incompatible format
+     * not supported. If this method returns {@code true} but the data cannot be actually parsed, then
+     * {@link #parse(String, SlingHttpServletRequest, SlingHttpServletResponse)} will throw a
+     * {@link VocabularyIndexException}, which will cause
+     * {@link ca.sickkids.ccm.lfs.vocabularies.VocabularyIndexerServlet} to try the next available parser.
+     *
+     * @param source the source parameter passed in the request, usually a URL or an identifier
+     * @return {@code true} if the source is known to be parsable by this vocabulary parser
+     */
+    boolean canParse(String source);
+
+    /**
      * Main method for handling vocabulary parsing.
      *
      * @param source the source to parse from, the value of the mandatory {@code source} request parameter

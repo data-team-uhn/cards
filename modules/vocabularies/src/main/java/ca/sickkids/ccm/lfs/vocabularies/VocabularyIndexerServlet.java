@@ -19,6 +19,7 @@
 package ca.sickkids.ccm.lfs.vocabularies;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.Servlet;
 
@@ -27,11 +28,13 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.sickkids.ccm.lfs.vocabularies.internal.NCITFlatParser;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 
 /**
  * Servlet which handles parsing and JCR node creation for vocabularies.
@@ -46,19 +49,32 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VocabularyIndexerServlet.class);
 
+    @Reference
+    private volatile List<VocabularyParser> parsers;
+
+    @Reference
+    private VocabularyParserUtils utils;
+
     @Override
     public void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
         throws IOException
     {
-        String source = request.getParameter("source");
-        if (source != null && "ncit".equalsIgnoreCase(source)) {
-            NCITFlatParser parser = new NCITFlatParser();
-            try {
-                parser.parse(source, request, response);
-            } catch (VocabularyIndexException e) {
-                LOGGER.warn("Failed to parse vocabulary from [{}] using parser [{}]: {}", source,
-                    parser.getClass().getCanonicalName(), e.getMessage());
+        boolean success = false;
+        final String source = request.getParameter("source");
+        for (VocabularyParser parser : this.parsers) {
+            if (parser.canParse(source)) {
+                try {
+                    parser.parse(source, request, response);
+                    success = true;
+                    break;
+                } catch (VocabularyIndexException e) {
+                    LOGGER.warn("Failed to parse vocabulary from [{}] using parser [{}]: {}", source,
+                        parser.getClass().getCanonicalName(), e.getMessage());
+                }
             }
+        }
+        if (!success) {
+            this.utils.writeStatusJson(request, response, false, "No valid parser for source " + source);
         }
     }
 }

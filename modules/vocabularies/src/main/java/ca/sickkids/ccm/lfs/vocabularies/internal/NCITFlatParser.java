@@ -36,14 +36,17 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
+import org.osgi.service.component.annotations.Component;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
 
 /**
  * Concrete subclass of AbstractNCITParser for parsing NCIT in flat file form.
  *
  * @version $Id$
  */
+@Component(service = VocabularyParser.class, name = "ncit-flat")
 public class NCITFlatParser extends AbstractNCITParser
 {
     // Column numbers of the properties we want to extract.
@@ -56,6 +59,12 @@ public class NCITFlatParser extends AbstractNCITParser
     private static final int DESCRIPTION_COLUMN = 4;
 
     private static final int LABEL_COLUMN = 5;
+
+    @Override
+    public boolean canParse(String source)
+    {
+        return "ncit".equals(source);
+    }
 
     /**
      * An implementation of the abstract method {@link AbstractNCITParser.getTempFileDirectory}.
