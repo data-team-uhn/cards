@@ -337,7 +337,7 @@ public class VocabularyIndexerServletTest
         throws Exception
     {
         String[] expectedNodes = { "C100000", "C100001", "C100002", "C100003", "C100004", "C100005", "C100006",
-        "C100007", "C100008", "C100009" };
+            "C100007", "C100008", "C100009" };
 
         // Check if each expected node exists
         for (String nodeName : expectedNodes) {
@@ -430,10 +430,10 @@ public class VocabularyIndexerServletTest
         checkString(c100008, "label", label);
 
         String[] synonyms = {
-        "Rescue Percutaneous Coronary Intervention for ST Elevation Myocardial Infarction After Failed "
-            + "Full-Dose Thrombolytic Therapy",
-        "RESCUE PERCUTANEOUS CORONARY INTERVENTION (PCI) FOR ST ELEVATION MYOCARDIAL INFARCTION (STEMI) "
-            + "(AFTER FAILED FULL-DOSE THROMBOLYTICS)"
+            "Rescue Percutaneous Coronary Intervention for ST Elevation Myocardial Infarction After Failed "
+                + "Full-Dose Thrombolytic Therapy",
+            "RESCUE PERCUTANEOUS CORONARY INTERVENTION (PCI) FOR ST ELEVATION MYOCARDIAL INFARCTION (STEMI) "
+                + "(AFTER FAILED FULL-DOSE THROMBOLYTICS)"
         };
         checkStringArray(c100008, "synonyms", synonyms);
 
@@ -463,8 +463,8 @@ public class VocabularyIndexerServletTest
         checkString(c100005, "label", label);
 
         String[] synonyms = {
-        "Post-Cardiac Transplant Evaluation",
-        "POST-CARDIAC TRANSPLANT"
+            "Post-Cardiac Transplant Evaluation",
+            "POST-CARDIAC TRANSPLANT"
         };
         checkStringArray(c100005, "synonyms", synonyms);
 

@@ -50,6 +50,7 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
  *
  * @version $Id$
  */
+@SuppressWarnings("checkstyle:RedundantModifier")
 public abstract class AbstractNCITParser implements VocabularyParser
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNCITParser.class);
@@ -72,7 +73,6 @@ public abstract class AbstractNCITParser implements VocabularyParser
      *
      * @param request http request from {@link ca.sickkids.ccm.lfs.vocabularies.VocabularyIndexerServlet}
      * @param response http response from {@link ca.sickkids.ccm.lfs.vocabularies.VocabularyIndexerServlet}
-     * @param logger - logger from the VocabularyIndexerServlet to log exceptions caught
      * @throws IOException thrown when response Json cannot be written
      */
     @Override

@@ -24,6 +24,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,8 +43,6 @@ import org.osgi.service.component.annotations.Component;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Concrete subclass of AbstractNCITParser for parsing NCIT in flat file form.
@@ -62,6 +62,9 @@ public class NCITFlatParser extends AbstractNCITParser
     private static final int DESCRIPTION_COLUMN = 4;
 
     private static final int LABEL_COLUMN = 5;
+
+    // UTF_8 charset instance to use
+    private static final Charset UTF_8 = StandardCharsets.UTF_8;
 
     /** An empty String[] array to use for {@code Set.toArray}, we don't want to create a new array for each call. */
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
