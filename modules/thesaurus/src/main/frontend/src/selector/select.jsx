@@ -23,7 +23,7 @@ import { List, withStyles } from "@material-ui/core";
 
 import Thesaurus from "../query/query.jsx";
 import SelectorStyle from "./selectorStyle.jsx";
-import VocabularyChild from "./selectChild.jsx";
+import VocabularyEntry from "./selectEntry.jsx";
 import SelectionResults from "./selectionResults.jsx";
 import { MakeRequest, REST_URL } from "../query/util.jsx";
 
@@ -90,14 +90,14 @@ class VocabularySelector extends React.Component {
   generateListChildren = (disabled) => {
     return this.state.listChildren.map( (childData) => {
       return (
-        <VocabularyChild
+        <VocabularyEntry
           id={childData[ID_POS]}
           key={childData[ID_POS]}
           name={childData[NAME_POS]}
           onClick={this.removeSelection}
           disabled={disabled}
           isPreselected={childData[IS_PRESELECT_POS]}
-        ></VocabularyChild>
+        ></VocabularyEntry>
       );
     });
   }

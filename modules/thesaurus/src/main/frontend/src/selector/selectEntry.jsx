@@ -24,7 +24,7 @@ import { Close } from "@material-ui/icons"
 import SelectorStyle from "./selectorStyle.jsx"
 
 // Child element that will be inserted to the target DOM
-class VocabularyChild extends React.Component {
+class VocabularyEntry extends React.Component {
   constructor(props) {
     super(props);
 
@@ -95,8 +95,8 @@ class VocabularyChild extends React.Component {
   }
 };
 
-VocabularyChild.defaultProps = {
+VocabularyEntry.defaultProps = {
   isPreselected: false,
 };
 
-export default withStyles(SelectorStyle)(VocabularyChild);
+export default withStyles(SelectorStyle)(VocabularyEntry);
