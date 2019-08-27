@@ -41,16 +41,29 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 
 /**
+ * Concrete subclass of AbstractNCITParser for parsing NCIT in OWL file form.
  * @version $Id$
  */
 public class NCITOWLParser extends AbstractNCITParser
 {
+    /**
+     * An implementation of the abstract method {@link AbstractNCITParser.getDefaultSource}.
+     * @param version - version of NCIT wanted
+     */
+    @Override
+    String getDefaultSource(String version)
+    {
+        return "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".OWL.zip";
+    }
+
     @Override
     public boolean canParse(String source)
     {
     	return "ncit_owl".equals(source);
     }
 
+    /**
+     */
     @Override
     protected void parseNCIT(final File source, final Node vocabularyNode)
         throws VocabularyIndexException

@@ -199,7 +199,7 @@ public class VocabularyIndexerServletTest
         MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
 
         // Set request parameters and execute request. Note that no version is provided.
-        String requestParams = "source=ncit&identifier=flatTestVocabulary&localpath=./flat_NCIT_type_testcase.zip";
+        String requestParams = "source=ncit_flat&identifier=flatTestVocabulary&localpath=./flat_NCIT_type_testcase.zip";
         makePost(request, response, requestParams);
 
         // Compare response to expected response
@@ -253,7 +253,7 @@ public class VocabularyIndexerServletTest
         MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
 
         // Set request parameters and execute request. Note that the localpath "./someLocation" does not exist.
-        String requestParams = "source=ncit&identifier=flatTestVocabulary&version=19.05d&localpath=./someLocation";
+        String requestParams = "source=ncit_flat&identifier=flatTestVocabulary&version=19.05d&localpath=./someLocation";
         makePost(request, response, requestParams);
 
         // Compare response to expected response
@@ -309,8 +309,8 @@ public class VocabularyIndexerServletTest
         MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
 
         // Set the request parameters and execute request
-        String requestParams = "source=ncit&identifier=flatTestVocabulary&version=19.05d&localpath="
-            + "./flat_NCIT_type_testcase.zip";
+        String requestParams = "source=ncit_flat&identifier=flatTestVocabulary&version=19.05d&localpath="
+                + "./flat_NCIT_type_testcase.zip";
         makePost(request, response, requestParams);
 
         // Get the root and vocabulary nodes from the request

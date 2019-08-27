@@ -113,7 +113,8 @@ public abstract class AbstractNCITParser implements VocabularyParser
             this.utils.clearVocabularyNode(homepage, identifier, overwrite);
 
             // Load temporary NCIT zip file. Default location is at https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/
-            String sourceLocation = "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".FLAT.zip";
+            String sourceLocation = getDefaultSource(version);
+
             VocabularyZipLoader zipLoader = new VocabularyZipLoader();
             if (localpath != null) {
                 sourceLocation = localpath;
@@ -255,4 +256,11 @@ public abstract class AbstractNCITParser implements VocabularyParser
      * @throws VocabularyIndexException thrown when an error occurs with parsing
      */
     protected abstract void parseNCIT(File sourceFile, Node vocabularyNode) throws VocabularyIndexException;
+
+    /**
+     * Returns the default source from which to obtain the NCIT zip file. This is an abstract class
+     * as individual subclasses will implement their own default sources;
+     * @param version - version of NCIT wanted
+     */
+    abstract String getDefaultSource(String version);
 }

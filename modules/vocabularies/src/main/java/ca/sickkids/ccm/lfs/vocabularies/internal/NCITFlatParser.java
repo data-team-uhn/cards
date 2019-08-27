@@ -70,7 +70,13 @@ public class NCITFlatParser extends AbstractNCITParser
     @Override
     public boolean canParse(String source)
     {
-        return "ncit".equals(source);
+        return "ncit_flat".equals(source);
+    }
+
+    @Override
+    String getDefaultSource(String version)
+    {
+        return "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".FLAT.zip";
     }
 
     /**
