@@ -30,6 +30,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 
+import ca.sickkids.ccm.lfs.vocabularies.internal.NCITFlatParser;
+
 /**
  * Servlet which handles parsing and JCR node creation for vocabularies.
  * @version $Id$

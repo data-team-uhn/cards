@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.vocabularies;
+package ca.sickkids.ccm.lfs.vocabularies.internal;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -36,6 +36,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
+
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 
 /**
  * Concrete subclass of AbstractNCITParser for parsing NCIT in flat file form.
