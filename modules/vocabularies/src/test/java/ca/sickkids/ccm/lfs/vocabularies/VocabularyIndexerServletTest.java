@@ -20,8 +20,10 @@
 package ca.sickkids.ccm.lfs.vocabularies;
 
 import java.io.StringReader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,13 +45,21 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.osgi.framework.BundleContext;
 
+import ca.sickkids.ccm.lfs.vocabularies.internal.NCITFlatParser;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 import com.google.common.base.Function;
 
 /**
@@ -63,8 +73,25 @@ public class VocabularyIndexerServletTest
     @Rule
     public SlingContext context = new SlingContext();
 
+    @Mock
+    private List<VocabularyParser> parsers;
+
     @InjectMocks
     private VocabularyIndexerServlet indexServlet;
+
+    @InjectMocks
+    private NCITFlatParser flatParser;
+
+    @Mock(answer = Answers.CALLS_REAL_METHODS)
+    private VocabularyParserUtils parserUtils;
+
+    @Before
+    public void setup()
+    {
+        MockitoAnnotations.initMocks(this);
+        List<VocabularyParser> realParsers = Collections.singletonList(this.flatParser);
+        Mockito.when(this.parsers.iterator()).thenReturn(realParsers.iterator());
+    }
 
     /**
      * Registers a {@link org.apache.sling.api.resource.Resource} to {@link javax.jcr.node} adapter. At present, this
@@ -186,7 +213,7 @@ public class VocabularyIndexerServletTest
 
         // Compare error message to expected error message
         String expectedError = "NCIT FLat parsing error: Mandatory version parameter not provided.";
-        String obtainedError = responseJson.getString("errors");
+        String obtainedError = responseJson.getString("error");
         Assert.assertTrue(expectedError.equalsIgnoreCase(obtainedError));
 
         // Make sure that the vocabulary node was not created
@@ -241,7 +268,7 @@ public class VocabularyIndexerServletTest
         // Compare the error message
         String expectedError = "NCIT FLat parsing error: Error: Failed to load zip vocabulary locally. "
             + "./someLocation (No such file or directory)";
-        String obtainedError = responseJson.getString("errors");
+        String obtainedError = responseJson.getString("error");
         Assert.assertTrue(expectedError.equalsIgnoreCase(obtainedError));
 
         // Make sure the vocabulary node was not created
