@@ -25,6 +25,7 @@ import java.io.IOException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.osgi.service.component.annotations.Reference;
@@ -88,8 +89,9 @@ public abstract class AbstractNCITParser implements VocabularyParser
         // Obtain the resource of the request and adapt it to a JCR node. This is taken as the homepage node
         Node homepage = request.getResource().adaptTo(Node.class);
 
-        // Throw exceptions if mandatory parameters are not found or if homepage node cannot be found
+        final File temporaryFile = File.createTempFile(identifier, "");
         try {
+            // Throw exceptions if mandatory parameters are not found or if homepage node cannot be found
             if (identifier == null) {
                 throw new VocabularyIndexException("Mandatory identifier parameter not provided.");
             }
@@ -110,12 +112,12 @@ public abstract class AbstractNCITParser implements VocabularyParser
             VocabularyZipLoader zipLoader = new VocabularyZipLoader();
             if (localpath != null) {
                 sourceLocation = localpath;
-                zipLoader.loadZipLocal(localpath, getTempFileDirectory(), getTempFileName());
+                zipLoader.loadZipLocal(localpath, temporaryFile);
             } else if (httppath != null) {
                 sourceLocation = httppath;
-                zipLoader.loadZipHttp(httppath, getTempFileDirectory(), getTempFileName());
+                zipLoader.loadZipHttp(httppath, temporaryFile);
             } else {
-                zipLoader.loadZipHttp(sourceLocation, getTempFileDirectory(), getTempFileName());
+                zipLoader.loadZipHttp(sourceLocation, temporaryFile);
             }
 
             // Create a new Vocabulary node instance representing this vocabulary instance
@@ -123,10 +125,7 @@ public abstract class AbstractNCITParser implements VocabularyParser
             Node vocabularyNode = createNCITVocabularyNode(homepage, identifier, name, sourceLocation, version);
 
             // Parse the NCIT zip file and create VocabularyTerm node children
-            parseNCIT(vocabularyNode);
-
-            // Delete temporary NCIT zip file
-            deleteTempZipFile(getTempFileDirectory(), getTempFileName());
+            parseNCIT(temporaryFile, vocabularyNode);
 
             /*
              * Save the JCR session. If any errors occur before this step, all proposed changes will not be applied and
@@ -138,10 +137,12 @@ public abstract class AbstractNCITParser implements VocabularyParser
             // Success response json
             this.utils.writeStatusJson(request, response, true, null);
         } catch (Exception e) {
-            // If parsing fails, delete the temporary zip file and return an error json with the exception message
-            deleteTempZipFile(getTempFileDirectory(), getTempFileName());
+            // If parsing fails, return an error json with the exception message
             this.utils.writeStatusJson(request, response, false, "NCIT Flat parsing error: " + e.getMessage());
             LOGGER.error("NCIT Flat parsing error: {}", e.getMessage(), e);
+        } finally {
+            // Delete temporary source file
+            FileUtils.deleteQuietly(temporaryFile);
         }
     }
 
@@ -223,18 +224,6 @@ public abstract class AbstractNCITParser implements VocabularyParser
     }
 
     /**
-     * Deletes the temporary NCIT zip file that was downloaded.
-     *
-     * @param directory - directory in which the NCIT zip file is located relative to the parser
-     * @param name - name of the temporary file
-     */
-    private void deleteTempZipFile(String directory, String name)
-    {
-        File tempfile = new File(directory + name + ".zip");
-        tempfile.delete();
-    }
-
-    /**
      * Saves the JCR session of the homepage node that was obtained from the resource of the request. If this is
      * successful, then the changes made already will be applied to the JCR repository. If not, then all of the changes
      * will not be applied. After the session is saved, then the JCR repository will automatically begin Lucene
@@ -263,22 +252,5 @@ public abstract class AbstractNCITParser implements VocabularyParser
      * @throws VocabularyIndexException thrown when an error occurs with parsing
      */
 
-    abstract void parseNCIT(Node vocabularyNode) throws VocabularyIndexException;
-
-    /**
-     * Returns the directory path that the temporary NCIT zip file that is downloaded will be placed in. This abstract
-     * class allows different parser implementations to control where they put their temporary NCIT zip files are.
-     *
-     * @return String directory path that the temporary NCIT zip file will be in
-     */
-    abstract String getTempFileDirectory();
-
-    /**
-     * Returns the name that the temporary NCIT zip file to be downloaded is to have. This abstract class allows
-     * different parser implementations to specify different temporary file names, which may be useful for avoiding
-     * conflicts.
-     *
-     * @return String name of the temporary NCIT zip file
-     */
-    abstract String getTempFileName();
+    abstract void parseNCIT(final File sourceFile, final Node vocabularyNode) throws VocabularyIndexException;
 }
