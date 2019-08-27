@@ -57,8 +57,8 @@ public abstract class AbstractNCITParser implements VocabularyParser
     protected VocabularyParserUtils utils;
 
     /**
-     * Method called by the {@link VocabularyIndexerServlet} to parse and index a NCIT vocabulary. Specifying the
-     * version to index is mandatory. There are two optional parameters.
+     * Method called by the {@link ca.sickkids.ccm.lfs.vocabularies.VocabularyIndexerServlet} to parse and index a NCIT
+     * vocabulary. Specifying the version to index is mandatory. There are two optional parameters.
      * <p>
      * <code>"localpath"</code> - allows downloading of NCIT from a path relative to the VocabularyIndexerServlet.
      * </p>
@@ -69,8 +69,8 @@ public abstract class AbstractNCITParser implements VocabularyParser
      * The method obtains the <code>VocabulariesHomepage</code> node by getting the resource of the request and adapting
      * it from a {@link org.apache.sling.api.resource.Resource} to a {@link javax.jcr.node}.
      *
-     * @param request http request from {@link VocabularyIndexerServlet}
-     * @param response http response from {@link VocabularyIndexerServlet}
+     * @param request http request from {@link ca.sickkids.ccm.lfs.vocabularies.VocabularyIndexerServlet}
+     * @param response http response from {@link ca.sickkids.ccm.lfs.vocabularies.VocabularyIndexerServlet}
      * @param logger - logger from the VocabularyIndexerServlet to log exceptions caught
      * @throws IOException thrown when response Json cannot be written
      */

@@ -37,9 +37,13 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 
 /**
- * Servlet which handles parsing and JCR node creation for vocabularies.
+ * Servlet which handles indexing vocabularies. It processes POST requests on the {@code /Vocabularies} homepage,
+ * expecting at least a {@code source} request parameter for identifying the vocabulary to parse. Additional parameters
+ * may influence the parsing process or outcome, depending on the source, such as {@code version}, {@code citation}, and
+ * {@code website}. The actual parsing is handled by implementations of the {@link VocabularyParser} service interface.
  *
  * @version $Id$
+ * @see VocabularyParser
  */
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "lfs/VocabulariesHomepage" }, methods = { "POST" })
