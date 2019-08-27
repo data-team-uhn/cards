@@ -21,19 +21,18 @@ package ca.sickkids.ccm.lfs.vocabularies.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.json.Json;
-import javax.json.stream.JsonGenerator;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 
 /**
  * Abstract class specifying a vocabulary ontology parser specifically for the National Cancer Institute Thesaurus. The
@@ -51,6 +50,9 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
  */
 public abstract class AbstractNCITParser implements VocabularyParser
 {
+    @Reference
+    protected VocabularyParserUtils utils;
+
     /**
      * Method called by the {@link VocabularyIndexerServlet} to parse and index a NCIT vocabulary. Specifying the
      * version to index is mandatory. There are two optional parameters.
@@ -98,7 +100,7 @@ public abstract class AbstractNCITParser implements VocabularyParser
             }
 
             // Delete the Vocabulary node already representing this vocabulary instance if it exists
-            clearVocabularyNode(homepage, identifier);
+            this.utils.clearVocabularyNode(homepage, identifier);
 
             // Load temporary NCIT zip file. Default location is at https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/
             String source = "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".FLAT.zip";
@@ -131,67 +133,14 @@ public abstract class AbstractNCITParser implements VocabularyParser
             saveSession(homepage);
 
             // Success response json
-            writeStatusJson(request, response, true, null);
+            this.utils.writeStatusJson(request, response, true, null);
         } catch (Exception e) {
             // If parsing fails, delete the temporary zip file and return an error json with the exception message
             deleteTempZipFile(getTempFileDirectory(), getTempFileName());
-            writeStatusJson(request, response, false, "NCIT Flat parsing error: " + e.getMessage());
+            this.utils.writeStatusJson(request, response, false, "NCIT Flat parsing error: " + e.getMessage());
             if (logger != null) {
                 logger.log(LogService.LOG_ERROR, "NCIT Flat parsing error: " + e.getMessage());
             }
-        }
-    }
-
-    /**
-     * Writes a json to the http response consisting of two entries.
-     * <p>
-     * <code>isSuccessful</code> - true if the parsing attempt was successful; false otherwise
-     * </p>
-     * <p>
-     * <code>error"</code> - error message of the exception causing the failure; null if there is no exception
-     * </p>
-     *
-     * @param request - http request from the VocabularyIndexerServlet
-     * @param response - http response from the VocabularyIndexerServlet
-     * @param isSuccessful - boolean variable which is true if parsing is successful and false otherwise
-     * @param errors - the error message caught from the exception which is null if there is no error
-     * @throws IOException thrown when json cannot be written
-     */
-    @Override
-    public void writeStatusJson(SlingHttpServletRequest request, SlingHttpServletResponse response,
-        boolean isSuccessful, String errors)
-        throws IOException
-    {
-        Writer out = response.getWriter();
-        JsonGenerator generator = Json.createGenerator(out);
-        generator.writeStartObject();
-        generator.write("isSuccessful", isSuccessful);
-        generator.write("errors", errors);
-        generator.writeEnd();
-        generator.flush();
-    }
-
-    /**
-     * Remove any previous instances of the vocabulary which is to be parsed and indexed in the JCR repository by
-     * deleting the vocabulary node instance. This will also cause the node's children to be deleted.
-     *
-     * @param homepage - an instance of the VocabulariesHomepage node serving as the root of Vocabulary nodes
-     * @param name - identifier of the vocabulary which will become its node name
-     * @throws VocabularyIndexException thrown when node cannot be removed
-     */
-    @Override
-    public void clearVocabularyNode(Node homepage, String name)
-        throws VocabularyIndexException
-    {
-        try {
-            // Only delete the node if it exists
-            if (homepage.hasNode(name)) {
-                Node target = homepage.getNode(name);
-                target.remove();
-            }
-        } catch (RepositoryException e) {
-            String message = "Error: Failed to delete existing Vocabulary node. " + e.getMessage();
-            throw new VocabularyIndexException(message, e);
         }
     }
 
