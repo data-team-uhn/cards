@@ -22,7 +22,6 @@ import java.io.IOException;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.osgi.service.log.LogService;
 
 /**
  * Interface which defines methods required from classes that parse vocabularies.
@@ -32,13 +31,14 @@ import org.osgi.service.log.LogService;
 public interface VocabularyParser
 {
     /**
-     * General method for handling vocabulary parsing.
+     * Main method for handling vocabulary parsing.
      *
-     * @param request - http request from the VocabularyIndexerServlet
-     * @param response - http response from the VocabularyIndexerServlet
-     * @param logger - logger from the VocabularyIndexerServlet to log exceptions caught
-     * @throws IOException thrown when response Json cannot be written
+     * @param source the source to parse from, the value of the mandatory {@code source} request parameter
+     * @param request HTTP request the original request that trigger the parse, may contain additional parameters that
+     *            customize the parsing process
+     * @param response HTTP response where the status should be written to
+     * @throws VocabularyIndexException when parsing the vocabulary or storing the parsed data fail
      */
-    void parseVocabulary(SlingHttpServletRequest request, SlingHttpServletResponse response, LogService logger)
-        throws IOException;
+    void parse(final String source, final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+        throws IOException, VocabularyIndexException;
 }

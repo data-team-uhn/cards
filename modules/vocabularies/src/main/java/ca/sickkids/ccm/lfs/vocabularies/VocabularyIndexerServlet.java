@@ -27,10 +27,11 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.log.LogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.sickkids.ccm.lfs.vocabularies.internal.NCITFlatParser;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 
 /**
  * Servlet which handles parsing and JCR node creation for vocabularies.
@@ -43,8 +44,7 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -2156160697967947088L;
 
-    @Reference
-    private LogService logger;
+    private static final Logger LOGGER = LoggerFactory.getLogger(VocabularyIndexerServlet.class);
 
     @Override
     public void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
@@ -53,7 +53,12 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
         String source = request.getParameter("source");
         if (source != null && "ncit".equalsIgnoreCase(source)) {
             NCITFlatParser parser = new NCITFlatParser();
-            parser.parseVocabulary(request, response, this.logger);
+            try {
+                parser.parse(source, request, response);
+            } catch (VocabularyIndexException e) {
+                LOGGER.warn("Failed to parse vocabulary from [{}] using parser [{}]: {}", source,
+                    parser.getClass().getCanonicalName(), e.getMessage());
+            }
         }
     }
 }
