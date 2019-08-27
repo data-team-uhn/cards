@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.vocabularies;
+package ca.sickkids.ccm.lfs.vocabularies.spi;
 
 /**
  * Exception thrown by classes in the vocabularies module.

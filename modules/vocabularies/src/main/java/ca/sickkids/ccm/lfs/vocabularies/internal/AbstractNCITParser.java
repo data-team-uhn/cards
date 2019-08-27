@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package ca.sickkids.ccm.lfs.vocabularies;
+package ca.sickkids.ccm.lfs.vocabularies.internal;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +31,9 @@ import javax.json.stream.JsonGenerator;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.osgi.service.log.LogService;
+
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
 
 /**
  * Abstract class specifying a vocabulary ontology parser specifically for the National Cancer Institute Thesaurus.

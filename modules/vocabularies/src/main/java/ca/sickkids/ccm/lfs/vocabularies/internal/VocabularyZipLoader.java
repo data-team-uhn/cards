@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.vocabularies;
+package ca.sickkids.ccm.lfs.vocabularies.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,6 +31,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 
 /**
  * Utility class to load zip files.
