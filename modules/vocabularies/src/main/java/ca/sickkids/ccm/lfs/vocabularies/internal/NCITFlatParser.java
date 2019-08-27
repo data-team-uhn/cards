@@ -19,15 +19,16 @@
 package ca.sickkids.ccm.lfs.vocabularies.internal;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.ZipInputStream;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -40,6 +41,8 @@ import org.osgi.service.component.annotations.Component;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Concrete subclass of AbstractNCITParser for parsing NCIT in flat file form.
@@ -60,28 +63,13 @@ public class NCITFlatParser extends AbstractNCITParser
 
     private static final int LABEL_COLUMN = 5;
 
+    /** An empty String[] array to use for {@code Set.toArray}, we don't want to create a new array for each call. */
+    private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
     @Override
     public boolean canParse(String source)
     {
         return "ncit".equals(source);
-    }
-
-    /**
-     * An implementation of the abstract method {@link AbstractNCITParser.getTempFileDirectory}.
-     */
-    @Override
-    String getTempFileDirectory()
-    {
-        return "./";
-    }
-
-    /**
-     * An implementation of the abstract method {@link AbstractNCITParser.getTempFileName}.
-     */
-    @Override
-    String getTempFileName()
-    {
-        return "temp_ncit_flat";
     }
 
     /**
@@ -92,15 +80,14 @@ public class NCITFlatParser extends AbstractNCITParser
      * @throws VocabularyIndexException upon failure to parse vocabulary
      */
     @Override
-    void parseNCIT(Node vocabularyNode)
-        throws VocabularyIndexException
+    void parseNCIT(final File source, final Node vocabularyNode) throws VocabularyIndexException
     {
         try {
             // Extracts term parents the flat file and returns a map of (term, parents) pairs
-            Map<String, String[]> parentsMap = returnParentMap();
+            Map<String, String[]> parentsMap = returnParentMap(source);
 
             // Extracts all other properties and creates VocabularyTerm nodes based on them
-            createTermNodes(parentsMap, vocabularyNode);
+            createTermNodes(source, parentsMap, vocabularyNode);
         } catch (RepositoryException e) {
             String message = "Failed to access Vocabulary node: " + e.getMessage();
             throw new VocabularyIndexException(message, e);
@@ -120,57 +107,45 @@ public class NCITFlatParser extends AbstractNCITParser
      * @throws RepositoryException thrown when JCR nodes cannot be created
      * @throws VocabularyIndexException throw by failure to create appropriate JCR node
      */
-    private void createTermNodes(Map<String, String[]> parentsMap, Node vocabularyNode)
+    private void createTermNodes(final File source, Map<String, String[]> parentsMap, Node vocabularyNode)
         throws IOException, RepositoryException, VocabularyIndexException
     {
-        // Read temporary NCIT
-        FileInputStream fileInputStream = new FileInputStream(getTempFileDirectory() + getTempFileName() + ".zip");
-        ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
-        zipInputStream.getNextEntry();
+        try (Reader input = new BufferedReader(new InputStreamReader(new FileInputStream(source), UTF_8));
+            // The NCIT source is an unquoted tab-delimited file
+            // We need withQuote(null) to keep all quotes as part of the text, and not interpreted as special chars
+            CSVParser csvParser = CSVParser.parse(input, CSVFormat.TDF.withQuote(null));) {
 
-        InputStreamReader inputStreamReader = new InputStreamReader(zipInputStream);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            Iterator<CSVRecord> csvIterator = csvParser.iterator();
 
-        // NCIT formated with TDF, not standard format. We need withQuote(null) to prevent quotes from being read
-        CSVParser csvParser = CSVParser.parse(bufferedReader, CSVFormat.TDF.withQuote(null));
+            while (csvIterator.hasNext()) {
+                CSVRecord row = csvIterator.next();
 
-        Iterator<CSVRecord> csvIterator = csvParser.iterator();
+                String identifier = row.get(IDENTIFIER_COLUMN);
+                String description = row.get(DESCRIPTION_COLUMN);
 
-        while (csvIterator.hasNext()) {
-            CSVRecord row = csvIterator.next();
+                String synonymString = row.get(SYNONYMS_COLUMN);
 
-            String identifier = row.get(IDENTIFIER_COLUMN);
-            String description = row.get(DESCRIPTION_COLUMN);
+                // Synonym entry is a String with terms separated by "|" so split the String into a String[]
+                String[] synonymsArray = synonymString.split("\\|");
 
-            String synonymString = row.get(SYNONYMS_COLUMN);
+                // Make the first synonym of the term the default label if no label is supplied by the term
+                String defaultLabel = synonymsArray[0];
+                String suppliedLabel = row.get(LABEL_COLUMN);
+                String label = StringUtils.defaultIfBlank(suppliedLabel, defaultLabel);
 
-            // Synonym entry is a String with terms separated by "|" so split the String into a String[]
-            String[] synonymsArray = synonymString.split("\\|");
+                String[] parentsArray = parentsMap.get(identifier);
 
-            // The first synonym of the term the default label if no label is supplied by the term
-            String defaultLabel = synonymsArray[0];
-            String suppliedLabel = row.get(LABEL_COLUMN);
-            String label = StringUtils.defaultIfBlank(suppliedLabel, defaultLabel);
+                /*
+                 * Ancestors are recursively calculated from parents. Since computeAnestors returns the ancestors as a
+                 * Set<String>, it must be converted to a String[] here.
+                 */
+                String[] ancestorsArray = computeAncestors(parentsMap, identifier).toArray(EMPTY_STRING_ARRAY);
 
-            String[] parentsArray = parentsMap.get(identifier);
-
-            /*
-             * Ancestors are recursively calculated from parents. Since computeAnestors returns the ancestors as a
-             * Set<String>, it must be converted to a String[] here.
-             */
-            String[] ancestorsArray = computeAncestors(parentsMap, identifier).toArray(new String[0]);
-
-            // This method is a protected method in AbstractNCITParser for creating VocabularyTerm nodes
-            createNCITVocabularyTermNode(vocabularyNode, identifier, label, description, synonymsArray,
-                parentsArray, ancestorsArray);
+                // This method is a protected method in AbstractNCITParser for creating VocabularyTerm nodes
+                createNCITVocabularyTermNode(vocabularyNode, identifier, label, description, synonymsArray,
+                    parentsArray, ancestorsArray);
+            }
         }
-
-        // Close the parsers, readers, and InputStreams
-        csvParser.close();
-        bufferedReader.close();
-        inputStreamReader.close();
-        zipInputStream.close();
-        fileInputStream.close();
     }
 
     /**
@@ -180,51 +155,38 @@ public class NCITFlatParser extends AbstractNCITParser
      * @return a map which stores (term, parent) pairs
      * @throws IOException thrown when temporary NCIT file cannot be read
      */
-    private Map<String, String[]> returnParentMap()
+    private Map<String, String[]> returnParentMap(final File source)
         throws IOException
     {
-        // Read temporary NCIT
-        FileInputStream fileInputStream = new FileInputStream(getTempFileDirectory() + getTempFileName() + ".zip");
-        ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
 
-        zipInputStream.getNextEntry();
+        try (Reader input = new BufferedReader(new InputStreamReader(new FileInputStream(source), UTF_8));
+            // The NCIT source is an unquoted tab-delimited file
+            // We need withQuote(null) to keep all quotes as part of the text, and not interpreted as special chars
+            CSVParser csvParser = CSVParser.parse(input, CSVFormat.TDF.withQuote(null));) {
 
-        InputStreamReader inputStreamReader = new InputStreamReader(zipInputStream);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            Iterator<CSVRecord> csvIterator = csvParser.iterator();
 
-        // NCIT formated with TDF, not standard format. We need withQuote(null) to prevent quotes from being read
-        CSVParser csvParser = CSVParser.parse(bufferedReader, CSVFormat.TDF.withQuote(null));
+            Map<String, String[]> parents = new HashMap<>();
 
-        Iterator<CSVRecord> csvIterator = csvParser.iterator();
+            while (csvIterator.hasNext()) {
+                CSVRecord row = csvIterator.next();
 
-        Map<String, String[]> parents = new HashMap<>();
+                String identifier = row.get(IDENTIFIER_COLUMN);
 
-        while (csvIterator.hasNext()) {
-            CSVRecord row = csvIterator.next();
+                String parentString = row.get(PARENTS_COLUMN);
 
-            String identifier = row.get(IDENTIFIER_COLUMN);
+                // Parent entry is a String with terms separated by "|" so split the String into a String[]
+                String[] parentArray = parentString.split("\\|");
 
-            String parentString = row.get(PARENTS_COLUMN);
-
-            // Parent entry is a String with terms separated by "|" so split the String into a String[]
-            String[] parentArray = parentString.split("\\|");
-
-            // Put a blank array if there are no parents
-            if (parentArray[0].contentEquals("")) {
-                parents.put(identifier, new String[0]);
-            } else {
-                parents.put(identifier, parentArray);
+                // Put a blank array if there are no parents
+                if (parentArray[0].contentEquals("")) {
+                    parents.put(identifier, EMPTY_STRING_ARRAY);
+                } else {
+                    parents.put(identifier, parentArray);
+                }
             }
+            return parents;
         }
-
-        // Close the parsers, readers, and InputStreams
-        csvParser.close();
-        bufferedReader.close();
-        inputStreamReader.close();
-        zipInputStream.close();
-        fileInputStream.close();
-
-        return parents;
     }
 
     /**

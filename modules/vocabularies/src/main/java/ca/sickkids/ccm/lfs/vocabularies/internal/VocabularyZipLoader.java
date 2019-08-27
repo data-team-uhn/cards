@@ -20,12 +20,10 @@ package ca.sickkids.ccm.lfs.vocabularies.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -49,38 +47,28 @@ public class VocabularyZipLoader
      * @param fileName - name of the temporary zip file
      * @throws VocabularyIndexException thrown upon failure of zip file to load
      */
-    public void loadZipHttp(String path, String directory, String fileName)
+    public void loadZipHttp(String path, File temporaryFile)
         throws VocabularyIndexException
     {
-        // GEt request
+        // GET request
         HttpGet httpget = new HttpGet(path);
         httpget.setHeader("Content-Type", "application/json");
 
-        CloseableHttpClient httpclient = HttpClientBuilder.create().build();
-        CloseableHttpResponse httpresponse;
-
-        try {
-            // Execute GET request
-            httpresponse = httpclient.execute(httpget);
+        try (CloseableHttpClient httpclient = HttpClientBuilder.create().build();
+            CloseableHttpResponse httpresponse = httpclient.execute(httpget)) {
 
             if (httpresponse.getStatusLine().getStatusCode() < 400) {
                 // If the http request is successful
 
-                // Create temporary zip file and an OutputStream for writing content to it
-                File.createTempFile(fileName, ".zip");
-                FileOutputStream fileOutput = new FileOutputStream(directory + fileName + ".zip");
-
                 // Write all of the contents of the request to the OutputStream
-                httpresponse.getEntity().writeTo(fileOutput);
+                ZipInputStream input = new ZipInputStream(httpresponse.getEntity().getContent());
+                input.getNextEntry();
+                FileUtils.copyInputStreamToFile(input, temporaryFile);
 
-                // Close the client and response
-                httpresponse.close();
-                httpclient.close();
+                input.close();
             } else {
                 // If http request is not successful, close the client and response and throw an exception
                 String message = "Failed to load zip: " + httpresponse.getStatusLine().getStatusCode() + " http error";
-                httpresponse.close();
-                httpclient.close();
                 throw new VocabularyIndexException(message);
             }
         } catch (ClientProtocolException e) {
@@ -100,17 +88,10 @@ public class VocabularyZipLoader
      * @param fileName - name of the temporary zip file
      * @throws VocabularyIndexException thrown upon failure of zip file to load
      */
-    public void loadZipLocal(String path, String directory, String fileName)
+    public void loadZipLocal(String path, File temporaryFile)
         throws VocabularyIndexException
     {
         try {
-            // Create
-            File.createTempFile(fileName, ".zip");
-
-            // OutuputStreams for creating the temp file
-            FileOutputStream fileOutputStream = new FileOutputStream(directory + fileName + ".zip");
-            ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
-
             // InputStreams for reading the new file
             FileInputStream fileInputStream = new FileInputStream(path);
             ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
@@ -119,22 +100,11 @@ public class VocabularyZipLoader
             zipInputStream.getNextEntry();
 
             try {
-                int c;
-                zipOutputStream.putNextEntry(new ZipEntry(fileName + ".txt"));
-
-                // While there is still content to read, read in the content and write it to the OutputStream
-                while ((c = zipInputStream.read()) != -1) {
-                    zipOutputStream.write(c);
-                }
-
-                // Close ZipEntry
-                zipOutputStream.closeEntry();
+                FileUtils.copyInputStreamToFile(zipInputStream, temporaryFile);
             } finally {
                 // Close InputStreams and OutputStreams
                 fileInputStream.close();
                 zipInputStream.close();
-                zipOutputStream.close();
-                fileOutputStream.close();
             }
         } catch (IOException e) {
             String message = "Error: Failed to load zip vocabulary locally. " + e.getMessage();
