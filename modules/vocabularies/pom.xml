@@ -189,5 +189,11 @@
       <artifactId>guava</artifactId>
       <version>27.0.1-jre</version>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 </project>
