@@ -26,6 +26,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.osgi.service.component.annotations.Reference;
@@ -214,11 +215,8 @@ public abstract class AbstractNCITParser implements VocabularyParser
             vocabularyTermNode.setProperty("ancestors", ancestors);
         } catch (RepositoryException e) {
             // If the identifier exists, print the identifier in the error message to identify node
-            String nodeName = "";
-            if (identifier != null) {
-                nodeName = identifier;
-            }
-            String message = "Failed to create VocabularyTerm node" + identifier + ": " + e.getMessage();
+            String message =
+                "Failed to create VocabularyTerm node " + StringUtils.defaultString(identifier) + ": " + e.getMessage();
             throw new VocabularyIndexException(message, e);
         }
     }

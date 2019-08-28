@@ -18,12 +18,8 @@
  */
 package ca.sickkids.ccm.lfs.vocabularies.internal;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -66,8 +62,8 @@ public class NCITFlatParser extends AbstractNCITParser
 
     private static final int LABEL_COLUMN = 5;
 
-    // UTF_8 charset instance to use
-    private static final Charset UTF_8 = StandardCharsets.UTF_8;
+    // Charset to use when reading the source file
+    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     /** An empty String[] array to use for {@code Set.toArray}, we don't want to create a new array for each call. */
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
@@ -116,11 +112,9 @@ public class NCITFlatParser extends AbstractNCITParser
     private void createTermNodes(final File source, Map<String, String[]> parentsMap, Node vocabularyNode)
         throws IOException, RepositoryException, VocabularyIndexException
     {
-        try (Reader input = new BufferedReader(new InputStreamReader(new FileInputStream(source), UTF_8));
-            // The NCIT source is an unquoted tab-delimited file
-            // We need withQuote(null) to keep all quotes as part of the text, and not interpreted as special chars
-            CSVParser csvParser = CSVParser.parse(input, CSVFormat.TDF.withQuote(null));) {
-
+        // The NCIT source is an unquoted tab-delimited file
+        // We need withQuote(null) to keep all quotes as part of the text, and not interpreted as special chars
+        try (CSVParser csvParser = CSVParser.parse(source, DEFAULT_CHARSET, CSVFormat.TDF.withQuote(null))) {
             Iterator<CSVRecord> csvIterator = csvParser.iterator();
 
             while (csvIterator.hasNext()) {
@@ -128,7 +122,6 @@ public class NCITFlatParser extends AbstractNCITParser
 
                 String identifier = row.get(IDENTIFIER_COLUMN);
                 String description = row.get(DESCRIPTION_COLUMN);
-
                 String synonymString = row.get(SYNONYMS_COLUMN);
 
                 // Synonym entry is a String with terms separated by "|" so split the String into a String[]
@@ -142,7 +135,7 @@ public class NCITFlatParser extends AbstractNCITParser
                 String[] parentsArray = parentsMap.get(identifier);
 
                 /*
-                 * Ancestors are recursively calculated from parents. Since computeAnestors returns the ancestors as a
+                 * Ancestors are recursively calculated from parents. Since computeAncestors returns the ancestors as a
                  * Set<String>, it must be converted to a String[] here.
                  */
                 String[] ancestorsArray = computeAncestors(parentsMap, identifier).toArray(EMPTY_STRING_ARRAY);
@@ -164,12 +157,9 @@ public class NCITFlatParser extends AbstractNCITParser
     private Map<String, String[]> returnParentMap(final File source)
         throws IOException
     {
-
-        try (Reader input = new BufferedReader(new InputStreamReader(new FileInputStream(source), UTF_8));
-            // The NCIT source is an unquoted tab-delimited file
-            // We need withQuote(null) to keep all quotes as part of the text, and not interpreted as special chars
-            CSVParser csvParser = CSVParser.parse(input, CSVFormat.TDF.withQuote(null));) {
-
+        // The NCIT source is an unquoted tab-delimited file
+        // We need withQuote(null) to keep all quotes as part of the text, and not interpreted as special chars
+        try (CSVParser csvParser = CSVParser.parse(source, DEFAULT_CHARSET, CSVFormat.TDF.withQuote(null))) {
             Iterator<CSVRecord> csvIterator = csvParser.iterator();
 
             Map<String, String[]> parents = new HashMap<>();
