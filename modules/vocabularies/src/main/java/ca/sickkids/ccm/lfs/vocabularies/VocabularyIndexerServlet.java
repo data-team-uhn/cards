@@ -53,6 +53,11 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VocabularyIndexerServlet.class);
 
+    /**
+     * Automatically injected list of all available parsers. Each of these will be tried in order until one of them can
+     * successfully index a vocabulary based on the parameters of the request. A {@code volatile} list dynamically
+     * changes when parsers are added, removed, or replaced.
+     */
     @Reference
     private volatile List<VocabularyParser> parsers;
 
@@ -69,6 +74,8 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
             if (parser.canParse(source)) {
                 try {
                     parser.parse(source, request, response);
+                    // No exception means that the parser either successfully parsed,
+                    // or encountered an exception and already printed a failure message
                     success = true;
                     break;
                 } catch (VocabularyIndexException e) {
@@ -78,6 +85,7 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
             }
         }
         if (!success) {
+            // No parser could process the request, output an error message
             this.utils.writeStatusJson(request, response, false, "No valid parser for source " + source);
         }
     }
