@@ -145,7 +145,7 @@ public abstract class AbstractNCITParser implements VocabularyParser
         } catch (Exception e) {
             // If parsing fails, return an error json with the exception message
             this.utils.writeStatusJson(request, response, false, "NCIT Flat parsing error: " + e.getMessage());
-            LOGGER.error("NCIT Flat parsing error: {}", e.getMessage(), e);
+            LOGGER.error("NCIT parsing error: {}", e.getMessage(), e);
         } finally {
             // Delete temporary source file
             FileUtils.deleteQuietly(temporaryFile);
