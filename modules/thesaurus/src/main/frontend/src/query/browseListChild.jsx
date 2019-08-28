@@ -92,8 +92,8 @@ class ListChild extends React.Component {
           color="info"
           className={classes.browseitem}
           >
-          <Typography inline className={classes.infoDataSource}>{id}&nbsp;</Typography>
-          <Typography inline className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}> {name}</Typography>
+          <Typography className={classes.infoDataSource}>{id}&nbsp;</Typography>
+          <Typography className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}> {name}</Typography>
         </Button>
 
         {/* Button to open info page */}

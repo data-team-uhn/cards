@@ -54,7 +54,7 @@ class VocabularyBrowser extends React.Component {
         {...rest}
       >
         <DialogTitle className={classes.headbar}>
-          <Typography inline className={classes.headbarText}>Related terms</Typography>
+          <Typography className={classes.headbarText}>Related terms</Typography>
           <Button
             className={classes.closeButton}
             onClick={onClose}

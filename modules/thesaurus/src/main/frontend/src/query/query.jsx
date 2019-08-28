@@ -97,7 +97,7 @@ class Thesaurus extends React.Component {
                   },
                   onFocus: this.delayLookup,
                   disabled: this.props.disabled,
-                  className: classes.searchInput
+                  className: classes.searchInput,
                 }}
               />
               <div className={classes.searchWrapper}>
@@ -185,7 +185,7 @@ class Thesaurus extends React.Component {
                 <Paper className={classes.infoPaper}>
                   <ClickAwayListener onClickAway={this.closeInfo}>
                     <div>
-                      <Typography inline className={classes.infoDataSource}>
+                      <Typography className={classes.infoDataSource}>
                         <a
                           href="http://human-phenotype-ontology.github.io/"
                           target="_blank"
@@ -202,8 +202,8 @@ class Thesaurus extends React.Component {
                         </Button>
                       </Typography>
                       <br />
-                      <Typography inline className={classes.infoIDTypography}>{this.state.infoID} </Typography>
-                      <Typography inline className={classes.infoName}>{this.state.infoName}</Typography> <br />
+                      <Typography className={classes.infoIDTypography}>{this.state.infoID} </Typography>
+                      <Typography className={classes.infoName}>{this.state.infoName}</Typography> <br />
                       <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography> <br />
                       {this.state.infoAlsoKnownAs.length > 0 && (
                         <div>
