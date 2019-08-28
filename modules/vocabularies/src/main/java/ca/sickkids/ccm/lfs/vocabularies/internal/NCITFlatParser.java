@@ -40,16 +40,19 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 
 /**
  * Concrete subclass of AbstractNCITParser for parsing NCIT in flat file form.
  *
  * @version $Id$
  */
-@Component(service = VocabularyParser.class, name = "ncit-flat")
+@Component(service = VocabularyParser.class, name = "ncit-flat", reference = {
+    @Reference(field = "utils", name = "utils", service = VocabularyParserUtils.class) })
 public class NCITFlatParser extends AbstractNCITParser
 {
     // Column numbers of the properties we want to extract.
