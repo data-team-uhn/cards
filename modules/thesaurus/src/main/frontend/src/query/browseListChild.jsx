@@ -122,7 +122,11 @@ class ListChild extends React.Component {
     }
 
     // Determine if this node has children
-    MakeChildrenFindingRequest(this.props.vocabulary, this.props.id, this.updateChildrenStatus);
+    MakeChildrenFindingRequest(
+      this.props.vocabulary,
+      {input: this.props.id},
+      this.updateChildrenStatus
+      );
   }
 
   // Callback from checkForChildren to update whether or not this node has children
