@@ -28,7 +28,6 @@ import java.util.zip.ZipInputStream;
 
 import javax.jcr.Node;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
@@ -37,17 +36,30 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 
 /**
  * Concrete subclass of AbstractNCITParser for parsing NCIT in OWL file form.
  * @version $Id$
  */
+@Component(service = VocabularyParser.class, name = "ncit-owl", reference = {
+    @Reference(field = "utils", name = "utils", service = VocabularyParserUtils.class)})
 public class NCITOWLParser extends AbstractNCITParser
 {
+    @Override
+    public boolean canParse(String source)
+    {
+        return "ncit_owl".equals(source);
+    }
+
     /**
      * An implementation of the abstract method {@link AbstractNCITParser.getDefaultSource}.
+     *
      * @param version - version of NCIT wanted
      */
     @Override
@@ -56,15 +68,10 @@ public class NCITOWLParser extends AbstractNCITParser
         return "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".OWL.zip";
     }
 
-    @Override
-    public boolean canParse(String source)
-    {
-    	return "ncit_owl".equals(source);
-    }
-
     /**
-     * Concrete implementation of the abstract method {@link AbstractNCITParser.parseVocabulary}.
+     * Implementation of the abstract method {@link ca.sickkids.ccm.lfs.vocabularies.internal.AbstractNCITParser.parseVocabulary}.
      * Parses the temporary NCIT zip file and creates JCR nodes for each term.
+     *
      * @param vocabularyNode - the <code>Vocabulary</code> node which represents the current NCIT instance to index
      * @exception VocabularyIndexException upon failure to parse vocabulary
      */
@@ -144,6 +151,7 @@ public class NCITOWLParser extends AbstractNCITParser
     /**
      * Returns a String array of synonyms for a specified term. This is done by obtaining an iterator that collects
      * all instances of the property "FULL_SYN" or "P90".
+     *
      * @param ontModel - OntModel representing the vocabulary
      * @param term - OntClass representing the term
      * @return String array containing all the synonyms of the term
@@ -179,16 +187,17 @@ public class NCITOWLParser extends AbstractNCITParser
      * Returns a String array of ancestors for a specified term. The method can return only the parents (direct
      * ancestors) or all of the ancestors. The method obtains an iterator which collects all of the superclasses
      * of the term directly listed in its OWL definition.
+     *
      * @param term - the OntClass representing the term for which ancestors should be retrieved
      * @param directAncestor - true if only parents (i.e. direct ancestors) are wanted, false if otherwise
-     * (if all ancestors are wanted)
+     *     (if all ancestors are wanted)
      * @return String array containing the identifiers of all specified ancestors
      */
     private String[] getAncestors(OntClass term, boolean directAncestor)
     {
         /*
-         *  A set is used for initial storage so that the number of ancestors does not need to be specified.
-         *  This removes order from the list of ancestors.
+         * A set is used for initial storage so that the number of ancestors does not need to be specified.
+         * This removes order from the list of ancestors.
          */
         Set<String> ancestors = new HashSet<String>();
 

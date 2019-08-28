@@ -73,6 +73,10 @@ public class NCITFlatParser extends AbstractNCITParser
         return "ncit_flat".equals(source);
     }
 
+    /**
+     * An implementation of the abstract method {@link ca.sickkids.ccm.lfs.vocabularies.internal.AbstractNCITParser.getDefaultSource}.
+     * @param version - version of NCIT wanted
+     */
     @Override
     String getDefaultSource(String version)
     {
@@ -80,8 +84,9 @@ public class NCITFlatParser extends AbstractNCITParser
     }
 
     /**
-     * An implementation of the abstract method {@link AbstractNCITParser.parseNCIT}. Parses the temporary NCIT zip file
-     * and creates JCR nodes for each term. All exceptions from the classes that it uses are handled here.
+     * Implementation of the abstract method {@link ca.sickkids.ccm.lfs.vocabularies.internal.AbstractNCITParser.parseNCIT}.
+     * Parses the temporary NCIT zip file and creates JCR nodes for each term. All exceptions from the classes that it
+     * uses are handled here.
      *
      * @param vocabularyNode the <code>Vocabulary</code> node which represents the current NCIT instance to index
      * @throws VocabularyIndexException upon failure to parse vocabulary
