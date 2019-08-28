@@ -28,7 +28,6 @@ import org.apache.sling.api.SlingHttpServletResponse;
  *
  * @version $Id$
  */
-@SuppressWarnings("checkstyle:RedundantModifier")
 public interface VocabularyParser
 {
     /**
@@ -55,6 +54,6 @@ public interface VocabularyParser
      * @throws IOException when writing json response fails
      * @throws VocabularyIndexException when parsing the vocabulary or storing the parsed data fail
      */
-    void parse(final String source, final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    void parse(String source, SlingHttpServletRequest request, SlingHttpServletResponse response)
         throws IOException, VocabularyIndexException;
 }

@@ -82,7 +82,7 @@ public class NCITFlatParser extends AbstractNCITParser
      * @throws VocabularyIndexException upon failure to parse vocabulary
      */
     @Override
-    void parseNCIT(final File source, final Node vocabularyNode) throws VocabularyIndexException
+    protected void parseNCIT(final File source, final Node vocabularyNode) throws VocabularyIndexException
     {
         try {
             // Extracts term parents the flat file and returns a map of (term, parents) pairs

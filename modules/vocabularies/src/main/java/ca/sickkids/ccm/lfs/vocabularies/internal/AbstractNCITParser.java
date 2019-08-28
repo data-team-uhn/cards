@@ -51,7 +51,6 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
  *
  * @version $Id$
  */
-@SuppressWarnings("checkstyle:RedundantModifier")
 public abstract class AbstractNCITParser implements VocabularyParser
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNCITParser.class);
@@ -250,5 +249,5 @@ public abstract class AbstractNCITParser implements VocabularyParser
      * @throws VocabularyIndexException thrown when an error occurs with parsing
      */
 
-    abstract void parseNCIT(final File sourceFile, final Node vocabularyNode) throws VocabularyIndexException;
+    protected abstract void parseNCIT(File sourceFile, Node vocabularyNode) throws VocabularyIndexException;
 }
