@@ -128,7 +128,7 @@ public class NCITFlatParser extends AbstractNCITParser
                 String[] synonymsArray = synonymString.split("\\|");
 
                 // Make the first synonym of the term the default label if no label is supplied by the term
-                String defaultLabel = synonymsArray[0];
+                String defaultLabel = synonymsArray.length > 0 ? synonymsArray[0] : "";
                 String suppliedLabel = row.get(LABEL_COLUMN);
                 String label = StringUtils.defaultIfBlank(suppliedLabel, defaultLabel);
 

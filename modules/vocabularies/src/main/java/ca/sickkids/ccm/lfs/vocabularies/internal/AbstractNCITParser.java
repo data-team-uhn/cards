@@ -198,7 +198,7 @@ public abstract class AbstractNCITParser implements VocabularyParser
             vocabularyTermNode.setProperty("identifier", identifier);
 
             // If the label does not exist, use the first synonym that is listed
-            if (label == null) {
+            if (label == null && synonyms.length > 0) {
                 vocabularyTermNode.setProperty("label", synonyms[0]);
             } else {
                 vocabularyTermNode.setProperty("label", label);
