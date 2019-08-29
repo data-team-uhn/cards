@@ -107,7 +107,7 @@ public class NCITFlatParser extends AbstractNCITParser
      * @param vocabularyNode the <code>Vocabulary</code> node which represents the current NCIT instance to index
      * @throws IOException thrown when file input cannot be read
      * @throws RepositoryException thrown when JCR nodes cannot be created
-     * @throws VocabularyIndexException throw by failure to create appropriate JCR node
+     * @throws VocabularyIndexException throw on failure to create appropriate JCR node
      */
     private void createTermNodes(final File source, Map<String, String[]> parentsMap, Node vocabularyNode)
         throws IOException, RepositoryException, VocabularyIndexException
