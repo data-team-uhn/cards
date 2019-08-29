@@ -81,7 +81,7 @@ public abstract class AbstractNCITParser implements VocabularyParser
         throws IOException, VocabularyIndexException
     {
         // Obtain relevant request parameters.
-        String identifier = request.getParameter("identifier");
+        String identifier = StringUtils.defaultIfBlank(request.getParameter("identifier"), "ncit");
         String version = request.getParameter("version");
         String httppath = request.getParameter("httppath");
         String localpath = request.getParameter("localpath");
@@ -92,10 +92,6 @@ public abstract class AbstractNCITParser implements VocabularyParser
         final File temporaryFile = File.createTempFile(identifier, "");
         try {
             // Throw exceptions if mandatory parameters are not found or if homepage node cannot be found
-            if (identifier == null) {
-                throw new VocabularyIndexException("Mandatory identifier parameter not provided.");
-            }
-
             if (version == null) {
                 throw new VocabularyIndexException("Mandatory version parameter not provided.");
             }
