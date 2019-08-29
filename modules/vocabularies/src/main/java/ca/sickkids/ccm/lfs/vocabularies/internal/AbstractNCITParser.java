@@ -147,12 +147,12 @@ public abstract class AbstractNCITParser implements VocabularyParser
      * the name of the node. The vocabulary property <code>website</code> is currently fixed to
      * https://ncit.nci.nih.gov/ncitbrowser/.
      *
-     * @param homepage - <code>VocabulariesHomepage</code> node instance that will be parent of the created node
-     * @param identifier - identifier of the vocabulary
-     * @param name - name of the vocabulary
-     * @param source - source of the vocabulary
-     * @param version - version of the vocabulary
-     * @return the <code>Vocabulary</code> node that is created
+     * @param homepage <code>VocabulariesHomepage</code> node instance that will be parent of the new vocabulary node
+     * @param identifier short unique identifier of the vocabulary
+     * @param name the official name of the vocabulary
+     * @param source source of the vocabulary, usually a URL
+     * @param version the version of the vocabulary, a short string
+     * @return the <code>Vocabulary</code> node that was created
      * @throws VocabularyIndexException when node cannot be created
      */
     private Node createNCITVocabularyNode(Node homepage, String identifier, String name, String source, String version)
@@ -180,13 +180,13 @@ public abstract class AbstractNCITParser implements VocabularyParser
      * Note that if the label does not exist, then the first synonym that exists is used instead for the label.
      * </p>
      *
-     * @param vocabularyNode - the <code>Vocabulary</code> node inst
-     * @param identifier - identifier code for the term
-     * @param label - long-form English-language name for the term
-     * @param description - definition or description of the term
-     * @param synonyms - synonyms of the term
-     * @param parents - parent terms (direct ancestors) of the given term
-     * @param ancestors - ancestor terms of the given term
+     * @param vocabularyNode the parent <code>Vocabulary</code> node
+     * @param identifier short identifier code for the term
+     * @param label long-form name for the term
+     * @param description longer definition or description of the term
+     * @param synonyms synonyms for this the term
+     * @param parents the parent terms (direct ancestors) of the given term, as a list of identifiers
+     * @param ancestors ancestor terms of the given term, as a list of identifiers
      * @throws VocabularyIndexException when node cannot be created
      */
     protected void createNCITVocabularyTermNode(Node vocabularyNode, String identifier, String label,
@@ -244,6 +244,5 @@ public abstract class AbstractNCITParser implements VocabularyParser
      * @param vocabularyNode <code>Vocabulary</code> node which represents the current NCIT instance
      * @throws VocabularyIndexException thrown when an error occurs with parsing
      */
-
     protected abstract void parseNCIT(File sourceFile, Node vocabularyNode) throws VocabularyIndexException;
 }

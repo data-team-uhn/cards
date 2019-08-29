@@ -78,7 +78,7 @@ public class NCITFlatParser extends AbstractNCITParser
      * An implementation of the abstract method {@link AbstractNCITParser.parseNCIT}. Parses the temporary NCIT zip file
      * and creates JCR nodes for each term. All exceptions from the classes that it uses are handled here.
      *
-     * @param vocabularyNode - the <code>Vocabulary</code> node which represents the current NCIT instance to index
+     * @param vocabularyNode the <code>Vocabulary</code> node which represents the current NCIT instance to index
      * @throws VocabularyIndexException upon failure to parse vocabulary
      */
     @Override
@@ -103,8 +103,8 @@ public class NCITFlatParser extends AbstractNCITParser
      * Extracts all <code>VocabularyTerm</code> node properties from the NCIT flat file zip and creates JCR nodes.
      * Ancestors of terms are calculated recursively from the parents.
      *
-     * @param parentsMap - a map of (term, parents) pairs where "parents" is an array of parent terms
-     * @param vocabularyNode - the <code>Vocabulary</code> node which represents the current NCIT instance to index
+     * @param parentsMap a map of (term, parents) pairs where "parents" is an array of parent terms
+     * @param vocabularyNode the <code>Vocabulary</code> node which represents the current NCIT instance to index
      * @throws IOException thrown when file input cannot be read
      * @throws RepositoryException thrown when JCR nodes cannot be created
      * @throws VocabularyIndexException throw by failure to create appropriate JCR node
@@ -151,7 +151,7 @@ public class NCITFlatParser extends AbstractNCITParser
      * Returns a HashMap containing a (String, String[]) pair representing (term, parents). This is extracted from the
      * temporary NCIT zip flat file.
      *
-     * @return a map which stores (term, parent) pairs
+     * @return a map which stores (term ID, parent IDs) pairs
      * @throws IOException thrown when temporary NCIT file cannot be read
      */
     private Map<String, String[]> returnParentMap(final File source)
@@ -189,8 +189,8 @@ public class NCITFlatParser extends AbstractNCITParser
      * Recursively calculates the ancestors of a given term, using the map of parents to accumulate a list of ancestors.
      * This is returned as a String set.
      *
-     * @param parentsMap - a map of (term, parents) pairs where "parents" is an array of parent terms
-     * @param identifier - identifier of the term
+     * @param parentsMap a map of (term, parents) pairs where "parents" is an array of parent terms
+     * @param identifier identifier of the term
      * @return a set which stores the ancestors of the given term
      */
     private Set<String> computeAncestors(Map<String, String[]> parentsMap, String identifier)
