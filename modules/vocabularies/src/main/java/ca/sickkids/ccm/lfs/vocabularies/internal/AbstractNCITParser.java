@@ -68,6 +68,14 @@ public abstract class AbstractNCITParser implements VocabularyParser
      * <code>"httppath"</code>- allows downloading of NCIT from a url other than
      * "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/".
      * </p>
+     * Also the following parameter is required if you want to overwrite a vocabulary that already exists
+     * in the repository:
+     * <p>
+     * <code>overwrite</code> - must be "true" or else overwritting is not permitted and a
+     * {@link ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException} is thrown.
+     * </p>
+     * You cannot create a vocabulary with the same identifier as an existing vocabulary unless you overwrite
+     * it.
      * The method obtains the <code>VocabulariesHomepage</code> node by getting the resource of the request and adapting
      * it from a {@link org.apache.sling.api.resource.Resource} to a {@link javax.jcr.node}.
      *
@@ -85,6 +93,7 @@ public abstract class AbstractNCITParser implements VocabularyParser
         String version = request.getParameter("version");
         String httppath = request.getParameter("httppath");
         String localpath = request.getParameter("localpath");
+        String overwrite = request.getParameter("overwrite");
 
         // Obtain the resource of the request and adapt it to a JCR node. This is taken as the homepage node
         Node homepage = request.getResource().adaptTo(Node.class);
@@ -101,7 +110,7 @@ public abstract class AbstractNCITParser implements VocabularyParser
             }
 
             // Delete the Vocabulary node already representing this vocabulary instance if it exists
-            this.utils.clearVocabularyNode(homepage, identifier);
+            this.utils.clearVocabularyNode(homepage, identifier, overwrite);
 
             // Load temporary NCIT zip file. Default location is at https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/
             String sourceLocation = "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".FLAT.zip";

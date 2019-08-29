@@ -41,19 +41,28 @@ public class VocabularyParserUtils
 
     /**
      * Remove any previous instances of the vocabulary which is to be parsed and indexed in the JCR repository by
-     * deleting the vocabulary node instance. This will also cause the node's children to be deleted.
+     * deleting the vocabulary node instance. This will also cause the node's children to be deleted. An exception is
+     * thrown if the overwrite parameter is not enabled and a vocabulary of the given name already exists in the
+     * repository.
      *
      * @param homepage - an instance of the VocabulariesHomepage node serving as the root of Vocabulary nodes
      * @param name - identifier of the vocabulary which will become its node name
+     * @param overwrite - signals whether a pre-existing vocabulary is to be overwritten by one with the same name
      * @throws VocabularyIndexException thrown when node cannot be removed
      */
-    public void clearVocabularyNode(final Node homepage, final String name) throws VocabularyIndexException
+    public void clearVocabularyNode(final Node homepage, final String name, final String overwrite)
+        throws VocabularyIndexException
     {
         try {
             // Only delete the node if it exists
             if (homepage.hasNode(name)) {
-                Node target = homepage.getNode(name);
-                target.remove();
+                if (overwrite != null && "true".equalsIgnoreCase(overwrite)) {
+                    Node target = homepage.getNode(name);
+                    target.remove();
+                } else {
+                    throw new VocabularyIndexException("The identifier you specified already exists in the"
+                        + " repository and you did not ");
+                }
             }
         } catch (RepositoryException e) {
             String message = "Error: Failed to delete existing Vocabulary node. " + e.getMessage();
