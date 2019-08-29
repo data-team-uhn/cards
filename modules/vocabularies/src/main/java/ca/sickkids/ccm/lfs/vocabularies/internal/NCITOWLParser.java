@@ -115,13 +115,8 @@ public class NCITOWLParser extends AbstractNCITParser
                  */
                 Statement descriptionFromTerm = term.getProperty(descriptionProperty);
 
-                // This handles the case if the statement is blank or null
-                String description;
-                if (descriptionFromTerm != null) {
-                    description = descriptionFromTerm.getString();
-                } else {
-                    description = "";
-                }
+                // Get String from Statement, and handle the case if the statement is blank or null
+                String description = StringUtils.defaultIfBlank(descriptionFromTerm.getString(), "");
 
                 String[] synonyms = getSynonyms(ontModel, term);
                 String[] parents = getAncestors(term, true);
@@ -131,9 +126,7 @@ public class NCITOWLParser extends AbstractNCITParser
                  * The label is the term label. The language option is null because "EN" doesn't
                  * return a correct label
                  */
-                String suppliedLabel = term.getLabel(null);
-                String defaultLabel = synonyms[0];
-                String label = StringUtils.defaultIfBlank(suppliedLabel, defaultLabel);
+                String label = term.getLabel(null);
 
                 // Create VocabularyTerm node as child of vocabularyNode using inherited protected method
                 createNCITVocabularyTermNode(vocabularyNode, identifier, label, description, synonyms,
