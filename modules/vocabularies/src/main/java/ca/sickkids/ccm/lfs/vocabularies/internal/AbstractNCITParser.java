@@ -197,12 +197,13 @@ public abstract class AbstractNCITParser implements VocabularyParser
             Node vocabularyTermNode = vocabularyNode.addNode("./" + identifier, "lfs:VocabularyTerm");
             vocabularyTermNode.setProperty("identifier", identifier);
 
-            // If the label does not exist, use the first synonym that is listed
-            if (label == null && synonyms.length > 0) {
-                vocabularyTermNode.setProperty("label", synonyms[0]);
-            } else {
-                vocabularyTermNode.setProperty("label", label);
-            }
+            /*
+             *  If the label does not exist, use the first synonym that is listed. If there are no synonyms
+             *  use a blank String;
+             */
+            String defaultLabel = synonyms != null && synonyms.length > 0 ? synonyms[0] : "";
+            String safeLabel = StringUtils.defaultIfBlank(label, defaultLabel);
+            vocabularyTermNode.setProperty("label", safeLabel);
 
             vocabularyTermNode.setProperty("description", description);
             vocabularyTermNode.setProperty("synonyms", synonyms);

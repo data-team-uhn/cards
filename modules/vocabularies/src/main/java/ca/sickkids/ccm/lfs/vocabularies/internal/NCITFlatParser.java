@@ -34,7 +34,6 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.lang3.StringUtils;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -127,10 +126,11 @@ public class NCITFlatParser extends AbstractNCITParser
                 // Synonym entry is a String with terms separated by "|" so split the String into a String[]
                 String[] synonymsArray = synonymString.split("\\|");
 
-                // Make the first synonym of the term the default label if no label is supplied by the term
-                String defaultLabel = synonymsArray.length > 0 ? synonymsArray[0] : "";
-                String suppliedLabel = row.get(LABEL_COLUMN);
-                String label = StringUtils.defaultIfBlank(suppliedLabel, defaultLabel);
+                /*
+                 *  If this doesn't exist, the first synonym will be used. If there are no synonyms, a blank
+                 *  String will be used. This is handled in createNCITVocabularyTermNode.
+                 */
+                String label = row.get(LABEL_COLUMN);
 
                 String[] parentsArray = parentsMap.get(identifier);
 
