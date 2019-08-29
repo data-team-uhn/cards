@@ -212,9 +212,9 @@ public class VocabularyIndexerServletTest
         Assert.assertFalse(responseJson.getBoolean("isSuccessful"));
 
         // Compare error message to expected error message
-        String expectedError = "NCIT FLat parsing error: Mandatory version parameter not provided.";
+        String expectedError = "NCIT Flat parsing error: Mandatory version parameter not provided.";
         String obtainedError = responseJson.getString("error");
-        Assert.assertTrue(expectedError.equalsIgnoreCase(obtainedError));
+        Assert.assertTrue(expectedError.equals(obtainedError));
 
         // Make sure that the vocabulary node was not created
         Node rootNode = request.getResource().adaptTo(Node.class);
@@ -266,10 +266,10 @@ public class VocabularyIndexerServletTest
         Assert.assertFalse(responseJson.getBoolean("isSuccessful"));
 
         // Compare the error message
-        String expectedError = "NCIT FLat parsing error: Error: Failed to load zip vocabulary locally. "
+        String expectedError = "NCIT Flat parsing error: Error: Failed to load zip vocabulary locally. "
             + "./someLocation (No such file or directory)";
         String obtainedError = responseJson.getString("error");
-        Assert.assertTrue(expectedError.equalsIgnoreCase(obtainedError));
+        Assert.assertTrue(expectedError.equals(obtainedError));
 
         // Make sure the vocabulary node was not created
         Node rootNode = request.getResource().adaptTo(Node.class);
