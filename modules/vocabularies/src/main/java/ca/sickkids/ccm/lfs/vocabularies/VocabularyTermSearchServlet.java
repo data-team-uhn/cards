@@ -27,6 +27,7 @@ import javax.json.JsonObject;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
@@ -42,13 +43,15 @@ import org.osgi.service.log.LogService;
  *
  * @version $Id$
  */
-@Component (service = {Servlet.class})
-@SlingServletResourceTypes(resourceTypes = {"lfs/Vocabulary"}, methods = {"GET"})
+@Component(service = { Servlet.class })
+@SlingServletResourceTypes(resourceTypes = { "lfs/Vocabulary" }, methods = { "GET" })
 public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -8244429250995709300L;
 
-    private static final int LIMIT = 10;
+    private static final int DEFAULT_LIMIT = 10;
+
+    private static final int MAX_LIMIT = 1000;
 
     @Reference
     private LogService logger;
@@ -59,11 +62,22 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
         String suggest = request.getParameter("suggest");
         String query = request.getParameter("query");
         response.setContentType("application/json");
+        String limitStr = request.getParameter("limit");
+        int limit = DEFAULT_LIMIT;
+        if (NumberUtils.isDigits(limitStr)) {
+            try {
+                limit = Integer.valueOf(limitStr);
+            } catch (NumberFormatException e) {
+                // Bad limit, the default will be used
+            }
+        }
+        // To avoid overloading the server, we set a limit on the number of nodes that can be returned
+        limit = Math.min(limit, MAX_LIMIT);
 
         if (suggest != null) {
-            handleFullTextQuery(suggest, request.getResourceResolver(), response);
+            handleFullTextQuery(suggest, request.getResourceResolver(), response, limit);
         } else if (query != null) {
-            handleLuceneQuery(query, request.getResourceResolver(), response);
+            handleLuceneQuery(query, request.getResourceResolver(), response, limit);
         } else {
             Writer out = response.getWriter();
             Json.createGenerator(out).writeStartObject().writeEnd().flush();
@@ -79,14 +93,14 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
      * @param response the response object to write to
      */
     private void handleFullTextQuery(String suggest, final ResourceResolver resolver,
-        final SlingHttpServletResponse response) throws IOException
+        final SlingHttpServletResponse response, final int limit) throws IOException
     {
         final String oakQuery =
             String.format("select * from [lfs:VocabularyTerm] where contains(*, '%s')",
                 suggest.replace("'", "''"));
         Iterator<Resource> results = resolver.findResources(oakQuery, "JCR-SQL2");
 
-        writeResults(response.getWriter(), results);
+        writeResults(response.getWriter(), results, limit);
     }
 
     /**
@@ -97,14 +111,14 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
      * @param response the response object to write to
      */
     private void handleLuceneQuery(String query, final ResourceResolver resolver,
-        final SlingHttpServletResponse response) throws IOException
+        final SlingHttpServletResponse response, final int limit) throws IOException
     {
         final String oakQuery =
             String.format("select * from [lfs:VocabularyTerm] where native('lucene', '%s')",
                 query.replace("'", "''"));
         Iterator<Resource> results = resolver.findResources(oakQuery, "JCR-SQL2");
 
-        writeResults(response.getWriter(), results);
+        writeResults(response.getWriter(), results, limit);
     }
 
     /**
@@ -113,14 +127,15 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
      * @param out the writer to output to
      * @param response the resources to output
      */
-    private void writeResults(Writer out, Iterator<Resource> results)
+    private void writeResults(Writer out, Iterator<Resource> results, final int limit)
         throws IOException
     {
         JsonGenerator generator = Json.createGenerator(out);
         generator.writeStartArray();
 
         // Turn the suggestions into a writable Json
-        while (results.hasNext()) {
+        int i = 0;
+        while (results.hasNext() && i++ < limit) {
             Resource suggestion = results.next();
             generator.write(suggestion.adaptTo(JsonObject.class));
         }
