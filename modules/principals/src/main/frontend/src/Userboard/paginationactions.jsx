@@ -22,26 +22,26 @@ class PaginationActions extends React.Component {
     handleFirstPage = (event) => {
       this.props.onChangePage(event, 0);
     }
-  
+
     handleNextPage = (event) => {
       if (this.props.page < Math.ceil(this.props.count/this.props.rowsPerPage) - 1) {
         this.props.onChangePage(event, this.props.page + 1);
       }
     }
-  
+
     handlePrevPage = (event) => {
       if (this.props.page > 0) {
         this.props.onChangePage(event, this.props.page - 1);
       }
     }
-  
+
     handleLastPage = (event) => {
       this.props.onChangePage(event, Math.max(0, Math.ceil(this.props.count/this.props.rowsPerPage) - 1));
     }
-  
+
     render () {
       const {count, page, rowsPerPage} = this.props;
-  
+
       return (
         <div style={{flexShrink: 0}}>
           <IconButton
@@ -51,7 +51,7 @@ class PaginationActions extends React.Component {
             <FirstPage/>
           </IconButton>
           <IconButton
-            onClick={this.handlePrevPage} 
+            onClick={this.handlePrevPage}
             disabled={page === 0}
           >
             <KeyboardArrowLeft/>

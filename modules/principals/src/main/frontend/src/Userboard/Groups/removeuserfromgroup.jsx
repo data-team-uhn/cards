@@ -36,43 +36,40 @@ class RemoveUserFromGroupDialogue extends React.Component {
   }
 
   handleLoadUsers() {
-    fetch("http://localhost:8080/system/userManager/group/" + this.props.name + ".1.json",
-      {
-        method: 'GET',
-        credentials: 'include'
-      })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        var names = [];
-        var i;
-        for (i = 0; i < data.members.length; ++i) {
-          let username = data.members[i];
-          username = username.substring(25);
-          names.push(this.addName(username));
-          console.log(data.members[i]);
-        }
-        this.setState({ groupUsers: names });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (this.props.name != "") {
+      fetch("http://localhost:8080/system/userManager/group/" + this.props.name + ".1.json",
+        {
+          method: 'GET',
+          credentials: 'include'
+        })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          var names = [];
+          var i;
+          for (i = 0; i < data.members.length; ++i) {
+            let username = data.members[i];
+            username = username.substring(25);
+            names.push(this.addName(username));
+          }
+          this.setState({ groupUsers: names });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }
 
   handleRemoveUsers() {
     let url = "http://localhost:8080/system/userManager/group/" + this.props.name + ".update.html";
 
     let formData = new FormData();
-    console.log(this.state.selectedUsers);
 
     var i;
     for (i = 0; i < this.state.selectedUsers.length; ++i) {
       formData.append(':member@Delete', this.state.selectedUsers[i].name);
     }
-
-    console.log(this.state.selectedUsers[0]);
-    console.log(formData);
 
     fetch(url,
       {
@@ -94,21 +91,17 @@ class RemoveUserFromGroupDialogue extends React.Component {
 
   handleSelectRowClick(event, row) {
     let chosens = this.state.selectedUsers;
-    console.log(chosens.indexOf(row));
 
     if (chosens.indexOf(row) === -1) {
       chosens.push(row);
       this.setState({ selectedUsers: chosens });
     }
-    console.log(this.state.selectedUsers);
   }
 
   handleDeselectRowClick(event, row) {
     let chosens = this.state.selectedUsers;
-    console.log(row);
     chosens.splice(chosens.indexOf(row), 1);
     this.setState({ selectedUsers: chosens });
-    console.log(this.state.selectedUsers);
   }
 
   render() {

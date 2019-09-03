@@ -43,6 +43,5 @@
     <module>principals</module>
     <module>thesaurus</module>
     <module>vocabularies</module>
-    <module>user-viewer</module>
   </modules>
 </project>

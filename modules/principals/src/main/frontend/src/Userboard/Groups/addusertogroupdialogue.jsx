@@ -62,16 +62,11 @@ class AddUserToGroupDialogue extends React.Component {
         let url = "http://localhost:8080/system/userManager/group/" + this.props.name + ".update.html";
 
         let formData = new FormData();
-        console.log(this.state.selectedUsers);
 
         var i;
         for (i = 0; i < this.state.selectedUsers.length; ++i) {
             formData.append(':member', this.state.selectedUsers[i].name);
         }
-
-        console.log(this.state.selectedUsers[0]);
-
-        console.log(formData);
 
         fetch(url,
             {
@@ -98,14 +93,12 @@ class AddUserToGroupDialogue extends React.Component {
             chosens.push(row);
             this.setState({ selectedUsers: chosens });
         }
-        console.log(this.state.selectedUsers);
     }
 
     handleDeselectRowClick(event, row) {
         let chosens = this.state.selectedUsers;
         chosens.splice(chosens.indexOf(row), 1);
         this.setState({ selectedUsers: chosens });
-        console.log(this.state.selectedUsers);
     }
 
     render() {

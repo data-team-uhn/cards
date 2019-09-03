@@ -38,24 +38,22 @@ class ChangeUserPasswordDialogue extends React.Component {
         formData.append('newPwdConfirm', this.state.newPwdConfirm);
         let url = "http://localhost:8080/system/userManager/user/" + this.props.name + ".changePassword.html";
 
-        console.log(formData);
         fetch(url, {
             method: 'POST',
             credentials: 'include',
             body: formData
         })
-            .then(() => {
-                this.props.handleClose();
-            })
-            .catch((error) => {
-                if (error.getElementById("Status") === 404) {
-                    console.log("missing user 404");
-                }
-                else {
-                    console.log("other error 505");
-                }
-                console.log(error);
-            });
+        .then(() => {
+            this.props.handleClose();
+        })
+        .catch((error) => {
+            if (error.getElementById("Status") === 404) {
+                console.log("missing user 404");
+            } else {
+                console.log("other error 505");
+            }
+            console.log(error);
+        });
     }
 
     render() {
@@ -102,7 +100,7 @@ class ChangeUserPasswordDialogue extends React.Component {
                             type="submit"
                         >
                             Change User Password
-              </Button>
+                        </Button>
                     </form>
                 </DialogContent>
                 <DialogActions>

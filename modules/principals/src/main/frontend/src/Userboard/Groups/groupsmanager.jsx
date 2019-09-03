@@ -35,18 +35,18 @@ import Button from "material-dashboard-react/dist/components/CustomButtons/Butto
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";
-import DeleteGroupDialogue from "./deletegroupdialogue.jsx"; 
+import DeleteGroupDialogue from "./deletegroupdialogue.jsx";
 import AddUserToGroupDialogue from "./addusertogroupdialogue.jsx";
 import RemoveUserFromGroupDialogue from "./removeuserfromgroup.jsx";
 import PaginationActions from "../paginationactions.jsx";
 
 class GroupsManager extends React.Component {
-  constructor(props) { 
+  constructor(props) {
     super(props);
     this.state = {
       groups: [],
       groupFilter: null,
-      
+
       currentGroupName: "",
       currentGroupIndex: -1,
       returnedGroupRows: 0,
@@ -174,7 +174,7 @@ class GroupsManager extends React.Component {
         <DeleteGroupDialogue isOpen={this.state.deployDeleteGroup} handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName} reload={() => this.handleReloadAfterDelete()}/>
         <AddUserToGroupDialogue isOpen={this.state.deployAddGroupUsers} handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName}/>
         <RemoveUserFromGroupDialogue isOpen={this.state.deployRemoveGroupUsers} handleClose={() => {this.setState({deployRemoveGroupUsers: false});}} name={this.state.currentGroupName}/>
-        
+
         <Hidden mdUp implementation="css">
           <Dialog
             open={this.state.deployMobileGroupDialog}
@@ -293,7 +293,7 @@ class GroupsManager extends React.Component {
                           ActionsComponent={PaginationActions}
                         />
                       </TableRow>
-                    </TableFooter>   
+                    </TableFooter>
                   </Table>
                 </Hidden>
                 <Hidden mdUp implementation="css">

@@ -44,7 +44,6 @@ class CreateGroupDialogue extends React.Component {
         .then((response) => {
             this.props.reload();
             this.props.handleClose();
-            console.log(response);
         })
         .catch((error) => {
             console.log(error);

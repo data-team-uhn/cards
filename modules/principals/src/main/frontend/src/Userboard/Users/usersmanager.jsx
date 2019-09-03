@@ -35,8 +35,8 @@ import Button from "material-dashboard-react/dist/components/CustomButtons/Butto
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateUserDialogue from "./createuserdialogue.jsx";
-import DeleteUserDialogue from "./deleteuserdialogue.jsx"; 
-import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx"; 
+import DeleteUserDialogue from "./deleteuserdialogue.jsx";
+import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx";
 import PaginationActions from "../paginationactions.jsx";
 
 class UsersManager extends React.Component {
@@ -50,7 +50,7 @@ class UsersManager extends React.Component {
       currentUserIndex: -1,
       returnedUserRows: 0,
       totalUserRows: 0,
-      
+
       userPaginationLimit: 5,
       userPageNumber: 0,
 
@@ -100,12 +100,11 @@ class UsersManager extends React.Component {
       this.clearSelectedUser();
       this.setState(
         {
-          returnedUserRows: data.returnedrows, 
+          returnedUserRows: data.returnedrows,
           totalUserRows: data.totalrows,
           users: data.rows,
         }
       );
-      console.log(data.rows);
     })
     .catch((error) => {
       console.log(error);
@@ -170,7 +169,7 @@ class UsersManager extends React.Component {
         <CreateUserDialogue isOpen={this.state.deployCreateUser} handleClose={() => {this.setState({deployCreateUser: false});}} reload={() => this.handleReload()}/>
         <DeleteUserDialogue isOpen={this.state.deployDeleteUser} handleClose={() => {this.setState({deployDeleteUser: false});}} name={this.state.currentUserName} reload={() => this.handleReloadAfterDelete()}/>
         <ChangeUserPasswordDialogue isOpen={this.state.deployChangeUserPassword} handleClose={() => {this.setState({deployChangeUserPassword: false});}} name={this.state.currentUserName}/>
-                
+
         <Hidden mdUp implementation="css">
           <Dialog
             open={this.state.deployMobileUserDialog}
@@ -289,7 +288,7 @@ class UsersManager extends React.Component {
                         </TableRow>
                       }
                     </TableBody>
-                    
+
                     <TableFooter>
                       <TableRow>
                         <TablePagination
@@ -394,7 +393,7 @@ class UsersManager extends React.Component {
 
                     <p className={classes.cardCategory}>Admin Status</p>
                     <h3 className={classes.cardTitle}>{this.state.users[this.state.currentUserIndex].isAdmin ? "True" : "False"}</h3>
- 
+
                     <p className={classes.cardCategory}>Disabled</p>
                     <h3 className={classes.cardTitle}>{this.state.users[this.state.currentUserIndex].isDisabled ? "True" : "False"}</h3>
 
