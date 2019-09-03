@@ -36,7 +36,7 @@ public class VocabularyIndexException extends Exception
     /**
      * Constructs a new instance of this class with the specified error message.
      *
-     * @param message - error message of the exception
+     * @param message error message of the exception
      */
     public VocabularyIndexException(String message)
     {
@@ -46,8 +46,8 @@ public class VocabularyIndexException extends Exception
     /**
      * Constructs a new instance of this class with the specified message and cause.
      *
-     * @param message - error message for the exception
-     * @param cause - cause of the exception
+     * @param message error message for the exception
+     * @param cause cause of the exception
      */
     public VocabularyIndexException(String message, Throwable cause)
     {
@@ -57,7 +57,7 @@ public class VocabularyIndexException extends Exception
     /**
      * Constructs a new instance of this class with the specified cause for exception.
      *
-     * @param cause - cause of the exception
+     * @param cause cause of the exception
      */
     public VocabularyIndexException(Throwable cause)
     {

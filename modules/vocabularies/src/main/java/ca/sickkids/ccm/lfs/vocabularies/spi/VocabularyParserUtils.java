@@ -45,9 +45,9 @@ public class VocabularyParserUtils
      * thrown if the overwrite parameter is not enabled and a vocabulary of the given name already exists in the
      * repository.
      *
-     * @param homepage - an instance of the VocabulariesHomepage node serving as the root of Vocabulary nodes
-     * @param name - identifier of the vocabulary which will become its node name
-     * @param overwrite - signals whether a pre-existing vocabulary is to be overwritten by one with the same name
+     * @param homepage an instance of the VocabulariesHomepage node serving as the root of Vocabulary nodes
+     * @param name the identifier of the vocabulary which will become its node name
+     * @param overwrite signals whether a pre-existing vocabulary is to be overwritten by one with the same name
      * @throws VocabularyIndexException thrown when node cannot be removed
      */
     public void clearVocabularyNode(final Node homepage, final String name, final String overwrite)
@@ -79,10 +79,10 @@ public class VocabularyParserUtils
      * <code>error</code> - error message of the exception causing the failure; null if there is no exception
      * </p>
      *
-     * @param request - http request from the VocabularyIndexerServlet
-     * @param response - http response from the VocabularyIndexerServlet
-     * @param isSuccessful - boolean variable which is true if parsing is successful and false otherwise
-     * @param error - the error message caught from the exception which is null if there is no error
+     * @param request http request from the VocabularyIndexerServlet
+     * @param response http response from the VocabularyIndexerServlet
+     * @param isSuccessful boolean variable which is true if parsing is successful and false otherwise
+     * @param error the error message caught from the exception which is null if there is no error
      * @throws IOException thrown when json cannot be written
      */
     public void writeStatusJson(final SlingHttpServletRequest request, final SlingHttpServletResponse response,

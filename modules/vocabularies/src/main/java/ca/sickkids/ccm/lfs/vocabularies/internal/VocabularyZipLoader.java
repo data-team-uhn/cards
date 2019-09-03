@@ -42,8 +42,8 @@ public class VocabularyZipLoader
     /**
      * Loads zip file from a url into a temporary zip file by making a http GET request.
      *
-     * @param path - url of the zip file
-     * @param temporaryFile - file object representing the temporary file to be created from the response information
+     * @param path url of the zip file
+     * @param temporaryFile file object representing the temporary file to be created from the response information
      * @throws VocabularyIndexException thrown upon failure of zip file to load
      */
     public void loadZipHttp(String path, File temporaryFile)
@@ -82,8 +82,8 @@ public class VocabularyZipLoader
     /**
      * Loads a local zip file to a temporary zip file based on a path relative to the VocabularyZipLoader instance.
      *
-     * @param path - path of the local file to be accessed relative to the VocabularyZipLoader
-     * @param temporaryFile - file object representing the temporary file to which the information will be copied
+     * @param path path of the local file to be accessed relative to the VocabularyZipLoader
+     * @param temporaryFile file object representing the temporary file to which the information will be copied
      * @throws VocabularyIndexException thrown upon failure of zip file to load
      */
     public void loadZipLocal(String path, File temporaryFile)

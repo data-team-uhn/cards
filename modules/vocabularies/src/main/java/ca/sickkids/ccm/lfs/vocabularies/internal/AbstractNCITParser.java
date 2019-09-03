@@ -232,7 +232,7 @@ public abstract class AbstractNCITParser implements VocabularyParser
      * will not be applied. After the session is saved, then the JCR repository will automatically begin Lucene
      * indexing.
      *
-     * @param vocabulariesHomepage - the <code>VocabulariesHomepage</code> node obtained from the request
+     * @param vocabulariesHomepage the <code>VocabulariesHomepage</code> node obtained from the request
      * @throws VocabularyIndexException if session is not successfully saved
      */
     private void saveSession(Node vocabulariesHomepage)
