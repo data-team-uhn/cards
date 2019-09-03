@@ -1,12 +1,12 @@
 {
     "Userpage": {
         "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "userpage.html",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/user",
         "lfs:extensionName": "User Profile",
         "lfs:defaultOrder": "1",
         "lfs:defaultDisabled": "false",
-        "lfs:icon": "/libs/lfs/resources/userboardIcon.js",
-        "lfs:extensionRenderURL": "/libs/lfs/resources/userboard.js",
+        "lfs:icon": "asset:lfs-principals.userboardIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-principals.userboard.js",
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "test",
