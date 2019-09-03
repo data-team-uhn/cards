@@ -135,10 +135,9 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
 
         // Turn the suggestions into a writable Json
         int i = 0;
-        while (results.hasNext() && i < limit) {
+        while (results.hasNext() && i++ < limit) {
             Resource suggestion = results.next();
             generator.write(suggestion.adaptTo(JsonObject.class));
-            ++i;
         }
 
         generator.writeEnd().flush();

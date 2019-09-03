@@ -127,8 +127,8 @@ public class NCITFlatParser extends AbstractNCITParser
                 String[] synonymsArray = synonymString.split("\\|");
 
                 /*
-                 *  If this doesn't exist, the first synonym will be used. If there are no synonyms, a blank
-                 *  String will be used. This is handled in createNCITVocabularyTermNode.
+                 * If this doesn't exist, the first synonym will be used. If there are no synonyms, a blank String will
+                 * be used. This is handled in createNCITVocabularyTermNode.
                  */
                 String label = row.get(LABEL_COLUMN);
 
@@ -200,7 +200,7 @@ public class NCITFlatParser extends AbstractNCITParser
 
         String[] parentArray = parentsMap.get(identifier);
 
-        if (parentArray != null && parentArray.length > 0) {
+        if (parentArray != null) {
             for (String parentIdentifier : parentArray) {
                 // Add parent as an ancestor
                 termAncestorSet.add(parentIdentifier);
