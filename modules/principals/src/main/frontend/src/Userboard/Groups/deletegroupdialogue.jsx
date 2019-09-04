@@ -17,7 +17,7 @@
 
 import React from "react";
 import {Dialog, DialogTitle, DialogActions, DialogContent} from "@material-ui/core";
-import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
+import { Button } from "MaterialDashboardReact";
 
 class DeleteGroupDialogue extends React.Component {
     constructor(props) {

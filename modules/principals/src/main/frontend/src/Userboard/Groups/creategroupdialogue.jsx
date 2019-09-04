@@ -17,10 +17,9 @@
 
 import React from "react";
 
-import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
-import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
-
 import { Button, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core";
+
+import { GridItem, GridContainer} from "MaterialDashboardReact";
 
 class CreateGroupDialogue extends React.Component {
     constructor(props) {
@@ -33,7 +32,6 @@ class CreateGroupDialogue extends React.Component {
     handleCreateGroup() {
         let formData = new FormData();
         formData.append(':name', this.state.newName);
-
         let url = "http://localhost:8080/system/userManager/group.create.json";
 
         fetch(url, {

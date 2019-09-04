@@ -17,8 +17,7 @@
 
 import React from "react";
 
-import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
-import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
+import { GridItem, GridContainer } from "MaterialDashboardReact";
 
 import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 

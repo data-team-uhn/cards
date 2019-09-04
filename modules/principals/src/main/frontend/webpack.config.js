@@ -41,6 +41,7 @@ module.exports = {
         "prop-types": "PropTypes",
         "jss": "jss",
         "@material-ui/core": "MaterialUI",
+        "MaterialDashboardReact": "window['MaterialDashboard']"
       }
     ]
   };

@@ -19,19 +19,12 @@ import React from "react";
 
 import PropTypes from "prop-types";
 
-import  {withStyles} from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 
-import {IconButton, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core";
-import {Search} from "@material-ui/icons";
+import { IconButton, Table, TableBody, TableHead, TableRow, TableCell, TableFooter, TablePagination, Hidden, Dialog, DialogTitle, DialogActions, DialogContent, TextField } from "@material-ui/core";
+import { Search } from "@material-ui/icons";
 
-import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
-import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
-import Card from "material-dashboard-react/dist/components/Card/Card.js";
-import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
-import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
-import CardFooter from "material-dashboard-react/dist/components/Card/CardFooter";
-//import { Avatar } from "@material-ui/core";
-import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
+import { Button, Card, CardHeader, CardBody, GridContainer, GridItem } from "MaterialDashboardReact";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateUserDialogue from "./createuserdialogue.jsx";

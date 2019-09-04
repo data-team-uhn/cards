@@ -16,10 +16,8 @@
 */
 
 import React from "react";
-import {Dialog, DialogTitle, DialogActions, DialogContent, TextField } from "@material-ui/core";
-import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
-import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
-import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
+import { Dialog, DialogTitle, DialogActions, DialogContent, TextField } from "@material-ui/core";
+import { Button, GridItem, GridContainer } from "MaterialDashboardReact";
 
 class CreateUserDialogue extends React.Component {
     constructor(props) {

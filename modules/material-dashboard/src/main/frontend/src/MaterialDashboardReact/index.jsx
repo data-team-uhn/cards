@@ -20,9 +20,12 @@
 // Expose children through here
 export {default as Button} from "./CustomButtons/Button.jsx";
 export {default as Card} from "./Card/Card.jsx";
-export {default as CardHeader} from "./Card/CardHeader.jsx";
 export {default as CardBody} from "./Card/CardBody.jsx";
+export {default as CardFooter} from "./Card/CardFooter.jsx";
+export {default as CardHeader} from "./Card/CardHeader.jsx";
 export {default as CustomInput} from "./CustomInput/CustomInput.jsx";
+export {default as GridContainer} from "./Grid/GridContainer.jsx";
+export {default as GridItem} from "./Grid/GridItem.jsx";
 export {default as Table} from "./Table/Table.jsx";
 
 export {default as DropdownStyle} from "./ExternalThemes/dropdownStyle.jsx";

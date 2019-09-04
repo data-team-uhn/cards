@@ -17,10 +17,8 @@
 
 import React from "react";
 
-import GridItem from "material-dashboard-react/dist/components/Grid/GridItem.js";
-import GridContainer from "material-dashboard-react/dist/components/Grid/GridContainer.js";
-import {Dialog, DialogTitle, DialogActions, DialogContent, Table, TableBody, TableHead, TableRow, TableCell} from "@material-ui/core";
-import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
+import { Dialog, DialogTitle, DialogActions, DialogContent, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
+import { Button, GridContainer, GridItem } from "MaterialDashboardReact";
 
 class AddUserToGroupDialogue extends React.Component {
     constructor(props) {
@@ -60,7 +58,6 @@ class AddUserToGroupDialogue extends React.Component {
 
     handleAddUsers() {
         let url = "http://localhost:8080/system/userManager/group/" + this.props.name + ".update.html";
-
         let formData = new FormData();
 
         var i;
@@ -109,7 +106,7 @@ class AddUserToGroupDialogue extends React.Component {
             >
                 <DialogTitle>
                     Add Users to Group
-        </DialogTitle>
+                </DialogTitle>
                 <DialogContent>
                     <GridContainer>
                         <GridItem xs={12} sm={12} md={6}>
