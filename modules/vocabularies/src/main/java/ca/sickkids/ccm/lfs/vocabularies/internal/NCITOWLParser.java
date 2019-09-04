@@ -49,10 +49,13 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 
 /**
  * Concrete subclass of AbstractNCITParser for parsing NCIT in OWL file form.
+ *
  * @version $Id$
  */
-@Component(service = VocabularyParser.class, name = "ncit-owl", reference = {
-    @Reference(field = "utils", name = "utils", service = VocabularyParserUtils.class) })
+@Component(
+    service = VocabularyParser.class,
+    name = "ncit-owl",
+    reference = { @Reference(field = "utils", name = "utils", service = VocabularyParserUtils.class) })
 public class NCITOWLParser extends AbstractNCITParser
 {
     // UTF_8 charset instance to use
@@ -64,24 +67,12 @@ public class NCITOWLParser extends AbstractNCITParser
         return "ncit_owl".equals(source);
     }
 
-    /**
-     * An implementation of the abstract method {@link AbstractNCITParser.getDefaultSource}.
-     *
-     * @param version - version of NCIT wanted
-     */
     @Override
     String getDefaultSource(String version)
     {
         return "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".OWL.zip";
     }
 
-    /**
-     * Implementation of the abstract method {@link ca.sickkids.ccm.lfs.vocabularies.internal.AbstractNCITParser.parseVocabulary}.
-     * Parses the temporary NCIT zip file and creates JCR nodes for each term.
-     *
-     * @param vocabularyNode - the <code>Vocabulary</code> node which represents the current NCIT instance to index
-     * @exception VocabularyIndexException upon failure to parse vocabulary
-     */
     @Override
     protected void parseNCIT(final File source, final Node vocabularyNode)
         throws VocabularyIndexException
@@ -137,17 +128,17 @@ public class NCITOWLParser extends AbstractNCITParser
             termIterator.close();
             ontModel.close();
         } catch (FileNotFoundException e) {
-            String message = "Could not find the temporary OWL zip file for parsing: " + e.getMessage();
+            String message = "Could not find the temporary OWL file for parsing: " + e.getMessage();
             throw new VocabularyIndexException(message, e);
         } catch (IOException e) {
-            String message = "Could not read the temporary OWL zip file for parsing: " + e.getMessage();
+            String message = "Could not read the temporary OWL file for parsing: " + e.getMessage();
             throw new VocabularyIndexException(message, e);
         }
     }
 
     /**
-     * Returns a String array of synonyms for a specified term. This is done by obtaining an iterator that collects
-     * all instances of the property "FULL_SYN" or "P90".
+     * Returns a String array of synonyms for a specified term. This is done by obtaining an iterator that collects all
+     * instances of the property "FULL_SYN" or "P90".
      *
      * @param ontModel - OntModel representing the vocabulary
      * @param term - OntClass representing the term
@@ -156,10 +147,10 @@ public class NCITOWLParser extends AbstractNCITParser
     private String[] getSynonyms(OntModel ontModel, OntClass term)
     {
         /*
-         * A set is used for initial storage so that the number of synonyms does not need to be specified.
-         * This removes order from the list of synonyms.
+         * A set is used for initial storage so that the number of synonyms does not need to be specified. This removes
+         * order from the list of synonyms.
          */
-        Set<String> synonyms = new HashSet<String>();
+        Set<String> synonyms = new HashSet<>();
 
         /*
          * Like the definition, synonyms are properties. The synonym property code is "P90". In order to
@@ -182,25 +173,24 @@ public class NCITOWLParser extends AbstractNCITParser
 
     /**
      * Returns a String array of ancestors for a specified term. The method can return only the parents (direct
-     * ancestors) or all of the ancestors. The method obtains an iterator which collects all of the superclasses
-     * of the term directly listed in its OWL definition.
+     * ancestors) or all of the ancestors. The method obtains an iterator which collects all of the superclasses of the
+     * term directly listed in its OWL definition.
      *
      * @param term - the OntClass representing the term for which ancestors should be retrieved
-     * @param directAncestor - true if only parents (i.e. direct ancestors) are wanted, false if otherwise
-     *     (if all ancestors are wanted)
+     * @param directAncestor - true if only parents (i.e. direct ancestors) are wanted, false if otherwise (if all
+     *            ancestors are wanted)
      * @return String array containing the identifiers of all specified ancestors
      */
     private String[] getAncestors(OntClass term, boolean directAncestor)
     {
         /*
-         * A set is used for initial storage so that the number of ancestors does not need to be specified.
-         * This removes order from the list of ancestors.
+         * A set is used for initial storage so that the number of ancestors does not need to be specified. This removes
+         * order from the list of ancestors.
          */
-        Set<String> ancestors = new HashSet<String>();
+        Set<String> ancestors = new HashSet<>();
 
         final ExtendedIterator<OntClass> allAncestors = term.listSuperClasses(directAncestor);
-        while (allAncestors.hasNext())
-        {
+        while (allAncestors.hasNext()) {
             // Obtain the identifier of each ancestor and add it to the set
             OntClass ancestorTerm = allAncestors.next();
             ancestors.add(ancestorTerm.getLocalName());
