@@ -61,6 +61,9 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
     reference = { @Reference(field = "utils", name = "utils", service = VocabularyParserUtils.class) })
 public class NCITOWLParser extends AbstractNCITParser
 {
+    /** An empty String[] array to use for {@code Set.toArray}, we don't want to create a new array for each call. */
+    private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
     /** The vocabulary node where the indexed data must be placed. */
     private ThreadLocal<Node> vocabularyNode = new ThreadLocal<>();
 
@@ -190,7 +193,7 @@ public class NCITOWLParser extends AbstractNCITParser
         allSynonyms.close();
 
         // Convert the set to an array and return it
-        return synonyms.toArray(new String[0]);
+        return synonyms.toArray(EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -215,6 +218,6 @@ public class NCITOWLParser extends AbstractNCITParser
         allAncestors.close();
 
         // Convert the set to an array and return it
-        return ancestors.toArray(new String[0]);
+        return ancestors.toArray(EMPTY_STRING_ARRAY);
     }
 }
