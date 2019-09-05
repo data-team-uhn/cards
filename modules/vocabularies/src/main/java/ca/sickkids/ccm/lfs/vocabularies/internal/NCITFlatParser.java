@@ -72,7 +72,7 @@ public class NCITFlatParser extends AbstractNCITParser
     @Override
     public boolean canParse(String source)
     {
-        return "ncit_flat".equals(source);
+        return "ncit-flat".equals(source);
     }
 
     @Override

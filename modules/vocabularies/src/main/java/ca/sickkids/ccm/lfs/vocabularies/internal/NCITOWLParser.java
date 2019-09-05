@@ -72,7 +72,7 @@ public class NCITOWLParser extends AbstractNCITParser
     @Override
     public boolean canParse(String source)
     {
-        return "ncit_owl".equals(source);
+        return "ncit-owl".equals(source);
     }
 
     @Override
