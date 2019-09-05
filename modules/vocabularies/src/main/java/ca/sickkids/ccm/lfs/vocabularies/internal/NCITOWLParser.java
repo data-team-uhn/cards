@@ -23,18 +23,25 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.jcr.Node;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -85,10 +92,25 @@ public class NCITOWLParser extends AbstractNCITParser
     protected void parseNCIT(final File source, final Node vocabularyNode)
         throws VocabularyIndexException
     {
+        // For efficiency, we load the ontology in a temporary filesystem-backed database instead of all-in-memory
+        Path temporaryDatasetPath = null;
         try (InputStream input = new FileInputStream(source)) {
-            // Create an OntModel to represent the vocabulary and read in the source
-            OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-            ontModel.read(input, null);
+            // First step, load the data from the OWL file into the data store
+            temporaryDatasetPath = Files.createTempDirectory(null);
+            Dataset store = TDB2Factory.connectDataset(temporaryDatasetPath.toString());
+            // This starts a transaction for the loading part
+            store.begin(ReadWrite.WRITE);
+            Model rawModel = store.getDefaultModel();
+            rawModel.read(input, null);
+            rawModel.commit();
+            store.end();
+
+            // Second step, read the model and load it into Sling
+            // Also in a transaction; although reading shouldn't require one, Jena recommends it
+            store.begin(ReadWrite.READ);
+            // OWL_LITE_MEM_TRANS_INF is fast enough for our needs, since the NCIT ontology isn't very complex,
+            // it has simple subclasses and properties
+            OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_LITE_MEM_TRANS_INF, rawModel);
 
             // Set the needed objects in ThreadLocals
             this.vocabularyNode.set(vocabularyNode);
@@ -107,6 +129,8 @@ public class NCITOWLParser extends AbstractNCITParser
             // Close iterator for terms and OntModel to save memory
             termIterator.close();
             ontModel.close();
+            // Close the transaction
+            store.end();
         } catch (FileNotFoundException e) {
             String message = "Could not find the temporary OWL file for parsing: " + e.getMessage();
             throw new VocabularyIndexException(message, e);
@@ -114,6 +138,8 @@ public class NCITOWLParser extends AbstractNCITParser
             String message = "Could not read the temporary OWL file for parsing: " + e.getMessage();
             throw new VocabularyIndexException(message, e);
         } finally {
+            // Delete the temporary data store
+            FileUtils.deleteQuietly(temporaryDatasetPath.toFile());
             // Clean up threadlocal variables so that memory can be reclaimed
             this.descriptionProperty.remove();
             this.synonymProperty.remove();
