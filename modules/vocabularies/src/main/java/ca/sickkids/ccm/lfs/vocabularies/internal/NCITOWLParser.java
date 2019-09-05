@@ -18,15 +18,11 @@
  */
 package ca.sickkids.ccm.lfs.vocabularies.internal;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -58,9 +54,6 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
     reference = { @Reference(field = "utils", name = "utils", service = VocabularyParserUtils.class) })
 public class NCITOWLParser extends AbstractNCITParser
 {
-    // UTF_8 charset instance to use
-    private static final Charset UTF_8 = StandardCharsets.UTF_8;
-
     @Override
     public boolean canParse(String source)
     {
@@ -77,8 +70,7 @@ public class NCITOWLParser extends AbstractNCITParser
     protected void parseNCIT(final File source, final Node vocabularyNode)
         throws VocabularyIndexException
     {
-        try (Reader input = new BufferedReader(new InputStreamReader(new FileInputStream(source), UTF_8)))
-        {
+        try (InputStream input = new FileInputStream(source)) {
             // Create an OntModel to represent the vocabulary and read in the zip file using a ZipInputStream
             OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
             ontModel.read(input, null);
