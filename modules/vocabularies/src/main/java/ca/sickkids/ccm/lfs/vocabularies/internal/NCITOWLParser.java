@@ -86,7 +86,7 @@ public class NCITOWLParser extends AbstractNCITParser
         throws VocabularyIndexException
     {
         try (InputStream input = new FileInputStream(source)) {
-            // Create an OntModel to represent the vocabulary and read in the zip file using a ZipInputStream
+            // Create an OntModel to represent the vocabulary and read in the source
             OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
             ontModel.read(input, null);
 
@@ -97,9 +97,9 @@ public class NCITOWLParser extends AbstractNCITParser
             this.synonymProperty
                 .set(ontModel.getProperty("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "P90"));
 
-            // Instantiate an iterator that returns all of the terms as OntClasses
+            // This lists all the named classes, which for NCIT means all the terms of the thesaurus
             ExtendedIterator<OntClass> termIterator = ontModel.listNamedClasses();
-
+            // Load each term into a vocabulary node
             while (termIterator.hasNext()) {
                 processTerm(termIterator.next());
             }
@@ -126,10 +126,7 @@ public class NCITOWLParser extends AbstractNCITParser
         // Identifier code is the local name of the term
         String identifier = term.getLocalName();
 
-        /*
-         * Then, the property must be passed into the getProperty function in order for the statement object
-         * representing the property's contents to be obtained.
-         */
+        // The description is given as a property Statement
         Statement descriptionFromTerm = term.getProperty(this.descriptionProperty.get());
 
         // Get String from Statement, and handle the case if the statement is blank or null
@@ -139,9 +136,7 @@ public class NCITOWLParser extends AbstractNCITParser
         String[] parents = getAncestors(term, true);
         String[] ancestors = getAncestors(term, false);
 
-        /*
-         * The label is the term label. The language option is null because "EN" doesn't return a correct label
-         */
+        // The label is the term label. The language option is null because the OWL file doesn't specify a language.
         String label = term.getLabel(null);
 
         // Create VocabularyTerm node as child of vocabularyNode using inherited protected method
@@ -150,19 +145,14 @@ public class NCITOWLParser extends AbstractNCITParser
     }
 
     /**
-     * Returns a String array of synonyms for a specified term. This is done by obtaining an iterator that collects all
-     * instances of the property "FULL_SYN" or "P90".
+     * Gets the synonyms for a vocabulary term.
      *
-     * @param term - OntClass representing the term
+     * @param term OntClass representing the term for which synonyms should be retrieved
      * @return String array containing all the synonyms of the term
      */
     private String[] getSynonyms(OntClass term)
     {
-        /*
-         * A set is used for initial storage so that the number of synonyms does not need to be specified. This removes
-         * order from the list of synonyms.
-         */
-        Set<String> synonyms = new HashSet<>();
+        final Set<String> synonyms = new HashSet<>();
 
         final ExtendedIterator<Statement> allSynonyms = term.listProperties(this.synonymProperty.get());
 
@@ -177,22 +167,17 @@ public class NCITOWLParser extends AbstractNCITParser
     }
 
     /**
-     * Returns a String array of ancestors for a specified term. The method can return only the parents (direct
-     * ancestors) or all of the ancestors. The method obtains an iterator which collects all of the superclasses of the
-     * term directly listed in its OWL definition.
+     * Gets the ancestors for a vocabulary term. The method can return only the parents (direct ancestors), or all of
+     * the transitive ancestors.
      *
-     * @param term - the OntClass representing the term for which ancestors should be retrieved
-     * @param directAncestor - true if only parents (i.e. direct ancestors) are wanted, false if otherwise (if all
-     *            ancestors are wanted)
-     * @return String array containing the identifiers of all specified ancestors
+     * @param term the OntClass representing the term for which ancestors should be retrieved
+     * @param directAncestor {@code true} if only parents (i.e. direct ancestors) are wanted, {@code false} if all
+     *            transitive ancestors are wanted
+     * @return String array containing the identifiers of all the term's ancestors
      */
     private String[] getAncestors(OntClass term, boolean directAncestor)
     {
-        /*
-         * A set is used for initial storage so that the number of ancestors does not need to be specified. This removes
-         * order from the list of ancestors.
-         */
-        Set<String> ancestors = new HashSet<>();
+        final Set<String> ancestors = new HashSet<>();
 
         final ExtendedIterator<OntClass> allAncestors = term.listSuperClasses(directAncestor);
         while (allAncestors.hasNext()) {
