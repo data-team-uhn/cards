@@ -25,6 +25,8 @@ package ca.sickkids.ccm.lfs.vocabularies.spi;
  */
 public class VocabularyIndexException extends Exception
 {
+    private static final long serialVersionUID = -2896534123721251531L;
+
     /**
      * Constructs a new instance of this class with <code>null</code> as the error message.
      */

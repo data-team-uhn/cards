@@ -26,6 +26,14 @@
     org.apache.commons/commons-lang3/3.9
     org.apache.sling/org.apache.sling.api/2.18.4
     org.slf4j/slf4j-api/1.7.26
+
+    # Apache Jena and its dependencies
+    org.apache.jena/jena-osgi/3.11.0
+    com.github.andrewoma.dexx/collection/0.7
+    com.github.jsonld-java/jsonld-java/0.12.3
+    org.apache.commons/commons-compress/1.18
+    org.apache.thrift/libthrift/0.12.0
+
     javax.json/javax.json-api/1.1.4
     javax.servlet/javax.servlet-api/3.1.0
 

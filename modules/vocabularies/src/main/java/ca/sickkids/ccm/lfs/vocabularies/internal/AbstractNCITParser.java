@@ -44,9 +44,7 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
  * be applied, and the repository will be left in its original state.
  * <p>
  * The parser assumes that the resource of the response it is given is a <code>VocabulariesHomepage</code> node under
- * which the <code>Vocabulary</code> node instance should be stored in the Jackrabbit Oak repository as a child. The
- * homepage node is obtained by adapting the resource of the response from a
- * {@link org.apache.sling.api.resource.Resource} to a {@link javax.jcr.node}.
+ * which the <code>Vocabulary</code> node instance should be stored in the Jackrabbit Oak repository as a child.
  * </p>
  *
  * @version $Id$
@@ -68,16 +66,13 @@ public abstract class AbstractNCITParser implements VocabularyParser
      * <code>"httppath"</code>- allows downloading of NCIT from a url other than
      * "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/".
      * </p>
-     * Also the following parameter is required if you want to overwrite a vocabulary that already exists
-     * in the repository:
+     * Also the following parameter is required if you want to overwrite a vocabulary that already exists in the
+     * repository:
      * <p>
      * <code>overwrite</code> - must be "true" or else overwritting is not permitted and a
      * {@link ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException} is thrown.
      * </p>
-     * You cannot create a vocabulary with the same identifier as an existing vocabulary unless you overwrite
-     * it.
-     * The method obtains the <code>VocabulariesHomepage</code> node by getting the resource of the request and adapting
-     * it from a {@link org.apache.sling.api.resource.Resource} to a {@link javax.jcr.node}.
+     * You cannot create a vocabulary with the same identifier as an existing vocabulary unless you overwrite it.
      *
      * @param request http request from {@link ca.sickkids.ccm.lfs.vocabularies.VocabularyIndexerServlet}
      * @param response http response from {@link ca.sickkids.ccm.lfs.vocabularies.VocabularyIndexerServlet}
@@ -95,7 +90,7 @@ public abstract class AbstractNCITParser implements VocabularyParser
         String localpath = request.getParameter("localpath");
         String overwrite = request.getParameter("overwrite");
 
-        // Obtain the resource of the request and adapt it to a JCR node. This is taken as the homepage node
+        // Obtain the resource of the request and adapt it to a JCR node. This must be the /Vocabularies homepage node.
         Node homepage = request.getResource().adaptTo(Node.class);
 
         final File temporaryFile = File.createTempFile(identifier, "");
@@ -113,7 +108,8 @@ public abstract class AbstractNCITParser implements VocabularyParser
             this.utils.clearVocabularyNode(homepage, identifier, overwrite);
 
             // Load temporary NCIT zip file. Default location is at https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/
-            String sourceLocation = "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".FLAT.zip";
+            String sourceLocation = getDefaultSource(version);
+
             VocabularyZipLoader zipLoader = new VocabularyZipLoader();
             if (localpath != null) {
                 sourceLocation = localpath;
@@ -144,7 +140,7 @@ public abstract class AbstractNCITParser implements VocabularyParser
         } catch (Exception e) {
             // If parsing fails, return an error json with the exception message
             this.utils.writeStatusJson(request, response, false, "NCIT Flat parsing error: " + e.getMessage());
-            LOGGER.error("NCIT Flat parsing error: {}", e.getMessage(), e);
+            LOGGER.error("NCIT parsing error: {}", e.getMessage(), e);
         } finally {
             // Delete temporary source file
             FileUtils.deleteQuietly(temporaryFile);
@@ -206,10 +202,8 @@ public abstract class AbstractNCITParser implements VocabularyParser
             Node vocabularyTermNode = vocabularyNode.addNode("./" + identifier, "lfs:VocabularyTerm");
             vocabularyTermNode.setProperty("identifier", identifier);
 
-            /*
-             *  If the label does not exist, use the first synonym that is listed. If there are no synonyms
-             *  use a blank String;
-             */
+            // If the label does not exist, use the first synonym that is listed
+            // In the impossible case that there are no synonyms, use a blank String
             String defaultLabel = synonyms != null && synonyms.length > 0 ? synonyms[0] : "";
             String safeLabel = StringUtils.defaultIfBlank(label, defaultLabel);
             vocabularyTermNode.setProperty("label", safeLabel);
@@ -247,12 +241,19 @@ public abstract class AbstractNCITParser implements VocabularyParser
     }
 
     /**
-     * Parses the temporary NCIT zip file and creates <code>VocabularyTerm</code> nodes for each term which are children
-     * of the given <code>Vocabulary</code> node representing the NCIT vocabulary instance. Subclasses will have
-     * concrete implementations of this method that are specific for their given file types.
+     * Parses the temporary NCIT source file and creates <code>VocabularyTerm</code> nodes for each term. The new term
+     * nodes must be children of the given <code>Vocabulary</code> node representing the NCIT vocabulary instance.
      *
-     * @param vocabularyNode <code>Vocabulary</code> node which represents the current NCIT instance
-     * @throws VocabularyIndexException thrown when an error occurs with parsing
+     * @param vocabularyNode <code>Vocabulary</code> node being indexed
+     * @throws VocabularyIndexException when an error occurs with parsing
      */
     protected abstract void parseNCIT(File sourceFile, Node vocabularyNode) throws VocabularyIndexException;
+
+    /**
+     * Returns the default source from which to obtain the NCIT zip file. This is an abstract method as individual
+     * subclasses will implement their own default sources.
+     *
+     * @param version the version of NCIT wanted, must be an available version
+     */
+    abstract String getDefaultSource(String version);
 }

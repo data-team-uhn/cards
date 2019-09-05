@@ -42,12 +42,14 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 
 /**
- * Concrete subclass of AbstractNCITParser for parsing NCIT in flat file form.
+ * Concrete subclass of {@link AbstractNCITParser} for parsing NCIT in flat file form.
  *
  * @version $Id$
  */
-@Component(service = VocabularyParser.class, name = "ncit-flat", reference = {
-    @Reference(field = "utils", name = "utils", service = VocabularyParserUtils.class) })
+@Component(
+    service = VocabularyParser.class,
+    name = "ncit-flat",
+    reference = { @Reference(field = "utils", name = "utils", service = VocabularyParserUtils.class) })
 public class NCITFlatParser extends AbstractNCITParser
 {
     // Column numbers of the properties we want to extract.
@@ -70,16 +72,15 @@ public class NCITFlatParser extends AbstractNCITParser
     @Override
     public boolean canParse(String source)
     {
-        return "ncit".equals(source);
+        return "ncit-flat".equals(source);
     }
 
-    /**
-     * An implementation of the abstract method {@link AbstractNCITParser.parseNCIT}. Parses the temporary NCIT zip file
-     * and creates JCR nodes for each term. All exceptions from the classes that it uses are handled here.
-     *
-     * @param vocabularyNode the <code>Vocabulary</code> node which represents the current NCIT instance to index
-     * @throws VocabularyIndexException upon failure to parse vocabulary
-     */
+    @Override
+    String getDefaultSource(String version)
+    {
+        return "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".FLAT.zip";
+    }
+
     @Override
     protected void parseNCIT(final File source, final Node vocabularyNode) throws VocabularyIndexException
     {
