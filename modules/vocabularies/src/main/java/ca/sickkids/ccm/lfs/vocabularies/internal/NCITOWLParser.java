@@ -134,8 +134,8 @@ public class NCITOWLParser extends AbstractNCITParser
             descriptionFromTerm == null ? "" : StringUtils.defaultIfBlank(descriptionFromTerm.getString(), "");
 
         String[] synonyms = getSynonyms(term);
-        String[] parents = getAncestors(term, true);
-        String[] ancestors = getAncestors(term, false);
+        String[] parents = getAncestors(term, false);
+        String[] ancestors = getAncestors(term, true);
 
         // The label is the term label. The language option is null because the OWL file doesn't specify a language.
         String label = term.getLabel(null);
@@ -172,15 +172,15 @@ public class NCITOWLParser extends AbstractNCITParser
      * the transitive ancestors.
      *
      * @param term the OntClass representing the term for which ancestors should be retrieved
-     * @param directAncestor {@code true} if only parents (i.e. direct ancestors) are wanted, {@code false} if all
+     * @param transitive {@code false} if only parents (i.e. direct ancestors) are wanted, {@code true} if all
      *            transitive ancestors are wanted
      * @return String array containing the identifiers of all the term's ancestors
      */
-    private String[] getAncestors(OntClass term, boolean directAncestor)
+    private String[] getAncestors(OntClass term, boolean transitive)
     {
         final Set<String> ancestors = new LinkedHashSet<>();
 
-        final ExtendedIterator<OntClass> allAncestors = term.listSuperClasses(directAncestor);
+        final ExtendedIterator<OntClass> allAncestors = term.listSuperClasses(!transitive);
         while (allAncestors.hasNext()) {
             // Obtain the identifier of each ancestor and add it to the set
             OntClass ancestorTerm = allAncestors.next();
