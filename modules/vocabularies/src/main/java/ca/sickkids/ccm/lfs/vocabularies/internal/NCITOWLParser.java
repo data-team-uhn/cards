@@ -51,7 +51,7 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 
 /**
- * Concrete subclass of AbstractNCITParser for parsing NCIT in OWL file form.
+ * Concrete subclass of {@link AbstractNCITParser} for parsing NCIT in OWL file form.
  *
  * @version $Id$
  */

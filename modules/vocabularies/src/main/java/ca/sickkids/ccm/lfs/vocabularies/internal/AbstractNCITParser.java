@@ -44,9 +44,7 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
  * be applied, and the repository will be left in its original state.
  * <p>
  * The parser assumes that the resource of the response it is given is a <code>VocabulariesHomepage</code> node under
- * which the <code>Vocabulary</code> node instance should be stored in the Jackrabbit Oak repository as a child. The
- * homepage node is obtained by adapting the resource of the response from a
- * {@link org.apache.sling.api.resource.Resource} to a {@link javax.jcr.node}.
+ * which the <code>Vocabulary</code> node instance should be stored in the Jackrabbit Oak repository as a child.
  * </p>
  *
  * @version $Id$
