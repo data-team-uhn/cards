@@ -101,32 +101,7 @@ public class NCITOWLParser extends AbstractNCITParser
             ExtendedIterator<OntClass> termIterator = ontModel.listNamedClasses();
 
             while (termIterator.hasNext()) {
-                OntClass term = termIterator.next();
-
-                // Identifier code is the local name of the term
-                String identifier = term.getLocalName();
-
-                /*
-                 * Then, the property must be passed into the getProperty function in order for the statement object
-                 * representing the property's contents to be obtained.
-                 */
-                Statement descriptionFromTerm = term.getProperty(this.descriptionProperty.get());
-
-                // Get String from Statement, and handle the case if the statement is blank or null
-                String description = StringUtils.defaultIfBlank(descriptionFromTerm.getString(), "");
-
-                String[] synonyms = getSynonyms(term);
-                String[] parents = getAncestors(term, true);
-                String[] ancestors = getAncestors(term, false);
-
-                /*
-                 * The label is the term label. The language option is null because "EN" doesn't return a correct label
-                 */
-                String label = term.getLabel(null);
-
-                // Create VocabularyTerm node as child of vocabularyNode using inherited protected method
-                createNCITVocabularyTermNode(this.vocabularyNode.get(), identifier, label, description, synonyms,
-                    parents, ancestors);
+                processTerm(termIterator.next());
             }
 
             // Close iterator for terms and OntModel to save memory
@@ -144,6 +119,34 @@ public class NCITOWLParser extends AbstractNCITParser
             this.synonymProperty.remove();
             this.vocabularyNode.remove();
         }
+    }
+
+    private void processTerm(OntClass term) throws VocabularyIndexException
+    {
+        // Identifier code is the local name of the term
+        String identifier = term.getLocalName();
+
+        /*
+         * Then, the property must be passed into the getProperty function in order for the statement object
+         * representing the property's contents to be obtained.
+         */
+        Statement descriptionFromTerm = term.getProperty(this.descriptionProperty.get());
+
+        // Get String from Statement, and handle the case if the statement is blank or null
+        String description = StringUtils.defaultIfBlank(descriptionFromTerm.getString(), "");
+
+        String[] synonyms = getSynonyms(term);
+        String[] parents = getAncestors(term, true);
+        String[] ancestors = getAncestors(term, false);
+
+        /*
+         * The label is the term label. The language option is null because "EN" doesn't return a correct label
+         */
+        String label = term.getLabel(null);
+
+        // Create VocabularyTerm node as child of vocabularyNode using inherited protected method
+        createNCITVocabularyTermNode(this.vocabularyNode.get(), identifier, label, description, synonyms,
+            parents, ancestors);
     }
 
     /**
