@@ -23,7 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.jcr.Node;
@@ -153,7 +153,7 @@ public class NCITOWLParser extends AbstractNCITParser
      */
     private String[] getSynonyms(OntClass term)
     {
-        final Set<String> synonyms = new HashSet<>();
+        final Set<String> synonyms = new LinkedHashSet<>();
 
         final ExtendedIterator<Statement> allSynonyms = term.listProperties(this.synonymProperty.get());
 
@@ -178,7 +178,7 @@ public class NCITOWLParser extends AbstractNCITParser
      */
     private String[] getAncestors(OntClass term, boolean directAncestor)
     {
-        final Set<String> ancestors = new HashSet<>();
+        final Set<String> ancestors = new LinkedHashSet<>();
 
         final ExtendedIterator<OntClass> allAncestors = term.listSuperClasses(directAncestor);
         while (allAncestors.hasNext()) {
