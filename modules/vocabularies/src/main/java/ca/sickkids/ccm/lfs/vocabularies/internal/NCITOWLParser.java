@@ -74,7 +74,6 @@ public class NCITOWLParser extends AbstractNCITParser
             // Create an OntModel to represent the vocabulary and read in the zip file using a ZipInputStream
             OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
             ontModel.read(input, null);
-            input.close();
 
             // Instantiate an iterator that returns all of the terms as OntClasses
             ExtendedIterator<OntClass> termIterator = ontModel.listNamedClasses();
