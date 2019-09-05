@@ -79,22 +79,22 @@ public class NCITOWLParser extends AbstractNCITParser
             // Instantiate an iterator that returns all of the terms as OntClasses
             ExtendedIterator<OntClass> termIterator = ontModel.listNamedClasses();
 
-            while (termIterator.hasNext())
-            {
+            while (termIterator.hasNext()) {
                 OntClass term = termIterator.next();
 
                 // Identifier code is the local name of the term
                 String identifier = term.getLocalName();
 
                 /*
-                 * The code for the definition is "P97". The properties are defined before all of the
-                 * terms in the OWL file, and they must be retrieved from the OntModel.
-                 * Note that the longform name of the property is "DEFINITION".
+                 * The code for the definition is "P97". The properties are defined before all of the terms in the OWL
+                 * file, and they must be retrieved from the OntModel. Note that the longform name of the property is
+                 * "DEFINITION".
                  */
                 Property descriptionProperty = ontModel.getProperty(term.getNameSpace(), "P97");
 
-                /*Then, the property must be passed into the getProperty function in order for the
-                 * statement object representing the property's contents to be obtained.
+                /*
+                 * Then, the property must be passed into the getProperty function in order for the statement object
+                 * representing the property's contents to be obtained.
                  */
                 Statement descriptionFromTerm = term.getProperty(descriptionProperty);
 
@@ -106,8 +106,7 @@ public class NCITOWLParser extends AbstractNCITParser
                 String[] ancestors = getAncestors(term, false);
 
                 /*
-                 * The label is the term label. The language option is null because "EN" doesn't
-                 * return a correct label
+                 * The label is the term label. The language option is null because "EN" doesn't return a correct label
                  */
                 String label = term.getLabel(null);
 
@@ -145,10 +144,9 @@ public class NCITOWLParser extends AbstractNCITParser
         Set<String> synonyms = new HashSet<>();
 
         /*
-         * Like the definition, synonyms are properties. The synonym property code is "P90". In order to
-         * find synonyms, the property definition must be first obtained from the OntModel, and then passed
-         * into listProperties in order to obtain an iterator that collects all instances of that property
-         * in the OntClass.
+         * Like the definition, synonyms are properties. The synonym property code is "P90". In order to find synonyms,
+         * the property definition must be first obtained from the OntModel, and then passed into listProperties in
+         * order to obtain an iterator that collects all instances of that property in the OntClass.
          */
         final Property synonymProperty = ontModel.getProperty(term.getNameSpace(), "P90");
         final ExtendedIterator<Statement> allSynonyms = term.listProperties(synonymProperty);
