@@ -45,7 +45,7 @@ export function MakeChildrenFindingRequest(vocabulary, requestOpt, callback) {
         requestOpt['maxResults'] = '10000';
     }
     if (!requestOpt.hasOwnProperty('customFilter')) {
-        var escapedId = requestOpt['input'].replace(":", "\\:"); // URI Escape the : from HP: for SolR
+        var escapedId = requestOpt['input'].replace(":", "\\:"); // URI Escape the : from vocabulary term identifiers (e.g.HP:#######) for SolR
         requestOpt['customFilter'] = `is_a:${escapedId}`;
     }
 
