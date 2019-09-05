@@ -54,6 +54,21 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
     reference = { @Reference(field = "utils", name = "utils", service = VocabularyParserUtils.class) })
 public class NCITOWLParser extends AbstractNCITParser
 {
+    /** The vocabulary node where the indexed data must be placed. */
+    private ThreadLocal<Node> vocabularyNode = new ThreadLocal<>();
+
+    /**
+     * Holds the OWL Property for a vocabulary term "definition". Its code is {@code P97}, and its name is
+     * {@code DEFINITION}.
+     */
+    private ThreadLocal<Property> descriptionProperty = new ThreadLocal<>();
+
+    /**
+     * Holds the OWL Property for a vocabulary term "synonyms". Its code is {@code P90}, and its name is
+     * {@code FULL_SYN}.
+     */
+    private ThreadLocal<Property> synonymProperty = new ThreadLocal<>();
+
     @Override
     public boolean canParse(String source)
     {
@@ -75,6 +90,13 @@ public class NCITOWLParser extends AbstractNCITParser
             OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
             ontModel.read(input, null);
 
+            // Set the needed objects in ThreadLocals
+            this.vocabularyNode.set(vocabularyNode);
+            this.descriptionProperty
+                .set(ontModel.getProperty("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "P97"));
+            this.synonymProperty
+                .set(ontModel.getProperty("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "P90"));
+
             // Instantiate an iterator that returns all of the terms as OntClasses
             ExtendedIterator<OntClass> termIterator = ontModel.listNamedClasses();
 
@@ -85,22 +107,15 @@ public class NCITOWLParser extends AbstractNCITParser
                 String identifier = term.getLocalName();
 
                 /*
-                 * The code for the definition is "P97". The properties are defined before all of the terms in the OWL
-                 * file, and they must be retrieved from the OntModel. Note that the longform name of the property is
-                 * "DEFINITION".
-                 */
-                Property descriptionProperty = ontModel.getProperty(term.getNameSpace(), "P97");
-
-                /*
                  * Then, the property must be passed into the getProperty function in order for the statement object
                  * representing the property's contents to be obtained.
                  */
-                Statement descriptionFromTerm = term.getProperty(descriptionProperty);
+                Statement descriptionFromTerm = term.getProperty(this.descriptionProperty.get());
 
                 // Get String from Statement, and handle the case if the statement is blank or null
                 String description = StringUtils.defaultIfBlank(descriptionFromTerm.getString(), "");
 
-                String[] synonyms = getSynonyms(ontModel, term);
+                String[] synonyms = getSynonyms(term);
                 String[] parents = getAncestors(term, true);
                 String[] ancestors = getAncestors(term, false);
 
@@ -110,7 +125,7 @@ public class NCITOWLParser extends AbstractNCITParser
                 String label = term.getLabel(null);
 
                 // Create VocabularyTerm node as child of vocabularyNode using inherited protected method
-                createNCITVocabularyTermNode(vocabularyNode, identifier, label, description, synonyms,
+                createNCITVocabularyTermNode(this.vocabularyNode.get(), identifier, label, description, synonyms,
                     parents, ancestors);
             }
 
@@ -123,6 +138,11 @@ public class NCITOWLParser extends AbstractNCITParser
         } catch (IOException e) {
             String message = "Could not read the temporary OWL file for parsing: " + e.getMessage();
             throw new VocabularyIndexException(message, e);
+        } finally {
+            // Clean up threadlocal variables so that memory can be reclaimed
+            this.descriptionProperty.remove();
+            this.synonymProperty.remove();
+            this.vocabularyNode.remove();
         }
     }
 
@@ -130,11 +150,10 @@ public class NCITOWLParser extends AbstractNCITParser
      * Returns a String array of synonyms for a specified term. This is done by obtaining an iterator that collects all
      * instances of the property "FULL_SYN" or "P90".
      *
-     * @param ontModel - OntModel representing the vocabulary
      * @param term - OntClass representing the term
      * @return String array containing all the synonyms of the term
      */
-    private String[] getSynonyms(OntModel ontModel, OntClass term)
+    private String[] getSynonyms(OntClass term)
     {
         /*
          * A set is used for initial storage so that the number of synonyms does not need to be specified. This removes
@@ -142,13 +161,7 @@ public class NCITOWLParser extends AbstractNCITParser
          */
         Set<String> synonyms = new HashSet<>();
 
-        /*
-         * Like the definition, synonyms are properties. The synonym property code is "P90". In order to find synonyms,
-         * the property definition must be first obtained from the OntModel, and then passed into listProperties in
-         * order to obtain an iterator that collects all instances of that property in the OntClass.
-         */
-        final Property synonymProperty = ontModel.getProperty(term.getNameSpace(), "P90");
-        final ExtendedIterator<Statement> allSynonyms = term.listProperties(synonymProperty);
+        final ExtendedIterator<Statement> allSynonyms = term.listProperties(this.synonymProperty.get());
 
         while (allSynonyms.hasNext()) {
             Statement synonymTerm = allSynonyms.next();
