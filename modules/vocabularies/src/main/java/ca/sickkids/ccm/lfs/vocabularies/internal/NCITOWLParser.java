@@ -130,7 +130,8 @@ public class NCITOWLParser extends AbstractNCITParser
         Statement descriptionFromTerm = term.getProperty(this.descriptionProperty.get());
 
         // Get String from Statement, and handle the case if the statement is blank or null
-        String description = StringUtils.defaultIfBlank(descriptionFromTerm.getString(), "");
+        String description =
+            descriptionFromTerm == null ? "" : StringUtils.defaultIfBlank(descriptionFromTerm.getString(), "");
 
         String[] synonyms = getSynonyms(term);
         String[] parents = getAncestors(term, true);
