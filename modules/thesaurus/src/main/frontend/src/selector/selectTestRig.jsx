@@ -39,7 +39,31 @@ class VocabularyTester extends React.Component {
               selectionContainer = {this.state.outsideNode}
               suggestionCategories = {["HP:0000951"]}
               defaultSuggestions = {{"abc": "given", "HP:0031840": undefined}}
+              source = "hpo"
+              title = "Skin-related vocab test"
               max = {3}
+            ></VocabularySelector>
+            <VocabularySelector
+              selectionContainer = {this.state.outsideNode}
+              suggestionCategories = {["HP:0000951"]}
+              defaultSuggestions = {{"abc": "given", "HP:0031840": undefined}}
+              source = "hpo"
+              title = "Radio options test"
+              max = {1}
+            ></VocabularySelector>
+            <VocabularySelector
+              selectionContainer = {this.state.outsideNode}
+              defaultSuggestions = {{"abc": "given", "HP:0031840": undefined}}
+              max = {1}
+              source = "ordo"
+              title = "Ordo test"
+            ></VocabularySelector>
+            <VocabularySelector
+              selectionContainer = {this.state.outsideNode}
+              defaultSuggestions = {{"abc": "given", "HP:0031840": undefined}}
+              max = {1}
+              source = "hgnc"
+              title = "HGNC test"
             ></VocabularySelector>
         </div>
         <div
