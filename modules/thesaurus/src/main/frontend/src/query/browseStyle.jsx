@@ -41,6 +41,8 @@ const browseStyle = theme => ({
       padding: "0px",
       fontSize: "10px",
       color: "#00ACC1",
+      width: "1.25rem",
+      minWidth: "1.25rem",
     },
     headbarText: {
       display: "inline",

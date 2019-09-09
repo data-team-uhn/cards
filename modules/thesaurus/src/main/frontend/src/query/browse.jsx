@@ -62,7 +62,7 @@ class VocabularyBrowser extends React.Component {
             justIcon={true}
             simple={true}
           >
-            x
+            ×
           </Button>
         </DialogTitle>
         <DialogContent className={classes.treeContainer}>
