@@ -19,7 +19,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
-import { Checkbox, FormControlLabel, IconButton, ListItem, withStyles, Typography } from "@material-ui/core"
+import { Checkbox, FormControlLabel, IconButton, ListItem, withStyles, Typography, Radio } from "@material-ui/core"
 import { Close } from "@material-ui/icons"
 import SelectorStyle from "./selectorStyle.jsx"
 
@@ -34,30 +34,41 @@ class VocabularyEntry extends React.Component {
   }
 
   render() {
-    const {classes, name, id, isPreselected, onClick, disabled} = this.props;
+    const {classes, name, id, isPreselected, onClick, disabled, isRadio} = this.props;
     return (
       <React.Fragment>
         <ListItem key={name} className={classes.selectionChild}>
           <Typography>
             { /* This is either a Checkbox if this is a suggestion, or a button otherwise */
             isPreselected ?
-            (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={this.state.checked}
-                    onChange={() => {onClick(id, name, this.state.checked); this.toggleCheck()}}
-                    disabled={!this.state.checked && disabled}
-                    className={classes.checkbox}
-                  />
-                }
-                label={name}
-                className={classes.childFormControl}
-                classes={{
-                  label: classes.inputLabel
-                }}
-              />
-            ) : (
+              (
+                <FormControlLabel
+                  control={
+                    isRadio ?
+                    (
+                      <Radio
+                        onChange={() => {onClick(id, name, this.state.checked);}}
+                        disabled={!this.state.checked && disabled}
+                        className={classes.checkbox}
+                      />
+                    ) :
+                    (
+                      <Checkbox
+                        checked={this.state.checked}
+                        onChange={() => {this.setState({checked: !this.state.checked}); onClick(id, name, this.state.checked);}}
+                        disabled={!this.state.checked && disabled}
+                        className={classes.checkbox}
+                      />
+                    )
+                  }
+                  label={name}
+                  value={id}
+                  className={classes.childFormControl}
+                  classes={{
+                    label: classes.inputLabel
+                  }}
+                />
+              ) : (
               <React.Fragment>
                 <IconButton
                   onClick={() => {onClick(id, name)}}
@@ -67,7 +78,7 @@ class VocabularyEntry extends React.Component {
                 >
                   <Close color="action" className={classes.deleteIcon}/>
                 </IconButton>
-                <div class={classes.inputLabel}>
+                <div className={classes.inputLabel}>
                   {name}
                 </div>
               </React.Fragment>

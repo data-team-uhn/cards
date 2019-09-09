@@ -45,6 +45,15 @@ const selectorStyle = theme => ({
     checkbox: {
         margin: theme.spacing(-2,0),
     },
+    radiobox: {
+        margin: theme.spacing(-2,0),
+    },
+    ghostRadiobox: {
+        margin: theme.spacing(0,0,-5,0),
+    },
+    ghostFormControl: {
+        height: "0px",
+    },
     selectionList: {
         paddingBottom: "0px",
     }

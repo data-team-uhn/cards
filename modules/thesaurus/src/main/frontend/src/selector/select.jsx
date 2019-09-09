@@ -19,7 +19,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
-import { List, withStyles } from "@material-ui/core";
+import { FormControlLabel, List, RadioGroup, Typography, withStyles, Radio } from "@material-ui/core";
 
 import Thesaurus from "../query/query.jsx";
 import SelectorStyle from "./selectorStyle.jsx";
@@ -37,35 +37,38 @@ class VocabularySelector extends React.Component {
     var listChildren = [];
 
     this.state = {
-      title: props.name,
+      defaultListChildren: listChildren,
       listChildren: listChildren,
       selected: 0,
+      radioSelect: "",
+      thresaurusRef: undefined,
+      radioValue: "&nbsp;"
     };
   }
 
   render() {
-    const {name, source, suggestionCategories, max, selectionContainer, defaultSuggestionIDs, defaultSuggestionNames, classes, ...rest} = this.props;
-    var disabled = max > 1 && this.state.selected >= max;
+    const {source, suggestionCategories, max, selectionContainer, defaultSuggestionIDs, defaultSuggestionNames, classes, ...rest} = this.props;
+    const disabled = max > 1 && this.state.selected >= max;
+    const isRadio = max === 1;
+    const reminderText = `Please select at most ${max} options.`;
 
     return (
       <React.Fragment>
         <Thesaurus
-          onClick = {this.addSelection}
+          onClick = {this.handleThesaurus}
           suggestionCategories = {suggestionCategories}
           Vocabulary = {source}
           ref = {(ref) => {this.thresaurusRef = ref;}}
           disabled = {disabled}
-          overrideText = {disabled ? `Please select at most ${max} options.` : undefined }
+          overrideText = {disabled ? reminderText : undefined }
+          clearOnClick = {!isRadio}
+          onInputFocus = {() => {this.setState({radioSelect: this.state.radioValue})}}
           {...rest}
         >
+          {max > 1 ?(<Typography>{reminderText}</Typography>) : ''}
           {
             // If we don't have an external container, add results here
-            typeof selectionContainer === "undefined" &&
-            (
-              <List className={classes.selectionList}>
-                {this.generateListChildren(disabled)}
-              </List>
-            )
+            typeof selectionContainer === "undefined" && this.generateList(disabled, isRadio)
           }
         </Thesaurus>
         {
@@ -75,9 +78,7 @@ class VocabularySelector extends React.Component {
             <SelectionResults
               root = {selectionContainer}
               >
-              <List className={classes.selectionList}>
-                {this.generateListChildren()}
-              </List>
+              {this.generateList(disabled, isRadio)}
             </SelectionResults>
           )
         }
@@ -85,9 +86,51 @@ class VocabularySelector extends React.Component {
     );
   }
 
+  generateList = (disabled, isRadio) => {
+    var classes = this.props.classes;
+    if (isRadio) {
+      var ghostSelected = this.state.radioSelect === "&nbsp;";
+      return (
+        <RadioGroup
+          aria-label="selection"
+          name="selection"
+          className={classes.selectionList}
+          value={this.state.radioSelect}
+          onChange={this.changeRadio}
+        >
+          {this.generateListChildren(disabled, isRadio)}
+          {/* Ghost radio for the text input */}
+          <FormControlLabel
+            control={
+            <Radio
+              onChange={() => {this.setState({radioSelect: this.state.radioValue})}}
+              onClick={() => {this.thresaurusRef.anchorEl.focus(); this.setState({radioSelect: this.state.radioValue})}}
+              disabled={!ghostSelected && disabled}
+              className={classes.ghostRadiobox}
+            />
+            }
+            label="&nbsp;"
+            name={this.state.radioName}
+            value={this.state.radioValue}
+            className={classes.ghostFormControl + " " + classes.childFormControl}
+            classes={{
+              label: classes.inputLabel
+            }}
+          />
+        </RadioGroup>
+      );
+    } else {
+      return (
+        <List className={classes.selectionList}>
+          {this.generateListChildren(disabled, isRadio)}
+        </List>
+      )
+    }
+  }
+
   /* Since we need to enable/disable children on the fly, we also generate them
       on the fly */
-  generateListChildren = (disabled) => {
+  generateListChildren = (disabled, isRadio) => {
     return this.state.listChildren.map( (childData) => {
       return (
         <VocabularyEntry
@@ -97,9 +140,33 @@ class VocabularySelector extends React.Component {
           onClick={this.removeSelection}
           disabled={disabled}
           isPreselected={childData[IS_PRESELECT_POS]}
+          isRadio={isRadio}
         ></VocabularyEntry>
       );
     });
+  }
+
+  // Handle the user clicking on a radio button
+  changeRadio = (event) => {
+    this.setState({
+      listChildren: this.state.defaultListChildren,
+      selected: 1,
+      radioSelect: event.target.value
+    });
+  }
+
+  handleThesaurus = (id, name) => {
+    var isRadio = this.props.max === 1;
+    if (isRadio) {
+      this.setState({
+        radioName: name,
+        radioValue: id,
+        selected: 1,
+        radioSelect: id,
+      })
+    } else {
+      this.addSelection(id, name);
+    }
   }
 
   // Create a new child from the selection with parent
@@ -114,19 +181,24 @@ class VocabularySelector extends React.Component {
       return;
     }
 
-    var newChildren;
-    var numSelected = 0;
     if (this.props.max == 1) {
       // If only 1 child is allowed, replace it instead of copying our array
-      newChildren = [];
-      numSelected = 1;
+      var newChildren = this.state.defaultListChildren.slice();
+      newChildren.push([name, id, false]);
+      this.setState({
+        listChildren: newChildren,
+        selected: 1,
+        radioSelect: name
+      });
     } else {
       // As per React specs, we do not modify the state array directly, but slice and add
-      newChildren = this.state.listChildren.slice();
-      numSelected = this.state.selected + 1;
+      var newChildren = this.state.listChildren.slice();
+      newChildren.push([name, id, false]);
+      this.setState({
+        listChildren: newChildren,
+        selected: this.state.selected + 1
+      });
     }
-    newChildren.push([name, id, false]);
-    this.setState({listChildren: newChildren, selected: numSelected});
   }
 
   componentDidMount() {
@@ -166,7 +238,10 @@ class VocabularySelector extends React.Component {
       // Possible race condition here?
       var newChildren = this.state.listChildren.slice();
       newChildren.push([name, id, true]);
-      this.setState({listChildren: newChildren});
+      this.setState({
+        defaultListChildren: newChildren,
+        listChildren: newChildren
+      });
     } else {
       console.log("Error: Thesaurus lookup failed with code " + status);
     }
@@ -201,7 +276,7 @@ class VocabularySelector extends React.Component {
 
 VocabularySelector.propTypes = {
     classes: PropTypes.object.isRequired,
-    name: PropTypes.string,
+    title: PropTypes.string,
     source: PropTypes.string.isRequired,
     max: PropTypes.number.isRequired,
     requiredAncestors: PropTypes.array,
@@ -210,8 +285,7 @@ VocabularySelector.propTypes = {
 };
 
 VocabularySelector.defaultProps = {
-    name: "VocabularySelector",
-    source: "hpo",
+    title: "VocabularySelector",
     max: 0,
     searchDefault: 'Other (specify here)'
 };
