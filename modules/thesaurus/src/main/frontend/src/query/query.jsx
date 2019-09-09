@@ -52,6 +52,7 @@ class Thesaurus extends React.Component {
       infoAlsoKnownAs: [],
       infoTypeOf: "",
       infoAnchor: null,
+      infoAboveBackground: false,
       buttonRefs: {},
       vocabulary: props.Vocabulary,
       noResults: false,
@@ -76,8 +77,15 @@ class Thesaurus extends React.Component {
                 formControlProps={{
                   className: classes.search
                 }}
+                labelText={this.props.searchDefault}
+                labelProps={{
+                  classes: {
+                    root: classes.searchLabel,
+                    shrink: classes.searchShrink,
+                  }
+                }}
                 inputProps={{
-                  placeholder: this.props.searchDefault,
+                  variant: 'outlined',
                   inputProps: {
                     "aria-label": "Search"
                   },
@@ -95,7 +103,12 @@ class Thesaurus extends React.Component {
                       }
                     }
                   },
-                  onFocus: this.delayLookup,
+                  onFocus: (status) => {
+                    if (this.props.onInputFocus !== undefined) {
+                      this.props.onInputFocus(status);
+                    }
+                    this.delayLookup(status)
+                  },
                   disabled: this.props.disabled,
                   className: classes.searchInput,
                 }}
@@ -142,6 +155,7 @@ class Thesaurus extends React.Component {
               enabled: false
             },
           }}
+          ref = {(ref) => {this.menuPopperRef = ref}}
         >
           {({ TransitionProps }) => (
             <Grow
@@ -153,7 +167,7 @@ class Thesaurus extends React.Component {
             >
               <Paper>
                 <ClickAwayListener onClickAway={this.closeAutocomplete}>
-                  <MenuList role="menu" ref={(ref) => {this.menuRef = ref}}>
+                  <MenuList role="menu" ref={(ref)=> {this.menuRef = ref}}>
                     {this.state.suggestions}
                   </MenuList>
                 </ClickAwayListener>
@@ -170,8 +184,9 @@ class Thesaurus extends React.Component {
           className={
             classNames({ [classes.popperClose]: !open })
             + " " + classes.popperNav
-            + " " + classes.popperInfoOnTop
+            + " " + (this.state.infoAboveBackground ? classes.infoAboveBackground : classes.popperInfoOnTop)
           }
+          ref={(ref) => {this.infoRef = ref}}
         >
           {({ TransitionProps }) => (
             <Grow
@@ -183,7 +198,7 @@ class Thesaurus extends React.Component {
             >
               <Card className={classes.infoCard}>
                 <Paper className={classes.infoPaper}>
-                  <ClickAwayListener onClickAway={this.closeInfo}>
+                  <ClickAwayListener onClickAway={this.clickAwayInfo}>
                     <div>
                       <Typography className={classes.infoDataSource}>
                         <a
@@ -337,6 +352,7 @@ class Thesaurus extends React.Component {
                 onClick={(e) => {
                   if (e.target.localName === "li") {
                     this.props.onClick(element["id"], element["name"]);
+                    this.anchorEl.value = element["name"];
                     this.closeDialog();
                   }}
                 }
@@ -384,7 +400,9 @@ class Thesaurus extends React.Component {
 
   // Event handler for clicking away from the autocomplete while it is open
   closeAutocomplete = event => {
-    if (this.anchorEl.contains(event.target)) {
+    if ((this.menuPopperRef && this.menuPopperRef.contains(event.target))
+      || (this.infoRef && this.infoRef.contains(event.target))
+      || this.state.browserOpened) {
       return;
     }
 
@@ -419,9 +437,12 @@ class Thesaurus extends React.Component {
         synonym = data["synonym"];
       }
 
-      const typeOf = data["parents"].map((parent, index) => {
-        return parent["name"];
-      })
+      var typeOf = [];
+      if ("parents" in data) {
+        typeOf = data["parents"].map((parent, index) => {
+          return parent["name"];
+        })
+      }
 
       this.setState({
         infoID: data["id"],
@@ -431,36 +452,46 @@ class Thesaurus extends React.Component {
         infoTypeOf: typeOf,
         infoAnchor: this.state.buttonRefs[data["id"]],
         termInfoVisible: true,
+        infoAboveBackground: this.state.browserOpened,
       });
     } else {
       this.logError("Error: term lookup failed with code " + status);
     }
   }
 
-  // Event handler for clicking away from the info window while it is open
-  closeInfo = (event) => {
-    if (this.anchorEl.contains(event.target)) {
+  clickAwayInfo = (event) => {
+    if ((this.menuPopperRef && this.menuPopperRef.contains(event.target))
+      || (this.infoRef && this.infoRef.contains(event.target))) {
       return;
     }
 
-    this.setState({ termInfoVisible: false });
+    this.closeInfo();
+  }
+
+  // Event handler for clicking away from the info window while it is open
+  closeInfo = (event) => {
+    this.setState({
+      termInfoVisible: false,
+      infoAboveBackground: false,
+    });
   };
 
   openDialog = () => {
     this.setState({
       browserOpened: true,
       browseID: this.state.infoID,
-      suggestionsVisible: false,
-      termInfoVisible: false,
     })
   }
 
   closeDialog = () => {
-    this.anchorEl.value = "";
+    if (this.props.clearOnClick) {
+      this.anchorEl.value = "";
+    }
     this.setState({
       browserOpened: false,
       suggestionsVisible: false,
       termInfoVisible: false,
+      infoAboveBackground: false,
     })
   }
 
@@ -496,12 +527,15 @@ class Thesaurus extends React.Component {
 Thesaurus.propTypes = {
     classes: PropTypes.object.isRequired,
     overrideText: PropTypes.string,
+    clearOnClick: PropTypes.bool,
+    onInputFocus: PropTypes.func,
 };
 
 Thesaurus.defaultProps = {
   Vocabulary: 'hpo',
   title: 'LFS Patients',
-  searchDefault: 'Search'
+  searchDefault: 'Search',
+  clearOnClick: true
 };
 
 export default withStyles(QueryStyle)(Thesaurus);

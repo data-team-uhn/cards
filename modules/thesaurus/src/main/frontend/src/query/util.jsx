@@ -34,28 +34,25 @@ export function MakeRequest(URL, callback) {
 
 // Find children of a node by id, calling callback with parameters (xhr status, json data)
 export function MakeChildrenFindingRequest(vocabulary, requestOpt, callback) {
+    const CHILDREN_FINDING_REQUEST_DEFAULTS = {
+        'sort': 'nameSort asc',
+        'maxResults': '10000',
+        'customFilter': 'is_a:' + requestOpt['input'].replace(":", "\\:")
+    };
+
     // Start with the suggest URL
     var URL = `${REST_URL}/${vocabulary}/suggest?`;
-
-    // Add default options
-    if (!requestOpt.hasOwnProperty('sort')) {
-        requestOpt['sort'] = 'nameSort asc';
-    }
-    if (!requestOpt.hasOwnProperty('maxResults')) {
-        requestOpt['maxResults'] = '10000';
-    }
-    if (!requestOpt.hasOwnProperty('customFilter')) {
-        var escapedId = requestOpt['input'].replace(":", "\\:"); // URI Escape the : from vocabulary term identifiers (e.g.HP:#######) for SolR
-        requestOpt['customFilter'] = `is_a:${escapedId}`;
-    }
+    var requestObj = {};
+    Object.assign(requestObj, CHILDREN_FINDING_REQUEST_DEFAULTS);
+    Object.assign(requestObj, requestOpt);
 
     // Construct URL
     var ret = []
-    for (let request in requestOpt) {
+    for (let request in requestObj) {
         if (request === "") {
             continue;
         }
-        ret.push(encodeURIComponent(request) + '=' + encodeURIComponent(requestOpt[request]));
+        ret.push(encodeURIComponent(request) + '=' + encodeURIComponent(requestObj[request]));
     }
     URL += ret.join('&');
 

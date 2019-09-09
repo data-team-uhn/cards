@@ -68,25 +68,14 @@ const browseStyle = theme => ({
     // Tree components
     treeRoot: {
       display: "block",
-      "& >div::before": {
-        content: '"├"',
-      },
-      "& >div:first-child:before": {
-        content: '"┌"',
-      }
     },
     treeNode: {
       // Nothing in here for now, but this is here in case we
       // want to apply themes in the future
+      marginLeft: "22px",
     },
     branch: {
       display: "block",
-      "&::before": {
-        content: '"├─"',
-      },
-      "&:last-child::before": {
-        content: '"└─"',
-      },
     },
     // Components of the browser list items
     browseitem: {
@@ -108,7 +97,7 @@ const browseStyle = theme => ({
     },
     boldedName: {
       fontWeight: "bold",
-    },
+    }
 });
 
 export default browseStyle;

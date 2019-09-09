@@ -39,6 +39,7 @@ const selectorStyle = theme => ({
         }
     },
     inputLabel: {
+        ...theme.typography.button.body1,
         paddingLeft: theme.spacing(1),
         display: "inline-block",
     },

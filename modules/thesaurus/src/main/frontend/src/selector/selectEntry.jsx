@@ -38,7 +38,6 @@ class VocabularyEntry extends React.Component {
     return (
       <React.Fragment>
         <ListItem key={name} className={classes.selectionChild}>
-          <Typography>
             { /* This is either a Checkbox if this is a suggestion, or a button otherwise */
             isPreselected ?
               (
@@ -79,12 +78,13 @@ class VocabularyEntry extends React.Component {
                   <Close color="action" className={classes.deleteIcon}/>
                 </IconButton>
                 <div className={classes.inputLabel}>
-                  {name}
+                  <Typography>
+                    {name}
+                  </Typography>
                 </div>
               </React.Fragment>
             )
             }
-          </Typography>
         </ListItem>
         {
           /* Add the hidden inputs if this is a user input selection (i.e. !isPreselected)
