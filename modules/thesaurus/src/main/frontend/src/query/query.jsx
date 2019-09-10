@@ -107,7 +107,8 @@ class Thesaurus extends React.Component {
                     if (this.props.onInputFocus !== undefined) {
                       this.props.onInputFocus(status);
                     }
-                    this.delayLookup(status)
+                    this.delayLookup(status);
+                    this.anchorEl.select();
                   },
                   disabled: this.props.disabled,
                   className: classes.searchInput,

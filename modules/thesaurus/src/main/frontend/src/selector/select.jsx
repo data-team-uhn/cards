@@ -104,7 +104,7 @@ class VocabularySelector extends React.Component {
             control={
             <Radio
               onChange={() => {this.setState({radioSelect: this.state.radioValue})}}
-              onClick={() => {this.thresaurusRef.anchorEl.focus(); this.setState({radioSelect: this.state.radioValue})}}
+              onClick={() => {this.thresaurusRef.anchorEl.select(); this.setState({radioSelect: this.state.radioValue})}}
               disabled={!ghostSelected && disabled}
               className={classes.ghostRadiobox}
             />
