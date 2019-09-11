@@ -18,6 +18,27 @@
 //
 
 const selectorStyle = theme => ({
+    selectionChild: {
+        paddingLeft: "0px",
+    },
+    deleteButton: {
+        padding: "9px 0px",
+        margin: "-9px 0px",
+        fontSize: "10px",
+        minWidth: "42px",
+    },
+    deleteIcon: {
+        color: "#00000054",
+        "&:hover": {
+            color: "#FF0000",
+        }
+    },
+    checkbox: {
+        margin: "-9px 0px"
+    },
+    selectionList: {
+        paddingBottom: "0px",
+    }
 });
 
 export default selectorStyle;

@@ -148,12 +148,23 @@ const thesaurusStyle = theme => ({
     backgroundColor: theme.palette.error.dark,
   },
   searchWrapper: {
-    margin: theme.spacing(1),
+    margin: "0px 42px",
     position: 'relative',
     display: 'inline-block',
+    paddingBottom: "0px",
+  },
+  search: {
+    paddingBottom: "0px",
+    margin: "0px"
+  },
+  searchInput: {
+    marginTop: "0px",
   },
   infoDataSource: {
     color: "#0089DC"
+  },
+  searchButton: {
+    margin: "0px",
   }
 });
 

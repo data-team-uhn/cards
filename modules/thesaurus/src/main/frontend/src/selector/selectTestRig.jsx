@@ -38,7 +38,7 @@ class VocabularyTester extends React.Component {
             <VocabularySelector
               selectionContainer = {this.state.outsideNode}
               suggestionCategories = {["HP:0000951"]}
-              defaultSuggestions = {{"abc": "given", "HP:0031840": undefined, "HP:003184z": undefined}}
+              defaultSuggestions = {{"abc": "given", "HP:0031840": undefined}}
               max = {3}
             ></VocabularySelector>
         </div>

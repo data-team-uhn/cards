@@ -38,8 +38,6 @@ class Thesaurus extends React.Component {
     super(props);
 
     this.state = {
-      title: "LFS Patients",
-      subtitle: "",
       suggestions: [],
       suggestionsLoading: false,
       suggestionsVisible: false,
@@ -67,17 +65,19 @@ class Thesaurus extends React.Component {
       <div>
         <Card>
           <CardHeader color="warning">
-            <h4 className={classes.cardTitleWhite}>{this.state.title}</h4>
-            <p className={classes.cardCategoryWhite}>{this.state.subtitle}</p>
+            <h4 className={classes.cardTitleWhite}>{this.props.title}</h4>
+            <p className={classes.cardCategoryWhite}>{this.props.subtitle}</p>
           </CardHeader>
           <CardBody>
+            {this.props.children}
+
             <div className={classes.searchWrapper}>
               <CustomInput
                 formControlProps={{
-                  className: classes.margin + " " + classes.search
+                  className: classes.search
                 }}
                 inputProps={{
-                  placeholder: "Search",
+                  placeholder: this.props.searchDefault,
                   inputProps: {
                     "aria-label": "Search"
                   },
@@ -85,13 +85,19 @@ class Thesaurus extends React.Component {
                   inputRef: node => {
                     this.anchorEl = node;
                   },
-                  onKeyPress: (event) => {
+                  onKeyDown: (event) => {
                     if (event.key == 'Enter') {
                       this.queryInput(this.anchorEl.value);
+                    } else if (event.key == 'ArrowDown') {
+                      // Move the focus to the suggestions list
+                      if (this.menuRef.children.length > 0) {
+                        this.menuRef.children[0].focus();
+                      }
                     }
                   },
                   onFocus: this.delayLookup,
                   disabled: this.props.disabled,
+                  className: classes.searchInput
                 }}
               />
               <div className={classes.searchWrapper}>
@@ -102,13 +108,12 @@ class Thesaurus extends React.Component {
                   round
                   onClick={() => this.queryInput(this.anchorEl.value)}
                   disabled={this.props.disabled}
+                  className={classes.searchButton}
                 >
                   <Search />
                 </Button>
                 {this.state.suggestionsLoading ? <CircularProgress size={50} className={classes.suggestionProgress} /> : ""}
               </div>
-
-              {this.props.children}
             </div>
           </CardBody>
         </Card>
@@ -134,7 +139,7 @@ class Thesaurus extends React.Component {
             >
               <Paper>
                 <ClickAwayListener onClickAway={this.closeAutocomplete}>
-                  <MenuList role="menu">
+                  <MenuList role="menu" ref={(ref) => {this.menuRef = ref}}>
                     {this.state.suggestions}
                   </MenuList>
                 </ClickAwayListener>
@@ -428,6 +433,7 @@ class Thesaurus extends React.Component {
   }
 
   closeDialog = () => {
+    this.anchorEl.value = "";
     this.setState({
       browserOpened: false,
       suggestionsVisible: false,
@@ -460,7 +466,9 @@ Thesaurus.propTypes = {
 };
 
 Thesaurus.defaultProps = {
-  Vocabulary: 'hpo'
+  Vocabulary: 'hpo',
+  title: 'LFS Patients',
+  searchDefault: 'Search'
 };
 
 export default withStyles(QueryStyle)(Thesaurus);
