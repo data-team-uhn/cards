@@ -45,7 +45,7 @@ class ListChild extends React.Component {
   }
 
   render() {
-    const { classes, id, name, changeId, registerInfo, getInfo, expands, headNode, bolded, onError } = this.props;
+    const { classes, id, name, changeId, registerInfo, getInfo, expands, headNode, bolded, onError, vocabulary } = this.props;
     if (expands) {
       this.checkForChildren();
     }
@@ -92,8 +92,8 @@ class ListChild extends React.Component {
           color="info"
           className={classes.browseitem}
           >
-          <Typography inline className={classes.infoDataSource}>{id}&nbsp;</Typography>
-          <Typography inline className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}> {name}</Typography>
+          <Typography className={classes.infoDataSource}>{id}&nbsp;</Typography>
+          <Typography className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}> {name}</Typography>
         </Button>
 
         {/* Button to open info page */}
@@ -122,7 +122,11 @@ class ListChild extends React.Component {
     }
 
     // Determine if this node has children
-    MakeChildrenFindingRequest(this.props.id, this.updateChildrenStatus);
+    MakeChildrenFindingRequest(
+      this.props.vocabulary,
+      {input: this.props.id},
+      this.updateChildrenStatus
+      );
   }
 
   // Callback from checkForChildren to update whether or not this node has children
@@ -162,6 +166,7 @@ class ListChild extends React.Component {
                 key={index}
                 headNode={false}
                 onError={this.props.onError}
+                vocabulary={this.props.vocabulary}
               />);
     });
     this.setState({

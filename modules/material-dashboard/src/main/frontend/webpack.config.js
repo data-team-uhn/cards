@@ -6,7 +6,8 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'all']: './src/MaterialDashboardReact/index.jsx'
+    [module_name + 'all']: './src/MaterialDashboardReact/index.jsx',
+    [module_name + 'themeStyle']: './src/MaterialDashboardReact/themeStyle.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -30,8 +31,8 @@ module.exports = {
     path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
     publicPath: '/',
     filename: '[name].[contenthash].js',
-    library: 'MaterialDashboard',
-    libraryTarget: 'umd'
+    library: ['MaterialDashboard', "[name]"],
+    libraryTarget: 'umd',
   },
   externals: [
     {

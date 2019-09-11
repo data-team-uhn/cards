@@ -27,7 +27,7 @@ function Header({ ...props }) {
   // Create the "brand", i.e. the route taken to get to the current page
   // (Usually displayed at the top left)
   function makeBrand() {
-    var name;
+    var name = "";
     props.routes.map((prop, key) => {
       if (prop.layout + prop.path === props.location.pathname) {
         name = prop.name;

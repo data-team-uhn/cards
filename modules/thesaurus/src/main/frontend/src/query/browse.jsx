@@ -54,7 +54,7 @@ class VocabularyBrowser extends React.Component {
         {...rest}
       >
         <DialogTitle className={classes.headbar}>
-          <Typography inline className={classes.headbarText}>Related terms</Typography>
+          <Typography className={classes.headbarText}>Related terms</Typography>
           <Button
             className={classes.closeButton}
             onClick={onClose}
@@ -62,7 +62,7 @@ class VocabularyBrowser extends React.Component {
             justIcon={true}
             simple={true}
           >
-            x
+            ×
           </Button>
         </DialogTitle>
         <DialogContent className={classes.treeContainer}>
@@ -95,7 +95,7 @@ class VocabularyBrowser extends React.Component {
     }
 
     // Create the XHR request
-    var URL = REST_URL + `/hpo/suggest?sort=nameSort%20asc&maxResults=1&input=${id}`;
+    var URL = REST_URL + `/${this.props.vocabulary}/suggest?sort=nameSort%20asc&maxResults=1&input=${id}`;
     MakeRequest(URL, this.rebuildTree);
   }
 
@@ -139,6 +139,7 @@ class VocabularyBrowser extends React.Component {
         headNode={!ischildnode}
         bolded={bolded}
         onError={this.props.onError}
+        vocabulary={this.props.vocabulary}
       />
     );
   }

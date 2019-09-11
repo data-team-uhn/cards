@@ -6,7 +6,9 @@ module.exports = {
   mode: 'development',
   entry: {
     [module_name + 'thesaurusQuery']: './src/query/query.jsx',
-    [module_name + 'thesaurusIcon']: '@material-ui/icons/AccountBox.js'
+    [module_name + 'thesaurusIcon']: '@material-ui/icons/AccountBox.js',
+    [module_name + 'selector']: './src/selector/select.jsx',
+    [module_name + 'test']: './src/selector/selectTestRig.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -40,7 +42,8 @@ module.exports = {
       "prop-types": "PropTypes",
       "jss": "jss",
       "@material-ui/core": "window['MaterialUI']",
-      "MaterialDashboardReact": "window['MaterialDashboard']"
+      "MaterialDashboardReact": "window['MaterialDashboard']['lfs-material-dashboard.all']",
+      "MaterialDashboardReact/ThemeStyle": "window['MaterialDashboard']['lfs-material-dashboard.themeStyle']"
     }
   ]
 };
