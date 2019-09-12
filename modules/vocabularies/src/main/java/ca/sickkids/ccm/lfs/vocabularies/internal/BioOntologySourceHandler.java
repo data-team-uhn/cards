@@ -34,21 +34,24 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 
 /**
  * A wrapper class for the metadata jsons contained in the Bioontology ontology repository. In addition to implementing
- * all of the methods defined in {@link ca.sickkids.ccm.lfs.vocabularies.spi.SourceHandler}, it implements
- * methods for extracting data that can be found in Bioontology jsons.
+ * all of the methods defined in {@link ca.sickkids.ccm.lfs.vocabularies.spi.SourceHandler}, it implements methods for
+ * extracting data that can be found in Bioontology jsons.
  *
  * @version $Id$
  */
 public class BioOntologySourceHandler extends AbstractSourceHandler
 {
     protected JsonObject latestSubmission;
+
     protected boolean successfulLatestSubmission;
+
     protected boolean loadedLatestSubmission;
 
     /**
      * Constructor for instantiating the wrapper. Uses the constructor defined in
-     * {@link ca.sickkids.ccm.lfs.vocabularies.internal.AbstractSourceHandler}, specifying that
-     * the repository is Bioontology and there are no parameters needed.
+     * {@link ca.sickkids.ccm.lfs.vocabularies.internal.AbstractSourceHandler}, specifying that the repository is
+     * Bioontology and there are no parameters needed.
+     *
      * @param identifier the identifier of the ontology to use
      * @throws VocabularyIndexException thrown on failure of http request to get metadata json
      * @throws IOException thrown on failure of http client to close
@@ -60,37 +63,25 @@ public class BioOntologySourceHandler extends AbstractSourceHandler
         this.loadedLatestSubmission = false;
     }
 
-    /**
-     * Implementation of {@link ca.sickkids.ccm.lfs.vocabularies.spi.SourceHandler.getRepositoryName}
-     * @return String name of the ontology repository used ("Biolontology")
-     */
+    @Override
     public String getRepositoryName()
     {
         return "Bioontology";
     }
 
-    /**
-     * Implementation of {@link ca.sickkids.ccm.lfs.vocabularies.spi.SourceHandler.getIdentifier}
-     * @return String identifier code of the ontology in the repository
-     */
+    @Override
     public String getIdentifier()
     {
         return this.identifier;
     }
 
-    /**
-     * Implementation of {@link ca.sickkids.ccm.lfs.vocabularies.spi.SourceHandler.getName}.
-     * @return String long-form name of the ontology
-     */
+    @Override
     public String getName()
     {
         return this.sourceJson.getString("name", null);
     }
 
-    /**
-     * Implementation of {@link ca.sickkids.ccm.lfs.vocabularies.spi.SourceHandler.getSourceLocation}.
-     * @return String url location of the ontology file to get
-     */
+    @Override
     public String getSourceLocation()
     {
         return this.sourceJson.getJsonObject("links").getString("download", null);
@@ -102,7 +93,7 @@ public class BioOntologySourceHandler extends AbstractSourceHandler
     public void loadLatestSubmission()
     {
         // Build the HTTP request
-        String latestSubmissionURL = "https://data.bioontology.org/ontologies/" + identifier + "/latestSubmission"
+        String latestSubmissionURL = "https://data.bioontology.org/ontologies/" + this.identifier + "/latestSubmission"
             + "?apikey=8ac0298d-99f4-4793-8c70-fb7d3400f279";
         HttpGet httpget = new HttpGet(latestSubmissionURL);
         httpget.setHeader("Content-Type", "application/json");
@@ -138,9 +129,9 @@ public class BioOntologySourceHandler extends AbstractSourceHandler
     }
 
     /**
-     * Returns the homepage of the currently loaded bioontology submission.
-     * Loads the latest bioontology submission, if not already loaded.
-     * If the bioontology ontology failed to load, returns null.
+     * Returns the homepage of the currently loaded bioontology submission. Loads the latest bioontology submission, if
+     * not already loaded. If the bioontology ontology failed to load, returns null.
+     *
      * @return The homepage of the currently loaded bioontology submission, or null if it failed to load
      */
     public String getWebsite()
@@ -158,10 +149,10 @@ public class BioOntologySourceHandler extends AbstractSourceHandler
     }
 
     /**
-     * Returns the version of the currently loaded bioontology submission.
-     * Loads the latest bioontology submission, if not already loaded.
-     * If the bioontology ontology failed to load, returns null.
-     * If the version is missing, it returns the creation date, or release date if that is also missing.
+     * Returns the version of the currently loaded bioontology submission. Loads the latest bioontology submission, if
+     * not already loaded. If the bioontology ontology failed to load, returns null. If the version is missing, it
+     * returns the creation date, or release date if that is also missing.
+     *
      * @return The version of the currently loaded bioontology submission, or null if it failed to load
      */
     public String getVersion()

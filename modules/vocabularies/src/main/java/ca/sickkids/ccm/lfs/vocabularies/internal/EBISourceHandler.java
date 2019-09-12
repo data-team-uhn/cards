@@ -24,9 +24,9 @@ import java.io.IOException;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 
 /**
- * A wrapper class for the metadata jsons in the EBI ontology repository. In addition to implementing
- * all of the methods defined in {@link ca.sickkids.ccm.lfs.vocabularies.spi.SourceHandler}, implements
- * extra methods for extracting data that can be found in the EBI jsons.
+ * A wrapper class for the metadata jsons in the EBI ontology repository. In addition to implementing all of the methods
+ * defined in {@link ca.sickkids.ccm.lfs.vocabularies.spi.SourceHandler}, implements extra methods for extracting data
+ * that can be found in the EBI jsons.
  *
  * @version $Id$
  */
@@ -34,8 +34,8 @@ public class EBISourceHandler extends AbstractSourceHandler
 {
     /**
      * Constructor for instantiating the wrapper. Uses the constructor defined in
-     * {@link ca.sickkids.ccm.lfs.vocabularies.internal.AbstractSourceHandler}, specifying that
-     * the repository is EBI and there are no parameters needed.
+     * {@link ca.sickkids.ccm.lfs.vocabularies.internal.AbstractSourceHandler}, specifying that the repository is EBI
+     * and there are no parameters needed.
      *
      * @param identifier identifier of the desired vocabulary
      * @throws VocabularyIndexException thrown when http request fails
@@ -71,8 +71,8 @@ public class EBISourceHandler extends AbstractSourceHandler
     }
 
     /**
-     * Returns the status of the ontology. "FAILED" generally means that the data in the json
-     * is not functioning or obsolete.
+     * Returns the status of the ontology. "FAILED" generally means that the data in the json is not functioning or
+     * obsolete.
      *
      * @return String declaring the status of the ontology
      */

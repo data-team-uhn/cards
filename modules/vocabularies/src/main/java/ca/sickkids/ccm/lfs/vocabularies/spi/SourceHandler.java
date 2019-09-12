@@ -19,32 +19,37 @@
 package ca.sickkids.ccm.lfs.vocabularies.spi;
 
 /**
- * Interface which defines the basic methods that wrapper classes around ontology repository jsons
- * should have for useful information to be extracted from them.
+ * Interface which defines the basic methods that wrapper classes around ontology repository jsons should have for
+ * useful information to be extracted from them.
+ *
  * @version $Id$
  */
 public interface SourceHandler
 {
     /**
      * Returns the name of the ontology repository the wrapper class uses.
+     *
      * @return String name of the ontology repository used
      */
     String getRepositoryName();
 
     /**
      * Returns the name of the identifier of the ontology the json represents.
+     *
      * @return String identifier code of the ontology in the repository
      */
     String getIdentifier();
 
     /**
      * Returns the long-form name of the ontology the json represents.
+     *
      * @return String long-form name of the ontology
      */
     String getName();
 
     /**
      * Returns the url of the ontology file.
+     *
      * @return String url location of the ontology file to get
      */
     String getSourceLocation();
