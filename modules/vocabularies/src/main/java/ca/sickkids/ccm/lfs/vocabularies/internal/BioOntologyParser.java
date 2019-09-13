@@ -35,20 +35,12 @@ import java.util.Set;
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
@@ -69,8 +61,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.sickkids.ccm.lfs.vocabularies.spi.RepositoryHandler;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescription;
-import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescriptionBuilder;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
@@ -93,18 +85,17 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
  */
 @Component(
     service = VocabularyParser.class,
-    name = "bioontology")
+    name = "VocabularyParser.bioontology")
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class BioOntologyParser implements VocabularyParser
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(BioOntologyParser.class);
 
-    /** Extra query parameters to send to authenticate the request and make the response more compact. */
-    private static final String QUERY =
-        "?apikey=8ac0298d-99f4-4793-8c70-fb7d3400f279&display_context=false&display_links=false";
-
     @Reference
     private VocabularyParserUtils utils;
+
+    @Reference(name = "RepositoryHandler.bioontology")
+    private RepositoryHandler repository;
 
     /** The vocabulary node where the indexed data must be placed. */
     private ThreadLocal<Node> vocabularyNode = new ThreadLocal<>();
@@ -130,7 +121,7 @@ public class BioOntologyParser implements VocabularyParser
         // Obtain the resource of the request and adapt it to a JCR node. This must be the /Vocabularies homepage node.
         Node homepage = request.getResource().adaptTo(Node.class);
 
-        final File temporaryFile = File.createTempFile("bioontology-" + identifier, "");
+        File temporaryFile = null;
         try {
             // Throw exceptions if mandatory parameters are not found or if homepage node cannot be found
             if (identifier == null) {
@@ -145,34 +136,11 @@ public class BioOntologyParser implements VocabularyParser
             this.utils.clearVocabularyNode(homepage, identifier, overwrite);
 
             // Load the description
-            VocabularyDescription description = loadDescription(identifier, version);
+            VocabularyDescription description = this.repository.getVocabularyDescription(identifier, version);
 
             // Download the source
-            HttpGet httpget = new HttpGet(description.getSource());
-            httpget.setHeader("Content-Type", "application/json");
+            temporaryFile = this.repository.downloadVocabularySource(description);
 
-            try (CloseableHttpClient httpclient = HttpClientBuilder.create().build();
-                CloseableHttpResponse httpresponse = httpclient.execute(httpget)) {
-
-                if (httpresponse.getStatusLine().getStatusCode() < 400) {
-                    // If the http request is successful
-
-                    // Write all of the contents of the request to the OutputStream
-                    FileUtils.copyInputStreamToFile(httpresponse.getEntity().getContent(), temporaryFile);
-                } else {
-                    // If http request is not successful, close the client and response and throw an exception
-                    String message = "Failed to download the source for vocabulary [" + identifier + "]: "
-                        + httpresponse.getStatusLine().getStatusCode()
-                        + " http error";
-                    LOGGER.warn(message);
-                    throw new VocabularyIndexException(message);
-                }
-            } catch (IOException e) {
-                String message = "Unexpected IO error while accessing vocabulary [" + identifier + "]: "
-                    + e.getMessage();
-                LOGGER.warn(message, e);
-                throw new VocabularyIndexException(message, e);
-            }
             // Create a new Vocabulary node representing this vocabulary
             this.vocabularyNode.set(createVocabularyNode(homepage, description));
 
@@ -409,52 +377,6 @@ public class BioOntologyParser implements VocabularyParser
             vocabulariesHomepage.getSession().save();
         } catch (RepositoryException e) {
             String message = "Failed to save session: " + e.getMessage();
-            throw new VocabularyIndexException(message, e);
-        }
-    }
-
-    private VocabularyDescription loadDescription(final String identifier, final String version)
-        throws VocabularyIndexException
-    {
-        final String submissionsURL = "https://data.bioontology.org/ontologies/" + identifier
-            + "/submissions" + QUERY;
-        HttpGet httpget = new HttpGet(submissionsURL);
-        httpget.setHeader("Content-Type", "application/json");
-        try (CloseableHttpClient httpclient = HttpClientBuilder.create().build();
-            CloseableHttpResponse httpresponse = httpclient.execute(httpget)) {
-
-            if (httpresponse.getStatusLine().getStatusCode() < 400) {
-                // If the http request is successful
-
-                JsonReader parser = Json.createReader(httpresponse.getEntity().getContent());
-                JsonArray submissions = parser.readArray();
-                JsonObject submission = submissions.stream()
-                    .map(i -> (JsonObject) i)
-                    .filter(i -> StringUtils.isBlank(version) ? true : version.equals(i.getString("version")))
-                    .findFirst()
-                    .orElseThrow(() -> new VocabularyIndexException(
-                        "Failed to find the requested version [" + version + "] of vocabulary [" + identifier + "]"));
-                VocabularyDescriptionBuilder desc = new VocabularyDescriptionBuilder();
-                desc.withIdentifier(identifier)
-                    .withVersion(submission.getString("version", null))
-                    .withName(submission.getJsonObject("ontology").getString("name", null))
-                    .withDescription(submission.getString("description", null))
-                    .withWebsite(submission.getString("homepage", null))
-                    .withCitation(submission.getString("publication", null))
-                    .withSource(submission.getString("@id") + "/download" + QUERY);
-                return desc.build();
-            } else {
-                // If http request is not successful, close the client and response and throw an exception
-                String message = "Failed to access submissions for vocabulary [" + identifier + "]: "
-                    + httpresponse.getStatusLine().getStatusCode()
-                    + " http error";
-                LOGGER.warn(message);
-                throw new VocabularyIndexException(message);
-            }
-        } catch (IOException e) {
-            String message = "Unexpected IO error while accessing submissions for vocabulary [" + identifier + "]: "
-                + e.getMessage();
-            LOGGER.warn(message, e);
             throw new VocabularyIndexException(message, e);
         }
     }
