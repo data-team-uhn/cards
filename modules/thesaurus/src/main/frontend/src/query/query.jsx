@@ -21,7 +21,7 @@ import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core/styles";
-import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, CircularProgress, Popper, Snackbar, SnackbarContent, Typography } from "@material-ui/core"
+import { ClickAwayListener, Grow, InputAdornment, LinearProgress, MenuItem, MenuList, Paper, Popper, Snackbar, SnackbarContent, Typography } from "@material-ui/core"
 // MaterialDashboardReact
 import { Button, Card, CardHeader, CardBody, CustomInput, QueryStyle } from "MaterialDashboardReact";
 // @material-ui/icons
@@ -112,22 +112,16 @@ class Thesaurus extends React.Component {
                   },
                   disabled: this.props.disabled,
                   className: classes.searchInput,
+                  multiline: true,
+                  endAdornment: (
+                    <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}}>
+                      <Search />
+                    </InputAdornment>
+                  )
                 }}
               />
-              <div className={classes.searchWrapper}>
-                <Button
-                  color="white"
-                  aria-label="edit"
-                  justIcon
-                  round
-                  onClick={() => this.queryInput(this.anchorEl.value)}
-                  disabled={this.props.disabled}
-                  className={classes.searchButton}
-                >
-                  <Search />
-                </Button>
-                {this.state.suggestionsLoading ? <CircularProgress size={50} className={classes.suggestionProgress} /> : ""}
-              </div>
+              <br />
+              <LinearProgress className={this.state.suggestionsLoading ? null : classes.inactiveProgress}/>
             </div>
           </CardBody>
         </Card>
