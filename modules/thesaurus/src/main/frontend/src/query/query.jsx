@@ -519,7 +519,7 @@ class Thesaurus extends React.Component {
     if (this.props.disabled != prevProps.disabled) {
       // Alter our text to either the override ("Please select at most X options")
       // or empty it
-      this.anchorEl.value = this.props.disabled ? this.props.overrideText : "";
+      this.anchorEl.value = this.props.disabled && this.props.overrideText;
     }
   }
 }
