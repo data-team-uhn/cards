@@ -20,40 +20,19 @@
 package ca.sickkids.ccm.lfs.vocabularies.internal;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jena.ontology.OntClass;
-import org.apache.jena.ontology.OntModel;
-import org.apache.jena.ontology.OntModelSpec;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.ReadWrite;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.tdb2.TDB2Factory;
-import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.osgi.service.component.annotations.Component;
@@ -62,10 +41,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.RepositoryHandler;
+import ca.sickkids.ccm.lfs.vocabularies.spi.SourceParser;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescription;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexer;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
 
 /**
  * Generic indexer for vocabularies available on the <a href="http://data.bioontology.org/">BioOntology</a> portal.
@@ -86,7 +67,6 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 @Component(
     service = VocabularyIndexer.class,
     name = "VocabularyIndexer.bioontology")
-@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class BioOntologyIndexer implements VocabularyIndexer
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(BioOntologyIndexer.class);
@@ -97,10 +77,15 @@ public class BioOntologyIndexer implements VocabularyIndexer
     @Reference(name = "RepositoryHandler.bioontology")
     private RepositoryHandler repository;
 
-    /** The vocabulary node where the indexed data must be placed. */
-    private ThreadLocal<Node> vocabularyNode = new ThreadLocal<>();
+    /**
+     * Automatically injected list of all available parsers. A {@code volatile} list dynamically changes when
+     * implementations are added, removed, or replaced.
+     */
+    @Reference
+    private volatile List<SourceParser> parsers;
 
-    private ThreadLocal<Property> labelProperty = new ThreadLocal<>();
+    /** The vocabulary node where the indexed data must be placed. */
+    private InheritableThreadLocal<Node> vocabularyNode = new InheritableThreadLocal<>();
 
     @Override
     public boolean canIndex(String source)
@@ -138,6 +123,12 @@ public class BioOntologyIndexer implements VocabularyIndexer
             // Load the description
             VocabularyDescription description = this.repository.getVocabularyDescription(identifier, version);
 
+            // Check that we have a known parser for this vocabulary
+            SourceParser parser =
+                this.parsers.stream().filter(p -> p.canParse(description.getSourceFormat())).findFirst()
+                    .orElseThrow(() -> new VocabularyIndexException("No known parsers for vocabulary [" + identifier
+                        + "] in format [" + description.getSourceFormat() + "]"));
+
             // Download the source
             temporaryFile = this.repository.downloadVocabularySource(description);
 
@@ -145,7 +136,7 @@ public class BioOntologyIndexer implements VocabularyIndexer
             this.vocabularyNode.set(createVocabularyNode(homepage, description));
 
             // Parse the source file and create VocabularyTerm node children
-            parse(temporaryFile);
+            parser.parse(temporaryFile, description, this::createVocabularyTermNode);
 
             /*
              * Save the JCR session. If any errors occur before this step, all proposed changes will not be applied and
@@ -200,112 +191,6 @@ public class BioOntologyIndexer implements VocabularyIndexer
         }
     }
 
-    protected void parse(final File source)
-        throws VocabularyIndexException
-    {
-        // For efficiency, we load the ontology in a temporary filesystem-backed database instead of all-in-memory
-        Path temporaryDatasetPath = null;
-        try (InputStream input = new FileInputStream(source)) {
-            // First step, load the data from the OWL file into the data store
-            temporaryDatasetPath = Files.createTempDirectory(null);
-            Dataset store = TDB2Factory.connectDataset(temporaryDatasetPath.toString());
-            // This starts a transaction for the loading part
-            store.begin(ReadWrite.WRITE);
-            Model rawModel = store.getDefaultModel();
-            rawModel.read(input, null);
-            rawModel.commit();
-            store.end();
-
-            // Second step, read the model and load it into Sling
-            // Also in a transaction; although reading shouldn't require one, Jena recommends it
-            store.begin(ReadWrite.READ);
-            // OWL_LITE_MEM_TRANS_INF is fast enough for our needs, since the NCIT ontology isn't very complex,
-            // it has simple subclasses and properties
-            OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_LITE_MEM_TRANS_INF, rawModel);
-
-            // Cache the rdf:label property, it will be used a lot later on
-            this.labelProperty.set(ontModel.getProperty("http://www.w3.org/2000/01/rdf-schema#label"));
-
-            // This lists all the named classes, which for NCIT means all the terms of the thesaurus
-            ExtendedIterator<OntClass> termIterator = ontModel.listNamedClasses();
-            // Load each term into a vocabulary node
-            while (termIterator.hasNext()) {
-                processTerm(termIterator.next());
-            }
-
-            // Close iterator for terms and OntModel to save memory
-            termIterator.close();
-            ontModel.close();
-            // Close the transaction
-            store.end();
-        } catch (FileNotFoundException e) {
-            String message = "Could not find the temporary OWL file for parsing: " + e.getMessage();
-            throw new VocabularyIndexException(message, e);
-        } catch (IOException e) {
-            String message = "Could not read the temporary OWL file for parsing: " + e.getMessage();
-            throw new VocabularyIndexException(message, e);
-        } finally {
-            // Delete the temporary data store
-            FileUtils.deleteQuietly(temporaryDatasetPath.toFile());
-            // Clean up threadlocal variables so that memory can be reclaimed
-            this.labelProperty.remove();
-        }
-    }
-
-    private void processTerm(OntClass term) throws VocabularyIndexException
-    {
-        // Identifier code is the local name of the term
-        String identifier = term.getLocalName();
-
-        // Read all the statements about this term, and extract property=value pairs
-        StmtIterator properties = term.listProperties();
-        MultiValuedMap<String, String> gatheredProperties = new ArrayListValuedHashMap<>();
-        while (properties.hasNext()) {
-            Statement statement = properties.next();
-            Property predicate = statement.getPredicate();
-            String label = predicate.hasProperty(this.labelProperty.get())
-                ? predicate.getProperty(this.labelProperty.get()).getString()
-                : predicate.getLocalName();
-            RDFNode object = statement.getObject();
-            String value = object.isResource() ? object.asResource().getLocalName() : object.asLiteral().getString();
-            gatheredProperties.put(label, value);
-        }
-
-        String[] parents = getAncestors(term, false);
-        String[] ancestors = getAncestors(term, true);
-
-        // The label is the term label. The language option is null because the OWL file doesn't specify a language.
-        String label = term.getLabel(null);
-
-        // Create VocabularyTerm node as child of vocabularyNode using inherited protected method
-        createVocabularyTermNode(this.vocabularyNode.get(), identifier, label, parents, ancestors, gatheredProperties);
-    }
-
-    /**
-     * Gets the ancestors for a vocabulary term. The method can return only the parents (direct ancestors), or all of
-     * the transitive ancestors.
-     *
-     * @param term the OntClass representing the term for which ancestors should be retrieved
-     * @param transitive {@code false} if only parents (i.e. direct ancestors) are wanted, {@code true} if all
-     *            transitive ancestors are wanted
-     * @return String array containing the identifiers of all the term's ancestors
-     */
-    private String[] getAncestors(OntClass term, boolean transitive)
-    {
-        final Set<String> ancestors = new LinkedHashSet<>();
-
-        final ExtendedIterator<OntClass> allAncestors = term.listSuperClasses(!transitive);
-        while (allAncestors.hasNext()) {
-            // Obtain the identifier of each ancestor and add it to the set
-            OntClass ancestorTerm = allAncestors.next();
-            ancestors.add(ancestorTerm.getLocalName());
-        }
-        allAncestors.close();
-
-        // Convert the set to an array and return it
-        return ancestors.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
-    }
-
     /**
      * Creates a <code>VocabularyTerm</code> node representing an individual term of the NCIT. This method is protected
      * to allow subclass implementations of {@link parseNCIT} to use this method, allowing the node creation process to
@@ -323,25 +208,23 @@ public class BioOntologyIndexer implements VocabularyIndexer
      * @param ancestors ancestor terms of the given term, as a list of identifiers
      * @throws VocabularyIndexException when node cannot be created
      */
-    private void createVocabularyTermNode(Node vocabularyNode, String identifier, String label,
-        String[] parents, String[] ancestors, MultiValuedMap<String, String> gatheredProperties)
-        throws VocabularyIndexException
+    private void createVocabularyTermNode(VocabularyTermSource term)
     {
         try {
             Node vocabularyTermNode;
             try {
-                vocabularyTermNode = vocabularyNode.addNode("./" + identifier, "lfs:VocabularyTerm");
+                vocabularyTermNode = this.vocabularyNode.get().addNode("./" + term.getId(), "lfs:VocabularyTerm");
             } catch (ItemExistsException e) {
                 // Sometimes terms appear twice; we'll just update the existing node
-                vocabularyTermNode = vocabularyNode.getNode(identifier);
+                vocabularyTermNode = this.vocabularyNode.get().getNode(term.getId());
             }
-            vocabularyTermNode.setProperty("identifier", identifier);
+            vocabularyTermNode.setProperty("identifier", term.getId());
 
-            vocabularyTermNode.setProperty("label", StringUtils.defaultString(label, identifier));
-            vocabularyTermNode.setProperty("parents", parents);
-            vocabularyTermNode.setProperty("ancestors", ancestors);
+            vocabularyTermNode.setProperty("label", term.getLabel());
+            vocabularyTermNode.setProperty("parents", term.getParents());
+            vocabularyTermNode.setProperty("ancestors", term.getAncestors());
 
-            Iterator<Map.Entry<String, Collection<String>>> it = gatheredProperties.asMap().entrySet().iterator();
+            Iterator<Map.Entry<String, Collection<String>>> it = term.getAllProperties().asMap().entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<String, Collection<String>> entry = it.next();
                 String[] valuesArray = entry.getValue().toArray(ArrayUtils.EMPTY_STRING_ARRAY);
@@ -355,9 +238,9 @@ public class BioOntologyIndexer implements VocabularyIndexer
             }
         } catch (RepositoryException e) {
             // If the identifier exists, print the identifier in the error message to identify node
-            String message =
-                "Failed to create VocabularyTerm node " + StringUtils.defaultString(identifier) + ": " + e.getMessage();
-            throw new VocabularyIndexException(message, e);
+            LOGGER.warn("Failed to create VocabularyTerm node {}: {}", StringUtils.defaultString(term.getId()),
+                e.getMessage());
+
         }
     }
 
