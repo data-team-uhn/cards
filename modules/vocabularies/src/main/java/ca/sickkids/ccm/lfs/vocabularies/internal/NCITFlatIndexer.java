@@ -38,19 +38,19 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
-import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexer;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 
 /**
- * Concrete subclass of {@link AbstractNCITParser} for parsing NCIT in flat file form.
+ * Concrete subclass of {@link AbstractNCITIndexer} for indexing NCIT in flat file form.
  *
  * @version $Id$
  */
 @Component(
-    service = VocabularyParser.class,
-    name = "ncit-flat",
+    service = VocabularyIndexer.class,
+    name = "VocabularyIndexer.ncit-flat",
     reference = { @Reference(field = "utils", name = "utils", service = VocabularyParserUtils.class) })
-public class NCITFlatParser extends AbstractNCITParser
+public class NCITFlatIndexer extends AbstractNCITIndexer
 {
     // Column numbers of the properties we want to extract.
     private static final int IDENTIFIER_COLUMN = 0;
@@ -70,7 +70,7 @@ public class NCITFlatParser extends AbstractNCITParser
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     @Override
-    public boolean canParse(String source)
+    public boolean canIndex(String source)
     {
         return "ncit-flat".equals(source);
     }
@@ -141,7 +141,7 @@ public class NCITFlatParser extends AbstractNCITParser
                  */
                 String[] ancestorsArray = computeAncestors(parentsMap, identifier).toArray(EMPTY_STRING_ARRAY);
 
-                // This method is a protected method in AbstractNCITParser for creating VocabularyTerm nodes
+                // This method is a protected method in AbstractNCITIndexer for creating VocabularyTerm nodes
                 createNCITVocabularyTermNode(vocabularyNode, identifier, label, description, synonymsArray,
                     parentsArray, ancestorsArray);
             }

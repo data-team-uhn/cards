@@ -64,15 +64,15 @@ import org.slf4j.LoggerFactory;
 import ca.sickkids.ccm.lfs.vocabularies.spi.RepositoryHandler;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescription;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
-import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexer;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 
 /**
- * Generic parser for vocabularies available on the <a href="http://data.bioontology.org/">BioOntology</a> portal.
+ * Generic indexer for vocabularies available on the <a href="http://data.bioontology.org/">BioOntology</a> portal.
  * BioOntology is a RESTfull server serving a large collection of vocabularies, available as OWL sources, along with
  * meta-information.
  * <p>
- * To be invoked, this parser requires that:
+ * To be invoked, this indexer requires that:
  * <ul>
  * <li>the {@code source} request parameter is {@code bioontology}</li>
  * <li>the {@code identifier} request parameter is a valid, case-sensitive identifier of a vocabulary available in the
@@ -84,12 +84,12 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
  * @version $Id$
  */
 @Component(
-    service = VocabularyParser.class,
-    name = "VocabularyParser.bioontology")
+    service = VocabularyIndexer.class,
+    name = "VocabularyIndexer.bioontology")
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")
-public class BioOntologyParser implements VocabularyParser
+public class BioOntologyIndexer implements VocabularyIndexer
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BioOntologyParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BioOntologyIndexer.class);
 
     @Reference
     private VocabularyParserUtils utils;
@@ -103,13 +103,13 @@ public class BioOntologyParser implements VocabularyParser
     private ThreadLocal<Property> labelProperty = new ThreadLocal<>();
 
     @Override
-    public boolean canParse(String source)
+    public boolean canIndex(String source)
     {
         return "bioontology".equals(source);
     }
 
     @Override
-    public void parse(final String source, final SlingHttpServletRequest request,
+    public void index(final String source, final SlingHttpServletRequest request,
         final SlingHttpServletResponse response)
         throws IOException, VocabularyIndexException
     {

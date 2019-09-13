@@ -47,19 +47,19 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
-import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexer;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 
 /**
- * Concrete subclass of {@link AbstractNCITParser} for parsing NCIT in OWL file form.
+ * Concrete subclass of {@link AbstractNCITIndexer} for indexing NCIT in OWL file form.
  *
  * @version $Id$
  */
 @Component(
-    service = VocabularyParser.class,
-    name = "ncit-owl",
+    service = VocabularyIndexer.class,
+    name = "VocabularyParser.ncit-owl",
     reference = { @Reference(field = "utils", name = "utils", service = VocabularyParserUtils.class) })
-public class NCITOWLParser extends AbstractNCITParser
+public class NCITOWLIndexer extends AbstractNCITIndexer
 {
     /** An empty String[] array to use for {@code Set.toArray}, we don't want to create a new array for each call. */
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
@@ -80,7 +80,7 @@ public class NCITOWLParser extends AbstractNCITParser
     private ThreadLocal<Property> synonymProperty = new ThreadLocal<>();
 
     @Override
-    public boolean canParse(String source)
+    public boolean canIndex(String source)
     {
         return "ncit-owl".equals(source);
     }
