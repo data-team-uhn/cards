@@ -186,6 +186,9 @@ const thesaurusStyle = theme => ({
     // When the info box is spawned from the browse menu,
     // it should no longer be greyed out
     zIndex: "1301 !important",
+  },
+  inactiveProgress: {
+    visibility: "hidden"
   }
 });
 
