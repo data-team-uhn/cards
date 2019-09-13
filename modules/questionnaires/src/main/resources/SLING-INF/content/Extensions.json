@@ -1,0 +1,18 @@
+{
+    "jcr:primaryType": "sling:Folder",
+    "TestRig": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionName": "Questionnaire test",
+        "lfs:defaultOrder": 0,
+        "lfs:targetURL": "Questionnaires",
+        "lfs:defaultDisabled": false,
+        "lfs:icon": "asset:lfs-questionnaire.questionnaireIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-questionnaire.testRig.js",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "",
+            "jcr:mimeType": "text/html"
+        }
+    }
+}

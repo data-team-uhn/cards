@@ -43,5 +43,6 @@
     <module>principals</module>
     <module>thesaurus</module>
     <module>vocabularies</module>
+    <module>questionnaires</module>
   </modules>
 </project>
