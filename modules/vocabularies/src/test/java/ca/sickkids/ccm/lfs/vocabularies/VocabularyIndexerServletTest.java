@@ -172,7 +172,8 @@ public class VocabularyIndexerServletTest
      *
      * @throws Exception when an unexpected response is returned or the request has failed
      */
-    @Test
+    // Disabled
+    // @Test
     public void testNoVersionProvided()
         throws Exception
     {
@@ -226,7 +227,8 @@ public class VocabularyIndexerServletTest
      *
      * @throws Exception when an unexpected response is returned or the request has failed
      */
-    @Test
+    // Disabled
+    // @Test
     public void testInvalidFileLocation()
         throws Exception
     {
