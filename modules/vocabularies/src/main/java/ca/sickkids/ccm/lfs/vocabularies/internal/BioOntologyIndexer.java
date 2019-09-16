@@ -159,15 +159,11 @@ public class BioOntologyIndexer implements VocabularyIndexer
     }
 
     /**
-     * Creates a <code>Vocabulary</code> node that represents the current vocabulary instance with the identifier. as
-     * the name of the node. The vocabulary property <code>website</code> is currently fixed to
-     * https://ncit.nci.nih.gov/ncitbrowser/.
+     * Creates a <code>Vocabulary</code> node that represents the current vocabulary instance with the identifier as the
+     * name of the node.
      *
      * @param homepage <code>VocabulariesHomepage</code> node instance that will be parent of the new vocabulary node
-     * @param identifier short unique identifier of the vocabulary
-     * @param name the official name of the vocabulary
-     * @param source source of the vocabulary, usually a URL
-     * @param version the version of the vocabulary, a short string
+     * @param description the vocabulary description, holding all the relevant information about the vocabulary
      * @return the <code>Vocabulary</code> node that was created
      * @throws VocabularyIndexException when node cannot be created
      */
@@ -192,21 +188,10 @@ public class BioOntologyIndexer implements VocabularyIndexer
     }
 
     /**
-     * Creates a <code>VocabularyTerm</code> node representing an individual term of the NCIT. This method is protected
-     * to allow subclass implementations of {@link parseNCIT} to use this method, allowing the node creation process to
-     * be standardized.
-     * <p>
-     * Note that if the label does not exist, then the first synonym that exists is used instead for the label.
-     * </p>
+     * Creates a <code>VocabularyTerm</code> node representing an individual term of the vocabulary.
      *
-     * @param vocabularyNode the parent <code>Vocabulary</code> node
-     * @param identifier short identifier code for the term
-     * @param label long-form name for the term
-     * @param description longer definition or description of the term
-     * @param synonyms synonyms for this the term
-     * @param parents the parent terms (direct ancestors) of the given term, as a list of identifiers
-     * @param ancestors ancestor terms of the given term, as a list of identifiers
-     * @throws VocabularyIndexException when node cannot be created
+     * @param term the term data
+     * @throws VocabularyIndexException when a node cannot be created
      */
     private void createVocabularyTermNode(VocabularyTermSource term)
     {
@@ -247,8 +232,7 @@ public class BioOntologyIndexer implements VocabularyIndexer
     /**
      * Saves the JCR session of the homepage node that was obtained from the resource of the request. If this is
      * successful, then the changes made already will be applied to the JCR repository. If not, then all of the changes
-     * will not be applied. After the session is saved, then the JCR repository will automatically begin Lucene
-     * indexing.
+     * will be discarded, reverting to the original state.
      *
      * @param vocabulariesHomepage the <code>VocabulariesHomepage</code> node obtained from the request
      * @throws VocabularyIndexException if session is not successfully saved

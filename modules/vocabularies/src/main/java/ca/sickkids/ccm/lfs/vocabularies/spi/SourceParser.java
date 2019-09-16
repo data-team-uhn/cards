@@ -43,7 +43,9 @@ public interface SourceParser
     boolean canParse(String format);
 
     /**
-     * Does the actual parsing.
+     * Does the actual parsing: extracts term data from the source file, builds {@code VocabularyTermSource}, and passes
+     * them to the consumer. It is the responsibility of the consumer to transform the {@code VocabularyTermSource} into
+     * a JCR node and store it in the repository.
      *
      * @param source a local temporary file where the source is stored
      * @param vocabularyDescription the description of the vocabulary where the names of special properties are defined
