@@ -95,29 +95,25 @@ class VocabularyBrowser extends React.Component {
     }
 
     // Create the XHR request
-    var URL = REST_URL + `/${this.props.vocabulary}/suggest?sort=nameSort%20asc&maxResults=1&input=${id}`;
+    var URL = REST_URL + `/${this.props.vocabulary}/${id}/`;
     MakeRequest(URL, this.rebuildTree);
   }
 
   // Callback from an onload to generate the tree from a /suggest query about the parent
   rebuildTree = (status, data) => {
     if (status === null) {
-      // We have the node we're looking at, and its parent.
-      var currentNodeData = data["rows"][0];
-      var id = currentNodeData["id"];
-
       // Construct parent elements, if they exist
       var parentBranches = null;
-      if (currentNodeData["parents"] !== undefined) {
-        parentBranches = currentNodeData["parents"].map((row, index) => {
+      if ("parents" in data) {
+        parentBranches = data["parents"].map((row, index) => {
           return this.constructBranch(row["id"], row["name"], false, false, false);
         });
       }
 
       this.setState({
         parentNode: parentBranches,
-        currentNode: this.constructBranch(id, currentNodeData["name"], true, true, true),
-        lastKnownTerm: id,
+        currentNode: this.constructBranch(data["id"], data["name"], true, true, true),
+        lastKnownTerm: this.props.term,
       })
     } else {
       this.props.onError("Error: initial term lookup failed with code " + status);
