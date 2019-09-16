@@ -46,6 +46,10 @@
   // A more user-friendly name for this UIXP
   - lfs:extensionPointName (STRING) mandatory
 
+  // And any other properties
+  - * (undefined) multiple
+  - * (undefined)
+
 //-----------------------------------------------------------------------------
 //
 // A User Interface Extension (UIX) defines content that can be automatically placed in a UIXP
@@ -83,3 +87,7 @@
 
   // Whether this extension is disabled or not by default
   - lfs:defaultDisabled (BOOLEAN) = "false" mandatory autocreated
+
+  // And any other properties
+  - * (undefined) multiple
+  - * (undefined)
