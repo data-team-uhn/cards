@@ -2,7 +2,8 @@
     "jcr:primaryType": "sling:Folder",
     "TestRig": {
         "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/thesaurus/selector/test",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:targetURL": "Thesaurus",
         "lfs:extensionName": "Thesaurus selector test",
         "lfs:defaultOrder": "0",
         "lfs:defaultDisabled": "false",

@@ -119,7 +119,7 @@ var loadRemoteComponent = function(component) {
         var returnVal = window.eval(remoteComponentSrc);
         return resolve({
           reactComponent: returnVal.default,
-          path: "/" + component["lfs:extensionPointId"],
+          path: "/" + component["lfs:targetURL"],
           name: component["lfs:extensionName"],
           iconUrl: component["lfs:icon"]
         });
