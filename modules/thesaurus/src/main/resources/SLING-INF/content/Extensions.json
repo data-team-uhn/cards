@@ -5,8 +5,6 @@
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
         "lfs:targetURL": "Thesaurus",
         "lfs:extensionName": "Thesaurus selector test",
-        "lfs:defaultOrder": "0",
-        "lfs:defaultDisabled": "false",
         "lfs:icon": "asset:lfs-thesaurus.thesaurusIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-thesaurus.test.js",
         "jcr:content": {
