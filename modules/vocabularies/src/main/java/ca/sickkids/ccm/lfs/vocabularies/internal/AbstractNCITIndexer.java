@@ -34,24 +34,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
-import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexer;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 
 /**
- * Abstract class specifying a vocabulary ontology parser specifically for the National Cancer Institute Thesaurus. The
+ * Abstract class specifying a vocabulary ontology indexer specifically for the National Cancer Institute Thesaurus. The
  * class implements methods common to parsers for the NCIT, but omits file-type specific methods. The parsing and node
  * creation process is done as a transaction, meaning that if it fails, then proposed changes saved in storage will not
  * be applied, and the repository will be left in its original state.
  * <p>
- * The parser assumes that the resource of the response it is given is a <code>VocabulariesHomepage</code> node under
+ * The indexer assumes that the resource of the response it is given is a <code>VocabulariesHomepage</code> node under
  * which the <code>Vocabulary</code> node instance should be stored in the Jackrabbit Oak repository as a child.
  * </p>
  *
  * @version $Id$
  */
-public abstract class AbstractNCITParser implements VocabularyParser
+public abstract class AbstractNCITIndexer implements VocabularyIndexer
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNCITParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNCITIndexer.class);
 
     @Reference
     protected VocabularyParserUtils utils;
@@ -79,7 +79,7 @@ public abstract class AbstractNCITParser implements VocabularyParser
      * @throws IOException thrown when response Json cannot be written
      */
     @Override
-    public void parse(final String source, final SlingHttpServletRequest request,
+    public void index(final String source, final SlingHttpServletRequest request,
         final SlingHttpServletResponse response)
         throws IOException, VocabularyIndexException
     {
@@ -139,8 +139,8 @@ public abstract class AbstractNCITParser implements VocabularyParser
             this.utils.writeStatusJson(request, response, true, null);
         } catch (Exception e) {
             // If parsing fails, return an error json with the exception message
-            this.utils.writeStatusJson(request, response, false, "NCIT Flat parsing error: " + e.getMessage());
-            LOGGER.error("NCIT parsing error: {}", e.getMessage(), e);
+            this.utils.writeStatusJson(request, response, false, "NCIT Flat indexing error: " + e.getMessage());
+            LOGGER.error("NCIT indexing error: {}", e.getMessage(), e);
         } finally {
             // Delete temporary source file
             FileUtils.deleteQuietly(temporaryFile);

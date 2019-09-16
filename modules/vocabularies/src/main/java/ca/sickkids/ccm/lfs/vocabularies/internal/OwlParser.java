@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package ca.sickkids.ccm.lfs.vocabularies.internal;
 
 import java.io.File;
@@ -27,11 +28,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
-import javax.jcr.Node;
-
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
@@ -40,60 +42,57 @@ import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import ca.sickkids.ccm.lfs.vocabularies.spi.SourceParser;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescription;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
-import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
 
 /**
- * Concrete subclass of {@link AbstractNCITParser} for parsing NCIT in OWL file form.
+ * Generic indexer for vocabularies available on the <a href="http://data.bioontology.org/">BioOntology</a> portal.
+ * BioOntology is a RESTfull server serving a large collection of vocabularies, available as OWL sources, along with
+ * meta-information.
+ * <p>
+ * To be invoked, this indexer requires that:
+ * <ul>
+ * <li>the {@code source} request parameter is {@code bioontology}</li>
+ * <li>the {@code identifier} request parameter is a valid, case-sensitive identifier of a vocabulary available in the
+ * BioOntology server</li>
+ * </ul>
+ * An optional {@code version} parameter can be used to index a specific version of the target vocabulary. If not
+ * specified, then the latest available version will be used.
  *
  * @version $Id$
  */
 @Component(
-    service = VocabularyParser.class,
-    name = "ncit-owl",
-    reference = { @Reference(field = "utils", name = "utils", service = VocabularyParserUtils.class) })
-public class NCITOWLParser extends AbstractNCITParser
+    service = SourceParser.class,
+    name = "SourceParser.OWL")
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
+public class OwlParser implements SourceParser
 {
-    /** An empty String[] array to use for {@code Set.toArray}, we don't want to create a new array for each call. */
-    private static final String[] EMPTY_STRING_ARRAY = new String[0];
+    @Reference
+    private VocabularyParserUtils utils;
 
-    /** The vocabulary node where the indexed data must be placed. */
-    private ThreadLocal<Node> vocabularyNode = new ThreadLocal<>();
-
-    /**
-     * Holds the OWL Property for a vocabulary term "definition". Its code is {@code P97}, and its name is
-     * {@code DEFINITION}.
-     */
-    private ThreadLocal<Property> descriptionProperty = new ThreadLocal<>();
-
-    /**
-     * Holds the OWL Property for a vocabulary term "synonyms". Its code is {@code P90}, and its name is
-     * {@code FULL_SYN}.
-     */
-    private ThreadLocal<Property> synonymProperty = new ThreadLocal<>();
+    private InheritableThreadLocal<Property> labelProperty = new InheritableThreadLocal<>();
 
     @Override
-    public boolean canParse(String source)
+    public boolean canParse(String format)
     {
-        return "ncit-owl".equals(source);
+        return "OWL".equals(format);
     }
 
     @Override
-    String getDefaultSource(String version)
-    {
-        return "https://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Thesaurus_" + version + ".OWL.zip";
-    }
-
-    @Override
-    protected void parseNCIT(final File source, final Node vocabularyNode)
-        throws VocabularyIndexException
+    public void parse(final File source, final VocabularyDescription vocabularyDescription,
+        final Consumer<VocabularyTermSource> consumer)
+        throws VocabularyIndexException, IOException
     {
         // For efficiency, we load the ontology in a temporary filesystem-backed database instead of all-in-memory
         Path temporaryDatasetPath = null;
@@ -115,18 +114,14 @@ public class NCITOWLParser extends AbstractNCITParser
             // it has simple subclasses and properties
             OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_LITE_MEM_TRANS_INF, rawModel);
 
-            // Set the needed objects in ThreadLocals
-            this.vocabularyNode.set(vocabularyNode);
-            this.descriptionProperty
-                .set(ontModel.getProperty("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "P97"));
-            this.synonymProperty
-                .set(ontModel.getProperty("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "P90"));
+            // Cache the rdf:label property, it will be used a lot later on
+            this.labelProperty.set(ontModel.getProperty("http://www.w3.org/2000/01/rdf-schema#label"));
 
-            // This lists all the named classes, which for NCIT means all the terms of the thesaurus
+            // This lists all the named classes, the actual terms of the vocabulary
             ExtendedIterator<OntClass> termIterator = ontModel.listNamedClasses();
             // Load each term into a vocabulary node
             while (termIterator.hasNext()) {
-                processTerm(termIterator.next());
+                processTerm(termIterator.next(), consumer);
             }
 
             // Close iterator for terms and OntModel to save memory
@@ -144,25 +139,30 @@ public class NCITOWLParser extends AbstractNCITParser
             // Delete the temporary data store
             FileUtils.deleteQuietly(temporaryDatasetPath.toFile());
             // Clean up threadlocal variables so that memory can be reclaimed
-            this.descriptionProperty.remove();
-            this.synonymProperty.remove();
-            this.vocabularyNode.remove();
+            this.labelProperty.remove();
         }
     }
 
-    private void processTerm(OntClass term) throws VocabularyIndexException
+    private void processTerm(final OntClass term, final Consumer<VocabularyTermSource> consumer)
+        throws VocabularyIndexException
     {
         // Identifier code is the local name of the term
         String identifier = term.getLocalName();
 
-        // The description is given as a property Statement
-        Statement descriptionFromTerm = term.getProperty(this.descriptionProperty.get());
+        // Read all the statements about this term, and extract property=value pairs
+        StmtIterator properties = term.listProperties();
+        MultiValuedMap<String, String> gatheredProperties = new ArrayListValuedHashMap<>();
+        while (properties.hasNext()) {
+            Statement statement = properties.next();
+            Property predicate = statement.getPredicate();
+            String label = predicate.hasProperty(this.labelProperty.get())
+                ? predicate.getProperty(this.labelProperty.get()).getString()
+                : predicate.getLocalName();
+            RDFNode object = statement.getObject();
+            String value = object.isResource() ? object.asResource().getLocalName() : object.asLiteral().getString();
+            gatheredProperties.put(label, value);
+        }
 
-        // Get String from Statement, and handle the case if the statement is blank or null
-        String description =
-            descriptionFromTerm == null ? "" : StringUtils.defaultIfBlank(descriptionFromTerm.getString(), "");
-
-        String[] synonyms = getSynonyms(term);
         String[] parents = getAncestors(term, false);
         String[] ancestors = getAncestors(term, true);
 
@@ -170,30 +170,7 @@ public class NCITOWLParser extends AbstractNCITParser
         String label = term.getLabel(null);
 
         // Create VocabularyTerm node as child of vocabularyNode using inherited protected method
-        createNCITVocabularyTermNode(this.vocabularyNode.get(), identifier, label, description, synonyms,
-            parents, ancestors);
-    }
-
-    /**
-     * Gets the synonyms for a vocabulary term.
-     *
-     * @param term OntClass representing the term for which synonyms should be retrieved
-     * @return String array containing all the synonyms of the term
-     */
-    private String[] getSynonyms(OntClass term)
-    {
-        final Set<String> synonyms = new LinkedHashSet<>();
-
-        final ExtendedIterator<Statement> allSynonyms = term.listProperties(this.synonymProperty.get());
-
-        while (allSynonyms.hasNext()) {
-            Statement synonymTerm = allSynonyms.next();
-            synonyms.add(synonymTerm.getString());
-        }
-        allSynonyms.close();
-
-        // Convert the set to an array and return it
-        return synonyms.toArray(EMPTY_STRING_ARRAY);
+        consumer.accept(new VocabularyTermSource(identifier, label, parents, ancestors, gatheredProperties));
     }
 
     /**
@@ -218,6 +195,6 @@ public class NCITOWLParser extends AbstractNCITParser
         allAncestors.close();
 
         // Convert the set to an array and return it
-        return ancestors.toArray(EMPTY_STRING_ARRAY);
+        return ancestors.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
     }
 }
