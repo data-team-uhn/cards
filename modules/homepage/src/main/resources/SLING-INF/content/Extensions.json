@@ -3,6 +3,7 @@
     "Dashboard": {
         "jcr:primaryType": "lfs:Extension",
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:targetURL": "Dashboard",
         "lfs:extensionName": "TestDashboard",
         "lfs:icon": "asset:lfs-homepage.dashboardIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-homepage.dashboard.js",

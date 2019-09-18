@@ -119,7 +119,7 @@ var loadRemoteComponent = function(component) {
         var returnVal = window.eval(remoteComponentSrc);
         return resolve({
           reactComponent: returnVal.default,
-          path: "/" + component["lfs:extensionPointId"],
+          path: "/" + component["lfs:targetURL"],
           name: component["lfs:extensionName"],
           iconUrl: component["lfs:icon"]
         });
@@ -142,7 +142,7 @@ var loadRemoteComponents = function(components) {
   );
 };
 
-var text = window.Sling.httpGet("/query?query=select%20*%20from%20[lfs:Extension]").responseText;
+var text = window.Sling.httpGet("/apps/lfs/ExtensionPoints/SidebarEntry").responseText;
 const contentNodes = JSON.parse(text);
 
 export default sidebarRoutes
