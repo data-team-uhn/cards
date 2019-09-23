@@ -16,7 +16,12 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { AccountBox, Assignment, Dashboard, Pets, Settings, Subtitles } from '@material-ui/icons';
+import AccountBox from '@material-ui/icons/AccountBox';
+import Assignment from '@material-ui/icons/Assignment';
+import Dashboard from '@material-ui/icons/Dashboard';
+import Pets from '@material-ui/icons/Pets';
+import Settings from '@material-ui/icons/Settings';
+import Subtitles from '@material-ui/icons/Subtitles';
 
 import DashboardPage from "./Dashboard/dashboard.jsx";
 

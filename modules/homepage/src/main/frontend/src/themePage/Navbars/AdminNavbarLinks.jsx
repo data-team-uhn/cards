@@ -15,7 +15,10 @@ import classNames from "classnames";
 import { withStyles } from "@material-ui/core";
 import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, Hidden, Popper } from "@material-ui/core";
 // @material-ui/icons
-import { Person, Notifications, Search, ExitToApp } from "@material-ui/icons";
+import Person from "@material-ui/icons/Person";
+import Notifications from "@material-ui/icons/Notifications";
+import Search from "@material-ui/icons/Search";
+import ExitToApp from "@material-ui/icons/ExitToApp";
 // core components
 import {Button, CustomInput} from "MaterialDashboardReact";
 
