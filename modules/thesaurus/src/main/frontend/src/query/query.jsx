@@ -20,7 +20,7 @@ import classNames from "classnames";
 import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core";
 import { ClickAwayListener, Grow, InputAdornment, LinearProgress, MenuItem, MenuList, Paper, Popper, Snackbar, SnackbarContent, Typography } from "@material-ui/core"
 // MaterialDashboardReact
 import { Button, Card, CardHeader, CardBody, CustomInput, QueryStyle } from "MaterialDashboardReact";

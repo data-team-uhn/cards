@@ -19,7 +19,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core";
 import { Dialog, DialogContent, DialogTitle, Typography } from '@material-ui/core';
 // material-dashboard-react
 import { Button } from "MaterialDashboardReact";
