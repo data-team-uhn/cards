@@ -121,6 +121,7 @@ class HeaderLinks extends React.Component {
             </Hidden>
           </Button>
           <Popper
+            placement="bottom"
             open={open}
             anchorEl={this.anchorEl}
             transition
