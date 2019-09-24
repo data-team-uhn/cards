@@ -182,6 +182,11 @@ class Thesaurus extends React.Component {
             + " " + (this.state.infoAboveBackground ? classes.infoAboveBackground : classes.popperInfoOnTop)
           }
           ref={(ref) => {this.infoRef = ref}}
+          modifiers={{
+            keepTogether: {
+              order: 500
+            }
+          }}
         >
           {({ TransitionProps }) => (
             <Grow
