@@ -11,6 +11,7 @@ module.exports = {
     [module_name + 'LiveTable']: './src/dataHomepage/LiveTable.jsx',
     [module_name + 'Questionnaires']: './src/dataHomepage/Questionnaires.jsx',
     [module_name + 'Subjects']: './src/dataHomepage/Subjects.jsx',
+    [module_name + 'Forms']: './src/dataHomepage/Forms.jsx',
   },
   plugins: [
     new CleanWebpackPlugin(),
