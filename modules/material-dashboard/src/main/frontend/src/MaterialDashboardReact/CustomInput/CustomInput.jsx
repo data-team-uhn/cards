@@ -16,7 +16,8 @@ import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core";
 import { FormControl, InputLabel, Input } from "@material-ui/core";
 // @material-ui/icons
-import { Clear, Check } from "@material-ui/icons";
+import Clear from "@material-ui/icons/Clear";
+import Check from "@material-ui/icons/Check";
 // core components
 import customInputStyle from "./customInputStyle.jsx";
 

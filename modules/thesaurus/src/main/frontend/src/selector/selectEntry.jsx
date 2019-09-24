@@ -20,7 +20,7 @@ import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { Checkbox, FormControlLabel, IconButton, ListItem, withStyles, Typography, Radio } from "@material-ui/core"
-import { Close } from "@material-ui/icons"
+import Close from "@material-ui/icons/Close"
 import SelectorStyle from "./selectorStyle.jsx"
 
 // Child element that will be inserted to the target DOM
