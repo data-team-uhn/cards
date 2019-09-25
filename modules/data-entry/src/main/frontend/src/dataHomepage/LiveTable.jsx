@@ -140,6 +140,9 @@ export default function LiveTable(props) {
 
     // Handle display formatting
     if (column.format && column.format.startsWith('date')) {
+      // The format can be either just "date", in which case a default date format is used, or "date:FORMAT".
+      // Cutting after the fifth char means that either we skip "date:" and read the format,
+      // or we just get the empty string and use the default format.
       let format = column.format.substring(5) || 'YYYY-MM-dd';
       content = _formatDate(content, format);
     }
