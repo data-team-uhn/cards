@@ -38,6 +38,7 @@ module.exports = {
   },
   externals: [
     {
+      "moment": "moment",
       "react": "React",
       "react-dom": "ReactDOM",
       "lodash": "lodash",
