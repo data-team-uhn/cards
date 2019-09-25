@@ -19,6 +19,7 @@
 
 import React, { useState } from "react";
 import { Paper, Table, TableHead, TableBody, TableFooter, TableRow, TableCell, TablePagination } from "@material-ui/core";
+import { Card, CardHeader, CardContent, CardActions, Typography, Button } from "@material-ui/core";
 import moment from "moment";
 
 // Convert a date into the given format string
@@ -77,7 +78,7 @@ export default function LiveTable(props) {
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
     let currentFetch = fetch(url);
-    setFetchStatus(Object.assign(fetchStatus, {
+    setFetchStatus(Object.assign({}, fetchStatus, {
       "currentFetch": currentFetch,
       "fetchError": false,
     }));
@@ -87,7 +88,6 @@ export default function LiveTable(props) {
 
   let handleResponse = (json) => {
     if (+json.req !== fetchStatus.currentRequestNumber) {
-    console.log("Different: ", json.req, fetchStatus.currentRequestNumber);
       // This is the response for an older request. Discard it, wait for the right one.
       return;
     }
@@ -104,11 +104,11 @@ export default function LiveTable(props) {
   };
 
   let handleError = (response) => {
-    setTableData();
-    setFetchStatus(Object.assign(fetchStatus, {
+    setFetchStatus(Object.assign({}, fetchStatus, {
       "currentFetch": false,
-      "fetchError": (response.statusText ? response.statusText : response),
+      "fetchError": (response.statusText ? response.statusText : response.toString()),
     }));
+    setTableData();
   };
 
   let makeRow = (entry) => {
@@ -205,10 +205,27 @@ export default function LiveTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          { tableData ?
-            ( Object.entries(tableData).map(makeRow) )
+          { fetchStatus.fetchError ?
+            (
+              <TableRow>
+                <TableCell colSpan={columns ? columns.length : 1}>
+                  <Card>
+                    <CardHeader title="Error"/>
+                    <CardContent>
+                      <Typography>{fetchStatus.fetchError}</Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Button onClick={() => fetchData(paginationData)}>Retry</Button>
+                    </CardActions>
+                  </Card>
+                </TableCell>
+              </TableRow>
+            )
             :
-            ( <TableRow><TableCell>Please wait...</TableCell></TableRow> )
+            tableData ?
+              ( Object.entries(tableData).map(makeRow) )
+              :
+              ( <TableRow><TableCell colSpan={columns ? columns.length : 1}>Please wait...</TableCell></TableRow> )
             /* TODO: Better progress bar, add some Suspense */
           }
         </TableBody>
