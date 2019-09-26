@@ -20,12 +20,16 @@ package ca.sickkids.ccm.lfs.commons.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
@@ -33,7 +37,6 @@ import javax.json.JsonObjectBuilder;
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.adapter.AdapterFactory;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,65 +63,106 @@ public class ResourceToJsonAdapterFactory
             return null;
         }
         Resource resource = (Resource) adaptable;
-        ValueMap valuemap = resource.getValueMap();
+        Node node = resource.adaptTo(Node.class);
         JsonObjectBuilder result = Json.createObjectBuilder();
-        valuemap.forEach((key, value) -> addProperty(result, key, value));
-        return type.cast(result.build());
+        try {
+            PropertyIterator properties = node.getProperties();
+            while (properties.hasNext()) {
+                addProperty(result, properties.nextProperty());
+            }
+            return type.cast(result.build());
+        } catch (RepositoryException e) {
+            LOGGER.error("Failed to serialize resource to JSON: {}", e.getMessage(), e);
+        }
+        return null;
     }
 
-    private void addProperty(JsonObjectBuilder objectBuilder, String name, Object value)
+    private void addProperty(JsonObjectBuilder objectBuilder, Property property) throws RepositoryException
     {
-        if (value == null) {
-            objectBuilder.addNull(name);
-        } else if (value instanceof Object[]) {
-            // For multi-value properties
-            addArray(objectBuilder, name, (Object[]) value);
-        } else if (value instanceof Calendar) {
-            // Corresponding to JCR DATE property
-            addCalendar(objectBuilder, name, (Calendar) value);
-        } else if (value instanceof InputStream) {
-            // Corresponding to JCR BINARY property
-            addInputStream(objectBuilder, name, (InputStream) value);
-        } else if (value instanceof BigDecimal) {
-            // Corresponding to JCR DECIMAL property
-            objectBuilder.add(name, (BigDecimal) value);
-        } else if (value instanceof BigInteger) {
-            // Also corresponding to JCR DECIMAL property
-            objectBuilder.add(name, (BigInteger) value);
+        if (property.isMultiple()) {
+            addMultiValuedProperty(objectBuilder, property);
         } else {
-            addPrimitive(objectBuilder, name, value);
+            addSingleValuedProperty(objectBuilder, property);
         }
     }
 
-    // for object
-    private void addArray(JsonObjectBuilder objectBuilder, String name, Object[] values)
+    private void addSingleValuedProperty(JsonObjectBuilder objectBuilder, Property property) throws RepositoryException
     {
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        for (Object o : values) {
-            addArrayElement(arrayBuilder, o);
+        final String name = property.getName();
+        final Value value = property.getValue();
+
+        switch (property.getType()) {
+            case PropertyType.BINARY:
+                addInputStream(objectBuilder, name, value.getBinary().getStream());
+                break;
+            case PropertyType.BOOLEAN:
+                objectBuilder.add(name, value.getBoolean());
+                break;
+            case PropertyType.DATE:
+                addCalendar(objectBuilder, name, value.getDate());
+                break;
+            case PropertyType.DECIMAL:
+                objectBuilder.add(name, value.getDecimal());
+                break;
+            case PropertyType.DOUBLE:
+                objectBuilder.add(name, value.getDouble());
+                break;
+            case PropertyType.LONG:
+                objectBuilder.add(name, value.getLong());
+                break;
+            case PropertyType.REFERENCE:
+            case PropertyType.PATH:
+                objectBuilder.add(name, property.getNode().getPath());
+                break;
+            default:
+                objectBuilder.add(name, value.getString());
+                break;
+        }
+    }
+
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
+    private void addMultiValuedProperty(JsonObjectBuilder objectBuilder, Property property) throws RepositoryException
+    {
+        final String name = property.getName();
+        final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+
+        for (Value value : property.getValues()) {
+            switch (property.getType()) {
+                case PropertyType.BINARY:
+                    addInputStream(arrayBuilder, value.getBinary().getStream());
+                    break;
+                case PropertyType.BOOLEAN:
+                    arrayBuilder.add(value.getBoolean());
+                    break;
+                case PropertyType.DATE:
+                    addCalendar(arrayBuilder, value.getDate());
+                    break;
+                case PropertyType.DECIMAL:
+                    arrayBuilder.add(value.getDecimal());
+                    break;
+                case PropertyType.DOUBLE:
+                    arrayBuilder.add(value.getDouble());
+                    break;
+                case PropertyType.LONG:
+                    arrayBuilder.add(value.getLong());
+                    break;
+                case PropertyType.REFERENCE:
+                    arrayBuilder.add(
+                        property.getSession().getNodeByIdentifier(value.getString()).getPath());
+                    break;
+                case PropertyType.PATH:
+                    final String path = value.getString();
+                    final Node referenced =
+                        path.charAt(0) == '/' ? property.getSession().getNode(path)
+                            : property.getParent().getNode(path);
+                    objectBuilder.add(name, referenced.getPath());
+                    break;
+                default:
+                    arrayBuilder.add(value.getString());
+                    break;
+            }
         }
         objectBuilder.add(name, arrayBuilder);
-    }
-
-    private void addArrayElement(JsonArrayBuilder arrayBuilder, Object value)
-    {
-        if (value == null) {
-            arrayBuilder.addNull();
-        } else if (value instanceof Calendar) {
-            // Corresponding to JCR DATE property
-            addCalendar(arrayBuilder, (Calendar) value);
-        } else if (value instanceof InputStream) {
-            // Corresponding to JCR BINARY property
-            addInputStream(arrayBuilder, (InputStream) value);
-        } else if (value instanceof BigDecimal) {
-            // Corresponding to JCR DECIMAL property
-            arrayBuilder.add((BigDecimal) value);
-        } else if (value instanceof BigInteger) {
-            // Also corresponding to JCR DECIMAL property
-            arrayBuilder.add((BigInteger) value);
-        } else {
-            addPrimitive(arrayBuilder, value);
-        }
     }
 
     // for object
@@ -158,38 +202,6 @@ public class ResourceToJsonAdapterFactory
             arrayBuilder.add(IOUtils.toString(value, StandardCharsets.ISO_8859_1));
         } catch (IOException e) {
             LOGGER.warn("Failed to read InputStream: {}", e.getMessage(), e);
-        }
-    }
-
-    // for object
-    private void addPrimitive(JsonObjectBuilder objectBuilder, String name, Object value)
-    {
-        if (value instanceof Boolean) {
-            objectBuilder.add(name, (boolean) value);
-        } else if (value instanceof Integer) {
-            objectBuilder.add(name, (int) value);
-        } else if (value instanceof Long) {
-            objectBuilder.add(name, (long) value);
-        } else if (value instanceof Double) {
-            objectBuilder.add(name, (double) value);
-        } else {
-            objectBuilder.add(name, value.toString());
-        }
-    }
-
-    // for array
-    private void addPrimitive(JsonArrayBuilder arrayBuilder, Object value)
-    {
-        if (value instanceof Boolean) {
-            arrayBuilder.add((boolean) value);
-        } else if (value instanceof Integer) {
-            arrayBuilder.add((int) value);
-        } else if (value instanceof Long) {
-            arrayBuilder.add((long) value);
-        } else if (value instanceof Double) {
-            arrayBuilder.add((double) value);
-        } else {
-            arrayBuilder.add(value.toString());
         }
     }
 }
