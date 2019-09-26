@@ -106,25 +106,27 @@ function generateDefaultOptions(defaults, disabled, isRadio, onClick) {
 }
 
 function MultipleChoice(props) {
-  let { classes, ghostAnchor, max, defaults, ...rest } = props;
+  let { classes, ghostAnchor, max, defaults, input, textarea, ...rest } = props;
   const [selection, setSelection] = useState([["", ""]]);
-  const [ghostName, setGhostName] = useState("&nbsp;");
-  const [ghostValue, setGhostValue] = useState("");
+  const [ghostName, setGhostName] = useState("");
+  const [ghostValue, setGhostValue] = useState(undefined);
   const [options, setOptions] = useState([]);
   const ghostSelected = ghostName === selection;
   const isRadio = max === 1;
   const disabled = selection.length >= max && !isRadio;
+  const hasGhost = input || textarea;
 
   // Convert our defaults into a list of useable options
   useEffect( () => {
-    let newOptions = [];
-    for (let id in defaults) {
-      if (typeof defaults[id] !== "undefined") {
-        newOptions.push([id, defaults[id], true]);
-      } else {
-        newOptions.push([id, id, false]);
+    let newOptions = defaults.map( (defaultOption) => {
+      if (!("id" in defaultOption)) {
+        console.log("Malformed default option: " + JSON.stringify(defaultOption));
+        return ['', '', true];
       }
-    }
+      let id = defaultOption["id"];
+      let label = ("label" in defaultOption ? defaultOption["label"] : id);
+      return ([id, label, true]); // id, label, default
+    });
     setOptions(newOptions);
   });
 
@@ -163,7 +165,8 @@ function MultipleChoice(props) {
         >
           {generateDefaultOptions(options, disabled, isRadio, selectOption)}
           {/* Ghost radio for the text input */}
-          <ListItem key={name} className={classes.selectionChild}>
+          {
+          hasGhost && <ListItem key={name} className={classes.selectionChild + " " + classes.ghostListItem}>
             <FormControlLabel
               control={
               <Radio
@@ -183,7 +186,13 @@ function MultipleChoice(props) {
               }}
             />
           </ListItem>
+          }
         </RadioGroup>
+        {
+          hasGhost && <div className={classes.searchWrapper}>
+            <input></input>
+          </div>
+        }
       </Answer>
     );
   } else {

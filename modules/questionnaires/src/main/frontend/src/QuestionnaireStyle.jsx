@@ -18,6 +18,28 @@
 //
 
 const questionnaireStyle = theme => ({
+    checkbox: {
+        margin: theme.spacing(-2,0),
+    },
+    radiobox: {
+        margin: theme.spacing(-2,0),
+    },
+    ghostRadiobox: {
+        margin: theme.spacing(0,0,-5,0),
+    },
+    ghostFormControl: {
+        height: "0px",
+    },
+    ghostListItem: {
+        padding: theme.spacing(0, 2, 0, 2),
+    },
+    searchWrapper: {
+      margin: theme.spacing(0, 0, 0, 6),
+      position: 'relative',
+      display: 'inline-block',
+      paddingBottom: "0px",
+      paddingTop: "10px",
+    },
 });
 
 export default questionnaireStyle;

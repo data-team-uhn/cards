@@ -17,15 +17,33 @@
 //  under the License.
 //
 
+import React from "react";
+
 import MultipleChoice from "./MultipleChoice";
 
 export default function TestRig(props) {
   return (
-    <MultipleChoice
-      max={1}
-      defaults={{"1": "1", "2": "2", "3": "3"}}
-      title="Title"
-      subtitle="Subtitle"
-      >
-    </MultipleChoice>);
+    <React.Fragment>
+      <MultipleChoice
+        max={1}
+        defaults={[
+          {"id": "1", "label": "1"},
+          {"id": "2", "label": "2"},
+          {"id": "3", "label": "3"}
+        ]}
+        title="Test multiple choice"
+        subtitle="No input"
+        />
+      <MultipleChoice
+        max={1}
+        defaults={[
+          {"id": "1", "label": "1"},
+          {"id": "2", "label": "2"},
+          {"id": "3", "label": "3"}
+        ]}
+        title="Test multiple choice"
+        subtitle="Text input"
+        input
+        />
+    </React.Fragment>);
 }
