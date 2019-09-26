@@ -57,16 +57,16 @@ public class ResourceToJsonAdapterFactory
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceToJsonAdapterFactory.class);
 
     @Override
-    public <A> A getAdapter(Object adaptable, Class<A> type)
+    public <A> A getAdapter(final Object adaptable, final Class<A> type)
     {
         if (adaptable == null) {
             return null;
         }
-        Resource resource = (Resource) adaptable;
-        Node node = resource.adaptTo(Node.class);
-        JsonObjectBuilder result = Json.createObjectBuilder();
+        final Resource resource = (Resource) adaptable;
+        final Node node = resource.adaptTo(Node.class);
+        final JsonObjectBuilder result = Json.createObjectBuilder();
         try {
-            PropertyIterator properties = node.getProperties();
+            final PropertyIterator properties = node.getProperties();
             while (properties.hasNext()) {
                 addProperty(result, properties.nextProperty());
             }
@@ -77,7 +77,7 @@ public class ResourceToJsonAdapterFactory
         return null;
     }
 
-    private void addProperty(JsonObjectBuilder objectBuilder, Property property) throws RepositoryException
+    private void addProperty(final JsonObjectBuilder objectBuilder, final Property property) throws RepositoryException
     {
         if (property.isMultiple()) {
             addMultiValuedProperty(objectBuilder, property);
@@ -86,7 +86,8 @@ public class ResourceToJsonAdapterFactory
         }
     }
 
-    private void addSingleValuedProperty(JsonObjectBuilder objectBuilder, Property property) throws RepositoryException
+    private void addSingleValuedProperty(final JsonObjectBuilder objectBuilder, final Property property)
+        throws RepositoryException
     {
         final String name = property.getName();
         final Value value = property.getValue();
@@ -121,7 +122,8 @@ public class ResourceToJsonAdapterFactory
     }
 
     @SuppressWarnings("checkstyle:CyclomaticComplexity")
-    private void addMultiValuedProperty(JsonObjectBuilder objectBuilder, Property property) throws RepositoryException
+    private void addMultiValuedProperty(final JsonObjectBuilder objectBuilder, final Property property)
+        throws RepositoryException
     {
         final String name = property.getName();
         final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -166,25 +168,25 @@ public class ResourceToJsonAdapterFactory
     }
 
     // for object
-    private void addCalendar(JsonObjectBuilder objectBuilder, String name, Calendar value)
+    private void addCalendar(final JsonObjectBuilder objectBuilder, final String name, final Calendar value)
     {
         // Use the ISO 8601 date+time format
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(value.getTimeZone());
         objectBuilder.add(name, sdf.format(value.getTime()));
     }
 
     // for array
-    private void addCalendar(JsonArrayBuilder arrayBuilder, Calendar value)
+    private void addCalendar(final JsonArrayBuilder arrayBuilder, final Calendar value)
     {
         // Use the ISO 8601 date+time format
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(value.getTimeZone());
         arrayBuilder.add(sdf.format(value.getTime()));
     }
 
     // for object
-    private void addInputStream(JsonObjectBuilder objectBuilder, String name, InputStream value)
+    private void addInputStream(final JsonObjectBuilder objectBuilder, final String name, final InputStream value)
     {
         try {
             // We're supposed to be transforming raw bytes into an Unicode string; ISO 8859-1 is a subset of Unicode
@@ -195,7 +197,7 @@ public class ResourceToJsonAdapterFactory
     }
 
     // for array
-    private void addInputStream(JsonArrayBuilder arrayBuilder, InputStream value)
+    private void addInputStream(final JsonArrayBuilder arrayBuilder, final InputStream value)
     {
         try {
             // We're supposed to be transforming raw bytes into an Unicode string; ISO 8859-1 is a subset of Unicode
