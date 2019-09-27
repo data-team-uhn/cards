@@ -20,6 +20,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { Checkbox, FormControlLabel, IconButton, List, ListItem, Radio, RadioGroup, Typography, withStyles } from "@material-ui/core";
+import PropTypes from 'prop-types';
 
 import Answer from "./Answer";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
@@ -28,6 +29,129 @@ const NAME_POS = 0;
 const ID_POS = 1;
 const IS_DEFAULT_POS = 2;
 
+function MultipleChoice(props) {
+  let { classes, ghostAnchor, max, defaults, input, textarea, ...rest } = props;
+  const [selection, setSelection] = useState([["", ""]]);
+  const [ghostName, setGhostName] = useState("");
+  const [ghostValue, setGhostValue] = useState(undefined);
+  const [options, setOptions] = useState([]);
+  const ghostSelected = ghostName === selection;
+  const isRadio = max === 1;
+  const disabled = selection.length >= max && !isRadio;
+
+  // On startup, convert our defaults into a list of useable options
+  useEffect( () => {
+    let newOptions = defaults.map( (defaultOption) => {
+      if (!("id" in defaultOption)) {
+        console.log("Malformed default option: " + JSON.stringify(defaultOption));
+        return ['', '', true];
+      }
+      let id = defaultOption["id"];
+      let label = ("label" in defaultOption ? defaultOption["label"] : id);
+      return ([id, label, true]); // id, label, default
+    });
+    setOptions(newOptions);
+  });
+
+  let selectOption = (id, name) => {
+    if (isRadio) {
+      setSelection([[name, id]]);
+      return;
+    }
+
+    // Do not add anything if we are at our maximum number of selections
+    if (selection.length >= max) {
+      return;
+    }
+
+    // Do not add duplicates
+    if (options.some(element => {return element[ID_POS] === id})) {
+      return;
+    }
+
+    let newSelection = selection.slice();
+    newSelection.push([name, id]);
+    setSelection(newSelection);
+  }
+
+  if (isRadio) {
+    return (
+      <Answer
+        answers={selection}
+        {...rest}
+        >
+        <RadioGroup
+          aria-label="selection"
+          name="selection"
+          className={classes.selectionList}
+          value={selection[0][ID_POS]}
+        >
+          {generateDefaultOptions(options, disabled, isRadio, selectOption)}
+          {/* Ghost radio for the text input */}
+          {
+          input && <ListItem key={name} className={classes.selectionChild + " " + classes.ghostListItem}>
+            <FormControlLabel
+              control={
+              <Radio
+                onChange={() => {setSelection([[ghostName, ghostValue]]);}}
+                onClick={() => {ghostAnchor && ghostAnchor.select(); setSelection([[ghostName, ghostValue]]);}}
+                disabled={!ghostSelected && disabled}
+                className={classes.ghostRadiobox}
+              />
+              }
+              label="&nbsp;"
+              name={ghostName}
+              value={ghostValue}
+              key={ghostValue}
+              className={classes.ghostFormControl + " " + classes.childFormControl}
+              classes={{
+                label: classes.inputLabel
+              }}
+            />
+          </ListItem>
+          }
+        </RadioGroup>
+        {
+          input && <div className={classes.searchWrapper}>
+            <input></input>
+          </div>
+        }
+      </Answer>
+    );
+  } else {
+    return (
+      <Answer
+        answers={selection}
+        {...rest}
+        >
+        <List className={classes.selectionList}>
+          {generateDefaultOptions(options, disabled, isRadio, selectOption)}
+        </List>
+      </Answer>
+    )
+  }
+}
+
+// Generate a list of options that are part of the default suggestions
+function generateDefaultOptions(defaults, disabled, isRadio, onClick) {
+  return defaults.map( (childData) => {
+    return (
+      <StyledResponseChild
+        id={childData[ID_POS]}
+        key={childData[ID_POS]}
+        name={childData[NAME_POS]}
+        disabled={disabled}
+        onClick={onClick}
+        isDefault={childData[IS_DEFAULT_POS]}
+        isRadio={isRadio}
+      ></StyledResponseChild>
+    );
+  });
+}
+
+var StyledResponseChild = withStyles(QuestionnaireStyle)(ResponseChild);
+
+// One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
   const {classes, name, id, isDefault, onClick, disabled, isRadio} = props;
   const [checked, setCheck] = useState(false);
@@ -87,126 +211,15 @@ function ResponseChild(props) {
   );
 }
 
-var StyledResponseChild = withStyles(QuestionnaireStyle)(ResponseChild);
-
-function generateDefaultOptions(defaults, disabled, isRadio, onClick) {
-  return defaults.map( (childData) => {
-    return (
-      <StyledResponseChild
-        id={childData[ID_POS]}
-        key={childData[ID_POS]}
-        name={childData[NAME_POS]}
-        disabled={disabled}
-        onClick={onClick}
-        isDefault={childData[IS_DEFAULT_POS]}
-        isRadio={isRadio}
-      ></StyledResponseChild>
-    );
-  });
-}
-
-function MultipleChoice(props) {
-  let { classes, ghostAnchor, max, defaults, input, textarea, ...rest } = props;
-  const [selection, setSelection] = useState([["", ""]]);
-  const [ghostName, setGhostName] = useState("");
-  const [ghostValue, setGhostValue] = useState(undefined);
-  const [options, setOptions] = useState([]);
-  const ghostSelected = ghostName === selection;
-  const isRadio = max === 1;
-  const disabled = selection.length >= max && !isRadio;
-  const hasGhost = input || textarea;
-
-  // Convert our defaults into a list of useable options
-  useEffect( () => {
-    let newOptions = defaults.map( (defaultOption) => {
-      if (!("id" in defaultOption)) {
-        console.log("Malformed default option: " + JSON.stringify(defaultOption));
-        return ['', '', true];
-      }
-      let id = defaultOption["id"];
-      let label = ("label" in defaultOption ? defaultOption["label"] : id);
-      return ([id, label, true]); // id, label, default
-    });
-    setOptions(newOptions);
-  });
-
-  let selectOption = (id, name) => {
-    if (isRadio) {
-      setSelection([[name, id]]);
-      return;
-    }
-
-    // Do not add anything if we are at our maximum number of selections
-    if (selection.length >= max) {
-      return;
-    }
-
-    // Do not add duplicates
-    if (options.some(element => {return element[ID_POS] === id})) {
-      return;
-    }
-
-    let newSelection = selection.slice();
-    newSelection.push([name, id]);
-    setSelection(newSelection);
-  }
-
-  if (isRadio) {
-    return (
-      <Answer
-        answers={selection}
-        {...rest}
-        >
-        <RadioGroup
-          aria-label="selection"
-          name="selection"
-          className={classes.selectionList}
-          value={selection[0][ID_POS]}
-        >
-          {generateDefaultOptions(options, disabled, isRadio, selectOption)}
-          {/* Ghost radio for the text input */}
-          {
-          hasGhost && <ListItem key={name} className={classes.selectionChild + " " + classes.ghostListItem}>
-            <FormControlLabel
-              control={
-              <Radio
-                onChange={() => {setSelection([[ghostName, ghostValue]]);}}
-                onClick={() => {ghostAnchor && ghostAnchor.select(); setSelection([[ghostName, ghostValue]]);}}
-                disabled={!ghostSelected && disabled}
-                className={classes.ghostRadiobox}
-              />
-              }
-              label="&nbsp;"
-              name={ghostName}
-              value={ghostValue}
-              key={ghostValue}
-              className={classes.ghostFormControl + " " + classes.childFormControl}
-              classes={{
-                label: classes.inputLabel
-              }}
-            />
-          </ListItem>
-          }
-        </RadioGroup>
-        {
-          hasGhost && <div className={classes.searchWrapper}>
-            <input></input>
-          </div>
-        }
-      </Answer>
-    );
-  } else {
-    return (
-      <Answer
-        answers={selection}
-        {...rest}
-        >
-        <List className={classes.selectionList}>
-          {generateDefaultOptions(options, disabled, isRadio, selectOption)}
-        </List>
-      </Answer>
-    )
-  }
-}
+MultipleChoice.propTypes = {
+  classes: PropTypes.object.isRequired,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  answers: PropTypes.array,
+  max: PropTypes.number,
+  defaults: PropTypes.array,
+  input: PropTypes.bool,
+  ghostAnchor: PropTypes.object
+};
 
 export default withStyles(QuestionnaireStyle)(MultipleChoice);

@@ -26,6 +26,8 @@ import {Card, CardHeader, CardBody} from "MaterialDashboardReact";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
+// Holds answers and automatically generates hidden inputs
+// for form submission
 function Answer (props) {
   let { answers, classes, children, title, subtitle } = props;
   return (
@@ -36,7 +38,7 @@ function Answer (props) {
       </CardHeader>
       <CardBody>
         {children}
-        {/*Create hidden inputs with the answers here, for later form submission*/
+        { /*Create hidden inputs with the answers here, for later form submission*/
           answers.map( (name, id) => {
           return (
             <input type="hidden" id={id} key={id} value={name}></input>
@@ -51,14 +53,7 @@ Answer.propTypes = {
     classes: PropTypes.object.isRequired,
     title: PropTypes.string,
     subtitle: PropTypes.string,
-    onInputFocus: PropTypes.func,
-};
-
-Answer.defaultProps = {
-  Vocabulary: 'hpo',
-  title: 'LFS Patients',
-  searchDefault: 'Search',
-  clearOnClick: true
+    answers: PropTypes.array,
 };
 
 export default withStyles(QuestionnaireStyle)(Answer);
