@@ -72,7 +72,7 @@ public class ResourceToJsonAdapterFactory
             }
             return type.cast(result.build());
         } catch (RepositoryException e) {
-            LOGGER.error("Failed to serialize resource to JSON: {}", e.getMessage(), e);
+            LOGGER.error("Failed to serialize resource [{}] to JSON: {}", resource.getPath(), e.getMessage(), e);
         }
         return null;
     }
