@@ -37,9 +37,9 @@ function Answer (props) {
         {subtitle}
         {children}
         { /*Create hidden inputs with the answers here, for later form submission*/
-          answers.map( (name, id) => {
+          answers.map( (id, name) => {
           return (
-            <input type="hidden" id={id} key={id} value={name}></input>
+            <input type="hidden" name={id} key={id} value={name}></input>
             );
         })}
       </CardContent>
