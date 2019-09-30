@@ -1,7 +1,7 @@
 {
   "name": "lfs-vocabularies",
   "version": "0.1.0",
-  "description": "Allows administrator to check,install and update vocabularies",
+  "description": "Frontend code for interacting with vocabularies",
   "author": "SickKids",
   "license": "Apache-2.0",
   "repository": {
