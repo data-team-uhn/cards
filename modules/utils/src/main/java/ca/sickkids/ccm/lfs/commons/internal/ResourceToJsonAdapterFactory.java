@@ -42,7 +42,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * AdapterFactory that converts Apache Sling resources to JsonObjects.
+ * AdapterFactory that converts Apache Sling resources to JsonObjects. Unlike the standard Sling serialization, this
+ * serialization is enhanced by:
+ * <ul>
+ * <li>using the ISO date/time format</li>
+ * <li>embedding referenced nodes instead of simply displaying the UUID or Path, except for versioning nodes</li>
+ * </ul>
  *
  * @version $Id$
  */
