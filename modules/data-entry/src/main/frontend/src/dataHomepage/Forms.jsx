@@ -28,12 +28,12 @@ export default function Forms(props) {
       "link": "entry",
     },
     {
-      "key": "questionnaire",
+      "key": "questionnaire/title",
       "label": "Questionnaire",
       "format": "string",
     },
     {
-      "key": "subject",
+      "key": "subject/identifier",
       "label": "Subject",
       "format": "string",
     },
