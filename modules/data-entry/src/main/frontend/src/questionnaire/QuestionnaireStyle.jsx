@@ -38,7 +38,7 @@ const questionnaireStyle = theme => ({
       position: 'relative',
       display: 'inline-block',
       paddingBottom: "0px",
-      paddingTop: "10px",
+      paddingTop: theme.spacing(1),
     },
 });
 

@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { Checkbox, FormControlLabel, IconButton, List, ListItem, Radio, RadioGroup, Typography, withStyles } from "@material-ui/core";
+import { Checkbox, FormControlLabel, IconButton, List, ListItem, Radio, RadioGroup, TextField, Typography, withStyles } from "@material-ui/core";
 import PropTypes from 'prop-types';
 
 import Answer from "./Answer";
@@ -32,8 +32,8 @@ const IS_DEFAULT_POS = 2;
 function MultipleChoice(props) {
   let { classes, ghostAnchor, max, defaults, input, textarea, ...rest } = props;
   const [selection, setSelection] = useState([["", ""]]);
-  const [ghostName, setGhostName] = useState("");
-  const [ghostValue, setGhostValue] = useState(undefined);
+  const [ghostName, setGhostName] = useState("&nbsp;");
+  const [ghostValue, setGhostValue] = useState("&nbsp;");
   const [options, setOptions] = useState([]);
   const ghostSelected = ghostName === selection;
   const isRadio = max === 1;
@@ -51,7 +51,7 @@ function MultipleChoice(props) {
       return ([id, label, true]); // id, label, default
     });
     setOptions(newOptions);
-  });
+  }, [defaults]);
 
   let selectOption = (id, name) => {
     if (isRadio) {
@@ -93,14 +93,13 @@ function MultipleChoice(props) {
             <FormControlLabel
               control={
               <Radio
-                onChange={() => {setSelection([[ghostName, ghostValue]]);}}
-                onClick={() => {ghostAnchor && ghostAnchor.select(); setSelection([[ghostName, ghostValue]]);}}
+                onChange={() => {selectOption(ghostValue, ghostName);}}
+                onClick={() => {ghostAnchor && ghostAnchor.select();}}
                 disabled={!ghostSelected && disabled}
                 className={classes.ghostRadiobox}
               />
               }
               label="&nbsp;"
-              name={ghostName}
               value={ghostValue}
               key={ghostValue}
               className={classes.ghostFormControl + " " + classes.childFormControl}
@@ -113,7 +112,14 @@ function MultipleChoice(props) {
         </RadioGroup>
         {
           input && <div className={classes.searchWrapper}>
-            <input></input>
+            <TextField
+              className={classes.textField}
+              onChange={(event) => {
+                setGhostValue("custom-input");
+                setGhostName(event.target.value);
+                selectOption("custom-input", event.target.name)}}
+              onFocus={() => {selectOption(ghostValue, ghostName)}}
+            />
           </div>
         }
       </Answer>
