@@ -64,15 +64,31 @@ public class ResourceToJsonAdapterFactory
         }
         final Resource resource = (Resource) adaptable;
         final Node node = resource.adaptTo(Node.class);
+        try {
+            final JsonObjectBuilder result = adapt(node);
+            if (result != null) {
+                return type.cast(result.build());
+            }
+        } catch (RepositoryException e) {
+            LOGGER.error("Failed to serialize resource [{}] to JSON: {}", resource.getPath(), e.getMessage(), e);
+        }
+        return null;
+    }
+
+    private JsonObjectBuilder adapt(final Node node) throws RepositoryException
+    {
+        if (node == null) {
+            return null;
+        }
         final JsonObjectBuilder result = Json.createObjectBuilder();
         try {
             final PropertyIterator properties = node.getProperties();
             while (properties.hasNext()) {
                 addProperty(result, properties.nextProperty());
             }
-            return type.cast(result.build());
+            return result;
         } catch (RepositoryException e) {
-            LOGGER.error("Failed to serialize resource [{}] to JSON: {}", resource.getPath(), e.getMessage(), e);
+            LOGGER.error("Failed to serialize node [{}] to JSON: {}", node.getPath(), e.getMessage(), e);
         }
         return null;
     }
@@ -113,7 +129,15 @@ public class ResourceToJsonAdapterFactory
                 break;
             case PropertyType.REFERENCE:
             case PropertyType.PATH:
-                objectBuilder.add(name, property.getNode().getPath());
+                final Node node = property.getNode();
+                // Reference properties starting with "jcr:" deal with versioning,
+                // and the version trees have cyclic references.
+                // Also, the node history shouldn't be serialized.
+                if (name.startsWith("jcr:")) {
+                    objectBuilder.add(name, node.getPath());
+                } else {
+                    objectBuilder.add(name, adapt(node));
+                }
                 break;
             default:
                 objectBuilder.add(name, value.getString());
@@ -149,15 +173,22 @@ public class ResourceToJsonAdapterFactory
                     arrayBuilder.add(value.getLong());
                     break;
                 case PropertyType.REFERENCE:
-                    arrayBuilder.add(
-                        property.getSession().getNodeByIdentifier(value.getString()).getPath());
+                    final Node node = property.getSession().getNodeByIdentifier(value.getString());
+                    // Reference properties starting with "jcr:" deal with versioning,
+                    // and the version trees have cyclic references.
+                    // Also, the node history shouldn't be serialized.
+                    if (name.startsWith("jcr:")) {
+                        arrayBuilder.add(node.getPath());
+                    } else {
+                        arrayBuilder.add(adapt(node));
+                    }
                     break;
                 case PropertyType.PATH:
                     final String path = value.getString();
                     final Node referenced =
                         path.charAt(0) == '/' ? property.getSession().getNode(path)
                             : property.getParent().getNode(path);
-                    objectBuilder.add(name, referenced.getPath());
+                    objectBuilder.add(name, adapt(referenced));
                     break;
                 default:
                     arrayBuilder.add(value.getString());
