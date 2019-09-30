@@ -20,26 +20,30 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-export const NAME_POS = 0;
-export const ID_POS = 1;
+import { Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
 
-// Holds answers and automatically generates hidden inputs
-// for form submission
-function Answer (props) {
-  let { answers } = props;
+import QuestionnaireStyle from "./QuestionnaireStyle";
+
+// GUI for displaying answers
+function Question (props) {
+  let { classes, children, description, text } = props;
   return (
-    <React.Fragment>
-      {answers.map( (element) => {
-        return (
-          <input type="hidden" name={element[ID_POS]} key={element[ID_POS]} value={element[NAME_POS]}></input>
-          );
-      })}
-    </React.Fragment>
+    <Card>
+      <CardHeader
+        title={text}
+        />
+      <CardContent>
+        {description}
+        {children}
+      </CardContent>
+    </Card>
     );
 }
 
-Answer.propTypes = {
-    answers: PropTypes.array,
+Question.propTypes = {
+    classes: PropTypes.object.isRequired,
+    text: PropTypes.string,
+    description: PropTypes.string
 };
 
-export default Answer;
+export default withStyles(QuestionnaireStyle)(Question);

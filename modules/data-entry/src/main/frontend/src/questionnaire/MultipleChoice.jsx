@@ -22,11 +22,10 @@ import React, { useState, useEffect } from 'react';
 import { Checkbox, FormControlLabel, IconButton, List, ListItem, Radio, RadioGroup, TextField, Typography, withStyles } from "@material-ui/core";
 import PropTypes from 'prop-types';
 
-import Answer from "./Answer";
+import Answer, {NAME_POS, ID_POS} from "./Answer";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
-const NAME_POS = 0;
-const ID_POS = 1;
+// Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
 const IS_DEFAULT_POS = 2;
 
 function MultipleChoice(props) {
@@ -76,10 +75,11 @@ function MultipleChoice(props) {
 
   if (isRadio) {
     return (
-      <Answer
-        answers={selection}
-        {...rest}
-        >
+      <React.Fragment>
+        <Answer
+          answers={selection}
+          {...rest}
+          />
         <RadioGroup
           aria-label="selection"
           name="selection"
@@ -117,23 +117,24 @@ function MultipleChoice(props) {
               onChange={(event) => {
                 setGhostValue("custom-input");
                 setGhostName(event.target.value);
-                selectOption("custom-input", event.target.name)}}
+                selectOption("custom-input", event.target.value)}}
               onFocus={() => {selectOption(ghostValue, ghostName)}}
             />
           </div>
         }
-      </Answer>
+      </React.Fragment>
     );
   } else {
     return (
-      <Answer
-        answers={selection}
-        {...rest}
-        >
+      <React.Fragment>
+        <Answer
+          answers={selection}
+          {...rest}
+          />
         <List className={classes.selectionList}>
           {generateDefaultOptions(options, disabled, isRadio, selectOption)}
         </List>
-      </Answer>
+      </React.Fragment>
     )
   }
 }
