@@ -219,8 +219,8 @@ function ResponseChild(props) {
 
 MultipleChoice.propTypes = {
   classes: PropTypes.object.isRequired,
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
+  text: PropTypes.string,
+  description: PropTypes.string,
   answers: PropTypes.array,
   max: PropTypes.number,
   defaults: PropTypes.array,

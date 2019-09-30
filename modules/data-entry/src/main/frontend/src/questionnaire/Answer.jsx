@@ -27,14 +27,14 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, classes, children, title, subtitle } = props;
+  let { answers, classes, children, description, text } = props;
   return (
     <Card>
       <CardHeader
-        title={title}
+        title={text}
         />
       <CardContent>
-        {subtitle}
+        {description}
         {children}
         { /*Create hidden inputs with the answers here, for later form submission*/
           answers.map( (id, name) => {
@@ -49,8 +49,8 @@ function Answer (props) {
 
 Answer.propTypes = {
     classes: PropTypes.object.isRequired,
-    title: PropTypes.string,
-    subtitle: PropTypes.string,
+    text: PropTypes.string,
+    description: PropTypes.string,
     answers: PropTypes.array,
 };
 
