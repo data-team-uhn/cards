@@ -43,4 +43,3 @@
     ca.sickkids.ccm.lfs/lfs-material-dashboard/${lfs.version}
     ca.sickkids.ccm.lfs/lfs-thesaurus/${lfs.version}
     ca.sickkids.ccm.lfs/lfs-vocabularies/${lfs.version}/slingfeature/slingfeature
-    ca.sickkids.ccm.lfs/lfs-questionnaireui/${lfs.version}/slingfeature/slingfeature
