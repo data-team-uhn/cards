@@ -20,9 +20,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { withStyles } from "@material-ui/core";
-
-import {Card, CardHeader, CardBody} from "MaterialDashboardReact";
+import { Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
@@ -32,11 +30,11 @@ function Answer (props) {
   let { answers, classes, children, title, subtitle } = props;
   return (
     <Card>
-      <CardHeader color="warning">
-        <h4 className={classes.cardTitleWhite}>{title}</h4>
-        <p className={classes.cardCategoryWhite}>{subtitle}</p>
-      </CardHeader>
-      <CardBody>
+      <CardHeader
+        title={title}
+        />
+      <CardContent>
+        {subtitle}
         {children}
         { /*Create hidden inputs with the answers here, for later form submission*/
           answers.map( (name, id) => {
@@ -44,7 +42,7 @@ function Answer (props) {
             <input type="hidden" id={id} key={id} value={name}></input>
             );
         })}
-      </CardBody>
+      </CardContent>
     </Card>
     );
 }

@@ -45,8 +45,7 @@ module.exports = {
       "react-dom": "ReactDOM",
       "lodash": "lodash",
       "prop-types": "PropTypes",
-      "@material-ui/core": "window['MaterialUI']",
-      "MaterialDashboardReact": "window['MaterialDashboard']['lfs-material-dashboard.all']"
+      "@material-ui/core": "window['MaterialUI']"
     }
   ]
 };
