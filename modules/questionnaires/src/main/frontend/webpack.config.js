@@ -5,7 +5,8 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'testRig']: './src/testRig.jsx',
+    [module_name + 'multipleChoice']: './src/MultipleChoice.jsx',
+    [module_name + 'answer']: './src/Answer.jsx',
     [module_name + 'questionnaireIcon']: '@material-ui/icons/Assignment.js'
   },
   plugins: [
