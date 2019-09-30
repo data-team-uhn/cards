@@ -1,0 +1,42 @@
+{
+    "jcr:primaryType": "sling:Folder",
+    "Questionnaires": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:targetURL": "Questionnaires",
+        "lfs:extensionName": "Questionnaires",
+        "lfs:icon": "asset:lfs-homepage.dashboardIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-dataentry.Questionnaires.js",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "",
+            "jcr:mimeType": "text/html"
+        }
+    },
+    "Subjects": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:targetURL": "Subjects",
+        "lfs:extensionName": "Subjects",
+        "lfs:icon": "asset:lfs-homepage.dashboardIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-dataentry.Subjects.js",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "",
+            "jcr:mimeType": "text/html"
+        }
+    },
+    "Forms": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:targetURL": "Forms",
+        "lfs:extensionName": "Forms",
+        "lfs:icon": "asset:lfs-homepage.dashboardIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-dataentry.Forms.js",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "",
+            "jcr:mimeType": "text/html"
+        }
+    }
+}

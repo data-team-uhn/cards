@@ -7,7 +7,11 @@ module.exports = {
   mode: 'development',
   entry: {
     [module_name + 'redirect']: './src/dataQuery/redirect.js',
-    [module_name + 'showQuery']: './src/dataQuery/query.js'
+    [module_name + 'showQuery']: './src/dataQuery/query.js',
+    [module_name + 'LiveTable']: './src/dataHomepage/LiveTable.jsx',
+    [module_name + 'Questionnaires']: './src/dataHomepage/Questionnaires.jsx',
+    [module_name + 'Subjects']: './src/dataHomepage/Subjects.jsx',
+    [module_name + 'Forms']: './src/dataHomepage/Forms.jsx',
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -30,11 +34,11 @@ module.exports = {
   output: {
     path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
     publicPath: '/',
-    library: 'dataQuery',
     filename: '[name].[contenthash].js'
   },
   externals: [
     {
+      "moment": "moment",
       "react": "React",
       "react-dom": "ReactDOM",
       "lodash": "lodash",
