@@ -12,6 +12,9 @@ module.exports = {
     [module_name + 'Questionnaires']: './src/dataHomepage/Questionnaires.jsx',
     [module_name + 'Subjects']: './src/dataHomepage/Subjects.jsx',
     [module_name + 'Forms']: './src/dataHomepage/Forms.jsx',
+    [module_name + 'multipleChoice']: './src/questionnaire/MultipleChoice.jsx',
+    [module_name + 'question']: './src/questionnaire/Question.jsx',
+    [module_name + 'answer']: './src/questionnaire/Answer.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -43,7 +46,7 @@ module.exports = {
       "react-dom": "ReactDOM",
       "lodash": "lodash",
       "prop-types": "PropTypes",
-      "@material-ui/core": "MaterialUI"
+      "@material-ui/core": "window['MaterialUI']"
     }
   ]
 };
