@@ -128,7 +128,10 @@ export default function LiveTable(props) {
   };
 
   let makeCell = (entry, column, index) => {
-    let content = entry[1][column.key];
+    let content = entry[1];
+    for (let subpath of column.key.split('/')) {
+      content = content && content[subpath];
+    }
     let target = false;
 
     // Handle links
