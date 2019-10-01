@@ -121,7 +121,7 @@ public class ResourceToJsonAdapterFactory
                 objectBuilder.add(name, value.getBoolean());
                 break;
             case PropertyType.DATE:
-                addCalendar(objectBuilder, name, value.getDate());
+                addDate(objectBuilder, name, value.getDate());
                 break;
             case PropertyType.DECIMAL:
                 objectBuilder.add(name, value.getDecimal());
@@ -166,7 +166,7 @@ public class ResourceToJsonAdapterFactory
                     arrayBuilder.add(value.getBoolean());
                     break;
                 case PropertyType.DATE:
-                    addCalendar(arrayBuilder, value.getDate());
+                    addDate(arrayBuilder, value.getDate());
                     break;
                 case PropertyType.DECIMAL:
                     arrayBuilder.add(value.getDecimal());
@@ -204,7 +204,7 @@ public class ResourceToJsonAdapterFactory
     }
 
     // for object
-    private void addCalendar(final JsonObjectBuilder objectBuilder, final String name, final Calendar value)
+    private void addDate(final JsonObjectBuilder objectBuilder, final String name, final Calendar value)
     {
         // Use the ISO 8601 date+time format
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
@@ -213,7 +213,7 @@ public class ResourceToJsonAdapterFactory
     }
 
     // for array
-    private void addCalendar(final JsonArrayBuilder arrayBuilder, final Calendar value)
+    private void addDate(final JsonArrayBuilder arrayBuilder, final Calendar value)
     {
         // Use the ISO 8601 date+time format
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
