@@ -6,6 +6,7 @@
     "lfs:extensionName": "Vocabularies",
     "lfs:icon": "asset:lfs-vocabularies.vocabulariesIcon.js",
     "lfs:extensionRenderURL": "asset:lfs-vocabularies.admin-page.js",
+    "lfs:targetURL": "admin/vocabularies",
     "jcr:content": {
       "jcr:primaryType": "nt:resource",
       "jcr:data": "test",
