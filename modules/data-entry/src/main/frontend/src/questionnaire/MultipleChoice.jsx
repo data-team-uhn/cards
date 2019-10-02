@@ -20,6 +20,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { Checkbox, FormControlLabel, IconButton, List, ListItem, Radio, RadioGroup, TextField, Typography, withStyles } from "@material-ui/core";
+import Close from "@material-ui/icons/Close";
 import PropTypes from 'prop-types';
 
 import Answer, {NAME_POS, ID_POS} from "./Answer";
@@ -27,14 +28,16 @@ import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 // Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
 const IS_DEFAULT_POS = 2;
+// Sentinel value used for the user-controlled input
+const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
   let { classes, ghostAnchor, max, min, defaults, input, textbox, ...rest } = props;
   const [selection, setSelection] = useState([]);
   const [ghostName, setGhostName] = useState("&nbsp;");
-  const [ghostValue, setGhostValue] = useState("custom-input");
+  const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);
   const [options, setOptions] = useState([]);
-  const ghostSelected = selection.some(element => {return element[ID_POS] === "custom-input";});
+  const ghostSelected = selection.some(element => {return element[ID_POS] === GHOST_SENTINEL;});
   const isRadio = max === 1;
   const disabled = selection.length >= max && !isRadio;
   let inputEl = null;
@@ -53,7 +56,7 @@ function MultipleChoice(props) {
     setOptions(newOptions);
   }, [defaults]);
 
-  let selectOption = (id, name, checked = false) => {
+  let selectOption = (id, name, checked = false, removeSentinel = false) => {
     if (isRadio) {
       setSelection([[name, id]]);
       return;
@@ -61,16 +64,11 @@ function MultipleChoice(props) {
 
     // If the element was already checked, remove it instead
     if (checked) {
-      setSelection(selection.filter(
-        (element) => {
-          return !(element[ID_POS] === id && element[NAME_POS] === name)
-        }
-      ));
-      return;
+      return unselect(id, name);
     }
 
     // Do not add anything if we are at our maximum number of selections
-    if (selection.length >= max) {
+    if (selection.length >= max && !removeSentinel) {
       return;
     }
 
@@ -80,8 +78,24 @@ function MultipleChoice(props) {
     }
 
     let newSelection = selection.slice();
+    if (removeSentinel) {
+      // Due to how React handles state, we need to do this in one step
+      newSelection = newSelection.filter(
+        (element) => {
+          return (element[ID_POS] !== GHOST_SENTINEL);
+        }
+      );
+    }
     newSelection.push([name, id]);
     setSelection(newSelection);
+  }
+
+  let unselect = (id, name) => {
+    return setSelection(selection.filter(
+      (element) => {
+        return !(element[ID_POS] === id && element[NAME_POS] === name)
+      }
+    ));
   }
 
   let updateGhost = (id, name) => {
@@ -91,7 +105,7 @@ function MultipleChoice(props) {
       return;
     }
 
-    let ghostIndex = selection.findIndex(element => {return element[ID_POS] === "custom-input"});
+    let ghostIndex = selection.findIndex(element => {return element[ID_POS] === GHOST_SENTINEL});
     let newSelection = selection.slice();
     // If the ghost is already selected, update it. Otherwise, append it.
     if (ghostIndex >= 0) {
@@ -102,18 +116,47 @@ function MultipleChoice(props) {
     setSelection(newSelection);
   }
 
+  // Add a non-default option
+  let addOption = (id, name) => {
+    let newOptions = options.slice();
+    newOptions.push([name, id, false]);
+    setOptions(newOptions);
+  }
+
+  // Remove a non-default option
+  let removeOption = (id, name) => {
+    setOptions(options.filter(
+      (option) => {
+        return !(option[ID_POS] === id && option[NAME_POS] === name)
+      }
+    ));
+    unselect(id, name);
+    return;
+  }
+
   // Hold the input box for either multiple choice type
   let ghostInput = input && (<div className={classes.searchWrapper}>
       <TextField
         className={classes.textField}
         onChange={(event) => {
           setGhostName(event.target.value);
-          updateGhost("custom-input", event.target.value)}}
+          updateGhost(GHOST_SENTINEL, event.target.value);
+          onChange && onChange(event.target.value);
+        }}
         onFocus={() => {max === 1 && selectOption(ghostValue, ghostName)}}
         inputProps={{
           onKeyDown: (event) => {
             if (event.key == 'Enter') {
-              selectOption(ghostValue, ghostName);
+              if (isRadio) {
+                selectOption(ghostValue, ghostName);
+              } else {
+                // If we can select multiple, add this as a possible input
+                addOption(ghostName, ghostName);
+                selectOption(ghostName, ghostName, false, true);
+
+                // Clear the ghost
+                inputEl.value = "";
+              }
             }
           }}
         }
@@ -137,7 +180,7 @@ function MultipleChoice(props) {
           className={classes.selectionList}
           value={selection.length > 0 && selection[0][ID_POS]}
         >
-          {generateDefaultOptions(options, disabled, isRadio, selectOption)}
+          {generateDefaultOptions(options, disabled, isRadio, selectOption, removeOption)}
           {/* Ghost radio for the text input */}
           {
           input && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
@@ -173,7 +216,7 @@ function MultipleChoice(props) {
           {...rest}
           />
         <List className={classes.checkboxList}>
-          {generateDefaultOptions(options, disabled, isRadio, selectOption)}
+          {generateDefaultOptions(options, disabled, isRadio, selectOption, removeOption)}
           {input && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
               <FormControlLabel
                 control={
@@ -203,7 +246,7 @@ function MultipleChoice(props) {
 }
 
 // Generate a list of options that are part of the default suggestions
-function generateDefaultOptions(defaults, disabled, isRadio, onClick) {
+function generateDefaultOptions(defaults, disabled, isRadio, onClick, onDelete) {
   return defaults.map( (childData) => {
     return (
       <StyledResponseChild
@@ -212,6 +255,7 @@ function generateDefaultOptions(defaults, disabled, isRadio, onClick) {
         name={childData[NAME_POS]}
         disabled={disabled}
         onClick={onClick}
+        onDelete={onDelete}
         isDefault={childData[IS_DEFAULT_POS]}
         isRadio={isRadio}
       ></StyledResponseChild>
@@ -223,7 +267,7 @@ var StyledResponseChild = withStyles(QuestionnaireStyle)(ResponseChild);
 
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
-  const {classes, name, id, isDefault, onClick, disabled, isRadio} = props;
+  const {classes, name, id, isDefault, onClick, disabled, isRadio, onDelete} = props;
   const [checked, setCheck] = useState(false);
 
   return (
@@ -261,7 +305,7 @@ function ResponseChild(props) {
             ) : (
             <React.Fragment>
               <IconButton
-                onClick={() => {onClick(id, name)}}
+                onClick={() => {onDelete(id, name)}}
                 className={classes.deleteButton}
                 color="secondary"
                 title="Delete"
