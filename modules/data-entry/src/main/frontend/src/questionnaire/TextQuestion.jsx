@@ -17,7 +17,9 @@
 //  under the License.
 //
 
-import { withStyles } from "@material-ui/core";
+import { useState } from "react";
+
+import { Typography, withStyles } from "@material-ui/core";
 
 import PropTypes from "prop-types";
 
@@ -26,17 +28,30 @@ import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function TextQuestion(props) {
-  let {defaults, max, min, name, userInput, regexp, ...rest} = props;
+  let {defaults, max, min, name, userInput, regexp, errorText, ...rest} = props;
+  const [error, setError] = useState(false);
+  const regexTest = new RegExp(regexp);
+
+  // Callback function if a regex is defined
+  let checkRegex = (text) => {
+    if (regexp) {
+      setError(!regexTest.test(text));
+    }
+  }
+
   return (
     <Question
       text={name}
       >
+      {error && <Typography color='error'>{errorText}</Typography>}
       <MultipleChoice
         max={max}
         min={min}
         defaults={defaults}
         input={userInput==="input"}
         textbox={userInput==="textbox"}
+        onChange={checkRegex}
+        {...rest}
         />
     </Question>);
 }
@@ -48,6 +63,12 @@ TextQuestion.propTypes = {
   max: PropTypes.number,
   defaults: PropTypes.array,
   userInput: PropTypes.oneOf([undefined, "input", "textbox"]),
+  regexp: PropTypes.string,
+  errorText: PropTypes.string
+};
+
+TextQuestion.defaultProps = {
+  errorText: "Invalid input"
 };
 
 export default withStyles(QuestionnaireStyle)(TextQuestion);
