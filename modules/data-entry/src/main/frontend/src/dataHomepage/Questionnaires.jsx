@@ -25,7 +25,7 @@ export default function Questionnaires(props) {
       "key": "title",
       "label": "Title",
       "format": "string",
-      "link": "entry",
+      "link": "path",
     },
     {
       "key": "jcr:createdBy",

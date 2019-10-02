@@ -113,14 +113,14 @@ export default function LiveTable(props) {
 
   let makeRow = (entry) => {
     return (
-      <TableRow key={entry[0]}>
+      <TableRow key={entry["@path"]}>
         { columns ?
           (
             columns.map((column, index) => makeCell(entry, column, index))
           )
         :
           (
-            <TableCell><a href={entry[0]}>{entry[1].title}</a></TableCell>
+            <TableCell><a href={entry["@path"]}>{entry.title}</a></TableCell>
           )
         }
       </TableRow>
@@ -128,18 +128,7 @@ export default function LiveTable(props) {
   };
 
   let makeCell = (entry, column, index) => {
-    let content = entry[1];
-    for (let subpath of column.key.split('/')) {
-      content = content && content[subpath];
-    }
-    let target = false;
-
-    // Handle links
-    if (column.link === 'entry') {
-      target = entry[0];
-    } else if (column.link === 'value') {
-      target = content;
-    }
+    let content = getNestedValue(entry, column.key);
 
     // Handle display formatting
     if (column.format && column.format.startsWith('date')) {
@@ -150,8 +139,27 @@ export default function LiveTable(props) {
       content = _formatDate(content, format);
     }
 
+    // Handle links
+    if (column.link) {
+      if (column.link === 'path') {
+        content = (<a href={entry["@path"]}>{content}</a>);
+      } else if (column.link === 'value') {
+        content = (<a href={content}>{content}</a>);;
+      } else if (column.link.startsWith('field:')) {
+        content = (<a href={getNestedValue(entry, column.link.substring('field:'.length))}>{content}</a>);
+      }
+    }
+
     // Render the cell
-    return <TableCell key={index}>{ target ? (<a href={target}>{content}</a>) : ( content )}</TableCell>
+    return <TableCell key={index}>{content}</TableCell>
+  };
+
+  let getNestedValue = (entry, path) => {
+    let result = entry;
+    for (let subpath of path.split('/')) {
+      result = result && result[subpath];
+    }
+    return result;
   };
 
   let handleChangePage = (event, page) => {
@@ -229,7 +237,7 @@ export default function LiveTable(props) {
             )
             :
             tableData ?
-              ( Object.entries(tableData).map(makeRow) )
+              ( tableData.map(makeRow) )
               :
               ( <TableRow><TableCell colSpan={columns ? columns.length : 1}>Please wait...</TableCell></TableRow> )
             /* TODO: Better progress bar, add some Suspense */

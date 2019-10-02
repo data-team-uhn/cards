@@ -120,14 +120,14 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         long offsetCounter = offset < 0 ? 0 : offset;
         long limitCounter = limit < 0 ? 0 : limit;
 
-        jsonGen.writeStartObject("rows");
+        jsonGen.writeStartArray("rows");
 
         while (nodes.hasNext()) {
             Resource n = nodes.next();
             if (offsetCounter > 0) {
                 --offsetCounter;
             } else if (limitCounter > 0) {
-                jsonGen.write(n.getPath(), n.adaptTo(JsonObject.class));
+                jsonGen.write(n.adaptTo(JsonObject.class));
                 --limitCounter;
                 ++counts[2];
             }
