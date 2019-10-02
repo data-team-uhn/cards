@@ -40,6 +40,9 @@ const questionnaireStyle = theme => ({
       paddingBottom: "0px",
       paddingTop: theme.spacing(1),
     },
+    checkboxList: {
+        padding: theme.spacing(0),
+    }
 });
 
 export default questionnaireStyle;

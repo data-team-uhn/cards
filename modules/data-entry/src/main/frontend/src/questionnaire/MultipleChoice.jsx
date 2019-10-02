@@ -29,14 +29,15 @@ import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 const IS_DEFAULT_POS = 2;
 
 function MultipleChoice(props) {
-  let { classes, ghostAnchor, max, defaults, input, textarea, ...rest } = props;
-  const [selection, setSelection] = useState([["", ""]]);
+  let { classes, ghostAnchor, max, min, defaults, input, textbox, ...rest } = props;
+  const [selection, setSelection] = useState([]);
   const [ghostName, setGhostName] = useState("&nbsp;");
-  const [ghostValue, setGhostValue] = useState("&nbsp;");
+  const [ghostValue, setGhostValue] = useState("custom-input");
   const [options, setOptions] = useState([]);
-  const ghostSelected = ghostName === selection;
+  const ghostSelected = selection.some(element => {return element[ID_POS] === "custom-input";});
   const isRadio = max === 1;
   const disabled = selection.length >= max && !isRadio;
+  let inputEl = null;
 
   // On startup, convert our defaults into a list of useable options
   useEffect( () => {
@@ -52,9 +53,19 @@ function MultipleChoice(props) {
     setOptions(newOptions);
   }, [defaults]);
 
-  let selectOption = (id, name) => {
+  let selectOption = (id, name, checked = false) => {
     if (isRadio) {
       setSelection([[name, id]]);
+      return;
+    }
+
+    // If the element was already checked, remove it instead
+    if (checked) {
+      setSelection(selection.filter(
+        (element) => {
+          return !(element[ID_POS] === id && element[NAME_POS] === name)
+        }
+      ));
       return;
     }
 
@@ -64,7 +75,7 @@ function MultipleChoice(props) {
     }
 
     // Do not add duplicates
-    if (options.some(element => {return element[ID_POS] === id})) {
+    if (selection.some(element => {return element[ID_POS] === id})) {
       return;
     }
 
@@ -73,9 +84,49 @@ function MultipleChoice(props) {
     setSelection(newSelection);
   }
 
+  let updateGhost = (id, name) => {
+    // If we're a radio, just update with the new value
+    if (isRadio) {
+      setSelection([[name, id]]);
+      return;
+    }
+
+    let ghostIndex = selection.findIndex(element => {return element[ID_POS] === "custom-input"});
+    let newSelection = selection.slice();
+    // If the ghost is already selected, update it. Otherwise, append it.
+    if (ghostIndex >= 0) {
+      newSelection[ghostIndex] = [name, id];
+    } else {
+      newSelection.push([name, id]);
+    }
+    setSelection(newSelection);
+  }
+
+  // Hold the input box for either multiple choice type
+  let ghostInput = input && (<div className={classes.searchWrapper}>
+      <TextField
+        className={classes.textField}
+        onChange={(event) => {
+          setGhostName(event.target.value);
+          updateGhost("custom-input", event.target.value)}}
+        onFocus={() => {max === 1 && selectOption(ghostValue, ghostName)}}
+        inputProps={{
+          onKeyDown: (event) => {
+            if (event.key == 'Enter') {
+              selectOption(ghostValue, ghostName);
+            }
+          }}
+        }
+        inputRef={ref => {inputEl = ref}}
+      />
+    </div>);
+
+  const warning = selection.length < min && (<Typography color='error'>Please select at least {min} options.</Typography>)
+
   if (isRadio) {
     return (
       <React.Fragment>
+        {warning}
         <Answer
           answers={selection}
           {...rest}
@@ -84,17 +135,17 @@ function MultipleChoice(props) {
           aria-label="selection"
           name="selection"
           className={classes.selectionList}
-          value={selection[0][ID_POS]}
+          value={selection.length > 0 && selection[0][ID_POS]}
         >
           {generateDefaultOptions(options, disabled, isRadio, selectOption)}
           {/* Ghost radio for the text input */}
           {
-          input && <ListItem key={name} className={classes.selectionChild + " " + classes.ghostListItem}>
+          input && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
             <FormControlLabel
               control={
               <Radio
                 onChange={() => {selectOption(ghostValue, ghostName);}}
-                onClick={() => {ghostAnchor && ghostAnchor.select();}}
+                onClick={() => {inputEl && inputEl.select();}}
                 disabled={!ghostSelected && disabled}
                 className={classes.ghostRadiobox}
               />
@@ -110,30 +161,42 @@ function MultipleChoice(props) {
           </ListItem>
           }
         </RadioGroup>
-        {
-          input && <div className={classes.searchWrapper}>
-            <TextField
-              className={classes.textField}
-              onChange={(event) => {
-                setGhostValue("custom-input");
-                setGhostName(event.target.value);
-                selectOption("custom-input", event.target.value)}}
-              onFocus={() => {selectOption(ghostValue, ghostName)}}
-            />
-          </div>
-        }
+        {ghostInput}
       </React.Fragment>
     );
   } else {
     return (
       <React.Fragment>
+        {warning}
         <Answer
           answers={selection}
           {...rest}
           />
-        <List className={classes.selectionList}>
+        <List className={classes.checkboxList}>
           {generateDefaultOptions(options, disabled, isRadio, selectOption)}
+          {input && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={ghostSelected}
+                    onChange={() => {selectOption(ghostValue, ghostName, ghostSelected);}}
+                    onClick={() => {inputEl && inputEl.select();}}
+                    disabled={!ghostSelected && disabled}
+                    className={classes.ghostRadiobox}
+                  />
+                }
+                label="&nbsp;"
+                value={ghostValue}
+                key={ghostValue}
+                className={classes.ghostFormControl + " " + classes.childFormControl}
+                classes={{
+                  label: classes.inputLabel
+                }}
+              />
+            </ListItem>
+          }
         </List>
+        {ghostInput}
       </React.Fragment>
     )
   }
@@ -182,7 +245,7 @@ function ResponseChild(props) {
                   (
                     <Checkbox
                       checked={checked}
-                      onChange={() => {setCheck(!checked); onClick(id, name, checked);}}
+                      onChange={() => {onClick(id, name, checked); setCheck(!checked);}}
                       disabled={!checked && disabled}
                       className={classes.checkbox}
                     />
