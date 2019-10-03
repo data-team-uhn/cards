@@ -27,6 +27,33 @@ import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
+// Component that renders a multiple choice question, with optional text input
+// Selected answers are placed in a series of <input type="hidden"> tags for
+// submission.
+//
+// arguments:
+//  max: Integer denoting maximum number of arguments that may be selected
+//  min: Integer denoting minimum number of arguments that may be selected
+//  name: String containing the question to ask
+//  defaults: Array of objects, each with an "id" representing internal ID
+//            and a "value" denoting what will be displayed
+//  regexp: String of a regular expression tested against the input
+//  errorText: String to display when the regexp is not matched
+//  userInput: Either "input", "textbox", or undefined denoting the type of
+//             user input. Currently, only "input" is supported
+//
+// sample usage:
+// <TextQuestion
+//    name="Test text question (lowercase only)"
+//    defaults={[
+//      {"id": "1", "label": "1"},
+//      {"id": "2", "label": "2"},
+//      {"id": "3", "label": "3"}
+//    ]}
+//    userInput={"input"}
+//    regexp={"[a-z]+"}
+//    errorText={"Please enter a lowercase input"}
+//    />
 function TextQuestion(props) {
   let {defaults, max, min, name, userInput, regexp, errorText, ...rest} = props;
   const [error, setError] = useState(false);
