@@ -36,7 +36,7 @@ function NumberQuestion(props) {
     let value = 0;
     if (type === "integer") {
       // Test that it is an integer
-      if (!/^[-+]?\d*/.test(text)) {
+      if (!/^[-+]?\d*$/.test(text)) {
         setError(true);
         return;
       }
@@ -44,12 +44,17 @@ function NumberQuestion(props) {
       value = parseInt(text);
     } else if (type === "float") {
       // Test that it can be parsed as a float
-      if (isNaN(text) || !/^[-+]?\d*([,.]\d+)?/.test(text)) {
+      if (isNaN(text) || !/^[-+]?\d*([,.]\d+)?$/.test(text)) {
         setError(true);
         return;
       }
 
-      value = parseFloat(text);
+      value = Number(text);
+      // Reject whitespace and non-numbers
+      if (/^\s*$/.test(text) || isNaN(value)) {
+        setError(true);
+        return;
+      }
     }
 
     // Test that it is within our min/max (if they are defined)
