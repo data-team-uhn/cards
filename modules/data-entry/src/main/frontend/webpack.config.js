@@ -17,6 +17,7 @@ module.exports = {
     [module_name + 'question']: './src/questionnaire/Question.jsx',
     [module_name + 'answer']: './src/questionnaire/Answer.jsx',
     [module_name + 'booleanQuestion']: './src/questionnaire/BooleanQuestion.jsx',
+    [module_name + 'numberQuestion']: './src/questionnaire/NumberQuestion.jsx',
   },
   plugins: [
     new CleanWebpackPlugin(),
