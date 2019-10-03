@@ -27,6 +27,34 @@ import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
+// Component that renders a multiple choice question, with optional number input
+// Selected answers are placed in a series of <input type="hidden"> tags for
+// submission.
+//
+// props:
+//  max: Integer denoting maximum number of options that may be selected
+//  min: Integer denoting minimum number of options that may be selected
+//  name: String containing the question to ask
+//  defaults: Array of objects, each with an "id" representing internal ID
+//            and a "value" denoting what will be displayed
+//  userInput: Either "input", "textbox", or undefined denoting the type of
+//             user input. Currently, only "input" is supported
+//  maxValue: The maximum allowed input value
+//  minValue: The minimum allowed input value
+//  type: One of "integer" or "float"
+//  errorText: String to display when the input is not valid
+//
+// sample usage:
+// <NumberQuestion
+//    name="Please enter the patient's age"
+//    defaults={[
+//      {"id": "<18", "label": "<18"}
+//    ]}
+//    max={1}
+//    minValue={18}
+//    type="integer"
+//    errorText="Please enter an age above 18, or select the <18 option"
+//    />
 function NumberQuestion(props) {
   let {defaults, max, min, name, userInput, minValue, maxValue, type, errorText, ...rest} = props;
   const [error, setError] = useState(false);
@@ -43,13 +71,8 @@ function NumberQuestion(props) {
 
       value = parseInt(text);
     } else if (type === "float") {
-      // Test that it can be parsed as a float
-      if (isNaN(text) || !/^[-+]?\d*([,.]\d+)?$/.test(text)) {
-        setError(true);
-        return;
-      }
-
       value = Number(text);
+
       // Reject whitespace and non-numbers
       if (/^\s*$/.test(text) || isNaN(value)) {
         setError(true);
