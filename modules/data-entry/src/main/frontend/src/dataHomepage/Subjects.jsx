@@ -25,7 +25,7 @@ export default function Subjects(props) {
       "key": "identifier",
       "label": "Identifier",
       "format": "string",
-      "link": "entry",
+      "link": "path",
     },
     {
       "key": "jcr:createdBy",

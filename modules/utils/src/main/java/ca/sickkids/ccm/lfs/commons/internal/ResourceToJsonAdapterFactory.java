@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
  * serialization is enhanced by:
  * <ul>
  * <li>using the ISO date/time format</li>
+ * <li>adding a {@code @path} property with the absolute path of the node</li>
  * <li>embedding referenced nodes instead of simply displaying the UUID or Path, except for versioning nodes</li>
  * </ul>
  *
@@ -91,6 +92,8 @@ public class ResourceToJsonAdapterFactory
             while (properties.hasNext()) {
                 addProperty(result, properties.nextProperty());
             }
+            // Since the node itself doesn't contain the path as a property, we must manually add it.
+            result.add("@path", node.getPath());
             return result;
         } catch (RepositoryException e) {
             LOGGER.error("Failed to serialize node [{}] to JSON: {}", node.getPath(), e.getMessage(), e);

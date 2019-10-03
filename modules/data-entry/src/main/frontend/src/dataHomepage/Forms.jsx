@@ -25,17 +25,19 @@ export default function Forms(props) {
       "key": "jcr:uuid",
       "label": "Identifier",
       "format": "string",
-      "link": "entry",
+      "link": "path",
     },
     {
       "key": "questionnaire/title",
       "label": "Questionnaire",
       "format": "string",
+      "link": "field:questionnaire/@path",
     },
     {
       "key": "subject/identifier",
       "label": "Subject",
       "format": "string",
+      "link": "field:subject/@path",
     },
     {
       "key": "jcr:createdBy",
