@@ -25,6 +25,22 @@ import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
+// Component that renders a yes/no question, with optional option Unknown
+// Selected answers are placed in a series of <input type="hidden"> tags for
+// submission.
+//
+// arguments:
+//  name: String containing the question to ask
+//  enableUnknown: Boolean denoting whether an unknown option should be allowed
+//
+// sample usage:
+// <BooleanQuestion
+//    name="Has the patient checked in on time?"
+//    />
+// <BooleanQuestion
+//    name="Has the patient eaten breakfast?"
+//    enableUnknown
+//    />
 function BooleanQuestion(props) {
   let {name, enableUnknown, ...rest} = props;
   const options = (enableUnknown ?
