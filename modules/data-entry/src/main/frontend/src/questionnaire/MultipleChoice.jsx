@@ -51,7 +51,7 @@ function MultipleChoice(props) {
       }
       let id = defaultOption["id"];
       let label = ("label" in defaultOption ? defaultOption["label"] : id);
-      return ([id, label, true]); // id, label, default
+      return ([label, id, true]); // label, id, default
     });
     setOptions(newOptions);
   }, [defaults]);
@@ -164,7 +164,7 @@ function MultipleChoice(props) {
       />
     </div>);
 
-  const warning = selection.length < min && (<Typography color='error'>Please select at least {min} options.</Typography>)
+  const warning = selection.length < min && (<Typography color='error'>Please select at least {min} option{min > 1 && "s"}.</Typography>)
 
   if (isRadio) {
     return (

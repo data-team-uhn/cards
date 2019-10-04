@@ -32,6 +32,9 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 // Optional arguments:
 //  name: String containing the question to ask
 //  enableUnknown: Boolean denoting whether an unknown option should be allowed
+//  yesLabel: String containing the label for 'true'
+//  noLabel: String containing the label for 'false'
+//  unknownLabel: String containing the label for 'undefined'
 //
 // Sample usage:
 // <BooleanQuestion
@@ -42,10 +45,11 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 //    enableUnknown
 //    />
 function BooleanQuestion(props) {
-  let {name, enableUnknown, ...rest} = props;
-  const options = (enableUnknown ?
-    [{id: "Yes", value: "Yes"}, {id: "No", value: "No"}, {id: "Unknown", value: "Unknown"}] :
-    [{id: "Yes", value: "Yes"}, {id: "No", value: "No"}]);
+  let {name, enableUnknown, yesLabel, noLabel, unknownLabel, ...rest} = props;
+  let options = [{label: yesLabel, id: "true"}, {label: noLabel, id: "false"}]
+  if (enableUnknown) {
+    options.push({label: unknownLabel, id: "undefined"});
+  }
 
   return (
     <Question
@@ -62,11 +66,17 @@ function BooleanQuestion(props) {
 BooleanQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   name: PropTypes.string,
-  enableUnknown: PropTypes.bool
+  enableUnknown: PropTypes.bool,
+  yesLabel: PropTypes.string,
+  noLabel: PropTypes.string,
+  unknownLabel: PropTypes.string
 };
 
 BooleanQuestion.defaultProps = {
-  enableUnknown: false
+  enableUnknown: false,
+  yesLabel: "Yes",
+  noLabel: "No",
+  unknownLabel: "Unknown"
 };
 
 export default withStyles(QuestionnaireStyle)(BooleanQuestion);
