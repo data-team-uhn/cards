@@ -27,11 +27,11 @@ import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
-// Component that renders a multiple choice question, with optional number input
+// Component that renders a multiple choice question, with optional number input.
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
 //
-// props:
+// Optional props:
 //  max: Integer denoting maximum number of options that may be selected
 //  min: Integer denoting minimum number of options that may be selected
 //  name: String containing the question to ask
@@ -41,10 +41,10 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 //             user input. Currently, only "input" is supported
 //  maxValue: The maximum allowed input value
 //  minValue: The minimum allowed input value
-//  type: One of "integer" or "float"
-//  errorText: String to display when the input is not valid
+//  type: One of "integer" or "float" (default: "float")
+//  errorText: String to display when the input is not valid (default: "invalid input")
 //
-// sample usage:
+// Sample usage:
 // <NumberQuestion
 //    name="Please enter the patient's age"
 //    defaults={[
@@ -118,7 +118,7 @@ NumberQuestion.propTypes = {
   max: PropTypes.number,
   defaults: PropTypes.array,
   userInput: PropTypes.oneOf([undefined, "input", "textbox"]),
-  type: PropTypes.oneOf(['integer', 'float']),
+  type: PropTypes.oneOf(['integer', 'float']).isRequired,
   minValue: PropTypes.number,
   maxValue: PropTypes.number,
   errorText: PropTypes.string
