@@ -25,15 +25,15 @@ import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
-// Component that renders a yes/no question, with optional option Unknown
+// Component that renders a yes/no question, with optional "unknown" option.
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
 //
-// arguments:
+// Optional arguments:
 //  name: String containing the question to ask
 //  enableUnknown: Boolean denoting whether an unknown option should be allowed
 //
-// sample usage:
+// Sample usage:
 // <BooleanQuestion
 //    name="Has the patient checked in on time?"
 //    />
