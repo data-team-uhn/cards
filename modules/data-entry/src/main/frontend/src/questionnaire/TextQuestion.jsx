@@ -27,11 +27,11 @@ import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
-// Component that renders a multiple choice question, with optional text input
+// Component that renders a multiple choice question, with optional text input.
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
 //
-// arguments:
+// Optional arguments:
 //  max: Integer denoting maximum number of arguments that may be selected
 //  min: Integer denoting minimum number of arguments that may be selected
 //  name: String containing the question to ask
