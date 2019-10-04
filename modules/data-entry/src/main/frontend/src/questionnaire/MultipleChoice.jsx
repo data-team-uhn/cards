@@ -44,15 +44,18 @@ function MultipleChoice(props) {
 
   // On startup, convert our defaults into a list of useable options
   useEffect( () => {
-    let newOptions = defaults.map( (defaultOption) => {
-      if (!("id" in defaultOption)) {
-        console.log("Malformed default option: " + JSON.stringify(defaultOption));
-        return ['', '', true];
-      }
-      let id = defaultOption["id"];
-      let label = ("label" in defaultOption ? defaultOption["label"] : id);
-      return ([label, id, true]); // label, id, default
-    });
+    let newOptions = [];
+    if (defaults) {
+      newOptions = defaults.map( (defaultOption) => {
+        if (!("id" in defaultOption)) {
+          console.log("Malformed default option: " + JSON.stringify(defaultOption));
+          return ['', '', true];
+        }
+        let id = defaultOption["id"];
+        let label = ("label" in defaultOption ? defaultOption["label"] : id);
+        return ([label, id, true]); // label, id, default
+      });
+    }
     setOptions(newOptions);
   }, [defaults]);
 
