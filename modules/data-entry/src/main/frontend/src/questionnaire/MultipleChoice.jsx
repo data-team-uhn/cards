@@ -32,7 +32,7 @@ const IS_DEFAULT_POS = 2;
 const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
-  let { classes, ghostAnchor, max, min, defaults, input, textbox, onChange, additionalInputProps, ...rest } = props;
+  let { classes, ghostAnchor, max, min, defaults, input, textbox, onChange, additionalInputProps, muiInputProps, ...rest } = props;
   const [selection, setSelection] = useState([]);
   const [ghostName, setGhostName] = useState("&nbsp;");
   const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);
@@ -161,8 +161,11 @@ function MultipleChoice(props) {
                 inputEl.value = "";
               }
             }
-          }}, additionalInputProps)
+          }
+        }, additionalInputProps)
         }
+        value={ghostName}
+        InputProps={muiInputProps}
         inputRef={ref => {inputEl = ref}}
       />
     </div>);
@@ -337,7 +340,8 @@ MultipleChoice.propTypes = {
   defaults: PropTypes.array,
   input: PropTypes.bool,
   ghostAnchor: PropTypes.object,
-  additionalInputProps: PropTypes.object
+  additionalInputProps: PropTypes.object,
+  muiInputProps: PropTypes.object
 };
 
 export default withStyles(QuestionnaireStyle)(MultipleChoice);

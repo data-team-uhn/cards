@@ -20,6 +20,7 @@
 import { useState } from "react";
 
 import { Typography, withStyles } from "@material-ui/core";
+import NumberFormat from 'react-number-format';
 
 import PropTypes from "prop-types";
 
@@ -102,14 +103,39 @@ function NumberQuestion(props) {
         textbox={userInput==="textbox"}
         onChange={checkNumber}
         additionalInputProps={{
-          type: "number",
           min: minValue,
           max: maxValue
         }}
+        muiInputProps={{inputComponent: NumberFormatCustom}}
         {...rest}
         />
     </Question>);
 }
+
+// Helper function to bridge react-number-format with @material-ui
+function NumberFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      onValueChange={values => {
+        onChange({
+          target: {
+            value: values.value,
+          },
+        });
+      }}
+      thousandSeparator
+    />
+  );
+}
+
+NumberFormatCustom.propTypes = {
+  inputRef: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
 
 NumberQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
