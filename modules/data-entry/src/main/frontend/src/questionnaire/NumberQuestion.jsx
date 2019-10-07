@@ -63,6 +63,13 @@ function NumberQuestion(props) {
   // Callback function for our min/max
   let checkNumber = (text) => {
     let value = 0;
+
+    if (typeof(text) === "undefined") {
+      // The custom input has been unset
+      setError(false);
+      return
+    }
+
     if (type === "integer") {
       // Test that it is an integer
       if (!/^[-+]?\d*$/.test(text)) {

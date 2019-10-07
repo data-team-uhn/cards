@@ -170,6 +170,12 @@ function MultipleChoice(props) {
       />
     </div>);
 
+  let selectNonGhostOption = (...args) => {
+    // Clear the ghost input
+    onChange && onChange(undefined);
+    selectOption(...args);
+  }
+
   const warning = selection.length < min && (<Typography color='error'>Please select at least {min} option{min > 1 && "s"}.</Typography>)
 
   if (isRadio) {
@@ -186,7 +192,7 @@ function MultipleChoice(props) {
           className={classes.selectionList}
           value={selection.length > 0 && selection[0][ID_POS]}
         >
-          {generateDefaultOptions(options, disabled, isRadio, selectOption, removeOption)}
+          {generateDefaultOptions(options, disabled, isRadio, selectNonGhostOption, removeOption)}
           {/* Ghost radio for the text input */}
           {
           input && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
@@ -222,13 +228,16 @@ function MultipleChoice(props) {
           {...rest}
           />
         <List className={classes.checkboxList}>
-          {generateDefaultOptions(options, disabled, isRadio, selectOption, removeOption)}
+          {generateDefaultOptions(options, disabled, isRadio, selectNonGhostOption, removeOption)}
           {input && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={ghostSelected}
-                    onChange={() => {selectOption(ghostValue, ghostName, ghostSelected);}}
+                    onChange={() => {
+                      selectOption(ghostValue, ghostName, ghostSelected);
+                      onChange && onChange(ghostSelected ? undefined : ghostName);
+                    }}
                     onClick={() => {inputEl && inputEl.select();}}
                     disabled={!ghostSelected && disabled}
                     className={classes.ghostRadiobox}
