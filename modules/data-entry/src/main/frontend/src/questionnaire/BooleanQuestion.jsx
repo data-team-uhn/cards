@@ -37,13 +37,22 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 //  unknownLabel: String containing the label for 'undefined'
 //
 // Sample usage:
+//
 // <BooleanQuestion
-//    name="Has the patient checked in on time?"
-//    />
+//   name="Has the patient checked in on time?"
+//   />
 // <BooleanQuestion
-//    name="Has the patient eaten breakfast?"
-//    enableUnknown
-//    />
+//   name="Has the patient eaten breakfast?"
+//   enableUnknown
+//   />
+// <BooleanQuestion
+//   min={1}
+//   name="This statement is false."
+//   enableUnknown
+//   yesLabel="True"
+//   noLabel="False"
+//   unknownLabel="Does not compute"
+//   />
 function BooleanQuestion(props) {
   let {name, enableUnknown, yesLabel, noLabel, unknownLabel, ...rest} = props;
   let options = [{label: yesLabel, id: "true"}, {label: noLabel, id: "false"}]
