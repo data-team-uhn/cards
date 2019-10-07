@@ -1,14 +1,26 @@
-// Taken from https://www.creative-tim.com/product/material-dashboard-react
+/*!
+=========================================================
+* Material Dashboard React - v1.7.0
+=========================================================
+* Product Page: https://www.creative-tim.com/product/material-dashboard-react
+* Copyright 2019 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://github.com/creativetimofficial/material-dashboard-react/blob/master/LICENSE.md)
+* Coded by Creative Tim
+=========================================================
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/
 import React from "react";
 import classNames from "classnames";
 // @material-ui/core components
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core";
 import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, Hidden, Popper } from "@material-ui/core";
 // @material-ui/icons
-import { Person, Notifications, Search, ExitToApp } from "@material-ui/icons";
+import Person from "@material-ui/icons/Person";
+import Notifications from "@material-ui/icons/Notifications";
+import Search from "@material-ui/icons/Search";
+import ExitToApp from "@material-ui/icons/ExitToApp";
 // core components
-import CustomInput from "material-dashboard-react/dist/components/CustomInput/CustomInput.js";
-import Button from "material-dashboard-react/dist/components/CustomButtons/Button.js";
+import {Button, CustomInput} from "MaterialDashboardReact";
 
 import headerLinksStyle from "./headerLinksStyle.jsx";
 
@@ -112,6 +124,7 @@ class HeaderLinks extends React.Component {
             </Hidden>
           </Button>
           <Popper
+            placement="bottom"
             open={open}
             anchorEl={this.anchorEl}
             transition
@@ -131,7 +144,7 @@ class HeaderLinks extends React.Component {
                     placement === "bottom" ? "center top" : "center bottom"
                 }}
               >
-                <Paper>
+              <Paper elevation={2}>
                   <ClickAwayListener onClickAway={this.closeNotifications}>
                     <MenuList role="menu">
                       {notifications}

@@ -34,6 +34,8 @@
   </head>
   <body>
     <div id="main-login-container"></div>
-    <script src="/libs/lfs/resources/login.js"></script>
+    <sly data-sly-use.assets="/libs/lfs/resources/assets">
+      <script src="/libs/lfs/resources/${assets['lfs-login.login.js']}"></script>
+    </sly>
   </body>
 </html>

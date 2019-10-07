@@ -16,7 +16,12 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { AccountBox, Assignment, Dashboard, Pets, Settings, Subtitles } from '@material-ui/icons';
+import AccountBox from '@material-ui/icons/AccountBox';
+import Assignment from '@material-ui/icons/Assignment';
+import Dashboard from '@material-ui/icons/Dashboard';
+import Pets from '@material-ui/icons/Pets';
+import Settings from '@material-ui/icons/Settings';
+import Subtitles from '@material-ui/icons/Subtitles';
 
 import DashboardPage from "./Dashboard/dashboard.jsx";
 
@@ -65,4 +70,85 @@ var sidebarRoutes = [
     },
 ];
 
+const ASSET_PREFIX="asset:";
+// Parse out asset URLs
+var parseAssetURL = function(url) {
+  if (!url.startsWith(ASSET_PREFIX)) {
+    return url;
+  }
+
+  var asset_id = url.slice(ASSET_PREFIX.length);
+  var assets = window.Sling.getContent("/libs/lfs/resources/assets.json", 1, "");
+  return "/libs/lfs/resources/" + assets[asset_id];
+}
+
+var loadRemoteIcon = function(uixDatum) {
+  return new Promise(function(resolve, reject) {
+    var request = new XMLHttpRequest();
+    var url = parseAssetURL(uixDatum.iconUrl);
+
+    request.onload = function() {
+      if(request.status >= 200 && request.status < 400) {
+        var remoteComponentSrc = request.responseText;
+        var returnVal = window.eval(remoteComponentSrc);
+        uixDatum.icon = returnVal.default;
+        return resolve(uixDatum);
+      } else {
+        return reject();
+      }
+    };
+
+    request.open('GET', url);
+    request.send();
+  });
+}
+
+// Find the icon and load them
+var loadRemoteIcons = function(uixData) {
+  return Promise.all(
+    _.map(uixData, function(uixDatum) {
+      return loadRemoteIcon(uixDatum);
+    })
+  );
+};
+
+// Load a react component from a URL
+var loadRemoteComponent = function(component) {
+  return new Promise(function(resolve, reject) {
+    var request = new XMLHttpRequest();
+    var url = parseAssetURL(component['lfs:extensionRenderURL']);
+
+    request.onload = function() {
+      if(request.status >= 200 && request.status < 400) {
+        var remoteComponentSrc = request.responseText;
+        var returnVal = window.eval(remoteComponentSrc);
+        return resolve({
+          reactComponent: returnVal.default,
+          path: "/" + component["lfs:targetURL"],
+          name: component["lfs:extensionName"],
+          iconUrl: component["lfs:icon"]
+        });
+      } else {
+        return reject();
+      }
+    };
+
+    request.open('GET', url);
+    request.send();
+  });
+};
+
+// Load each given component
+var loadRemoteComponents = function(components) {
+  return Promise.all(
+    _.map(components, function(component) {
+      return loadRemoteComponent(component);
+    })
+  );
+};
+
+var text = window.Sling.httpGet("/apps/lfs/ExtensionPoints/SidebarEntry").responseText;
+const contentNodes = JSON.parse(text);
+
 export default sidebarRoutes
+export { loadRemoteComponents, loadRemoteIcons, contentNodes }

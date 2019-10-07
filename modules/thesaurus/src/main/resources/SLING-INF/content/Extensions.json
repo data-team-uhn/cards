@@ -1,0 +1,16 @@
+{
+    "jcr:primaryType": "sling:Folder",
+    "TestRig": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:targetURL": "Thesaurus",
+        "lfs:extensionName": "Thesaurus selector test",
+        "lfs:icon": "asset:lfs-thesaurus.thesaurusIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-thesaurus.test.js",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "",
+            "jcr:mimeType": "text/html"
+        }
+    }
+}

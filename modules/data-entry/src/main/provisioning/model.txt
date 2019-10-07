@@ -27,9 +27,13 @@
     javax.json/javax.json-api/1.1.4
     javax.jcr/jcr/2.0
     javax.servlet/javax.servlet-api/3.1.0
+    org.apache.commons/commons-csv/1.6
 
 [:repoinit]
     # Data entry
+    create path (lfs:QuestionnairesHomepage) /Questionnaires
+    create path (lfs:FormsHomepage) /Forms
+    create path (lfs:SubjectsHomepage) /Subjects
     create path (sling:Folder) /db
     create path (lfs:dataEntryViewer) /view
     create path (lfs:dataQuery) /query
@@ -41,6 +45,9 @@
 
     # Allow all users to read from the database and one of the nodes
     set ACL for everyone
+        allow   jcr:read    on /Questionnaires
+        allow   jcr:read    on /Forms
+        allow   jcr:read    on /Subjects
         allow   jcr:read    on /view
         allow   jcr:read    on /db
         allow   jcr:read    on /query

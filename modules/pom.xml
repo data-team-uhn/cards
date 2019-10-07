@@ -33,6 +33,7 @@
   <modules>
     <module>startup-customization</module>
     <module>commons</module>
+    <module>material-dashboard</module>
     <module>ui-extension</module>
     <module>login</module>
     <module>homepage</module>
@@ -40,5 +41,7 @@
     <module>ldap-support</module>
     <module>utils</module>
     <module>principals</module>
+    <module>thesaurus</module>
+    <module>vocabularies</module>
   </modules>
 </project>

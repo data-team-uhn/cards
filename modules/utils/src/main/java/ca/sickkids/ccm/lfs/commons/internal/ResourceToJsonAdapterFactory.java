@@ -20,12 +20,16 @@ package ca.sickkids.ccm.lfs.commons.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
@@ -33,13 +37,18 @@ import javax.json.JsonObjectBuilder;
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.adapter.AdapterFactory;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * AdapterFactory that converts Apache Sling resources to JsonObjects.
+ * AdapterFactory that converts Apache Sling resources to JsonObjects. Unlike the standard Sling serialization, this
+ * serialization is enhanced by:
+ * <ul>
+ * <li>using the ISO date/time format</li>
+ * <li>adding a {@code @path} property with the absolute path of the node</li>
+ * <li>embedding referenced nodes instead of simply displaying the UUID or Path, except for versioning nodes</li>
+ * </ul>
  *
  * @version $Id$
  */
@@ -54,93 +63,169 @@ public class ResourceToJsonAdapterFactory
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceToJsonAdapterFactory.class);
 
     @Override
-    public <A> A getAdapter(Object adaptable, Class<A> type)
+    public <A> A getAdapter(final Object adaptable, final Class<A> type)
     {
         if (adaptable == null) {
             return null;
         }
-        Resource resource = (Resource) adaptable;
-        ValueMap valuemap = resource.getValueMap();
-        JsonObjectBuilder result = Json.createObjectBuilder();
-        valuemap.forEach((key, value) -> addProperty(result, key, value));
-        return type.cast(result.build());
+        final Resource resource = (Resource) adaptable;
+        final Node node = resource.adaptTo(Node.class);
+        try {
+            final JsonObjectBuilder result = adapt(node);
+            if (result != null) {
+                return type.cast(result.build());
+            }
+        } catch (RepositoryException e) {
+            LOGGER.error("Failed to serialize resource [{}] to JSON: {}", resource.getPath(), e.getMessage(), e);
+        }
+        return null;
     }
 
-    private void addProperty(JsonObjectBuilder objectBuilder, String name, Object value)
+    private JsonObjectBuilder adapt(final Node node) throws RepositoryException
     {
-        if (value == null) {
-            objectBuilder.addNull(name);
-        } else if (value instanceof Object[]) {
-            // For multi-value properties
-            addArray(objectBuilder, name, (Object[]) value);
-        } else if (value instanceof Calendar) {
-            // Corresponding to JCR DATE property
-            addCalendar(objectBuilder, name, (Calendar) value);
-        } else if (value instanceof InputStream) {
-            // Corresponding to JCR BINARY property
-            addInputStream(objectBuilder, name, (InputStream) value);
-        } else if (value instanceof BigDecimal) {
-            // Corresponding to JCR DECIMAL property
-            objectBuilder.add(name, (BigDecimal) value);
-        } else if (value instanceof BigInteger) {
-            // Also corresponding to JCR DECIMAL property
-            objectBuilder.add(name, (BigInteger) value);
+        if (node == null) {
+            return null;
+        }
+        final JsonObjectBuilder result = Json.createObjectBuilder();
+        try {
+            final PropertyIterator properties = node.getProperties();
+            while (properties.hasNext()) {
+                addProperty(result, properties.nextProperty());
+            }
+            // Since the node itself doesn't contain the path as a property, we must manually add it.
+            result.add("@path", node.getPath());
+            return result;
+        } catch (RepositoryException e) {
+            LOGGER.error("Failed to serialize node [{}] to JSON: {}", node.getPath(), e.getMessage(), e);
+        }
+        return null;
+    }
+
+    private void addProperty(final JsonObjectBuilder objectBuilder, final Property property) throws RepositoryException
+    {
+        if (property.isMultiple()) {
+            addMultiValuedProperty(objectBuilder, property);
         } else {
-            addPrimitive(objectBuilder, name, value);
+            addSingleValuedProperty(objectBuilder, property);
         }
     }
 
-    // for object
-    private void addArray(JsonObjectBuilder objectBuilder, String name, Object[] values)
+    private void addSingleValuedProperty(final JsonObjectBuilder objectBuilder, final Property property)
+        throws RepositoryException
     {
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        for (Object o : values) {
-            addArrayElement(arrayBuilder, o);
+        final String name = property.getName();
+        final Value value = property.getValue();
+
+        switch (property.getType()) {
+            case PropertyType.BINARY:
+                addInputStream(objectBuilder, name, value.getBinary().getStream());
+                break;
+            case PropertyType.BOOLEAN:
+                objectBuilder.add(name, value.getBoolean());
+                break;
+            case PropertyType.DATE:
+                addDate(objectBuilder, name, value.getDate());
+                break;
+            case PropertyType.DECIMAL:
+                objectBuilder.add(name, value.getDecimal());
+                break;
+            case PropertyType.DOUBLE:
+                objectBuilder.add(name, value.getDouble());
+                break;
+            case PropertyType.LONG:
+                objectBuilder.add(name, value.getLong());
+                break;
+            case PropertyType.REFERENCE:
+            case PropertyType.PATH:
+                final Node node = property.getNode();
+                // Reference properties starting with "jcr:" deal with versioning,
+                // and the version trees have cyclic references.
+                // Also, the node history shouldn't be serialized.
+                if (name.startsWith("jcr:")) {
+                    objectBuilder.add(name, node.getPath());
+                } else {
+                    objectBuilder.add(name, adapt(node));
+                }
+                break;
+            default:
+                objectBuilder.add(name, value.getString());
+                break;
+        }
+    }
+
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
+    private void addMultiValuedProperty(final JsonObjectBuilder objectBuilder, final Property property)
+        throws RepositoryException
+    {
+        final String name = property.getName();
+        final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+
+        for (Value value : property.getValues()) {
+            switch (property.getType()) {
+                case PropertyType.BINARY:
+                    addInputStream(arrayBuilder, value.getBinary().getStream());
+                    break;
+                case PropertyType.BOOLEAN:
+                    arrayBuilder.add(value.getBoolean());
+                    break;
+                case PropertyType.DATE:
+                    addDate(arrayBuilder, value.getDate());
+                    break;
+                case PropertyType.DECIMAL:
+                    arrayBuilder.add(value.getDecimal());
+                    break;
+                case PropertyType.DOUBLE:
+                    arrayBuilder.add(value.getDouble());
+                    break;
+                case PropertyType.LONG:
+                    arrayBuilder.add(value.getLong());
+                    break;
+                case PropertyType.REFERENCE:
+                    final Node node = property.getSession().getNodeByIdentifier(value.getString());
+                    // Reference properties starting with "jcr:" deal with versioning,
+                    // and the version trees have cyclic references.
+                    // Also, the node history shouldn't be serialized.
+                    if (name.startsWith("jcr:")) {
+                        arrayBuilder.add(node.getPath());
+                    } else {
+                        arrayBuilder.add(adapt(node));
+                    }
+                    break;
+                case PropertyType.PATH:
+                    final String path = value.getString();
+                    final Node referenced =
+                        path.charAt(0) == '/' ? property.getSession().getNode(path)
+                            : property.getParent().getNode(path);
+                    objectBuilder.add(name, adapt(referenced));
+                    break;
+                default:
+                    arrayBuilder.add(value.getString());
+                    break;
+            }
         }
         objectBuilder.add(name, arrayBuilder);
     }
 
-    private void addArrayElement(JsonArrayBuilder arrayBuilder, Object value)
-    {
-        if (value == null) {
-            arrayBuilder.addNull();
-        } else if (value instanceof Calendar) {
-            // Corresponding to JCR DATE property
-            addCalendar(arrayBuilder, (Calendar) value);
-        } else if (value instanceof InputStream) {
-            // Corresponding to JCR BINARY property
-            addInputStream(arrayBuilder, (InputStream) value);
-        } else if (value instanceof BigDecimal) {
-            // Corresponding to JCR DECIMAL property
-            arrayBuilder.add((BigDecimal) value);
-        } else if (value instanceof BigInteger) {
-            // Also corresponding to JCR DECIMAL property
-            arrayBuilder.add((BigInteger) value);
-        } else {
-            addPrimitive(arrayBuilder, value);
-        }
-    }
-
     // for object
-    private void addCalendar(JsonObjectBuilder objectBuilder, String name, Calendar value)
+    private void addDate(final JsonObjectBuilder objectBuilder, final String name, final Calendar value)
     {
         // Use the ISO 8601 date+time format
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(value.getTimeZone());
         objectBuilder.add(name, sdf.format(value.getTime()));
     }
 
     // for array
-    private void addCalendar(JsonArrayBuilder arrayBuilder, Calendar value)
+    private void addDate(final JsonArrayBuilder arrayBuilder, final Calendar value)
     {
         // Use the ISO 8601 date+time format
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(value.getTimeZone());
         arrayBuilder.add(sdf.format(value.getTime()));
     }
 
     // for object
-    private void addInputStream(JsonObjectBuilder objectBuilder, String name, InputStream value)
+    private void addInputStream(final JsonObjectBuilder objectBuilder, final String name, final InputStream value)
     {
         try {
             // We're supposed to be transforming raw bytes into an Unicode string; ISO 8859-1 is a subset of Unicode
@@ -151,45 +236,13 @@ public class ResourceToJsonAdapterFactory
     }
 
     // for array
-    private void addInputStream(JsonArrayBuilder arrayBuilder, InputStream value)
+    private void addInputStream(final JsonArrayBuilder arrayBuilder, final InputStream value)
     {
         try {
             // We're supposed to be transforming raw bytes into an Unicode string; ISO 8859-1 is a subset of Unicode
             arrayBuilder.add(IOUtils.toString(value, StandardCharsets.ISO_8859_1));
         } catch (IOException e) {
             LOGGER.warn("Failed to read InputStream: {}", e.getMessage(), e);
-        }
-    }
-
-    // for object
-    private void addPrimitive(JsonObjectBuilder objectBuilder, String name, Object value)
-    {
-        if (value instanceof Boolean) {
-            objectBuilder.add(name, (boolean) value);
-        } else if (value instanceof Integer) {
-            objectBuilder.add(name, (int) value);
-        } else if (value instanceof Long) {
-            objectBuilder.add(name, (long) value);
-        } else if (value instanceof Double) {
-            objectBuilder.add(name, (double) value);
-        } else {
-            objectBuilder.add(name, value.toString());
-        }
-    }
-
-    // for array
-    private void addPrimitive(JsonArrayBuilder arrayBuilder, Object value)
-    {
-        if (value instanceof Boolean) {
-            arrayBuilder.add((boolean) value);
-        } else if (value instanceof Integer) {
-            arrayBuilder.add((int) value);
-        } else if (value instanceof Long) {
-            arrayBuilder.add((long) value);
-        } else if (value instanceof Double) {
-            arrayBuilder.add((double) value);
-        } else {
-            arrayBuilder.add(value.toString());
         }
     }
 }
