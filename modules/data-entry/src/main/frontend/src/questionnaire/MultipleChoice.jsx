@@ -173,7 +173,7 @@ function MultipleChoice(props) {
 
   let selectNonGhostOption = (...args) => {
     // Clear the ghost input
-    onChange && onChange(undefined);
+    onChange && onChange(ghostSelected && !isRadio ? ghostName : undefined);
     selectOption(...args);
   }
 
