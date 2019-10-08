@@ -17,19 +17,17 @@
 //  under the License.
 //
 
-import { Box, Grid, Typography } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import React from "react";
 
 function VocabulariesAdminPage(props) {
   return (
-    <Grid container direction="column" justify="space-between">
+    <Grid spacing={5} container direction="column" justify="space-between">
 
       <Grid item>
-        <Box pb={5} bgcolor="background.paper">
-          <Typography variant="h4" gutterBottom>
-            Installed
-          </Typography>
-        </Box>
+        <Typography variant="h4" gutterBottom>
+          Installed
+        </Typography>
       </Grid>
 
       <Grid item>
