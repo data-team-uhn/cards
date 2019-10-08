@@ -199,7 +199,10 @@ function MultipleChoice(props) {
             <FormControlLabel
               control={
               <Radio
-                onChange={() => {selectOption(ghostValue, ghostName);}}
+                onChange={() => {
+                  selectOption(ghostValue, ghostName);
+                  onChange && onChange(ghostSelected ? undefined : ghostName);
+                }}
                 onClick={() => {inputEl && inputEl.select();}}
                 disabled={!ghostSelected && disabled}
                 className={classes.ghostRadiobox}
