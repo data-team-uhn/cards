@@ -38,7 +38,8 @@ function MultipleChoice(props) {
   const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);
   const [options, setOptions] = useState([]);
   const ghostSelected = selection.some(element => {return element[ID_POS] === GHOST_SENTINEL;});
-  const isRadio = max === 1;
+  const isRadio = max === 1 && options.length > 0;
+  const isBare = options.length === 0;
   const disabled = selection.length >= max && !isRadio;
   let inputEl = null;
 
@@ -178,7 +179,17 @@ function MultipleChoice(props) {
 
   const warning = selection.length < min && (<Typography color='error'>Please select at least {min} option{min > 1 && "s"}.</Typography>)
 
-  if (isRadio) {
+  if (isBare) {
+    return(
+      <React.Fragment>
+        <Answer
+          answers={selection}
+          {...rest}
+          />
+        {ghostInput}
+      </React.Fragment>
+    )
+  } else if (isRadio) {
     return (
       <React.Fragment>
         {warning}
