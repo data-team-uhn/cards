@@ -111,7 +111,9 @@ function NumberQuestion(props) {
         onChange={checkNumber}
         additionalInputProps={{
           min: minValue,
-          max: maxValue
+          max: maxValue,
+          allowNegative: minValue > 0,
+          decimalScale: type === "integer" ? 0 : undefined
         }}
         muiInputProps={{inputComponent: NumberFormatCustom}}
         {...rest}
