@@ -116,6 +116,7 @@ function NumberQuestion(props) {
           decimalScale: type === "integer" ? 0 : undefined
         }}
         muiInputProps={{inputComponent: NumberFormatCustom}}
+        error={error}
         {...rest}
         />
     </Question>);
