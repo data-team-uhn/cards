@@ -112,7 +112,7 @@ function NumberQuestion(props) {
         additionalInputProps={{
           min: minValue,
           max: maxValue,
-          allowNegative: minValue > 0,
+          allowNegative: minValue < 0,
           decimalScale: type === "integer" ? 0 : undefined
         }}
         muiInputProps={{inputComponent: NumberFormatCustom}}
