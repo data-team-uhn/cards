@@ -41,6 +41,7 @@
     "react-dom": "^16.9.0",
     "react-number-format": "^4.3.0",
     "moment": "^2.24.0",
+    "prop-types": "^15.7.2",
     "classnames": "^2.2.6"
   }
 }

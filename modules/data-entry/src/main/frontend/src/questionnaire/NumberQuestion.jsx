@@ -137,7 +137,6 @@ function NumberFormatCustom(props) {
           },
         });
       }}
-      thousandSeparator
     />
   );
 }
