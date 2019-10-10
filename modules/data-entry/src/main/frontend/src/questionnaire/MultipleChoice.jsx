@@ -32,27 +32,31 @@ const IS_DEFAULT_POS = 2;
 const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
-  let { classes, ghostAnchor, max, min, defaults, input, textbox, onChange, ...rest } = props;
+  let { classes, ghostAnchor, max, min, defaults, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
   const [selection, setSelection] = useState([]);
   const [ghostName, setGhostName] = useState("&nbsp;");
   const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);
   const [options, setOptions] = useState([]);
   const ghostSelected = selection.some(element => {return element[ID_POS] === GHOST_SENTINEL;});
-  const isRadio = max === 1;
+  const isRadio = max === 1 && options.length > 0;
+  const isBare = options.length === 0;
   const disabled = selection.length >= max && !isRadio;
   let inputEl = null;
 
   // On startup, convert our defaults into a list of useable options
   useEffect( () => {
-    let newOptions = defaults.map( (defaultOption) => {
-      if (!("id" in defaultOption)) {
-        console.log("Malformed default option: " + JSON.stringify(defaultOption));
-        return ['', '', true];
-      }
-      let id = defaultOption["id"];
-      let label = ("label" in defaultOption ? defaultOption["label"] : id);
-      return ([label, id, true]); // label, id, default
-    });
+    let newOptions = [];
+    if (defaults) {
+      newOptions = defaults.map( (defaultOption) => {
+        if (!("id" in defaultOption)) {
+          console.log("Malformed default option: " + JSON.stringify(defaultOption));
+          return ['', '', true];
+        }
+        let id = defaultOption["id"];
+        let label = ("label" in defaultOption ? defaultOption["label"] : id);
+        return ([label, id, true]); // label, id, default
+      });
+    }
     setOptions(newOptions);
   }, [defaults]);
 
@@ -144,13 +148,13 @@ function MultipleChoice(props) {
           onChange && onChange(event.target.value);
         }}
         onFocus={() => {max === 1 && selectOption(ghostValue, ghostName)}}
-        inputProps={{
+        inputProps={Object.assign({
           onKeyDown: (event) => {
             if (event.key == 'Enter') {
               if (isRadio) {
                 selectOption(ghostValue, ghostName);
-              } else {
-                // If we can select multiple, add this as a possible input
+              } else if (!error) {
+                // If we can select multiple and are not in error, add this as a possible input
                 addOption(ghostName, ghostName);
                 selectOption(ghostName, ghostName, false, true);
 
@@ -158,15 +162,34 @@ function MultipleChoice(props) {
                 inputEl.value = "";
               }
             }
-          }}
+          }
+        }, additionalInputProps)
         }
+        value={ghostName}
+        InputProps={muiInputProps}
         inputRef={ref => {inputEl = ref}}
       />
     </div>);
 
+  let selectNonGhostOption = (...args) => {
+    // Clear the ghost input
+    onChange && onChange(ghostSelected && !isRadio ? ghostName : undefined);
+    selectOption(...args);
+  }
+
   const warning = selection.length < min && (<Typography color='error'>Please select at least {min} option{min > 1 && "s"}.</Typography>)
 
-  if (isRadio) {
+  if (isBare) {
+    return(
+      <React.Fragment>
+        <Answer
+          answers={selection}
+          {...rest}
+          />
+        {ghostInput}
+      </React.Fragment>
+    )
+  } else if (isRadio) {
     return (
       <React.Fragment>
         {warning}
@@ -180,14 +203,17 @@ function MultipleChoice(props) {
           className={classes.selectionList}
           value={selection.length > 0 && selection[0][ID_POS]}
         >
-          {generateDefaultOptions(options, disabled, isRadio, selectOption, removeOption)}
+          {generateDefaultOptions(options, disabled, isRadio, selectNonGhostOption, removeOption)}
           {/* Ghost radio for the text input */}
           {
           input && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
             <FormControlLabel
               control={
               <Radio
-                onChange={() => {selectOption(ghostValue, ghostName);}}
+                onChange={() => {
+                  selectOption(ghostValue, ghostName);
+                  onChange && onChange(ghostSelected ? undefined : ghostName);
+                }}
                 onClick={() => {inputEl && inputEl.select();}}
                 disabled={!ghostSelected && disabled}
                 className={classes.ghostRadiobox}
@@ -216,13 +242,16 @@ function MultipleChoice(props) {
           {...rest}
           />
         <List className={classes.checkboxList}>
-          {generateDefaultOptions(options, disabled, isRadio, selectOption, removeOption)}
+          {generateDefaultOptions(options, disabled, isRadio, selectNonGhostOption, removeOption)}
           {input && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={ghostSelected}
-                    onChange={() => {selectOption(ghostValue, ghostName, ghostSelected);}}
+                    onChange={() => {
+                      selectOption(ghostValue, ghostName, ghostSelected);
+                      onChange && onChange(ghostSelected ? undefined : ghostName);
+                    }}
                     onClick={() => {inputEl && inputEl.select();}}
                     disabled={!ghostSelected && disabled}
                     className={classes.ghostRadiobox}
@@ -333,7 +362,10 @@ MultipleChoice.propTypes = {
   max: PropTypes.number,
   defaults: PropTypes.array,
   input: PropTypes.bool,
-  ghostAnchor: PropTypes.object
+  ghostAnchor: PropTypes.object,
+  additionalInputProps: PropTypes.object,
+  muiInputProps: PropTypes.object,
+  error: PropTypes.bool
 };
 
 export default withStyles(QuestionnaireStyle)(MultipleChoice);
