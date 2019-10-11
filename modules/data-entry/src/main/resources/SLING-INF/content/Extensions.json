@@ -5,7 +5,7 @@
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
         "lfs:targetURL": "Questionnaires",
         "lfs:extensionName": "Questionnaires",
-        "lfs:icon": "asset:lfs-homepage.dashboardIcon.js",
+        "lfs:icon": "asset:lfs-dataentry.questionnairesIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.Questionnaires.js",
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
@@ -18,7 +18,7 @@
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
         "lfs:targetURL": "Subjects",
         "lfs:extensionName": "Subjects",
-        "lfs:icon": "asset:lfs-homepage.dashboardIcon.js",
+        "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.Subjects.js",
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
@@ -31,7 +31,7 @@
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
         "lfs:targetURL": "Forms",
         "lfs:extensionName": "Forms",
-        "lfs:icon": "asset:lfs-homepage.dashboardIcon.js",
+        "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.Forms.js",
         "jcr:content": {
             "jcr:primaryType": "nt:resource",

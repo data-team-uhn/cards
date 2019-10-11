@@ -18,6 +18,9 @@ module.exports = {
     [module_name + 'answer']: './src/questionnaire/Answer.jsx',
     [module_name + 'booleanQuestion']: './src/questionnaire/BooleanQuestion.jsx',
     [module_name + 'numberQuestion']: './src/questionnaire/NumberQuestion.jsx',
+    [module_name + 'subjectsIcon']: '@material-ui/icons/AssignmentInd.js',
+    [module_name + 'questionnairesIcon']: '@material-ui/icons/Assignment.js',
+    [module_name + 'formsIcon']: '@material-ui/icons/Description.js',
   },
   plugins: [
     new CleanWebpackPlugin(),
