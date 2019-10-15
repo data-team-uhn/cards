@@ -22,7 +22,7 @@ import React from "react";
 
 function VocabulariesAdminPage(props) {
   return (
-    <Grid spacing={5} container direction="column" justify="space-between">
+    <Grid container direction="column" spacing={5} justify="space-between">
 
       <Grid item>
         <Typography variant="h4" gutterBottom>
