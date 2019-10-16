@@ -41,6 +41,9 @@ const DATETIME_FORMATS = [
   "yyyy-MM-dd hh:mm:ss"
 ]
 
+const TIMESTAMP_TYPE = "timestamp";
+const INTERVAL_TYPE = "interval";
+
 const ALLOWABLE_DATETIME_FORMATS = DATE_FORMATS.concat(DATETIME_FORMATS)
 
 // Truncates fields in the given moment object or date string
@@ -76,30 +79,26 @@ function amendMoment(date, format) {
 // submission.
 //
 // Optional props:
-//  Widget configuration:
-// name: the name attribute of the input
-// type: single timestamp | interval
+// name: the question to be displayed
+// type: "timestamp" for a single date or "interval" for two dates
 // precision: yyyy, yyyy-MM, yyyy-MM-dd, yyyy-MM-dd hh,  yyyy-MM-dd hh:mm, yyyy-MM-dd hh:mm:ss
 // displayFormat (defaults to precision)
-// lowerLimit
-// upperLimit
-// Note: date answer types will not have predefined options
-// Displayed as inputs with calendar dropdowns. If the type is 'interval', the second date-time must be greater or equal to the first.
+// lowerLimit: lower date limit (inclusive) given as an object or string parsable by moment()
+// upperLimit: upper date limit (inclusive) given as an object or string parsable by moment()
+// Other options are passed to the <question> widget
 //
 // Sample usage:
-// <NumberQuestion
-//    name="Please enter the patient's age"
-//    defaults={[
-//      {"id": "<18", "label": "<18"}
-//    ]}
-//    max={1}
-//    minValue={18}
-//    type="integer"
-//    errorText="Please enter an age above 18, or select the <18 option"
-//    />
+//<DateQuestion
+//  name="Please enter a date-time in 2019"
+//  precision="yyyy-MM-dd hh:mm:ss"
+//  lowerLimit={new Date("01-01-2019")}
+//  upperLimit={new Date("12-31-2019")}
+//  type="timestamp"
+//  />
 function DateQuestion(props) {
   let {defaults, name, type, precision, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
   const [selectedDate, changeDate] = useState(amendMoment(moment(), precision));
+  const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), precision));
   const [error, setError] = useState(false);
   const upperLimitMoment = moment(upperLimit);
   const lowerLimitMoment = moment(lowerLimit);
@@ -115,7 +114,9 @@ function DateQuestion(props) {
         max={1}
         userInput="input"
         type="integer"
-        errorText="Please insert a valid date."
+        errorText="Please insert a valid year range."
+        isRange={type === INTERVAL_TYPE}
+        {...rest}
         />
     );
   }
@@ -125,16 +126,27 @@ function DateQuestion(props) {
     displayFormat = precision;
   }
 
-  // Type-check and change the selected date
-  let checkAndSelectDate = (date) => {
+  // Check that the given date is within the upper/lower limit (if given)
+  let boundDate = (date) => {
     if (upperLimit && upperLimitMoment < date) {
       date = upperLimitMoment;
     }
 
-    if (lowerLimit && lowerLimitMoment > date) {
+    if (lowerLimit && lowerLimitMoment >= date) {
       date = lowerLimitMoment;
     }
-    changeDate(date);
+    return(date);
+  }
+
+  // Check that the given date is less than the upper limit, but also
+  // greater than the start date
+  let boundEndDate = (date, startDate) => {
+    date = boundDate(date);
+
+    if (date < startDate) {
+      date = startDate;
+    }
+    return(date);
   }
 
   // Determine the granularity of the input textfield
@@ -147,10 +159,15 @@ function DateQuestion(props) {
   const outputDateString = isMonth ? outputDate.format(moment.HTML5_FMT.MONTH) :
       isDate ? outputDate.format(moment.HTML5_FMT.DATE) :
       outputDate.format(moment.HTML5_FMT.DATETIME_LOCAL);
+  const outputEndDate = amendMoment(selectedEndDate, displayFormat);
+  const outputEndDateString = isMonth ? outputEndDate.format(moment.HTML5_FMT.MONTH) :
+      isDate ? outputEndDate.format(moment.HTML5_FMT.DATE) :
+      outputEndDate.format(moment.HTML5_FMT.DATETIME_LOCAL);
 
   return (
     <Question
       text={name}
+      {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
       <Answer
@@ -167,8 +184,12 @@ function DateQuestion(props) {
         }}
         onChange={
           (value) => {
-            // Year inputs should preappend a dummy month/day so as to work with moment.js
-            checkAndSelectDate(amendMoment(event.target.value, precision));}
+            let parsedDate = boundDate(amendMoment(event.target.value, precision));
+            changeDate(parsedDate);
+
+            // Also fix the end date if it is earlier than the given start date
+            type === INTERVAL_TYPE && changeEndDate(boundEndDate(selectedEndDate, parsedDate));
+          }
         }
         value={outputDateString}
       />
@@ -202,7 +223,7 @@ DateQuestion.propTypes = {
   name: PropTypes.string,
   precision: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS).isRequired,
   displayFormat: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS),
-  type: PropTypes.oneOf(["timestamp", "interval"]).isRequired,
+  type: PropTypes.oneOf([TIMESTAMP_TYPE, INTERVAL_TYPE]).isRequired,
   lowerLimit: PropTypes.object,
   upperLimit: PropTypes.object
 };
