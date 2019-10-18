@@ -17,10 +17,27 @@
 //  under the License.
 //
 
+import { Grid, Typography } from "@material-ui/core";
 import React from "react";
 
 function VocabulariesAdminPage(props) {
-  return(<div></div>);
+  return (
+    <Grid container direction="column" spacing={5} justify="space-between">
+
+      <Grid item>
+        <Typography variant="h4" gutterBottom>
+          Installed
+        </Typography>
+      </Grid>
+
+      <Grid item>
+        <Typography variant="h4">
+          Find on <a href="https://www.bioontology.org/" target="_blank">BioPortal</a>
+        </Typography>
+      </Grid>
+
+    </Grid>
+  );
 }
 
 export default VocabulariesAdminPage;
