@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
@@ -62,6 +63,15 @@ public class ResourceToJsonAdapterFactory
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceToJsonAdapterFactory.class);
 
+    private ThreadLocal<Boolean> deep = new ThreadLocal<Boolean>()
+    {
+        @Override
+        protected Boolean initialValue()
+        {
+            return Boolean.FALSE;
+        }
+    };
+
     @Override
     public <A> A getAdapter(final Object adaptable, final Class<A> type)
     {
@@ -71,12 +81,17 @@ public class ResourceToJsonAdapterFactory
         final Resource resource = (Resource) adaptable;
         final Node node = resource.adaptTo(Node.class);
         try {
+            if (".deep.json".equals(resource.getResourceMetadata().getResolutionPathInfo())) {
+                this.deep.set(Boolean.TRUE);
+            }
             final JsonObjectBuilder result = adapt(node);
             if (result != null) {
                 return type.cast(result.build());
             }
         } catch (RepositoryException e) {
             LOGGER.error("Failed to serialize resource [{}] to JSON: {}", resource.getPath(), e.getMessage(), e);
+        } finally {
+            this.deep.remove();
         }
         return null;
     }
@@ -91,6 +106,14 @@ public class ResourceToJsonAdapterFactory
             final PropertyIterator properties = node.getProperties();
             while (properties.hasNext()) {
                 addProperty(result, properties.nextProperty());
+            }
+            // If this is a deep serialization, also serialize child nodes
+            if (this.deep.get()) {
+                final NodeIterator children = node.getNodes();
+                while (children.hasNext()) {
+                    final Node child = children.nextNode();
+                    result.add(child.getName(), adapt(child));
+                }
             }
             // Since the node itself doesn't contain the path as a property, we must manually add it.
             result.add("@path", node.getPath());
