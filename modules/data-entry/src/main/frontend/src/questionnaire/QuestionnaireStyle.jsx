@@ -34,15 +34,11 @@ const questionnaireStyle = theme => ({
         padding: theme.spacing(0, 2, 0, 2),
     },
     searchWrapper: {
-      margin: theme.spacing(0, 0, 0, 6),
-      position: 'relative',
-      display: 'inline-block',
-      paddingBottom: "0px",
-      paddingTop: theme.spacing(1),
-      with: "100%"
-    },
-    answerPadding: {
         margin: theme.spacing(0, 0, 0, 6),
+        position: 'relative',
+        display: 'inline-block',
+        paddingBottom: "0px",
+        paddingTop: theme.spacing(1)
     },
     textField: {
         // Differing input types have differing widths, so setting width:100%

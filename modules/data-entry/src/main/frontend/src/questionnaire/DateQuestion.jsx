@@ -23,6 +23,7 @@ import { TextField, Typography, withStyles } from "@material-ui/core";
 
 import PropTypes from "prop-types";
 import moment from "moment";
+import * as jdfp from "moment-jdateformatparser";
 
 import Answer from "./Answer";
 import NumberQuestion from "./NumberQuestion";
@@ -162,6 +163,10 @@ function DateQuestion(props) {
   const outputEndDateString = isMonth ? outputEndDate.format(moment.HTML5_FMT.MONTH) :
       isDate ? outputEndDate.format(moment.HTML5_FMT.DATE) :
       outputEndDate.format(moment.HTML5_FMT.DATETIME_LOCAL);
+  let outputAnswers = [["date", selectedDate.formatWithJDF(precision)]];
+  if (type === INTERVAL_TYPE) {
+    outputAnswers.push(["endDate", selectedEndDate.formatWithJDF(precision)])
+  }
 
   return (
     <Question
@@ -178,6 +183,9 @@ function DateQuestion(props) {
         className={classes.textField + " " + classes.searchWrapper}
         InputLabelProps={{
           shrink: true,
+        }}
+        InputProps={{
+          className: classes.textField
         }}
         inputProps={{
           max: upperLimit,
@@ -204,6 +212,9 @@ function DateQuestion(props) {
           className={classes.textField}
           InputLabelProps={{
             shrink: true,
+          }}
+          InputProps={{
+            className: classes.textField
           }}
           inputProps={{
             max: upperLimit,

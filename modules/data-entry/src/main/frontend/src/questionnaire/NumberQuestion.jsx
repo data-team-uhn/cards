@@ -128,7 +128,10 @@ function NumberQuestion(props) {
     allowNegative: (typeof minValue === "undefined" || minValue < 0),
     decimalScale: type === "integer" ? 0 : undefined
   };
-  const muiInputProps = {inputComponent: NumberFormatCustom}; // Used to override a TextField's type
+  const muiInputProps = {
+    inputComponent: NumberFormatCustom, // Used to override a TextField's type
+    className: classes.textField
+  };
 
   return (
     <Question
