@@ -156,7 +156,7 @@ function NumberQuestion(props) {
           {...rest}
           />
         <TextField
-          className={classes.textField + " " + classes.answerPadding}
+          className={classes.textField + " " + classes.searchWrapper}
           onChange={(event) => {
             findRangeError(event.target.value, endInput);
             setInput(event.target.value);

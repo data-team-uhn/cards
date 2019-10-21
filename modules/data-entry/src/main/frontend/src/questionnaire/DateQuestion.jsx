@@ -36,9 +36,8 @@ const DATE_FORMATS = [
 ]
 
 const DATETIME_FORMATS = [
-  "yyyy-MM-dd hh",
-  "yyyy-MM-dd hh:mm",
-  "yyyy-MM-dd hh:mm:ss"
+  "yyyy-MM-dd HH:mm",
+  "yyyy-MM-dd HH:mm:ss"
 ]
 
 const TIMESTAMP_TYPE = "timestamp";
@@ -54,24 +53,24 @@ function amendMoment(date, format) {
     new_date = moment(new_date);
   }
 
-  if (format.search("ss") < 0) {
-    new_date.set("s", 0);
-  }
-  if (format.search("mm") < 0) {
-    new_date.set("m", 0);
-  }
-  if (format.search("hh") < 0) {
-    new_date.set("h", 0);
-  }
-  if (format.search("dd") < 0) {
-    // Days are 1-indexed in moment
-    new_date.set("D", 1);
-  }
-  if (format.search("MM") < 0) {
-    new_date.set("M", 0);
+  // Determine the coarsest measure to truncate the input to
+  const truncate = {
+    'S':'second',
+    's':'minute',
+    'm':'hour',
+    'H':'day',
+    'h':'day',
+    'D': 'month',
+    'M':'year'
+  };
+  let truncateTo;
+  for (let [formatSpecifier, targetPrecision] of Object.entries(truncate)) {
+    if (format.indexOf(formatSpecifier) < 0) {
+      truncateTo = targetPrecision;
+    }
   }
 
-  return(new_date);
+  return(new_date.startOf(truncateTo));
 }
 
 // Component that renders a date/time question
@@ -176,14 +175,16 @@ function DateQuestion(props) {
       <TextField
         id="date"
         type={textFieldType}
-        className={classes.textField + " " + classes.answerPadding}
+        className={classes.textField + " " + classes.searchWrapper}
         InputLabelProps={{
           shrink: true,
+        }}
+        inputProps={{
           max: upperLimit,
           min: lowerLimit
         }}
         onChange={
-          (value) => {
+          (event) => {
             let parsedDate = boundDate(amendMoment(event.target.value, precision));
             changeDate(parsedDate);
 
@@ -193,7 +194,7 @@ function DateQuestion(props) {
         }
         value={outputDateString}
       />
-      { /* If this is an interval, allow the user to select a second date*/
+      { /* If this is an interval, allow the user to select a second date */
       type === INTERVAL_TYPE &&
       <React.Fragment>
         <span className={classes.mdash}>&mdash;</span>
@@ -203,12 +204,15 @@ function DateQuestion(props) {
           className={classes.textField}
           InputLabelProps={{
             shrink: true,
+          }}
+          inputProps={{
             max: upperLimit,
             min: lowerLimit
           }}
           onChange={
-            (value) => {
-              changeEndDate(boundEndDate(amendMoment(event.target.value, precision), selectedDate));
+            (event) => {
+              let parsedDate = amendMoment(event.target.value, precision);
+              changeEndDate(boundEndDate(parsedDate, selectedDate));
             }
           }
           value={outputEndDateString}
@@ -221,7 +225,7 @@ function DateQuestion(props) {
 DateQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   name: PropTypes.string,
-  precision: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS).isRequired,
+  precision: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS),
   displayFormat: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS),
   type: PropTypes.oneOf([TIMESTAMP_TYPE, INTERVAL_TYPE]).isRequired,
   lowerLimit: PropTypes.object,
@@ -230,7 +234,8 @@ DateQuestion.propTypes = {
 
 DateQuestion.defaultProps = {
   errorText: "Invalid input",
-  type: 'float'
+  precision: "yyyy-MM-dd",
+  type: TIMESTAMP_TYPE
 };
 
 export default withStyles(QuestionnaireStyle)(DateQuestion);

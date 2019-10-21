@@ -39,6 +39,7 @@ const questionnaireStyle = theme => ({
       display: 'inline-block',
       paddingBottom: "0px",
       paddingTop: theme.spacing(1),
+      with: "100%"
     },
     answerPadding: {
         margin: theme.spacing(0, 0, 0, 6),
