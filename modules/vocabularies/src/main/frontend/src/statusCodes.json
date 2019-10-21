@@ -1,0 +1,6 @@
+{
+  "Init": 0,
+  "Loading": 1,
+  "Error": 2,
+  "Loaded": 3
+}

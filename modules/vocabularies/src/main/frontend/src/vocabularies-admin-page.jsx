@@ -17,27 +17,73 @@
 //  under the License.
 //
 
-import { Grid, Typography } from "@material-ui/core";
+import {
+  Grid,
+  Typography,
+} from "@material-ui/core";
+
 import React from "react";
 
-function VocabulariesAdminPage(props) {
+import RequestVocabList from './RequestVocabList';
+
+const vocabLinks = require('./vocabularyLinks.json');
+
+export default function VocabulariesAdminPage() {
+  const [remoteVocabList, setRemoteVocabList] = React.useState({});
+
+  /*
+    The following object will map Acronym -> Release Date for a vocabulary. 
+    This allows for efficiently figuring out whether an installed vocabulary is up to date 
+  */
+  const [optimisedDateList, setOptimisedDateList] = React.useState({});
+
+  function processLocalVocabList(vocabList) {
+    var acronymDateObject = {};
+    vocabList.map((vocab) => {
+      acronymDateObject[vocab.ontology.acronym] = vocab.released;
+    });
+    setOptimisedDateList(acronymDateObject);
+  }
+
   return (
-    <Grid container direction="column" spacing={5} justify="space-between">
+    <Grid container direction="column" spacing={4} justify="space-between">
 
       <Grid item>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h2">
           Installed
         </Typography>
       </Grid>
 
+      <RequestVocabList 
+        type="local"
+        link={vocabLinks["local"]} 
+        setVocabList={processLocalVocabList}
+      />
+
       <Grid item>
-        <Typography variant="h4">
+        <Typography variant="h2">
           Find on <a href="https://www.bioontology.org/" target="_blank">BioPortal</a>
         </Typography>
       </Grid>
+       
+      <RequestVocabList 
+        type="remote"
+        link={
+          vocabLinks["remote"]["base"]+
+          vocabLinks["apikey"]+
+          Object.keys(vocabLinks["remote"]["params"]).map(
+            (key) => {return "&"+key+"="+
+              (key === "include" ? 
+                vocabLinks["remote"]["params"][key].join()
+                :
+                vocabLinks["remote"]["params"][key])})
+          .join("")
+        } 
+        setVocabList={setRemoteVocabList}
+        remoteVocabList={remoteVocabList}
+        optimisedDateList={optimisedDateList}
+      />
 
     </Grid>
   );
 }
-
-export default VocabulariesAdminPage;
