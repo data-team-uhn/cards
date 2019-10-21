@@ -121,7 +121,7 @@ function NumberQuestion(props) {
     setError(false);
   }
 
-  const answers = isRange ? [[input, input], [endInput, endInput]] : [[input, input]];
+  const answers = isRange ? [["start", input], ["end", endInput]] : [["start", input]];
   const textFieldProps = {
     min: minValue,
     max: maxValue,

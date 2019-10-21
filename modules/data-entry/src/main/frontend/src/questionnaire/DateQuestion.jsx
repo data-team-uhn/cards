@@ -100,8 +100,8 @@ function DateQuestion(props) {
   const [selectedDate, changeDate] = useState(amendMoment(moment(), precision));
   const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), precision));
   const [error, setError] = useState(false);
-  const upperLimitMoment = moment(upperLimit);
-  const lowerLimitMoment = moment(lowerLimit);
+  const upperLimitMoment = amendMoment(moment(upperLimit), precision);
+  const lowerLimitMoment = amendMoment(moment(lowerLimit), precision);
   const isMonth = precision === DATE_FORMATS[1];
   const isDate = DATE_FORMATS.includes(precision);
 

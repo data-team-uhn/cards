@@ -31,7 +31,7 @@ function Answer (props) {
     <React.Fragment>
       {answers.map( (element) => {
         return (
-          <input type="hidden" name={element[NAME_POS]} key={element[ID_POS]} value={element[ID_POS]}></input>
+          <input type="hidden" name={element[NAME_POS]} key={element[NAME_POS]} value={element[ID_POS]}></input>
           );
       })}
     </React.Fragment>
