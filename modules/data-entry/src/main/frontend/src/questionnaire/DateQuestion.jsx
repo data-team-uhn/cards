@@ -175,7 +175,7 @@ function DateQuestion(props) {
       >
       {error && <Typography color='error'>{errorText}</Typography>}
       <Answer
-        answers={[["date", selectedDate.toString()]]}
+        answers={outputAnswers}
         />
       <TextField
         id="date"
