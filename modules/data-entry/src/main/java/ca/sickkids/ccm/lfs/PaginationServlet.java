@@ -77,8 +77,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         query.append(" order by 'jcr:created'");
         final Iterator<Resource> results =
             request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
-
-        try (Writer out = response.getWriter(); JsonGenerator jsonGen = Json.createGenerator(out)) {
+        // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
+        final Writer out = response.getWriter();
+        try (JsonGenerator jsonGen = Json.createGenerator(out)) {
             jsonGen.writeStartObject();
             long[] limits = writeNodes(jsonGen, results, offset, limit);
             writeSummary(jsonGen, request, limits);
