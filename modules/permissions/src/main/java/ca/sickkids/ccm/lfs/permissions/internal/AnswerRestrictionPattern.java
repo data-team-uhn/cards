@@ -25,22 +25,22 @@ import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
 
 /**
- * A restriction that makes a permissions entry only be valid on a node of type Answer for a specific Question.
+ * A restriction that makes a permissions entry only be valid on a specific Answer node.
  *
  * @version $Id$
  */
-public class QuestionRestrictionPattern implements RestrictionPattern
+public class AnswerRestrictionPattern implements RestrictionPattern
 {
-    private final String targetQuestion;
+    private final String targetAnswer;
 
     /**
      * Constructor which receives the configured restriction.
      *
-     * @param value the identifier (UUID) of a specific question
+     * @param value the identifier (UUID) of a specific answer
      */
-    public QuestionRestrictionPattern(String value)
+    public AnswerRestrictionPattern(String value)
     {
-        this.targetQuestion = value;
+        this.targetAnswer = value;
     }
 
     @Override
@@ -53,10 +53,9 @@ public class QuestionRestrictionPattern implements RestrictionPattern
             || !formTree.getProperty("sling:resourceSuperType").getValue(Type.STRING).equals("lfs/Answer")) {
             return false;
         }
-        // Check if the question to this answer is the same as the one specified in the restriction
-        boolean result =
-            StringUtils.equals(formTree.getProperty("question").getValue(Type.REFERENCE),
-                this.targetQuestion);
+
+        // Check if this answer is the one specified in the restriction
+        boolean result = StringUtils.equals(formTree.getName(), this.targetAnswer);
         return result;
     }
 
