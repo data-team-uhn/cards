@@ -52,7 +52,9 @@ function reformat(data) {
   Object.filter = (obj, predicate) => Object.keys(obj)
                                      .filter( key => predicate(obj[key]) )
                                      .reduce( (res, key) => (res[key] = obj[key], res), {} );
-  var filtered = Object.filter(data, (val) => typeof(val) == "object");// && val["jcr:primaryType"] == "lfs:Vocabulary");
+  var filtered = Object.filter(data, (val) => ((typeof val) == "object") && 
+                                     (val.hasOwnProperty("jcr:primaryType")) && 
+                                     (val["jcr:primaryType"] === "lfs:Vocabulary"));
   // Filtered contains all properties of type object that have jcr:primaryType = lfs:Vocabulary
   var vocabularies = [];
   Object.keys(filtered).map((key) => vocabularies.push({
