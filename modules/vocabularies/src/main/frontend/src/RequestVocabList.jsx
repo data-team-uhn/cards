@@ -133,7 +133,6 @@ export default function RequestVocabList(props) {
     )}
     {(curStatus == Status["Loaded"] && !(typeof props.optimisedDateList === "undefined") && props.type === "remote") && (
       <RenderVocabListTable
-        type={props.type}
         remoteVocabList={props.remoteVocabList}
         optimisedDateList={props.optimisedDateList} 
       />
