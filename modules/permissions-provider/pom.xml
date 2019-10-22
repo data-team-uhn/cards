@@ -24,7 +24,7 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-permissions</artifactId>
+  <artifactId>lfs-permissions-provider</artifactId>
   <packaging>bundle</packaging>
   <name>LFS - Permissions</name>
 
@@ -46,11 +46,6 @@
       <version>1.4.0</version>
     </dependency>
     <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.framework</artifactId>
-      <version>1.9.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.jackrabbit</groupId>
       <artifactId>oak-security-spi</artifactId>
       <version>${oak.version}</version>
@@ -61,8 +56,8 @@
       <version>${oak.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
     <!-- OSGi -->
     <dependency>
@@ -70,6 +65,12 @@
       <artifactId>osgi.cmpn</artifactId>
       <version>6.0.0</version>
       <scope>provided</scope>
+    </dependency>
+    <!-- Permissions -->
+    <dependency>
+      <groupId>ca.sickkids.ccm.lfs</groupId>
+      <artifactId>lfs-permissions</artifactId>
+      <version>0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

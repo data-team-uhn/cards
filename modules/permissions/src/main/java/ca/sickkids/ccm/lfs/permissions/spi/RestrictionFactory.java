@@ -18,9 +18,15 @@
  */
 package ca.sickkids.ccm.lfs.permissions.spi;
 
+import java.util.ArrayList;
+
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
+import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionProvider;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.wiring.FrameworkWiring;
+import org.osgi.service.component.ComponentContext;
 
 /**
  * Service interface used by {@link ca.sickkids.ccm.lfs.permissions.internal.FormsRestrictionProvider} to create
@@ -53,4 +59,19 @@ public interface RestrictionFactory
      * @return a new restriction pattern
      */
     RestrictionPattern forValue(PropertyState value);
+
+    /**
+     * Refresh the FormsRestrictionProvider.
+     * @param context The context of this factory's bundle
+     */
+    default void refreshProvider(ComponentContext context)
+    {
+        // To reload of restriction provider component, we need the system bundle
+        // as well as the restriction provider's service bundle
+        Bundle systemBundle = context.getBundleContext().getBundle(0);
+        Bundle toReload = context.getBundleContext().getServiceReference(RestrictionProvider.class).getBundle();
+        ArrayList<Bundle> bundles = new ArrayList<Bundle>();
+        bundles.add(toReload);
+        systemBundle.adapt(FrameworkWiring.class).refreshBundles(bundles);
+    }
 }

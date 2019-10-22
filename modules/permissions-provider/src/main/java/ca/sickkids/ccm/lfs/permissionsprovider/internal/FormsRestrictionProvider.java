@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.permissions.internal;
+package ca.sickkids.ccm.lfs.permissionsprovider.internal;
 
 import java.util.List;
 import java.util.Objects;
@@ -53,7 +53,15 @@ public class FormsRestrictionProvider extends AbstractRestrictionProvider
     /**
      * Automatically injected list of all available restriction factories.
      */
+    @Reference
     private List<RestrictionFactory> factories;
+
+    /**
+     * Restriction factories must be given during AbstractRestrictionProvider construction, which violates OSGi
+     * To work around this, we create a new AbstractRestrictionProvider every time a new RestrictionFactory
+     * becomes available.
+     */
+    private AbstractRestrictionProvider provider;
 
     /**
      * Default constructor.
@@ -64,11 +72,6 @@ public class FormsRestrictionProvider extends AbstractRestrictionProvider
     public FormsRestrictionProvider(
         @Reference(cardinality = ReferenceCardinality.AT_LEAST_ONE) List<RestrictionFactory> factories)
     {
-        // FIXME this isn't dynamic at all. This is created after the first RestrictionFactory becomes available,
-        // ignoring all others. The problem is that AbstractRestrictionProvider can only work with the definitions
-        // provided in the constructor at the moment, but that can easily change. To fix this, instead of extending
-        // AbstractRestrictionProvider copy the code from that class in here, let #factories be a dynamic reference, and
-        // make sure that all the code from AbstractRestrictionProvider is adapted to work with this dynamic list.
         super(factories.stream()
             .map(f -> new RestrictionDefinitionImpl(f.getName(), f.getType(), false))
             .collect(Collectors.toMap(RestrictionDefinitionImpl::getName, f -> f)));
