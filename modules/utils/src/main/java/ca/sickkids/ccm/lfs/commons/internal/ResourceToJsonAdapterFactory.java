@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Stack;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -72,6 +73,15 @@ public class ResourceToJsonAdapterFactory
         }
     };
 
+    private ThreadLocal<Stack<String>> processedNodes = new ThreadLocal<Stack<String>>()
+    {
+        @Override
+        protected Stack<String> initialValue()
+        {
+            return new Stack<>();
+        }
+    };
+
     @Override
     public <A> A getAdapter(final Object adaptable, final Class<A> type)
     {
@@ -101,18 +111,23 @@ public class ResourceToJsonAdapterFactory
         if (node == null) {
             return null;
         }
+
         final JsonObjectBuilder result = Json.createObjectBuilder();
+        final boolean alreadyProcessed = this.processedNodes.get().contains(node.getPath());
         try {
-            final PropertyIterator properties = node.getProperties();
-            while (properties.hasNext()) {
-                addProperty(result, properties.nextProperty());
-            }
-            // If this is a deep serialization, also serialize child nodes
-            if (this.deep.get()) {
-                final NodeIterator children = node.getNodes();
-                while (children.hasNext()) {
-                    final Node child = children.nextNode();
-                    result.add(child.getName(), adapt(child));
+            this.processedNodes.get().add(node.getPath());
+            if (!alreadyProcessed) {
+                final PropertyIterator properties = node.getProperties();
+                while (properties.hasNext()) {
+                    addProperty(result, properties.nextProperty());
+                }
+                // If this is a deep serialization, also serialize child nodes
+                if (this.deep.get()) {
+                    final NodeIterator children = node.getNodes();
+                    while (children.hasNext()) {
+                        final Node child = children.nextNode();
+                        result.add(child.getName(), adapt(child));
+                    }
                 }
             }
             // Since the node itself doesn't contain the path as a property, we must manually add it.
@@ -120,6 +135,8 @@ public class ResourceToJsonAdapterFactory
             return result;
         } catch (RepositoryException e) {
             LOGGER.error("Failed to serialize node [{}] to JSON: {}", node.getPath(), e.getMessage(), e);
+        } finally {
+            this.processedNodes.get().pop();
         }
         return null;
     }
