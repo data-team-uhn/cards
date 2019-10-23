@@ -53,15 +53,7 @@ public class FormsRestrictionProvider extends AbstractRestrictionProvider
     /**
      * Automatically injected list of all available restriction factories.
      */
-    @Reference
     private List<RestrictionFactory> factories;
-
-    /**
-     * Restriction factories must be given during AbstractRestrictionProvider construction, which violates OSGi
-     * To work around this, we create a new AbstractRestrictionProvider every time a new RestrictionFactory
-     * becomes available.
-     */
-    private AbstractRestrictionProvider provider;
 
     /**
      * Default constructor.

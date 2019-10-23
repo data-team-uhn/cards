@@ -48,14 +48,13 @@ public class QuestionRestrictionPattern implements RestrictionPattern
     {
         // This restriction only applies to Answers.
         // If this is not an Answer node, we do not care.
-        Tree formTree = tree;
-        if (!formTree.hasProperty("sling:resourceSuperType")
-            || !formTree.getProperty("sling:resourceSuperType").getValue(Type.STRING).equals("lfs/Answer")) {
+        if (!tree.hasProperty("sling:resourceSuperType")
+            || !tree.getProperty("sling:resourceSuperType").getValue(Type.STRING).equals("lfs/Answer")) {
             return false;
         }
-        // Check if the question to this answer is the same as the one specified in the restriction
+        // Check if the question for this answer is the same as the one specified in the restriction
         boolean result =
-            StringUtils.equals(formTree.getProperty("question").getValue(Type.REFERENCE),
+            StringUtils.equals(tree.getProperty("question").getValue(Type.REFERENCE),
                 this.targetQuestion);
         return result;
     }

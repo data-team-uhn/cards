@@ -48,14 +48,13 @@ public class AnswerRestrictionPattern implements RestrictionPattern
     {
         // This restriction only applies to Answers.
         // If this is not an Answer node, we do not care.
-        Tree formTree = tree;
-        if (!formTree.hasProperty("sling:resourceSuperType")
-            || !formTree.getProperty("sling:resourceSuperType").getValue(Type.STRING).equals("lfs/Answer")) {
+        if (!tree.hasProperty("sling:resourceSuperType")
+            || !tree.getProperty("sling:resourceSuperType").getValue(Type.STRING).equals("lfs/Answer")) {
             return false;
         }
 
         // Check if this answer is the one specified in the restriction
-        boolean result = StringUtils.equals(formTree.getName(), this.targetAnswer);
+        boolean result = StringUtils.equals(tree.getName(), this.targetAnswer);
         return result;
     }
 
