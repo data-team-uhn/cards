@@ -20,6 +20,7 @@
 import React, { useState } from "react";
 import { Paper, Table, TableHead, TableBody, TableFooter, TableRow, TableCell, TablePagination } from "@material-ui/core";
 import { Card, CardHeader, CardContent, CardActions, Typography, Button } from "@material-ui/core";
+import { Link } from 'react-router-dom';
 import moment from "moment";
 
 // Convert a date into the given format string
@@ -143,10 +144,16 @@ export default function LiveTable(props) {
     if (column.link) {
       if (column.link === 'path') {
         content = (<a href={entry["@path"]}>{content}</a>);
+      } else if (column.link === 'dashboard+path') {
+        content = (<Link to={"/content.html" + entry["@path"]}>{content}</Link>);
       } else if (column.link === 'value') {
         content = (<a href={content}>{content}</a>);;
+      } else if (column.link === 'dashboard+value') {
+        content = (<Link to={"/content.html" + content}>{content}</Link>);
       } else if (column.link.startsWith('field:')) {
         content = (<a href={getNestedValue(entry, column.link.substring('field:'.length))}>{content}</a>);
+      } else if (column.link.startsWith('dashboard+field:')) {
+        content = (<Link to={"/content.html" + getNestedValue(entry, column.link.substring('dashboard+field:'.length))}>{content}</Link>);
       }
     }
 

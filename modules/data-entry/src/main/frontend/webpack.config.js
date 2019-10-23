@@ -51,6 +51,7 @@ module.exports = {
       "moment": "moment",
       "react": "React",
       "react-dom": "ReactDOM",
+      "react-router-dom": "ReactRouterDOM",
       "lodash": "lodash",
       "prop-types": "PropTypes",
       "@material-ui/core": "window['MaterialUI']"
