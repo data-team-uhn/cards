@@ -81,7 +81,7 @@ function amendMoment(date, format) {
 // Optional props:
 // name: the question to be displayed
 // type: "timestamp" for a single date or "interval" for two dates
-// precision: yyyy, yyyy-MM, yyyy-MM-dd, yyyy-MM-dd hh,  yyyy-MM-dd hh:mm, yyyy-MM-dd hh:mm:ss
+// precision: yyyy, yyyy-MM, yyyy-MM-dd, yyyy-MM-dd hh:mm, yyyy-MM-dd hh:mm:ss
 // displayFormat (defaults to precision)
 // lowerLimit: lower date limit (inclusive) given as an object or string parsable by moment()
 // upperLimit: upper date limit (inclusive) given as an object or string parsable by moment()
