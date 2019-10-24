@@ -29,6 +29,8 @@ import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import MultipleChoice from "./MultipleChoice";
 
+import AnswerComponentManager from "./AnswerComponentManager";
+
 // Component that renders a multiple choice question, with optional number input.
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
@@ -232,4 +234,11 @@ NumberQuestion.defaultProps = {
   isRange: false
 };
 
-export default withStyles(QuestionnaireStyle)(NumberQuestion);
+const StyledNumberQuestion = withStyles(QuestionnaireStyle)(NumberQuestion)
+export default StyledNumberQuestion;
+
+AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+  if (["long", "double", "decimal"].includes(questionDefinition.dataType)) {
+    return [StyledNumberQuestion, 50];
+  }
+});

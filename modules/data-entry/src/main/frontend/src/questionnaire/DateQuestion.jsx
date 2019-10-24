@@ -30,6 +30,8 @@ import NumberQuestion from "./NumberQuestion";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
+import AnswerComponentManager from "./AnswerComponentManager";
+
 const DATE_FORMATS = [
   "yyyy",
   "yyyy-MM",
@@ -248,4 +250,11 @@ DateQuestion.defaultProps = {
   type: TIMESTAMP_TYPE
 };
 
-export default withStyles(QuestionnaireStyle)(DateQuestion);
+const StyledDateQuestion = withStyles(QuestionnaireStyle)(DateQuestion);
+export default StyledDateQuestion;
+
+AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+  if (questionDefinition.dataType === "date") {
+    return [StyledDateQuestion, 50];
+  }
+});

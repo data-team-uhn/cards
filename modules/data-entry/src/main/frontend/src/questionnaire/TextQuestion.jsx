@@ -27,6 +27,8 @@ import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
+import AnswerComponentManager from "./AnswerComponentManager";
+
 // Component that renders a multiple choice question, with optional text input.
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
@@ -98,4 +100,9 @@ TextQuestion.defaultProps = {
   errorText: "Invalid input"
 };
 
-export default withStyles(QuestionnaireStyle)(TextQuestion);
+const StyledTextQuestion = withStyles(QuestionnaireStyle)(TextQuestion)
+export default StyledTextQuestion;
+
+AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+  return [StyledTextQuestion, 0];
+});

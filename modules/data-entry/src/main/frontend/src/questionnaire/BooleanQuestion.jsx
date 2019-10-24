@@ -25,6 +25,8 @@ import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
+import AnswerComponentManager from "./AnswerComponentManager";
+
 // Component that renders a yes/no question, with optional "unknown" option.
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
@@ -88,4 +90,11 @@ BooleanQuestion.defaultProps = {
   unknownLabel: "Unknown"
 };
 
-export default withStyles(QuestionnaireStyle)(BooleanQuestion);
+const StyledBooleanQuestion = withStyles(QuestionnaireStyle)(BooleanQuestion)
+export default StyledBooleanQuestion;
+
+AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+  if (questionDefinition.dataType === "boolean") {
+    return [StyledBooleanQuestion, 50];
+  }
+});
