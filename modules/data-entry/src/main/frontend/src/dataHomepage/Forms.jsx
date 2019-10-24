@@ -18,6 +18,7 @@
 //
 import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
+import Form from "../questionnaire/Form.jsx";
 
 import { Button, Grid, Link, withStyles } from "@material-ui/core";
 import { Card, CardHeader, CardBody } from "MaterialDashboardReact";
@@ -25,6 +26,12 @@ import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function Forms(props) {
   const { match, location, classes } = props;
+
+  const entry = /Forms\/(.+)/.exec(location.pathname);
+  if (entry) {
+    return <Form id={entry[1]}/>;
+  }
+
   const [ title, setTitle ] = useState("Forms");
   const [ titleFetchSent, setFetchStatus ] = useState(false);
   const questionnaireID = /questionnaire=([^&]+)/.exec(location.search);
@@ -53,7 +60,7 @@ function Forms(props) {
       "key": "jcr:uuid",
       "label": "Identifier",
       "format": "string",
-      "link": "path",
+      "link": "dashboard+path",
     },
     {
       "key": "questionnaire/title",
