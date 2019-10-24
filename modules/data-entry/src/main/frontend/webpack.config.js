@@ -21,6 +21,7 @@ module.exports = {
     [module_name + 'subjectsIcon']: '@material-ui/icons/AssignmentInd.js',
     [module_name + 'questionnairesIcon']: '@material-ui/icons/Assignment.js',
     [module_name + 'formsIcon']: '@material-ui/icons/Description.js',
+    [module_name + 'dateQuestion']: './src/questionnaire/DateQuestion.jsx',
   },
   plugins: [
     new CleanWebpackPlugin(),

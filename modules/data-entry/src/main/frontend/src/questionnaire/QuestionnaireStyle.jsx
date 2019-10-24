@@ -34,11 +34,21 @@ const questionnaireStyle = theme => ({
         padding: theme.spacing(0, 2, 0, 2),
     },
     searchWrapper: {
-      margin: theme.spacing(0, 0, 0, 6),
-      position: 'relative',
-      display: 'inline-block',
-      paddingBottom: "0px",
-      paddingTop: theme.spacing(1),
+        margin: theme.spacing(0, 0, 0, 6),
+        position: 'relative',
+        display: 'inline-block',
+        paddingBottom: "0px",
+        paddingTop: theme.spacing(1)
+    },
+    answerField: {
+        margin: theme.spacing(0, 0, 0, 6),
+        position: 'relative',
+        display: 'inline-block',
+    },
+    textField: {
+        // Differing input types have differing widths, so setting width:100%
+        // is insufficient in making sure all components are the same size
+        minWidth: "250px",
     },
     checkboxList: {
         padding: theme.spacing(0),
@@ -48,6 +58,9 @@ const questionnaireStyle = theme => ({
         margin: theme.spacing(-1,0,-1,-1.5),
         fontSize: "10px",
         minWidth: "42px",
+    },
+    mdash: {
+        padding: theme.spacing(0, 1),
     },
 });
 

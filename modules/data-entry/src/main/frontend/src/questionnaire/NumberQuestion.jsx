@@ -19,14 +19,15 @@
 
 import { useState } from "react";
 
-import { Typography, withStyles } from "@material-ui/core";
+import { TextField, Typography, withStyles } from "@material-ui/core";
 import NumberFormat from 'react-number-format';
 
 import PropTypes from "prop-types";
 
-import MultipleChoice from "./MultipleChoice";
+import Answer from "./Answer";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
+import MultipleChoice from "./MultipleChoice";
 
 // Component that renders a multiple choice question, with optional number input.
 // Selected answers are placed in a series of <input type="hidden"> tags for
@@ -44,6 +45,7 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 //  minValue: The minimum allowed input value
 //  type: One of "integer" or "float" (default: "float")
 //  errorText: String to display when the input is not valid (default: "invalid input")
+//  isRange: Whether or not to display a range instead of a single value
 //
 // Sample usage:
 // <NumberQuestion
@@ -57,24 +59,25 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  let {defaults, max, min, name, userInput, minValue, maxValue, type, errorText, ...rest} = props;
+  let {defaults, max, min, name, userInput, minValue, maxValue, type, errorText, isRange, classes, ...rest} = props;
   const [error, setError] = useState(false);
+  // The following two are only used if a default is not given, as we switch to handling values here
+  const [input, setInput] = useState(undefined);
+  const [endInput, setEndInput] = useState(undefined);
 
   // Callback function for our min/max
-  let checkNumber = (text) => {
+  let hasError = (text) => {
     let value = 0;
 
     if (typeof(text) === "undefined") {
       // The custom input has been unset
-      setError(false);
-      return
+      return false;
     }
 
     if (type === "integer") {
       // Test that it is an integer
       if (!/^[-+]?\d*$/.test(text)) {
-        setError(true);
-        return;
+        return true;
       }
 
       value = parseInt(text);
@@ -83,42 +86,105 @@ function NumberQuestion(props) {
 
       // Reject whitespace and non-numbers
       if (/^\s*$/.test(text) || isNaN(value)) {
-        setError(true);
-        return;
+        return true;
       }
     }
 
     // Test that it is within our min/max (if they are defined)
     if ((typeof minValue !== 'undefined' && value < minValue) ||
       (typeof maxValue !== 'undefined' && value > maxValue)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // Callback for a change of MultipleChoice input to check for errors on the input
+  let findError = (text) => {
+    setError(hasError(text));
+  }
+
+  // Callback for a range input to check for errors on our self-stated input
+  let findRangeError = (inputToCheck, endInputToCheck) => {
+    if (hasError(inputToCheck)) {
       setError(true);
       return;
     }
+
+    // Also consider the end of the range (if applicable)
+    if (isRange && (hasError(endInputToCheck) ||
+      Number(inputToCheck) > Number(endInputToCheck))) {
+        setError(true);
+        return;
+    }
+
     setError(false);
   }
+
+  const answers = isRange ? [["start", input], ["end", endInput]] : [["start", input]];
+  const textFieldProps = {
+    min: minValue,
+    max: maxValue,
+    allowNegative: (typeof minValue === "undefined" || minValue < 0),
+    decimalScale: type === "integer" ? 0 : undefined
+  };
+  const muiInputProps = {
+    inputComponent: NumberFormatCustom, // Used to override a TextField's type
+    className: classes.textField
+  };
 
   return (
     <Question
       text={name}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
+      {defaults ?
+      /* Use MultipleChoice if we have default options */
       <MultipleChoice
         max={max}
         min={min}
         defaults={defaults}
         input={userInput==="input"}
         textbox={userInput==="textbox"}
-        onChange={checkNumber}
-        additionalInputProps={{
-          min: minValue,
-          max: maxValue,
-          allowNegative: (typeof minValue === "undefined" || minValue < 0),
-          decimalScale: type === "integer" ? 0 : undefined
-        }}
-        muiInputProps={{inputComponent: NumberFormatCustom}}
+        onChange={findError}
+        additionalInputProps={textFieldProps}
+        muiInputProps={muiInputProps}
         error={error}
         {...rest}
-        />
+        /> :
+      /* Otherwise just use a single text field */
+      <React.Fragment>
+        <Answer
+          answers={answers}
+          {...rest}
+          />
+        <TextField
+          className={classes.textField + " " + classes.answerField}
+          onChange={(event) => {
+            findRangeError(event.target.value, endInput);
+            setInput(event.target.value);
+          }}
+          inputProps={textFieldProps}
+          value={input}
+          InputProps={muiInputProps}
+          />
+      </React.Fragment>
+        }
+      {isRange &&
+      <React.Fragment>
+        <span className={classes.mdash}>&mdash;</span>
+        <TextField
+          className={classes.textField}
+          onChange={(event) => {
+            findRangeError(input, event.target.value);
+            setEndInput(event.target.value);
+          }}
+          inputProps={textFieldProps}
+          value={endInput}
+          InputProps={muiInputProps}
+          />
+      </React.Fragment>
+      }
     </Question>);
 }
 
@@ -137,7 +203,6 @@ function NumberFormatCustom(props) {
           },
         });
       }}
-      thousandSeparator
     />
   );
 }
@@ -157,12 +222,14 @@ NumberQuestion.propTypes = {
   type: PropTypes.oneOf(['integer', 'float']).isRequired,
   minValue: PropTypes.number,
   maxValue: PropTypes.number,
-  errorText: PropTypes.string
+  errorText: PropTypes.string,
+  isRange: PropTypes.bool,
 };
 
 NumberQuestion.defaultProps = {
   errorText: "Invalid input",
-  type: 'float'
+  type: 'float',
+  isRange: false
 };
 
 export default withStyles(QuestionnaireStyle)(NumberQuestion);
