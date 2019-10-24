@@ -32,7 +32,7 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import Actions from "./Actions";
+import Actions from "./actions";
 
 const Config = require("./config.json");
 const Phase = require("./phaseCodes.json");
@@ -42,11 +42,13 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     marginTop: theme.spacing(3),
     overflowX: "auto"
+  },
+  table: {
+    tableLayout: "fixed"
   }
 }));
 
 // Creating customized Table components for a nicer look
-
 const StyledTableRow = withStyles(theme => ({
   root: {
     "&:nth-of-type(odd)": {
@@ -55,23 +57,26 @@ const StyledTableRow = withStyles(theme => ({
   },
 }))(TableRow);
 
-const StyledTableCell = withStyles(theme => ({
+const HeaderTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-    whiteSpace: "pre"
-  },
+    color: theme.palette.common.white
+  }
+}))(TableCell);
+
+const StyledTableCell = withStyles(theme => ({
   body: {
     whiteSpace: "pre",
     textAlign: "right"
   },
 }))(TableCell);
 
-export default function RenderVocabListTable(props) {
+export default function VocabularyTable(props) {
   const classes = useStyles();
   const vocabList = props.remoteVocabList;
-  const tableHeadingSize = Config["tableHeadingSize"];
-  const tableBodySize = Config["tableBodySize"];
+  const headingTypography = Config["tableHeadingTypography"];
+  const bodyTypography = Config["tableBodyTypography"];
+  const columnWidths = Config["tableColumnWidths"]
 
   function initPhase(acronym, released) {
     if (!props.optimisedDateList.hasOwnProperty(acronym)) {
@@ -85,27 +90,27 @@ export default function RenderVocabListTable(props) {
   return(
     <Grid item>
       <Paper className={classes.root}>
-        <Table>
+        <Table className={classes.table}>
           <TableHead>
             <TableRow>
 
-              <StyledTableCell>
-                <Typography variant={tableHeadingSize}>ID</Typography>
-              </StyledTableCell>
+              <HeaderTableCell width={columnWidths["id"]}>
+                <Typography variant={headingTypography}>ID</Typography>
+              </HeaderTableCell>
 
-              <StyledTableCell>
-                <Typography variant={tableHeadingSize}>Name</Typography>
-              </StyledTableCell>
+              <HeaderTableCell width={columnWidths["name"]}>
+                <Typography variant={headingTypography}>Name</Typography>
+              </HeaderTableCell>
 
-              <StyledTableCell>
-                <Typography variant={tableHeadingSize}>Version</Typography>
-              </StyledTableCell>
+              <HeaderTableCell width={columnWidths["version"]}>
+                <Typography variant={headingTypography}>Version</Typography>
+              </HeaderTableCell>
 
-              <StyledTableCell>
-                <Typography variant={tableHeadingSize}>Release Date</Typography>
-              </StyledTableCell>
+              <HeaderTableCell width={columnWidths["releaseDate"]}>
+                <Typography variant={headingTypography}>Release Date</Typography>
+              </HeaderTableCell>
 
-              <StyledTableCell/>
+              <HeaderTableCell width={columnWidths["actions"]}/>
 
             </TableRow>
           </TableHead>
@@ -118,28 +123,28 @@ export default function RenderVocabListTable(props) {
                   <StyledTableRow key={"Row_"+vocab.ontology.acronym}>
 
                     <TableCell component="th" scope="row" >
-                      <Typography variant={tableBodySize}>
+                      <Typography variant={bodyTypography}>
                         {vocab.ontology.acronym}
                       </Typography>
                     </TableCell>
 
                     <TableCell>
-                      <Typography variant={tableBodySize}>
+                      <Typography variant={bodyTypography}>
                         {vocab.ontology.name}
                       </Typography>
                     </TableCell>
 
                     <TableCell>
-                      <Typography variant={tableBodySize}>
-                        {vocab.version ? vocab.version.substring(0, Math.min(20, vocab.version.length)) : ""}
-                      </Typography>  
-                    </TableCell>
-
-                    <TableCell>
-                      <Typography variant={tableBodySize}>
-                        {date.toString().substring(4,15)}
+                      <Typography variant={bodyTypography} noWrap>
+                        {vocab.version}
                       </Typography>
                     </TableCell>
+
+                    <StyledTableCell>
+                      <Typography variant={bodyTypography}>
+                        {date.toString().substring(4,15)}
+                      </Typography>
+                    </StyledTableCell>
 
                     <StyledTableCell>
                       <Actions
@@ -148,7 +153,7 @@ export default function RenderVocabListTable(props) {
                         initPhase={initPhase(vocab.ontology.acronym, vocab.released)}
                         name={vocab.ontology.name}
                         released={vocab.released}
-                        version={vocab.version ? vocab.version.substring(0, Math.min(20, vocab.version.length)) : ""}
+                        version={vocab.version}
                       />
                     </StyledTableCell>
 

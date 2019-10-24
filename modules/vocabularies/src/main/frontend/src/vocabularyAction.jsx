@@ -62,12 +62,11 @@ const useStyles = makeStyles(theme => ({
   },
   wrapper: {
     position: "relative",
-    display: "inline-block",
-    marginLeft: -theme.spacing(3)
+    display: "inline-block"
   }
 }));
 
-export default function Action(props) {
+export default function VocabularyAction(props) {
   const classes = useStyles();
   return(
     <React.Fragment>

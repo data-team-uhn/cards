@@ -27,7 +27,7 @@ import {
   Typography 
 } from "@material-ui/core";
 
-import RenderVocabListTable from "./RenderVocabListTable";
+import VocabularyTable from "./vocabularyTable";
 
 const Status = require("./statusCodes.json");
 
@@ -69,7 +69,7 @@ function reformat(data) {
 }
 
 // Requests list of Vocabularies from Bioontology API. Currently only renders a table to display items if they are form the remote source
-export default function RequestVocabList(props) {
+export default function VocabularyList(props) {
   const [curStatus, setCurStatus] = React.useState(Status["Init"]);
 
   // Function that fetches list of Vocabularies from Bioontology API
@@ -122,7 +122,7 @@ export default function RequestVocabList(props) {
     {(curStatus == Status["Error"]) && (
       <React.Fragment>
         <Grid item>
-          <Typography variant="h3" gutterBottom>
+          <Typography color="error">
             The list of Bioportal vocabularies is currently inaccessible
           </Typography>
 
@@ -134,7 +134,7 @@ export default function RequestVocabList(props) {
      
     )}
     {(curStatus == Status["Loaded"] && !(typeof props.optimisedDateList === "undefined") && props.type === "remote") && (
-      <RenderVocabListTable
+      <VocabularyTable
         remoteVocabList={props.remoteVocabList}
         optimisedDateList={props.optimisedDateList} 
       />

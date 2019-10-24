@@ -1,5 +1,14 @@
 {
   "apikey": "apikey=8ac0298d-99f4-4793-8c70-fb7d3400f279",
+  "install": {
+    "base": "/Vocabularies?source=bioontology",
+    "params": {
+      "overwrite": "true"
+    }
+  },
+  "uninstall": {
+    "base": "/Vocabularies/"
+  },
   "local": "/Vocabularies.1.json",
   "remote": {
     "base": "http://data.bioontology.org/submissions/?",

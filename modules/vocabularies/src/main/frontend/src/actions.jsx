@@ -31,10 +31,11 @@ import {
 
 import CloseIcon from "@material-ui/icons/Close";
 
-import About from "./About"
-import Action from "./Action"
-import Uninstall from "./Uninstall"
+import VocabularyDetails from "./vocabularyDetails"
+import VocabularyAction from "./vocabularyAction"
+import Uninstall from "./uninstall"
 
+const vocabLinks = require('./vocabularyLinks.json');
 const Phase = require("./phaseCodes.json");
 
 const useStyles = makeStyles(theme => ({
@@ -71,7 +72,12 @@ export default function Actions(props) {
 
     setPhase(Phase["Installing"]);
 
-    fetch("/Vocabularies?source=bioontology&identifier="+props.acronym+"&overwrite=true", {method: "POST"})
+    fetch(vocabLinks["install"]["base"] +
+          Object.keys(vocabLinks["install"]["params"]).map(
+            key => ("&" + key + "=" + vocabLinks["install"]["params"][key])
+          ).join("") +
+          "&identifier=" + props.acronym,
+          {method: "POST"})
     .then((resp) => resp.json())
     .then((resp) => {
       if(!resp["isSuccessful"]) {
@@ -102,13 +108,13 @@ export default function Actions(props) {
 
     setPhase(Phase["Uninstalling"]);
 
-    fetch("/Vocabularies/"+props.acronym, {method: "DELETE"})
+    fetch(vocabLinks["uninstall"]["base"] + props.acronym, {method: "DELETE"})
     .then((resp) => {
       const code = resp.status;
       if(Math.floor(code/100) !== 2) {
         setPhase(oldPhase);
         setAction("Uninstall");
-        setErrMsg("Error "+code+": "+resp.statusText);
+        setErrMsg("Error " + code + ": " + resp.statusText);
         setErr(true);
         badResponse = true;
       }
@@ -129,7 +135,7 @@ export default function Actions(props) {
 
   return(
     <React.Fragment>
-      <Action
+      <VocabularyAction
         acronym={props.acronym}
         install={install}
         phase={phase}
@@ -138,7 +144,7 @@ export default function Actions(props) {
       {(phase == Phase["Update Available"] || phase == Phase["Latest"]) && 
         <Uninstall uninstall={uninstall} />}
 
-      <About
+      <VocabularyDetails
         acronym={props.acronym}
         install={install}
         uninstall={uninstall}

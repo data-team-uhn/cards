@@ -34,8 +34,8 @@ import {
 
 import CloseIcon from "@material-ui/icons/Close";
 
-import Action from "./Action";
-import Uninstall from "./Uninstall";
+import VocabularyAction from "./vocabularyAction";
+import Uninstall from "./uninstall";
 
 const Phase = require("./phaseCodes.json");
 
@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function About(props) {
+export default function VocabularyDetails(props) {
   const [displayPopup, setDisplayPopup] = React.useState(false);
   const handleOpen = () => {setDisplayPopup(true);}
   const handleClose = () => {setDisplayPopup(false);}
@@ -82,7 +82,7 @@ export default function About(props) {
 
       <Dialog onClose={handleClose} open={displayPopup}>
 
-        <DialogTitle disableTypography id={props.acronym + "_about-title"} onClose={handleClose} className={classes.root}>
+        <DialogTitle disableTypography onClose={handleClose} className={classes.root}>
           <Typography variant="h4">{props.acronym}</Typography>
           <IconButton className={classes.closeButton} onClick={handleClose}>
             <CloseIcon />
@@ -95,7 +95,7 @@ export default function About(props) {
         </DialogContent>
 
         <DialogActions>
-          <Action acronym={props.acronym} install={props.install} phase={props.phase} />
+          <VocabularyAction acronym={props.acronym} install={props.install} phase={props.phase} />
           {(props.phase == Phase["Update Available"] || props.phase == Phase["Latest"]) && 
             <Uninstall uninstall={props.uninstall} />}
         </DialogActions>

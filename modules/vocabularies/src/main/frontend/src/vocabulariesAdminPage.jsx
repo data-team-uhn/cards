@@ -24,7 +24,7 @@ import {
 
 import React from "react";
 
-import RequestVocabList from './RequestVocabList';
+import VocabularyList from './vocabularyList';
 
 const vocabLinks = require('./vocabularyLinks.json');
 
@@ -54,7 +54,7 @@ export default function VocabulariesAdminPage() {
         </Typography>
       </Grid>
 
-      <RequestVocabList 
+      <VocabularyList 
         type="local"
         link={vocabLinks["local"]} 
         setVocabList={processLocalVocabList}
@@ -66,17 +66,17 @@ export default function VocabulariesAdminPage() {
         </Typography>
       </Grid>
        
-      <RequestVocabList 
+      <VocabularyList 
         type="remote"
         link={
-          vocabLinks["remote"]["base"]+
-          vocabLinks["apikey"]+
+          vocabLinks["remote"]["base"] +
+          vocabLinks["apikey"] +
           Object.keys(vocabLinks["remote"]["params"]).map(
-            (key) => {return "&"+key+"="+
+            key => ("&" + key + "=" +
               (key === "include" ? 
                 vocabLinks["remote"]["params"][key].join()
                 :
-                vocabLinks["remote"]["params"][key])})
+                vocabLinks["remote"]["params"][key])))
           .join("")
         } 
         setVocabList={setRemoteVocabList}
