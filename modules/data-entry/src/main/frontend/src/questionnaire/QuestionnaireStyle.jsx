@@ -40,6 +40,11 @@ const questionnaireStyle = theme => ({
         paddingBottom: "0px",
         paddingTop: theme.spacing(1)
     },
+    answerField: {
+        margin: theme.spacing(0, 0, 0, 6),
+        position: 'relative',
+        display: 'inline-block',
+    },
     textField: {
         // Differing input types have differing widths, so setting width:100%
         // is insufficient in making sure all components are the same size

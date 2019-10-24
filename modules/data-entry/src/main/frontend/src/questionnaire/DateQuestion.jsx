@@ -60,8 +60,7 @@ function amendMoment(date, format) {
     's':'minute',
     'm':'hour',
     'H':'day',
-    'h':'day',
-    'D': 'month',
+    'd':'month',
     'M':'year'
   };
   let truncateTo;
@@ -180,7 +179,7 @@ function DateQuestion(props) {
       <TextField
         id="date"
         type={textFieldType}
-        className={classes.textField + " " + classes.searchWrapper}
+        className={classes.textField + " " + classes.answerField}
         InputLabelProps={{
           shrink: true,
         }}
