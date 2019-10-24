@@ -20,7 +20,15 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import { Paper, Grid, Typography, Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Grid,
+  Paper,
+  Typography,
+  withStyles
+} from "@material-ui/core";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
