@@ -25,7 +25,6 @@ import {
   CardContent,
   CardHeader,
   Grid,
-  Paper,
   Typography,
   withStyles
 } from "@material-ui/core";
