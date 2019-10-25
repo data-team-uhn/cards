@@ -120,7 +120,7 @@ export default function VocabularyTable(props) {
               if (vocab.status === "production") {
                 const date = new Date(vocab.released);
                 return(
-                  <StyledTableRow key={"Row_"+vocab.ontology.acronym}>
+                  <StyledTableRow key={"Row_" + vocab.ontology.acronym}>
 
                     <TableCell component="th" scope="row" >
                       <Typography variant={bodyTypography}>
