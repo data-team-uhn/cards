@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.permissionsprovider.internal;
+package ca.sickkids.ccm.lfs.permissionsprovider.spi;
 
 import java.security.Principal;
 import java.util.Map;
@@ -24,23 +24,15 @@ import java.util.Map;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
-import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
 
-import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
-import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
-import org.osgi.service.component.annotations.Component;
-
-import ca.sickkids.ccm.lfs.permissionsprovider.spi.PermissionsChanger;
-
 /**
- * Permission changing service for altering/creating ACLs on arbitrary nodes.
+ * Service interface used by {@link ca.sickkids.ccm.lfs.permissionsprovider.internal.PermissionsChangeService} to alter
+ * permissions on JCR nodes.
  *
  * @version $Id$
- *
  */
-@Component(service = { PermissionsChanger.class })
-public class PermissionsChangeService implements PermissionsChanger
+public interface PermissionsChanger
 {
     /**
      * Change the permissions on the {@code target} node with the given specifications.
@@ -53,15 +45,6 @@ public class PermissionsChangeService implements PermissionsChanger
      * @throws RepositoryException if an error occurs while obtaining repository entries, or
      *     illegal arguments occur
      */
-    @Override
-    public void alterPermissions(String target, boolean isAllow, Principal principal, Privilege[] privileges,
-            Map<String, Value> restrictions, Session session) throws RepositoryException
-    {
-        AccessControlManager acm = session.getAccessControlManager();
-        JackrabbitAccessControlList acl = AccessControlUtils.getAccessControlList(acm, target);
-        if (acl != null) {
-            acl.addEntry(principal, privileges, isAllow, restrictions);
-            acm.setPolicy(target, acl);
-        }
-    }
+    void alterPermissions(String target, boolean isAllow, Principal principal, Privilege[] privileges,
+            Map<String, Value> restrictions, Session session) throws RepositoryException;
 }

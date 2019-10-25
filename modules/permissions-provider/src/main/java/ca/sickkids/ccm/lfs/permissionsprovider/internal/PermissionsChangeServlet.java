@@ -38,8 +38,11 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ca.sickkids.ccm.lfs.permissionsprovider.spi.PermissionsChanger;
 
 /**
  * Servlet which handles changing permissions. It processes POST requests on the {@code /Forms} page and subpages,
@@ -60,6 +63,9 @@ public class PermissionsChangeServlet extends SlingAllMethodsServlet
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PermissionsChangeServlet.class);
 
+    @Reference
+    private PermissionsChanger permissionsChangeServiceHandler;
+
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
             throws ServletException
@@ -79,9 +85,8 @@ public class PermissionsChangeServlet extends SlingAllMethodsServlet
             Privilege[] privileges = parsePrivileges(privilegesText, session.getAccessControlManager());
             Map<String, Value> restrictions = parseRestriction(restrictionText, session.getValueFactory());
             Principal principal = session.getPrincipalManager().getPrincipal(principalName);
-            AccessControlManager acm = session.getAccessControlManager();
-            PermissionsChangeService.alterPermissions(
-                    target, isAllow, principal, privileges, restrictions, acm);
+            this.permissionsChangeServiceHandler.alterPermissions(
+                    target, isAllow, principal, privileges, restrictions, session);
             session.save();
         } catch (RepositoryException e) {
             LOGGER.error("Failed to change permissions: {}", e.getMessage(), e);
