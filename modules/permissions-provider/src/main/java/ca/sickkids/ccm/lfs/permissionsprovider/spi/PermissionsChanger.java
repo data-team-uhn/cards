@@ -45,6 +45,20 @@ public interface PermissionsChanger
      * @throws RepositoryException if an error occurs while obtaining repository entries, or
      *     illegal arguments occur
      */
-    void alterPermissions(String target, boolean isAllow, Principal principal, Privilege[] privileges,
+    void addAccessControlEntry(String target, boolean isAllow, Principal principal, Privilege[] privileges,
+            Map<String, Value> restrictions, Session session) throws RepositoryException;
+
+    /**
+     * Remove a permission on the {@code target} node with the given specifications.
+     * @param target The target node to alter permissions for
+     * @param isAllow whether the request is to allow (true) or deny (false) access
+     * @param principal The Principal for the rule (i.e. target users to affect)
+     * @param privileges A comma-delimited list of privileges
+     * @param restrictions The restrictions to apply
+     * @param session The {@code javax.jcr.Session} to commit changes to.
+     * @throws RepositoryException if an error occurs while obtaining repository entries, or
+     *     illegal arguments occur
+     */
+    void removeAccessControlEntry(String target, boolean isAllow, Principal principal, Privilege[] privileges,
             Map<String, Value> restrictions, Session session) throws RepositoryException;
 }

@@ -77,6 +77,7 @@ public class PermissionsChangeServlet extends SlingAllMethodsServlet
         String uri = request.getRequestURI();
         String target = uri.substring(0, uri.indexOf("."));
         String restrictionText = request.getParameter(":restriction");
+        String remove = request.getParameter(":remove");
         JackrabbitSession session = (JackrabbitSession) request.getResourceResolver().adaptTo(Session.class);
 
         // Alter this node's permissions
@@ -85,8 +86,13 @@ public class PermissionsChangeServlet extends SlingAllMethodsServlet
             Privilege[] privileges = parsePrivileges(privilegesText, session.getAccessControlManager());
             Map<String, Value> restrictions = parseRestriction(restrictionText, session.getValueFactory());
             Principal principal = session.getPrincipalManager().getPrincipal(principalName);
-            this.permissionsChangeServiceHandler.alterPermissions(
-                    target, isAllow, principal, privileges, restrictions, session);
+            if (remove == null) {
+                this.permissionsChangeServiceHandler.addAccessControlEntry(
+                        target, isAllow, principal, privileges, restrictions, session);
+            } else {
+                this.permissionsChangeServiceHandler.removeAccessControlEntry(
+                        target, isAllow, principal, privileges, restrictions, session);
+            }
             session.save();
         } catch (RepositoryException e) {
             LOGGER.error("Failed to change permissions: {}", e.getMessage(), e);
