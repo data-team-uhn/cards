@@ -24,10 +24,13 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Grid,
   Typography,
   withStyles
 } from "@material-ui/core";
+
+import moment from "moment";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
@@ -56,15 +59,22 @@ export default function Questionnaire (props) {
 
   return (
     <div>
-      <Typography variant="h2">{data ? data['title'] : id} </Typography>
       <Grid container direction="column" spacing={8}>
+      <Grid item>
+        <Typography variant="h2">{data ? data['title'] : id} </Typography>
+        {
+          data && data['jcr:createdBy'] && data['jcr:created'] ?
+            <Typography variant="overline">Created by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
+            : ""
+        }
+      </Grid>
         {
           data ?
             Object.entries(data)
               .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question')
-              .map(([key, value]) => <Question key={key} data={value}/>)
+              .map(([key, value]) => <Grid item key={key}><Question data={value}/></Grid>)
           :
-            <Typography>Loading...</Typography>
+            <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
         }
       </Grid>
     </div>
@@ -72,7 +82,7 @@ export default function Questionnaire (props) {
 };
 
 let Question = (props) => {
-  return <Grid item>
+  return (
     <Card>
       <CardHeader title={props.data.text} />
       <CardContent>
@@ -92,7 +102,7 @@ let Question = (props) => {
         </dl>
       </CardContent>
     </Card>
-  </Grid>;
+  );
 };
 
 let AnswerOption = (props) => {
