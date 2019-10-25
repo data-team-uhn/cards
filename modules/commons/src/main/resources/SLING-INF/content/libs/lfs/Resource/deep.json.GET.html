@@ -17,8 +17,8 @@
   under the License.
 */-->
 <!--/*
-  Serialization of resources as JSON.
-  Only properties are included, not child nodes.
-  Properties of type REFERENCE are followed and serialized as well.
+  Deep serialization of resources as JSON.
+  Properties of type REFERENCE are followed and serialized.
+  All child nodes are (recursively) included the response JSON, including those from REFERENCE properties.
 */-->
 <sly data-sly-use.json="javax.json.JsonObject">${json.toString @ context='unsafe'}</sly>
