@@ -35,9 +35,6 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 
 import VocabularyAction from "./vocabularyAction";
-import Uninstall from "./uninstall";
-
-const Phase = require("./phaseCodes.json");
 
 const useStyles = makeStyles(theme => ({
   about: {
@@ -95,9 +92,7 @@ export default function VocabularyDetails(props) {
         </DialogContent>
 
         <DialogActions>
-          <VocabularyAction acronym={props.acronym} install={props.install} phase={props.phase} />
-          {(props.phase == Phase["Update Available"] || props.phase == Phase["Latest"]) && 
-            <Uninstall uninstall={props.uninstall} />}
+          <VocabularyAction acronym={props.acronym} install={props.install} uninstall={props.uninstall} phase={props.phase} />
         </DialogActions>
 
       </Dialog>

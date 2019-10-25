@@ -33,7 +33,6 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import VocabularyDetails from "./vocabularyDetails"
 import VocabularyAction from "./vocabularyAction"
-import Uninstall from "./uninstall"
 
 const vocabLinks = require('./vocabularyLinks.json');
 const Phase = require("./phaseCodes.json");
@@ -43,7 +42,7 @@ const useStyles = makeStyles(theme => ({
     position: 'absolute',
     right: theme.spacing(1),
     top: theme.spacing(1),
-    color: theme.palette.grey[500],
+    color: theme.palette.grey[500]
   },
   title: {
     marginRight: theme.spacing(4)
@@ -138,11 +137,9 @@ export default function Actions(props) {
       <VocabularyAction
         acronym={props.acronym}
         install={install}
+        uninstall={uninstall}
         phase={phase}
       />
-
-      {(phase == Phase["Update Available"] || phase == Phase["Latest"]) && 
-        <Uninstall uninstall={uninstall} />}
 
       <VocabularyDetails
         acronym={props.acronym}

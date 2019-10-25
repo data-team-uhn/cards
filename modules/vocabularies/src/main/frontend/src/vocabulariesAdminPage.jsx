@@ -24,7 +24,7 @@ import {
 
 import React from "react";
 
-import VocabularyList from './vocabularyList';
+import VocabularyDirectory from './vocabularyDirectory';
 
 const vocabLinks = require('./vocabularyLinks.json');
 
@@ -54,7 +54,7 @@ export default function VocabulariesAdminPage() {
         </Typography>
       </Grid>
 
-      <VocabularyList 
+      <VocabularyDirectory 
         type="local"
         link={vocabLinks["local"]} 
         setVocabList={processLocalVocabList}
@@ -66,7 +66,7 @@ export default function VocabulariesAdminPage() {
         </Typography>
       </Grid>
        
-      <VocabularyList 
+      <VocabularyDirectory 
         type="remote"
         link={
           vocabLinks["remote"]["base"] +

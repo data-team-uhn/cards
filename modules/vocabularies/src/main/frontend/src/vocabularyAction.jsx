@@ -48,6 +48,12 @@ const useStyles = makeStyles(theme => ({
       background: "#075706"
     }
   },
+  uninstall: {
+    background: "red",
+    "&:hover": {
+      background: "#a3211f"
+    }
+  },
   installingColor: {
     color: "green",
   },
@@ -82,15 +88,25 @@ export default function VocabularyAction(props) {
       </span>
     )}
     {(props.phase == Phase["Update Available"]) && (
-      <Tooltip title="Update this vocabulary">
-        <Button onClick={props.install} variant="contained" className={classes.button + " " + classes.update}>Update</Button>
-      </Tooltip>
+      <React.Fragment>
+        <Tooltip title="Update this vocabulary">
+          <Button onClick={props.install} variant="contained" className={classes.button + " " + classes.update}>Update</Button>
+        </Tooltip>
+        <Tooltip title="Remove this vocabulary">
+          <Button onClick={props.uninstall} variant="contained" className={classes.button + " " + classes.uninstall}>Uninstall</Button>
+        </Tooltip>
+      </React.Fragment> 
     )}
     {(props.phase == Phase["Uninstalling"]) && (
       <span className={classes.wrapper}>
         <Button disabled variant="contained" className={classes.button}>Uninstalling</Button>
         <CircularProgress size={24} className={classes.buttonProgress + " " + classes.uninstallingColor} />
       </span>
+    )}
+    {(props.phase == Phase["Latest"]) && (
+      <Tooltip title="Remove this vocabulary">
+        <Button onClick={props.uninstall} variant="contained" className={classes.button + " " + classes.uninstall}>Uninstall</Button>
+      </Tooltip>
     )}
     </React.Fragment>
   );
