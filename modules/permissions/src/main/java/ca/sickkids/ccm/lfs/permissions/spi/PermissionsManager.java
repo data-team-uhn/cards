@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.permissionsprovider.spi;
+package ca.sickkids.ccm.lfs.permissions.spi;
 
 import java.security.Principal;
 import java.util.Map;
@@ -27,7 +27,7 @@ import javax.jcr.Value;
 import javax.jcr.security.Privilege;
 
 /**
- * Service interface used by {@link ca.sickkids.ccm.lfs.permissionsprovider.internal.PermissionsChangeService} to alter
+ * Service interface used by {@link ca.sickkids.ccm.lfs.permissions.internal.PermissionsChangeService} to alter
  * permissions on JCR nodes.
  *
  * @version $Id$

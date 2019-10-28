@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.permissionsprovider.internal;
+package ca.sickkids.ccm.lfs.permissions.internal;
 
 import java.security.Principal;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.sickkids.ccm.lfs.permissionsprovider.spi.PermissionsManager;
+import ca.sickkids.ccm.lfs.permissions.spi.PermissionsManager;
 
 /**
  * Servlet which handles changing permissions. It processes POST requests on the {@code /Forms} page and subpages,

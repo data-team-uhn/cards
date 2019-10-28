@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.permissionsprovider.internal;
+package ca.sickkids.ccm.lfs.permissions.internal;
 
 import java.security.Principal;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
 import org.osgi.service.component.annotations.Component;
 
-import ca.sickkids.ccm.lfs.permissionsprovider.spi.PermissionsManager;
+import ca.sickkids.ccm.lfs.permissions.spi.PermissionsManager;
 
 /**
  * Permission changing service for altering/creating ACLs on arbitrary nodes.
