@@ -32,10 +32,10 @@ import javax.jcr.security.Privilege;
  *
  * @version $Id$
  */
-public interface PermissionsChanger
+public interface PermissionsManager
 {
     /**
-     * Change the permissions on the {@code target} node with the given specifications.
+     * Adds a new ACE (Access Control Entry) to the policy on the {@code target} node with the given specifications.
      * @param target The target node to alter permissions for
      * @param isAllow whether the request is to allow (true) or deny (false) access
      * @param principal The Principal for the rule (i.e. target users to affect)
@@ -49,7 +49,7 @@ public interface PermissionsChanger
             Map<String, Value> restrictions, Session session) throws RepositoryException;
 
     /**
-     * Remove a permission on the {@code target} node with the given specifications.
+     * Removes the ACE matching the parameters from the {@code target} node, if any such ACE exists.
      * @param target The target node to alter permissions for
      * @param isAllow whether the request is to allow (true) or deny (false) access
      * @param principal The Principal for the rule (i.e. target users to affect)

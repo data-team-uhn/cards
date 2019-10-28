@@ -18,7 +18,8 @@
  */
 package ca.sickkids.ccm.lfs.permissions.spi;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
@@ -70,8 +71,7 @@ public interface RestrictionFactory
         // as well as the restriction provider's service bundle
         Bundle systemBundle = context.getBundleContext().getBundle(0);
         Bundle toReload = context.getBundleContext().getServiceReference(RestrictionProvider.class).getBundle();
-        ArrayList<Bundle> bundles = new ArrayList<Bundle>();
-        bundles.add(toReload);
+        List<Bundle> bundles = Collections.singletonList(toReload);
         systemBundle.adapt(FrameworkWiring.class).refreshBundles(bundles);
     }
 }

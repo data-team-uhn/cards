@@ -105,7 +105,7 @@ public class FormsRestrictionProvider extends AbstractRestrictionProvider
         if (factory != null) {
             return factory.forValue(restriction.getProperty());
         } else {
-            LOGGER.error("Ignoring unsupported restriction {}", name);
+            LOGGER.debug("Ignoring unsupported restriction {}", name);
         }
         return null;
     }

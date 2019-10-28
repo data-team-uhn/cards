@@ -34,7 +34,7 @@ import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
 import org.osgi.service.component.annotations.Component;
 
-import ca.sickkids.ccm.lfs.permissionsprovider.spi.PermissionsChanger;
+import ca.sickkids.ccm.lfs.permissionsprovider.spi.PermissionsManager;
 
 /**
  * Permission changing service for altering/creating ACLs on arbitrary nodes.
@@ -42,8 +42,8 @@ import ca.sickkids.ccm.lfs.permissionsprovider.spi.PermissionsChanger;
  * @version $Id$
  *
  */
-@Component(service = { PermissionsChanger.class })
-public class PermissionsChangeService implements PermissionsChanger
+@Component(service = { PermissionsManager.class })
+public class PermissionsChangeService implements PermissionsManager
 {
     @Override
     public void addAccessControlEntry(String target, boolean isAllow, Principal principal, Privilege[] privileges,

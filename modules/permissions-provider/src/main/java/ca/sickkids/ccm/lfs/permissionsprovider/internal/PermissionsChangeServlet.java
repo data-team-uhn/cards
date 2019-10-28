@@ -42,12 +42,14 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.sickkids.ccm.lfs.permissionsprovider.spi.PermissionsChanger;
+import ca.sickkids.ccm.lfs.permissionsprovider.spi.PermissionsManager;
 
 /**
  * Servlet which handles changing permissions. It processes POST requests on the {@code /Forms} page and subpages,
- * expecting three parameters: {@code rule} is either "deny" or "allow". {@code privileges} is a comma-seperated
- * list of privileges to alter, {@code principal} is the group or user name.
+ * expecting three parameters: {@code :rule} is either "deny" or "allow". {@code :privileges} is a comma-seperated
+ * list of privileges to alter, {@code :principal} is the group or user name, {@code :restriction} is a single
+ * {@code restriction=value} pair. An optional {@code :remove} can be provided if you wish to delete an entry
+ * matching the above instead.
  *
  * @version $Id$
  */
@@ -64,7 +66,7 @@ public class PermissionsChangeServlet extends SlingAllMethodsServlet
     private static final Logger LOGGER = LoggerFactory.getLogger(PermissionsChangeServlet.class);
 
     @Reference
-    private PermissionsChanger permissionsChangeServiceHandler;
+    private PermissionsManager permissionsChangeServiceHandler;
 
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
@@ -153,7 +155,7 @@ public class PermissionsChangeServlet extends SlingAllMethodsServlet
         throws RepositoryException
     {
         if (toParse == null) {
-            throw new IllegalArgumentException("Required parameter \":principal\" missing");
+            throw new IllegalArgumentException("Required parameter \":restriction\" missing");
         }
         final Map<String, Value> restriction = new HashMap<>();
         int splitPos = toParse.indexOf("=");
