@@ -27,7 +27,7 @@ import javax.jcr.Value;
 import javax.jcr.security.Privilege;
 
 /**
- * Service interface used by {@link ca.sickkids.ccm.lfs.permissions.internal.PermissionsChangeService} to alter
+ * Service interface used by {@link ca.sickkids.ccm.lfs.permissions.internal.PermissionsManagerService} to alter
  * permissions on JCR nodes.
  *
  * @version $Id$

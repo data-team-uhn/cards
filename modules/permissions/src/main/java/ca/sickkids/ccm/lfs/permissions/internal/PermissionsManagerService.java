@@ -43,7 +43,7 @@ import ca.sickkids.ccm.lfs.permissions.spi.PermissionsManager;
  *
  */
 @Component(service = { PermissionsManager.class })
-public class PermissionsChangeService implements PermissionsManager
+public class PermissionsManagerService implements PermissionsManager
 {
     @Override
     public void addAccessControlEntry(String target, boolean isAllow, Principal principal, Privilege[] privileges,

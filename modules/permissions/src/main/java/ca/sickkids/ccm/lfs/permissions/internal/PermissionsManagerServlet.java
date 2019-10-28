@@ -59,11 +59,11 @@ import ca.sickkids.ccm.lfs.permissions.spi.PermissionsManager;
     selectors = { "permissions" },
     methods = { "POST" }
     )
-public class PermissionsChangeServlet extends SlingAllMethodsServlet
+public class PermissionsManagerServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -677311195300436475L;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PermissionsChangeServlet.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PermissionsManagerServlet.class);
 
     @Reference
     private PermissionsManager permissionsChangeServiceHandler;
