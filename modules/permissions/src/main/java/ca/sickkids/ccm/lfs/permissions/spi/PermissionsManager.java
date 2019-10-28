@@ -36,12 +36,12 @@ public interface PermissionsManager
 {
     /**
      * Adds a new ACE (Access Control Entry) to the policy on the {@code target} node with the given specifications.
-     * @param target The target node to alter permissions for
+     * @param target the target node to alter permissions for
      * @param isAllow whether the request is to allow (true) or deny (false) access
-     * @param principal The Principal for the rule (i.e. target users to affect)
-     * @param privileges A comma-delimited list of privileges
-     * @param restrictions The restrictions to apply
-     * @param session The {@code javax.jcr.Session} to commit changes to.
+     * @param principal the Principal for the rule (i.e. target users to affect)
+     * @param privileges a comma-delimited list of privileges
+     * @param restrictions the restrictions to apply
+     * @param session the {@code javax.jcr.Session} to commit changes to.
      * @throws RepositoryException if an error occurs while obtaining repository entries, or
      *     illegal arguments occur
      */
@@ -50,12 +50,12 @@ public interface PermissionsManager
 
     /**
      * Removes the ACE matching the parameters from the {@code target} node, if any such ACE exists.
-     * @param target The target node to alter permissions for
+     * @param target the target node to alter permissions for
      * @param isAllow whether the request is to allow (true) or deny (false) access
-     * @param principal The Principal for the rule (i.e. target users to affect)
-     * @param privileges A comma-delimited list of privileges
-     * @param restrictions The restrictions to apply
-     * @param session The {@code javax.jcr.Session} to commit changes to.
+     * @param principal the Principal for the rule (i.e. target users to affect)
+     * @param privileges a comma-delimited list of privileges
+     * @param restrictions the restrictions to apply
+     * @param session the {@code javax.jcr.Session} to commit changes to.
      * @throws RepositoryException if an error occurs while obtaining repository entries, or
      *     illegal arguments occur
      */

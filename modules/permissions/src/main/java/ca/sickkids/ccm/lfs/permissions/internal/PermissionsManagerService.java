@@ -90,13 +90,13 @@ public class PermissionsManagerService implements PermissionsManager
 
     /**
      * Determine if the given JackrabbitAccessControlEntry fits the given criteria.
-     * @param entry Entry to determine sameness of
+     * @param entry entry to determine sameness of
      * @param isAllow whether the request is to allow (true) or deny (false) access
-     * @param principal The Principal for the rule (i.e. target users to affect)
-     * @param privileges A comma-delimited list of privileges
-     * @param restrictions The restrictions to apply
+     * @param principal the Principal for the rule (i.e. target users to affect)
+     * @param privileges a comma-delimited list of privileges
+     * @param restrictions the restrictions to apply
      * @return true if the JackrabbitAccessControlEntry fits the given criteria.
-     * @throws RepositoryException If an error occurs while obtaining restrictions from the entry
+     * @throws RepositoryException if an error occurs while obtaining restrictions from the entry
      */
     private boolean entryHasDetails(JackrabbitAccessControlEntry entry, boolean isAllow,
             Principal principal, Privilege[] privileges, Map<String, Value> restrictions) throws RepositoryException
@@ -111,9 +111,9 @@ public class PermissionsManagerService implements PermissionsManager
 
     /**
      * Check that the given privilege array is present in the given entry.
-     * @param entry Entry to check
-     * @param privileges Privileges to check
-     * @return True if the given entry's privileges are exactly equal to the given ones.
+     * @param entry entry to check
+     * @param privileges privileges to check
+     * @return true if the given entry's privileges are exactly equal to the given ones.
      */
     private boolean entryHasPrivileges(JackrabbitAccessControlEntry entry, Privilege[] privileges)
     {
@@ -135,10 +135,10 @@ public class PermissionsManagerService implements PermissionsManager
 
     /**
      * Check that the given restrictions map is present in the given entry.
-     * @param entry Entry to check
-     * @param restrictions Map of restrictions names to {@code javax.jcr.Value} to check
-     * @return True if the entry's restrictions are exactly equal to the given restrictions.
-     * @throws RepositoryException If the restrictions could not be obtained from the entry
+     * @param entry entry to check
+     * @param restrictions map of restrictions names to {@code javax.jcr.Value} to check
+     * @return true if the entry's restrictions are exactly equal to the given restrictions.
+     * @throws RepositoryException if the restrictions could not be obtained from the entry
      */
     private boolean entryHasRestrictions(JackrabbitAccessControlEntry entry, Map<String, Value> restrictions)
             throws RepositoryException
