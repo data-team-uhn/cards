@@ -1,0 +1,55 @@
+{
+    "jcr:primaryType": "sling:Folder",
+    "Dashboard": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionName": "Dashboard",
+        "lfs:icon": "asset:lfs-homepage.dashboardIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-homepage.dashboard.js",
+        "lfs:targetURL": "dashboard",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "test",
+            "jcr:mimeType": "text/html"
+        }
+    },
+    "Administration": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionName": "Administration",
+        "lfs:icon": "asset:lfs-homepage.adminIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-homepage.dashboard.js",
+        "lfs:targetURL": "admin.html",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "test",
+            "jcr:mimeType": "text/html"
+        }
+    },
+    "Model Organisms": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionName": "Model Organisms",
+        "lfs:icon": "asset:lfs-homepage.modelOrganismsIcon.js",
+        "lfs:extensionRenderURL": "",
+        "lfs:targetURL": "modelorganisms",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "test",
+            "jcr:mimeType": "text/html"
+        }
+    },
+    "Variants": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionName": "Model Organisms",
+        "lfs:icon": "asset:lfs-homepage.variantsIcon.js",
+        "lfs:extensionRenderURL": "",
+        "lfs:targetURL": "variants",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "test",
+            "jcr:mimeType": "text/html"
+        }
+    }
+}
