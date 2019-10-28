@@ -34,14 +34,17 @@ import moment from "moment";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
-// GUI for displaying answers
-export default function Questionnaire (props) {
+// GUI for displaying details about a questionnaire.
+let Questionnaire = (props) => {
   let { id } = props;
   let [ data, setData ] = useState();
   let [ error, setError ] = useState();
 
   let fetchData = () => {
-    fetch(`/Questionnaires/${id}.deep.json`).then((response) => response.ok ? response.json() : Promise.reject(response)).then(handleResponse).catch(handleError);
+    fetch(`/Questionnaires/${id}.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(handleResponse)
+      .catch(handleError);
   };
 
   let handleResponse = (json) => {
@@ -49,7 +52,7 @@ export default function Questionnaire (props) {
   };
 
   let handleError = (response) => {
-    console.error(response);
+    // FIXME Display errors to the users
     setError(response);
   }
 
@@ -81,6 +84,13 @@ export default function Questionnaire (props) {
   );
 };
 
+Questionnaire.propTypes = {
+    id: PropTypes.string.isRequired
+};
+
+export default withStyles(QuestionnaireStyle)(Questionnaire);
+
+// Details about a particular question in a questionnaire.
 let Question = (props) => {
   return (
     <Card>
@@ -98,13 +108,26 @@ let Question = (props) => {
           <dt>Maximum number of selected options:</dt>
           <dd>{props.data.maxAnswers || 0}</dd>
           <dt>Answer choices:</dt>
-          {Object.values(props.data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').map(value => <AnswerOption key={value['jcr:uuid']} data={value} />)}
+          {
+            Object.values(props.data)
+              .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
+              .map(value => <AnswerOption key={value['jcr:uuid']} data={value} />)
+          }
         </dl>
       </CardContent>
     </Card>
   );
 };
 
+Question.propTypes = {
+    data: PropTypes.object.isRequired
+};
+
+// A predefined answer option for a question.
 let AnswerOption = (props) => {
   return <dd>{props.data.label} (<Typography variant="body2" component="span">{props.data.value}</Typography>)</dd>;
+};
+
+AnswerOption.propTypes = {
+    data: PropTypes.object.isRequired
 };
