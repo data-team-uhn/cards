@@ -102,23 +102,11 @@ public class PermissionsChangeService implements PermissionsChanger
             Principal principal, Privilege[] privileges, Map<String, Value> restrictions) throws RepositoryException
     {
         // Ensure the principal and rules match
-        if (!entry.isAllow() == isAllow
-            || !entry.getPrincipal().equals(principal)) {
-            return false;
-        }
-
-        // Ensure the privileges match (using getPrivileges().equals() fails)
-        if (!entryHasPrivileges(entry, privileges)) {
-            return false;
-        }
-
-        // Ensure the restrictions match
-        if (!entryHasRestrictions(entry, restrictions)) {
-            return false;
-        }
-
-        // If everything looks OK, we have the correct entry
-        return true;
+        // Note that using getPrivileges().equals() fails to detect matches
+        return (entry.isAllow() == isAllow
+                && entry.getPrincipal().equals(principal)
+                && entryHasPrivileges(entry, privileges)
+                && entryHasRestrictions(entry, restrictions));
     }
 
     /**
