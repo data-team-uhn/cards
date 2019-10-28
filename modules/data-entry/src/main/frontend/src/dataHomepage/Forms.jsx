@@ -31,7 +31,7 @@ export default function Forms(props) {
       "key": "questionnaire/title",
       "label": "Questionnaire",
       "format": "string",
-      "link": "field:questionnaire/@path",
+      "link": "dashboard+field:questionnaire/@path",
     },
     {
       "key": "subject/identifier",

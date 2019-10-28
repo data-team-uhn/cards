@@ -40,6 +40,7 @@
     "moment-jdateformatparser": "^1.2.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-router-dom": "^5.0.1",
     "react-number-format": "^4.3.0",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
