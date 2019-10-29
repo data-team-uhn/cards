@@ -74,7 +74,8 @@ var loadRemoteComponent = function(component) {
         reactComponent: null,
         path: "/" + component["lfs:targetURL"],
         name: component["lfs:extensionName"],
-        iconUrl: component["lfs:icon"]
+        iconUrl: component["lfs:icon"],
+        order: component["lfs:defaultOrder"]
       });
     }
 
@@ -86,7 +87,8 @@ var loadRemoteComponent = function(component) {
           reactComponent: returnVal.default,
           path: "/" + component["lfs:targetURL"],
           name: component["lfs:extensionName"],
-          iconUrl: component["lfs:icon"]
+          iconUrl: component["lfs:icon"],
+          order: component["lfs:defaultOrder"]
         });
       } else {
         return reject();

@@ -7,6 +7,7 @@
         "lfs:icon": "asset:lfs-homepage.dashboardIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-homepage.dashboard.js",
         "lfs:targetURL": "dashboard",
+        "lfs:defaultOrder": 0,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "test",
@@ -20,6 +21,35 @@
         "lfs:icon": "asset:lfs-homepage.adminIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-homepage.dashboard.js",
         "lfs:targetURL": "admin.html",
+        "lfs:defaultOrder": 90,
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "test",
+            "jcr:mimeType": "text/html"
+        }
+    },
+    "Tumours": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionName": "Tumours",
+        "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
+        "lfs:extensionRenderURL": "",
+        "lfs:targetURL": "tumours",
+        "lfs:defaultOrder": 2,
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "test",
+            "jcr:mimeType": "text/html"
+        }
+    },
+    "Treatments": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionName": "Treatments",
+        "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
+        "lfs:extensionRenderURL": "",
+        "lfs:targetURL": "treatments",
+        "lfs:defaultOrder": 3,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "test",
@@ -33,6 +63,7 @@
         "lfs:icon": "asset:lfs-homepage.modelOrganismsIcon.js",
         "lfs:extensionRenderURL": "",
         "lfs:targetURL": "modelorganisms",
+        "lfs:defaultOrder": 4,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "test",
@@ -42,10 +73,11 @@
     "Variants": {
         "jcr:primaryType": "lfs:Extension",
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-        "lfs:extensionName": "Model Organisms",
+        "lfs:extensionName": "Variants",
         "lfs:icon": "asset:lfs-homepage.variantsIcon.js",
         "lfs:extensionRenderURL": "",
         "lfs:targetURL": "variants",
+        "lfs:defaultOrder": 5,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "test",

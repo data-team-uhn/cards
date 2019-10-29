@@ -31,14 +31,62 @@ const Sidebar = ({ ...props }) => {
   var links = (
     <List className={classes.list}>
       {routes.map((prop, key) => {
-        var adminButton = " ";
         var listItemClasses;
 
         // Generate a list of class names for each item in the sidebar
         // We colour two links in: the currently active
         // link, and the administration link
-        if (prop.path === "/admin.html") {
-          adminButton = classes.adminButton + " ";
+        if (prop.isAdmin) {
+          // Don't put non-admin links in here
+          return;
+        }
+        listItemClasses = classNames({
+          [" " + classes[color]]: activeRoute(prop.layout + prop.path)
+        });
+        const whiteFontClasses = classNames({
+          [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
+        });
+
+        // Handle prop.icon being either a class or the name of an icon class
+        // NavLink allows us to set styles iff the link's URL matches the current URL
+        return (
+          <NavLink
+            to={prop.layout + prop.path}
+            className={classes.item}
+            activeClassName="active"
+            key={key}
+          >
+            <ListItem button className={classes.itemLink + listItemClasses}>
+              <prop.icon
+                  className={classNames(classes.itemIcon, whiteFontClasses)}
+                />
+              <ListItemText
+                primary={prop.name}
+                className={classNames(classes.itemText, whiteFontClasses)}
+                disableTypography={true}
+              />
+            </ListItem>
+          </NavLink>
+        );
+      })}
+    </List>
+  );
+
+  var adminLinks = (
+    <List className={classes.adminSidebar}>
+      {routes.map((prop, key) => {
+        var blueButton = " ";
+        var listItemClasses;
+
+        // Generate a list of class names for each item in the sidebar
+        // We colour two links in: the currently active
+        // link, and the administration link
+        if (!prop.isAdmin) {
+          // Don't put non-admin links in here
+          return;
+        } else if (prop.path === "/admin.html") {
+          // The admin page button is blue
+          blueButton = classes.adminButton + " ";
           listItemClasses = classNames({
             [" " + classes[color]]: true
           });
@@ -56,7 +104,7 @@ const Sidebar = ({ ...props }) => {
         return (
           <NavLink
             to={prop.layout + prop.path}
-            className={adminButton + classes.item}
+            className={blueButton + classes.item}
             activeClassName="active"
             key={key}
           >
@@ -110,6 +158,7 @@ const Sidebar = ({ ...props }) => {
           <div className={classes.sidebarWrapper}>
             <AdminNavbarLinks />
             {links}
+            {adminLinks}
           </div>
           {image !== undefined ? (
             <div
@@ -128,7 +177,10 @@ const Sidebar = ({ ...props }) => {
           classes={{paper: classes.drawerPaper}}
         >
           {brand}
-          <div className={classes.sidebarWrapper}>{links}</div>
+          <div className={classes.sidebarWrapper}>
+            {links}
+            {adminLinks}
+          </div>
           {image !== undefined ? (
             <div
               className={classes.background}
