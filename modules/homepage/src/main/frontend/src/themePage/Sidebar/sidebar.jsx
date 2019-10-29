@@ -27,99 +27,59 @@ const Sidebar = ({ ...props }) => {
   }
   const { classes, color, logoImage, image, logoText, routes } = props;
 
+  // Generate NavLinks and ListItems from the given route prop
+  // activeStyle is true for anything that should look "active" (e.g. the admin link, the current page)
+  function generateListItem(prop, key, activeStyle) {
+    var listItemClasses, whiteFontClasses;
+    listItemClasses = classNames({
+      [" " + classes[color]]: activeStyle
+    });
+    whiteFontClasses = classNames({
+      [" " + classes.whiteFont]: activeStyle
+    });
+
+    return (
+      <NavLink
+        to={prop.layout + prop.path}
+        className={classes.item}
+        activeClassName="active"
+        key={key}
+      >
+        <ListItem button className={classes.itemLink + listItemClasses}>
+          <prop.icon
+              className={classNames(classes.itemIcon, whiteFontClasses)}
+            />
+          <ListItemText
+            primary={prop.name}
+            className={classNames(classes.itemText, whiteFontClasses)}
+            disableTypography={true}
+          />
+        </ListItem>
+      </NavLink>
+    );
+  }
+
   // Links
   var links = (
     <List className={classes.list}>
-      {routes.map((prop, key) => {
-        var listItemClasses;
-
-        // Generate a list of class names for each item in the sidebar
-        // We colour two links in: the currently active
-        // link, and the administration link
-        if (prop.isAdmin) {
-          // Don't put non-admin links in here
-          return;
-        }
-        listItemClasses = classNames({
-          [" " + classes[color]]: activeRoute(prop.layout + prop.path)
-        });
-        const whiteFontClasses = classNames({
-          [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
-        });
-
-        // Handle prop.icon being either a class or the name of an icon class
-        // NavLink allows us to set styles iff the link's URL matches the current URL
-        return (
-          <NavLink
-            to={prop.layout + prop.path}
-            className={classes.item}
-            activeClassName="active"
-            key={key}
-          >
-            <ListItem button className={classes.itemLink + listItemClasses}>
-              <prop.icon
-                  className={classNames(classes.itemIcon, whiteFontClasses)}
-                />
-              <ListItemText
-                primary={prop.name}
-                className={classNames(classes.itemText, whiteFontClasses)}
-                disableTypography={true}
-              />
-            </ListItem>
-          </NavLink>
-        );
+      {routes.filter((prop, key) => {
+        // Only use non-admin links
+        return !prop.isAdmin;
+      }).map((prop, key) => {
+        return(generateListItem(prop, key, activeRoute(prop.layout + prop.path)));
       })}
     </List>
   );
 
   var adminLinks = (
     <List className={classes.adminSidebar}>
-      {routes.map((prop, key) => {
-        var blueButton = " ";
-        var listItemClasses;
-
-        // Generate a list of class names for each item in the sidebar
-        // We colour two links in: the currently active
-        // link, and the administration link
-        if (!prop.isAdmin) {
-          // Don't put non-admin links in here
-          return;
-        } else if (prop.path === "/admin.html") {
-          // The admin page button is blue
-          blueButton = classes.adminButton + " ";
-          listItemClasses = classNames({
-            [" " + classes[color]]: true
-          });
-        } else {
-          listItemClasses = classNames({
-            [" " + classes[color]]: activeRoute(prop.layout + prop.path)
-          });
-        }
-        const whiteFontClasses = classNames({
-          [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
-        });
-
-        // Handle prop.icon being either a class or the name of an icon class
-        // NavLink allows us to set styles iff the link's URL matches the current URL
-        return (
-          <NavLink
-            to={prop.layout + prop.path}
-            className={blueButton + classes.item}
-            activeClassName="active"
-            key={key}
-          >
-            <ListItem button className={classes.itemLink + listItemClasses}>
-              <prop.icon
-                  className={classNames(classes.itemIcon, whiteFontClasses)}
-                />
-              <ListItemText
-                primary={prop.name}
-                className={classNames(classes.itemText, whiteFontClasses)}
-                disableTypography={true}
-              />
-            </ListItem>
-          </NavLink>
-        );
+      {routes.filter((prop, key) => {
+        // Only use admin links
+        return prop.isAdmin;
+      }).map((prop, key) => {
+        // To make it stand out, the admin link is also active
+        const isActive = prop.path === "/admin.html" || activeRoute(prop.layout + prop.path);
+        return(generateListItem(prop, key, isActive));
       })}
     </List>
   );
