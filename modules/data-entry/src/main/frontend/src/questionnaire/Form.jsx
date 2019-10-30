@@ -53,7 +53,16 @@ export default function Form (props) {
   let handleError = (response) => {
     console.error(response);
     setError(response);
-  }
+  };
+
+  let displayQuestion = (questionDefinition, key) => {
+    const existingAnswer = Object.entries(data)
+      .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
+        && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
+    // This variable must start with an upper case letter so that React treats it as a component
+    const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
+    return <QuestionDisplay key={key} questionDefinition={questionDefinition} existingAnswer={existingAnswer} />;
+  };
 
   if (!data) {
     fetchData();
@@ -74,20 +83,7 @@ export default function Form (props) {
         {
           Object.entries(data.questionnaire)
             .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question')
-            .map(([key, questionDefinition]) =>
-              <Typography key={key}>Will display
-                {questionDefinition.text}
-                with
-                {AnswerComponentManager.getAnswerComponent(questionDefinition).name}
-                for answers
-                {JSON.stringify(
-                  Object.entries(data)
-                    .filter(([key, value]) => value['sling:resourceSuperType'] == 'lfs/Answer')
-                    .filter(([key, answer]) => answer['question']['jcr:uuid'] === questionDefinition['jcr:uuid'])
-                    .map(([key, answer]) => answer.value))
-                }
-              </Typography>
-            )
+            .map(([key, questionDefinition]) => displayQuestion(questionDefinition, key))
         }
       </Grid>
     </div>
