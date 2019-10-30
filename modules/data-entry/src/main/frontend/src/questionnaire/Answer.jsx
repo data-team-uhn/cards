@@ -19,6 +19,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import uuidv4 from "uuid/v4";
 
 export const NAME_POS = 0;
 export const ID_POS = 1;
@@ -26,12 +27,16 @@ export const ID_POS = 1;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers } = props;
+  let { answers, questionDefinition, existingAnswer } = props;
+  let answerPath = (existingAnswer && existingAnswer[0]) || uuidv4();
   return (
     <React.Fragment>
+      <input type="hidden" name={`./${answerPath}/jcr:primaryType`} value="lfs:TextAnswer"></input>
+      <input type="hidden" name={`./${answerPath}/question`} value={questionDefinition['jcr:uuid']}></input>
+      <input type="hidden" name={`./${answerPath}/question@TypeHint`} value="Reference"></input>
       {answers.map( (element) => {
         return (
-          <input type="hidden" name={element[NAME_POS]} key={element[NAME_POS]} value={element[ID_POS]}></input>
+          <input type="hidden" name={`./${answerPath}/value`} key={element[NAME_POS]} value={element[ID_POS]}></input>
           );
       })}
     </React.Fragment>
