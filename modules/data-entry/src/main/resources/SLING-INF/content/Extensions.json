@@ -41,5 +41,18 @@
             "jcr:data": "",
             "jcr:mimeType": "text/html"
         }
+    },
+    "UserDashboard": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:targetURL": "Questionnaires/User",
+        "lfs:extensionName": "User dashboard",
+        "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-dataentry.userDashboard.js",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "",
+            "jcr:mimeType": "text/html"
+        }
     }
 }

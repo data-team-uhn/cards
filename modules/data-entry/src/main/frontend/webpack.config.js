@@ -22,6 +22,7 @@ module.exports = {
     [module_name + 'questionnairesIcon']: '@material-ui/icons/Assignment.js',
     [module_name + 'formsIcon']: '@material-ui/icons/Description.js',
     [module_name + 'dateQuestion']: './src/questionnaire/DateQuestion.jsx',
+    [module_name + 'userDashboard']: './src/dataHomepage/UserDashboard.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -54,7 +55,8 @@ module.exports = {
       "react-router-dom": "ReactRouterDOM",
       "lodash": "lodash",
       "prop-types": "PropTypes",
-      "@material-ui/core": "window['MaterialUI']"
+      "@material-ui/core": "window['MaterialUI']",
+      "MaterialDashboardReact": "window['MaterialDashboard']['lfs-material-dashboard.all']",
     }
   ]
 };
