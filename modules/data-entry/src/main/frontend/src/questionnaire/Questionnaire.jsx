@@ -54,6 +54,7 @@ let Questionnaire = (props) => {
   let handleError = (response) => {
     // FIXME Display errors to the users
     setError(response);
+    setData([]);
   }
 
   if (!data) {
