@@ -56,7 +56,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //   unknownLabel="Does not compute"
 //   />
 function BooleanQuestion(props) {
-  let {text, enableUnknown, yesLabel, noLabel, unknownLabel, ...rest} = props;
+  let {enableUnknown, yesLabel, noLabel, unknownLabel, ...rest} = props;
   let options = [{label: yesLabel, id: "true"}, {label: noLabel, id: "false"}]
   if (enableUnknown) {
     options.push({label: unknownLabel, id: "undefined"});
@@ -64,7 +64,7 @@ function BooleanQuestion(props) {
 
   return (
     <Question
-      text={text}
+      {...rest}
       >
       <MultipleChoice
         maxAnswers={1}
