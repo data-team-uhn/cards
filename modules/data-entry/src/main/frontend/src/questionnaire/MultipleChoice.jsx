@@ -23,7 +23,7 @@ import { Checkbox, FormControlLabel, IconButton, List, ListItem, Radio, RadioGro
 import Close from "@material-ui/icons/Close";
 import PropTypes from 'prop-types';
 
-import Answer, {NAME_POS, ID_POS} from "./Answer";
+import Answer, {LABEL_POS, VALUE_POS} from "./Answer";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 // Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
@@ -37,7 +37,7 @@ function MultipleChoice(props) {
   const [ghostName, setGhostName] = useState("&nbsp;");
   const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);
   const [options, setOptions] = useState([]);
-  const ghostSelected = selection.some(element => {return element[ID_POS] === GHOST_SENTINEL;});
+  const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
   const isRadio = max === 1 && options.length > 0;
   const isBare = options.length === 0;
   const disabled = selection.length >= max && !isRadio;
@@ -77,7 +77,7 @@ function MultipleChoice(props) {
     }
 
     // Do not add duplicates
-    if (selection.some(element => {return element[ID_POS] === id})) {
+    if (selection.some(element => {return element[VALUE_POS] === id})) {
       return;
     }
 
@@ -86,7 +86,7 @@ function MultipleChoice(props) {
       // Due to how React handles state, we need to do this in one step
       newSelection = newSelection.filter(
         (element) => {
-          return (element[ID_POS] !== GHOST_SENTINEL);
+          return (element[VALUE_POS] !== GHOST_SENTINEL);
         }
       );
     }
@@ -97,7 +97,7 @@ function MultipleChoice(props) {
   let unselect = (id, name) => {
     return setSelection(selection.filter(
       (element) => {
-        return !(element[ID_POS] === id && element[NAME_POS] === name)
+        return !(element[VALUE_POS] === id && element[LABEL_POS] === name)
       }
     ));
   }
@@ -109,7 +109,7 @@ function MultipleChoice(props) {
       return;
     }
 
-    let ghostIndex = selection.findIndex(element => {return element[ID_POS] === GHOST_SENTINEL});
+    let ghostIndex = selection.findIndex(element => {return element[VALUE_POS] === GHOST_SENTINEL});
     let newSelection = selection.slice();
     // If the ghost is already selected, update it. Otherwise, append it.
     if (ghostIndex >= 0) {
@@ -131,7 +131,7 @@ function MultipleChoice(props) {
   let removeOption = (id, name) => {
     setOptions(options.filter(
       (option) => {
-        return !(option[ID_POS] === id && option[NAME_POS] === name)
+        return !(option[VALUE_POS] === id && option[LABEL_POS] === name)
       }
     ));
     unselect(id, name);
@@ -201,7 +201,7 @@ function MultipleChoice(props) {
           aria-label="selection"
           name="selection"
           className={classes.selectionList}
-          value={selection.length > 0 && selection[0][ID_POS]}
+          value={selection.length > 0 && selection[0][VALUE_POS]}
         >
           {generateDefaultOptions(options, disabled, isRadio, selectNonGhostOption, removeOption)}
           {/* Ghost radio for the text input */}
@@ -279,9 +279,9 @@ function generateDefaultOptions(defaults, disabled, isRadio, onClick, onDelete) 
   return defaults.map( (childData) => {
     return (
       <StyledResponseChild
-        id={childData[ID_POS]}
-        key={childData[ID_POS]}
-        name={childData[NAME_POS]}
+        id={childData[VALUE_POS]}
+        key={childData[VALUE_POS]}
+        name={childData[LABEL_POS]}
         disabled={disabled}
         onClick={onClick}
         onDelete={onDelete}
