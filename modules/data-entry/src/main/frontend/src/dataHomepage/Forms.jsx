@@ -20,6 +20,14 @@ import React from "react";
 import LiveTable from "./LiveTable.jsx";
 
 export default function Forms(props) {
+  const { match, location } = props;
+  console.log(props);
+  const questionnaireID = /questionnaire=([^&]+)/.exec(location.search);
+  let customUrl = undefined;
+  if (questionnaireID) {
+    customUrl='/Forms.paginate?fieldname=questionnaire&fieldvalue='
+            + encodeURIComponent(questionnaireID[1]);
+  }
   const columns = [
     {
       "key": "jcr:uuid",
@@ -51,6 +59,6 @@ export default function Forms(props) {
     },
   ]
   return (
-    <LiveTable columns={columns} />
+    <LiveTable columns={columns} customUrl={customUrl}/>
   );
 }
