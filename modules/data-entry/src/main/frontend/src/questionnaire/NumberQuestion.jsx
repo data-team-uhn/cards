@@ -36,12 +36,12 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // submission.
 //
 // Optional props:
-//  max: Integer denoting maximum number of options that may be selected
-//  min: Integer denoting minimum number of options that may be selected
-//  name: String containing the question to ask
+//  minAnswers: Integer denoting minimum number of options that may be selected
+//  maxAnswers: Integer denoting maximum number of options that may be selected
+//  text: String containing the question to ask
 //  defaults: Array of objects, each with an "id" representing internal ID
 //            and a "value" denoting what will be displayed
-//  userInput: Either "input", "textbox", or undefined denoting the type of
+//  displayMode: Either "input", "textbox", or undefined denoting the type of
 //             user input. Currently, only "input" is supported
 //  maxValue: The maximum allowed input value
 //  minValue: The minimum allowed input value
@@ -51,17 +51,17 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //
 // Sample usage:
 // <NumberQuestion
-//    name="Please enter the patient's age"
+//    text="Please enter the patient's age"
 //    defaults={[
 //      {"id": "<18", "label": "<18"}
 //    ]}
-//    max={1}
+//    maxAnswers={1}
 //    minValue={18}
 //    type="integer"
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  let {defaults, max, min, name, userInput, minValue, maxValue, type, errorText, isRange, classes, ...rest} = props;
+  let {defaults, maxAnswers, minAnswers, text, dataType, displayMode, minValue, maxValue, errorText, isRange, classes, ...rest} = props;
   const [error, setError] = useState(false);
   // The following two are only used if a default is not given, as we switch to handling values here
   const [input, setInput] = useState(undefined);
@@ -76,14 +76,14 @@ function NumberQuestion(props) {
       return false;
     }
 
-    if (type === "integer") {
+    if (dataType === "integer") {
       // Test that it is an integer
       if (!/^[-+]?\d*$/.test(text)) {
         return true;
       }
 
       value = parseInt(text);
-    } else if (type === "float") {
+    } else if (dataType === "float") {
       value = Number(text);
 
       // Reject whitespace and non-numbers
@@ -128,7 +128,7 @@ function NumberQuestion(props) {
     min: minValue,
     max: maxValue,
     allowNegative: (typeof minValue === "undefined" || minValue < 0),
-    decimalScale: type === "integer" ? 0 : undefined
+    decimalScale: dataType === "integer" ? 0 : undefined
   };
   const muiInputProps = {
     inputComponent: NumberFormatCustom, // Used to override a TextField's type
@@ -137,17 +137,17 @@ function NumberQuestion(props) {
 
   return (
     <Question
-      text={name}
+      text={text}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
       {defaults ?
       /* Use MultipleChoice if we have default options */
       <MultipleChoice
-        max={max}
-        min={min}
+        maxAnswers={maxAnswers}
+        minAnswers={minAnswers}
         defaults={defaults}
-        input={userInput==="input"}
-        textbox={userInput==="textbox"}
+        input={displayMode === "input"}
+        textbox={displayMode === "textbox"}
         onChange={findError}
         additionalInputProps={textFieldProps}
         muiInputProps={muiInputProps}
@@ -216,12 +216,12 @@ NumberFormatCustom.propTypes = {
 
 NumberQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
-  name: PropTypes.string,
-  min: PropTypes.number,
-  max: PropTypes.number,
+  text: PropTypes.string,
+  minAnswers: PropTypes.number,
+  maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
-  userInput: PropTypes.oneOf([undefined, "input", "textbox"]),
-  type: PropTypes.oneOf(['integer', 'float']).isRequired,
+  displayMode: PropTypes.oneOf([undefined, "input", "textbox"]),
+  dataType: PropTypes.oneOf(['integer', 'float']),
   minValue: PropTypes.number,
   maxValue: PropTypes.number,
   errorText: PropTypes.string,

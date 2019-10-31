@@ -32,7 +32,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // submission.
 //
 // Optional arguments:
-//  name: String containing the question to ask
+//  text: String containing the question to ask
 //  enableUnknown: Boolean denoting whether an unknown option should be allowed
 //  yesLabel: String containing the label for 'true'
 //  noLabel: String containing the label for 'false'
@@ -41,22 +41,22 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // Sample usage:
 //
 // <BooleanQuestion
-//   name="Has the patient checked in on time?"
+//   text="Has the patient checked in on time?"
 //   />
 // <BooleanQuestion
-//   name="Has the patient eaten breakfast?"
+//   text="Has the patient eaten breakfast?"
 //   enableUnknown
 //   />
 // <BooleanQuestion
 //   min={1}
-//   name="This statement is false."
+//   text="This statement is false."
 //   enableUnknown
 //   yesLabel="True"
 //   noLabel="False"
 //   unknownLabel="Does not compute"
 //   />
 function BooleanQuestion(props) {
-  let {name, enableUnknown, yesLabel, noLabel, unknownLabel, ...rest} = props;
+  let {text, enableUnknown, yesLabel, noLabel, unknownLabel, ...rest} = props;
   let options = [{label: yesLabel, id: "true"}, {label: noLabel, id: "false"}]
   if (enableUnknown) {
     options.push({label: unknownLabel, id: "undefined"});
@@ -64,10 +64,10 @@ function BooleanQuestion(props) {
 
   return (
     <Question
-      text={name}
+      text={text}
       >
       <MultipleChoice
-        max={1}
+        maxAnswers={1}
         defaults={options}
         {...rest}
         />
@@ -76,7 +76,7 @@ function BooleanQuestion(props) {
 
 BooleanQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
-  name: PropTypes.string,
+  text: PropTypes.string,
   enableUnknown: PropTypes.bool,
   yesLabel: PropTypes.string,
   noLabel: PropTypes.string,

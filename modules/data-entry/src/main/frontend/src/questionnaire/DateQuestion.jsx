@@ -80,7 +80,7 @@ function amendMoment(date, format) {
 // submission.
 //
 // Optional props:
-// name: the question to be displayed
+// text: the question to be displayed
 // type: "timestamp" for a single date or "interval" for two dates
 // precision: yyyy, yyyy-MM, yyyy-MM-dd, yyyy-MM-dd hh:mm, yyyy-MM-dd hh:mm:ss
 // displayFormat (defaults to precision)
@@ -90,14 +90,14 @@ function amendMoment(date, format) {
 //
 // Sample usage:
 //<DateQuestion
-//  name="Please enter a date-time in 2019"
+//  text="Please enter a date-time in 2019"
 //  precision="yyyy-MM-dd hh:mm:ss"
 //  lowerLimit={new Date("01-01-2019")}
 //  upperLimit={new Date("12-31-2019")}
 //  type="timestamp"
 //  />
 function DateQuestion(props) {
-  let {defaults, name, type, precision, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
+  let {defaults, text, type, precision, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
   const [selectedDate, changeDate] = useState(amendMoment(moment(), precision));
   const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), precision));
   const [error, setError] = useState(false);
@@ -111,10 +111,10 @@ function DateQuestion(props) {
     return (
       <NumberQuestion
         minValue={0}
-        name={name}
-        max={1}
+        text={text}
+        maxAnswers={1}
         userInput="input"
-        type="integer"
+        dataType="integer"
         errorText="Please insert a valid year range."
         isRange={type === INTERVAL_TYPE}
         {...rest}
@@ -171,7 +171,7 @@ function DateQuestion(props) {
 
   return (
     <Question
-      text={name}
+      text={text}
       {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
@@ -236,7 +236,7 @@ function DateQuestion(props) {
 
 DateQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
-  name: PropTypes.string,
+  text: PropTypes.string,
   precision: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS),
   displayFormat: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS),
   type: PropTypes.oneOf([TIMESTAMP_TYPE, INTERVAL_TYPE]).isRequired,

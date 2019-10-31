@@ -36,28 +36,28 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // Optional arguments:
 //  max: Integer denoting maximum number of arguments that may be selected
 //  min: Integer denoting minimum number of arguments that may be selected
-//  name: String containing the question to ask
+//  text: String containing the question to ask
 //  defaults: Array of objects, each with an "id" representing internal ID
 //            and a "value" denoting what will be displayed
 //  regexp: String of a regular expression tested against the input
 //  errorText: String to display when the regexp is not matched
-//  userInput: Either "input", "textbox", or undefined denoting the type of
+//  displayMode: Either "input", "textbox", or undefined denoting the type of
 //             user input. Currently, only "input" is supported
 //
 // sample usage:
 // <TextQuestion
-//    name="Test text question (lowercase only)"
+//    text="Test text question (lowercase only)"
 //    defaults={[
 //      {"id": "1", "label": "1"},
 //      {"id": "2", "label": "2"},
 //      {"id": "3", "label": "3"}
 //    ]}
-//    userInput={"input"}
+//    displayMode={"input"}
 //    regexp={"[a-z]+"}
 //    errorText={"Please enter a lowercase input"}
 //    />
 function TextQuestion(props) {
-  let {defaults, max, min, name, userInput, regexp, errorText, ...rest} = props;
+  let {defaults, maxAnswers, minAnswers, text, displayMode, regexp, errorText, ...rest} = props;
   const [error, setError] = useState(false);
   const regexTest = new RegExp(regexp);
 
@@ -70,15 +70,15 @@ function TextQuestion(props) {
 
   return (
     <Question
-      text={name}
+      text={text}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
       <MultipleChoice
-        max={max}
-        min={min}
+        maxAnswers={maxAnswers}
+        minAnswers={minAnswers}
         defaults={defaults}
-        input={userInput==="input"}
-        textbox={userInput==="textbox"}
+        input={displayMode==="input"}
+        textbox={displayMode==="textbox"}
         onChange={checkRegex}
         {...rest}
         />
@@ -87,11 +87,11 @@ function TextQuestion(props) {
 
 TextQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
-  name: PropTypes.string,
-  min: PropTypes.number,
-  max: PropTypes.number,
+  text: PropTypes.string.isRequired,
+  minAnswers: PropTypes.number,
+  maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
-  userInput: PropTypes.oneOf([undefined, "input", "textbox"]),
+  displayMode: PropTypes.oneOf([undefined, "input", "textbox"]),
   regexp: PropTypes.string,
   errorText: PropTypes.string
 };

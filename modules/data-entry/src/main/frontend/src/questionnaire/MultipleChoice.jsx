@@ -32,15 +32,15 @@ const IS_DEFAULT_POS = 2;
 const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
-  let { classes, ghostAnchor, max, min, defaults, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { classes, ghostAnchor, maxAnswers, minAnswers, defaults, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
   const [selection, setSelection] = useState([]);
   const [ghostName, setGhostName] = useState("&nbsp;");
   const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);
   const [options, setOptions] = useState([]);
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
-  const isRadio = max === 1 && options.length > 0;
+  const isRadio = maxAnswers === 1 && options.length > 0;
   const isBare = options.length === 0;
-  const disabled = selection.length >= max && !isRadio;
+  const disabled = selection.length >= maxAnswers && !isRadio;
   let inputEl = null;
 
   // On startup, convert our defaults into a list of useable options
@@ -72,7 +72,7 @@ function MultipleChoice(props) {
     }
 
     // Do not add anything if we are at our maximum number of selections
-    if (selection.length >= max && !removeSentinel) {
+    if (selection.length >= maxAnswers && !removeSentinel) {
       return;
     }
 
@@ -147,7 +147,7 @@ function MultipleChoice(props) {
           updateGhost(GHOST_SENTINEL, event.target.value);
           onChange && onChange(event.target.value);
         }}
-        onFocus={() => {max === 1 && selectOption(ghostValue, ghostName)}}
+        onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
         inputProps={Object.assign({
           onKeyDown: (event) => {
             if (event.key == 'Enter') {
@@ -177,7 +177,7 @@ function MultipleChoice(props) {
     selectOption(...args);
   }
 
-  const warning = selection.length < min && (<Typography color='error'>Please select at least {min} option{min > 1 && "s"}.</Typography>)
+  const warning = selection.length < minAnswers && (<Typography color='error'>Please select at least {minAnswers} option{minAnswers > 1 && "s"}.</Typography>)
 
   if (isBare) {
     return(
@@ -358,8 +358,7 @@ MultipleChoice.propTypes = {
   classes: PropTypes.object.isRequired,
   text: PropTypes.string,
   description: PropTypes.string,
-  answers: PropTypes.array,
-  max: PropTypes.number,
+  maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
   input: PropTypes.bool,
   ghostAnchor: PropTypes.object,
