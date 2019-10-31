@@ -21,7 +21,6 @@ import LiveTable from "./LiveTable.jsx";
 
 export default function Forms(props) {
   const { match, location } = props;
-  console.log(props);
   const questionnaireID = /questionnaire=([^&]+)/.exec(location.search);
   let customUrl = undefined;
   if (questionnaireID) {

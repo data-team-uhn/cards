@@ -90,7 +90,11 @@ function UserDashboard(props) {
           return(
             <Grid item lg={12} xl={6} key={questionnaire["jcr:uuid"]}>
               <Card>
-                <CardHeader color="warning">{questionnaire["title"]}</CardHeader>
+                <CardHeader color="warning">
+                  <a href={`/content.html/Forms?questionnaire=${questionnaire["jcr:uuid"]}`}>
+                    {questionnaire["title"]}
+                  </a>
+                </CardHeader>
                 <CardBody>
                   <LiveTable
                     columns={columns}
