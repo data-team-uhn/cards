@@ -72,7 +72,14 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final String filter = request.getParameter("filter");
         if (StringUtils.isNotBlank(filter)) {
             // Full text search; \ and ' must be escaped
-            query.append(" and contains(*, '" + filter.replaceAll("['\\\\]", "\\\\$0") + "')");
+            query.append(" and contains(n.*, '" + filter.replaceAll("['\\\\]", "\\\\$0") + "')");
+        }
+        final String fieldname = request.getParameter("fieldname");
+        final String fieldvalue = request.getParameter("fieldvalue");
+        if (StringUtils.isNotBlank(fieldname) && StringUtils.isNotBlank(fieldvalue)) {
+            // Exact condition; \ and ' must be escaped. The value must be wrapped in 's
+            query.append(" and " + fieldname.replaceAll("['\\\\]", "\\\\$0") + "='"
+                    + fieldvalue.replaceAll("['\\\\]", "\\\\$0") + "'");
         }
         query.append(" order by 'jcr:created'");
         final Iterator<Resource> results =
