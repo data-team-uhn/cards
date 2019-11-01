@@ -76,7 +76,7 @@ export default function Form (props) {
   }
 
   return (
-    <div>
+    <form action={data["@path"]} method="POST">
       <Typography variant="h2">{id}</Typography>
       <Grid container direction="column" spacing={8}>
         {
@@ -84,7 +84,8 @@ export default function Form (props) {
             .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question')
             .map(([key, questionDefinition]) => displayQuestion(questionDefinition, key))
         }
+        <Grid item><input type="submit" value="Save"/></Grid>
       </Grid>
-    </div>
+    </form>
   );
 };
