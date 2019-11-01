@@ -158,7 +158,7 @@ function MultipleChoice(props) {
                 selectOption(ghostName, ghostName, false, true);
 
                 // Clear the ghost
-                inputEl.value = "";
+                setGhostName("");
               }
             }
           }
