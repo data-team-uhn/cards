@@ -39,8 +39,8 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //  minAnswers: Integer denoting minimum number of options that may be selected
 //  maxAnswers: Integer denoting maximum number of options that may be selected
 //  text: String containing the question to ask
-//  defaults: Array of objects, each with an "id" representing internal ID
-//            and a "value" denoting what will be displayed
+//  defaults: Array of arrays, each with two values, a "label" which will be displayed to the user,
+//            and a "value" denoting what will actually be stored
 //  displayMode: Either "input", "textbox", or undefined denoting the type of
 //             user input. Currently, only "input" is supported
 //  maxValue: The maximum allowed input value
@@ -53,11 +53,11 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // <NumberQuestion
 //    text="Please enter the patient's age"
 //    defaults={[
-//      {"id": "<18", "label": "<18"}
+//      ["<18", -1]
 //    ]}
 //    maxAnswers={1}
 //    minValue={18}
-//    type="integer"
+//    type="long"
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {

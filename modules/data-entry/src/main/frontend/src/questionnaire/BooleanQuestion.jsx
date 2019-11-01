@@ -48,7 +48,6 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //   enableUnknown
 //   />
 // <BooleanQuestion
-//   min={1}
 //   text="This statement is false."
 //   enableUnknown
 //   yesLabel="True"
@@ -56,7 +55,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //   unknownLabel="Does not compute"
 //   />
 function BooleanQuestion(props) {
-  let {enableUnknown, yesLabel, noLabel, unknownLabel, ...rest} = props;
+  const {enableUnknown, yesLabel, noLabel, unknownLabel, ...rest} = props;
   let options = [[yesLabel, "true", true], [noLabel, "false", true]];
   if (enableUnknown) {
     options.push([unknownLabel, "undefined", true]);

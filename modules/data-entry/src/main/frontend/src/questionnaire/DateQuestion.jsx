@@ -97,7 +97,7 @@ function amendMoment(date, format) {
 //  type="timestamp"
 //  />
 function DateQuestion(props) {
-  let {defaults, questionDefinition, existingAnswer, type, precision, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
+  let {questionDefinition, existingAnswer, type, precision, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
   let {text} = questionDefinition;
   let currentStartValue = existingAnswer && existingAnswer[1].value || '';
   const [selectedDate, changeDate] = useState(amendMoment(moment(currentStartValue), precision));

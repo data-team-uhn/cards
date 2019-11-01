@@ -37,8 +37,8 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //  max: Integer denoting maximum number of arguments that may be selected
 //  min: Integer denoting minimum number of arguments that may be selected
 //  text: String containing the question to ask
-//  defaults: Array of objects, each with an "id" representing internal ID
-//            and a "value" denoting what will be displayed
+//  defaults: Array of arrays, each with two values, a "label" which will be displayed to the user,
+//            and a "value" denoting what will actually be stored
 //  regexp: String of a regular expression tested against the input
 //  errorText: String to display when the regexp is not matched
 //  displayMode: Either "input", "textbox", or undefined denoting the type of
@@ -48,9 +48,9 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // <TextQuestion
 //    text="Test text question (lowercase only)"
 //    defaults={[
-//      {"id": "1", "label": "1"},
-//      {"id": "2", "label": "2"},
-//      {"id": "3", "label": "3"}
+//      ["One", "1"],
+//      ["Two", "2"],
+//      ["Three", "3"]
 //    ]}
 //    displayMode={"input"}
 //    regexp={"[a-z]+"}
