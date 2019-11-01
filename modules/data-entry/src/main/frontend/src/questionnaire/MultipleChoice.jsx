@@ -152,7 +152,7 @@ function MultipleChoice(props) {
             if (event.key == 'Enter') {
               if (isRadio) {
                 selectOption(ghostValue, ghostName);
-              } else if (!error) {
+              } else if (maxAnswers !== 1 && !error) {
                 // If we can select multiple and are not in error, add this as a possible input
                 addOption(ghostName, ghostName);
                 selectOption(ghostName, ghostName, false, true);
