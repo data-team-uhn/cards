@@ -32,7 +32,7 @@ const IS_DEFAULT_POS = 2;
 const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
-  let { classes, ghostAnchor, defaults, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { classes, existingAnswer, ghostAnchor, defaults, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
   let { maxAnswers, minAnswers } = {...props.questionDefinition, ...props};
   const [selection, setSelection] = useState([]);
   const [ghostName, setGhostName] = useState("&nbsp;");
@@ -187,6 +187,7 @@ function MultipleChoice(props) {
       <React.Fragment>
         <Answer
           answers={answers}
+          existingAnswer={existingAnswer}
           {...rest}
           />
         {ghostInput}
@@ -198,6 +199,7 @@ function MultipleChoice(props) {
         {warning}
         <Answer
           answers={answers}
+          existingAnswer={existingAnswer}
           {...rest}
           />
         <RadioGroup
@@ -242,6 +244,7 @@ function MultipleChoice(props) {
         {warning}
         <Answer
           answers={answers}
+          existingAnswer={existingAnswer}
           {...rest}
           />
         <List className={classes.checkboxList}>

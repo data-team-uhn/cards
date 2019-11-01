@@ -61,7 +61,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  const { defaults, errorText, isRange, classes, ...rest} = props;
+  const { existingAnswer, defaults, errorText, isRange, classes, ...rest} = props;
   const { text, dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
   const [error, setError] = useState(false);
   // The following two are only used if a default is not given, as we switch to handling values here
@@ -152,12 +152,14 @@ function NumberQuestion(props) {
         additionalInputProps={textFieldProps}
         muiInputProps={muiInputProps}
         error={error}
+        existingAnswer={existingAnswer}
         {...rest}
         /> :
       /* Otherwise just use a single text field */
       <React.Fragment>
         <Answer
           answers={answers}
+          existingAnswer={existingAnswer}
           {...rest}
           />
         <TextField
