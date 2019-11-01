@@ -99,7 +99,9 @@ function amendMoment(date, format) {
 function DateQuestion(props) {
   let {defaults, questionDefinition, existingAnswer, type, precision, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
   let {text} = questionDefinition;
-  const [selectedDate, changeDate] = useState(amendMoment(moment(), precision));
+  let currentStartValue = existingAnswer && existingAnswer[1].value || '';
+  const [selectedDate, changeDate] = useState(amendMoment(moment(currentStartValue), precision));
+  // FIXME There's no way to store the end date currently. Maybe add existingAnswer[1].endValue?
   const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), precision));
   const [error, setError] = useState(false);
   const upperLimitMoment = amendMoment(moment(upperLimit), precision);

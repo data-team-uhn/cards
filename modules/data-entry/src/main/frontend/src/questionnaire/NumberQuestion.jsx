@@ -64,8 +64,11 @@ function NumberQuestion(props) {
   const { existingAnswer, defaults, errorText, isRange, classes, ...rest} = props;
   const { text, dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
   const [error, setError] = useState(false);
+
+  const initialValue = existingAnswer ? existingAnswer[1].value : undefined;
+
   // The following two are only used if a default is not given, as we switch to handling values here
-  const [input, setInput] = useState(undefined);
+  const [input, setInput] = useState(initialValue);
   const [endInput, setEndInput] = useState(undefined);
 
   // Callback function for our min/max

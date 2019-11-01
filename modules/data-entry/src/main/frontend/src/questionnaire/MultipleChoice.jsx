@@ -34,8 +34,17 @@ const GHOST_SENTINEL = "custom-input";
 function MultipleChoice(props) {
   let { classes, existingAnswer, ghostAnchor, defaults, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
   let { maxAnswers, minAnswers } = {...props.questionDefinition, ...props};
-  const [selection, setSelection] = useState([]);
-  const [ghostName, setGhostName] = useState("&nbsp;");
+  let initialSelection =
+    // If there's no existing answer, there's no initial selection
+    (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
+    // The value can either be a single value or an array of values; force it into an array
+    Array.of(existingAnswer[1].value).flat()
+    // Only the internal values are stored, turn them into pairs of [label, value]
+    // Values that are not predefined come from a custom input, and custom inputs use a special value
+    .map(answer => (defaults.find(e => e[1] === answer) || [answer, GHOST_SENTINEL]));
+  const [selection, setSelection] = useState(initialSelection);
+  // FIXME This doesn't work with multiple values
+  const [ghostName, setGhostName] = useState(existingAnswer && existingAnswer[1].value || '');
   const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);
   const [options, setOptions] = useState([]);
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
