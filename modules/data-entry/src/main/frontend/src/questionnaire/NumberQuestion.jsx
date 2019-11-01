@@ -76,14 +76,14 @@ function NumberQuestion(props) {
       return false;
     }
 
-    if (dataType === "integer") {
+    if (dataType === "long") {
       // Test that it is an integer
       if (!/^[-+]?\d*$/.test(text)) {
         return true;
       }
 
       value = parseInt(text);
-    } else if (dataType === "float") {
+    } else if (dataType === "double") {
       value = Number(text);
 
       // Reject whitespace and non-numbers
@@ -128,7 +128,7 @@ function NumberQuestion(props) {
     min: minValue,
     max: maxValue,
     allowNegative: (typeof minValue === "undefined" || minValue < 0),
-    decimalScale: dataType === "integer" ? 0 : undefined
+    decimalScale: dataType === "long" ? 0 : undefined
   };
   const muiInputProps = {
     inputComponent: NumberFormatCustom, // Used to override a TextField's type
@@ -221,7 +221,7 @@ NumberQuestion.propTypes = {
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
   displayMode: PropTypes.oneOf([undefined, "input", "textbox"]),
-  dataType: PropTypes.oneOf(['integer', 'float']),
+  dataType: PropTypes.oneOf(['long', 'double', 'decimal']),
   minValue: PropTypes.number,
   maxValue: PropTypes.number,
   errorText: PropTypes.string,
@@ -230,7 +230,7 @@ NumberQuestion.propTypes = {
 
 NumberQuestion.defaultProps = {
   errorText: "Invalid input",
-  type: 'float',
+  dataType: 'double',
   isRange: false
 };
 
