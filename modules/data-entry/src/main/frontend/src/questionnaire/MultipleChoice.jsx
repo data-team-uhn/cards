@@ -179,11 +179,13 @@ function MultipleChoice(props) {
 
   const warning = selection.length < minAnswers && (<Typography color='error'>Please select at least {minAnswers} option{minAnswers > 1 && "s"}.</Typography>)
 
+  const answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
+
   if (isBare) {
     return(
       <React.Fragment>
         <Answer
-          answers={selection}
+          answers={answers}
           {...rest}
           />
         {ghostInput}
@@ -194,7 +196,7 @@ function MultipleChoice(props) {
       <React.Fragment>
         {warning}
         <Answer
-          answers={selection}
+          answers={answers}
           {...rest}
           />
         <RadioGroup
@@ -238,7 +240,7 @@ function MultipleChoice(props) {
       <React.Fragment>
         {warning}
         <Answer
-          answers={selection}
+          answers={answers}
           {...rest}
           />
         <List className={classes.checkboxList}>
