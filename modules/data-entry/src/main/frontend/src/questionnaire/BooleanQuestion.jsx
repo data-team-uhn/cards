@@ -57,9 +57,9 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //   />
 function BooleanQuestion(props) {
   let {enableUnknown, yesLabel, noLabel, unknownLabel, ...rest} = props;
-  let options = [{label: yesLabel, id: "true"}, {label: noLabel, id: "false"}]
+  let options = [[yesLabel, "true", true], [noLabel, "false", true]];
   if (enableUnknown) {
-    options.push({label: unknownLabel, id: "undefined"});
+    options.push([unknownLabel, "undefined", true]);
   }
 
   return (

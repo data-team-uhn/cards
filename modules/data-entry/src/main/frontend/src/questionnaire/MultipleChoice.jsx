@@ -32,8 +32,14 @@ const IS_DEFAULT_POS = 2;
 const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
-  let { classes, existingAnswer, ghostAnchor, defaults, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { classes, existingAnswer, ghostAnchor, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
   let { maxAnswers, minAnswers } = {...props.questionDefinition, ...props};
+  let defaults = props.defaults || Object.values(props.questionDefinition)
+    // Keep only answer options
+    // FIXME Must deal with nested options, do this recursively
+    .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
+    // Only extract the labels and internal values from the node
+    .map(value => [value.label, value.value, true]);
   let initialSelection =
     // If there's no existing answer, there's no initial selection
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
@@ -46,29 +52,12 @@ function MultipleChoice(props) {
   // FIXME This doesn't work with multiple values
   const [ghostName, setGhostName] = useState(existingAnswer && existingAnswer[1].value || '');
   const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = useState(defaults);
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
   const isRadio = maxAnswers === 1 && options.length > 0;
   const isBare = options.length === 0;
   const disabled = selection.length >= maxAnswers && !isRadio;
   let inputEl = null;
-
-  // On startup, convert our defaults into a list of useable options
-  useEffect( () => {
-    let newOptions = [];
-    if (defaults) {
-      newOptions = defaults.map( (defaultOption) => {
-        if (!("id" in defaultOption)) {
-          console.log("Malformed default option: " + JSON.stringify(defaultOption));
-          return ['', '', true];
-        }
-        let id = defaultOption["id"];
-        let label = ("label" in defaultOption ? defaultOption["label"] : id);
-        return ([label, id, true]); // label, id, default
-      });
-    }
-    setOptions(newOptions);
-  }, [defaults]);
 
   let selectOption = (id, name, checked = false, removeSentinel = false) => {
     if (isRadio) {

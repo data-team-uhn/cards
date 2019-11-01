@@ -61,7 +61,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  const { existingAnswer, defaults, errorText, isRange, classes, ...rest} = props;
+  const { existingAnswer, errorText, isRange, classes, ...rest} = props;
   const { text, dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
   const [error, setError] = useState(false);
 
@@ -145,10 +145,9 @@ function NumberQuestion(props) {
       {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
-      {defaults ?
+      {props.defaults || Object.values(props.questionDefinition).some(value => value['jcr:primaryType'] == 'lfs:AnswerOption') ?
       /* Use MultipleChoice if we have default options */
       <MultipleChoice
-        defaults={defaults}
         input={displayMode === "input"}
         textbox={displayMode === "textbox"}
         onChange={findError}

@@ -57,7 +57,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    errorText={"Please enter a lowercase input"}
 //    />
 function TextQuestion(props) {
-  let { defaults, errorText, ...rest } = props;
+  let { errorText, ...rest } = props;
   let { text, displayMode, regexp } = props.questionDefinition;
   const [error, setError] = useState(false);
   const regexTest = new RegExp(regexp);
@@ -76,7 +76,6 @@ function TextQuestion(props) {
       >
       {error && <Typography color='error'>{errorText}</Typography>}
       <MultipleChoice
-        defaults={defaults}
         input={displayMode==="input"}
         textbox={displayMode==="textbox"}
         onChange={checkRegex}
