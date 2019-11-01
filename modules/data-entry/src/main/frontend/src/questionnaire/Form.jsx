@@ -51,7 +51,6 @@ export default function Form (props) {
   };
 
   let handleError = (response) => {
-    console.error(response);
     setError(response);
   };
 
