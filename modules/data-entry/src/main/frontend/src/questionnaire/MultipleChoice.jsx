@@ -138,7 +138,7 @@ function MultipleChoice(props) {
   }
 
   // Hold the input box for either multiple choice type
-  let ghostInput = input && (<div className={classes.searchWrapper}>
+  let ghostInput = (input || textbox) && (<div className={classes.searchWrapper}>
       <TextField
         className={classes.textField}
         onChange={(event) => {
@@ -165,6 +165,7 @@ function MultipleChoice(props) {
         }, additionalInputProps)
         }
         value={ghostName}
+        multiline={textbox}
         InputProps={muiInputProps}
         inputRef={ref => {inputEl = ref}}
       />
@@ -209,7 +210,7 @@ function MultipleChoice(props) {
           {generateDefaultOptions(options, disabled, isRadio, selectNonGhostOption, removeOption)}
           {/* Ghost radio for the text input */}
           {
-          input && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
+          (input || textbox) && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
             <FormControlLabel
               control={
               <Radio
@@ -247,7 +248,7 @@ function MultipleChoice(props) {
           />
         <List className={classes.checkboxList}>
           {generateDefaultOptions(options, disabled, isRadio, selectNonGhostOption, removeOption)}
-          {input && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
+          {(input || textbox) && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
               <FormControlLabel
                 control={
                   <Checkbox
