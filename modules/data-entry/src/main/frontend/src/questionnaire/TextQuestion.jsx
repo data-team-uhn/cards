@@ -57,7 +57,8 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    errorText={"Please enter a lowercase input"}
 //    />
 function TextQuestion(props) {
-  let {defaults, maxAnswers, minAnswers, text, displayMode, regexp, errorText, ...rest} = props;
+  let { defaults, errorText, ...rest } = props;
+  let { text, displayMode, regexp } = props.questionDefinition;
   const [error, setError] = useState(false);
   const regexTest = new RegExp(regexp);
 
@@ -71,11 +72,10 @@ function TextQuestion(props) {
   return (
     <Question
       text={text}
+      {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
       <MultipleChoice
-        maxAnswers={maxAnswers}
-        minAnswers={minAnswers}
         defaults={defaults}
         input={displayMode==="input"}
         textbox={displayMode==="textbox"}
@@ -87,12 +87,17 @@ function TextQuestion(props) {
 
 TextQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
-  text: PropTypes.string.isRequired,
+  questionDefinition: PropTypes.shape({
+    text: PropTypes.string.isRequired,
+    minAnswers: PropTypes.number,
+    maxAnswers: PropTypes.number,
+    displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input"]),
+    regexp: PropTypes.string,
+  }).isRequired,
+  text: PropTypes.string,
   minAnswers: PropTypes.number,
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
-  displayMode: PropTypes.oneOf([undefined, "input", "textbox"]),
-  regexp: PropTypes.string,
   errorText: PropTypes.string
 };
 

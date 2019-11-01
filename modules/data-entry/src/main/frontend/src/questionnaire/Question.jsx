@@ -26,7 +26,8 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 // GUI for displaying answers
 function Question (props) {
-  let { classes, children, description, text } = props;
+  let { classes, children, questionDefinition} = props;
+  let { text, description } = {...questionDefinition, ...props}
   return (
     <Card>
       <CardHeader

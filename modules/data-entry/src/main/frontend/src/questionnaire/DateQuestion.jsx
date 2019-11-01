@@ -97,7 +97,8 @@ function amendMoment(date, format) {
 //  type="timestamp"
 //  />
 function DateQuestion(props) {
-  let {defaults, text, type, precision, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
+  let {defaults, questionDefinition, type, precision, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
+  let {text} = questionDefinition;
   const [selectedDate, changeDate] = useState(amendMoment(moment(), precision));
   const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), precision));
   const [error, setError] = useState(false);
@@ -111,12 +112,11 @@ function DateQuestion(props) {
     return (
       <NumberQuestion
         minValue={0}
-        text={text}
         maxAnswers={1}
-        userInput="input"
-        dataType="integer"
+        dataType="long"
         errorText="Please insert a valid year range."
         isRange={type === INTERVAL_TYPE}
+        questionDefinition={questionDefinition}
         {...rest}
         />
     );
@@ -172,11 +172,13 @@ function DateQuestion(props) {
   return (
     <Question
       text={text}
+      questionDefinition={questionDefinition}
       {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
       <Answer
         answers={outputAnswers}
+        questionDefinition={questionDefinition}
         />
       <TextField
         id="date"

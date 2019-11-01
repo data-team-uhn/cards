@@ -32,7 +32,8 @@ const IS_DEFAULT_POS = 2;
 const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
-  let { classes, ghostAnchor, maxAnswers, minAnswers, defaults, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { classes, ghostAnchor, defaults, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { maxAnswers, minAnswers } = {...props.questionDefinition, ...props};
   const [selection, setSelection] = useState([]);
   const [ghostName, setGhostName] = useState("&nbsp;");
   const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);

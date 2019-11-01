@@ -61,7 +61,8 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  let {defaults, maxAnswers, minAnswers, text, dataType, displayMode, minValue, maxValue, errorText, isRange, classes, ...rest} = props;
+  const { defaults, errorText, isRange, classes, ...rest} = props;
+  const { text, dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
   const [error, setError] = useState(false);
   // The following two are only used if a default is not given, as we switch to handling values here
   const [input, setInput] = useState(undefined);
@@ -138,13 +139,12 @@ function NumberQuestion(props) {
   return (
     <Question
       text={text}
+      {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
       {defaults ?
       /* Use MultipleChoice if we have default options */
       <MultipleChoice
-        maxAnswers={maxAnswers}
-        minAnswers={minAnswers}
         defaults={defaults}
         input={displayMode === "input"}
         textbox={displayMode === "textbox"}
@@ -216,6 +216,14 @@ NumberFormatCustom.propTypes = {
 
 NumberQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
+  questionDefinition: PropTypes.shape({
+    text: PropTypes.string.isRequired,
+    minAnswers: PropTypes.number,
+    maxAnswers: PropTypes.number,
+    minValue: PropTypes.number,
+    maxValue: PropTypes.number,
+    displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input"]),
+  }).isRequired,
   text: PropTypes.string,
   minAnswers: PropTypes.number,
   maxAnswers: PropTypes.number,
