@@ -261,7 +261,7 @@ function MultipleChoice(props) {
                     className={classes.ghostRadiobox}
                   />
                 }
-                label="&nbsp;"
+                label=""
                 value={ghostValue}
                 key={ghostValue}
                 className={classes.ghostFormControl + " " + classes.childFormControl}
