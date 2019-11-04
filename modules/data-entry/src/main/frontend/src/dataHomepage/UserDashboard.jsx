@@ -21,7 +21,7 @@ import LiveTable from "./LiveTable.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
-import { Grid } from "@material-ui/core";
+import { Grid, Link } from "@material-ui/core";
 import { Card, CardHeader, CardBody } from "MaterialDashboardReact";
 import { withStyles } from "@material-ui/core";
 
@@ -91,9 +91,9 @@ function UserDashboard(props) {
             <Grid item lg={12} xl={6} key={questionnaire["jcr:uuid"]}>
               <Card>
                 <CardHeader color="warning">
-                  <a href={`/content.html/Forms?questionnaire=${questionnaire["jcr:uuid"]}`}>
+                  <Link href={`/content.html/Forms?questionnaire=${questionnaire["jcr:uuid"]}`}>
                     {questionnaire["title"]}
-                  </a>
+                  </Link>
                 </CardHeader>
                 <CardBody>
                   <LiveTable
