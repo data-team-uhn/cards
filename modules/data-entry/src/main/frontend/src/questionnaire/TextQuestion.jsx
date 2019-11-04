@@ -58,7 +58,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    />
 function TextQuestion(props) {
   let { errorText, ...rest } = props;
-  let { text, displayMode, regexp } = props.questionDefinition;
+  let { displayMode, regexp } = {...props.questionDefinition, ...props};
   const [error, setError] = useState(false);
   const regexTest = new RegExp(regexp);
 
@@ -71,7 +71,6 @@ function TextQuestion(props) {
 
   return (
     <Question
-      text={text}
       {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
