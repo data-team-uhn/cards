@@ -169,7 +169,6 @@ function DateQuestion(props) {
       isDate ? outputEndDate.format(moment.HTML5_FMT.DATE) :
       outputEndDate.format(moment.HTML5_FMT.DATETIME_LOCAL);
   let outputAnswers = [["date", selectedDate.isValid() ? selectedDate.formatWithJDF(dateFormat) : '']];
-  console.log(selectedDate);
   if (type === INTERVAL_TYPE) {
     outputAnswers.push(["endDate", selectedEndDate.isValid() ? selectedEndDate.formatWithJDF(dateFormat) : ''])
   }
