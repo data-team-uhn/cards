@@ -67,6 +67,7 @@ function BooleanQuestion(props) {
       >
       <MultipleChoice
         answerNodeType="lfs:BooleanAnswer"
+        valueType="Boolean"
         maxAnswers={1}
         defaults={options}
         {...rest}

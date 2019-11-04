@@ -64,6 +64,7 @@ function NumberQuestion(props) {
   const { existingAnswer, errorText, isRange, classes, ...rest} = props;
   const { text, dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
   const answerNodeType = props.answerNodeType || (dataType === "long" ? "lfs:LongAnswer" : dataType === "double" ? "lfs:DoubleAnswer" : dataType === "decimal" ? "lfs:DecimalAnswer" : undefined);
+  const valueType = props.valueType || (dataType === "long" ? "Long" : dataType === "double" ? "Double" : dataType === "decimal" ? "Decimal" : undefined);
   const [error, setError] = useState(false);
 
   const initialValue = existingAnswer ? existingAnswer[1].value : undefined;
@@ -150,6 +151,7 @@ function NumberQuestion(props) {
       /* Use MultipleChoice if we have default options */
       <MultipleChoice
         answerNodeType={answerNodeType}
+        valueType={valueType}
         input={displayMode === "input"}
         textbox={displayMode === "textbox"}
         onChange={findError}
@@ -165,6 +167,7 @@ function NumberQuestion(props) {
           answers={answers}
           existingAnswer={existingAnswer}
           answerNodeType={answerNodeType}
+          valueType={valueType}
           {...rest}
           />
         <TextField

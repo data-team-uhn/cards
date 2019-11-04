@@ -47,7 +47,7 @@ function MultipleChoice(props) {
     Array.of(existingAnswer[1].value).flat()
     // Only the internal values are stored, turn them into pairs of [label, value]
     // Values that are not predefined come from a custom input, and custom inputs use a special value
-    .map(answer => (defaults.find(e => e[1] === answer) || [answer, GHOST_SENTINEL]));
+    .map(answer => (defaults.find(e => e[1] === String(answer)) || [String(answer), GHOST_SENTINEL]));
   const [selection, setSelection] = useState(initialSelection);
   // FIXME This doesn't work with multiple values
   const [ghostName, setGhostName] = useState(existingAnswer && existingAnswer[1].value || '');

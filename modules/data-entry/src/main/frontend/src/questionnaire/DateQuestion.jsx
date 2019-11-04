@@ -119,6 +119,7 @@ function DateQuestion(props) {
         errorText="Please insert a valid year range."
         isRange={type === INTERVAL_TYPE}
         answerNodeType="lfs:DateAnswer"
+        valueType="Long"
         existingAnswer={existingAnswer}
         {...rest}
         />
@@ -184,6 +185,7 @@ function DateQuestion(props) {
         questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
         answerNodeType="lfs:DateAnswer"
+        valueType="Date"
         />
       <TextField
         id="date"
