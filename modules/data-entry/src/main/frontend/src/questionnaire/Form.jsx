@@ -46,7 +46,10 @@ export default function Form (props) {
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
 
   let fetchData = () => {
-    fetch(`/Forms/${id}.deep.json`).then((response) => response.ok ? response.json() : Promise.reject(response)).then(handleResponse).catch(handleError);
+    fetch(`/Forms/${id}.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(handleResponse)
+      .catch(handleError);
   };
 
   let handleResponse = (json) => {
