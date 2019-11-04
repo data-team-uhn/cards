@@ -75,8 +75,8 @@ function TextQuestion(props) {
       >
       {error && <Typography color='error'>{errorText}</Typography>}
       <MultipleChoice
-        input={displayMode==="input"}
-        textbox={displayMode==="textbox"}
+        input={displayMode === "input" || displayMode === "list+input"}
+        textbox={displayMode === "textbox"}
         onChange={checkRegex}
         {...rest}
         />
