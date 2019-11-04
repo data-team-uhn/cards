@@ -21,14 +21,14 @@ import LiveTable from "./LiveTable.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
-import { Grid, Link } from "@material-ui/core";
+import { Button, Grid, Link, withStyles } from "@material-ui/core";
 import { Card, CardHeader, CardBody } from "MaterialDashboardReact";
-import { withStyles } from "@material-ui/core";
 
 // Component that renders the user's dashboard, with one LiveTable per questionnaire
 // visible by the user. Each LiveTable contains all forms that use the given
-// questionnaire. This component uses no props.
+// questionnaire. 
 function UserDashboard(props) {
+  const { classes } = props;
   // Store information about each questionnaire and whether or not we have
   // initialized
   let [questionnaires, setQuestionnaires] = useState([]);
@@ -92,8 +92,13 @@ function UserDashboard(props) {
               <Card>
                 <CardHeader color="warning">
                   <Link href={`/content.html/Forms?questionnaire=${questionnaire["jcr:uuid"]}`}>
-                    {questionnaire["title"]}
+                    <Button className={classes.cardHeaderButton}>
+                      {questionnaire["title"]}
+                    </Button>
                   </Link>
+                  <Button variant="contained" color="primary" className={classes.newFormButton}>
+                    New form
+                  </Button>
                 </CardHeader>
                 <CardBody>
                   <LiveTable
