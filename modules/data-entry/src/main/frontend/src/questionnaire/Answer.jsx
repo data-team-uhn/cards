@@ -27,11 +27,11 @@ export const VALUE_POS = 1;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, questionDefinition, existingAnswer } = props;
+  let { answers, answerNodeType, questionDefinition, existingAnswer } = props;
   let answerPath = (existingAnswer && existingAnswer[0]) || uuidv4();
   return (
     <React.Fragment>
-      <input type="hidden" name={`./${answerPath}/jcr:primaryType`} value="lfs:TextAnswer"></input>
+      <input type="hidden" name={`./${answerPath}/jcr:primaryType`} value={answerNodeType}></input>
       <input type="hidden" name={`./${answerPath}/question`} value={questionDefinition['jcr:uuid']}></input>
       <input type="hidden" name={`./${answerPath}/question@TypeHint`} value="Reference"></input>
       {answers.map( (element, index) => {
@@ -45,6 +45,11 @@ function Answer (props) {
 
 Answer.propTypes = {
     answers: PropTypes.array,
+    answerNodeType: PropTypes.string,
+};
+
+Answer.defaultProps = {
+  answerNodeType: "lfs:TextAnswer"
 };
 
 export default Answer;

@@ -63,6 +63,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 function NumberQuestion(props) {
   const { existingAnswer, errorText, isRange, classes, ...rest} = props;
   const { text, dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
+  const answerNodeType = props.answerNodeType || (dataType === "long" ? "lfs:LongAnswer" : dataType === "double" ? "lfs:DoubleAnswer" : dataType === "decimal" ? "lfs:DecimalAnswer" : undefined);
   const [error, setError] = useState(false);
 
   const initialValue = existingAnswer ? existingAnswer[1].value : undefined;
@@ -148,6 +149,7 @@ function NumberQuestion(props) {
       {props.defaults || Object.values(props.questionDefinition).some(value => value['jcr:primaryType'] == 'lfs:AnswerOption') ?
       /* Use MultipleChoice if we have default options */
       <MultipleChoice
+        answerNodeType={answerNodeType}
         input={displayMode === "input"}
         textbox={displayMode === "textbox"}
         onChange={findError}
@@ -162,6 +164,7 @@ function NumberQuestion(props) {
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
+          answerNodeType={answerNodeType}
           {...rest}
           />
         <TextField
