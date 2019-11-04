@@ -56,7 +56,7 @@ function MultipleChoice(props) {
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
   const isRadio = maxAnswers === 1 && options.length > 0;
   const isBare = options.length === 0;
-  const disabled = selection.length >= maxAnswers && !isRadio;
+  const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio;
   let inputEl = null;
 
   let selectOption = (id, name, checked = false, removeSentinel = false) => {
