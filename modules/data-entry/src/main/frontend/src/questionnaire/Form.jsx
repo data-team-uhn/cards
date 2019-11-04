@@ -21,6 +21,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import {
+  Button,
   Grid,
   Typography,
   withStyles
@@ -41,6 +42,8 @@ export default function Form (props) {
   let { id } = props;
   let [ data, setData ] = useState();
   let [ error, setError ] = useState();
+  let [ saveInProgress, setSaveInProgress ] = useState();
+  let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
 
   let fetchData = () => {
     fetch(`/Forms/${id}.deep.json`).then((response) => response.ok ? response.json() : Promise.reject(response)).then(handleResponse).catch(handleError);
@@ -53,6 +56,19 @@ export default function Form (props) {
   let handleError = (response) => {
     setError(response);
   };
+
+  let saveData = (event) => {
+    setSaveInProgress(true);
+    event.preventDefault();
+    let data = new FormData(event.currentTarget);
+    fetch(`/Forms/${id}`, {
+      method: "POST",
+      body: data
+    }).then((response) => response.ok ? true : Promise.reject(response))
+      .then(() => setLastSaveStatus(true))
+      .catch(() => setLastSaveStatus(false))
+      .finally(() => setSaveInProgress(false));
+  }
 
   let displayQuestion = (questionDefinition, key) => {
     const existingAnswer = Object.entries(data)
@@ -76,7 +92,7 @@ export default function Form (props) {
   }
 
   return (
-    <form action={data["@path"]} method="POST">
+    <form action={data["@path"]} method="POST" onSubmit={saveData} onChange={()=>setLastSaveStatus(undefined)}>
       <Typography variant="h2">{id}</Typography>
       <Grid container direction="column" spacing={8}>
         {
@@ -84,7 +100,7 @@ export default function Form (props) {
             .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question')
             .map(([key, questionDefinition]) => displayQuestion(questionDefinition, key))
         }
-        <Grid item><input type="submit" value="Save"/></Grid>
+        <Grid item><Button type="submit" variant="contained" color="primary" disabled={saveInProgress}>{saveInProgress ? 'Saving' : lastSaveStatus === true ? 'Saved' : lastSaveStatus === false ? 'Save failed, try again?' : 'Save'}</Button></Grid>
       </Grid>
     </form>
   );
