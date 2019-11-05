@@ -71,7 +71,7 @@ function MultipleChoice(props) {
     }
 
     // Do not add anything if we are at our maximum number of selections
-    if (selection.length >= maxAnswers && !removeSentinel) {
+    if (maxAnswers > 0 && selection.length >= maxAnswers && !removeSentinel) {
       return;
     }
 
