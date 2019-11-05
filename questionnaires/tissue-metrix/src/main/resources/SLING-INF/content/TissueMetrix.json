@@ -1,0 +1,145 @@
+{
+  "jcr:primaryType": "lfs:Questionnaire",
+  "title": "Tissue Metrix Data",
+  "File1": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "File1"
+  },
+  "File2": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "File2"
+  },
+  "File3": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "File3"
+  },
+  "Donor number": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Donor number",
+    "mandatory": true
+  },
+  "Perinatal history": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Perinatal history"
+  },
+  "Disease": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Disease"
+  },
+  "Last follow up": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Last follow-up",
+    "dataType": "date",
+    "dateFormat": "yyyy-MM-dd"
+  },
+  "Date of birth": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Date of birth",
+    "dataType": "date",
+    "dateFormat": "yyyy-MM-dd"
+  },
+  "Date of death": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Date of death",
+    "dataType": "date",
+    "dateFormat": "yyyy-MM-dd"
+  },
+  "Date registered": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Date registered",
+    "dataType": "date",
+    "dateFormat": "yyyy-MM-dd"
+  },
+  "Tumor": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Tumor type"
+  },
+  "Life status": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Life status",
+    "displayMode": "list",
+    "alive": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "label": "Alive",
+      "value": "alive"
+    },
+    "deceased": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "label": "Deceased",
+      "value": "deceased"
+    }
+  },
+  "Comments": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Comments",
+    "displayMode": "textbox"
+  },
+  "Mutation status": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Mutation status"
+  },
+  "Maternal ethnicity": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Maternal ethnicity"
+  },
+  "Paternal ethnicity": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Paternal ethnicity"
+  },
+  "Disease site": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Disease site"
+  },
+  "Reason for referral": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Reason for referral"
+  },
+  "Sex": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Sex",
+    "description": "Sex must be recorded as biological sex rather than gender.",
+    "displayMode": "list+input",
+    "male": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "label": "Male",
+      "value": "m"
+    },
+    "female": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "label": "Female",
+      "value": "f"
+    }
+  },
+  "Source1": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Source1"
+  },
+  "Source2": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Source2"
+  },
+  "Source3": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Source3"
+  },
+  "Species": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Species",
+    "displayMode": "list+input",
+    "human": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "label": "Human",
+      "value": "human"
+    },
+    "canide": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "label": "Canide",
+      "value": "canide"
+    },
+    "murine": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "label": "Murine",
+      "value": "murine"
+    }
+  }
+}
