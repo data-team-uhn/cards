@@ -3,24 +3,29 @@
   "title": "Tissue Metrix Data",
   "File1": {
     "jcr:primaryType": "lfs:Question",
-    "text": "File1"
+    "text": "File1",
+    "maxAnswers": 1
   },
   "File2": {
     "jcr:primaryType": "lfs:Question",
-    "text": "File2"
+    "text": "File2",
+    "maxAnswers": 1
   },
   "File3": {
     "jcr:primaryType": "lfs:Question",
-    "text": "File3"
+    "text": "File3",
+    "maxAnswers": 1
   },
   "Donor number": {
     "jcr:primaryType": "lfs:Question",
     "text": "Donor number",
-    "mandatory": true
+    "mandatory": true,
+    "maxAnswers": 1
   },
   "Perinatal history": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Perinatal history"
+    "text": "Perinatal history",
+    "maxAnswers": 1
   },
   "Disease": {
     "jcr:primaryType": "lfs:Question",
@@ -30,25 +35,29 @@
     "jcr:primaryType": "lfs:Question",
     "text": "Last follow-up",
     "dataType": "date",
-    "dateFormat": "yyyy-MM-dd"
+    "dateFormat": "yyyy-MM-dd",
+    "maxAnswers": 1
   },
   "Date of birth": {
     "jcr:primaryType": "lfs:Question",
     "text": "Date of birth",
     "dataType": "date",
-    "dateFormat": "yyyy-MM-dd"
+    "dateFormat": "yyyy-MM-dd",
+    "maxAnswers": 1
   },
   "Date of death": {
     "jcr:primaryType": "lfs:Question",
     "text": "Date of death",
     "dataType": "date",
-    "dateFormat": "yyyy-MM-dd"
+    "dateFormat": "yyyy-MM-dd",
+    "maxAnswers": 1
   },
   "Date registered": {
     "jcr:primaryType": "lfs:Question",
     "text": "Date registered",
     "dataType": "date",
-    "dateFormat": "yyyy-MM-dd"
+    "dateFormat": "yyyy-MM-dd",
+    "maxAnswers": 1
   },
   "Tumor": {
     "jcr:primaryType": "lfs:Question",
@@ -58,6 +67,7 @@
     "jcr:primaryType": "lfs:Question",
     "text": "Life status",
     "displayMode": "list",
+    "maxAnswers": 1,
     "alive": {
       "jcr:primaryType": "lfs:AnswerOption",
       "label": "Alive",
@@ -92,13 +102,15 @@
   },
   "Reason for referral": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Reason for referral"
+    "text": "Reason for referral",
+    "maxAnswers": 1
   },
   "Sex": {
     "jcr:primaryType": "lfs:Question",
     "text": "Sex",
     "description": "Sex must be recorded as biological sex rather than gender.",
     "displayMode": "list+input",
+    "maxAnswers": 1,
     "male": {
       "jcr:primaryType": "lfs:AnswerOption",
       "label": "Male",
@@ -112,20 +124,24 @@
   },
   "Source1": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Source1"
+    "text": "Source1",
+    "maxAnswers": 1
   },
   "Source2": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Source2"
+    "text": "Source2",
+    "maxAnswers": 1
   },
   "Source3": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Source3"
+    "text": "Source3",
+    "maxAnswers": 1
   },
   "Species": {
     "jcr:primaryType": "lfs:Question",
     "text": "Species",
     "displayMode": "list+input",
+    "maxAnswers": 1,
     "human": {
       "jcr:primaryType": "lfs:AnswerOption",
       "label": "Human",
