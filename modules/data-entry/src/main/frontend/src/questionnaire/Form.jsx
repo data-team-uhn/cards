@@ -22,6 +22,7 @@ import PropTypes from "prop-types";
 
 import {
   Button,
+  CircularProgress,
   Grid,
   Typography,
   withStyles
@@ -85,23 +86,34 @@ export default function Form (props) {
   if (!data) {
     fetchData();
     return (
-      <div>
-        <Typography variant="h2">{id}</Typography>
-        <Grid container direction="column" spacing={8}>
-          <Typography>Loading...</Typography>
-        </Grid>
-      </div>
+      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 
   return (
     <form action={data["@path"]} method="POST" onSubmit={saveData} onChange={()=>setLastSaveStatus(undefined)}>
-      <Typography variant="h2">{id}</Typography>
-      <Grid container direction="column" spacing={8}>
+      <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
+        <Grid item>
+          {
+            data && data.questionnaire && data.questionnaire.title ?
+              <Typography variant="overline">{data.questionnaire.title}</Typography>
+            : ""
+          }
+          {
+            data && data.subject && data.subject.identifier ?
+              <Typography variant="h2">{data.subject.identifier}</Typography>
+            : id
+          }
+          {
+            data && data['jcr:createdBy'] && data['jcr:created'] ?
+            <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
+            : ""
+          }
+        </Grid>
         {
           Object.entries(data.questionnaire)
             .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question')
-            .map(([key, questionDefinition]) => displayQuestion(questionDefinition, key))
+            .map(([key, questionDefinition]) => <Grid item key={key}>{displayQuestion(questionDefinition, key)}</Grid>)
         }
         <Grid item><Button type="submit" variant="contained" color="primary" disabled={saveInProgress}>{saveInProgress ? 'Saving' : lastSaveStatus === true ? 'Saved' : lastSaveStatus === false ? 'Save failed, try again?' : 'Save'}</Button></Grid>
       </Grid>
