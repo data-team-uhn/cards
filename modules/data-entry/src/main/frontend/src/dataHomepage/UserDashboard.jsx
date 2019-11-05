@@ -23,6 +23,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 import { Button, Grid, Link, withStyles } from "@material-ui/core";
 import { Card, CardHeader, CardBody } from "MaterialDashboardReact";
+import NewFormDialog from "NewFormDialog";
 
 // Component that renders the user's dashboard, with one LiveTable per questionnaire
 // visible by the user. Each LiveTable contains all forms that use the given
@@ -96,9 +97,9 @@ function UserDashboard(props) {
                       {questionnaire["title"]}
                     </Button>
                   </Link>
-                  <Button variant="contained" color="primary" className={classes.newFormButton}>
+                  <NewFormDialog>
                     New form
-                  </Button>
+                  </NewFormDialog>
                 </CardHeader>
                 <CardBody>
                   <LiveTable
