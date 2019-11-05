@@ -1,0 +1,305 @@
+{
+  "jcr:primaryType": "lfs:QuestionnairesHomepage",
+  "RadiotherapyData": {
+    "jcr:primaryType": "lfs:Questionnaire",
+    "title": "Radiotherapy Data"
+  },
+  "Patient ID": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Patient ID",
+    "minAnswers": "1",
+    "maxAnswers": "1",
+    "displayMode": "hidden",
+    "dataType": "computed"
+  },
+  "Tumor number": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Tumor number",
+    "minAnswers": "1",
+    "maxAnswers": "1",
+    "displayMode": "hidden",
+    "dataType": "computed"
+  },
+  "Diagnosis (Morphology) as on pathology report": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Diagnosis (Morphology) as on pathology report",
+    "displayMode": "hidden",
+    "dataType": "computed",
+    "formula": "value of Diagnosis from the Tumors questionnaire, for the current Patient Id and Tumor number"
+  },
+  "Radiation therapy (Y/N)": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Radiation therapy (Y/N)",
+    "minAnswers": "1",
+    "maxAnswers": "1",
+    "displayMode": "list",
+    "dataType": "text",
+    "options": {
+      "y": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "y"
+      },
+      "N": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "N"
+      },
+      "Unknown": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "Unknown"
+      }
+    }
+  },
+  "Weight at start of radiation therapy (kg)": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Weight at start of radiation therapy (kg)",
+    "description": "kg",
+    "minAnswers": "1",
+    "maxAnswers": "1",
+    "displayMode": "input",
+    "dataType": "decimal"
+  },
+  "Height at start of radiation therapy (cm)": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Height at start of radiation therapy (cm)",
+    "description": "m",
+    "minAnswers": "1",
+    "maxAnswers": "1",
+    "displayMode": "input",
+    "dataType": "decimal"
+  },
+  "Radiation start date (mm/dd/yyyy)": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Radiation start date (mm/dd/yyyy)",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "input",
+    "dataType": "date",
+    "dateFormat": "MM/dd/yyyy"
+  },
+  "Radiation end date (mm/dd/yyyy)": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Radiation end date (mm/dd/yyyy)",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "input",
+    "dataType": "date",
+    "dateFormat": "MM/dd/yyyy"
+  },
+  "Radiation technique": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Radiation technique",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "list+input",
+    "dataType": "text",
+    "options": {
+      "N/A": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "N/A"
+      }
+    }
+  },
+  "Radiation source": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Radiation source",
+    "minAnswers": "1",
+    "maxAnswers": "1",
+    "dataType": "text",
+    "options": {
+      "Xray": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "Xray"
+      },
+      "Proton": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "Proton"
+      },
+      "N/A": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "N/A"
+      }
+    }
+  },
+  "Beam energy": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Beam energy",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "list+input",
+    "dataType": "text",
+    "options": {
+      "N/A": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "N/A"
+      }
+    }
+  },
+  "Total radiation dose to tumor bed (cGy)": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Total radiation dose to tumor bed (cGy)",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "list+input",
+    "dataType": "text",
+    "options": {
+      "N/A": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "N/A"
+      }
+    }
+  },
+  "Fraction number": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Fraction number",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "list+input",
+    "dataType": "text",
+    "options": {
+      "N/A": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "N/A"
+      }
+    }
+  },
+  "Boost": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Boost",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "list+input",
+    "dataType": "text",
+    "options": {
+      "Yes": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "Yes"
+      },
+      "No": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "No"
+      },
+      "Unknown": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "Unknown"
+      }
+    }
+  },
+  "Boost radiation technique": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Boost radiation technique",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "list+input",
+    "dataType": "text",
+    "options": {
+      "N/A": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "N/A"
+      }
+    }
+  },
+  "Boost beam energy": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Boost beam energy",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "list+input",
+    "dataType": "text",
+    "options": {
+      "N/A": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "N/A"
+      }
+    }
+  },
+  "Boost dose": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Boost dose",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "list+input",
+    "dataType": "text",
+    "options": {
+      "N/A": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "N/A"
+      }
+    }
+  },
+  "Radiation field": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Radiation field",
+    "minAnswers": "1",
+    "maxAnswers": "1",
+    "displayMode": "list+input",
+    "dataType": "text",
+    "options": {
+      "N/A": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "N/A"
+      }
+    }
+  },
+  "Total body irradiation  (transplant conditioning) (Y/N)": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Total body irradiation  (transplant conditioning) (Y/N)",
+    "minAnswers": "1",
+    "maxAnswers": "1",
+    "displayMode": "list",
+    "dataType": "text",
+    "options": {
+      "Yes": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "Yes"
+      },
+      "No": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "No"
+      },
+      "N/A": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "N/A"
+      }
+    }
+  },
+  "TBI start date (mm/dd/yyyy)": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "TBI start date (mm/dd/yyyy)",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "input",
+    "dataType": "date",
+    "dateFormat": "MM/dd/yyyy"
+  },
+  "TBI end date (mm/dd/yyyy)": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "TBI end date (mm/dd/yyyy)",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "input",
+    "dataType": "date",
+    "dateFormat": "MM/dd/yyyy"
+  },
+  "TBI dose (cGy)": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "TBI dose (cGy)",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "list+input",
+    "dataType": "text",
+    "options": {
+      "N/A": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "N/A"
+      }
+    }
+  },
+  "Comments": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Comments",
+    "minAnswers": "0",
+    "maxAnswers": "1",
+    "displayMode": "textbox",
+    "dataType": "text"
+  }
+}
