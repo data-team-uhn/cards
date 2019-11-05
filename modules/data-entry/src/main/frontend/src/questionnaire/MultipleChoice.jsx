@@ -210,7 +210,7 @@ function MultipleChoice(props) {
           className={classes.selectionList}
           value={selection.length > 0 && selection[0][VALUE_POS]}
         >
-          {generateDefaultOptions(options, disabled, isRadio, selectNonGhostOption, removeOption)}
+          {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
           {/* Ghost radio for the text input */}
           {
           (input || textbox) && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
@@ -250,7 +250,7 @@ function MultipleChoice(props) {
           {...rest}
           />
         <List className={classes.checkboxList}>
-          {generateDefaultOptions(options, disabled, isRadio, selectNonGhostOption, removeOption)}
+          {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
           {(input || textbox) && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
               <FormControlLabel
                 control={
@@ -283,13 +283,14 @@ function MultipleChoice(props) {
 }
 
 // Generate a list of options that are part of the default suggestions
-function generateDefaultOptions(defaults, disabled, isRadio, onClick, onDelete) {
+function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick, onDelete) {
   return defaults.map( (childData) => {
     return (
       <StyledResponseChild
         id={childData[VALUE_POS]}
         key={childData[VALUE_POS]}
         name={childData[LABEL_POS]}
+        checked={selection.includes(childData)}
         disabled={disabled}
         onClick={onClick}
         onDelete={onDelete}
@@ -305,7 +306,7 @@ var StyledResponseChild = withStyles(QuestionnaireStyle)(ResponseChild);
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
   const {classes, name, id, isDefault, onClick, disabled, isRadio, onDelete} = props;
-  const [checked, setCheck] = useState(false);
+  const [checked, setCheck] = useState(props.checked);
 
   return (
     <React.Fragment>
