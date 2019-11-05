@@ -150,6 +150,9 @@ function MultipleChoice(props) {
         inputProps={Object.assign({
           onKeyDown: (event) => {
             if (event.key == 'Enter') {
+              // We need to stop the event so that it doesn't trigger a form submission
+              event.preventDefault();
+              event.stopPropagation();
               if (isRadio) {
                 selectOption(ghostValue, ghostName);
               } else if (maxAnswers !== 1 && !error) {
