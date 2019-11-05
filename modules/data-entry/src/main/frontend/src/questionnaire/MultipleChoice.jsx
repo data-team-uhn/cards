@@ -55,7 +55,7 @@ function MultipleChoice(props) {
   const [options, setOptions] = useState(defaults);
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
   const isRadio = maxAnswers === 1 && options.length > 0;
-  const isBare = options.length === 0;
+  const isBare = options.length === 0 && maxAnswers === 1;
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio;
   let inputEl = null;
 
@@ -180,7 +180,11 @@ function MultipleChoice(props) {
     selectOption(...args);
   }
 
-  const warning = selection.length < minAnswers && (<Typography color='error'>Please select at least {minAnswers} option{minAnswers > 1 && "s"}.</Typography>)
+  const warning = selection.length < minAnswers && (
+    <Typography color={error ? 'error' : 'textSecondary'} className={classes.warningTypography}>
+      Please select at least {minAnswers} option{minAnswers > 1 && "s"}.
+    </Typography>
+    );
 
   const answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
 
@@ -198,7 +202,6 @@ function MultipleChoice(props) {
   } else if (isRadio) {
     return (
       <React.Fragment>
-        {warning}
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
@@ -238,12 +241,12 @@ function MultipleChoice(props) {
           }
         </RadioGroup>
         {ghostInput}
+        {warning}
       </React.Fragment>
     );
   } else {
     return (
       <React.Fragment>
-        {warning}
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
@@ -277,6 +280,7 @@ function MultipleChoice(props) {
           }
         </List>
         {ghostInput}
+        {warning}
       </React.Fragment>
     )
   }
