@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
@@ -361,7 +362,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
                     break;
                 case "text":
                 default:
-                    result = valueFactory.createValue(rawValue);
+                    result = valueFactory.createValue(standardizeValue(rawValue, question));
             }
         } catch (RepositoryException e) {
             LOGGER.warn("Value factory is unexpectedly unavailable: {}", e.getMessage());
@@ -391,6 +392,53 @@ public class DataImportServlet extends SlingAllMethodsServlet
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         return calendar;
+    }
+
+    /**
+     * Converts user-facing labels to the stored value, if the question being answered has a list of default options,
+     * and one of the options has a label or value matching (case insensitive) the parsed value. To allow for different
+     * options that differ only in their case, priority is given, in order, to:
+     * <ol>
+     * <li>Exact match of a value, which means that the input file already stored the correct value</li>
+     * <li>Case-insensitive match of a value</li>
+     * <li>Case-sensitive match of a label</li>
+     * <li>Case-insensitive match of a label</li>
+     * </ol>
+     *
+     * @param value the value as read from the input file
+     * @param question the question that is being answered, where the Answer configuration is defined
+     * @return an equivalent standard value to be stored, may be the same as the input value
+     */
+    private String standardizeValue(final String value, Node question)
+    {
+        String result = null;
+        try {
+            for (String prop : new String[] { "value", "label" }) {
+                NodeIterator childNodes = question.getNodes();
+                while (childNodes.hasNext()) {
+                    Node childNode = childNodes.nextNode();
+                    if (!"lfs:AnswerOption".equals(childNode.getPrimaryNodeType().getName())
+                        || childNode.getProperty(prop) == null) {
+                        continue;
+                    }
+                    if (StringUtils.equals(value, childNode.getProperty(prop).getString())) {
+                        // We found an exact match for a known option, no need to do any further processing
+                        return childNode.getProperty("value").getString();
+                    } else if (StringUtils.equalsIgnoreCase(value, childNode.getProperty(prop).getString())) {
+                        result = childNode.getProperty("value").getString();
+                    }
+                }
+                if (result != null) {
+                    // We found a case-insensitive value match, return it
+                    return result;
+                }
+            }
+            return value;
+        } catch (RepositoryException ex) {
+            LOGGER.warn("Unexpected error while standardizing value [{}] for question [{}]: {}", value, question,
+                ex.getMessage());
+        }
+        return result;
     }
 
     /**
