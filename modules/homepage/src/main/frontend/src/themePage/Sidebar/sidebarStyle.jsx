@@ -282,6 +282,8 @@ import {
       overflowScrolling: "touch"
     },
     adminButton: {
+    },
+    adminSidebar: {
       [theme.breakpoints.up("md")]: {
         position: "absolute",
         width: "100%",

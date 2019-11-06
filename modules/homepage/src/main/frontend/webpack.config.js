@@ -8,7 +8,10 @@ module.exports = {
   entry: {
     [module_name + 'themeindex']: './src/themePage/index.jsx',
     [module_name + 'dashboard']: './src/themePage/Dashboard/dashboard.jsx',
-    [module_name + 'dashboardIcon']: '@material-ui/icons/Dashboard.js'
+    [module_name + 'dashboardIcon']: '@material-ui/icons/Dashboard.js',
+    [module_name + 'modelOrganismsIcon']: '@material-ui/icons/Pets.js',
+    [module_name + 'variantsIcon']: '@material-ui/icons/Subtitles.js',
+    [module_name + 'adminIcon']: '@material-ui/icons/Settings.js'
   },
   plugins: [
     new CleanWebpackPlugin(),

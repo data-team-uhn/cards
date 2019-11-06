@@ -16,58 +16,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import AccountBox from '@material-ui/icons/AccountBox';
-import Assignment from '@material-ui/icons/Assignment';
-import Dashboard from '@material-ui/icons/Dashboard';
-import Pets from '@material-ui/icons/Pets';
-import Settings from '@material-ui/icons/Settings';
-import Subtitles from '@material-ui/icons/Subtitles';
-
-import DashboardPage from "./Dashboard/dashboard.jsx";
 
 var sidebarRoutes = [
-    {
-      path: "/dashboard.html",
-      name: "Dashboard",
-      icon: Dashboard,
-      component: DashboardPage,
-      layout: "/content.html"
-    },
-    {
-      path: "/view.html",
-      name: "Patients",
-      icon: Assignment,
-      component: "",
-      layout: "/content.html"
-    },
-    {
-      path: "/modelorganisms.html",
-      name: "Model Organisms",
-      icon: Pets,
-      component: "",
-      layout: "/content.html"
-    },
-    {
-      path: "/variants.html",
-      name: "Variants",
-      icon: Subtitles,
-      component: "",
-      layout: "/content.html"
-    },
-    {
-      path: "/userpage.html",
-      name: "User Profile",
-      icon: AccountBox,
-      component: "",
-      layout: "/content.html"
-    },
-    {
-      path: "/admin.html",
-      name: "Administration",
-      icon: Settings,
-      component: "",
-      layout: "/content.html"
-    },
 ];
 
 const ASSET_PREFIX="asset:";
@@ -118,6 +68,17 @@ var loadRemoteComponent = function(component) {
     var request = new XMLHttpRequest();
     var url = parseAssetURL(component['lfs:extensionRenderURL']);
 
+    // If the URL is empty, return an empty page
+    if (url === "") {
+      return resolve({
+        reactComponent: null,
+        path: "/" + component["lfs:targetURL"],
+        name: component["lfs:extensionName"],
+        iconUrl: component["lfs:icon"],
+        order: component["lfs:defaultOrder"]
+      });
+    }
+
     request.onload = function() {
       if(request.status >= 200 && request.status < 400) {
         var remoteComponentSrc = request.responseText;
@@ -126,7 +87,8 @@ var loadRemoteComponent = function(component) {
           reactComponent: returnVal.default,
           path: "/" + component["lfs:targetURL"],
           name: component["lfs:extensionName"],
-          iconUrl: component["lfs:icon"]
+          iconUrl: component["lfs:icon"],
+          order: component["lfs:defaultOrder"]
         });
       } else {
         return reject();
