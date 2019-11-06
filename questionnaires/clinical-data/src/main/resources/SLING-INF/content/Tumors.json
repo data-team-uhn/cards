@@ -438,8 +438,7 @@
         "jcr:primaryType": "lfs:AnswerOption",
         "value": "4/4"
       }
-    },
-    "": "4/4"
+    }
   },
   "Group": {
     "jcr:primaryType": "lfs:Question",
