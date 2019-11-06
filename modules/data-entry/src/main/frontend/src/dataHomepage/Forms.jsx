@@ -16,10 +16,38 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
+import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 
-export default function Forms(props) {
+import { Button, Grid, Link, withStyles } from "@material-ui/core";
+import { Card, CardHeader, CardBody } from "MaterialDashboardReact";
+import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+
+function Forms(props) {
+  const { match, location, classes } = props;
+  const [ title, setTitle ] = useState("Forms");
+  const [ titleFetchSent, setFetchStatus ] = useState(false);
+  const questionnaireID = /questionnaire=([^&]+)/.exec(location.search);
+
+  // Convert from a questionnaire ID to the title of the form we're editing
+  let getQuestionnaireTitle = (id) => {
+    setFetchStatus(true);
+    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Questionnaire] as n WHERE n.'jcr:uuid'='${id}'`))
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {setTitle(json[0]["title"])});
+  }
+
+  let customUrl = undefined;
+  // Formulate a custom pagination request if a questionnaire ID is given
+  if (questionnaireID) {
+    customUrl='/Forms.paginate?fieldname=questionnaire&fieldvalue='
+            + encodeURIComponent(questionnaireID[1]);
+
+    // Also fetch the title if we haven't yet
+    if (!titleFetchSent) {
+      getQuestionnaireTitle(questionnaireID[1]);
+    }
+  }
   const columns = [
     {
       "key": "jcr:uuid",
@@ -51,6 +79,20 @@ export default function Forms(props) {
     },
   ]
   return (
-    <LiveTable columns={columns} />
+    <Card>
+      <CardHeader color="warning">
+        <Button className={classes.cardHeaderButton}>
+          {title}
+        </Button>
+        <Button variant="contained" color="primary" className={classes.newFormButton}>
+          New form
+        </Button>
+      </CardHeader>
+      <CardBody>
+        <LiveTable columns={columns} customUrl={customUrl}/>
+      </CardBody>
+    </Card>
   );
 }
+
+export default withStyles(questionnaireStyle)(Forms);

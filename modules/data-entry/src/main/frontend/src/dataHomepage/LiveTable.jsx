@@ -33,16 +33,16 @@ let _formatDate = (date, formatString) => {
   return "";
 };
 
-export default function LiveTable(props) {
+function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, classes } = props;
+  const { customUrl, columns, defaultLimit, classes } = props;
   const [tableData, setTableData] = useState();
   const [paginationData, setPaginationData] = useState(
     {
       "offset": 0,
-      "limit": 50,
+      "limit": defaultLimit,
       "displayed": 0,
       "total": -1,
       "page": 0,
@@ -270,3 +270,9 @@ export default function LiveTable(props) {
     </Paper>
   );
 }
+
+LiveTable.defaultProps = {
+  defaultLimit: 50
+}
+
+export default LiveTable;

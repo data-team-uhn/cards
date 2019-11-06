@@ -62,6 +62,12 @@ const questionnaireStyle = theme => ({
     mdash: {
         padding: theme.spacing(0, 1),
     },
+    cardHeaderButton: {
+        // No styles here yet
+    },
+    newFormButton: {
+        float: "right"
+    }
 });
 
 export default questionnaireStyle;
