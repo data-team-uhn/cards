@@ -29,7 +29,7 @@
       "value": "F"
     }
   },
-  "Race/ Ethnicity reported": {
+  "Race Ethnicity reported": {
     "jcr:primaryType": "lfs:Question",
     "text": "Race/ Ethnicity reported",
     "minAnswers": "0",
@@ -232,7 +232,7 @@
       "value": "Unknown"
     }
   },
-  "Test done as depicted in the report/ file (single gene, fam mutation, gane panel, WES)...": {
+  "Test done as depicted in the report file (single gene, fam mutation, gane panel, WES)...": {
     "jcr:primaryType": "lfs:Question",
     "text": "Test done as depicted in the report/ file (single gene, fam mutation, gane panel, WES)...",
     "minAnswers": "0",
@@ -262,7 +262,7 @@
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "Unknown"
     },
-    "N/A": {
+    "NA": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "N/A"
     }
@@ -399,7 +399,7 @@
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "N"
     },
-    "N/A": {
+    "NA": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "N/A"
     },
@@ -458,7 +458,7 @@
     "displayMode": "input",
     "dataType": "long"
   },
-  "Co-mormidities (non cancerous), including abnormal incidental imaging/ labs": {
+  "Co-mormidities (non cancerous), including abnormal incidental imaging labs": {
     "jcr:primaryType": "lfs:Question",
     "text": "Co-mormidities (non cancerous), including abnormal incidental imaging/ labs",
     "minAnswers": "0",
