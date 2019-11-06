@@ -1,9 +1,6 @@
 {
-  "jcr:primaryType": "lfs:QuestionnairesHomepage",
-  "DemographicsData": {
-    "jcr:primaryType": "lfs:Questionnaire",
-    "title": "Demographics Data"
-  },
+  "jcr:primaryType": "lfs:Questionnaire",
+  "title": "Demographics Data",
   "Patient ID": {
     "jcr:primaryType": "lfs:Question",
     "text": "Patient ID"
