@@ -39,7 +39,7 @@ function MultipleChoice(props) {
     // FIXME Must deal with nested options, do this recursively
     .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
     // Only extract the labels and internal values from the node
-    .map(value => [value.label, value.value, true]);
+    .map(value => [value.label || value.value, value.value, true]);
   let initialSelection =
     // If there's no existing answer, there's no initial selection
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
