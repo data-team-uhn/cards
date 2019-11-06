@@ -8,16 +8,16 @@
   "Family": {
     "jcr:primaryType": "lfs:Question",
     "text": "Family",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "text"
   },
   "Gender": {
     "jcr:primaryType": "lfs:Question",
     "text": "Gender",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "list",
     "dataType": "text",
     "M": {
@@ -32,8 +32,8 @@
   "Race Ethnicity reported": {
     "jcr:primaryType": "lfs:Question",
     "text": "Race/ Ethnicity reported",
-    "minAnswers": "0",
-    "maxAnswers": "0",
+    "minAnswers": 0,
+    "maxAnswers": 0,
     "displayMode": "list+input",
     "dataType": "vocabulary",
     "sourceVocabulary": "HANCESTRO",
@@ -70,8 +70,8 @@
   "Date of birth": {
     "jcr:primaryType": "lfs:Question",
     "text": "Date of birth",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
@@ -79,34 +79,34 @@
   "TP53 variant (cDNA)  as stated in file": {
     "jcr:primaryType": "lfs:Question",
     "text": "TP53 variant (cDNA)  as stated in file",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "text"
   },
   "TP53 variant (protein)  as stated in file": {
     "jcr:primaryType": "lfs:Question",
     "text": "TP53 variant (protein)  as stated in file",
-    "minAnswers": "1",
-    "maxAnswers": "1"
+    "minAnswers": 1,
+    "maxAnswers": 1
   },
   "c. per ClinVar 2019": {
     "jcr:primaryType": "lfs:Question",
     "text": "c. per ClinVar 2019",
-    "minAnswers": "1",
-    "maxAnswers": "1"
+    "minAnswers": 1,
+    "maxAnswers": 1
   },
   "p. per ClinVar 2019": {
     "jcr:primaryType": "lfs:Question",
     "text": "p. per ClinVar 2019",
-    "minAnswers": "1",
-    "maxAnswers": "1"
+    "minAnswers": 1,
+    "maxAnswers": 1
   },
   "Mutation-Pathogenecity": {
     "jcr:primaryType": "lfs:Question",
     "text": "Mutation-Pathogenecity",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "list",
     "dataType": "text",
     "P": {
@@ -148,8 +148,8 @@
   "Mutation-Function": {
     "jcr:primaryType": "lfs:Question",
     "text": "Mutation- function",
-    "minAnswers": "1",
-    "maxAnswers": "0",
+    "minAnswers": 1,
+    "maxAnswers": 0,
     "displayMode": "list",
     "dataType": "text",
     "fs": {
@@ -207,8 +207,8 @@
   "Test done (code)": {
     "jcr:primaryType": "lfs:Question",
     "text": "Test done (code)",
-    "minAnswers": "0",
-    "maxAnswers": "0",
+    "minAnswers": 0,
+    "maxAnswers": 0,
     "displayMode": "list",
     "dataType": "text",
     "WES": {
@@ -235,15 +235,15 @@
   "Test done as depicted in the report file (single gene, fam mutation, gane panel, WES)...": {
     "jcr:primaryType": "lfs:Question",
     "text": "Test done as depicted in the report/ file (single gene, fam mutation, gane panel, WES)...",
-    "minAnswers": "0",
-    "maxAnswers": "0",
+    "minAnswers": 0,
+    "maxAnswers": 0,
     "displayMode": "textbox"
   },
   "Reason for Dx": {
     "jcr:primaryType": "lfs:Question",
     "text": "Reason for Dx",
-    "minAnswers": "1",
-    "maxAnswers": "0",
+    "minAnswers": 1,
+    "maxAnswers": 0,
     "displayMode": "list",
     "dataType": "text",
     "Incidental": {
@@ -270,16 +270,16 @@
   "Other positive genetic results": {
     "jcr:primaryType": "lfs:Question",
     "text": "Other positive genetic results",
-    "minAnswers": "0",
-    "maxAnswers": "0",
+    "minAnswers": 0,
+    "maxAnswers": 0,
     "displayMode": "textbox",
     "dataType": "text"
   },
   "Date of genetic  diagnosis": {
     "jcr:primaryType": "lfs:Question",
     "text": "Date of genetic  diagnosis",
-    "minAnswers": "0",
-    "maxAnswers": "0",
+    "minAnswers": 0,
+    "maxAnswers": 0,
     "displayMode": "input",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
@@ -287,16 +287,16 @@
   "Age of genetic  diagnosis": {
     "jcr:primaryType": "lfs:Question",
     "text": "Age of genetic  diagnosis (y)",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "decimal"
   },
   "Vital status": {
     "jcr:primaryType": "lfs:Question",
     "text": "Vital status",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "list",
     "dataType": "text",
     "alive and NED": {
@@ -316,8 +316,8 @@
   "Date of last follow-up": {
     "jcr:primaryType": "lfs:Question",
     "text": "Date of last follow-up",
-    "minAnswers": "0",
-    "maxAnswers": "0",
+    "minAnswers": 0,
+    "maxAnswers": 0,
     "displayMode": "input",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
@@ -325,16 +325,16 @@
   "Age at last follow up": {
     "jcr:primaryType": "lfs:Question",
     "text": "Age at last follow up",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "decimal"
   },
   "Relation to proband": {
     "jcr:primaryType": "lfs:Question",
     "text": "Relation to proband",
-    "minAnswers": "0",
-    "maxAnswers": "0",
+    "minAnswers": 0,
+    "maxAnswers": 0,
     "displayMode": "list+input",
     "dataType": "vocabulary",
     "sourceVocabulary": "SNOMEDCT",
@@ -387,8 +387,8 @@
   "Undergoing surveillance": {
     "jcr:primaryType": "lfs:Question",
     "text": "Undergoing surveillance?",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "list",
     "dataType": "text",
     "Y": {
@@ -411,8 +411,8 @@
   "Surveilled since": {
     "jcr:primaryType": "lfs:Question",
     "text": "Survielled since",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "list",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
@@ -420,8 +420,8 @@
   "Surveilled until": {
     "jcr:primaryType": "lfs:Question",
     "text": "Surveilled until",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "list",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
@@ -429,40 +429,40 @@
   "Additional information about surveillance": {
     "jcr:primaryType": "lfs:Question",
     "text": "Additional information about surveillance",
-    "minAnswers": "0",
-    "maxAnswers": "0",
+    "minAnswers": 0,
+    "maxAnswers": 0,
     "displayMode": "textbox",
     "dataType": "text"
   },
   "Total number of lesions": {
     "jcr:primaryType": "lfs:Question",
     "text": "Total number of lesions",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "long"
   },
   "Number of Malignant tumors": {
     "jcr:primaryType": "lfs:Question",
     "text": "Number of Malignant tumors",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "long"
   },
   "age at 1st malignant Dx": {
     "jcr:primaryType": "lfs:Question",
     "text": "age at 1st malignant Dx (y)",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "long"
   },
   "Co-mormidities": {
     "jcr:primaryType": "lfs:Question",
     "text": "Co-mormidities (non cancerous), including abnormal incidental imaging/ labs",
-    "minAnswers": "0",
-    "maxAnswers": "0",
+    "minAnswers": 0,
+    "maxAnswers": 0,
     "displayMode": "input",
     "dataType": "vocabulary",
     "sourceVocabulary": "HPO",
@@ -471,8 +471,8 @@
   "Inherited from": {
     "jcr:primaryType": "lfs:Question",
     "text": "Inherited from",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "list",
     "M": {
       "jcr:primaryType": "lfs:AnswerOption",
@@ -493,32 +493,32 @@
   "Family history": {
     "jcr:primaryType": "lfs:Question",
     "text": "Family history",
-    "minAnswers": "0",
-    "maxAnswers": "0",
+    "minAnswers": 0,
+    "maxAnswers": 0,
     "displayMode": "textbox",
     "dataType": "text"
   },
   "Mosaic consultation": {
     "jcr:primaryType": "lfs:Question",
     "text": "Mosaic consultation",
-    "minAnswers": "0",
-    "maxAnswers": "0",
+    "minAnswers": 0,
+    "maxAnswers": 0,
     "displayMode": "textbox",
     "dataType": "text"
   },
   "Comments": {
     "jcr:primaryType": "lfs:Question",
     "text": "Comments",
-    "minAnswers": "0",
-    "maxAnswers": "0",
+    "minAnswers": 0,
+    "maxAnswers": 0,
     "displayMode": "textbox",
     "dataType": "text"
   },
   "More comments": {
     "jcr:primaryType": "lfs:Question",
     "text": "More comments",
-    "minAnswers": "0",
-    "maxAnswers": "0",
+    "minAnswers": 0,
+    "maxAnswers": 0,
     "displayMode": "textbox",
     "dataType": "text"
   }
