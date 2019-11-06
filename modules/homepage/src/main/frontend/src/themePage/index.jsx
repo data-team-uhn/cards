@@ -148,8 +148,8 @@ ReactDOM.render(
   <Router history={hist}>
     <Switch>
       <Route path="/content.html/" component={MainComponent} />
-      <Redirect from="/" to="/content.html/dashboard.html"/>
-      <Redirect from="/content" to="/content.html/dashboard.html" />
+      <Redirect from="/" to="/content.html/Questionnaires/User"/>
+      <Redirect from="/content" to="/content.html/Questionnaires/User" />
     </Switch>
   </Router>,
   document.querySelector('#main-container')

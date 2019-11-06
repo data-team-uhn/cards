@@ -49,6 +49,7 @@
         "lfs:extensionName": "User dashboard",
         "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.userDashboard.js",
+        "lfs:defaultOrder": 0,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "",

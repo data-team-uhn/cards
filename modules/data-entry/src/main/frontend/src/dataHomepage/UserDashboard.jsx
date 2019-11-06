@@ -40,7 +40,7 @@ function UserDashboard(props) {
       "key": "jcr:uuid",
       "label": "Identifier",
       "format": "string",
-      "link": "path",
+      "link": "dashboard+path",
     },
     {
       "key": "questionnaire/title",
