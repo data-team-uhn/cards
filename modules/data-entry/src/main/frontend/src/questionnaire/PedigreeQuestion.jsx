@@ -17,7 +17,9 @@
 //  under the License.
 //
 
-import { withStyles } from "@material-ui/core";
+import { useState } from "react";
+
+import { Dialog, DialogContent, Link, withStyles } from "@material-ui/core";
 
 import PropTypes from "prop-types";
 
@@ -29,15 +31,33 @@ import AnswerComponentManager from "./AnswerComponentManager";
 
 // Component that renders a pedigree question.
 function PedigreeQuestion(props) {
-  const {existingAnswer, ...rest} = props;
+  const { existingAnswer, classes, ...rest } = props;
+  const [ openDialog, setOpenDialog ] = useState(false);
+  var image_div = "";
+  var full_image_div = "";
+  // If we have a valid image
+  // console.log(existingAnswer);
+  if (existingAnswer && existingAnswer.length > 1 && existingAnswer[1].image) {
+    // FIXME: Hardcoded height
+    var new_image = existingAnswer[1].image.replace(/(<svg[^>]+)height="\d+"/, "$1height=\"250px\"");
+    image_div = (<div className={classes.pedigreeSmall} dangerouslySetInnerHTML={{__html: new_image}}/>);
+    full_image_div = (<div className={classes.pedigreeSmall} dangerouslySetInnerHTML={{__html: existingAnswer[1].image}}/>);
+  }
 
   return (
     <Question
       {...rest}
       >
-      {existingAnswer && existingAnswer.length > 0 && existingAnswer[1].image &&
-        <div dangerouslySetInnerHTML={{__html: existingAnswer[1].image}}/>
-      }
+      {image_div && (
+        <Link onClick={() => {setOpenDialog(true);}}>
+          {image_div}
+        </Link>
+      )}
+      <Dialog maxWidth={false} open={openDialog} onClose={() => {setOpenDialog(false);}}>
+        <DialogContent>
+          {full_image_div}
+        </DialogContent>
+      </Dialog>
     </Question>);
 }
 

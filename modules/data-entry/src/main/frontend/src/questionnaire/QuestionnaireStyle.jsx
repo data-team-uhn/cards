@@ -73,6 +73,10 @@ const questionnaireStyle = theme => ({
     },
     warningTypography: {
         padding: theme.spacing(1, 1),
+    },
+    pedigreeSmall: {
+        width: "100%",
+        height: "100%"
     }
 });
 
