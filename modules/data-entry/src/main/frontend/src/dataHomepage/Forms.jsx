@@ -24,6 +24,7 @@ import { Button, Grid, Link, withStyles } from "@material-ui/core";
 import { Card, CardHeader, CardBody } from "MaterialDashboardReact";
 
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import NewFormDialog from "./NewFormDialog.jsx";
 
 function Forms(props) {
   const { match, location, classes } = props;
@@ -35,6 +36,7 @@ function Forms(props) {
 
   const [ title, setTitle ] = useState("Forms");
   const [ titleFetchSent, setFetchStatus ] = useState(false);
+  const [ questionnairePath, setQuestionnairePath ] = useState(undefined);
   const questionnaireID = /questionnaire=([^&]+)/.exec(location.search);
 
   // Convert from a questionnaire ID to the title of the form we're editing
@@ -42,7 +44,7 @@ function Forms(props) {
     setFetchStatus(true);
     fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Questionnaire] as n WHERE n.'jcr:uuid'='${id}'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {setTitle(json[0]["title"])});
+      .then((json) => {setTitle(json[0]["title"]); setQuestionnairePath(json[0]["@path"])});
   }
 
   let customUrl = undefined;
@@ -92,9 +94,9 @@ function Forms(props) {
         <Button className={classes.cardHeaderButton}>
           {title}
         </Button>
-        <Button variant="contained" color="primary" className={classes.newFormButton}>
+        <NewFormDialog presetPath={questionnairePath}>
           New form
-        </Button>
+        </NewFormDialog>
       </CardHeader>
       <CardBody>
         <LiveTable columns={columns} customUrl={customUrl}/>

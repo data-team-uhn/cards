@@ -20,7 +20,7 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import uuid from "uuid/v4";
 
-import { Button, Dialog, DialogTitle, Link, List, ListItem, withStyles } from "@material-ui/core";
+import { Button, Dialog, DialogTitle, List, ListItem, ListItemText, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
@@ -29,27 +29,20 @@ function NewFormDialog(props) {
   const [ open, setOpen ] = useState(false);
   const [ questionnaires, setQuestionnaires ] = useState([]);
 
-  let openForm = () => {
-    // Make a POST request to the form
-    // Then take the response and... something something something
+  let openForm = (path) => {
     setOpen(true);
     
+    // Make a POST request to the form
     const URL = "/Forms/" + uuid();
-    /*const request_data = {
-      'jcr:primaryType': 'lfs:Form',
-      'questionnaire': presetPath,
-      'questionnaire@TypeHint': 'Reference'
-    }*/
     var request_data = new FormData();
     request_data.append('jcr:primaryType', 'lfs:Form');
-    request_data.append('questionnaire', presetPath);
+    request_data.append('questionnaire', path);
     request_data.append('questionnaire@TypeHint', 'Reference');
     var xhr = new XMLHttpRequest();
     xhr.open('POST', URL, true);
     xhr.onreadystatechange = function () {
       if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 201) {
         // Redirect the user to the new uuid
-        console.log(URL);
         props.history.push(URL);
       }
     };
@@ -76,19 +69,20 @@ function NewFormDialog(props) {
         </DialogTitle>
         {questionnaires ? 
           <List>
-            questionnaires.map((questionnaire) => {
-              <ListItemText
-                primary={questionnaire["title"]}
-                >
-              </ListItemText>
-            })
+            {questionnaires.map((questionnaire) => {
+              return (
+              <ListItem button key={questionnaire["jcr:uuid"]} onClick={() => {openForm(questionnaire["@path"])}}>
+                <ListItemText primary={questionnaire["title"]}>
+                </ListItemText>
+              </ListItem>);
+            })}
           </List>
           :
           ""
         }
       </Dialog>}
       {presetPath ?
-        <Button variant="contained" color="primary" onClick={openForm} className={classes.newFormButton}>
+        <Button variant="contained" color="primary" onClick={() => {openForm(presetPath);}} className={classes.newFormButton}>
           { children }
         </Button>
         :
