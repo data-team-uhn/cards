@@ -145,7 +145,7 @@
       "label": "Undetermined"
     }
   },
-  "Mutation- function": {
+  "Mutation-Function": {
     "jcr:primaryType": "lfs:Question",
     "text": "Mutation- function",
     "minAnswers": "1",
@@ -275,16 +275,16 @@
     "displayMode": "textbox",
     "dataType": "text"
   },
-  "Date of genetic  diagnosis (mm/dd/yyyy)": {
+  "Date of genetic  diagnosis": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Date of genetic  diagnosis (mm/dd/yyyy)",
+    "text": "Date of genetic  diagnosis",
     "minAnswers": "0",
     "maxAnswers": "0",
     "displayMode": "input",
     "dataType": "date",
     "dateFormat": "MM/dd/yyyy"
   },
-  "Age of genetic  diagnosis (y)": {
+  "Age of genetic  diagnosis": {
     "jcr:primaryType": "lfs:Question",
     "text": "Age of genetic  diagnosis (y)",
     "minAnswers": "1",
@@ -384,9 +384,9 @@
       "value": "Cousin"
     }
   },
-  "Undergoing survillnce?": {
+  "Undergoing surveillance": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Undergoing survillnce?",
+    "text": "Undergoing surveillance?",
     "minAnswers": "1",
     "maxAnswers": "1",
     "displayMode": "list",
@@ -408,7 +408,7 @@
       "value": "Unknown"
     }
   },
-  "Survielled since": {
+  "Surveilled since": {
     "jcr:primaryType": "lfs:Question",
     "text": "Survielled since",
     "minAnswers": "1",
@@ -450,7 +450,7 @@
     "displayMode": "input",
     "dataType": "long"
   },
-  "age at 1st malignant Dx (y)": {
+  "age at 1st malignant Dx": {
     "jcr:primaryType": "lfs:Question",
     "text": "age at 1st malignant Dx (y)",
     "minAnswers": "1",
@@ -458,7 +458,7 @@
     "displayMode": "input",
     "dataType": "long"
   },
-  "Co-mormidities (non cancerous), including abnormal incidental imaging labs": {
+  "Co-mormidities": {
     "jcr:primaryType": "lfs:Question",
     "text": "Co-mormidities (non cancerous), including abnormal incidental imaging/ labs",
     "minAnswers": "0",
@@ -468,9 +468,9 @@
     "sourceVocabulary": "HPO",
     "vocabularyFilter": "children of Phenotypic abnormaloty"
   },
-  "Inhereted from": {
+  "Inherited from": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Inhereted from",
+    "text": "Inherited from",
     "minAnswers": "1",
     "maxAnswers": "1",
     "displayMode": "list",
