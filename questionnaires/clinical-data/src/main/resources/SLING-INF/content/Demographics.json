@@ -78,7 +78,7 @@
     "maxAnswers": "1",
     "displayMode": "input",
     "dataType": "date",
-    "dateFormat": "MM/yyyy"
+    "dateFormat": "yyyy-MM-dd"
   },
   "TP53 variant (cDNA)  as stated in file": {
     "jcr:primaryType": "lfs:Question",
