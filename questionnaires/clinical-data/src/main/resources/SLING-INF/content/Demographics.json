@@ -282,7 +282,7 @@
     "maxAnswers": "0",
     "displayMode": "input",
     "dataType": "date",
-    "dateFormat": "MM/dd/yyyy"
+    "dateFormat": "yyyy-MM-dd"
   },
   "Age of genetic  diagnosis": {
     "jcr:primaryType": "lfs:Question",
@@ -320,7 +320,7 @@
     "maxAnswers": "0",
     "displayMode": "input",
     "dataType": "date",
-    "dateFormat": "MM/dd/yyyy"
+    "dateFormat": "yyyy-MM-dd"
   },
   "Age at last follow up": {
     "jcr:primaryType": "lfs:Question",
@@ -415,7 +415,7 @@
     "maxAnswers": "1",
     "displayMode": "list",
     "dataType": "date",
-    "dateFormat": "MM/dd/yyyy"
+    "dateFormat": "yyyy-MM-dd"
   },
   "Surveilled until": {
     "jcr:primaryType": "lfs:Question",
@@ -424,7 +424,7 @@
     "maxAnswers": "1",
     "displayMode": "list",
     "dataType": "date",
-    "dateFormat": "MM/dd/yyyy"
+    "dateFormat": "yyyy-MM-dd"
   },
   "Additional information about surveillance": {
     "jcr:primaryType": "lfs:Question",
