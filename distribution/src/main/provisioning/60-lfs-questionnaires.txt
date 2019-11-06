@@ -25,3 +25,4 @@
 
 [artifacts]
     ca.sickkids.ccm.lfs/lfs-questionnaire-tissue-metrix/${lfs.version}
+    ca.sickkids.ccm.lfs/lfs-questionnaire-clinical-data/${lfs.version}
