@@ -71,7 +71,7 @@ export default function VocabularyDetails(props) {
   const classes = useStyles();
 
   return(
-    <span>
+    <React.Fragment>
 
       <Tooltip title="About this vocabulary" TransitionComponent={Zoom}>
         <Button onClick={handleOpen} variant="contained" className={classes.button + " " + classes.about} >About</Button>
@@ -97,6 +97,6 @@ export default function VocabularyDetails(props) {
 
       </Dialog>
 
-    </span>
+    </React.Fragment>
     );
 }

@@ -26,7 +26,10 @@ import {
   DialogTitle,
   IconButton,
   makeStyles,
+  TableCell,
+  TableRow,
   Typography,
+  withStyles
 } from "@material-ui/core";
 
 import CloseIcon from "@material-ui/icons/Close";
@@ -34,6 +37,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import VocabularyDetails from "./vocabularyDetails"
 import VocabularyAction from "./vocabularyAction"
 
+const Config = require("./config.json");
 const vocabLinks = require('./vocabularyLinks.json');
 const Phase = require("./phaseCodes.json");
 
@@ -49,38 +53,55 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const StyledTableRow = withStyles(theme => ({
+  root: {
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.background.default
+    }
+  },
+}))(TableRow);
+
+const StyledTableCell = withStyles(theme => ({
+  body: {
+    whiteSpace: "pre",
+    textAlign: "right"
+  },
+}))(TableCell);
+
 /*
   This function keeps track of the state of the current vocabulary. It also keeps track of any error messages needed to be displayed.
   Then it renders an action button and an about button. It also renders a dialog box for any installation / uninstallation errors
 */
-export default function Actions(props) {
+export default function VocabularyEntry(props) {
   // The following facillitates the usage of the same code to report errors for both installation and uninstallation
-  const [action, setAction] = React.useState("");
-
   const [err, setErr] = React.useState(false);
+  const [action, setAction] = React.useState("");
   const [errMsg, setErrMsg] = React.useState("");
+
   const [phase, setPhase] = React.useState(props.initPhase);
 
   const classes = useStyles();
+  const date = new Date(props.released);
+  const bodyTypography = Config["tableBodyTypography"];
 
   const handleClose = () => {setErr(false)};
 
   function install() {
     const oldPhase = phase;
     var badResponse = false;
+    props.setPhase(Phase["Installing"]);
 
-    setPhase(Phase["Installing"]);
-
-    fetch(vocabLinks["install"]["base"] +
-          Object.keys(vocabLinks["install"]["params"]).map(
-            key => ("&" + key + "=" + vocabLinks["install"]["params"][key])
-          ).join("") +
-          "&identifier=" + props.acronym,
-          {method: "POST"})
+    fetch(
+      vocabLinks["install"]["base"] + "&identifier=" + props.acronym +
+      Object.keys(vocabLinks["install"]["params"]).map(
+        key => ("&" + key + "=" + vocabLinks["install"]["params"][key])
+      ).join(""),
+      {method: "POST"}
+    )
     .then((resp) => resp.json())
     .then((resp) => {
       if(!resp["isSuccessful"]) {
-        setPhase(oldPhase);
+        props.setPhase(oldPhase);
         setAction("Install");
         setErrMsg(resp["error"]);
         setErr(true);
@@ -88,7 +109,7 @@ export default function Actions(props) {
       }
     })
     .catch(function(error) {
-      setPhase(oldPhase);
+      props.setPhase(oldPhase);
       setAction("Install");
       setErrMsg(error);
       setErr(true);
@@ -96,7 +117,12 @@ export default function Actions(props) {
     })
     .finally(function() {
       if(!badResponse) {
-        setPhase(Phase["Latest"]);
+        if (oldPhase === Phase["Update Available"]) {
+          props.updateLocalList("update");
+        } else {
+          props.updateLocalList("add");
+        }
+        props.setPhase(Phase["Latest"]);
       }
     });
   }
@@ -104,14 +130,13 @@ export default function Actions(props) {
   function uninstall() {
     const oldPhase = phase;
     var badResponse = false;
-
-    setPhase(Phase["Uninstalling"]);
+    props.setPhase(Phase["Uninstalling"]);
 
     fetch(vocabLinks["uninstall"]["base"] + props.acronym, {method: "DELETE"})
     .then((resp) => {
       const code = resp.status;
       if(Math.floor(code/100) !== 2) {
-        setPhase(oldPhase);
+        props.setPhase(oldPhase);
         setAction("Uninstall");
         setErrMsg("Error " + code + ": " + resp.statusText);
         setErr(true);
@@ -119,7 +144,7 @@ export default function Actions(props) {
       }
     })
     .catch(function(error) {
-      setPhase(oldPhase);
+      props.setPhase(oldPhase);
       setAction("Uninstall");
       setErrMsg(error);
       setErr(true);
@@ -127,29 +152,66 @@ export default function Actions(props) {
     })
     .finally(function() {
       if(!badResponse) {
-        setPhase(Phase["Not Installed"]);
+        props.updateLocalList("remove");
+        props.setPhase(Phase["Not Installed"]);
       }
     });
   }
+  React.useEffect(() => {props.addSetter(setPhase);},[0]);
+  
 
   return(
     <React.Fragment>
-      <VocabularyAction
-        acronym={props.acronym}
-        install={install}
-        uninstall={uninstall}
-        phase={phase}
-      />
+      <StyledTableRow>
 
-      <VocabularyDetails
-        acronym={props.acronym}
-        install={install}
-        uninstall={uninstall}
-        phase={phase}
-        name={props.name}
-        description={props.description}
-      />
+        <TableCell component="th" scope="row" >
+          <Typography variant={bodyTypography}>
+            {props.acronym}
+          </Typography>
+        </TableCell>
 
+        <TableCell>
+          <Typography variant={bodyTypography}>
+            {props.name}
+          </Typography>
+        </TableCell>
+
+        <TableCell>
+          <Typography variant={bodyTypography} noWrap>
+            {props.version}
+          </Typography>
+        </TableCell>
+
+        <StyledTableCell>
+          <Typography variant={bodyTypography}>
+            {date.toString().substring(4,15)}
+          </Typography>
+        </StyledTableCell>
+
+        <StyledTableCell>
+          {(phase != Phase["Other Source"]) &&
+          <React.Fragment>
+            <VocabularyAction
+              acronym={props.acronym}
+              install={install}
+              uninstall={uninstall}
+              phase={phase}
+            />
+
+            <VocabularyDetails
+              acronym={props.acronym}
+              install={install}
+              uninstall={uninstall}
+              phase={phase}
+              name={props.name}
+              description={props.description}
+            />
+          </React.Fragment>
+          }
+        </StyledTableCell>
+
+      </StyledTableRow>
+      
       <Dialog open={err} onClose={handleClose}>
 
         <DialogTitle onClose={handleClose}>

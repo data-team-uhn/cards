@@ -19,30 +19,107 @@
 
 import {
   Grid,
-  Typography,
+  Typography
 } from "@material-ui/core";
 
 import React from "react";
 
-import VocabularyDirectory from './vocabularyDirectory';
+import VocabularyDirectory from "./vocabularyDirectory";
 
-const vocabLinks = require('./vocabularyLinks.json');
+const Phase = require("./phaseCodes.json");
+const vocabLinks = require("./vocabularyLinks.json");
 
 export default function VocabulariesAdminPage() {
-  const [remoteVocabList, setRemoteVocabList] = React.useState({});
-
+  const [remoteVocabList, setRemoteVocabList] = React.useState([]);
+  const [localVocabList, setLocalVocabList] = React.useState([]);
   /*
     The following object will map Acronym -> Release Date for a vocabulary. 
     This allows for efficiently figuring out whether an installed vocabulary is up to date 
   */
-  const [optimisedDateList, setOptimisedDateList] = React.useState({});
+  const [acronymDateObject, setAcronymDateObject] = React.useState({});
+  /* 
+    The Phase represents the state of Vocabulary. It can be 1 of:
+      1) Not Installed
+      2) Installing
+      3) Update Available
+      4) Latest
+      5) Uninstalling
+  */
+  const [acronymPhaseObject, setAcronymPhaseObject] = React.useState({});
+  const [acronymPhaseSettersObject, setAcronymPhaseSettersObject] = React.useState({});
+  const [remoteLoaded, setRemoteLoaded] = React.useState(false);
+  const [localLoaded, setLocalLoaded] = React.useState(false);
+  const [displayTables, setDisplayTables] = React.useState(false);
 
   function processLocalVocabList(vocabList) {
-    var acronymDateObject = {};
+    setLocalVocabList(vocabList);
+    var tempObject = {};
     vocabList.map((vocab) => {
-      acronymDateObject[vocab.ontology.acronym] = vocab.released;
+      tempObject[vocab.ontology.acronym] = vocab.released;
     });
-    setOptimisedDateList(acronymDateObject);
+    setAcronymDateObject(tempObject);
+    setLocalLoaded(true);
+  }
+
+  function processRemoteVocabList(vocabList) {
+    setRemoteVocabList(vocabList);
+    setRemoteLoaded(true);
+  }
+
+  function addSetter(acronym, setFunction, type) {
+    var copy = acronymPhaseSettersObject;
+    if (copy.hasOwnProperty(acronym)) {
+      copy[acronym][type] = setFunction;
+    } else {
+      var temp = {};
+      temp[type] = setFunction;
+      copy[acronym] = temp;
+    }
+    setAcronymPhaseSettersObject(copy);
+  }
+
+  function setPhase(acronym, phase) {
+    const setters = acronymPhaseSettersObject[acronym];
+    if (setters.hasOwnProperty("local")) {
+      setters["local"](phase);
+    }
+    if (setters.hasOwnProperty("remote")) {
+      setters["remote"](phase);
+    }
+  }
+
+  function updateLocalList(action, vocab) {
+    const acronym = vocab.ontology.acronym;
+
+    if (action === "add") {
+      var tempLocalVocabList = localVocabList.slice();
+      tempLocalVocabList.push(vocab);
+      setLocalVocabList(tempLocalVocabList);
+
+    } else if (action === "remove") {
+      var copy = acronymPhaseSettersObject;
+      delete copy[acronym]["local"];
+      setAcronymPhaseSettersObject(copy);
+      setLocalVocabList(localVocabList.filter((vocab) => vocab.ontology.acronym != acronym));
+    }
+  }
+
+  function determinePhase(acronym, released) {
+    if (!acronymDateObject.hasOwnProperty(acronym)) {
+      return Phase["Not Installed"];
+    }
+    const remoteReleaseDate = new Date(released);
+    const localInstallDate = new Date(acronymDateObject[acronym]);
+    return (remoteReleaseDate > localInstallDate ? Phase["Update Available"] : Phase["Latest"]);
+  }
+
+  if (localLoaded && remoteLoaded && !displayTables) {
+    var tempAcronymPhaseObject = {};
+    remoteVocabList.map((vocab) => {
+      tempAcronymPhaseObject[vocab.ontology.acronym] = determinePhase(vocab.ontology.acronym, vocab.released)
+    });
+    setAcronymPhaseObject(tempAcronymPhaseObject);
+    setDisplayTables(true);
   }
 
   return (
@@ -56,8 +133,14 @@ export default function VocabulariesAdminPage() {
 
       <VocabularyDirectory 
         type="local"
-        link={vocabLinks["local"]} 
+        link={vocabLinks["local"]}
+        vocabList={localVocabList}
         setVocabList={processLocalVocabList}
+        acronymPhaseObject={acronymPhaseObject}
+        displayTables={displayTables}
+        updateLocalList={updateLocalList}
+        addSetter={addSetter}
+        setPhase={setPhase}
       />
 
       <Grid item>
@@ -76,14 +159,21 @@ export default function VocabulariesAdminPage() {
               (key === "include" ? 
                 vocabLinks["remote"]["params"][key].join()
                 :
-                vocabLinks["remote"]["params"][key])))
+                vocabLinks["remote"]["params"][key])
+              )
+            )
           .join("")
         } 
-        setVocabList={setRemoteVocabList}
-        remoteVocabList={remoteVocabList}
-        optimisedDateList={optimisedDateList}
+        vocabList={remoteVocabList}
+        setVocabList={processRemoteVocabList}
+        acronymPhaseObject={acronymPhaseObject}
+        displayTables={displayTables}
+        setPhase={setPhase}
+        updateLocalList={updateLocalList}
+        addSetter={addSetter}
       />
 
     </Grid>
   );
 }
+

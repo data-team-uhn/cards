@@ -57,12 +57,14 @@ function reformat(data) {
                                      (val["jcr:primaryType"] === "lfs:Vocabulary"));
   // Filtered contains all properties of type object that have jcr:primaryType = lfs:Vocabulary
   var vocabularies = [];
+  // The released date is currently not stored in the local version of the vocabularies. That needs to be changed.
   Object.keys(filtered).map((key) => vocabularies.push({
     ontology: {
       acronym: key,
       name: filtered[key]["name"]
     },
-    released: filtered[key]["version"],
+    version: filtered[key]["version"],
+    released: filtered[key]["jcr:created"],
     description: filtered[key]["description"]
   }));
   return vocabularies;
@@ -133,10 +135,14 @@ export default function VocabularyDirectory(props) {
       </React.Fragment>
      
     )}
-    {(curStatus == Status["Loaded"] && !(typeof props.optimisedDateList === "undefined") && props.type === "remote") && (
+    {(curStatus == Status["Loaded"] && props.displayTables) && (
       <VocabularyTable
-        remoteVocabList={props.remoteVocabList}
-        optimisedDateList={props.optimisedDateList} 
+        type={props.type}
+        vocabList={props.vocabList}
+        acronymPhaseObject={props.acronymPhaseObject}
+        updateLocalList={props.updateLocalList}
+        setPhase={props.setPhase}
+        addSetter={props.addSetter}
       />
     )}
     </React.Fragment>

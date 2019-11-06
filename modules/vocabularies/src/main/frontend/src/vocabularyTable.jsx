@@ -32,7 +32,7 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import Actions from "./actions";
+import VocabularyEntry from "./vocabularyEntry";
 
 const Config = require("./config.json");
 const Phase = require("./phaseCodes.json");
@@ -49,14 +49,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 // Creating customized Table components for a nicer look
-const StyledTableRow = withStyles(theme => ({
-  root: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.background.default
-    }
-  },
-}))(TableRow);
-
 const HeaderTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -64,31 +56,15 @@ const HeaderTableCell = withStyles(theme => ({
   }
 }))(TableCell);
 
-const StyledTableCell = withStyles(theme => ({
-  body: {
-    whiteSpace: "pre",
-    textAlign: "right"
-  },
-}))(TableCell);
-
 export default function VocabularyTable(props) {
+  const vocabList = props.vocabList;
   const classes = useStyles();
-  const vocabList = props.remoteVocabList;
   const headingTypography = Config["tableHeadingTypography"];
-  const bodyTypography = Config["tableBodyTypography"];
   const columnWidths = Config["tableColumnWidths"]
-
-  function initPhase(acronym, released) {
-    if (!props.optimisedDateList.hasOwnProperty(acronym)) {
-      return Phase["Not Installed"];
-    }
-    const remoteReleaseDate = new Date(released);
-    const localInstallDate = new Date(props.optimisedDateList[acronym]);
-    return (remoteReleaseDate > localInstallDate ? Phase["Update Available"] : Phase["Latest"]);
-  }
 
   return(
     <Grid item>
+      {(vocabList.length > 0) &&
       <Paper className={classes.root}>
         <Table className={classes.table}>
           <TableHead>
@@ -117,47 +93,25 @@ export default function VocabularyTable(props) {
 
           <TableBody>
             {vocabList.map((vocab) => {
-              if (vocab.status === "production") {
-                const date = new Date(vocab.released);
+              if (props.type === "local" || vocab.status === "production") {
                 return(
-                  <StyledTableRow key={"Row_" + vocab.ontology.acronym}>
-
-                    <TableCell component="th" scope="row" >
-                      <Typography variant={bodyTypography}>
-                        {vocab.ontology.acronym}
-                      </Typography>
-                    </TableCell>
-
-                    <TableCell>
-                      <Typography variant={bodyTypography}>
-                        {vocab.ontology.name}
-                      </Typography>
-                    </TableCell>
-
-                    <TableCell>
-                      <Typography variant={bodyTypography} noWrap>
-                        {vocab.version}
-                      </Typography>
-                    </TableCell>
-
-                    <StyledTableCell>
-                      <Typography variant={bodyTypography}>
-                        {date.toString().substring(4,15)}
-                      </Typography>
-                    </StyledTableCell>
-
-                    <StyledTableCell>
-                      <Actions
-                        acronym={vocab.ontology.acronym}
-                        description={vocab.description}
-                        initPhase={initPhase(vocab.ontology.acronym, vocab.released)}
-                        name={vocab.ontology.name}
-                        released={vocab.released}
-                        version={vocab.version}
-                      />
-                    </StyledTableCell>
-
-                  </StyledTableRow>
+                  <VocabularyEntry
+                    key={vocab.ontology.acronym}
+                    acronym={vocab.ontology.acronym}
+                    name={vocab.ontology.name}
+                    description={vocab.description}
+                    released={vocab.released}
+                    version={vocab.version}
+                    updateLocalList={(action) => {props.updateLocalList(action, vocab)}}
+                    initPhase={(
+                      props.acronymPhaseObject.hasOwnProperty(vocab.ontology.acronym) ? 
+                        props.acronymPhaseObject[vocab.ontology.acronym]
+                        :
+                        Phase["Other Source"]
+                    )} 
+                    setPhase={(phase) => props.setPhase(vocab.ontology.acronym, phase)}
+                    addSetter={(setFunction) => props.addSetter(vocab.ontology.acronym, setFunction, props.type)}
+                  />
                 );
               }
             })}
@@ -165,6 +119,7 @@ export default function VocabularyTable(props) {
 
         </Table>
       </Paper>
+      }
     </Grid>
   );
 }
