@@ -20,15 +20,13 @@
     "maxAnswers": "1",
     "displayMode": "list",
     "dataType": "text",
-    "options": {
-      "M": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "M"
-      },
-      "F": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "F"
-      }
+    "M": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "M"
+    },
+    "F": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "F"
     }
   },
   "Race/ Ethnicity reported": {
@@ -40,35 +38,33 @@
     "dataType": "vocabulary",
     "sourceVocabulary": "HANCESTRO",
     "vocabularyFilter": "child of Ethnic group or Racial Group",
-    "options": {
-      "African race": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "African race"
-      },
-      "American Indian or Alaska native": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "American Indian or Alaska native"
-      },
-      "Asian or Pacific islander": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Asian or Pacific islander"
-      },
-      "Australian aborigine": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Australian aborigine"
-      },
-      "Caucasian": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Caucasian"
-      },
-      "Hispanic": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Hispanic"
-      },
-      "Indian": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Indian"
-      }
+    "African race": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "African race"
+    },
+    "American Indian or Alaska native": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "American Indian or Alaska native"
+    },
+    "Asian or Pacific islander": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Asian or Pacific islander"
+    },
+    "Australian aborigine": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Australian aborigine"
+    },
+    "Caucasian": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Caucasian"
+    },
+    "Hispanic": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Hispanic"
+    },
+    "Indian": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Indian"
     }
   },
   "Date of birth": {
@@ -113,42 +109,40 @@
     "maxAnswers": "1",
     "displayMode": "list",
     "dataType": "text",
-    "options": {
-      "P": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "P",
-        "label": "Pathogenic"
-      },
-      "LP": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "LP",
-        "label": "Likely Pathogenic"
-      },
-      "VUS": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "VUS",
-        "label": "Variant of Unknown Significance"
-      },
-      "VUS_D": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "VUS_D",
-        "label": "VUS, treated as deleterious"
-      },
-      "LB": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "LB",
-        "label": "Likely benign"
-      },
-      "B": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "B",
-        "label": "Benign"
-      },
-      "U": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "U",
-        "label": "Undetermined"
-      }
+    "P": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "P",
+      "label": "Pathogenic"
+    },
+    "LP": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "LP",
+      "label": "Likely Pathogenic"
+    },
+    "VUS": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "VUS",
+      "label": "Variant of Unknown Significance"
+    },
+    "VUS_D": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "VUS_D",
+      "label": "VUS, treated as deleterious"
+    },
+    "LB": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "LB",
+      "label": "Likely benign"
+    },
+    "B": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "B",
+      "label": "Benign"
+    },
+    "U": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "U",
+      "label": "Undetermined"
     }
   },
   "Mutation- function": {
@@ -158,58 +152,56 @@
     "maxAnswers": "0",
     "displayMode": "list",
     "dataType": "text",
-    "options": {
-      "fs": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "fs",
-        "label": "Frameshift"
-      },
-      "fsi": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "fsi",
-        "label": "Frameshift (smalll insertion)"
-      },
-      "fsd": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "fsd",
-        "label": "Frameshift (small deletion)"
-      },
-      "missense": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "missense"
-      },
-      "nonsense": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "nonsense"
-      },
-      "missense DN": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "missense DN"
-      },
-      "splice donor": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "splice donor"
-      },
-      "splice acceptor": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "splice acceptor"
-      },
-      "large insertion": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "large insertion"
-      },
-      "large deletion": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "large deletion"
-      },
-      "synonymous": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "synonymous"
-      },
-      "synonymous splicing": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "synonymous splicing"
-      }
+    "fs": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "fs",
+      "label": "Frameshift"
+    },
+    "fsi": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "fsi",
+      "label": "Frameshift (smalll insertion)"
+    },
+    "fsd": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "fsd",
+      "label": "Frameshift (small deletion)"
+    },
+    "missense": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "missense"
+    },
+    "nonsense": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "nonsense"
+    },
+    "missense DN": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "missense DN"
+    },
+    "splice donor": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "splice donor"
+    },
+    "splice acceptor": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "splice acceptor"
+    },
+    "large insertion": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "large insertion"
+    },
+    "large deletion": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "large deletion"
+    },
+    "synonymous": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "synonymous"
+    },
+    "synonymous splicing": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "synonymous splicing"
     }
   },
   "Test done (code)": {
@@ -219,27 +211,25 @@
     "maxAnswers": "0",
     "displayMode": "list",
     "dataType": "text",
-    "options": {
-      "WES": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "WES"
-      },
-      "single gene": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "single gene"
-      },
-      "panel": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "panel"
-      },
-      "Kics": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Kics"
-      },
-      "Unknown": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Unknown"
-      }
+    "WES": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "WES"
+    },
+    "single gene": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "single gene"
+    },
+    "panel": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "panel"
+    },
+    "Kics": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Kics"
+    },
+    "Unknown": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Unknown"
     }
   },
   "Test done as depicted in the report/ file (single gene, fam mutation, gane panel, WES)...": {
@@ -256,27 +246,25 @@
     "maxAnswers": "0",
     "displayMode": "list",
     "dataType": "text",
-    "options": {
-      "Incidental": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Incidental"
-      },
-      "FHx": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "FHx"
-      },
-      "PHx": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "PHx"
-      },
-      "Unknown": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Unknown"
-      },
-      "N/A": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "N/A"
-      }
+    "Incidental": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Incidental"
+    },
+    "FHx": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "FHx"
+    },
+    "PHx": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "PHx"
+    },
+    "Unknown": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Unknown"
+    },
+    "N/A": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "N/A"
     }
   },
   "Other positive genetic results": {
@@ -311,20 +299,18 @@
     "maxAnswers": "1",
     "displayMode": "list",
     "dataType": "text",
-    "options": {
-      "alive and NED": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "alive and NED"
-      },
-      "alive with disease": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "alive with disease"
-      },
-      "dod": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "dod",
-        "label": "died of disease"
-      }
+    "alive and NED": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "alive and NED"
+    },
+    "alive with disease": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "alive with disease"
+    },
+    "dod": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "dod",
+      "label": "died of disease"
     }
   },
   "Date of last follow-up": {
@@ -353,51 +339,49 @@
     "dataType": "vocabulary",
     "sourceVocabulary": "SNOMEDCT",
     "vocabularyFilter": "children of Relative",
-    "options": {
-      "Mother": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Mother"
-      },
-      "Father": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Father"
-      },
-      "Son": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Son"
-      },
-      "Daughter": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Daughter"
-      },
-      "Brother": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Brother"
-      },
-      "Sister": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Sister"
-      },
-      "Aunt": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Aunt"
-      },
-      "Uncle": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Uncle"
-      },
-      "Niece": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Niece"
-      },
-      "Nephew": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Nephew"
-      },
-      "Cousin": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Cousin"
-      }
+    "Mother": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Mother"
+    },
+    "Father": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Father"
+    },
+    "Son": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Son"
+    },
+    "Daughter": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Daughter"
+    },
+    "Brother": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Brother"
+    },
+    "Sister": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Sister"
+    },
+    "Aunt": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Aunt"
+    },
+    "Uncle": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Uncle"
+    },
+    "Niece": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Niece"
+    },
+    "Nephew": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Nephew"
+    },
+    "Cousin": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Cousin"
     }
   },
   "Undergoing survillnce?": {
@@ -407,23 +391,21 @@
     "maxAnswers": "1",
     "displayMode": "list",
     "dataType": "text",
-    "options": {
-      "Y": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Y"
-      },
-      "N": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "N"
-      },
-      "N/A": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "N/A"
-      },
-      "Unknown": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Unknown"
-      }
+    "Y": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Y"
+    },
+    "N": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "N"
+    },
+    "N/A": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "N/A"
+    },
+    "Unknown": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Unknown"
     }
   },
   "Survielled since": {
@@ -492,22 +474,20 @@
     "minAnswers": "1",
     "maxAnswers": "1",
     "displayMode": "list",
-    "options": {
-      "M": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "M",
-        "label": "Maternal"
-      },
-      "P": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "P",
-        "label": "Paternal"
-      },
-      "U": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "U",
-        "label": "Unknown"
-      }
+    "M": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "M",
+      "label": "Maternal"
+    },
+    "P": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "P",
+      "label": "Paternal"
+    },
+    "U": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "U",
+      "label": "Unknown"
     }
   },
   "Family history": {
