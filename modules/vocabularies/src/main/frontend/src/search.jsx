@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
     fontStyle: "italic",
     borderLeftStyle: "solid",
     borderLeftColor: "#DCDCDC",
-    borderLeftWidth: "0.6em",
+    borderLeftWidth: "0.5em",
     fontSize: "2em"
   }
 }));
