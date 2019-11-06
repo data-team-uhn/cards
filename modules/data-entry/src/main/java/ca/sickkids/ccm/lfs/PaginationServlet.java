@@ -76,9 +76,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         }
         final String fieldname = request.getParameter("fieldname");
         final String fieldvalue = request.getParameter("fieldvalue");
-        if (StringUtils.isNotBlank(fieldname) && StringUtils.isNotBlank(fieldvalue)) {
+        if (StringUtils.isNotBlank(fieldname)) {
             // Exact condition; \ and ' must be escaped. The value must be wrapped in 's
-            query.append(" and " + fieldname.replaceAll("['\\\\]", "\\\\$0") + "='"
+            query.append(" and n.'" + fieldname.replaceAll("['\\\\]", "\\\\$0") + "'='"
                     + fieldvalue.replaceAll("['\\\\]", "\\\\$0") + "'");
         }
         query.append(" order by 'jcr:created'");
