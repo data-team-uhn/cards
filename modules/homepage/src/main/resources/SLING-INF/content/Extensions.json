@@ -35,7 +35,7 @@
         "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
         "lfs:extensionRenderURL": "",
         "lfs:targetURL": "tumours",
-        "lfs:defaultOrder": 2,
+        "lfs:defaultOrder": 5,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "test",
@@ -49,7 +49,7 @@
         "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
         "lfs:extensionRenderURL": "",
         "lfs:targetURL": "treatments",
-        "lfs:defaultOrder": 3,
+        "lfs:defaultOrder": 10,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "test",
@@ -63,7 +63,7 @@
         "lfs:icon": "asset:lfs-homepage.modelOrganismsIcon.js",
         "lfs:extensionRenderURL": "",
         "lfs:targetURL": "modelorganisms",
-        "lfs:defaultOrder": 4,
+        "lfs:defaultOrder": 15,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "test",
@@ -77,7 +77,7 @@
         "lfs:icon": "asset:lfs-homepage.variantsIcon.js",
         "lfs:extensionRenderURL": "",
         "lfs:targetURL": "variants",
-        "lfs:defaultOrder": 5,
+        "lfs:defaultOrder": 20,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "test",

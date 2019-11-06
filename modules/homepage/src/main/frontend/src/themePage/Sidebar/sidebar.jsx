@@ -30,11 +30,10 @@ const Sidebar = ({ ...props }) => {
   // Generate NavLinks and ListItems from the given route prop
   // activeStyle is true for anything that should look "active" (e.g. the admin link, the current page)
   function generateListItem(prop, key, activeStyle) {
-    var listItemClasses, whiteFontClasses;
-    listItemClasses = classNames({
+    const listBackground = classNames({
       [" " + classes[color]]: activeStyle
     });
-    whiteFontClasses = classNames({
+    const listItemFont = classNames({
       [" " + classes.whiteFont]: activeStyle
     });
 
@@ -45,13 +44,13 @@ const Sidebar = ({ ...props }) => {
         activeClassName="active"
         key={key}
       >
-        <ListItem button className={classes.itemLink + listItemClasses}>
+        <ListItem button className={classes.itemLink + listBackground}>
           <prop.icon
-              className={classNames(classes.itemIcon, whiteFontClasses)}
+              className={classNames(classes.itemIcon, listItemFont)}
             />
           <ListItemText
             primary={prop.name}
-            className={classNames(classes.itemText, whiteFontClasses)}
+            className={classNames(classes.itemText, listItemFont)}
             disableTypography={true}
           />
         </ListItem>

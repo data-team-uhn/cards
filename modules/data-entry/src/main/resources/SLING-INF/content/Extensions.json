@@ -35,7 +35,7 @@
         "lfs:extensionName": "Forms",
         "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.Forms.js",
-        "lfs:defaultOrder": 92,
+        "lfs:defaultOrder": 2,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "",
