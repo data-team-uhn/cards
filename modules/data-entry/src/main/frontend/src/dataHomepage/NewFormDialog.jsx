@@ -17,13 +17,15 @@
 //  under the License.
 //
 import React, { useState } from "react";
+import { withRouter } from "react-router-dom";
+import uuid from "uuid/v4";
 
-import { Dialog, DialogTitle, List, ListItem } from "@material-ui/core";
+import { Button, Dialog, DialogTitle, Link, List, ListItem, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
-export default function NewFormDialog(props) {
-  const { presetForm } = props;
+function NewFormDialog(props) {
+  const { children, classes, presetPath } = props;
   const [ open, setOpen ] = useState(false);
   const [ questionnaires, setQuestionnaires ] = useState([]);
 
@@ -31,33 +33,71 @@ export default function NewFormDialog(props) {
     // Make a POST request to the form
     // Then take the response and... something something something
     setOpen(true);
+    
+    const URL = "/Forms/" + uuid();
+    /*const request_data = {
+      'jcr:primaryType': 'lfs:Form',
+      'questionnaire': presetPath,
+      'questionnaire@TypeHint': 'Reference'
+    }*/
+    var request_data = new FormData();
+    request_data.append('jcr:primaryType', 'lfs:Form');
+    request_data.append('questionnaire', presetPath);
+    request_data.append('questionnaire@TypeHint', 'Reference');
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', URL, true);
+    xhr.onreadystatechange = function () {
+      if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 201) {
+        // Redirect the user to the new uuid
+        console.log(URL);
+        props.history.push(URL);
+      }
+    };
+    xhr.send(request_data);
+  }
 
-
+  let openDialog = () => {
+    // Determine what questionnaires are available
+    setOpen(true);
+    if (questionnaires.length === 0) {
+      // Send a fetch request to determine the questionnaires available
+      fetch('/query?query=' + encodeURIComponent('select * from [lfs:Questionnaire]'))
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((json) => {setQuestionnaires(json)});
+    }
   }
 
   return (
     <React.Fragment>
       { /* Only create a dialog if we need to allow the user to choose from multiple questionnaires */
-      presetForm || <Dialog open={open} onClose={() => { setOpen(false); }}>
+      presetPath ? "" : <Dialog open={open} onClose={() => { setOpen(false); }}>
         <DialogTitle id="new-form-title">
           Select questionnaire
         </DialogTitle>
-        <List>
-          {questionnaires.map((questionnaire) => {
-
-          })}
-        </List>
+        {questionnaires ? 
+          <List>
+            questionnaires.map((questionnaire) => {
+              <ListItemText
+                primary={questionnaire["title"]}
+                >
+              </ListItemText>
+            })
+          </List>
+          :
+          ""
+        }
       </Dialog>}
-      {presetForm ?
-        <Button variant="outlined" color="primary" onClick={openForm}>
-          New Form
+      {presetPath ?
+        <Button variant="contained" color="primary" onClick={openForm} className={classes.newFormButton}>
+          { children }
         </Button>
-      :
-        <Link href={`/content.html/Forms?questionnaire=${presetForm}`}>
-        </Link>
+        :
+        <Button variant="contained" color="primary" onClick={openDialog} className={classes.newFormButton}>
+          { children }
+        </Button>
       }
     </React.Fragment>
   )
 }
 
-export default withStyles(QuestionnaireStyle)(NewFormDialog);
+export default withStyles(QuestionnaireStyle)(withRouter(NewFormDialog));
