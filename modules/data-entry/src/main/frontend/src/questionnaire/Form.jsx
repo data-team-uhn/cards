@@ -36,6 +36,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 import BooleanQuestion from "./BooleanQuestion";
 import DateQuestion from "./DateQuestion";
 import NumberQuestion from "./NumberQuestion";
+import PedigreeQuestion from "./PedigreeQuestion";
 import TextQuestion from "./TextQuestion";
 
 // GUI for displaying answers
