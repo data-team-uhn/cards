@@ -35,7 +35,9 @@ function PedigreeQuestion(props) {
     <Question
       {...rest}
       >
-      <div dangerouslySetInnerHTML={{__html: existingAnswer[1].image}}/>
+      {existingAnswer && existingAnswer.length > 0 && existingAnswer[1].image &&
+        <div dangerouslySetInnerHTML={{__html: existingAnswer[1].image}}/>
+      }
     </Question>);
 }
 
