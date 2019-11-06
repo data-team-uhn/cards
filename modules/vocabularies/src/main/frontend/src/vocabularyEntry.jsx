@@ -162,77 +162,81 @@ export default function VocabularyEntry(props) {
 
   return(
     <React.Fragment>
-      <StyledTableRow>
+      {(!props.hidden) && (
+      <React.Fragment>
+        <StyledTableRow>
 
-        <TableCell component="th" scope="row" >
-          <Typography variant={bodyTypography}>
-            {props.acronym}
-          </Typography>
-        </TableCell>
+          <TableCell component="th" scope="row" >
+            <Typography variant={bodyTypography}>
+              {props.acronym}
+            </Typography>
+          </TableCell>
 
-        <TableCell>
-          <Typography variant={bodyTypography}>
-            {props.name}
-          </Typography>
-        </TableCell>
+          <TableCell>
+            <Typography variant={bodyTypography}>
+              {props.name}
+            </Typography>
+          </TableCell>
 
-        <TableCell>
-          <Typography variant={bodyTypography} noWrap>
-            {props.version}
-          </Typography>
-        </TableCell>
+          <TableCell>
+            <Typography variant={bodyTypography} noWrap>
+              {props.version}
+            </Typography>
+          </TableCell>
 
-        <StyledTableCell>
-          <Typography variant={bodyTypography}>
-            {date.toString().substring(4,15)}
-          </Typography>
-        </StyledTableCell>
+          <StyledTableCell>
+            <Typography variant={bodyTypography}>
+              {date.toString().substring(4,15)}
+            </Typography>
+          </StyledTableCell>
 
-        <StyledTableCell>
-          {(phase != Phase["Other Source"]) &&
-          <React.Fragment>
-            <VocabularyAction
-              acronym={props.acronym}
-              install={install}
-              uninstall={uninstall}
-              phase={phase}
-            />
+          <StyledTableCell>
+            {(phase != Phase["Other Source"]) &&
+            <React.Fragment>
+              <VocabularyAction
+                acronym={props.acronym}
+                install={install}
+                uninstall={uninstall}
+                phase={phase}
+              />
 
-            <VocabularyDetails
-              acronym={props.acronym}
-              install={install}
-              uninstall={uninstall}
-              phase={phase}
-              name={props.name}
-              description={props.description}
-            />
-          </React.Fragment>
-          }
-        </StyledTableCell>
+              <VocabularyDetails
+                acronym={props.acronym}
+                install={install}
+                uninstall={uninstall}
+                phase={phase}
+                name={props.name}
+                description={props.description}
+              />
+            </React.Fragment>
+            }
+          </StyledTableCell>
 
-      </StyledTableRow>
-      
-      <Dialog open={err} onClose={handleClose}>
+        </StyledTableRow>
+        
+        <Dialog open={err} onClose={handleClose}>
 
-        <DialogTitle onClose={handleClose}>
-          <Typography variant="h5" color="error" className={classes.title}>Failed to {action}</Typography>
-          <IconButton onClick={handleClose} className={classes.closeButton}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
+          <DialogTitle onClose={handleClose}>
+            <Typography variant="h5" color="error" className={classes.title}>Failed to {action}</Typography>
+            <IconButton onClick={handleClose} className={classes.closeButton}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
 
-        <DialogContent>
-          <Typography variant="h6">{props.name}</Typography>
-          <Typography variant="body1">Version {props.version}</Typography>
-        </DialogContent>
+          <DialogContent>
+            <Typography variant="h6">{props.name}</Typography>
+            <Typography variant="body1">Version {props.version}</Typography>
+          </DialogContent>
 
-        <DialogContent>
-          <Typography variant="body1">{errMsg}</Typography>
-        </DialogContent>
+          <DialogContent>
+            <Typography variant="body1">{errMsg}</Typography>
+          </DialogContent>
 
-        <DialogActions/>
+          <DialogActions/>
 
-      </Dialog>
+        </Dialog>
+      </React.Fragment>
+      )}
     </React.Fragment>
   );
 }

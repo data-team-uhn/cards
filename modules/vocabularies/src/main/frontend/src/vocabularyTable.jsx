@@ -32,6 +32,7 @@ import {
   withStyles
 } from "@material-ui/core";
 
+import Search from "./search";
 import VocabularyEntry from "./vocabularyEntry";
 
 const Config = require("./config.json");
@@ -57,69 +58,84 @@ const HeaderTableCell = withStyles(theme => ({
 }))(TableCell);
 
 export default function VocabularyTable(props) {
+  const [filterTable, setFilterTable] = React.useState(false);
+  const [acronymList, setAcronymList] = React.useState([]);
+
   const vocabList = props.vocabList;
   const classes = useStyles();
   const headingTypography = Config["tableHeadingTypography"];
   const columnWidths = Config["tableColumnWidths"]
 
   return(
-    <Grid item>
-      {(vocabList.length > 0) &&
-      <Paper className={classes.root}>
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-
-              <HeaderTableCell width={columnWidths["id"]}>
-                <Typography variant={headingTypography}>ID</Typography>
-              </HeaderTableCell>
-
-              <HeaderTableCell width={columnWidths["name"]}>
-                <Typography variant={headingTypography}>Name</Typography>
-              </HeaderTableCell>
-
-              <HeaderTableCell width={columnWidths["version"]}>
-                <Typography variant={headingTypography}>Version</Typography>
-              </HeaderTableCell>
-
-              <HeaderTableCell width={columnWidths["releaseDate"]}>
-                <Typography variant={headingTypography}>Release Date</Typography>
-              </HeaderTableCell>
-
-              <HeaderTableCell width={columnWidths["actions"]}/>
-
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {vocabList.map((vocab) => {
-              if (props.type === "local" || vocab.status === "production") {
-                return(
-                  <VocabularyEntry
-                    key={vocab.ontology.acronym}
-                    acronym={vocab.ontology.acronym}
-                    name={vocab.ontology.name}
-                    description={vocab.description}
-                    released={vocab.released}
-                    version={vocab.version}
-                    updateLocalList={(action) => {props.updateLocalList(action, vocab)}}
-                    initPhase={(
-                      props.acronymPhaseObject.hasOwnProperty(vocab.ontology.acronym) ? 
-                        props.acronymPhaseObject[vocab.ontology.acronym]
-                        :
-                        Phase["Other Source"]
-                    )} 
-                    setPhase={(phase) => props.setPhase(vocab.ontology.acronym, phase)}
-                    addSetter={(setFunction) => props.addSetter(vocab.ontology.acronym, setFunction, props.type)}
-                  />
-                );
-              }
-            })}
-          </TableBody>
-
-        </Table>
-      </Paper>
+    <React.Fragment>
+      {(props.type === "remote") &&
+      <Search
+          setParentAcronymList={setAcronymList}
+          setParentFilterTable={setFilterTable}
+      />
       }
-    </Grid>
+
+      {(vocabList.length > 0) &&
+      <Grid item>
+        <Paper className={classes.root}>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+
+                <HeaderTableCell width={columnWidths["id"]}>
+                  <Typography variant={headingTypography}>ID</Typography>
+                </HeaderTableCell>
+
+                <HeaderTableCell width={columnWidths["name"]}>
+                  <Typography variant={headingTypography}>Name</Typography>
+                </HeaderTableCell>
+
+                <HeaderTableCell width={columnWidths["version"]}>
+                  <Typography variant={headingTypography}>Version</Typography>
+                </HeaderTableCell>
+
+                <HeaderTableCell width={columnWidths["releaseDate"]}>
+                  <Typography variant={headingTypography}>Release Date</Typography>
+                </HeaderTableCell>
+
+                <HeaderTableCell width={columnWidths["actions"]}/>
+
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              {vocabList.map((vocab) => {
+                if (props.type === "local" || vocab.status === "production") {
+                  return(
+                    <VocabularyEntry
+                      key={vocab.ontology.acronym}
+                      acronym={vocab.ontology.acronym}
+                      name={vocab.ontology.name}
+                      description={vocab.description}
+                      released={vocab.released}
+                      version={vocab.version}
+                      updateLocalList={(action) => {props.updateLocalList(action, vocab)}}
+                      // If filterTable is True, then check if the acronym is of a vocabulary to be displayed
+                      // If filterTable is False, then don't hide anything
+                      hidden={filterTable && !acronymList.includes(vocab.ontology.acronym)}
+                      initPhase={(
+                        props.acronymPhaseObject.hasOwnProperty(vocab.ontology.acronym) ?
+                          props.acronymPhaseObject[vocab.ontology.acronym]
+                          :
+                          Phase["Other Source"]
+                      )} 
+                      setPhase={(phase) => props.setPhase(vocab.ontology.acronym, phase)}
+                      addSetter={(setFunction) => props.addSetter(vocab.ontology.acronym, setFunction, props.type)}
+                    />
+                  );
+                }
+              })}
+            </TableBody>
+
+          </Table>
+        </Paper>
+      </Grid>
+      }
+    </React.Fragment>
   );
 }

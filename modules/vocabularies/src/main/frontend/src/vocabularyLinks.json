@@ -10,6 +10,9 @@
     "base": "/Vocabularies/"
   },
   "local": "/Vocabularies.1.json",
+  "recommender": {
+    "base": "http://data.bioontology.org/recommender?"
+  },
   "remote": {
     "base": "http://data.bioontology.org/submissions/?",
     "params": {
