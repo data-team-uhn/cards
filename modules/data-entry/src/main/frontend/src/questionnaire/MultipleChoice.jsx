@@ -40,22 +40,27 @@ function MultipleChoice(props) {
     .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
     // Only extract the labels and internal values from the node
     .map(value => [value.label || value.value, value.value, true]);
+  const isBare = defaults.length === 0 && maxAnswers === 1;
+  const isRadio = defaults.length > 0 && maxAnswers === 1;
   let initialSelection =
     // If there's no existing answer, there's no initial selection
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
     // The value can either be a single value or an array of values; force it into an array
     Array.of(existingAnswer[1].value).flat()
     // Only the internal values are stored, turn them into pairs of [label, value]
-    // Values that are not predefined come from a custom input, and custom inputs use a special value
-    .map(answer => (defaults.find(e => e[1] === String(answer)) || [String(answer), GHOST_SENTINEL]));
+    // Values that are not predefined come from a custom input, and custom inputs use either the same name as their answer (multiple inputs)
+    // or the the special ghost sentinel value
+    .map(answer => (defaults.find(e => e[1] === String(answer)) || [String(answer), (isBare || isRadio) ? GHOST_SENTINEL : String(answer)]));
+  const all_options =
+    // If the question is a radio, just display the defaults as duplicates
+    isRadio ? defaults.slice() :
+    // Otherwise, display as options the union of all defaults + existing answers, without duplicates
+    defaults.slice().concat(initialSelection.filter( (selectedAnswer) => defaults.indexOf(selectedAnswer) < 0));
   const [selection, setSelection] = useState(initialSelection);
-  // FIXME This doesn't work with multiple values
-  const [ghostName, setGhostName] = useState(existingAnswer && existingAnswer[1].value || '');
+  const [ghostName, setGhostName] = useState((isBare || (isRadio && defaults.indexOf(initialSelection[0]) < 0)) && existingAnswer && existingAnswer[1].value || '');
   const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);
-  const [options, setOptions] = useState(defaults);
+  const [options, setOptions] = useState(all_options);
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
-  const isRadio = maxAnswers === 1 && options.length > 0;
-  const isBare = options.length === 0 && maxAnswers === 1;
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio;
   let inputEl = null;
 
@@ -138,7 +143,7 @@ function MultipleChoice(props) {
   }
 
   // Hold the input box for either multiple choice type
-  let ghostInput = (input || textbox) && (<div className={classes.searchWrapper}>
+  let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
       <TextField
         className={classes.textField}
         onChange={(event) => {
