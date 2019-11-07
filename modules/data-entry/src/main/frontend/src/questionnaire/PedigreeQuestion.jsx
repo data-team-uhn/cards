@@ -32,11 +32,11 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // Component that renders a pedigree question.
 function PedigreeQuestion(props) {
   const { existingAnswer, classes, ...rest } = props;
-  const [ openDialog, setOpenDialog ] = useState(false);
+  const [ expanded, setExpanded ] = useState(false);
   var image_div = "";
   var full_image_div = "";
+
   // If we have a valid image
-  // console.log(existingAnswer);
   if (existingAnswer && existingAnswer.length > 1 && existingAnswer[1].image) {
     // FIXME: Hardcoded height
     var new_image = existingAnswer[1].image.replace(/(<svg[^>]+)height="\d+"/, "$1height=\"250px\"");
@@ -49,11 +49,11 @@ function PedigreeQuestion(props) {
       {...rest}
       >
       {image_div && (
-        <Link onClick={() => {setOpenDialog(true);}}>
+        <Link onClick={() => {setExpanded(true);}}>
           {image_div}
         </Link>
       )}
-      <Dialog maxWidth={false} open={openDialog} onClose={() => {setOpenDialog(false);}}>
+      <Dialog maxWidth={false} open={expanded} onClose={() => {setExpanded(false);}}>
         <DialogContent>
           {full_image_div}
         </DialogContent>
