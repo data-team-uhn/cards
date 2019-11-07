@@ -145,7 +145,7 @@ export default function VocabulariesAdminPage() {
 
       <Grid item>
         <Typography variant="h2">
-          Find on <a href="https://www.bioontology.org/" target="_blank">BioPortal</a>
+          Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
         </Typography>
       </Grid>
        

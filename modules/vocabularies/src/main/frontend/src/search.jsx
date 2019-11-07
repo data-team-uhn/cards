@@ -100,16 +100,22 @@ export default function Search(props) {
     });
   }
 
-  function clearSearch() {
+  function reset() {
     props.setParentFilterTable(false);
     props.setParentAcronymList([]);
-    setKeywords("");
+    if (keywords !== "") {
+      setKeywords("");
+    }
     setFilterTable(false);
   }
 
   function checkEnterKey(event) {
     if(event.keyCode == 13) {
-      search();
+      if (keywords === "") {
+        reset();
+      } else {
+        search();
+      }
     }
   }
 
@@ -123,7 +129,7 @@ export default function Search(props) {
               fullWidth
               InputProps={{
                 endAdornment: <InputAdornment position="end">
-                                <IconButton onClick={search}>
+                                <IconButton onClick={keywords === "" ? reset: search}>
                                   <SearchIcon/>
                                 </IconButton>
                               </InputAdornment>
@@ -139,7 +145,7 @@ export default function Search(props) {
           </Grid>
 
           <Grid item xs={12} sm={1}>
-            <Button className={classes.clearButton} onClick={clearSearch} variant="contained" size="large" color="secondary">
+            <Button className={classes.clearButton} onClick={reset} variant="contained" size="large" color="secondary">
               Clear
             </Button>
           </Grid>
