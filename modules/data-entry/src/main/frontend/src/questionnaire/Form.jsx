@@ -40,8 +40,8 @@ import PedigreeQuestion from "./PedigreeQuestion";
 import TextQuestion from "./TextQuestion";
 
 // GUI for displaying answers
-export default function Form (props) {
-  let { id } = props;
+function Form (props) {
+  let { classes, id } = props;
   let [ data, setData ] = useState();
   let [ error, setError ] = useState();
   let [ saveInProgress, setSaveInProgress ] = useState();
@@ -116,8 +116,22 @@ export default function Form (props) {
             .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question')
             .map(([key, questionDefinition]) => <Grid item key={key}>{displayQuestion(questionDefinition, key)}</Grid>)
         }
-        <Grid item><Button type="submit" variant="contained" color="primary" disabled={saveInProgress}>{saveInProgress ? 'Saving' : lastSaveStatus === true ? 'Saved' : lastSaveStatus === false ? 'Save failed, try again?' : 'Save'}</Button></Grid>
       </Grid>
+
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        disabled={saveInProgress}
+        className={classes.saveButton}
+      >
+        {saveInProgress ? 'Saving' :
+        lastSaveStatus === true ? 'Saved' :
+        lastSaveStatus === false ? 'Save failed, try again?' :
+        'Save'}
+      </Button>
     </form>
   );
 };
+
+export default withStyles(QuestionnaireStyle)(Form);
