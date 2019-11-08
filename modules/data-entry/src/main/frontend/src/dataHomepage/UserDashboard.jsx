@@ -21,8 +21,7 @@ import LiveTable from "./LiveTable.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
-import { Button, Grid, Link, withStyles } from "@material-ui/core";
-import { Card, CardHeader, CardBody } from "MaterialDashboardReact";
+import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles } from "@material-ui/core";
 import NewFormDialog from "./NewFormDialog.jsx";
 
 // Component that renders the user's dashboard, with one LiveTable per questionnaire
@@ -91,23 +90,27 @@ function UserDashboard(props) {
           return(
             <Grid item lg={12} xl={6} key={questionnaire["jcr:uuid"]}>
               <Card>
-                <CardHeader color="warning">
-                  <Link href={`/content.html/Forms?questionnaire=${questionnaire["jcr:uuid"]}`}>
-                    <Button className={classes.cardHeaderButton}>
-                      {questionnaire["title"]}
-                    </Button>
-                  </Link>
-                  <NewFormDialog presetPath={questionnaire["@path"]}>
-                    New form
-                  </NewFormDialog>
-                </CardHeader>
-                <CardBody>
+                <CardHeader
+                  title={
+                    <Link href={`/content.html/Forms?questionnaire=${questionnaire["jcr:uuid"]}`}>
+                      <Button className={classes.cardHeaderButton}>
+                        {questionnaire["title"]}
+                      </Button>
+                    </Link>
+                  }
+                  action={
+                    <NewFormDialog presetPath={questionnaire["@path"]}>
+                      New form
+                    </NewFormDialog>
+                  }
+                />
+                <CardContent>
                   <LiveTable
                     columns={columns}
                     customUrl={customUrl}
                     defaultLimit={10}
                     />
-                </CardBody>
+                </CardContent>
               </Card>
             </Grid>
           )
