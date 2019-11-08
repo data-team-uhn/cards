@@ -43,7 +43,9 @@ function NewFormDialog(props) {
     xhr.onreadystatechange = function () {
       if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 201) {
         // Redirect the user to the new uuid
-        props.history.push(URL);
+        // FIXME: Would be better to somehow obtain the router prefix from props
+        // but that is not currently possible
+        props.history.push("/content.html" + URL);
       }
     };
     xhr.send(request_data);
