@@ -339,6 +339,11 @@
     "dataType": "vocabulary",
     "sourceVocabulary": "SNOMEDCT",
     "vocabularyFilter": "children of Relative",
+    "Proband": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Proband",
+      "label": "This is the proband"
+    },
     "Mother": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "Mother"
