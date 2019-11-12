@@ -1,0 +1,113 @@
+format-version: 1.2
+data-version: hp/releases/2019-11-08
+saved-by: Peter Robinson, Sebastian Koehler, Sandra Doelken, Chris Mungall, Melissa Haendel, Nicole Vasilevsky, Monarch Initiative, et al.
+subsetdef: hposlim_core "Core clinical terminology"
+subsetdef: secondary_consequence "Consequence of a disorder in another organ system."
+synonymtypedef: HP:0031859 "obsolete synonym"
+synonymtypedef: HP:0045076 "UK spelling"
+synonymtypedef: HP:0045077 "abbreviation"
+synonymtypedef: HP:0045078 "plural form"
+synonymtypedef: layperson "layperson term"
+default-namespace: human_phenotype
+remark: Please see license of HPO at http://www.human-phenotype-ontology.org
+ontology: hp.obo
+property_value: http://purl.org/dc/elements/1.1/creator "Human Phenotype Ontology Consortium" xsd:string
+property_value: http://purl.org/dc/elements/1.1/creator "Monarch Initiative" xsd:string
+property_value: http://purl.org/dc/elements/1.1/creator "Peter Robinson" xsd:string
+property_value: http://purl.org/dc/elements/1.1/creator "Sebastian Köhler" xsd:string
+property_value: http://purl.org/dc/elements/1.1/description "The Human Phenotype Ontology (HPO) provides a standardized vocabulary of phenotypic abnormalities and clinical features encountered in human disease." xsd:string
+property_value: http://purl.org/dc/elements/1.1/license https://hpo.jax.org/app/license xsd:string
+property_value: http://purl.org/dc/elements/1.1/rights "Peter Robinson, Sebastian Koehler, The Human Phenotype Ontology Consortium, and The Monarch Initiative" xsd:string
+property_value: http://purl.org/dc/elements/1.1/subject "Phenotypic abnormalities encountered in human disease" xsd:string
+property_value: http://purl.org/dc/elements/1.1/title "Human Phenotype Ontology" xsd:string
+property_value: http://purl.org/dc/terms/license https://hpo.jax.org/app/license xsd:string
+logical-definition-view-relation: has_part
+
+[Term]
+id: HP:0000008
+name: Abnormality of female internal genitalia
+def: "An abnormality of the female internal genitalia." [HPO:probinson]
+xref: UMLS:C4025900
+is_a: HP:0000812 ! Abnormal internal genitalia
+is_a: HP:0010460 ! Abnormality of the female genitalia
+
+[Term]
+id: HP:0000812
+name: Abnormal internal genitalia
+def: "An anomaly of the adnexa, uterus, and vagina (in female) or seminal tract and prostate (in male)." [HPO:probinson]
+synonym: "Abnormal internal genitalia" EXACT layperson []
+xref: UMLS:C4025824
+is_a: HP:0012243 ! Abnormal reproductive system morphology
+
+[Term]
+id: HP:0010460
+name: Abnormality of the female genitalia
+def: "Abnormality of the female genital system." [HPO:probinson]
+comment: Abnormality of the female internal or external genitalia.
+xref: UMLS:C4023820
+is_a: HP:0012243 ! Abnormal reproductive system morphology
+created_by: peter
+creation_date: 2009-09-15T08:32:09Z
+
+[Term]
+id: HP:0012243
+name: Abnormal reproductive system morphology
+def: "A structural or developmental anomaly of any of the tissues involved in the genital system." [HPO:probinson, MP:0002160]
+synonym: "Abnormal genital system morphology" EXACT []
+xref: UMLS:C4021096
+is_a: HP:0000078 ! Abnormality of the genital system
+created_by: peter
+creation_date: 2013-04-02T07:02:20Z
+
+[Term]
+id: HP:0000078
+name: Abnormality of the genital system
+def: "An abnormality of the genital system." [HPO:probinson]
+synonym: "Abnormality of the reproductive system" RELATED layperson []
+synonym: "Genital abnormalities" EXACT layperson []
+synonym: "Genital abnormality" EXACT layperson []
+synonym: "Genital anomalies" EXACT layperson []
+synonym: "Genital defects" EXACT layperson []
+xref: UMLS:C0281966
+xref: UMLS:C0744356
+is_a: HP:0000119 ! Abnormality of the genitourinary system
+
+[Term]
+id: HP:0000119
+name: Abnormality of the genitourinary system
+alt_id: HP:0008658
+alt_id: HP:0008688
+alt_id: HP:0008704
+alt_id: HP:0008713
+def: "The presence of any abnormality of the genitourinary system." [HPO:curators]
+synonym: "Abnormality of the GU system" EXACT HP:0045077 []
+synonym: "Genitourinary abnormality" EXACT []
+synonym: "Genitourinary disease" RELATED []
+synonym: "Genitourinary dysplasia" RELATED []
+synonym: "Genitourinary tract anomalies" EXACT []
+synonym: "Genitourinary tract malformation" EXACT []
+synonym: "Urogenital abnormalities" EXACT []
+synonym: "Urogenital anomalies" EXACT []
+xref: MSH:D014564
+xref: SNOMEDCT_US:287085006
+xref: SNOMEDCT_US:42030000
+xref: UMLS:C0042063
+xref: UMLS:C0080276
+xref: UMLS:C4020895
+is_a: HP:0000118 ! Phenotypic abnormality
+
+[Term]
+id: HP:0000118
+name: Phenotypic abnormality
+def: "A phenotypic abnormality." [HPO:probinson]
+comment: This is the root of the phenotypic abnormality subontology of the HPO.
+synonym: "Organ abnormality" EXACT []
+xref: UMLS:C4021819
+is_a: HP:0000001 ! All
+
+[Term]
+id: HP:0000001
+name: All
+comment: Root of all terms in the Human Phenotype Ontology.
+xref: UMLS:C0444868
+

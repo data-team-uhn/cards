@@ -19,13 +19,17 @@
 
 package ca.sickkids.ccm.lfs.vocabularies;
 
+import java.io.File;
 import java.io.StringReader;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -36,6 +40,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -58,8 +63,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.osgi.framework.BundleContext;
 
 import ca.sickkids.ccm.lfs.vocabularies.internal.NCITFlatIndexer;
+import ca.sickkids.ccm.lfs.vocabularies.internal.OboParser;
+import ca.sickkids.ccm.lfs.vocabularies.internal.TermData;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescription;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescriptionBuilder;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexer;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
 import com.google.common.base.Function;
 
 /**
@@ -165,6 +175,61 @@ public class VocabularyIndexerServletTest
 
         // Execute POST request using the class's instance of the VocabularyIndexerServlet
         this.indexServlet.doPost(request, response);
+    }
+
+    /**
+     * Method which gets a String property from a node and compares it with the correct String value.
+     *
+     * @param node - JCR node instance
+     * @param propertyName - name of the String property we want to get from the node
+     * @param correctString - correct value of the String property
+     * @throws Exception thrown when property cannot be obtained or if the Strings do not match
+     */
+    private void checkString(Node node, String propertyName, String correctString)
+        throws Exception
+    {
+        Property obtainedProperty = node.getProperty(propertyName);
+        String obtainedString = obtainedProperty.getString();
+
+        Assert.assertTrue(correctString.compareTo(obtainedString) == 0);
+    }
+
+    /**
+     * Method which gets a String[] property from a node and compares it with the correct String[] value. Only the
+     * contents are compared; the order of the contents does not matter. The arrays are loaded in to String set
+     * instances and these are compared. Since sets are unordered, it allows the order of the array elements to be
+     * neglected.
+     *
+     * @param node - JCR node instance
+     * @param propertyName - name of the String[] property we want to get from the node
+     * @param correctStringArray - correct value of the String[] property
+     * @throws Exception when the contents of the arrays do not equal or if the String[] property cannot be obtained
+     */
+    private void checkStringArray(Node node, String propertyName, String[] correctStringArray)
+        throws Exception
+    {
+        // Get value array from the node
+        Property obtainedProperty = node.getProperty(propertyName);
+        Value[] obtainedStringValues = obtainedProperty.getValues();
+
+        // Check if the arrays have the same number of terms
+        Assert.assertTrue(obtainedStringValues.length == correctStringArray.length);
+
+        // Load the respective arrays into sets
+        Set<String> correctStringSet = new HashSet<>();
+        Set<String> obtainedStringSet = new HashSet<>();
+
+        for (String correctString : correctStringArray) {
+            correctStringSet.add(correctString);
+        }
+
+        for (Value obtainedValue : obtainedStringValues) {
+            // Convert the value to String before putting into set
+            obtainedStringSet.add(obtainedValue.getString());
+        }
+
+        // Assert that the sets are identical
+        Assert.assertTrue(correctStringSet.equals(obtainedStringSet));
     }
 
     /**
@@ -356,61 +421,6 @@ public class VocabularyIndexerServletTest
     }
 
     /**
-     * Method which gets a String property from a node and compares it with the correct String value.
-     *
-     * @param node - JCR node instance
-     * @param propertyName - name of the String property we want to get from the node
-     * @param correctString - correct value of the String property
-     * @throws Exception thrown when property cannot be obtained or if the Strings do not match
-     */
-    private void checkString(Node node, String propertyName, String correctString)
-        throws Exception
-    {
-        Property obtainedProperty = node.getProperty(propertyName);
-        String obtainedString = obtainedProperty.getString();
-
-        Assert.assertTrue(correctString.compareTo(obtainedString) == 0);
-    }
-
-    /**
-     * Method which gets a String[] property from a node and compares it with the correct String[] value. Only the
-     * contents are compared; the order of the contents does not matter. The arrays are loaded in to String set
-     * instances and these are compared. Since sets are unordered, it allows the order of the array elements to be
-     * neglected.
-     *
-     * @param node - JCR node instance
-     * @param propertyName - name of the String[] property we want to get from the node
-     * @param correctStringArray - correct value of the String[] property
-     * @throws Exception when the contents of the arrays do not equal or if the String[] property cannot be obtained
-     */
-    private void checkStringArray(Node node, String propertyName, String[] correctStringArray)
-        throws Exception
-    {
-        // Get value array from the node
-        Property obtainedProperty = node.getProperty(propertyName);
-        Value[] obtainedStringValues = obtainedProperty.getValues();
-
-        // Check if the arrays have the same number of terms
-        Assert.assertTrue(obtainedStringValues.length == correctStringArray.length);
-
-        // Load the respective arrays into sets
-        Set<String> correctStringSet = new HashSet<>();
-        Set<String> obtainedStringSet = new HashSet<>();
-
-        for (String correctString : correctStringArray) {
-            correctStringSet.add(correctString);
-        }
-
-        for (Value obtainedValue : obtainedStringValues) {
-            // Convert the value to String before putting into set
-            obtainedStringSet.add(obtainedValue.getString());
-        }
-
-        // Assert that the sets are identical
-        Assert.assertTrue(correctStringSet.equals(obtainedStringSet));
-    }
-
-    /**
      * Compares the correct values for node C100008 in the test vocabulary to the ones actually generated by the
      * {@link VocabularyIndexerServlet}.
      *
@@ -475,5 +485,186 @@ public class VocabularyIndexerServletTest
 
         String[] ancestors = { "C100002" };
         checkStringArray(c100005, "ancestors", ancestors);
+    }
+
+    // OBO Tests
+    /**
+     * Dummy class to facilitate the basic testing of parsing of 2 pre selected OBO vocabulary terms.
+     */
+    private class ConsumerTest implements Consumer<VocabularyTermSource>
+    {
+        public void accept(VocabularyTermSource vTS)
+        {
+            Assert.assertNotNull(vTS);
+            if ("HP:0001510".equals(vTS.getId())) {
+                oboTestHP0001510(vTS);
+            } else if ("HP:0004323".equals(vTS.getId())) {
+                oboTestHP0004323(vTS);
+            } else if ("CHEBI:24867".equals(vTS.getId())) {
+                chebiTest24867(vTS);
+            } else if ("CHEBI:23367".equals(vTS.getId())) {
+                chebiTest23367(vTS);
+            }
+        }
+    }
+
+    /**
+     * Tests {@link VocabularyIndexerServlet} parsing and indexing a locally stored zip of a test vocabulary called
+     * flatTestVocabulary. Checks if the resultant nodes that are created in the MockJcr instance are correct.
+     *
+     * @throws Exception when node cannot be created
+     */
+    @Test
+    public void testObo() throws Exception
+    {
+        // Load the description
+        VocabularyDescription description = new VocabularyDescriptionBuilder().build();
+
+        // Create Obo Parser
+        OboParser oboParser = new OboParser();
+        Assert.assertTrue(oboParser.canParse("OBO"));
+
+        // Set Test file
+        String basicPath = Paths.get("").toAbsolutePath().toString()
+            + "/src/test/java/ca/sickkids/ccm/lfs/vocabularies/";
+        List<String> files = Arrays.asList("chebi-test.obo", "hpo-test.obo");
+        ConsumerTest tester = new ConsumerTest();
+
+        for (String file : files) {
+            File temporaryFile = new File(basicPath + file);
+            // Parse the source file and create VocabularyTerm node children
+            oboParser.parse(temporaryFile, description, tester);
+        }
+    }
+
+    /**
+     * Compares the correct values for term HP:0001510 in the test vocabulary to the ones actually generated by the
+     * {@link VocabularyIndexerServlet}.
+     *
+     * @param hp0001510 - VocabularyTermSource object generated from parsing HP:0001510
+     * @throws Exception thrown when node properties don't match correct properties or if properties don't exist
+     */
+    private void oboTestHP0001510(VocabularyTermSource hp0001510)
+    {
+        MultiValuedMap<String, String> allProperties = hp0001510.getAllProperties();
+
+        // Check Label
+        Assert.assertTrue("Growth delay".equals(hp0001510.getLabel()));
+
+        // Check Alternate IDs
+        List<String> altIds = Arrays.asList("HP:0001434", "HP:0001512", "HP:0001514", "HP:0001517",
+            "HP:0001532", "HP:0008847", "HP:0008870", "HP:0008886", "HP:0008893", "HP:0008926");
+        Assert.assertTrue(allProperties.get("alt_id").containsAll(altIds));
+
+        // Check Description
+        String description = "A deficiency or slowing down of growth pre- and postnatally.";
+        Assert.assertTrue(allProperties.containsMapping("def", description));
+
+        // Check Comment
+        String comment = "Poor or abnormally slow gains in weight or height in a child.";
+        Assert.assertTrue(allProperties.containsMapping("comment", comment));
+
+        // Check Synonyms
+        List<String> synonyms = Arrays.asList("Delayed growth", "Growth deficiency", "Growth failure",
+            "Growth retardation", "Poor growth", "Retarded growth", "VERY POOR GROWTH");
+        Assert.assertTrue(allProperties.get("synonym").containsAll(synonyms));
+
+        // Check Parents
+        Assert.assertTrue(allProperties.containsMapping(TermData.PARENT_FIELD_NAME, "HP:0001507"));
+
+        // Check Ancestors
+        List<String> ancestors = Arrays.asList("HP:0001507", "HP:0000118", "HP:0000001");
+        Assert.assertTrue(allProperties.get(TermData.TERM_CATEGORY_FIELD_NAME).containsAll(ancestors));
+    }
+
+    /**
+     * Compares the correct values for term HP:0004323 in the test vocabulary to the ones actually generated by the
+     * {@link VocabularyIndexerServlet}.
+     *
+     * @param hp0004323 - VocabularyTermSource object generated from parsing HP:0004323
+     * @throws Exception thrown when node properties don't match correct properties or if properties don't exist
+     */
+    private void oboTestHP0004323(VocabularyTermSource hp0004323)
+    {
+        MultiValuedMap<String, String> allProperties = hp0004323.getAllProperties();
+
+        // Check Label
+        Assert.assertTrue("Abnormality of body weight".equals(hp0004323.getLabel()));
+
+        // Check Alternate ID
+        Assert.assertTrue(allProperties.containsMapping("alt_id", "HP:0010718"));
+
+        // Check description
+        String description = "An abnormal increase or decrease of weight or an abnormal"
+            + " distribution of mass in the body.";
+        Assert.assertTrue(allProperties.containsMapping("def", description));
+
+        // Check synonym
+        Assert.assertTrue(allProperties.containsMapping("synonym", "Abnormality of habitus"));
+
+        // Check Parent
+        Assert.assertTrue(allProperties.containsMapping(TermData.PARENT_FIELD_NAME, "HP:0001507"));
+
+        // Check Ancestors
+        List<String> ancestors = Arrays.asList("HP:0001507", "HP:0000118", "HP:0000001");
+        Assert.assertTrue(allProperties.get(TermData.TERM_CATEGORY_FIELD_NAME).containsAll(ancestors));
+    }
+
+    /**
+     * Compares the correct values for term CHEBI:24867 in the test vocabulary to the ones actually generated by the
+     * {@link VocabularyIndexerServlet}.
+     *
+     * @param chebi24867 - VocabularyTermSource object generated from parsing CHEBI:24867
+     * @throws Exception thrown when node properties don't match correct properties or if properties don't exist
+     */
+    private void chebiTest24867(VocabularyTermSource chebi24867)
+    {
+        MultiValuedMap<String, String> allProperties = chebi24867.getAllProperties();
+
+        // Check Label
+        Assert.assertTrue("monoatomic ion".equals(chebi24867.getLabel()));
+
+        // Check Synonym
+        Assert.assertTrue(allProperties.containsMapping("synonym", "monoatomic ions"));
+
+        // Check Parents
+        List<String> parents = Arrays.asList("CHEBI:24870", "CHEBI:33238");
+        Assert.assertTrue(allProperties.get(TermData.PARENT_FIELD_NAME).containsAll(parents));
+
+        // Check Ancestors
+        List<String> ancestors = Arrays.asList(
+            "CHEBI:24870", "CHEBI:33238", "CHEBI:23367", "CHEBI:33259", "CHEBI:23367", "CHEBI:24431");
+        Assert.assertTrue(allProperties.get(TermData.TERM_CATEGORY_FIELD_NAME).containsAll(ancestors));
+    }
+
+    /**
+     * Compares the correct values for term CHEBI:23367 in the test vocabulary to the ones actually generated by the
+     * {@link VocabularyIndexerServlet}.
+     *
+     * @param chebi23367 - VocabularyTermSource object generated from parsing CHEBI:23367
+     * @throws Exception thrown when node properties don't match correct properties or if properties don't exist
+     */
+    private void chebiTest23367(VocabularyTermSource chebi23367)
+    {
+        MultiValuedMap<String, String> allProperties = chebi23367.getAllProperties();
+
+        // Check Label
+        Assert.assertTrue("molecular entity".equals(chebi23367.getLabel()));
+
+        // Check Description
+        String description = "Any constitutionally or isotopically distinct atom, molecule, ion, ion pair, radical,"
+            + " radical ion, complex, conformer etc., identifiable as a separately distinguishable entity.";
+        Assert.assertTrue(allProperties.containsMapping("def", description));
+
+        // Check Synonyms
+        List<String> synonyms = Arrays.asList("entidades moleculares", "molekulare Entitaet", "entite moleculaire",
+            "entidad molecular", "molecular entity", "molecular entities");
+        Assert.assertTrue(allProperties.get("synonym").containsAll(synonyms));
+
+        // Check Parents
+        Assert.assertTrue(allProperties.containsMapping(TermData.PARENT_FIELD_NAME, "CHEBI:24431"));
+
+        // Check Ancestors
+        Assert.assertTrue(allProperties.containsMapping(TermData.TERM_CATEGORY_FIELD_NAME, "CHEBI:24431"));
     }
 }

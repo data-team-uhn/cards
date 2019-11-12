@@ -371,6 +371,9 @@
             <exclude>**/.*/**</exclude>
             <!-- bnd -->
             <exclude>bnd.bnd</exclude>
+            <!-- Ignore file with data for testing -->
+            <exclude>**/hpo-test.obo</exclude>
+            <exclude>**/chebi-test.obo</exclude>
           </excludes>
         </configuration>
         <executions>
