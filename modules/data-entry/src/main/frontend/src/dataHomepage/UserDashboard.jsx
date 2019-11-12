@@ -103,6 +103,9 @@ function UserDashboard(props) {
                       New form
                     </NewFormDialog>
                   }
+                  classes={{
+                    action: classes.newFormButtonHeader
+                  }}
                 />
                 <CardContent>
                   <LiveTable

@@ -100,6 +100,9 @@ function Forms(props) {
             New form
           </NewFormDialog>
         }
+        classes={{
+          action: classes.newFormButtonHeader
+        }}
       />
       <CardContent>
         <LiveTable columns={columns} customUrl={customUrl}/>
