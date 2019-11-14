@@ -19,11 +19,24 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
+// Component that allows the user to insert an extension from the given URL.
+//
+// Required props:
+//  path: Location of the extension to insert. This must correspond to a .js or .html file
+//  on this server.
+// Optional props:
+//  id: string ID to give to the containing <div /> element
+//
+// Sample usage:
+// <ExtensionPoint
+//    path="/testRig.js"
+//    />
 function ExtensionPoint(props) {
   const { path, id } = props;
   const [ renderedResponse, setRenderedResponse ] = useState();
   const [ initialized, setInitialized ] = useState(false);
 
+  // Fetch the extension, called once on load
   let fetchExtension = (url) => {
     setInitialized(true);
     const parsedURL = new URL(url, window.location.origin);
@@ -35,6 +48,7 @@ function ExtensionPoint(props) {
     }
   }
 
+  // Determine if content at the URL is safe to include
   let isSafe = (url) => {
     return (
       // The origins must match
@@ -43,6 +57,7 @@ function ExtensionPoint(props) {
       )
   }
 
+  // Parse the content from the given Response object
   let handleResponse = (response) => {
     if (!response.ok) {
       return Promise.reject(`Fetching ExtensionPoint ${path} failed with response ${response.status}`);
@@ -91,7 +106,8 @@ function ExtensionPoint(props) {
 }
 
 ExtensionPoint.propTypes = {
-    path: PropTypes.string.isRequired
+    path: PropTypes.string.isRequired,
+    id: PropTypes.string
 };
 
 export default ExtensionPoint;
