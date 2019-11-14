@@ -20,20 +20,32 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 function ExtensionPoint(props) {
+  const { path, id } = props;
   const [ renderedResponse, setRenderedResponse ] = useState();
   const [ initialized, setInitialized ] = useState(false);
 
   let fetchExtension = (url) => {
     setInitialized(true);
-    fetch(url)
-      .then(handleResponse)
-      .then((text) => {setRenderedResponse({__html: text})})
-      .catch(handleError);
+    const parsedURL = new URL(url, window.location.origin);
+    if (isSafe(parsedURL)) {
+      fetch(url)
+        .then(handleResponse)
+        .then((text) => {setRenderedResponse({__html: text})})
+        .catch(handleError);
+    }
+  }
+
+  let isSafe = (url) => {
+    return (
+      // The origins must match
+      window.location.origin === url.origin
+      // FIXME: The node must actually be of type lfs:Extension
+      )
   }
 
   let handleResponse = (response) => {
     if (!response.ok) {
-      return Promise.reject(`Fetching ExtensionPoint ${props.path} failed with response ${response.status}`);
+      return Promise.reject(`Fetching ExtensionPoint ${path} failed with response ${response.status}`);
     }
 
     // Check the headers to determine how to handle this respnse
@@ -46,15 +58,21 @@ function ExtensionPoint(props) {
     }
 
     // Determine what to do depending on the value of the output
-    if (contentType === 'application/json') {
+    if (contentType === 'text/javascript' || contentType === 'application/javascript') {
       // jsonp
-      // FIXME: Implement
-      return(eval(response.text()));
+      response.text().then( (text) => {
+        return(eval(text));
+      })
+
+      // As per jsonp standard, we assume that the above eval inserted this ExtensionPoint by itself,
+      // so we do not do anything with the response
+      return;
     } else if (contentType === 'text/html') {
       // html -- include it inline
       return(response.text());
     } else {
-      // FIXME: What if we don't understand what we're given?
+      // Reject any other content type
+      return(Promise.reject(`Fetching ExtensionPoint ${path} returned unknown contentType: ${contentType}`));
     }
   }
 
@@ -63,12 +81,12 @@ function ExtensionPoint(props) {
   }
 
   if (!initialized) {
-    fetchExtension(props.path);
+    fetchExtension(path);
   }
 
 
   return(
-    <div dangerouslySetInnerHTML={renderedResponse}/>
+    <div id={id} dangerouslySetInnerHTML={renderedResponse}/>
   );
 }
 
