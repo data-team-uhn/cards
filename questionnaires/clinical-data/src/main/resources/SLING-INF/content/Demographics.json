@@ -31,7 +31,7 @@
   },
   "Race Ethnicity reported": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Race/ Ethnicity reported",
+    "text": "Race/Ethnicity reported",
     "minAnswers": 0,
     "maxAnswers": 0,
     "displayMode": "list+input",
@@ -76,17 +76,17 @@
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
   },
-  "TP53 variant (cDNA)  as stated in file": {
+  "TP53 variant (cDNA) as stated in file": {
     "jcr:primaryType": "lfs:Question",
-    "text": "TP53 variant (cDNA)  as stated in file",
+    "text": "TP53 variant (cDNA) as stated in file",
     "minAnswers": 1,
     "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "text"
   },
-  "TP53 variant (protein)  as stated in file": {
+  "TP53 variant (protein) as stated in file": {
     "jcr:primaryType": "lfs:Question",
-    "text": "TP53 variant (protein)  as stated in file",
+    "text": "TP53 variant (protein) as stated in file",
     "minAnswers": 1,
     "maxAnswers": 1
   },
@@ -106,7 +106,7 @@
     "jcr:primaryType": "lfs:Question",
     "text": "Mutation-Pathogenecity",
     "minAnswers": 1,
-    "maxAnswers": 1,
+    "maxAnswers": 0,
     "displayMode": "list",
     "dataType": "text",
     "P": {
@@ -147,7 +147,7 @@
   },
   "Mutation-Function": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Mutation- function",
+    "text": "Mutation-Function",
     "minAnswers": 1,
     "maxAnswers": 0,
     "displayMode": "list",
@@ -234,7 +234,7 @@
   },
   "Test done as depicted in the report file (single gene, fam mutation, gane panel, WES)...": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Test done as depicted in the report/ file (single gene, fam mutation, gane panel, WES)...",
+    "text": "Test done as depicted in the report/file (single gene, fam mutation, gane panel, WES)...",
     "minAnswers": 0,
     "maxAnswers": 0,
     "displayMode": "textbox"
@@ -275,18 +275,18 @@
     "displayMode": "textbox",
     "dataType": "text"
   },
-  "Date of genetic  diagnosis": {
+  "Date of genetic diagnosis": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Date of genetic  diagnosis",
+    "text": "Date of genetic diagnosis",
     "minAnswers": 0,
     "maxAnswers": 0,
     "displayMode": "input",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
   },
-  "Age of genetic  diagnosis": {
+  "Age of genetic diagnosis": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Age of genetic  diagnosis (y)",
+    "text": "Age of genetic diagnosis (y)",
     "minAnswers": 1,
     "maxAnswers": 1,
     "displayMode": "input",
@@ -447,25 +447,25 @@
     "displayMode": "input",
     "dataType": "long"
   },
-  "Number of Malignant tumors": {
+  "Number of malignant tumors": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Number of Malignant tumors",
+    "text": "Number of malignant tumors",
     "minAnswers": 1,
     "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "long"
   },
-  "age at 1st malignant Dx": {
+  "Age at 1st malignant Dx": {
     "jcr:primaryType": "lfs:Question",
-    "text": "age at 1st malignant Dx (y)",
+    "text": "Age at 1st malignant Dx (y)",
     "minAnswers": 1,
     "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "long"
   },
-  "Co-mormidities": {
+  "Co-morbidities": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Co-mormidities (non cancerous), including abnormal incidental imaging/ labs",
+    "text": "Co-morbidities (non cancerous), including abnormal incidental imaging/labs",
     "minAnswers": 0,
     "maxAnswers": 0,
     "displayMode": "input",
