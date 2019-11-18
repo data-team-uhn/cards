@@ -78,6 +78,10 @@ public class DataImportServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -5821127949309764050L;
 
+    private static final String VALUE_PROPERTY = "value";
+
+    private static final String LABEL_PROPERTY = "label";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DataImportServlet.class);
 
     /** Supported date formats. */
@@ -234,7 +238,17 @@ public class DataImportServlet extends SlingAllMethodsServlet
         }
 
         Resource answer = getOrCreateAnswer(form, question);
-        answer.adaptTo(Node.class).setProperty("value", parseAnswerValue(fieldValue, question));
+
+        if (question.getProperty("maxAnswers").getLong() == 0) {
+            String[] rawValues = fieldValue.split("\n|,");
+            Value[] values = new Value[rawValues.length];
+            for (int i = 0; i < rawValues.length; ++i) {
+                values[i] = parseAnswerValue(rawValues[i], question);
+            }
+            answer.adaptTo(Node.class).setProperty(VALUE_PROPERTY, values);
+        } else {
+            answer.adaptTo(Node.class).setProperty(VALUE_PROPERTY, parseAnswerValue(fieldValue, question));
+        }
     }
 
     /**
@@ -413,19 +427,19 @@ public class DataImportServlet extends SlingAllMethodsServlet
     {
         String result = null;
         try {
-            for (String prop : new String[] { "value", "label" }) {
+            for (String prop : new String[] { VALUE_PROPERTY, LABEL_PROPERTY }) {
                 NodeIterator childNodes = question.getNodes();
                 while (childNodes.hasNext()) {
                     Node childNode = childNodes.nextNode();
                     if (!"lfs:AnswerOption".equals(childNode.getPrimaryNodeType().getName())
-                        || childNode.getProperty(prop) == null) {
+                        || !childNode.hasProperty(prop)) {
                         continue;
                     }
                     if (StringUtils.equals(value, childNode.getProperty(prop).getString())) {
                         // We found an exact match for a known option, no need to do any further processing
-                        return childNode.getProperty("value").getString();
+                        return childNode.getProperty(VALUE_PROPERTY).getString();
                     } else if (StringUtils.equalsIgnoreCase(value, childNode.getProperty(prop).getString())) {
-                        result = childNode.getProperty("value").getString();
+                        result = childNode.getProperty(VALUE_PROPERTY).getString();
                     }
                 }
                 if (result != null) {
