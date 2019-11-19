@@ -98,7 +98,7 @@ function NewFormDialog(props) {
         }
         {isFetching && <CircularProgress size={24} className={classes.newFormCircularProgress} />}
       </Dialog>}
-      <div className={classes.newFormButtonDiv}>
+      <div className={classes.newFormButtonWrapper}>
         <Button
           variant="contained"
           color="primary"

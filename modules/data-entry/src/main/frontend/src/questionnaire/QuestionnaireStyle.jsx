@@ -81,7 +81,7 @@ const questionnaireStyle = theme => ({
         bottom: theme.spacing(1),
         right: theme.spacing(5)
     },
-    newFormButtonDiv: {
+    newFormButtonWrapper: {
         float: "right",
         position: "inherit"
     },
