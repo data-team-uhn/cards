@@ -20,7 +20,7 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import uuid from "uuid/v4";
 
-import { Button, Dialog, DialogTitle, List, ListItem, ListItemText, withStyles } from "@material-ui/core";
+import { Button, CircularProgress, Dialog, DialogTitle, List, ListItem, ListItemText, Typography, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
@@ -28,70 +28,87 @@ function NewFormDialog(props) {
   const { children, classes, presetPath } = props;
   const [ open, setOpen ] = useState(false);
   const [ questionnaires, setQuestionnaires ] = useState([]);
+  const [ isFetching, setFetching ] = useState(false);
+  const [ error, setError ] = useState("");
 
-  let openForm = (path) => {
+  let createForm = (questionnaireReference) => {
     setOpen(true);
+    setError("");
     
-    // Make a POST request to the form
+    // Make a POST request to create a new form, with a randomly generated UUID
     const URL = "/Forms/" + uuid();
     var request_data = new FormData();
     request_data.append('jcr:primaryType', 'lfs:Form');
-    request_data.append('questionnaire', path);
+    request_data.append('questionnaire', questionnaireReference);
     request_data.append('questionnaire@TypeHint', 'Reference');
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', URL, true);
-    xhr.onreadystatechange = function () {
-      if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 201) {
-        // Redirect the user to the new uuid
-        // FIXME: Would be better to somehow obtain the router prefix from props
-        // but that is not currently possible
-        props.history.push("/content.html" + URL);
-      }
-    };
-    xhr.send(request_data);
+    fetch( URL, { method: 'POST', body: request_data })
+      .then( (response) => {
+        if (response.ok) {
+          // Redirect the user to the new uuid
+          // FIXME: Would be better to somehow obtain the router prefix from props
+          // but that is not currently possible
+          props.history.push("/content.html" + URL);
+          setFetching(false);
+        } else {
+          return(Promise.reject(response));
+        }
+      })
+      .catch(parseErrorResponse);
+    setFetching(true);
   }
 
   let openDialog = () => {
     // Determine what questionnaires are available
     setOpen(true);
+    setError("");
     if (questionnaires.length === 0) {
       // Send a fetch request to determine the questionnaires available
       fetch('/query?query=' + encodeURIComponent('select * from [lfs:Questionnaire]'))
         .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then((json) => {setQuestionnaires(json)});
+        .then((json) => {setQuestionnaires(json); setFetching(false);})
+        .catch(parseErrorResponse);
+      setFetching(true);
     }
+  }
+
+  // Parse an errored response object
+  let parseErrorResponse = (response) => {
+    setError(`New form request failed with error code ${response.status}: ${response.statusText}`);
+    setFetching(false);
   }
 
   return (
     <React.Fragment>
       { /* Only create a dialog if we need to allow the user to choose from multiple questionnaires */
-      presetPath ? "" : <Dialog open={open} onClose={() => { setOpen(false); }}>
+      (!presetPath) && <Dialog open={open} onClose={() => { setOpen(false); }}>
         <DialogTitle id="new-form-title">
           Select questionnaire
         </DialogTitle>
-        {questionnaires ? 
+        {error && <Typography color='error'>{error}</Typography>}
+        {questionnaires &&
           <List>
             {questionnaires.map((questionnaire) => {
               return (
-              <ListItem button key={questionnaire["jcr:uuid"]} onClick={() => {openForm(questionnaire["@path"])}}>
+              <ListItem button key={questionnaire["jcr:uuid"]} onClick={() => {createForm(questionnaire["@path"])}} disabled={isFetching}>
                 <ListItemText primary={questionnaire["title"]}>
                 </ListItemText>
               </ListItem>);
             })}
           </List>
-          :
-          ""
         }
+        {isFetching && <CircularProgress size={24} className={classes.newFormCircularProgress} />}
       </Dialog>}
-      {presetPath ?
-        <Button variant="contained" color="primary" onClick={() => {openForm(presetPath);}} className={classes.newFormButton}>
+      <div className={classes.newFormButtonDiv}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={presetPath ? () => {createForm(presetPath)} : openDialog}
+          disabled={isFetching}
+          >
           { children }
         </Button>
-        :
-        <Button variant="contained" color="primary" onClick={openDialog} className={classes.newFormButton}>
-          { children }
-        </Button>
-      }
+        {<CircularProgress size={24} className={classes.newFormCircularProgress} />}
+      </div>
     </React.Fragment>
   )
 }
