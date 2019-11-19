@@ -48,12 +48,12 @@ function NewFormDialog(props) {
           // FIXME: Would be better to somehow obtain the router prefix from props
           // but that is not currently possible
           props.history.push("/content.html" + URL);
-          setFetching(false);
         } else {
           return(Promise.reject(response));
         }
       })
-      .catch(parseErrorResponse);
+      .catch(parseErrorResponse)
+      .finally(setFetching(false));
     setFetching(true);
   }
 
@@ -65,8 +65,9 @@ function NewFormDialog(props) {
       // Send a fetch request to determine the questionnaires available
       fetch('/query?query=' + encodeURIComponent('select * from [lfs:Questionnaire]'))
         .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then((json) => {setQuestionnaires(json); setFetching(false);})
-        .catch(parseErrorResponse);
+        .then((json) => {setQuestionnaires(json)})
+        .catch(parseErrorResponse)
+        .finally(setFetching(false));
       setFetching(true);
     }
   }
@@ -74,7 +75,6 @@ function NewFormDialog(props) {
   // Parse an errored response object
   let parseErrorResponse = (response) => {
     setError(`New form request failed with error code ${response.status}: ${response.statusText}`);
-    setFetching(false);
   }
 
   return (
