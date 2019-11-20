@@ -19,42 +19,46 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
+const UIXP_FINDER_URL = "/uixp";
+
 // Component that allows the user to insert an extension from the given URL.
 //
 // Required props:
-//  path: Location of the extension to insert. This must correspond to a .js or .html file
-//  on this server.
+//  path: Extension Point ID (e.g. lfs/coreUI/sidebar/entry).
 // Optional props:
-//  id: string ID to give to the containing <div /> element
+//  callback: function to callback with the json data if the extension is a json object
 //
 // Sample usage:
 // <ExtensionPoint
 //    path="/testRig.js"
 //    />
 function ExtensionPoint(props) {
-  const { path, id } = props;
+  const { path, callback } = props;
   const [ renderedResponse, setRenderedResponse ] = useState();
   const [ initialized, setInitialized ] = useState(false);
 
   // Fetch the extension, called once on load
   let fetchExtension = (url) => {
     setInitialized(true);
-    const parsedURL = new URL(url, window.location.origin);
-    if (isSafe(parsedURL)) {
-      fetch(url)
-        .then(handleResponse)
-        .then((text) => {setRenderedResponse({__html: text})})
-        .catch(handleError);
-    }
+
+    // From the extension point path, locate the URL of the ExtensionPoint
+    const uixpFinder = new URL(`${UIXP_FINDER_URL}?path=${url}`, window.location.origin);
+    fetch(uixpFinder)
+      .then(grabUIXP)
+      .then(handleResponse)
+      .then((text) => {setRenderedResponse({__html: text})})
+      .catch(handleError);
   }
 
-  // Determine if content at the URL is safe to include
-  let isSafe = (url) => {
-    return (
-      // The origins must match
-      window.location.origin === url.origin
-      // FIXME: The node must actually be of type lfs:Extension
-      )
+  // Parse the UIXP URL from our UIXP Finder
+  let grabUIXP = (response) => {
+    if (!response.ok) {
+      return Promise.reject(`Finding ExtensionPoint ${path} failed with response ${response.status}`);
+    }
+
+    const url = response.text();
+    const parsedURL = new URL(url, window.location.origin);
+    return fetch(parsedURL);
   }
 
   // Parse the content from the given Response object
@@ -73,15 +77,18 @@ function ExtensionPoint(props) {
     }
 
     // Determine what to do depending on the value of the output
-    if (contentType === 'text/javascript' || contentType === 'application/javascript') {
-      // jsonp
+    if (['text/javascript', 'application/javascript'].indexOf(contentType) >= 0) {
+      // javascript -- evaluate as-is
       response.text().then( (text) => {
         return(eval(text));
       })
-
-      // As per jsonp standard, we assume that the above eval inserted this ExtensionPoint by itself,
-      // so we do not do anything with the response
-      return;
+    } else if (contentType === 'application/json') {
+      // json -- call the provided callback
+      if (callback !== undefined) {
+        response.json().then( (json) => callback(json));
+      } else {
+        return(Promise.reject(`Fetching ExtensionPoint ${path} returned json data, but no callback was provided to its extensionPoint`));
+      }
     } else if (contentType === 'text/html') {
       // html -- include it inline
       return(response.text());
@@ -100,14 +107,12 @@ function ExtensionPoint(props) {
   }
 
 
-  return(
-    <div id={id} dangerouslySetInnerHTML={renderedResponse}/>
-  );
+  return renderedResponse;
 }
 
 ExtensionPoint.propTypes = {
     path: PropTypes.string.isRequired,
-    id: PropTypes.string
+    callback: PropTypes.func
 };
 
 export default ExtensionPoint;
