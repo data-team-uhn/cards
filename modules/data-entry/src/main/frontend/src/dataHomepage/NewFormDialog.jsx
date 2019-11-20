@@ -53,7 +53,7 @@ function NewFormDialog(props) {
         }
       })
       .catch(parseErrorResponse)
-      .finally(setFetching(false));
+      .finally(() => {setFetching(false)});
     setFetching(true);
   }
 
@@ -67,7 +67,7 @@ function NewFormDialog(props) {
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {setQuestionnaires(json)})
         .catch(parseErrorResponse)
-        .finally(setFetching(false));
+        .finally(() => {setFetching(false)});
       setFetching(true);
     }
   }
@@ -96,18 +96,18 @@ function NewFormDialog(props) {
             })}
           </List>
         }
-        {isFetching && <CircularProgress size={24} className={classes.newFormCircularProgress} />}
+        {isFetching && <CircularProgress size={24} className={classes.newFormLoadingIndicator} />}
       </Dialog>}
       <div className={classes.newFormButtonWrapper}>
         <Button
           variant="contained"
-          color="primary"
+          color="default"
           onClick={presetPath ? () => {createForm(presetPath)} : openDialog}
-          disabled={isFetching}
+          disabled={!open && isFetching}
           >
           { children }
         </Button>
-        {<CircularProgress size={24} className={classes.newFormCircularProgress} />}
+        {!open && isFetching && <CircularProgress size={24} className={classes.newFormLoadingIndicator} />}
       </div>
     </React.Fragment>
   )

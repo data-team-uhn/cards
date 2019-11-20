@@ -85,7 +85,7 @@ const questionnaireStyle = theme => ({
         float: "right",
         position: "inherit"
     },
-    newFormCircularProgress: {
+    newFormLoadingIndicator: {
         position: 'absolute',
         top: '50%',
         left: '50%',
