@@ -34,7 +34,7 @@ const UIXP_FINDER_URL = "/uixp";
 //    />
 function ExtensionPoint(props) {
   const { path, callback } = props;
-  const [ renderedResponse, setRenderedResponse ] = useState();
+  const [ renderedResponse, setRenderedResponse ] = useState(null);
   const [ initialized, setInitialized ] = useState(false);
 
   // Fetch the extension, called once on load
@@ -46,7 +46,6 @@ function ExtensionPoint(props) {
     fetch(uixpFinder)
       .then(grabUIXP)
       .then(handleResponse)
-      .then((text) => {setRenderedResponse({__html: text})})
       .catch(handleError);
   }
 
@@ -56,9 +55,10 @@ function ExtensionPoint(props) {
       return Promise.reject(`Finding ExtensionPoint ${path} failed with response ${response.status}`);
     }
 
-    const url = response.text();
-    const parsedURL = new URL(url, window.location.origin);
-    return fetch(parsedURL);
+    return response.text().then( (url) => {
+      const parsedURL = new URL(url, window.location.origin);
+      return(fetch(parsedURL));
+    });
   }
 
   // Parse the content from the given Response object
@@ -87,11 +87,13 @@ function ExtensionPoint(props) {
       if (callback !== undefined) {
         response.json().then( (json) => callback(json));
       } else {
-        return(Promise.reject(`Fetching ExtensionPoint ${path} returned json data, but no callback was provided to its extensionPoint`));
+        return(Promise.reject(`Fetching ExtensionPoint ${path} returned json data, but no callback was provided to its ExtensionPoint`));
       }
     } else if (contentType === 'text/html') {
       // html -- include it inline
-      return(response.text());
+      return(response.text().then((text) => {
+        setRenderedResponse(text);
+      }));
     } else {
       // Reject any other content type
       return(Promise.reject(`Fetching ExtensionPoint ${path} returned unknown contentType: ${contentType}`));
