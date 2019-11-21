@@ -92,6 +92,7 @@ Questionnaire.propTypes = {
 export default withStyles(QuestionnaireStyle)(Questionnaire);
 
 // Details about a particular question in a questionnaire.
+// Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
   return (
     <Card>

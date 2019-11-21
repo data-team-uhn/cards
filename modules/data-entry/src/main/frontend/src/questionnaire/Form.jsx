@@ -39,14 +39,35 @@ import NumberQuestion from "./NumberQuestion";
 import PedigreeQuestion from "./PedigreeQuestion";
 import TextQuestion from "./TextQuestion";
 
-// GUI for displaying answers
+/**
+ * Component that displays an editable Form.
+ *
+ * @example
+ * <Form id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
+ *
+ * @param {string} id the identifier of a form; this is the JCR node name
+ */
 function Form (props) {
   let { classes, id } = props;
+  // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
+  // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
+  // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
+  // Indicates whether the form has been saved or not. This has three possible values:
+  // - undefined -> no save performed yet, or the form has been modified since the last save
+  // - true -> data has been successfully saved
+  // - false -> the save attempt failed
+  // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
 
+  // Fetch the form's data as JSON from the server.
+  // The data will contain the form metadata,
+  // such as authorship and versioning information, the associated subject,
+  // the questionnaire definition,
+  // and all the existing answers.
+  // Once the data arrives from the server, it will be stored in the `data` state variable.
   let fetchData = () => {
     fetch(`/Forms/${id}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -54,27 +75,40 @@ function Form (props) {
       .catch(handleError);
   };
 
+  // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
   let handleResponse = (json) => {
     setData(json);
   };
 
+  // Callback method for the `fetchData` method, invoked when the request failed.
   let handleError = (response) => {
     setError(response);
   };
 
+  // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
   let saveData = (event) => {
     setSaveInProgress(true);
+    // This stops the normal browser form submission
     event.preventDefault();
+    // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
     let data = new FormData(event.currentTarget);
     fetch(`/Forms/${id}`, {
       method: "POST",
       body: data
     }).then((response) => response.ok ? true : Promise.reject(response))
       .then(() => setLastSaveStatus(true))
+      // FIXME Use setError?
       .catch(() => setLastSaveStatus(false))
       .finally(() => setSaveInProgress(false));
   }
 
+  /**
+   * Method responsible for displaying a question from the questionnaire, along with its answer(s).
+   *
+   * @param {Object} questionDefinition the question definition JSON
+   * @param {string} key the node name of the question definition JCR node
+   * @returns a React component that renders the question
+   */
   let displayQuestion = (questionDefinition, key) => {
     const existingAnswer = Object.entries(data)
       .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
