@@ -23,20 +23,32 @@ import { Dialog, DialogContent, Link, withStyles } from "@material-ui/core";
 
 import PropTypes from "prop-types";
 
-import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
-// Component that renders a pedigree question.
+// Component that renders a pedigree, although answering these questions is not currently possible.
+//
+// Optional props:
+//  existingAnswer: array of length 1, where the first entry corresponds to a pedigree object. The
+//    pedigree object is assumed to contain an image property with an SVG as its value.
+//  questionDescription: props forwarded to the Question element.
+//
+// Sample usage:
+// <PedigreeQuestion
+//    questionDefinition={{
+//      text="Patient pedigree"
+//      description="De-identified information only."
+//      }}
+//    />
 function PedigreeQuestion(props) {
   const { existingAnswer, classes, ...rest } = props;
   const [ expanded, setExpanded ] = useState(false);
   var image_div = "";
   var full_image_div = "";
 
-  // If we have a valid image
+  // If we have a valid image, render a small and a large version.
   if (existingAnswer && existingAnswer.length > 1 && existingAnswer[1].image) {
     // FIXME: Hardcoded height
     var new_image = existingAnswer[1].image.replace(/(<svg[^>]+)height="\d+"/, "$1height=\"250px\"");
@@ -59,6 +71,15 @@ function PedigreeQuestion(props) {
         </DialogContent>
       </Dialog>
     </Question>);
+}
+
+PedigreeQuestion.propTypes = {
+  classes: PropTypes.object.isRequired,
+  questionDefinition: PropTypes.shape({
+    text: PropTypes.string.isRequired,
+    description: PropTypes.string
+  }).isRequired,
+  existingAnswer: PropTypes.array
 }
 
 const StyledPedigreeQuestion = withStyles(QuestionnaireStyle)(PedigreeQuestion)
