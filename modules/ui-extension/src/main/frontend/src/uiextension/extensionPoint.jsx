@@ -92,7 +92,7 @@ function ExtensionPoint(props) {
     } else if (contentType === 'text/html') {
       // html -- include it inline
       return(response.text().then((text) => {
-        setRenderedResponse(text);
+        setRenderedResponse((<div dangerouslySetInnerHTML={{__html: text}}/>));
       }));
     } else {
       // Reject any other content type

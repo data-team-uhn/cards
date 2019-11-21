@@ -5,8 +5,7 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'extensionPoint']: './src/uiextension/extensionPoint.jsx',
-    [module_name + 'testRig']: './src/uiextension/testRig.jsx',
+    [module_name + 'extensionPoint']: './src/uiextension/extensionPoint.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),
