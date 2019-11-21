@@ -20,7 +20,8 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import uuid from "uuid/v4";
 
-import { Button, CircularProgress, Dialog, DialogTitle, List, ListItem, ListItemText, Typography, withStyles } from "@material-ui/core";
+import { Avatar, Button, CircularProgress, Dialog, DialogContent, DialogTitle, List, ListItem, ListItemAvatar, ListItemText, Typography, withStyles } from "@material-ui/core";
+import AssignmentIcon from '@material-ui/icons/Assignment';
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
@@ -84,12 +85,16 @@ function NewFormDialog(props) {
         <DialogTitle id="new-form-title">
           Select questionnaire
         </DialogTitle>
+        <DialogContent dividers>
         {error && <Typography color='error'>{error}</Typography>}
         {questionnaires &&
           <List>
             {questionnaires.map((questionnaire) => {
               return (
               <ListItem button key={questionnaire["jcr:uuid"]} onClick={() => {createForm(questionnaire["@path"])}} disabled={isFetching}>
+                <ListItemAvatar>
+                  <Avatar><AssignmentIcon /></Avatar>
+                </ListItemAvatar>
                 <ListItemText primary={questionnaire["title"]}>
                 </ListItemText>
               </ListItem>);
@@ -97,6 +102,7 @@ function NewFormDialog(props) {
           </List>
         }
         {isFetching && <CircularProgress size={24} className={classes.newFormLoadingIndicator} />}
+        </DialogContent>
       </Dialog>}
       <div className={classes.newFormButtonWrapper}>
         <Button
