@@ -31,6 +31,19 @@ import MultipleChoice from "./MultipleChoice";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
+/** Conversion between the `dataType` setting in the question definition and the corresponding primary node type of the `Answer` node for that question. */
+const DATA_TO_NODE_TYPE = {
+  "long": "lfs:LongAnswer",
+  "double": "lfs:DoubleAnswer",
+  "decimal": "lfs:DecimalAnswer",
+};
+/** Conversion between the `dataType` setting in the question definition and the corresponding value type for storing the value in the `Answer` node. */
+const DATA_TO_VALUE_TYPE = {
+  "long": "Long",
+  "double": "Double",
+  "decimal": "Decimal",
+};
+
 // Component that renders a multiple choice question, with optional number input.
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
@@ -63,8 +76,8 @@ import AnswerComponentManager from "./AnswerComponentManager";
 function NumberQuestion(props) {
   const { existingAnswer, errorText, isRange, classes, ...rest} = props;
   const { text, dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
-  const answerNodeType = props.answerNodeType || (dataType === "long" ? "lfs:LongAnswer" : dataType === "double" ? "lfs:DoubleAnswer" : dataType === "decimal" ? "lfs:DecimalAnswer" : undefined);
-  const valueType = props.valueType || (dataType === "long" ? "Long" : dataType === "double" ? "Double" : dataType === "decimal" ? "Decimal" : undefined);
+  const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
+  const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
   const [error, setError] = useState(false);
 
   const initialValue = existingAnswer ? existingAnswer[1].value : undefined;
