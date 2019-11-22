@@ -65,9 +65,6 @@ const questionnaireStyle = theme => ({
     cardHeaderButton: {
         // No styles here yet
     },
-    newFormButton: {
-        float: "right"
-    },
     questionHeader: {
         paddingBottom: theme.spacing(0),
     },
@@ -83,6 +80,17 @@ const questionnaireStyle = theme => ({
         top: 'auto',
         bottom: theme.spacing(1),
         right: theme.spacing(5)
+    },
+    newFormButtonWrapper: {
+        float: "right",
+        position: "relative"
+    },
+    newFormLoadingIndicator: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
     }
 });
 
