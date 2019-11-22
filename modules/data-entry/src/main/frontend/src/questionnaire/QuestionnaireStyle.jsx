@@ -83,7 +83,7 @@ const questionnaireStyle = theme => ({
     },
     newFormButtonWrapper: {
         float: "right",
-        position: "inherit"
+        position: "relative"
     },
     newFormLoadingIndicator: {
         position: 'absolute',

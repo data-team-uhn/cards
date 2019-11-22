@@ -33,9 +33,8 @@ function NewFormDialog(props) {
   const [ error, setError ] = useState("");
 
   let createForm = (questionnaireReference) => {
-    setOpen(true);
     setError("");
-    
+
     // Make a POST request to create a new form, with a randomly generated UUID
     const URL = "/Forms/" + uuid();
     var request_data = new FormData();
@@ -44,6 +43,7 @@ function NewFormDialog(props) {
     request_data.append('questionnaire@TypeHint', 'Reference');
     fetch( URL, { method: 'POST', body: request_data })
       .then( (response) => {
+        setFetching(false);
         if (response.ok) {
           // Redirect the user to the new uuid
           // FIXME: Would be better to somehow obtain the router prefix from props
@@ -53,8 +53,7 @@ function NewFormDialog(props) {
           return(Promise.reject(response));
         }
       })
-      .catch(parseErrorResponse)
-      .finally(() => {setFetching(false)});
+      .catch(parseErrorResponse);
     setFetching(true);
   }
 
@@ -75,6 +74,7 @@ function NewFormDialog(props) {
 
   // Parse an errored response object
   let parseErrorResponse = (response) => {
+    setFetching(false);
     setError(`New form request failed with error code ${response.status}: ${response.statusText}`);
   }
 
