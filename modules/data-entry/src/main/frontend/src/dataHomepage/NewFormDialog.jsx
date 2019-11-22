@@ -21,7 +21,7 @@ import { withRouter } from "react-router-dom";
 import uuid from "uuid/v4";
 
 import { Avatar, Button, CircularProgress, Dialog, DialogContent, DialogTitle, List, ListItem, ListItemAvatar, ListItemText, Typography, withStyles } from "@material-ui/core";
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import AssignmentIcon from "@material-ui/icons/Assignment";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
@@ -83,7 +83,7 @@ function NewFormDialog(props) {
       { /* Only create a dialog if we need to allow the user to choose from multiple questionnaires */
       (!presetPath) && <Dialog open={open} onClose={() => { setOpen(false); }}>
         <DialogTitle id="new-form-title">
-          Select questionnaire
+          Select a questionnaire
         </DialogTitle>
         <DialogContent dividers>
         {error && <Typography color='error'>{error}</Typography>}
