@@ -25,12 +25,14 @@ import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
+import AnswerComponentManager from "./AnswerComponentManager";
+
 // Component that renders a yes/no question, with optional "unknown" option.
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
 //
 // Optional arguments:
-//  name: String containing the question to ask
+//  text: String containing the question to ask
 //  enableUnknown: Boolean denoting whether an unknown option should be allowed
 //  yesLabel: String containing the label for 'true'
 //  noLabel: String containing the label for 'false'
@@ -39,33 +41,34 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 // Sample usage:
 //
 // <BooleanQuestion
-//   name="Has the patient checked in on time?"
+//   text="Has the patient checked in on time?"
 //   />
 // <BooleanQuestion
-//   name="Has the patient eaten breakfast?"
+//   text="Has the patient eaten breakfast?"
 //   enableUnknown
 //   />
 // <BooleanQuestion
-//   min={1}
-//   name="This statement is false."
+//   text="This statement is false."
 //   enableUnknown
 //   yesLabel="True"
 //   noLabel="False"
 //   unknownLabel="Does not compute"
 //   />
 function BooleanQuestion(props) {
-  let {name, enableUnknown, yesLabel, noLabel, unknownLabel, ...rest} = props;
-  let options = [{label: yesLabel, id: "true"}, {label: noLabel, id: "false"}]
+  const {enableUnknown, yesLabel, noLabel, unknownLabel, ...rest} = props;
+  let options = [[yesLabel, "true", true], [noLabel, "false", true]];
   if (enableUnknown) {
-    options.push({label: unknownLabel, id: "undefined"});
+    options.push([unknownLabel, "undefined", true]);
   }
 
   return (
     <Question
-      text={name}
+      {...rest}
       >
       <MultipleChoice
-        max={1}
+        answerNodeType="lfs:BooleanAnswer"
+        valueType="Boolean"
+        maxAnswers={1}
         defaults={options}
         {...rest}
         />
@@ -74,7 +77,10 @@ function BooleanQuestion(props) {
 
 BooleanQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
-  name: PropTypes.string,
+  questionDefinition: PropTypes.shape({
+    text: PropTypes.string.isRequired,
+  }).isRequired,
+  text: PropTypes.string,
   enableUnknown: PropTypes.bool,
   yesLabel: PropTypes.string,
   noLabel: PropTypes.string,
@@ -88,4 +94,11 @@ BooleanQuestion.defaultProps = {
   unknownLabel: "Unknown"
 };
 
-export default withStyles(QuestionnaireStyle)(BooleanQuestion);
+const StyledBooleanQuestion = withStyles(QuestionnaireStyle)(BooleanQuestion)
+export default StyledBooleanQuestion;
+
+AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+  if (questionDefinition.dataType === "boolean") {
+    return [StyledBooleanQuestion, 50];
+  }
+});

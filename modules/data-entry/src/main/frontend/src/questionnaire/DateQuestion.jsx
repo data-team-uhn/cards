@@ -30,6 +30,8 @@ import NumberQuestion from "./NumberQuestion";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
+import AnswerComponentManager from "./AnswerComponentManager";
+
 const DATE_FORMATS = [
   "yyyy",
   "yyyy-MM",
@@ -78,51 +80,55 @@ function amendMoment(date, format) {
 // submission.
 //
 // Optional props:
-// name: the question to be displayed
+// text: the question to be displayed
 // type: "timestamp" for a single date or "interval" for two dates
-// precision: yyyy, yyyy-MM, yyyy-MM-dd, yyyy-MM-dd hh:mm, yyyy-MM-dd hh:mm:ss
-// displayFormat (defaults to precision)
+// dateFormat: yyyy, yyyy-MM, yyyy-MM-dd, yyyy-MM-dd hh:mm, yyyy-MM-dd hh:mm:ss
+// displayFormat (defaults to dateFormat)
 // lowerLimit: lower date limit (inclusive) given as an object or string parsable by moment()
 // upperLimit: upper date limit (inclusive) given as an object or string parsable by moment()
 // Other options are passed to the <question> widget
 //
 // Sample usage:
 //<DateQuestion
-//  name="Please enter a date-time in 2019"
-//  precision="yyyy-MM-dd hh:mm:ss"
+//  text="Please enter a date-time in 2019"
+//  dateFormat="yyyy-MM-dd hh:mm:ss"
 //  lowerLimit={new Date("01-01-2019")}
 //  upperLimit={new Date("12-31-2019")}
 //  type="timestamp"
 //  />
 function DateQuestion(props) {
-  let {defaults, name, type, precision, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
-  const [selectedDate, changeDate] = useState(amendMoment(moment(), precision));
-  const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), precision));
+  let {existingAnswer, type, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
+  let {text, dateFormat} = {dateFormat: "yyyy-MM-dd", ...props.questionDefinition, ...props};
+  let currentStartValue = existingAnswer && existingAnswer[1].value && Array.of(existingAnswer[1].value).flat()[0] || '';
+  const [selectedDate, changeDate] = useState(amendMoment(moment(currentStartValue), dateFormat));
+  // FIXME There's no way to store the end date currently. Maybe add existingAnswer[1].endValue?
+  const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), dateFormat));
   const [error, setError] = useState(false);
-  const upperLimitMoment = amendMoment(moment(upperLimit), precision);
-  const lowerLimitMoment = amendMoment(moment(lowerLimit), precision);
-  const isMonth = precision === DATE_FORMATS[1];
-  const isDate = DATE_FORMATS.includes(precision);
+  const upperLimitMoment = amendMoment(moment(upperLimit), dateFormat);
+  const lowerLimitMoment = amendMoment(moment(lowerLimit), dateFormat);
+  const isMonth = dateFormat === DATE_FORMATS[1];
+  const isDate = DATE_FORMATS.includes(dateFormat);
 
   // If we're given a year, instead supply the NumberQuestion widget
-  if (precision === DATE_FORMATS[0]) {
+  if (dateFormat === DATE_FORMATS[0]) {
     return (
       <NumberQuestion
         minValue={0}
-        name={name}
-        max={1}
-        userInput="input"
-        type="integer"
+        maxAnswers={1}
+        dataType="long"
         errorText="Please insert a valid year range."
         isRange={type === INTERVAL_TYPE}
+        answerNodeType="lfs:DateAnswer"
+        valueType="Long"
+        existingAnswer={existingAnswer}
         {...rest}
         />
     );
   }
 
-  // The default value of displayFormat, if not given, is precision's value
+  // The default value of displayFormat, if not given, is dateFormat's value
   if (typeof displayFormat === "undefined") {
-    displayFormat = precision;
+    displayFormat = dateFormat;
   }
 
   // Check that the given date is within the upper/lower limit (if given)
@@ -162,19 +168,23 @@ function DateQuestion(props) {
   const outputEndDateString = isMonth ? outputEndDate.format(moment.HTML5_FMT.MONTH) :
       isDate ? outputEndDate.format(moment.HTML5_FMT.DATE) :
       outputEndDate.format(moment.HTML5_FMT.DATETIME_LOCAL);
-  let outputAnswers = [["date", selectedDate.formatWithJDF(precision)]];
+  let outputAnswers = [["date", selectedDate.isValid() ? selectedDate.formatWithJDF(dateFormat) : '']];
   if (type === INTERVAL_TYPE) {
-    outputAnswers.push(["endDate", selectedEndDate.formatWithJDF(precision)])
+    outputAnswers.push(["endDate", selectedEndDate.isValid() ? selectedEndDate.formatWithJDF(dateFormat) : ''])
   }
 
   return (
     <Question
-      text={name}
+      text={text}
       {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
       <Answer
         answers={outputAnswers}
+        questionDefinition={props.questionDefinition}
+        existingAnswer={existingAnswer}
+        answerNodeType="lfs:DateAnswer"
+        valueType="Date"
         />
       <TextField
         id="date"
@@ -192,7 +202,7 @@ function DateQuestion(props) {
         }}
         onChange={
           (event) => {
-            let parsedDate = boundDate(amendMoment(event.target.value, precision));
+            let parsedDate = boundDate(amendMoment(event.target.value, dateFormat));
             changeDate(parsedDate);
 
             // Also fix the end date if it is earlier than the given start date
@@ -221,7 +231,7 @@ function DateQuestion(props) {
           }}
           onChange={
             (event) => {
-              let parsedDate = amendMoment(event.target.value, precision);
+              let parsedDate = amendMoment(event.target.value, dateFormat);
               changeEndDate(boundEndDate(parsedDate, selectedDate));
             }
           }
@@ -234,8 +244,8 @@ function DateQuestion(props) {
 
 DateQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
-  name: PropTypes.string,
-  precision: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS),
+  text: PropTypes.string,
+  dateFormat: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS),
   displayFormat: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS),
   type: PropTypes.oneOf([TIMESTAMP_TYPE, INTERVAL_TYPE]).isRequired,
   lowerLimit: PropTypes.object,
@@ -244,8 +254,14 @@ DateQuestion.propTypes = {
 
 DateQuestion.defaultProps = {
   errorText: "Invalid input",
-  precision: "yyyy-MM-dd",
   type: TIMESTAMP_TYPE
 };
 
-export default withStyles(QuestionnaireStyle)(DateQuestion);
+const StyledDateQuestion = withStyles(QuestionnaireStyle)(DateQuestion);
+export default StyledDateQuestion;
+
+AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+  if (questionDefinition.dataType === "date") {
+    return [StyledDateQuestion, 50];
+  }
+});

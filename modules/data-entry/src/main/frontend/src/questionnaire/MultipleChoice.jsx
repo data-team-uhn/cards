@@ -23,7 +23,7 @@ import { Checkbox, FormControlLabel, IconButton, List, ListItem, Radio, RadioGro
 import Close from "@material-ui/icons/Close";
 import PropTypes from 'prop-types';
 
-import Answer, {NAME_POS, ID_POS} from "./Answer";
+import Answer, {LABEL_POS, VALUE_POS} from "./Answer";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 // Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
@@ -32,33 +32,37 @@ const IS_DEFAULT_POS = 2;
 const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
-  let { classes, ghostAnchor, max, min, defaults, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
-  const [selection, setSelection] = useState([]);
-  const [ghostName, setGhostName] = useState("&nbsp;");
+  let { classes, existingAnswer, ghostAnchor, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { maxAnswers, minAnswers } = {...props.questionDefinition, ...props};
+  let defaults = props.defaults || Object.values(props.questionDefinition)
+    // Keep only answer options
+    // FIXME Must deal with nested options, do this recursively
+    .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
+    // Only extract the labels and internal values from the node
+    .map(value => [value.label || value.value, value.value, true]);
+  const isBare = defaults.length === 0 && maxAnswers === 1;
+  const isRadio = defaults.length > 0 && maxAnswers === 1;
+  let initialSelection =
+    // If there's no existing answer, there's no initial selection
+    (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
+    // The value can either be a single value or an array of values; force it into an array
+    Array.of(existingAnswer[1].value).flat()
+    // Only the internal values are stored, turn them into pairs of [label, value]
+    // Values that are not predefined come from a custom input, and custom inputs use either the same name as their answer (multiple inputs)
+    // or the the special ghost sentinel value
+    .map(answer => (defaults.find(e => e[1] === String(answer)) || [String(answer), (isBare || isRadio) ? GHOST_SENTINEL : String(answer)]));
+  const all_options =
+    // If the question is a radio, just display the defaults as duplicates
+    isRadio ? defaults.slice() :
+    // Otherwise, display as options the union of all defaults + existing answers, without duplicates
+    defaults.slice().concat(initialSelection.filter( (selectedAnswer) => defaults.indexOf(selectedAnswer) < 0));
+  const [selection, setSelection] = useState(initialSelection);
+  const [ghostName, setGhostName] = useState((isBare || (isRadio && defaults.indexOf(initialSelection[0]) < 0)) && existingAnswer && existingAnswer[1].value || '');
   const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);
-  const [options, setOptions] = useState([]);
-  const ghostSelected = selection.some(element => {return element[ID_POS] === GHOST_SENTINEL;});
-  const isRadio = max === 1 && options.length > 0;
-  const isBare = options.length === 0;
-  const disabled = selection.length >= max && !isRadio;
+  const [options, setOptions] = useState(all_options);
+  const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
+  const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio;
   let inputEl = null;
-
-  // On startup, convert our defaults into a list of useable options
-  useEffect( () => {
-    let newOptions = [];
-    if (defaults) {
-      newOptions = defaults.map( (defaultOption) => {
-        if (!("id" in defaultOption)) {
-          console.log("Malformed default option: " + JSON.stringify(defaultOption));
-          return ['', '', true];
-        }
-        let id = defaultOption["id"];
-        let label = ("label" in defaultOption ? defaultOption["label"] : id);
-        return ([label, id, true]); // label, id, default
-      });
-    }
-    setOptions(newOptions);
-  }, [defaults]);
 
   let selectOption = (id, name, checked = false, removeSentinel = false) => {
     if (isRadio) {
@@ -72,12 +76,12 @@ function MultipleChoice(props) {
     }
 
     // Do not add anything if we are at our maximum number of selections
-    if (selection.length >= max && !removeSentinel) {
+    if (maxAnswers > 0 && selection.length >= maxAnswers && !removeSentinel) {
       return;
     }
 
     // Do not add duplicates
-    if (selection.some(element => {return element[ID_POS] === id})) {
+    if (selection.some(element => {return element[VALUE_POS] === id})) {
       return;
     }
 
@@ -86,7 +90,7 @@ function MultipleChoice(props) {
       // Due to how React handles state, we need to do this in one step
       newSelection = newSelection.filter(
         (element) => {
-          return (element[ID_POS] !== GHOST_SENTINEL);
+          return (element[VALUE_POS] !== GHOST_SENTINEL);
         }
       );
     }
@@ -97,7 +101,7 @@ function MultipleChoice(props) {
   let unselect = (id, name) => {
     return setSelection(selection.filter(
       (element) => {
-        return !(element[ID_POS] === id && element[NAME_POS] === name)
+        return !(element[VALUE_POS] === id && element[LABEL_POS] === name)
       }
     ));
   }
@@ -109,7 +113,7 @@ function MultipleChoice(props) {
       return;
     }
 
-    let ghostIndex = selection.findIndex(element => {return element[ID_POS] === GHOST_SENTINEL});
+    let ghostIndex = selection.findIndex(element => {return element[VALUE_POS] === GHOST_SENTINEL});
     let newSelection = selection.slice();
     // If the ghost is already selected, update it. Otherwise, append it.
     if (ghostIndex >= 0) {
@@ -131,7 +135,7 @@ function MultipleChoice(props) {
   let removeOption = (id, name) => {
     setOptions(options.filter(
       (option) => {
-        return !(option[ID_POS] === id && option[NAME_POS] === name)
+        return !(option[VALUE_POS] === id && option[LABEL_POS] === name)
       }
     ));
     unselect(id, name);
@@ -139,7 +143,7 @@ function MultipleChoice(props) {
   }
 
   // Hold the input box for either multiple choice type
-  let ghostInput = input && (<div className={classes.searchWrapper}>
+  let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
       <TextField
         className={classes.textField}
         onChange={(event) => {
@@ -147,25 +151,29 @@ function MultipleChoice(props) {
           updateGhost(GHOST_SENTINEL, event.target.value);
           onChange && onChange(event.target.value);
         }}
-        onFocus={() => {max === 1 && selectOption(ghostValue, ghostName)}}
+        onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
         inputProps={Object.assign({
           onKeyDown: (event) => {
             if (event.key == 'Enter') {
+              // We need to stop the event so that it doesn't trigger a form submission
+              event.preventDefault();
+              event.stopPropagation();
               if (isRadio) {
                 selectOption(ghostValue, ghostName);
-              } else if (!error) {
+              } else if (maxAnswers !== 1 && !error) {
                 // If we can select multiple and are not in error, add this as a possible input
                 addOption(ghostName, ghostName);
                 selectOption(ghostName, ghostName, false, true);
 
                 // Clear the ghost
-                inputEl.value = "";
+                setGhostName("");
               }
             }
           }
         }, additionalInputProps)
         }
         value={ghostName}
+        multiline={textbox}
         InputProps={muiInputProps}
         inputRef={ref => {inputEl = ref}}
       />
@@ -177,13 +185,20 @@ function MultipleChoice(props) {
     selectOption(...args);
   }
 
-  const warning = selection.length < min && (<Typography color='error'>Please select at least {min} option{min > 1 && "s"}.</Typography>)
+  const warning = selection.length < minAnswers && (
+    <Typography color={error ? 'error' : 'textSecondary'} className={classes.warningTypography}>
+      Please select at least {minAnswers} option{minAnswers > 1 && "s"}.
+    </Typography>
+    );
+
+  const answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
 
   if (isBare) {
     return(
       <React.Fragment>
         <Answer
-          answers={selection}
+          answers={answers}
+          existingAnswer={existingAnswer}
           {...rest}
           />
         {ghostInput}
@@ -192,21 +207,21 @@ function MultipleChoice(props) {
   } else if (isRadio) {
     return (
       <React.Fragment>
-        {warning}
         <Answer
-          answers={selection}
+          answers={answers}
+          existingAnswer={existingAnswer}
           {...rest}
           />
         <RadioGroup
           aria-label="selection"
           name="selection"
           className={classes.selectionList}
-          value={selection.length > 0 && selection[0][ID_POS]}
+          value={selection.length > 0 && selection[0][VALUE_POS]}
         >
-          {generateDefaultOptions(options, disabled, isRadio, selectNonGhostOption, removeOption)}
+          {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
           {/* Ghost radio for the text input */}
           {
-          input && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
+          (input || textbox) && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
             <FormControlLabel
               control={
               <Radio
@@ -231,19 +246,20 @@ function MultipleChoice(props) {
           }
         </RadioGroup>
         {ghostInput}
+        {warning}
       </React.Fragment>
     );
   } else {
     return (
       <React.Fragment>
-        {warning}
         <Answer
-          answers={selection}
+          answers={answers}
+          existingAnswer={existingAnswer}
           {...rest}
           />
         <List className={classes.checkboxList}>
-          {generateDefaultOptions(options, disabled, isRadio, selectNonGhostOption, removeOption)}
-          {input && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
+          {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
+          {(input || textbox) && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -257,7 +273,7 @@ function MultipleChoice(props) {
                     className={classes.ghostRadiobox}
                   />
                 }
-                label="&nbsp;"
+                label=""
                 value={ghostValue}
                 key={ghostValue}
                 className={classes.ghostFormControl + " " + classes.childFormControl}
@@ -269,19 +285,21 @@ function MultipleChoice(props) {
           }
         </List>
         {ghostInput}
+        {warning}
       </React.Fragment>
     )
   }
 }
 
 // Generate a list of options that are part of the default suggestions
-function generateDefaultOptions(defaults, disabled, isRadio, onClick, onDelete) {
+function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick, onDelete) {
   return defaults.map( (childData) => {
     return (
       <StyledResponseChild
-        id={childData[ID_POS]}
-        key={childData[ID_POS]}
-        name={childData[NAME_POS]}
+        id={childData[VALUE_POS]}
+        key={childData[VALUE_POS]}
+        name={childData[LABEL_POS]}
+        checked={selection.includes(childData)}
         disabled={disabled}
         onClick={onClick}
         onDelete={onDelete}
@@ -297,7 +315,7 @@ var StyledResponseChild = withStyles(QuestionnaireStyle)(ResponseChild);
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
   const {classes, name, id, isDefault, onClick, disabled, isRadio, onDelete} = props;
-  const [checked, setCheck] = useState(false);
+  const [checked, setCheck] = useState(props.checked);
 
   return (
     <React.Fragment>
@@ -358,8 +376,7 @@ MultipleChoice.propTypes = {
   classes: PropTypes.object.isRequired,
   text: PropTypes.string,
   description: PropTypes.string,
-  answers: PropTypes.array,
-  max: PropTypes.number,
+  maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
   input: PropTypes.bool,
   ghostAnchor: PropTypes.object,

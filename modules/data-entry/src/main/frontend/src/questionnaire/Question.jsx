@@ -26,14 +26,17 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 // GUI for displaying answers
 function Question (props) {
-  let { classes, children, description, text } = props;
+  let { classes, children, questionDefinition } = props;
+  let { text, description } = { ...questionDefinition, ...props }
   return (
     <Card>
       <CardHeader
         title={text}
+        titleTypographyProps={{ variant: 'h6' }}
+        subheader={description}
+        className={classes.questionHeader}
         />
       <CardContent>
-        {description}
         {children}
       </CardContent>
     </Card>

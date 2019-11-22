@@ -429,6 +429,21 @@
   - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
+// Pedigree, stored mainly as a JSON representation, but also as a cached SVG image
+[lfs:PedigreeAnswer] > lfs:Answer
+  // The pedigree data is stored here, as a JSON
+  - value (string)
+
+  // The pedigree image is stored here, as a SVG file
+  - image (string)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/lfs:PedigreeAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
 // Vocabulary identifiers, stored as strings.
 [lfs:VocabularyAnswer] > lfs:Answer
   - value (string)

@@ -67,6 +67,22 @@ const questionnaireStyle = theme => ({
     },
     newFormButton: {
         float: "right"
+    },
+    questionHeader: {
+        paddingBottom: theme.spacing(0),
+    },
+    warningTypography: {
+        padding: theme.spacing(1, 1),
+    },
+    pedigreeSmall: {
+        width: "100%",
+        height: "100%"
+    },
+    saveButton: {
+        position: "fixed",
+        top: 'auto',
+        bottom: theme.spacing(1),
+        right: theme.spacing(5)
     }
 });
 

@@ -29,17 +29,32 @@ import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import MultipleChoice from "./MultipleChoice";
 
+import AnswerComponentManager from "./AnswerComponentManager";
+
+/** Conversion between the `dataType` setting in the question definition and the corresponding primary node type of the `Answer` node for that question. */
+const DATA_TO_NODE_TYPE = {
+  "long": "lfs:LongAnswer",
+  "double": "lfs:DoubleAnswer",
+  "decimal": "lfs:DecimalAnswer",
+};
+/** Conversion between the `dataType` setting in the question definition and the corresponding value type for storing the value in the `Answer` node. */
+const DATA_TO_VALUE_TYPE = {
+  "long": "Long",
+  "double": "Double",
+  "decimal": "Decimal",
+};
+
 // Component that renders a multiple choice question, with optional number input.
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
 //
 // Optional props:
-//  max: Integer denoting maximum number of options that may be selected
-//  min: Integer denoting minimum number of options that may be selected
-//  name: String containing the question to ask
-//  defaults: Array of objects, each with an "id" representing internal ID
-//            and a "value" denoting what will be displayed
-//  userInput: Either "input", "textbox", or undefined denoting the type of
+//  minAnswers: Integer denoting minimum number of options that may be selected
+//  maxAnswers: Integer denoting maximum number of options that may be selected
+//  text: String containing the question to ask
+//  defaults: Array of arrays, each with two values, a "label" which will be displayed to the user,
+//            and a "value" denoting what will actually be stored
+//  displayMode: Either "input", "textbox", or undefined denoting the type of
 //             user input. Currently, only "input" is supported
 //  maxValue: The maximum allowed input value
 //  minValue: The minimum allowed input value
@@ -49,20 +64,26 @@ import MultipleChoice from "./MultipleChoice";
 //
 // Sample usage:
 // <NumberQuestion
-//    name="Please enter the patient's age"
+//    text="Please enter the patient's age"
 //    defaults={[
-//      {"id": "<18", "label": "<18"}
+//      ["<18", -1]
 //    ]}
-//    max={1}
+//    maxAnswers={1}
 //    minValue={18}
-//    type="integer"
+//    type="long"
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  let {defaults, max, min, name, userInput, minValue, maxValue, type, errorText, isRange, classes, ...rest} = props;
+  const { existingAnswer, errorText, isRange, classes, ...rest} = props;
+  const { text, dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
+  const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
+  const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
   const [error, setError] = useState(false);
+
+  const initialValue = existingAnswer ? existingAnswer[1].value : undefined;
+
   // The following two are only used if a default is not given, as we switch to handling values here
-  const [input, setInput] = useState(undefined);
+  const [input, setInput] = useState(initialValue);
   const [endInput, setEndInput] = useState(undefined);
 
   // Callback function for our min/max
@@ -74,14 +95,14 @@ function NumberQuestion(props) {
       return false;
     }
 
-    if (type === "integer") {
+    if (dataType === "long") {
       // Test that it is an integer
       if (!/^[-+]?\d*$/.test(text)) {
         return true;
       }
 
       value = parseInt(text);
-    } else if (type === "float") {
+    } else if (dataType === "double") {
       value = Number(text);
 
       // Reject whitespace and non-numbers
@@ -126,7 +147,7 @@ function NumberQuestion(props) {
     min: minValue,
     max: maxValue,
     allowNegative: (typeof minValue === "undefined" || minValue < 0),
-    decimalScale: type === "integer" ? 0 : undefined
+    decimalScale: dataType === "long" ? 0 : undefined
   };
   const muiInputProps = {
     inputComponent: NumberFormatCustom, // Used to override a TextField's type
@@ -135,27 +156,31 @@ function NumberQuestion(props) {
 
   return (
     <Question
-      text={name}
+      text={text}
+      {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
-      {defaults ?
+      {props.defaults || Object.values(props.questionDefinition).some(value => value['jcr:primaryType'] == 'lfs:AnswerOption') ?
       /* Use MultipleChoice if we have default options */
       <MultipleChoice
-        max={max}
-        min={min}
-        defaults={defaults}
-        input={userInput==="input"}
-        textbox={userInput==="textbox"}
+        answerNodeType={answerNodeType}
+        valueType={valueType}
+        input={displayMode === "input"}
+        textbox={displayMode === "textbox"}
         onChange={findError}
         additionalInputProps={textFieldProps}
         muiInputProps={muiInputProps}
         error={error}
+        existingAnswer={existingAnswer}
         {...rest}
         /> :
       /* Otherwise just use a single text field */
       <React.Fragment>
         <Answer
           answers={answers}
+          existingAnswer={existingAnswer}
+          answerNodeType={answerNodeType}
+          valueType={valueType}
           {...rest}
           />
         <TextField
@@ -214,12 +239,20 @@ NumberFormatCustom.propTypes = {
 
 NumberQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
-  name: PropTypes.string,
-  min: PropTypes.number,
-  max: PropTypes.number,
+  questionDefinition: PropTypes.shape({
+    text: PropTypes.string.isRequired,
+    minAnswers: PropTypes.number,
+    maxAnswers: PropTypes.number,
+    minValue: PropTypes.number,
+    maxValue: PropTypes.number,
+    displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input"]),
+  }).isRequired,
+  text: PropTypes.string,
+  minAnswers: PropTypes.number,
+  maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
-  userInput: PropTypes.oneOf([undefined, "input", "textbox"]),
-  type: PropTypes.oneOf(['integer', 'float']).isRequired,
+  displayMode: PropTypes.oneOf([undefined, "input", "textbox"]),
+  dataType: PropTypes.oneOf(['long', 'double', 'decimal']),
   minValue: PropTypes.number,
   maxValue: PropTypes.number,
   errorText: PropTypes.string,
@@ -228,8 +261,15 @@ NumberQuestion.propTypes = {
 
 NumberQuestion.defaultProps = {
   errorText: "Invalid input",
-  type: 'float',
+  dataType: 'double',
   isRange: false
 };
 
-export default withStyles(QuestionnaireStyle)(NumberQuestion);
+const StyledNumberQuestion = withStyles(QuestionnaireStyle)(NumberQuestion)
+export default StyledNumberQuestion;
+
+AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+  if (["long", "double", "decimal"].includes(questionDefinition.dataType)) {
+    return [StyledNumberQuestion, 50];
+  }
+});
