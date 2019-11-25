@@ -82,15 +82,19 @@ const questionnaireStyle = theme => ({
         right: theme.spacing(5)
     },
     newFormButtonWrapper: {
-        float: "right",
+        margin: theme.spacing(1),
         position: "relative"
+    },
+    newFormTypePlaceholder: {
+        position: 'relative',
+        textAlign: 'center'
     },
     newFormLoadingIndicator: {
         position: 'absolute',
         top: '50%',
         left: '50%',
-        marginTop: -12,
-        marginLeft: -12,
+        marginLeft: "-50%",
+        marginTop: "-50%"
     }
 });
 

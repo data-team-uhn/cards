@@ -20,8 +20,9 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import uuid from "uuid/v4";
 
-import { Avatar, Button, CircularProgress, Dialog, DialogContent, DialogTitle, List, ListItem, ListItemAvatar, ListItemText, Typography, withStyles } from "@material-ui/core";
+import { Avatar, CircularProgress, Dialog, DialogContent, DialogTitle, Fab, List, ListItem, ListItemAvatar, ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core";
 import AssignmentIcon from "@material-ui/icons/Assignment";
+import AddIcon from "@material-ui/icons/Add";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
@@ -87,6 +88,7 @@ function NewFormDialog(props) {
         </DialogTitle>
         <DialogContent dividers>
         {error && <Typography color='error'>{error}</Typography>}
+        {isFetching && <div className={classes.newFormTypePlaceholder}><CircularProgress size={24} className={classes.newFormTypeLoadingIndicator} /></div>}
         {questionnaires &&
           <List>
             {questionnaires.map((questionnaire) => {
@@ -101,19 +103,20 @@ function NewFormDialog(props) {
             })}
           </List>
         }
-        {isFetching && <CircularProgress size={24} className={classes.newFormLoadingIndicator} />}
         </DialogContent>
       </Dialog>}
       <div className={classes.newFormButtonWrapper}>
-        <Button
-          variant="contained"
-          color="default"
-          onClick={presetPath ? () => {createForm(presetPath)} : openDialog}
-          disabled={!open && isFetching}
+        <Tooltip title={children} aria-label="add">
+          <Fab
+            color="primary"
+            aria-label="add"
+            onClick={presetPath ? () => {createForm(presetPath)} : openDialog}
+            disabled={!open && isFetching}
           >
-          { children }
-        </Button>
-        {!open && isFetching && <CircularProgress size={24} className={classes.newFormLoadingIndicator} />}
+            <AddIcon />
+          </Fab>
+        </Tooltip>
+        {!open && isFetching && <CircularProgress size={56} className={classes.newFormLoadingIndicator} />}
       </div>
     </React.Fragment>
   )
