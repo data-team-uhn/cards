@@ -18,10 +18,11 @@
 //
 
 import React, { useState } from "react";
-import { Paper, Table, TableHead, TableBody, TableFooter, TableRow, TableCell, TablePagination } from "@material-ui/core";
-import { Card, CardHeader, CardContent, CardActions, Typography, Button } from "@material-ui/core";
+import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
+import { Card, CardHeader, CardContent, CardActions, Typography, Button, withStyles } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import moment from "moment";
+import LiveTableStyle from "./tableStyle.jsx";
 
 // Convert a date into the given format string
 // If the date is invalid (usually because it is missing), return ""
@@ -202,7 +203,7 @@ function LiveTable(props) {
 
   return (
     // We wrap everything in a Paper for a nice separation, as a Table has no background or border of its own.
-    <Paper>
+    <Paper elevation={0}>
       {/*
       // stickyHeader doesn't really work right now, since the Paper just extends all the way down to fit the table.
       // The whole UI needs to be redesigned so that we can set a maximum height to the Paper,
@@ -216,7 +217,7 @@ function LiveTable(props) {
           <TableRow>
           { columns ?
             (
-              columns.map((column, index) => <TableCell key={index}>{column.label}</TableCell>)
+              columns.map((column, index) => <TableCell key={index} className={classes.tableHeader}>{column.label}</TableCell>)
             )
           :
             (
@@ -275,4 +276,4 @@ LiveTable.defaultProps = {
   defaultLimit: 50
 }
 
-export default LiveTable;
+export default withStyles(LiveTableStyle)(LiveTable);
