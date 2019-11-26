@@ -35,10 +35,7 @@ class GlobalFooter extends React.Component {
   render() {
     return (
       <footer className={this.props.classes.footer}>
-        <Typography variant="h6" align="center" gutterBottom>
-          Reproducing or distributing this clinical information without permission from the institution that owns it is strictly forbidden.
-        </Typography>
-        <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
+        <Typography variant="overline" align="center" color="textSecondary" component="p">
           LFS Data Repository version 0.1-SNAPSHOT
         </Typography>
       </footer>
