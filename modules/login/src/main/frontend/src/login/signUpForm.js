@@ -256,6 +256,9 @@ class SignUpForm extends React.Component {
         }
         <div className={classes.main}>
           <Paper elevation={1} className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
+            <Typography component="overline">
+              LFS Data Core
+            </Typography>
             <Typography component="h1" variant="h5">
               Sign Up
             </Typography>

@@ -18,11 +18,21 @@
 //
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Button, CssBaseline, FormControl, Input, InputLabel, Paper, Typography, withStyles, InputAdornment, IconButton, Tooltip, Icon, SvgIcon } from '@material-ui/core';
-// core components
-import Card from "material-dashboard-react/dist/components/Card/Card.js";
-import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
-import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
+import {
+    Avatar,
+    Button,
+    FormControl,
+    Icon,
+    IconButton,
+    Input,
+    InputAdornment,
+    InputLabel,
+    Paper,
+    Tooltip,
+    Typography,
+    withStyles
+} from '@material-ui/core';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import styles from "../styling/styles";
 
 class SignIn extends React.Component {
@@ -84,15 +94,17 @@ class SignIn extends React.Component {
     const { passwordIsMasked } = this.state;
 
     return (
-      <main className={classes.main}>
-        <CssBaseline />
-        <Card>
-          <CardHeader color="info">
-            <h4 className={classes.cardTitle}>LFS Data Core</h4>
-            <span className={classes.cardSubtitle}>Sign in</span>
-          </CardHeader>
-          <CardBody>
-
+        <div className={classes.main}>
+          <Paper elevation={1} className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
+            <Typography component="overline">
+              LFS Data Core
+            </Typography>
+            <Typography component="h1" variant="h5">
+              Sign In
+            </Typography>
+            <Avatar className={classes.avatar}>
+              <ExitToAppIcon />
+            </Avatar>
             {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>Invalid username or password</Typography>}
 
             <form className={classes.form} onSubmit={(event)=>{event.preventDefault(); this.submitLogin();}} >
@@ -123,25 +135,21 @@ class SignIn extends React.Component {
                 type="submit"
                 fullWidth
                 variant="contained"
+                color="primary"
                 className={classes.submit}
               >
                 Sign in
               </Button>
             </form>
-            <Typography>
-              Don't have an account?
-            </Typography>
             <Button
               fullWidth
-              variant="contained"
+              color="default"
               onClick={this.props.swapForm}
-              className={classes.register}
             >
-              <Icon className={classes.buttonIcon}>person_add</Icon> Register
+              Request an account
             </Button>
-          </CardBody>
-        </Card>
-      </main>
+          </Paper>
+        </div>
     );
   }
 }
