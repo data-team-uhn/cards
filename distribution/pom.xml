@@ -62,5 +62,34 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <!-- If Docker is available, also build a Docker image -->
+      <id>docker</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <file>
+          <exists>/var/run/docker.sock</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.31.0</version>
+            <executions>
+              <execution>
+                <id>build</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 </project>
