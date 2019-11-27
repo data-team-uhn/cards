@@ -21,11 +21,11 @@ import PropTypes from "prop-types";
 // @material-ui/core
 import { FormControlLabel, List, RadioGroup, Typography, withStyles, Radio } from "@material-ui/core";
 
-import Thesaurus from "../query/query.jsx";
+import Thesaurus from "../vocabQuery/query.jsx";
 import SelectorStyle from "./selectorStyle.jsx";
 import VocabularyEntry from "./selectEntry.jsx";
 import SelectionResults from "./selectionResults.jsx";
-import { MakeRequest, REST_URL } from "../query/util.jsx";
+import { MakeRequest, REST_URL } from "../vocabQuery/util.jsx";
 
 const NAME_POS = 0;
 const ID_POS = 1;

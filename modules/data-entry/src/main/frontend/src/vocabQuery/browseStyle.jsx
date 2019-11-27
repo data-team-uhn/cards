@@ -17,10 +17,7 @@
 //  under the License.
 //
 
-import { DropdownStyle } from "MaterialDashboardReact";
-
 const browseStyle = theme => ({
-    ...DropdownStyle(theme),
     dialog: {
       // The dialogue appears in the wrong location without the following
       padding: theme.spacing(1),
@@ -53,13 +50,15 @@ const browseStyle = theme => ({
     // Info box components
     infoDataSource: {
       color: "#00ACC1",
+      marginTop: "3px",
     },
     infoName: {
       color: "#000000",
       whiteSpace: "normal", // Enable line wrapping
     },
     infoButton: {
-      width: "20px",
+      minWidth: "0px",
+      width: "30px",
       color: "#00ACC1",
     },
     treeContainer: {
@@ -83,6 +82,7 @@ const browseStyle = theme => ({
       padding: "0px",
       textTransform: "none",
       color: "#00ACC1",
+      backgroundColor: 'transparent',
     },
     childDiv: {
       marginLeft: "22px",
@@ -97,7 +97,11 @@ const browseStyle = theme => ({
     },
     boldedName: {
       fontWeight: "bold",
-    }
+    },
+    arrowButton: {
+      minWidth: "0px",
+      backgroundColor: 'transparent',
+    },
 });
 
 export default browseStyle;

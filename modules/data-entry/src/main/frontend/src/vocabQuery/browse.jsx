@@ -20,9 +20,7 @@ import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core";
-import { Dialog, DialogContent, DialogTitle, Typography } from '@material-ui/core';
-// material-dashboard-react
-import { Button } from "MaterialDashboardReact";
+import { Button, Dialog, DialogContent, DialogTitle, Typography } from '@material-ui/core';
 
 import BrowseListChild from "./browseListChild.jsx";
 import BrowseTheme from "./browseStyle.jsx";
@@ -59,8 +57,6 @@ class VocabularyBrowser extends React.Component {
             className={classes.closeButton}
             onClick={onClose}
             variant="outlined"
-            justIcon={true}
-            simple={true}
           >
             ×
           </Button>

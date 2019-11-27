@@ -20,9 +20,7 @@ import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core";
-import { CircularProgress, Typography } from '@material-ui/core';
-// material-dashboard-react
-import { Button } from "MaterialDashboardReact";
+import { Button, CircularProgress, Typography } from '@material-ui/core';
 // @material-ui/icons
 import Info from "@material-ui/icons/Info";
 
@@ -70,11 +68,9 @@ class ListChild extends React.Component {
                 });
               }}
               variant="text"
-              simple={true}
-              color="info"
-              className={classes.browseitem}
+              className={classes.browseitem + " " + classes.arrowButton}
               >
-              {this.state.expanded ? "▼" : "▶"}
+              {this.state.expanded ? "▼" : "►"}
             </Button>
             : ""
           }
@@ -87,9 +83,6 @@ class ListChild extends React.Component {
         {/* Listitem button */}
         <Button
           onClick={() => changeId(id)}
-          variant="text"
-          simple={true}
-          color="info"
           className={classes.browseitem}
           >
           <Typography className={classes.infoDataSource}>{id}&nbsp;</Typography>
@@ -99,9 +92,6 @@ class ListChild extends React.Component {
         {/* Button to open info page */}
         <Button
           buttonRef={(node) => {registerInfo(id, node)}}
-          color="info"
-          justIcon={true}
-          simple={true}
           onClick={() => {getInfo(id)}}
           className={classes.buttonLink + " " + classes.infoButton}
         >

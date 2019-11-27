@@ -55,5 +55,19 @@
             "jcr:data": "",
             "jcr:mimeType": "text/html"
         }
+    },
+    "VocabularyTest": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:targetURL": "VocabularyQ",
+        "lfs:extensionName": "VocabularyQ",
+        "lfs:icon": "asset:lfs-homepage.variantsIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-dataentry.selectTest.js",
+        "lfs:defaultOrder": 91,
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "",
+            "jcr:mimeType": "text/html"
+        }
     }
 }

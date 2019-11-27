@@ -20,16 +20,16 @@ import classNames from "classnames";
 import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
-import { withStyles } from "@material-ui/core";
-import { ClickAwayListener, Grow, InputAdornment, LinearProgress, MenuItem, MenuList, Paper, Popper, Snackbar, SnackbarContent, Typography } from "@material-ui/core"
-// MaterialDashboardReact
-import { Button, Card, CardHeader, CardBody, CustomInput, QueryStyle } from "MaterialDashboardReact";
+import { withStyles, FormControl } from "@material-ui/core";
+import { Button, Card, CardHeader, CardContent, ClickAwayListener, Grow, Input, InputAdornment, InputLabel } from "@material-ui/core"
+import { LinearProgress, MenuItem, MenuList, Paper, Popper, Snackbar, SnackbarContent, Typography } from "@material-ui/core"
 // @material-ui/icons
 import Search from "@material-ui/icons/Search";
 import Info from "@material-ui/icons/Info";
 
 import VocabularyBrowser from "./browse.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
+import QueryStyle from "./queryStyle.jsx";
 
 const NO_RESULTS_TEXT = "No results";
 
@@ -65,35 +65,34 @@ class Thesaurus extends React.Component {
     return (
       <div>
         <Card>
-          <CardHeader color="warning">
-            <h4 className={classes.cardTitleWhite}>{this.props.title}</h4>
-            <p className={classes.cardCategoryWhite}>{this.props.subtitle}</p>
-          </CardHeader>
-          <CardBody>
+          <CardHeader
+            title={this.props.title}
+            subheader={this.props.subtitle}
+            />
+          <CardContent>
             {this.props.children}
 
             <div className={classes.searchWrapper}>
-              <CustomInput
-                formControlProps={{
-                  className: classes.search
-                }}
-                labelText={this.props.searchDefault}
-                labelProps={{
-                  classes: {
+              <FormControl className={classes.search}>
+                <InputLabel
+                  classes={{
                     root: classes.searchLabel,
                     shrink: classes.searchShrink,
-                  }
-                }}
-                inputProps={{
-                  variant: 'outlined',
-                  inputProps: {
+                  }}
+                >
+                  {this.props.searchDefault}
+                </InputLabel>
+                <Input
+                  disabled={this.props.disabled}
+                  variant='outlined'
+                  inputProps={{
                     "aria-label": "Search"
-                  },
-                  onChange: this.delayLookup,
-                  inputRef: node => {
+                  }}
+                  onChange={this.delayLookup}
+                  inputRef={(node) => {
                     this.anchorEl = node;
-                  },
-                  onKeyDown: (event) => {
+                  }}
+                  onKeyDown={(event) => {
                     if (event.key == 'Enter') {
                       this.queryInput(this.anchorEl.value);
                     } else if (event.key == 'ArrowDown') {
@@ -102,28 +101,29 @@ class Thesaurus extends React.Component {
                         this.menuRef.children[0].focus();
                       }
                     }
-                  },
-                  onFocus: (status) => {
+                  }}
+                  onFocus={(status) => {
                     if (this.props.onInputFocus !== undefined) {
                       this.props.onInputFocus(status);
                     }
                     this.delayLookup(status);
                     this.anchorEl.select();
-                  },
-                  disabled: this.props.disabled,
-                  className: classes.searchInput,
-                  multiline: true,
-                  endAdornment: (
+                  }}
+                  disabled={this.props.disabled}
+                  className={classes.searchInput}
+                  multiline={true}
+                  endAdornment={(
                     <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}}>
                       <Search />
                     </InputAdornment>
-                  )
-                }}
-              />
+                  )}
+                >
+                </Input>
+              </FormControl>
               <br />
               <LinearProgress className={this.state.suggestionsLoading ? null : classes.inactiveProgress}/>
             </div>
-          </CardBody>
+          </CardContent>
         </Card>
         {/* Suggestions list using Popper */}
         <Popper
@@ -197,7 +197,7 @@ class Thesaurus extends React.Component {
               }}
             >
               <Card className={classes.infoCard}>
-                <Paper className={classes.infoPaper}>
+                <CardContent className={classes.infoPaper}>
                   <ClickAwayListener onClickAway={this.clickAwayInfo}>
                     <div>
                       <Typography className={classes.infoDataSource}>
@@ -210,7 +210,7 @@ class Thesaurus extends React.Component {
                         </a>
                         <Button
                           className={classes.closeButton}
-                          color="transparent"
+                          color="primary"
                           onClick={this.closeInfo}
                         >
                           ×
@@ -251,7 +251,7 @@ class Thesaurus extends React.Component {
                       </React.Fragment>}
                     </div>
                   </ClickAwayListener>
-                </Paper>
+                </CardContent>
               </Card>
             </Grow>
           )}
@@ -362,9 +362,7 @@ class Thesaurus extends React.Component {
                   buttonRef={node => {
                     this.registerInfoButton(element["id"], node);
                   }}
-                  color="info"
-                  justIcon={true}
-                  simple={true}
+                  color="primary"
                   aria-owns={this.state.termInfoVisible ? "menu-list-grow" : null}
                   aria-haspopup={true}
                   onClick={(e) => this.getInfo(element["id"])}
