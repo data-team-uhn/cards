@@ -20,7 +20,9 @@
     <script>
       // Redirect to /login if the user is not logged in
       if (window.Sling.getSessionInfo() === null || window.Sling.getSessionInfo().userID === 'anonymous') {
-        window.location = "/login.html";
+        window.location = "/login.html" +
+           // Provide the `resource` to redirect to after successful login
+           ((window.location.pathname.length > 1) ? ("?resource=" + encodeURI(window.location.pathname)) : "");
       }
     </script>
     <div id="main-container"></div>
