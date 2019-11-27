@@ -155,7 +155,4 @@ ReactDOM.render(
   document.querySelector('#main-container')
 );
 
-// Override the header
-document.querySelector('#header-container').style.display = 'none';
-
 export default MainComponent;
