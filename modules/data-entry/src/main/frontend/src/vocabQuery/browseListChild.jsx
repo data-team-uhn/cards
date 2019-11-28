@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core";
@@ -27,120 +27,67 @@ import Info from "@material-ui/icons/Info";
 import BrowseTheme from "./browseStyle.jsx";
 import { MakeChildrenFindingRequest } from "./util.jsx";
 
-class ListChild extends React.Component {
-  constructor(props) {
-    super(props);
+// Component that renders an element of the VocabularyBrowser, with expandable children.
+//
+// Required arguments:
+//  id: Term to search
+//  name: Text to display
+//  changeId: callback to change the term being looked up
+//  registerInfo: callback to add a possible hook point for the info box
+//  getInfo: callback to change the currently displayed info box term
+//  expands: boolean determining whether or not to allow this child to display its children
+//  headNode: boolean determining whether or not this node is the topmost node in the browser
+//  bolded: boolean determining whether or not to bold this entry
+//  onError: callback when an error occurs
+//  vocabulary: Name of the vocabulary to use to look up terms
+//
+// Optional arguments:
+//  fullscreen: whether or not the dialog is fullscreen (default: false)
+function ListChild(props) {
+  const { classes, defaultOpen, id, name, changeId, registerInfo, getInfo, expands, headNode, bolded, onError, vocabulary } = props;
 
-    this.state = {
-      currentlyLoading: true,
-      loadedChildren: false,
-      checkedForChildren: false,
-      hasChildren: false,
-      childrenData: null,
-      children: [],
-      expanded: props.defaultOpen,
-    };
-  }
+  const [ currentlyLoading, setCurrentlyLoading ] = useState(true);
+  const [ loadedChildren, setLoadedChildren ] = useState(false);
+  const [ checkedForChildren, setCheckedForChildren ] = useState(false);
+  const [ hasChildren, setHasChildren ] = useState(false);
+  const [ childrenData, setChildrenData ] = useState();
+  const [ children, setChildren ] = useState([]);
+  const [ expanded, setExpanded ] = useState(defaultOpen);
 
-  render() {
-    const { classes, id, name, changeId, registerInfo, getInfo, expands, headNode, bolded, onError, vocabulary } = this.props;
-    if (expands) {
-      this.checkForChildren();
-    }
-
-    return(
-      <div key={id} className={headNode ? "" : classes.branch}>
-        {/* Expand button ▼ */}
-        <div className={classes.arrowDiv}>
-          {(expands && this.state.hasChildren) ?
-            <Button
-              onClick={() => {
-                // Prevent a race condition when rapidly opening/closing
-                // by loading children here, and stopping it from loading
-                // children again
-                if (!this.state.loadedChildren) {
-                  this.loadChildren(this.state.childrenData);
-                }
-
-                this.setState({
-                  expanded: !this.state.expanded,
-                  loadedChildren: true,
-                });
-              }}
-              variant="text"
-              className={classes.browseitem + " " + classes.arrowButton}
-              >
-              {this.state.expanded ? "▼" : "►"}
-            </Button>
-            : ""
-          }
-          {(expands && this.state.currentlyLoading) ?
-            <CircularProgress size={10} />
-            : ""
-          }
-        </div>
-
-        {/* Listitem button */}
-        <Button
-          onClick={() => changeId(id)}
-          className={classes.browseitem}
-          >
-          <Typography className={classes.infoDataSource}>{id}&nbsp;</Typography>
-          <Typography className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}> {name}</Typography>
-        </Button>
-
-        {/* Button to open info page */}
-        <Button
-          buttonRef={(node) => {registerInfo(id, node)}}
-          onClick={() => {getInfo(id)}}
-          className={classes.buttonLink + " " + classes.infoButton}
-        >
-          <Info color="primary" fontSize="small" className={classes.infoButton}/>
-        </Button>
-        <br />
-
-        {/* Children */}
-        <div className={classes.childDiv + ((expands && this.state.expanded) ? " " : (" " + classes.hiddenDiv)) }> {this.state.children} </div>
-      </div>
-    );
-  }
-
-  checkForChildren = () => {
+  let checkForChildren = () => {
     // Prevent ourselves for checking for children if we've already checked for children
-    if (this.state.checkedForChildren) {
+    if (checkedForChildren) {
       return;
     }
 
     // Determine if this node has children
     MakeChildrenFindingRequest(
-      this.props.vocabulary,
-      {input: this.props.id},
-      this.updateChildrenStatus
+      vocabulary,
+      {input: id},
+      updateChildrenStatus
       );
   }
 
   // Callback from checkForChildren to update whether or not this node has children
   // This does not recreate the child elements
-  updateChildrenStatus = (status, data) => {
+  let updateChildrenStatus = (status, data) => {
     if (status === null) {
-      this.setState({
-        hasChildren: (data["rows"].length > 0),
-        childrenData: (data["rows"]),
-        checkedForChildren: true,
-        currentlyLoading: false,
-      });
-      if (this.state.expanded && !this.state.loadedChildren) {
-        this.loadChildren(data["rows"]);
+      setHasChildren(data["rows"].length > 0);
+      setChildrenData(data["rows"]);
+      setCheckedForChildren(true);
+      setCurrentlyLoading(false);
+      if (expanded && !loadedChildren) {
+        loadChildren(data["rows"]);
       }
     } else {
-      this.props.onError("Error: children lookup failed with code " + status);
+      onError("Error: children lookup failed with code " + status);
     }
   }
 
-  // Update this.state.children with children elements
-  loadChildren = (data) => {
+  // Update state with children elements
+  let loadChildren = (data) => {
     // Prevent ourselves from loading children if we've already loaded children
-    if (this.state.loadedChildren || !this.state.hasChildren) {
+    if (loadedChildren || !hasChildren) {
       return;
     }
 
@@ -148,22 +95,78 @@ class ListChild extends React.Component {
       return (<BrowseListChild
                 id={row["id"]}
                 name={row["name"]}
-                changeId={this.props.changeId}
-                registerInfo={this.props.registerInfo}
-                getInfo={this.props.getInfo}
+                changeId={changeId}
+                registerInfo={registerInfo}
+                getInfo={getInfo}
                 expands={true}
                 defaultOpen={false}
                 key={index}
                 headNode={false}
-                onError={this.props.onError}
-                vocabulary={this.props.vocabulary}
+                onError={onError}
+                vocabulary={vocabulary}
               />);
     });
-    this.setState({
-      loadedChildren: true,
-      children: children,
-    });
+    setLoadedChildren(true);
+    setChildren(children);
   }
+
+  if (expands) {
+    checkForChildren();
+  }
+
+  return(
+    <div key={id} className={headNode ? "" : classes.branch}>
+      {/* Expand button ▼ */}
+      <div className={classes.arrowDiv}>
+        {(expands && hasChildren) ?
+          <Button
+            onClick={() => {
+              // Prevent a race condition when rapidly opening/closing
+              // by loading children here, and stopping it from loading
+              // children again
+              if (!loadedChildren) {
+                loadChildren(childrenData);
+              }
+
+              setExpanded(!expanded);
+              setLoadedChildren(true);
+            }}
+            variant="text"
+            className={classes.browseitem + " " + classes.arrowButton}
+            >
+            {expanded ? "▼" : "►"}
+          </Button>
+          : ""
+        }
+        {(expands && currentlyLoading) ?
+          <CircularProgress size={10} />
+          : ""
+        }
+      </div>
+
+      {/* Listitem button */}
+      <Button
+        onClick={() => changeId(id)}
+        className={classes.browseitem}
+        >
+        <Typography className={classes.infoDataSource}>{id}&nbsp;</Typography>
+        <Typography className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}> {name}</Typography>
+      </Button>
+
+      {/* Button to open info page */}
+      <Button
+        buttonRef={(node) => {registerInfo(id, node)}}
+        onClick={() => {getInfo(id)}}
+        className={classes.buttonLink + " " + classes.infoButton}
+      >
+        <Info color="primary" fontSize="small" className={classes.infoButton}/>
+      </Button>
+      <br />
+
+      {/* Children */}
+      <div className={classes.childDiv + ((expands && expanded) ? " " : (" " + classes.hiddenDiv)) }> {children} </div>
+    </div>
+  );
 }
 
 ListChild.propTypes = {

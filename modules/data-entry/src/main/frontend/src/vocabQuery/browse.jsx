@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core";
@@ -27,118 +27,132 @@ import BrowseTheme from "./browseStyle.jsx";
 
 import { REST_URL, MakeRequest } from "./util.jsx";
 
-class VocabularyBrowser extends React.Component {
-  constructor(props) {
-    super(props);
+// Component that renders a full screen dialog, to browse related terms of an input
+// term.
+//
+// Required arguments:
+//  term: Term to search
+//  vocabulary: Name of the vocabulary to use to look up terms
+//  changeId: callback to change the term being looked up
+//  registerInfo: callback to add a possible hook point for the info box
+//  getInfo: callback to change the currently displayed info box term
+//  onClose: callback when this dialog is closed
+//  onError: callback when an error occurs
+//
+// Optional arguments:
+//  fullscreen: whether or not the dialog is fullscreen (default: false)
+function VocabularyBrowser(props) {
+  const { classes, fullscreen, term, changeId, registerInfo, getInfo, onClose, onError, vocabulary, ...rest } = props;
 
-    this.state = {
-      lastKnownTerm: "",
-      parentNode: null,
-      currentNode: null,
-    };
-  }
-
-  render() {
-    const { classes, term, changeId, registerInfo, getInfo, onClose, onError, ...rest } = this.props;
-    const fullscreen = false;
-    this.rebuildBrowser(term);
-
-    return (
-      <Dialog
-        fullscreen={fullscreen.toString()}
-        className={classes.dialog}
-        onClose={onClose}
-        classes={{paper: classes.dialogPaper}}
-        {...rest}
-      >
-        <DialogTitle className={classes.headbar}>
-          <Typography className={classes.headbarText}>Related terms</Typography>
-          <Button
-            className={classes.closeButton}
-            onClick={onClose}
-            variant="outlined"
-          >
-            ×
-          </Button>
-        </DialogTitle>
-        <DialogContent className={classes.treeContainer}>
-          <div className={classes.treeRoot}>
-            {this.state.parentNode}
-          </div>
-          <div className={classes.treeNode}>
-            {this.state.currentNode}
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
-  }
+  const [ lastKnownTerm, setLastKnownTerm ] = useState("");
+  const [ parentNode, setParentNode ] = useState();
+  const [ currentNode, setCurrentNode ] = useState();
 
   // Rebuild the browser tree centered around the given term.
-  rebuildBrowser = (id) => {
+  let rebuildBrowser = (id) => {
     // Do not re-grab suggestions for the same term
-    if (id === this.state.lastKnownTerm) {
+    if (id === lastKnownTerm) {
       return;
     }
 
     // If the search is empty, remove every component
     if (id === "" || id === null) {
-      this.setState({
-        parentNode: null,
-        currentNode: null,
-        lastKnownTerm: id,
-      })
+      setParentNode(null);
+      setCurrentNode(null);
+      setLastKnownTerm(id);
       return;
     }
 
     // Create the XHR request
-    var URL = REST_URL + `/${this.props.vocabulary}/${id}/`;
-    MakeRequest(URL, this.rebuildTree);
+    var URL = REST_URL + `/${vocabulary}/${id}/`;
+    MakeRequest(URL, rebuildTree);
   }
 
   // Callback from an onload to generate the tree from a /suggest query about the parent
-  rebuildTree = (status, data) => {
+  let rebuildTree = (status, data) => {
     if (status === null) {
       // Construct parent elements, if they exist
       var parentBranches = null;
       if ("parents" in data) {
         parentBranches = data["parents"].map((row, index) => {
-          return this.constructBranch(row["id"], row["name"], false, false, false);
+          return constructBranch(row["id"], row["name"], false, false, false);
         });
       }
 
-      this.setState({
-        parentNode: parentBranches,
-        currentNode: this.constructBranch(data["id"], data["name"], true, true, true),
-        lastKnownTerm: this.props.term,
-      })
+      setParentNode(parentBranches);
+      setCurrentNode(constructBranch(data["id"], data["name"], true, true, true));
+      setLastKnownTerm(term);
     } else {
-      this.props.onError("Error: initial term lookup failed with code " + status);
+      onError("Error: initial term lookup failed with code " + status);
     }
   }
 
   // Construct a branch element for rendering
-  constructBranch = (id, name, ischildnode, defaultexpanded, bolded) => {
+  let constructBranch = (id, name, ischildnode, defaultexpanded, bolded) => {
     return(
       <BrowseListChild
         id={id}
         name={name}
-        changeId={this.props.changeId}
-        registerInfo={this.props.registerInfo}
-        getInfo={this.props.getInfo}
+        changeId={changeId}
+        registerInfo={registerInfo}
+        getInfo={getInfo}
         expands={ischildnode}
         defaultOpen={defaultexpanded}
         key={id}
         headNode={!ischildnode}
         bolded={bolded}
-        onError={this.props.onError}
-        vocabulary={this.props.vocabulary}
+        onError={onError}
+        vocabulary={vocabulary}
       />
     );
   }
+
+  rebuildBrowser(term);
+
+  return (
+    <Dialog
+      fullscreen={fullscreen.toString()}
+      className={classes.dialog}
+      onClose={onClose}
+      classes={{paper: classes.dialogPaper}}
+      {...rest}
+    >
+      <DialogTitle className={classes.headbar}>
+        <Typography className={classes.headbarText}>Related terms</Typography>
+        <Button
+          className={classes.closeButton}
+          onClick={onClose}
+          variant="outlined"
+        >
+          ×
+        </Button>
+      </DialogTitle>
+      <DialogContent className={classes.treeContainer}>
+        <div className={classes.treeRoot}>
+          {parentNode}
+        </div>
+        <div className={classes.treeNode}>
+          {currentNode}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 VocabularyBrowser.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  fullscreen: PropTypes.bool,
+  term: PropTypes.string.isRequired,
+  vocabulary: PropTypes.string.isRequired,
+  changeId: PropTypes.func.isRequired,
+  registerInfo: PropTypes.func.isRequired,
+  getInfo: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired
 };
+
+VocabularyBrowser.defaultProps = {
+  fullscreen: true
+}
 
 export default withStyles(BrowseTheme)(VocabularyBrowser);
