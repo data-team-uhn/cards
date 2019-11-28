@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { FormControlLabel, List, RadioGroup, Typography, withStyles, Radio } from "@material-ui/core";
@@ -26,92 +26,66 @@ import SelectorStyle from "./selectorStyle.jsx";
 import VocabularyEntry from "./selectEntry.jsx";
 import SelectionResults from "./selectionResults.jsx";
 import { MakeRequest, REST_URL } from "../vocabQuery/util.jsx";
+import { useEffect } from "react";
 
+// Enumeration for how to store the output
 const NAME_POS = 0;
 const ID_POS = 1;
 const IS_PRESELECT_POS = 2;
 
-class VocabularySelector extends React.Component {
-  constructor(props) {
-    super(props);
-    var listChildren = [];
+// Component that renders a full screen dialog, to browse related terms of an input
+// term.
+//
+// Required arguments:
+//  title: Title of the selector question
+//  source: Vocabulary source to use
+//  max: Maximum number of selectable options
+//  requiredAncestors: For vocabularies that support ancestries, supplies a required ancestor element. This
+//    can be used to restrict answers to be e.g. descendents of skin conditions
+//  defaultSuggestions: Default suggestions
+//  searchDefault: Default text to place in search bar before user input
+// Other arguments are passed onto contained Thesaurus element
+function VocabularySelector(props) {
+  const {defaultSuggestions, source, suggestionCategories, max, selectionContainer, classes, ...rest} = props;
 
-    this.state = {
-      defaultListChildren: listChildren,
-      listChildren: listChildren,
-      selected: 0,
-      radioSelect: "",
-      thresaurusRef: undefined,
-      radioValue: "&nbsp;"
-    };
-  }
+  const [defaultListChildren, setDefaultListChildren] = useState([]);
+  const [listChildren, setListChildren] = useState([]);
+  const [selected, setSelected] = useState(0);
+  const [radioName, setRadioName] = useState("");
+  const [radioSelect, setRadioSelect] = useState("");
+  const [radioValue, setRadioValue] = useState("&nbsp;");
+  
+  const disabled = max > 1 && selected >= max;
+  const isRadio = max === 1;
+  const reminderText = `Please select at most ${max} options.`;
 
-  render() {
-    const {source, suggestionCategories, max, selectionContainer, defaultSuggestionIDs, defaultSuggestionNames, classes, ...rest} = this.props;
-    const disabled = max > 1 && this.state.selected >= max;
-    const isRadio = max === 1;
-    const reminderText = `Please select at most ${max} options.`;
+  let thesaurusRef = null;
 
-    return (
-      <React.Fragment>
-        <Thesaurus
-          onClick = {this.handleThesaurus}
-          suggestionCategories = {suggestionCategories}
-          Vocabulary = {source}
-          ref = {(ref) => {this.thresaurusRef = ref;}}
-          disabled = {disabled}
-          overrideText = {disabled ? reminderText : undefined }
-          clearOnClick = {!isRadio}
-          onInputFocus = {() => {this.setState({radioSelect: this.state.radioValue})}}
-          {...rest}
-        >
-          {max > 1 ?(<Typography>{reminderText}</Typography>) : ''}
-          {
-            // If we don't have an external container, add results here
-            typeof selectionContainer === "undefined" && this.generateList(disabled, isRadio)
-          }
-        </Thesaurus>
-        {
-          // If we have an external container, open a portal there
-          typeof selectionContainer !== "undefined" &&
-          (
-            <SelectionResults
-              root = {selectionContainer}
-              >
-              {this.generateList(disabled, isRadio)}
-            </SelectionResults>
-          )
-        }
-      </React.Fragment>
-    );
-  }
-
-  generateList = (disabled, isRadio) => {
-    var classes = this.props.classes;
+  let generateList = (disabled, isRadio) => {
     if (isRadio) {
-      var ghostSelected = this.state.radioSelect === "&nbsp;";
+      var ghostSelected = radioSelect === "&nbsp;";
       return (
         <RadioGroup
           aria-label="selection"
           name="selection"
           className={classes.selectionList}
-          value={this.state.radioSelect}
-          onChange={this.changeRadio}
+          value={radioSelect}
+          onChange={changeRadio}
         >
-          {this.generateListChildren(disabled, isRadio)}
+          {generateListChildren(disabled, isRadio)}
           {/* Ghost radio for the text input */}
           <FormControlLabel
             control={
             <Radio
-              onChange={() => {this.setState({radioSelect: this.state.radioValue})}}
-              onClick={() => {this.thresaurusRef.anchorEl.select(); this.setState({radioSelect: this.state.radioValue})}}
+              onChange={() => {setRadioSelect(radioValue)}}
+              onClick={() => {thesaurusRef.anchorEl.select(); setRadioSelect(radioValue)}}
               disabled={!ghostSelected && disabled}
               className={classes.ghostRadiobox}
             />
             }
             label="&nbsp;"
-            name={this.state.radioName}
-            value={this.state.radioValue}
+            name={radioName}
+            value={radioValue}
             className={classes.ghostFormControl + " " + classes.childFormControl}
             classes={{
               label: classes.inputLabel
@@ -122,7 +96,7 @@ class VocabularySelector extends React.Component {
     } else {
       return (
         <List className={classes.selectionList}>
-          {this.generateListChildren(disabled, isRadio)}
+          {generateListChildren(disabled, isRadio)}
         </List>
       )
     }
@@ -130,14 +104,14 @@ class VocabularySelector extends React.Component {
 
   /* Since we need to enable/disable children on the fly, we also generate them
       on the fly */
-  generateListChildren = (disabled, isRadio) => {
-    return this.state.listChildren.map( (childData) => {
+  let generateListChildren = (disabled, isRadio) => {
+    return listChildren.map( (childData) => {
       return (
         <VocabularyEntry
           id={childData[ID_POS]}
           key={childData[ID_POS]}
           name={childData[NAME_POS]}
-          onClick={this.removeSelection}
+          onClick={removeSelection}
           disabled={disabled}
           isPreselected={childData[IS_PRESELECT_POS]}
           isRadio={isRadio}
@@ -147,70 +121,58 @@ class VocabularySelector extends React.Component {
   }
 
   // Handle the user clicking on a radio button
-  changeRadio = (event) => {
-    this.setState({
-      listChildren: this.state.defaultListChildren,
-      selected: 1,
-      radioSelect: event.target.value
-    });
+  let changeRadio = (event) => {
+    setListChildren(defaultListChildren);
+    setSelected(1);
+    setRadioSelect(event.target.value);
   }
 
-  handleThesaurus = (id, name) => {
-    var isRadio = this.props.max === 1;
+  let handleThesaurus = (id, name) => {
+    var isRadio = max === 1;
     if (isRadio) {
-      this.setState({
-        radioName: name,
-        radioValue: id,
-        selected: 1,
-        radioSelect: id,
-      })
+      setRadioName(name);
+      setRadioValue(id);
+      setSelected(1);
+      setRadioSelect(id);
     } else {
-      this.addSelection(id, name);
+      addSelection(id, name);
     }
   }
 
   // Create a new child from the selection with parent
-  addSelection = (id, name) => {
+  let addSelection = (id, name) => {
     // Also do not add anything if we are at our maximum number of selections
-    if (this.state.selected >= this.props.max && this.props.max > 1 ) {
+    if (selected >= max && max > 1 ) {
       return;
     }
 
     // Also do not add duplicates
-    if (this.state.listChildren.some(element => {return element[ID_POS] === id})) {
+    if (listChildren.some(element => {return element[ID_POS] === id})) {
       return;
     }
 
-    if (this.props.max == 1) {
+    if (max == 1) {
       // If only 1 child is allowed, replace it instead of copying our array
-      var newChildren = this.state.defaultListChildren.slice();
+      var newChildren = defaultListChildren.slice();
       newChildren.push([name, id, false]);
-      this.setState({
-        listChildren: newChildren,
-        selected: 1,
-        radioSelect: name
-      });
+      setListChildren(newChildren);
+      setSelected(1);
+      setRadioSelect(name);
     } else {
       // As per React specs, we do not modify the state array directly, but slice and add
-      var newChildren = this.state.listChildren.slice();
+      var newChildren = listChildren.slice();
       newChildren.push([name, id, false]);
-      this.setState({
-        listChildren: newChildren,
-        selected: this.state.selected + 1
-      });
+      setListChildren(newChildren);
+      setSelected(selected + 1);
     }
   }
 
-  componentDidMount() {
-    this.populateDefaults();
-  }
-
-  populateDefaults() {
-    var newChildren = this.state.listChildren.slice();
-    for (var id in this.props.defaultSuggestions) {
+  let populateDefaults = () => {
+    var newChildren = [];
+    for (var id in defaultSuggestions) {
       // If we are given a name, use it
-      if (typeof this.props.defaultSuggestions[id] !== "undefined") {
-        newChildren.push([this.props.defaultSuggestions[id], id, true]);
+      if (typeof defaultSuggestions[id] !== "undefined") {
+        newChildren.push([defaultSuggestions[id], id, true]);
         continue;
       }
 
@@ -218,15 +180,13 @@ class VocabularySelector extends React.Component {
       var testId = id;
       var escapedId = id.replace(":", "\\:"); // URI Escape the : from HP: for SolR
       var customFilter = encodeURIComponent(`id:${escapedId}`);
-      var URL = `${REST_URL}/${this.props.source}/suggest?sort=nameSort%20asc&maxResults=1&input=${id}&customFilter=${customFilter}`
-      MakeRequest(URL, (status, data) => this.addDefaultSuggestion(status, data, testId));
+      var URL = `${REST_URL}/${source}/suggest?sort=nameSort%20asc&maxResults=1&input=${id}&customFilter=${customFilter}`
+      MakeRequest(URL, (status, data) => addDefaultSuggestion(status, data, testId));
     };
-    this.setState({
-      listChildren: newChildren,
-    });
+    setListChildren(newChildren);
   }
 
-  addDefaultSuggestion = (status, data, id) => {
+  let addDefaultSuggestion = (status, data, id) => {
     if (status === null) {
       var name = id;
       // Determine if we can find the name from here
@@ -235,43 +195,67 @@ class VocabularySelector extends React.Component {
       }
       // If the name could not be found, use the ID as the name
 
-      // Possible race condition here?
-      var newChildren = this.state.listChildren.slice();
-      newChildren.push([name, id, true]);
-      this.setState({
-        defaultListChildren: newChildren,
-        listChildren: newChildren
-      });
+      // Avoid the race condition by using updater functions
+      var newChild = [name, id, true];
+      setDefaultListChildren(oldDefaultListChildren => {var newList = oldDefaultListChildren.slice(); newList.push(newChild); return(newList);});
+      setListChildren(oldListChildren => {var newList = oldListChildren.slice(); newList.push(newChild); return(newList);});
     } else {
       console.log("Error: Thesaurus lookup failed with code " + status);
     }
   }
 
-  componentDidUpdate(prevProps) {
-    // Use JSON.stringify to compare the values of defaultSuggestions rather than their refs
-    if (JSON.stringify(prevProps.defaultSuggestions) !== JSON.stringify(this.props.defaultSuggestions)) {
-      this.populateDefaults();
-    }
-  }
-
-  removeSelection = (id, name, wasSelected=false) => {
+  let removeSelection = (id, name, wasSelected=false) => {
     // Do not remove this element if it is in our default suggestions
     // Instead, just update the number of items selected
-    if (typeof this.props.defaultSuggestions !== "undefined" && id in this.props.defaultSuggestions) {
+    if (typeof defaultSuggestions !== "undefined" && id in defaultSuggestions) {
       if (wasSelected) {
-        this.setState({selected: this.state.selected - 1});
+        setSelected(selected - 1);
       } else {
-        this.setState({selected: this.state.selected + 1});
+        setSelected(selected + 1);
       }
       return;
     }
 
-    var newChildren = this.state.listChildren.filter(element => element[ID_POS] != id);
-    this.setState({
-      listChildren: newChildren,
-      selected: this.state.selected - 1
-    });
+    var newChildren = listChildren.filter(element => element[ID_POS] != id);
+    setListChildren(newChildren);
+    setSelected(selected - 1);
   }
+
+  // Populate defaults when we load for the first time
+  useEffect(() => {populateDefaults()}, [defaultSuggestions]);
+
+  return (
+    <React.Fragment>
+      <Thesaurus
+        onClick = {handleThesaurus}
+        suggestionCategories = {suggestionCategories}
+        Vocabulary = {source}
+        ref = {(ref) => {thesaurusRef = ref;}}
+        disabled = {disabled}
+        overrideText = {disabled ? reminderText : undefined }
+        clearOnClick = {!isRadio}
+        onInputFocus = {() => {setRadioSelect(radioValue);}}
+        {...rest}
+      >
+        {max > 1 ?(<Typography>{reminderText}</Typography>) : ''}
+        {
+          // If we don't have an external container, add results here
+          typeof selectionContainer === "undefined" && generateList(disabled, isRadio)
+        }
+      </Thesaurus>
+      {
+        // If we have an external container, open a portal there
+        typeof selectionContainer !== "undefined" &&
+        (
+          <SelectionResults
+            root = {selectionContainer}
+            >
+            {generateList(disabled, isRadio)}
+          </SelectionResults>
+        )
+      }
+    </React.Fragment>
+  );
 }
 
 VocabularySelector.propTypes = {

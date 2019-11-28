@@ -16,21 +16,14 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
 import { createPortal } from "react-dom";
 
-// Portal-ize the results
-class SelectionResults extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return createPortal(
-            this.props.children,
-            this.props.root
-        );
-    }
+// Portalizes results, so that they can be moved to an area outside of the root DOM
+function SelectionResults(props) {
+    return createPortal(
+        props.children,
+        props.root
+    );
 }
 
 export default SelectionResults;
