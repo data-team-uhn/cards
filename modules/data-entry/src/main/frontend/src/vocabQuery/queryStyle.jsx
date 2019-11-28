@@ -186,6 +186,11 @@ const thesaurusStyle = theme => ({
   },
   inactiveProgress: {
     visibility: "hidden"
+  },
+  infoButton: {
+    minWidth: "0px",
+    width: "30px",
+    color: "#00ACC1",
   }
 });
 

@@ -366,7 +366,7 @@ class Thesaurus extends React.Component {
                   aria-owns={this.state.termInfoVisible ? "menu-list-grow" : null}
                   aria-haspopup={true}
                   onClick={(e) => this.getInfo(element["id"])}
-                  className={this.props.classes.buttonLink}
+                  className={this.props.classes.buttonLink + " " + this.props.classes.infoButton}
                 >
                   <Info color="primary" />
                 </Button>

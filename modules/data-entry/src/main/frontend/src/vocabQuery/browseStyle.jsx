@@ -17,7 +17,10 @@
 //  under the License.
 //
 
+import queryStyle from "./queryStyle.jsx";
+
 const browseStyle = theme => ({
+    ...queryStyle(theme),
     dialog: {
       // The dialogue appears in the wrong location without the following
       padding: theme.spacing(1),
@@ -55,11 +58,6 @@ const browseStyle = theme => ({
     infoName: {
       color: "#000000",
       whiteSpace: "normal", // Enable line wrapping
-    },
-    infoButton: {
-      minWidth: "0px",
-      width: "30px",
-      color: "#00ACC1",
     },
     treeContainer: {
       padding: theme.spacing(2),
