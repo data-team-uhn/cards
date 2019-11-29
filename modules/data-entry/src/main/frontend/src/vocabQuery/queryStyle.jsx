@@ -97,7 +97,7 @@ const thesaurusStyle = theme => ({
   // Info box typography styles
   infoPaper: {
     maxWidth: "500px",
-    padding: theme.spacing(1, 2),
+    padding: theme.spacing(2),
   },
   infoCard: {
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",

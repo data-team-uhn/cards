@@ -226,9 +226,11 @@ class VocabularyQuery extends React.Component {
                     titleTypographyProps={{variant: 'h5'}}
                   />
                   <CardContent className={classes.infoPaper}>
-                    <div className={classes.infoSection}>
-                      <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography>
-                    </div>
+                      {this.state.infoDefinition && (
+                        <div className={classes.infoSection}>
+                          <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography>
+                        </div>
+                      )}
                       {this.state.infoAlsoKnownAs.length > 0 && (
                         <div className={classes.infoSection}>
                           <Typography variant="h6" className={classes.infoHeader}>Also known as</Typography>
