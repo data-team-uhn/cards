@@ -27,6 +27,9 @@ COPY target/${project.artifactId}-${project.version}.jar .
 # Make this a volume which can be persisted between different container versions
 VOLUME ["/opt/lfs/sling"]
 
+# Expose the 8080 port where normal HTTP connections are expected
+EXPOSE 8080
+
 # Optional: enable remote debugging at port 5005
 ENV DEBUG=
 # EXPOSE is just an indication, no port is actually published unless done explicitly when starting the container,
