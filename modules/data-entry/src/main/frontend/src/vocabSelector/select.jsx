@@ -257,7 +257,7 @@ function VocabularySelector(props) {
   }
 
   // Populate defaults when we load for the first time
-  useEffect(() => {populateDefaults()}, [defaultSuggestions]);
+  useEffect(() => {populateDefaults()}, [JSON.stringify(defaultSuggestions)]);
 
   return (
     <React.Fragment>
