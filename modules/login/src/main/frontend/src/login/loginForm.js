@@ -22,7 +22,6 @@ import {
     Avatar,
     Button,
     FormControl,
-    Icon,
     IconButton,
     Input,
     InputAdornment,
@@ -33,6 +32,9 @@ import {
     withStyles
 } from '@material-ui/core';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import styles from "../styling/styles";
 
 class SignIn extends React.Component {
@@ -96,10 +98,10 @@ class SignIn extends React.Component {
     return (
         <div className={classes.main}>
           <Paper elevation={1} className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
-            <Typography component="overline">
+            <Typography component="h1" variant="overline">
               LFS Data Core
             </Typography>
-            <Typography component="h1" variant="h5">
+            <Typography component="h2" variant="h5">
               Sign In
             </Typography>
             <Avatar className={classes.avatar}>
@@ -124,7 +126,7 @@ class SignIn extends React.Component {
                         aria-label="Toggle password visibility"
                         onClick={this.togglePasswordMask}
                       >
-                        {this.state.passwordIsMasked ? <Icon>visibility</Icon> : <Icon >visibility_off</Icon>}
+                        {this.state.passwordIsMasked ? <VisibilityIcon/> : <VisibilityOffIcon/>}
                       </IconButton>
                     </Tooltip>
                   </InputAdornment>
@@ -141,12 +143,13 @@ class SignIn extends React.Component {
                 Sign in
               </Button>
             </form>
+            <Typography>Don't have an account?</Typography>
             <Button
               fullWidth
               color="default"
               onClick={this.props.swapForm}
             >
-              Request an account
+              <PersonAddIcon/> Request an account
             </Button>
           </Paper>
         </div>
