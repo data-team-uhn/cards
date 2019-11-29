@@ -63,3 +63,9 @@ Explanation:
     - the second port must be `8080`
 - `--name lfs-production` gives a name to the container, for easy identification
 - `lfs/lfs` is the name of the image
+
+To enable developer mode, also add `--env DEV=true -p 5005:5005` to the `docker run` command.
+
+To enable debug mode, also add `--env DEBUG=true` to the `docker run` command.
+
+`docker run -d -p 8080:8080 -p 5005:5005 --env DEV=true --env DEBUG=true --name lfs-debug lfs/lfs`

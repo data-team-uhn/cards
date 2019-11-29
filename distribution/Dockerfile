@@ -27,5 +27,14 @@ COPY target/${project.artifactId}-${project.version}.jar .
 # Make this a volume which can be persisted between different container versions
 VOLUME ["/opt/lfs/sling"]
 
+# Optional: enable remote debugging at port 5005
+ENV DEBUG=
+# EXPOSE is just an indication, no port is actually published unless done explicitly when starting the container,
+# so it is safe to always declare it here, even when debug mode isn't active
+EXPOSE 5005
+
+# Optional: enable developer mode
+ENV DEV=
+
 # This is the default command executed when starting the container
-ENTRYPOINT [ "java", "-jar", "${project.artifactId}-${project.version}.jar" ]
+ENTRYPOINT java ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar ${project.artifactId}-${project.version}.jar ${DEV:+-Dsling.run.modes=dev}
