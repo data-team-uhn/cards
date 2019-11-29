@@ -21,6 +21,7 @@ import PropTypes from "prop-types";
 // @material-ui/core
 import { FormControlLabel, List, RadioGroup, Typography, withStyles, Radio } from "@material-ui/core";
 
+import Answer from "../questionnaire/Answer.jsx";
 import Thesaurus from "../vocabQuery/query.jsx";
 import SelectorStyle from "./selectorStyle.jsx";
 import VocabularyEntry from "./selectEntry.jsx";
@@ -32,6 +33,7 @@ import { useEffect } from "react";
 const NAME_POS = 0;
 const ID_POS = 1;
 const IS_PRESELECT_POS = 2;
+const IS_SELECTED_POS = 3;
 
 // Component that renders a full screen dialog, to browse related terms of an input
 // term.
@@ -46,7 +48,7 @@ const IS_PRESELECT_POS = 2;
 //  searchDefault: Default text to place in search bar before user input
 // Other arguments are passed onto contained Thesaurus element
 function VocabularySelector(props) {
-  const {defaultSuggestions, source, suggestionCategories, max, selectionContainer, classes, ...rest} = props;
+  const {defaultSuggestions, existingAnswer, source, suggestionCategories, max, selectionContainer, questionDefinition, classes, ...rest} = props;
 
   const [defaultListChildren, setDefaultListChildren] = useState([]);
   const [listChildren, setListChildren] = useState([]);
@@ -58,6 +60,7 @@ function VocabularySelector(props) {
   const disabled = max > 1 && selected >= max;
   const isRadio = max === 1;
   const reminderText = `Please select at most ${max} options.`;
+  const selectedListChildren = listChildren.filter( (element) => element[IS_SELECTED_POS] );
 
   let thesaurusRef = null;
 
@@ -114,6 +117,7 @@ function VocabularySelector(props) {
           onClick={removeSelection}
           disabled={disabled}
           isPreselected={childData[IS_PRESELECT_POS]}
+          currentlySelected={childData[IS_SELECTED_POS]}
           isRadio={isRadio}
         ></VocabularyEntry>
       );
@@ -154,14 +158,14 @@ function VocabularySelector(props) {
     if (max == 1) {
       // If only 1 child is allowed, replace it instead of copying our array
       var newChildren = defaultListChildren.slice();
-      newChildren.push([name, id, false]);
+      newChildren.push([name, id, false, true]);
       setListChildren(newChildren);
       setSelected(1);
       setRadioSelect(name);
     } else {
       // As per React specs, we do not modify the state array directly, but slice and add
       var newChildren = listChildren.slice();
-      newChildren.push([name, id, false]);
+      newChildren.push([name, id, false, true]);
       setListChildren(newChildren);
       setSelected(selected + 1);
     }
@@ -169,10 +173,12 @@ function VocabularySelector(props) {
 
   let populateDefaults = () => {
     var newChildren = [];
+    const hasExistingAnswers = existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value;
+    const existingAnswers = hasExistingAnswers && existingAnswer[1].value;
     for (var id in defaultSuggestions) {
       // If we are given a name, use it
       if (typeof defaultSuggestions[id] !== "undefined") {
-        newChildren.push([defaultSuggestions[id], id, true]);
+        newChildren.push([defaultSuggestions[id], id, true, hasExistingAnswers && existingAnswers.includes(id)]);
         continue;
       }
 
@@ -183,10 +189,29 @@ function VocabularySelector(props) {
       var URL = `${REST_URL}/${source}/suggest?sort=nameSort%20asc&maxResults=1&input=${id}&customFilter=${customFilter}`
       MakeRequest(URL, (status, data) => addDefaultSuggestion(status, data, testId));
     };
+
+    // If any answers are existing (i.e. we are loading an old form), also populate these
+    if (hasExistingAnswers) {
+      Array.of(existingAnswer[1].value).flat().forEach( (id) => {
+        // Do not add a pre-existing answer if it is a default
+        if (id in defaultSuggestions) {
+          return;
+        }
+        // Determine the name from our vocab
+        var testId = id;
+        var escapedId = id.replace(":", "\\:"); // URI Escape the : from HP: for SolR
+        var customFilter = encodeURIComponent(`id:${escapedId}`);
+        var URL = `${REST_URL}/${source}/suggest?sort=nameSort%20asc&maxResults=1&input=${id}&customFilter=${customFilter}`
+        MakeRequest(URL, (status, data) => addDefaultSuggestion(status, data, testId, false));
+      });
+    }
+
     setListChildren(newChildren);
   }
 
-  let addDefaultSuggestion = (status, data, id) => {
+  let addDefaultSuggestion = (status, data, id, isSuggestion) => {
+    const hasExistingAnswers = existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value;
+    const existingAnswers = existingAnswer && existingAnswer[1].value;
     if (status === null) {
       var name = id;
       // Determine if we can find the name from here
@@ -196,7 +221,7 @@ function VocabularySelector(props) {
       // If the name could not be found, use the ID as the name
 
       // Avoid the race condition by using updater functions
-      var newChild = [name, id, true];
+      var newChild = [name, id, isSuggestion, hasExistingAnswers && existingAnswers.includes(id)];
       setDefaultListChildren(oldDefaultListChildren => {var newList = oldDefaultListChildren.slice(); newList.push(newChild); return(newList);});
       setListChildren(oldListChildren => {var newList = oldListChildren.slice(); newList.push(newChild); return(newList);});
     } else {
@@ -208,10 +233,20 @@ function VocabularySelector(props) {
     // Do not remove this element if it is in our default suggestions
     // Instead, just update the number of items selected
     if (typeof defaultSuggestions !== "undefined" && id in defaultSuggestions) {
+      setListChildren(
+        (oldChildren) => {
+          return oldChildren.slice().map( (childData) => {
+            if (childData[ID_POS] === id && childData[NAME_POS] === name) {
+              childData[IS_SELECTED_POS] = !wasSelected;
+            }
+            return(childData);
+          })
+        }
+      );
       if (wasSelected) {
-        setSelected(selected - 1);
+        setSelected(oldSelected => oldSelected - 1);
       } else {
-        setSelected(selected + 1);
+        setSelected(oldSelected => oldSelected + 1);
       }
       return;
     }
@@ -254,6 +289,13 @@ function VocabularySelector(props) {
           </SelectionResults>
         )
       }
+      {/* Generate the hidden answer array */}
+      <Answer
+        answers={selectedListChildren}
+        answerNodeType={'lfs:VocabularyAnswer'}
+        questionDefinition={questionDefinition}
+        existingAnswer={existingAnswer}
+      />
     </React.Fragment>
   );
 }

@@ -26,6 +26,7 @@ import SelectorStyle from "./selectorStyle.jsx"
 // Child selection element of a vocabulary term
 //
 // Required arguments:
+//  currentlySelected: Whether or not this element begins selected
 //  name: Label of the term
 //  id: Internal ID of the entry
 //  onClick: Callback when the control for this term is clicked (generally to select it)
@@ -35,8 +36,8 @@ import SelectorStyle from "./selectorStyle.jsx"
 // Optional arguments:
 //  isPreselected: Whether or not this term is "preselected", i.e. non-deletable (default: false)
 function VocabularyEntry(props) {
-  const [checked, setChecked] = useState(false);
-  const {classes, name, id, isPreselected, onClick, disabled, isRadio} = props;
+  const {classes, currentlySelected, name, id, isPreselected, onClick, disabled, isRadio} = props;
+  const [checked, setChecked] = useState(currentlySelected);
 
   let toggleCheck = () => {
     setChecked(!checked);
@@ -93,17 +94,6 @@ function VocabularyEntry(props) {
           )
           }
       </ListItem>
-      {
-        /* Add the hidden inputs if this is a user input selection (i.e. !isPreselected)
-            or if this is a suggestion that is checked */
-        (!isPreselected || checked) ?
-        (
-        <React.Fragment>
-          <input type="hidden" name="name" value={name} />
-          <input type="hidden" name="id" value={id} />
-        </React.Fragment>
-        ) : ""
-      }
     </React.Fragment>
   );
 };

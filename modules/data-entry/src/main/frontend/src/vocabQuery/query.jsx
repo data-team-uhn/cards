@@ -21,7 +21,7 @@ import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles, FormControl } from "@material-ui/core";
-import { Button, Card, CardHeader, CardContent, ClickAwayListener, Grow, Input, InputAdornment, InputLabel } from "@material-ui/core"
+import { Button, Card, CardContent, ClickAwayListener, Grow, Input, InputAdornment, InputLabel } from "@material-ui/core"
 import { LinearProgress, MenuItem, MenuList, Paper, Popper, Snackbar, SnackbarContent, Typography } from "@material-ui/core"
 // @material-ui/icons
 import Search from "@material-ui/icons/Search";
@@ -33,7 +33,7 @@ import QueryStyle from "./queryStyle.jsx";
 
 const NO_RESULTS_TEXT = "No results";
 
-class Thesaurus extends React.Component {
+class VocabularyQuery extends React.Component {
   constructor(props) {
     super(props);
 
@@ -64,67 +64,59 @@ class Thesaurus extends React.Component {
 
     return (
       <div>
-        <Card>
-          <CardHeader
-            title={this.props.title}
-            subheader={this.props.subtitle}
-            />
-          <CardContent>
-            {this.props.children}
+        {this.props.children}
 
-            <div className={classes.searchWrapper}>
-              <FormControl className={classes.search}>
-                <InputLabel
-                  classes={{
-                    root: classes.searchLabel,
-                    shrink: classes.searchShrink,
-                  }}
-                >
-                  {this.props.searchDefault}
-                </InputLabel>
-                <Input
-                  disabled={this.props.disabled}
-                  variant='outlined'
-                  inputProps={{
-                    "aria-label": "Search"
-                  }}
-                  onChange={this.delayLookup}
-                  inputRef={(node) => {
-                    this.anchorEl = node;
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key == 'Enter') {
-                      this.queryInput(this.anchorEl.value);
-                    } else if (event.key == 'ArrowDown') {
-                      // Move the focus to the suggestions list
-                      if (this.menuRef.children.length > 0) {
-                        this.menuRef.children[0].focus();
-                      }
-                    }
-                  }}
-                  onFocus={(status) => {
-                    if (this.props.onInputFocus !== undefined) {
-                      this.props.onInputFocus(status);
-                    }
-                    this.delayLookup(status);
-                    this.anchorEl.select();
-                  }}
-                  disabled={this.props.disabled}
-                  className={classes.searchInput}
-                  multiline={true}
-                  endAdornment={(
-                    <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}}>
-                      <Search />
-                    </InputAdornment>
-                  )}
-                >
-                </Input>
-              </FormControl>
-              <br />
-              <LinearProgress className={this.state.suggestionsLoading ? null : classes.inactiveProgress}/>
-            </div>
-          </CardContent>
-        </Card>
+        <div className={classes.searchWrapper}>
+          <FormControl className={classes.search}>
+            <InputLabel
+              classes={{
+                root: classes.searchLabel,
+                shrink: classes.searchShrink,
+              }}
+            >
+              {this.props.searchDefault}
+            </InputLabel>
+            <Input
+              disabled={this.props.disabled}
+              variant='outlined'
+              inputProps={{
+                "aria-label": "Search"
+              }}
+              onChange={this.delayLookup}
+              inputRef={(node) => {
+                this.anchorEl = node;
+              }}
+              onKeyDown={(event) => {
+                if (event.key == 'Enter') {
+                  this.queryInput(this.anchorEl.value);
+                } else if (event.key == 'ArrowDown') {
+                  // Move the focus to the suggestions list
+                  if (this.menuRef.children.length > 0) {
+                    this.menuRef.children[0].focus();
+                  }
+                }
+              }}
+              onFocus={(status) => {
+                if (this.props.onInputFocus !== undefined) {
+                  this.props.onInputFocus(status);
+                }
+                this.delayLookup(status);
+                this.anchorEl.select();
+              }}
+              disabled={this.props.disabled}
+              className={classes.searchInput}
+              multiline={true}
+              endAdornment={(
+                <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}}>
+                  <Search />
+                </InputAdornment>
+              )}
+            >
+            </Input>
+          </FormControl>
+          <br />
+          <LinearProgress className={this.state.suggestionsLoading ? null : classes.inactiveProgress}/>
+        </div>
         {/* Suggestions list using Popper */}
         <Popper
           open={this.state.suggestionsVisible}
@@ -280,7 +272,7 @@ class Thesaurus extends React.Component {
           >
             <SnackbarContent
               className={classes.errorSnack}
-              variant="error"
+              role="alertdialog"
               message={this.state.snackbarMessage}
             />
           </Snackbar>
@@ -522,18 +514,17 @@ class Thesaurus extends React.Component {
   }
 }
 
-Thesaurus.propTypes = {
+VocabularyQuery.propTypes = {
     classes: PropTypes.object.isRequired,
     overrideText: PropTypes.string,
     clearOnClick: PropTypes.bool,
     onInputFocus: PropTypes.func,
 };
 
-Thesaurus.defaultProps = {
+VocabularyQuery.defaultProps = {
   Vocabulary: 'hpo',
-  title: 'LFS Patients',
   searchDefault: 'Search',
   clearOnClick: true
 };
 
-export default withStyles(QueryStyle)(Thesaurus);
+export default withStyles(QueryStyle)(VocabularyQuery);
