@@ -20,20 +20,34 @@ import classNames from "classnames";
 import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
-import { withStyles } from "@material-ui/core";
-import { ClickAwayListener, Grow, InputAdornment, LinearProgress, MenuItem, MenuList, Paper, Popper, Snackbar, SnackbarContent, Typography } from "@material-ui/core"
-// MaterialDashboardReact
-import { Button, Card, CardHeader, CardBody, CustomInput, QueryStyle } from "MaterialDashboardReact";
+import { withStyles, FormControl } from "@material-ui/core";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel } from "@material-ui/core"
+import { LinearProgress, Link, MenuItem, MenuList, Paper, Popper, Snackbar, SnackbarContent, Tooltip, Typography } from "@material-ui/core";
+import CloseIcon from '@material-ui/icons/Close';
 // @material-ui/icons
 import Search from "@material-ui/icons/Search";
 import Info from "@material-ui/icons/Info";
 
 import VocabularyBrowser from "./browse.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
+import QueryStyle from "./queryStyle.jsx";
 
 const NO_RESULTS_TEXT = "No results";
 
-class Thesaurus extends React.Component {
+// Component that renders a search bar for vocabulary terms.
+//
+// Required arguments:
+//  clearOnClick: Whether selecting an option will clear the search bar
+//  onClick: Callback when the user clicks on this element
+//  onInputFocus: Callback when the input is focused on
+//  vocabulary: String of vocabulary to use (e.g. "hpo")
+//
+// Optional arguments:
+//  disabled: Boolean representing whether or not this element is disabled
+//  searchDefault: Default text to display in search bar when nothing has been entered (default: 'Search')
+//  suggestionCategories: Array of required ancestor elements, of which any term must be a descendent of
+//  overrideText: When not undefined, this will overwrite the contents of the search bar
+class VocabularyQuery extends React.Component {
   constructor(props) {
     super(props);
 
@@ -54,77 +68,69 @@ class Thesaurus extends React.Component {
       infoAnchor: null,
       infoAboveBackground: false,
       buttonRefs: {},
-      vocabulary: props.Vocabulary,
+      vocabulary: props.vocabulary,
       noResults: false,
     };
   }
 
   render() {
-    const { classes, onSelect } = this.props;
+    const { classes, disabled, onInputFocus, searchDefault, vocabulary } = this.props;
 
     return (
       <div>
-        <Card>
-          <CardHeader color="warning">
-            <h4 className={classes.cardTitleWhite}>{this.props.title}</h4>
-            <p className={classes.cardCategoryWhite}>{this.props.subtitle}</p>
-          </CardHeader>
-          <CardBody>
-            {this.props.children}
+        {this.props.children}
 
-            <div className={classes.searchWrapper}>
-              <CustomInput
-                formControlProps={{
-                  className: classes.search
-                }}
-                labelText={this.props.searchDefault}
-                labelProps={{
-                  classes: {
-                    root: classes.searchLabel,
-                    shrink: classes.searchShrink,
+        <div className={classes.searchWrapper}>
+          <FormControl className={classes.search}>
+            <InputLabel
+              classes={{
+                root: classes.searchLabel,
+                shrink: classes.searchShrink,
+              }}
+            >
+              {searchDefault}
+            </InputLabel>
+            <Input
+              disabled={disabled}
+              variant='outlined'
+              inputProps={{
+                "aria-label": "Search"
+              }}
+              onChange={this.delayLookup}
+              inputRef={(node) => {
+                this.anchorEl = node;
+              }}
+              onKeyDown={(event) => {
+                if (event.key == 'Enter') {
+                  this.queryInput(this.anchorEl.value);
+                } else if (event.key == 'ArrowDown') {
+                  // Move the focus to the suggestions list
+                  if (this.menuRef.children.length > 0) {
+                    this.menuRef.children[0].focus();
                   }
-                }}
-                inputProps={{
-                  variant: 'outlined',
-                  inputProps: {
-                    "aria-label": "Search"
-                  },
-                  onChange: this.delayLookup,
-                  inputRef: node => {
-                    this.anchorEl = node;
-                  },
-                  onKeyDown: (event) => {
-                    if (event.key == 'Enter') {
-                      this.queryInput(this.anchorEl.value);
-                    } else if (event.key == 'ArrowDown') {
-                      // Move the focus to the suggestions list
-                      if (this.menuRef.children.length > 0) {
-                        this.menuRef.children[0].focus();
-                      }
-                    }
-                  },
-                  onFocus: (status) => {
-                    if (this.props.onInputFocus !== undefined) {
-                      this.props.onInputFocus(status);
-                    }
-                    this.delayLookup(status);
-                    this.anchorEl.select();
-                  },
-                  disabled: this.props.disabled,
-                  className: classes.searchInput,
-                  multiline: true,
-                  endAdornment: (
-                    <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}}>
-                      <Search />
-                    </InputAdornment>
-                  )
-                }}
-              />
-              <br />
-              <LinearProgress className={this.state.suggestionsLoading ? null : classes.inactiveProgress}/>
-            </div>
-          </CardBody>
-        </Card>
+                }
+              }}
+              onFocus={(status) => {
+                if (onInputFocus !== undefined) {
+                  onInputFocus(status);
+                }
+                this.delayLookup(status);
+                this.anchorEl.select();
+              }}
+              disabled={disabled}
+              className={classes.searchInput}
+              multiline={true}
+              endAdornment={(
+                <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}}>
+                  <Search />
+                </InputAdornment>
+              )}
+            >
+            </Input>
+          </FormControl>
+          <br />
+          <LinearProgress className={this.state.suggestionsLoading ? null : classes.inactiveProgress}/>
+        </div>
         {/* Suggestions list using Popper */}
         <Popper
           open={this.state.suggestionsVisible}
@@ -197,43 +203,48 @@ class Thesaurus extends React.Component {
               }}
             >
               <Card className={classes.infoCard}>
-                <Paper className={classes.infoPaper}>
-                  <ClickAwayListener onClickAway={this.clickAwayInfo}>
-                    <div>
-                      <Typography className={classes.infoDataSource}>
-                        <a
-                          href="http://human-phenotype-ontology.github.io/"
-                          target="_blank"
-                          title="The Human Phenotype Ontology project: linking molecular biology and disease through phenotype data. Sebastian Köhler, Sandra C Doelken, Christopher J. Mungall, Sebastian Bauer, Helen V. Firth, et al. Nucl. Acids Res. (1 January 2014) 42 (D1): D966-D974 doi:10.1093/nar/gkt1026. Current version: releases/2018-10-09"
-                        >
-                            The Human Phenotype Ontology (HPO)
-                        </a>
-                        <Button
-                          className={classes.closeButton}
-                          color="transparent"
-                          onClick={this.closeInfo}
-                        >
-                          ×
-                        </Button>
-                      </Typography>
-                      <br />
-                      <Typography className={classes.infoIDTypography}>{this.state.infoID} </Typography>
-                      <Typography className={classes.infoName}>{this.state.infoName}</Typography> <br />
-                      <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography> <br />
+                <ClickAwayListener onClickAway={this.clickAwayInfo}><div>
+                   <CardHeader
+                     avatar={
+                       <Tooltip title="The Human Phenotype Ontology project: linking molecular biology and disease through phenotype data. Sebastian Köhler, Sandra C Doelken, Christopher J. Mungall, Sebastian Bauer, Helen V. Firth, et al. Nucl. Acids Res. (1 January 2014) 42 (D1): D966-D974 doi:10.1093/nar/gkt1026. Current version: releases/2018-10-09">
+                         <Link color="primary"
+                            href="http://human-phenotype-ontology.github.io/"  target="_blank"
+                          >
+                            <Avatar aria-label="source" className={classes.vocabularyAvatar}>
+                               HPO
+                            </Avatar>
+                         </Link>
+                       </Tooltip>
+                    }
+                    action={
+                      <IconButton aria-label="close" onClick={this.closeInfo}>
+                        <CloseIcon />
+                      </IconButton>
+                    }
+                    title={this.state.infoName}
+                    subheader={this.state.infoID}
+                    titleTypographyProps={{variant: 'h5'}}
+                  />
+                  <CardContent className={classes.infoPaper}>
+                      {this.state.infoDefinition && (
+                        <div className={classes.infoSection}>
+                          <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography>
+                        </div>
+                      )}
                       {this.state.infoAlsoKnownAs.length > 0 && (
-                        <div>
-                          <Typography className={classes.infoHeader}>Also known as</Typography>
+                        <div className={classes.infoSection}>
+                          <Typography variant="h6" className={classes.infoHeader}>Also known as</Typography>
                           {this.state.infoAlsoKnownAs.map((name, index) => {
                             return (<Typography className={classes.infoAlsoKnownAs} key={index}>
                                       {name}
                                     </Typography>
                             );
-                          })} <br />
+                          })}
                         </div>
                       )}
                       {this.state.infoTypeOf !== "" && (
-                        <div>
-                          <Typography className={classes.infoHeader}>Is a type of</Typography>
+                        <div className={classes.infoSection}>
+                          <Typography variant="h6" className={classes.infoHeader}>Is a type of</Typography>
                           {this.state.infoTypeOf.map((name, index) => {
                             return (<Typography className={classes.infoTypeOf} key={index}>
                                       {name}
@@ -242,16 +253,13 @@ class Thesaurus extends React.Component {
                           })}
                         </div>
                       )}
+                      </CardContent>
                       {!this.state.browserOpened &&
-                      <React.Fragment>
-                        <br />
-                        <Button onClick={this.openDialog}>
-                          See more
-                        </Button>
-                      </React.Fragment>}
-                    </div>
-                  </ClickAwayListener>
-                </Paper>
+                        <CardActions className={classes.infoPaper}>
+                          <Button size="small" onClick={this.openDialog} variant='contained' color='primary'>Learn more</Button>
+                        </CardActions>
+                      }
+                 </div></ClickAwayListener>
               </Card>
             </Grow>
           )}
@@ -265,7 +273,7 @@ class Thesaurus extends React.Component {
           onError={this.logError}
           registerInfo={this.registerInfoButton}
           getInfo={this.getInfo}
-          vocabulary={this.props.Vocabulary}
+          vocabulary={vocabulary}
           />
         { /* Error snackbar */}
         <Snackbar
@@ -273,14 +281,14 @@ class Thesaurus extends React.Component {
           onClose={() => {this.setState({snackbarVisible: false});}}
           autoHideDuration={6000}
           anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
+            vertical: 'bottom',
+            horizontal: 'center',
           }}
           variant="error"
           >
             <SnackbarContent
               className={classes.errorSnack}
-              variant="error"
+              role="alertdialog"
               message={this.state.snackbarMessage}
             />
           </Snackbar>
@@ -326,7 +334,7 @@ class Thesaurus extends React.Component {
 
     // Grab suggestions
     input = encodeURIComponent(input);
-    var URL = `${REST_URL}/${this.props.Vocabulary}/suggest?input=${input}${filter}`;
+    var URL = `${REST_URL}/${this.props.vocabulary}/suggest?input=${input}${filter}`;
     MakeRequest(URL, this.showSuggestions);
 
     // Hide the infobox and stop the timer
@@ -362,13 +370,11 @@ class Thesaurus extends React.Component {
                   buttonRef={node => {
                     this.registerInfoButton(element["id"], node);
                   }}
-                  color="info"
-                  justIcon={true}
-                  simple={true}
+                  color="primary"
                   aria-owns={this.state.termInfoVisible ? "menu-list-grow" : null}
                   aria-haspopup={true}
                   onClick={(e) => this.getInfo(element["id"])}
-                  className={this.props.classes.buttonLink}
+                  className={this.props.classes.buttonLink + " " + this.props.classes.infoButton}
                 >
                   <Info color="primary" />
                 </Button>
@@ -423,7 +429,7 @@ class Thesaurus extends React.Component {
 
   // Grab information about the given ID and populate the info box
   getInfo = (id) => {
-    var URL = `${REST_URL}/${this.props.Vocabulary}/${id}`;
+    var URL = `${REST_URL}/${this.props.vocabulary}/${id}`;
     MakeRequest(URL, this.showInfo);
   }
 
@@ -524,18 +530,17 @@ class Thesaurus extends React.Component {
   }
 }
 
-Thesaurus.propTypes = {
+VocabularyQuery.propTypes = {
     classes: PropTypes.object.isRequired,
     overrideText: PropTypes.string,
     clearOnClick: PropTypes.bool,
     onInputFocus: PropTypes.func,
 };
 
-Thesaurus.defaultProps = {
-  Vocabulary: 'hpo',
-  title: 'LFS Patients',
+VocabularyQuery.defaultProps = {
+  vocabulary: 'hpo',
   searchDefault: 'Search',
   clearOnClick: true
 };
 
-export default withStyles(QueryStyle)(Thesaurus);
+export default withStyles(QueryStyle)(VocabularyQuery);

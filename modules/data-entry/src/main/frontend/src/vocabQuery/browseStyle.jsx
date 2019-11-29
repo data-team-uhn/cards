@@ -17,10 +17,10 @@
 //  under the License.
 //
 
-import { DropdownStyle } from "MaterialDashboardReact";
+import queryStyle from "./queryStyle.jsx";
 
 const browseStyle = theme => ({
-    ...DropdownStyle(theme),
+    ...queryStyle(theme),
     dialog: {
       // The dialogue appears in the wrong location without the following
       padding: theme.spacing(1),
@@ -29,38 +29,19 @@ const browseStyle = theme => ({
       top: "0px",
       position: "absolute",
     },
-    // Top part of the dialog
-    headbar: {
-      backgroundColor: "#000000",
-      color: "#FFFFFF",
-      padding: theme.spacing(0),
-    },
-    closeButton: {
-      float: "right",
-      height: "100%",
-      padding: "0px",
-      fontSize: "10px",
-      color: "#00ACC1",
-      width: "1.25rem",
-      minWidth: "1.25rem",
-    },
-    headbarText: {
-      display: "inline",
-      color: "#FFFFFF",
-      paddingLeft: "10px",
-      paddingTop: "5px",
+     closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
     },
     // Info box components
     infoDataSource: {
       color: "#00ACC1",
+      marginTop: "3px",
     },
     infoName: {
       color: "#000000",
       whiteSpace: "normal", // Enable line wrapping
-    },
-    infoButton: {
-      width: "20px",
-      color: "#00ACC1",
     },
     treeContainer: {
       padding: theme.spacing(2),
@@ -83,6 +64,7 @@ const browseStyle = theme => ({
       padding: "0px",
       textTransform: "none",
       color: "#00ACC1",
+      backgroundColor: 'transparent',
     },
     childDiv: {
       marginLeft: "22px",
@@ -97,7 +79,11 @@ const browseStyle = theme => ({
     },
     boldedName: {
       fontWeight: "bold",
-    }
+    },
+    arrowButton: {
+      minWidth: "0px",
+      backgroundColor: 'transparent',
+    },
 });
 
 export default browseStyle;

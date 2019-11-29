@@ -43,7 +43,6 @@
     <module>principals</module>
     <module>permissions</module>
     <module>permissions-provider</module>
-    <module>thesaurus</module>
     <module>vocabularies</module>
   </modules>
 </project>

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { dangerColor, grayColor } from "MaterialDashboardReact/ThemeStyle";
+import { dangerColor, grayColor } from "../vocabQuery/themeStyle.jsx";
 
 const selectorStyle = theme => ({
     selectionChild: {

@@ -38,6 +38,7 @@ import DateQuestion from "./DateQuestion";
 import NumberQuestion from "./NumberQuestion";
 import PedigreeQuestion from "./PedigreeQuestion";
 import TextQuestion from "./TextQuestion";
+import VocabularyQuestion from "./VocabularyQuestion";
 
 /**
  * Component that displays an editable Form.
