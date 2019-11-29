@@ -21,8 +21,9 @@ import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles, FormControl } from "@material-ui/core";
-import { Button, Card, CardContent, ClickAwayListener, Grow, Input, InputAdornment, InputLabel } from "@material-ui/core"
-import { LinearProgress, MenuItem, MenuList, Paper, Popper, Snackbar, SnackbarContent, Typography } from "@material-ui/core"
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel } from "@material-ui/core"
+import { LinearProgress, Link, MenuItem, MenuList, Paper, Popper, Snackbar, SnackbarContent, Tooltip, Typography } from "@material-ui/core";
+import CloseIcon from '@material-ui/icons/Close';
 // @material-ui/icons
 import Search from "@material-ui/icons/Search";
 import Info from "@material-ui/icons/Info";
@@ -189,43 +190,46 @@ class VocabularyQuery extends React.Component {
               }}
             >
               <Card className={classes.infoCard}>
-                <CardContent className={classes.infoPaper}>
-                  <ClickAwayListener onClickAway={this.clickAwayInfo}>
-                    <div>
-                      <Typography className={classes.infoDataSource}>
-                        <a
-                          href="http://human-phenotype-ontology.github.io/"
-                          target="_blank"
-                          title="The Human Phenotype Ontology project: linking molecular biology and disease through phenotype data. Sebastian Köhler, Sandra C Doelken, Christopher J. Mungall, Sebastian Bauer, Helen V. Firth, et al. Nucl. Acids Res. (1 January 2014) 42 (D1): D966-D974 doi:10.1093/nar/gkt1026. Current version: releases/2018-10-09"
-                        >
-                            The Human Phenotype Ontology (HPO)
-                        </a>
-                        <Button
-                          className={classes.closeButton}
-                          color="primary"
-                          onClick={this.closeInfo}
-                        >
-                          ×
-                        </Button>
-                      </Typography>
-                      <br />
-                      <Typography className={classes.infoIDTypography}>{this.state.infoID} </Typography>
-                      <Typography className={classes.infoName}>{this.state.infoName}</Typography> <br />
-                      <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography> <br />
+                <ClickAwayListener onClickAway={this.clickAwayInfo}><div>
+                   <CardHeader
+                     avatar={
+                       <Tooltip title="The Human Phenotype Ontology project: linking molecular biology and disease through phenotype data. Sebastian Köhler, Sandra C Doelken, Christopher J. Mungall, Sebastian Bauer, Helen V. Firth, et al. Nucl. Acids Res. (1 January 2014) 42 (D1): D966-D974 doi:10.1093/nar/gkt1026. Current version: releases/2018-10-09">
+                         <Link className={classes.infoDataSource} color="textSecondary"
+                            href="http://human-phenotype-ontology.github.io/"  target="_blank"
+                          >
+                            <Avatar aria-label="source" className={classes.vocabularyAvatar}>
+                               HPO
+                            </Avatar>
+                         </Link>
+                       </Tooltip>
+                    }
+                    action={
+                      <IconButton aria-label="close" onClick={this.closeInfo}>
+                        <CloseIcon />
+                      </IconButton>
+                    }
+                    title={this.state.infoName}
+                    subheader={this.state.infoID}
+                    titleTypographyProps={{variant: 'h5'}}
+                  />
+                  <CardContent className={classes.infoPaper}>
+                    <div className={classes.infoSection}>
+                      <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography>
+                    </div>
                       {this.state.infoAlsoKnownAs.length > 0 && (
-                        <div>
-                          <Typography className={classes.infoHeader}>Also known as</Typography>
+                        <div className={classes.infoSection}>
+                          <Typography variant="h6" className={classes.infoHeader}>Also known as</Typography>
                           {this.state.infoAlsoKnownAs.map((name, index) => {
                             return (<Typography className={classes.infoAlsoKnownAs} key={index}>
                                       {name}
                                     </Typography>
                             );
-                          })} <br />
+                          })}
                         </div>
                       )}
                       {this.state.infoTypeOf !== "" && (
-                        <div>
-                          <Typography className={classes.infoHeader}>Is a type of</Typography>
+                        <div className={classes.infoSection}>
+                          <Typography variant="h6" className={classes.infoHeader}>Is a type of</Typography>
                           {this.state.infoTypeOf.map((name, index) => {
                             return (<Typography className={classes.infoTypeOf} key={index}>
                                       {name}
@@ -234,16 +238,13 @@ class VocabularyQuery extends React.Component {
                           })}
                         </div>
                       )}
+                      </CardContent>
                       {!this.state.browserOpened &&
-                      <React.Fragment>
-                        <br />
-                        <Button onClick={this.openDialog} variant='contained' color='primary'>
-                          See more
-                        </Button>
-                      </React.Fragment>}
-                    </div>
-                  </ClickAwayListener>
-                </CardContent>
+                        <CardActions className={classes.infoPaper}>
+                          <Button size="small" onClick={this.openDialog} variant='contained' color='primary'>Learn more</Button>
+                        </CardActions>
+                      }
+                 </div></ClickAwayListener>
               </Card>
             </Grow>
           )}

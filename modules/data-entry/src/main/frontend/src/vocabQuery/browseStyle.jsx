@@ -29,26 +29,10 @@ const browseStyle = theme => ({
       top: "0px",
       position: "absolute",
     },
-    // Top part of the dialog
-    headbar: {
-      backgroundColor: "#000000",
-      color: "#FFFFFF",
-      padding: theme.spacing(0),
-    },
-    closeButton: {
-      float: "right",
-      height: "100%",
-      padding: "0px",
-      fontSize: "14px",
-      color: "#00ACC1",
-      width: "1.25rem",
-      minWidth: "1.25rem",
-    },
-    headbarText: {
-      display: "inline",
-      color: "#FFFFFF",
-      paddingLeft: "10px",
-      paddingTop: "5px",
+     closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
     },
     // Info box components
     infoDataSource: {

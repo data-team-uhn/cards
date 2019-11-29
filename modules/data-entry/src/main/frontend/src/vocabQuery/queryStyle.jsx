@@ -18,14 +18,10 @@ import {
 
 const thesaurusStyle = theme => ({
   closeButton: {
-    float: "right",
-    height: "100%",
-    padding: "0px",
-    marginTop: "0px",
-    marginBottom: "0px",
-    minWidth: "0px",
-    fontSize: "14px",
-    color: grayColor[0],
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    opacity: 0.5
   },
   successText: {
     color: successColor[0]
@@ -99,36 +95,23 @@ const thesaurusStyle = theme => ({
     }
   },
   // Info box typography styles
-  infoHeader: {
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    fontWeight: "800",
-  },
-  infoIDTypography: {
-    color: grayColor[1],
-    fontWeight: "400",
-    lineHeight: "1",
-    fontSize: "10px",
-  },
-  infoName: {
-    fontWeight: "800",
-    lineHeight: "2",
-  },
-  infoDefinition: {
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-  },
-  infoAlsoKnownAs: {
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-  },
-  infoTypeOf: {
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-  },
   infoPaper: {
     maxWidth: "500px",
-    padding: theme.spacing(2),
+    padding: theme.spacing(1, 2),
   },
   infoCard: {
-    zIndex: "4 !important",
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     position: "static",
+    zIndex: "4 !important",
+  },
+  vocabularyAvatar: {
+    color: '#fff',
+    backgroundColor: "#000",
+    width: 64,
+    height: 64,
+  },
+  infoSection: {
+    padding: theme.spacing(1, 0),
   },
   // The following ensures poppers are placed below the presentation (zIndex 1300)
   // but above everything else

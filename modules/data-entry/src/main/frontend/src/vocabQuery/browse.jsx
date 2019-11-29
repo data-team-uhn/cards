@@ -20,7 +20,8 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core";
-import { Button, Dialog, DialogContent, DialogTitle, Typography } from '@material-ui/core';
+import { Button, Dialog, DialogContent, DialogTitle, IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 
 import BrowseListChild from "./browseListChild.jsx";
 import BrowseTheme from "./browseStyle.jsx";
@@ -117,16 +118,13 @@ function VocabularyBrowser(props) {
       classes={{paper: classes.dialogPaper}}
       {...rest}
     >
-      <DialogTitle className={classes.headbar}>
-        <Typography className={classes.headbarText}>Related terms</Typography>
-        <Button
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          ×
-        </Button>
+      <DialogTitle>
+        Related terms
+        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
       </DialogTitle>
-      <DialogContent className={classes.treeContainer}>
+      <DialogContent className={classes.treeContainer} dividers>
         <div className={classes.treeRoot}>
           {parentNode}
         </div>
