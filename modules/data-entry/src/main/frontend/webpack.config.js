@@ -22,7 +22,6 @@ module.exports = {
     [module_name + 'questionnairesIcon']: '@material-ui/icons/Assignment.js',
     [module_name + 'formsIcon']: '@material-ui/icons/Description.js',
     [module_name + 'dateQuestion']: './src/questionnaire/DateQuestion.jsx',
-    [module_name + 'selectTest']: './src/vocabSelector/selectTestRig.jsx',
     [module_name + 'userDashboard']: './src/dataHomepage/UserDashboard.jsx'
   },
   plugins: [
