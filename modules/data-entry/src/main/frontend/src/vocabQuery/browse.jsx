@@ -28,8 +28,7 @@ import BrowseTheme from "./browseStyle.jsx";
 
 import { REST_URL, MakeRequest } from "./util.jsx";
 
-// Component that renders a full screen dialog, to browse related terms of an input
-// term.
+// Component that renders a modal dialog, to browse related terms of an input term.
 //
 // Required arguments:
 //  term: Term to search

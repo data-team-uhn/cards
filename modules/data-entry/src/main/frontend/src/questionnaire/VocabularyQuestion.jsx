@@ -31,31 +31,43 @@ import VocabularySelector from "../vocabSelector/select.jsx";
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
 //
-// Optional arguments:
+// Required arguments:
 //  text: String containing the question to ask
-//  enableUnknown: Boolean denoting whether an unknown option should be allowed
+//  sourceVocabulary: String denoting the vocabulary source
+//
+// Optional arguments:
+//  maxAnswers: Integer indicating the maximum number of terms allowed
 //
 // Sample usage:
 //
 // <VocabularyQuestion
-//   text="?"
+//   text="Does the patient have any co-morbidities (non cancerous), including abnormal incidental imaging/labs?"
+//   sourceVocabulary="hpo"
 //   />
 // <VocabularyQuestion
-//   text="Has the patient eaten breakfast?"
-//   enableUnknown
+//   text="Does the patient have any skin conditions?"
+//   sourceVocabulary="hpo"
+//   suggestionCategories={["HP:0000951"]}
+//   />
+// <!-- Alternate method of specifying arguments -->
+// <VocabularyQuestion
+//   questionDefintion={{
+//     text: "Does the patient have any skin conditions?",
+//     sourceVocabulary: "hpo",
+//     suggestionCategories: ["HP:0000951"]
+//   }}
 //   />
 function VocabularyQuestion(props) {
   let { classes, ...rest } = props;
   let { maxAnswers, suggestionCategories, sourceVocabulary } = { ...props.questionDefinition, ...props };
-  let defaultSuggestions = {}
-  let defaults = props.defaults || Object.values(props.questionDefinition)
+  let defaultSuggestions = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
     .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
     // Only extract the labels and internal values from the node
-    .map(value => [value.label || value.value, value.value, true]);
-  // Reparse defaults into a format VocabularySelector understands
-  defaults.forEach( (value) => {defaultSuggestions[value[0]] = value[1]});
+    .map(value => [value.label || value.value, value.value, true])
+    // Reparse defaults into a format VocabularySelector understands
+    .reduce((object, value) => ({...object, [value[0]]: value[1]}), {});
 
   return (
     <Question
