@@ -264,7 +264,7 @@ function VocabularySelector(props) {
       <Thesaurus
         onClick = {handleThesaurus}
         suggestionCategories = {suggestionCategories}
-        Vocabulary = {source}
+        vocabulary = {source}
         ref = {(ref) => {thesaurusRef = ref;}}
         disabled = {disabled}
         overrideText = {disabled ? reminderText : undefined }

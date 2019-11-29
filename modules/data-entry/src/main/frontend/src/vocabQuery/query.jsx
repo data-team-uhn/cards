@@ -34,6 +34,19 @@ import QueryStyle from "./queryStyle.jsx";
 
 const NO_RESULTS_TEXT = "No results";
 
+// Component that renders a search bar for vocabulary terms.
+//
+// Required arguments:
+//  clearOnClick: Whether selecting an option will clear the search bar
+//  onClick: Callback when the user clicks on this element
+//  onInputFocus: Callback when the input is focused on
+//  vocabulary: String of vocabulary to use (e.g. "hpo")
+//
+// Optional arguments:
+//  disabled: Boolean representing whether or not this element is disabled
+//  searchDefault: Default text to display in search bar when nothing has been entered (default: 'Search')
+//  suggestionCategories: Array of required ancestor elements, of which any term must be a descendent of
+//  overrideText: When not undefined, this will overwrite the contents of the search bar
 class VocabularyQuery extends React.Component {
   constructor(props) {
     super(props);
@@ -55,13 +68,13 @@ class VocabularyQuery extends React.Component {
       infoAnchor: null,
       infoAboveBackground: false,
       buttonRefs: {},
-      vocabulary: props.Vocabulary,
+      vocabulary: props.vocabulary,
       noResults: false,
     };
   }
 
   render() {
-    const { classes, onSelect } = this.props;
+    const { classes, disabled, onInputFocus, searchDefault, vocabulary } = this.props;
 
     return (
       <div>
@@ -75,10 +88,10 @@ class VocabularyQuery extends React.Component {
                 shrink: classes.searchShrink,
               }}
             >
-              {this.props.searchDefault}
+              {searchDefault}
             </InputLabel>
             <Input
-              disabled={this.props.disabled}
+              disabled={disabled}
               variant='outlined'
               inputProps={{
                 "aria-label": "Search"
@@ -98,13 +111,13 @@ class VocabularyQuery extends React.Component {
                 }
               }}
               onFocus={(status) => {
-                if (this.props.onInputFocus !== undefined) {
-                  this.props.onInputFocus(status);
+                if (onInputFocus !== undefined) {
+                  onInputFocus(status);
                 }
                 this.delayLookup(status);
                 this.anchorEl.select();
               }}
-              disabled={this.props.disabled}
+              disabled={disabled}
               className={classes.searchInput}
               multiline={true}
               endAdornment={(
@@ -258,7 +271,7 @@ class VocabularyQuery extends React.Component {
           onError={this.logError}
           registerInfo={this.registerInfoButton}
           getInfo={this.getInfo}
-          vocabulary={this.props.Vocabulary}
+          vocabulary={vocabulary}
           />
         { /* Error snackbar */}
         <Snackbar
@@ -319,7 +332,7 @@ class VocabularyQuery extends React.Component {
 
     // Grab suggestions
     input = encodeURIComponent(input);
-    var URL = `${REST_URL}/${this.props.Vocabulary}/suggest?input=${input}${filter}`;
+    var URL = `${REST_URL}/${this.props.vocabulary}/suggest?input=${input}${filter}`;
     MakeRequest(URL, this.showSuggestions);
 
     // Hide the infobox and stop the timer
@@ -414,7 +427,7 @@ class VocabularyQuery extends React.Component {
 
   // Grab information about the given ID and populate the info box
   getInfo = (id) => {
-    var URL = `${REST_URL}/${this.props.Vocabulary}/${id}`;
+    var URL = `${REST_URL}/${this.props.vocabulary}/${id}`;
     MakeRequest(URL, this.showInfo);
   }
 
@@ -523,7 +536,7 @@ VocabularyQuery.propTypes = {
 };
 
 VocabularyQuery.defaultProps = {
-  Vocabulary: 'hpo',
+  vocabulary: 'hpo',
   searchDefault: 'Search',
   clearOnClick: true
 };
