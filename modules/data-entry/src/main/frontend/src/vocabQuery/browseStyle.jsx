@@ -39,7 +39,7 @@ const browseStyle = theme => ({
       float: "right",
       height: "100%",
       padding: "0px",
-      fontSize: "10px",
+      fontSize: "14px",
       color: "#00ACC1",
       width: "1.25rem",
       minWidth: "1.25rem",

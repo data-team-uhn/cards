@@ -237,7 +237,7 @@ class VocabularyQuery extends React.Component {
                       {!this.state.browserOpened &&
                       <React.Fragment>
                         <br />
-                        <Button onClick={this.openDialog}>
+                        <Button onClick={this.openDialog} variant='contained' color='primary'>
                           See more
                         </Button>
                       </React.Fragment>}
@@ -265,8 +265,8 @@ class VocabularyQuery extends React.Component {
           onClose={() => {this.setState({snackbarVisible: false});}}
           autoHideDuration={6000}
           anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
+            vertical: 'bottom',
+            horizontal: 'center',
           }}
           variant="error"
           >

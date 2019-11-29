@@ -23,7 +23,8 @@ const thesaurusStyle = theme => ({
     padding: "0px",
     marginTop: "0px",
     marginBottom: "0px",
-    fontSize: "12px",
+    minWidth: "0px",
+    fontSize: "14px",
     color: grayColor[0],
   },
   successText: {

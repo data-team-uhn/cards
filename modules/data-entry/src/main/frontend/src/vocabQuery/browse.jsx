@@ -122,7 +122,6 @@ function VocabularyBrowser(props) {
         <Button
           className={classes.closeButton}
           onClick={onClose}
-          variant="outlined"
         >
           ×
         </Button>
