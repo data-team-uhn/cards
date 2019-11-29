@@ -105,10 +105,10 @@ const thesaurusStyle = theme => ({
     zIndex: "4 !important",
   },
   vocabularyAvatar: {
-    color: '#fff',
-    backgroundColor: "#000",
-    width: 64,
     height: 64,
+    minWidth: 64,
+    width: "auto",
+    padding: theme.spacing(0.5),
   },
   infoSection: {
     padding: theme.spacing(1, 0),
@@ -152,10 +152,6 @@ const thesaurusStyle = theme => ({
   },
   searchShrink: {
     transform: "translate(0, 12px) scale(0.6)",
-  },
-  infoDataSource: {
-    color: "#0089DC",
-    fontSize: "10px",
   },
   searchButton: {
     margin: "0px",
