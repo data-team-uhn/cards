@@ -33,6 +33,6 @@ use(function(){
     }
   
     return {
-      uixp: nodePaths
+      uixp: nodePaths[0]
     };
   });
