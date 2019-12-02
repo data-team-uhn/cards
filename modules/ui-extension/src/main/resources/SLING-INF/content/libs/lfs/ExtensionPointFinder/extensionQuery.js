@@ -18,25 +18,19 @@
 //
 // Locate all visible lfs:dataEntry nodes
 use(function(){
-    var path = request.getRequestParameter("path");
-    if (!path) {
+    var uixp = request.getRequestParameter("uixp");
+    if (!uixp) {
         return {'uixp': ''};
     }
-    path = path.getString();
+    uixp = uixp.getString();
     var queryManager = currentSession.getWorkspace().getQueryManager();
     var q = "select * from [lfs:ExtensionPoint] as n WHERE n.'lfs:extensionPointId' = $path and ISDESCENDANTNODE(n, '/apps/lfs/ExtensionPoints/')";
     var query = queryManager.createQuery(q, "JCR-SQL2");
-    query.bindValue("path", currentSession.getValueFactory().createValue(path));
+    query.bindValue("path", currentSession.getValueFactory().createValue(uixp));
     var queryResults = query.execute().getNodes();
   
-    // Dump our iterator into a list of strings
-    var nodePaths = [];
-    while (queryResults.hasNext()) {
-      var resource = queryResults.next();
-      nodePaths.push(resource.getPath());
-    }
-  
+    // Dump the first result into our return statement
     return {
-      uixp: nodePaths[0]
+      uixp: queryResults.next().getPath()
     };
   });

@@ -42,7 +42,7 @@ function ExtensionPoint(props) {
     setInitialized(true);
 
     // From the extension point path, locate the URL of the ExtensionPoint
-    const uixpFinder = new URL(`${UIXP_FINDER_URL}?path=${url}`, window.location.origin);
+    const uixpFinder = new URL(`${UIXP_FINDER_URL}?uixp=${url}`, window.location.origin);
     fetch(uixpFinder)
       .then(grabUIXP)
       .then(handleResponse)
@@ -73,7 +73,7 @@ function ExtensionPoint(props) {
     // Truncate the ';charset=utf-8'
     const sepPos = contentType.indexOf(";");
     if (sepPos >= 0) {
-      contentType = contentType.substr(0, sepPos)
+      contentType = contentType.substring(0, sepPos)
     }
 
     // Determine what to do depending on the value of the output
