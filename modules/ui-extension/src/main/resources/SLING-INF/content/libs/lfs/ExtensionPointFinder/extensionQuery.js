@@ -23,12 +23,16 @@ use(function(){
         return {'uixp': ''};
     }
     path = path.getString();
-    var query = resolver.findResources("select * from [lfs:ExtensionPoint] as n WHERE n.'lfs:extensionPointId' = '"+path+"'`", "JCR-SQL2");
+    var queryManager = currentSession.getWorkspace().getQueryManager();
+    var q = "select * from [lfs:ExtensionPoint] as n WHERE n.'lfs:extensionPointId' = $path and ISDESCENDANTNODE(n, '/apps/lfs/ExtensionPoints/')";
+    var query = queryManager.createQuery(q, "JCR-SQL2");
+    query.bindValue("path", currentSession.getValueFactory().createValue(path));
+    var queryResults = query.execute().getNodes();
   
     // Dump our iterator into a list of strings
     var nodePaths = [];
-    while (query.hasNext()) {
-      var resource = query.next();
+    while (queryResults.hasNext()) {
+      var resource = queryResults.next();
       nodePaths.push(resource.getPath());
     }
   
