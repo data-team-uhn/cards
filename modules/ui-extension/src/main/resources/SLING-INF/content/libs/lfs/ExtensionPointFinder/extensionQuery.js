@@ -18,7 +18,11 @@
 //
 // Locate all visible lfs:dataEntry nodes
 use(function(){
-    var path = request.getRequestParameter("path").getString();
+    var path = request.getRequestParameter("path");
+    if (!path) {
+        return {'uixp': ''};
+    }
+    path = path.getString();
     var query = resolver.findResources("select * from [lfs:ExtensionPoint] as n WHERE n.'lfs:extensionPointId' = '"+path+"'`", "JCR-SQL2");
   
     // Dump our iterator into a list of strings
