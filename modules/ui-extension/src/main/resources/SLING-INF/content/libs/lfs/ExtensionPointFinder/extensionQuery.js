@@ -28,9 +28,10 @@ use(function(){
     var query = queryManager.createQuery(q, "JCR-SQL2");
     query.bindValue("path", currentSession.getValueFactory().createValue(uixp));
     var queryResults = query.execute().getNodes();
-  
+
     // Dump the first result into our return statement
     return {
-      uixp: queryResults.next().getPath()
+      uixp: queryResults.hasNext() ? queryResults.next().getPath() : ""
     };
   });
+  
