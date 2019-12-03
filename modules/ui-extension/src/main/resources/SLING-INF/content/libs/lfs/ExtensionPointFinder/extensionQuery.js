@@ -39,4 +39,3 @@ use(function(){
       uixp: queryResults.hasNext() ? queryResults.next().getPath() : ""
     };
   });
-  
