@@ -28,3 +28,12 @@
     org.apache.sling/org.apache.sling.api/2.18.4
     javax.json/javax.json-api/1.1.4
     javax.jcr/jcr/2.0
+
+[:repoinit]
+    # Extension point finder
+    create path (lfs:ExtensionPointFinder) /uixp
+
+    # Allow all users to read from the extension point finder and one of the nodes
+    set ACL for everyone
+        allow   jcr:read    on /uixp
+    end

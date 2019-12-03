@@ -16,13 +16,7 @@
   specific language governing permissions and limitations
   under the License.
 --%><%
-if (currentNode.hasNode('jcr:content') && currentNode.getNode('jcr:content').getPrimaryItem() != '') {
-  // This extension defines custom display code in its jcr:content
-  response.setContentType(currentNode.getNode('jcr:content').getProperty("jcr:mimeType").getString());
-  out.print(currentNode.getNode('jcr:content').getPrimaryItem());
-} else {
-  // No content, include the JSON displayer for this resource.
-  response.setContentType('application/json');
-  sling.include(resource + '.infinity.json');
-}
+// No content, just include all the extensions for this point
+response.setContentType('application/json');
+sling.include(resource + '.resolved');
 %>
