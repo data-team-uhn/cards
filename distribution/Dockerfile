@@ -18,6 +18,12 @@
 # Start from a small JRE8 base image
 FROM openjdk:8-jre-alpine
 
+# Optional: enable remote debugging at port 5005
+ENV DEBUG=
+
+# Optional: enable developer mode
+ENV DEV=
+
 # Put everything in /opt/lfs
 RUN mkdir -p /opt/lfs/
 WORKDIR /opt/lfs/
@@ -30,14 +36,9 @@ VOLUME ["/opt/lfs/sling"]
 # Expose the 8080 port where normal HTTP connections are expected
 EXPOSE 8080
 
-# Optional: enable remote debugging at port 5005
-ENV DEBUG=
 # EXPOSE is just an indication, no port is actually published unless done explicitly when starting the container,
 # so it is safe to always declare it here, even when debug mode isn't active
 EXPOSE 5005
-
-# Optional: enable developer mode
-ENV DEV=
 
 # This is the default command executed when starting the container
 ENTRYPOINT java ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar ${project.artifactId}-${project.version}.jar ${DEV:+-Dsling.run.modes=dev}
