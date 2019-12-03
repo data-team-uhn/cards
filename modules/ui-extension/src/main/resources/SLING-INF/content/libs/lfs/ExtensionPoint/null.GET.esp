@@ -17,9 +17,25 @@
   under the License.
 --%><%
 if (currentNode.hasNode('jcr:content') && currentNode.getNode('jcr:content').getPrimaryItem() != '') {
-  // This extension defines custom display code in its jcr:content
+  // This extension defines custom display code in its jcr:content, which should be evaluated on the server
+  const MIME_TO_EXT = {
+    "text/html": "html",
+    "application/javascript": "esp",
+  }
   response.setContentType(currentNode.getNode('jcr:content').getProperty("jcr:mimeType").getString());
-  out.print(currentNode.getNode('jcr:content').getPrimaryItem());
+
+  // Find the right scripting engine for the given mimetype
+  let engine = sling.getService(javax.script.ScriptEngineManager).getEngineByExtension(MIME_TO_EXT[currentNode.getNode('jcr:content').getProperty("jcr:mimeType").getString()]);
+
+  // Build a script context, copying everything that's available in the current context
+  let bindings = {};
+  Object.assign(bindings, this);
+  bindings = new javax.script.SimpleBindings(bindings);
+  let scriptContext = new javax.script.SimpleScriptContext();
+  scriptContext.setBindings(bindings, javax.script.ScriptContext.ENGINE_SCOPE);
+
+  // Evaluate the script
+  engine.eval(currentNode.getNode('jcr:content').getPrimaryItem().getString(), scriptContext);
 } else {
   // No content, just include all the extensions for this point
   response.setContentType('application/json');
