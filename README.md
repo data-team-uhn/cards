@@ -48,10 +48,6 @@ Then the container can be started with:
 
 `docker container run --rm --detach --volume lfs-test-volume:/opt/lfs/sling/ -p 8080:8080 --name lfs-production lfs/lfs`
 
-Additional parameters for starting the instance can be appended, such as:
-
-`docker container run --rm --detach --volume lfs-test-volume:/opt/lfs/sling/ -p 8080:8080 --name lfs-production lfs/lfs -Dsling.run.modes=dev`
-
 Explanation:
 
 - `docker container run` creates and starts a new container
