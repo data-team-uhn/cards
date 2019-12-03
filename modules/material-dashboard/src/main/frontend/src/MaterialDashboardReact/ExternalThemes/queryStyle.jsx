@@ -16,10 +16,7 @@ import {
     hexToRgb
   } from "../themeStyle.jsx";
 
-import dropdownStyle from "./dropdownStyle.jsx";
-
 const thesaurusStyle = theme => ({
-  //...dropdownStyle(theme),
   closeButton: {
     float: "right",
     height: "100%",

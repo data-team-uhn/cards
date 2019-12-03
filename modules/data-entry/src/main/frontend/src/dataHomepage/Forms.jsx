@@ -20,9 +20,7 @@ import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Form from "../questionnaire/Form.jsx";
 
-import { Button, Grid, Link, withStyles } from "@material-ui/core";
-import { Card, CardHeader, CardBody } from "MaterialDashboardReact";
-
+import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles } from "@material-ui/core";
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
 
@@ -90,17 +88,25 @@ function Forms(props) {
   ]
   return (
     <Card>
-      <CardHeader color="warning">
-        <Button className={classes.cardHeaderButton}>
-          {title}
-        </Button>
-        <NewFormDialog presetPath={questionnairePath}>
-          New form
-        </NewFormDialog>
-      </CardHeader>
-      <CardBody>
+      <CardHeader
+        color={"warning"/* Does nothing */}
+        title={
+          <Button className={classes.cardHeaderButton}>
+            {title}
+          </Button>
+        }
+        action={
+          <NewFormDialog presetPath={questionnairePath}>
+            New form
+          </NewFormDialog>
+        }
+        classes={{
+          action: classes.newFormButtonHeader
+        }}
+      />
+      <CardContent>
         <LiveTable columns={columns} customUrl={customUrl}/>
-      </CardBody>
+      </CardContent>
     </Card>
   );
 }

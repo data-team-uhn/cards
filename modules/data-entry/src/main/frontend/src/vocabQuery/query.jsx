@@ -143,18 +143,19 @@ class VocabularyQuery extends React.Component {
           }
           placement = "bottom-start"
           keepMounted
+          container={document.querySelector('#main-panel')}
           modifiers={{
             flip: {
-              enabled: false
+              enabled: true
             },
             preventOverflow: {
               enabled: true,
-              priority: ['left', 'right'],
-              boundariesElement: 'viewport',
+              boundariesElement: 'window',
+              escapeWithReference: true,
             },
             hide: {
-              enabled: false
-            },
+              enabled: true
+            }
           }}
           ref = {(ref) => {this.menuPopperRef = ref}}
         >
@@ -190,7 +191,15 @@ class VocabularyQuery extends React.Component {
           ref={(ref) => {this.infoRef = ref}}
           modifiers={{
             keepTogether: {
-              order: 500
+              enabled: true
+            },
+            preventOverflow: {
+              boundariesElement: 'window',
+              escapeWithReference: false,
+              enabled: true
+            },
+            arrow: {
+              enabled: false
             }
           }}
         >
@@ -207,7 +216,7 @@ class VocabularyQuery extends React.Component {
                    <CardHeader
                      avatar={
                        <Tooltip title="The Human Phenotype Ontology project: linking molecular biology and disease through phenotype data. Sebastian Köhler, Sandra C Doelken, Christopher J. Mungall, Sebastian Bauer, Helen V. Firth, et al. Nucl. Acids Res. (1 January 2014) 42 (D1): D966-D974 doi:10.1093/nar/gkt1026. Current version: releases/2018-10-09">
-                         <Link color="primary"
+                         <Link className={classes.infoDataSource} color="textSecondary"
                             href="http://human-phenotype-ontology.github.io/"  target="_blank"
                           >
                             <Avatar aria-label="source" className={classes.vocabularyAvatar}>
@@ -226,11 +235,9 @@ class VocabularyQuery extends React.Component {
                     titleTypographyProps={{variant: 'h5'}}
                   />
                   <CardContent className={classes.infoPaper}>
-                      {this.state.infoDefinition && (
-                        <div className={classes.infoSection}>
-                          <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography>
-                        </div>
-                      )}
+                    <div className={classes.infoSection}>
+                      <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography>
+                    </div>
                       {this.state.infoAlsoKnownAs.length > 0 && (
                         <div className={classes.infoSection}>
                           <Typography variant="h6" className={classes.infoHeader}>Also known as</Typography>

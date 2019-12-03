@@ -18,11 +18,23 @@
 //
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Button, CssBaseline, FormControl, Input, InputLabel, Paper, Typography, withStyles, InputAdornment, IconButton, Tooltip, Icon, SvgIcon } from '@material-ui/core';
-// core components
-import Card from "material-dashboard-react/dist/components/Card/Card.js";
-import CardHeader from "material-dashboard-react/dist/components/Card/CardHeader.js";
-import CardBody from "material-dashboard-react/dist/components/Card/CardBody.js";
+import {
+    Avatar,
+    Button,
+    FormControl,
+    IconButton,
+    Input,
+    InputAdornment,
+    InputLabel,
+    Paper,
+    Tooltip,
+    Typography,
+    withStyles
+} from '@material-ui/core';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import styles from "../styling/styles";
 
 class SignIn extends React.Component {
@@ -84,15 +96,17 @@ class SignIn extends React.Component {
     const { passwordIsMasked } = this.state;
 
     return (
-      <main className={classes.main}>
-        <CssBaseline />
-        <Card>
-          <CardHeader color="info">
-            <h4 className={classes.cardTitle}>LFS Data Core</h4>
-            <span className={classes.cardSubtitle}>Sign in</span>
-          </CardHeader>
-          <CardBody>
-
+        <div className={classes.main}>
+          <Paper elevation={1} className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
+            <Typography component="h1" variant="overline">
+              LFS Data Core
+            </Typography>
+            <Typography component="h2" variant="h5">
+              Sign In
+            </Typography>
+            <Avatar className={classes.avatar}>
+              <ExitToAppIcon />
+            </Avatar>
             {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>Invalid username or password</Typography>}
 
             <form className={classes.form} onSubmit={(event)=>{event.preventDefault(); this.submitLogin();}} >
@@ -112,7 +126,7 @@ class SignIn extends React.Component {
                         aria-label="Toggle password visibility"
                         onClick={this.togglePasswordMask}
                       >
-                        {this.state.passwordIsMasked ? <Icon>visibility</Icon> : <Icon >visibility_off</Icon>}
+                        {this.state.passwordIsMasked ? <VisibilityIcon/> : <VisibilityOffIcon/>}
                       </IconButton>
                     </Tooltip>
                   </InputAdornment>
@@ -123,25 +137,22 @@ class SignIn extends React.Component {
                 type="submit"
                 fullWidth
                 variant="contained"
+                color="primary"
                 className={classes.submit}
               >
                 Sign in
               </Button>
             </form>
-            <Typography>
-              Don't have an account?
-            </Typography>
+            <Typography>Don't have an account?</Typography>
             <Button
               fullWidth
-              variant="contained"
+              color="default"
               onClick={this.props.swapForm}
-              className={classes.register}
             >
-              <Icon className={classes.buttonIcon}>person_add</Icon> Register
+              <PersonAddIcon/> Request an account
             </Button>
-          </CardBody>
-        </Card>
-      </main>
+          </Paper>
+        </div>
     );
   }
 }

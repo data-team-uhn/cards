@@ -109,6 +109,7 @@ VocabularyEntry.propTypes = {
 
 VocabularyEntry.defaultProps = {
   isPreselected: false,
+  currentlySelected: false
 };
 
 export default withStyles(SelectorStyle)(VocabularyEntry);

@@ -122,7 +122,7 @@ class Main extends React.Component {
             color={ "blue" }
             {...rest}
           />
-          <div className={classes.mainPanel} ref="mainPanel">
+          <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
             <div className={classes.content}>
               <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
             </div>

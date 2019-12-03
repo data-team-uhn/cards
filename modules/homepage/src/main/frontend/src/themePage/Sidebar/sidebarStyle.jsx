@@ -172,6 +172,7 @@ import {
       margin: "0",
       lineHeight: "30px",
       fontSize: "14px",
+      fontWeight: "400",
       color: whiteColor
     },
     whiteFont: {
