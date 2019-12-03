@@ -62,6 +62,6 @@ Explanation:
 
 To enable developer mode, also add `--env DEV=true -p 5005:5005` to the `docker run` command.
 
-To enable debug mode, also add `--env DEBUG=true` to the `docker run` command.
+To enable debug mode, also add `--env DEBUG=true` to the `docker run` command. Note that the application will not start until a debugger is actually attached to the process on port 5005.
 
 `docker run -d -p 8080:8080 -p 5005:5005 --env DEV=true --env DEBUG=true --name lfs-debug lfs/lfs`
