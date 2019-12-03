@@ -29,6 +29,11 @@ use(function(){
     query.bindValue("path", currentSession.getValueFactory().createValue(uixp));
     var queryResults = query.execute().getNodes();
 
+    // If no results were found, throw an exception
+    if (!queryResults.hasNext()) {
+      throw("No UIXP found at " + uixp);
+    }
+
     // Dump the first result into our return statement
     return {
       uixp: queryResults.hasNext() ? queryResults.next().getPath() : ""
