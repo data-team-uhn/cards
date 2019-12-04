@@ -32,13 +32,13 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
-const DATE_FORMATS = [
+export const DATE_FORMATS = [
   "yyyy",
   "yyyy-MM",
   "yyyy-MM-dd"
 ]
 
-const DATETIME_FORMATS = [
+export const DATETIME_FORMATS = [
   "yyyy-MM-dd HH:mm",
   "yyyy-MM-dd HH:mm:ss"
 ]

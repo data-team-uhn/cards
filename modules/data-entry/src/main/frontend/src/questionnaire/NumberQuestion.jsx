@@ -217,7 +217,7 @@ function NumberQuestion(props) {
 }
 
 // Helper function to bridge react-number-format with @material-ui
-function NumberFormatCustom(props) {
+export function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props;
 
   return (
