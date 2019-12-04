@@ -20,6 +20,45 @@
 const liveTableStyle = theme => ({
     tableHeader: {
         fontWeight: "300"
+    },
+    filterLabel: {
+        margin: theme.spacing(0, 1, 0, 0)
+    },
+    filterContainer: {
+        padding: theme.spacing(0, 1),
+    },
+    addFilterButton: {
+        minWidth: 0,
+        padding: 0,
+        borderRadius: "50%",
+        height: "24px",
+        width: "24px",
+        margin: theme.spacing(0.5, 0)
+    },
+    filterChips: {
+        marginRight: theme.spacing(0.5),
+        marginTop: theme.spacing(0.5),
+        marginBottom: theme.spacing(0.5),
+        '& >span': {
+            margin: theme.spacing(0.5),
+        },
+    },
+    saveButton: {
+        position: 'absolute',
+        right: theme.spacing(1)
+    },
+    dialogContent: {
+        padding: theme.spacing(4,2,2,2),
+        minHeight: theme.spacing(8)
+    },
+    answerField: {
+        width: "100%",
+    },
+    categoryField: {
+        width: "100%",
+    },
+    categoryOption: {
+        whiteSpace: "normal",
     }
 });
 

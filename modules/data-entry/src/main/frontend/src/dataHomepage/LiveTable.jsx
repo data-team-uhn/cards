@@ -18,10 +18,13 @@
 //
 
 import React, { useState } from "react";
-import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
-import { Card, CardHeader, CardContent, CardActions, Typography, Button, withStyles } from "@material-ui/core";
+import { Fab, Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
+import { Card, CardHeader, CardContent, CardActions, Chip, Typography, Button, withStyles } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import moment from "moment";
+
+import Filters from "./Filters.jsx";
+
 import LiveTableStyle from "./tableStyle.jsx";
 
 // Convert a date into the given format string
@@ -201,9 +204,29 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // The rendering code
 
+  /*
+  // The pagination is outside the table itself to support internal scrolling of the table.
+  // The element used by TablePagination by default is TableCell, but since it is not in a TableRow, we have to override this to be a <div>.
+  */
+  const paginationControls = tableData && (
+    <TablePagination
+      component="div"
+      rowsPerPageOptions={[10, 50, 100, 1000]}
+      count={paginationData.total}
+      rowsPerPage={paginationData.limit}
+      page={paginationData.page}
+      onChangePage={handleChangePage}
+      onChangeRowsPerPage={handleChangeRowsPerPage}
+    />
+  )
+
   return (
     // We wrap everything in a Paper for a nice separation, as a Table has no background or border of its own.
     <Paper elevation={0}>
+      <Filters />
+      <div>
+        {paginationControls}
+      </div>
       {/*
       // stickyHeader doesn't really work right now, since the Paper just extends all the way down to fit the table.
       // The whole UI needs to be redesigned so that we can set a maximum height to the Paper,
@@ -252,22 +275,7 @@ function LiveTable(props) {
           }
         </TableBody>
       </Table>
-      {/*
-      // The pagination is outside the table itself to support internal scrolling of the table.
-      // The element used by TablePagination by default is TableCell, but since it is not in a TableRow, we have to override this to be a <div>.
-      */}
-      { tableData && (
-          <TablePagination
-            component="div"
-            rowsPerPageOptions={[10, 50, 100, 1000]}
-            count={paginationData.total}
-            rowsPerPage={paginationData.limit}
-            page={paginationData.page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
-        )
-      }
+      {paginationControls}
     </Paper>
   );
 }
