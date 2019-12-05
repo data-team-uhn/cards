@@ -84,6 +84,7 @@ function Form (props) {
   // Callback method for the `fetchData` method, invoked when the request failed.
   let handleError = (response) => {
     setError(response);
+    setData([]);  // Prevent an infinite loop if data was not set
   };
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
@@ -119,10 +120,24 @@ function Form (props) {
     return <QuestionDisplay key={key} questionDefinition={questionDefinition} existingAnswer={existingAnswer} />;
   };
 
+  // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     fetchData();
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+    );
+  }
+
+  // If an error was returned, do not display a form at all, but report the error
+  if (error) {
+    return (
+      <Grid container justify="center">
+        <Grid item>
+          <Typography variant="h2" color="error">
+            Error obtaining form data: {error.status} {error.statusText}
+          </Typography>
+        </Grid>
+      </Grid>
     );
   }
 
