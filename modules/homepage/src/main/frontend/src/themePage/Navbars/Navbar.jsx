@@ -16,7 +16,7 @@ import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core";
 import { AppBar, Toolbar, IconButton, Hidden } from "@material-ui/core";
 // @material-ui/icons
-import { Menu } from "@material-ui/icons";
+import Menu from "@material-ui/icons/Menu";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
 import { Button } from "MaterialDashboardReact";
@@ -27,7 +27,7 @@ function Header({ ...props }) {
   // Create the "brand", i.e. the route taken to get to the current page
   // (Usually displayed at the top left)
   function makeBrand() {
-    var name;
+    var name = "";
     props.routes.map((prop, key) => {
       if (prop.layout + prop.path === props.location.pathname) {
         name = prop.name;

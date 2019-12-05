@@ -33,17 +33,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
-import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParser;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexer;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 
 /**
  * Servlet which handles indexing vocabularies. It processes POST requests on the {@code /Vocabularies} homepage,
- * expecting at least a {@code source} request parameter for identifying the vocabulary to parse. Additional parameters
- * may influence the parsing process or outcome, depending on the source, such as {@code version}, {@code citation}, and
- * {@code website}. The actual parsing is handled by implementations of the {@link VocabularyParser} service interface.
+ * expecting at least a {@code source} request parameter for identifying the vocabulary to index. Additional parameters
+ * may influence the indexing process or outcome, depending on the source, such as {@code version}, {@code citation},
+ * and {@code website}. The actual indexing is handled by implementations of the {@link VocabularyIndexer} service
+ * interface.
  *
  * @version $Id$
- * @see VocabularyParser
+ * @see VocabularyIndexer
  */
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "lfs/VocabulariesHomepage" }, methods = { "POST" })
@@ -54,12 +55,12 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
     private static final Logger LOGGER = LoggerFactory.getLogger(VocabularyIndexerServlet.class);
 
     /**
-     * Automatically injected list of all available parsers. Each of these will be tried in order until one of them can
+     * Automatically injected list of all available indexers. Each of these will be tried in order until one of them can
      * successfully index a vocabulary based on the parameters of the request. A {@code volatile} list dynamically
-     * changes when parsers are added, removed, or replaced.
+     * changes when implementations are added, removed, or replaced.
      */
     @Reference
-    private volatile List<VocabularyParser> parsers;
+    private volatile List<VocabularyIndexer> indexers;
 
     @Reference
     private VocabularyParserUtils utils;
@@ -70,23 +71,23 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
     {
         boolean success = false;
         final String source = request.getParameter("source");
-        for (VocabularyParser parser : this.parsers) {
-            if (parser.canParse(source)) {
+        for (VocabularyIndexer indexer : this.indexers) {
+            if (indexer.canIndex(source)) {
                 try {
-                    parser.parse(source, request, response);
-                    // No exception means that the parser either successfully parsed,
+                    indexer.index(source, request, response);
+                    // No exception means that the indexer either successfully finished,
                     // or encountered an exception and already printed a failure message
                     success = true;
                     break;
                 } catch (VocabularyIndexException e) {
-                    LOGGER.warn("Failed to parse vocabulary from [{}] using parser [{}]: {}", source,
-                        parser.getClass().getCanonicalName(), e.getMessage());
+                    LOGGER.warn("Failed to index vocabulary from [{}] using indexer [{}]: {}", source,
+                        indexer.getClass().getCanonicalName(), e.getMessage());
                 }
             }
         }
         if (!success) {
-            // No parser could process the request, output an error message
-            this.utils.writeStatusJson(request, response, false, "No valid parser for source " + source);
+            // No indexer could process the request, output an error message
+            this.utils.writeStatusJson(request, response, false, "No valid indexer for source " + source);
         }
     }
 }

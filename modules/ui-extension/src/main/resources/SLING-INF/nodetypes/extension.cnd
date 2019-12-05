@@ -46,6 +46,10 @@
   // A more user-friendly name for this UIXP
   - lfs:extensionPointName (STRING) mandatory
 
+  // And any other properties
+  - * (undefined) multiple
+  - * (undefined)
+
 //-----------------------------------------------------------------------------
 //
 // A User Interface Extension (UIX) defines content that can be automatically placed in a UIXP
@@ -83,3 +87,27 @@
 
   // Whether this extension is disabled or not by default
   - lfs:defaultDisabled (BOOLEAN) = "false" mandatory autocreated
+
+  // And any other properties
+  - * (undefined) multiple
+  - * (undefined)
+
+//-----------------------------------------------------------------------------
+//
+// A UIXP Finder locates extension points based on their ID
+//
+//-----------------------------------------------------------------------------
+[lfs:ExtensionPointFinder] > sling:Resource
+
+  // Attributes
+
+  // We can use extension points in a query.
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/ExtensionPointFinder" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each UIXP is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected

@@ -17,7 +17,17 @@
 //  under the License.
 //
 import React from 'react';
-import { Avatar, Button, Paper, Typography, Icon, SvgIcon, TextField, Tooltip, withStyles } from '@material-ui/core';
+import {
+    Avatar,
+    Button,
+    Paper,
+    Typography,
+    TextField,
+    Tooltip,
+    withStyles
+} from '@material-ui/core';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -256,11 +266,14 @@ class SignUpForm extends React.Component {
         }
         <div className={classes.main}>
           <Paper elevation={1} className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
-            <Typography component="h1" variant="h5">
+            <Typography component="h1" variant="overline">
+              LFS Data Core
+            </Typography>
+            <Typography component="h2" variant="h5">
               Sign Up
             </Typography>
             <Avatar className={classes.avatar}>
-              <Icon>person_add</Icon>
+              <PersonAddIcon/>
             </Avatar>
             <Formik
               render={props => <FormFieldsComponent {...props} />}
@@ -278,7 +291,7 @@ class SignUpForm extends React.Component {
               color="default"
               onClick={this.props.swapForm}
             >
-              <SvgIcon className={classes.buttonIcon}><path d="M10,17V14H3V10H10V7L15,12L10,17M10,2H19C20.1,2 21,2.9 21,4V20C21,21.1 20.1,22 19,22H10C8.9,22 8,21.1 8,20V18H10V20H19V4H10V6H8V4C8,2.9 8.9,2 10,2Z"/></SvgIcon> Sign In
+              <ExitToAppIcon/> Sign In
             </Button>
           </Paper>
         </div>

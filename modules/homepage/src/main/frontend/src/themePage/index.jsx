@@ -58,8 +58,15 @@ class Main extends React.Component {
     window.removeEventListener("resize", this.autoCloseMobileMenus);
   }
 
+  // Determine if the given defaultOrder makes the associated link an admin link (i.e. defaultOrder is in the 90s)
+  // FIXME: Admin links should ideally be in a separate extension target
+  _isAdministrativeButton(order) {
+    return Math.floor(order % 100 / 90);
+  }
+
   _buildSidebar = (uixData) => {
     var routes = sidebarRoutes.slice();
+    uixData.sort((firstEl, secondEl) => {return firstEl.order - secondEl.order;});
     for (var id in uixData) {
       var uixDatum = uixData[id];
       routes.push({
@@ -67,6 +74,7 @@ class Main extends React.Component {
         name: uixDatum.name,
         icon: uixDatum.icon,
         component: uixDatum.reactComponent,
+        isAdmin: this._isAdministrativeButton(uixDatum.order),
         rtlName: "rtl:test",
         layout: "/content.html"
       });
@@ -114,7 +122,7 @@ class Main extends React.Component {
             color={ "blue" }
             {...rest}
           />
-          <div className={classes.mainPanel} ref="mainPanel">
+          <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
             <div className={classes.content}>
               <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
             </div>
@@ -140,14 +148,11 @@ ReactDOM.render(
   <Router history={hist}>
     <Switch>
       <Route path="/content.html/" component={MainComponent} />
-      <Redirect from="/" to="/content.html/dashboard.html"/>
-      <Redirect from="/content" to="/content.html/dashboard.html" />
+      <Redirect from="/" to="/content.html/Questionnaires/User"/>
+      <Redirect from="/content" to="/content.html/Questionnaires/User" />
     </Switch>
   </Router>,
   document.querySelector('#main-container')
 );
-
-// Override the header
-document.querySelector('#header-container').style.display = 'none';
 
 export default MainComponent;

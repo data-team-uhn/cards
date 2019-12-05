@@ -1,0 +1,8 @@
+{
+  "Not Installed": 4,
+  "Installing": 5,
+  "Update Available": 6,
+  "Latest": 7,
+  "Uninstalling": 8,
+  "Other Source": 9
+}

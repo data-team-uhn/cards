@@ -16,15 +16,14 @@ import {
     hexToRgb
   } from "../themeStyle.jsx";
 
-import dropdownStyle from "./dropdownStyle.jsx";
-
 const thesaurusStyle = theme => ({
-  ...dropdownStyle(theme),
   closeButton: {
     float: "right",
     height: "100%",
     padding: "0px",
-    fontSize: "10px",
+    marginTop: "0px",
+    marginBottom: "0px",
+    fontSize: "12px",
     color: grayColor[0],
   },
   successText: {
@@ -130,12 +129,16 @@ const thesaurusStyle = theme => ({
     zIndex: "4 !important",
     position: "static",
   },
-  // The following ensures poppers are placed above the presentation, which has zIndex 1300
+  // The following ensures poppers are placed below the presentation (zIndex 1300)
+  // but above everything else
   popperListOnTop: {
-    zIndex: "1400 !important",
+    zIndex: "1200 !important",
   },
   popperInfoOnTop: {
-    zIndex: "1401 !important",
+    zIndex: "1201 !important",
+  },
+  popperNav: {
+    // Old material-dashboard-react style, overridden because of issues with small screens
   },
   suggestionProgress: {
     position: 'absolute',
@@ -148,12 +151,41 @@ const thesaurusStyle = theme => ({
     backgroundColor: theme.palette.error.dark,
   },
   searchWrapper: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(0, 0, 0, 6.3),
     position: 'relative',
     display: 'inline-block',
+    paddingBottom: "0px",
+  },
+  search: {
+    paddingBottom: "0px",
+    margin: "0px"
+  },
+  searchInput: {
+    marginTop: "6px !important",
+  },
+  searchLabel: {
+    marginTop: theme.spacing(-1.5),
+  },
+  searchShrink: {
+    transform: "translate(0, 12px) scale(0.6)",
   },
   infoDataSource: {
-    color: "#0089DC"
+    color: "#0089DC",
+    fontSize: "10px",
+  },
+  searchButton: {
+    margin: "0px",
+  },
+  dropdownItem: {
+    whiteSpace: 'normal',
+  },
+  infoAboveBackground: {
+    // When the info box is spawned from the browse menu,
+    // it should no longer be greyed out
+    zIndex: "1301 !important",
+  },
+  inactiveProgress: {
+    visibility: "hidden"
   }
 });
 

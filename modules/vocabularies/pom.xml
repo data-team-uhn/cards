@@ -31,17 +31,24 @@
   <name>LFS - Vocabularies</name>
 
   <properties>
-    <coverage.instructionRatio>0.23</coverage.instructionRatio>
+    <coverage.instructionRatio>0.18</coverage.instructionRatio>
   </properties>
 
   <build>
     <plugins>
+      <!-- Compile the React code -->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
           <instructions>
+            <Include-Resource>src/main/frontend/dist/,{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/vocabularies.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>SLING-INF/content/;ignoreImportProviders:="zip"</Sling-Initial-Content>
@@ -116,6 +123,10 @@
       <version>3.9</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
       <version>4.4.10</version>
@@ -125,6 +136,17 @@
       <artifactId>org.apache.sling.api</artifactId>
       <version>2.18.4</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-osgi</artifactId>
+      <version>3.11.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <version>5.0.0</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.servlets.annotations</artifactId>
@@ -172,11 +194,6 @@
       <artifactId>osgi.cmpn</artifactId>
       <version>6.0.0</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.framework</artifactId>
-      <version>1.9.0</version>
     </dependency>
     <dependency>
       <groupId>biz.aQute.bnd</groupId>

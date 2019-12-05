@@ -41,7 +41,8 @@
     <module>ldap-support</module>
     <module>utils</module>
     <module>principals</module>
-    <module>thesaurus</module>
+    <module>permissions</module>
+    <module>permissions-provider</module>
     <module>vocabularies</module>
   </modules>
 </project>

@@ -31,6 +31,7 @@
 
 [:repoinit]
     # Data entry
+    create path (lfs:QuestionnairesHomepage) /Questionnaires
     create path (lfs:FormsHomepage) /Forms
     create path (lfs:SubjectsHomepage) /Subjects
     create path (sling:Folder) /db
@@ -44,6 +45,7 @@
 
     # Allow all users to read from the database and one of the nodes
     set ACL for everyone
+        allow   jcr:read    on /Questionnaires
         allow   jcr:read    on /Forms
         allow   jcr:read    on /Subjects
         allow   jcr:read    on /view

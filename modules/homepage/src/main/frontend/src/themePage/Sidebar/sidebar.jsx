@@ -27,51 +27,58 @@ const Sidebar = ({ ...props }) => {
   }
   const { classes, color, logoImage, image, logoText, routes } = props;
 
+  // Generate NavLinks and ListItems from the given route prop
+  // activeStyle is true for anything that should look "active" (e.g. the admin link, the current page)
+  function generateListItem(prop, key, activeStyle) {
+    const listBackground = classNames({
+      [" " + classes[color]]: activeStyle
+    });
+    const listItemFont = classNames({
+      [" " + classes.whiteFont]: activeStyle
+    });
+
+    return (
+      <NavLink
+        to={prop.layout + prop.path}
+        className={classes.item}
+        activeClassName="active"
+        key={key}
+      >
+        <ListItem button className={classes.itemLink + listBackground}>
+          <prop.icon
+              className={classNames(classes.itemIcon, listItemFont)}
+            />
+          <ListItemText
+            primary={prop.name}
+            className={classNames(classes.itemText, listItemFont)}
+            disableTypography={true}
+          />
+        </ListItem>
+      </NavLink>
+    );
+  }
+
   // Links
   var links = (
     <List className={classes.list}>
-      {routes.map((prop, key) => {
-        var adminButton = " ";
-        var listItemClasses;
+      {routes.filter((prop, key) => {
+        // Only use non-admin links
+        return !prop.isAdmin;
+      }).map((prop, key) => {
+        return(generateListItem(prop, key, activeRoute(prop.layout + prop.path)));
+      })}
+    </List>
+  );
 
-        // Generate a list of class names for each item in the sidebar
-        // We colour two links in: the currently active
-        // link, and the administration link
-        if (prop.path === "/admin.html") {
-          adminButton = classes.adminButton + " ";
-          listItemClasses = classNames({
-            [" " + classes[color]]: true
-          });
-        } else {
-          listItemClasses = classNames({
-            [" " + classes[color]]: activeRoute(prop.layout + prop.path)
-          });
-        }
-        const whiteFontClasses = classNames({
-          [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
-        });
-
-        // Handle prop.icon being either a class or the name of an icon class
-        // NavLink allows us to set styles iff the link's URL matches the current URL
-        return (
-          <NavLink
-            to={prop.layout + prop.path}
-            className={adminButton + classes.item}
-            activeClassName="active"
-            key={key}
-          >
-            <ListItem button className={classes.itemLink + listItemClasses}>
-              <prop.icon
-                  className={classNames(classes.itemIcon, whiteFontClasses)}
-                />
-              <ListItemText
-                primary={prop.name}
-                className={classNames(classes.itemText, whiteFontClasses)}
-                disableTypography={true}
-              />
-            </ListItem>
-          </NavLink>
-        );
+  var adminLinks = (
+    <List className={classes.adminSidebar}>
+      {routes.filter((prop, key) => {
+        // Only use admin links
+        return prop.isAdmin;
+      }).map((prop, key) => {
+        // To make it stand out, the admin link is also active
+        const isActive = prop.path === "/admin.html" || activeRoute(prop.layout + prop.path);
+        return(generateListItem(prop, key, isActive));
       })}
     </List>
   );
@@ -110,6 +117,7 @@ const Sidebar = ({ ...props }) => {
           <div className={classes.sidebarWrapper}>
             <AdminNavbarLinks />
             {links}
+            {adminLinks}
           </div>
           {image !== undefined ? (
             <div
@@ -128,7 +136,10 @@ const Sidebar = ({ ...props }) => {
           classes={{paper: classes.drawerPaper}}
         >
           {brand}
-          <div className={classes.sidebarWrapper}>{links}</div>
+          <div className={classes.sidebarWrapper}>
+            {links}
+            {adminLinks}
+          </div>
           {image !== undefined ? (
             <div
               className={classes.background}

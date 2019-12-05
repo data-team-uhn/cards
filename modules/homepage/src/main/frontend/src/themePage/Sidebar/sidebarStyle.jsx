@@ -172,6 +172,7 @@ import {
       margin: "0",
       lineHeight: "30px",
       fontSize: "14px",
+      fontWeight: "400",
       color: whiteColor
     },
     whiteFont: {
@@ -282,6 +283,8 @@ import {
       overflowScrolling: "touch"
     },
     adminButton: {
+    },
+    adminSidebar: {
       [theme.breakpoints.up("md")]: {
         position: "absolute",
         width: "100%",

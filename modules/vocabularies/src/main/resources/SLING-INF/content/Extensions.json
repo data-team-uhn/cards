@@ -1,0 +1,17 @@
+{
+  "jcr:primaryType": "sling:Folder",
+  "AdminVocabularies": {
+    "jcr:primaryType": "lfs:Extension",
+    "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+    "lfs:extensionName": "Vocabularies",
+    "lfs:icon": "asset:lfs-vocabularies.vocabulariesIcon.js",
+    "lfs:extensionRenderURL": "asset:lfs-vocabularies.admin-page.js",
+    "lfs:targetURL": "admin/vocabularies",
+    "lfs:defaultOrder": 94,
+    "jcr:content": {
+      "jcr:primaryType": "nt:resource",
+      "jcr:data": "test",
+      "jcr:mimeType": "text/html"
+    }
+  }
+}
