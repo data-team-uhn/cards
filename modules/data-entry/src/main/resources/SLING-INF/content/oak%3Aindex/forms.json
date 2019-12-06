@@ -4,7 +4,7 @@
     "compatVersion": 2,
     "async": "async",
     "evaluatePathRestrictions": true,
-    "includedPaths": "/Forms",
+    "includedPaths": ["/Forms"],
     "indexRules" : {
         "jcr:primaryType": "nt:unstructured",
         "lfs:Form" : {
