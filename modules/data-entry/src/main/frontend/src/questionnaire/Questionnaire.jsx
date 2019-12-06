@@ -63,6 +63,11 @@ let Questionnaire = (props) => {
 
   return (
     <div>
+      {
+        error && <Typography variant="h2" color="error">
+            Error obtaining questionnaire info: {error.status} {error.statusText}
+          </Typography>
+      }
       <Grid container direction="column" spacing={8}>
       <Grid item>
         <Typography variant="h2">{data ? data['title'] : id} </Typography>
