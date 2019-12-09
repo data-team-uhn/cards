@@ -1,21 +1,18 @@
 {
-  "jcr:primaryType": "lfs:QuestionnairesHomepage",
-  "ChemotherapyData": {
-    "jcr:primaryType": "lfs:Questionnaire",
-    "title": "Chemotherapy Data"
-  },
+  "jcr:primaryType": "lfs:Questionnaire",
+  "title": "Chemotherapy Data",
   "Patient ID": {
     "jcr:primaryType": "lfs:Question",
     "text": "Patient ID",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "hidden"
   },
   "Tumor number": {
     "jcr:primaryType": "lfs:Question",
     "text": "Tumor number",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "hidden"
   },
   "Diagnosis (Morphology) as on pathology report": {
@@ -28,161 +25,155 @@
   "Chemotherapy": {
     "jcr:primaryType": "lfs:Question",
     "text": "Chemotherapy",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "list",
     "dataType": "text",
-    "options": {
-      "Yes": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Yes"
-      },
-      "No": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "No"
-      },
-      "Unknown": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Unknown"
-      },
-      "N/A": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "N/A"
-      }
+    "Yes": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Yes"
+    },
+    "No": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "No"
+    },
+    "Unknown": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Unknown"
+    },
+    "NA": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "NA"
     }
   },
   "Treatment Protocol": {
     "jcr:primaryType": "lfs:Question",
     "text": "Treatment Protocol",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "text"
   },
   "Weight at start of protocol (kg)": {
     "jcr:primaryType": "lfs:Question",
     "text": "Weight at start of protocol (kg)",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "double"
   },
   "Height at start of protocol (cm)": {
     "jcr:primaryType": "lfs:Question",
     "text": "Height at start of protocol (cm)",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "double"
   },
   "Chemotherapy Agent": {
     "jcr:primaryType": "lfs:Question",
     "text": "Chemotherapy Agent",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "vocabulary",
     "sourceVocabulary": "CHEBI"
   },
-  "Start date (mm/dd/yyyy)": {
+  "Start date (yyyy-mm-dd)": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Start date (mm/dd/yyyy)",
-    "minAnswers": "0",
-    "maxAnswers": "1",
+    "text": "Start date (yyyy-mm-dd)",
+    "minAnswers": 0,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "date",
-    "dateFormat": "MM/dd/yyyy"
+    "dateFormat": "yyyy-MM-dd"
   },
-  "End date (mm/dd/yyyy)": {
+  "End date (yyyy-mm-dd)": {
     "jcr:primaryType": "lfs:Question",
-    "text": "End date (mm/dd/yyyy)",
-    "minAnswers": "0",
-    "maxAnswers": "1",
+    "text": "End date (yyyy-mm-dd)",
+    "minAnswers": 0,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "date",
-    "dateFormat": "MM/dd/yyyy"
+    "dateFormat": "yyyy-MM-dd"
   },
   "Cyclic/Continuous/Unknown": {
     "jcr:primaryType": "lfs:Question",
     "text": "Cyclic/Continuous/Unknown",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "list",
     "dataType": "text",
-    "options": {
-      "Cyclic": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Cyclic"
-      },
-      "Continuous": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Continuous"
-      },
-      "Unknown": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Unknown"
-      }
+    "Cyclic": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Cyclic"
+    },
+    "Continuous": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Continuous"
+    },
+    "Unknown": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Unknown"
     }
   },
   "Number of cycles": {
     "jcr:primaryType": "lfs:Question",
     "text": "Number of cycles",
-    "minAnswers": "0",
-    "maxAnswers": "1",
+    "minAnswers": 0,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "long"
   },
   "Total duration if continuous (months)": {
     "jcr:primaryType": "lfs:Question",
     "text": "Total duration if continuous (months)",
-    "minAnswers": "0",
-    "maxAnswers": "1",
+    "minAnswers": 0,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "long"
   },
   "Cumulative dose (x/m2)": {
     "jcr:primaryType": "lfs:Question",
     "text": "Cumulative dose (x/m2)",
-    "minAnswers": "0",
-    "maxAnswers": "1",
+    "minAnswers": 0,
+    "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "double"
   },
   "Dose reduction (Y/N/Unknown)": {
     "jcr:primaryType": "lfs:Question",
     "text": "Dose reduction (Y/N/Unknown)",
-    "minAnswers": "1",
-    "maxAnswers": "1",
+    "minAnswers": 1,
+    "maxAnswers": 1,
     "displayMode": "list",
     "dataType": "text",
-    "options": {
-      "Yes": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Yes"
-      },
-      "No": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "No"
-      },
-      "Unknown": {
-        "jcr:primaryType": "lfs:AnswerOption",
-        "value": "Unknown"
-      }
+    "Yes": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Yes"
+    },
+    "No": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "No"
+    },
+    "Unknown": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Unknown"
     }
   },
   "Comments": {
     "jcr:primaryType": "lfs:Question",
     "text": "Comments",
-    "minAnswers": "0",
-    "maxAnswers": "1",
+    "minAnswers": 0,
+    "maxAnswers": 1,
     "displayMode": "textbox",
     "dataType": "text"
   },
   "protocol information": {
     "jcr:primaryType": "lfs:Question",
     "text": "protocol information",
-    "minAnswers": "0",
-    "maxAnswers": "1",
+    "minAnswers": 0,
+    "maxAnswers": 1,
     "displayMode": "textbox",
     "dataType": "text"
   }
