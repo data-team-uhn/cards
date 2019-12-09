@@ -18,6 +18,7 @@
 //
 import React from "react";
 import LiveTable from "./LiveTable.jsx";
+import Subject from "../questionnaire/Subject.jsx";
 
 export default function Subjects(props) {
   const columns = [
@@ -25,7 +26,7 @@ export default function Subjects(props) {
       "key": "identifier",
       "label": "Identifier",
       "format": "string",
-      "link": "path",
+      "link": "dashboard+field:@path",
     },
     {
       "key": "jcr:createdBy",
@@ -38,6 +39,12 @@ export default function Subjects(props) {
       "format": "date:YYYY-MM-DD HH:mm",
     },
   ]
+
+  const entry = /Subjects\/(.+)/.exec(location.pathname);
+  if (entry) {
+    return <Subject id={entry[1]}/>;
+  }
+
   return (
     <LiveTable columns={columns} />
   );
