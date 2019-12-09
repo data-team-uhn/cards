@@ -32,7 +32,7 @@ import LiveTable from "../dataHomepage/LiveTable.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 /**
- * Component that displays an editable Subject.
+ * Component that displays a Subject.
  *
  * @example
  * <Subject id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
@@ -41,10 +41,36 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
  */
 function Subject (props) {
   let { classes, id } = props;
-  // This holds the full form JSON, once it is received from the server
+  // This holds the full subject JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
+
+    // Column configuration for the LiveTables
+  const columns = [
+    {
+      "key": "jcr:uuid",
+      "label": "Identifier",
+      "format": "string",
+      "link": "dashboard+path",
+    },
+    {
+      "key": "questionnaire/title",
+      "label": "Questionnaire",
+      "format": "string",
+      "link": "dashboard+field:questionnaire/@path",
+    },
+    {
+      "key": "jcr:createdBy",
+      "label": "Created by",
+      "format": "string",
+    },
+    {
+      "key": "jcr:created",
+      "label": "Created on",
+      "format": "date:YYYY-MM-DD HH:mm",
+    },
+  ]
 
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
@@ -76,7 +102,7 @@ function Subject (props) {
     );
   }
 
-  // If an error was returned, do not display a form at all, but report the error
+  // If an error was returned, do not display a subject at all, but report the error
   if (error) {
     return (
       <Grid container justify="center">
@@ -88,33 +114,6 @@ function Subject (props) {
       </Grid>
     );
   }
-
-
-  // Column configuration for the LiveTables
-  const columns = [
-    {
-      "key": "jcr:uuid",
-      "label": "Identifier",
-      "format": "string",
-      "link": "dashboard+path",
-    },
-    {
-      "key": "questionnaire/title",
-      "label": "Questionnaire",
-      "format": "string",
-      "link": "dashboard+field:questionnaire/@path",
-    },
-    {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
-    },
-    {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
-    },
-  ]
 
   const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
