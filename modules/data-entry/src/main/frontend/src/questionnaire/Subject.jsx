@@ -46,7 +46,7 @@ function Subject (props) {
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
 
-    // Column configuration for the LiveTables
+  // Column configuration for the LiveTables
   const columns = [
     {
       "key": "jcr:uuid",

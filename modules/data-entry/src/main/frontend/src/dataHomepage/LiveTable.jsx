@@ -150,7 +150,7 @@ function LiveTable(props) {
       } else if (column.link === 'value') {
         content = (<a href={content}>{content}</a>);;
       } else if (column.link === 'dashboard+value') {
-        content = (<Link to={"/content.html/" + content}>{content}</Link>);
+        content = (<Link to={"/content.html" + content}>{content}</Link>);
       } else if (column.link.startsWith('field:')) {
         content = (<a href={getNestedValue(entry, column.link.substring('field:'.length))}>{content}</a>);
       } else if (column.link.startsWith('dashboard+field:')) {
