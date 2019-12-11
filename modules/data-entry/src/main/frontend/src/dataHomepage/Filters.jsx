@@ -79,8 +79,11 @@ function Filters(props) {
   // Open the filter selection dialog
   let openDialogAndAdd = () => {
     setDialogOpen(true);
-    setFilters(activeFilters);  // Replace our defaults with what's actually active, plus one
-    addFilter();
+    // Replace our defaults with a deep copy of what's actually active, plus one
+    let newFilters = deepCopyFilters(activeFilters);
+    newFilters.push({});
+    console.log(newFilters);
+    setFilters(newFilters);
 
     // What filters are we looking at here?
     if (!filterRequestSent) {
@@ -122,7 +125,9 @@ function Filters(props) {
       comparators = ([">", "<", ">=", "<=", "=", "!="]);
     } else if (dataType == 'date') {
       // this is a date question (eq, ne)
-      comparators = (["before", "after", "equal to"]);
+      // TODO: This should probably be in plainer text, but
+      // since these are sent to JCR2 we leave it as is
+      comparators = (["<", ">", "="]);
     } else {
       // Strings
       comparators = (["=", "!="]);
@@ -250,9 +255,22 @@ function Filters(props) {
 
   // Parse out all of our stuff into chips
   let saveFilters = () => {
-    setActiveFilters(filters.slice());
-    onChangeFilters && onChangeFilters(filters);
+    // Create a deep copy of the active filters
+    let newFilters = deepCopyFilters(filters);
+    setActiveFilters(newFilters);
+    onChangeFilters && onChangeFilters(newFilters);
     setDialogOpen(false);
+  }
+
+  // Create a deep copy of filters or activeFilters
+  // This allows us to isolate the two from each other, preventing filter updates
+  // while the dialog is active
+  let deepCopyFilters = (toCopy) => {
+    let newFilters = [];
+    toCopy.forEach( (oldFilter) => {
+      newFilters.push({ ...oldFilter });
+    });
+    return(newFilters);
   }
 
   return(
@@ -315,7 +333,7 @@ function Filters(props) {
                   {/* Select the field to filter */}
                   <Grid item xs={5}>
                     <Select
-                      value={filterDatum.name}
+                      value={filterDatum.name || ""}
                       onChange={(event) => {handleChangeFilter(index, event);}}
                       className={classes.categoryField}
                       >
@@ -330,7 +348,7 @@ function Filters(props) {
                   <Grid item xs={1}>
                     <Select
                       disabled={!filterDatum.name}
-                      value={filterDatum.comparator}
+                      value={filterDatum.comparator || ""}
                       onChange={(event) => {handleChangeComparator(index, event);}}
                       >
                         {(filterComparators[filterDatum.name] && filterComparators[filterDatum.name].map( (name) => {
