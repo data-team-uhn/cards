@@ -24,9 +24,9 @@
     "dataType": "computed",
     "formula": "value of Diagnosis from the Tumors questionnaire, for the current Patient Id and Tumor number"
   },
-  "Radiation therapy (Y/N)": {
+  "Radiation therapy": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Radiation therapy (Y/N)",
+    "text": "Radiation therapy",
     "minAnswers": 1,
     "maxAnswers": 1,
     "displayMode": "list",
@@ -44,7 +44,7 @@
       "value": "Unknown"
     }
   },
-  "Weight at start of radiation therapy (kg)": {
+  "Weight at start of radiation therapy": {
     "jcr:primaryType": "lfs:Question",
     "text": "Weight at start of radiation therapy (kg)",
     "description": "kg",
@@ -53,7 +53,7 @@
     "displayMode": "input",
     "dataType": "decimal"
   },
-  "Height at start of radiation therapy (cm)": {
+  "Height at start of radiation therapy": {
     "jcr:primaryType": "lfs:Question",
     "text": "Height at start of radiation therapy (cm)",
     "description": "m",
@@ -62,18 +62,18 @@
     "displayMode": "input",
     "dataType": "decimal"
   },
-  "Radiation start date (yyyy-mm-dd)": {
+  "Radiation start date": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Radiation start date (yyyy-mm-dd)",
+    "text": "Radiation start date",
     "minAnswers": 0,
     "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
   },
-  "Radiation end date (yyyy-mm-dd)": {
+  "Radiation end date": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Radiation end date (yyyy-mm-dd)",
+    "text": "Radiation end date",
     "minAnswers": 0,
     "maxAnswers": 1,
     "displayMode": "input",
@@ -123,7 +123,7 @@
       "value": "NA"
     }
   },
-  "Total radiation dose to tumor bed (cGy)": {
+  "Total radiation dose to tumor bed": {
     "jcr:primaryType": "lfs:Question",
     "text": "Total radiation dose to tumor bed (cGy)",
     "minAnswers": 0,
@@ -215,9 +215,9 @@
       "value": "NA"
     }
   },
-  "Total body irradiation  (transplant conditioning) (Y/N)": {
+  "Total body irradiation  (transplant conditioning)": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Total body irradiation  (transplant conditioning) (Y/N)",
+    "text": "Total body irradiation  (transplant conditioning)",
     "minAnswers": 1,
     "maxAnswers": 1,
     "displayMode": "list",
@@ -235,25 +235,25 @@
       "value": "NA"
     }
   },
-  "TBI start date (yyyy-mm-dd)": {
+  "TBI start date": {
     "jcr:primaryType": "lfs:Question",
-    "text": "TBI start date (yyyy-mm-dd)",
+    "text": "TBI start date",
     "minAnswers": 0,
     "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
   },
-  "TBI end date (yyyy-mm-dd)": {
+  "TBI end date": {
     "jcr:primaryType": "lfs:Question",
-    "text": "TBI end date (yyyy-mm-dd)",
+    "text": "TBI end date",
     "minAnswers": 0,
     "maxAnswers": 1,
     "displayMode": "input",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
   },
-  "TBI dose (cGy)": {
+  "TBI dose": {
     "jcr:primaryType": "lfs:Question",
     "text": "TBI dose (cGy)",
     "minAnswers": 0,
