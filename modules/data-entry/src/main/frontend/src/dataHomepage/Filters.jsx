@@ -77,12 +77,16 @@ function Filters(props) {
   }
 
   // Open the filter selection dialog
-  let openDialogAndAdd = () => {
+  let openDialog = () => {
     setDialogOpen(true);
-    // Replace our defaults with a deep copy of what's actually active, plus one
+    // Replace our defaults with a deep copy of what's actually active, plus an empty one
     let newFilters = deepCopyFilters(activeFilters);
-    newFilters.push({});
     setEditingFilters(newFilters);
+
+    // Bugfix: also reload every active outputChoice, in order to refresh its copy of the state variables
+    newFilters.forEach( (newFilter) => {
+      getOutputChoices(newFilter.name, newFilter);
+    });
 
     // What filters are we looking at here?
     if (!filterRequestSent) {
@@ -101,7 +105,8 @@ function Filters(props) {
     if (!filterComparators[event.target.value]) {
       loadComparators(event.target.value);
     }
-    setFilters(oldfilters => {
+
+    setEditingFilters(oldfilters => {
       var newfilters = oldfilters.slice();
       var newfilter = {name: event.target.value, uuid: filterableUUIDs[event.target.value]}
       newfilters[index] = newfilter;
@@ -118,10 +123,10 @@ function Filters(props) {
 
     if (displayMode == 'list') {
       // this is a list question with only predefined answers
-      comparators = (["=", "!="]);
+      comparators = (["=", "<>"]);
     } else if (dataType == 'decimal' || dataType == 'long') {
       // this is a numeric question (gt, lt, eq)
-      comparators = ([">", "<", ">=", "<=", "=", "!="]);
+      comparators = ([">", "<", ">=", "<=", "=", "<>"]);
     } else if (dataType == 'date') {
       // this is a date question (eq, ne)
       // TODO: This should probably be in plainer text, but
@@ -129,7 +134,7 @@ function Filters(props) {
       comparators = (["<", ">", "="]);
     } else {
       // Strings
-      comparators = (["=", "!="]);
+      comparators = (["=", "<>"]);
     }
 
     // As per React standards: copy, slice, and return our input object
@@ -141,13 +146,11 @@ function Filters(props) {
   // Allow the comparator for any filter to change
   let handleChangeComparator = (index, event) => {
     // Load up the output value for this index, if not already loaded
-    if (!filterableAnswers[event.target.value]) {
-      getOutputChoices(editingFilters[index].name);
-    }
-    setFilters(oldfilters => {
+    getOutputChoices(editingFilters[index].name);
+    setEditingFilters(oldfilters => {
       let newFilters = oldfilters.slice();
-      let newFilter = {...newFilters[index], comparator: event.target.value}
-      newFilters[index] = newFilter;
+      let newFilter = {...newFilters[index], comparator: event.target.value};
+      newFilters.splice(index, 1, newFilter);
       return(newFilters);
     });
   }
@@ -155,7 +158,7 @@ function Filters(props) {
   // Determine how to show the output choices field
   // Note that we this creates functions, that take the index of the filter to alter, and return the
   // component that handles its own onClick/onChange events
-  let getOutputChoices = (field) => {
+  let getOutputChoices = (field, overrideFilters) => {
     // TODO: What happens if the field isn't inside of fieldData for some reason?
     let dataType = filterableDataTypes[field];
     let displayMode = filterableDisplayModes[field];
@@ -167,7 +170,7 @@ function Filters(props) {
       // First, obtain the children nodes
       newChoices = (index) => (
         <Select
-          value={editingFilters[index].value}
+          defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           className={classes.answerField}
           >
@@ -196,7 +199,7 @@ function Filters(props) {
             inputComponent: NumberFormatCustom, // Used to override a TextField's type
             className: classes.textField
           }}
-          value={editingFilters[index].value}
+          defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           />
       );
@@ -219,7 +222,7 @@ function Filters(props) {
           InputProps={{
             className: classes.textField
           }}
-          value={editingFilters[index].value}
+          defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           />);
     } else {
@@ -233,13 +236,13 @@ function Filters(props) {
           InputProps={{
             className: classes.textField
           }}
-          value={editingFilters[index].value}
+          defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           />);
     }
 
     setFilterableAnswers( answers => {
-      return { [field]: newChoices, ...answers };
+      return { ...answers, [field]: newChoices };
     });
   }
 
@@ -247,7 +250,7 @@ function Filters(props) {
     setEditingFilters( oldfilters => {
       let newFilters = oldfilters.slice();
       let newFilter =  {...newFilters[index], value: newValue };
-      newFilters[index] = newFilter;
+      newFilters.splice(index, 1, newFilter);
       return(newFilters);
     })
   }
@@ -294,6 +297,7 @@ function Filters(props) {
               onChangeFilters && onChangeFilters(newFilters);
               }
             }
+            onClick={openDialog}
             className={classes.filterChips}
             />
           );
@@ -305,7 +309,8 @@ function Filters(props) {
         color="primary"
         className={classes.addFilterButton}
         onClick={()=>{
-          openDialogAndAdd();
+          openDialog();
+          addFilter();
         }}
         >
         <Add fontSize="small" />
