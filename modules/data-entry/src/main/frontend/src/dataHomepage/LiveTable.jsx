@@ -41,8 +41,9 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, classes } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, classes } = props;
   const [tableData, setTableData] = useState();
+  const [cachedFilters, setCachedFilters] = useState([]);
   const [paginationData, setPaginationData] = useState(
     {
       "offset": 0,
@@ -82,6 +83,13 @@ function LiveTable(props) {
     url.searchParams.set("offset", newPage.offset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
+    let filters = newPage.filters || cachedFilters;
+    if (filters.length > 0) {
+      url.searchParams.set("joinchildren", joinChildren);
+      url.searchParams.set("filternames", filters[0].join("|"));
+      url.searchParams.set("filtercomparators", filters[1].join("|"));
+      url.searchParams.set("filtervalues", filters[2].join("|"));
+    }
     let currentFetch = fetch(url);
     setFetchStatus(Object.assign({}, fetchStatus, {
       "currentFetch": currentFetch,
@@ -195,6 +203,31 @@ function LiveTable(props) {
     });
   };
 
+  // Callback to the filters component to handle a change in filters
+  let handleChangeFilters = (newFilters) => {
+    // Parse out the new filters
+    let fields = [];
+    let comparators = [];
+    let values = [];
+    newFilters.forEach((filter) => {
+      fields.push(filter.uuid);
+      comparators.push(filter.comparator);
+      values.push(filter.value);
+    });
+
+    if (fields.length > 0) {
+      setCachedFilters([fields, comparators, values]);
+      fetchData({
+        "filters": [fields, comparators, values]
+      });
+    } else {
+      setCachedFilters([]);
+      fetchData({
+        "filters": []
+      });
+    }
+  }
+
   // Initialize the component: if there's no data loaded yet, fetch the first page
 
   if (fetchStatus.currentRequestNumber == -1) {
@@ -223,7 +256,7 @@ function LiveTable(props) {
   return (
     // We wrap everything in a Paper for a nice separation, as a Table has no background or border of its own.
     <Paper elevation={0}>
-      <Filters />
+      <Filters onChangeFilters={handleChangeFilters}/>
       <div>
         {paginationControls}
       </div>

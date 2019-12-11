@@ -100,25 +100,32 @@ public class FilterServlet extends SlingSafeMethodsServlet
                 resource = request.getResourceResolver().resolve(path.concat(".deep.json"));
                 JsonObject questions = resource.adaptTo(JsonObject.class);
                 Map<String, String> seenElements = new HashMap<String, String>();
+
                 // Copy over the keys
                 for (String key : questions.keySet()) {
-                    // Skip over non-questions (non-objects
+                    // Skip over non-questions (non-objects)
                     if (questions.get(key).getValueType() != ValueType.OBJECT
                         || !questions.getJsonObject(key).getString("jcr:primaryType").equals("lfs:Question")) {
                         continue;
                     }
 
                     if (seenElements.containsKey(key)) {
-                        // If this element already exists, make sure that it has the same dataType
+                        // If this question already exists, make sure that it has the same dataType
                         String questionType = questions.getJsonObject(key).getString("dataType");
                         if (seenElements.get(key) != questionType) {
                             // DIFFERENT -- prepend a slightly differently named version
                             String newKey = questionType.concat("|").concat(key);
                             seenElements.put(newKey, questionType);
                             builder.add(newKey, questions.getJsonObject(key));
+                        } else {
+                            // SAME -- append our jcr:uuid to the question
+                            JsonObject amending = builder.build().getJsonObject(key);
+                            amending.put("jcr:uuid", Json.createValue(amending.getString("jcr:uuid").concat(",")
+                                        .concat(questions.getJsonObject(key).getString("jcr:uuid"))));
+                            builder.add(key, amending);
                         }
                     } else {
-                        // If this element does not exist, just add it
+                        // If this question does not exist, just add it
                         seenElements.put(key, questions.getJsonObject(key).getString("dataType"));
                         builder.add(key, questions.getJsonObject(key));
                     }
