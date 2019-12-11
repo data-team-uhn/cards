@@ -58,8 +58,10 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -6068156942302219324L;
 
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:MultipleStringLiterals"})
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
+    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+            throws IOException, IllegalArgumentException
     {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -67,21 +69,53 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
         final StringBuilder query =
             // We select all child nodes of the homepage, filtering out nodes that aren't ours, such as rep:policy
-            new StringBuilder("select n from [nt:base] as n where ischildnode(n, '" + request.getResource().getPath()
+            new StringBuilder("select n.* from [nt:base] as n");
+
+        // If child nodes are required for this query, also grab them
+        // TODO: joinchildren should be sanitized
+        final String joinchildren = request.getParameter("joinchildren");
+        final String filtername = request.getParameter("filternames");
+        if (StringUtils.isNotBlank(joinchildren)) {
+            // Determine how many children we need for this query
+            final int fields = StringUtils.countMatches(filtername, "|");
+            for (int i = 0; i <= fields; i++) {
+                String childname = "child" + Integer.toString(i);
+                query.append(" inner join [" + joinchildren + "] as " + childname
+                        + " on ischildnode(" + childname + ", n)");
+            }
+        }
+
+        // Check only for our fields
+        query.append(" where ischildnode(n, '" + request.getResource().getPath()
                 + "') and n.'sling:resourceSuperType' = 'lfs/Resource'");
+
+        // Full text search; \ and ' must be escaped
         final String filter = request.getParameter("filter");
         if (StringUtils.isNotBlank(filter)) {
-            // Full text search; \ and ' must be escaped
-            query.append(" and contains(n.*, '" + filter.replaceAll("['\\\\]", "\\\\$0") + "')");
+            query.append(" and contains(n.*, '" + this.sanitize(filter) + "')");
         }
+
+        // Exact condition on parent node; \ and ' must be escaped. The value must be wrapped in 's
         final String fieldname = request.getParameter("fieldname");
         final String fieldvalue = request.getParameter("fieldvalue");
+        String fieldcomparator = request.getParameter("fieldcomparator");
         if (StringUtils.isNotBlank(fieldname)) {
-            // Exact condition; \ and ' must be escaped. The value must be wrapped in 's
-            query.append(" and n.'" + fieldname.replaceAll("['\\\\]", "\\\\$0") + "'='"
-                    + fieldvalue.replaceAll("['\\\\]", "\\\\$0") + "'");
+            if (StringUtils.isBlank(fieldcomparator)) {
+                // Default comparator is =
+                fieldcomparator = "=";
+            }
+            query.append(" and n.'" + this.sanitize(fieldname) + "'"
+                    + fieldcomparator + "'" + this.sanitize(fieldvalue) + "'");
         }
-        query.append(" order by 'jcr:created'");
+
+        // Condition on child nodes. See parseFilter for details.
+        final String filtervalue = request.getParameter("filtervalues");
+        final String filtercomparators = request.getParameter("filtercomparators");
+        if (StringUtils.isNotBlank(filtername)) {
+            query.append(parseFilter(filtername, filtervalue, filtercomparators));
+        }
+
+        query.append(" order by n.'jcr:created'");
         final Iterator<Resource> results =
             request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
         // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
@@ -92,6 +126,75 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             writeSummary(jsonGen, request, limits);
             jsonGen.writeEnd().flush();
         }
+    }
+
+    /**
+     * Parse out filter data into a series of JCR_SQL2 conditionals.
+     *
+     * @param fields user input field names, pipe delimited (|)
+     * @param values user input field values, pipe delimited (|)
+     * @param comparator user input comparators, pipe delimited (|)
+     * @throws IllegalArgumentException when the number of input fields are not equal
+     */
+    private String parseFilter(final String fields, final String values, final String comparator)
+        throws IllegalArgumentException
+    {
+        // Parse out multiple fields, split by pipes (|)
+        String[] fieldnames = fields.split("\\|");
+        String[] fieldvalues = values.split("\\|");
+        if (fieldnames.length != fieldvalues.length) {
+            throw new IllegalArgumentException("fieldname and fieldvalue must have the same number"
+                    + "of values, as delimited by pipes (|)");
+        }
+
+        // Also parse out multiple comparators
+        String[] comparators;
+        if (StringUtils.isBlank(comparator)) {
+            // Use = as the default
+            comparators = new String[fieldnames.length];
+            for (int i = 0; i < fieldnames.length; i++) {
+                comparators[i] = "=";
+            }
+        } else {
+            comparators = comparator.split("\\|");
+            if (comparators.length != fieldvalues.length) {
+                throw new IllegalArgumentException("must have the same number of comparators as fields,"
+                        + " as delimited by pipes (|)");
+            }
+        }
+
+        // Build the filter conditionals by left outer joining on the lfs:Answer children
+        StringBuilder filterdata = new StringBuilder();
+        // TODO: Double check the sanitization on the comparator
+        for (int i = 0; i < fieldnames.length; i++) {
+            // Condition 1: the question uuid must match one of the given (comma delimited)
+            String[] possibleQuestions = fieldnames[i].split(",");
+            filterdata.append(" and (");
+            for (int j = 0; j < possibleQuestions.length; j++) {
+                filterdata.append(" child" + Integer.toString(i) + ".'question'='"
+                        + this.sanitize(possibleQuestions[j]) + "'");
+                // Add an 'or' if there are more possible conditions
+                if (j + 1 != possibleQuestions.length) {
+                    filterdata.append(" or");
+                }
+            }
+
+            // Condition 2: the value must exactly match
+            filterdata.append(") and child" + Integer.toString(i) + ".'value'" + this.sanitize(comparators[i]) + "'"
+                    + this.sanitize(fieldvalues[i]) + "'");
+        }
+        return filterdata.toString();
+    }
+
+    /**
+     * Sanitize a field name for an input query.
+     *
+     * @param fieldname the field name to sanitize
+     * @return a sanitized version of the input
+     */
+    private String sanitize(String fieldname)
+    {
+        return fieldname.replaceAll("['\\\\]", "\\\\$0");
     }
 
     /**

@@ -38,6 +38,7 @@ function Filters(props) {
   const [filterableFields, setFilterableFields] = useState([]);
   const [filterableDataTypes, setFilterableDataTypes] = useState({});
   const [filterableDisplayModes, setFilterableDisplayModes] = useState({});
+  const [filterableUUIDs, setFilterableUUIDs] = useState({});
   const [filterableAnswers, setFilterableAnswers] = useState({});
   const [filterComparators, setFilterComparators] = useState({});
   const [questionDefinitions, setQuestionDefinitions] = useState({});
@@ -60,22 +61,26 @@ function Filters(props) {
     let dataTypes = {};
     let fields = [];
     let displayModes = {};
+    let uuids = {}
     for (let [questionName, question] of Object.entries(filterJson)) {
       // For each question, save the name, data type, and answers (if necessary)
       fields.push(questionName);
       dataTypes[questionName] = question["dataType"];
       displayModes[questionName] = question["displayMode"];
+      uuids[questionName] = question["jcr:uuid"];
     }
     setFilterableFields(fields);
     setQuestionDefinitions(filterJson);
     setFilterableDataTypes(dataTypes);
     setFilterableDisplayModes(displayModes);
+    setFilterableUUIDs(uuids);
   }
 
   // Open the filter selection dialog
-  let openFilterDialog = () => {
+  let openDialogAndAdd = () => {
     setDialogOpen(true);
-    setFilters(activeFilters);  // Replace our defaults with what's actually active
+    setFilters(activeFilters);  // Replace our defaults with what's actually active, plus one
+    addFilter();
 
     // What filters are we looking at here?
     if (!filterRequestSent) {
@@ -85,7 +90,7 @@ function Filters(props) {
 
   // Add a new filter
   let addFilter = () => {
-    setFilters(filters => {var newfilters = filters.slice(); newfilters.push(["","",""]); return(newfilters);})
+    setFilters(oldfilters => {var newfilters = oldfilters.slice(); newfilters.push({}); return(newfilters);})
   }
 
   // Handle the user changing one of the active filter categories
@@ -94,10 +99,10 @@ function Filters(props) {
     if (!filterComparators[event.target.value]) {
       loadComparators(event.target.value);
     }
-    setFilters(filters => {
-      var newfilters = filters.slice();
-      newfilters[index][0] = event.target.value;
-      newfilters[index][1] = "";
+    setFilters(oldfilters => {
+      var newfilters = oldfilters.slice();
+      var newfilter = {name: event.target.value, uuid: filterableUUIDs[event.target.value]}
+      newfilters[index] = newfilter;
       return(newfilters);
     });
   }
@@ -133,9 +138,14 @@ function Filters(props) {
   let handleChangeComparator = (index, event) => {
     // Load up the output value for this index, if not already loaded
     if (!filterableAnswers[event.target.value]) {
-      getOutputChoices(filters[index][0]);
+      getOutputChoices(filters[index].name);
     }
-    setFilters(filters => { let newFilters = filters.slice(); newFilters[index][1] = event.target.value; return(newFilters); });
+    setFilters(oldfilters => {
+      let newFilters = oldfilters.slice();
+      let newFilter = {...newFilters[index], comparator: event.target.value}
+      newFilters[index] = newFilter;
+      return(newFilters);
+    });
   }
 
   // Determine how to show the output choices field
@@ -153,7 +163,7 @@ function Filters(props) {
       // First, obtain the children nodes
       newChoices = (index) => (
         <Select
-          value={filters[index][2]}
+          value={filters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           className={classes.answerField}
           >
@@ -182,7 +192,7 @@ function Filters(props) {
             inputComponent: NumberFormatCustom, // Used to override a TextField's type
             className: classes.textField
           }}
-          value={filters[index][2]}
+          value={filters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           />
       );
@@ -205,7 +215,7 @@ function Filters(props) {
           InputProps={{
             className: classes.textField
           }}
-          value={filters[index][2]}
+          value={filters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           />);
     } else {
@@ -219,7 +229,7 @@ function Filters(props) {
           InputProps={{
             className: classes.textField
           }}
-          value={filters[index][2]}
+          value={filters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           />);
     }
@@ -230,9 +240,10 @@ function Filters(props) {
   }
 
   let handleChangeOutput = (index, newValue) => {
-    setFilters( filters => {
-      let newFilters = filters.slice();
-      newFilters[index][2] = newValue;
+    setFilters( oldfilters => {
+      let newFilters = oldfilters.slice();
+      let newFilter =  {...newFilters[index], value: newValue };
+      newFilters[index] = newFilter;
       return(newFilters);
     })
   }
@@ -250,19 +261,20 @@ function Filters(props) {
       <Typography display="inline" className={classes.filterLabel}>
         Filters:
       </Typography>
-      {activeFilters.map( (filter) => {
-        let label = filter[0] + " " + filter[1] + " " + filter[2];
+      {activeFilters.map( (activeFilter, index) => {
+        let label = activeFilter.name + " " + activeFilter.comparator + " " + activeFilter.value;
         return(
           <Chip
             key={label}
             size="small"
             label={label}
             onDelete={()=>{
-              setFilters(
-                (oldData) => {
-                  return(oldData.splice(index, index));
-                });
-              }}
+              const newFilters = activeFilters.slice();
+              newFilters.splice(index, 1);
+              setActiveFilters(newFilters);
+              onChangeFilters && onChangeFilters(newFilters);
+              }
+            }
             className={classes.filterChips}
             />
           );
@@ -274,7 +286,7 @@ function Filters(props) {
         color="primary"
         className={classes.addFilterButton}
         onClick={()=>{
-          openFilterDialog();
+          openDialogAndAdd();
         }}
         >
         <Add fontSize="small" />
@@ -303,7 +315,7 @@ function Filters(props) {
                   {/* Select the field to filter */}
                   <Grid item xs={5}>
                     <Select
-                      value={filterDatum[0]}
+                      value={filterDatum.name}
                       onChange={(event) => {handleChangeFilter(index, event);}}
                       className={classes.categoryField}
                       >
@@ -317,11 +329,11 @@ function Filters(props) {
                   {/* Select the comparison operator */}
                   <Grid item xs={1}>
                     <Select
-                      disabled={filterDatum[0] === ""}
-                      value={filterDatum[1]}
+                      disabled={!filterDatum.name}
+                      value={filterDatum.comparator}
                       onChange={(event) => {handleChangeComparator(index, event);}}
                       >
-                        {(filterComparators[filterDatum[0]] && filterComparators[filterDatum[0]].map( (name) => {
+                        {(filterComparators[filterDatum.name] && filterComparators[filterDatum.name].map( (name) => {
                           return(
                             <MenuItem value={name} key={name}>{name}</MenuItem>
                           );
@@ -330,8 +342,8 @@ function Filters(props) {
                   </Grid>
                   {/* Options, generated from their function */}
                   <Grid item xs={5}>
-                    {filterDatum[1] ?
-                        filterableAnswers[filterDatum[0]](index)
+                    {filterDatum.comparator ?
+                        filterableAnswers[filterDatum.name](index)
                       : <TextField disabled className={classes.answerField}></TextField>
                     }
                   </Grid>
@@ -341,7 +353,9 @@ function Filters(props) {
                       onClick={()=>{
                         setFilters(
                           (oldData) => {
-                            return(oldData.splice(index, index));
+                            let newData = oldData.slice()
+                            newData.splice(index, 1);
+                            return(newData);
                           });
                         }}
                       >

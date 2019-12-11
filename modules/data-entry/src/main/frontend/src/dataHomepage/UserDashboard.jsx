@@ -112,6 +112,7 @@ function UserDashboard(props) {
                     columns={columns}
                     customUrl={customUrl}
                     defaultLimit={10}
+                    joinChildren="lfs:Answer"
                     />
                 </CardContent>
               </Card>
