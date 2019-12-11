@@ -32,7 +32,7 @@ const FILTER_URL = "/Questionnaires.filters";
 function Filters(props) {
   const { classes, onChangeFilters } = props;
   // Filters, as displayed in the dialog, and filters as actually saved
-  const [filters, setFilters] = useState([]);
+  const [editingFilters, setEditingFilters] = useState([]);
   const [activeFilters, setActiveFilters] = useState([]);
   // Information on the questionnaires
   const [filterableFields, setFilterableFields] = useState([]);
@@ -82,8 +82,7 @@ function Filters(props) {
     // Replace our defaults with a deep copy of what's actually active, plus one
     let newFilters = deepCopyFilters(activeFilters);
     newFilters.push({});
-    console.log(newFilters);
-    setFilters(newFilters);
+    setEditingFilters(newFilters);
 
     // What filters are we looking at here?
     if (!filterRequestSent) {
@@ -93,7 +92,7 @@ function Filters(props) {
 
   // Add a new filter
   let addFilter = () => {
-    setFilters(oldfilters => {var newfilters = oldfilters.slice(); newfilters.push({}); return(newfilters);})
+    setEditingFilters(oldfilters => {var newfilters = oldfilters.slice(); newfilters.push({}); return(newfilters);})
   }
 
   // Handle the user changing one of the active filter categories
@@ -143,7 +142,7 @@ function Filters(props) {
   let handleChangeComparator = (index, event) => {
     // Load up the output value for this index, if not already loaded
     if (!filterableAnswers[event.target.value]) {
-      getOutputChoices(filters[index].name);
+      getOutputChoices(editingFilters[index].name);
     }
     setFilters(oldfilters => {
       let newFilters = oldfilters.slice();
@@ -168,7 +167,7 @@ function Filters(props) {
       // First, obtain the children nodes
       newChoices = (index) => (
         <Select
-          value={filters[index].value}
+          value={editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           className={classes.answerField}
           >
@@ -197,7 +196,7 @@ function Filters(props) {
             inputComponent: NumberFormatCustom, // Used to override a TextField's type
             className: classes.textField
           }}
-          value={filters[index].value}
+          value={editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           />
       );
@@ -220,7 +219,7 @@ function Filters(props) {
           InputProps={{
             className: classes.textField
           }}
-          value={filters[index].value}
+          value={editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           />);
     } else {
@@ -234,7 +233,7 @@ function Filters(props) {
           InputProps={{
             className: classes.textField
           }}
-          value={filters[index].value}
+          value={editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           />);
     }
@@ -245,7 +244,7 @@ function Filters(props) {
   }
 
   let handleChangeOutput = (index, newValue) => {
-    setFilters( oldfilters => {
+    setEditingFilters( oldfilters => {
       let newFilters = oldfilters.slice();
       let newFilter =  {...newFilters[index], value: newValue };
       newFilters[index] = newFilter;
@@ -256,7 +255,9 @@ function Filters(props) {
   // Parse out all of our stuff into chips
   let saveFilters = () => {
     // Create a deep copy of the active filters
-    let newFilters = deepCopyFilters(filters);
+    let newFilters = deepCopyFilters(editingFilters)
+    // Remove filters that are not complete
+      .filter( (toCheck) => {return toCheck.uuid && toCheck.comparator});
     setActiveFilters(newFilters);
     onChangeFilters && onChangeFilters(newFilters);
     setDialogOpen(false);
@@ -313,6 +314,7 @@ function Filters(props) {
       <Dialog
         open={dialogOpen}
         onClose={() => { setDialogOpen(false); }}
+        className={classes.dialog}
         fullWidth
         >
         <DialogTitle id="new-form-title">
@@ -326,8 +328,8 @@ function Filters(props) {
           { /* If there is no error but also no data, show a progress circle */
           !error && !filterableFields &&
             <CircularProgress />}
-          <Grid container spacing={3}>
-            {filters.map( (filterDatum, index) => {
+          <Grid container spacing={3} className={classes.filterTable}>
+            {editingFilters.map( (filterDatum, index) => {
               return(
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
@@ -368,8 +370,9 @@ function Filters(props) {
                   {/* Deletion button */}
                   <Grid item xs={1}>
                     <IconButton
+                      size="small"
                       onClick={()=>{
-                        setFilters(
+                        setEditingFilters(
                           (oldData) => {
                             let newData = oldData.slice()
                             newData.splice(index, 1);
@@ -383,19 +386,22 @@ function Filters(props) {
                 </React.Fragment>
               );
             })}
+            <Grid item xs={9}>
+              <Link href="#" onClick={addFilter}>
+                +Add another filter
+              </Link>
+            </Grid>
+            <Grid item xs={3}>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.saveButton}
+                onClick={saveFilters}
+              >
+                {'Save'}
+              </Button>
+            </Grid>
           </Grid>
-          <Link href="#" onClick={addFilter}>
-            +Add another filter
-          </Link>
-
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.saveButton}
-            onClick={saveFilters}
-          >
-            {'Save'}
-          </Button>
         </DialogContent>
       </Dialog>
     </div>

@@ -45,7 +45,7 @@ const liveTableStyle = theme => ({
     },
     saveButton: {
         position: 'absolute',
-        right: theme.spacing(1)
+        right: theme.spacing(2)
     },
     dialogContent: {
         padding: theme.spacing(4,2,2,2),
@@ -59,6 +59,9 @@ const liveTableStyle = theme => ({
     },
     categoryOption: {
         whiteSpace: "normal",
+    },
+    filterTable: {
+        marginBottom: "0px"
     }
 });
 
