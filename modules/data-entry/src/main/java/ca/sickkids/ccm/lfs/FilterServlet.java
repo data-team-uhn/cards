@@ -59,6 +59,8 @@ public class FilterServlet extends SlingSafeMethodsServlet
 
     private static final String DEEP_JSON_SUFFIX = ".deep.json";
 
+    private static final String JCR_UUID = "jcr:uuid";
+
     // TODO: Cleanup
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
@@ -92,12 +94,13 @@ public class FilterServlet extends SlingSafeMethodsServlet
             final Iterator<Resource> results =
                 request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
             JsonObjectBuilder builder = Json.createObjectBuilder();
+            Map<String, String> seenTypes = new HashMap<String, String>();
             Map<String, String> seenElements = new HashMap<String, String>();
             while (results.hasNext()) {
                 Resource resource = results.next();
                 String path = resource.getResourceMetadata().getResolutionPath();
                 resource = request.getResourceResolver().resolve(path.concat(DEEP_JSON_SUFFIX));
-                this.copyFields(resource.adaptTo(JsonObject.class), builder, seenElements);
+                this.copyFields(resource.adaptTo(JsonObject.class), builder, seenTypes, seenElements);
             }
             allProperties = builder.build();
         }
@@ -115,10 +118,12 @@ public class FilterServlet extends SlingSafeMethodsServlet
      *
      * @param questions A JsonObject (from an lfs:Questionnaire) whose fields may be lfs:Questions
      * @param builder A JsonObjectBuilder to copy results to
-     * @param seenElements Either a map to track already-seen fields, or null to disable tracking
+     * @param seenTypes Either a map from field names to dataTypes, or null to disable tracking
+     * @param seenElements Either a map from field names to jcr:uuids, or null to disable tracking
      * @return the content matching the query
      */
-    private void copyFields(JsonObject questions, JsonObjectBuilder builder, Map<String, String> seenElements)
+    private void copyFields(JsonObject questions, JsonObjectBuilder builder, Map<String, String> seenTypes,
+            Map<String, String> seenElements)
     {
         // Copy over the keys
         for (String key : questions.keySet()) {
@@ -128,30 +133,47 @@ public class FilterServlet extends SlingSafeMethodsServlet
                 continue;
             }
 
-            if (seenElements != null) {
-                if (seenElements.containsKey(key)) {
-                    // If this question already exists, make sure that it has the same dataType
-                    String questionType = questions.getJsonObject(key).getString("dataType");
-                    if (seenElements.get(key) != questionType) {
-                        // DIFFERENT -- prepend a slightly differently named version
-                        String newKey = questionType.concat("|").concat(key);
-                        seenElements.put(newKey, questionType);
-                        builder.add(newKey, questions.getJsonObject(key));
-                    } else {
-                        // SAME -- append our jcr:uuid to the question
-                        JsonObject amending = builder.build().getJsonObject(key);
-                        amending.put("jcr:uuid", Json.createValue(amending.getString("jcr:uuid").concat(",")
-                                    .concat(questions.getJsonObject(key).getString("jcr:uuid"))));
-                        builder.add(key, amending);
-                    }
-                } else {
-                    // If this question does not exist, just add it
-                    seenElements.put(key, questions.getJsonObject(key).getString("dataType"));
-                    builder.add(key, questions.getJsonObject(key));
-                }
-            } else {
+            if (seenTypes == null) {
                 // No map to keep track of dataTypes provided: add blindly to the builder
                 builder.add(key, questions.get(key));
+                continue;
+            }
+
+            JsonObject question = questions.getJsonObject(key);
+            if (seenTypes.containsKey(key)) {
+                // If this question already exists, make sure that it has the same dataType
+                String questionType = question.getString("dataType");
+                if (seenTypes.get(key) != questionType) {
+                    // DIFFERENT -- prepend a slightly differently named version
+                    String newKey = questionType.concat("|").concat(key);
+                    seenTypes.put(newKey, questionType);
+                    seenElements.put(newKey, question.getString(JCR_UUID));
+                    builder.add(newKey, question);
+                } else {
+                    // SAME -- append our jcr:uuid to the question
+                    // JsonObjects are immutable, so we need to copy and overwrite the UUID
+                    JsonObjectBuilder amended = Json.createObjectBuilder();
+                    for (String amendKey : question.keySet()) {
+                        if (amendKey.equals(JCR_UUID)) {
+                            // Append our jcr:uuid to the existing one
+                            String newUUID = String.format(
+                                "%s,%s",
+                                seenElements.get(key),
+                                question.getString(JCR_UUID)
+                            );
+                            amended.add(JCR_UUID, newUUID);
+                            seenElements.put(key, newUUID);
+                        } else {
+                            amended.add(amendKey, question.get(amendKey));
+                        }
+                    }
+                    builder.add(key, amended.build());
+                }
+            } else {
+                // If this question does not exist, just add it
+                seenTypes.put(key, question.getString("dataType"));
+                seenElements.put(key, question.getString(JCR_UUID));
+                builder.add(key, question);
             }
         }
     }
@@ -165,6 +187,6 @@ public class FilterServlet extends SlingSafeMethodsServlet
      */
     private void copyFields(JsonObject questions, JsonObjectBuilder builder)
     {
-        this.copyFields(questions, builder, null);
+        this.copyFields(questions, builder, null, null);
     }
 }
