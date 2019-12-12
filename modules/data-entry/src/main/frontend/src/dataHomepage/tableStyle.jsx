@@ -48,8 +48,6 @@ const liveTableStyle = theme => ({
         right: theme.spacing(2)
     },
     dialogContent: {
-        padding: theme.spacing(4,2,2,2),
-        minHeight: theme.spacing(8)
     },
     answerField: {
         width: "100%",
@@ -60,8 +58,15 @@ const liveTableStyle = theme => ({
     categoryOption: {
         whiteSpace: "normal",
     },
-    filterTable: {
-        marginBottom: "0px"
+    hidden: {
+        visibility: "hidden"
+    },
+    selectPlaceholder: {
+        opacity: 0.3
+    },
+    verticalFieldSpacer: {
+        paddingTop: "0px !important",
+        paddingBottom: "0px !important"
     }
 });
 
