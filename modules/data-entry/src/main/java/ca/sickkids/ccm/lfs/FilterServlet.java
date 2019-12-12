@@ -37,8 +37,6 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A servlet that lists the filters applicable to the given questionnaire, or all questionnaires visible by the user.
@@ -59,12 +57,9 @@ public class FilterServlet extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = 2558430802619674046L;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FilterServlet.class);
-
     private static final String DEEP_JSON_SUFFIX = ".deep.json";
 
     // TODO: Cleanup
-    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
@@ -81,8 +76,12 @@ public class FilterServlet extends SlingSafeMethodsServlet
             }
 
             // Next, convert it to a deep json object
-            final Resource resource = request.getResourceResolver().getResource(questionnaire);
-            allProperties = resource.adaptTo(JsonObject.class);
+            final Resource resource = request.getResourceResolver().resolve(questionnaire);
+
+            // JsonObjects are immutable, so we have to manually copy over non-questions to a new object
+            JsonObjectBuilder builder = Json.createObjectBuilder();
+            this.copyFields(resource.adaptTo(JsonObject.class), builder);
+            allProperties = builder.build();
         } else {
             // If there is no questionnaire specified, we return all fields by all questionnaires
             // visible by the user
@@ -90,46 +89,15 @@ public class FilterServlet extends SlingSafeMethodsServlet
                 // We select all child nodes of the homepage, filtering out nodes that aren't ours, such as rep:policy
                 new StringBuilder("select n from [lfs:Questionnaire] as n where ischildnode(n, '"
                     + request.getResource().getPath() + "') and n.'sling:resourceSuperType' = 'lfs/Resource'");
-            // TODO: Append .deep.json to the results
             final Iterator<Resource> results =
                 request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
             JsonObjectBuilder builder = Json.createObjectBuilder();
+            Map<String, String> seenElements = new HashMap<String, String>();
             while (results.hasNext()) {
                 Resource resource = results.next();
                 String path = resource.getResourceMetadata().getResolutionPath();
-                resource = request.getResourceResolver().resolve(path.concat(".deep.json"));
-                JsonObject questions = resource.adaptTo(JsonObject.class);
-                Map<String, String> seenElements = new HashMap<String, String>();
-
-                // Copy over the keys
-                for (String key : questions.keySet()) {
-                    // Skip over non-questions (non-objects)
-                    if (questions.get(key).getValueType() != ValueType.OBJECT
-                        || !questions.getJsonObject(key).getString("jcr:primaryType").equals("lfs:Question")) {
-                        continue;
-                    }
-
-                    if (seenElements.containsKey(key)) {
-                        // If this question already exists, make sure that it has the same dataType
-                        String questionType = questions.getJsonObject(key).getString("dataType");
-                        if (seenElements.get(key) != questionType) {
-                            // DIFFERENT -- prepend a slightly differently named version
-                            String newKey = questionType.concat("|").concat(key);
-                            seenElements.put(newKey, questionType);
-                            builder.add(newKey, questions.getJsonObject(key));
-                        } else {
-                            // SAME -- append our jcr:uuid to the question
-                            JsonObject amending = builder.build().getJsonObject(key);
-                            amending.put("jcr:uuid", Json.createValue(amending.getString("jcr:uuid").concat(",")
-                                        .concat(questions.getJsonObject(key).getString("jcr:uuid"))));
-                            builder.add(key, amending);
-                        }
-                    } else {
-                        // If this question does not exist, just add it
-                        seenElements.put(key, questions.getJsonObject(key).getString("dataType"));
-                        builder.add(key, questions.getJsonObject(key));
-                    }
-                }
+                resource = request.getResourceResolver().resolve(path.concat(DEEP_JSON_SUFFIX));
+                this.copyFields(resource.adaptTo(JsonObject.class), builder, seenElements);
             }
             allProperties = builder.build();
         }
@@ -138,5 +106,65 @@ public class FilterServlet extends SlingSafeMethodsServlet
         // name and type
         final Writer out = response.getWriter();
         out.write(allProperties.toString());
+    }
+
+
+    /**
+     * Copies over lfs:Question fields from the input JsonObject, optionally handling questions that
+     * may already exist in the builder.
+     *
+     * @param questions A JsonObject (from an lfs:Questionnaire) whose fields may be lfs:Questions
+     * @param builder A JsonObjectBuilder to copy results to
+     * @param seenElements Either a map to track already-seen fields, or null to disable tracking
+     * @return the content matching the query
+     */
+    private void copyFields(JsonObject questions, JsonObjectBuilder builder, Map<String, String> seenElements)
+    {
+        // Copy over the keys
+        for (String key : questions.keySet()) {
+            // Skip over non-questions (non-objects)
+            if (questions.get(key).getValueType() != ValueType.OBJECT
+                || !questions.getJsonObject(key).getString("jcr:primaryType").equals("lfs:Question")) {
+                continue;
+            }
+
+            if (seenElements != null) {
+                if (seenElements.containsKey(key)) {
+                    // If this question already exists, make sure that it has the same dataType
+                    String questionType = questions.getJsonObject(key).getString("dataType");
+                    if (seenElements.get(key) != questionType) {
+                        // DIFFERENT -- prepend a slightly differently named version
+                        String newKey = questionType.concat("|").concat(key);
+                        seenElements.put(newKey, questionType);
+                        builder.add(newKey, questions.getJsonObject(key));
+                    } else {
+                        // SAME -- append our jcr:uuid to the question
+                        JsonObject amending = builder.build().getJsonObject(key);
+                        amending.put("jcr:uuid", Json.createValue(amending.getString("jcr:uuid").concat(",")
+                                    .concat(questions.getJsonObject(key).getString("jcr:uuid"))));
+                        builder.add(key, amending);
+                    }
+                } else {
+                    // If this question does not exist, just add it
+                    seenElements.put(key, questions.getJsonObject(key).getString("dataType"));
+                    builder.add(key, questions.getJsonObject(key));
+                }
+            } else {
+                // No map to keep track of dataTypes provided: add blindly to the builder
+                builder.add(key, questions.get(key));
+            }
+        }
+    }
+
+    /**
+     * Copies over lfs:Question fields from the input JsonObject.
+     *
+     * @param questions A JsonObject (from an lfs:Questionnaire) whose fields may be lfs:Questions
+     * @param builder A JsonObjectBuilder to copy results to
+     * @return the content matching the query
+     */
+    private void copyFields(JsonObject questions, JsonObjectBuilder builder)
+    {
+        this.copyFields(questions, builder, null);
     }
 }

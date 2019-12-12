@@ -105,7 +105,12 @@ function Forms(props) {
         }}
       />
       <CardContent>
-        <LiveTable columns={columns} customUrl={customUrl}/>
+        <LiveTable
+          columns={columns}
+          customUrl={customUrl}
+          filters
+          joinChildren="lfs:Answer"
+          />
       </CardContent>
     </Card>
   );

@@ -113,6 +113,8 @@ function UserDashboard(props) {
                     customUrl={customUrl}
                     defaultLimit={10}
                     joinChildren="lfs:Answer"
+                    questionnaire={questionnaire["@path"]}
+                    filters
                     />
                 </CardContent>
               </Card>

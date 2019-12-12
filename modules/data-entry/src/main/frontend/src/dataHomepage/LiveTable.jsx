@@ -41,7 +41,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, classes } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, classes, filters, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState([]);
   const [paginationData, setPaginationData] = useState(
@@ -256,7 +256,7 @@ function LiveTable(props) {
   return (
     // We wrap everything in a Paper for a nice separation, as a Table has no background or border of its own.
     <Paper elevation={0}>
-      <Filters onChangeFilters={handleChangeFilters}/>
+      {filters && <Filters onChangeFilters={handleChangeFilters} {...rest} />}
       <div>
         {paginationControls}
       </div>
