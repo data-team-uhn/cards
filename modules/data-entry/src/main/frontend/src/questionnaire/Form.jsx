@@ -31,6 +31,8 @@ import {
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerComponentManager from "./AnswerComponentManager";
 
+// todo: once components from the login module can be imported, open the login Dialog instead of redirecting to the login page
+
 // FIXME In order for the questions to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all question types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
 
 import BooleanQuestion from "./BooleanQuestion";
@@ -174,10 +176,11 @@ function Form (props) {
         color="primary"
         disabled={saveInProgress}
         className={classes.saveButton}
+        href = {lastSaveStatus === false ? "/system/sling/logout" : ""} // doing this makes the second attempt at saving log the user out
       >
         {saveInProgress ? 'Saving' :
         lastSaveStatus === true ? 'Saved' :
-        lastSaveStatus === false ? 'Save failed, try again?' :
+        lastSaveStatus === false ? 'Save failed, log out and try again?' :
         'Save'}
       </Button>
     </form>
