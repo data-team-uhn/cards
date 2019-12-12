@@ -17,14 +17,14 @@
 //  under the License.
 //
 import React, { useState } from "react";
-import { Chip, Typography, Button, Link, Dialog, CircularProgress, IconButton } from "@material-ui/core";
-import { DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
+import { Chip, Typography, Button, Dialog, CircularProgress, IconButton } from "@material-ui/core";
+import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import CloseIcon from '@material-ui/icons/Close';
-import moment from "moment";
 
 import { DATE_FORMATS } from "../questionnaire/DateQuestion.jsx";
 import { NumberFormatCustom } from "../questionnaire/NumberQuestion";
+import VocabularySelector from "../vocabQuery/query.jsx";
 import LiveTableStyle from "./tableStyle.jsx";
 
 const FILTER_URL = "/Questionnaires.filters";
@@ -84,7 +84,7 @@ function Filters(props) {
   }
 
   // Open the filter selection dialog
-  let openDialog = () => {
+  let openDialogAndAdd = () => {
     setDialogOpen(true);
     // Replace our defaults with a deep copy of what's actually active, plus an empty one
     let newFilters = deepCopyFilters(activeFilters);
@@ -94,6 +94,8 @@ function Filters(props) {
     newFilters.forEach( (newFilter) => {
       getOutputChoices(newFilter.name, newFilter);
     });
+
+    addFilter();
 
     // What filters are we looking at here?
     if (!filterRequestSent) {
@@ -109,13 +111,20 @@ function Filters(props) {
   // Handle the user changing one of the active filter categories
   let handleChangeFilter = (index, event) => {
     // Load up the comparators for this index, if not already loaded
-    if (!filterComparators[event.target.value]) {
-      loadComparators(event.target.value);
+    let loadedComparators = filterComparators[event.target.value];
+    if (!loadedComparators) {
+      loadedComparators = loadComparators(event.target.value);
     }
 
+    // Automatically add a new filter if they've edited the final filter
+    if (index == editingFilters.length-1) {
+      addFilter();
+    }
+
+    getOutputChoices(event.target.value);
     setEditingFilters(oldfilters => {
       var newfilters = oldfilters.slice();
-      var newfilter = {name: event.target.value, uuid: filterableUUIDs[event.target.value]}
+      var newfilter = {name: event.target.value, uuid: filterableUUIDs[event.target.value], comparator: loadedComparators[0]}
       newfilters[index] = newfilter;
       return(newfilters);
     });
@@ -125,29 +134,18 @@ function Filters(props) {
   let loadComparators = (field) => {
     // TODO: What happens if the field isn't inside of fieldData for some reason?
     let dataType = filterableDataTypes[field];
-    let displayMode = filterableDisplayModes[field];
-    let comparators;
+    let comparators = ["=", "<>"];
 
-    if (displayMode == 'list') {
-      // this is a list question with only predefined answers
-      comparators = (["=", "<>"]);
-    } else if (dataType == 'decimal' || dataType == 'long') {
-      // this is a numeric question (gt, lt, eq)
-      comparators = ([">", "<", ">=", "<=", "=", "<>"]);
-    } else if (dataType == 'date') {
-      // this is a date question (eq, ne)
-      // TODO: This should probably be in plainer text, but
-      // since these are sent to JCR2 we leave it as is
-      comparators = (["<", ">", "="]);
-    } else {
-      // Strings
-      comparators = (["=", "<>"]);
+    // Allow comparison of greater than or less than if the dataType is comparable
+    if (dataType == 'decimal' || dataType == 'long' || dataType == 'date') {
+      comparators.concat(["<", "<=", ">", ">="]);
     }
 
     // As per React standards: copy, slice, and return our input object
     setFilterComparators(filterComparators => {
       return { [field]: comparators, ...filterComparators };
     })
+    return comparators;
   }
 
   // Allow the comparator for any filter to change
@@ -232,6 +230,16 @@ function Filters(props) {
           defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           />);
+    } else if (dataType == 'vocabulary') {
+      let vocabulary = questionDefinitions[field]["sourceVocabulary"];
+      let suggestionCategories = questionDefinitions[field]["suggestionCategories"];
+      newChoices = (index) => (
+        <VocabularySelector
+          onClick = {(id, name) => {handleChangeOutput(index, id)}}
+          suggestionCategories = {suggestionCategories}
+          vocabulary = {vocabulary}
+        />
+      );
     } else {
       // Assume a string input by default
       newChoices = (index) => (
@@ -284,6 +292,11 @@ function Filters(props) {
     return(newFilters);
   }
 
+  // Helper function to close an open dialog without saving
+  let closeDialog = () => {
+    setDialogOpen(false);
+  }
+
   return(
     <div className={classes.filterContainer}>
       {/* Place the stuff in one row on the top */}
@@ -293,39 +306,41 @@ function Filters(props) {
       {activeFilters.map( (activeFilter, index) => {
         let label = activeFilter.name + " " + activeFilter.comparator + " " + activeFilter.value;
         return(
-          <Chip
-            key={label}
-            size="small"
-            label={label}
-            onDelete={()=>{
-              const newFilters = activeFilters.slice();
-              newFilters.splice(index, 1);
-              setActiveFilters(newFilters);
-              onChangeFilters && onChangeFilters(newFilters);
+          <React.Fragment key={label}>
+            <Chip
+              key={label}
+              size="small"
+              label={label}
+              onDelete={()=>{
+                const newFilters = activeFilters.slice();
+                newFilters.splice(index, 1);
+                setActiveFilters(newFilters);
+                onChangeFilters && onChangeFilters(newFilters);
+                }
               }
-            }
-            onClick={openDialog}
-            className={classes.filterChips}
-            />
+              onClick={openDialogAndAdd}
+              className={classes.filterChips}
+              />
+            {index+1 != activeFilters.length && (
+              <Typography variant="body2" display="inline">and </Typography>
+            )}
+          </React.Fragment>
           );
         })
       }
       <Button
         size="small"
         variant="contained"
-        color="primary"
+        color="default"
         className={classes.addFilterButton}
-        onClick={()=>{
-          openDialog();
-          addFilter();
-        }}
+        onClick={openDialogAndAdd}
         >
         <Add fontSize="small" />
       </Button>
       {/* Dialog for setting up filters */}
       <Dialog
         open={dialogOpen}
-        onClose={() => { setDialogOpen(false); }}
+        onClose={closeDialog}
         className={classes.dialog}
         fullWidth
         >
@@ -350,7 +365,11 @@ function Filters(props) {
                       value={filterDatum.name || ""}
                       onChange={(event) => {handleChangeFilter(index, event);}}
                       className={classes.categoryField}
+                      displayEmpty
                       >
+                        <MenuItem value="" disabled>
+                          <span className={classes.selectPlaceholder}>Add new filter...</span>
+                        </MenuItem>
                         {(filterableFields.map( (name) => {
                           return(
                             <MenuItem value={name} key={name} className={classes.categoryOption}>{name}</MenuItem>
@@ -359,7 +378,7 @@ function Filters(props) {
                     </Select>
                   </Grid>
                   {/* Select the comparison operator */}
-                  <Grid item xs={1}>
+                  <Grid item xs={1} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <Select
                       disabled={!filterDatum.name}
                       value={filterDatum.comparator || ""}
@@ -373,14 +392,14 @@ function Filters(props) {
                     </Select>
                   </Grid>
                   {/* Options, generated from their function */}
-                  <Grid item xs={5}>
+                  <Grid item xs={5} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     {filterDatum.comparator ?
                         filterableAnswers[filterDatum.name](index)
                       : <TextField disabled className={classes.answerField}></TextField>
                     }
                   </Grid>
                   {/* Deletion button */}
-                  <Grid item xs={1}>
+                  <Grid item xs={1} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <IconButton
                       size="small"
                       onClick={()=>{
@@ -395,26 +414,32 @@ function Filters(props) {
                       <CloseIcon />
                     </IconButton>
                   </Grid>
+                  {index < editingFilters.length-1 &&
+                    <Grid item container xs={12} justify="center" className={classes.verticalFieldSpacer}>
+                      <Typography variant="overline">and</Typography>
+                    </Grid>
+                  }
                 </React.Fragment>
               );
             })}
-            <Grid item xs={9}>
-              <Link href="#" onClick={addFilter}>
-                +Add another filter
-              </Link>
-            </Grid>
-            <Grid item xs={3}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.saveButton}
-                onClick={saveFilters}
-              >
-                {'Save'}
-              </Button>
-            </Grid>
           </Grid>
         </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={saveFilters}
+            >
+            {'Save'}
+          </Button>
+          <Button
+            variant="contained"
+            color="default"
+            onClick={closeDialog}
+            >
+            {'Cancel'}
+          </Button>
+        </DialogActions>
       </Dialog>
     </div>
   );
