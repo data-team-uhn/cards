@@ -30,7 +30,7 @@ import LiveTableStyle from "./tableStyle.jsx";
 const FILTER_URL = "/Questionnaires.filters";
 
 function Filters(props) {
-  const { classes, onChangeFilters } = props;
+  const { classes, onChangeFilters, questionnaire } = props;
   // Filters, as displayed in the dialog, and filters as actually saved
   const [editingFilters, setEditingFilters] = useState([]);
   const [activeFilters, setActiveFilters] = useState([]);
@@ -48,8 +48,15 @@ function Filters(props) {
   const [filterRequestSent, setFilterRequestSent] = useState(false);
 
   // Obtain information about the filters that can be applied
-  let grabFilters = (url) => {
+  let grabFilters = (urlBase) => {
     setFilterRequestSent(true);
+    let url = new URL(urlBase, window.location.origin);
+
+    // Add information about the questionnaire, if we have any
+    if (questionnaire) {
+      url.searchParams.set("questionnaire", questionnaire);
+    }
+
     fetch(url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(parseFilterData)
