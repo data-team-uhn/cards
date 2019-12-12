@@ -92,6 +92,9 @@ const headerStyle = theme => ({
     backgroundColor: "rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
     borderRadius: "15px",
     width: theme.spacing(32)
+  },
+  search: {
+    marginTop: theme.spacing(1)
   }
 });
 
