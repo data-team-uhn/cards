@@ -49,6 +49,9 @@ const headerLinksStyle = theme => ({
         width: "100%"
       }
     }
+  },
+  logout: {
+    marginTop: "0px"
   }
 });
 

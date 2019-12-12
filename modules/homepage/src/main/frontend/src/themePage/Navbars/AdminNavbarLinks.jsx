@@ -18,6 +18,7 @@ import ExitToApp from "@material-ui/icons/ExitToApp";
 // core components
 import { Button } from "MaterialDashboardReact";
 
+import SearchBar from "./SearchBar.jsx";
 import headerLinksStyle from "./headerLinksStyle.jsx";
 
 class HeaderLinks extends React.Component {
@@ -31,13 +32,14 @@ class HeaderLinks extends React.Component {
 
     return (
       <div>
+        <SearchBar />
         {/* Log out */}
         <Button
           color={expand ? "transparent" : "white"}
           justIcon={expand}
           simple={!(expand)}
           aria-label="Log out"
-          className={classes.buttonLink}
+          className={classes.buttonLink + " " + classes.logout}
           href="/system/sling/logout"
           title="Log out"
         >

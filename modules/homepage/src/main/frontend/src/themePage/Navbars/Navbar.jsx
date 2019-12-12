@@ -14,12 +14,11 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 // @material-ui/core components
 import { withStyles } from "@material-ui/core";
-import { AppBar, Toolbar, IconButton, Hidden } from "@material-ui/core";
+import { AppBar, Button, Toolbar, IconButton, Hidden } from "@material-ui/core";
 // @material-ui/icons
 import Menu from "@material-ui/icons/Menu";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
-import { Button } from "MaterialDashboardReact";
 
 import headerStyle from "./headerStyle.jsx";
 
