@@ -176,7 +176,7 @@ function Filters(props) {
     if (displayMode === 'list') {
       // First, obtain the children nodes
       newChoices = (index) => (
-        <Select
+        <SelfManagedSelect
           defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           className={classes.answerField}
@@ -193,7 +193,7 @@ function Filters(props) {
               );
             })
           }
-        </Select>
+        </SelfManagedSelect>
       );
     } else if (dataType == 'decimal' || dataType == 'long') {
       newChoices = (index) => (
@@ -417,6 +417,23 @@ function Filters(props) {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+// An implementation of Select that tracks its own state without using native=true
+function SelfManagedSelect(props) {
+  const { onChange, defaultValue, ...rest } = props;
+  const [ selection, setSelection ] = useState(defaultValue || "");
+
+  return(
+    <Select
+      value={selection}
+      onChange={(event) => {
+        setSelection(event.target.value);
+        onChange(event);
+      }}
+      {...rest}
+      />
   );
 }
 
