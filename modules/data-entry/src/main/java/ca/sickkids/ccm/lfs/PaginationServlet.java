@@ -20,7 +20,9 @@ package ca.sickkids.ccm.lfs;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.jcr.query.Query;
 import javax.json.Json;
@@ -58,7 +60,10 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -6068156942302219324L;
 
-    @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:MultipleStringLiterals"})
+    // Allowed JCR-SQL2 operators (from https://docs.adobe.com/docs/en/spec/jcr/2.0/6_Query.html#6.7.17%20Operator)
+    private static final List<String> COMPARATORS = Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE");
+
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
             throws IOException, IllegalArgumentException
@@ -72,16 +77,21 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             new StringBuilder("select n.* from [nt:base] as n");
 
         // If child nodes are required for this query, also grab them
-        // TODO: joinchildren should be sanitized
         final String joinchildren = request.getParameter("joinchildren");
         final String filtername = request.getParameter("filternames");
         if (StringUtils.isNotBlank(joinchildren)) {
             // Determine how many children we need for this query
             final int fields = StringUtils.countMatches(filtername, "|");
             for (int i = 0; i <= fields; i++) {
-                String childname = "child" + Integer.toString(i);
-                query.append(" inner join [" + joinchildren + "] as " + childname
-                        + " on ischildnode(" + childname + ", n)");
+                // joinchildren escapes \ and ]
+                query.append(
+                    String.format(
+                        " inner join [%s] as child%d on ischildnode(child%d, n)",
+                        joinchildren.replaceAll("[\\\\\\]]", "\\\\$0"),
+                        i,
+                        i
+                    )
+                );
             }
         }
 
@@ -92,7 +102,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // Full text search; \ and ' must be escaped
         final String filter = request.getParameter("filter");
         if (StringUtils.isNotBlank(filter)) {
-            query.append(" and contains(n.*, '" + this.sanitize(filter) + "')");
+            query.append(" and contains(n.*, '" + this.sanitizeField(filter) + "')");
         }
 
         // Exact condition on parent node; \ and ' must be escaped. The value must be wrapped in 's
@@ -104,8 +114,14 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 // Default comparator is =
                 fieldcomparator = "=";
             }
-            query.append(" and n.'" + this.sanitize(fieldname) + "'"
-                    + fieldcomparator + "'" + this.sanitize(fieldvalue) + "'");
+            query.append(
+                String.format(
+                    " and n.'%s'%s'%s'",
+                    this.sanitizeField(fieldname),
+                    this.sanitizeComparator(fieldcomparator),
+                    this.sanitizeField(fieldvalue)
+                )
+            );
         }
 
         // Condition on child nodes. See parseFilter for details.
@@ -163,7 +179,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             }
         }
 
-        // Build the filter conditionals by left outer joining on the lfs:Answer children
+        // Build the filter conditionals by imposing conditions on the inner joined lfs:Answer children
         StringBuilder filterdata = new StringBuilder();
         // TODO: Double check the sanitization on the comparator
         for (int i = 0; i < fieldnames.length; i++) {
@@ -171,8 +187,12 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             String[] possibleQuestions = fieldnames[i].split(",");
             filterdata.append(" and (");
             for (int j = 0; j < possibleQuestions.length; j++) {
-                filterdata.append(" child" + Integer.toString(i) + ".'question'='"
-                        + this.sanitize(possibleQuestions[j]) + "'");
+                filterdata.append(
+                    String.format(" child%d.'question'='%s'",
+                        i,
+                        this.sanitizeField(possibleQuestions[j])
+                    )
+                );
                 // Add an 'or' if there are more possible conditions
                 if (j + 1 != possibleQuestions.length) {
                     filterdata.append(" or");
@@ -180,8 +200,14 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             }
 
             // Condition 2: the value must exactly match
-            filterdata.append(") and child" + Integer.toString(i) + ".'value'" + this.sanitize(comparators[i]) + "'"
-                    + this.sanitize(fieldvalues[i]) + "'");
+            filterdata.append(
+                String.format(
+                    ") and child%d.'value'%s'%s'",
+                    i,
+                    this.sanitizeComparator(comparators[i]),
+                    this.sanitizeField(fieldvalues[i])
+                )
+            );
         }
         return filterdata.toString();
     }
@@ -192,9 +218,25 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @param fieldname the field name to sanitize
      * @return a sanitized version of the input
      */
-    private String sanitize(String fieldname)
+    private String sanitizeField(String fieldname)
     {
         return fieldname.replaceAll("['\\\\]", "\\\\$0");
+    }
+
+    /**
+     * Sanitize a comparator for an input query.
+     *
+     * @param comparator the comparator to sanitize
+     * @return a sanitized version of the input
+     */
+    private String sanitizeComparator(String comparator)
+    {
+
+        if (!COMPARATORS.contains(comparator)) {
+            // Invalid comparator: return '='
+            return "=";
+        }
+        return comparator;
     }
 
     /**
