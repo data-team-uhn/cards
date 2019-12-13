@@ -235,9 +235,12 @@ function Filters(props) {
       let suggestionCategories = questionDefinitions[field]["suggestionCategories"];
       newChoices = (index) => (
         <VocabularySelector
-          onClick = {(id, name) => {handleChangeOutput(index, id)}}
-          suggestionCategories = {suggestionCategories}
-          vocabulary = {vocabulary}
+          onClick={(id, name) => {handleChangeOutput(index, id, name)}}
+          clearOnClick={false}
+          suggestionCategories={suggestionCategories}
+          defaultValue={overrideFilters ? overrideFilters.label : editingFilters[index].label}
+          vocabulary={vocabulary}
+          noMargin
         />
       );
     } else {
@@ -261,10 +264,13 @@ function Filters(props) {
     });
   }
 
-  let handleChangeOutput = (index, newValue) => {
+  let handleChangeOutput = (index, newValue, newLabel) => {
     setEditingFilters( oldfilters => {
       let newFilters = oldfilters.slice();
       let newFilter =  {...newFilters[index], value: newValue };
+      if (newLabel != null) {
+        newFilter.label = newLabel;
+      }
       newFilters.splice(index, 1, newFilter);
       return(newFilters);
     })
@@ -304,7 +310,7 @@ function Filters(props) {
         Filters:
       </Typography>
       {activeFilters.map( (activeFilter, index) => {
-        let label = activeFilter.name + " " + activeFilter.comparator + " " + activeFilter.value;
+        let label = activeFilter.name + " " + activeFilter.comparator + " " + (activeFilter.label || activeFilter.value);
         return(
           <React.Fragment key={label}>
             <Chip
@@ -342,7 +348,9 @@ function Filters(props) {
         open={dialogOpen}
         onClose={closeDialog}
         className={classes.dialog}
+        BackdropProps={{invisible: true}}
         fullWidth
+        disableEnforceFocus
         >
         <DialogTitle id="new-form-title">
           Modify filters
