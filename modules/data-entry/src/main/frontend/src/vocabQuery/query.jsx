@@ -47,6 +47,9 @@ const NO_RESULTS_TEXT = "No results";
 //  searchDefault: Default text to display in search bar when nothing has been entered (default: 'Search')
 //  suggestionCategories: Array of required ancestor elements, of which any term must be a descendent of
 //  overrideText: When not undefined, this will overwrite the contents of the search bar
+//  defaultValue: Default chosen term ID, which will be converted to the real ID when the vocabulary loads
+//  noMargin: Removes the margin from the search wrapper
+//  keepAboveBackdrop: Keeps all of the components above the backdrop
 class VocabularyQuery extends React.Component {
   constructor(props) {
     super(props);
@@ -74,13 +77,54 @@ class VocabularyQuery extends React.Component {
   }
 
   render() {
-    const { classes, disabled, onInputFocus, searchDefault, vocabulary } = this.props;
+    const { classes, defaultValue, disabled, keepAboveBackdrop, noMargin, onInputFocus, searchDefault, vocabulary } = this.props;
+
+    const inputEl = (<Input
+      disabled={disabled}
+      variant='outlined'
+      inputProps={{
+        "aria-label": "Search"
+      }}
+      onChange={this.delayLookup}
+      inputRef={(node) => {
+        this.anchorEl = node;
+      }}
+      onKeyDown={(event) => {
+        if (event.key == 'Enter') {
+          this.queryInput(this.anchorEl.value);
+        } else if (event.key == 'ArrowDown') {
+          // Move the focus to the suggestions list
+          if (this.menuRef.children.length > 0) {
+            this.menuRef.children[0].focus();
+          }
+        }
+      }}
+      onFocus={(status) => {
+        if (onInputFocus !== undefined) {
+          onInputFocus(status);
+        }
+        this.delayLookup(status);
+        this.anchorEl.select();
+      }}
+      disabled={disabled}
+      className={noMargin ? "" : classes.searchInput}
+      multiline={true}
+      endAdornment={(
+        <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}}>
+          <Search />
+        </InputAdornment>
+      )}
+      defaultValue={defaultValue}
+      />);
 
     return (
       <div>
         {this.props.children}
 
-        <div className={classes.searchWrapper}>
+        <div className={noMargin ? "" : classes.searchWrapper}>
+          {noMargin ?
+          inputEl
+          :
           <FormControl className={classes.search}>
             <InputLabel
               classes={{
@@ -90,44 +134,8 @@ class VocabularyQuery extends React.Component {
             >
               {searchDefault}
             </InputLabel>
-            <Input
-              disabled={disabled}
-              variant='outlined'
-              inputProps={{
-                "aria-label": "Search"
-              }}
-              onChange={this.delayLookup}
-              inputRef={(node) => {
-                this.anchorEl = node;
-              }}
-              onKeyDown={(event) => {
-                if (event.key == 'Enter') {
-                  this.queryInput(this.anchorEl.value);
-                } else if (event.key == 'ArrowDown') {
-                  // Move the focus to the suggestions list
-                  if (this.menuRef.children.length > 0) {
-                    this.menuRef.children[0].focus();
-                  }
-                }
-              }}
-              onFocus={(status) => {
-                if (onInputFocus !== undefined) {
-                  onInputFocus(status);
-                }
-                this.delayLookup(status);
-                this.anchorEl.select();
-              }}
-              disabled={disabled}
-              className={classes.searchInput}
-              multiline={true}
-              endAdornment={(
-                <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}}>
-                  <Search />
-                </InputAdornment>
-              )}
-            >
-            </Input>
-          </FormControl>
+            {inputEl}
+          </FormControl>}
           <br />
           <LinearProgress className={this.state.suggestionsLoading ? null : classes.inactiveProgress}/>
         </div>
@@ -139,7 +147,7 @@ class VocabularyQuery extends React.Component {
           className={
             classNames({ [classes.popperClose]: !open })
             + " " + classes.popperNav
-            + " " + classes.popperListOnTop
+            + " " + keepAboveBackdrop ? classes.aboveBackdrop : classes.popperListOnTop
           }
           placement = "bottom-start"
           keepMounted
@@ -186,7 +194,7 @@ class VocabularyQuery extends React.Component {
           className={
             classNames({ [classes.popperClose]: !open })
             + " " + classes.popperNav
-            + " " + (this.state.infoAboveBackground ? classes.infoAboveBackground : classes.popperInfoOnTop)
+            + " " + (this.state.infoAboveBackground || keepAboveBackdrop ? classes.aboveBackdrop : classes.popperInfoOnTop)
           }
           ref={(ref) => {this.infoRef = ref}}
           modifiers={{
@@ -542,6 +550,8 @@ VocabularyQuery.propTypes = {
     overrideText: PropTypes.string,
     clearOnClick: PropTypes.bool,
     onInputFocus: PropTypes.func,
+    defaultValue: PropTypes.string,
+    noMargin: PropTypes.bool
 };
 
 VocabularyQuery.defaultProps = {

@@ -159,7 +159,7 @@ const thesaurusStyle = theme => ({
   dropdownItem: {
     whiteSpace: 'normal',
   },
-  infoAboveBackground: {
+  aboveBackdrop: {
     // When the info box is spawned from the browse menu,
     // it should no longer be greyed out
     zIndex: "1301 !important",
