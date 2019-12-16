@@ -438,7 +438,7 @@ function Filters(props) {
             color="primary"
             onClick={saveFilters}
             >
-            {'Save'}
+            {'Apply'}
           </Button>
           <Button
             variant="contained"
