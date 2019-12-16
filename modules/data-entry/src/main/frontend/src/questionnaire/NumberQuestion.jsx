@@ -19,7 +19,7 @@
 
 import { useState } from "react";
 
-import { TextField, Typography, withStyles } from "@material-ui/core";
+import { InputAdornment, TextField, Typography, withStyles } from "@material-ui/core";
 import NumberFormat from 'react-number-format';
 
 import PropTypes from "prop-types";
@@ -151,7 +151,8 @@ function NumberQuestion(props) {
   };
   const muiInputProps = {
     inputComponent: NumberFormatCustom, // Used to override a TextField's type
-    className: classes.textField
+    className: classes.textField,
+    endAdornment: <InputAdornment position="end">{props.questionDefinition.unitOfMeasurement}</InputAdornment>
   };
 
   return (
