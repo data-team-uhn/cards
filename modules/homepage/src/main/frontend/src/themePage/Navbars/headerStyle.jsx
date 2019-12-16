@@ -95,6 +95,13 @@ const headerStyle = theme => ({
   },
   search: {
     marginTop: theme.spacing(1)
+  },
+  dropdownItem: {
+    whiteSpace: "normal"
+  },
+  suggestions: {
+    // Unsure, but this should probably be a constant size, not spacing dependent
+    maxWidth: theme.spacing(32)
   }
 });
 

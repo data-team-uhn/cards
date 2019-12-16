@@ -16,19 +16,25 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import classNames from "classnames";
+import React, { useRef, useState } from "react";
 
-import { IconButton, Input, withStyles, InputAdornment } from "@material-ui/core";
+import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, MenuList, Paper, Popper, withStyles } from "@material-ui/core";
 import Search from "@material-ui/icons/Search";
 import HeaderStyle from "./headerStyle.jsx";
 
-const QUERY_URL = "/query?native=";
+const QUERY_URL = "/query";
+const MAX_RESULTS = 5;
 
 function SearchBar(props) {
   const { classes } = props;
   const [ search, setSearch ] = useState("");
+  const [ results, setResults ] = useState([]);
+  const [ popperOpen, setPopperOpen ] = useState(false);
   const [ timer, setTimer ] = useState();
   const [ error, setError ] = useState();
+
+  let input = React.useRef();
 
   let changeSearch = (query) => {
     // Reset the timer if it exists
@@ -36,13 +42,14 @@ function SearchBar(props) {
       clearTimeout(timer);
     }
 
-    setTimer(setTimeout(runQuery, 500));
     setSearch(query);
+    setTimer(setTimeout(runQuery, 500, query));
   }
 
-  let runQuery = () => {
-    let new_url = QUERY_URL + encodeURIComponent(
-      "select * from [lfs:Form] WHERE native('lucene', " + search.replace(/['\\]/g, "\\$1") + ")");
+  let runQuery = (query) => {
+    let new_url = new URL(QUERY_URL, window.location.origin);
+    new_url.searchParams.set("fulltext", encodeURIComponent(query));
+    console.log(query);
     fetch(new_url)
       .then(response => response.ok ? response.json() : Promise.reject(response))
       .then(displayResults)
@@ -51,27 +58,101 @@ function SearchBar(props) {
 
   let displayResults = (json) => {
     // Parse out the top 5 and display in popper?
+    if (json.length >= MAX_RESULTS) {
+      setResults(json.slice(0, MAX_RESULTS));
+      console.log(json.slice(0, MAX_RESULTS));
+    } else {
+      setResults(json);
+      console.log(json);
+    }
+    setPopperOpen(true);
   }
 
   let handleError = (response) => {
-    setError(response)
+    setError(response);
+  }
+
+  let getElementName = (element) => {
+    // Attempt a few different methods of getting the name
+    return element["name"] || element["title"] || element["identifier"] || element["@path"];
   }
 
   return(
-    <Input
-      type="text"
-      placeholder="Search"
-      value={search}
-      onChange={(event) => changeSearch(event.target.value)}
-      endAdornment={
-        <InputAdornment position="end">
-          <IconButton>
-            <Search />
-          </IconButton>
-        </InputAdornment>
-      }
-      className={classes.search}
-      />
+    <React.Fragment>
+      <Input
+        type="text"
+        placeholder="Search"
+        value={search}
+        onChange={(event) => changeSearch(event.target.value)}
+        endAdornment={
+          <InputAdornment position="end">
+            <IconButton>
+              <Search />
+            </IconButton>
+          </InputAdornment>
+        }
+        className={classes.search}
+        inputRef={input}
+        />
+      {/* Suggestions list using Popper */}
+      <Popper
+        open={popperOpen}
+        anchorEl={input.current}
+        transition
+        className={
+          classNames({ [classes.popperClose]: !open })
+          + " " + classes.popperNav
+          + " " + classes.popperListOnTop
+        }
+        placement = "bottom-start"
+        keepMounted
+        container={document.querySelector('#main-panel')}
+        modifiers={{
+          flip: {
+            enabled: true
+          },
+          preventOverflow: {
+            enabled: true,
+            boundariesElement: 'window',
+            escapeWithReference: true,
+          },
+          hide: {
+            enabled: true
+          }
+        }}
+        >
+        {({ TransitionProps }) => (
+          <Grow
+            {...TransitionProps}
+            id="menu-list-grow"
+            style={{
+              transformOrigin: "left top"
+            }}
+          >
+            <Paper>
+              <ClickAwayListener onClickAway={() => {setPopperOpen(false)}}>
+                <MenuList role="menu" className={classes.suggestions}>
+                  {results.map( (element, index) => (
+                    <MenuItem
+                      className={classes.dropdownItem}
+                      key={element["@path"]}
+                      onClick={(e) => {
+                        //????
+                        }}
+                      >
+                        <ListItemText
+                          primary={getElementName(element)}
+                          secondary={element["jcr:primaryType"]}
+                          />
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+    </React.Fragment>
   );
 }
 

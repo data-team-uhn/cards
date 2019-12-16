@@ -11,12 +11,9 @@
 */
 import React from "react";
 // @material-ui/core components
-import { withStyles } from "@material-ui/core";
-import { Hidden } from "@material-ui/core";
+import { Button, Hidden, IconButton, withStyles } from "@material-ui/core";
 // @material-ui/icons
 import ExitToApp from "@material-ui/icons/ExitToApp";
-// core components
-import { Button } from "MaterialDashboardReact";
 
 import SearchBar from "./SearchBar.jsx";
 import headerLinksStyle from "./headerLinksStyle.jsx";
@@ -34,12 +31,9 @@ class HeaderLinks extends React.Component {
       <div>
         <SearchBar />
         {/* Log out */}
-        <Button
-          color={expand ? "transparent" : "white"}
-          justIcon={expand}
-          simple={!(expand)}
+        <IconButton
           aria-label="Log out"
-          className={classes.buttonLink + " " + classes.logout}
+          className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
           href="/system/sling/logout"
           title="Log out"
         >
@@ -47,7 +41,7 @@ class HeaderLinks extends React.Component {
           <Hidden mdUp implementation="css">
             <p className={classes.linkText}>Log out</p>
           </Hidden>
-        </Button>
+        </IconButton>
       </div>
     );
   }
