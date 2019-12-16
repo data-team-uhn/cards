@@ -138,7 +138,7 @@ function Filters(props) {
 
     // Allow comparison of greater than or less than if the dataType is comparable
     if (dataType == 'decimal' || dataType == 'long' || dataType == 'date') {
-      comparators.concat(["<", "<=", ">", ">="]);
+      comparators = comparators.concat(["<", "<=", ">", ">="]);
     }
 
     // As per React standards: copy, slice, and return our input object
