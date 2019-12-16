@@ -30,6 +30,7 @@ const headerLinksStyle = theme => ({
       display: "flex",
       margin: "10px 15px 0",
       width: "-webkit-fill-available",
+      color: whiteColor,
       "& svg": {
         width: "24px",
         height: "30px",

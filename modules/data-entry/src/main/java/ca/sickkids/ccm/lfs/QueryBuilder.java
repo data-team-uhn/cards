@@ -16,6 +16,9 @@
  */
 package ca.sickkids.ccm.lfs;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 
 import javax.jcr.RepositoryException;
@@ -24,6 +27,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.script.Bindings;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -57,19 +61,72 @@ public class QueryBuilder implements Use
         this.resourceResolver = (ResourceResolver) bindings.get("resolver");
 
         try {
-            this.content = findContent(this.request.getRequestParameter("query").getString());
+            final String jcrQuery = this.request.getParameter("query");
+            final String luceneQuery = this.request.getParameter("lucene");
+            final String fullTextQuery = this.request.getParameter("fulltext");
+
+            // Try to use a JCR-SQL2 query first
+            if (StringUtils.isNotBlank(jcrQuery)) {
+                this.content = queryJCR(this.urlDecode(jcrQuery));
+            } else if (StringUtils.isNotBlank(luceneQuery)) {
+                this.content = queryLucene(this.urlDecode(luceneQuery));
+            } else if (StringUtils.isNotBlank(fullTextQuery)) {
+                this.content = fullTextSearch(this.urlDecode(fullTextQuery));
+            } else {
+                this.content = Json.createArrayBuilder().build().toString();
+            }
         } catch (Exception e) {
             this.content = "Unknown error: " + e.fillInStackTrace();
         }
     }
 
     /**
-     * Finds content matching the given query.
+     * URL-decodes the given request parameter.
      *
-     * @param query a JCR_SQL2 query
+     * @param param a URL-encoded request parameter
+     * @return a decoded version of the input
+     * @throws UnsupportedEncodingException should not be thrown unless UTF_8 is somehow not available
+     */
+    private String urlDecode(String param) throws UnsupportedEncodingException
+    {
+        return URLDecoder.decode(param, StandardCharsets.UTF_8.name());
+    }
+
+    /**
+     * Finds content matching the given lucene query.
+     *
+     * @param query a lucene query
      * @return the content matching the query
      */
-    private String findContent(String query) throws RepositoryException
+    private String queryLucene(String query) throws RepositoryException
+    {
+        // Wrap our lucene query in JCR-SQL2 syntax for the resource resolver to understand
+        return queryJCR(
+            String.format("select n.* from [nt:base] as n where native('lucene', '%s')"
+                + " and n.'sling:resourceSuperType' = 'lfs/Resource'", query.replace("'", "''")));
+    }
+
+    /**
+     * Finds content using the given full text search.
+     *
+     * @param query text to search
+     *
+     * @return the content matching the query
+     */
+    private String fullTextSearch(String query) throws RepositoryException
+    {
+        // Wrap our full-text query in JCR-SQL2 syntax for the resource resolver to understand
+        return queryJCR(
+            String.format("select n.* from [nt:base] as n where contains(*, '%s')", query.replace("'", "''")));
+    }
+
+    /**
+     * Finds content matching the given JCR_SQL2 query.
+     *
+     * @param query a JCR-SQL2 query
+     * @return the content matching the query
+     */
+    private String queryJCR(String query) throws RepositoryException
     {
         Iterator<Resource> results = this.resourceResolver.findResources(query, "JCR-SQL2");
         JsonArrayBuilder builder = Json.createArrayBuilder();
