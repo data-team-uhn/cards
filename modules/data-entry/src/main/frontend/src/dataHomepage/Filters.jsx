@@ -328,9 +328,6 @@ function Filters(props) {
               onClick={openDialogAndAdd}
               className={classes.filterChips}
               />
-            {index+1 != activeFilters.length && (
-              <Typography variant="body2" display="inline">and </Typography>
-            )}
           </React.Fragment>
           );
         })
@@ -423,11 +420,6 @@ function Filters(props) {
                       <CloseIcon />
                     </IconButton>
                   </Grid>
-                  {index < editingFilters.length-1 &&
-                    <Grid item container xs={12} justify="center" className={classes.verticalFieldSpacer}>
-                      <Typography variant="overline">and</Typography>
-                    </Grid>
-                  }
                 </React.Fragment>
               );
             })}
