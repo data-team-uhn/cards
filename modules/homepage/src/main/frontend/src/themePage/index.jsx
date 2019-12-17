@@ -109,6 +109,7 @@ class Main extends React.Component {
   render() {
     const { classes, ...rest } = this.props;
 
+    // if the login window was opened by the form, close the window
     if (window.name === "loginOpenedByForm") {
       window.close();
     }

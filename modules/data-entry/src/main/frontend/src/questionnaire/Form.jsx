@@ -103,20 +103,24 @@ function Form (props) {
       .then(() => setLastSaveStatus(true))
       // FIXME Use setError?
       .catch(() => {
-        // on first error, display "log out?" on click again, will make window open and will set back to save, so when loging closes...
         if (lastSaveStatus === false) {
           loginToSave();
         } else {
+          // on first attempt to save while logged out, set status to false
           setLastSaveStatus(false);
         }
       })
       .finally(() => setSaveInProgress(false));
   }
 
+  // method to open the login page in a new window, centered wrt the parent window
   let loginToSave = () => {
-    window.open("/login.html", "loginOpenedByForm", "width=600,height=800"); //open login page in new window
-    //TO DO: on successful login, close window - should this be handled here or in the login module?
-    setLastSaveStatus([]); // set back to save
+    const w = 600; // width of new window
+    const h = 800; // height of new window
+    const y = window.top.outerHeight / 2 + window.top.screenY - ( h / 2);
+    const x = window.top.outerWidth / 2 + window.top.screenX - ( w / 2);
+    window.open("/login.html", "loginOpenedByForm", `width=${w}, height=${h}, top=${y}, left=${x}`);
+    setLastSaveStatus([]); // display 'save' on button
   }
 
   /**
