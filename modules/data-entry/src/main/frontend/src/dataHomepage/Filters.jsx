@@ -169,46 +169,8 @@ function Filters(props) {
     let displayMode = filterableDisplayModes[field];
     let newChoices;
 
-    // If this question has multiple pre-defined responses, and a displayMode='list', store the responses
-    // (we ignore list+input here because the user can select anything from those)
-    if (displayMode === 'list') {
-      // First, obtain the children nodes
-      newChoices = (index) => (
-        <SelfManagedSelect
-          defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
-          onChange={(event) => {handleChangeOutput(index, event.target.value)}}
-          className={classes.answerField}
-          >
-          {Object.entries(questionDefinitions[field])
-          // answers are nodes with "jcr:primaryType" = "lfs:AnswerOption"
-            .filter( (answer) => {
-              return answer[1]['jcr:primaryType'] && answer[1]['jcr:primaryType'] === 'lfs:AnswerOption'
-            })
-          // turn these answers into menuItems
-            .map( (answer) => {
-              return(
-                <MenuItem value={answer[1]['value']} key={answer[1]['value']}>{answer[1]['value']}</MenuItem>
-              );
-            })
-          }
-        </SelfManagedSelect>
-      );
-    } else if (dataType == 'decimal' || dataType == 'long') {
-      newChoices = (index) => (
-        <TextField
-          className={classes.textField + " " + classes.answerField}
-          inputProps={{
-            decimalScale: dataType === "long" ? 0 : undefined
-          }}
-          InputProps={{
-            inputComponent: NumberFormatCustom, // Used to override a TextField's type
-            className: classes.textField
-          }}
-          defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
-          onChange={(event) => {handleChangeOutput(index, event.target.value)}}
-          />
-      );
-    } else if (dataType == 'date') {
+    // Since numeric fields can always be compared with an arbitrary input, they take precedence over list rendering
+    if (dataType == 'date') {
       // Dates should have a dateFormat, or default to "yyyy-MM-dd"
       let dateFormat = questionDefinitions[field]["dateFormat"] || "yyyy-MM-dd";
       let isMonth = dateFormat === DATE_FORMATS[1];
@@ -230,6 +192,45 @@ function Filters(props) {
           defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           />);
+    } else if (dataType == 'decimal' || dataType == 'long') {
+      // Numeric fields should be constrained to numeric fields (using NumberFormatCustom)
+      newChoices = (index) => (
+        <TextField
+          className={classes.textField + " " + classes.answerField}
+          inputProps={{
+            decimalScale: dataType === "long" ? 0 : undefined
+          }}
+          InputProps={{
+            inputComponent: NumberFormatCustom, // Used to override a TextField's type
+            className: classes.textField
+          }}
+          defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
+          onChange={(event) => {handleChangeOutput(index, event.target.value)}}
+          />
+      );
+    } else if (displayMode === 'list') {
+      // If this question has multiple pre-defined responses, and a displayMode='list', store the responses
+      // (we ignore list+input here because the user can select anything from those)
+      newChoices = (index) => (
+        <SelfManagedSelect
+          defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
+          onChange={(event) => {handleChangeOutput(index, event.target.value)}}
+          className={classes.answerField}
+          >
+          {Object.entries(questionDefinitions[field])
+          // answers are nodes with "jcr:primaryType" = "lfs:AnswerOption"
+            .filter( (answer) => {
+              return answer[1]['jcr:primaryType'] && answer[1]['jcr:primaryType'] === 'lfs:AnswerOption'
+            })
+          // turn these answers into menuItems
+            .map( (answer) => {
+              return(
+                <MenuItem value={answer[1]['value']} key={answer[1]['value']}>{answer[1]['value']}</MenuItem>
+              );
+            })
+          }
+        </SelfManagedSelect>
+      );
     } else if (dataType == 'vocabulary') {
       let vocabulary = questionDefinitions[field]["sourceVocabulary"];
       let suggestionCategories = questionDefinitions[field]["suggestionCategories"];
