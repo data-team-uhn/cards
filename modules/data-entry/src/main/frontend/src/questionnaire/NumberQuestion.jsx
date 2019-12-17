@@ -151,9 +151,11 @@ function NumberQuestion(props) {
   };
   const muiInputProps = {
     inputComponent: NumberFormatCustom, // Used to override a TextField's type
-    className: classes.textField,
-    endAdornment: <InputAdornment position="end">{props.questionDefinition.unitOfMeasurement}</InputAdornment>
+    className: classes.textField
   };
+  if (props.questionDefinition && props.questionDefinition.unitOfMeasurement) {
+    muiInputProps.endAdornment = <InputAdornment position="end">{props.questionDefinition.unitOfMeasurement}</InputAdornment>;
+  }
 
   return (
     <Question
