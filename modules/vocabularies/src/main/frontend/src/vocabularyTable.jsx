@@ -74,7 +74,7 @@ export default function VocabularyTable(props) {
           // setAcronymList can also take in a transformation function
           setAcronymList(oldAcronymList =>
             // Create a Set with the concatenated list which removes duplicates
-            // Use this duplicate free Set to make a list
+            // Use this duplicate free Set to make a list object and return it
             [...new Set(
               // New List = oldAcronymList + list
               oldAcronymList.concat(list)

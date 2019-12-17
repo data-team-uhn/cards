@@ -81,8 +81,6 @@ export default function Search(props) {
     let keywordsList = keywords.split(" ");
     keywordsList.forEach(keyword => keyword.toLowerCase());
     props.vocabList.map((vocab) => {
-      console.log(vocab.ontology.name.split(" ")
-      .map(S => S.toLowerCase()));
       if (keywordsList.includes(vocab.ontology.acronym.toLowerCase()) || 
         vocab.ontology.name.split(" ")
           .map(S => S.toLowerCase())
