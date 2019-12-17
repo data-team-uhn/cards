@@ -70,8 +70,20 @@ export default function VocabularyTable(props) {
     <React.Fragment>
       {(props.type === "remote") &&
       <Search
-          setParentAcronymList={setAcronymList}
-          setParentFilterTable={setFilterTable}
+        concatParentAcronymList={list => {
+          // setAcronymList can also take in a transformation function
+          setAcronymList(oldAcronymList =>
+            // Create a Set with the concatenated list which removes duplicates
+            // Use this duplicate free Set to make a list
+            [...new Set(
+              // New List = oldAcronymList + list
+              oldAcronymList.concat(list)
+              )
+            ]);
+        }}
+        setParentAcronymList={setAcronymList}
+        setParentFilterTable={setFilterTable}
+        vocabList={vocabList}
       />
       }
 

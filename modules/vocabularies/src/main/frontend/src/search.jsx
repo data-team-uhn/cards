@@ -75,14 +75,36 @@ export default function Search(props) {
   function search() {
     var errHappened = false;
     setLoading(true);
+    
+    // First check if any of the keywords match a vocabulary name or acronym
+    let acronymList = [];
+    let keywordsList = keywords.split(" ");
+    keywordsList.forEach(keyword => keyword.toLowerCase());
+    props.vocabList.map((vocab) => {
+      console.log(vocab.ontology.name.split(" ")
+      .map(S => S.toLowerCase()));
+      if (keywordsList.includes(vocab.ontology.acronym.toLowerCase()) || 
+        vocab.ontology.name.split(" ")
+          .map(S => S.toLowerCase())
+          .some(nameWord => keywordsList.includes(nameWord))) {
+            acronymList.push(vocab.ontology.acronym);
+        }
+    });
 
-    fetch(vocabLinks["recommender"]["base"]+vocabLinks["apikey"]+"&input="+keywords.replace(" ", "%20"))
+    if (acronymList.length > 0) {
+      setFilterTable(true);
+      props.setParentFilterTable(true);
+      props.setParentAcronymList(acronymList);
+    }
+
+    // Then also make a request to recommender and update filtered list.
+    fetch(vocabLinks["recommender"]["base"] + vocabLinks["apikey"] + "&input="+keywords.replace(" ", "%20"))
     .then((response) => {
       if (response.status >= 400) {
         errHappened = true;
       } else {
         return response;
-      }
+      } 
     })
     .then((response) => {
       if(!errHappened) {
@@ -91,8 +113,7 @@ export default function Search(props) {
     })
     .then((data) => {
       if(!errHappened) {
-        extractList(data);
-        props.setParentAcronymList(extractList(data));
+        props.concatParentAcronymList(extractList(data));
         setFilterTable(true);
         props.setParentFilterTable(true);
       }
