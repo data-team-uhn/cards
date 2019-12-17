@@ -168,7 +168,7 @@ function NumberQuestion(props) {
       <MultipleChoice
         answerNodeType={answerNodeType}
         valueType={valueType}
-        input={displayMode === "input"}
+        input={displayMode === "input" || displayMode === "list+input"}
         textbox={displayMode === "textbox"}
         onChange={findError}
         additionalInputProps={textFieldProps}
@@ -254,7 +254,7 @@ NumberQuestion.propTypes = {
   minAnswers: PropTypes.number,
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
-  displayMode: PropTypes.oneOf([undefined, "input", "textbox"]),
+  displayMode: PropTypes.oneOf([undefined, "input", "list", "list+input", "textbox"]),
   dataType: PropTypes.oneOf(['long', 'double', 'decimal']),
   minValue: PropTypes.number,
   maxValue: PropTypes.number,
