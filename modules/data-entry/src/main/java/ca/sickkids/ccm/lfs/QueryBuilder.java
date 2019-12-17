@@ -64,6 +64,7 @@ public class QueryBuilder implements Use
             final String jcrQuery = this.request.getParameter("query");
             final String luceneQuery = this.request.getParameter("lucene");
             final String fullTextQuery = this.request.getParameter("fulltext");
+            final String quickQuery = this.request.getParameter("quick");
 
             // Try to use a JCR-SQL2 query first
             if (StringUtils.isNotBlank(jcrQuery)) {
@@ -72,6 +73,8 @@ public class QueryBuilder implements Use
                 this.content = queryLucene(this.urlDecode(luceneQuery));
             } else if (StringUtils.isNotBlank(fullTextQuery)) {
                 this.content = fullTextSearch(this.urlDecode(fullTextQuery));
+            } else if (StringUtils.isNotBlank(quickQuery)) {
+                this.content = quickSearch(this.urlDecode(quickQuery));
             } else {
                 this.content = Json.createArrayBuilder().build().toString();
             }
@@ -119,6 +122,39 @@ public class QueryBuilder implements Use
         return queryJCR(
             String.format("select n.* from [nt:base] as n where contains(*, '%s')", query.replace("'", "''")));
     }
+
+    /**
+     * Finds [lfs:Form]s, [lfs:Subject]s, and [lfs:Questionnaire]s using the given full text search.
+     * This performs the search in such a way that values in child nodes (e.g. lfs:Answers of an lfs:Form)
+     * are aggregated to their parent.
+     *
+     * @param query text to search
+     *
+     * @return the content matching the query
+     */
+    private String quickSearch(String query) throws RepositoryException
+    {
+        final String[] toSearch = {"lfs:Form", "lfs:Subject", "lfs:Questionnaire"};
+        final StringBuilder oakQuery = new StringBuilder();
+
+        for (int i = 0; i < toSearch.length; i++) {
+            oakQuery.append(
+                String.format(
+                    "select n.* from [%s] as n where contains(*, '%s')",
+                    toSearch[i],
+                    query.replace("'", "''")
+                )
+            );
+
+            // Union interstitial terms together
+            if (i + 1 != toSearch.length) {
+                oakQuery.append(" union ");
+            }
+        }
+        // Wrap our full-text query in JCR-SQL2 syntax for the resource resolver to understand
+        return queryJCR(oakQuery.toString());
+    }
+
 
     /**
      * Finds content matching the given JCR_SQL2 query.
