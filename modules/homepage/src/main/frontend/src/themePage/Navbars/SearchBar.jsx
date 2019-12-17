@@ -17,7 +17,8 @@
 //  under the License.
 //
 import classNames from "classnames";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
+import { withRouter } from "react-router-dom";
 
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, MenuList, Paper, Popper, withStyles } from "@material-ui/core";
 import Search from "@material-ui/icons/Search";
@@ -48,7 +49,7 @@ function SearchBar(props) {
 
   let runQuery = (query) => {
     let new_url = new URL(QUERY_URL, window.location.origin);
-    new_url.searchParams.set("fulltext", encodeURIComponent(query));
+    new_url.searchParams.set("quick", encodeURIComponent(query));
     console.log(query);
     fetch(new_url)
       .then(response => response.ok ? response.json() : Promise.reject(response))
@@ -74,7 +75,7 @@ function SearchBar(props) {
 
   let getElementName = (element) => {
     // Attempt a few different methods of getting the name
-    return element["name"] || element["title"] || element["identifier"] || element["@path"];
+    return element["name"] || element["title"] || element["jcr:uuid"];
   }
 
   return(
@@ -107,19 +108,6 @@ function SearchBar(props) {
         placement = "bottom-start"
         keepMounted
         container={document.querySelector('#main-panel')}
-        modifiers={{
-          flip: {
-            enabled: true
-          },
-          preventOverflow: {
-            enabled: true,
-            boundariesElement: 'window',
-            escapeWithReference: true,
-          },
-          hide: {
-            enabled: true
-          }
-        }}
         >
         {({ TransitionProps }) => (
           <Grow
@@ -137,12 +125,14 @@ function SearchBar(props) {
                       className={classes.dropdownItem}
                       key={element["@path"]}
                       onClick={(e) => {
-                        //????
+                        // Redirect
+                        props.history.push("/content.html" + element["@path"]);
                         }}
                       >
                         <ListItemText
                           primary={getElementName(element)}
                           secondary={element["jcr:primaryType"]}
+                          className={classes.dropdownItem}
                           />
                     </MenuItem>
                   ))}
@@ -156,4 +146,4 @@ function SearchBar(props) {
   );
 }
 
-export default withStyles(HeaderStyle)(SearchBar);
+export default withStyles(HeaderStyle)(withRouter(SearchBar));
