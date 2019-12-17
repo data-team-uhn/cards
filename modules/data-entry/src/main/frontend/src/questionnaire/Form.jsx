@@ -114,7 +114,7 @@ function Form (props) {
   }
 
   let loginToSave = () => {
-    window.open("/login.html", "", "width=600,height=400"); //open login page in new window
+    window.open("/login.html", "loginOpenedByForm", "width=600,height=800"); //open login page in new window
     //TO DO: on successful login, close window - should this be handled here or in the login module?
     setLastSaveStatus([]); // set back to save
   }
@@ -192,7 +192,7 @@ function Form (props) {
       >
         {saveInProgress ? 'Saving' :
         lastSaveStatus === true ? 'Saved' :
-        lastSaveStatus === false ? 'Save failed, log out and try again?' :
+        lastSaveStatus === false ? 'Save failed, log in and try again?' :
         'Save'}
       </Button>
     </form>

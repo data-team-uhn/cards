@@ -109,6 +109,10 @@ class Main extends React.Component {
   render() {
     const { classes, ...rest } = this.props;
 
+    if (window.name === "loginOpenedByForm") {
+      window.close();
+    }
+
     return (
       <div className={classes.wrapper}>
         <Suspense fallback={<div>Loading...</div>}>
