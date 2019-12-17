@@ -102,8 +102,21 @@ function Form (props) {
     }).then((response) => response.ok ? true : Promise.reject(response))
       .then(() => setLastSaveStatus(true))
       // FIXME Use setError?
-      .catch(() => setLastSaveStatus(false))
+      .catch(() => {
+        // on first error, display "log out?" on click again, will make window open and will set back to save, so when loging closes...
+        if (lastSaveStatus === false) {
+          loginToSave();
+        } else {
+          setLastSaveStatus(false);
+        }
+      })
       .finally(() => setSaveInProgress(false));
+  }
+
+  let loginToSave = () => {
+    window.open("/login.html", "", "width=600,height=400"); //open login page in new window
+    //TO DO: on successful login, close window - should this be handled here or in the login module?
+    setLastSaveStatus([]); // set back to save
   }
 
   /**
@@ -176,7 +189,6 @@ function Form (props) {
         color="primary"
         disabled={saveInProgress}
         className={classes.saveButton}
-        href = {lastSaveStatus === false ? "/system/sling/logout" : ""} // doing this makes the second attempt at saving log the user out
       >
         {saveInProgress ? 'Saving' :
         lastSaveStatus === true ? 'Saved' :
