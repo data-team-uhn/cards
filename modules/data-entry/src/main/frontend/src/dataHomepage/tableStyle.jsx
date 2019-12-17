@@ -67,6 +67,15 @@ const liveTableStyle = theme => ({
     verticalFieldSpacer: {
         paddingTop: "0px !important",
         paddingBottom: "0px !important"
+    },
+    comparatorSelector: {
+        width: "100%"
+    },
+    dialogPaper: {
+        maxWidth: "634px"
+    },
+    deleteButton: {
+        width: "100%"
     }
 });
 

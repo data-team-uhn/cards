@@ -346,6 +346,9 @@ function Filters(props) {
         open={dialogOpen}
         onClose={closeDialog}
         className={classes.dialog}
+        PaperProps={{
+          className: classes.dialogPaper
+        }}
         BackdropProps={{invisible: true}}
         fullWidth
         disableEnforceFocus
@@ -361,7 +364,7 @@ function Filters(props) {
           { /* If there is no error but also no data, show a progress circle */
           !error && !filterableFields &&
             <CircularProgress />}
-          <Grid container spacing={3} className={classes.filterTable}>
+          <Grid container spacing={2} className={classes.filterTable}>
             {editingFilters.map( (filterDatum, index) => {
               return(
                 <React.Fragment key={index}>
@@ -384,7 +387,7 @@ function Filters(props) {
                     </Select>
                   </Grid>
                   {/* Select the comparison operator */}
-                  <Grid item xs={1} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                  <Grid item xs={1} className={classes.comparatorStyle + " " + (index == editingFilters.length-1 ? classes.hidden : "")}>
                     <Select
                       disabled={!filterDatum.name}
                       value={filterDatum.comparator || ""}
@@ -416,6 +419,7 @@ function Filters(props) {
                             return(newData);
                           });
                         }}
+                      className={classes.deleteButton}
                       >
                       <CloseIcon />
                     </IconButton>
