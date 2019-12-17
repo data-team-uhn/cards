@@ -286,10 +286,11 @@
   },
   "Age of genetic diagnosis": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Age of genetic diagnosis (y)",
+    "text": "Age of genetic diagnosis",
     "minAnswers": 1,
     "maxAnswers": 1,
     "displayMode": "input",
+    "unitOfMeasurement": "years",
     "dataType": "decimal"
   },
   "Vital status": {
@@ -457,10 +458,11 @@
   },
   "Age at 1st malignant Dx": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Age at 1st malignant Dx (y)",
+    "text": "Age at 1st malignant Dx",
     "minAnswers": 1,
     "maxAnswers": 1,
     "displayMode": "input",
+    "unitOfMeasurement": "years",
     "dataType": "long"
   },
   "Co-morbidities": {
