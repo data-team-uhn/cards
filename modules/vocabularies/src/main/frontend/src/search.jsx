@@ -66,6 +66,7 @@ function extractList(data) {
 }
 
 export default function Search(props) {
+  const [error, setError] = React.useState(false);
   const [filterTable, setFilterTable] = React.useState(false);
   const [keywords, setKeywords] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -73,21 +74,25 @@ export default function Search(props) {
   const classes = useStyles();
 
   function search() {
-    var errHappened = false;
+    setError(false);
     setLoading(true);
-    
     // First check if any of the keywords match a vocabulary name or acronym
-    let acronymList = [];
-    let keywordsList = keywords.split(" ");
-    keywordsList.forEach(keyword => keyword.toLowerCase());
-    props.vocabList.map((vocab) => {
-      if (keywordsList.includes(vocab.ontology.acronym.toLowerCase()) || 
-        vocab.ontology.name.split(" ")
-          .map(S => S.toLowerCase())
-          .some(nameWord => keywordsList.includes(nameWord))) {
-            acronymList.push(vocab.ontology.acronym);
-        }
-    });
+
+    // Process keywords of search into a list of lower case words
+    let keywordsList = keywords.split(" ").map(keyword => keyword.toLowerCase());
+
+    // Filter the list for vocabularies that meet either of 2 criteria
+    let acronymList = props.vocabList.filter(vocab => (
+      // (1) Any of the search keywords is the vocabulary's acronym
+      keywordsList.includes(vocab.ontology.acronym.toLowerCase())
+      ||
+      // (2) There is an intersection of the set of name words and the set of search keywords
+      // The name words are also processed into a list of lower case words
+      vocab.ontology.name.split(" ")
+        .map(S => S.toLowerCase())
+        .some(nameWord => keywordsList.includes(nameWord))
+    // Finally return only the acronyms of the vocabularies that meet above criteria as a list
+    )).map(vocab => vocab.ontology.acronym);
 
     if (acronymList.length > 0) {
       setFilterTable(true);
@@ -96,25 +101,24 @@ export default function Search(props) {
     }
 
     // Then also make a request to recommender and update filtered list.
-    fetch(vocabLinks["recommender"]["base"] + vocabLinks["apikey"] + "&input="+keywords.replace(" ", "%20"))
+    let url = new URL(vocabLinks["recommender"]["base"]);
+    url.searchParams.set("apikey", vocabLinks["apikey"]);
+    url.searchParams.set("input", encodeURIComponent(keywords));
+    fetch(url.toString())
     .then((response) => {
       if (response.status >= 400) {
-        errHappened = true;
+        setLoading(false);
+        setError(true);
+        return Promise.reject(response);
       } else {
         return response;
-      } 
-    })
-    .then((response) => {
-      if(!errHappened) {
-        return response.json();
       }
     })
+    .then(response => response.json())
     .then((data) => {
-      if(!errHappened) {
-        props.concatParentAcronymList(extractList(data));
-        setFilterTable(true);
-        props.setParentFilterTable(true);
-      }
+      props.concatParentAcronymList(extractList(data));
+      setFilterTable(true);
+      props.setParentFilterTable(true);
       setLoading(false);
     });
   }
@@ -146,6 +150,7 @@ export default function Search(props) {
           <Grid item xs={12} sm={11}>
             <TextField
               fullWidth
+              helperText={(error ? "Request Failed" : "")}
               InputProps={{
                 endAdornment: <InputAdornment position="end">
                                 <IconButton onClick={keywords === "" ? reset: search}>

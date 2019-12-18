@@ -91,13 +91,13 @@ export default function VocabularyEntry(props) {
     var badResponse = false;
     props.setPhase(Phase["Installing"]);
 
-    fetch(
-      vocabLinks["install"]["base"] + "&identifier=" + props.acronym +
-      Object.keys(vocabLinks["install"]["params"]).map(
-        key => ("&" + key + "=" + vocabLinks["install"]["params"][key])
-      ).join(""),
-      {method: "POST"}
-    )
+    let url = new URL(vocabLinks["install"]["base"]);
+    url.searchParams.set("identifier", props.acronym);
+    Object.keys(vocabLinks["install"]["params"]).forEach(
+      (key) => {url.searchParams.set(key, vocabLinks["install"]["params"][key])}
+    );
+
+    fetch(url.toString(), {method: "POST"})
     .then((resp) => resp.json())
     .then((resp) => {
       if(!resp["isSuccessful"]) {

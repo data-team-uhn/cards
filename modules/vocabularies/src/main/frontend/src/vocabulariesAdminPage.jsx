@@ -29,6 +29,21 @@ import VocabularyDirectory from "./vocabularyDirectory";
 const Phase = require("./phaseCodes.json");
 const vocabLinks = require("./vocabularyLinks.json");
 
+function generateRemoteLink() {
+  let url = new URL(vocabLinks["remote"]["base"]);
+  url.searchParams.set("apikey", vocabLinks["apikey"]);
+  Object.keys(vocabLinks["remote"]["params"]).forEach(
+    (key) => {
+      (key === "include" ? 
+        url.searchParams.set(key, vocabLinks["remote"]["params"][key].join())
+        :
+        url.searchParams.set(key,  vocabLinks["remote"]["params"][key])
+      )
+    }
+  )
+  return url.toString();
+}
+
 export default function VocabulariesAdminPage() {
   const [remoteVocabList, setRemoteVocabList] = React.useState([]);
   const [localVocabList, setLocalVocabList] = React.useState([]);
@@ -151,19 +166,7 @@ export default function VocabulariesAdminPage() {
        
       <VocabularyDirectory 
         type="remote"
-        link={
-          vocabLinks["remote"]["base"] +
-          vocabLinks["apikey"] +
-          Object.keys(vocabLinks["remote"]["params"]).map(
-            key => ("&" + key + "=" +
-              (key === "include" ? 
-                vocabLinks["remote"]["params"][key].join()
-                :
-                vocabLinks["remote"]["params"][key])
-              )
-            )
-          .join("")
-        } 
+        link={generateRemoteLink()} 
         vocabList={remoteVocabList}
         setVocabList={processRemoteVocabList}
         acronymPhaseObject={acronymPhaseObject}
