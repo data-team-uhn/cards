@@ -102,13 +102,11 @@ function Form (props) {
     }).then((response) => response.ok ? true : Promise.reject(response))
       .then(() => setLastSaveStatus(true))
       // FIXME Use setError?
-      .catch(() => {
-        if (lastSaveStatus === false) {
-          loginToSave();
-        } else {
-          // on first attempt to save while logged out, set status to false
-          setLastSaveStatus(false);
-        }
+      .catch((error) => {
+        // on first attempt to save while logged out, set status to false to make button text inform user
+        (lastSaveStatus === false) ? loginToSave() : setLastSaveStatus(false);
+        // TODO: place above in: if (error.status === 401)
+        // currently, error status is 500
       })
       .finally(() => setSaveInProgress(false));
   }
