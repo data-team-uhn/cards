@@ -102,11 +102,12 @@ function Form (props) {
     }).then((response) => response.ok ? true : Promise.reject(response))
       .then(() => setLastSaveStatus(true))
       // FIXME Use setError?
-      .catch((error) => {
-        // on first attempt to save while logged out, set status to false to make button text inform user
-        (lastSaveStatus === false) ? loginToSave() : setLastSaveStatus(false);
-        // TODO: place above in: if (error.status === 401)
-        // currently, error status is 500
+      .catch(() => {
+        // error is handled if user is not logged in
+        if (window.Sling.getSessionInfo() === null || window.Sling.getSessionInfo().userID === 'anonymous') {
+          // on first attempt to save while logged out, set status to false to make button text inform user
+          (lastSaveStatus === false) ? loginToSave() : setLastSaveStatus(false);
+        }
       })
       .finally(() => setSaveInProgress(false));
   }
