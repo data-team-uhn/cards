@@ -132,7 +132,7 @@ const Sidebar = ({ ...props }) => {
         >
           {brand}
           <div className={classes.sidebarWrapper}>
-            <AdminNavbarLinks />
+            <AdminNavbarLinks closeSidebar={props.handleDrawerToggle}/>
             {links}
             {adminLinks}
           </div>

@@ -17,8 +17,9 @@
 //  under the License.
 //
 import classNames from "classnames";
+import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { withRouter } from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom";
 
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, MenuList, Paper, Popper, withStyles } from "@material-ui/core";
 import Search from "@material-ui/icons/Search";
@@ -28,7 +29,7 @@ const QUERY_URL = "/query";
 const MAX_RESULTS = 5;
 
 function SearchBar(props) {
-  const { classes } = props;
+  const { classes, closeSidebar, invertColors } = props;
   const [ search, setSearch ] = useState("");
   const [ results, setResults ] = useState([]);
   const [ popperOpen, setPopperOpen ] = useState(false);
@@ -50,7 +51,6 @@ function SearchBar(props) {
   let runQuery = (query) => {
     let new_url = new URL(QUERY_URL, window.location.origin);
     new_url.searchParams.set("quick", encodeURIComponent(query));
-    console.log(query);
     fetch(new_url)
       .then(response => response.ok ? response.json() : Promise.reject(response))
       .then(displayResults)
@@ -61,10 +61,8 @@ function SearchBar(props) {
     // Parse out the top 5 and display in popper?
     if (json.length >= MAX_RESULTS) {
       setResults(json.slice(0, MAX_RESULTS));
-      console.log(json.slice(0, MAX_RESULTS));
     } else {
       setResults(json);
-      console.log(json);
     }
     setPopperOpen(true);
   }
@@ -87,12 +85,12 @@ function SearchBar(props) {
         onChange={(event) => changeSearch(event.target.value)}
         endAdornment={
           <InputAdornment position="end">
-            <IconButton>
+            <IconButton className={invertColors ? classes.invertedColors : ""}>
               <Search />
             </IconButton>
           </InputAdornment>
         }
-        className={classes.search}
+        className={classes.search + " " + (invertColors ? classes.invertedColors : "")}
         inputRef={input}
         />
       {/* Suggestions list using Popper */}
@@ -103,7 +101,7 @@ function SearchBar(props) {
         className={
           classNames({ [classes.popperClose]: !open })
           + " " + classes.popperNav
-          + " " + classes.popperListOnTop
+          + " " + classes.aboveBackground
         }
         placement = "bottom-start"
         keepMounted
@@ -127,6 +125,8 @@ function SearchBar(props) {
                       onClick={(e) => {
                         // Redirect
                         props.history.push("/content.html" + element["@path"]);
+                        closeSidebar && closeSidebar();
+                        setPopperOpen(false);
                         }}
                       >
                         <ListItemText
@@ -144,6 +144,10 @@ function SearchBar(props) {
       </Popper>
     </React.Fragment>
   );
+}
+
+SearchBar.propTypes = {
+  invertColors: PropTypes.bool
 }
 
 export default withStyles(HeaderStyle)(withRouter(SearchBar));

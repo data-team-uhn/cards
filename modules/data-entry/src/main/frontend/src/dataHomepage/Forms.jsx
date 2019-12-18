@@ -29,7 +29,7 @@ function Forms(props) {
 
   const entry = /Forms\/(.+)/.exec(location.pathname);
   if (entry) {
-    return <Form id={entry[1]}/>;
+    return <Form id={entry[1]} key={location.pathname}/>;
   }
 
   const [ title, setTitle ] = useState("Forms");

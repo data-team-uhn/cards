@@ -9,6 +9,7 @@
 =========================================================
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import PropTypes from "prop-types";
 import React from "react";
 // @material-ui/core components
 import { Button, Hidden, IconButton, withStyles } from "@material-ui/core";
@@ -20,7 +21,7 @@ import headerLinksStyle from "./headerLinksStyle.jsx";
 
 class HeaderLinks extends React.Component {
   render() {
-    const { classes } = this.props;
+    const { classes, closeSidebar } = this.props;
 
     // When the screen is larger than "MdUp" size, we alter some menu items
     // so that they show up white in the sidebar (rather than black on the
@@ -29,7 +30,10 @@ class HeaderLinks extends React.Component {
 
     return (
       <div>
-        <SearchBar />
+        <SearchBar
+          invertColors={!expand}
+          closeSidebar={expand ? undefined : closeSidebar}
+          />
         {/* Log out */}
         <IconButton
           aria-label="Log out"
@@ -45,6 +49,10 @@ class HeaderLinks extends React.Component {
       </div>
     );
   }
+}
+
+HeaderLinks.propTypes = {
+  closeSidebar: PropTypes.func
 }
 
 export default withStyles(headerLinksStyle, {withTheme: true})(HeaderLinks);

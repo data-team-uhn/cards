@@ -102,6 +102,12 @@ const headerStyle = theme => ({
   suggestions: {
     // Unsure, but this should probably be a constant size, not spacing dependent
     maxWidth: theme.spacing(32)
+  },
+  invertedColors: {
+    color: whiteColor
+  },
+  aboveBackground: {
+    zIndex: "1301"
   }
 });
 
