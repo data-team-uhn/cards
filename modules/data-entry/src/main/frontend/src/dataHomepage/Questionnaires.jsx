@@ -24,7 +24,7 @@ export default function Questionnaires(props) {
   const { match, location } = props;
   const entry = /Questionnaires\/(.+)/.exec(location.pathname);
   if (entry) {
-    return <Questionnaire id={entry[1]}/>;
+    return <Questionnaire id={entry[1]} key={location.pathname}/>;
   }
   const columns = [
     {

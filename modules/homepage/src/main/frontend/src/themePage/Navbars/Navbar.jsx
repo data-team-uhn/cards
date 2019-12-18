@@ -50,7 +50,7 @@ function Header({ ...props }) {
         </div>
         {/* While the screen is wide enough, display the navbar at the topright */}
         <Hidden smDown implementation="css">
-          <AdminNavbarLinks />
+          <AdminNavbarLinks closeSidebar={props.handleDrawerToggle} />
         </Hidden>
         {/* While the screen is too narrow, display the mini sidebar control */}
         <Hidden mdUp implementation="css">
