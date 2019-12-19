@@ -329,6 +329,7 @@
     "minAnswers": 1,
     "maxAnswers": 1,
     "displayMode": "input",
+    "unitOfMeasurement": "years",
     "dataType": "decimal"
   },
   "Relation to proband": {
