@@ -16,10 +16,9 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import classNames from "classnames";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { Redirect, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, MenuList, Paper, Popper, withStyles } from "@material-ui/core";
 import Search from "@material-ui/icons/Search";
@@ -37,6 +36,7 @@ function SearchBar(props) {
   const [ error, setError ] = useState();
 
   let input = React.useRef();
+  let suggestionMenu = React.useRef();
 
   let changeSearch = (query) => {
     // Reset the timer if it exists
@@ -45,7 +45,14 @@ function SearchBar(props) {
     }
 
     setSearch(query);
+    setPopperOpen(true);
+    setResults([{
+      name: 'Searching...',
+      '@path': '',
+      'disabled': true
+    }]);
     setTimer(setTimeout(runQuery, 500, query));
+    setError(false);
   }
 
   let runQuery = (query) => {
@@ -58,17 +65,23 @@ function SearchBar(props) {
   }
 
   let displayResults = (json) => {
-    // Parse out the top 5 and display in popper?
+    // Parse out the top 5 and display in popper
     if (json.length >= MAX_RESULTS) {
       setResults(json.slice(0, MAX_RESULTS));
-    } else {
+    } else if (json.length > 0) {
       setResults(json);
+    } else {
+      setResults([{
+        name: 'No results',
+        '@path': '',
+        'disabled': true
+      }]);
     }
-    setPopperOpen(true);
   }
 
   let handleError = (response) => {
     setError(response);
+    console.log(response);
   }
 
   let getElementName = (element) => {
@@ -83,6 +96,17 @@ function SearchBar(props) {
         placeholder="Search"
         value={search}
         onChange={(event) => changeSearch(event.target.value)}
+        onFocus={(event) => {
+          // Rerun the query
+          changeSearch(search);
+        }}
+        onKeyDown={(event) => {
+          if (event.key == 'ArrowDown' && suggestionMenu.current.children.length > 0) {
+            // Move the focus to the suggestions list
+            suggestionMenu.current.children[0].focus();
+            event.preventDefault();
+          }
+        }}
         endAdornment={
           <InputAdornment position="end">
             <IconButton className={invertColors ? classes.invertedColors : ""}>
@@ -97,36 +121,53 @@ function SearchBar(props) {
       <Popper
         open={popperOpen}
         anchorEl={input.current}
-        transition
-        className={
-          classNames({ [classes.popperClose]: !open })
-          + " " + classes.popperNav
-          + " " + classes.aboveBackground
-        }
+        className={classes.aboveBackground}
+        modifiers={{
+          keepTogether: {enabled: true}
+        }}
         placement = "bottom-start"
+        transition
         keepMounted
-        container={document.querySelector('#main-panel')}
         >
         {({ TransitionProps }) => (
           <Grow
             {...TransitionProps}
-            id="menu-list-grow"
-            style={{
-              transformOrigin: "left top"
-            }}
+            style={{transformOrigin: "top"}}
           >
-            <Paper>
-              <ClickAwayListener onClickAway={() => {setPopperOpen(false)}}>
-                <MenuList role="menu" className={classes.suggestions}>
-                  {results.map( (element, index) => (
+            <Paper square className={classes.suggestionContainer}>
+              <ClickAwayListener onClickAway={(event) => {
+                // Ignore clickaway events if they're just clicking on the input box
+                if (!input.current.contains(event.target)) {
+                  setPopperOpen(false)
+                }}}>
+                <MenuList role="menu" className={classes.suggestions} ref={suggestionMenu}>
+                  {error ?
+                    /* Error message in the popper, if appropriate */
+                    <MenuItem
+                      className={classes.dropdownItem}
+                      disabled
+                      >
+                      { /* Handle either a fetch error (which uses error.message/error.name)
+                           or an HTTP error (error.status/error.statusText) */}
+                      <ListItemText
+                        primary={"Error: " + (error.statusText ? error.statusText : error.message)}
+                        secondary={(error.status ? error.status : error.name)}
+                        primaryTypographyProps={{color: "error"}}
+                        />
+                    </MenuItem>
+                  : results.map( (element) => (
+                    /* Results if no errors occurred */
                     <MenuItem
                       className={classes.dropdownItem}
                       key={element["@path"]}
+                      disabled={element["disabled"]}
                       onClick={(e) => {
-                        // Redirect
-                        props.history.push("/content.html" + element["@path"]);
-                        closeSidebar && closeSidebar();
-                        setPopperOpen(false);
+                        // Redirect using React-router
+                        if (element["@path"]) {
+                          props.history.push("/content.html" + element["@path"]);
+                          closeSidebar && closeSidebar();
+                          setPopperOpen(false);
+                        }
                         }}
                       >
                         <ListItemText

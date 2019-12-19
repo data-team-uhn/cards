@@ -100,8 +100,10 @@ const headerStyle = theme => ({
     whiteSpace: "normal"
   },
   suggestions: {
-    // Unsure, but this should probably be a constant size, not spacing dependent
-    maxWidth: theme.spacing(32)
+    width: theme.spacing(32)
+  },
+  suggestionContainer: {
+    minHeight: "10px"
   },
   invertedColors: {
     color: whiteColor
