@@ -84,17 +84,16 @@ export default function VocabularyDirectory(props) {
       if (code >= 400) {
         badResponse = true;
         setCurStatus(Status["Error"]);
+        return Promise.reject(response);
       }
       return response;
     })
-    .then((response) => (badResponse ? {} : response.json()))
+    .then(response => response.json())
     .then(function(data) {
-      if (!badResponse) {
-        if (props.type === "remote") {
-          props.setVocabList(data);
-        } else if (props.type === "local") {
-          props.setVocabList(reformat(data));
-        }
+      if (props.type === "remote") {
+        props.setVocabList(data);
+      } else if (props.type === "local") {
+        props.setVocabList(reformat(data));
       }
     })
     .catch(function(error) {
