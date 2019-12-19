@@ -91,9 +91,16 @@ function Form (props) {
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
   let saveData = (event) => {
-    setSaveInProgress(true);
     // This stops the normal browser form submission
     event.preventDefault();
+
+    // If the previous save attempt failed, instead of trying to save again, open a login popup
+    if (lastSaveStatus === false) {
+      loginToSave();
+      return;
+    }
+
+    setSaveInProgress(true);
     // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
     let data = new FormData(event.currentTarget);
     fetch(`/Forms/${id}`, {
@@ -107,7 +114,7 @@ function Form (props) {
         const sessionInfo = window.Sling.getSessionInfo();
         if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
           // on first attempt to save while logged out, set status to false to make button text inform user
-          (lastSaveStatus === false) ? loginToSave() : setLastSaveStatus(false);
+          setLastSaveStatus(false);
         }
       })
       .finally(() => setSaveInProgress(false));
