@@ -120,7 +120,7 @@ function Form (props) {
     const y = window.top.outerHeight / 2 + window.top.screenY - ( h / 2);
     const x = window.top.outerWidth / 2 + window.top.screenX - ( w / 2);
     window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${w}, height=${h}, top=${y}, left=${x}`);
-    setLastSaveStatus([]); // display 'save' on button
+    setLastSaveStatus(undefined); // display 'save' on button
   }
 
   /**
