@@ -104,7 +104,8 @@ function Form (props) {
       // FIXME Use setError?
       .catch(() => {
         // error is handled if user is not logged in
-        if (window.Sling.getSessionInfo() === null || window.Sling.getSessionInfo().userID === 'anonymous') {
+        const sessionInfo = window.Sling.getSessionInfo();
+        if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
           // on first attempt to save while logged out, set status to false to make button text inform user
           (lastSaveStatus === false) ? loginToSave() : setLastSaveStatus(false);
         }
