@@ -38,6 +38,7 @@ function SearchBar(props) {
   let input = React.useRef();
   let suggestionMenu = React.useRef();
 
+  // Callback to update the value of the search bar. Sends off a delayed fulltext request
   let changeSearch = (query) => {
     // Reset the timer if it exists
     if (timer !== null) {
@@ -55,6 +56,7 @@ function SearchBar(props) {
     setError(false);
   }
 
+  // Runs a fulltext request
   let runQuery = (query) => {
     let new_url = new URL(QUERY_URL, window.location.origin);
     new_url.searchParams.set("quick", encodeURIComponent(query));
@@ -64,6 +66,7 @@ function SearchBar(props) {
       .catch(handleError)
   }
 
+  // Callback to store the results of the top results, or to display 'No results'
   let displayResults = (json) => {
     // Parse out the top 5 and display in popper
     if (json.length >= MAX_RESULTS) {
@@ -79,13 +82,13 @@ function SearchBar(props) {
     }
   }
 
+  // Error handling
   let handleError = (response) => {
     setError(response);
-    console.log(response);
   }
 
+  // Attempt a few different methods of getting the name of an element from <code>/query?quick</code>
   let getElementName = (element) => {
-    // Attempt a few different methods of getting the name
     return element["name"] || element["title"] || element["jcr:uuid"];
   }
 
