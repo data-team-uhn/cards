@@ -31,7 +31,9 @@ import {
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerComponentManager from "./AnswerComponentManager";
 
-// todo: once components from the login module can be imported, open the login Dialog instead of redirecting to the login page
+// TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
+
+// TODO Try to move the save-failed code somewhere more generic instead of the Form component
 
 // FIXME In order for the questions to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all question types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
 
@@ -110,24 +112,26 @@ function Form (props) {
       .then(() => setLastSaveStatus(true))
       // FIXME Use setError?
       .catch(() => {
-        // error is handled if user is not logged in
+        // If the user is not logged in, offer to log in
         const sessionInfo = window.Sling.getSessionInfo();
         if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-          // on first attempt to save while logged out, set status to false to make button text inform user
+          // On first attempt to save while logged out, set status to false to make button text inform user
           setLastSaveStatus(false);
         }
       })
       .finally(() => setSaveInProgress(false));
   }
 
-  // method to open the login page in a new window, centered wrt the parent window
+  // Open the login page in a new popup window, centered wrt the parent window
   let loginToSave = () => {
-    const w = 600; // width of new window
-    const h = 800; // height of new window
-    const y = window.top.outerHeight / 2 + window.top.screenY - ( h / 2);
-    const x = window.top.outerWidth / 2 + window.top.screenX - ( w / 2);
-    window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${w}, height=${h}, top=${y}, left=${x}`);
-    setLastSaveStatus(undefined); // display 'save' on button
+    const width = 600;
+    const height = 800;
+    const top = window.top.outerHeight / 2 + window.top.screenY - ( height / 2);
+    const left = window.top.outerWidth / 2 + window.top.screenX - ( width / 2);
+    // After a successful log in, the login dialog code will "open" the specified resource, which results in executing the specified javascript code
+    window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${width}, height=${height}, top=${top}, left=${left}`);
+    // Display 'save' on button
+    setLastSaveStatus(undefined);
   }
 
   /**
