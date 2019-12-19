@@ -52,7 +52,7 @@ function UserDashboard(props) {
       "key": "subject/identifier",
       "label": "Subject",
       "format": "string",
-      "link": "field:subject/@path",
+      "link": "dashboard+field:subject/@path",
     },
     {
       "key": "jcr:createdBy",
