@@ -33,6 +33,7 @@ class HeaderLinks extends React.Component {
         <SearchBar
           invertColors={!expand}
           closeSidebar={expand ? undefined : closeSidebar}
+          className={expand ? undefined : classes.buttonLink}
           />
         {/* Log out */}
         <IconButton

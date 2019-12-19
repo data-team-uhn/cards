@@ -28,7 +28,7 @@ const QUERY_URL = "/query";
 const MAX_RESULTS = 5;
 
 function SearchBar(props) {
-  const { classes, closeSidebar, invertColors } = props;
+  const { classes, className, closeSidebar, invertColors } = props;
   const [ search, setSearch ] = useState("");
   const [ results, setResults ] = useState([]);
   const [ popperOpen, setPopperOpen ] = useState(false);
@@ -114,7 +114,11 @@ function SearchBar(props) {
             </IconButton>
           </InputAdornment>
         }
-        className={classes.search + " " + (invertColors ? classes.invertedColors : "")}
+        className={
+          classes.search
+          + " " + (invertColors ? classes.invertedColors : "")
+          + " " + (className ? className : "")
+        }
         inputRef={input}
         />
       {/* Suggestions list using Popper */}
