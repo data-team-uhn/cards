@@ -29,6 +29,7 @@ import VocabularyDirectory from "./vocabularyDirectory";
 const Phase = require("./phaseCodes.json");
 const vocabLinks = require("./vocabularyLinks.json");
 
+// Generates a URL to the vocabulary listing page
 function generateRemoteLink() {
   let url = new URL(vocabLinks["remote"]["base"]);
   url.searchParams.set("apikey", vocabLinks["apikey"]);
@@ -37,7 +38,7 @@ function generateRemoteLink() {
       (key === "include" ? 
         url.searchParams.set(key, vocabLinks["remote"]["params"][key].join())
         :
-        url.searchParams.set(key,  vocabLinks["remote"]["params"][key])
+        url.searchParams.set(key, vocabLinks["remote"]["params"][key])
       )
     }
   )
