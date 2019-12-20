@@ -27,6 +27,9 @@ bin
 # NetBeans
 nbproject
 
+# Visual Studio Code
+.vscode
+
 # Other
 *.log.*
 *.log
