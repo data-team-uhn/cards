@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import uuidv4 from "uuid/v4";
 
@@ -28,7 +28,7 @@ export const VALUE_POS = 1;
 // for form submission
 function Answer (props) {
   let { answers, answerNodeType, valueType, questionDefinition, existingAnswer } = props;
-  let answerPath = (existingAnswer && existingAnswer[0]) || uuidv4();
+  let [answerPath] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   return (
     <React.Fragment>
       <input type="hidden" name={`./${answerPath}/jcr:primaryType`} value={answerNodeType}></input>
