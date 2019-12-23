@@ -15,7 +15,7 @@ import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 // @material-ui/core components
 import { withStyles } from "@material-ui/core";
-import { Drawer, Hidden, List, ListItem, ListItemText } from "@material-ui/core";
+import { Drawer, Hidden, IconButton, List, ListItem, ListItemText } from "@material-ui/core";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 import sidebarStyle from "./sidebarStyle.jsx";
@@ -25,7 +25,7 @@ const Sidebar = ({ ...props }) => {
   function activeRoute(routeName) {
     return props.location.pathname.indexOf(routeName) > -1 ? true : false;
   }
-  const { classes, color, logoImage, image, logoText, routes } = props;
+  const { classes, color, loading, logoImage, image, logoText, routes } = props;
 
   // Generate NavLinks and ListItems from the given route prop
   // activeStyle is true for anything that should look "active" (e.g. the admin link, the current page)
@@ -57,11 +57,19 @@ const Sidebar = ({ ...props }) => {
       </NavLink>
     );
   }
-
   // Links
   var links = (
     <List className={classes.list}>
-      {routes.filter((prop, key) => {
+      {loading ?
+        /* Add some skeleton UI of varying heights */
+        [...Array(7)].map((_, index) => (
+        <ListItem button className={classNames(classes.itemLink, classes.skeletonItem)} key={index}>
+          <div className={classNames(classes.itemIcon, classes.skeletonButton)}></div>
+          {/* The primary text here is a random amount of spaces between 1 and 30*/}
+          <ListItemText primary={"\u00A0".repeat(Math.random()*29+1)} className={classNames(classes.itemText, classes.skeletonText)}/>
+        </ListItem>
+        ))
+      : routes.filter((prop) => {
         // Only use non-admin links
         return !prop.isAdmin;
       }).map((prop, key) => {
@@ -72,7 +80,16 @@ const Sidebar = ({ ...props }) => {
 
   var adminLinks = (
     <List className={classes.adminSidebar}>
-      {routes.filter((prop, key) => {
+      {loading ?
+        /* Add some skeleton UI of varying heights */
+        [...Array(3)].map((_, index) => (
+        <ListItem button className={classNames(classes.itemLink, classes.skeletonItem, index == 0 && classes[color])} key={index}>
+          <div className={classNames(classes.itemIcon, classes.skeletonButton)}></div>
+          {/* The primary text here is a random amount of spaces between 1 and 30*/}
+          <ListItemText primary={" "} className={classNames(classes.itemText, classes.skeletonText)}/>
+        </ListItem>
+        ))
+      : routes.filter((prop, key) => {
         // Only use admin links
         return prop.isAdmin;
       }).map((prop, key) => {

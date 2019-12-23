@@ -27,17 +27,13 @@ function Header({ ...props }) {
   // Create the "brand", i.e. the route taken to get to the current page
   // (Usually displayed at the top left)
   function makeBrand() {
-    var name = "";
-    props.routes.map((prop, key) => {
-      if (prop.layout + prop.path === props.location.pathname) {
-        name = prop.name;
-      }
-      return null;
+    var matching_routes = props.routes.filter((prop) => {
+      return (prop.layout + prop.path === props.location.pathname);
     });
-    return name;
+    return matching_routes.length > 0 ? matching_routes[0].name : "\u00A0";
   }
 
-  const { classes, color } = props;
+  const { classes, color, loading } = props;
   const appBarClasses = classNames({
     [" " + classes[color]]: color
   });
@@ -48,7 +44,9 @@ function Header({ ...props }) {
         {/* Here we create navbar brand, based on route name */}
         <div className={classes.flex}>
           <Button color="transparent" href="#" className={classes.title}>
-            {makeBrand()}
+            {loading ?
+              <span className={classes.skeletonHeader}>{"\u00A0".repeat(30)}</span>
+            : makeBrand()}
           </Button>
         </div>
         {/* While the screen is wide enough, display the navbar at the topright */}
