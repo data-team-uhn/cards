@@ -19,11 +19,12 @@
 	},
 	"Age at diagnosis": {
 		"jcr:primaryType": "lfs:Question",
-		"text": "Age at diagnosis (y)",
+		"text": "Age at diagnosis",
 		"minAnswers": 1,
 		"maxAnswers": 1,
 		"displayMode": "hidden",
-		"dataType": "computed"
+		"dataType": "computed",
+		"unitOfMeasurement": "years"
 	},
 	"Diagnosis description": {
 		"jcr:primaryType": "lfs:Question",
@@ -115,18 +116,7 @@
 		"maxAnswers": 1,
 		"displayMode": "list",
 		"dataType": "boolean",
-		"Yes": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Yes"
-		},
-		"No": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "No"
-		},
-		"Unknown": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Unknown"
-		}
+		"enableUnknown": "true"
 	},
 	"Localized": {
 		"jcr:primaryType": "lfs:Question",
@@ -135,18 +125,7 @@
 		"maxAnswers": 1,
 		"displayMode": "list",
 		"dataType": "boolean",
-		"Yes": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Yes"
-		},
-		"No": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "No"
-		},
-		"Unknown": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Unknown"
-		}
+		"enableUnknown": "true"
 	},
 	"Primarymetastatic": {
 		"jcr:primaryType": "lfs:Question",
@@ -177,18 +156,7 @@
 		"maxAnswers": 1,
 		"displayMode": "list",
 		"dataType": "boolean",
-		"Yes": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Yes"
-		},
-		"No": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "No"
-		},
-		"Unknown": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Unknown"
-		}
+		"enableUnknown": "true"
 	},
 	"Comments": {
 		"jcr:primaryType": "lfs:Question",
@@ -205,18 +173,7 @@
 		"maxAnswers": 1,
 		"displayMode": "list",
 		"dataType": "boolean",
-		"Yes": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Yes"
-		},
-		"No": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "No"
-		},
-		"Unknown": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Unknown"
-		}
+		"enableUnknown": "true"
 	},
 	"BMT": {
 		"jcr:primaryType": "lfs:Question",
@@ -225,18 +182,7 @@
 		"maxAnswers": 1,
 		"displayMode": "list",
 		"dataType": "boolean",
-		"Yes": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Yes"
-		},
-		"No": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "No"
-		},
-		"Unknown": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Unknown"
-		}
+		"enableUnknown": "true"
 	},
 	"Immunotherapy": {
 		"jcr:primaryType": "lfs:Question",
@@ -245,18 +191,7 @@
 		"maxAnswers": 1,
 		"displayMode": "list",
 		"dataType": "boolean",
-		"Yes": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Yes"
-		},
-		"No": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "No"
-		},
-		"Unknown": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Unknown"
-		}
+		"enableUnknown": "true"
 	},
 	"Targeted therapy": {
 		"jcr:primaryType": "lfs:Question",
@@ -265,18 +200,7 @@
 		"maxAnswers": 1,
 		"displayMode": "list",
 		"dataType": "boolean",
-		"Yes": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Yes"
-		},
-		"No": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "No"
-		},
-		"Unknown": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Unknown"
-		}
+		"enableUnknown": "true"
 	},
 	"RT": {
 		"jcr:primaryType": "lfs:Question",
@@ -285,18 +209,7 @@
 		"maxAnswers": 1,
 		"displayMode": "list",
 		"dataType": "boolean",
-		"Yes": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Yes"
-		},
-		"No": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "No"
-		},
-		"Unknown": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"value": "Unknown"
-		}
+		"enableUnknown": "true"
 	},
 	"ICD Morphology Code": {
 		"jcr:primaryType": "lfs:Question",
