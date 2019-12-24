@@ -66,7 +66,7 @@ const Sidebar = ({ ...props }) => {
         <ListItem button className={classNames(classes.itemLink, classes.skeletonItem)} key={index}>
           <div className={classNames(classes.itemIcon, classes.skeletonButton)}></div>
           {/* The primary text here is a random amount of spaces between 1 and 30*/}
-          <ListItemText primary={"\u00A0".repeat(Math.random()*29+1)} className={classNames(classes.itemText, classes.skeletonText)}/>
+          <ListItemText primary="&nbsp;" className={classNames(classes.itemText, classes.skeletonText)}/>
         </ListItem>
         ))
       : routes.filter((prop) => {
@@ -86,7 +86,7 @@ const Sidebar = ({ ...props }) => {
         <ListItem button className={classNames(classes.itemLink, classes.skeletonItem, index == 0 && classes[color])} key={index}>
           <div className={classNames(classes.itemIcon, classes.skeletonButton)}></div>
           {/* The primary text here is a random amount of spaces between 1 and 30*/}
-          <ListItemText primary={" "} className={classNames(classes.itemText, classes.skeletonText)}/>
+          <ListItemText primary="&nbsp;" className={classNames(classes.itemText, classes.skeletonText)}/>
         </ListItem>
         ))
       : routes.filter((prop, key) => {

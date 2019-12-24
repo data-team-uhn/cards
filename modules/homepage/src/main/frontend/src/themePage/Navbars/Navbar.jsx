@@ -30,7 +30,7 @@ function Header({ ...props }) {
     var matching_routes = props.routes.filter((prop) => {
       return (prop.layout + prop.path === props.location.pathname);
     });
-    return matching_routes.length > 0 ? matching_routes[0].name : "\u00A0";
+    return matching_routes.length > 0 ? matching_routes[0].name : " ";
   }
 
   const { classes, color, loading } = props;
@@ -45,7 +45,7 @@ function Header({ ...props }) {
         <div className={classes.flex}>
           <Button color="transparent" href="#" className={classes.title}>
             {loading ?
-              <span className={classes.skeletonHeader}>{"\u00A0".repeat(30)}</span>
+              <span className={classes.skeletonHeader}>&nbsp;</span>
             : makeBrand()}
           </Button>
         </div>

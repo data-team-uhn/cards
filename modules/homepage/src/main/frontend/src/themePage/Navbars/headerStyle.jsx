@@ -90,7 +90,8 @@ const headerStyle = theme => ({
   },
   skeletonHeader: {
     backgroundColor: "rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
-    borderRadius: "15px"
+    borderRadius: "15px",
+    width: theme.spacing(32)
   }
 });
 
