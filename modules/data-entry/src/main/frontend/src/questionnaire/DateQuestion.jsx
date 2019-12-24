@@ -99,7 +99,7 @@ function amendMoment(date, format) {
 function DateQuestion(props) {
   let {existingAnswer, type, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
   let {text, dateFormat} = {dateFormat: "yyyy-MM-dd", ...props.questionDefinition, ...props};
-  let currentStartValue = existingAnswer && existingAnswer[1].value && Array.of(existingAnswer[1].value).flat()[0] || '';
+  let currentStartValue = existingAnswer && existingAnswer[1].value && Array.of(existingAnswer[1].value).flat()[0] || undefined;
   const [selectedDate, changeDate] = useState(amendMoment(moment(currentStartValue), dateFormat));
   // FIXME There's no way to store the end date currently. Maybe add existingAnswer[1].endValue?
   const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), dateFormat));
@@ -187,7 +187,6 @@ function DateQuestion(props) {
         valueType="Date"
         />
       <TextField
-        id="date"
         type={textFieldType}
         className={classes.textField + " " + classes.answerField}
         InputLabelProps={{
@@ -216,7 +215,6 @@ function DateQuestion(props) {
       <React.Fragment>
         <span className={classes.mdash}>&mdash;</span>
         <TextField
-          id="date"
           type={textFieldType}
           className={classes.textField}
           InputLabelProps={{
