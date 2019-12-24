@@ -1,547 +1,547 @@
 {
-  "jcr:primaryType": "lfs:Questionnaire",
-  "title": "Tumors Data",
-  "Patient ID": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Patient ID",
-    "minAnswers": 1,
-    "maxAnswers": 1,
-    "displayMode": "hidden",
-    "dataType": "computed"
-  },
-  "Lesion Number": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Lesion Number",
-    "minAnswers": 1,
-    "maxAnswers": 1,
-    "displayMode": "hidden",
-    "dataType": "computed"
-  },
-  "Age at diagnosis (y)": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Age at diagnosis (y)",
-    "minAnswers": 1,
-    "maxAnswers": 1,
-    "displayMode": "hidden",
-    "dataType": "computed"
-  },
-  "Diagnosis description": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Diagnosis description",
-    "minAnswers": 1,
-    "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "text"
-  },
-  "Diagnosis code": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Diagnosis code",
-    "minAnswers": 0,
-    "maxAnswers": 0,
-    "displayMode": "input",
-    "dataType": "vocabulary",
-    "sourceVocabulary": "NCIT",
-    "vocabularyFilter": "children of Neoplasm"
-  },
-  "Diagnosis (Morphology) as on pathology report": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Diagnosis (Morphology) as on pathology report",
-    "minAnswers": 1,
-    "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "text"
-  },
-  "Morphology code": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Morphology code",
-    "minAnswers": 0,
-    "maxAnswers": 0,
-    "displayMode": "input",
-    "dataType": "vocabulary",
-    "sourceVocabulary": "NCIT"
-  },
-  "Location (code)": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Location (code)",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "vocabulary"
-  },
-  "Topography of primary lesion": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Topography of primary lesion",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "text"
-  },
-  "Benign (B), Premalignant (P) or Malignant (M)": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Benign (B), Premalignant (P) or Malignant (M)",
-    "minAnswers": 1,
-    "maxAnswers": 1,
-    "displayMode": "list",
-    "dataType": "text",
-    "B": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "B",
-      "label": "Benign"
-    },
-    "P": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "P",
-      "label": "Premalignant"
-    },
-    "M": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "M",
-      "label": "Malignant"
-    },
-    "U": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "U",
-      "label": "Unknown"
-    },
-    "N/A": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "NA"
-    }
-  },
-  "Resected": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Resected",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "list",
-    "dataType": "boolean",
-    "Yes": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Yes"
-    },
-    "No": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "No"
-    },
-    "Unknown": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Unknown"
-    }
-  },
-  "Localized": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Localized",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "list",
-    "dataType": "boolean",
-    "Yes": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Yes"
-    },
-    "No": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "No"
-    },
-    "Unknown": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Unknown"
-    }
-  },
-  "Primary/metastatic": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Primary/metastatic",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "list",
-    "dataType": "text",
-    "P": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "P",
-      "label": "Primary"
-    },
-    "Met": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Met",
-      "label": "Metastatic"
-    },
-    "N/A": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "NA"
-    }
-  },
-  "Detected by surveillance imaging? (Y, N, U=unknown)": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Detected by surveillance imaging? (Y, N, U=unknown)",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "list",
-    "dataType": "boolean",
-    "Yes": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Yes"
-    },
-    "No": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "No"
-    },
-    "Unknown": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Unknown"
-    }
-  },
-  "Comments": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Comments",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "textbox",
-    "dataType": "text"
-  },
-  "CT": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "CT",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "list",
-    "dataType": "boolean",
-    "Yes": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Yes"
-    },
-    "No": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "No"
-    },
-    "Unknown": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Unknown"
-    }
-  },
-  "BMT": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "BMT",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "list",
-    "dataType": "boolean",
-    "Yes": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Yes"
-    },
-    "No": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "No"
-    },
-    "Unknown": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Unknown"
-    }
-  },
-  "Immunotherapy": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Immunotherapy",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "list",
-    "dataType": "boolean",
-    "Yes": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Yes"
-    },
-    "No": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "No"
-    },
-    "Unknown": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Unknown"
-    }
-  },
-  "Targeted therapy": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Targeted therapy",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "list",
-    "dataType": "boolean",
-    "Yes": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Yes"
-    },
-    "No": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "No"
-    },
-    "Unknown": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Unknown"
-    }
-  },
-  "RT": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "RT",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "list",
-    "dataType": "boolean",
-    "Yes": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Yes"
-    },
-    "No": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "No"
-    },
-    "Unknown": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Unknown"
-    }
-  },
-  "ICD Morphology Code (only if reported)": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "ICD Morphology Code (only if reported)",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "vocabulary",
-    "sourceVocabulary": "ICD"
-  },
-  "ICD Topography Code (only if reported)": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "ICD Topography Code (only if reported)",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "vocabulary",
-    "sourceVocabulary": "ICD"
-  },
-  "Source of Tumor Diagnosis- Pathology report Clinic note Patient report Other (specify) blank= pre requesting..": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Source of Tumor Diagnosis- Pathology report Clinic note Patient report Other (specify) blank= pre requesting..",
-    "minAnswers": 0,
-    "maxAnswers": 0,
-    "displayMode": "list+input",
-    "dataType": "text",
-    "Pathology report": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Pathology report"
-    },
-    "Clinic note": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Clinic note"
-    },
-    "Biopsy report": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Biopsy report"
-    },
-    "Autopsy report": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Autopsy report"
-    },
-    "Tissue metrix": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Tissue metrix"
-    }
-  },
-  "Laterality": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Laterality",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "list",
-    "dataType": "long",
-    "0": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": 0,
-      "label": "NA"
-    },
-    "1": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": 1,
-      "label": "Right"
-    },
-    "2": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "2",
-      "label": "Left"
-    }
-  },
-  "Grade": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Grade",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "list+input",
-    "dataType": "text",
-    "Low": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Low"
-    },
-    "High": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "High"
-    },
-    "1/3": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "1/3"
-    },
-    "2/3": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "2/3"
-    },
-    "3/3": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "3/3"
-    },
-    "1/4": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "1/4"
-    },
-    "2/4": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "2/4"
-    },
-    "3/4": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "3/4"
-    },
-    "4/4": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "4/4"
-    }
-  },
-  "Group": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Group",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "text"
-  },
-  "Stage": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Stage",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "list+input",
-    "dataType": "text",
-    "I": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "I"
-    },
-    "II": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "II"
-    },
-    "III": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "III"
-    },
-    "IV": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "IV"
-    }
-  },
-  "Topography/sites of metastases if present": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Topography/sites of metastases if present",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "text"
-  },
-  "Specific molecular/cytogenetic/Immunohistochemistry features (ex. HER2+)": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Specific molecular/cytogenetic/Immunohistochemistry features (ex. HER2+)",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "text"
-  },
-  "Risk Group Assignment": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Risk Group Assignment",
-    "Low risk": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Low risk"
-    },
-    "Intermediate": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Intermediate"
-    },
-    "High risk": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "High risk"
-    },
-    "Very high risk": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Very high risk"
-    }
-  },
-  "Group/Stage/Risk Classification Schema": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Group/Stage/Risk Classification Schema",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "list+input",
-    "dataType": "text"
-  },
-  "Modality of detection": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Modality of detection",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "text"
-  },
-  "Symptoms": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Symptoms",
-    "minAnswers": 0,
-    "maxAnswers": 0,
-    "displayMode": "list+input",
-    "dataType": "vocabulary",
-    "sourceVocabulary": "HPO"
-  },
-  "surgery - extent": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "surgery - extent",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "text"
-  },
-  "special AE": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "special AE",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "text"
-  },
-  "Preventions": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Preventions",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "text"
-  },
-  "Smoking history (lung tumors)": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Smoking history (lung tumors)",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "textbox",
-    "dataType": "text"
-  },
-  "Any treatment at PMH?": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Any treatment at PMH?",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "displayMode": "textbox",
-    "dataType": "text"
-  }
+	"jcr:primaryType": "lfs:Questionnaire",
+	"title": "Tumors Data",
+	"Patient ID": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Patient ID",
+		"minAnswers": 1,
+		"maxAnswers": 1,
+		"displayMode": "hidden",
+		"dataType": "computed"
+	},
+	"Lesion Number": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Lesion Number",
+		"minAnswers": 1,
+		"maxAnswers": 1,
+		"displayMode": "hidden",
+		"dataType": "computed"
+	},
+	"Age at diagnosis": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Age at diagnosis (y)",
+		"minAnswers": 1,
+		"maxAnswers": 1,
+		"displayMode": "hidden",
+		"dataType": "computed"
+	},
+	"Diagnosis description": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Diagnosis description",
+		"minAnswers": 1,
+		"maxAnswers": 1,
+		"displayMode": "input",
+		"dataType": "text"
+	},
+	"Diagnosis code": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Diagnosis code",
+		"minAnswers": 0,
+		"maxAnswers": 0,
+		"displayMode": "input",
+		"dataType": "vocabulary",
+		"sourceVocabulary": "NCIT",
+		"vocabularyFilter": "children of Neoplasm"
+	},
+	"Diagnosis  as on pathology report": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Diagnosis (Morphology) as on pathology report",
+		"minAnswers": 1,
+		"maxAnswers": 1,
+		"displayMode": "input",
+		"dataType": "text"
+	},
+	"Morphology code": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Morphology code",
+		"minAnswers": 0,
+		"maxAnswers": 0,
+		"displayMode": "input",
+		"dataType": "vocabulary",
+		"sourceVocabulary": "NCIT"
+	},
+	"Location": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Location (code)",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "input",
+		"dataType": "vocabulary"
+	},
+	"Topography of primary lesion": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Topography of primary lesion",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "input",
+		"dataType": "text"
+	},
+	"Benign": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Benign (B), Premalignant (P) or Malignant (M)",
+		"minAnswers": 1,
+		"maxAnswers": 1,
+		"displayMode": "list",
+		"dataType": "text",
+		"B": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "B",
+			"label": "Benign"
+		},
+		"P": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "P",
+			"label": "Premalignant"
+		},
+		"M": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "M",
+			"label": "Malignant"
+		},
+		"U": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "U",
+			"label": "Unknown"
+		},
+		"NA": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "NA"
+		}
+	},
+	"Resected": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Resected",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "list",
+		"dataType": "boolean",
+		"Yes": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Yes"
+		},
+		"No": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "No"
+		},
+		"Unknown": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Unknown"
+		}
+	},
+	"Localized": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Localized",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "list",
+		"dataType": "boolean",
+		"Yes": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Yes"
+		},
+		"No": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "No"
+		},
+		"Unknown": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Unknown"
+		}
+	},
+	"Primarymetastatic": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Primary/metastatic",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "list",
+		"dataType": "text",
+		"P": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "P",
+			"label": "Primary"
+		},
+		"Met": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Met",
+			"label": "Metastatic"
+		},
+		"NA": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "NA"
+		}
+	},
+	"Detected by surveillance imaging": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Detected by surveillance imaging? (Y, N, U=unknown)",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "list",
+		"dataType": "boolean",
+		"Yes": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Yes"
+		},
+		"No": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "No"
+		},
+		"Unknown": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Unknown"
+		}
+	},
+	"Comments": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Comments",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "textbox",
+		"dataType": "text"
+	},
+	"CT": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "CT",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "list",
+		"dataType": "boolean",
+		"Yes": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Yes"
+		},
+		"No": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "No"
+		},
+		"Unknown": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Unknown"
+		}
+	},
+	"BMT": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "BMT",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "list",
+		"dataType": "boolean",
+		"Yes": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Yes"
+		},
+		"No": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "No"
+		},
+		"Unknown": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Unknown"
+		}
+	},
+	"Immunotherapy": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Immunotherapy",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "list",
+		"dataType": "boolean",
+		"Yes": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Yes"
+		},
+		"No": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "No"
+		},
+		"Unknown": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Unknown"
+		}
+	},
+	"Targeted therapy": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Targeted therapy",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "list",
+		"dataType": "boolean",
+		"Yes": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Yes"
+		},
+		"No": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "No"
+		},
+		"Unknown": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Unknown"
+		}
+	},
+	"RT": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "RT",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "list",
+		"dataType": "boolean",
+		"Yes": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Yes"
+		},
+		"No": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "No"
+		},
+		"Unknown": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Unknown"
+		}
+	},
+	"ICD Morphology Code": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "ICD Morphology Code (only if reported)",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "input",
+		"dataType": "vocabulary",
+		"sourceVocabulary": "ICD"
+	},
+	"ICD Topography Code": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "ICD Topography Code (only if reported)",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "input",
+		"dataType": "vocabulary",
+		"sourceVocabulary": "ICD"
+	},
+	"Source of Tumor Diagnosis Pathology report Clinic note Patient report Other  blank pre requesting": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Source of Tumor Diagnosis- Pathology report Clinic note Patient report Other (specify) blank= pre requesting..",
+		"minAnswers": 0,
+		"maxAnswers": 0,
+		"displayMode": "list+input",
+		"dataType": "text",
+		"Pathology report": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Pathology report"
+		},
+		"Clinic note": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Clinic note"
+		},
+		"Biopsy report": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Biopsy report"
+		},
+		"Autopsy report": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Autopsy report"
+		},
+		"Tissue metrix": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Tissue metrix"
+		}
+	},
+	"Laterality": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Laterality",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "list",
+		"dataType": "long",
+		"0": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "0",
+			"label": "NA"
+		},
+		"1": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "1",
+			"label": "Right"
+		},
+		"2": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "2",
+			"label": "Left"
+		}
+	},
+	"Grade": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Grade",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "list+input",
+		"dataType": "text",
+		"Low": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Low"
+		},
+		"High": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "High"
+		},
+		"13": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "1/3"
+		},
+		"23": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "2/3"
+		},
+		"33": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "3/3"
+		},
+		"14": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "1/4"
+		},
+		"24": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "2/4"
+		},
+		"34": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "3/4"
+		},
+		"44": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "4/4"
+		}
+	},
+	"Group": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Group",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "input",
+		"dataType": "text"
+	},
+	"Stage": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Stage",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "list+input",
+		"dataType": "text",
+		"I": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "I"
+		},
+		"II": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "II"
+		},
+		"III": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "III"
+		},
+		"IV": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "IV"
+		}
+	},
+	"Topographysites of metastases if present": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Topography/sites of metastases if present",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "input",
+		"dataType": "text"
+	},
+	"Specific molecularcytogeneticImmunohistochemistry features": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Specific molecular/cytogenetic/Immunohistochemistry features (ex. HER2+)",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "input",
+		"dataType": "text"
+	},
+	"Risk Group Assignment": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Risk Group Assignment",
+		"Low risk": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Low risk"
+		},
+		"Intermediate": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Intermediate"
+		},
+		"High risk": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "High risk"
+		},
+		"Very high risk": {
+			"jcr:primaryType": "lfs:AnswerOption",
+			"value": "Very high risk"
+		}
+	},
+	"GroupStageRisk Classification Schema": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Group/Stage/Risk Classification Schema",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "list+input",
+		"dataType": "text"
+	},
+	"Modality of detection": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Modality of detection",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "input",
+		"dataType": "text"
+	},
+	"Symptoms": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Symptoms",
+		"minAnswers": 0,
+		"maxAnswers": 0,
+		"displayMode": "list+input",
+		"dataType": "vocabulary",
+		"sourceVocabulary": "HPO"
+	},
+	"surgery  extent": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "surgery - extent",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "input",
+		"dataType": "text"
+	},
+	"special AE": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "special AE",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "input",
+		"dataType": "text"
+	},
+	"Preventions": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Preventions",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "input",
+		"dataType": "text"
+	},
+	"Smoking history": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Smoking history (lung tumors)",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "textbox",
+		"dataType": "text"
+	},
+	"Any treatment at PMH": {
+		"jcr:primaryType": "lfs:Question",
+		"text": "Any treatment at PMH?",
+		"minAnswers": 0,
+		"maxAnswers": 1,
+		"displayMode": "textbox",
+		"dataType": "text"
+	}
 }
