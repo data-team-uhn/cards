@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 import Sidebar from "./Sidebar/sidebar"
-import sidebarRoutes, { loadRemoteComponents, loadRemoteIcons, contentNodes } from './routes';
+import sidebarRoutes, { loadRemoteComponents, loadRemoteIcons, loadContentNodes } from './routes';
 import { withStyles } from '@material-ui/core';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
@@ -84,7 +84,8 @@ class Main extends React.Component {
 
   componentDidMount() {
     window.addEventListener("resize", this.autoCloseMobileMenus);
-    loadRemoteComponents(contentNodes)
+    loadContentNodes()
+    .then(loadRemoteComponents)
     .then(loadRemoteIcons)
     .then(this._buildSidebar)
     .catch(function(err) {
