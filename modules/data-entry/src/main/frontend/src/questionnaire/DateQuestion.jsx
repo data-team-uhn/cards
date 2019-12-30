@@ -99,7 +99,7 @@ function amendMoment(date, format) {
 function DateQuestion(props) {
   let {existingAnswer, type, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
   let {text, dateFormat} = {dateFormat: "yyyy-MM-dd", ...props.questionDefinition, ...props};
-  let currentStartValue = existingAnswer && existingAnswer[1].value && Array.of(existingAnswer[1].value).flat()[0] || undefined;
+  let currentStartValue = existingAnswer && existingAnswer[1].value && Array.of(existingAnswer[1].value).flat()[0] || null;
   const [selectedDate, changeDate] = useState(amendMoment(moment(currentStartValue), dateFormat));
   // FIXME There's no way to store the end date currently. Maybe add existingAnswer[1].endValue?
   const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), dateFormat));
@@ -154,6 +154,13 @@ function DateQuestion(props) {
     return(date);
   }
 
+  let momentToString = (date) => {
+    return !date.isValid() ? "" :
+    isMonth ? date.format(moment.HTML5_FMT.MONTH) :
+    isDate ? date.format(moment.HTML5_FMT.DATE) :
+    date.format(moment.HTML5_FMT.DATETIME_LOCAL);
+  }
+
   // Determine the granularity of the input textfield
   const textFieldType = isMonth ? "month" :
     isDate ? "date" :
@@ -161,13 +168,9 @@ function DateQuestion(props) {
 
   // Determine how to display the currently selected value
   const outputDate = amendMoment(selectedDate, displayFormat);
-  const outputDateString = isMonth ? outputDate.format(moment.HTML5_FMT.MONTH) :
-      isDate ? outputDate.format(moment.HTML5_FMT.DATE) :
-      outputDate.format(moment.HTML5_FMT.DATETIME_LOCAL);
+  const outputDateString = momentToString(outputDate);
   const outputEndDate = amendMoment(selectedEndDate, displayFormat);
-  const outputEndDateString = isMonth ? outputEndDate.format(moment.HTML5_FMT.MONTH) :
-      isDate ? outputEndDate.format(moment.HTML5_FMT.DATE) :
-      outputEndDate.format(moment.HTML5_FMT.DATETIME_LOCAL);
+  const outputEndDateString = momentToString(outputEndDate);
   let outputAnswers = [["date", selectedDate.isValid() ? selectedDate.formatWithJDF(dateFormat) : '']];
   if (type === INTERVAL_TYPE) {
     outputAnswers.push(["endDate", selectedEndDate.isValid() ? selectedEndDate.formatWithJDF(dateFormat) : ''])
