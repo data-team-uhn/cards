@@ -21,36 +21,28 @@ var sidebarRoutes = [
 ];
 
 const ASSET_PREFIX="asset:";
-// Parse out asset URLs
-var parseAssetURL = function(url) {
+
+// Begin a fetch for the asset URL to use
+var fetchAssetURL = function(url) {
   if (!url.startsWith(ASSET_PREFIX)) {
-    return url;
+    return new Promise(function(resolve, reject) {resolve(url)});
   }
 
   var asset_id = url.slice(ASSET_PREFIX.length);
-  var assets = window.Sling.getContent("/libs/lfs/resources/assets.json", 1, "");
-  return "/libs/lfs/resources/" + assets[asset_id];
+  return fetch("/libs/lfs/resources/assets.json")
+    .then(response => response.ok ? response.json() : Promise.reject(response))
+    .then(json => "/libs/lfs/resources/" + json[asset_id]);
 }
 
 var loadRemoteIcon = function(uixDatum) {
-  return new Promise(function(resolve, reject) {
-    var request = new XMLHttpRequest();
-    var url = parseAssetURL(uixDatum.iconUrl);
-
-    request.onload = function() {
-      if(request.status >= 200 && request.status < 400) {
-        var remoteComponentSrc = request.responseText;
-        var returnVal = window.eval(remoteComponentSrc);
-        uixDatum.icon = returnVal.default;
-        return resolve(uixDatum);
-      } else {
-        return reject();
-      }
-    };
-
-    request.open('GET', url);
-    request.send();
-  });
+  return fetchAssetURL(uixDatum.iconUrl)
+    .then(url => fetch(url))
+    .then(response => response.ok ? response.text() : Promise.reject(response))
+    .then(remoteComponentSrc => {
+      var returnVal = window.eval(remoteComponentSrc);
+      uixDatum.icon = returnVal.default;
+      return(uixDatum);
+    });
 }
 
 // Find the icon and load them
@@ -64,40 +56,32 @@ var loadRemoteIcons = function(uixData) {
 
 // Load a react component from a URL
 var loadRemoteComponent = function(component) {
-  return new Promise(function(resolve, reject) {
-    var request = new XMLHttpRequest();
-    var url = parseAssetURL(component['lfs:extensionRenderURL']);
-
-    // If the URL is empty, return an empty page
-    if (url === "") {
-      return resolve({
-        reactComponent: null,
-        path: "/" + component["lfs:targetURL"],
-        name: component["lfs:extensionName"],
-        iconUrl: component["lfs:icon"],
-        order: component["lfs:defaultOrder"]
-      });
-    }
-
-    request.onload = function() {
-      if(request.status >= 200 && request.status < 400) {
-        var remoteComponentSrc = request.responseText;
-        var returnVal = window.eval(remoteComponentSrc);
-        return resolve({
-          reactComponent: returnVal.default,
+  return fetchAssetURL(component['lfs:extensionRenderURL'])
+    .then(url => {
+      // If the URL is empty, return an empty page
+      if (url === "") {
+        return ({
+          reactComponent: null,
           path: "/" + component["lfs:targetURL"],
           name: component["lfs:extensionName"],
           iconUrl: component["lfs:icon"],
           order: component["lfs:defaultOrder"]
         });
-      } else {
-        return reject();
       }
-    };
 
-    request.open('GET', url);
-    request.send();
-  });
+      return fetch(url)
+        .then(response => response.ok ? response.text() : Promise.reject(response))
+        .then(remoteComponentSrc => {
+          var returnVal = window.eval(remoteComponentSrc);
+          return({
+            reactComponent: returnVal.default,
+            path: "/" + component["lfs:targetURL"],
+            name: component["lfs:extensionName"],
+            iconUrl: component["lfs:icon"],
+            order: component["lfs:defaultOrder"]
+          })
+        })
+    });
 };
 
 // Load each given component
@@ -109,8 +93,12 @@ var loadRemoteComponents = function(components) {
   );
 };
 
-var text = window.Sling.httpGet("/apps/lfs/ExtensionPoints/SidebarEntry").responseText;
-const contentNodes = JSON.parse(text);
+// Load the content nodes
+var loadContentNodes = function() {
+  return fetch("/apps/lfs/ExtensionPoints/SidebarEntry")
+    .then(response => response.ok ? response.json() : Promise.reject(response));
+}
+
 
 export default sidebarRoutes
-export { loadRemoteComponents, loadRemoteIcons, contentNodes }
+export { loadRemoteComponents, loadRemoteIcons, loadContentNodes }
