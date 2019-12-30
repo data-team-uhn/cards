@@ -20,7 +20,7 @@
     <script>
       // Redirect to /login if the user is not logged in
       // Since the default window.Sling.getSessionInfo() throws an async warning, we fetch it ourselves
-      var url = window.Sling.baseurl+"/system/sling/info.sessionInfo.json";
+      var url = window.Sling.baseurl + "/system/sling/info.sessionInfo.json";
       fetch(url)
       .then(function(response) {
         if (response.ok) {
@@ -37,7 +37,7 @@
       .catch(function() {
         // Provide the `resource` to redirect to after successful login
         var relativeLocation = window.location.toString().substring(window.location.origin.length);
-        window.location = "/login.html" + ((relativeLocation.length > 1) ? ("?resource=" + encodeURIComponent(relativeLocation)) : "");
+        window.location = window.Sling.baseurl + "/login.html" + ((relativeLocation.length > 1) ? ("?resource=" + encodeURIComponent(relativeLocation)) : "");
       });
     </script>
     <div id="main-container"></div>
