@@ -66,40 +66,64 @@ function extractList(data) {
 }
 
 export default function Search(props) {
+  const [error, setError] = React.useState(false);
   const [filterTable, setFilterTable] = React.useState(false);
   const [keywords, setKeywords] = React.useState("");
+  const [lastSearch, setLastSearch] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
   const classes = useStyles();
 
+  // Search using the currently entered keywords
   function search() {
-    var errHappened = false;
-    setLoading(true);
+    // Prevent a race condition by disallowing searches while a search is underway
+    if (!loading) {
+      setError(false);
+      setLoading(true);
+      setLastSearch(keywords);
+      // First check if any of the keywords match a vocabulary name or acronym
 
-    fetch(vocabLinks["recommender"]["base"]+vocabLinks["apikey"]+"&input="+keywords.replace(" ", "%20"))
-    .then((response) => {
-      if (response.status >= 400) {
-        errHappened = true;
-      } else {
-        return response;
-      }
-    })
-    .then((response) => {
-      if(!errHappened) {
-        return response.json();
-      }
-    })
-    .then((data) => {
-      if(!errHappened) {
-        extractList(data);
-        props.setParentAcronymList(extractList(data));
-        setFilterTable(true);
-        props.setParentFilterTable(true);
-      }
-      setLoading(false);
-    });
+      // Process keywords of search into a list of lower case words
+      let keywordsList = keywords.split(" ").map(keyword => keyword.toLowerCase());
+
+      // Filter the list for vocabularies that meet either of 2 criteria
+      let acronymList = props.vocabList.filter(vocab => (
+        // (1) Any of the search keywords is the vocabulary's acronym
+        keywordsList.includes(vocab.ontology.acronym.toLowerCase())
+        ||
+        // (2) There is an intersection of the set of name words and the set of search keywords
+        // The name words are also processed into a list of lower case words
+        vocab.ontology.name.split(" ")
+          .map(S => S.toLowerCase())
+          .some(nameWord => keywordsList.includes(nameWord))
+      // Finally return only the acronyms of the vocabularies that meet above criteria as a list
+      )).map(vocab => vocab.ontology.acronym);
+
+      setFilterTable(true);
+      props.setParentAcronymList(acronymList);
+      props.setParentFilterTable(true);
+
+      // Then also make a request to recommender and update filtered list.
+      let url = new URL(vocabLinks["recommender"]["base"]);
+      url.searchParams.set("apikey", vocabLinks["apikey"]);
+      url.searchParams.set("input", encodeURIComponent(keywords));
+      fetch(url)
+        .then((response) => (response.ok ? response.json() : Promise.reject(response)))
+        .then((data) => {
+          props.concatParentAcronymList(extractList(data));
+          setFilterTable(true);
+          props.setParentFilterTable(true);
+        })
+        .catch(() => {
+          setError(true);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }
 
+  // Clear the search
   function reset() {
     props.setParentFilterTable(false);
     props.setParentAcronymList([]);
@@ -109,7 +133,8 @@ export default function Search(props) {
     setFilterTable(false);
   }
 
-  function checkEnterKey(event) {
+  // Checks if return is pressed, and searches/resets the search
+  function handleSearchInput(event) {
     if(event.keyCode == 13) {
       if (keywords === "") {
         reset();
@@ -127,6 +152,7 @@ export default function Search(props) {
           <Grid item xs={12} sm={11}>
             <TextField
               fullWidth
+              helperText={(error ? "Request Failed" : "")}
               InputProps={{
                 endAdornment: <InputAdornment position="end">
                                 <IconButton onClick={keywords === "" ? reset: search}>
@@ -136,7 +162,7 @@ export default function Search(props) {
               }}
               label="Search by keywords"
               onChange={(event) => setKeywords(event.target.value)}
-              onKeyDown={checkEnterKey}
+              onKeyDown={handleSearchInput}
               type="text"
               value={keywords}
               variant="outlined"
@@ -157,7 +183,7 @@ export default function Search(props) {
         {(filterTable ?
         <React.Fragment> 
           <Typography variant="h3">Browse vocabularies matching </Typography>
-          <Typography variant="h3" className={classes.keywords}>{keywords}</Typography>
+          <Typography variant="h3" className={classes.keywords}>{lastSearch}</Typography>
         </React.Fragment> 
         : 
         <Typography variant="h3">Browse All</Typography>)}

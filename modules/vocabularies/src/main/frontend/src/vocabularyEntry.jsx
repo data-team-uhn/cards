@@ -141,6 +141,7 @@ export default function VocabularyEntry(props) {
         setErrMsg("Error " + code + ": " + resp.statusText);
         setErr(true);
         badResponse = true;
+        return Promise.reject(resp);
       }
     })
     .catch(function(error) {
