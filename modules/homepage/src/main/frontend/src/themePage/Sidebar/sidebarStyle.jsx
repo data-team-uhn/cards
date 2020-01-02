@@ -290,6 +290,21 @@ import {
         width: "100%",
         bottom: "13px"
       }
+    },
+    skeletonText: {
+      backgroundColor: "rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
+      borderRadius: "15px",
+      width: theme.spacing(15),
+      display: "inline-block"
+    },
+    skeletonButton: {
+      backgroundColor: "rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
+      borderRadius: "15px",
+      width: "24px",
+      height: "24px"
+    },
+    skeletonItem: {
+      height: "50px"
     }
   });
 

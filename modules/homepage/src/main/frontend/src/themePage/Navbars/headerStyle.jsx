@@ -19,7 +19,8 @@ import {
   warningColor,
   dangerColor,
   whiteColor,
-  grayColor
+  grayColor,
+  hexToRgb
 } from "../themeStyle.jsx";
 
 const headerStyle = theme => ({
@@ -86,6 +87,11 @@ const headerStyle = theme => ({
     backgroundColor: dangerColor[0],
     color: whiteColor,
     ...defaultBoxShadow
+  },
+  skeletonHeader: {
+    backgroundColor: "rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
+    borderRadius: "15px",
+    width: theme.spacing(32)
   }
 });
 

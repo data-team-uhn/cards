@@ -37,6 +37,7 @@ class Main extends React.Component {
       hasImage: true,
       fixedClasses: "dropdown show",
       mobileOpen: false,
+      loading: true,
       routes: sidebarRoutes
     };
   }
@@ -79,7 +80,7 @@ class Main extends React.Component {
         layout: "/content.html"
       });
     }
-    this.setState({routes: routes});
+    this.setState({routes: routes, loading: false});
   };
 
   componentDidMount() {
@@ -121,6 +122,7 @@ class Main extends React.Component {
             handleDrawerToggle={this.handleDrawerToggle}
             open={this.state.mobileOpen}
             color={ "blue" }
+            loading={this.state.loading}
             {...rest}
           />
           <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
@@ -130,6 +132,7 @@ class Main extends React.Component {
             <Navbar
               routes={ this.state.routes }
               handleDrawerToggle={this.handleDrawerToggle}
+              loading={this.state.loading}
               {...rest}
             />
           </div>
