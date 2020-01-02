@@ -99,11 +99,9 @@ export default function Search(props) {
       // Finally return only the acronyms of the vocabularies that meet above criteria as a list
       )).map(vocab => vocab.ontology.acronym);
 
-      if (acronymList.length > 0) {
-        setFilterTable(true);
-        props.setParentFilterTable(true);
-        props.setParentAcronymList(acronymList);
-      }
+      setFilterTable(true);
+      props.setParentAcronymList(acronymList);
+      props.setParentFilterTable(true);
 
       // Then also make a request to recommender and update filtered list.
       let url = new URL(vocabLinks["recommender"]["base"]);
