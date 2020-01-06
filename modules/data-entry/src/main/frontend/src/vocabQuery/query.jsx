@@ -77,7 +77,7 @@ class VocabularyQuery extends React.Component {
   }
 
   render() {
-    const { classes, defaultValue, disabled, keepAboveBackdrop, noMargin, onInputFocus, searchDefault, vocabulary } = this.props;
+    const { classes, defaultValue, disabled, keepAboveBackdrop, noMargin, onInputFocus, placeholder, searchDefault, vocabulary } = this.props;
 
     const inputEl = (<Input
       disabled={disabled}
@@ -115,6 +115,7 @@ class VocabularyQuery extends React.Component {
         </InputAdornment>
       )}
       defaultValue={defaultValue}
+      placeholder={placeholder}
       />);
 
     return (
@@ -137,7 +138,7 @@ class VocabularyQuery extends React.Component {
             {inputEl}
           </FormControl>}
           <br />
-          <LinearProgress className={this.state.suggestionsLoading ? null : classes.inactiveProgress}/>
+          <LinearProgress className={classes.progressIndicator + " " + (this.state.suggestionsLoading ? "" : classes.inactiveProgress)}/>
         </div>
         {/* Suggestions list using Popper */}
         <Popper

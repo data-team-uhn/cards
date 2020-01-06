@@ -28,6 +28,7 @@ import VocabularySelector from "../vocabQuery/query.jsx";
 import LiveTableStyle from "./tableStyle.jsx";
 
 const FILTER_URL = "/Questionnaires.filters";
+const UNARY_OPERATORS = ["is empty", "is not empty"];
 
 function Filters(props) {
   const { classes, onChangeFilters, questionnaire } = props;
@@ -141,6 +142,8 @@ function Filters(props) {
       comparators = comparators.concat(["<", "<=", ">", ">="]);
     }
 
+    comparators = comparators.concat(UNARY_OPERATORS);
+
     // As per React standards: copy, slice, and return our input object
     setFilterComparators(filterComparators => {
       return { [field]: comparators, ...filterComparators };
@@ -206,6 +209,7 @@ function Filters(props) {
           }}
           defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
+          placeholder="empty"
           />
       );
     } else if (displayMode === 'list') {
@@ -241,6 +245,7 @@ function Filters(props) {
           suggestionCategories={suggestionCategories}
           defaultValue={overrideFilters ? overrideFilters.label : editingFilters[index].label}
           vocabulary={vocabulary}
+          placeholder="empty"
           noMargin
         />
       );
@@ -257,6 +262,7 @@ function Filters(props) {
           }}
           defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
+          placeholder="empty"
           />);
     }
 
@@ -311,7 +317,9 @@ function Filters(props) {
         Filters:
       </Typography>
       {activeFilters.map( (activeFilter, index) => {
-        let label = activeFilter.name + " " + activeFilter.comparator + " " + (activeFilter.label || activeFilter.value);
+        let label = activeFilter.name + " " + activeFilter.comparator +
+          // Include the label (if available) or value for this filter iff the comparator is not unary
+          (UNARY_OPERATORS.includes(activeFilter.comparator) ? "" : (" " + activeFilter.label || activeFilter.value));
         return(
           <React.Fragment key={label}>
             <Chip
@@ -364,7 +372,7 @@ function Filters(props) {
           { /* If there is no error but also no data, show a progress circle */
           !error && !filterableFields &&
             <CircularProgress />}
-          <Grid container spacing={2} className={classes.filterTable}>
+          <Grid container alignItems="flex-end" spacing={2} className={classes.filterTable}>
             {editingFilters.map( (filterDatum, index) => {
               return(
                 <React.Fragment key={index}>
@@ -386,27 +394,47 @@ function Filters(props) {
                         }))}
                     </Select>
                   </Grid>
-                  {/* Select the comparison operator */}
-                  <Grid item xs={1} className={classes.comparatorStyle + " " + (index == editingFilters.length-1 ? classes.hidden : "")}>
-                    <Select
-                      disabled={!filterDatum.name}
-                      value={filterDatum.comparator || ""}
-                      onChange={(event) => {handleChangeComparator(index, event);}}
-                      >
-                        {(filterComparators[filterDatum.name] && filterComparators[filterDatum.name].map( (name) => {
-                          return(
-                            <MenuItem value={name} key={name}>{name}</MenuItem>
-                          );
-                        }))}
-                    </Select>
-                  </Grid>
-                  {/* Options, generated from their function */}
-                  <Grid item xs={5} className={index == editingFilters.length-1 ? classes.hidden : ""}>
-                    {filterDatum.comparator ?
-                        filterableAnswers[filterDatum.name](index)
-                      : <TextField disabled className={classes.answerField}></TextField>
-                    }
-                  </Grid>
+                  {
+                    /* Select the comparison operator
+                    If the comparison operator is unary, it fills up the entire row */
+                    UNARY_OPERATORS.includes(filterDatum.comparator) ?
+                      <Grid item xs={6} className={classes.comparatorStyle + " " + (index == editingFilters.length-1 ? classes.hidden : "")}>
+                        <Select
+                          disabled={!filterDatum.name}
+                          value={filterDatum.comparator || ""}
+                          onChange={(event) => {handleChangeComparator(index, event);}}
+                          >
+                            {(filterComparators[filterDatum.name] && filterComparators[filterDatum.name].map( (name) => {
+                              return(
+                                <MenuItem value={name} key={name}>{name}</MenuItem>
+                              );
+                            }))}
+                        </Select>
+                      </Grid>
+                    :
+                      <React.Fragment>
+                        <Grid item xs={1} className={classes.comparatorStyle + " " + (index == editingFilters.length-1 ? classes.hidden : "")}>
+                          <Select
+                            disabled={!filterDatum.name}
+                            value={filterDatum.comparator || ""}
+                            onChange={(event) => {handleChangeComparator(index, event);}}
+                            >
+                              {(filterComparators[filterDatum.name] && filterComparators[filterDatum.name].map( (name) => {
+                                return(
+                                  <MenuItem value={name} key={name}>{name}</MenuItem>
+                                );
+                              }))}
+                          </Select>
+                        </Grid>
+                        {/* Options, generated from their function */}
+                        <Grid item xs={5} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                          {filterDatum.comparator ?
+                              filterableAnswers[filterDatum.name](index)
+                            : <TextField disabled className={classes.answerField}></TextField>
+                          }
+                        </Grid>
+                      </React.Fragment>
+                  }
                   {/* Deletion button */}
                   <Grid item xs={1} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <IconButton
