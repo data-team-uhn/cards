@@ -167,6 +167,10 @@ const thesaurusStyle = theme => ({
   inactiveProgress: {
     visibility: "hidden"
   },
+  progressIndicator: {
+    marginBottom: theme.spacing(-.5),
+    height: theme.spacing(.5)
+  },
   infoButton: {
     minWidth: "0px",
     width: "30px",
