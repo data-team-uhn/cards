@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { createRef, useCallback, useEffect, useState } from "react";
 import { Chip, Typography, Button, Dialog, CircularProgress, IconButton } from "@material-ui/core";
 import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
@@ -47,6 +47,16 @@ function Filters(props) {
   const [error, setError] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [filterRequestSent, setFilterRequestSent] = useState(false);
+  const [toFocus, setFocusRow] = useState(null);
+
+  // Focus on inputs as they are flagged for focus
+  const focusRef = useCallback(node => {
+    if (node !== null) {
+      console.log("Focus event");
+      console.log(node);
+      node.focus();
+    }
+  }, []);
 
   // Obtain information about the filters that can be applied
   let grabFilters = (urlBase) => {
@@ -129,6 +139,7 @@ function Filters(props) {
       newfilters[index] = newfilter;
       return(newfilters);
     });
+    setFocusRow(index);
   }
 
   // Determine what comparators are available for the input field
@@ -181,7 +192,7 @@ function Filters(props) {
       let textFieldType = isMonth ? "month" :
         isDate ? "date" :
         "datetime-local";
-      newChoices = (index) => (
+      newChoices = (index, toFocus) => (
         <TextField
           id="date"
           type={textFieldType}
@@ -194,10 +205,11 @@ function Filters(props) {
           }}
           defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
+          inputRef={toFocus}
           />);
     } else if (dataType == 'decimal' || dataType == 'long') {
       // Numeric fields should be constrained to numeric fields (using NumberFormatCustom)
-      newChoices = (index) => (
+      newChoices = (index, toFocus) => (
         <TextField
           className={classes.textField + " " + classes.answerField}
           inputProps={{
@@ -210,16 +222,18 @@ function Filters(props) {
           defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           placeholder="empty"
+          inputRef={toFocus}
           />
       );
     } else if (displayMode === 'list') {
       // If this question has multiple pre-defined responses, and a displayMode='list', store the responses
       // (we ignore list+input here because the user can select anything from those)
-      newChoices = (index) => (
+      newChoices = (index, toFocus) => (
         <SelfManagedSelect
           defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           className={classes.answerField}
+          ref={toFocus}
           >
           {Object.entries(questionDefinitions[field])
           // answers are nodes with "jcr:primaryType" = "lfs:AnswerOption"
@@ -238,7 +252,7 @@ function Filters(props) {
     } else if (dataType == 'vocabulary') {
       let vocabulary = questionDefinitions[field]["sourceVocabulary"];
       let suggestionCategories = questionDefinitions[field]["suggestionCategories"];
-      newChoices = (index) => (
+      newChoices = (index, toFocus) => (
         <VocabularySelector
           onClick={(id, name) => {handleChangeOutput(index, id, name)}}
           clearOnClick={false}
@@ -246,12 +260,13 @@ function Filters(props) {
           defaultValue={overrideFilters ? overrideFilters.label : editingFilters[index].label}
           vocabulary={vocabulary}
           placeholder="empty"
+          inputRef={toFocus}
           noMargin
         />
       );
     } else {
       // Assume a string input by default
-      newChoices = (index) => (
+      newChoices = (index, toFocus) => (
         <TextField
           className={classes.textField + " " + classes.answerField}
           InputLabelProps={{
@@ -262,6 +277,7 @@ function Filters(props) {
           }}
           defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
+          inputRef={toFocus}
           placeholder="empty"
           />);
     }
@@ -310,6 +326,23 @@ function Filters(props) {
     setDialogOpen(false);
   }
 
+  // Return the pre-computed input element, and focus it if we were asked to
+  let getCachedInput = (filterDatum, index, focusRef) => {
+    return filterableAnswers[filterDatum.name](index, focusRef);
+  }
+
+  // Attempt to focus
+  /*useEffect(() => {
+    if (toFocus != null) {
+      console.log(toFocus);
+      console.log(focusRefActual);
+      if (focusRefActual.current != null) {
+        focusRefActual.current.focus();
+      }
+      setFocusRow(null);
+    }
+  }, [toFocus]);*/
+
   return(
     <div className={classes.filterContainer}>
       {/* Place the stuff in one row on the top */}
@@ -319,7 +352,8 @@ function Filters(props) {
       {activeFilters.map( (activeFilter, index) => {
         let label = activeFilter.name + " " + activeFilter.comparator +
           // Include the label (if available) or value for this filter iff the comparator is not unary
-          (UNARY_OPERATORS.includes(activeFilter.comparator) ? "" : (" " + activeFilter.label || activeFilter.value));
+          (UNARY_OPERATORS.includes(activeFilter.comparator) ? ""
+            : (" " + (activeFilter.label != undefined ? activeFilter.label : activeFilter.value)));
         return(
           <React.Fragment key={label}>
             <Chip
@@ -333,7 +367,10 @@ function Filters(props) {
                 onChangeFilters && onChangeFilters(newFilters);
                 }
               }
-              onClick={openDialogAndAdd}
+              onClick={() => {
+                openDialogAndAdd();
+                setFocusRow(index);
+              }}
               className={classes.filterChips}
               />
           </React.Fragment>
@@ -345,7 +382,10 @@ function Filters(props) {
         variant="contained"
         color="default"
         className={classes.addFilterButton}
-        onClick={openDialogAndAdd}
+        onClick={() => {
+          openDialogAndAdd();
+          setFocusRow(activeFilters.length);
+        }}
         >
         <Add fontSize="small" />
       </Button>
@@ -374,6 +414,11 @@ function Filters(props) {
             <CircularProgress />}
           <Grid container alignItems="flex-end" spacing={2} className={classes.filterTable}>
             {editingFilters.map( (filterDatum, index) => {
+              // We grab focus on the field if we were asked to
+              //var fieldFocus = (index === editingFilters.length-1 && toFocus === index) ? focusRef : undefined;
+              if (index === editingFilters.length-1 && toFocus === index) {
+                console.log("Focus row event");
+              }
               return(
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
@@ -382,6 +427,7 @@ function Filters(props) {
                       value={filterDatum.name || ""}
                       onChange={(event) => {handleChangeFilter(index, event);}}
                       className={classes.categoryField}
+                      inputRef={(index === editingFilters.length-1 && toFocus === index) ? focusRef : undefined}
                       displayEmpty
                       >
                         <MenuItem value="" disabled>
@@ -429,7 +475,7 @@ function Filters(props) {
                         {/* Options, generated from their function */}
                         <Grid item xs={5} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                           {filterDatum.comparator ?
-                              filterableAnswers[filterDatum.name](index)
+                              getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusRef : undefined))
                             : <TextField disabled className={classes.answerField}></TextField>
                           }
                         </Grid>
