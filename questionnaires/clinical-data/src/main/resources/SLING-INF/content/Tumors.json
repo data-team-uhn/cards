@@ -1,72 +1,55 @@
 {
   "jcr:primaryType": "lfs:Questionnaire",
   "title": "Tumors Data",
-  "Patient ID": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Patient ID",
-    "minAnswers": 1,
-    "maxAnswers": 1,
-    "displayMode": "hidden",
-    "dataType": "computed"
-  },
-  "Lesion Number": {
+  "lesion_number": {
     "jcr:primaryType": "lfs:Question",
     "text": "Lesion Number",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "hidden",
-    "dataType": "computed"
+    "dataType": "long"
   },
-  "Age at diagnosis": {
+  "age_at_diagnosis": {
     "jcr:primaryType": "lfs:Question",
     "text": "Age at diagnosis",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "hidden",
-    "dataType": "computed",
+    "dataType": "decimal",
     "unitOfMeasurement": "years"
   },
-  "Diagnosis description": {
+  "diagnosis_description": {
     "jcr:primaryType": "lfs:Question",
     "text": "Diagnosis description",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "input",
     "dataType": "text"
   },
-  "Diagnosis code": {
+  "diagnosis_code": {
     "jcr:primaryType": "lfs:Question",
     "text": "Diagnosis code",
-    "minAnswers": 0,
-    "maxAnswers": 0,
-    "displayMode": "input",
     "dataType": "vocabulary",
     "sourceVocabulary": "NCIT",
     "vocabularyFilter": "children of Neoplasm"
   },
-  "Diagnosis  as on pathology report": {
+  "diagnosis_from_pathology_report": {
     "jcr:primaryType": "lfs:Question",
     "text": "Diagnosis (Morphology) as on pathology report",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "input",
     "dataType": "text"
   },
-  "Morphology code": {
+  "morphology_code": {
     "jcr:primaryType": "lfs:Question",
     "text": "Morphology code",
     "minAnswers": 0,
     "maxAnswers": 0,
-    "displayMode": "input",
     "dataType": "vocabulary",
     "sourceVocabulary": "NCIT"
   },
-  "Location": {
+  "location": {
     "jcr:primaryType": "lfs:Question",
     "text": "Location (code)",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "input",
     "dataType": "vocabulary"
   },
   "Topography of primary lesion": {
@@ -77,9 +60,9 @@
     "displayMode": "input",
     "dataType": "text"
   },
-  "Benign": {
+  "malignancy": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Benign (B), Premalignant (P) or Malignant (M)",
+    "text": "Malignancy",
     "minAnswers": 1,
     "maxAnswers": 1,
     "displayMode": "list",
@@ -109,27 +92,25 @@
       "value": "NA"
     }
   },
-  "Resected": {
+  "resected": {
     "jcr:primaryType": "lfs:Question",
     "text": "Resected",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "list",
     "dataType": "boolean",
     "enableUnknown": "true"
   },
-  "Localized": {
+  "localized": {
     "jcr:primaryType": "lfs:Question",
     "text": "Localized",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "list",
     "dataType": "boolean",
     "enableUnknown": "true"
   },
-  "Primarymetastatic": {
+  "spread": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Primary/metastatic",
+    "text": "Spread",
     "minAnswers": 0,
     "maxAnswers": 1,
     "displayMode": "list",
@@ -149,16 +130,15 @@
       "value": "NA"
     }
   },
-  "Detected by surveillance imaging": {
+  "detected_by_imaging": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Detected by surveillance imaging? (Y, N, U=unknown)",
+    "text": "Detected by surveillance imaging?",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "list",
     "dataType": "boolean",
     "enableUnknown": "true"
   },
-  "Comments": {
+  "comments": {
     "jcr:primaryType": "lfs:Question",
     "text": "Comments",
     "minAnswers": 0,
@@ -171,7 +151,6 @@
     "text": "CT",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "list",
     "dataType": "boolean",
     "enableUnknown": "true"
   },
@@ -180,7 +159,6 @@
     "text": "BMT",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "list",
     "dataType": "boolean",
     "enableUnknown": "true"
   },
@@ -189,16 +167,14 @@
     "text": "Immunotherapy",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "list",
     "dataType": "boolean",
     "enableUnknown": "true"
   },
-  "Targeted therapy": {
+  "targeted_therapy": {
     "jcr:primaryType": "lfs:Question",
     "text": "Targeted therapy",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "list",
     "dataType": "boolean",
     "enableUnknown": "true"
   },
@@ -207,31 +183,28 @@
     "text": "RT",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "list",
     "dataType": "boolean",
     "enableUnknown": "true"
   },
-  "ICD Morphology Code": {
+  "ICD_morphology_code": {
     "jcr:primaryType": "lfs:Question",
     "text": "ICD Morphology Code (only if reported)",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "input",
     "dataType": "vocabulary",
     "sourceVocabulary": "ICD"
   },
-  "ICD Topography Code": {
+  "ICD_topography_code": {
     "jcr:primaryType": "lfs:Question",
     "text": "ICD Topography Code (only if reported)",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "input",
     "dataType": "vocabulary",
     "sourceVocabulary": "ICD"
   },
-  "Source of Tumor Diagnosis Pathology report Clinic note Patient report Other  blank pre requesting": {
+  "source_of_diagnosis": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Source of Tumor Diagnosis- Pathology report Clinic note Patient report Other (specify) blank= pre requesting..",
+    "text": "Source of Tumor Diagnosis",
     "minAnswers": 0,
     "maxAnswers": 0,
     "displayMode": "list+input",
@@ -257,7 +230,7 @@
       "value": "Tissue metrix"
     }
   },
-  "Laterality": {
+  "laterality": {
     "jcr:primaryType": "lfs:Question",
     "text": "Laterality",
     "minAnswers": 0,
@@ -280,7 +253,7 @@
       "label": "Left"
     }
   },
-  "Grade": {
+  "grade": {
     "jcr:primaryType": "lfs:Question",
     "text": "Grade",
     "minAnswers": 0,
@@ -324,7 +297,7 @@
       "value": "4/4"
     }
   },
-  "Group": {
+  "group": {
     "jcr:primaryType": "lfs:Question",
     "text": "Group",
     "minAnswers": 0,
@@ -332,7 +305,7 @@
     "displayMode": "input",
     "dataType": "text"
   },
-  "Stage": {
+  "stage": {
     "jcr:primaryType": "lfs:Question",
     "text": "Stage",
     "minAnswers": 0,
@@ -356,7 +329,7 @@
       "value": "IV"
     }
   },
-  "Topographysites of metastases if present": {
+  "sites_of_metastases": {
     "jcr:primaryType": "lfs:Question",
     "text": "Topography/sites of metastases if present",
     "minAnswers": 0,
@@ -364,7 +337,7 @@
     "displayMode": "input",
     "dataType": "text"
   },
-  "Specific molecularcytogeneticImmunohistochemistry features": {
+  "specific_features": {
     "jcr:primaryType": "lfs:Question",
     "text": "Specific molecular/cytogenetic/Immunohistochemistry features (ex. HER2+)",
     "minAnswers": 0,
@@ -372,7 +345,7 @@
     "displayMode": "input",
     "dataType": "text"
   },
-  "Risk Group Assignment": {
+  "risk_group_assignment": {
     "jcr:primaryType": "lfs:Question",
     "text": "Risk Group Assignment",
     "Low risk": {
@@ -392,56 +365,51 @@
       "value": "Very high risk"
     }
   },
-  "GroupStageRisk Classification Schema": {
+  "classification_schema": {
     "jcr:primaryType": "lfs:Question",
     "text": "Group/Stage/Risk Classification Schema",
     "minAnswers": 0,
-    "maxAnswers": 1,
+    "maxAnswers": 0,
     "displayMode": "list+input",
     "dataType": "text"
   },
-  "Modality of detection": {
+  "modality_of_detection": {
     "jcr:primaryType": "lfs:Question",
     "text": "Modality of detection",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "input",
     "dataType": "text"
   },
-  "Symptoms": {
+  "symptoms": {
     "jcr:primaryType": "lfs:Question",
     "text": "Symptoms",
     "minAnswers": 0,
     "maxAnswers": 0,
-    "displayMode": "list+input",
     "dataType": "vocabulary",
     "sourceVocabulary": "HPO"
   },
-  "surgery  extent": {
+  "surgery_extent": {
     "jcr:primaryType": "lfs:Question",
-    "text": "surgery - extent",
+    "text": "Surgery - extent",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "input",
     "dataType": "text"
   },
-  "special AE": {
+  "special_AE": {
     "jcr:primaryType": "lfs:Question",
-    "text": "special AE",
+    "text": "Special AE",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "input",
     "dataType": "text"
   },
-  "Preventions": {
+  "preventions": {
     "jcr:primaryType": "lfs:Question",
     "text": "Preventions",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "input",
     "dataType": "text"
   },
-  "Smoking history": {
+  "smoking_history": {
     "jcr:primaryType": "lfs:Question",
     "text": "Smoking history (lung tumors)",
     "minAnswers": 0,
@@ -449,7 +417,7 @@
     "displayMode": "textbox",
     "dataType": "text"
   },
-  "Any treatment at PMH": {
+  "treatment_at_PMH": {
     "jcr:primaryType": "lfs:Question",
     "text": "Any treatment at PMH?",
     "minAnswers": 0,
