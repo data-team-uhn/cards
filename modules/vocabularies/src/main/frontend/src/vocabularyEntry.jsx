@@ -21,7 +21,6 @@ import React from "react";
 
 import {
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
@@ -49,7 +48,7 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.grey[500]
   },
   title: {
-    marginRight: theme.spacing(4)
+    marginRight: theme.spacing(5)
   }
 }));
 
@@ -217,25 +216,21 @@ export default function VocabularyEntry(props) {
         
         <Dialog open={err} onClose={handleClose}>
 
-          <DialogTitle onClose={handleClose}>
-            <Typography variant="h5" color="error" className={classes.title}>Failed to {action}</Typography>
+          <DialogTitle disableTypography>
+            <Typography variant="h6" color="error" className={classes.title}>Failed to {action}</Typography>
             <IconButton onClick={handleClose} className={classes.closeButton}>
               <CloseIcon />
             </IconButton>
           </DialogTitle>
 
-          <DialogContent>
+          <DialogContent dividers>
             <Typography variant="h6">{props.name}</Typography>
-            <Typography variant="body1">Version {props.version}</Typography>
+            <Typography variant="subtitle2" gutterBottom>Version: {props.version}</Typography>
+            <Typography paragraph color="error">{errMsg}</Typography>
           </DialogContent>
-
-          <DialogContent>
-            <Typography variant="body1">{errMsg}</Typography>
-          </DialogContent>
-
-          <DialogActions/>
 
         </Dialog>
+
       </React.Fragment>
       )}
     </React.Fragment>
