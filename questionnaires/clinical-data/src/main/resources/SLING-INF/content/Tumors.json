@@ -26,9 +26,9 @@
   "diagnosis_code": {
     "jcr:primaryType": "lfs:Question",
     "text": "Diagnosis code",
-    "dataType": "vocabulary",
-    "sourceVocabulary": "NCIT",
-    "vocabularyFilter": "children of Neoplasm"
+    "minAnswers": 1,
+    "maxAnswers": 1,
+    "dataType" : "text"
   },
   "diagnosis_from_pathology_report": {
     "jcr:primaryType": "lfs:Question",
@@ -42,22 +42,20 @@
     "text": "Morphology code",
     "minAnswers": 0,
     "maxAnswers": 0,
-    "dataType": "vocabulary",
-    "sourceVocabulary": "NCIT"
+    "dataType": "text"
   },
   "location": {
     "jcr:primaryType": "lfs:Question",
     "text": "Location (code)",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "dataType": "vocabulary"
+    "dataType": "text"
   },
   "Topography of primary lesion": {
     "jcr:primaryType": "lfs:Question",
     "text": "Topography of primary lesion",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "displayMode": "input",
     "dataType": "text"
   },
   "malignancy": {
@@ -191,16 +189,14 @@
     "text": "ICD Morphology Code (only if reported)",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "dataType": "vocabulary",
-    "sourceVocabulary": "ICD"
+    "dataType": "text"
   },
   "ICD_topography_code": {
     "jcr:primaryType": "lfs:Question",
     "text": "ICD Topography Code (only if reported)",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "dataType": "vocabulary",
-    "sourceVocabulary": "ICD"
+    "dataType": "text"
   },
   "source_of_diagnosis": {
     "jcr:primaryType": "lfs:Question",
@@ -268,31 +264,31 @@
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "High"
     },
-    "13": {
+    "1_3": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "1/3"
     },
-    "23": {
+    "2_3": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "2/3"
     },
-    "33": {
+    "3_3": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "3/3"
     },
-    "14": {
+    "1_4": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "1/4"
     },
-    "24": {
+    "2_4": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "2/4"
     },
-    "34": {
+    "3_4": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "3/4"
     },
-    "44": {
+    "4_4": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "4/4"
     }
@@ -370,7 +366,6 @@
     "text": "Group/Stage/Risk Classification Schema",
     "minAnswers": 0,
     "maxAnswers": 0,
-    "displayMode": "list+input",
     "dataType": "text"
   },
   "modality_of_detection": {
@@ -406,7 +401,7 @@
     "jcr:primaryType": "lfs:Question",
     "text": "Preventions",
     "minAnswers": 0,
-    "maxAnswers": 1,
+    "maxAnswers": 0,
     "dataType": "text"
   },
   "smoking_history": {
