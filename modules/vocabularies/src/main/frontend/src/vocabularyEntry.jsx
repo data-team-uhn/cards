@@ -73,9 +73,9 @@ const StyledTableCell = withStyles(theme => ({
 */
 export default function VocabularyEntry(props) {
   // The following facillitates the usage of the same code to report errors for both installation and uninstallation
-  const [err, setErr] = React.useState(false);
+  const [error, setError] = React.useState(false);
   const [action, setAction] = React.useState("");
-  const [errMsg, setErrMsg] = React.useState("");
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const [phase, setPhase] = React.useState(props.initPhase);
 
@@ -83,7 +83,7 @@ export default function VocabularyEntry(props) {
   const date = new Date(props.released);
   const bodyTypography = Config["tableBodyTypography"];
 
-  const handleClose = () => {setErr(false)};
+  const handleClose = () => {setError(false)};
 
   function install() {
     const oldPhase = phase;
@@ -102,16 +102,16 @@ export default function VocabularyEntry(props) {
       if(!resp["isSuccessful"]) {
         props.setPhase(oldPhase);
         setAction("Install");
-        setErrMsg(resp["error"]);
-        setErr(true);
+        setErrorMessage(resp["error"]);
+        setError(true);
         badResponse = true;
       }
     })
     .catch(function(error) {
       props.setPhase(oldPhase);
       setAction("Install");
-      setErrMsg(error);
-      setErr(true);
+      setErrorMessage(error);
+      setError(true);
       badResponse = true;
     })
     .finally(function() {
@@ -137,8 +137,8 @@ export default function VocabularyEntry(props) {
       if(Math.floor(code/100) !== 2) {
         props.setPhase(oldPhase);
         setAction("Uninstall");
-        setErrMsg("Error " + code + ": " + resp.statusText);
-        setErr(true);
+        setErrorMessage("Error " + code + ": " + resp.statusText);
+        setError(true);
         badResponse = true;
         return Promise.reject(resp);
       }
@@ -146,8 +146,8 @@ export default function VocabularyEntry(props) {
     .catch(function(error) {
       props.setPhase(oldPhase);
       setAction("Uninstall");
-      setErrMsg(error);
-      setErr(true);
+      setErrorMessage(error);
+      setError(true);
       badResponse = true;
     })
     .finally(function() {
@@ -213,8 +213,8 @@ export default function VocabularyEntry(props) {
           </StyledTableCell>
 
         </StyledTableRow>
-        
-        <Dialog open={err} onClose={handleClose}>
+
+        <Dialog open={error} onClose={handleClose}>
 
           <DialogTitle disableTypography>
             <Typography variant="h6" color="error" className={classes.title}>Failed to {action}</Typography>
@@ -226,7 +226,7 @@ export default function VocabularyEntry(props) {
           <DialogContent dividers>
             <Typography variant="h6">{props.name}</Typography>
             <Typography variant="subtitle2" gutterBottom>Version: {props.version}</Typography>
-            <Typography paragraph color="error">{errMsg}</Typography>
+            <Typography paragraph color="error">{errorMessage}</Typography>
           </DialogContent>
 
         </Dialog>
