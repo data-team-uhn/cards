@@ -398,6 +398,7 @@ function Filters(props) {
         BackdropProps={{invisible: true}}
         fullWidth
         disableEnforceFocus
+        disablePortal
         >
         <DialogTitle id="new-form-title">
           Modify filters
