@@ -116,10 +116,10 @@ const thesaurusStyle = theme => ({
   // The following ensures poppers are placed below the presentation (zIndex 1300)
   // but above everything else
   popperListOnTop: {
-    zIndex: "1200 !important",
+    zIndex: "1301 !important",
   },
   popperInfoOnTop: {
-    zIndex: "1201 !important",
+    zIndex: "1302 !important",
   },
   popperNav: {
     // Old material-dashboard-react style, overridden because of issues with small screens
@@ -159,10 +159,10 @@ const thesaurusStyle = theme => ({
   dropdownItem: {
     whiteSpace: 'normal',
   },
-  aboveBackdrop: {
+  infoAboveBackdrop: {
     // When the info box is spawned from the browse menu,
     // it should no longer be greyed out
-    zIndex: "1301 !important",
+    zIndex: "1352 !important",
   },
   inactiveProgress: {
     visibility: "hidden"
@@ -175,6 +175,9 @@ const thesaurusStyle = theme => ({
     minWidth: "0px",
     width: "30px",
     color: "#00ACC1",
+  },
+  infoDialog: {
+    zIndex: "1350 !important",
   }
 });
 

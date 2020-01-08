@@ -49,7 +49,6 @@ const NO_RESULTS_TEXT = "No results";
 //  overrideText: When not undefined, this will overwrite the contents of the search bar
 //  defaultValue: Default chosen term ID, which will be converted to the real ID when the vocabulary loads
 //  noMargin: Removes the margin from the search wrapper
-//  keepAboveBackdrop: Keeps all of the components above the backdrop
 class VocabularyQuery extends React.Component {
   constructor(props) {
     super(props);
@@ -77,7 +76,7 @@ class VocabularyQuery extends React.Component {
   }
 
   render() {
-    const { classes, defaultValue, disabled, keepAboveBackdrop, noMargin, onInputFocus, placeholder, searchDefault, vocabulary } = this.props;
+    const { classes, defaultValue, disabled, noMargin, onInputFocus, placeholder, searchDefault, vocabulary } = this.props;
 
     const inputEl = (<Input
       disabled={disabled}
@@ -148,11 +147,10 @@ class VocabularyQuery extends React.Component {
           className={
             classNames({ [classes.popperClose]: !open })
             + " " + classes.popperNav
-            + " " + keepAboveBackdrop ? classes.aboveBackdrop : classes.popperListOnTop
+            + " " + classes.popperListOnTop
           }
           placement = "bottom-start"
           keepMounted
-          container={document.querySelector('#main-panel')}
           modifiers={{
             flip: {
               enabled: true
@@ -195,7 +193,7 @@ class VocabularyQuery extends React.Component {
           className={
             classNames({ [classes.popperClose]: !open })
             + " " + classes.popperNav
-            + " " + (this.state.infoAboveBackground || keepAboveBackdrop ? classes.aboveBackdrop : classes.popperInfoOnTop)
+            + " " + (this.state.infoAboveBackground ? classes.infoAboveBackdrop : classes.popperInfoOnTop)
           }
           ref={(ref) => {this.infoRef = ref}}
           modifiers={{
