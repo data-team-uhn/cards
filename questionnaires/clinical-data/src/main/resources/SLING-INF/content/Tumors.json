@@ -414,7 +414,7 @@
   },
   "treatment_at_PMH": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Any treatment at PMH?",
+    "text": "Describe treatments done at PMH, if any",
     "minAnswers": 0,
     "maxAnswers": 1,
     "displayMode": "textbox",
