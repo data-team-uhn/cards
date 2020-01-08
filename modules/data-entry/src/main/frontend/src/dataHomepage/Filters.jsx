@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { createRef, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Chip, Typography, Button, Dialog, CircularProgress, IconButton } from "@material-ui/core";
 import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
@@ -50,13 +50,23 @@ function Filters(props) {
   const [toFocus, setFocusRow] = useState(null);
 
   // Focus on inputs as they are flagged for focus
-  const focusRef = useCallback(node => {
+  const focusRef = useRef();
+  const focusCallback = useCallback(node => {
     if (node !== null) {
-      console.log("Focus event");
-      console.log(node);
       node.focus();
+      setFocusRow(null);
+      focusRef.current = node;
     }
   }, []);
+
+  // Refocus on the current input
+  // Note: When selecting an option of a Select component, the select will forcibly re-grab
+  // focus after our focusRef callback. This allows us to re-grab it after the Select.
+  let forceRegrabFocus = () => {
+    if (focusRef.current != null) {
+      focusRef.current.focus();
+    }
+  }
 
   // Obtain information about the filters that can be applied
   let grabFilters = (urlBase) => {
@@ -331,18 +341,6 @@ function Filters(props) {
     return filterableAnswers[filterDatum.name](index, focusRef);
   }
 
-  // Attempt to focus
-  /*useEffect(() => {
-    if (toFocus != null) {
-      console.log(toFocus);
-      console.log(focusRefActual);
-      if (focusRefActual.current != null) {
-        focusRefActual.current.focus();
-      }
-      setFocusRow(null);
-    }
-  }, [toFocus]);*/
-
   return(
     <div className={classes.filterContainer}>
       {/* Place the stuff in one row on the top */}
@@ -415,10 +413,6 @@ function Filters(props) {
           <Grid container alignItems="flex-end" spacing={2} className={classes.filterTable}>
             {editingFilters.map( (filterDatum, index) => {
               // We grab focus on the field if we were asked to
-              //var fieldFocus = (index === editingFilters.length-1 && toFocus === index) ? focusRef : undefined;
-              if (index === editingFilters.length-1 && toFocus === index) {
-                console.log("Focus row event");
-              }
               return(
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
@@ -426,8 +420,11 @@ function Filters(props) {
                     <Select
                       value={filterDatum.name || ""}
                       onChange={(event) => {handleChangeFilter(index, event);}}
+                      MenuProps={{
+                        onExited: forceRegrabFocus
+                      }}
                       className={classes.categoryField}
-                      inputRef={(index === editingFilters.length-1 && toFocus === index) ? focusRef : undefined}
+                      inputRef={(index === editingFilters.length-1 && toFocus === index) ? focusCallback : undefined}
                       displayEmpty
                       >
                         <MenuItem value="" disabled>
@@ -475,7 +472,7 @@ function Filters(props) {
                         {/* Options, generated from their function */}
                         <Grid item xs={5} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                           {filterDatum.comparator ?
-                              getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusRef : undefined))
+                              getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
                             : <TextField disabled className={classes.answerField}></TextField>
                           }
                         </Grid>
