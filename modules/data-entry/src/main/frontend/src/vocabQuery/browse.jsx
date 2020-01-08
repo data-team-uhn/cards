@@ -114,7 +114,10 @@ function VocabularyBrowser(props) {
       fullscreen={fullscreen.toString()}
       className={classes.dialog}
       onClose={onClose}
-      classes={{paper: classes.dialogPaper}}
+      classes={{
+        paper: classes.dialogPaper,
+        root: classes.infoDialog
+      }}
       {...rest}
     >
       <DialogTitle>
