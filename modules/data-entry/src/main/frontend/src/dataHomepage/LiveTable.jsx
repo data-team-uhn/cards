@@ -43,7 +43,7 @@ function LiveTable(props) {
 
   const { customUrl, columns, defaultLimit, joinChildren, classes, filters, ...rest } = props;
   const [tableData, setTableData] = useState();
-  const [cachedFilters, setCachedFilters] = useState([]);
+  const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
     {
       "offset": 0,
@@ -84,11 +84,17 @@ function LiveTable(props) {
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
     let filters = newPage.filters || cachedFilters;
-    if (filters.length > 0) {
+    if (filters != null) {
       url.searchParams.set("joinchildren", joinChildren);
-      url.searchParams.set("filternames", filters[0].join("|"));
-      url.searchParams.set("filtercomparators", filters[1].join("|"));
-      url.searchParams.set("filtervalues", filters[2].join("|"));
+      url.searchParams.set("filternames", filters["fields"].join("|"));
+      url.searchParams.set("filtercomparators", filters["comparators"].join("|"));
+      url.searchParams.set("filtervalues", filters["values"].join("|"));
+      if (filters["empties"].length > 0) {
+        url.searchParams.set("filterempty", filters["empties"].join("|"));
+      }
+      if (filters["notempties"].length > 0) {
+        url.searchParams.set("filternotempty", filters["notempties"].join("|"));
+      }
     }
     let currentFetch = fetch(url);
     setFetchStatus(Object.assign({}, fetchStatus, {
@@ -209,21 +215,39 @@ function LiveTable(props) {
     let fields = [];
     let comparators = [];
     let values = [];
+    let empties = [];
+    let notempties = [];
+
+    let filtersNotBlank = false;
     newFilters.forEach((filter) => {
-      fields.push(filter.uuid);
-      comparators.push(filter.comparator);
-      values.push(filter.value);
+      filtersNotBlank = true;
+      if (filter.comparator === "is empty") {
+        empties.push(filter.uuid);
+      } else if (filter.comparator === "is not empty") {
+        notempties.push(filter.uuid);
+      } else {
+        fields.push(filter.uuid);
+        comparators.push(filter.comparator);
+        values.push(filter.value);
+      }
     });
 
-    if (fields.length > 0) {
-      setCachedFilters([fields, comparators, values]);
+    if (filtersNotBlank) {
+      let filter_obj = {
+        fields: fields,
+        comparators: comparators,
+        values: values,
+        empties: empties,
+        notempties: notempties
+      };
+      setCachedFilters(filter_obj);
       fetchData({
-        "filters": [fields, comparators, values]
+        "filters": filter_obj
       });
     } else {
-      setCachedFilters([]);
+      setCachedFilters(null);
       fetchData({
-        "filters": []
+        "filters": null
       });
     }
   }

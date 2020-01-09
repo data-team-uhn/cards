@@ -76,7 +76,7 @@ class VocabularyQuery extends React.Component {
   }
 
   render() {
-    const { classes, defaultValue, disabled, noMargin, onInputFocus, placeholder, searchDefault, vocabulary } = this.props;
+    const { classes, defaultValue, disabled, inputRef, noMargin, onInputFocus, placeholder, searchDefault, vocabulary } = this.props;
 
     const inputEl = (<Input
       disabled={disabled}
@@ -87,6 +87,9 @@ class VocabularyQuery extends React.Component {
       onChange={this.delayLookup}
       inputRef={(node) => {
         this.anchorEl = node;
+        if (inputRef != null) {
+          inputRef(node);
+        }
       }}
       onKeyDown={(event) => {
         if (event.key == 'Enter') {
