@@ -77,23 +77,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             new StringBuilder("select n.* from [nt:base] as n");
 
         // If child nodes are required for this query, also grab them
-        final String joinchildren = request.getParameter("joinchildren");
         final String filtername = request.getParameter("filternames");
-        if (StringUtils.isNotBlank(joinchildren)) {
-            // Determine how many children we need for this query
-            final int fields = StringUtils.countMatches(filtername, "|");
-            for (int i = 0; i <= fields; i++) {
-                // joinchildren escapes \ and ]
-                query.append(
-                    String.format(
-                        " inner join [%s] as child%d on ischildnode(child%d, n)",
-                        joinchildren.replaceAll("[\\\\\\]]", "\\\\$0"),
-                        i,
-                        i
-                    )
-                );
-            }
-        }
+        query.append(createJoins(
+            request.getParameter("joinchildren"),
+            request.getParameter("filternames"),
+            request.getParameter("filterempty"),
+            request.getParameter("filternotempty")
+            ));
 
         // Check only for our fields
         query.append(" where ischildnode(n, '" + request.getResource().getPath()
@@ -130,6 +120,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         if (StringUtils.isNotBlank(filtername)) {
             query.append(parseFilter(filtername, filtervalue, filtercomparators));
         }
+        query.append(parseExistence(
+            request.getParameter("filterempty"),
+            request.getParameter("filternotempty")));
 
         query.append(" order by n.'jcr:created'");
         final Iterator<Resource> results =
@@ -142,6 +135,73 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             writeSummary(jsonGen, request, limits);
             jsonGen.writeEnd().flush();
         }
+    }
+
+    /**
+     * Parse out filter data into a series of JCR_SQL2 joins.
+     * This should be used in conjuction with parseFilter later on.
+     *
+     * @param nodetype node types to join, pipe delimited (|)
+     * @param filternames user input field names, pipe delimited (|)
+     * @param empties user input fields to assert emptiness of, pipe delimited (|)
+     * @param notempties user input fields to assert non-emptiness of, pipe delimited (|)
+     * @return the input fields and assertions as a series of sql joins
+     */
+    private String createJoins(final String nodetype, final String filternames, final String empties,
+        final String notempties)
+    {
+        if (StringUtils.isBlank(nodetype)) {
+            // Unknown join type: do not parse
+            return "";
+        }
+
+        String sanitizednodetype = nodetype.replaceAll("[\\\\\\]]", "\\\\$0");
+        StringBuilder joindata = new StringBuilder();
+
+        // Parse out the fields to later impose conditions on
+        joindata.append(createSingleJoin(filternames, "child", sanitizednodetype));
+
+        // Parse out the fields to assert the nonexistence of
+        joindata.append(createSingleJoin(empties, "empty", sanitizednodetype));
+
+        // Parse out the fields to assert the existence of
+        joindata.append(createSingleJoin(notempties, "notempty", sanitizednodetype));
+
+        return joindata.toString();
+    }
+
+    /**
+     * Parse out filter data into a series of JCR_SQL2 joins.
+     *
+     * @param joins node types to join, pipe delimited (|)
+     * @param childprefix prefix to give the child, to which a number will be appended to
+     * @param nodetype Node type to join on
+     * @return the input field as a series of sql joins
+     */
+    private String createSingleJoin(final String joins, final String childprefix, final String nodetype)
+    {
+        // Don't attempt to append joins if we're not given anything
+        if (StringUtils.isBlank(joins)) {
+            return "";
+        }
+
+        // Append an inner join for each pipe-delimited identifier in joins
+        StringBuilder joindata = new StringBuilder();
+        final int numChildren = StringUtils.countMatches(joins, "|") + 1;
+        for (int i = 0; i < numChildren; i++) {
+            joindata.append(
+                String.format(
+                    " inner join [%s] as %s%d on ischildnode(%s%d, n)",
+                    nodetype,
+                    childprefix,
+                    i,
+                    childprefix,
+                    i
+                )
+            );
+        }
+
+        return joindata.toString();
     }
 
     /**
@@ -210,6 +270,40 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             );
         }
         return filterdata.toString();
+    }
+
+    private String parseExistence(final String empties, final String notempties)
+        throws IllegalArgumentException
+    {
+        StringBuilder joindata = new StringBuilder();
+        joindata.append(parseComparison(empties, "empty", " IS NULL"));
+        joindata.append(parseComparison(notempties, "notempty", " IS NOT NULL"));
+        return joindata.toString();
+    }
+
+    private String parseComparison(final String fieldnames, final String childname, final String comparison)
+    {
+        // Guard against nothing being entered
+        if (StringUtils.isBlank(fieldnames)) {
+            return "";
+        }
+
+        StringBuilder joindata = new StringBuilder();
+        String[] fields = fieldnames.split("\\|");
+        for (int i = 0; i < fields.length; i++) {
+            joindata.append(
+                String.format(
+                    " and %s%d.'question'='%s' and %s%d.'value'%s",
+                    childname,
+                    i,
+                    fields[i],
+                    childname,
+                    i,
+                    comparison
+                )
+            );
+        }
+        return joindata.toString();
     }
 
     /**
