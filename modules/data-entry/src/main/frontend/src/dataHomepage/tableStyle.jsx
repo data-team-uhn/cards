@@ -59,13 +59,6 @@ const liveTableStyle = theme => ({
     selectPlaceholder: {
         opacity: 0.3
     },
-    verticalFieldSpacer: {
-        paddingTop: "0px !important",
-        paddingBottom: "0px !important"
-    },
-    dialogPaper: {
-        maxWidth: "634px"
-    },
     deleteButton: {
         width: "100%"
     }

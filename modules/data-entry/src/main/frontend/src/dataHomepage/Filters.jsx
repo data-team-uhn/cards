@@ -394,9 +394,6 @@ function Filters(props) {
         open={dialogOpen}
         onClose={closeDialog}
         className={classes.dialog}
-        PaperProps={{
-          className: classes.dialogPaper
-        }}
         BackdropProps={{invisible: true}}
         fullWidth
         disableEnforceFocus
