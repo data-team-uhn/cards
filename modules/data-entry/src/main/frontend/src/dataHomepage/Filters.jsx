@@ -243,7 +243,7 @@ function Filters(props) {
           defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           className={classes.answerField}
-          ref={toFocus}
+          inputRef={toFocus}
           >
           {Object.entries(questionDefinitions[field])
           // answers are nodes with "jcr:primaryType" = "lfs:AnswerOption"
