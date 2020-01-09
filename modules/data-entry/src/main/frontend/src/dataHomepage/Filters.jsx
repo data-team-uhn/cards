@@ -314,7 +314,9 @@ function Filters(props) {
     // Create a deep copy of the active filters
     let newFilters = deepCopyFilters(editingFilters)
     // Remove filters that are not complete
-      .filter( (toCheck) => {return toCheck.uuid && toCheck.comparator});
+      .filter( (toCheck) => (toCheck.uuid && toCheck.comparator))
+    // Replace filters with empty output to use the "is empty" comparator
+      .map( (toCheck) => (toCheck.value || UNARY_OPERATORS.includes(toCheck.comparator) ? toCheck: {...toCheck, comparator: "is empty"}));
     setActiveFilters(newFilters);
     onChangeFilters && onChangeFilters(newFilters);
     setDialogOpen(false);
