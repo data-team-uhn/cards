@@ -47,12 +47,7 @@ const liveTableStyle = theme => ({
         position: 'absolute',
         right: theme.spacing(2)
     },
-    dialogContent: {
-    },
     answerField: {
-        width: "100%",
-    },
-    categoryField: {
         width: "100%",
     },
     categoryOption: {
@@ -67,9 +62,6 @@ const liveTableStyle = theme => ({
     verticalFieldSpacer: {
         paddingTop: "0px !important",
         paddingBottom: "0px !important"
-    },
-    comparatorSelector: {
-        width: "100%"
     },
     dialogPaper: {
         maxWidth: "634px"
