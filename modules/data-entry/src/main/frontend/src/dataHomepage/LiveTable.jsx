@@ -83,18 +83,18 @@ function LiveTable(props) {
     url.searchParams.set("offset", newPage.offset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
-    let filters = newPage.filters || cachedFilters;
+
+    // filters should be nullable, but if left undefined we use the cached filters
+    let filters = (newPage.filters === null ? null : (newPage.filters || cachedFilters));
+
+    // Add the filters (if they exist)
     if (filters != null) {
       url.searchParams.set("joinchildren", joinChildren);
-      url.searchParams.set("filternames", filters["fields"].join("|"));
-      url.searchParams.set("filtercomparators", filters["comparators"].join("|"));
-      url.searchParams.set("filtervalues", filters["values"].join("|"));
-      if (filters["empties"].length > 0) {
-        url.searchParams.set("filterempty", filters["empties"].join("|"));
-      }
-      if (filters["notempties"].length > 0) {
-        url.searchParams.set("filternotempty", filters["notempties"].join("|"));
-      }
+      filters["fields"].forEach((field) => {url.searchParams.append("filternames", field)});
+      filters["comparators"].forEach((comparator) => {url.searchParams.append("filtercomparators", comparator)});
+      filters["values"].forEach((value) => {url.searchParams.append("filtervalues", value)});
+      filters["empties"].forEach((value) => {url.searchParams.append("filterempty", value)});
+      filters["notempties"].forEach((value) => {url.searchParams.append("filternotempty", value)});
     }
     let currentFetch = fetch(url);
     setFetchStatus(Object.assign({}, fetchStatus, {

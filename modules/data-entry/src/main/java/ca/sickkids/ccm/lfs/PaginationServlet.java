@@ -77,12 +77,12 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             new StringBuilder("select n.* from [nt:base] as n");
 
         // If child nodes are required for this query, also grab them
-        final String filtername = request.getParameter("filternames");
+        final String[] filternames = request.getParameterValues("filternames");
         query.append(createJoins(
             request.getParameter("joinchildren"),
-            request.getParameter("filternames"),
-            request.getParameter("filterempty"),
-            request.getParameter("filternotempty")
+            request.getParameterValues("filternames"),
+            request.getParameterValues("filterempty"),
+            request.getParameterValues("filternotempty")
             ));
 
         // Check only for our fields
@@ -115,11 +115,11 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         }
 
         // Condition on child nodes. See parseFilter for details.
-        final String filtervalue = request.getParameter("filtervalues");
-        final String filtercomparators = request.getParameter("filtercomparators");
-        final String filterempty = request.getParameter("filterempty");
-        final String filternotempty = request.getParameter("filternotempty");
-        query.append(parseFilter(filtername, filtervalue, filtercomparators));
+        final String[] filtervalues = request.getParameterValues("filtervalues");
+        final String[] filtercomparators = request.getParameterValues("filtercomparators");
+        final String[] filterempty = request.getParameterValues("filterempty");
+        final String[] filternotempty = request.getParameterValues("filternotempty");
+        query.append(parseFilter(filternames, filtervalues, filtercomparators));
         query.append(parseExistence(filterempty, filternotempty));
 
         query.append(" order by n.'jcr:created'");
@@ -139,14 +139,14 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * Parse out filter data into a series of JCR_SQL2 joins.
      * This should be used in conjuction with parseFilter later on.
      *
-     * @param nodetype node types to join, pipe delimited (|)
-     * @param filternames user input field names, pipe delimited (|)
-     * @param empties user input fields to assert emptiness of, pipe delimited (|)
-     * @param notempties user input fields to assert non-emptiness of, pipe delimited (|)
+     * @param nodetype node types to join
+     * @param filternames user input field names
+     * @param empties user input fields to assert emptiness of
+     * @param notempties user input fields to assert non-emptiness of
      * @return the input fields and assertions as a series of sql joins
      */
-    private String createJoins(final String nodetype, final String filternames, final String empties,
-        final String notempties)
+    private String createJoins(final String nodetype, final String[] filternames, final String[] empties,
+        final String[] notempties)
     {
         if (StringUtils.isBlank(nodetype)) {
             // Unknown join type: do not parse
@@ -171,22 +171,21 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     /**
      * Parse out filter data into a series of JCR_SQL2 joins.
      *
-     * @param joins node types to join, pipe delimited (|)
+     * @param joins node types to join
      * @param childprefix prefix to give the child, to which a number will be appended to
      * @param nodetype Node type to join on
      * @return the input field as a series of sql joins
      */
-    private String createSingleJoin(final String joins, final String childprefix, final String nodetype)
+    private String createSingleJoin(final String[] joins, final String childprefix, final String nodetype)
     {
         // Don't attempt to append joins if we're not given anything
-        if (StringUtils.isBlank(joins)) {
+        if (joins == null) {
             return "";
         }
 
         // Append an inner join for each pipe-delimited identifier in joins
         StringBuilder joindata = new StringBuilder();
-        final int numChildren = StringUtils.countMatches(joins, "|") + 1;
-        for (int i = 0; i < numChildren; i++) {
+        for (int i = 0; i < joins.length; i++) {
             joindata.append(
                 String.format(
                     " inner join [%s] as %s%d on ischildnode(%s%d, n)",
@@ -205,49 +204,45 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     /**
      * Parse out filter data into a series of JCR_SQL2 conditionals.
      *
-     * @param fields user input field names, pipe delimited (|)
-     * @param values user input field values, pipe delimited (|)
-     * @param comparator user input comparators, pipe delimited (|)
+     * @param fields user input field names
+     * @param values user input field values
+     * @param comparator user input comparators
      * @throws IllegalArgumentException when the number of input fields are not equal
      */
-    private String parseFilter(final String fields, final String values, final String comparator)
+    private String parseFilter(final String[] fields, final String[] values, final String[] comparator)
         throws IllegalArgumentException
     {
         // If we don't have either names or values, we should fail to filter
-        if (StringUtils.isBlank(fields) || StringUtils.isBlank(values)) {
+        if (fields == null || values == null) {
             return "";
         }
 
         // Parse out multiple fields, split by pipes (|)
-        String[] fieldnames = fields.split("\\|");
-        String[] fieldvalues = values.split("\\|");
-        if (fieldnames.length != fieldvalues.length) {
-            throw new IllegalArgumentException("fieldname and fieldvalue must have the same number"
-                    + "of values, as delimited by pipes (|)");
+        if (fields.length != values.length) {
+            throw new IllegalArgumentException("fieldname and fieldvalue must have the same number of values");
         }
 
         // Also parse out multiple comparators
         String[] comparators;
-        if (StringUtils.isBlank(comparator)) {
+        if (comparator == null) {
             // Use = as the default
-            comparators = new String[fieldnames.length];
-            for (int i = 0; i < fieldnames.length; i++) {
+            comparators = new String[fields.length];
+            for (int i = 0; i < fields.length; i++) {
                 comparators[i] = "=";
             }
         } else {
-            comparators = comparator.split("\\|");
-            if (comparators.length != fieldvalues.length) {
-                throw new IllegalArgumentException("must have the same number of comparators as fields,"
-                        + " as delimited by pipes (|)");
+            comparators = comparator;
+            if (comparators.length != values.length) {
+                throw new IllegalArgumentException("must have the same number of comparators as fields,");
             }
         }
 
         // Build the filter conditionals by imposing conditions on the inner joined lfs:Answer children
         StringBuilder filterdata = new StringBuilder();
         // TODO: Double check the sanitization on the comparator
-        for (int i = 0; i < fieldnames.length; i++) {
+        for (int i = 0; i < fields.length; i++) {
             // Condition 1: the question uuid must match one of the given (comma delimited)
-            String[] possibleQuestions = fieldnames[i].split(",");
+            String[] possibleQuestions = fields[i].split(",");
             filterdata.append(" and (");
             for (int j = 0; j < possibleQuestions.length; j++) {
                 filterdata.append(
@@ -268,7 +263,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                     ") and child%d.'value'%s'%s'",
                     i,
                     this.sanitizeComparator(comparators[i]),
-                    this.sanitizeField(fieldvalues[i])
+                    this.sanitizeField(values[i])
                 )
             );
         }
@@ -278,11 +273,11 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     /**
      * Parse out empty & not empty fields into a series of JCR_SQL2 conditionals.
      *
-     * @param empties user input field names to assert the nonexistance of content for, pipe delimited (|)
-     * @param notempties user input field names to assert the existance of content for, pipe delimited (|)
+     * @param empties user input field names to assert the nonexistance of content for
+     * @param notempties user input field names to assert the existance of content for
      * @return JCR_SQL conditionals for the input
      */
-    private String parseExistence(final String empties, final String notempties)
+    private String parseExistence(final String[] empties, final String[] notempties)
         throws IllegalArgumentException
     {
         StringBuilder joindata = new StringBuilder();
@@ -294,28 +289,28 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     /**
      * Parse out a field and its unary comparison into a series of JCR_SQL2 conditionals.
      *
-     * @param fieldnames user input field names, pipe delimited (|)
+     * @param fieldnames user input field names
      * @param childprefix prefix for the child nodes
      * @param comparison unary comparitor to assert
      * @return JCR_SQL conditionals for the input
      */
-    private String parseComparison(final String fieldnames, final String childprefix, final String comparison)
+    private String parseComparison(final String[] fieldnames, final String childprefix, final String comparison)
     {
-        // Guard against nothing being entered
-        if (StringUtils.isBlank(fieldnames)) {
+        // If no comparison is entered, do nothing
+        if (fieldnames == null) {
             return "";
         }
 
         // Build the conditionals (e.g. and child0.'question'='uuid' and child0.'value' IS NOT NULL...)
         StringBuilder joindata = new StringBuilder();
-        String[] fields = fieldnames.split("\\|");
-        for (int i = 0; i < fields.length; i++) {
+        for (int i = 0; i < fieldnames.length; i++) {
+            String sanitizedFieldName = sanitizeField(fieldnames[i]);
             joindata.append(
                 String.format(
                     " and %s%d.'question'='%s' and %s%d.'value'%s",
                     childprefix,
                     i,
-                    fields[i],
+                    sanitizedFieldName,
                     childprefix,
                     i,
                     comparison
