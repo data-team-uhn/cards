@@ -425,7 +425,7 @@ function Filters(props) {
                       MenuProps={{
                         onExited: forceRegrabFocus
                       }}
-                      className={classes.categoryField}
+                      className={classes.answerField}
                       inputRef={(index === editingFilters.length-1 && toFocus === index) ? focusCallback : undefined}
                       displayEmpty
                       >
