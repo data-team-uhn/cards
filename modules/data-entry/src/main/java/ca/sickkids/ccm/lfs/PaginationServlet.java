@@ -117,12 +117,10 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // Condition on child nodes. See parseFilter for details.
         final String filtervalue = request.getParameter("filtervalues");
         final String filtercomparators = request.getParameter("filtercomparators");
-        if (StringUtils.isNotBlank(filtername)) {
-            query.append(parseFilter(filtername, filtervalue, filtercomparators));
-        }
-        query.append(parseExistence(
-            request.getParameter("filterempty"),
-            request.getParameter("filternotempty")));
+        final String filterempty = request.getParameter("filterempty");
+        final String filternotempty = request.getParameter("filternotempty");
+        query.append(parseFilter(filtername, filtervalue, filtercomparators));
+        query.append(parseExistence(filterempty, filternotempty));
 
         query.append(" order by n.'jcr:created'");
         final Iterator<Resource> results =
@@ -215,6 +213,11 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     private String parseFilter(final String fields, final String values, final String comparator)
         throws IllegalArgumentException
     {
+        // If we don't have either names or values, we should fail to filter
+        if (StringUtils.isBlank(fields) || StringUtils.isBlank(values)) {
+            return "";
+        }
+
         // Parse out multiple fields, split by pipes (|)
         String[] fieldnames = fields.split("\\|");
         String[] fieldvalues = values.split("\\|");
@@ -272,6 +275,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         return filterdata.toString();
     }
 
+    /**
+     * Parse out empty & not empty fields into a series of JCR_SQL2 conditionals.
+     *
+     * @param empties user input field names to assert the nonexistance of content for, pipe delimited (|)
+     * @param notempties user input field names to assert the existance of content for, pipe delimited (|)
+     * @return JCR_SQL conditionals for the input
+     */
     private String parseExistence(final String empties, final String notempties)
         throws IllegalArgumentException
     {
@@ -281,23 +291,32 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         return joindata.toString();
     }
 
-    private String parseComparison(final String fieldnames, final String childname, final String comparison)
+    /**
+     * Parse out a field and its unary comparison into a series of JCR_SQL2 conditionals.
+     *
+     * @param fieldnames user input field names, pipe delimited (|)
+     * @param childprefix prefix for the child nodes
+     * @param comparison unary comparitor to assert
+     * @return JCR_SQL conditionals for the input
+     */
+    private String parseComparison(final String fieldnames, final String childprefix, final String comparison)
     {
         // Guard against nothing being entered
         if (StringUtils.isBlank(fieldnames)) {
             return "";
         }
 
+        // Build the conditionals (e.g. and child0.'question'='uuid' and child0.'value' IS NOT NULL...)
         StringBuilder joindata = new StringBuilder();
         String[] fields = fieldnames.split("\\|");
         for (int i = 0; i < fields.length; i++) {
             joindata.append(
                 String.format(
                     " and %s%d.'question'='%s' and %s%d.'value'%s",
-                    childname,
+                    childprefix,
                     i,
                     fields[i],
-                    childname,
+                    childprefix,
                     i,
                     comparison
                 )
