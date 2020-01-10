@@ -227,8 +227,7 @@ public class VocabularyIndexerServletTest
      *
      * @throws Exception when an unexpected response is returned or the request has failed
      */
-    // Disabled
-    // @Test
+    @Test
     public void testNoVersionProvided()
         throws Exception
     {
@@ -268,9 +267,9 @@ public class VocabularyIndexerServletTest
         Assert.assertFalse(responseJson.getBoolean("isSuccessful"));
 
         // Compare error message to expected error message
-        String expectedError = "NCIT Flat parsing error: Mandatory version parameter not provided.";
+        String expectedError = "NCIT Flat indexing error: Mandatory version parameter not provided.";
         String obtainedError = responseJson.getString("error");
-        Assert.assertTrue(expectedError.equals(obtainedError));
+        Assert.assertEquals(expectedError, obtainedError);
 
         // Make sure that the vocabulary node was not created
         Node rootNode = request.getResource().adaptTo(Node.class);
@@ -282,8 +281,7 @@ public class VocabularyIndexerServletTest
      *
      * @throws Exception when an unexpected response is returned or the request has failed
      */
-    // Disabled
-    // @Test
+    @Test
     public void testInvalidFileLocation()
         throws Exception
     {
@@ -323,10 +321,10 @@ public class VocabularyIndexerServletTest
         Assert.assertFalse(responseJson.getBoolean("isSuccessful"));
 
         // Compare the error message
-        String expectedError = "NCIT Flat parsing error: Error: Failed to load zip vocabulary locally. "
+        String expectedError = "NCIT Flat indexing error: Error: Failed to load zip vocabulary locally. "
             + "./someLocation (No such file or directory)";
         String obtainedError = responseJson.getString("error");
-        Assert.assertTrue(expectedError.equals(obtainedError));
+        Assert.assertEquals(expectedError, obtainedError);
 
         // Make sure the vocabulary node was not created
         Node rootNode = request.getResource().adaptTo(Node.class);
@@ -367,7 +365,7 @@ public class VocabularyIndexerServletTest
 
         // Set the request parameters and execute request
         String requestParams = "source=ncit-flat&identifier=flatTestVocabulary&version=19.05d&localpath="
-                + "./flat_NCIT_type_testcase.zip";
+            + "./flat_NCIT_type_testcase.zip";
         makePost(request, response, requestParams);
 
         // Get the root and vocabulary nodes from the request
@@ -393,7 +391,8 @@ public class VocabularyIndexerServletTest
     private void ncitFlatTestVocabularyNode(Node flatTestVocabulary)
         throws Exception
     {
-        String[] expectedNodes = { "C100000", "C100001", "C100002", "C100003", "C100004", "C100005", "C100006",
+        String[] expectedNodes =
+            { "C100000", "C100001", "C100002", "C100003", "C100004", "C100005", "C100006",
             "C100007", "C100008", "C100009" };
 
         // Check if each expected node exists
@@ -464,10 +463,7 @@ public class VocabularyIndexerServletTest
         String label = "Post-Cardiac Transplant Evaluation";
         checkString(c100005, "label", label);
 
-        String[] synonyms = {
-            "Post-Cardiac Transplant Evaluation",
-            "POST-CARDIAC TRANSPLANT"
-        };
+        String[] synonyms = { "Post-Cardiac Transplant Evaluation", "POST-CARDIAC TRANSPLANT" };
         checkStringArray(c100005, "synonyms", synonyms);
 
         String[] parents = { "C100002" };
