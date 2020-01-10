@@ -59,7 +59,7 @@ function SearchBar(props) {
   // Runs a fulltext request
   let runQuery = (query) => {
     let new_url = new URL(QUERY_URL, window.location.origin);
-    new_url.searchParams.set("quick", encodeURIComponent(query));
+    new_url.searchParams.set("quick", encodeURIComponent("*" + query + "*"));
     fetch(new_url)
       .then(response => response.ok ? response.json() : Promise.reject(response))
       .then(displayResults)
