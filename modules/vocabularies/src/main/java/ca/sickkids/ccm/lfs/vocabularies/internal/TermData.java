@@ -93,7 +93,7 @@ public class TermData
      *
      * @param key - for value to be assigned.
      * @param value - that is to be assigned to key.
-     * @return Boolean that indicates whether or not the add was successful.
+     * @return whether or not the add was successful.
      */
     public boolean addTo(String key, String value)
     {
