@@ -365,7 +365,7 @@ public class VocabularyIndexerServletTest
 
         // Set the request parameters and execute request
         String requestParams = "source=ncit-flat&identifier=flatTestVocabulary&version=19.05d&localpath="
-            + "./flat_NCIT_type_testcase.zip";
+            + getClass().getResource("/flat_NCIT_type_testcase.zip").getPath();
         makePost(request, response, requestParams);
 
         // Get the root and vocabulary nodes from the request
