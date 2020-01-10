@@ -28,7 +28,7 @@ const QUERY_URL = "/query";
 const MAX_RESULTS = 5;
 
 function SearchBar(props) {
-  const { classes, className, closeSidebar, invertColors } = props;
+  const { classes, className, closeSidebar, invertColors, doNotEscapeQuery } = props;
   const [ search, setSearch ] = useState("");
   const [ results, setResults ] = useState([]);
   const [ popperOpen, setPopperOpen ] = useState(false);
@@ -56,10 +56,17 @@ function SearchBar(props) {
     setError(false);
   }
 
+  let sqlEscape = (query) => (
+    // The list of characters to escape are taken from https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Escaping%20Special%20Characters
+    // The single quote is escaped via our QueryBuilder, so we ignore it here
+    doNotEscapeQuery ? query : query.replace("([+-!(){}[]^\"~*?:\\&& ||])", "\\$1")
+    );
+
   // Runs a fulltext request
   let runQuery = (query) => {
     let new_url = new URL(QUERY_URL, window.location.origin);
-    new_url.searchParams.set("quick", encodeURIComponent("*" + query + "*"));
+    let escaped_query = "*" + sqlEscape(query) + "*";
+    new_url.searchParams.set("quick", encodeURIComponent(escaped_query));
     fetch(new_url)
       .then(response => response.ok ? response.json() : Promise.reject(response))
       .then(displayResults)
@@ -195,7 +202,8 @@ function SearchBar(props) {
 }
 
 SearchBar.propTypes = {
-  invertColors: PropTypes.bool
+  invertColors: PropTypes.bool,
+  doNotEscapeQuery: PropTypes.bool
 }
 
 export default withStyles(HeaderStyle)(withRouter(SearchBar));
