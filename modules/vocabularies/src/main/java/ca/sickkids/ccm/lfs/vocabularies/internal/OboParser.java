@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -41,18 +43,7 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
 
 /**
- * Generic indexer for vocabularies available on the <a href="http://data.bioontology.org/">BioOntology</a> portal.
- * BioOntology is a RESTfull server serving a large collection of vocabularies, available as OBO sources, along with
- * meta-information.
- * <p>
- * To be invoked, this indexer requires that:
- * <ul>
- * <li>the {@code source} request parameter is {@code bioontology}</li>
- * <li>the {@code identifier} request parameter is a valid, case-sensitive identifier of a vocabulary available in the
- * BioOntology server</li>
- * </ul>
- * An optional {@code version} parameter can be used to index a specific version of the target vocabulary. If not
- * specified, then the latest available version will be used.
+ * Parser for vocabulary sources in the OBO format.
  *
  * @version $Id$
  */
@@ -69,8 +60,7 @@ public class OboParser implements SourceParser
     private static final String ENTITY_SEPARATION_REGEX = "^\\[[a-zA-Z]+\\]$";
 
     /** Regex pattern for a String -> String mapping. */
-    private static final String FIELD_NAME_VALUE_SEPARATOR = "\\s*:\\s+";
-
+    private static final String FIELD_NAME_VALUE_SEPARATOR = "(?<!\\\\)(?:\\\\\\\\)*:\\s*";
 
     /** The data structure for the term currently being processed. */
     private TermData crtTerm;
@@ -95,7 +85,7 @@ public class OboParser implements SourceParser
     @Override
     public boolean canParse(String format)
     {
-        return "OBO".equals(format);
+        return "OBO".equalsIgnoreCase(format);
     }
 
     @Override
@@ -110,8 +100,6 @@ public class OboParser implements SourceParser
             consumeData(consumer);
         } catch (IOException ex) {
             this.logger.error("IOException: {}", ex.getMessage());
-        } catch (NullPointerException ex) {
-            this.logger.error("NullPointer: {}", ex.getMessage());
         }
     }
 
@@ -120,73 +108,175 @@ public class OboParser implements SourceParser
      *
      * @param source the file containing information about the vocabulary.
      * @throws IOException if it cannot read the source file at any point
-     * @throws NullPointerException if it encounters a null pointer
      */
-    private void readLines(final File source) throws IOException, NullPointerException
+    private void readLines(final File source) throws IOException
     {
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(source)));
-        String line;
-        Boolean canStore = false;
-        /*
-        * When encountering a separator that is not a term separator, all data should be skipped until a term
-        * separator is encountered again.
-        */
-        boolean skip = false;
-        while ((line = br.readLine()) != null) {
-            if (line.trim().matches(ENTITY_SEPARATION_REGEX)) {
-                if (canStore) {
-                    storeCrtTerm();
-                }
-                // Overridden below
-                skip = true;
-            }
-            if (line.trim().equalsIgnoreCase(TERM_MARKER)) {
-                canStore = true;
-                skip = false;
-                continue;
-            }
-            if (!skip) {
-                String[] pieces = line.split(FIELD_NAME_VALUE_SEPARATOR, 2);
-                if (pieces.length != 2) {
+        try (ConcatenatingLineReader br =
+            new ConcatenatingLineReader(new InputStreamReader(new FileInputStream(source), StandardCharsets.UTF_8))) {
+            String line;
+            // Used to skip over the header and non-Term frames
+            // Initially false, since at the start of the file is the header
+            boolean isTerm = false;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().matches(ENTITY_SEPARATION_REGEX)) {
+                    // We just encountered the start of a new frame
+                    if (isTerm) {
+                        // If the previous frame was a Term, store it
+                        storeCrtTerm();
+                    }
+                    // Non-Term frames must be ignored, only Terms are recorded
+                    isTerm = line.trim().equalsIgnoreCase(TERM_MARKER);
                     continue;
                 }
-                if (pieces[0].trim().equals("data-version")) {
-                    this.crtTerm.addTo("version", pieces[1]);
-                    this.crtTerm.addTo(TermData.ID_FIELD_NAME, "HEADER_INFO");
-                    canStore = true;
+                if (isTerm) {
+                    // Inside a Term, process its values
+                    String[] pieces = line.split(FIELD_NAME_VALUE_SEPARATOR, 2);
+                    if (pieces.length != 2) {
+                        continue;
+                    }
+                    loadField(pieces[0], pieces[1]);
                 }
-                loadField(pieces[0], pieces[1]);
+            }
+            // Also store the last term parsed when the end of the file is encountered
+            if (isTerm) {
+                storeCrtTerm();
             }
         }
-        storeCrtTerm();
     }
 
+    /**
+     * Store the current term data and set up a new TermData instance to record the next term.
+     */
     private void storeCrtTerm()
     {
         if (this.crtTerm.getId() != null) {
-            this.data.put(this.crtTerm.getId(), this.crtTerm);
+            TermData existing = this.data.get(this.crtTerm.getId());
+            if (existing == null) {
+                this.data.put(this.crtTerm.getId(), this.crtTerm);
+            } else {
+                existing.getAllProperties().putAll(this.crtTerm.getAllProperties());
+            }
         }
         this.crtTerm = new TermData();
     }
 
+    /**
+     * Process a field ("name = value" pair) by extracting only the actual value, ignoring trailing modifiers, dbxrefs,
+     * and comments, as well as synonym categories.
+     *
+     * @param name the name of the property
+     * @param value the raw value, which may be a simple unquoted or quoted value, or a value with additional trailing
+     *            modifiers, comments, and other tags
+     */
     private void loadField(String name, String value)
     {
-        // "\"Autosomal dominant type\" RELATED [HPO:skoehler]" -> "Autosomal dominant type"
-        String newValue = value.replaceFirst("^\"(.+)\"\\s*?(?:[A-Z]+|\\[).*", "$1")
-            // "  {xref="PMID:16424154"}" at the end of the String -> ""
-            .replaceFirst("\\s+\\{.*$", "");
-        if (name.equals(TermData.PARENT_FIELD_NAME)) {
-            // "VOCAB:1234567 ! ..." at start of String -> "VOCAB:1234567"
-            newValue = newValue.replaceFirst("^(\\S+) ! .*", "$1");
-        }
-        this.crtTerm.addTo(name, newValue.replace("\\\"", "\""));
-        // [A-Z]+:[A-Z]*[0-9]* ! .*
-        // .*:.* ! .*
+        this.crtTerm.addTo(process(name), process(value));
     }
 
     /**
-     * Recursively determine the ancestors of the initial Vocabulary Term,
-     * as well as all the Terms that are parents of it.
+     * Process a raw value read from the OBO file to extract only the real value, ignoring trailing modifiers, comments,
+     * and xref lists, removing quotes if needed, and unescaping special escape sequences.
+     *
+     * @param rawValue the value as present in the input file
+     * @return the processed value, with any trailing bits removed, unquoted, and unescaped
+     */
+    private String process(final String rawValue)
+    {
+        String realValue = rawValue;
+
+        // If the string was quoted, then trailing modifiers and comments don't need to be trimmed from within
+        final boolean wasQuoted = rawValue.startsWith("\"");
+
+        // If the value is quoted, only keep the part inside the quotes.
+        // - must match from the start: ^
+        // - must start with a quote: \"
+        // - start a capture: (
+        // - any characters: .*
+        // - lazy matching, capture the shortest match to avoid capturing between two distinct quoted strings): ?
+        // (now going backwards from the last closing bracket)
+        // - end the capture: )
+        // - which may be proceded by an even number of backslashes, including none: (?:\\\\\\\\)*
+        // -- two backslashes: \\
+        // -- escaped as part of the regexp: \\\\
+        // -- escaped again as part of a java string: \\\\\\\\
+        // -- in a non-capturing group: (?:\\\\\\\\)
+        // -- repeated any number of times, including 0: (?:\\\\\\\\)*
+        // - not preceded by another backslash, which would make it an odd number of backslashes: (?<!\\\\)
+        // -- a backslash: \
+        // -- escaped as part of the regexp: \\
+        // -- escaped again as part of a java string: \\\\
+        // -- in a negative lookbehind: (?<!\\\\)
+        // (resume going forward after the last closing bracket)
+        // - stop capturing at a quote: \"
+        // - followed by anything else: .*
+        //
+        // For example:
+        // "Abnormally long and slender fingers (\"spider fingers\")." [HPO:probinson]
+        // becomes
+        // Abnormally long and slender fingers (\"spider fingers\").
+        realValue = realValue.replaceFirst("^\"(.*?(?<!\\\\)(?:\\\\\\\\)*)\".*", "$1");
+
+        // If there are trailing modifiers or comments, remove them.
+        // - must match from the start: ^
+        // - start a capture: (
+        // - any characters: .*
+        // - lazy matching, capture the shortest match to stop at the first exclamation mark): ?
+        // - an even number of backslashes, including none (see explanation above for this part): (?<!\\\\)(?:\\\\\\\\)*
+        // - end the capture: )
+        // - an opening brace or exclamation mark: [\\{!]
+        // - followed by anything else: .*
+        //
+        // We also trim the value, to remove any potential whitespace before the trailing bit.
+        //
+        // Examples:
+        //
+        // He said "Hello\!" and then left. ! Did he mean to say "Goodbye!" instead?
+        // becomes
+        // He said "Hello\!" and then left.
+        //
+        // Often associated with Cowden syndrome. {xref="PMID:11073535"}
+        // becomes
+        // Often associated with Cowden syndrome.
+        if (!wasQuoted) {
+            realValue = realValue.replaceFirst("^(.*?(?<!\\\\)(?:\\\\\\\\)*)[\\{!].*", "$1").trim();
+        }
+
+        // We should also remove trailing Dbxref lists, but this isn't necessary since they can only appear after a
+        // quoted string, which means that they should already have been discarded during the first step when everything
+        // outside the quotes was discarded
+
+        // Unescape special symbols which are replaced by themselves: !:,"()[]{}
+        // - replace any occurrence, so we don't need to match from the start
+        // - an even number of backslashes, including none (explanation above): (?<!\\\\)(?:\\\\\\\\)*
+        // - captured as the first group, since we want to preserve them: ((?<!\\\\)(?:\\\\\\\\)*)
+        // - followed by a single backslash, escaped two times: \\\\
+        // - followed by one of the special characters: [!:,"()[]{}]
+        // - escaped: [!:,\"\\(\\)\\[\\]\\{\\}]
+        // - captured as the second group, since we want to output it: ([!:,\"\\(\\)\\[\\]\\{\\}])
+        // - replace with the optional even backslashes before the escaping backslash, and the symbol itself
+        realValue = realValue.replaceAll("((?<!\\\\)(?:\\\\\\\\)*)\\\\([!:,\"\\(\\)\\[\\]\\{\\}])", "$1$2");
+
+        // Unescape other special characters: newline, space, tab
+        // - as above, captured optional even number of preceding backslashes: ((?<!\\\\)(?:\\\\\\\\)*)
+        // - followed by a single backslash, escaped two times: \\\\
+        // - followed by n, W, or t respectively
+        // - replace with the optional even backslashes before the escaping backslash, and the special character
+        realValue = realValue.replaceAll("((?<!\\\\)(?:\\\\\\\\)*)\\\\n", "$1\n")
+            .replaceAll("((?<!\\\\)(?:\\\\\\\\)*)\\\\W", "$1 ")
+            .replaceAll("((?<!\\\\)(?:\\\\\\\\)*)\\\\t", "$1\t");
+
+        // Finally, unescape the escape character itself
+        // - replace any two backslashes with one: \\
+        // - double escaped as a regexp special symbol and as a java string: \\\\\\\\
+        // - replace with a single backslash, also double escaped
+        realValue = realValue.replaceAll("\\\\\\\\", "\\\\");
+
+        return realValue;
+    }
+
+    /**
+     * Recursively determine the ancestors of the initial Vocabulary Term, as well as all the Terms that are parents of
+     * it.
      *
      * @param termID is the ID of the term whose ancestors are to be propogated
      * @return IDs of the ancestors of the given term
@@ -195,6 +285,11 @@ public class OboParser implements SourceParser
     private Collection<String> findAncestors(String termID)
     {
         TermData term = this.data.get(termID);
+
+        if (term == null) {
+            // Unknown parent
+            return Collections.emptySet();
+        }
         // If the ancestors for this node have already been determined, return them as a list of IDs.
         if (term.hasKey(TermData.TERM_CATEGORY_FIELD_NAME)) {
             return term.getCollection(TermData.TERM_CATEGORY_FIELD_NAME);
@@ -205,7 +300,7 @@ public class OboParser implements SourceParser
                 parents = term.getCollection(TermData.PARENT_FIELD_NAME);
             } else {
                 // Else we have reached the root node which has no parents.
-                parents = Collections.emptyList();
+                parents = Collections.emptySet();
             }
             Collection<String> ancestors = new LinkedHashSet<>(parents);
             // Take the Union of the ancestors IDs of all parent nodes and the IDs of parents.
@@ -227,8 +322,7 @@ public class OboParser implements SourceParser
     }
 
     /**
-     * Creates a new VocabularyTermSource object from the parsed Term
-     * and passes it to the consumer.accept() function.
+     * Creates a new VocabularyTermSource object from the parsed Term and passes it to the consumer.accept() function.
      *
      * @param consumer method that will store the parsed term
      */
@@ -242,8 +336,37 @@ public class OboParser implements SourceParser
                 term.getLabel(),
                 term.getCollection(TermData.PARENT_FIELD_NAME).toArray(typeString),
                 term.getCollection(TermData.TERM_CATEGORY_FIELD_NAME).toArray(typeString),
-                term.getAllProperties()
-            ));
+                term.getAllProperties()));
+        }
+    }
+
+    private static final class ConcatenatingLineReader extends BufferedReader
+    {
+        ConcatenatingLineReader(Reader in)
+        {
+            super(in);
+        }
+
+        @Override
+        public String readLine() throws IOException
+        {
+            String line = super.readLine();
+            StringBuilder concatenatedLine = new StringBuilder();
+            boolean firstLineIsNull = true;
+            while (line != null
+                && line.toString().matches(".*((?<!\\\\)(?:\\\\\\\\)*)\\\\")
+                && !line.toString().matches(".*(?<!\\\\)(?:\\\\\\\\)*!.*")) {
+                concatenatedLine.append(line, 0, line.length() - 1);
+                firstLineIsNull = false;
+                line = super.readLine();
+            }
+            // The file may end with a last backslash, which needs to be removed
+            if (line != null) {
+                concatenatedLine.append(line);
+            } else if (firstLineIsNull) {
+                return null;
+            }
+            return concatenatedLine.toString();
         }
     }
 }

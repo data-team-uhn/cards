@@ -22,12 +22,12 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
 /**
- * A datatype that contains a LinkedHashMap object which maps: String -> Collection[String].
- * It is used to store the information of a Vocabulary Term prior to ancestor propagation.
- * The below is copied from OboParser.java .
+ * A datatype that contains a LinkedHashMap object which maps: String -> Collection[String]. It is used to store the
+ * information of a Vocabulary Term prior to ancestor propagation. The below is copied from OboParser.java .
+ *
  * @version $Id$
  */
 public class TermData
@@ -55,7 +55,7 @@ public class TermData
      */
     public TermData()
     {
-        this.properties = new ArrayListValuedHashMap<String, String>();
+        this.properties = new HashSetValuedHashMap<>();
     }
 
     /**

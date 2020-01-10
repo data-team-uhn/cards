@@ -18,6 +18,8 @@
  */
 package ca.sickkids.ccm.lfs.vocabularies.spi;
 
+import java.util.Collection;
+
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.lang3.StringUtils;
 
@@ -87,6 +89,10 @@ public class VocabularyTermSource
      */
     public String getDescription()
     {
+        final Collection<String> allDefs = this.allProperties.get("def");
+        if (allDefs != null && !allDefs.isEmpty()) {
+            return allDefs.iterator().next();
+        }
         return null;
     }
 

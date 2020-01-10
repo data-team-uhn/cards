@@ -1,0 +1,175 @@
+! Licensed to the Apache Software Foundation (ASF) under one
+! or more contributor license agreements.  See the NOTICE file
+! distributed with this work for additional information
+! regarding copyright ownership.  The ASF licenses this file
+! to you under the Apache License, Version 2.0 (the
+! "License"); you may not use this file except in compliance
+! with the License.  You may obtain a copy of the License at
+!
+! http://www.apache.org/licenses/LICENSE-2.0
+!
+! Unless required by applicable law or agreed to in writing,
+! software distributed under the License is distributed on an
+! "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+! KIND, either express or implied.  See the License for the
+! specific language governing permissions and limitations
+! under the License.
+
+format-version: 1.2
+data-version: releases/2015-04-10
+
+[Typedef]
+id: ignored
+name: This should be ignored, since it is not a Term
+
+[Term]
+id: TEST:ROOT
+name: Root term
+
+[Term]
+id: TEST:SIMPLE
+name: Simple term
+def: "A simple term." []
+is_a: TEST:ROOT
+
+[Term]
+id: TEST:MULTI
+name: Multivalued term
+def: "This has multiple values for some properties" []
+alt_id: TEST:MV
+alt_id: TEST:MANY
+alt_id: TEST:MV
+synonym: "Multi-valued term" EXACT []
+synonym: "Multivalued" EXACT []
+synonym: "A term that may have multiple values" NARROW []
+is_a: TEST:ROOT
+
+[Typedef]
+id: ignored2
+name: This should be ignored too
+
+[Term]
+id: TEST:EMPTY
+! This has no name, def, parents... Testing what happens when a term has missing properties
+
+[Term]
+id: TEST:COMBINED
+name: Combined term
+synonym: "Split" EXACT []
+
+[Term]
+id: TEST:COMBINED
+def: "A term may be combined from different frames with the same identifier, so only one TEST:COMBINED term should end up in the data, having both a name and a def, and two synonyms"
+is_a: TEST:ROOT
+synonym: "Recomposed" EXACT []
+
+[Term]
+id: TEST:COMMENTS ! Even in the identifier!
+name: Test support for comments
+def: "Comments inside quotes are not! allowed" ! But are allowed outside
+!comment: a comment right at the start should ignore the whole line
+comment!: This is not a valid tag either
+before: Newline continuations are not allowed after ! comments \
+after: This must be a valid tag
+escape1: Escape \! is \! possible\! ! But unescaped is still ignored
+escape2: Double escape \\! is not a comment escape, but a backslash escape
+escape3: Tripe escape \\\! is still an escape
+escape4: While quad escape \\\\! is not
+escape5: Still \\\\\! valid ! escape
+esc\!ape: Tag name can al\!so be escaped
+
+[Term]
+id: TEST:TRAILINGMODS {test:ignored}
+name: Trailing modifiers are ignored {test:ignored}
+escape1: Escape \{is\} \{possible\} {But unescaped is still ignored}
+escape2: Double escape \\{is not an escape}
+escape3: Tripe escape \\\{is still an escape\\\}
+escape4: While quad escape \\\\{is not\\\\}
+escape5: Still \\\\\{valid} {escape}
+esc\{ape\}: Tag name can al\{so b\}e escaped
+
+[Term]
+id: TEST:XREFLISTS
+name: XredLists must be [ignored outside quotes, but not in the absence of quotes]
+def: "They can only appear outside quotes" [Like this one, which is ignored]
+
+[Term]
+id: "TEST:QUOTES"
+name: "All fields can be quoted" and everything outside the quotes is ignored
+def: \"But escaped quotes are not\" really quotes
+"tag": "Tag names can also be quoted"
+inner: If the "quotes" are not from the start, then they are simple inner quotes
+escape1: "Inner \"quotes\" must be escaped as well" in order to survive
+escape2: "Double escaped \\"quotes\\" are not actually escaped"
+escape3: "Tripe escaped \\\"quotes\\\" are escaped"
+escape4: "Quad escaped \\\\"quotes\\\\" are not"
+escape5: "Still \\\\\"valid\\\\\" escapes"
+
+[Term]
+id: TEST:CONTINUATION
+name: Values can be \
+continued on the \\\
+next line if needed \\
+but this is not included
+d\
+ef: tag names \
+can also be continued
+
+[Term]
+id: TEST:ESCAPES
+name: Test for special character escapes
+te\:st1: pass\:ed
+test2:\Wspaces\Win\Wthe\Wvalue\W
+tab\ts: allow\ted
+\nnew\nlines\n: \nallowed\n
+b\\s: allow\\ed
+b\\\\\\s: all\\\\ow\\\\\\ed\\
+others: \!\:\{\}\\\[\]\!
+
+[Term]
+id: TEST:PARENT1
+name: Test for ancestor propagation; parent 1
+is_a: TEST:ROOT
+
+[Term]
+id: TEST:PARENT2
+name: Test for ancestor propagation; parent 2
+is_a: TEST:ROOT
+
+[Term]
+id: TEST:PARENT21
+name: Test for ancestor propagation; parent 3
+is_a: TEST:PARENT2
+
+[Term]
+id: TEST:PARENT22
+name: Test for ancestor propagation; parent 4
+is_a: TEST:PARENT2
+
+[Term]
+id: TEST:PARENT222
+name: Test for ancestor propagation; parent 5
+is_a: TEST:PARENT21
+is_a: TEST:PARENT22
+
+[Term]
+id: TEST:ANCESTORS
+name: Test for ancestor propagation; child node
+is_a: TEST:PARENT1
+is_a: TEST:PARENT21
+is_a: TEST:PARENT222
+
+[Term]
+id: TEST:BROKEN_PARENTS
+name: Test what happens when a parent is unknown
+is_a: TEST:PARENT1
+is_a: TEST:MISSING_PARENT
+is_a: TEST:PARENT2
+
+[Term]
+name: A term with a missing ID is invalid and must be ignored
+alt_id: TEST:MISSING_ID
+
+[Term]
+id: TEST:ESCAPED_EOF
+name: If the file ends with a backslash, it will be trimmed away\
