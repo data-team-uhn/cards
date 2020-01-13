@@ -1,0 +1,131 @@
+{
+  "jcr:primaryType": "lfs:Questionnaire",
+  "title": "Chemotherapy Data",
+  "chemotherapy": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Chemotherapy",
+    "minAnswers": 1,
+    "maxAnswers": 1,
+    "dataType": "boolean",
+    "enableUnknown" : true
+  },
+  "protocol": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Treatment Protocol",
+    "minAnswers": 1,
+    "maxAnswers": 1,
+    "dataType": "text"
+  },
+  "weight_at_start": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Weight at start of protocol",
+    "minAnswers": 1,
+    "maxAnswers": 1,
+    "dataType": "decimal",
+    "minValue" : 0,
+    "unitOfMeasurement" : "kg"
+  },
+  "height_at_start": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Height at start of protocol",
+    "minAnswers": 1,
+    "maxAnswers": 1,
+    "dataType": "decimal",
+    "minValue" : 0,
+    "unitOfMeasurement" : "cm"
+  },
+  "agent": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Chemotherapy Agent",
+    "minAnswers": 1,
+    "maxAnswers": 1,
+    "dataType": "vocabulary",
+    "sourceVocabulary": "CHEBI"
+  },
+  "start_date": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Start date",
+    "minAnswers": 0,
+    "maxAnswers": 1,
+    "dataType": "date",
+    "dateFormat": "yyyy-MM-dd"
+  },
+  "end_date": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "End date",
+    "minAnswers": 0,
+    "maxAnswers": 1,
+    "dataType": "date",
+    "dateFormat": "yyyy-MM-dd"
+  },
+  "mode": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Mode",
+    "minAnswers": 1,
+    "maxAnswers": 1,
+    "displayMode": "list",
+    "dataType": "text",
+    "Cyclic": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Cyclic"
+    },
+    "Continuous": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Continuous"
+    },
+    "Unknown": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "Unknown"
+    }
+  },
+  "number_of_cycles": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Number of cycles",
+    "minAnswers": 0,
+    "maxAnswers": 1,
+    "dataType": "long",
+    "minValue" : 0
+  },
+  "total_duration": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Total duration if continuous",
+    "minAnswers": 0,
+    "maxAnswers": 1,
+    "dataType": "decimal",
+    "minValue" : 0,
+    "unitOfMeasurement" : "months"
+  },
+  "cumulative_dose": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Cumulative dose",
+    "minAnswers": 0,
+    "maxAnswers": 1,
+    "dataType": "decimal",
+    "minValue" : 0,
+    "unitOfMeasurement" : "mg/m²"
+  },
+  "dose_reduction": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Dose reduction",
+    "minAnswers": 1,
+    "maxAnswers": 1,
+    "dataType": "boolean",
+    "enableUnknown" : true
+  },
+  "comments": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Comments",
+    "minAnswers": 0,
+    "maxAnswers": 1,
+    "displayMode": "textbox",
+    "dataType": "text"
+  },
+  "protocol_information": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Protocol information",
+    "minAnswers": 0,
+    "maxAnswers": 1,
+    "displayMode": "textbox",
+    "dataType": "text"
+  }
+}
