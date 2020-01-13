@@ -110,6 +110,18 @@ const headerStyle = theme => ({
   },
   aboveBackground: {
     zIndex: "1301"
+  },
+  searchResultAvatar: {
+    color: "white",
+  },
+  searchResultFormIcon: {
+    backgroundColor: "cornflowerblue"
+  },
+  searchResultQuestionnaireIcon: {
+    backgroundColor: "limegreen"
+  },
+  searchResultSubjectIcon: {
+    backgroundColor: "orange"
   }
 });
 

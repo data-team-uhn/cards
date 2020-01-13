@@ -20,7 +20,11 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
-import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, MenuList, Paper, Popper, withStyles } from "@material-ui/core";
+import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar}  from "@material-ui/core";
+import { MenuList, Paper, Popper, Typography, withStyles } from "@material-ui/core";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import DescriptionIcon from "@material-ui/icons/Description";
+import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import Search from "@material-ui/icons/Search";
 import HeaderStyle from "./headerStyle.jsx";
 
@@ -59,7 +63,7 @@ function SearchBar(props) {
   let sqlEscape = (query) => (
     // The list of characters to escape are taken from https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Escaping%20Special%20Characters
     // The single quote is escaped via our QueryBuilder, so we ignore it here
-    doNotEscapeQuery ? query : query.replace("([+-!(){}[]^\"~*?:\\&& ||])", "\\$1")
+    doNotEscapeQuery ? query : (query && query.replace("([+-!(){}[]^\"~*?:\\&& ||])", "\\$1"))
     );
 
   // Runs a fulltext request
@@ -94,9 +98,43 @@ function SearchBar(props) {
     setError(response);
   }
 
+  const categoryToAvatar = {
+    ["lfs:Form"]: <ListItemAvatar>
+        <Avatar className={classes.searchResultFormIcon + " " + classes.searchResultAvatar}>
+          <DescriptionIcon />
+        </Avatar>
+      </ListItemAvatar>,
+    ["lfs:Questionnaire"]: <ListItemAvatar>
+        <Avatar className={classes.searchResultQuestionnaireIcon + " " + classes.searchResultAvatar}>
+          <AssignmentIcon />
+        </Avatar>
+      </ListItemAvatar>,
+    ["lfs:Subject"]: <ListItemAvatar>
+        <Avatar className={classes.searchResultSubjectIcon + " " + classes.searchResultAvatar}>
+          <AssignmentIndIcon />
+        </Avatar>
+      </ListItemAvatar>
+  }
+
+  let getCategoryIcon = (element) => (
+    categoryToAvatar[element["jcr:primaryType"]] || " "
+  );
+
+  // Get a user friendly version of the category
+  let getFriendlyCategory = (element) => {
+    return (element["jcr:primaryType"] && element["jcr:primaryType"].replace(/lfs:/,""));
+  }
+
   // Attempt a few different methods of getting the name of an element from <code>/query?quick</code>
   let getElementName = (element) => {
-    return element["name"] || element["title"] || element["jcr:uuid"];
+    /* Form data: grab the subject name */
+    return (element["subject"] && element["subject"]["identifier"])
+      /* Questionnaire: grab the title */
+      || element["name"] || element["title"]
+      /* Subject: grab the subject ID */
+      || element["identifier"]
+      /* Could not find any of the above: return the uuid */
+      || element["jcr:uuid"];
   }
 
   return(
@@ -184,9 +222,15 @@ function SearchBar(props) {
                         }
                         }}
                       >
+                        {getCategoryIcon(element)}
+                        {/* for now, nothing in the secondary until we get the suggest() API working */}
                         <ListItemText
-                          primary={getElementName(element)}
-                          secondary={element["jcr:primaryType"]}
+                          primary={(<div>
+                            <Typography variant="body2" color="textSecondary">
+                              {getFriendlyCategory(element)}
+                            </Typography>
+                            {getElementName(element)}
+                          </div>)}
                           className={classes.dropdownItem}
                           />
                     </MenuItem>
