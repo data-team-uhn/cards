@@ -45,7 +45,7 @@ const NO_RESULTS_TEXT = "No results";
 // Optional arguments:
 //  disabled: Boolean representing whether or not this element is disabled
 //  searchDefault: Default text to display in search bar when nothing has been entered (default: 'Search')
-//  suggestionCategories: Array of required ancestor elements, of which any term must be a descendent of
+//  vocabularyFilter: Array of required ancestor elements, of which any term must be a descendent of
 //  overrideText: When not undefined, this will overwrite the contents of the search bar
 //  defaultValue: Default chosen term ID, which will be converted to the real ID when the vocabulary loads
 //  noMargin: Removes the margin from the search wrapper
@@ -341,9 +341,9 @@ class VocabularyQuery extends React.Component {
 
     // Determine if we should add a custom filter
     var filter = "";
-    if (this.props.suggestionCategories) {
+    if (this.props.vocabularyFilter) {
       filter = "&customFilter=";
-      filter += this.props.suggestionCategories.map((category) => {
+      filter += this.props.vocabularyFilter.map((category) => {
         var escapedId = category.replace(":", "\\:"); // URI Escape the : from HP: for SolR
         return encodeURIComponent(`term_category:${escapedId}`);
       }).join(encodeURIComponent(" OR "));

@@ -38,6 +38,8 @@ import VocabularySelector from "../vocabSelector/select.jsx";
 // Optional arguments:
 //  maxAnswers: Integer indicating the maximum number of terms allowed
 //
+// Other arguments are passed to the VocabularySelector component
+//
 // Sample usage:
 //
 // <VocabularyQuestion
@@ -47,19 +49,19 @@ import VocabularySelector from "../vocabSelector/select.jsx";
 // <VocabularyQuestion
 //   text="Does the patient have any skin conditions?"
 //   sourceVocabulary="hpo"
-//   suggestionCategories={["HP:0000951"]}
+//   vocabularyFilter={["HP:0000951"]}
 //   />
 // <!-- Alternate method of specifying arguments -->
 // <VocabularyQuestion
 //   questionDefintion={{
 //     text: "Does the patient have any skin conditions?",
 //     sourceVocabulary: "hpo",
-//     suggestionCategories: ["HP:0000951"]
+//     vocabularyFilter: ["HP:0000951"]
 //   }}
 //   />
 function VocabularyQuestion(props) {
   let { classes, ...rest } = props;
-  let { maxAnswers, suggestionCategories, sourceVocabulary } = { ...props.questionDefinition, ...props };
+  let { maxAnswers, sourceVocabulary, vocabularyFilter } = { ...props.questionDefinition, ...props };
   let defaultSuggestions = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
@@ -74,7 +76,7 @@ function VocabularyQuestion(props) {
       {...rest}
       >
       <VocabularySelector
-        suggestionCategories = {suggestionCategories}
+        vocabularyFilter = {vocabularyFilter}
         max = {maxAnswers}
         defaultSuggestions = {defaultSuggestions}
         source = {sourceVocabulary}

@@ -474,7 +474,7 @@
     "displayMode": "input",
     "dataType": "vocabulary",
     "sourceVocabulary": "HPO",
-    "vocabularyFilter": "children of Phenotypic abnormaloty"
+    "vocabularyFilter": ["HP:0000118"]
   },
   "Inherited from": {
     "jcr:primaryType": "lfs:Question",
