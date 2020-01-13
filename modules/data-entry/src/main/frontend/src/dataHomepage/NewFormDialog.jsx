@@ -66,7 +66,7 @@ function NewFormDialog(props) {
       // Send a fetch request to determine the questionnaires available
       fetch('/query?query=' + encodeURIComponent('select * from [lfs:Questionnaire]'))
         .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then((json) => {setQuestionnaires(json)})
+        .then((json) => {setQuestionnaires(json["rows"])})
         .catch(parseErrorResponse)
         .finally(() => {setFetching(false)});
       setFetching(true);
