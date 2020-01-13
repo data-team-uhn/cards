@@ -19,7 +19,6 @@
 package ca.sickkids.ccm.lfs.vocabularies.internal;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
@@ -44,42 +43,32 @@ public class TermData
     /** Key for fetching Ancestors. */
     public static final String TERM_CATEGORY_FIELD_NAME = "term_category";
 
-    private String id;
-
-    private String label;
-
-    private MultiValuedMap<String, String> properties;
+    private MultiValuedMap<String, String> properties = new HashSetValuedHashMap<>();
 
     /**
-     * Blank Constructor. Allocates space for properties.
-     */
-    public TermData()
-    {
-        this.properties = new HashSetValuedHashMap<>();
-    }
-
-    /**
-     * Obtain the vocabulary ID of this term.
+     * Returns the identifier of this term, if it is set.
      *
-     * @return id
+     * @return the identifier, or {@code null} if one isn't set yet
      */
     public String getId()
     {
-        return this.id;
+        return getValue(ID_FIELD_NAME);
     }
 
     /**
-     * Obtain the label, as provided by the vocabulary, of this term.
+     * Returns the label of this term, if it is set. If no label is set yet, {@code null} is returned. If multiple
+     * labels are set, which isn't allowed by the specification and shouldn't happen, then any of the labels may be
+     * returned.
      *
-     * @return label
+     * @return the label, or {@code null} if one isn't set yet
      */
     public String getLabel()
     {
-        return this.label;
+        return getValue(LABEL_FIELD_NAME);
     }
 
     /**
-     * Return all properties of this term.
+     * Return all properties of this term, including the identifier and label.
      *
      * @return MultiValuedMap[String: String] that has all the properties of the VocabularyTerm represented by this.
      */
@@ -89,60 +78,64 @@ public class TermData
     }
 
     /**
-     * Add a value to the collection of Strings corresponding to the key.
+     * Checks if a certain tag is defined for this term.
      *
-     * @param key - for value to be assigned.
-     * @param value - that is to be assigned to key.
-     * @return whether or not the add was successful.
-     */
-    public boolean addTo(String key, String value)
-    {
-        if (ID_FIELD_NAME.equals(key)) {
-            this.id = value;
-        } else if (LABEL_FIELD_NAME.equals(key)) {
-            this.label = value;
-        }
-        return this.properties.put(key, value);
-    }
-
-    /**
-     * Add a Collection of Strings to the collection of Strings corresponding to the key.
-     *
-     * @param key - for value to be assigned.
-     * @param values - that are to be assigned to key.
-     * @return Boolean that indicates whether or not the add was successful.
-     */
-    public boolean addTo(String key, Collection<String> values)
-    {
-        boolean result = true;
-        for (String value : values) {
-            result &= this.addTo(key, value);
-        }
-        return result;
-    }
-
-    /**
-     * Return Collection of Strings associated with key.
-     *
-     * @param key - whose collection is to be returned
-     * @return the Collection associated with the key
-     */
-    public Collection<String> getCollection(String key)
-    {
-        if (this.properties.containsKey(key)) {
-            return this.properties.get(key);
-        }
-        return Collections.emptySet();
-    }
-
-    /**
-     * Checks if the key exists in its properties.
-     *
-     * @param key - to be checked
-     * @return Boolean True if the key exists in properties
+     * @param key the tag to be checked
+     * @return true if at least one value is set for the tag
      */
     public Boolean hasKey(String key)
     {
         return this.properties.containsKey(key);
+    }
+
+    /**
+     * Returns all the values set for a tag.
+     *
+     * @param key the tag to be retrieved
+     * @return the values set for the tag, may be empty if the tag is not yet set
+     */
+    public Collection<String> getAllValues(String key)
+    {
+        return this.properties.get(key);
+    }
+
+    /**
+     * Retrieves a value set for a specified tag. If no value is set, {@code null} is returned. Given that there's no
+     * order defined for multiple values set for a tag, any of the values may be returned.
+     *
+     * @param key the tag to be retrieved
+     * @return one of the values, as a string, or {@code null} if no value is yet set for the requested tag
+     */
+    public String getValue(final String key)
+    {
+        final Collection<String> values = this.properties.get(key);
+        if (values != null && !values.isEmpty()) {
+            return values.iterator().next();
+        }
+        return null;
+    }
+
+    /**
+     * Add a value to the collection of Strings corresponding to the key. Given that the collection is a set, if the
+     * value was already set for this tag, nothing is changed.
+     *
+     * @param key the tag to be modified
+     * @param value a new value to be added to the tag
+     */
+    public void addTo(String key, String value)
+    {
+        this.properties.put(key, value);
+    }
+
+    /**
+     * Add a Collection of Strings to the collection of Strings corresponding to the key. Given that the collection is a
+     * set, some of the "new" values may already have been present and re-adding them will not have any effect.
+     *
+     * @param key the tag to be modified
+     * @param values new values that are to be added to the tag
+     */
+    public void addTo(String key, Collection<String> values)
+    {
+        values.forEach(value -> this.addTo(key, value));
     }
 }

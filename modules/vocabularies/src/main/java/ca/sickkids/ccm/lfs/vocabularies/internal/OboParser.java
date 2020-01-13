@@ -53,34 +53,26 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
     name = "SourceParser.OBO")
 public class OboParser implements SourceParser
 {
-    /** Marks the start of a new Term. */
+    /** Marks the start of a new Frame. */
+    private static final String FRAME_MARKER = "^\\[[a-zA-Z]+\\]$";
+
+    /** Marks the start of a new Term Frame. */
     private static final String TERM_MARKER = "[Term]";
 
-    /** Not all entities are terms prompted by the presence of a {@link #TERM_MARKER}. */
-    private static final String ENTITY_SEPARATION_REGEX = "^\\[[a-zA-Z]+\\]$";
-
-    /** Regex pattern for a String -> String mapping. */
+    /**
+     * Regex pattern for separating the tag and its value from a line: an optional even number of backslashes, followed
+     * by a colon, and optional whitespace.
+     */
     private static final String FIELD_NAME_VALUE_SEPARATOR = "(?<!\\\\)(?:\\\\\\\\)*:\\s*";
 
-    /** The data structure for the term currently being processed. */
-    private TermData crtTerm;
+    /** Holds the term currently being . */
+    private TermData crtTerm = new TermData();
 
-    /** The data structure for all the terms processed. */
-    private Map<String, TermData> data;
+    /** Holds all the terms parsed so far. */
+    private Map<String, TermData> data = new LinkedHashMap<>();
 
     /** Logger object used to handle thrown errors. */
-    private Logger logger;
-
-    /**
-     * Default Constructor.
-     */
-    public OboParser()
-    {
-        super();
-        this.crtTerm = new TermData();
-        this.data = new LinkedHashMap<>();
-        this.logger = LoggerFactory.getLogger(this.getClass());
-    }
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public boolean canParse(String format)
@@ -106,8 +98,8 @@ public class OboParser implements SourceParser
     /**
      * Read the source file and populate the data variable.
      *
-     * @param source the file containing information about the vocabulary.
-     * @throws IOException if it cannot read the source file at any point
+     * @param source the file containing the vocabulary source in OBO format
+     * @throws IOException if reading the source file fails
      */
     private void readLines(final File source) throws IOException
     {
@@ -118,7 +110,7 @@ public class OboParser implements SourceParser
             // Initially false, since at the start of the file is the header
             boolean isTerm = false;
             while ((line = br.readLine()) != null) {
-                if (line.trim().matches(ENTITY_SEPARATION_REGEX)) {
+                if (line.trim().matches(FRAME_MARKER)) {
                     // We just encountered the start of a new frame
                     if (isTerm) {
                         // If the previous frame was a Term, store it
@@ -149,7 +141,9 @@ public class OboParser implements SourceParser
      */
     private void storeCrtTerm()
     {
+        // Only terms with a valid identifier can be stored
         if (this.crtTerm.getId() != null) {
+            // Multiple frames can describe the same term, we must combine them into one
             TermData existing = this.data.get(this.crtTerm.getId());
             if (existing == null) {
                 this.data.put(this.crtTerm.getId(), this.crtTerm);
@@ -275,12 +269,13 @@ public class OboParser implements SourceParser
     }
 
     /**
-     * Recursively determine the ancestors of the initial Vocabulary Term, as well as all the Terms that are parents of
-     * it.
+     * Determine and return the ancestors of a vocabulary term. Initially, the ancestors are not available, since the
+     * vocabulary source only includes direct parents, but after the ancestors are recursively computed the first time,
+     * they will be stored in the TermData for quick subsequent retrieval.
      *
-     * @param termID is the ID of the term whose ancestors are to be propogated
-     * @return IDs of the ancestors of the given term
-     * @throws NullPointerException if there was no term in the source file with the ID termID
+     * @param termID the identifier of the term whose ancestors are to be retrieved
+     * @return identifiers of the ancestors of the given term, may be an empty collection if the term has no
+     *         parents/ancestors, or if the term doesn't exist
      */
     private Collection<String> findAncestors(String termID)
     {
@@ -292,12 +287,12 @@ public class OboParser implements SourceParser
         }
         // If the ancestors for this node have already been determined, return them as a list of IDs.
         if (term.hasKey(TermData.TERM_CATEGORY_FIELD_NAME)) {
-            return term.getCollection(TermData.TERM_CATEGORY_FIELD_NAME);
+            return term.getAllValues(TermData.TERM_CATEGORY_FIELD_NAME);
         } else {
             Collection<String> parents;
             // If the node has Parents, it definitely has Ancestors but they have not yet been determined.
             if (term.hasKey(TermData.PARENT_FIELD_NAME)) {
-                parents = term.getCollection(TermData.PARENT_FIELD_NAME);
+                parents = term.getAllValues(TermData.PARENT_FIELD_NAME);
             } else {
                 // Else we have reached the root node which has no parents.
                 parents = Collections.emptySet();
@@ -314,6 +309,9 @@ public class OboParser implements SourceParser
         }
     }
 
+    /**
+     * Recursively computes ancestors from the parents for all terms.
+     */
     private void propagateAncestors()
     {
         for (String id : this.data.keySet()) {
@@ -322,7 +320,7 @@ public class OboParser implements SourceParser
     }
 
     /**
-     * Creates a new VocabularyTermSource object from the parsed Term and passes it to the consumer.accept() function.
+     * Creates a new VocabularyTermSource object from the parsed Term and passes it to the consumer function.
      *
      * @param consumer method that will store the parsed term
      */
@@ -334,12 +332,18 @@ public class OboParser implements SourceParser
             consumer.accept(new VocabularyTermSource(
                 term.getId(),
                 term.getLabel(),
-                term.getCollection(TermData.PARENT_FIELD_NAME).toArray(typeString),
-                term.getCollection(TermData.TERM_CATEGORY_FIELD_NAME).toArray(typeString),
+                term.getAllValues(TermData.PARENT_FIELD_NAME).toArray(typeString),
+                term.getAllValues(TermData.TERM_CATEGORY_FIELD_NAME).toArray(typeString),
                 term.getAllProperties()));
         }
     }
 
+    /**
+     * A buffered line reader that concatenates split lines into one. In other words, whenever a real line ends with an
+     * unescaped backslash, the backslash is removed and the following line is appended.
+     *
+     * @version $Id$
+     */
     private static final class ConcatenatingLineReader extends BufferedReader
     {
         ConcatenatingLineReader(Reader in)

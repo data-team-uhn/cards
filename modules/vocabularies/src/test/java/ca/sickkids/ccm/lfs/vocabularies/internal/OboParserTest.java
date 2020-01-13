@@ -98,7 +98,7 @@ public class OboParserTest
     }
 
     @Test
-    public void gracefullyIgnoreMissingFiles() throws IOException, VocabularyIndexException
+    public void gracefullyIgnoresMissingFiles() throws IOException, VocabularyIndexException
     {
         new OboParser().parse(new File("/" + RandomStringUtils.random(40)), new VocabularyDescriptionBuilder().build(),
             new Consumer<VocabularyTermSource>()
@@ -166,7 +166,7 @@ public class OboParserTest
     }
 
     @Test
-    public void typedefIgnored()
+    public void typedefFramesAreIgnored()
     {
         Assert.assertNull(getTerm("ignored"));
         Assert.assertNull(getTerm("ignored2"));
@@ -275,7 +275,7 @@ public class OboParserTest
     }
 
     @Test
-    public void quotedStrings()
+    public void quotedStringsAreSupported()
     {
         VocabularyTermSource term = getTerm("TEST:QUOTES");
         Assert.assertNotNull(term);
@@ -293,7 +293,7 @@ public class OboParserTest
     }
 
     @Test
-    public void continuations()
+    public void continuationsAreSupported()
     {
         VocabularyTermSource term = getTerm("TEST:CONTINUATION");
         Assert.assertNotNull(term);
@@ -303,7 +303,7 @@ public class OboParserTest
     }
 
     @Test
-    public void escapeSequencesAre()
+    public void escapeSequencesAreSupported()
     {
         VocabularyTermSource term = getTerm("TEST:ESCAPES");
         Assert.assertNotNull(term);
@@ -318,7 +318,7 @@ public class OboParserTest
     }
 
     @Test
-    public void ancestors()
+    public void ancestorsAreRecursivelyGathered()
     {
         VocabularyTermSource term = getTerm("TEST:ANCESTORS");
         Assert.assertNotNull(term);
