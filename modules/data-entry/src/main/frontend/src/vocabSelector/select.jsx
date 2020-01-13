@@ -48,7 +48,7 @@ const IS_SELECTED_POS = 3;
 //  searchDefault: Default text to place in search bar before user input
 // Other arguments are passed onto contained Thesaurus element
 function VocabularySelector(props) {
-  const {defaultSuggestions, existingAnswer, source, suggestionCategories, max, selectionContainer, questionDefinition, classes, ...rest} = props;
+  const {defaultSuggestions, existingAnswer, source, vocabularyFilter, max, selectionContainer, questionDefinition, classes, ...rest} = props;
 
   const [defaultListChildren, setDefaultListChildren] = useState([]);
   const [listChildren, setListChildren] = useState([]);
@@ -263,7 +263,7 @@ function VocabularySelector(props) {
     <React.Fragment>
       <Thesaurus
         onClick = {handleThesaurus}
-        suggestionCategories = {suggestionCategories}
+        vocabularyFilter = {vocabularyFilter}
         vocabulary = {source}
         ref = {(ref) => {thesaurusRef = ref;}}
         disabled = {disabled}

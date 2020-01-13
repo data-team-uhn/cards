@@ -261,12 +261,12 @@ function Filters(props) {
       );
     } else if (dataType == 'vocabulary') {
       let vocabulary = questionDefinitions[field]["sourceVocabulary"];
-      let suggestionCategories = questionDefinitions[field]["suggestionCategories"];
+      let vocabularyFilter = questionDefinitions[field]["vocabularyFilter"];
       newChoices = (index, toFocus) => (
         <VocabularySelector
           onClick={(id, name) => {handleChangeOutput(index, id, name)}}
           clearOnClick={false}
-          suggestionCategories={suggestionCategories}
+          vocabularyFilter={vocabularyFilter}
           defaultValue={overrideFilters ? overrideFilters.label : editingFilters[index].label}
           vocabulary={vocabulary}
           placeholder="empty"
