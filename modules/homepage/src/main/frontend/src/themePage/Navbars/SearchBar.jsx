@@ -99,30 +99,31 @@ function SearchBar(props) {
   }
 
   const categoryToAvatar = {
-    ["lfs:Form"]: <ListItemAvatar>
-        <Avatar className={classes.searchResultFormIcon + " " + classes.searchResultAvatar}>
-          <DescriptionIcon />
-        </Avatar>
-      </ListItemAvatar>,
-    ["lfs:Questionnaire"]: <ListItemAvatar>
-        <Avatar className={classes.searchResultQuestionnaireIcon + " " + classes.searchResultAvatar}>
-          <AssignmentIcon />
-        </Avatar>
-      </ListItemAvatar>,
-    ["lfs:Subject"]: <ListItemAvatar>
-        <Avatar className={classes.searchResultSubjectIcon + " " + classes.searchResultAvatar}>
-          <AssignmentIndIcon />
-        </Avatar>
-      </ListItemAvatar>
+    ["lfs:Form"]: <Avatar className={classes.searchResultFormIcon + " " + classes.searchResultAvatar}>
+        <DescriptionIcon />
+      </Avatar>,
+    ["lfs:Questionnaire"]: <Avatar className={classes.searchResultQuestionnaireIcon + " " + classes.searchResultAvatar}>
+        <AssignmentIcon />
+      </Avatar>,
+    ["lfs:Subject"]: <Avatar className={classes.searchResultSubjectIcon + " " + classes.searchResultAvatar}>
+        <AssignmentIndIcon />
+      </Avatar>
   }
 
+  // Get a user friendly version of the icon
   let getCategoryIcon = (element) => (
-    categoryToAvatar[element["jcr:primaryType"]] || " "
+    categoryToAvatar[element["jcr:primaryType"]] ?
+      <ListItemAvatar>{categoryToAvatar[element["jcr:primaryType"]]}</ListItemAvatar>
+      : " "
   );
 
   // Get a user friendly version of the category
   let getFriendlyCategory = (element) => {
-    return (element["jcr:primaryType"] && element["jcr:primaryType"].replace(/lfs:/,""));
+    const friendlyType = element["jcr:primaryType"] && element["jcr:primaryType"].replace(/lfs:/,"");
+    /* Prepend the questionnaire title, if this has it */
+    return (element["questionnaire"] ? element["questionnaire"]["title"] + " " + friendlyType
+    /* Otherwise just use the user-friendly element name */
+      : friendlyType);
   }
 
   // Attempt a few different methods of getting the name of an element from <code>/query?quick</code>
