@@ -1,69 +1,69 @@
 {
   "jcr:primaryType": "lfs:Questionnaire",
   "title": "Tissue Metrix Data",
-  "File1": {
+  "file1": {
     "jcr:primaryType": "lfs:Question",
     "text": "File1",
     "maxAnswers": 1
   },
-  "File2": {
+  "file2": {
     "jcr:primaryType": "lfs:Question",
     "text": "File2",
     "maxAnswers": 1
   },
-  "File3": {
+  "file3": {
     "jcr:primaryType": "lfs:Question",
     "text": "File3",
     "maxAnswers": 1
   },
-  "Donor number": {
+  "donor_number": {
     "jcr:primaryType": "lfs:Question",
     "text": "Donor number",
     "mandatory": true,
     "maxAnswers": 1
   },
-  "Perinatal history": {
+  "perinatal_history": {
     "jcr:primaryType": "lfs:Question",
     "text": "Perinatal history",
     "maxAnswers": 1
   },
-  "Disease": {
+  "disease": {
     "jcr:primaryType": "lfs:Question",
     "text": "Disease"
   },
-  "Last follow up": {
+  "last_fup": {
     "jcr:primaryType": "lfs:Question",
     "text": "Last follow-up",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd",
     "maxAnswers": 1
   },
-  "Date of birth": {
+  "date_of_birth": {
     "jcr:primaryType": "lfs:Question",
     "text": "Date of birth",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd",
     "maxAnswers": 1
   },
-  "Date of death": {
+  "date_of_death": {
     "jcr:primaryType": "lfs:Question",
     "text": "Date of death",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd",
     "maxAnswers": 1
   },
-  "Date registered": {
+  "date_registered": {
     "jcr:primaryType": "lfs:Question",
     "text": "Date registered",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd",
     "maxAnswers": 1
   },
-  "Tumor": {
+  "tumor": {
     "jcr:primaryType": "lfs:Question",
     "text": "Tumor type"
   },
-  "Life status": {
+  "vital_status": {
     "jcr:primaryType": "lfs:Question",
     "text": "Life status",
     "displayMode": "list",
@@ -79,65 +79,75 @@
       "value": "deceased"
     }
   },
-  "Comments": {
+  "comments": {
     "jcr:primaryType": "lfs:Question",
     "text": "Comments",
     "displayMode": "textbox"
   },
-  "Mutation status": {
+  "mutation_status": {
     "jcr:primaryType": "lfs:Question",
     "text": "Mutation status"
   },
-  "Maternal ethnicity": {
+  "maternal_ethnicity": {
     "jcr:primaryType": "lfs:Question",
     "text": "Maternal ethnicity"
   },
-  "Paternal ethnicity": {
+  "paternal_ethnicity": {
     "jcr:primaryType": "lfs:Question",
     "text": "Paternal ethnicity"
   },
-  "Disease site": {
+  "disease_site": {
     "jcr:primaryType": "lfs:Question",
     "text": "Disease site"
   },
-  "Reason for referral": {
+  "reason_for_referral": {
     "jcr:primaryType": "lfs:Question",
     "text": "Reason for referral",
     "maxAnswers": 1
   },
-  "Sex": {
+  "sex": {
     "jcr:primaryType": "lfs:Question",
     "text": "Sex",
     "description": "Sex must be recorded as biological sex rather than gender.",
     "displayMode": "list+input",
     "maxAnswers": 1,
-    "male": {
+    "M": {
       "jcr:primaryType": "lfs:AnswerOption",
       "label": "Male",
-      "value": "m"
+      "value": "M"
     },
-    "female": {
+    "F": {
       "jcr:primaryType": "lfs:AnswerOption",
       "label": "Female",
-      "value": "f"
+      "value": "F"
+    },
+    "O": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "label": "Other",
+      "value": "O"
+    },
+    "U": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "label": "Unknown",
+      "value": "U"
     }
   },
-  "Source1": {
+  "source1": {
     "jcr:primaryType": "lfs:Question",
     "text": "Source1",
     "maxAnswers": 1
   },
-  "Source2": {
+  "source2": {
     "jcr:primaryType": "lfs:Question",
     "text": "Source2",
     "maxAnswers": 1
   },
-  "Source3": {
+  "source3": {
     "jcr:primaryType": "lfs:Question",
     "text": "Source3",
     "maxAnswers": 1
   },
-  "Species": {
+  "species": {
     "jcr:primaryType": "lfs:Question",
     "text": "Species",
     "displayMode": "list+input",
