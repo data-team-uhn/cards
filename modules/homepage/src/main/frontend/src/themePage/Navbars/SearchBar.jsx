@@ -38,6 +38,7 @@ function SearchBar(props) {
   const [ popperOpen, setPopperOpen ] = useState(false);
   const [ timer, setTimer ] = useState();
   const [ error, setError ] = useState();
+  const [ requestID, setRequestID ] = useState(0);
 
   let input = React.useRef();
   let suggestionMenu = React.useRef();
@@ -50,40 +51,50 @@ function SearchBar(props) {
     }
 
     setSearch(query);
-    setPopperOpen(true);
     setResults([{
       name: 'Searching...',
       '@path': '',
       'disabled': true
     }]);
-    setTimer(setTimeout(runQuery, 500, query));
     setError(false);
-  }
 
-  let sqlEscape = (query) => (
-    // The list of characters to escape are taken from https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Escaping%20Special%20Characters
-    // The single quote is escaped via our QueryBuilder, so we ignore it here
-    doNotEscapeQuery ? query : (query && query.replace("([+-!(){}[]^\"~*?:\\&& ||])", "\\$1"))
-    );
+    // If there is a query, execute it
+    if (query !== "") {
+      setTimer(setTimeout(runQuery, 500, query));
+      setPopperOpen(true);
+    } else {
+      setTimer(null);
+      setPopperOpen(false);
+    }
+  }
 
   // Runs a fulltext request
   let runQuery = (query) => {
     let new_url = new URL(QUERY_URL, window.location.origin);
-    let escaped_query = "*" + sqlEscape(query) + "*";
-    new_url.searchParams.set("quick", encodeURIComponent(escaped_query));
+    new_url.searchParams.set("quick", encodeURIComponent(query));
+    doNotEscapeQuery && new_url.searchParams.set("doNotEscapeQuery", "true");
+    new_url.searchParams.set("limit", MAX_RESULTS);
+    new_url.searchParams.set("req", requestID);
+    // In the closure generated, displayResults will look for req_id, instead of requestID+1
+    setRequestID(requestID+1);
     fetch(new_url)
       .then(response => response.ok ? response.json() : Promise.reject(response))
       .then(displayResults)
-      .catch(handleError)
+      .catch(handleError);
   }
 
   // Callback to store the results of the top results, or to display 'No results'
   let displayResults = (json) => {
+    // Ignore this result if the request ID does not match our last request
+    if (json["req"] != requestID) {
+      console.log(requestID);
+      console.log(json["req"]);
+      return;
+    }
+
     // Parse out the top 5 and display in popper
-    if (json.length >= MAX_RESULTS) {
-      setResults(json.slice(0, MAX_RESULTS));
-    } else if (json.length > 0) {
-      setResults(json);
+    if (json["rows"].length > 0) {
+      setResults(json["rows"]);
     } else {
       setResults([{
         name: 'No results',

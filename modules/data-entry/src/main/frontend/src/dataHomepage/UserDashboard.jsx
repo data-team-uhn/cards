@@ -73,7 +73,7 @@ function UserDashboard(props) {
     // Fetch the questionnaires
     fetch("/query?query=select * from [lfs:Questionnaire]")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(setQuestionnaires);
+      .then((response) => setQuestionnaires(response["rows"]));
   }
 
   // If no forms can be obtained, we do not want to keep on re-obtaining questionnaires

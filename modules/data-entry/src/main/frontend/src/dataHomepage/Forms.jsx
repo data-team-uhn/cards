@@ -42,7 +42,7 @@ function Forms(props) {
     setFetchStatus(true);
     fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Questionnaire] as n WHERE n.'jcr:uuid'='${id}'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {setTitle(json[0]["title"]); setQuestionnairePath(json[0]["@path"])});
+      .then((json) => {setTitle(json["rows"][0]["title"]); setQuestionnairePath(json["rows"][0]["@path"])});
   }
 
   let customUrl = undefined;
