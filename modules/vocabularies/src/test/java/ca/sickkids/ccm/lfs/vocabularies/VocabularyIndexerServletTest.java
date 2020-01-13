@@ -168,194 +168,6 @@ public class VocabularyIndexerServletTest
     }
 
     /**
-     * Tests {@link VocabularyIndexerServlet} response to a request with the mandatory version parameter missing.
-     *
-     * @throws Exception when an unexpected response is returned or the request has failed
-     */
-    // Disabled
-    // @Test
-    public void testNoVersionProvided()
-        throws Exception
-    {
-        // Set up mock repository
-
-        // Instantiate a MockJcr session and register a Resource to Node adapter to it
-        final Session session = MockJcr.newSession();
-        registerResourceToNodeAdapter(session);
-
-        // BundleContext and ResourceResolver for creating resources and instantiating requests
-        BundleContext slingBundleContext = this.context.bundleContext();
-        ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
-
-        // Create a mock VocabulariesHomepage node /Vocabularies to act as the resource for the request
-        makeRequestResource(resourceResolver);
-
-        // Execute request
-
-        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
-
-        // Set the resource of the request as the /Vocabularies node
-        request.setResource(resourceResolver.getResource("/Vocabularies"));
-
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
-
-        // Set request parameters and execute request. Note that no version is provided.
-        String requestParams = "source=ncit-flat&identifier=flatTestVocabulary&localpath=./flat_NCIT_type_testcase.zip";
-        makePost(request, response, requestParams);
-
-        // Compare response to expected response
-
-        // Read response
-        JsonReader reader = Json.createReader(new StringReader(response.getOutputAsString()));
-        JsonObject responseJson = reader.readObject();
-
-        // Make sure the parsing/indexing attempt was unsuccessful
-        Assert.assertFalse(responseJson.getBoolean("isSuccessful"));
-
-        // Compare error message to expected error message
-        String expectedError = "NCIT Flat parsing error: Mandatory version parameter not provided.";
-        String obtainedError = responseJson.getString("error");
-        Assert.assertTrue(expectedError.equals(obtainedError));
-
-        // Make sure that the vocabulary node was not created
-        Node rootNode = request.getResource().adaptTo(Node.class);
-        Assert.assertFalse(rootNode.hasNode("/flatTestvocabulary"));
-    }
-
-    /**
-     * Tests {@link VocabularyIndexerServlet} response to a request with a nonexistent relative path to a zip file.
-     *
-     * @throws Exception when an unexpected response is returned or the request has failed
-     */
-    // Disabled
-    // @Test
-    public void testInvalidFileLocation()
-        throws Exception
-    {
-        // Set up mock repository
-
-        // Instantiate a MockJcr session and register a Resource to Node adapter to it
-        final Session session = MockJcr.newSession();
-        registerResourceToNodeAdapter(session);
-
-        // BundleContext and ResourceResolver for creating resources and instantiating requests
-        BundleContext slingBundleContext = this.context.bundleContext();
-        ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
-
-        // Create a mock VocabulariesHomepage node /Vocabularies to act as the resource for the request
-        makeRequestResource(resourceResolver);
-
-        // Execute request
-
-        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
-
-        // Set the resource of the request as the /Vocabularies node
-        request.setResource(resourceResolver.getResource("/Vocabularies"));
-
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
-
-        // Set request parameters and execute request. Note that the localpath "./someLocation" does not exist.
-        String requestParams = "source=ncit-flat&identifier=flatTestVocabulary&version=19.05d&localpath=./someLocation";
-        makePost(request, response, requestParams);
-
-        // Compare response to expected response
-
-        // Read response
-        JsonReader reader = Json.createReader(new StringReader(response.getOutputAsString()));
-        JsonObject responseJson = reader.readObject();
-
-        // Make sure that the parsing/indexing attempt was unsuccessful
-        Assert.assertFalse(responseJson.getBoolean("isSuccessful"));
-
-        // Compare the error message
-        String expectedError = "NCIT Flat parsing error: Error: Failed to load zip vocabulary locally. "
-            + "./someLocation (No such file or directory)";
-        String obtainedError = responseJson.getString("error");
-        Assert.assertTrue(expectedError.equals(obtainedError));
-
-        // Make sure the vocabulary node was not created
-        Node rootNode = request.getResource().adaptTo(Node.class);
-        Assert.assertFalse(rootNode.hasNode("/flatTestvocabulary"));
-    }
-
-    /**
-     * Tests {@link VocabularyIndexerServlet} parsing and indexing a locally stored zip of a test vocabulary called
-     * flatTestVocabulary. Checks if the resultant nodes that are created in the MockJcr instance are correct.
-     *
-     * @throws Exception when an unexpected response is returned or the request has failed
-     */
-    @Test
-    public void testNCITFlatIndexing()
-        throws Exception
-    {
-        // Set up mock repository
-
-        // Instantiate a MockJcr session and register a Resource to Node adapter to it
-        final Session session = MockJcr.newSession();
-        registerResourceToNodeAdapter(session);
-
-        // BundleContext and ResourceResolver for creating resources and instantiating requests
-        BundleContext slingBundleContext = this.context.bundleContext();
-        ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
-
-        // Create a mock VocabulariesHomepage node /Vocabularies to act as the resource for the request
-        makeRequestResource(resourceResolver);
-
-        // Execute request
-
-        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
-
-        // Set the resource of the request as the /Vocabularies node
-        request.setResource(resourceResolver.getResource("/Vocabularies"));
-
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
-
-        // Set the request parameters and execute request
-        String requestParams = "source=ncit-flat&identifier=flatTestVocabulary&version=19.05d&localpath="
-                + "./flat_NCIT_type_testcase.zip";
-        makePost(request, response, requestParams);
-
-        // Get the root and vocabulary nodes from the request
-        Node rootNode = request.getResource().adaptTo(Node.class);
-        Node vocabNode = rootNode.getNode("flatTestVocabulary");
-
-        // Check that all nodes representing the given terms exist
-        ncitFlatTestVocabularyNode(vocabNode);
-
-        // Check nodes representing terms C100005 and C100008 have the correct properties
-        ncitFlatTestC100005(vocabNode);
-        ncitFlatTestC100008(vocabNode);
-    }
-
-    /**
-     * Checks if all of the terms in the test vocabulary have been created as valid nodes by the parsing/indexing
-     * process.
-     *
-     * @param flatTestVocabulary - <code>Vocabulary</code> node created in the MockJcr instance
-     * @throws Exception if the given <code>VocabularyTerm</code> nodes or the <code>Vocabulary</code> nodes do not
-     *             exist.
-     */
-    private void ncitFlatTestVocabularyNode(Node flatTestVocabulary)
-        throws Exception
-    {
-        String[] expectedNodes = { "C100000", "C100001", "C100002", "C100003", "C100004", "C100005", "C100006",
-            "C100007", "C100008", "C100009" };
-
-        // Check if each expected node exists
-        for (String nodeName : expectedNodes) {
-            Assert.assertTrue(flatTestVocabulary.hasNode(nodeName));
-        }
-
-        // Check if default name has been set
-        Value obtainedNameValue = flatTestVocabulary.getProperty("name").getValue();
-        Assert.assertTrue("National Cancer Institute Thesaurus".compareTo(obtainedNameValue.getString()) == 0);
-
-        // Check if correct version has been set
-        Value obtainedVersionValue = flatTestVocabulary.getProperty("version").getValue();
-        Assert.assertTrue("19.05d".compareTo(obtainedVersionValue.getString()) == 0);
-    }
-
-    /**
      * Method which gets a String property from a node and compares it with the correct String value.
      *
      * @param node - JCR node instance
@@ -408,6 +220,193 @@ public class VocabularyIndexerServletTest
 
         // Assert that the sets are identical
         Assert.assertTrue(correctStringSet.equals(obtainedStringSet));
+    }
+
+    /**
+     * Tests {@link VocabularyIndexerServlet} response to a request with the mandatory version parameter missing.
+     *
+     * @throws Exception when an unexpected response is returned or the request has failed
+     */
+    @Test
+    public void testNoVersionProvided()
+        throws Exception
+    {
+        // Set up mock repository
+
+        // Instantiate a MockJcr session and register a Resource to Node adapter to it
+        final Session session = MockJcr.newSession();
+        registerResourceToNodeAdapter(session);
+
+        // BundleContext and ResourceResolver for creating resources and instantiating requests
+        BundleContext slingBundleContext = this.context.bundleContext();
+        ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
+
+        // Create a mock VocabulariesHomepage node /Vocabularies to act as the resource for the request
+        makeRequestResource(resourceResolver);
+
+        // Execute request
+
+        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
+
+        // Set the resource of the request as the /Vocabularies node
+        request.setResource(resourceResolver.getResource("/Vocabularies"));
+
+        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+
+        // Set request parameters and execute request. Note that no version is provided.
+        String requestParams = "source=ncit-flat&identifier=flatTestVocabulary&localpath=./flat_NCIT_type_testcase.zip";
+        makePost(request, response, requestParams);
+
+        // Compare response to expected response
+
+        // Read response
+        JsonReader reader = Json.createReader(new StringReader(response.getOutputAsString()));
+        JsonObject responseJson = reader.readObject();
+
+        // Make sure the parsing/indexing attempt was unsuccessful
+        Assert.assertFalse(responseJson.getBoolean("isSuccessful"));
+
+        // Compare error message to expected error message
+        String expectedError = "NCIT Flat indexing error: Mandatory version parameter not provided.";
+        String obtainedError = responseJson.getString("error");
+        Assert.assertEquals(expectedError, obtainedError);
+
+        // Make sure that the vocabulary node was not created
+        Node rootNode = request.getResource().adaptTo(Node.class);
+        Assert.assertFalse(rootNode.hasNode("/flatTestvocabulary"));
+    }
+
+    /**
+     * Tests {@link VocabularyIndexerServlet} response to a request with a nonexistent relative path to a zip file.
+     *
+     * @throws Exception when an unexpected response is returned or the request has failed
+     */
+    @Test
+    public void testInvalidFileLocation()
+        throws Exception
+    {
+        // Set up mock repository
+
+        // Instantiate a MockJcr session and register a Resource to Node adapter to it
+        final Session session = MockJcr.newSession();
+        registerResourceToNodeAdapter(session);
+
+        // BundleContext and ResourceResolver for creating resources and instantiating requests
+        BundleContext slingBundleContext = this.context.bundleContext();
+        ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
+
+        // Create a mock VocabulariesHomepage node /Vocabularies to act as the resource for the request
+        makeRequestResource(resourceResolver);
+
+        // Execute request
+
+        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
+
+        // Set the resource of the request as the /Vocabularies node
+        request.setResource(resourceResolver.getResource("/Vocabularies"));
+
+        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+
+        // Set request parameters and execute request. Note that the localpath "./someLocation" does not exist.
+        String requestParams = "source=ncit-flat&identifier=flatTestVocabulary&version=19.05d&localpath=./someLocation";
+        makePost(request, response, requestParams);
+
+        // Compare response to expected response
+
+        // Read response
+        JsonReader reader = Json.createReader(new StringReader(response.getOutputAsString()));
+        JsonObject responseJson = reader.readObject();
+
+        // Make sure that the parsing/indexing attempt was unsuccessful
+        Assert.assertFalse(responseJson.getBoolean("isSuccessful"));
+
+        // Compare the error message
+        String expectedError = "NCIT Flat indexing error: Error: Failed to load zip vocabulary locally. "
+            + "./someLocation (No such file or directory)";
+        String obtainedError = responseJson.getString("error");
+        Assert.assertEquals(expectedError, obtainedError);
+
+        // Make sure the vocabulary node was not created
+        Node rootNode = request.getResource().adaptTo(Node.class);
+        Assert.assertFalse(rootNode.hasNode("/flatTestvocabulary"));
+    }
+
+    /**
+     * Tests {@link VocabularyIndexerServlet} parsing and indexing a locally stored zip of a test vocabulary called
+     * flatTestVocabulary. Checks if the resultant nodes that are created in the MockJcr instance are correct.
+     *
+     * @throws Exception when an unexpected response is returned or the request has failed
+     */
+    @Test
+    public void testNCITFlatIndexing()
+        throws Exception
+    {
+        // Set up mock repository
+
+        // Instantiate a MockJcr session and register a Resource to Node adapter to it
+        final Session session = MockJcr.newSession();
+        registerResourceToNodeAdapter(session);
+
+        // BundleContext and ResourceResolver for creating resources and instantiating requests
+        BundleContext slingBundleContext = this.context.bundleContext();
+        ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
+
+        // Create a mock VocabulariesHomepage node /Vocabularies to act as the resource for the request
+        makeRequestResource(resourceResolver);
+
+        // Execute request
+
+        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
+
+        // Set the resource of the request as the /Vocabularies node
+        request.setResource(resourceResolver.getResource("/Vocabularies"));
+
+        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+
+        // Set the request parameters and execute request
+        String requestParams = "source=ncit-flat&identifier=flatTestVocabulary&version=19.05d&localpath="
+            + getClass().getResource("/flat_NCIT_type_testcase.zip").getPath();
+        makePost(request, response, requestParams);
+
+        // Get the root and vocabulary nodes from the request
+        Node rootNode = request.getResource().adaptTo(Node.class);
+        Node vocabNode = rootNode.getNode("flatTestVocabulary");
+
+        // Check that all nodes representing the given terms exist
+        ncitFlatTestVocabularyNode(vocabNode);
+
+        // Check nodes representing terms C100005 and C100008 have the correct properties
+        ncitFlatTestC100005(vocabNode);
+        ncitFlatTestC100008(vocabNode);
+    }
+
+    /**
+     * Checks if all of the terms in the test vocabulary have been created as valid nodes by the parsing/indexing
+     * process.
+     *
+     * @param flatTestVocabulary - <code>Vocabulary</code> node created in the MockJcr instance
+     * @throws Exception if the given <code>VocabularyTerm</code> nodes or the <code>Vocabulary</code> nodes do not
+     *             exist.
+     */
+    private void ncitFlatTestVocabularyNode(Node flatTestVocabulary)
+        throws Exception
+    {
+        String[] expectedNodes =
+            { "C100000", "C100001", "C100002", "C100003", "C100004", "C100005", "C100006",
+            "C100007", "C100008", "C100009" };
+
+        // Check if each expected node exists
+        for (String nodeName : expectedNodes) {
+            Assert.assertTrue(flatTestVocabulary.hasNode(nodeName));
+        }
+
+        // Check if default name has been set
+        Value obtainedNameValue = flatTestVocabulary.getProperty("name").getValue();
+        Assert.assertTrue("National Cancer Institute Thesaurus".compareTo(obtainedNameValue.getString()) == 0);
+
+        // Check if correct version has been set
+        Value obtainedVersionValue = flatTestVocabulary.getProperty("version").getValue();
+        Assert.assertTrue("19.05d".compareTo(obtainedVersionValue.getString()) == 0);
     }
 
     /**
@@ -464,10 +463,7 @@ public class VocabularyIndexerServletTest
         String label = "Post-Cardiac Transplant Evaluation";
         checkString(c100005, "label", label);
 
-        String[] synonyms = {
-            "Post-Cardiac Transplant Evaluation",
-            "POST-CARDIAC TRANSPLANT"
-        };
+        String[] synonyms = { "Post-Cardiac Transplant Evaluation", "POST-CARDIAC TRANSPLANT" };
         checkStringArray(c100005, "synonyms", synonyms);
 
         String[] parents = { "C100002" };

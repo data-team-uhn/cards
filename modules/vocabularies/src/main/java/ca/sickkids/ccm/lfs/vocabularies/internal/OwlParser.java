@@ -57,18 +57,7 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
 
 /**
- * Generic indexer for vocabularies available on the <a href="http://data.bioontology.org/">BioOntology</a> portal.
- * BioOntology is a RESTfull server serving a large collection of vocabularies, available as OWL sources, along with
- * meta-information.
- * <p>
- * To be invoked, this indexer requires that:
- * <ul>
- * <li>the {@code source} request parameter is {@code bioontology}</li>
- * <li>the {@code identifier} request parameter is a valid, case-sensitive identifier of a vocabulary available in the
- * BioOntology server</li>
- * </ul>
- * An optional {@code version} parameter can be used to index a specific version of the target vocabulary. If not
- * specified, then the latest available version will be used.
+ * Parser for vocabulary sources in OWL format.
  *
  * @version $Id$
  */
@@ -110,8 +99,8 @@ public class OwlParser implements SourceParser
             // Second step, read the model and load it into Sling
             // Also in a transaction; although reading shouldn't require one, Jena recommends it
             store.begin(ReadWrite.READ);
-            // OWL_LITE_MEM_TRANS_INF is fast enough for our needs, since the NCIT ontology isn't very complex,
-            // it has simple subclasses and properties
+            // OWL_LITE_MEM_TRANS_INF is fast enough for our needs, since ontologies aren't usually very complex,
+            // having just simple subclasses and properties
             OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_LITE_MEM_TRANS_INF, rawModel);
 
             // Cache the rdf:label property, it will be used a lot later on
