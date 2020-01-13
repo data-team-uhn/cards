@@ -60,10 +60,6 @@ const useStyles = makeStyles(theme => ({
   dialogTitle: {
     marginRight: theme.spacing(5)
   },
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  }
 }));
 
 
@@ -83,7 +79,7 @@ export default function VocabularyDetails(props) {
 
       <Dialog onClose={handleClose} open={displayPopup}>
 
-        <DialogTitle disableTypography onClose={handleClose} className={classes.root}>
+        <DialogTitle disableTypography>
           <Typography variant="h4" className={classes.dialogTitle}>{props.acronym}</Typography>
           <IconButton className={classes.closeButton} onClick={handleClose}>
             <CloseIcon />
