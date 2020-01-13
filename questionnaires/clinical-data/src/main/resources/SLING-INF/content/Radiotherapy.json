@@ -15,6 +15,7 @@
     "minAnswers": 1,
     "maxAnswers": 1,
     "dataType": "decimal",
+    "minValue" : 0,
     "unitOfMeasurement": "kg"
   },
   "height_at_start": {
@@ -23,6 +24,7 @@
     "minAnswers": 1,
     "maxAnswers": 1,
     "dataType": "decimal",
+    "minValue" : 0,
     "unitOfMeasurement": "cm"
   },
   "start_date": {
@@ -68,7 +70,9 @@
     "text": "Beam energy",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "dataType": "text"
+    "dataType": "decimal",
+    "minValue" : 0,
+    "unitOfMeasurement" : "MV"
   },
   "total_dose": {
     "jcr:primaryType": "lfs:Question",
@@ -76,6 +80,7 @@
     "minAnswers": 0,
     "maxAnswers": 1,
     "dataType": "decimal",
+    "minValue" : 0,
     "unitOfMeasurement" : "cGy"
   },
   "fraction_number": {
@@ -83,7 +88,8 @@
     "text": "Fraction number",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "dataType": "decimal"
+    "dataType": "decimal",
+    "minValue" : 0
   },
   "boost": {
     "jcr:primaryType": "lfs:Question",
@@ -105,7 +111,9 @@
     "text": "Boost beam energy",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "dataType": "text"
+    "dataType": "decimal",
+    "minValue" : 0,
+    "unitOfMeasurement" : "MV"
   },
   "boost_dose": {
     "jcr:primaryType": "lfs:Question",
@@ -113,6 +121,7 @@
     "minAnswers": 0,
     "maxAnswers": 1,
     "dataType": "decimal",
+    "minValue" : 0,
     "unitOfMeasurement" : "cGy"
   },
   "radiation_field": {
@@ -151,6 +160,7 @@
     "minAnswers": 0,
     "maxAnswers": 1,
     "dataType": "decimal",
+    "minValue" : 0,
     "unitOfMeasurement" : "cGy"
   },
   "comments": {
