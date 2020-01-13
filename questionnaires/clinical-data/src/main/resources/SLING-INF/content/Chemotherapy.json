@@ -22,6 +22,7 @@
     "minAnswers": 1,
     "maxAnswers": 1,
     "dataType": "decimal",
+    "minValue" : 0,
     "unitOfMeasurement" : "kg"
   },
   "height_at_start": {
@@ -30,6 +31,7 @@
     "minAnswers": 1,
     "maxAnswers": 1,
     "dataType": "decimal",
+    "minValue" : 0,
     "unitOfMeasurement" : "cm"
   },
   "agent": {
@@ -81,7 +83,8 @@
     "text": "Number of cycles",
     "minAnswers": 0,
     "maxAnswers": 1,
-    "dataType": "long"
+    "dataType": "long",
+    "minValue" : 0
   },
   "total_duration": {
     "jcr:primaryType": "lfs:Question",
@@ -89,6 +92,7 @@
     "minAnswers": 0,
     "maxAnswers": 1,
     "dataType": "decimal",
+    "minValue" : 0,
     "unitOfMeasurement" : "months"
   },
   "cumulative_dose": {
@@ -97,7 +101,8 @@
     "minAnswers": 0,
     "maxAnswers": 1,
     "dataType": "decimal",
-    "unitOfMeasurement" : "/m²"
+    "minValue" : 0,
+    "unitOfMeasurement" : "mg/m²"
   },
   "dose_reduction": {
     "jcr:primaryType": "lfs:Question",
