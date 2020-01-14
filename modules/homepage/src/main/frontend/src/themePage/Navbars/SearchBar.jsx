@@ -87,8 +87,6 @@ function SearchBar(props) {
   let displayResults = (json) => {
     // Ignore this result if the request ID does not match our last request
     if (json["req"] != requestID) {
-      console.log(requestID);
-      console.log(json["req"]);
       return;
     }
 
