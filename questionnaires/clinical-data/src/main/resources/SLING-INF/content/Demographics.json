@@ -1,19 +1,18 @@
 {
   "jcr:primaryType": "lfs:Questionnaire",
   "title": "Demographics Data",
-  "Patient ID": {
+  "patient_id": {
     "jcr:primaryType": "lfs:Question",
     "text": "Patient ID"
   },
-  "Family": {
+  "family": {
     "jcr:primaryType": "lfs:Question",
     "text": "Family",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "input",
     "dataType": "text"
   },
-  "Gender": {
+  "gender": {
     "jcr:primaryType": "lfs:Question",
     "text": "Gender",
     "minAnswers": 1,
@@ -22,14 +21,26 @@
     "dataType": "text",
     "M": {
       "jcr:primaryType": "lfs:AnswerOption",
+      "label" : "Male",
       "value": "M"
     },
     "F": {
       "jcr:primaryType": "lfs:AnswerOption",
+      "label": "Female",
       "value": "F"
+    },
+    "O": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "label" : "Other",
+      "value": "O"
+    },
+    "U": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "label" : "Unknown",
+      "value": "U"
     }
   },
-  "Race Ethnicity reported": {
+  "race_ethnicity": {
     "jcr:primaryType": "lfs:Question",
     "text": "Race/Ethnicity reported",
     "minAnswers": 0,
@@ -67,42 +78,40 @@
       "value": "Indian"
     }
   },
-  "Date of birth": {
+  "date_of_birth": {
     "jcr:primaryType": "lfs:Question",
     "text": "Date of birth",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "input",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
   },
-  "TP53 variant (cDNA) as stated in file": {
+  "tp53_variant_cDNA": {
     "jcr:primaryType": "lfs:Question",
     "text": "TP53 variant (cDNA) as stated in file",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "input",
     "dataType": "text"
   },
-  "TP53 variant (protein) as stated in file": {
+  "tp53_variant_protein": {
     "jcr:primaryType": "lfs:Question",
     "text": "TP53 variant (protein) as stated in file",
     "minAnswers": 1,
     "maxAnswers": 1
   },
-  "c. per ClinVar 2019": {
+  "c_per_clinvar_2019": {
     "jcr:primaryType": "lfs:Question",
     "text": "c. per ClinVar 2019",
     "minAnswers": 1,
     "maxAnswers": 1
   },
-  "p. per ClinVar 2019": {
+  "p_per_ClinVar_2019": {
     "jcr:primaryType": "lfs:Question",
     "text": "p. per ClinVar 2019",
     "minAnswers": 1,
     "maxAnswers": 1
   },
-  "Mutation-Pathogenecity": {
+  "mutation_pathogenecity": {
     "jcr:primaryType": "lfs:Question",
     "text": "Mutation-Pathogenecity",
     "minAnswers": 1,
@@ -145,7 +154,7 @@
       "label": "Undetermined"
     }
   },
-  "Mutation-Function": {
+  "mutation_function": {
     "jcr:primaryType": "lfs:Question",
     "text": "Mutation-Function",
     "minAnswers": 1,
@@ -204,7 +213,7 @@
       "value": "synonymous splicing"
     }
   },
-  "Test done (code)": {
+  "test_done_code": {
     "jcr:primaryType": "lfs:Question",
     "text": "Test done (code)",
     "minAnswers": 0,
@@ -217,11 +226,11 @@
     },
     "single gene": {
       "jcr:primaryType": "lfs:AnswerOption",
-      "value": "single gene"
+      "value": "Single gene"
     },
     "panel": {
       "jcr:primaryType": "lfs:AnswerOption",
-      "value": "panel"
+      "value": "Panel"
     },
     "Kics": {
       "jcr:primaryType": "lfs:AnswerOption",
@@ -232,14 +241,14 @@
       "value": "Unknown"
     }
   },
-  "Test done as depicted in the report file (single gene, fam mutation, gane panel, WES)...": {
+  "Test_done_per_report": {
     "jcr:primaryType": "lfs:Question",
     "text": "Test done as depicted in the report/file (single gene, fam mutation, gane panel, WES)...",
     "minAnswers": 0,
     "maxAnswers": 0,
     "displayMode": "textbox"
   },
-  "Reason for Dx": {
+  "reason_for_dx": {
     "jcr:primaryType": "lfs:Question",
     "text": "Reason for Dx",
     "minAnswers": 1,
@@ -267,7 +276,7 @@
       "value": "N/A"
     }
   },
-  "Other positive genetic results": {
+  "other_positive_genetic_results": {
     "jcr:primaryType": "lfs:Question",
     "text": "Other positive genetic results",
     "minAnswers": 0,
@@ -275,25 +284,24 @@
     "displayMode": "textbox",
     "dataType": "text"
   },
-  "Date of genetic diagnosis": {
+  "date_of_genetic_diagnosis": {
     "jcr:primaryType": "lfs:Question",
     "text": "Date of genetic diagnosis",
     "minAnswers": 0,
     "maxAnswers": 0,
-    "displayMode": "input",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
   },
-  "Age of genetic diagnosis": {
+  "age_of_genetic_diagnosis": {
     "jcr:primaryType": "lfs:Question",
     "text": "Age of genetic diagnosis",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "input",
-    "unitOfMeasurement": "years",
-    "dataType": "decimal"
+    "dataType": "decimal",
+    "minValue": 0,
+    "unitOfMeasurement": "years"
   },
-  "Vital status": {
+  "vital_status": {
     "jcr:primaryType": "lfs:Question",
     "text": "Vital status",
     "minAnswers": 1,
@@ -314,25 +322,24 @@
       "label": "died of disease"
     }
   },
-  "Date of last follow-up": {
+  "date_of_last_fup": {
     "jcr:primaryType": "lfs:Question",
     "text": "Date of last follow-up",
     "minAnswers": 0,
     "maxAnswers": 0,
-    "displayMode": "input",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
   },
-  "Age at last follow up": {
+  "age_at_last_fup": {
     "jcr:primaryType": "lfs:Question",
     "text": "Age at last follow up",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "input",
-    "unitOfMeasurement": "years",
-    "dataType": "decimal"
+    "dataType": "decimal",
+    "minValue" : 0,
+    "unitOfMeasurement": "years"
   },
-  "Relation to proband": {
+  "relation_to_proband": {
     "jcr:primaryType": "lfs:Question",
     "text": "Relation to proband",
     "minAnswers": 0,
@@ -391,49 +398,31 @@
       "value": "Cousin"
     }
   },
-  "Undergoing surveillance": {
+  "undergoing_surveillance": {
     "jcr:primaryType": "lfs:Question",
     "text": "Undergoing surveillance?",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "list",
-    "dataType": "text",
-    "Y": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Y"
-    },
-    "N": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "N"
-    },
-    "NA": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "N/A"
-    },
-    "Unknown": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Unknown"
-    }
+    "dataType": "boolean",
+    "enableUnknown" : true
   },
-  "Surveilled since": {
+  "surveilled_since": {
     "jcr:primaryType": "lfs:Question",
     "text": "Survielled since",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "list",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
   },
-  "Surveilled until": {
+  "surveilled_until": {
     "jcr:primaryType": "lfs:Question",
     "text": "Surveilled until",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "list",
     "dataType": "date",
     "dateFormat": "yyyy-MM-dd"
   },
-  "Additional information about surveillance": {
+  "surveillance_info": {
     "jcr:primaryType": "lfs:Question",
     "text": "Additional information about surveillance",
     "minAnswers": 0,
@@ -441,32 +430,32 @@
     "displayMode": "textbox",
     "dataType": "text"
   },
-  "Total number of lesions": {
+  "total_number_of_lesions": {
     "jcr:primaryType": "lfs:Question",
     "text": "Total number of lesions",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "long"
+    "dataType": "long",
+    "minValue": 0
   },
-  "Number of malignant tumors": {
+  "number_of_malignant_tumors": {
     "jcr:primaryType": "lfs:Question",
     "text": "Number of malignant tumors",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "input",
-    "dataType": "long"
+    "dataType": "long",
+    "minValue": 0
   },
-  "Age at 1st malignant Dx": {
+  "age_at_1st_malignant_dx": {
     "jcr:primaryType": "lfs:Question",
     "text": "Age at 1st malignant Dx",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "displayMode": "input",
-    "unitOfMeasurement": "years",
-    "dataType": "long"
+    "dataType": "long",
+    "minValue" : 0,
+    "unitOfMeasurement": "years"
   },
-  "Co-morbidities": {
+  "comorbidities": {
     "jcr:primaryType": "lfs:Question",
     "text": "Co-morbidities (non cancerous), including abnormal incidental imaging/labs",
     "minAnswers": 0,
@@ -476,7 +465,7 @@
     "sourceVocabulary": "HPO",
     "vocabularyFilter": ["HP:0000118"]
   },
-  "Inherited from": {
+  "inherited_from": {
     "jcr:primaryType": "lfs:Question",
     "text": "Inherited from",
     "minAnswers": 1,
@@ -498,7 +487,7 @@
       "label": "Unknown"
     }
   },
-  "Family history": {
+  "family_history": {
     "jcr:primaryType": "lfs:Question",
     "text": "Family history",
     "minAnswers": 0,
@@ -506,7 +495,7 @@
     "displayMode": "textbox",
     "dataType": "text"
   },
-  "Mosaic consultation": {
+  "mosaic_consultation": {
     "jcr:primaryType": "lfs:Question",
     "text": "Mosaic consultation",
     "minAnswers": 0,
@@ -514,17 +503,9 @@
     "displayMode": "textbox",
     "dataType": "text"
   },
-  "Comments": {
+  "comments": {
     "jcr:primaryType": "lfs:Question",
     "text": "Comments",
-    "minAnswers": 0,
-    "maxAnswers": 0,
-    "displayMode": "textbox",
-    "dataType": "text"
-  },
-  "More comments": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "More comments",
     "minAnswers": 0,
     "maxAnswers": 0,
     "displayMode": "textbox",
