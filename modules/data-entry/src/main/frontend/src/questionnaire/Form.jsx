@@ -30,6 +30,7 @@ import {
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerComponentManager from "./AnswerComponentManager";
+import Section from "./Section";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -150,6 +151,37 @@ function Form (props) {
     return <QuestionDisplay key={key} questionDefinition={questionDefinition} existingAnswer={existingAnswer} />;
   };
 
+  /**
+   * Method responsible for displaying a section from the questionnaire, along with its answer(s).
+   * TODO: Somehow pass the conditional state upwards from here
+   *
+   * @param {Object} sectionDefinition the section definition JSON
+   * @param {string} key the node name of the section definition JCR node
+   * @returns a React component that renders the section
+   */
+  let displaySection = (sectionDefinition, key) => {
+    // Parse through SectionLink nodes to find our Section node
+    // TODO: What if a sectionRef loop is present?
+    while (sectionDefinition && sectionDefinition["sling:resourceType"] == "sectionLink") {
+      sectionDefinition = sectionDefinition["ref"];
+    }
+    const existingAnswer = Object.entries(data)
+      .find(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
+        && value["question"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
+    return <Section key={key} sectionDefinition={sectionDefinition} existingAnswer={existingAnswer} />;
+  }
+
+  // TODO: As before, I'm writing something that's basically an if statement
+  // this should instead be via a componentManager
+  // This code is likely reuseable for the Section component as well
+  let display = (questionDefinition, key) => {
+    if (questionDefinition["jcr:primaryType"] == "lfs:Question") {
+      return displayQuestion(questionDefinition, key);
+    } else if (questionDefinition["jcr:primaryType"] == "lfs:Section") {
+      return displaySection(questionDefinition, key);
+    }
+  }
+
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     fetchData();
@@ -193,8 +225,8 @@ function Form (props) {
         </Grid>
         {
           Object.entries(data.questionnaire)
-            .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question')
-            .map(([key, questionDefinition]) => <Grid item key={key}>{displayQuestion(questionDefinition, key)}</Grid>)
+            .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question' || value['jcr:primaryType'] == 'lfs:Section')
+            .map(([key, questionDefinition]) => <Grid item key={key}>{display(questionDefinition, key)}</Grid>)
         }
       </Grid>
 

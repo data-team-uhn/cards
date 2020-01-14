@@ -260,6 +260,30 @@
   + * (lfs:Question, lfs:Section) = lfs:Question
 
 //-----------------------------------------------------------------------------
+// A section link is a reference to another link that should be inserted here.
+[lfs:SectionLink] > sling:Resource, mix:referenceable
+  // Attributes
+
+  // The list of subsections and questions is orderable.
+  orderable
+  // We can use section links in a query.
+  query
+  // The main sub-item of a section is its reference.
+  primaryitem ref
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/SectionLink" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each section link is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // An optional reference to another section node, if this node is merely a link to
+  // a section in another questionnaire
+  - ref (reference) mandatory
+
+//-----------------------------------------------------------------------------
 // A questionnaire is a collection of sections and questions.
 [lfs:Questionnaire] > sling:Folder, mix:referenceable, mix:versionable
   // Attributes
@@ -457,6 +481,21 @@
 
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
+// Section object, which can contain multiple other answers. The "question" element here
+// can be multiple
+[lfs:AnswerSection] > lfs:Answer
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/AnswerSection" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+  // Children
+
+  // The answers recorded in this section.
+  + * (lfs:Answer) = lfs:Answer
 
 //-----------------------------------------------------------------------------
 // Forms: a filled in questionnaire.
