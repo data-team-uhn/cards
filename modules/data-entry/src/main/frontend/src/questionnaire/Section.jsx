@@ -18,13 +18,24 @@
 //
 
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Grid, Typography, withStyles } from "@material-ui/core";
 import uuidv4 from "uuid/v4";
 
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
-/// Component that consists of a few sections, and optionally has some criteria to its display
+/**
+ * Component that consists of a few sections, and optionally has some criteria to its display
+ *
+ * @example
+ * <Section depth={1} path="." sectionDefinition={{label: "Section"}} />
+ *
+ * @param {int} depth the section nesting depth
+ * @param {Object} existingAnswer form data that may include answers already submitted for this component
+ * @param {string} path the path to the parent of the question
+ * @param {Object} sectionDefinition the section definition JSON
+ */
 function Section(props) {
   const { classes, depth, existingAnswer, path, sectionDefinition } = props;
   const [sectionID] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
@@ -55,6 +66,17 @@ function Section(props) {
       </Grid>
     </Grid>
   );
+}
+
+Section.propTypes = {
+  classes: PropTypes.object.isRequired,
+  depth: PropTypes.number.isRequired,
+  existingAnswer: PropTypes.object,
+  path: PropTypes.string.isRequired,
+  sectionDefinition: PropTypes.shape({
+    label: PropTypes.string,
+    description: PropTypes.string,
+  }).isRequired,
 }
 
 export default withStyles(QuestionnaireStyle)(Section);
