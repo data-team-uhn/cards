@@ -33,6 +33,10 @@ import PedigreeQuestion from "./PedigreeQuestion";
 import TextQuestion from "./TextQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 
+const QUESTION_TYPES = ["lfs:Question"];
+const SECTION_TYPES = ["lfs:Section", "lfs:SectionLink"];
+export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
+
 /**
  * Method responsible for displaying a question from the questionnaire, along with its answer(s).
  *
@@ -90,9 +94,9 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
 export default function FormEntry(questionDefinition, path, depth, existingAnswers, key) {
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
-  if (questionDefinition["jcr:primaryType"] == "lfs:Question") {
+  if (QUESTION_TYPES.includes(questionDefinition["jcr:primaryType"])) {
       return displayQuestion(questionDefinition, path, existingAnswers, key);
-  } else if (questionDefinition["jcr:primaryType"] == "lfs:Section") {
+  } else if (SECTION_TYPES.includes(questionDefinition["jcr:primaryType"])) {
       return displaySection(questionDefinition, path, depth, existingAnswers, key);
   }
 }

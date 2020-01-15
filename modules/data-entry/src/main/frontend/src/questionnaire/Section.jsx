@@ -21,7 +21,7 @@ import React, { useState } from "react";
 import { Grid, Typography, withStyles } from "@material-ui/core";
 import uuidv4 from "uuid/v4";
 
-import FormEntry from "./FormEntry";
+import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 /// Component that consists of a few sections, and optionally has some criteria to its display
@@ -49,7 +49,7 @@ function Section(props) {
           </Grid>
         }
         {Object.entries(sectionDefinition)
-          .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question' || value['jcr:primaryType'] == 'lfs:Section')
+          .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
           .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingAnswer && existingAnswer[1], key))
         }
       </Grid>

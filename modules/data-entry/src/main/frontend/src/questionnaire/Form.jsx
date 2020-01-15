@@ -29,7 +29,7 @@ import {
 } from "@material-ui/core";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import FormEntry from "./FormEntry";
+import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -168,7 +168,7 @@ function Form (props) {
         </Grid>
         {
           Object.entries(data.questionnaire)
-            .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question' || value['jcr:primaryType'] == 'lfs:Section')
+            .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
             .map(([key, questionDefinition]) => FormEntry(questionDefinition, ".", 0, data, key))
         }
       </Grid>
