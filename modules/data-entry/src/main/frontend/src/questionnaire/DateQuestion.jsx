@@ -188,6 +188,7 @@ function DateQuestion(props) {
         existingAnswer={existingAnswer}
         answerNodeType="lfs:DateAnswer"
         valueType="Date"
+        {...rest}
         />
       <TextField
         type={textFieldType}

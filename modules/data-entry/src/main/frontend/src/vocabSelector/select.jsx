@@ -295,6 +295,7 @@ function VocabularySelector(props) {
         answerNodeType={'lfs:VocabularyAnswer'}
         questionDefinition={questionDefinition}
         existingAnswer={existingAnswer}
+        {...rest}
       />
     </React.Fragment>
   );

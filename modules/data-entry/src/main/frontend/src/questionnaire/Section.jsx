@@ -17,8 +17,9 @@
 //  under the License.
 //
 
-import React from "react";
-import { Grid, Typography } from "@material-ui/core";
+import React, { useState } from "react";
+import { Grid, Typography, withStyles } from "@material-ui/core";
+import uuidv4 from "uuid/v4";
 
 import FormEntry from "./FormEntry";
 import QuestionnaireStyle from "./QuestionnaireStyle";
@@ -26,6 +27,8 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 /// Component that consists of a few sections, and optionally has some criteria to its display
 function Section(props) {
   const { classes, depth, existingAnswer, path, sectionDefinition } = props;
+  const [sectionID] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
+  const sectionPath = path + "/" + sectionID;
   const headerVariant = (depth > 3 ? "body1" : ("h" + (depth+3)));
 
   const titleEl = sectionDefinition["label"] && <Typography variant={headerVariant}>{sectionDefinition["label"]} </Typography>;
