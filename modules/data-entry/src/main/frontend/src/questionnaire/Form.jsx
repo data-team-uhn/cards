@@ -30,6 +30,7 @@ import {
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
+import { CONTAINER_PROPS } from "./Section";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -148,7 +149,7 @@ function Form (props) {
 
   return (
     <form action={data["@path"]} method="POST" onSubmit={saveData} onChange={()=>setLastSaveStatus(undefined)} key={id}>
-      <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
+      <Grid container {...CONTAINER_PROPS} >
         <Grid item>
           {
             data && data.questionnaire && data.questionnaire.title ?

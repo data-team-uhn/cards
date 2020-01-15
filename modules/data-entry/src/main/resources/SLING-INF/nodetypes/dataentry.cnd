@@ -280,9 +280,8 @@
   // Hardcode the resource supertype: each section link is a resource.
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
 
-  // An optional reference to another section node, if this node is merely a link to
-  // a section in another questionnaire
-  - ref (reference) mandatory
+  // A reference to another section node
+  - ref (path) mandatory
 
 //-----------------------------------------------------------------------------
 // A questionnaire is a collection of sections and questions.

@@ -25,6 +25,20 @@ import uuidv4 from "uuid/v4";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
+
+// Props used in Section grid containers
+export const CONTAINER_PROPS = {
+  direction: "column",
+  spacing: 4,
+  alignItems: "stretch",
+  justify: "space-between",
+  wrap: "nowrap"
+};
+
+// The heading levels that @material-ui supports
+const MAX_HEADING_LEVEL = 6;
+const MIN_HEADING_LEVEL = 3;
+
 /**
  * Component that consists of a few sections, and optionally has some criteria to its display
  *
@@ -40,7 +54,7 @@ function Section(props) {
   const { classes, depth, existingAnswer, path, sectionDefinition } = props;
   const [sectionID] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   const sectionPath = path + "/" + sectionID;
-  const headerVariant = (depth > 3 ? "body1" : ("h" + (depth+3)));
+  const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
 
   const titleEl = sectionDefinition["label"] && <Typography variant={headerVariant}>{sectionDefinition["label"]} </Typography>;
   const descEl = sectionDefinition["description"] && <Typography variant="overline">{sectionDefinition["description"]} </Typography>
@@ -52,7 +66,7 @@ function Section(props) {
       <input type="hidden" name={`${sectionPath}/question`} value={sectionDefinition['jcr:uuid']}></input>
       <input type="hidden" name={`${sectionPath}/question@TypeHint`} value="Reference"></input>
 
-      <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
+      <Grid container {...CONTAINER_PROPS}>
         {hasPadding &&
           <Grid item className={classes.sectionHeader}>
             {titleEl}
