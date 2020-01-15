@@ -41,6 +41,7 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
  * Method responsible for displaying a question from the questionnaire, along with its answer(s).
  *
  * @param {Object} questionDefinition the question definition JSON
+ * @param {string} path the path to the parent of the question
  * @param {Object} existingAnswer form data that may include answers already submitted for this component
  * @param {string} key the node name of the question definition JCR node
  * @returns a React component that renders the question
@@ -67,6 +68,8 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key) => {
  * TODO: Somehow pass the conditional state upwards from here
  *
  * @param {Object} sectionDefinition the section definition JSON
+ * @param {string} path the path to the parent of the section
+ * @param {int} depth the section nesting depth
  * @param {Object} existingAnswer form data that may include answers already submitted for this component
  * @param {string} key the node name of the section definition JCR node
  * @returns a React component that renders the section
