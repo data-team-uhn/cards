@@ -17,75 +17,23 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
-import { Grid, withStyles } from "@material-ui/core";
+import React from "react";
 
-import AnswerComponentManager from "./AnswerComponentManager";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import FormEntry from "./FormEntry";
 
 /// Component that consists of a few sections, and optionally has some criteria to its display
 function Section(props) {
-  const { classes, existingAnswer, sectionDefinition } = props;
-  const [ error, setError ] = useState();
-
-  // I need to move the AnswerComponentManager renderer outside of Form so it can be accessed here instead of this
-
-  /**
-   * Method responsible for displaying a question from the questionnaire, along with its answer(s).
-   *
-   * @param {Object} questionDefinition the question definition JSON
-   * @param {string} key the node name of the question definition JCR node
-   * @returns a React component that renders the question
-   */
-  let displayQuestion = (questionDefinition, key) => {
-    const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
-      .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
-        && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
-    // This variable must start with an upper case letter so that React treats it as a component
-    const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
-    return <QuestionDisplay key={key} questionDefinition={questionDefinition} existingAnswer={existingQuestionAnswer} />;
-  };
-
-  /**
-   * Method responsible for displaying a section from the questionnaire, along with its answer(s).
-   * TODO: Somehow pass the conditional state upwards from here
-   *
-   * @param {Object} sectionDefinition the section definition JSON
-   * @param {string} key the node name of the section definition JCR node
-   * @returns a React component that renders the section
-   */
-  let displaySection = (sectionDefinition, key) => {
-    // Parse through SectionLink nodes to find our Section node
-    // TODO: What if a sectionRef loop is present?
-    while (sectionDefinition && sectionDefinition["sling:resourceType"] == "sectionLink") {
-      sectionDefinition = sectionDefinition["ref"];
-    }
-    const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
-      .find(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
-        && value["question"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
-    return <Section key={key} sectionDefinition={sectionDefinition} existingAnswer={existingQuestionAnswer} />;
-  }
-
-  // TODO: As before, I'm writing something that's basically an if statement
-  // this should instead be via a componentManager
-  // This code is likely reuseable for the Section component as well
-  let display = (definition, key) => {
-    if (definition["jcr:primaryType"] == "lfs:Question") {
-      return displayQuestion(definition, key);
-    } else if (definition["jcr:primaryType"] == "lfs:Section") {
-      return displaySection(definition, key);
-    }
-  }
+  const { existingAnswer, sectionDefinition } = props;
 
   return (
     <React.Fragment>
     {
       Object.entries(sectionDefinition)
         .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question' || value['jcr:primaryType'] == 'lfs:Section')
-        .map(([key, definition]) => <Grid item key={key}>{display(definition, key)}</Grid>)
+        .map(([key, definition]) => FormEntry(definition, existingAnswer, key))
     }
     </React.Fragment>
   );
 }
 
-export default withStyles(QuestionnaireStyle)(Section);
+export default Section;
