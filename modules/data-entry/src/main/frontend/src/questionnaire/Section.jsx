@@ -18,6 +18,7 @@
 //
 
 import React from "react";
+import { Grid, Typography } from "@material-ui/core";
 
 import FormEntry from "./FormEntry";
 
@@ -25,13 +26,21 @@ import FormEntry from "./FormEntry";
 function Section(props) {
   const { existingAnswer, sectionDefinition } = props;
 
+  const titleEl = sectionDefinition["label"] && <Typography variant="h3">{sectionDefinition["label"]} </Typography>;
+  const descEl = sectionDefinition["description"] && <Typography variant="overline">{sectionDefinition["description"]} </Typography>
+
   return (
     <React.Fragment>
-    {
-      Object.entries(sectionDefinition)
+      {(titleEl || descEl) &&
+        <Grid item>
+          {titleEl}
+          {descEl}
+        </Grid>
+      }
+      {Object.entries(sectionDefinition)
         .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question' || value['jcr:primaryType'] == 'lfs:Section')
         .map(([key, definition]) => FormEntry(definition, existingAnswer, key))
-    }
+      }
     </React.Fragment>
   );
 }
