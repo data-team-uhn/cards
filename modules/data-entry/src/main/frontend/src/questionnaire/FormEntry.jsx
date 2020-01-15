@@ -41,13 +41,21 @@ import VocabularyQuestion from "./VocabularyQuestion";
  * @param {string} key the node name of the question definition JCR node
  * @returns a React component that renders the question
  */
-let displayQuestion = (questionDefinition, existingAnswer, key) => {
+let displayQuestion = (questionDefinition, path, existingAnswer, key) => {
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
   // This variable must start with an upper case letter so that React treats it as a component
   const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
-  return <Grid item key={key}><QuestionDisplay key={key} questionDefinition={questionDefinition} existingAnswer={existingQuestionAnswer} /></Grid>;
+  return (
+    <Grid item key={key} className={"questionContainer"}>
+      <QuestionDisplay
+        key={key}
+        questionDefinition={questionDefinition}
+        existingAnswer={existingQuestionAnswer}
+        path={path} />
+    </Grid>
+  );
 };
 
 /**
@@ -59,7 +67,7 @@ let displayQuestion = (questionDefinition, existingAnswer, key) => {
  * @param {string} key the node name of the section definition JCR node
  * @returns a React component that renders the section
  */
-let displaySection = (sectionDefinition, existingAnswer, key) => {
+let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
   // Parse through SectionLink nodes to find our Section node
   // TODO: What if a sectionRef loop is present?
   while (sectionDefinition && sectionDefinition["sling:resourceType"] == "sectionLink") {
@@ -68,15 +76,23 @@ let displaySection = (sectionDefinition, existingAnswer, key) => {
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
       && value["question"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
-  return <Section key={key} sectionDefinition={sectionDefinition} existingAnswer={existingQuestionAnswer} />;
+  return (
+    <Section
+      key={key}
+      depth={depth}
+      sectionDefinition={sectionDefinition}
+      existingAnswer={existingQuestionAnswer}
+      path={path}
+      />
+  );
 }
 
-export default function FormEntry(questionDefinition, existingAnswers, key) {
+export default function FormEntry(questionDefinition, path, depth, existingAnswers, key) {
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (questionDefinition["jcr:primaryType"] == "lfs:Question") {
-      return displayQuestion(questionDefinition, existingAnswers, key);
+      return displayQuestion(questionDefinition, path, existingAnswers, key);
   } else if (questionDefinition["jcr:primaryType"] == "lfs:Section") {
-      return displaySection(questionDefinition, existingAnswers, key);
+      return displaySection(questionDefinition, path, depth, existingAnswers, key);
   }
 }

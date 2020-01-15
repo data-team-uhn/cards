@@ -21,28 +21,37 @@ import React from "react";
 import { Grid, Typography } from "@material-ui/core";
 
 import FormEntry from "./FormEntry";
+import QuestionnaireStyle from "./QuestionnaireStyle";
 
 /// Component that consists of a few sections, and optionally has some criteria to its display
 function Section(props) {
-  const { existingAnswer, sectionDefinition } = props;
+  const { classes, depth, existingAnswer, path, sectionDefinition } = props;
+  const headerVariant = (depth > 3 ? "body1" : ("h" + (depth+3)));
 
-  const titleEl = sectionDefinition["label"] && <Typography variant="h3">{sectionDefinition["label"]} </Typography>;
+  const titleEl = sectionDefinition["label"] && <Typography variant={headerVariant}>{sectionDefinition["label"]} </Typography>;
   const descEl = sectionDefinition["description"] && <Typography variant="overline">{sectionDefinition["description"]} </Typography>
+  const hasPadding = titleEl || descEl;
 
   return (
-    <React.Fragment>
-      {(titleEl || descEl) &&
-        <Grid item>
-          {titleEl}
-          {descEl}
-        </Grid>
-      }
-      {Object.entries(sectionDefinition)
-        .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question' || value['jcr:primaryType'] == 'lfs:Section')
-        .map(([key, definition]) => FormEntry(definition, existingAnswer, key))
-      }
-    </React.Fragment>
+    <Grid item className={hasPadding && classes.paddedSection}>
+      <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
+      <input type="hidden" name={`${sectionPath}/question`} value={sectionDefinition['jcr:uuid']}></input>
+      <input type="hidden" name={`${sectionPath}/question@TypeHint`} value="Reference"></input>
+
+      <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
+        {hasPadding &&
+          <Grid item className={classes.sectionHeader}>
+            {titleEl}
+            {descEl}
+          </Grid>
+        }
+        {Object.entries(sectionDefinition)
+          .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question' || value['jcr:primaryType'] == 'lfs:Section')
+          .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingAnswer && existingAnswer[1], key))
+        }
+      </Grid>
+    </Grid>
   );
 }
 
-export default Section;
+export default withStyles(QuestionnaireStyle)(Section);

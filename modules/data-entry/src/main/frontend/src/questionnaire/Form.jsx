@@ -169,7 +169,7 @@ function Form (props) {
         {
           Object.entries(data.questionnaire)
             .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question' || value['jcr:primaryType'] == 'lfs:Section')
-            .map(([key, questionDefinition]) => FormEntry(questionDefinition, data, key))
+            .map(([key, questionDefinition]) => FormEntry(questionDefinition, ".", 0, data, key))
         }
       </Grid>
 
