@@ -5,8 +5,9 @@
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
         "lfs:targetURL": "Questionnaires",
         "lfs:extensionName": "Questionnaires",
-        "lfs:icon": "asset:lfs-homepage.dashboardIcon.js",
+        "lfs:icon": "asset:lfs-dataentry.questionnairesIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.Questionnaires.js",
+        "lfs:defaultOrder": 91,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "",
@@ -18,8 +19,9 @@
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
         "lfs:targetURL": "Subjects",
         "lfs:extensionName": "Subjects",
-        "lfs:icon": "asset:lfs-homepage.dashboardIcon.js",
+        "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.Subjects.js",
+        "lfs:defaultOrder": 1,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "",
@@ -31,8 +33,23 @@
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
         "lfs:targetURL": "Forms",
         "lfs:extensionName": "Forms",
-        "lfs:icon": "asset:lfs-homepage.dashboardIcon.js",
+        "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.Forms.js",
+        "lfs:defaultOrder": 2,
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "",
+            "jcr:mimeType": "text/html"
+        }
+    },
+    "UserDashboard": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:targetURL": "Questionnaires/User",
+        "lfs:extensionName": "User dashboard",
+        "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-dataentry.userDashboard.js",
+        "lfs:defaultOrder": 0,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "",

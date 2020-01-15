@@ -20,7 +20,9 @@ package ca.sickkids.ccm.lfs;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.jcr.query.Query;
 import javax.json.Json;
@@ -58,8 +60,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -6068156942302219324L;
 
+    // Allowed JCR-SQL2 operators (from https://docs.adobe.com/docs/en/spec/jcr/2.0/6_Query.html#6.7.17%20Operator)
+    private static final List<String> COMPARATORS = Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE");
+
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
+    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+            throws IOException, IllegalArgumentException
     {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -67,23 +74,277 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
         final StringBuilder query =
             // We select all child nodes of the homepage, filtering out nodes that aren't ours, such as rep:policy
-            new StringBuilder("select n from [nt:base] as n where ischildnode(n, '" + request.getResource().getPath()
+            new StringBuilder("select n.* from [nt:base] as n");
+
+        // If child nodes are required for this query, also grab them
+        final String[] filternames = request.getParameterValues("filternames");
+        query.append(createJoins(
+            request.getParameter("joinchildren"),
+            request.getParameterValues("filternames"),
+            request.getParameterValues("filterempty"),
+            request.getParameterValues("filternotempty")
+            ));
+
+        // Check only for our fields
+        query.append(" where ischildnode(n, '" + request.getResource().getPath()
                 + "') and n.'sling:resourceSuperType' = 'lfs/Resource'");
+
+        // Full text search; \ and ' must be escaped
         final String filter = request.getParameter("filter");
         if (StringUtils.isNotBlank(filter)) {
-            // Full text search; \ and ' must be escaped
-            query.append(" and contains(*, '" + filter.replaceAll("['\\\\]", "\\\\$0") + "')");
+            query.append(" and contains(n.*, '" + this.sanitizeField(filter) + "')");
         }
-        query.append(" order by 'jcr:created'");
+
+        // Exact condition on parent node; \ and ' must be escaped. The value must be wrapped in 's
+        final String fieldname = request.getParameter("fieldname");
+        final String fieldvalue = request.getParameter("fieldvalue");
+        String fieldcomparator = request.getParameter("fieldcomparator");
+        if (StringUtils.isNotBlank(fieldname)) {
+            if (StringUtils.isBlank(fieldcomparator)) {
+                // Default comparator is =
+                fieldcomparator = "=";
+            }
+            query.append(
+                String.format(
+                    " and n.'%s'%s'%s'",
+                    this.sanitizeField(fieldname),
+                    this.sanitizeComparator(fieldcomparator),
+                    this.sanitizeField(fieldvalue)
+                )
+            );
+        }
+
+        // Condition on child nodes. See parseFilter for details.
+        final String[] filtervalues = request.getParameterValues("filtervalues");
+        final String[] filtercomparators = request.getParameterValues("filtercomparators");
+        final String[] filterempty = request.getParameterValues("filterempty");
+        final String[] filternotempty = request.getParameterValues("filternotempty");
+        query.append(parseFilter(filternames, filtervalues, filtercomparators));
+        query.append(parseExistence(filterempty, filternotempty));
+
+        query.append(" order by n.'jcr:created'");
         final Iterator<Resource> results =
             request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
-
-        try (Writer out = response.getWriter(); JsonGenerator jsonGen = Json.createGenerator(out)) {
+        // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
+        final Writer out = response.getWriter();
+        try (JsonGenerator jsonGen = Json.createGenerator(out)) {
             jsonGen.writeStartObject();
             long[] limits = writeNodes(jsonGen, results, offset, limit);
             writeSummary(jsonGen, request, limits);
             jsonGen.writeEnd().flush();
         }
+    }
+
+    /**
+     * Parse out filter data into a series of JCR_SQL2 joins.
+     * This should be used in conjuction with parseFilter later on.
+     *
+     * @param nodetype node types to join
+     * @param filternames user input field names
+     * @param empties user input fields to assert emptiness of
+     * @param notempties user input fields to assert non-emptiness of
+     * @return the input fields and assertions as a series of sql joins
+     */
+    private String createJoins(final String nodetype, final String[] filternames, final String[] empties,
+        final String[] notempties)
+    {
+        if (StringUtils.isBlank(nodetype)) {
+            // Unknown join type: do not parse
+            return "";
+        }
+
+        String sanitizednodetype = nodetype.replaceAll("[\\\\\\]]", "\\\\$0");
+        StringBuilder joindata = new StringBuilder();
+
+        // Parse out the fields to later impose conditions on
+        joindata.append(createSingleJoin(filternames, "child", sanitizednodetype));
+
+        // Parse out the fields to assert the nonexistence of
+        joindata.append(createSingleJoin(empties, "empty", sanitizednodetype));
+
+        // Parse out the fields to assert the existence of
+        joindata.append(createSingleJoin(notempties, "notempty", sanitizednodetype));
+
+        return joindata.toString();
+    }
+
+    /**
+     * Parse out filter data into a series of JCR_SQL2 joins.
+     *
+     * @param joins node types to join
+     * @param childprefix prefix to give the child, to which a number will be appended to
+     * @param nodetype Node type to join on
+     * @return the input field as a series of sql joins
+     */
+    private String createSingleJoin(final String[] joins, final String childprefix, final String nodetype)
+    {
+        // Don't attempt to append joins if we're not given anything
+        if (joins == null) {
+            return "";
+        }
+
+        // Append an inner join for each pipe-delimited identifier in joins
+        StringBuilder joindata = new StringBuilder();
+        for (int i = 0; i < joins.length; i++) {
+            joindata.append(
+                String.format(
+                    " inner join [%s] as %s%d on ischildnode(%s%d, n)",
+                    nodetype,
+                    childprefix,
+                    i,
+                    childprefix,
+                    i
+                )
+            );
+        }
+
+        return joindata.toString();
+    }
+
+    /**
+     * Parse out filter data into a series of JCR_SQL2 conditionals.
+     *
+     * @param fields user input field names
+     * @param values user input field values
+     * @param comparator user input comparators
+     * @throws IllegalArgumentException when the number of input fields are not equal
+     */
+    private String parseFilter(final String[] fields, final String[] values, final String[] comparator)
+        throws IllegalArgumentException
+    {
+        // If we don't have either names or values, we should fail to filter
+        if (fields == null || values == null) {
+            return "";
+        }
+
+        // Parse out multiple fields, split by pipes (|)
+        if (fields.length != values.length) {
+            throw new IllegalArgumentException("fieldname and fieldvalue must have the same number of values");
+        }
+
+        // Also parse out multiple comparators
+        String[] comparators;
+        if (comparator == null) {
+            // Use = as the default
+            comparators = new String[fields.length];
+            for (int i = 0; i < fields.length; i++) {
+                comparators[i] = "=";
+            }
+        } else {
+            comparators = comparator;
+            if (comparators.length != values.length) {
+                throw new IllegalArgumentException("must have the same number of comparators as fields,");
+            }
+        }
+
+        // Build the filter conditionals by imposing conditions on the inner joined lfs:Answer children
+        StringBuilder filterdata = new StringBuilder();
+        // TODO: Double check the sanitization on the comparator
+        for (int i = 0; i < fields.length; i++) {
+            // Condition 1: the question uuid must match one of the given (comma delimited)
+            String[] possibleQuestions = fields[i].split(",");
+            filterdata.append(" and (");
+            for (int j = 0; j < possibleQuestions.length; j++) {
+                filterdata.append(
+                    String.format(" child%d.'question'='%s'",
+                        i,
+                        this.sanitizeField(possibleQuestions[j])
+                    )
+                );
+                // Add an 'or' if there are more possible conditions
+                if (j + 1 != possibleQuestions.length) {
+                    filterdata.append(" or");
+                }
+            }
+
+            // Condition 2: the value must exactly match
+            filterdata.append(
+                String.format(
+                    ") and child%d.'value'%s'%s'",
+                    i,
+                    this.sanitizeComparator(comparators[i]),
+                    this.sanitizeField(values[i])
+                )
+            );
+        }
+        return filterdata.toString();
+    }
+
+    /**
+     * Parse out empty & not empty fields into a series of JCR_SQL2 conditionals.
+     *
+     * @param empties user input field names to assert the nonexistance of content for
+     * @param notempties user input field names to assert the existance of content for
+     * @return JCR_SQL conditionals for the input
+     */
+    private String parseExistence(final String[] empties, final String[] notempties)
+        throws IllegalArgumentException
+    {
+        StringBuilder joindata = new StringBuilder();
+        joindata.append(parseComparison(empties, "empty", " IS NULL"));
+        joindata.append(parseComparison(notempties, "notempty", " IS NOT NULL"));
+        return joindata.toString();
+    }
+
+    /**
+     * Parse out a field and its unary comparison into a series of JCR_SQL2 conditionals.
+     *
+     * @param fieldnames user input field names
+     * @param childprefix prefix for the child nodes
+     * @param comparison unary comparitor to assert
+     * @return JCR_SQL conditionals for the input
+     */
+    private String parseComparison(final String[] fieldnames, final String childprefix, final String comparison)
+    {
+        // If no comparison is entered, do nothing
+        if (fieldnames == null) {
+            return "";
+        }
+
+        // Build the conditionals (e.g. and child0.'question'='uuid' and child0.'value' IS NOT NULL...)
+        StringBuilder joindata = new StringBuilder();
+        for (int i = 0; i < fieldnames.length; i++) {
+            String sanitizedFieldName = sanitizeField(fieldnames[i]);
+            joindata.append(
+                String.format(
+                    " and %s%d.'question'='%s' and %s%d.'value'%s",
+                    childprefix,
+                    i,
+                    sanitizedFieldName,
+                    childprefix,
+                    i,
+                    comparison
+                )
+            );
+        }
+        return joindata.toString();
+    }
+
+    /**
+     * Sanitize a field name for an input query.
+     *
+     * @param fieldname the field name to sanitize
+     * @return a sanitized version of the input
+     */
+    private String sanitizeField(String fieldname)
+    {
+        return fieldname.replaceAll("['\\\\]", "\\\\$0");
+    }
+
+    /**
+     * Sanitize a comparator for an input query.
+     *
+     * @param comparator the comparator to sanitize
+     * @return a sanitized version of the input
+     */
+    private String sanitizeComparator(String comparator)
+    {
+
+        if (!COMPARATORS.contains(comparator)) {
+            // Invalid comparator: return '='
+            return "=";
+        }
+        return comparator;
     }
 
     /**

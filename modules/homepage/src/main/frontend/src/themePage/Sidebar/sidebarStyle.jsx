@@ -172,6 +172,7 @@ import {
       margin: "0",
       lineHeight: "30px",
       fontSize: "14px",
+      fontWeight: "400",
       color: whiteColor
     },
     whiteFont: {
@@ -282,11 +283,28 @@ import {
       overflowScrolling: "touch"
     },
     adminButton: {
+    },
+    adminSidebar: {
       [theme.breakpoints.up("md")]: {
         position: "absolute",
         width: "100%",
         bottom: "13px"
       }
+    },
+    skeletonText: {
+      backgroundColor: "rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
+      borderRadius: "15px",
+      width: theme.spacing(15),
+      display: "inline-block"
+    },
+    skeletonButton: {
+      backgroundColor: "rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
+      borderRadius: "15px",
+      width: "24px",
+      height: "24px"
+    },
+    skeletonItem: {
+      height: "50px"
     }
   });
 

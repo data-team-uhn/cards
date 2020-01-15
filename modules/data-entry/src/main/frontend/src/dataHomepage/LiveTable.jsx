@@ -18,9 +18,14 @@
 //
 
 import React, { useState } from "react";
-import { Paper, Table, TableHead, TableBody, TableFooter, TableRow, TableCell, TablePagination } from "@material-ui/core";
-import { Card, CardHeader, CardContent, CardActions, Typography, Button } from "@material-ui/core";
+import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
+import { Card, CardHeader, CardContent, CardActions, Chip, Typography, Button, withStyles } from "@material-ui/core";
+import { Link } from 'react-router-dom';
 import moment from "moment";
+
+import Filters from "./Filters.jsx";
+
+import LiveTableStyle from "./tableStyle.jsx";
 
 // Convert a date into the given format string
 // If the date is invalid (usually because it is missing), return ""
@@ -32,16 +37,17 @@ let _formatDate = (date, formatString) => {
   return "";
 };
 
-export default function LiveTable(props) {
+function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, classes } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, classes, filters, ...rest } = props;
   const [tableData, setTableData] = useState();
+  const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
     {
       "offset": 0,
-      "limit": 50,
+      "limit": defaultLimit,
       "displayed": 0,
       "total": -1,
       "page": 0,
@@ -77,6 +83,19 @@ export default function LiveTable(props) {
     url.searchParams.set("offset", newPage.offset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
+
+    // filters should be nullable, but if left undefined we use the cached filters
+    let filters = (newPage.filters === null ? null : (newPage.filters || cachedFilters));
+
+    // Add the filters (if they exist)
+    if (filters != null) {
+      url.searchParams.set("joinchildren", joinChildren);
+      filters["fields"].forEach((field) => {url.searchParams.append("filternames", field)});
+      filters["comparators"].forEach((comparator) => {url.searchParams.append("filtercomparators", comparator)});
+      filters["values"].forEach((value) => {url.searchParams.append("filtervalues", value)});
+      filters["empties"].forEach((value) => {url.searchParams.append("filterempty", value)});
+      filters["notempties"].forEach((value) => {url.searchParams.append("filternotempty", value)});
+    }
     let currentFetch = fetch(url);
     setFetchStatus(Object.assign({}, fetchStatus, {
       "currentFetch": currentFetch,
@@ -143,10 +162,16 @@ export default function LiveTable(props) {
     if (column.link) {
       if (column.link === 'path') {
         content = (<a href={entry["@path"]}>{content}</a>);
+      } else if (column.link === 'dashboard+path') {
+        content = (<Link to={"/content.html" + entry["@path"]}>{content}</Link>);
       } else if (column.link === 'value') {
         content = (<a href={content}>{content}</a>);;
+      } else if (column.link === 'dashboard+value') {
+        content = (<Link to={"/content.html" + content}>{content}</Link>);
       } else if (column.link.startsWith('field:')) {
         content = (<a href={getNestedValue(entry, column.link.substring('field:'.length))}>{content}</a>);
+      } else if (column.link.startsWith('dashboard+field:')) {
+        content = (<Link to={"/content.html" + getNestedValue(entry, column.link.substring('dashboard+field:'.length))}>{content}</Link>);
       }
     }
 
@@ -184,6 +209,49 @@ export default function LiveTable(props) {
     });
   };
 
+  // Callback to the filters component to handle a change in filters
+  let handleChangeFilters = (newFilters) => {
+    // Parse out the new filters
+    let fields = [];
+    let comparators = [];
+    let values = [];
+    let empties = [];
+    let notempties = [];
+
+    let filtersNotBlank = false;
+    newFilters.forEach((filter) => {
+      filtersNotBlank = true;
+      if (filter.comparator === "is empty") {
+        empties.push(filter.uuid);
+      } else if (filter.comparator === "is not empty") {
+        notempties.push(filter.uuid);
+      } else {
+        fields.push(filter.uuid);
+        comparators.push(filter.comparator);
+        values.push(filter.value);
+      }
+    });
+
+    if (filtersNotBlank) {
+      let filter_obj = {
+        fields: fields,
+        comparators: comparators,
+        values: values,
+        empties: empties,
+        notempties: notempties
+      };
+      setCachedFilters(filter_obj);
+      fetchData({
+        "filters": filter_obj
+      });
+    } else {
+      setCachedFilters(null);
+      fetchData({
+        "filters": null
+      });
+    }
+  }
+
   // Initialize the component: if there's no data loaded yet, fetch the first page
 
   if (fetchStatus.currentRequestNumber == -1) {
@@ -193,9 +261,29 @@ export default function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // The rendering code
 
+  /*
+  // The pagination is outside the table itself to support internal scrolling of the table.
+  // The element used by TablePagination by default is TableCell, but since it is not in a TableRow, we have to override this to be a <div>.
+  */
+  const paginationControls = tableData && (
+    <TablePagination
+      component="div"
+      rowsPerPageOptions={[10, 50, 100, 1000]}
+      count={paginationData.total}
+      rowsPerPage={paginationData.limit}
+      page={paginationData.page}
+      onChangePage={handleChangePage}
+      onChangeRowsPerPage={handleChangeRowsPerPage}
+    />
+  )
+
   return (
     // We wrap everything in a Paper for a nice separation, as a Table has no background or border of its own.
-    <Paper>
+    <Paper elevation={0}>
+      {filters && <Filters onChangeFilters={handleChangeFilters} {...rest} />}
+      <div>
+        {paginationControls}
+      </div>
       {/*
       // stickyHeader doesn't really work right now, since the Paper just extends all the way down to fit the table.
       // The whole UI needs to be redesigned so that we can set a maximum height to the Paper,
@@ -209,7 +297,7 @@ export default function LiveTable(props) {
           <TableRow>
           { columns ?
             (
-              columns.map((column, index) => <TableCell key={index}>{column.label}</TableCell>)
+              columns.map((column, index) => <TableCell key={index} className={classes.tableHeader}>{column.label}</TableCell>)
             )
           :
             (
@@ -244,22 +332,13 @@ export default function LiveTable(props) {
           }
         </TableBody>
       </Table>
-      {/*
-      // The pagination is outside the table itself to support internal scrolling of the table.
-      // The element used by TablePagination by default is TableCell, but since it is not in a TableRow, we have to override this to be a <div>.
-      */}
-      { tableData && (
-          <TablePagination
-            component="div"
-            rowsPerPageOptions={[10, 50, 100, 1000]}
-            count={paginationData.total}
-            rowsPerPage={paginationData.limit}
-            page={paginationData.page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
-        )
-      }
+      {paginationControls}
     </Paper>
   );
 }
+
+LiveTable.defaultProps = {
+  defaultLimit: 50
+}
+
+export default withStyles(LiveTableStyle)(LiveTable);

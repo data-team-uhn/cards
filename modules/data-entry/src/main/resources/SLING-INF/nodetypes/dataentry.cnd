@@ -192,6 +192,10 @@
   - minValue (double)
   - maxValue (double)
 
+  // For numeric answers, the measurement unit used for the value (kg, cm, cGy...).
+  // This will be displayed as an input end adornment.
+  - unitOfMeasurement (string)
+
   // For date answers, the format in which to display (and accept as input) the date.
   // This is a SimpleDateFormat compatible string.
   - dateFormat (string)
@@ -424,6 +428,21 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "lfs/lfs:DateAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
+// Pedigree, stored mainly as a JSON representation, but also as a cached SVG image
+[lfs:PedigreeAnswer] > lfs:Answer
+  // The pedigree data is stored here, as a JSON
+  - value (string)
+
+  // The pedigree image is stored here, as a SVG file
+  - image (string)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/lfs:PedigreeAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected

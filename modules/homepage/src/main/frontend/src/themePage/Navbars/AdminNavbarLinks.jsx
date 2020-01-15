@@ -9,72 +9,19 @@
 =========================================================
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import PropTypes from "prop-types";
 import React from "react";
-import classNames from "classnames";
 // @material-ui/core components
-import { withStyles } from "@material-ui/core";
-import { MenuItem, MenuList, Grow, Paper, ClickAwayListener, Hidden, Popper } from "@material-ui/core";
+import { Button, Hidden, IconButton, withStyles } from "@material-ui/core";
 // @material-ui/icons
-import Person from "@material-ui/icons/Person";
-import Notifications from "@material-ui/icons/Notifications";
-import Search from "@material-ui/icons/Search";
 import ExitToApp from "@material-ui/icons/ExitToApp";
-// core components
-import {Button, CustomInput} from "MaterialDashboardReact";
 
+import SearchBar from "./SearchBar.jsx";
 import headerLinksStyle from "./headerLinksStyle.jsx";
 
 class HeaderLinks extends React.Component {
-  state = {
-    open: false
-  };
-
-  // Placeholder function for clicking on a notification
-  placeholderDoNothing = () => {
-    console.log("test");
-  }
-
-  // Obtain notifications, then returns list of <MenuItem>s
-  getNotifications = (dropdownClass) => {
-    // TODO: obtain notifications dynamically
-    const notifications = {
-      "New notification 1": this.placeholderDoNothing,
-      "New notification 2": this.placeholderDoNothing
-    };
-
-    const retVal = [];
-    for (var key in notifications) {
-      retVal.push(
-        <MenuItem
-          onClick={notifications[key]}
-          className={dropdownClass}
-          key={key}
-        >
-          {key}
-        </MenuItem>
-      );
-    }
-    return retVal;
-  }
-
-  // Event handler for clicking on the notifications
-  toggleNotifications = () => {
-    this.setState(state => ({ open: !state.open }));
-  };
-
-  // Event handler for clicking away from notifications while it is open
-  closeNotifications = event => {
-    if (this.anchorEl.contains(event.target)) {
-      return;
-    }
-
-    this.setState({ open: false });
-  };
-
   render() {
-    const { classes } = this.props;
-    const { open } = this.state;
-    const notifications = this.getNotifications(classes.dropdownItem);
+    const { classes, closeSidebar } = this.props;
 
     // When the screen is larger than "MdUp" size, we alter some menu items
     // so that they show up white in the sidebar (rather than black on the
@@ -83,100 +30,15 @@ class HeaderLinks extends React.Component {
 
     return (
       <div>
-        {/* Searchbar */}
-        <div className={classes.searchWrapper}>
-          <CustomInput
-            formControlProps={{
-              className: classes.margin + " " + classes.search
-            }}
-            inputProps={{
-              placeholder: "Search",
-              inputProps: {
-                "aria-label": "Search"
-              }
-            }}
+        <SearchBar
+          invertColors={!expand}
+          closeSidebar={expand ? undefined : closeSidebar}
+          className={expand ? undefined : classes.buttonLink}
           />
-          <Button color="white" aria-label="edit" justIcon round>
-            <Search />
-          </Button>
-        </div>
-
-        {/* Notifications */}
-        <div className={classes.manager}>
-          <Button
-            buttonRef={node => {
-              this.anchorEl = node;
-            }}
-            color={expand ? "transparent" : "white"}
-            justIcon={expand}
-            simple={!(expand)}
-            aria-owns={open ? "menu-list-grow" : null}
-            aria-haspopup="true"
-            onClick={this.toggleNotifications}
-            className={classes.buttonLink}
-          >
-            <Notifications className={classes.icons} />
-            <span className={classes.notifications}>{notifications.length}</span>
-            <Hidden mdUp implementation="css">
-              <p onClick={this.handleClick} className={classes.linkText}>
-                Notifications
-              </p>
-            </Hidden>
-          </Button>
-          <Popper
-            placement="bottom"
-            open={open}
-            anchorEl={this.anchorEl}
-            transition
-            disablePortal
-            className={
-              classNames({ [classes.popperClose]: !open }) +
-              " " +
-              classes.popperNav
-            }
-          >
-            {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
-                id="menu-list-grow"
-                style={{
-                  transformOrigin:
-                    placement === "bottom" ? "center top" : "center bottom"
-                }}
-              >
-              <Paper elevation={2}>
-                  <ClickAwayListener onClickAway={this.closeNotifications}>
-                    <MenuList role="menu">
-                      {notifications}
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
-            )}
-          </Popper>
-        </div>
-
-        {/* Profile */}
-        <Button
-          color={expand ? "transparent" : "white"}
-          justIcon={expand}
-          simple={!(expand)}
-          aria-label="Person"
-          className={classes.buttonLink}
-        >
-          <Person className={classes.icons} />
-          <Hidden mdUp implementation="css">
-            <p className={classes.linkText}>Profile</p>
-          </Hidden>
-        </Button>
-
         {/* Log out */}
-        <Button
-          color={expand ? "transparent" : "white"}
-          justIcon={expand}
-          simple={!(expand)}
+        <IconButton
           aria-label="Log out"
-          className={classes.buttonLink}
+          className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
           href="/system/sling/logout"
           title="Log out"
         >
@@ -184,10 +46,14 @@ class HeaderLinks extends React.Component {
           <Hidden mdUp implementation="css">
             <p className={classes.linkText}>Log out</p>
           </Hidden>
-        </Button>
+        </IconButton>
       </div>
     );
   }
+}
+
+HeaderLinks.propTypes = {
+  closeSidebar: PropTypes.func
 }
 
 export default withStyles(headerLinksStyle, {withTheme: true})(HeaderLinks);

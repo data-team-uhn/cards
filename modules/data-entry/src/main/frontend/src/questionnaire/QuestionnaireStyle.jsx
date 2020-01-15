@@ -34,11 +34,21 @@ const questionnaireStyle = theme => ({
         padding: theme.spacing(0, 2, 0, 2),
     },
     searchWrapper: {
-      margin: theme.spacing(0, 0, 0, 6),
-      position: 'relative',
-      display: 'inline-block',
-      paddingBottom: "0px",
-      paddingTop: theme.spacing(1),
+        margin: theme.spacing(0, 0, 0, 6),
+        position: 'relative',
+        display: 'inline-block',
+        paddingBottom: "0px",
+        paddingTop: theme.spacing(1)
+    },
+    answerField: {
+        margin: theme.spacing(0, 0, 0, 6),
+        position: 'relative',
+        display: 'inline-block',
+    },
+    textField: {
+        // Differing input types have differing widths, so setting width:100%
+        // is insufficient in making sure all components are the same size
+        minWidth: "250px",
     },
     checkboxList: {
         padding: theme.spacing(0),
@@ -49,6 +59,43 @@ const questionnaireStyle = theme => ({
         fontSize: "10px",
         minWidth: "42px",
     },
+    mdash: {
+        padding: theme.spacing(0, 1),
+    },
+    cardHeaderButton: {
+        // No styles here yet
+    },
+    questionHeader: {
+        paddingBottom: theme.spacing(0),
+    },
+    warningTypography: {
+        padding: theme.spacing(1, 1),
+    },
+    pedigreeSmall: {
+        width: "100%",
+        height: "100%"
+    },
+    saveButton: {
+        position: "fixed",
+        top: 'auto',
+        bottom: theme.spacing(1),
+        right: theme.spacing(5)
+    },
+    newFormButtonWrapper: {
+        margin: theme.spacing(1),
+        position: "relative"
+    },
+    newFormTypePlaceholder: {
+        position: 'relative',
+        textAlign: 'center'
+    },
+    newFormLoadingIndicator: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginLeft: "-50%",
+        marginTop: "-50%"
+    }
 });
 
 export default questionnaireStyle;

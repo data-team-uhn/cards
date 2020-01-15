@@ -16,4 +16,9 @@
   specific language governing permissions and limitations
   under the License.
 */-->
+<!--/*
+  Serialization of resources as JSON.
+  Only properties are included, not child nodes.
+  Properties of type REFERENCE are followed and serialized as well.
+*/-->
 <sly data-sly-use.json="javax.json.JsonObject">${json.toString @ context='unsafe'}</sly>

@@ -39,7 +39,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Sling-Initial-Content>SLING-INF/content/;path:=/Questionnaires</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/;path:=/Questionnaires/</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

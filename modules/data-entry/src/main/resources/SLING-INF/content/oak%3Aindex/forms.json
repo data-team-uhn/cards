@@ -1,0 +1,43 @@
+{
+    "jcr:primaryType": "oak:QueryIndexDefinition",
+    "type": "lucene",
+    "compatVersion": 2,
+    "async": "async",
+    "evaluatePathRestrictions": true,
+    "includedPaths": ["/Forms"],
+    "indexRules" : {
+        "jcr:primaryType": "nt:unstructured",
+        "lfs:Form" : {
+            "jcr:primaryType": "nt:unstructured",
+            "properties": {
+                "jcr:primaryType": "nt:unstructured",
+                "questionnaire": {
+                    "analyzed": false,
+                    "boost": 1,
+                    "nodeScopeIndex": false,
+                    "useInExcerpt": true,
+                    "ordered": true,
+                    "propertyIndex": true
+                },
+                "subject": {
+                    "analyzed": false,
+                    "boost": 1,
+                    "nodeScopeIndex": false,
+                    "useInExcerpt": true,
+                    "ordered": true,
+                    "propertyIndex": true
+                }
+            }
+        }
+    },
+    "aggregates" : {
+        "jcr:primaryType": "nt:unstructured",
+        "lfs:Form" : {
+            "jcr:primaryType": "nt:unstructured",
+            "include0": {
+                "jcr:primaryType": "nt:unstructured",
+                "path": "*"
+            }
+        }
+    }
+}

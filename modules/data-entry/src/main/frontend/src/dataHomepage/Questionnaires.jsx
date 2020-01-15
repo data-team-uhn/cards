@@ -18,14 +18,20 @@
 //
 import React from "react";
 import LiveTable from "./LiveTable.jsx";
+import Questionnaire from "../questionnaire/Questionnaire.jsx";
 
 export default function Questionnaires(props) {
+  const { match, location } = props;
+  const entry = /Questionnaires\/(.+)/.exec(location.pathname);
+  if (entry) {
+    return <Questionnaire id={entry[1]} key={location.pathname}/>;
+  }
   const columns = [
     {
       "key": "title",
       "label": "Title",
       "format": "string",
-      "link": "path",
+      "link": "dashboard+path",
     },
     {
       "key": "jcr:createdBy",

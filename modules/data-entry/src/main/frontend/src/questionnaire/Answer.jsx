@@ -17,21 +17,27 @@
 //  under the License.
 //
 
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
+import uuidv4 from "uuid/v4";
 
-export const NAME_POS = 0;
-export const ID_POS = 1;
+export const LABEL_POS = 0;
+export const VALUE_POS = 1;
 
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers } = props;
+  let { answers, answerNodeType, valueType, questionDefinition, existingAnswer } = props;
+  let [answerPath] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   return (
     <React.Fragment>
-      {answers.map( (element) => {
+      <input type="hidden" name={`./${answerPath}/jcr:primaryType`} value={answerNodeType}></input>
+      <input type="hidden" name={`./${answerPath}/question`} value={questionDefinition['jcr:uuid']}></input>
+      <input type="hidden" name={`./${answerPath}/question@TypeHint`} value="Reference"></input>
+      <input type="hidden" name={`./${answerPath}/value@TypeHint`} value={valueType}></input>
+      {answers.map( (element, index) => {
         return (
-          <input type="hidden" name={element[ID_POS]} key={element[ID_POS]} value={element[NAME_POS]}></input>
+          <input type="hidden" name={`./${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS]} value={element[VALUE_POS]}></input>
           );
       })}
     </React.Fragment>
@@ -40,6 +46,13 @@ function Answer (props) {
 
 Answer.propTypes = {
     answers: PropTypes.array,
+    answerNodeType: PropTypes.string,
+    valueType: PropTypes.string,
+};
+
+Answer.defaultProps = {
+  answerNodeType: "lfs:TextAnswer",
+  valueType: 'String',
 };
 
 export default Answer;

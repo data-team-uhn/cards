@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 import Sidebar from "./Sidebar/sidebar"
-import sidebarRoutes, { loadRemoteComponents, loadRemoteIcons, contentNodes } from './routes';
+import sidebarRoutes, { loadRemoteComponents, loadRemoteIcons, loadContentNodes } from './routes';
 import { withStyles } from '@material-ui/core';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
@@ -37,6 +37,7 @@ class Main extends React.Component {
       hasImage: true,
       fixedClasses: "dropdown show",
       mobileOpen: false,
+      loading: true,
       routes: sidebarRoutes
     };
   }
@@ -58,8 +59,15 @@ class Main extends React.Component {
     window.removeEventListener("resize", this.autoCloseMobileMenus);
   }
 
+  // Determine if the given defaultOrder makes the associated link an admin link (i.e. defaultOrder is in the 90s)
+  // FIXME: Admin links should ideally be in a separate extension target
+  _isAdministrativeButton(order) {
+    return Math.floor(order % 100 / 90);
+  }
+
   _buildSidebar = (uixData) => {
     var routes = sidebarRoutes.slice();
+    uixData.sort((firstEl, secondEl) => {return firstEl.order - secondEl.order;});
     for (var id in uixData) {
       var uixDatum = uixData[id];
       routes.push({
@@ -67,16 +75,18 @@ class Main extends React.Component {
         name: uixDatum.name,
         icon: uixDatum.icon,
         component: uixDatum.reactComponent,
+        isAdmin: this._isAdministrativeButton(uixDatum.order),
         rtlName: "rtl:test",
         layout: "/content.html"
       });
     }
-    this.setState({routes: routes});
+    this.setState({routes: routes, loading: false});
   };
 
   componentDidMount() {
     window.addEventListener("resize", this.autoCloseMobileMenus);
-    loadRemoteComponents(contentNodes)
+    loadContentNodes()
+    .then(loadRemoteComponents)
     .then(loadRemoteIcons)
     .then(this._buildSidebar)
     .catch(function(err) {
@@ -112,15 +122,17 @@ class Main extends React.Component {
             handleDrawerToggle={this.handleDrawerToggle}
             open={this.state.mobileOpen}
             color={ "blue" }
+            loading={this.state.loading}
             {...rest}
           />
-          <div className={classes.mainPanel} ref="mainPanel">
+          <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
             <div className={classes.content}>
               <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
             </div>
             <Navbar
               routes={ this.state.routes }
               handleDrawerToggle={this.handleDrawerToggle}
+              loading={this.state.loading}
               {...rest}
             />
           </div>
@@ -140,14 +152,11 @@ ReactDOM.render(
   <Router history={hist}>
     <Switch>
       <Route path="/content.html/" component={MainComponent} />
-      <Redirect from="/" to="/content.html/dashboard.html"/>
-      <Redirect from="/content" to="/content.html/dashboard.html" />
+      <Redirect from="/" to="/content.html/Questionnaires/User"/>
+      <Redirect from="/content" to="/content.html/Questionnaires/User" />
     </Switch>
   </Router>,
   document.querySelector('#main-container')
 );
-
-// Override the header
-document.querySelector('#header-container').style.display = 'none';
 
 export default MainComponent;

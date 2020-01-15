@@ -14,12 +14,11 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 // @material-ui/core components
 import { withStyles } from "@material-ui/core";
-import { AppBar, Toolbar, IconButton, Hidden } from "@material-ui/core";
+import { AppBar, Button, Toolbar, IconButton, Hidden } from "@material-ui/core";
 // @material-ui/icons
 import Menu from "@material-ui/icons/Menu";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
-import { Button } from "MaterialDashboardReact";
 
 import headerStyle from "./headerStyle.jsx";
 
@@ -27,17 +26,13 @@ function Header({ ...props }) {
   // Create the "brand", i.e. the route taken to get to the current page
   // (Usually displayed at the top left)
   function makeBrand() {
-    var name = "";
-    props.routes.map((prop, key) => {
-      if (prop.layout + prop.path === props.location.pathname) {
-        name = prop.name;
-      }
-      return null;
+    var matching_routes = props.routes.filter((prop) => {
+      return (prop.layout + prop.path === props.location.pathname);
     });
-    return name;
+    return matching_routes.length > 0 ? matching_routes[0].name : " ";
   }
 
-  const { classes, color } = props;
+  const { classes, color, loading } = props;
   const appBarClasses = classNames({
     [" " + classes[color]]: color
   });
@@ -48,12 +43,14 @@ function Header({ ...props }) {
         {/* Here we create navbar brand, based on route name */}
         <div className={classes.flex}>
           <Button color="transparent" href="#" className={classes.title}>
-            {makeBrand()}
+            {loading ?
+              <span className={classes.skeletonHeader}>&nbsp;</span>
+            : makeBrand()}
           </Button>
         </div>
         {/* While the screen is wide enough, display the navbar at the topright */}
         <Hidden smDown implementation="css">
-          <AdminNavbarLinks />
+          <AdminNavbarLinks closeSidebar={props.handleDrawerToggle} />
         </Hidden>
         {/* While the screen is too narrow, display the mini sidebar control */}
         <Hidden mdUp implementation="css">
