@@ -260,7 +260,8 @@
   + * (lfs:Question, lfs:Section) = lfs:Question
 
 //-----------------------------------------------------------------------------
-// A section link is a reference to another link that should be inserted here.
+// A section link is a reference to another section (e.g. in another Questionnaire)
+// that should be inserted here.
 [lfs:SectionLink] > sling:Resource, mix:referenceable
   // Attributes
 
@@ -484,7 +485,7 @@
 
 //-----------------------------------------------------------------------------
 // Section object, which can contain multiple other answers. The "question" element here
-// can be multiple
+// should be the section we're answering
 [lfs:AnswerSection] > lfs:Answer
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "lfs/AnswerSection" mandatory autocreated protected

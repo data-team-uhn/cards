@@ -94,12 +94,22 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
   );
 }
 
-export default function FormEntry(questionDefinition, path, depth, existingAnswers, key) {
+/**
+ * Display a question or section from the questionnaire, along with its answer(s).
+ *
+ * @param {Object} entryDefinition the definition for this entry JSON
+ * @param {string} path the path to the parent of the entry
+ * @param {int} depth the section nesting depth
+ * @param {Object} existingAnswers form data that may include answers already submitted for this component
+ * @param {string} key the node name of the section definition JCR node
+ * @returns a React component that renders the section
+ */
+export default function FormEntry(entryDefinition, path, depth, existingAnswers, key) {
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
-  if (QUESTION_TYPES.includes(questionDefinition["jcr:primaryType"])) {
-      return displayQuestion(questionDefinition, path, existingAnswers, key);
-  } else if (SECTION_TYPES.includes(questionDefinition["jcr:primaryType"])) {
-      return displaySection(questionDefinition, path, depth, existingAnswers, key);
+  if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+      return displayQuestion(entryDefinition, path, existingAnswers, key);
+  } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+      return displaySection(entryDefinition, path, depth, existingAnswers, key);
   }
 }
