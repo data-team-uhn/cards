@@ -110,4 +110,14 @@ const questionnaireStyle = theme => ({
     }
 });
 
+
+// Props used in grid containers for displaying Form entries
+export const CONTAINER_PROPS = {
+    direction: "column",
+    spacing: 4,
+    alignItems: "stretch",
+    justify: "space-between",
+    wrap: "nowrap"
+  };
+
 export default questionnaireStyle;

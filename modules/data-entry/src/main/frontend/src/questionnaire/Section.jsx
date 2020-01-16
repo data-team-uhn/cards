@@ -23,17 +23,7 @@ import { Grid, Typography, withStyles } from "@material-ui/core";
 import uuidv4 from "uuid/v4";
 
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
-import QuestionnaireStyle from "./QuestionnaireStyle";
-
-
-// Props used in Section grid containers
-export const CONTAINER_PROPS = {
-  direction: "column",
-  spacing: 4,
-  alignItems: "stretch",
-  justify: "space-between",
-  wrap: "nowrap"
-};
+import QuestionnaireStyle, { CONTAINER_PROPS } from "./QuestionnaireStyle";
 
 // The heading levels that @material-ui supports
 const MAX_HEADING_LEVEL = 6;

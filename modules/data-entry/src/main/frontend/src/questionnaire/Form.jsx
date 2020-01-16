@@ -28,9 +28,8 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import QuestionnaireStyle, { CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
-import { CONTAINER_PROPS } from "./Section";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
