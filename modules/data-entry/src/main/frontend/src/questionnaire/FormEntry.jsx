@@ -76,13 +76,22 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key) => {
  */
 let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
   // Parse through SectionLink nodes to find our Section node
-  // TODO: What if a sectionRef loop is present?
-  while (sectionDefinition && sectionDefinition["sling:resourceType"] == "sectionLink") {
+  // We expect sectionDefinition to have been passed from the Resource to JSON adapter factory,
+  // which prevents infinite loops
+  while (sectionDefinition && sectionDefinition["jcr:primaryType"] == "lfs:SectionLink") {
     sectionDefinition = sectionDefinition["ref"];
   }
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
       && value["question"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
+
+  // Catch an invalid section
+  if (!sectionDefinition || sectionDefinition["jcr:primaryType"] != "lfs:Section") {
+    console.log("Error: an invalid section was passed to displaySection:");
+    console.log(sectionDefinition);
+    return(<React.Fragment></React.Fragment>);
+  }
+
   return (
     <Section
       key={key}
