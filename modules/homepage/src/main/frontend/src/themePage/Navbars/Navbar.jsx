@@ -42,7 +42,7 @@ function Header({ ...props }) {
       <Toolbar className={classes.container}>
         {/* Here we create navbar brand, based on route name */}
         <div className={classes.flex}>
-          <Button color="transparent" href="#" className={classes.title}>
+          <Button href="#" className={classes.title}>
             {loading ?
               <span className={classes.skeletonHeader}>&nbsp;</span>
             : makeBrand()}
