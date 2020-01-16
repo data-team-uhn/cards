@@ -34,7 +34,7 @@ import TextQuestion from "./TextQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 
 const QUESTION_TYPES = ["lfs:Question"];
-const SECTION_TYPES = ["lfs:Section", "lfs:SectionLink"];
+const SECTION_TYPES = ["lfs:Section"];
 export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
 
 /**
@@ -75,13 +75,6 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key) => {
  * @returns a React component that renders the section
  */
 let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
-  // Parse through SectionLink nodes to find our Section node
-  // We expect sectionDefinition to have been passed from the Resource to JSON adapter factory,
-  // which prevents infinite loops
-  while (sectionDefinition && sectionDefinition["jcr:primaryType"] == "lfs:SectionLink") {
-    sectionDefinition = sectionDefinition["ref"];
-  }
-
   // Catch an invalid section
   if (!sectionDefinition || sectionDefinition["jcr:primaryType"] != "lfs:Section") {
     console.log("Error: an invalid section was passed to displaySection:");
@@ -92,7 +85,7 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
   // Find the existing AnswerSection for this section, if available
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
-      && value["question"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
+      && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
 
   return (
     <Section

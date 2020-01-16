@@ -76,7 +76,7 @@ function Section(props) {
 Section.propTypes = {
   classes: PropTypes.object.isRequired,
   depth: PropTypes.number.isRequired,
-  existingAnswer: PropTypes.object,
+  existingAnswer: PropTypes.array,
   path: PropTypes.string.isRequired,
   sectionDefinition: PropTypes.shape({
     label: PropTypes.string,

@@ -260,30 +260,6 @@
   + * (lfs:Question, lfs:Section) = lfs:Question
 
 //-----------------------------------------------------------------------------
-// A section link is a reference to another section (e.g. in another Questionnaire)
-// that should be inserted here.
-[lfs:SectionLink] > sling:Resource, mix:referenceable
-  // Attributes
-
-  // The list of subsections and questions is orderable.
-  orderable
-  // We can use section links in a query.
-  query
-  // The main sub-item of a section is its reference.
-  primaryitem ref
-
-  // Properties
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/SectionLink" mandatory autocreated protected
-
-  // Hardcode the resource supertype: each section link is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
-
-  // A reference to another section node
-  - ref (path) mandatory
-
-//-----------------------------------------------------------------------------
 // A questionnaire is a collection of sections and questions.
 [lfs:Questionnaire] > sling:Folder, mix:referenceable, mix:versionable
   // Attributes
