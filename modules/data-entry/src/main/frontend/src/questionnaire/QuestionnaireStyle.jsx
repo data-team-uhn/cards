@@ -96,7 +96,7 @@ const questionnaireStyle = theme => ({
         marginLeft: "-50%",
         marginTop: "-50%"
     },
-    paddedSection: {
+    labeledSection: {
         marginTop: theme.spacing(2),
         // Select only questions that occur immediately after padded sections,
         // and add a large margin before them

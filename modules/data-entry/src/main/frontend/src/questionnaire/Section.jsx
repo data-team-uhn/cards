@@ -30,7 +30,8 @@ const MAX_HEADING_LEVEL = 6;
 const MIN_HEADING_LEVEL = 3;
 
 /**
- * Component that consists of a few sections, and optionally has some criteria to its display
+ * Component responsible for displaying a (sub)section of a questionnaire, consisting of a title, a description,
+ * a list of questions and/or subsections, and may have some conditions to its display.
  *
  * @example
  * <Section depth={1} path="." sectionDefinition={{label: "Section"}} />
@@ -48,16 +49,16 @@ function Section(props) {
 
   const titleEl = sectionDefinition["label"] && <Typography variant={headerVariant}>{sectionDefinition["label"]} </Typography>;
   const descEl = sectionDefinition["description"] && <Typography variant="caption" color="textSecondary">{sectionDefinition["description"]} </Typography>
-  const hasPadding = titleEl || descEl;
+  const hasHeader = titleEl || descEl;
 
   return (
-    <Grid item className={hasPadding && classes.paddedSection}>
+    <Grid item className={hasHeader && classes.labeledSection}>
       <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
-      <input type="hidden" name={`${sectionPath}/question`} value={sectionDefinition['jcr:uuid']}></input>
-      <input type="hidden" name={`${sectionPath}/question@TypeHint`} value="Reference"></input>
+      <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
+      <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
 
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-        {hasPadding &&
+        {hasHeader &&
           <Grid item className={classes.sectionHeader}>
             {titleEl}
             {descEl}

@@ -81,9 +81,6 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
   while (sectionDefinition && sectionDefinition["jcr:primaryType"] == "lfs:SectionLink") {
     sectionDefinition = sectionDefinition["ref"];
   }
-  const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
-    .find(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
-      && value["question"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
 
   // Catch an invalid section
   if (!sectionDefinition || sectionDefinition["jcr:primaryType"] != "lfs:Section") {
@@ -91,6 +88,11 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
     console.log(sectionDefinition);
     return(<React.Fragment></React.Fragment>);
   }
+
+  // Find the existing AnswerSection for this section, if available
+  const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
+    .find(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
+      && value["question"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
 
   return (
     <Section
