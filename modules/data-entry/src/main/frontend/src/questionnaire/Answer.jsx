@@ -17,9 +17,11 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import uuidv4 from "uuid/v4";
+
+import { useFormWriterContext } from "./FormContext";
 
 export const LABEL_POS = 0;
 export const VALUE_POS = 1;
@@ -27,9 +29,18 @@ export const VALUE_POS = 1;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, answerNodeType, existingAnswer, path, questionDefinition, valueType } = props;
+  let { answers, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType } = props;
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
+  // Hooks must be pulled from the top level, so this cannot be moved to inside the useEffect()
+  const changeFormContext = useFormWriterContext();
+
+  // When the answers change, we inform the FormContext
+  useEffect(() => {
+    if (answers && answers.length > 0) {
+      changeFormContext((oldContext) => ({...oldContext, [questionName]: answers}));
+    }
+  }, [answers]);
 
   return (
     <React.Fragment>

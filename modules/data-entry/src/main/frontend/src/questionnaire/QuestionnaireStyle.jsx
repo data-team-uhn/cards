@@ -107,6 +107,9 @@ const questionnaireStyle = theme => ({
     sectionHeader: {
         paddingBottom: "0 !important",
         marginBottom: theme.spacing(-1)
+    },
+    collapsedSection: {
+        padding: "0 !important"
     }
 });
 

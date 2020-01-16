@@ -228,7 +228,39 @@
   // Children
 
   // The questions and sub-sections that make up this section.
-  + * (lfs:Question, lfs:Section) = lfs:Question
+  // The conditions to display this section may also be listed as children
+  + * (lfs:Question, lfs:Section, lfs:Conditional) = lfs:Question
+
+//-----------------------------------------------------------------------------
+// A conditional is a condition that can be imposed on e.g. the display of a section
+[lfs:Conditional] > sling:Resource
+  // Attributes
+
+  // Conditionals are queryable
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Conditional" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each section link is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A conditional always has at least one operand.
+  - operandA (STRING) mandatory
+
+  // The first operand may either be a value or a reference to a value
+  - operandAIsReference (BOOLEAN) = false mandatory autocreated
+
+  // A conditional always has exactly one comparator
+  - comparator (STRING) mandatory
+
+  // A conditional may optionally have a second operand.
+  - operandB (STRING)
+
+  // The second operand may also either be a value or a reference to a value
+  - operandBIsReference (BOOLEAN) = false mandatory autocreated
 
 //-----------------------------------------------------------------------------
 // A questionnaire is a collection of sections and questions.

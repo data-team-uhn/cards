@@ -19,10 +19,12 @@
 
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Grid, Typography, withStyles } from "@material-ui/core";
+import { Collapse, Grid, Typography, withStyles } from "@material-ui/core";
 import uuidv4 from "uuid/v4";
 
+import { isConditionalObjSatisfied } from "./Conditional";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
+import { useFormReaderContext } from "./FormContext";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 
 // The heading levels that @material-ui supports
@@ -46,31 +48,43 @@ function Section(props) {
   const [sectionID] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   const sectionPath = path + "/" + sectionID;
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
+  // Hooks must be pulled from the top level, so this cannot be moved to inside the useEffect()
+  const formContext = useFormReaderContext();
 
   const titleEl = sectionDefinition["label"] && <Typography variant={headerVariant}>{sectionDefinition["label"]} </Typography>;
   const descEl = sectionDefinition["description"] && <Typography variant="caption" color="textSecondary">{sectionDefinition["description"]} </Typography>
   const hasHeader = titleEl || descEl;
 
-  return (
-    <Grid item className={hasHeader && classes.labeledSection}>
-      <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
-      <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
-      <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
+  // Determine if we have any conditionals in our definition that would cause us to be hidden
+  const displayed = Object.entries(sectionDefinition)
+      // Grab all of the conditionals from our definition
+      .filter(([_, value]) => value['jcr:primaryType'] === "lfs:Conditional")
+      // Ensure they are all satisfied
+      .every(([_, value]) => isConditionalObjSatisfied(value, formContext));
 
-      <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-        {hasHeader &&
-          <Grid item className={classes.sectionHeader}>
-            {titleEl}
-            {descEl}
-          </Grid>
-        }
-        {Object.entries(sectionDefinition)
-          .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-          .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingAnswer && existingAnswer[1], key))
-        }
-      </Grid>
+  return <Collapse
+    in={displayed}
+    component={Grid}
+    item
+    className={(hasHeader ? classes.labeledSection : "") + " " + (displayed ? "" : classes.collapsedSection)}
+    >
+    <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
+    <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
+    <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
+
+    <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
+      {hasHeader &&
+        <Grid item className={classes.sectionHeader}>
+          {titleEl}
+          {descEl}
+        </Grid>
+      }
+      {Object.entries(sectionDefinition)
+        .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+        .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingAnswer && existingAnswer[1], key))
+      }
     </Grid>
-  );
+  </Collapse>
 }
 
 Section.propTypes = {
