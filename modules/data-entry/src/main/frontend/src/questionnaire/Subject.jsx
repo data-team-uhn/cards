@@ -29,7 +29,7 @@ import {
 
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 
-import QuestionnaireStyle, { CONTAINER_PROPS } from "./QuestionnaireStyle";
+import QuestionnaireStyle from "./QuestionnaireStyle";
 
 /**
  * Component that displays a Subject.
@@ -120,7 +120,7 @@ function Subject (props) {
 
   return (
     <div>
-      <Grid container {...CONTAINER_PROPS} >
+      <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
         <Grid item>
           {
             data && data.identifier ?
@@ -145,9 +145,5 @@ function Subject (props) {
     </div>
   );
 };
-
-Subject.PropTypes = {
-  id: PropTypes.string
-}
 
 export default withStyles(QuestionnaireStyle)(Subject);

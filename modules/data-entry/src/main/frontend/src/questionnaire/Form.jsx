@@ -28,7 +28,7 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import QuestionnaireStyle, { CONTAINER_PROPS } from "./QuestionnaireStyle";
+import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
@@ -148,7 +148,7 @@ function Form (props) {
 
   return (
     <form action={data["@path"]} method="POST" onSubmit={saveData} onChange={()=>setLastSaveStatus(undefined)} key={id}>
-      <Grid container {...CONTAINER_PROPS} >
+      <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         <Grid item>
           {
             data && data.questionnaire && data.questionnaire.title ?

@@ -23,7 +23,7 @@ import { Grid, Typography, withStyles } from "@material-ui/core";
 import uuidv4 from "uuid/v4";
 
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
-import QuestionnaireStyle, { CONTAINER_PROPS } from "./QuestionnaireStyle";
+import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 
 // The heading levels that @material-ui supports
 const MAX_HEADING_LEVEL = 6;
@@ -56,7 +56,7 @@ function Section(props) {
       <input type="hidden" name={`${sectionPath}/question`} value={sectionDefinition['jcr:uuid']}></input>
       <input type="hidden" name={`${sectionPath}/question@TypeHint`} value="Reference"></input>
 
-      <Grid container {...CONTAINER_PROPS}>
+      <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
         {hasPadding &&
           <Grid item className={classes.sectionHeader}>
             {titleEl}
