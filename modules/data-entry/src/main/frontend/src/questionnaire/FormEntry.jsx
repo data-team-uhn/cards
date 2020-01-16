@@ -55,10 +55,11 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key) => {
   return (
     <Grid item key={key} className={"questionContainer"}>
       <QuestionDisplay
-        key={key}
         questionDefinition={questionDefinition}
         existingAnswer={existingQuestionAnswer}
-        path={path} />
+        path={path}
+        questionName={key}
+        />
     </Grid>
   );
 };
@@ -86,6 +87,8 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
       && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
+
+  // Locate all
 
   return (
     <Section
