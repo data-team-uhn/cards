@@ -23,13 +23,10 @@ import PropTypes from "prop-types";
 import {
   CircularProgress,
   Grid,
-  Typography,
-  withStyles
+  Typography
 } from "@material-ui/core";
 
 import LiveTable from "../dataHomepage/LiveTable.jsx";
-
-import QuestionnaireStyle from "./QuestionnaireStyle";
 
 /**
  * Component that displays a Subject.
@@ -40,7 +37,7 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
  * @param {string} id the identifier of a subject; this is the JCR node name
  */
 function Subject (props) {
-  let { classes, id } = props;
+  let { id } = props;
   // This holds the full subject JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -146,4 +143,8 @@ function Subject (props) {
   );
 };
 
-export default withStyles(QuestionnaireStyle)(Subject);
+Subject.propTypes = {
+  id: PropTypes.string
+}
+
+export default Subject;
