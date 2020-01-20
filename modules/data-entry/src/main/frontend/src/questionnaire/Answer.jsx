@@ -27,14 +27,16 @@ export const VALUE_POS = 1;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, answerNodeType, valueType, questionDefinition, existingAnswer } = props;
-  let [answerPath] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
+  let { answers, answerNodeType, existingAnswer, path, questionDefinition, valueType } = props;
+  let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
+  let answerPath = path + "/" + answerID;
+
   return (
     <React.Fragment>
-      <input type="hidden" name={`./${answerPath}/jcr:primaryType`} value={answerNodeType}></input>
-      <input type="hidden" name={`./${answerPath}/question`} value={questionDefinition['jcr:uuid']}></input>
-      <input type="hidden" name={`./${answerPath}/question@TypeHint`} value="Reference"></input>
-      <input type="hidden" name={`./${answerPath}/value@TypeHint`} value={valueType}></input>
+      <input type="hidden" name={`${answerPath}/jcr:primaryType`} value={answerNodeType}></input>
+      <input type="hidden" name={`${answerPath}/question`} value={questionDefinition['jcr:uuid']}></input>
+      <input type="hidden" name={`${answerPath}/question@TypeHint`} value="Reference"></input>
+      <input type="hidden" name={`${answerPath}/value@TypeHint`} value={valueType}></input>
       {answers.map( (element, index) => {
         return (
           <input type="hidden" name={`./${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS]} value={element[VALUE_POS]}></input>

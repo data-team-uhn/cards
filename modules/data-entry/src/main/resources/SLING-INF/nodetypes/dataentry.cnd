@@ -430,6 +430,39 @@
   - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
+// Section object, which can contain multiple other answers. The "question" element here
+// should be the section we're answering
+[lfs:AnswerSection] > sling:Folder
+  // Attributes
+  // The child answers will need to be orderable.
+  orderable
+
+  // We can use answer sections in a query.
+  query
+
+  // The main sub-item of an answer is its section link.
+  primaryitem section
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/AnswerSection" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A reference to the section being answered.
+  // Mandatory, every answer section is answering a section.
+  // No full text search, since it's just a non-textual reference.
+  - section (reference) mandatory nofulltext
+
+  // An optional additional identifier for the section being answered, in case of repeatable sections.
+  - sectionInstanceLabel (string)
+
+  // Children
+
+  // The answers and other answersections recorded in this section.
+  + * (lfs:Answer, lfs:AnswerSection) = lfs:Answer
+
+//-----------------------------------------------------------------------------
 // Forms: a filled in questionnaire.
 [lfs:Form] > sling:Folder, mix:referenceable, mix:versionable
   // Attributes
@@ -458,8 +491,8 @@
 
   // Children
 
-  // The answers recorded in this form.
-  + * (lfs:Answer)
+  // The answers and answer sections recorded in this form.
+  + * (lfs:Answer, lfs:AnswerSection) = lfs:Answer
 
 //-----------------------------------------------------------------------------
 // The homepage for the Forms space.
