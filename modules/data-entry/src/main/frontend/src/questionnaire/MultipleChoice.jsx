@@ -126,9 +126,11 @@ function MultipleChoice(props) {
 
   // Add a non-default option
   let addOption = (id, name) => {
-    let newOptions = options.slice();
-    newOptions.push([name, id, false]);
-    setOptions(newOptions);
+    if (options.filter((option) => {return option[VALUE_POS] === id}).length === 0) {
+      let newOptions = options.slice();
+      newOptions.push([name, id, false]);
+      setOptions(newOptions);
+    }
   }
 
   // Remove a non-default option
@@ -142,9 +144,22 @@ function MultipleChoice(props) {
     return;
   }
 
+  let newOptionEntered = () => {
+    if (isRadio) {
+      selectOption(ghostValue, ghostName);
+    } else if (maxAnswers !== 1 && !error && ghostName !== "") {
+      // If we can select multiple and are not in error, add this as a possible input
+      addOption(ghostName, ghostName);
+      selectOption(ghostName, ghostName, false, true);
+      // Clear the ghost
+      setGhostName("");
+    }
+  }
+
   // Hold the input box for either multiple choice type
   let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
       <TextField
+        helperText={maxAnswers !== 1 && "Press ENTER to add a new line"}
         className={classes.textField}
         onChange={(event) => {
           setGhostName(event.target.value);
@@ -152,22 +167,14 @@ function MultipleChoice(props) {
           onChange && onChange(event.target.value);
         }}
         onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
+        onBlur={newOptionEntered}
         inputProps={Object.assign({
           onKeyDown: (event) => {
             if (event.key == 'Enter') {
               // We need to stop the event so that it doesn't trigger a form submission
               event.preventDefault();
               event.stopPropagation();
-              if (isRadio) {
-                selectOption(ghostValue, ghostName);
-              } else if (maxAnswers !== 1 && !error) {
-                // If we can select multiple and are not in error, add this as a possible input
-                addOption(ghostName, ghostName);
-                selectOption(ghostName, ghostName, false, true);
-
-                // Clear the ghost
-                setGhostName("");
-              }
+              newOptionEntered();
             }
           }
         }, additionalInputProps)
@@ -263,6 +270,7 @@ function MultipleChoice(props) {
               <FormControlLabel
                 control={
                   <Checkbox
+                    style={{'visibility' : 'hidden'}}
                     checked={ghostSelected}
                     onChange={() => {
                       selectOption(ghostValue, ghostName, ghostSelected);
