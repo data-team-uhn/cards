@@ -64,7 +64,7 @@ function MultipleChoice(props) {
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio;
   let inputEl = null;
 
-  let selectOption = (id, name, checked = false, removeSentinel = false) => {
+  let selectOption = (id, name, checked = false) => {
     if (isRadio) {
       setSelection([[name, id]]);
       return;
@@ -76,25 +76,28 @@ function MultipleChoice(props) {
     }
 
     // Do not add anything if we are at our maximum number of selections
-    if (maxAnswers > 0 && selection.length >= maxAnswers && !removeSentinel) {
+    if (maxAnswers > 0 && selection.length >= maxAnswers) {
       return;
     }
 
     // Do not add duplicates
-    if (selection.some(element => {return element[VALUE_POS] === id})) {
+    if (selection.some(element => {return element[VALUE_POS] === id || element[LABEL_POS] === name})) {
       return;
     }
 
     let newSelection = selection.slice();
-    if (removeSentinel) {
-      // Due to how React handles state, we need to do this in one step
-      newSelection = newSelection.filter(
-        (element) => {
-          return (element[VALUE_POS] !== GHOST_SENTINEL);
-        }
-      );
+
+    // Check if any of the predefined options matches the user input. If yes, select it instead of adding a new entry
+    let existingOptions = all_options.filter((option) => {
+      return (option[VALUE_POS] === id || option[LABEL_POS] === name)
+    });
+    if (existingOptions.length > 0) {
+      newSelection.push([existingOptions[0][LABEL_POS], existingOptions[0][VALUE_POS]]);
+      console.log(existingOptions[0]);
+    } else {
+      // Otherwise, add a new entry
+      newSelection.push([name, id]);
     }
-    newSelection.push([name, id]);
     setSelection(newSelection);
   }
 
@@ -113,7 +116,8 @@ function MultipleChoice(props) {
 
   // Add a non-default option
   let addOption = (id, name) => {
-    if (options.filter((option) => {return option[VALUE_POS] === id}).length === 0) {
+    if (options.filter((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name}).length === 0 &&
+        defaults.filter((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name}).length === 0) {
       let newOptions = options.slice();
       newOptions.push([name, id, false]);
       setOptions(newOptions);
@@ -137,7 +141,7 @@ function MultipleChoice(props) {
     } else if (maxAnswers !== 1 && !error && ghostName !== "") {
       // If we can select multiple and are not in error, add this as a possible input
       addOption(ghostName, ghostName);
-      selectOption(ghostName, ghostName, false, true);
+      selectOption(ghostName, ghostName);
       // Clear the ghost
       setGhostName("");
     }
@@ -269,7 +273,7 @@ function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick,
         id={childData[VALUE_POS]}
         key={childData[VALUE_POS]}
         name={childData[LABEL_POS]}
-        checked={selection.includes(childData)}
+        checked={selection.filter((sel) => {return sel[LABEL_POS] === childData[LABEL_POS] || sel[VALUE_POS] === childData[VALUE_POS]}).lenght > 0}
         disabled={disabled}
         onClick={onClick}
         onDelete={onDelete}
