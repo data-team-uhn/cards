@@ -108,20 +108,7 @@ function MultipleChoice(props) {
 
   let updateGhost = (id, name) => {
     // If we're a radio, just update with the new value
-    if (isRadio) {
-      setSelection([[name, id]]);
-      return;
-    }
-
-    let ghostIndex = selection.findIndex(element => {return element[VALUE_POS] === GHOST_SENTINEL});
-    let newSelection = selection.slice();
-    // If the ghost is already selected, update it. Otherwise, append it.
-    if (ghostIndex >= 0) {
-      newSelection[ghostIndex] = [name, id];
-    } else {
-      newSelection.push([name, id]);
-    }
-    setSelection(newSelection);
+    isRadio && setSelection([[name, id]]);
   }
 
   // Add a non-default option
@@ -144,7 +131,7 @@ function MultipleChoice(props) {
     return;
   }
 
-  let newOptionEntered = () => {
+  let acceptEnteredOption = () => {
     if (isRadio) {
       selectOption(ghostValue, ghostName);
     } else if (maxAnswers !== 1 && !error && ghostName !== "") {
@@ -167,14 +154,14 @@ function MultipleChoice(props) {
           onChange && onChange(event.target.value);
         }}
         onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
-        onBlur={newOptionEntered}
+        onBlur={acceptEnteredOption}
         inputProps={Object.assign({
           onKeyDown: (event) => {
             if (event.key == 'Enter') {
               // We need to stop the event so that it doesn't trigger a form submission
               event.preventDefault();
               event.stopPropagation();
-              newOptionEntered();
+              acceptEnteredOption();
             }
           }
         }, additionalInputProps)
@@ -266,31 +253,6 @@ function MultipleChoice(props) {
           />
         <List className={classes.checkboxList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
-          {(input || textbox) && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    style={{'visibility' : 'hidden'}}
-                    checked={ghostSelected}
-                    onChange={() => {
-                      selectOption(ghostValue, ghostName, ghostSelected);
-                      onChange && onChange(ghostSelected ? undefined : ghostName);
-                    }}
-                    onClick={() => {inputEl && inputEl.select();}}
-                    disabled={!ghostSelected && disabled}
-                    className={classes.ghostRadiobox}
-                  />
-                }
-                label=""
-                value={ghostValue}
-                key={ghostValue}
-                className={classes.ghostFormControl + " " + classes.childFormControl}
-                classes={{
-                  label: classes.inputLabel
-                }}
-              />
-            </ListItem>
-          }
         </List>
         {ghostInput}
         {warning}
