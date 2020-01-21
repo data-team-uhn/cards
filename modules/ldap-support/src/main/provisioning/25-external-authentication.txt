@@ -30,7 +30,7 @@
     org.apache.jackrabbit/oak-auth-external/${oak.version}
 
 # Configuration for authentication and authorization
-[configurations]
+[configurations runModes=initial_sling_node]
   # ExternalLoginModuleFactory will be automatically picked up by JAAS
   # This configures the ExternalLoginModule created by the factory
   org.apache.jackrabbit.oak.spi.security.authentication.external.impl.ExternalLoginModuleFactory

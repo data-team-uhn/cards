@@ -41,4 +41,4 @@ EXPOSE 8080
 EXPOSE 5005
 
 # This is the default command executed when starting the container
-ENTRYPOINT java ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar ${project.artifactId}-${project.version}.jar ${DEV:+-Dsling.run.modes=dev}
+ENTRYPOINT java -Dsling.run.modes=${INITIAL_SLING_NODE:+initial_sling_node,}oak_mongo${DEV:+,dev} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar ${project.artifactId}-${project.version}.jar

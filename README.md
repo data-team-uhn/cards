@@ -64,4 +64,30 @@ To enable developer mode, also add `--env DEV=true -p 5005:5005` to the `docker 
 
 To enable debug mode, also add `--env DEBUG=true` to the `docker run` command. Note that the application will not start until a debugger is actually attached to the process on port 5005.
 
-`docker run -d -p 8080:8080 -p 5005:5005 --env DEV=true --env DEBUG=true --name lfs-debug lfs/lfs`
+`docker run --network lfsbridge -d -p 8080:8080 -p 5005:5005 --env DEV=true --env DEBUG=true --name lfs-debug lfs/lfs`
+
+### Running a Docker Cluster of Multiple LFS Instances
+
+Similar to the *Running with Docker* example, before the LFS Docker
+container can be started, an isolated network providing MongoDB must be
+established. To do so:
+
+```bash
+docker network create lfsbridge
+docker run --rm --network lfsbridge --name mongo -d mongo
+```
+
+Now, start the initial LFS Docker container:
+
+```bash
+docker run --rm --network lfsbridge -d -p 8080:8080 -e INITIAL_SLING_NODE=true lfs/lfs
+```
+
+Start all subsequent LFS containers:
+
+```bash
+docker run --rm --network lfsbridge -d -p 8081:8080 lfs/lfs
+docker run --rm --network lfsbridge -d -p 8082:8080 lfs/lfs
+docker run --rm --network lfsbridge -d -p 8083:8080 lfs/lfs
+...
+```
