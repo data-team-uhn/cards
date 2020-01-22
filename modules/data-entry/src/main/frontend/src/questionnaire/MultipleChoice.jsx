@@ -66,8 +66,16 @@ function MultipleChoice(props) {
 
   let selectOption = (id, name, checked = false) => {
     if (isRadio) {
-      setSelection([[name, id]]);
-      return;
+      let defaultOption = defaults.filter((option) => {return option[VALUE_POS] === name || option[LABEL_POS] === name})[0];
+      if (defaultOption) {
+        setSelection([[defaultOption[LABEL_POS], defaultOption[VALUE_POS]]]);
+        // Selected the matching value, we no longer need the input
+        return true;
+      } else {
+        setSelection([[name, id]]);
+        // Don't clear the input, we're still using it:
+        return false;
+      }
     }
 
     // If the element was already checked, remove it instead
@@ -88,12 +96,11 @@ function MultipleChoice(props) {
     let newSelection = selection.slice();
 
     // Check if any of the predefined options matches the user input. If yes, select it instead of adding a new entry
-    let existingOptions = all_options.filter((option) => {
+    let defaultOption = defaults.filter((option) => {
       return (option[VALUE_POS] === id || option[LABEL_POS] === name)
-    });
-    if (existingOptions.length > 0) {
-      newSelection.push([existingOptions[0][LABEL_POS], existingOptions[0][VALUE_POS]]);
-      console.log(existingOptions[0]);
+    })[0];
+    if (defaultOption) {
+      newSelection.push([defaultOption[LABEL_POS], defaultOption[VALUE_POS]]);
     } else {
       // Otherwise, add a new entry
       newSelection.push([name, id]);
@@ -115,9 +122,10 @@ function MultipleChoice(props) {
   }
 
   // Add a non-default option
+  // Returns whether an option was added (true) or a matching option already existed (false)
   let addOption = (id, name) => {
-    if (options.filter((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name}).length === 0 &&
-        defaults.filter((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name}).length === 0) {
+    if ( !options.some((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name}) &&
+        !defaults.some((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name})) {
       let newOptions = options.slice();
       newOptions.push([name, id, false]);
       setOptions(newOptions);
@@ -137,9 +145,9 @@ function MultipleChoice(props) {
 
   let acceptEnteredOption = () => {
     if (isRadio) {
-      selectOption(ghostValue, ghostName);
+      selectOption(ghostValue, ghostName) && setGhostName("");
     } else if (maxAnswers !== 1 && !error && ghostName !== "") {
-      // If we can select multiple and are not in error, add this as a possible input
+      // If we can select multiple and are not in error, add this option (if not alreday available) and ensure it's selected
       addOption(ghostName, ghostName);
       selectOption(ghostName, ghostName);
       // Clear the ghost
@@ -271,9 +279,9 @@ function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick,
     return (
       <StyledResponseChild
         id={childData[VALUE_POS]}
-        key={childData[VALUE_POS]}
+        key={"value-"+childData[VALUE_POS]}
         name={childData[LABEL_POS]}
-        checked={selection.filter((sel) => {return sel[LABEL_POS] === childData[LABEL_POS] || sel[VALUE_POS] === childData[VALUE_POS]}).lenght > 0}
+        checked={selection.some((sel) => {return (sel[LABEL_POS] === childData[LABEL_POS] || sel[VALUE_POS] === childData[VALUE_POS])})}
         disabled={disabled}
         onClick={onClick}
         onDelete={onDelete}
