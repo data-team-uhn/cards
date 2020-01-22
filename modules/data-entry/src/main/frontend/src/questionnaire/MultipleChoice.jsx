@@ -145,7 +145,7 @@ function MultipleChoice(props) {
   // Hold the input box for either multiple choice type
   let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
       <TextField
-        className={classes.textField}
+        className={classes.textField + (maxAnswers === 1 && (!defaults || defaults.length == 0) ? (' ' + classes.answerField) : '')}
         onChange={(event) => {
           setGhostName(event.target.value);
           updateGhost(GHOST_SENTINEL, event.target.value);
