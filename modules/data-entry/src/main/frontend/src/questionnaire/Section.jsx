@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
 import { Collapse, Grid, Typography, withStyles } from "@material-ui/core";
 import uuidv4 from "uuid/v4";
@@ -62,7 +62,7 @@ function Section(props) {
       // Ensure they are all satisfied
       .every(([_, value]) => isConditionalObjSatisfied(value, formContext));
 
-  return <Collapse
+  return useCallback(<Collapse
     in={displayed}
     component={Grid}
     item
@@ -84,7 +84,7 @@ function Section(props) {
         .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingAnswer && existingAnswer[1], key))
       }
     </Grid>
-  </Collapse>
+  </Collapse>, [displayed]);
 }
 
 Section.propTypes = {
