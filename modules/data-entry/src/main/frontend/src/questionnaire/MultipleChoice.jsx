@@ -146,6 +146,7 @@ function MultipleChoice(props) {
   let acceptEnteredOption = () => {
     if (isRadio) {
       selectOption(ghostValue, ghostName) && setGhostName("");
+      inputEl && inputEl.blur();
     } else if (maxAnswers !== 1 && !error && ghostName !== "") {
       // If we can select multiple and are not in error, add this option (if not alreday available) and ensure it's selected
       addOption(ghostName, ghostName);
@@ -296,8 +297,7 @@ var StyledResponseChild = withStyles(QuestionnaireStyle)(ResponseChild);
 
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
-  const {classes, name, id, isDefault, onClick, disabled, isRadio, onDelete} = props;
-  const [checked, setCheck] = useState(props.checked);
+  const {classes, checked, name, id, isDefault, onClick, disabled, isRadio, onDelete} = props;
 
   return (
     <React.Fragment>
@@ -318,7 +318,7 @@ function ResponseChild(props) {
                   (
                     <Checkbox
                       checked={checked}
-                      onChange={() => {onClick(id, name, checked); setCheck(!checked);}}
+                      onChange={() => {onClick(id, name, checked)}}
                       disabled={!checked && disabled}
                       className={classes.checkbox}
                     />
