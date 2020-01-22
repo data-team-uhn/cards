@@ -28,11 +28,11 @@ To specify a different URL, use `-Dsling.url=https://lfs.server:8443/system/cons
 `mvn install -PintegrationTests` to run integration tests
 
 ## Run:
-`java -jar distribution/target/lfs-*.jar` => the app will run at `http://localhost:8080` (default port)
+`java -jar distribution/target/lfs-*.jar -Dsling.run.modes=initial_sling_node` => the app will run at `http://localhost:8080` (default port)
 
-`java -jar distribution/target/lfs-*.jar -p PORT` to run at a different port
+`java -jar distribution/target/lfs-*.jar -p PORT -Dsling.run.modes=initial_sling_node` to run at a different port
 
-`java -jar distribution/target/lfs-*.jar -Dsling.run.modes=dev` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
+`java -jar distribution/target/lfs-*.jar -Dsling.run.modes=initial_sling_node,dev` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
 
 ## Running with Docker
 If Docker is installed, then the build will also create a new image named `lfs/lfs:latest`. You can run this image (for testing) with:
