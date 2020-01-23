@@ -73,30 +73,13 @@ def merge_webpack_files(base_dir, modules_dir, project_to_name_map, webpack_merg
 
                 copy_tree(path_to_source, path_to_base_source)
 
-            ext_line_number = lines.index('  externals: [\n')
-            for i in range(ext_line_number+1, len(lines)):
-
-                if '}' in lines[i]:
-                    break
-                if lines[i].strip() == '{':
-                    continue
-                if not lines[i].endswith(',\n'):
-                    lines[i] = lines[i].replace('\n', ',\n')
-                if lines[i] in externals:
-                    continue
-
-                externals.append(lines[i])
-
     # Remove last ',' in a last string
     entries[-1] = entries[-1].replace(',\n', '\n')
-    externals[-1] = externals[-1].replace(',\n', '\n')
 
     f = open(webpack_merged_file, 'r')
     lines = f.readlines()
     entry_line_number = lines.index('ENTRY_CONTENT\n')
     lines[entry_line_number] = lines[entry_line_number].replace('ENTRY_CONTENT\n', '      ' + '      '.join(entries))
-    ext_line_number = lines.index('EXTERNALS_CONTENT\n')
-    lines[ext_line_number] = lines[ext_line_number].replace('EXTERNALS_CONTENT\n', '      ' + '      '.join(externals))
     f.close()
 
     f = open(webpack_merged_file, "w")

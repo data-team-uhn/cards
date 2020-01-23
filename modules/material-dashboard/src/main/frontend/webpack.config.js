@@ -33,16 +33,5 @@ module.exports = {
     filename: '[name].[contenthash].js',
     library: ['MaterialDashboard', "[name]"],
     libraryTarget: 'umd',
-  },
-  externals: [
-    {
-      "react": "React",
-      "react-dom": "ReactDOM",
-      "formik": "Formik",
-      "lodash": "lodash",
-      "prop-types": "PropTypes",
-      "jss": "jss",
-      "@material-ui/core": "MaterialUI"
-    }
-  ]
+  }
 };
