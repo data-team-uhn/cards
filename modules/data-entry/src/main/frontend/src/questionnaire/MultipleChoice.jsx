@@ -26,10 +26,18 @@ import PropTypes from 'prop-types';
 import Answer, {LABEL_POS, VALUE_POS} from "./Answer";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
+// import I18n, {registerI18nBundle} from "./I18n";
+
 // Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
 const IS_DEFAULT_POS = 2;
 // Sentinel value used for the user-controlled input
 const GHOST_SENTINEL = "custom-input";
+// Texts being used in the UI
+const /* MULTIPLECHOICE_*/ I18N_STRINGS = {
+  "widgets.multiplechoice.warning.mandatory" : "This question is mandatory",
+  "widgets.multiplechoice.warning.minOptions" : "This question is mandatory. Please select at least ${args[0]} options.",
+  "widgets.multiplechoice.multiuserinput.hint" : "Press ENTER to add a new line"
+}
 
 function MultipleChoice(props) {
   let { classes, existingAnswer, ghostAnchor, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
@@ -63,6 +71,13 @@ function MultipleChoice(props) {
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio;
   let inputEl = null;
+
+  const I18N_PREFIX = "widgets.multiplechoice.";
+
+  let _i18n = (key, ...args) => {
+      var s = I18N_STRINGS[I18N_PREFIX + key];
+      return args.length && s && s.replace(/\${args\[(\d+)\]\}/g,(match, idx) => {return args[parseInt(idx)]}) || s || key;
+  };
 
   let selectOption = (id, name, checked = false) => {
     if (isRadio) {
@@ -159,8 +174,8 @@ function MultipleChoice(props) {
   // Hold the input box for either multiple choice type
   let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
       <TextField
-        helperText={maxAnswers !== 1 && "Press ENTER to add a new line"}
-        className={classes.textField}
+        helperText={maxAnswers !== 1 && _i18n("multiuserinput.hint")}
+        className={classes.textField + (maxAnswers === 1 && (!defaults || defaults.length == 0) ? (' ' + classes.answerField) : '')}
         onChange={(event) => {
           setGhostName(event.target.value);
           updateGhost(GHOST_SENTINEL, event.target.value);
@@ -192,9 +207,9 @@ function MultipleChoice(props) {
     selectOption(...args);
   }
 
-  const warning = selection.length < minAnswers && (
-    <Typography color={error ? 'error' : 'textSecondary'} className={classes.warningTypography}>
-      Please select at least {minAnswers} option{minAnswers > 1 && "s"}.
+  const warning = minAnswers > 0 && (
+    <Typography variant="caption" color={selection.length < minAnswers ? 'error' : 'textSecondary'} className={classes.warningTypography} paragraph>
+      {minAnswers === 1 ? _i18n("warning.mandatory") : _i18n("warning.minOptions")}
     </Typography>
     );
 
@@ -203,6 +218,7 @@ function MultipleChoice(props) {
   if (isBare) {
     return(
       <React.Fragment>
+        {warning}
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
@@ -214,6 +230,7 @@ function MultipleChoice(props) {
   } else if (isRadio) {
     return (
       <React.Fragment>
+        {warning}
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
@@ -253,12 +270,12 @@ function MultipleChoice(props) {
           }
         </RadioGroup>
         {ghostInput}
-        {warning}
       </React.Fragment>
     );
   } else {
     return (
       <React.Fragment>
+        {warning}
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
@@ -268,7 +285,6 @@ function MultipleChoice(props) {
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
         </List>
         {ghostInput}
-        {warning}
       </React.Fragment>
     )
   }
