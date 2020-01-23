@@ -78,8 +78,11 @@ const questionnaireStyle = theme => ({
     questionHeader: {
         paddingBottom: theme.spacing(0),
     },
+    questionBody: {
+        paddingTop: theme.spacing(0),
+    },
     warningTypography: {
-        padding: theme.spacing(1, 1),
+        padding: theme.spacing(0),
     },
     pedigreeSmall: {
         width: "100%",

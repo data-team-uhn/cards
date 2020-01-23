@@ -36,7 +36,7 @@ function Question (props) {
         subheader={description}
         className={classes.questionHeader}
         />
-      <CardContent>
+      <CardContent className={classes.questionBody}>
         {children}
       </CardContent>
     </Card>
