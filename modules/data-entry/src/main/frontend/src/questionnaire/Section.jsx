@@ -22,10 +22,14 @@ import PropTypes from "prop-types";
 import { Collapse, Grid, Typography, withStyles } from "@material-ui/core";
 import uuidv4 from "uuid/v4";
 
-import { isConditionalGroupSatisfied } from "./Conditional";
+import ConditionalComponentManager from "./ConditionalComponentManager";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import { useFormReaderContext } from "./FormContext";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
+
+// FIXME In order for the conditionals to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all conditional types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
+import ConditionalGroup from "./ConditionalGroup";
+import ConditionalSingle from "./ConditionalSingle";
 
 // The heading levels that @material-ui supports
 const MAX_HEADING_LEVEL = 6;
@@ -56,7 +60,7 @@ function Section(props) {
   const hasHeader = titleEl || descEl;
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
-  const displayed = isConditionalGroupSatisfied(
+  const displayed = ConditionalComponentManager.evaluateCondition(
     sectionDefinition,
     formContext);
 
