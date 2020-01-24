@@ -18,6 +18,7 @@
 //
 
 import { VALUE_POS } from "./Answer";
+import ConditionalComponentManager from "./ConditionalComponentManager";
 
 /**
  * Determines whether or not the conditional is satisfied.
@@ -51,7 +52,7 @@ export function isConditionalSatisfied(operandA, comparator, operandB) {
  */
 export function isConditionalObjSatisfied(conditional, context) {
   const requireAllOperandA = conditional["operandA"]["requireAll"];
-  const requireAllOperandB =conditional["operandB"]?.requireAll;
+  const requireAllOperandB = conditional["operandB"]?.requireAll;
 
   const operandA = getValue(context, conditional["operandA"]);
   const operandB = getValue(context, conditional["operandB"]);
@@ -71,38 +72,6 @@ export function isConditionalObjSatisfied(conditional, context) {
   })
 }
 
-const VALID_CONDITIONALS = ["lfs:Conditional", "lfs:ConditionalGroup"];
-
-/**
- * Determines if a conditional child is truthy or not.
- * For non-conditional elements, this returns whatever is in defaultReturn.
- */
-function _evaluateConditional(conditional, context, defaultReturn) {
-  if (conditional["jcr:primaryType"] == "lfs:Conditional") {
-    return isConditionalObjSatisfied(conditional, context);
-  } else if (conditional["jcr:primaryType"] == "lfs:ConditionalGroup") {
-    return isConditionalGroupSatisfied(conditional, context);
-  }
-  return defaultReturn;
-}
-
-/**
- * Determines if an lfs:ConditionalGroup object is truthy or not.
- * @param {Object} conditional The lfs:ConditionalGroup object to evaluate the truthiness of
- * @param {Object} context The React Context from which to pull values
- */
-export function isConditionalGroupSatisfied(conditional, context) {
-  conditionalChildren = Object.values(conditional)
-    .filter((child) => VALID_CONDITIONALS.includes(child["jcr:primaryType"]));
-  if (conditional["requireAll"]) {
-    return Object.values(conditional)
-      .every( (child) => _evaluateConditional(child, context, true));
-  } else {
-    return Object.values(conditional)
-      .some( (child) => _evaluateConditional(child, context, false));
-  }
-}
-
 /**
  * Converts a potential reference into its value from the given context, or returns the id input.
  * @param {Object} context The React Context from which to pull values
@@ -115,3 +84,9 @@ function getValue(context, valueObj) {
     // Otherwise use the value as is
     : valueObj["value"]));
 }
+
+ConditionalComponentManager.registerConditionComponent((conditionDefinition) => {
+  if (conditionDefinition["jcr:primaryType"] === "lfs:Conditional") {
+    return [isConditionalObjSatisfied, 50];
+  }
+}, ["lfs:Conditional"]);
