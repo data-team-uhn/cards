@@ -21,23 +21,23 @@ import { VALUE_POS } from "./Answer";
 
 /**
  * Determines whether or not the conditional is satisfied.
- * @param {STRING} operand_a The first operand to compare
+ * @param {STRING} operandA The first operand to compare
  * @param {STRING} comparator The operator to use as a comparison
- * @param {STRING} operand_b The second operand to compare (if necessary)
+ * @param {STRING} operandB The second operand to compare (if necessary)
  */
-export function isConditionalSatisfied(operand_a, comparator, operand_b) {
+export function isConditionalSatisfied(operandA, comparator, operandB) {
   if (comparator == "=") {
-    return operand_a == operand_b;
+    return operandA == operandB;
   } else if (comparator == "<") {
-    return operand_a < operand_b;
+    return operandA < operandB;
   } else if (comparator == ">") {
-    return operand_a > operand_b;
+    return operandA > operandB;
   } else if (comparator == "<>") {
-    return operand_a !== operand_b;
+    return operandA !== operandB;
   } else if (comparator == "is empty") {
-    return operand_a == null || operand_a == undefined;
+    return operandA == null || operandA == undefined;
   } else if (comparator == "is not empty") {
-    return operand_a != null && operand_a != undefined;
+    return operandA != null && operandA != undefined;
   } else {
     // Invalid operand
     throw new Error("Invalid operand specified.")
@@ -50,19 +50,68 @@ export function isConditionalSatisfied(operand_a, comparator, operand_b) {
  * @param {Object} context The React Context from which to pull values
  */
 export function isConditionalObjSatisfied(conditional, context) {
-  return isConditionalSatisfied(
-    getValue(context, conditional["operandA"], conditional["operandAIsReference"]),
-    conditional["comparator"],
-    getValue(context, conditional["operandB"], conditional["operandBIsReference"])
-    );
+  const requireAllOperandA = conditional["operandA"]["requireAll"];
+  const requireAllOperandB =conditional["operandB"]?.requireAll;
+
+  const operandA = getValue(context, conditional["operandA"]);
+  const operandB = getValue(context, conditional["operandB"]);
+
+  // Don't try to run if operandA isn't loaded yet
+  if (!operandA) {
+    return false;
+  }
+
+  const firstCondition = requireAllOperandA ? ((func) => operandA.some(func)) : ((func) => operandA.every(func));
+  const secondCondition = requireAllOperandB ? ((func) => operandB.some(func)) : ((func) => operandB.every(func));
+
+  return firstCondition( (valueA) => {
+    return secondCondition( (valueB) => {
+      return isConditionalSatisfied(valueA, conditional["comparator"], valueB);
+    })
+  })
+}
+
+const VALID_CONDITIONALS = ["lfs:Conditional", "lfs:ConditionalGroup"];
+
+/**
+ * Determines if a conditional child is truthy or not.
+ * For non-conditional elements, this returns whatever is in defaultReturn.
+ */
+function _evaluateConditional(conditional, context, defaultReturn) {
+  if (conditional["jcr:primaryType"] == "lfs:Conditional") {
+    return isConditionalObjSatisfied(conditional, context);
+  } else if (conditional["jcr:primaryType"] == "lfs:ConditionalGroup") {
+    return isConditionalGroupSatisfied(conditional, context);
+  }
+  return defaultReturn;
+}
+
+/**
+ * Determines if an lfs:ConditionalGroup object is truthy or not.
+ * @param {Object} conditional The lfs:ConditionalGroup object to evaluate the truthiness of
+ * @param {Object} context The React Context from which to pull values
+ */
+export function isConditionalGroupSatisfied(conditional, context) {
+  conditionalChildren = Object.values(conditional)
+    .filter((child) => VALID_CONDITIONALS.includes(child["jcr:primaryType"]));
+  if (conditional["requireAll"]) {
+    return Object.values(conditional)
+      .every( (child) => _evaluateConditional(child, context, true));
+  } else {
+    return Object.values(conditional)
+      .some( (child) => _evaluateConditional(child, context, false));
+  }
 }
 
 /**
  * Converts a potential reference into its value from the given context, or returns the id input.
  * @param {Object} context The React Context from which to pull values
- * @param {String} id The ID of the field to use, or its raw value
- * @param {Boolean} isReference Whether or not the input is a reference or not
+ * @param {String} valueObj The ID of the field to use, or its raw value
  */
-function getValue(context, id, isReference) {
-    return (isReference ? (context[id] && context[id][0] && context[id][0][VALUE_POS]) : (id));
+function getValue(context, valueObj) {
+  return (valueObj && (valueObj["isReference"] ?
+    // Find the value from the referred position, and remap it to only include its values
+    (context[valueObj["value"]]?.map((element) => (element[VALUE_POS])))
+    // Otherwise use the value as is
+    : valueObj["value"]));
 }
