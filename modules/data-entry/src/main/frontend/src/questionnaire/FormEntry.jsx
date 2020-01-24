@@ -88,8 +88,6 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
     .find(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
       && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
 
-  // Locate all
-
   return (
     <Section
       key={key}
