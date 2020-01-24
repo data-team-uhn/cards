@@ -18,6 +18,7 @@
 //
 
 import ConditionalComponentManager from "./ConditionalComponentManager";
+
 /**
  * Determines if an lfs:ConditionalGroup object is truthy or not.
  * @param {Object} conditional The lfs:ConditionalGroup object to evaluate the truthiness of

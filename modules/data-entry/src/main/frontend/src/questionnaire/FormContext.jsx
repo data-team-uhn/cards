@@ -26,6 +26,8 @@ const FormWriterContext = React.createContext();
 
 /**
  * A context provider for a form, which contains answers and a way to set them
+ * @param {Object} props the props to pass onwards to the child, generally its children
+ * @returns {Object} a React component with the form provider
  */
 export function FormProvider(props) {
   const [answers, setAnswers] = React.useState(DEFAULT_STATE);
@@ -38,8 +40,9 @@ export function FormProvider(props) {
 }
 
 /**
- * Read from the context of the parent form.
- * This will throw an error if it is not within a FormProvider
+ * Obtain the context reader of the parent form.
+ * @returns {Object} a React context of values from the parent form
+ * @throws an error if it is not within a FormProvider
  */
 export function useFormReaderContext() {
   const context = React.useContext(FormReaderContext);
@@ -52,8 +55,9 @@ export function useFormReaderContext() {
 }
 
 /**
- * Write to the context of the parent form.
- * This will throw an error if it is not within a FormProvider
+ * Obtain a writer to the context of the parent form.
+ * @returns {Object} a React context of values from the parent form
+ * @throws an error if it is not within a FormProvider
  */
 export function useFormWriterContext() {
   const context = React.useContext(FormWriterContext);

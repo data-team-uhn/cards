@@ -303,7 +303,7 @@
   - value (STRING) multiple
 
   // Whether or not this value is a reference or not
-  - isReference (BOOLEAN)
+  - isReference (BOOLEAN) = false autocreated
 
   // Require that the parent conditional checks every value (for a multi-valued field)
   // Otherwise it will return true if at least one value fits

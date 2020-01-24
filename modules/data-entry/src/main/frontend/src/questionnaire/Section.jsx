@@ -52,7 +52,6 @@ function Section(props) {
   const [sectionID] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   const sectionPath = path + "/" + sectionID;
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
-  // Hooks must be pulled from the top level, so this cannot be moved to inside the useEffect()
   const formContext = useFormReaderContext();
 
   const titleEl = sectionDefinition["label"] && <Typography variant={headerVariant}>{sectionDefinition["label"]} </Typography>;
