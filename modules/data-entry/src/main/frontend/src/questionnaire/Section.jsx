@@ -22,7 +22,7 @@ import PropTypes from "prop-types";
 import { Collapse, Grid, Typography, withStyles } from "@material-ui/core";
 import uuidv4 from "uuid/v4";
 
-import { isConditionalObjSatisfied } from "./Conditional";
+import { isConditionalGroupSatisfied } from "./Conditional";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import { useFormReaderContext } from "./FormContext";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
@@ -56,11 +56,9 @@ function Section(props) {
   const hasHeader = titleEl || descEl;
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
-  const displayed = Object.entries(sectionDefinition)
-      // Grab all of the conditionals from our definition
-      .filter(([_, value]) => value['jcr:primaryType'] === "lfs:Conditional")
-      // Ensure they are all satisfied
-      .every(([_, value]) => isConditionalObjSatisfied(value, formContext));
+  const displayed = isConditionalGroupSatisfied(
+    sectionDefinition,
+    formContext);
 
   return useCallback(<Collapse
     in={displayed}
