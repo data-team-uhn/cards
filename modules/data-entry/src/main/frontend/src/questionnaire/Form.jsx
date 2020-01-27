@@ -30,6 +30,7 @@ import {
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
+import moment from "moment";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
