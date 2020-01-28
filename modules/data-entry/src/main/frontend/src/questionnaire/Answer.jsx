@@ -47,13 +47,20 @@ function Answer (props) {
       <input type="hidden" name={`${answerPath}/jcr:primaryType`} value={answerNodeType}></input>
       <input type="hidden" name={`${answerPath}/question`} value={questionDefinition['jcr:uuid']}></input>
       <input type="hidden" name={`${answerPath}/question@TypeHint`} value="Reference"></input>
-      <input type="hidden" name={`${answerPath}/value@Delete`} value="0"></input>
-      <input type="hidden" name={`${answerPath}/value@TypeHint`} value={valueType}></input>
-      {answers.map( (element, index) => {
-        return (
-          <input type="hidden" name={`${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS]} value={element[VALUE_POS]}></input>
-          );
-      })}
+
+      {/* Add the answers, if any exist, or otherwise delete them */}
+      {(answers && answers.length) ?
+        (<React.Fragment>
+          <input type="hidden" name={`${answerPath}/value@TypeHint`} value={valueType}></input>
+          {answers.map( (element, index) => {
+            return (
+              <input type="hidden" name={`${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS]} value={element[VALUE_POS]}></input>
+              );
+          })}
+        </React.Fragment>)
+      :
+        <input type="hidden" name={`${answerPath}/value@Delete`} value="0"></input>
+      }
     </React.Fragment>
     );
 }
