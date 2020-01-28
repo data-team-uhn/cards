@@ -63,10 +63,14 @@ function Section(props) {
     sectionDefinition,
     formContext);
 
+  // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
+  // if it is not currently visible
   return useCallback(<Collapse
     in={displayed}
     component={Grid}
     item
+    mountOnEnter
+    unmountOnExit
     className={(hasHeader ? classes.labeledSection : "") + " " + (displayed ? "" : classes.collapsedSection)}
     >
     <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
