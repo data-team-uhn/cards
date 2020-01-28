@@ -20,29 +20,28 @@
 import { VALUE_POS } from "./Answer";
 import ConditionalComponentManager from "./ConditionalComponentManager";
 
+// A mapping from operands to conditionals
+const COMPARE_MAP = {
+  "=": (a, b) => (a == b),
+  "<": (a, b) => (a < b),
+  ">": (a, b) => (a > b),
+  "<>": (a, b) => (a !== b),
+  "is empty": (a) => (a == null || a == undefined),
+  "is not empty": (a) => (a != null && a != undefined)
+}
+
 /**
  * Determines whether or not the conditional is satisfied.
- * @param {STRING} operandA The first operand to compare
  * @param {STRING} comparator The operator to use as a comparison
- * @param {STRING} operandB The second operand to compare (if necessary)
+ * @param {STRING...} operands Any number of operands used for the comparison
  */
-export function isConditionalSatisfied(operandA, comparator, operandB) {
-  if (comparator == "=") {
-    return operandA == operandB;
-  } else if (comparator == "<") {
-    return operandA < operandB;
-  } else if (comparator == ">") {
-    return operandA > operandB;
-  } else if (comparator == "<>") {
-    return operandA !== operandB;
-  } else if (comparator == "is empty") {
-    return operandA == null || operandA == undefined;
-  } else if (comparator == "is not empty") {
-    return operandA != null && operandA != undefined;
-  } else {
+export function isConditionalSatisfied(comparator, ...operands) {
+  if (!(comparator in COMPARE_MAP)) {
     // Invalid operand
     throw new Error("Invalid operand specified.")
   }
+
+  return COMPARE_MAP[comparator]?.apply(null, operands);
 }
 
 /**
@@ -67,7 +66,7 @@ export function isConditionalObjSatisfied(conditional, context) {
 
   return firstCondition( (valueA) => {
     return secondCondition( (valueB) => {
-      return isConditionalSatisfied(valueA, conditional["comparator"], valueB);
+      return isConditionalSatisfied(conditional["comparator"], valueA, valueB);
     })
   })
 }
