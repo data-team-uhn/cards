@@ -19,7 +19,9 @@
 
 import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
-import { Collapse, Grid, Typography, withStyles } from "@material-ui/core";
+import { Button, Collapse, Grid, Typography, withStyles } from "@material-ui/core";
+import Add from "@material-ui/icons/Add";
+import Close from '@material-ui/icons/Close';
 import uuidv4 from "uuid/v4";
 
 import ConditionalComponentManager from "./ConditionalComponentManager";
@@ -49,14 +51,18 @@ const MIN_HEADING_LEVEL = 3;
  */
 function Section(props) {
   const { classes, depth, existingAnswer, path, sectionDefinition } = props;
-  const [sectionID] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
-  const sectionPath = path + "/" + sectionID;
+  const [ instanceLabels, setInstanceLabels ] = useState(
+    // If we already exist from existingAnswer, our labels are the first element
+    existingAnswer ? existingAnswer.map(element => element[0])
+    // Otherwise, create a new UUID
+    : [uuidv4()]);
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
   const formContext = useFormReaderContext();
 
   const titleEl = sectionDefinition["label"] && <Typography variant={headerVariant}>{sectionDefinition["label"]} </Typography>;
   const descEl = sectionDefinition["description"] && <Typography variant="caption" color="textSecondary">{sectionDefinition["description"]} </Typography>
   const hasHeader = titleEl || descEl;
+  const isRecurrent = sectionDefinition['recurrent'];
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const displayed = ConditionalComponentManager.evaluateCondition(
@@ -73,22 +79,45 @@ function Section(props) {
     unmountOnExit
     className={(hasHeader ? classes.labeledSection : "") + " " + (displayed ? "" : classes.collapsedSection)}
     >
-    <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
-    <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
-    <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
+    {instanceLabels.map( (uuid, idx) => {
+        const sectionPath = path + "/" + uuid;
+        const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
+        return <Grid item className={hasHeader && idx === 0 && classes.labeledSection} key={uuid}>
+          <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
+          <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
+          <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
 
-    <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-      {hasHeader &&
-        <Grid item className={classes.sectionHeader}>
-          {titleEl}
-          {descEl}
+          <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
+            {hasHeader &&
+              <Grid item className={classes.sectionHeader}>
+                {titleEl}
+                {descEl}
+              </Grid>
+            }
+            {<Grid item className={classes.sectionHeader}>{sectionPath}</Grid>}
+            {Object.entries(sectionDefinition)
+              .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+              .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingSectionAnswer, key))
+            }
+          </Grid>
         </Grid>
+        })
       }
-      {Object.entries(sectionDefinition)
-        .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-        .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingAnswer && existingAnswer[1], key))
-      }
-    </Grid>
+      {isRecurrent &&
+      <Grid item>
+        <Button
+          size="small"
+          variant="contained"
+          color="default"
+          className={classes.addSectionButton}
+          onClick={() => {
+            console.log(uuidv4());
+            setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
+          }}
+          >
+          <Add fontSize="small" />
+        </Button>
+      </Grid>}
   </Collapse>, [displayed]);
 }
 
