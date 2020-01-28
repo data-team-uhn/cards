@@ -85,7 +85,7 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
 
   // Find the existing AnswerSection for this section, if available
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
-    .find(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
+    .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
       && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
 
   return (

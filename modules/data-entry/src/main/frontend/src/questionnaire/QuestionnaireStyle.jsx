@@ -109,6 +109,9 @@ const questionnaireStyle = theme => ({
     },
     collapsedSection: {
         padding: "0 !important"
+    },
+    addSectionButton: {
+        width: "100%"
     }
 });
 
