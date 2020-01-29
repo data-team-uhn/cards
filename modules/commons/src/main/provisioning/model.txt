@@ -22,7 +22,12 @@
 
 [:repoinit]
     create path (sling:Folder) /libs/lfs
+    create path (sling:Folder) /libs/lfs/resources
+    create path (sling:Folder) /apps/lfs
+    create path (sling:Folder) /Extensions
 
     set ACL for everyone
         allow   jcr:read    on /libs/lfs
+        allow   jcr:read    on /apps/lfs
+        allow   jcr:read    on /Extensions
     end
