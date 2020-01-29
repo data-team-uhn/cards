@@ -40,7 +40,7 @@
         </configuration>
       </plugin>
 
-      <!-- Run Python script to consolidate webpack.js and pachake.json files of all modules -->
+      <!-- Run Python script to consolidate webpack.js and package.json files of all modules -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -88,10 +88,8 @@
         <version>0.13</version>
         <configuration>
           <excludes combine.children="append">
-            <!-- Ignore files from material-dashboard-react, as they're under their own license -->
+            <!-- These files have already been checked in their original location, there's no need to duplicate the exact ignored list -->
             <exclude>**/main/frontend/src/**</exclude>
-            <exclude>**/webpack.config-template.js</exclude>
-            <exclude>**/webpack_script.py</exclude>
           </excludes>
         </configuration>
       </plugin>
