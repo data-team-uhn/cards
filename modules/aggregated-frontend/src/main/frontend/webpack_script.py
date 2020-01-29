@@ -35,8 +35,8 @@ def merge_packache_json_files(modules_dir, project_to_name_map, package_json_fil
         fl = os.path.join(modules_dir, name, 'src', 'main', 'frontend', 'package.json')
         if path.exists(fl):
 
-            f = open(fl, "r")
-            json_text = f.read()
+            with open(fl, "r") as f:
+                json_text = f.read()
             package = json.loads(json_text)
             project_to_name_map[name] = package["name"]
 
@@ -51,15 +51,13 @@ def merge_packache_json_files(modules_dir, project_to_name_map, package_json_fil
             package_merged["devDependencies"].update(package["devDependencies"])
             package_merged["dependencies"].update(package["dependencies"])
 
-    f = open(package_json_file, "w+")
-    f.write(json.dumps(package_merged, indent=2, sort_keys=False))
-    f.close()
+    with open(package_json_file, "w+") as f:
+        f.write(json.dumps(package_merged, indent=2, sort_keys=False))
 
 
 def merge_webpack_files(base_dir, modules_dir, project_to_name_map, webpack_merged_template_file, webpack_merged_file):
     shutil.copy2(webpack_merged_template_file, webpack_merged_file)
     entries = []
-    externals = []
 
     for name in os.listdir(modules_dir):
         if name == 'aggregated-frontend':
@@ -68,8 +66,8 @@ def merge_webpack_files(base_dir, modules_dir, project_to_name_map, webpack_merg
         fl = os.path.join(modules_dir, name, 'src', 'main', 'frontend', 'webpack.config.js')
         if path.exists(fl):
 
-            ins = open(fl, 'rt')
-            lines = ins.readlines()
+            with open(fl, 'rt') as ins:
+                lines = ins.readlines()
 
             entry_line_number = lines.index('  entry: {\n')
             for i in range(entry_line_number + 1, len(lines)):
@@ -95,21 +93,18 @@ def merge_webpack_files(base_dir, modules_dir, project_to_name_map, webpack_merg
     # Remove last ',' in a last string
     entries[-1] = entries[-1].replace(',\n', '\n')
 
-    f = open(webpack_merged_file, 'r')
-    lines = f.readlines()
-    entry_line_number = lines.index('ENTRY_CONTENT\n')
-    lines[entry_line_number] = lines[entry_line_number].replace('ENTRY_CONTENT\n', '      ' + '      '.join(entries))
-    f.close()
+    with open(webpack_merged_file, 'r') as f:
+        lines = f.readlines()
+        entry_line_number = lines.index('ENTRY_CONTENT\n')
+        lines[entry_line_number] = lines[entry_line_number].replace('ENTRY_CONTENT\n', '      ' + '      '.join(entries))
 
-    f = open(webpack_merged_file, "w")
-    for item in lines:
-        f.write("%s" % item)
-    f.close()
+    with open(webpack_merged_file, "w") as f:
+        for item in lines:
+            f.write("%s" % item)
 
 
 def main(args=sys.argv[1:]):
     base_dir = args[0]
-    #modules_dir = os.path.join(os.path.dirname(base_dir), 'modules')
     modules_dir = os.path.dirname(base_dir)
     
     webpack_merged_template_file = os.path.join(base_dir, 'src', 'main', 'frontend', 'webpack.config-template.js')
