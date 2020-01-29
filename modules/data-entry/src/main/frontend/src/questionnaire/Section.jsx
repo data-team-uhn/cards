@@ -51,14 +51,17 @@ const MIN_HEADING_LEVEL = 3;
  */
 function Section(props) {
   const { classes, depth, existingAnswer, path, sectionDefinition } = props;
+
   const [ instanceLabels, setInstanceLabels ] = useState(
     // If we already exist from existingAnswer, our labels are the first element
     existingAnswer ? existingAnswer.map(element => element[0])
     // Otherwise, create a new UUID
     : [uuidv4()]);
-  const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
+  // Keep a list of UUIDs whose contents we need to remove
+  const [ UUIDsToRemove, setUUIDsToRemove ] = useState([]);
   const formContext = useFormReaderContext();
 
+  const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
   const titleEl = sectionDefinition["label"] && <Typography variant={headerVariant}>{sectionDefinition["label"]} </Typography>;
   const descEl = sectionDefinition["description"] && <Typography variant="caption" color="textSecondary">{sectionDefinition["description"]} </Typography>
   const hasHeader = titleEl || descEl;
@@ -87,15 +90,30 @@ function Section(props) {
           <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
           <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
 
+          {/* Delete this entry button */}
+          {isRecurrent && <Button
+            size="small"
+            variant="contained"
+            color="default"
+            className={classes.addSectionButton}
+            onClick={() => {
+              setInstanceLabels((oldLabels) => oldLabels.filter((label) => label != uuid));
+              setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, uuid]);
+            }}
+            >
+            <Close fontSize="small" />
+          </Button>}
+
           <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-            {hasHeader &&
-              <Grid item className={classes.sectionHeader}>
-                {titleEl}
-                {descEl}
-              </Grid>
+            {/* Section header */
+              hasHeader &&
+                <Grid item className={classes.sectionHeader}>
+                  {titleEl}
+                  {descEl}
+                </Grid>
             }
-            {<Grid item className={classes.sectionHeader}>{sectionPath}</Grid>}
-            {Object.entries(sectionDefinition)
+            {/* Section contents */
+            Object.entries(sectionDefinition)
               .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
               .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingSectionAnswer, key))
             }
@@ -111,14 +129,17 @@ function Section(props) {
           color="default"
           className={classes.addSectionButton}
           onClick={() => {
-            console.log(uuidv4());
             setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
           }}
           >
           <Add fontSize="small" />
         </Button>
       </Grid>}
-  </Collapse>, [displayed]);
+      {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
+      UUIDsToRemove.map( (uuid) =>
+        <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
+      )}}
+    </Collapse>, [displayed]);
 }
 
 Section.propTypes = {
