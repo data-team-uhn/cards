@@ -32,14 +32,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>slingstart-maven-plugin</artifactId>
-        <configuration>
-          <setFeatureVersions>false</setFeatureVersions>
-        </configuration>
-      </plugin>
-
       <!-- Run Python script to consolidate webpack.js and package.json files of all modules -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
