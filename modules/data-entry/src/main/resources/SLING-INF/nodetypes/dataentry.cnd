@@ -535,9 +535,6 @@
   // No full text search, since it's just a non-textual reference.
   - section (reference) mandatory nofulltext
 
-  // An optional additional identifier for the section being answered, in case of repeatable sections.
-  - sectionInstanceLabel (string)
-
   // Children
 
   // The answers and other answersections recorded in this section.
