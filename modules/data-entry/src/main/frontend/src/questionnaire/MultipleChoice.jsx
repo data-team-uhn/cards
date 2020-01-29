@@ -148,7 +148,7 @@ function MultipleChoice(props) {
       selectOption(ghostValue, ghostName) && setGhostName("");
       inputEl && inputEl.blur();
     } else if (maxAnswers !== 1 && !error && ghostName !== "") {
-      // If we can select multiple and are not in error, add this option (if not alreday available) and ensure it's selected
+      // If we can select multiple and are not in error, add this option (if not already available) and ensure it's selected
       addOption(ghostName, ghostName);
       selectOption(ghostName, ghostName);
       // Clear the ghost
