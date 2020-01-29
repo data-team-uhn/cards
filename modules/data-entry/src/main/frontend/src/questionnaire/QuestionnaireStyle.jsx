@@ -76,10 +76,11 @@ const questionnaireStyle = theme => ({
         height: "100%"
     },
     saveButton: {
-        position: "fixed",
-        top: 'auto',
+        position: "sticky",
+        marginTop: theme.spacing(2),
         bottom: theme.spacing(1),
-        right: theme.spacing(6.5)
+        float: "right"
+
     },
     newFormButtonWrapper: {
         margin: theme.spacing(1),
