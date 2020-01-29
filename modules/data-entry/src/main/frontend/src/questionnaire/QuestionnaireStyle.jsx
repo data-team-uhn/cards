@@ -80,7 +80,6 @@ const questionnaireStyle = theme => ({
         marginTop: theme.spacing(2),
         bottom: theme.spacing(1),
         float: "right"
-
     },
     newFormButtonWrapper: {
         margin: theme.spacing(1),
