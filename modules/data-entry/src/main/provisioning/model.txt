@@ -39,7 +39,7 @@
     # Allow all users to read from the database and one of the nodes
     set ACL for everyone
         allow   jcr:read    on /Questionnaires
-        allow   jcr:read    on /Forms
-        allow   jcr:read    on /Subjects
+        allow   jcr:all     on /Forms
+        allow   jcr:all     on /Subjects
         allow   jcr:read    on /query
     end
