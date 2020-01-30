@@ -19,9 +19,11 @@
 
 import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
-import { Button, Collapse, Grid, Typography, withStyles } from "@material-ui/core";
+import { Button, Collapse, Grid, IconButton, Tooltip, Typography, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
-import Close from '@material-ui/icons/Close';
+import Delete from '@material-ui/icons/Delete';
+import UnfoldLess from '@material-ui/icons/UnfoldLess';
+import UnfoldMore from '@material-ui/icons/UnfoldMore';
 import uuidv4 from "uuid/v4";
 
 import ConditionalComponentManager from "./ConditionalComponentManager";
@@ -35,7 +37,12 @@ import ConditionalSingle from "./ConditionalSingle";
 
 // The heading levels that @material-ui supports
 const MAX_HEADING_LEVEL = 6;
-const MIN_HEADING_LEVEL = 3;
+const MIN_HEADING_LEVEL = 4;
+const REPEAT_NUMBER_SENTINEL = "$REPEATNO";
+
+function parseTitle(title, repeat_number) {
+  return title.replace(REPEAT_NUMBER_SENTINEL, repeat_number);
+}
 
 /**
  * Component responsible for displaying a (sub)section of a questionnaire, consisting of a title, a description,
@@ -62,8 +69,8 @@ function Section(props) {
   const formContext = useFormReaderContext();
 
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
-  const titleEl = sectionDefinition["label"] && <Typography variant={headerVariant}>{sectionDefinition["label"]} </Typography>;
-  const descEl = sectionDefinition["description"] && <Typography variant="caption" color="textSecondary">{sectionDefinition["description"]} </Typography>
+  const titleEl = sectionDefinition["label"] && (idx => <Typography variant={headerVariant} style={{display: "inline"}}>{parseTitle(sectionDefinition["label"], idx)} </Typography>);
+  const descEl = sectionDefinition["description"] && (idx => <Typography variant="caption" color="textSecondary">{parseTitle(sectionDefinition["description"], idx)}</Typography>);
   const hasHeader = titleEl || descEl;
   const isRecurrent = sectionDefinition['recurrent'];
 
@@ -85,31 +92,45 @@ function Section(props) {
     {instanceLabels.map( (uuid, idx) => {
         const sectionPath = path + "/" + uuid;
         const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
-        return <Grid item className={hasHeader && idx === 0 && classes.labeledSection} key={uuid}>
+        return <Grid item className={hasHeader && idx === 0 ? classes.labeledSection : undefined} key={uuid}>
           <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
           <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
           <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
-
-          {/* Delete this entry button */}
-          {isRecurrent && <Button
-            size="small"
-            variant="contained"
-            color="default"
-            className={classes.addSectionButton}
-            onClick={() => {
-              setInstanceLabels((oldLabels) => oldLabels.filter((label) => label != uuid));
-              setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, uuid]);
-            }}
-            >
-            <Close fontSize="small" />
-          </Button>}
 
           <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
             {/* Section header */
               hasHeader &&
                 <Grid item className={classes.sectionHeader}>
-                  {titleEl}
-                  {descEl}
+                  {/* Delete this entry and expand this entry button */}
+                  {isRecurrent &&
+                  <React.Fragment>
+                    <Tooltip title="Delete section" aria-label="Delete section" >
+                      <IconButton
+                        color="default"
+                        className={classes.addSectionButton}
+                        onClick={() => {
+                          setInstanceLabels((oldLabels) => oldLabels.filter((label) => label != uuid));
+                          setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, uuid]);
+                        }}
+                        >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Expand section" aria-label="Expand section" >
+                      <IconButton
+                        color="default"
+                        className={classes.addSectionButton}
+                        onClick={() => {
+                        }}
+                        >
+                        <UnfoldLess fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </React.Fragment>}
+
+                  {/* Title & description */}
+                  {titleEl && titleEl(idx)}
+                  {descEl && descEl(idx)}
                 </Grid>
             }
             {/* Section contents */
@@ -138,8 +159,8 @@ function Section(props) {
       {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
       UUIDsToRemove.map( (uuid) =>
         <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
-      )}}
-    </Collapse>, [displayed]);
+      )}
+    </Collapse>, [displayed, instanceLabels]);
 }
 
 Section.propTypes = {

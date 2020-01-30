@@ -27,6 +27,11 @@ import ConditionalComponentManager from "./ConditionalComponentManager";
 export function isConditionalGroupSatisfied(conditional, context) {
   let conditionalChildren = Object.values(conditional)
     .filter((child) => ConditionalComponentManager.isValidConditional(child));
+
+  if (conditionalChildren.length == 0) {
+    return true;
+  }
+
   if (conditional["requireAll"]) {
     return conditionalChildren.every( (child) => ConditionalComponentManager.evaluateCondition(child, context) );
   } else {
