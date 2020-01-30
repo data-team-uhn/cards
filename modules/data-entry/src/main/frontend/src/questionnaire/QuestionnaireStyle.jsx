@@ -112,7 +112,7 @@ const questionnaireStyle = theme => ({
         padding: "0 !important"
     },
     addSectionButton: {
-        width: "100%"
+        //width: "100%"
     }
 });
 
