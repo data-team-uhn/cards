@@ -156,7 +156,7 @@ const questionnaireStyle = theme => ({
         }
     },
     // When the user is deleting a section, highlight it via a border on the left
-    // TODO: This is tuned to the spacing of the FORM_ENTRY_CONTAINER_PROPS below
+   
     highlightedSection: {
         borderLeftWidth: theme.spacing(GRID_SPACE_UNIT),
         borderLeftColor: theme.palette.primary.light,
