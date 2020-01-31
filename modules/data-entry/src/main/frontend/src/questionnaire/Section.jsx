@@ -72,6 +72,8 @@ function Section(props) {
     : [uuidv4()]);
   // Keep a list of UUIDs whose contents we need to remove
   const [ UUIDsToRemove, setUUIDsToRemove ] = useState([]);
+  // Keep a list of UUIDs whose contents we should hide
+  const [ labelsToHide, setLabelsToHide ] = useState({});
   const formContext = useFormReaderContext();
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
@@ -92,6 +94,7 @@ function Section(props) {
     {instanceLabels.map( (uuid, idx) => {
         const sectionPath = path + "/" + uuid;
         const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
+        const hiddenSection = displayed && labelsToHide[uuid];
         return <Grid item className={hasHeader && idx === 0 ? classes.labeledSection : undefined} key={uuid}>
           <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
           <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
@@ -121,9 +124,13 @@ function Section(props) {
                         color="default"
                         className={classes.entryActionIcon}
                         onClick={() => {
+                          setLabelsToHide((toHide) => ({...toHide, [uuid]: !hiddenSection}));
                         }}
                         >
-                        <UnfoldLess fontSize="small" />
+                        {hiddenSection ?
+                          <UnfoldMore fontSize="small" />
+                          : <UnfoldLess fontSize="small" />
+                        }
                       </IconButton>
                     </Tooltip>
                   </React.Fragment>}
@@ -133,11 +140,17 @@ function Section(props) {
                   {descEl && descEl(idx)}
                 </Grid>
             }
+            <Collapse
+              in={!hiddenSection}
+              component={Grid}
+              item
+              >
             {/* Section contents */
             Object.entries(sectionDefinition)
               .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
               .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingSectionAnswer, key))
             }
+            </Collapse>
           </Grid>
         </Grid>
         })
@@ -160,7 +173,7 @@ function Section(props) {
       UUIDsToRemove.map( (uuid) =>
         <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
       )}
-    </Collapse>, [displayed, instanceLabels]);
+    </Collapse>, [displayed, instanceLabels, labelsToHide]);
 }
 
 Section.propTypes = {
