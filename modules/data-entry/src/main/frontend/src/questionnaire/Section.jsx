@@ -19,7 +19,7 @@
 
 import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
-import { Button, Collapse, Grid, IconButton, Tooltip, Typography, withStyles } from "@material-ui/core";
+import { Button, Collapse, Dialog, DialogActions, DialogTitle, Grid, IconButton, Tooltip, Typography, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import Delete from '@material-ui/icons/Delete';
 import UnfoldLess from '@material-ui/icons/UnfoldLess';
@@ -75,6 +75,9 @@ function Section(props) {
   // Keep a list of UUIDs whose contents we should hide
   const [ labelsToHide, setLabelsToHide ] = useState({});
   const formContext = useFormReaderContext();
+  const [ dialogOpen, setDialogOpen ] = useState(false);
+  const [ dialogUUID, setDialogUUID ] = useState();
+  const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const displayed = ConditionalComponentManager.evaluateCondition(
@@ -83,97 +86,124 @@ function Section(props) {
 
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
-  return useCallback(<Collapse
-    in={displayed}
-    component={Grid}
-    item
-    mountOnEnter
-    unmountOnExit
-    className={(hasHeader ? classes.labeledSection : "") + " " + (displayed ? "" : classes.collapsedSection)}
-    >
-    {instanceLabels.map( (uuid, idx) => {
-        const sectionPath = path + "/" + uuid;
-        const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
-        const hiddenSection = displayed && labelsToHide[uuid];
-        return <Grid item className={hasHeader && idx === 0 ? classes.labeledSection : undefined} key={uuid}>
-          <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
-          <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
-          <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
+  return useCallback(
+  <React.Fragment>
+    <Collapse
+      in={displayed}
+      component={Grid}
+      item
+      mountOnEnter
+      unmountOnExit
+      className={(hasHeader ? classes.labeledSection : "") + " " + (displayed ? "" : classes.collapsedSection)}
+      >
+      {instanceLabels.map( (uuid, idx) => {
+          const sectionPath = path + "/" + uuid;
+          const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
+          const hiddenSection = displayed && labelsToHide[uuid];
+          return <Grid item className={hasHeader && idx === 0 ? classes.labeledSection : undefined} key={uuid}>
+            <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
+            <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
+            <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
 
-          <Grid container className={isRecurrent ? classes.recurrentSection : ""} {...FORM_ENTRY_CONTAINER_PROPS}>
-            {/* Section header */
-              hasHeader &&
-                <Grid item className={classes.sectionHeader + " " + (isRecurrent ? classes.recurrentHeader : "")}>
-                  {/* Delete this entry and expand this entry button */}
-                  {isRecurrent &&
-                  <React.Fragment>
-                    <Tooltip title="Delete section" aria-label="Delete section" >
-                      <IconButton
-                        color="default"
-                        className={classes.entryActionIcon}
-                        onClick={() => {
-                          setInstanceLabels((oldLabels) => oldLabels.filter((label) => label != uuid));
-                          setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, uuid]);
-                        }}
-                        >
-                        <Delete fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Expand section" aria-label="Expand section" >
-                      <IconButton
-                        color="default"
-                        className={classes.entryActionIcon}
-                        onClick={() => {
-                          setLabelsToHide((toHide) => ({...toHide, [uuid]: !hiddenSection}));
-                        }}
-                        >
-                        {hiddenSection ?
-                          <UnfoldMore fontSize="small" />
-                          : <UnfoldLess fontSize="small" />
-                        }
-                      </IconButton>
-                    </Tooltip>
-                  </React.Fragment>}
+            <Grid container className={isRecurrent ? classes.recurrentSection : ""} {...FORM_ENTRY_CONTAINER_PROPS}>
+              {/* Section header */
+                hasHeader &&
+                  <Grid item className={classes.sectionHeader + " " + (isRecurrent ? classes.recurrentHeader : "")}>
+                    {/* Delete this entry and expand this entry button */}
+                    {isRecurrent &&
+                    <React.Fragment>
+                      <Tooltip title="Delete section" aria-label="Delete section" >
+                        <IconButton
+                          color="default"
+                          className={classes.entryActionIcon}
+                          onClick={() => {
+                            setDialogOpen(true);
+                            setDialogUUID(uuid);
+                          }}
+                          >
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Expand section" aria-label="Expand section" >
+                        <IconButton
+                          color="default"
+                          className={classes.entryActionIcon}
+                          onClick={() => {
+                            setLabelsToHide((toHide) => ({...toHide, [uuid]: !hiddenSection}));
+                          }}
+                          >
+                          {hiddenSection ?
+                            <UnfoldMore fontSize="small" />
+                            : <UnfoldLess fontSize="small" />
+                          }
+                        </IconButton>
+                      </Tooltip>
+                    </React.Fragment>}
 
-                  {/* Title & description */}
-                  {titleEl && titleEl(idx)}
-                  {descEl && descEl(idx)}
-                </Grid>
-            }
-            <Collapse
-              in={!hiddenSection}
-              component={Grid}
-              item
-              >
-            {/* Section contents */
-            Object.entries(sectionDefinition)
-              .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-              .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingSectionAnswer, key))
-            }
-            </Collapse>
+                    {/* Title & description */}
+                    {titleEl && titleEl(idx)}
+                    {descEl && descEl(idx)}
+                  </Grid>
+              }
+              <Collapse
+                in={!hiddenSection}
+                component={Grid}
+                item
+                >
+              {/* Section contents */
+              Object.entries(sectionDefinition)
+                .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+                .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingSectionAnswer, key))
+              }
+              </Collapse>
+            </Grid>
           </Grid>
-        </Grid>
-        })
-      }
-      {isRecurrent &&
-      <Grid item>
-        <Button
-          size="small"
-          variant="contained"
-          color="default"
-          className={classes.addSectionButton}
-          onClick={() => {
-            setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
-          }}
-          >
-          <Add fontSize="small" /> Add recurring section
+          })
+        }
+        {isRecurrent &&
+        <Grid item>
+          <Button
+            size="small"
+            variant="contained"
+            color="default"
+            className={classes.addSectionButton}
+            onClick={() => {
+              setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
+            }}
+            >
+            <Add fontSize="small" /> Add recurring section
+          </Button>
+        </Grid>}
+        {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
+        UUIDsToRemove.map( (uuid) =>
+          <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
+        )}
+      </Collapse>
+    <Dialog
+      open={dialogOpen}
+      onClose={() => {setDialogOpen(false);}}
+      aria-labelledby={uuid + "-delete-dialog-title"}
+      >
+      <DialogTitle id={uuid + "-delete-dialog-title"}>Really delete this section?</DialogTitle>
+      <DialogActions>
+        <Button onClick={() => {setDialogOpen(false);}} color="primary">
+          Cancel
         </Button>
-      </Grid>}
-      {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
-      UUIDsToRemove.map( (uuid) =>
-        <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
-      )}
-    </Collapse>, [displayed, instanceLabels, labelsToHide]);
+        <Button
+          onClick={() => {
+            setDialogOpen(false);
+            setInstanceLabels((oldLabels) => oldLabels.filter((label) => label != dialogUUID));
+            setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, dialogUUID]);
+          }}
+          color="primary"
+          autoFocus
+          >
+          Delete
+        </Button>
+      </DialogActions>
+    </Dialog>
+    </React.Fragment>
+    , [displayed, instanceLabels, labelsToHide, dialogOpen]);
 }
 
 Section.propTypes = {
