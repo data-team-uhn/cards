@@ -79,3 +79,41 @@ To enable developer mode, also add `--env DEV=true -p 5005:5005` to the `docker 
 To enable debug mode, also add `--env DEBUG=true` to the `docker run` command. Note that the application will not start until a debugger is actually attached to the process on port 5005.
 
 `docker run --network lfsbridge -d -p 8080:8080 -p 5005:5005 -e INITIAL_SLING_NODE=true --env DEV=true --env DEBUG=true --name lfs-debug lfs/lfs`
+
+## Running with Docker-Compose
+
+Docker-Compose can be employed to create a cluster of *N* MongoDB Shards, *M* MongoDB Replicas, and *one* LFS instance.
+
+1. Before proceeding, ensure that the `lfs/lfs` Docker image has been built.
+
+2. Now build the *docker-compose* environment.
+
+```bash
+cd compose-cluster
+python3 generate_compose_yaml.py 2 3 #two shards, three replicas
+docker-compose build
+```
+
+3. Start the *docker-compose* environment.
+
+```bash
+docker-compose up -d
+```
+
+4. The LFS instance should be available at `http://localhost:8080/`
+
+4.1. To inspect the data split between the MongoDB shards:
+```bash
+docker-compose exec router mongo
+sh.status()
+exit
+```
+
+5. When stopping the LFS instance:
+
+```bash
+docker-compose down
+docker-compose rm
+docker volume prune -f
+./cleanup.sh
+```
