@@ -48,7 +48,7 @@ docker run --rm --network lfsbridge --name mongo -d mongo
 For basic testing of the LFS Docker image, run:
 
 ```bash
-docker run --rm --network lfsbridge -d -p 8080:8080 lfs/lfs
+docker run --rm --network lfsbridge -e INITIAL_SLING_NODE=true -d -p 8080:8080 lfs/lfs
 ```
 
 However, since runtime data isn't persisted after the container stops, no changes will be permanently persisted this way.
@@ -58,7 +58,7 @@ It is recommended to first create a permanent volume that can be reused between 
 
 Then the container can be started with:
 
-`docker container run --rm --network lfsbridge --detach --volume lfs-test-volume:/opt/lfs/sling/ -p 8080:8080 --name lfs-production lfs/lfs`
+`docker container run --rm --network lfsbridge -e INITIAL_SLING_NODE=true --detach --volume lfs-test-volume:/opt/lfs/sling/ -p 8080:8080 --name lfs-production lfs/lfs`
 
 Explanation:
 
@@ -66,6 +66,7 @@ Explanation:
 - `--rm` will automatically remove the container after it is stopped
 - `--network lfsbridge` causes the container to connect to the network providing MongoDB
 - `--detach` starts the container in the background
+- `-e INITIAL_SLING_NODE=true` instructs Apache Sling to expect no other Apache Sling Nodes connected to the same database
 - `--volume lfs-test-volume:/opt/lfs/sling/` mounts the volume named `lfs-test-volume` at `/opt/lfs/sling/`, where the application data is stored
 - `-p 8080:8080` makes the local port 8080 forward to the 8080 port inside the container
     - you can also specify a specific local network, and a different local port, for example `-p 127.0.0.1:9999:8080`
@@ -77,4 +78,4 @@ To enable developer mode, also add `--env DEV=true -p 5005:5005` to the `docker 
 
 To enable debug mode, also add `--env DEBUG=true` to the `docker run` command. Note that the application will not start until a debugger is actually attached to the process on port 5005.
 
-`docker run --network lfsbridge -d -p 8080:8080 -p 5005:5005 --env DEV=true --env DEBUG=true --name lfs-debug lfs/lfs`
+`docker run --network lfsbridge -d -p 8080:8080 -p 5005:5005 -e INITIAL_SLING_NODE=true --env DEV=true --env DEBUG=true --name lfs-debug lfs/lfs`

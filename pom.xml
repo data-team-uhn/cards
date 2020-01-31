@@ -374,6 +374,7 @@
             <!-- Ignore file with data for testing -->
             <exclude>**/hpo-test.obo</exclude>
             <exclude>**/chebi-test.obo</exclude>
+            <exclude>**/docker_entry.sh</exclude>
           </excludes>
         </configuration>
         <executions>
