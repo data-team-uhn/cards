@@ -117,7 +117,7 @@ const questionnaireStyle = theme => ({
         padding: "0 !important"
     },
     addSectionButton: {
-        marginTop: theme.spacing(GRID_SPACE_UNIT*2)
+        marginTop: theme.spacing(GRID_SPACE_UNIT * 2)
     },
     childSection: {
         paddingLeft: theme.spacing(GRID_SPACE_UNIT)
@@ -142,17 +142,17 @@ const questionnaireStyle = theme => ({
         // Select only questions that occur immediately after padded sections,
         // and add a large margin before them
         "& +.questionContainer": {
-            marginTop: theme.spacing(GRID_SPACE_UNIT*2)
+            marginTop: theme.spacing(GRID_SPACE_UNIT * 2)
         },
         "& .recurrentSectionInstance:not(:first-child)": {
-            marginTop: theme.spacing(GRID_SPACE_UNIT*3)
+            marginTop: theme.spacing(GRID_SPACE_UNIT * 3)
         }
     },
     recurrentSectionInstance: {
         // Select the add section button that occurs immediately after padded sections,
         // and add a large margin before it
         "& +.addSectionContainer": {
-            marginTop: theme.spacing(GRID_SPACE_UNIT*2)
+            marginTop: theme.spacing(GRID_SPACE_UNIT * 2)
         }
     },
     // When the user is deleting a section, highlight it via a border on the left

@@ -37,7 +37,7 @@ import ConditionalSingle from "./ConditionalSingle";
 
 // The heading levels that @material-ui supports
 const MAX_HEADING_LEVEL = 6;
-const MIN_HEADING_LEVEL = 5;
+const MIN_HEADING_LEVEL = 4;
 
 /**
  * Creates the title from the given section specification.
@@ -66,7 +66,7 @@ function Section(props) {
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
   const titleEl = sectionDefinition["label"] &&
     ((idx, uuid) =>
-      <Typography variant={headerVariant} style={{display: "inline"}} className={uuid == dialogUUID ? classes.highlightedTitle: undefined}>
+      <Typography variant={headerVariant} style={{display: "inline"}} className={uuid == selectedUUID ? classes.highlightedTitle: undefined}>
         {createTitle(sectionDefinition["label"], idx)}
       </Typography>
     );
@@ -90,7 +90,7 @@ function Section(props) {
   const [ labelsToHide, setLabelsToHide ] = useState({});
   const formContext = useFormReaderContext();
   const [ dialogOpen, setDialogOpen ] = useState(false);
-  const [ dialogUUID, setDialogUUID ] = useState();
+  const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
@@ -99,7 +99,7 @@ function Section(props) {
     formContext);
 
   let closeDialog = () => {
-    setDialogUUID(undefined);
+    setSelectedUUID(undefined);
     setDialogOpen(false);
   }
 
@@ -149,7 +149,7 @@ function Section(props) {
                           className={classes.entryActionIcon}
                           onClick={() => {
                             setDialogOpen(true);
-                            setDialogUUID(uuid);
+                            setSelectedUUID(uuid);
                           }}
                           >
                           <Delete fontSize="small" />
@@ -178,7 +178,7 @@ function Section(props) {
               <Collapse
                 in={!hiddenSection}
                 component={Grid}
-                className={(uuid == dialogUUID ? classes.highlightedSection : undefined)}
+                className={(uuid == selectedUUID ? classes.highlightedSection : undefined)}
                 item
                 >
                 <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
@@ -225,8 +225,8 @@ function Section(props) {
         <Button
           onClick={() => {
             closeDialog();
-            setInstanceLabels((oldLabels) => oldLabels.filter((label) => label != dialogUUID));
-            setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, dialogUUID]);
+            setInstanceLabels((oldLabels) => oldLabels.filter((label) => label != selectedUUID));
+            setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, selectedUUID]);
           }}
           color="primary"
           autoFocus
