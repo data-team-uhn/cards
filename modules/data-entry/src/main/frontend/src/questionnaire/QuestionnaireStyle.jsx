@@ -112,7 +112,22 @@ const questionnaireStyle = theme => ({
         padding: "0 !important"
     },
     addSectionButton: {
-        //width: "100%"
+        marginTop: theme.spacing(4)
+    },
+    childSection: {
+        paddingLeft: theme.spacing(2)
+    },
+    entryActionIcon: {
+        padding: "0",
+        verticalAlign: "baseline"
+    },
+    recurrentSection: {
+        marginLeft: theme.spacing(3),
+        paddingLeft: "0 !important"
+    },
+    recurrentHeader: {
+        marginLeft: theme.spacing(-3) + " !important",
+        paddingLeft: "0 !important"
     }
 });
 
