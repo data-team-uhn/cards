@@ -37,7 +37,7 @@ import ConditionalSingle from "./ConditionalSingle";
 
 // The heading levels that @material-ui supports
 const MAX_HEADING_LEVEL = 6;
-const MIN_HEADING_LEVEL = 4;
+const MIN_HEADING_LEVEL = 5;
 const REPEAT_NUMBER_SENTINEL = "$REPEATNO";
 
 function parseTitle(title, repeat_number) {
@@ -59,20 +59,20 @@ function parseTitle(title, repeat_number) {
 function Section(props) {
   const { classes, depth, existingAnswer, path, sectionDefinition } = props;
 
-  const [ instanceLabels, setInstanceLabels ] = useState(
-    // If we already exist from existingAnswer, our labels are the first element
-    existingAnswer ? existingAnswer.map(element => element[0])
-    // Otherwise, create a new UUID
-    : [uuidv4()]);
-  // Keep a list of UUIDs whose contents we need to remove
-  const [ UUIDsToRemove, setUUIDsToRemove ] = useState([]);
-  const formContext = useFormReaderContext();
-
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
   const titleEl = sectionDefinition["label"] && (idx => <Typography variant={headerVariant} style={{display: "inline"}}>{parseTitle(sectionDefinition["label"], idx)} </Typography>);
   const descEl = sectionDefinition["description"] && (idx => <Typography variant="caption" color="textSecondary">{parseTitle(sectionDefinition["description"], idx)}</Typography>);
   const hasHeader = titleEl || descEl;
   const isRecurrent = sectionDefinition['recurrent'];
+
+  const [ instanceLabels, setInstanceLabels ] = useState(
+    // If we already exist from existingAnswer, our labels are the first element
+    existingAnswer?.length > 0 ? existingAnswer.map(element => element[0])
+    // Otherwise, create a new UUID
+    : [uuidv4()]);
+  // Keep a list of UUIDs whose contents we need to remove
+  const [ UUIDsToRemove, setUUIDsToRemove ] = useState([]);
+  const formContext = useFormReaderContext();
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const displayed = ConditionalComponentManager.evaluateCondition(
@@ -97,17 +97,17 @@ function Section(props) {
           <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
           <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
 
-          <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
+          <Grid container className={isRecurrent ? classes.recurrentSection : ""} {...FORM_ENTRY_CONTAINER_PROPS}>
             {/* Section header */
               hasHeader &&
-                <Grid item className={classes.sectionHeader}>
+                <Grid item className={classes.sectionHeader + " " + (isRecurrent ? classes.recurrentHeader : "")}>
                   {/* Delete this entry and expand this entry button */}
                   {isRecurrent &&
                   <React.Fragment>
                     <Tooltip title="Delete section" aria-label="Delete section" >
                       <IconButton
                         color="default"
-                        className={classes.addSectionButton}
+                        className={classes.entryActionIcon}
                         onClick={() => {
                           setInstanceLabels((oldLabels) => oldLabels.filter((label) => label != uuid));
                           setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, uuid]);
@@ -119,7 +119,7 @@ function Section(props) {
                     <Tooltip title="Expand section" aria-label="Expand section" >
                       <IconButton
                         color="default"
-                        className={classes.addSectionButton}
+                        className={classes.entryActionIcon}
                         onClick={() => {
                         }}
                         >
@@ -153,7 +153,7 @@ function Section(props) {
             setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
           }}
           >
-          <Add fontSize="small" />
+          <Add fontSize="small" /> Add recurring section
         </Button>
       </Grid>}
       {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
