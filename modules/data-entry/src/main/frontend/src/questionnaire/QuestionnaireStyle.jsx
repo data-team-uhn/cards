@@ -17,6 +17,17 @@
 //  under the License.
 //
 
+// Props used in grid containers for displaying Form entries
+export const FORM_ENTRY_CONTAINER_PROPS = {
+    direction: "column",
+    spacing: 4,
+    alignItems: "stretch",
+    justify: "space-between",
+    wrap: "nowrap"
+  };
+
+const GRID_SPACE_UNIT = FORM_ENTRY_CONTAINER_PROPS.spacing/2;
+
 const questionnaireStyle = theme => ({
     checkbox: {
         margin: theme.spacing(-2,0),
@@ -97,12 +108,7 @@ const questionnaireStyle = theme => ({
         marginTop: "-50%"
     },
     labeledSection: {
-        marginTop: theme.spacing(2),
-        // Select only questions that occur immediately after padded sections,
-        // and add a large margin before them
-        "& +.questionContainer": {
-            marginTop: theme.spacing(4),
-        }
+        marginTop: theme.spacing(GRID_SPACE_UNIT)
     },
     sectionHeader: {
         paddingBottom: "0 !important",
@@ -112,33 +118,59 @@ const questionnaireStyle = theme => ({
         padding: "0 !important"
     },
     addSectionButton: {
-        marginTop: theme.spacing(4)
+        marginTop: theme.spacing(GRID_SPACE_UNIT*2)
     },
     childSection: {
-        paddingLeft: theme.spacing(2)
+        paddingLeft: theme.spacing(GRID_SPACE_UNIT)
     },
     entryActionIcon: {
-        padding: "0",
-        verticalAlign: "baseline"
+        padding: theme.spacing(1),
+        verticalAlign: "baseline",
+        marginRight: theme.spacing(-1),
+        float: "right",
+        color: theme.palette.text.primary
     },
     recurrentSection: {
-        marginLeft: theme.spacing(3),
-        paddingLeft: "0 !important"
+        marginLeft: theme.spacing(GRID_SPACE_UNIT),
+        paddingLeft: "0 !important",
+        width: "auto"
     },
     recurrentHeader: {
-        marginLeft: theme.spacing(-3) + " !important",
+        marginLeft: theme.spacing(-GRID_SPACE_UNIT) + " !important",
         paddingLeft: "0 !important"
+    },
+    collapseWrapper: {
+        // Select only questions that occur immediately after padded sections,
+        // and add a large margin before them
+        "& +.questionContainer": {
+            marginTop: theme.spacing(GRID_SPACE_UNIT*2)
+        },
+        "& .recurrentSectionInstance:not(:first-child)": {
+            marginTop: theme.spacing(GRID_SPACE_UNIT*3)
+        }
+    },
+    recurrentSectionInstance: {
+        // Select the add section button that occurs immediately after padded sections,
+        // and add a large margin before it
+        "& +.addSectionContainer": {
+            marginTop: theme.spacing(GRID_SPACE_UNIT*2)
+        }
+    },
+    // When the user is deleting a section, highlight it via a border on the left
+    // TODO: This is tuned to the spacing of the FORM_ENTRY_CONTAINER_PROPS below
+    highlightedSection: {
+        borderLeftWidth: theme.spacing(GRID_SPACE_UNIT),
+        borderLeftColor: theme.palette.primary.light,
+        borderLeftStyle: "solid",
+        marginLeft: theme.spacing(-GRID_SPACE_UNIT),
+        marginTop: theme.spacing(GRID_SPACE_UNIT),
+        marginBottom: theme.spacing(GRID_SPACE_UNIT),
+        paddingTop: theme.spacing(0) + " !important",
+        paddingBottom: theme.spacing(0) + " !important"
+    },
+    highlightedTitle: {
+        color: theme.palette.primary.light,
     }
 });
-
-
-// Props used in grid containers for displaying Form entries
-export const FORM_ENTRY_CONTAINER_PROPS = {
-    direction: "column",
-    spacing: 4,
-    alignItems: "stretch",
-    justify: "space-between",
-    wrap: "nowrap"
-  };
 
 export default questionnaireStyle;

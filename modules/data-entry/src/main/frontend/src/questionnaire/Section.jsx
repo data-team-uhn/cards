@@ -38,10 +38,14 @@ import ConditionalSingle from "./ConditionalSingle";
 // The heading levels that @material-ui supports
 const MAX_HEADING_LEVEL = 6;
 const MIN_HEADING_LEVEL = 5;
-const REPEAT_NUMBER_SENTINEL = "$REPEATNO";
 
-function parseTitle(title, repeat_number) {
-  return title.replace(REPEAT_NUMBER_SENTINEL, repeat_number);
+/**
+ * Creates the title from the given section specification.
+ * @param {String} label Label of the section
+ * @param {int} idx Zero-indexed section number
+ */
+function createTitle(label, idx) {
+  return (label + " #" + (idx+1));
 }
 
 /**
@@ -60,8 +64,18 @@ function Section(props) {
   const { classes, depth, existingAnswer, path, sectionDefinition } = props;
 
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
-  const titleEl = sectionDefinition["label"] && (idx => <Typography variant={headerVariant} style={{display: "inline"}}>{parseTitle(sectionDefinition["label"], idx)} </Typography>);
-  const descEl = sectionDefinition["description"] && (idx => <Typography variant="caption" color="textSecondary">{parseTitle(sectionDefinition["description"], idx)}</Typography>);
+  const titleEl = sectionDefinition["label"] &&
+    ((idx, uuid) =>
+      <Typography variant={headerVariant} style={{display: "inline"}} className={uuid == dialogUUID ? classes.highlightedTitle: undefined}>
+        {createTitle(sectionDefinition["label"], idx)}
+      </Typography>
+    );
+  const descEl = sectionDefinition["description"] &&
+    (idx =>
+      <Typography variant="caption" color="textSecondary">
+        {sectionDefinition["description"]}
+      </Typography>
+    );
   const hasHeader = titleEl || descEl;
   const isRecurrent = sectionDefinition['recurrent'];
 
@@ -84,6 +98,11 @@ function Section(props) {
     sectionDefinition,
     formContext);
 
+  let closeDialog = () => {
+    setDialogUUID(undefined);
+    setDialogOpen(false);
+  }
+
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
   return useCallback(
@@ -94,24 +113,36 @@ function Section(props) {
       item
       mountOnEnter
       unmountOnExit
-      className={(hasHeader ? classes.labeledSection : "") + " " + (displayed ? "" : classes.collapsedSection)}
+      className={
+        (displayed ? "" : classes.collapsedSection)
+        + " " + (hasHeader ? classes.collapseWrapper : "")
+      }
       >
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;
           const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
           const hiddenSection = displayed && labelsToHide[uuid];
-          return <Grid item className={hasHeader && idx === 0 ? classes.labeledSection : undefined} key={uuid}>
+          return <div
+            key={uuid}
+            className={"recurrentSectionInstance " + classes.recurrentSectionInstance}
+            >
             <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
             <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
             <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
 
-            <Grid container className={isRecurrent ? classes.recurrentSection : ""} {...FORM_ENTRY_CONTAINER_PROPS}>
+            <Grid
+              container
+              className={
+                (isRecurrent ? classes.recurrentSection : undefined)
+                + " " + (hasHeader ? classes.labeledSection : undefined)
+              }
+              {...FORM_ENTRY_CONTAINER_PROPS}
+              >
               {/* Section header */
                 hasHeader &&
                   <Grid item className={classes.sectionHeader + " " + (isRecurrent ? classes.recurrentHeader : "")}>
                     {/* Delete this entry and expand this entry button */}
                     {isRecurrent &&
-                    <React.Fragment>
                       <Tooltip title="Delete section" aria-label="Delete section" >
                         <IconButton
                           color="default"
@@ -123,45 +154,47 @@ function Section(props) {
                           >
                           <Delete fontSize="small" />
                         </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Expand section" aria-label="Expand section" >
-                        <IconButton
-                          color="default"
-                          className={classes.entryActionIcon}
-                          onClick={() => {
-                            setLabelsToHide((toHide) => ({...toHide, [uuid]: !hiddenSection}));
-                          }}
-                          >
-                          {hiddenSection ?
-                            <UnfoldMore fontSize="small" />
-                            : <UnfoldLess fontSize="small" />
-                          }
-                        </IconButton>
-                      </Tooltip>
-                    </React.Fragment>}
+                      </Tooltip>}
+                    <Tooltip title="Expand section" aria-label="Expand section" >
+                      <IconButton
+                        color="default"
+                        className={classes.entryActionIcon}
+                        onClick={() => {
+                          setLabelsToHide((toHide) => ({...toHide, [uuid]: !hiddenSection}));
+                        }}
+                        >
+                        {hiddenSection ?
+                          <UnfoldMore fontSize="small" />
+                          : <UnfoldLess fontSize="small" />
+                        }
+                      </IconButton>
+                    </Tooltip>
 
                     {/* Title & description */}
-                    {titleEl && titleEl(idx)}
+                    {titleEl && titleEl(idx, uuid)}
                     {descEl && descEl(idx)}
                   </Grid>
               }
               <Collapse
                 in={!hiddenSection}
                 component={Grid}
+                className={(uuid == dialogUUID ? classes.highlightedSection : undefined)}
                 item
                 >
-              {/* Section contents */
-              Object.entries(sectionDefinition)
-                .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingSectionAnswer, key))
-              }
+                <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
+                  {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
+                    Object.entries(sectionDefinition)
+                      .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+                      .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingSectionAnswer, key))
+                  }
+                </Grid>
               </Collapse>
             </Grid>
-          </Grid>
+          </div>
           })
         }
         {isRecurrent &&
-        <Grid item>
+        <Grid item className="addSectionContainer">
           <Button
             size="small"
             variant="contained"
@@ -171,7 +204,7 @@ function Section(props) {
               setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
             }}
             >
-            <Add fontSize="small" /> Add recurring section
+            <Add fontSize="small" /> {sectionDefinition["label"]}
           </Button>
         </Grid>}
         {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
@@ -181,17 +214,17 @@ function Section(props) {
       </Collapse>
     <Dialog
       open={dialogOpen}
-      onClose={() => {setDialogOpen(false);}}
+      onClose={closeDialog}
       aria-labelledby={uuid + "-delete-dialog-title"}
       >
-      <DialogTitle id={uuid + "-delete-dialog-title"}>Really delete this section?</DialogTitle>
+      <DialogTitle id={uuid + "-delete-dialog-title"}>Are you sure you want to delete this section?</DialogTitle>
       <DialogActions>
-        <Button onClick={() => {setDialogOpen(false);}} color="primary">
+        <Button onClick={closeDialog} color="primary">
           Cancel
         </Button>
         <Button
           onClick={() => {
-            setDialogOpen(false);
+            closeDialog();
             setInstanceLabels((oldLabels) => oldLabels.filter((label) => label != dialogUUID));
             setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, dialogUUID]);
           }}
