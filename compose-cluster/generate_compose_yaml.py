@@ -100,7 +100,6 @@ print("Configuring service: initializer")
 #Generate the initializations for the shards/replicas
 with open("initializer/initialize_all.sh", 'w') as f_init:
 	f_init.write("#!/bin/bash\n")
-	#f_init.write("sleep 60\n") #This is a hack...just for now
 	f_init.write("/wait_for_mongo.sh config0\n")
 	f_init.write('echo "Host config0 is up"\n')
 	
