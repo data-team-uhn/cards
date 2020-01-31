@@ -375,6 +375,7 @@
             <exclude>**/hpo-test.obo</exclude>
             <exclude>**/chebi-test.obo</exclude>
             <exclude>**/docker_entry.sh</exclude>
+            <exclude>**/compose-cluster/**</exclude>
           </excludes>
         </configuration>
         <executions>
