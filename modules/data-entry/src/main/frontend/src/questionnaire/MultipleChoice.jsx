@@ -117,8 +117,8 @@ function MultipleChoice(props) {
   }
 
   let updateGhost = (id, name) => {
-    // If we're a radio, just update with the new value
-    isRadio && setSelection([[name, id]]);
+    // If at most one answer is allowed, just update with the new value
+    (maxAnswers === 1) && setSelection([[name, id]]);
   }
 
   // Add a non-default option
