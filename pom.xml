@@ -411,7 +411,7 @@
             <dependency>
               <groupId>org.phenotips</groupId>
               <artifactId>phenotips-checkstyle-configuration</artifactId>
-              <version>1.11</version>
+              <version>1.12</version>
             </dependency>
           </dependencies>
           <configuration>
