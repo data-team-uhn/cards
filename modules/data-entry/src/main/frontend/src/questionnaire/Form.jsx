@@ -31,6 +31,7 @@ import {
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import moment from "moment";
+import { FormProvider } from "./FormContext";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -167,11 +168,13 @@ function Form (props) {
             : ""
           }
         </Grid>
-        {
-          Object.entries(data.questionnaire)
-            .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-            .map(([key, entryDefinition]) => FormEntry(entryDefinition, ".", 0, data, key))
-        }
+        <FormProvider>
+          {
+            Object.entries(data.questionnaire)
+              .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+              .map(([key, entryDefinition]) => FormEntry(entryDefinition, ".", 0, data, key))
+          }
+        </FormProvider>
       </Grid>
 
       <Button

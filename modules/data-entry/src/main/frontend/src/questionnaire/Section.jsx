@@ -17,13 +17,19 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
-import { Grid, Typography, withStyles } from "@material-ui/core";
+import { Collapse, Grid, Typography, withStyles } from "@material-ui/core";
 import uuidv4 from "uuid/v4";
 
+import ConditionalComponentManager from "./ConditionalComponentManager";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
+import { useFormReaderContext } from "./FormContext";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
+
+// FIXME In order for the conditionals to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all conditional types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
+import ConditionalGroup from "./ConditionalGroup";
+import ConditionalSingle from "./ConditionalSingle";
 
 // The heading levels that @material-ui supports
 const MAX_HEADING_LEVEL = 6;
@@ -46,31 +52,44 @@ function Section(props) {
   const [sectionID] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   const sectionPath = path + "/" + sectionID;
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
+  const formContext = useFormReaderContext();
 
   const titleEl = sectionDefinition["label"] && <Typography variant={headerVariant}>{sectionDefinition["label"]} </Typography>;
   const descEl = sectionDefinition["description"] && <Typography variant="caption" color="textSecondary">{sectionDefinition["description"]} </Typography>
   const hasHeader = titleEl || descEl;
 
-  return (
-    <Grid item className={hasHeader && classes.labeledSection}>
-      <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
-      <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
-      <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
+  // Determine if we have any conditionals in our definition that would cause us to be hidden
+  const displayed = ConditionalComponentManager.evaluateCondition(
+    sectionDefinition,
+    formContext);
 
-      <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-        {hasHeader &&
-          <Grid item className={classes.sectionHeader}>
-            {titleEl}
-            {descEl}
-          </Grid>
-        }
-        {Object.entries(sectionDefinition)
-          .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-          .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingAnswer && existingAnswer[1], key))
-        }
-      </Grid>
+  // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
+  // if it is not currently visible
+  return useCallback(<Collapse
+    in={displayed}
+    component={Grid}
+    item
+    mountOnEnter
+    unmountOnExit
+    className={(hasHeader ? classes.labeledSection : "") + " " + (displayed ? "" : classes.collapsedSection)}
+    >
+    <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
+    <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
+    <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
+
+    <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
+      {hasHeader &&
+        <Grid item className={classes.sectionHeader}>
+          {titleEl}
+          {descEl}
+        </Grid>
+      }
+      {Object.entries(sectionDefinition)
+        .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+        .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingAnswer && existingAnswer[1], key))
+      }
     </Grid>
-  );
+  </Collapse>, [displayed]);
 }
 
 Section.propTypes = {

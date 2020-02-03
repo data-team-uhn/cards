@@ -228,7 +228,88 @@
   // Children
 
   // The questions and sub-sections that make up this section.
-  + * (lfs:Question, lfs:Section) = lfs:Question
+  // The conditions to display this section may also be listed as children
+  + * (lfs:Question, lfs:Section, lfs:Conditional, lfs:ConditionalGroup) = lfs:Question
+
+//-----------------------------------------------------------------------------
+// A conditional group is a set of conditions that can be imposed on e.g. the display of a section.
+// The conditions are listed as children of this, and may be turned from an OR to an AND via the
+// `requireAll` property.
+[lfs:ConditionalGroup] > sling:Resource
+  // Attributes
+
+  // Conditionals are queryable
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Conditional" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each section link is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // This conditional may contain any number of conditionals or conditional groups
+  + * (lfs:ConditionalGroup, lfs:Conditional) = lfs:Question
+
+//-----------------------------------------------------------------------------
+// A conditional is a condition that can be imposed on e.g. the display of a section.
+[lfs:Conditional] > sling:Resource
+  // Attributes
+
+  // Conditionals are queryable
+  query
+  // Our children are orderable, and may be executable in a specific order
+  orderable
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Conditional" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each section link is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A conditional will always have a child node called operandA of type ConditionalValue
+  + operandA (lfs:ConditionalValue) mandatory
+
+  // A conditional always has exactly one comparator
+  - comparator (STRING) mandatory
+
+  // A second child operandB may be specified, but leaving it as the default is OK if the comparator is singular
+  + operandB (lfs:ConditionalValue) = lfs:ConditionalValue autocreated
+
+//-----------------------------------------------------------------------------
+// A conditional value is either a value or a method of getting a value.
+[lfs:ConditionalValue] > sling:Resource
+  // Attributes
+
+  // We don't have children, but let's assume children might need to be ordered in the future.
+  orderable
+  // The main sub-item of an answer is its value.
+  primaryitem value
+  // Conditional values are queryable
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/ConditionalValue" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each value is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // The value which may be a reference to a field or a value (or multiple values)
+  - value (STRING) multiple
+
+  // Whether or not this value is a reference or not
+  - isReference (BOOLEAN) = false autocreated
+
+  // Require that the parent conditional checks every value (for a multi-valued field)
+  // Otherwise it will return true if at least one value fits
+  - requireAll (BOOLEAN) = false mandatory autocreated
+
+  // We don't define any subchildren.
 
 //-----------------------------------------------------------------------------
 // A questionnaire is a collection of sections and questions.

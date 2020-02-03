@@ -55,10 +55,11 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key) => {
   return (
     <Grid item key={key} className={"questionContainer"}>
       <QuestionDisplay
-        key={key}
         questionDefinition={questionDefinition}
         existingAnswer={existingQuestionAnswer}
-        path={path} />
+        path={path}
+        questionName={key}
+        />
     </Grid>
   );
 };
