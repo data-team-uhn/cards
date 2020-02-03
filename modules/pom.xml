@@ -44,5 +44,6 @@
     <module>permissions</module>
     <module>permissions-provider</module>
     <module>vocabularies</module>
+    <module>aggregated-frontend</module>
   </modules>
 </project>

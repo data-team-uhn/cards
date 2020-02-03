@@ -43,7 +43,6 @@ const questionnaireStyle = theme => ({
     answerField: {
         margin: theme.spacing(0, 0, 0, 6),
         position: 'relative',
-        display: 'inline-block',
     },
     textField: {
         // Differing input types have differing widths, so setting width:100%
@@ -79,7 +78,7 @@ const questionnaireStyle = theme => ({
         position: "fixed",
         top: 'auto',
         bottom: theme.spacing(1),
-        right: theme.spacing(5)
+        right: theme.spacing(6.5)
     },
     newFormButtonWrapper: {
         margin: theme.spacing(1),
@@ -95,7 +94,32 @@ const questionnaireStyle = theme => ({
         left: '50%',
         marginLeft: "-50%",
         marginTop: "-50%"
+    },
+    labeledSection: {
+        marginTop: theme.spacing(2),
+        // Select only questions that occur immediately after padded sections,
+        // and add a large margin before them
+        "& +.questionContainer": {
+            marginTop: theme.spacing(4),
+        }
+    },
+    sectionHeader: {
+        paddingBottom: "0 !important",
+        marginBottom: theme.spacing(-1)
+    },
+    collapsedSection: {
+        padding: "0 !important"
     }
 });
+
+
+// Props used in grid containers for displaying Form entries
+export const FORM_ENTRY_CONTAINER_PROPS = {
+    direction: "column",
+    spacing: 4,
+    alignItems: "stretch",
+    justify: "space-between",
+    wrap: "nowrap"
+  };
 
 export default questionnaireStyle;

@@ -102,5 +102,5 @@
 # When running with MongoDB, this is where the database connection is configured.
 [configurations runModes=oak_mongo]
   org.apache.jackrabbit.oak.plugins.document.DocumentNodeStoreService
-    mongouri="mongodb://localhost:27017"
+    mongouri="mongodb://mongo:27017"
     db="sling"

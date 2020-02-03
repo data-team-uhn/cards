@@ -33,18 +33,5 @@ module.exports = {
     path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
     publicPath: '/',
     filename: '[name].[contenthash].js',
-  },
-  externals: [
-    {
-      "moment": "moment",
-      "react": "React",
-      "react-dom": "ReactDOM",
-      "react-router-dom": "ReactRouterDOM",
-      "formik": "Formik",
-      "lodash": "lodash",
-      "prop-types": "PropTypes",
-      "jss": "jss",
-      "@material-ui/core": "MaterialUI"
-    }
-  ]
+  }
 };

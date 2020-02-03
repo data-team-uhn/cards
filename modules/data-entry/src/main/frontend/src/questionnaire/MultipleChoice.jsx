@@ -160,7 +160,7 @@ function MultipleChoice(props) {
   let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
       <TextField
         helperText={maxAnswers !== 1 && "Press ENTER to add a new line"}
-        className={classes.textField}
+        className={classes.textField + (maxAnswers === 1 && (!defaults || defaults.length == 0) ? (' ' + classes.answerField) : '')}
         onChange={(event) => {
           setGhostName(event.target.value);
           updateGhost(GHOST_SENTINEL, event.target.value);

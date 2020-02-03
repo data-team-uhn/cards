@@ -5,6 +5,7 @@
 ## Prerequisites:
 * Java 1.8+
 * Maven 3.3+
+* Python 2.5+ or Python 3.0+
 
 ## Build:
 `mvn clean install`
@@ -35,9 +36,21 @@ To specify a different URL, use `-Dsling.url=https://lfs.server:8443/system/cons
 `java -jar distribution/target/lfs-*.jar -Dsling.run.modes=dev` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
 
 ## Running with Docker
-If Docker is installed, then the build will also create a new image named `lfs/lfs:latest`. You can run this image (for testing) with:
 
-`docker run -d -p 8080:8080 lfs/lfs`
+If Docker is installed, then the build will also create a new image named `lfs/lfs:latest`
+
+Before the LFS Docker container can be started, an isolated network providing MongoDB must be established. To do so:
+
+```bash
+docker network create lfsbridge
+docker run --rm --network lfsbridge --name mongo -d mongo
+```
+
+For basic testing of the LFS Docker image, run:
+
+```bash
+docker run --rm --network lfsbridge -d -p 8080:8080 lfs/lfs
+```
 
 However, since runtime data isn't persisted after the container stops, no changes will be permanently persisted this way.
 It is recommended to first create a permanent volume that can be reused between different image instantiations, and different image versions.
@@ -46,12 +59,13 @@ It is recommended to first create a permanent volume that can be reused between 
 
 Then the container can be started with:
 
-`docker container run --rm --detach --volume lfs-test-volume:/opt/lfs/sling/ -p 8080:8080 --name lfs-production lfs/lfs`
+`docker container run --rm --network lfsbridge --detach --volume lfs-test-volume:/opt/lfs/sling/ -p 8080:8080 --name lfs-production lfs/lfs`
 
 Explanation:
 
 - `docker container run` creates and starts a new container
 - `--rm` will automatically remove the container after it is stopped
+- `--network lfsbridge` causes the container to connect to the network providing MongoDB
 - `--detach` starts the container in the background
 - `--volume lfs-test-volume:/opt/lfs/sling/` mounts the volume named `lfs-test-volume` at `/opt/lfs/sling/`, where the application data is stored
 - `-p 8080:8080` makes the local port 8080 forward to the 8080 port inside the container
@@ -64,4 +78,4 @@ To enable developer mode, also add `--env DEV=true -p 5005:5005` to the `docker 
 
 To enable debug mode, also add `--env DEBUG=true` to the `docker run` command. Note that the application will not start until a debugger is actually attached to the process on port 5005.
 
-`docker run -d -p 8080:8080 -p 5005:5005 --env DEV=true --env DEBUG=true --name lfs-debug lfs/lfs`
+`docker run --network lfsbridge -d -p 8080:8080 -p 5005:5005 --env DEV=true --env DEBUG=true --name lfs-debug lfs/lfs`

@@ -28,21 +28,14 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import QuestionnaireStyle from "./QuestionnaireStyle";
-import AnswerComponentManager from "./AnswerComponentManager";
+import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
+import FormEntry, { ENTRY_TYPES } from "./FormEntry";
+import moment from "moment";
+import { FormProvider } from "./FormContext";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
 // TODO Try to move the save-failed code somewhere more generic instead of the Form component
-
-// FIXME In order for the questions to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all question types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
-
-import BooleanQuestion from "./BooleanQuestion";
-import DateQuestion from "./DateQuestion";
-import NumberQuestion from "./NumberQuestion";
-import PedigreeQuestion from "./PedigreeQuestion";
-import TextQuestion from "./TextQuestion";
-import VocabularyQuestion from "./VocabularyQuestion";
 
 /**
  * Component that displays an editable Form.
@@ -134,22 +127,6 @@ function Form (props) {
     setLastSaveStatus(undefined);
   }
 
-  /**
-   * Method responsible for displaying a question from the questionnaire, along with its answer(s).
-   *
-   * @param {Object} questionDefinition the question definition JSON
-   * @param {string} key the node name of the question definition JCR node
-   * @returns a React component that renders the question
-   */
-  let displayQuestion = (questionDefinition, key) => {
-    const existingAnswer = Object.entries(data)
-      .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
-        && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
-    // This variable must start with an upper case letter so that React treats it as a component
-    const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
-    return <QuestionDisplay key={key} questionDefinition={questionDefinition} existingAnswer={existingAnswer} />;
-  };
-
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     fetchData();
@@ -173,7 +150,7 @@ function Form (props) {
 
   return (
     <form action={data["@path"]} method="POST" onSubmit={saveData} onChange={()=>setLastSaveStatus(undefined)} key={id}>
-      <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
+      <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         <Grid item>
           {
             data && data.questionnaire && data.questionnaire.title ?
@@ -191,11 +168,13 @@ function Form (props) {
             : ""
           }
         </Grid>
-        {
-          Object.entries(data.questionnaire)
-            .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question')
-            .map(([key, questionDefinition]) => <Grid item key={key}>{displayQuestion(questionDefinition, key)}</Grid>)
-        }
+        <FormProvider>
+          {
+            Object.entries(data.questionnaire)
+              .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+              .map(([key, entryDefinition]) => FormEntry(entryDefinition, ".", 0, data, key))
+          }
+        </FormProvider>
       </Grid>
 
       <Button
