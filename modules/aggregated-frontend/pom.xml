@@ -26,34 +26,62 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-material-dashboard</artifactId>
+  <artifactId>lfs-aggregated-frontend</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Frontend library</name>
+  <name>LFS - The aggregated frontend files</name>
 
   <build>
     <plugins>
-      <!-- This is an OSGi bundle -->
+      <!-- Run Python script to consolidate webpack.js and package.json files of all modules -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <configuration>
+              <executable>python</executable>
+              <workingDirectory>src/main/frontend/</workingDirectory>
+              <arguments>
+                <argument>webpack_script.py</argument>
+                <argument>${project.basedir}</argument>
+              </arguments>
+            </configuration>
+            <id>python-build</id>
+            <phase>initialize</phase>
+            <goals>
+               <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Compile the React code -->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Include-Resource>{maven-resources}</Include-Resource>
-            <!-- Initial content to be loaded on bundle installation -->
+            <Include-Resource>src/main/frontend/dist/,{maven-resources}</Include-Resource>
             <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
 
-      <!-- Ignore files from material-dashboard-react, as they're under their own license -->
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
         <version>0.13</version>
         <configuration>
           <excludes combine.children="append">
-            <exclude>**/MaterialDashboardReact/**</exclude>
+            <!-- These files have already been checked in their original location, there's no need to duplicate the exact ignored list -->
+            <exclude>**/main/frontend/src/**</exclude>
           </excludes>
         </configuration>
       </plugin>

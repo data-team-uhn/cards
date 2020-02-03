@@ -48,7 +48,7 @@ var loadRemoteIcon = function(uixDatum) {
 // Find the icon and load them
 var loadRemoteIcons = function(uixData) {
   return Promise.all(
-    _.map(uixData, function(uixDatum) {
+    uixData.map(function(uixDatum) {
       return loadRemoteIcon(uixDatum);
     })
   );
@@ -87,7 +87,7 @@ var loadRemoteComponent = function(component) {
 // Load each given component
 var loadRemoteComponents = function(components) {
   return Promise.all(
-    _.map(components, function(component) {
+    components.map(function(component) {
       return loadRemoteComponent(component);
     })
   );
