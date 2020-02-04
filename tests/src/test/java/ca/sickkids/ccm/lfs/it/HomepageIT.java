@@ -44,14 +44,14 @@ public class HomepageIT
     @BeforeClass
     public static void waitForStartup() throws TimeoutException, InterruptedException
     {
-        client = slingInstanceRule.defaultInstance.getClient(SlingClient.class, null, null);
+        client = slingInstanceRule.defaultInstance.getClient(SlingClient.class, "admin", "admin");
 
         Polling p = new Polling()
         {
             @Override
             public Boolean call() throws Exception
             {
-                return HomepageIT.client.doGet("/").getStatusLine().getStatusCode() == SC_OK;
+                return HomepageIT.client.doGet("/login").getStatusLine().getStatusCode() == SC_OK;
             }
 
             @Override
@@ -66,19 +66,19 @@ public class HomepageIT
     }
 
     @Test
-    public void homepageIsDisplayedWhenNotLoggedInAtContextRoot() throws Exception
+    public void homepageIsDisplayedAtContextRoot() throws Exception
     {
         checkHtmlHomepage("/");
     }
 
     @Test
-    public void homepageIsDisplayedWhenNotLoggedInAtSlashContent() throws Exception
+    public void homepageIsDisplayedAtSlashContent() throws Exception
     {
         checkHtmlHomepage("/content");
     }
 
     @Test
-    public void homepageIsDisplayedWhenNotLoggedInAtSlashContentDotHtml() throws Exception
+    public void homepageIsDisplayedAtSlashContentDotHtml() throws Exception
     {
         checkHtmlHomepage("/content.html");
     }
