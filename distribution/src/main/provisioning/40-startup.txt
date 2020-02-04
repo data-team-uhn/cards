@@ -27,3 +27,16 @@
   # Allow self-registration
   org.apache.sling.jackrabbit.usermanager.impl.post.CreateUserServlet
     self.registration.enabled=B"true"
+
+  # Authentication requirements
+  org.apache.sling.engine.impl.auth.SlingAuthenticator
+    # Don't allow anonymous access by default
+    auth.annonymous=B"false"
+    # Require access by default on all resources, with a few exceptions
+    sling.auth.requirements=[ \
+      "+/", \
+      "-/login", \
+      "-/libs", \
+      "-/apps", \
+      "-/system", \
+    ]

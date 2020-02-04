@@ -22,9 +22,9 @@
 
 [artifacts]
     # This can parse a :repoinit section from a provisioning file into POJOs
-    org.apache.sling/org.apache.sling.repoinit.parser/1.2.2
+    org.apache.sling/org.apache.sling.repoinit.parser/1.2.4
     # This performs the instructions parsed from a :repoinit section in JCR
-    org.apache.sling/org.apache.sling.jcr.repoinit/1.1.8
+    org.apache.sling/org.apache.sling.jcr.repoinit/1.1.10
     # This can read provisioning files
     org.apache.sling/org.apache.sling.provisioning.model/1.8.4
 
