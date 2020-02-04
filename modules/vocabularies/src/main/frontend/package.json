@@ -36,7 +36,6 @@
     "webpack-cli": "^3.3.2"
   },
   "dependencies": {
-    "material-dashboard-react": "1.6.0",
     "@material-ui/core": "^4.4.3",
     "@material-ui/icons": "^4.4.3",
     "react": "^16.9.0",
