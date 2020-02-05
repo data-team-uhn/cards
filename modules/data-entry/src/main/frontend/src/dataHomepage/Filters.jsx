@@ -238,12 +238,14 @@ function Filters(props) {
     } else if (displayMode === 'list') {
       // If this question has multiple pre-defined responses, and a displayMode='list', store the responses
       // (we ignore list+input here because the user can select anything from those)
+      // Note: autoFocus is used here instead of passing the input ref because of a bug where the inputRef
+      // callback is called before the select's children are ready, causing a crash when it tries to focus()
       newChoices = (index, toFocus) => (
         <SelfManagedSelect
           defaultValue={overrideFilters ? overrideFilters.value : editingFilters[index].value}
           onChange={(event) => {handleChangeOutput(index, event.target.value)}}
           className={classes.answerField}
-          inputRef={toFocus}
+          autoFocus={toFocus !== undefined}
           >
           {Object.entries(questionDefinitions[field])
           // answers are nodes with "jcr:primaryType" = "lfs:AnswerOption"
@@ -423,7 +425,7 @@ function Filters(props) {
                         onExited: forceRegrabFocus
                       }}
                       className={classes.answerField}
-                      inputRef={(index === editingFilters.length-1 && toFocus === index) ? focusCallback : undefined}
+                      autoFocus={(index === editingFilters.length-1 && toFocus === index)}
                       displayEmpty
                       >
                         <MenuItem value="" disabled>
