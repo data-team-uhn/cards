@@ -1,4 +1,4 @@
-FROM mongo:4.2.3-bionic
+FROM mongo:4.2-bionic
 
 #Need netcat to signal LFS to start
 RUN apt-get update
