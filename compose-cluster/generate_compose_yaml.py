@@ -6,16 +6,17 @@ import sys
 import yaml
 import json
 import shutil
+import argparse
 
 LFS_DOCKER_TAG = "latest"
 
-#Print help if args not given correctly
-if len(sys.argv) != 3:
-	print("Usage: python3 generate_compose_yaml.py MONGO_SHARD_COUNT MONGO_REPLICA_COUNT")
-	sys.exit(-1)
+argparser = argparse.ArgumentParser()
+argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
+argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard', default=3, type=int)
+args = argparser.parse_args()
 
-MONGO_SHARD_COUNT = int(sys.argv[1])
-MONGO_REPLICA_COUNT = int(sys.argv[2])
+MONGO_SHARD_COUNT = args.shards
+MONGO_REPLICA_COUNT = args.replicas
 
 #Validate before doing anything else
 if (MONGO_REPLICA_COUNT % 2) != 1:
