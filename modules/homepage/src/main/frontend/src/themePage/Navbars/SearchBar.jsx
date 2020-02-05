@@ -30,6 +30,7 @@ import HeaderStyle from "./headerStyle.jsx";
 
 const QUERY_URL = "/query";
 const MAX_RESULTS = 5;
+const MAX_CONTEXT_MATCH = 8;
 
 function SearchBar(props) {
   const { classes, className, closeSidebar, invertColors, doNotEscapeQuery } = props;
@@ -79,8 +80,43 @@ function SearchBar(props) {
     setRequestID(requestID+1);
     fetch(new_url)
       .then(response => response.ok ? response.json() : Promise.reject(response))
-      .then(displayResults)
+      .then(function (json) { addMatchingContent(query, json) })
       .catch(handleError);
+  }
+
+  let addMatchingContent = (query, json) => {
+    let i = 0;
+    let processNext = (data) => {
+      for (let key in data) {
+        if (typeof(data[key]) === "object") {
+          if ('value' in data[key]) {
+            let match_status = false;
+            if (data[key]['value'].toString().toLowerCase().indexOf(query.toLowerCase()) != -1) {
+              let match_index = data[key]['value'].toString().toLowerCase().indexOf(query.toLowerCase());
+              json.rows[i-1]['queryMatch'] = {
+                'matchKey' : data[key]['question']['text'].toString(),
+                'matchBefore' : data[key]['value'].toString().slice(0, match_index),
+                'matchText' : data[key]['value'].toString().slice(match_index, match_index + query.length),
+                'matchAfter' : data[key]['value'].toString().slice(match_index + query.length)
+              };
+            }
+          }
+        }
+      }
+      if (i >= json.rows.length) {
+        displayResults(json);
+      }
+      else {
+        let formUrl = json.rows[i]["@path"];
+        let new_url = new URL(formUrl + ".deep.json", window.location.origin);
+        i += 1;
+        fetch(new_url)
+          .then(response => response.ok ? response.json() : Promise.reject(response))
+          .then(processNext)
+          .catch(handleError);
+      }
+    }
+    processNext({});
   }
 
   // Callback to store the results of the top results, or to display 'No results'
@@ -145,6 +181,40 @@ function SearchBar(props) {
       || element["identifier"]
       /* Could not find any of the above: return the uuid */
       || element["jcr:uuid"];
+  }
+
+  let getElementQueryMatchKey = (element) => {
+    if ("queryMatch" in element) {
+      return element["queryMatch"]["matchKey"] + " = ";
+    }
+  }
+
+  let getElementQueryMatchBefore = (element) => {
+    if ("queryMatch" in element) {
+      if (element["queryMatch"]["matchBefore"].length <= MAX_CONTEXT_MATCH) {
+        return element["queryMatch"]["matchBefore"];
+      }
+      else {
+        return "..." + element["queryMatch"]["matchBefore"].slice(-1 * MAX_CONTEXT_MATCH);
+      }
+    }
+  }
+
+  let getElementQueryMatchText = (element) => {
+    if ("queryMatch" in element) {
+      return element["queryMatch"]["matchText"];
+    }
+  }
+
+  let getElementQueryMatchAfter = (element) => {
+    if ("queryMatch" in element) {
+      if (element["queryMatch"]["matchAfter"].length <= MAX_CONTEXT_MATCH) {
+        return element["queryMatch"]["matchAfter"];
+      }
+      else {
+        return element["queryMatch"]["matchAfter"].slice(0, MAX_CONTEXT_MATCH) + "...";
+      }
+    }
   }
 
   return(
@@ -240,6 +310,14 @@ function SearchBar(props) {
                               {getFriendlyCategory(element)}
                             </Typography>
                             {getElementName(element)}
+                          </div>)}
+                          secondary={(<div>
+                            {getElementQueryMatchKey(element)}
+                            {getElementQueryMatchBefore(element)}
+                            <b>
+                              {getElementQueryMatchText(element)}
+                            </b>
+                            {getElementQueryMatchAfter(element)}
                           </div>)}
                           className={classes.dropdownItem}
                           />
