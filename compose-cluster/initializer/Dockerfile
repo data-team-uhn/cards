@@ -1,4 +1,4 @@
-FROM mongo
+FROM mongo:4.2.3-bionic
 
 COPY initialize_all.sh /initialize_all.sh
 RUN chmod +x /initialize_all.sh
