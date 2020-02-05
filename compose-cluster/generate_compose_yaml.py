@@ -7,6 +7,8 @@ import yaml
 import json
 import shutil
 
+LFS_DOCKER_TAG = "latest"
+
 #Print help if args not given correctly
 if len(sys.argv) != 3:
 	print("Usage: python3 generate_compose_yaml.py MONGO_SHARD_COUNT MONGO_REPLICA_COUNT")
@@ -156,7 +158,7 @@ yaml_obj['services']['initializer']['depends_on'] = ['router']
 #Configure the initial LFS container
 print("Configuring service: lfsinitial")
 yaml_obj['services']['lfsinitial'] = {}
-yaml_obj['services']['lfsinitial']['image'] = "lfs/lfs"
+yaml_obj['services']['lfsinitial']['image'] = "lfs/lfs:{}".format(LFS_DOCKER_TAG)
 
 yaml_obj['services']['lfsinitial']['networks'] = {}
 yaml_obj['services']['lfsinitial']['networks']['internalnetwork'] = {}
