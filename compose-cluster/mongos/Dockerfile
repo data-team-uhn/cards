@@ -6,5 +6,5 @@ RUN apt-get install -y netcat-traditional
 
 COPY initialize_mongos.sh /initialize_mongos.sh
 RUN chmod +x /initialize_mongos.sh
-COPY mongo.conf /etc/mongo.conf
+COPY mongo-router.conf /etc/mongo.conf
 ENTRYPOINT /initialize_mongos.sh

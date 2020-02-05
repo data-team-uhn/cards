@@ -58,7 +58,7 @@ for shard_index in range(MONGO_SHARD_COUNT):
 	mongo_conf['net']['bindIp'] = '0.0.0.0'
 	mongo_conf['net']['port'] = 27017
 	
-	with open("shard{}/mongo.conf".format(shard_index), 'w') as f_out:
+	with open("shard{}/mongo-shard.conf".format(shard_index), 'w') as f_out:
 		f_out.write(yaml.dump(mongo_conf, default_flow_style=False))
 	
 	for replica_index in range(MONGO_REPLICA_COUNT):
