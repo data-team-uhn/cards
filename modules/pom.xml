@@ -33,7 +33,6 @@
   <modules>
     <module>startup-customization</module>
     <module>commons</module>
-    <module>material-dashboard</module>
     <module>ui-extension</module>
     <module>login</module>
     <module>homepage</module>
@@ -44,5 +43,6 @@
     <module>permissions</module>
     <module>permissions-provider</module>
     <module>vocabularies</module>
+    <module>aggregated-frontend</module>
   </modules>
 </project>

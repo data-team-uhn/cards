@@ -20,7 +20,7 @@
 # The LFS homepage
 [feature name=lfs-dataentry]
 
-[artifacts]
+[artifacts runModes=forms startLevel=10]
     org.apache.sling/org.apache.sling.scripting.sightly/1.1.2-1.4.0
     org.apache.sling/org.apache.sling.scripting.sightly.runtime/1.1.0-1.4.0
     org.apache.sling/org.apache.sling.api/2.18.4
@@ -28,39 +28,49 @@
     javax.jcr/jcr/2.0
     javax.servlet/javax.servlet-api/3.1.0
     org.apache.commons/commons-csv/1.6
+    ca.sickkids.ccm.lfs/lfs-dataentry
 
-[:repoinit]
-    # Data entry
-    create path (lfs:QuestionnairesHomepage) /Questionnaires
-    create path (lfs:FormsHomepage) /Forms
-    create path (lfs:SubjectsHomepage) /Subjects
-    create path (sling:Folder) /db
-    create path (lfs:dataEntryViewer) /view
-    create path (lfs:dataQuery) /query
+[configurations runModes=forms]
+    org.apache.sling.jcr.repoinit.RepositoryInitializer-forms
+        scripts=["\
+            create path (lfs:dataQuery) /query \
+\
+            # Allow all users to query; the actual results will obey their access rights \
+            set ACL for everyone \
+                allow   jcr:read    on /query \
+            end \
+          "]
 
-    # Testing users
-    create path (lfs:dataEntry) /db/dummy1
-    create path (lfs:dataEntry) /db/dummy2
-    create user test_user with password testing
+[configurations runModes=forms,permissions_open]
+    org.apache.sling.jcr.repoinit.RepositoryInitializer-forms_open
+        scripts=["\
+            create path (lfs:QuestionnairesHomepage) /Questionnaires \
+            create path (lfs:FormsHomepage) /Forms \
+            create path (lfs:SubjectsHomepage) /Subjects \
+\
+            set ACL on /Forms,/Subjects \
+                allow jcr:all for everyone \
+            end \
+\
+            set ACL on /Questionnaires \
+                allow jcr:read for everyone \
+            end \
+          "]
 
-    # Allow all users to read from the database and one of the nodes
-    set ACL for everyone
-        allow   jcr:read    on /Questionnaires
-        allow   jcr:read    on /Forms
-        allow   jcr:read    on /Subjects
-        allow   jcr:read    on /view
-        allow   jcr:read    on /db
-        allow   jcr:read    on /query
-        allow   jcr:read    on /db/dummy1
-        deny    jcr:read    on /db/dummy2
-    end
-
-    # Allow test_user to add new data
-    set ACL for test_user
-        allow   jcr:addChildNodes       on /db
-        allow   jcr:modifyProperties    on /db
-        allow   jcr:nodeTypeManagement  on /db
-        allow   jcr:read    on /db/dummy2
-        allow   jcr:write   on /db/dummy1
-        allow   jcr:write   on /db/dummy2
-    end
+[configurations runModes=forms,permissions_trusted]
+    org.apache.sling.jcr.repoinit.RepositoryInitializer-forms_trusted
+        scripts=["\
+            create path (lfs:QuestionnairesHomepage) /Questionnaires \
+            create path (lfs:FormsHomepage) /Forms \
+            create path (lfs:SubjectsHomepage) /Subjects \
+\
+            create group TrustedUsers \
+\
+            set ACL on /Forms,/Subjects \
+                allow jcr:all for TrustedUsers \
+            end \
+\
+            set ACL on /Questionnaires \
+                allow jcr:read for TrustedUsers \
+            end \
+          "]

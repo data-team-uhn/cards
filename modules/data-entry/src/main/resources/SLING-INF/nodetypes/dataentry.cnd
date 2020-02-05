@@ -27,35 +27,6 @@
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// Simple nodetype to store user-entered data.
-[lfs:dataEntry] > sling:Resource
-  // Attributes:
-  query
-
-  // Properties:
-  // Hardcode the resource type
-  - sling:resourceType (STRING) = "lfs/dataEntry" mandatory autocreated protected
-  // Hardcode the resource supertype: a dataEntry is a resource
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
-  // Each data entry has a name and a value (proof-of-concept properties)
-  - name (STRING) = "testname" mandatory autocreated
-  - value (STRING) = "testvalue" mandatory autocreated
-
-//-----------------------------------------------------------------------------
-// Nodetype for homepage to display/create/edit data entries
-[lfs:dataEntryViewer] > sling:Folder
-  // Attributes:
-  query
-
-  // Properties:
-  // Hardcode the resource type
-  - sling:resourceType (STRING) = "lfs/dataEntryViewer" mandatory autocreated protected
-  // Hardcode the resource supertype: the dataEntryViewer is a resource
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
-  // Set a default title
-  - title (String) = "LFS data entries" mandatory autocreated
-
-//-----------------------------------------------------------------------------
 // Nodetype for data query handling
 [lfs:dataQuery] > sling:Folder
   // Attributes:
@@ -257,7 +228,88 @@
   // Children
 
   // The questions and sub-sections that make up this section.
-  + * (lfs:Question, lfs:Section) = lfs:Question
+  // The conditions to display this section may also be listed as children
+  + * (lfs:Question, lfs:Section, lfs:Conditional, lfs:ConditionalGroup) = lfs:Question
+
+//-----------------------------------------------------------------------------
+// A conditional group is a set of conditions that can be imposed on e.g. the display of a section.
+// The conditions are listed as children of this, and may be turned from an OR to an AND via the
+// `requireAll` property.
+[lfs:ConditionalGroup] > sling:Resource
+  // Attributes
+
+  // Conditionals are queryable
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Conditional" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each section link is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // This conditional may contain any number of conditionals or conditional groups
+  + * (lfs:ConditionalGroup, lfs:Conditional) = lfs:Question
+
+//-----------------------------------------------------------------------------
+// A conditional is a condition that can be imposed on e.g. the display of a section.
+[lfs:Conditional] > sling:Resource
+  // Attributes
+
+  // Conditionals are queryable
+  query
+  // Our children are orderable, and may be executable in a specific order
+  orderable
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Conditional" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each section link is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A conditional will always have a child node called operandA of type ConditionalValue
+  + operandA (lfs:ConditionalValue) mandatory
+
+  // A conditional always has exactly one comparator
+  - comparator (STRING) mandatory
+
+  // A second child operandB may be specified, but leaving it as the default is OK if the comparator is singular
+  + operandB (lfs:ConditionalValue) = lfs:ConditionalValue autocreated
+
+//-----------------------------------------------------------------------------
+// A conditional value is either a value or a method of getting a value.
+[lfs:ConditionalValue] > sling:Resource
+  // Attributes
+
+  // We don't have children, but let's assume children might need to be ordered in the future.
+  orderable
+  // The main sub-item of an answer is its value.
+  primaryitem value
+  // Conditional values are queryable
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/ConditionalValue" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each value is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // The value which may be a reference to a field or a value (or multiple values)
+  - value (STRING) multiple
+
+  // Whether or not this value is a reference or not
+  - isReference (BOOLEAN) = false autocreated
+
+  // Require that the parent conditional checks every value (for a multi-valued field)
+  // Otherwise it will return true if at least one value fits
+  - requireAll (BOOLEAN) = false mandatory autocreated
+
+  // We don't define any subchildren.
 
 //-----------------------------------------------------------------------------
 // A questionnaire is a collection of sections and questions.
@@ -459,6 +511,36 @@
   - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
+// Section object, which can contain multiple other answers. The "question" element here
+// should be the section we're answering
+[lfs:AnswerSection] > sling:Folder
+  // Attributes
+  // The child answers will need to be orderable.
+  orderable
+
+  // We can use answer sections in a query.
+  query
+
+  // The main sub-item of an answer is its section link.
+  primaryitem section
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/AnswerSection" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A reference to the section being answered.
+  // Mandatory, every answer section is answering a section.
+  // No full text search, since it's just a non-textual reference.
+  - section (reference) mandatory nofulltext
+
+  // Children
+
+  // The answers and other answersections recorded in this section.
+  + * (lfs:Answer, lfs:AnswerSection) = lfs:Answer
+
+//-----------------------------------------------------------------------------
 // Forms: a filled in questionnaire.
 [lfs:Form] > sling:Folder, mix:referenceable, mix:versionable
   // Attributes
@@ -487,8 +569,8 @@
 
   // Children
 
-  // The answers recorded in this form.
-  + * (lfs:Answer)
+  // The answers and answer sections recorded in this form.
+  + * (lfs:Answer, lfs:AnswerSection) = lfs:Answer
 
 //-----------------------------------------------------------------------------
 // The homepage for the Forms space.

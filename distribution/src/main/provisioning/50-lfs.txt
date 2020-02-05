@@ -44,5 +44,5 @@
     ca.sickkids.ccm.lfs/lfs-dataentry/${lfs.version}/slingfeature/slingfeature
     ca.sickkids.ccm.lfs/lfs-login/${lfs.version}/slingfeature/slingfeature
     ca.sickkids.ccm.lfs/lfs-principals/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-material-dashboard/${lfs.version}
     ca.sickkids.ccm.lfs/lfs-vocabularies/${lfs.version}/slingfeature/slingfeature
+    ca.sickkids.ccm.lfs/lfs-aggregated-frontend/${lfs.version}

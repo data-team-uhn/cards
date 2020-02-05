@@ -17,9 +17,11 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import uuidv4 from "uuid/v4";
+
+import { useFormWriterContext } from "./FormContext";
 
 export const LABEL_POS = 0;
 export const VALUE_POS = 1;
@@ -27,19 +29,38 @@ export const VALUE_POS = 1;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, answerNodeType, valueType, questionDefinition, existingAnswer } = props;
-  let [answerPath] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
+  let { answers, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType } = props;
+  let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
+  let answerPath = path + "/" + answerID;
+  // Hooks must be pulled from the top level, so this cannot be moved to inside the useEffect()
+  const changeFormContext = useFormWriterContext();
+
+  // When the answers change, we inform the FormContext
+  useEffect(() => {
+    if (answers && answers.length > 0) {
+      changeFormContext((oldContext) => ({...oldContext, [questionName]: answers}));
+    }
+  }, [answers]);
+
   return (
     <React.Fragment>
-      <input type="hidden" name={`./${answerPath}/jcr:primaryType`} value={answerNodeType}></input>
-      <input type="hidden" name={`./${answerPath}/question`} value={questionDefinition['jcr:uuid']}></input>
-      <input type="hidden" name={`./${answerPath}/question@TypeHint`} value="Reference"></input>
-      <input type="hidden" name={`./${answerPath}/value@TypeHint`} value={valueType}></input>
-      {answers.map( (element, index) => {
-        return (
-          <input type="hidden" name={`./${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS]} value={element[VALUE_POS]}></input>
-          );
-      })}
+      <input type="hidden" name={`${answerPath}/jcr:primaryType`} value={answerNodeType}></input>
+      <input type="hidden" name={`${answerPath}/question`} value={questionDefinition['jcr:uuid']}></input>
+      <input type="hidden" name={`${answerPath}/question@TypeHint`} value="Reference"></input>
+
+      {/* Add the answers, if any exist, or otherwise delete them */}
+      {(answers && answers.length) ?
+        (<React.Fragment>
+          <input type="hidden" name={`${answerPath}/value@TypeHint`} value={valueType}></input>
+          {answers.map( (element, index) => {
+            return (
+              <input type="hidden" name={`${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS]} value={element[VALUE_POS]}></input>
+              );
+          })}
+        </React.Fragment>)
+      :
+        <input type="hidden" name={`${answerPath}/value@Delete`} value="0"></input>
+      }
     </React.Fragment>
     );
 }

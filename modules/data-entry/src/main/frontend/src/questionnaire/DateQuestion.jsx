@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 import { TextField, Typography, withStyles } from "@material-ui/core";
 
@@ -188,6 +188,7 @@ function DateQuestion(props) {
         existingAnswer={existingAnswer}
         answerNodeType="lfs:DateAnswer"
         valueType="Date"
+        {...rest}
         />
       <TextField
         type={textFieldType}

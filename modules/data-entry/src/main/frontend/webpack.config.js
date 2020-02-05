@@ -6,8 +6,6 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'redirect']: './src/dataQuery/redirect.js',
-    [module_name + 'showQuery']: './src/dataQuery/query.js',
     [module_name + 'LiveTable']: './src/dataHomepage/LiveTable.jsx',
     [module_name + 'Questionnaires']: './src/dataHomepage/Questionnaires.jsx',
     [module_name + 'Subjects']: './src/dataHomepage/Subjects.jsx',
@@ -46,16 +44,5 @@ module.exports = {
     path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
     publicPath: '/',
     filename: '[name].[contenthash].js'
-  },
-  externals: [
-    {
-      "moment": "moment",
-      "react": "React",
-      "react-dom": "ReactDOM",
-      "react-router-dom": "ReactRouterDOM",
-      "lodash": "lodash",
-      "prop-types": "PropTypes",
-      "@material-ui/core": "window['MaterialUI']",
-    }
-  ]
+  }
 };

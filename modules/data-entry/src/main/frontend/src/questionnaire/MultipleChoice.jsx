@@ -64,10 +64,18 @@ function MultipleChoice(props) {
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio;
   let inputEl = null;
 
-  let selectOption = (id, name, checked = false, removeSentinel = false) => {
+  let selectOption = (id, name, checked = false) => {
     if (isRadio) {
-      setSelection([[name, id]]);
-      return;
+      let defaultOption = defaults.filter((option) => {return option[VALUE_POS] === name || option[LABEL_POS] === name})[0];
+      if (defaultOption) {
+        setSelection([[defaultOption[LABEL_POS], defaultOption[VALUE_POS]]]);
+        // Selected the matching value, we no longer need the input
+        return true;
+      } else {
+        setSelection([[name, id]]);
+        // Don't clear the input, we're still using it:
+        return false;
+      }
     }
 
     // If the element was already checked, remove it instead
@@ -76,25 +84,27 @@ function MultipleChoice(props) {
     }
 
     // Do not add anything if we are at our maximum number of selections
-    if (maxAnswers > 0 && selection.length >= maxAnswers && !removeSentinel) {
+    if (maxAnswers > 0 && selection.length >= maxAnswers) {
       return;
     }
 
     // Do not add duplicates
-    if (selection.some(element => {return element[VALUE_POS] === id})) {
+    if (selection.some(element => {return element[VALUE_POS] === id || element[LABEL_POS] === name})) {
       return;
     }
 
     let newSelection = selection.slice();
-    if (removeSentinel) {
-      // Due to how React handles state, we need to do this in one step
-      newSelection = newSelection.filter(
-        (element) => {
-          return (element[VALUE_POS] !== GHOST_SENTINEL);
-        }
-      );
+
+    // Check if any of the predefined options matches the user input. If yes, select it instead of adding a new entry
+    let defaultOption = defaults.filter((option) => {
+      return (option[VALUE_POS] === id || option[LABEL_POS] === name)
+    })[0];
+    if (defaultOption) {
+      newSelection.push([defaultOption[LABEL_POS], defaultOption[VALUE_POS]]);
+    } else {
+      // Otherwise, add a new entry
+      newSelection.push([name, id]);
     }
-    newSelection.push([name, id]);
     setSelection(newSelection);
   }
 
@@ -107,28 +117,19 @@ function MultipleChoice(props) {
   }
 
   let updateGhost = (id, name) => {
-    // If we're a radio, just update with the new value
-    if (isRadio) {
-      setSelection([[name, id]]);
-      return;
-    }
-
-    let ghostIndex = selection.findIndex(element => {return element[VALUE_POS] === GHOST_SENTINEL});
-    let newSelection = selection.slice();
-    // If the ghost is already selected, update it. Otherwise, append it.
-    if (ghostIndex >= 0) {
-      newSelection[ghostIndex] = [name, id];
-    } else {
-      newSelection.push([name, id]);
-    }
-    setSelection(newSelection);
+    // If at most one answer is allowed, just update with the new value
+    (maxAnswers === 1) && setSelection([[name, id]]);
   }
 
   // Add a non-default option
+  // Returns whether an option was added (true) or a matching option already existed (false)
   let addOption = (id, name) => {
-    let newOptions = options.slice();
-    newOptions.push([name, id, false]);
-    setOptions(newOptions);
+    if ( !options.some((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name}) &&
+        !defaults.some((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name})) {
+      let newOptions = options.slice();
+      newOptions.push([name, id, false]);
+      setOptions(newOptions);
+    }
   }
 
   // Remove a non-default option
@@ -142,32 +143,38 @@ function MultipleChoice(props) {
     return;
   }
 
+  let acceptEnteredOption = () => {
+    if (isRadio) {
+      selectOption(ghostValue, ghostName) && setGhostName("");
+      inputEl && inputEl.blur();
+    } else if (maxAnswers !== 1 && !error && ghostName !== "") {
+      // If we can select multiple and are not in error, add this option (if not already available) and ensure it's selected
+      addOption(ghostName, ghostName);
+      selectOption(ghostName, ghostName);
+      // Clear the ghost
+      setGhostName("");
+    }
+  }
+
   // Hold the input box for either multiple choice type
   let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
       <TextField
-        className={classes.textField}
+        helperText={maxAnswers !== 1 && "Press ENTER to add a new line"}
+        className={classes.textField + (maxAnswers === 1 && (!defaults || defaults.length == 0) ? (' ' + classes.answerField) : '')}
         onChange={(event) => {
           setGhostName(event.target.value);
           updateGhost(GHOST_SENTINEL, event.target.value);
           onChange && onChange(event.target.value);
         }}
         onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
+        onBlur={acceptEnteredOption}
         inputProps={Object.assign({
           onKeyDown: (event) => {
             if (event.key == 'Enter') {
               // We need to stop the event so that it doesn't trigger a form submission
               event.preventDefault();
               event.stopPropagation();
-              if (isRadio) {
-                selectOption(ghostValue, ghostName);
-              } else if (maxAnswers !== 1 && !error) {
-                // If we can select multiple and are not in error, add this as a possible input
-                addOption(ghostName, ghostName);
-                selectOption(ghostName, ghostName, false, true);
-
-                // Clear the ghost
-                setGhostName("");
-              }
+              acceptEnteredOption();
             }
           }
         }, additionalInputProps)
@@ -259,30 +266,6 @@ function MultipleChoice(props) {
           />
         <List className={classes.checkboxList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
-          {(input || textbox) && <ListItem key={ghostName} className={classes.selectionChild + " " + classes.ghostListItem}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={ghostSelected}
-                    onChange={() => {
-                      selectOption(ghostValue, ghostName, ghostSelected);
-                      onChange && onChange(ghostSelected ? undefined : ghostName);
-                    }}
-                    onClick={() => {inputEl && inputEl.select();}}
-                    disabled={!ghostSelected && disabled}
-                    className={classes.ghostRadiobox}
-                  />
-                }
-                label=""
-                value={ghostValue}
-                key={ghostValue}
-                className={classes.ghostFormControl + " " + classes.childFormControl}
-                classes={{
-                  label: classes.inputLabel
-                }}
-              />
-            </ListItem>
-          }
         </List>
         {ghostInput}
         {warning}
@@ -297,9 +280,9 @@ function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick,
     return (
       <StyledResponseChild
         id={childData[VALUE_POS]}
-        key={childData[VALUE_POS]}
+        key={"value-"+childData[VALUE_POS]}
         name={childData[LABEL_POS]}
-        checked={selection.includes(childData)}
+        checked={selection.some((sel) => {return (sel[LABEL_POS] === childData[LABEL_POS] || sel[VALUE_POS] === childData[VALUE_POS])})}
         disabled={disabled}
         onClick={onClick}
         onDelete={onDelete}
@@ -314,8 +297,7 @@ var StyledResponseChild = withStyles(QuestionnaireStyle)(ResponseChild);
 
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
-  const {classes, name, id, isDefault, onClick, disabled, isRadio, onDelete} = props;
-  const [checked, setCheck] = useState(props.checked);
+  const {classes, checked, name, id, isDefault, onClick, disabled, isRadio, onDelete} = props;
 
   return (
     <React.Fragment>
@@ -336,7 +318,7 @@ function ResponseChild(props) {
                   (
                     <Checkbox
                       checked={checked}
-                      onChange={() => {onClick(id, name, checked); setCheck(!checked);}}
+                      onChange={() => {onClick(id, name, checked)}}
                       disabled={!checked && disabled}
                       className={classes.checkbox}
                     />
