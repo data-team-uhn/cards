@@ -90,7 +90,7 @@ Docker-Compose can be employed to create a cluster of *N* MongoDB Shards, *M* Mo
 
 ```bash
 cd compose-cluster
-python3 generate_compose_yaml.py 2 3 #two shards, three replicas
+python3 generate_compose_yaml.py --shards 2 --replicas 3
 docker-compose build
 ```
 
