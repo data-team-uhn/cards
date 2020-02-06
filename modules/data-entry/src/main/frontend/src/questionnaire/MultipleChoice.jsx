@@ -68,6 +68,7 @@ function MultipleChoice(props) {
   const [ghostName, setGhostName] = useState((isBare || (isRadio && defaults.indexOf(initialSelection[0]) < 0)) && existingAnswer && existingAnswer[1].value || '');
   const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);
   const [options, setOptions] = useState(all_options);
+  const [changed, hasChanged] = useState(false);
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio;
   let inputEl = null;
@@ -155,6 +156,7 @@ function MultipleChoice(props) {
       }
     ));
     unselect(id, name);
+    hasChanged(true);
     return;
   }
 
@@ -179,6 +181,7 @@ function MultipleChoice(props) {
         onChange={(event) => {
           setGhostName(event.target.value);
           updateGhost(GHOST_SENTINEL, event.target.value);
+          hasChanged(true);
           onChange && onChange(event.target.value);
         }}
         onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
@@ -205,10 +208,11 @@ function MultipleChoice(props) {
     // Clear the ghost input
     onChange && onChange(ghostSelected && !isRadio ? ghostName : undefined);
     selectOption(...args);
+    hasChanged(true);
   }
 
-  const warning = minAnswers > 0 && (
-    <Typography variant="caption" color={selection.length < minAnswers ? 'error' : 'textSecondary'} className={classes.warningTypography} paragraph>
+  const warning = minAnswers > 0 && (console.log(selection) || true) && (
+    <Typography variant="caption" color={selection.filter((s) => s!="").length < minAnswers && changed ? 'error' : 'textSecondary'} className={classes.warningTypography} paragraph>
       {minAnswers === 1 ? _i18n("warning.mandatory") : _i18n("warning.minOptions")}
     </Typography>
     );
@@ -250,6 +254,7 @@ function MultipleChoice(props) {
               control={
               <Radio
                 onChange={() => {
+                  hasChanged(true);
                   selectOption(ghostValue, ghostName);
                   onChange && onChange(ghostSelected ? undefined : ghostName);
                 }}
