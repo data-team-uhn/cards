@@ -9,164 +9,199 @@
     "dataType": "boolean",
     "enableUnknown" : true
   },
-  "weight_at_start": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Weight at start of radiation therapy",
-    "minAnswers": 1,
-    "maxAnswers": 1,
-    "dataType": "decimal",
-    "minValue" : 0,
-    "unitOfMeasurement": "kg"
-  },
-  "height_at_start": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Height at start of radiation therapy",
-    "minAnswers": 1,
-    "maxAnswers": 1,
-    "dataType": "decimal",
-    "minValue" : 0,
-    "unitOfMeasurement": "cm"
-  },
-  "start_date": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Radiation start date",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "date",
-    "dateFormat": "yyyy-MM-dd"
-  },
-  "end_date": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Radiation end date",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "date",
-    "dateFormat": "yyyy-MM-dd"
-  },
-  "technique": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Radiation technique",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "text"
-  },
-  "source": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Radiation source",
-    "minAnswers": 1,
-    "maxAnswers": 1,
-    "dataType": "text",
-    "Xray": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Xray"
+  "radiation_details": {
+    "jcr:primaryType": "lfs:Section",
+    "condition": {
+      "jcr:primaryType": "lfs:Conditional",
+      "operandA": {
+        "jcr:primaryType": "lfs:ConditionalValue",
+        "value": ["radiation"],
+        "isReference": true
+      },
+      "comparator": "=",
+      "operandB": {
+        "jcr:primaryType": "lfs:ConditionalValue",
+        "value": ["true"]
+      }
     },
-    "Proton": {
-      "jcr:primaryType": "lfs:AnswerOption",
-      "value": "Proton"
+    "weight_at_start": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Weight at start of radiation therapy",
+      "minAnswers": 1,
+      "maxAnswers": 1,
+      "dataType": "decimal",
+      "minValue" : 0,
+      "unitOfMeasurement": "kg"
+    },
+    "height_at_start": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Height at start of radiation therapy",
+      "minAnswers": 1,
+      "maxAnswers": 1,
+      "dataType": "decimal",
+      "minValue" : 0,
+      "unitOfMeasurement": "cm"
+    },
+    "start_date": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Radiation start date",
+      "maxAnswers": 1,
+      "dataType": "date",
+      "dateFormat": "yyyy-MM-dd"
+    },
+    "end_date": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Radiation end date",
+      "maxAnswers": 1,
+      "dataType": "date",
+      "dateFormat": "yyyy-MM-dd"
+    },
+    "technique": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Radiation technique",
+      "maxAnswers": 1,
+      "dataType": "text"
+    },
+    "source": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Radiation source",
+      "minAnswers": 1,
+      "maxAnswers": 1,
+      "dataType": "text",
+      "Xray": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "Xray"
+      },
+      "Proton": {
+        "jcr:primaryType": "lfs:AnswerOption",
+        "value": "Proton"
+      }
+    },
+    "beam_energy": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Beam energy",
+      "maxAnswers": 1,
+      "dataType": "decimal",
+      "minValue" : 0,
+      "unitOfMeasurement" : "MV"
+    },
+    "total_dose": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Total radiation dose to tumor bed",
+      "maxAnswers": 1,
+      "dataType": "decimal",
+      "minValue" : 0,
+      "unitOfMeasurement" : "cGy"
+    },
+    "fraction_number": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Fraction number",
+      "maxAnswers": 1,
+      "dataType": "decimal",
+      "minValue" : 0
+    },
+    "boost": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Boost",
+      "maxAnswers": 1,
+      "dataType": "boolean",
+      "enableUnknown" : true
+    },
+    "boost_details": {
+      "jcr:primaryType": "lfs:Section",
+      "condition": {
+        "jcr:primaryType": "lfs:Conditional",
+        "operandA": {
+          "jcr:primaryType": "lfs:ConditionalValue",
+          "value": ["boost"],
+          "isReference": true
+        },
+        "comparator": "=",
+        "operandB": {
+          "jcr:primaryType": "lfs:ConditionalValue",
+          "value": ["true"]
+        }
+      },
+      "boost_technique": {
+        "jcr:primaryType": "lfs:Question",
+        "text": "Boost radiation technique",
+        "maxAnswers": 1,
+        "dataType": "text"
+      },
+      "boost_beam_energy": {
+        "jcr:primaryType": "lfs:Question",
+        "text": "Boost beam energy",
+        "maxAnswers": 1,
+        "dataType": "decimal",
+        "minValue" : 0,
+        "unitOfMeasurement" : "MV"
+      },
+      "boost_dose": {
+        "jcr:primaryType": "lfs:Question",
+        "text": "Boost dose",
+        "maxAnswers": 1,
+        "dataType": "decimal",
+        "minValue" : 0,
+        "unitOfMeasurement" : "cGy"
+      }
+    },
+    "radiation_field": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Radiation field",
+      "minAnswers": 1,
+      "maxAnswers": 1,
+      "dataType": "text"
+    },
+    "tbi": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Total Body Irradiation (TBI) - transplant conditioning",
+      "minAnswers": 1,
+      "maxAnswers": 1,
+      "dataType": "boolean",
+      "enableUnknown" : true
+    },
+    "tbi_details": {
+      "jcr:primaryType": "lfs:Section",
+      "condition": {
+        "jcr:primaryType": "lfs:Conditional",
+        "operandA": {
+          "jcr:primaryType": "lfs:ConditionalValue",
+          "value": ["tbi"],
+          "isReference": true
+        },
+        "comparator": "=",
+        "operandB": {
+          "jcr:primaryType": "lfs:ConditionalValue",
+          "value": ["true"]
+        }
+      },
+      "tbi_start_date": {
+        "jcr:primaryType": "lfs:Question",
+        "text": "TBI start date",
+        "maxAnswers": 1,
+        "dataType": "date",
+        "dateFormat": "yyyy-MM-dd"
+      },
+      "tbi_end_date": {
+        "jcr:primaryType": "lfs:Question",
+        "text": "TBI end date",
+        "maxAnswers": 1,
+        "dataType": "date",
+        "dateFormat": "yyyy-MM-dd"
+      },
+      "tbi_dose": {
+        "jcr:primaryType": "lfs:Question",
+        "text": "TBI dose",
+        "maxAnswers": 1,
+        "dataType": "decimal",
+        "minValue" : 0,
+        "unitOfMeasurement" : "cGy"
+      }
     }
-  },
-  "beam_energy": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Beam energy",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "decimal",
-    "minValue" : 0,
-    "unitOfMeasurement" : "MV"
-  },
-  "total_dose": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Total radiation dose to tumor bed",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "decimal",
-    "minValue" : 0,
-    "unitOfMeasurement" : "cGy"
-  },
-  "fraction_number": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Fraction number",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "decimal",
-    "minValue" : 0
-  },
-  "boost": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Boost",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "boolean",
-    "enableUnknown" : true
-  },
-  "boost_technique": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Boost radiation technique",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "text"
-  },
-  "boost_beam_energy": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Boost beam energy",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "decimal",
-    "minValue" : 0,
-    "unitOfMeasurement" : "MV"
-  },
-  "boost_dose": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Boost dose",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "decimal",
-    "minValue" : 0,
-    "unitOfMeasurement" : "cGy"
-  },
-  "radiation_field": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Radiation field",
-    "minAnswers": 1,
-    "maxAnswers": 1,
-    "dataType": "text"
-  },
-  "tbi": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Total Body Irradiation (TBI) - transplant conditioning",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "boolean"
-  },
-  "tbi_start_date": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "TBI start date",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "date",
-    "dateFormat": "yyyy-MM-dd"
-  },
-  "tbi_end_date": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "TBI end date",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "date",
-    "dateFormat": "yyyy-MM-dd"
-  },
-  "tbi_dose": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "TBI dose",
-    "minAnswers": 0,
-    "maxAnswers": 1,
-    "dataType": "decimal",
-    "minValue" : 0,
-    "unitOfMeasurement" : "cGy"
   },
   "comments": {
     "jcr:primaryType": "lfs:Question",
     "text": "Comments",
-    "minAnswers": 0,
     "maxAnswers": 1,
     "displayMode": "textbox",
     "dataType": "text"
