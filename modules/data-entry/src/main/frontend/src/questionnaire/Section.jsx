@@ -66,13 +66,13 @@ function Section(props) {
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
   const titleEl = sectionDefinition["label"] &&
     ((idx, uuid) =>
-      <Typography variant={headerVariant} style={{display: "inline"}} className={uuid == selectedUUID ? classes.highlightedTitle: undefined}>
+      <Typography variant={headerVariant} className={uuid == selectedUUID ? classes.highlightedTitle: undefined}>
         {createTitle(sectionDefinition["label"], idx)}
       </Typography>
     );
   const descEl = sectionDefinition["description"] &&
     (idx =>
-      <Typography variant="caption" color="textSecondary">
+      <Typography variant="caption" color="textSecondary" display="block">
         {sectionDefinition["description"]}
       </Typography>
     );
