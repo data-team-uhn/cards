@@ -29,7 +29,7 @@ LFS_DOCKER_TAG = "latest"
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
-argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard', default=3, type=int)
+argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
