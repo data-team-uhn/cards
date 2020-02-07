@@ -84,7 +84,13 @@ To enable debug mode, also add `--env DEBUG=true` to the `docker run` command. N
 
 Docker-Compose can be employed to create a cluster of *N* MongoDB Shards, *M* MongoDB Replicas, and *one* LFS instance.
 
+### Installing/Starting
+
 1. Before proceeding, ensure that the `lfs/lfs` Docker image has been built.
+
+```bash
+mvn clean install
+```
 
 2. Now build the *docker-compose* environment.
 
@@ -109,11 +115,30 @@ sh.status()
 exit
 ```
 
-5. When stopping the LFS instance:
+### Stopping gracefully, without losing data
+
+1. To stop the MongoDB/LFS cluster:
 
 ```bash
 docker-compose down
-docker-compose rm
-docker volume prune -f
-./cleanup.sh
+```
+
+### Restarting
+
+1. To restart the MongoDB/LFS cluster while preserving the entered data
+from the previous execution:
+
+```bash
+LFS_RELOAD=true docker-compose up -d
+```
+
+### Cleaning up
+
+1. To stop the MongoDB/LFS cluster and **delete all entered data**:
+
+```
+docker-compose down #Stop all containers
+docker-compose rm #Remove all stopped containers
+docker volume prune -f #Remove all stored data
+./cleanup.sh #Remove the cluster configuration files
 ```
