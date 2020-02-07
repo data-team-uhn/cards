@@ -17,6 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+#If we are simply restarting...
+[ -z $LFS_RELOAD ] || WAIT_FOR_LFSINIT=''
+[ -z $LFS_RELOAD ] || INITIAL_SLING_NODE=''
+
 #If inside a docker-compose environment, wait for a signal...
 [ -z $INSIDE_DOCKER_COMPOSE ] || (while true; do (echo "LFS" | nc router 9999) && break; sleep 5; done)
 

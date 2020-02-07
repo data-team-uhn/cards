@@ -44,6 +44,7 @@ OUTPUT_FILENAME = "docker-compose.yml"
 
 yaml_obj = {}
 yaml_obj['version'] = '3'
+yaml_obj['volumes'] = {}
 yaml_obj['services'] = {}
 
 #Create 3 configuration databases
@@ -61,7 +62,11 @@ for i in range(3):
 	yaml_obj['services'][service_name]['networks']['internalnetwork'] = {}
 	yaml_obj['services'][service_name]['networks']['internalnetwork']['aliases'] = [service_name]
 	
+	volume_name = "{}-volume".format(service_name)
+	yaml_obj['volumes'][volume_name] = {}
+	yaml_obj['volumes'][volume_name]['driver'] = "local"
 	
+	yaml_obj['services'][service_name]['volumes'] = ["{}:/data/configdb".format(volume_name)]
 
 #Setup the Mongo shard/replica service containers
 for shard_index in range(MONGO_SHARD_COUNT):
@@ -94,6 +99,12 @@ for shard_index in range(MONGO_SHARD_COUNT):
 		yaml_obj['services'][service_name]['networks'] = {}
 		yaml_obj['services'][service_name]['networks']['internalnetwork'] = {}
 		yaml_obj['services'][service_name]['networks']['internalnetwork']['aliases'] = [service_name]
+		
+		volume_name = "{}-volume".format(service_name)
+		yaml_obj['volumes'][volume_name] = {}
+		yaml_obj['volumes'][volume_name]['driver'] = "local"
+		
+		yaml_obj['services'][service_name]['volumes'] = ["{}:/data/db".format(volume_name)]
 
 #Setup the router
 print("Configuring service: router")
@@ -187,6 +198,7 @@ yaml_obj['services']['lfsinitial']['ports'] = ["8080:8080"]
 yaml_obj['services']['lfsinitial']['environment'] = []
 yaml_obj['services']['lfsinitial']['environment'].append("INITIAL_SLING_NODE=true")
 yaml_obj['services']['lfsinitial']['environment'].append("INSIDE_DOCKER_COMPOSE=true")
+yaml_obj['services']['lfsinitial']['environment'].append("LFS_RELOAD=$LFS_RELOAD")
 
 yaml_obj['services']['lfsinitial']['depends_on'] = ['router']
 
