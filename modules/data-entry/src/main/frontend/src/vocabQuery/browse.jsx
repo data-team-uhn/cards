@@ -50,7 +50,7 @@ function VocabularyBrowser(props) {
 
   // Rebuild the browser tree centered around the given term.
   let rebuildBrowser = (id) => {
-    // Do not re-grab suggestions for the same term
+    // Do not re-grab suggestions for the same term, or if our lookup has failed (to prevent infinite loops)
     if (id === lastKnownTerm) {
       return;
     }
@@ -64,8 +64,9 @@ function VocabularyBrowser(props) {
     }
 
     // Create the XHR request
-    var URL = REST_URL + `/${vocabulary}/${id}/`;
-    MakeRequest(URL, rebuildTree);
+    var escapedID = id.replace(":", "");  // JCR nodes do not have colons in their names
+    var url = new URL(`./${vocabulary}/${escapedID}.info.json`, REST_URL);
+    MakeRequest(url, rebuildTree);
   }
 
   // Callback from an onload to generate the tree from a /suggest query about the parent
@@ -81,10 +82,10 @@ function VocabularyBrowser(props) {
 
       setParentNode(parentBranches);
       setCurrentNode(constructBranch(data["id"], data["name"], true, true, true));
-      setLastKnownTerm(term);
     } else {
       onError("Error: initial term lookup failed with code " + status);
     }
+    setLastKnownTerm(term);
   }
 
   // Construct a branch element for rendering

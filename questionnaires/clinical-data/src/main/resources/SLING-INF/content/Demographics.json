@@ -476,7 +476,7 @@
     "maxAnswers": 0,
     "displayMode": "input",
     "dataType": "vocabulary",
-    "sourceVocabulary": "HPO",
+    "sourceVocabulary": "HP",
     "vocabularyFilter": ["HP:0000118"]
   },
   "inherited_from": {

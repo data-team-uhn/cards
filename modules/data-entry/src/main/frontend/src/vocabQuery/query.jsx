@@ -66,9 +66,14 @@ class VocabularyQuery extends React.Component {
       infoName: "",
       infoDefinition: "",
       infoAlsoKnownAs: [],
-      infoTypeOf: "",
+      infoTypeOf: [],
       infoAnchor: null,
       infoAboveBackground: false,
+      // Information about the vocabulary
+      infoVocabAcronym: props.vocabulary,
+      infoVocabURL: "",
+      infoVocabDescription: "",
+      infoVocabObtained: false,
       buttonRefs: {},
       vocabulary: props.vocabulary,
       noResults: false,
@@ -225,12 +230,12 @@ class VocabularyQuery extends React.Component {
                 <ClickAwayListener onClickAway={this.clickAwayInfo}><div>
                    <CardHeader
                      avatar={
-                       <Tooltip title="The Human Phenotype Ontology project: linking molecular biology and disease through phenotype data. Sebastian Köhler, Sandra C Doelken, Christopher J. Mungall, Sebastian Bauer, Helen V. Firth, et al. Nucl. Acids Res. (1 January 2014) 42 (D1): D966-D974 doi:10.1093/nar/gkt1026. Current version: releases/2018-10-09">
+                       <Tooltip title={this.state.infoVocabDescription}>
                          <Link className={classes.infoDataSource} color="textSecondary"
-                            href="http://human-phenotype-ontology.github.io/"  target="_blank"
+                            href={this.state.infoVocabURL || "."}  target="_blank"
                           >
                             <Avatar aria-label="source" className={classes.vocabularyAvatar}>
-                               HPO
+                               {this.state.infoVocabAcronym}
                             </Avatar>
                          </Link>
                        </Tooltip>
@@ -259,7 +264,7 @@ class VocabularyQuery extends React.Component {
                           })}
                         </div>
                       )}
-                      {this.state.infoTypeOf !== "" && (
+                      {this.state.infoTypeOf.length > 0 && (
                         <div className={classes.infoSection}>
                           <Typography variant="h6" className={classes.infoHeader}>Is a type of</Typography>
                           {this.state.infoTypeOf.map((name, index) => {
@@ -271,7 +276,7 @@ class VocabularyQuery extends React.Component {
                         </div>
                       )}
                       </CardContent>
-                      {!this.state.browserOpened &&
+                      {this.state.infoTypeOf.length > 0 && !this.state.browserOpened &&
                         <CardActions className={classes.infoPaper}>
                           <Button size="small" onClick={this.openDialog} variant='contained' color='primary'>Learn more</Button>
                         </CardActions>
@@ -339,20 +344,18 @@ class VocabularyQuery extends React.Component {
       return;
     }
 
-    // Determine if we should add a custom filter
-    var filter = "";
-    if (this.props.vocabularyFilter) {
-      filter = "&customFilter=";
-      filter += this.props.vocabularyFilter.map((category) => {
-        var escapedId = category.replace(":", "\\:"); // URI Escape the : from HP: for SolR
-        return encodeURIComponent(`term_category:${escapedId}`);
-      }).join(encodeURIComponent(" OR "));
-    }
-
     // Grab suggestions
-    input = encodeURIComponent(input);
-    var URL = `${REST_URL}/${this.props.vocabulary}/suggest?input=${input}${filter}`;
-    MakeRequest(URL, this.showSuggestions);
+    var url = new URL(`./${this.props.vocabulary}.search.json`, REST_URL);
+    url.searchParams.set("suggest", input);
+
+    // Determine if we should add a custom filter
+    if (this.props.vocabularyFilter) {
+      var filter = this.props.vocabularyFilter.map((category) => {
+        return (`term_category:${category}`);
+      }).join(" OR ");
+      url.searchParams.set("customFilter", `(${filter})`);
+    }
+    MakeRequest(url, this.showSuggestions);
 
     // Hide the infobox and stop the timer
     this.setState({
@@ -370,27 +373,28 @@ class VocabularyQuery extends React.Component {
 
         if (data["rows"].length > 0) {
           data["rows"].forEach((element) => {
+            var name = element["name"] || element["identifier"];
             suggestions.push(
               <MenuItem
                 className={this.props.classes.dropdownItem}
-                key={element["id"]}
+                key={element["identifier"]}
                 onClick={(e) => {
                   if (e.target.localName === "li") {
-                    this.props.onClick(element["id"], element["name"]);
-                    this.anchorEl.value = element["name"];
+                    this.props.onClick(element["identifier"], name);
+                    this.anchorEl.value = name;
                     this.closeDialog();
                   }}
                 }
               >
-                {element["name"]}
+                {name}
                 <Button
                   buttonRef={node => {
-                    this.registerInfoButton(element["id"], node);
+                    this.registerInfoButton(element["identifier"], node);
                   }}
                   color="primary"
                   aria-owns={this.state.termInfoVisible ? "menu-list-grow" : null}
                   aria-haspopup={true}
-                  onClick={(e) => this.getInfo(element["id"])}
+                  onClick={(e) => this.getInfo(element["identifier"])}
                   className={this.props.classes.buttonLink + " " + this.props.classes.infoButton}
                 >
                   <Info color="primary" />
@@ -446,8 +450,28 @@ class VocabularyQuery extends React.Component {
 
   // Grab information about the given ID and populate the info box
   getInfo = (id) => {
-    var URL = `${REST_URL}/${this.props.vocabulary}/${id}`;
-    MakeRequest(URL, this.showInfo);
+    // If we don't yet know anything about our vocabulary, fill it in
+    if (!this.state.infoVocabObtained) {
+      var url = new URL(`./${this.props.vocabulary}.json`, REST_URL);
+      MakeRequest(url, this.parseVocabInfo);
+    }
+
+    var escapedId = id.replace(":", "");  // JCR Nodes do not contain colons
+    var url = new URL(`./${this.props.vocabulary}/${escapedId}.info.json`, REST_URL);
+    MakeRequest(url, this.showInfo);
+  }
+
+  parseVocabInfo = (status, data) => {
+    if (status === null) {
+      this.setState({
+        infoVocabAcronym: data["identifier"] || "",
+        infoVocabURL: data["website"] || "",
+        infoVocabDescription: data["description"],
+        infoVocabObtained: true
+      });
+    } else {
+      this.logError("Error: vocabulary details lookup failed with code " + status);
+    }
   }
 
   // callback for getInfo to populate info box
@@ -455,25 +479,25 @@ class VocabularyQuery extends React.Component {
     if (status === null) {
       // Use an empty array instead of null if this element has no synonyms
       var synonym = [];
-      if ("synonym" in data)
+      if ("synonyms" in data)
       {
-        synonym = data["synonym"];
+        synonym = data["synonyms"];
       }
 
       var typeOf = [];
       if ("parents" in data) {
-        typeOf = data["parents"].map((parent, index) => {
-          return parent["name"];
-        })
+        typeOf = data["parents"].map(element =>
+          element["name"] || element["identifier"] || element["id"]
+        );
       }
 
       this.setState({
-        infoID: data["id"],
+        infoID: data["identifier"],
         infoName: data["name"],
-        infoDefinition: data["def"],
+        infoDefinition: data["def"] || data["description"],
         infoAlsoKnownAs: synonym,
         infoTypeOf: typeOf,
-        infoAnchor: this.state.buttonRefs[data["id"]],
+        infoAnchor: this.state.buttonRefs[data["identifier"]],
         termInfoVisible: true,
         infoAboveBackground: this.state.browserOpened,
       });
