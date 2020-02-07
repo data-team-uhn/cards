@@ -66,7 +66,7 @@ Explanation:
 - `--rm` will automatically remove the container after it is stopped
 - `--network lfsbridge` causes the container to connect to the network providing MongoDB
 - `--detach` starts the container in the background
-- `-e INITIAL_SLING_NODE=true` instructs Apache Sling to expect no other Apache Sling Nodes connected to the same database
+- `-e INITIAL_SLING_NODE=true` marks this container as the first to start up, and thus responsible for setting up the database
 - `--volume lfs-test-volume:/opt/lfs/sling/` mounts the volume named `lfs-test-volume` at `/opt/lfs/sling/`, where the application data is stored
 - `-p 8080:8080` makes the local port 8080 forward to the 8080 port inside the container
     - you can also specify a specific local network, and a different local port, for example `-p 127.0.0.1:9999:8080`
