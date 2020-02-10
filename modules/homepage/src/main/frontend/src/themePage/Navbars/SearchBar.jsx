@@ -88,8 +88,8 @@ function SearchBar(props) {
     let i = 0;
     let processNext = (data) => {
       for (let key in data) {
-        if (data[key]?.['value']?.toString().toLowerCase().indexOf(query.toLowerCase()) > -1) {
-          let match_index = data[key]['value'].toString().toLowerCase().indexOf(query.toLowerCase());
+        let match_index = data[key]?.['value']?.toString().toLowerCase().indexOf(query.toLowerCase());
+        if (match_index > -1) {
           json.rows[i-1]['queryMatch'] = {
             'matchKey' : data[key]['question']['text'].toString(),
             'matchBefore' : data[key]['value'].toString().slice(0, match_index),
