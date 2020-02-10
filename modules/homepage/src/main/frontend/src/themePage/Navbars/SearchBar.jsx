@@ -184,28 +184,28 @@ function SearchBar(props) {
   }
 
   let getElementQueryMatchKey = (element) => {
-    return element["queryMatch"]["matchKey"] + " = ";
+    return element["matchKey"] + " = ";
   }
 
   let getElementQueryMatchBefore = (element) => {
-    if (element["queryMatch"]["matchBefore"].length <= MAX_CONTEXT_MATCH) {
-      return element["queryMatch"]["matchBefore"];
+    if (element["matchBefore"].length <= MAX_CONTEXT_MATCH) {
+      return element["matchBefore"];
     }
     else {
-      return "..." + element["queryMatch"]["matchBefore"].slice(-1 * MAX_CONTEXT_MATCH);
+      return "..." + element["matchBefore"].slice(-1 * MAX_CONTEXT_MATCH);
     }
   }
 
   let getElementQueryMatchText = (element) => {
-    return element["queryMatch"]["matchText"];
+    return element["matchText"];
   }
 
   let getElementQueryMatchAfter = (element) => {
-    if (element["queryMatch"]["matchAfter"].length <= MAX_CONTEXT_MATCH) {
-      return element["queryMatch"]["matchAfter"];
+    if (element["matchAfter"].length <= MAX_CONTEXT_MATCH) {
+      return element["matchAfter"];
     }
     else {
-      return element["queryMatch"]["matchAfter"].slice(0, MAX_CONTEXT_MATCH) + "...";
+      return element["matchAfter"].slice(0, MAX_CONTEXT_MATCH) + "...";
     }
   }
 
@@ -304,12 +304,12 @@ function SearchBar(props) {
                             {getElementName(element)}
                           </div>)}
                           secondary={("queryMatch" in element) ? (<React.Fragment>
-                            {getElementQueryMatchKey(element)}
-                            {getElementQueryMatchBefore(element)}
+                            {getElementQueryMatchKey(element["queryMatch"])}
+                            {getElementQueryMatchBefore(element["queryMatch"])}
                             <span className={classes.highlightedText}>
-                              {getElementQueryMatchText(element)}
+                              {getElementQueryMatchText(element["queryMatch"])}
                             </span>
-                            {getElementQueryMatchAfter(element)}
+                            {getElementQueryMatchAfter(element["queryMatch"])}
                           </React.Fragment>) : undefined}
                           className={classes.dropdownItem}
                           />
