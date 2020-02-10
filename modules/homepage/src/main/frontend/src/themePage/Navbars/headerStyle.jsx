@@ -122,6 +122,9 @@ const headerStyle = theme => ({
   },
   searchResultSubjectIcon: {
     backgroundColor: "orange"
+  },
+  highlightedText: {
+    fontWeight: "bold"
   }
 });
 

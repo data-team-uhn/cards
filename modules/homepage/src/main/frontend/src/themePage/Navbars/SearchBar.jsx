@@ -316,7 +316,7 @@ function SearchBar(props) {
                             {getElementQueryMatchBefore(element)}
                             <span className={classes.highlightedText}>
                               {getElementQueryMatchText(element)}
-                            </b>
+                            </span>
                             {getElementQueryMatchAfter(element)}
                           </React.Fragment>)}
                           className={classes.dropdownItem}
