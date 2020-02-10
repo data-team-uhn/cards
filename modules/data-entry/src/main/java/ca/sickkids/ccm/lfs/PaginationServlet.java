@@ -86,7 +86,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             ));
 
         // Check only for our fields
-        query.append(" where ischildnode(n, '" + request.getResource().getPath()
+        query.append(" where isdescendantnode(n, '" + request.getResource().getPath()
                 + "') and n.'sling:resourceSuperType' = 'lfs/Resource'");
 
         // Full text search; \ and ' must be escaped
@@ -188,7 +188,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         for (int i = 0; i < joins.length; i++) {
             joindata.append(
                 String.format(
-                    " inner join [%s] as %s%d on ischildnode(%s%d, n)",
+                    " inner join [%s] as %s%d on isdescendantnode(%s%d, n)",
                     nodetype,
                     childprefix,
                     i,
