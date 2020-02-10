@@ -314,7 +314,7 @@ function SearchBar(props) {
                           secondary={(<React.Fragment>
                             {getElementQueryMatchKey(element)}
                             {getElementQueryMatchBefore(element)}
-                            <b>
+                            <span className={classes.highlightedText}>
                               {getElementQueryMatchText(element)}
                             </b>
                             {getElementQueryMatchAfter(element)}
