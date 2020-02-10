@@ -37,6 +37,7 @@ function Filters(props) {
   const [activeFilters, setActiveFilters] = useState([]);
   // Information on the questionnaires
   const [filterableFields, setFilterableFields] = useState([]);
+  const [filterableTitles, setFilterableTitles] = useState({});
   const [filterableDataTypes, setFilterableDataTypes] = useState({});
   const [filterableDisplayModes, setFilterableDisplayModes] = useState({});
   const [filterableUUIDs, setFilterableUUIDs] = useState({});
@@ -89,16 +90,19 @@ function Filters(props) {
     let dataTypes = {};
     let fields = [];
     let displayModes = {};
-    let uuids = {}
+    let uuids = {};
+    let titles = {};
     for (let [questionName, question] of Object.entries(filterJson)) {
       // For each question, save the name, data type, and answers (if necessary)
       fields.push(questionName);
       dataTypes[questionName] = question["dataType"];
       displayModes[questionName] = question["displayMode"];
       uuids[questionName] = question["jcr:uuid"];
+      titles[questionName] = question["text"];
     }
     setFilterableFields(fields);
     setQuestionDefinitions(filterJson);
+    setFilterableTitles(titles);
     setFilterableDataTypes(dataTypes);
     setFilterableDisplayModes(displayModes);
     setFilterableUUIDs(uuids);
@@ -145,7 +149,12 @@ function Filters(props) {
     getOutputChoices(event.target.value);
     setEditingFilters(oldfilters => {
       var newfilters = oldfilters.slice();
-      var newfilter = {name: event.target.value, uuid: filterableUUIDs[event.target.value], comparator: loadedComparators[0]}
+      var newfilter = {
+        name: event.target.value,
+        uuid: filterableUUIDs[event.target.value],
+        comparator: loadedComparators[0],
+        title: filterableTitles[event.target.value]
+      }
       newfilters[index] = newfilter;
       return(newfilters);
     });
@@ -352,7 +361,7 @@ function Filters(props) {
         Filters:
       </Typography>
       {activeFilters.map( (activeFilter, index) => {
-        let label = activeFilter.name + " " + activeFilter.comparator +
+        let label = activeFilter.title + " " + activeFilter.comparator +
           // Include the label (if available) or value for this filter iff the comparator is not unary
           (UNARY_OPERATORS.includes(activeFilter.comparator) ? ""
             : (" " + (activeFilter.label != undefined ? activeFilter.label : activeFilter.value)));
@@ -433,7 +442,7 @@ function Filters(props) {
                         </MenuItem>
                         {(filterableFields.map( (name) => {
                           return(
-                            <MenuItem value={name} key={name} className={classes.categoryOption}>{name}</MenuItem>
+                            <MenuItem value={name} key={name} className={classes.categoryOption}>{filterableTitles[name]}</MenuItem>
                           );
                         }))}
                     </Select>
