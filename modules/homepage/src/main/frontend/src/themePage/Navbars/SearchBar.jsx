@@ -311,14 +311,14 @@ function SearchBar(props) {
                             </Typography>
                             {getElementName(element)}
                           </div>)}
-                          secondary={(<div>
+                          secondary={(<React.Fragment>
                             {getElementQueryMatchKey(element)}
                             {getElementQueryMatchBefore(element)}
                             <b>
                               {getElementQueryMatchText(element)}
                             </b>
                             {getElementQueryMatchAfter(element)}
-                          </div>)}
+                          </React.Fragment>)}
                           className={classes.dropdownItem}
                           />
                     </MenuItem>
