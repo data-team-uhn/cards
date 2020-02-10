@@ -30,14 +30,20 @@ LFS_DOCKER_TAG = "latest"
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
 argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
+argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
 MONGO_REPLICA_COUNT = args.replicas
+CONFIGDB_REPLICA_COUNT = args.config_replicas
 
 #Validate before doing anything else
 if (MONGO_REPLICA_COUNT % 2) != 1:
 	print("ERROR: Replica count must be *odd* to achieve distributed consensus")
+	sys.exit(-1)
+
+if (CONFIGDB_REPLICA_COUNT % 2) != 1:
+	print("ERROR: Config replica count must be *odd* to achieve distributed consensus")
 	sys.exit(-1)
 
 OUTPUT_FILENAME = "docker-compose.yml"
@@ -47,8 +53,8 @@ yaml_obj['version'] = '3'
 yaml_obj['volumes'] = {}
 yaml_obj['services'] = {}
 
-#Create 3 configuration databases
-for i in range(3):
+#Create configuration databases
+for i in range(CONFIGDB_REPLICA_COUNT):
 	service_name = "config{}".format(i)
 	print("Configuring service: {}".format(service_name))
 	yaml_obj['services'][service_name] = {}
@@ -119,12 +125,28 @@ yaml_obj['services']['router']['networks']['internalnetwork'] = {}
 yaml_obj['services']['router']['networks']['internalnetwork']['aliases'] = ['router', 'mongo']
 
 yaml_obj['services']['router']['depends_on'] = []
-for i in range(3):
+for i in range(CONFIGDB_REPLICA_COUNT):
 	yaml_obj['services']['router']['depends_on'].append("config{}".format(i))
 
 for shard_index in range(MONGO_SHARD_COUNT):
 	for replica_index in range(MONGO_REPLICA_COUNT):
 		yaml_obj['services']['router']['depends_on'].append("s{}r{}".format(shard_index, replica_index))
+
+with open("mongos/mongo-router.conf", 'w') as f_out:
+	configdb_str = "ConfigRS/"
+	for config_index in range(CONFIGDB_REPLICA_COUNT):
+		configdb_str += "config{}:27017,".format(config_index)
+	configdb_str = configdb_str.rstrip(',')
+	
+	mongo_router_conf = {}
+	mongo_router_conf['net'] = {}
+	mongo_router_conf['net']['bindIp'] = '0.0.0.0'
+	mongo_router_conf['net']['port'] = 27017
+	
+	mongo_router_conf['sharding'] = {}
+	mongo_router_conf['sharding']['configDB'] = configdb_str
+	
+	f_out.write(yaml.dump(mongo_router_conf, default_flow_style=False))
 
 #Setup the initializer
 print("Configuring service: initializer")
@@ -138,9 +160,8 @@ with open("initializer/initialize_all.sh", 'w') as f_init:
 	config_init_doc['_id'] = "ConfigRS"
 	config_init_doc['configsvr'] = True
 	config_init_doc['members'] = []
-	config_init_doc['members'].append({'_id' : 0, 'host' : 'config0:27017'})
-	config_init_doc['members'].append({'_id' : 1, 'host' : 'config1:27017'})
-	config_init_doc['members'].append({'_id' : 2, 'host' : 'config2:27017'})
+	for config_index in range(CONFIGDB_REPLICA_COUNT):
+		config_init_doc['members'].append({'_id' : config_index, 'host' : 'config{}:27017'.format(config_index)})
 	
 	f_init.write("/mongo_rs_initiate.sh config0 '{}'\n".format(json.dumps(config_init_doc)))
 	f_init.write('echo "ConfigDB replicas have been configured"\n')
