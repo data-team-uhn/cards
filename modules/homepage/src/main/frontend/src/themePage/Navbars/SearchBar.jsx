@@ -88,19 +88,14 @@ function SearchBar(props) {
     let i = 0;
     let processNext = (data) => {
       for (let key in data) {
-        if (typeof(data[key]) === "object") {
-          if ('value' in data[key]) {
-            let match_status = false;
-            if (data[key]['value'].toString().toLowerCase().indexOf(query.toLowerCase()) != -1) {
-              let match_index = data[key]['value'].toString().toLowerCase().indexOf(query.toLowerCase());
-              json.rows[i-1]['queryMatch'] = {
-                'matchKey' : data[key]['question']['text'].toString(),
-                'matchBefore' : data[key]['value'].toString().slice(0, match_index),
-                'matchText' : data[key]['value'].toString().slice(match_index, match_index + query.length),
-                'matchAfter' : data[key]['value'].toString().slice(match_index + query.length)
-              };
-            }
-          }
+        if (data[key]?.['value']?.toString().toLowerCase().indexOf(query.toLowerCase()) > -1) {
+          let match_index = data[key]['value'].toString().toLowerCase().indexOf(query.toLowerCase());
+          json.rows[i-1]['queryMatch'] = {
+            'matchKey' : data[key]['question']['text'].toString(),
+            'matchBefore' : data[key]['value'].toString().slice(0, match_index),
+            'matchText' : data[key]['value'].toString().slice(match_index, match_index + query.length),
+            'matchAfter' : data[key]['value'].toString().slice(match_index + query.length)
+          };
         }
       }
       if (i >= json.rows.length) {
