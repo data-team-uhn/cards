@@ -134,12 +134,12 @@ public class FilterServlet extends SlingSafeMethodsServlet
             JsonObject datum = questions.getJsonObject(key);
 
             // Copy over information from children of sections
-            if (datum.getString("jcr:primaryType").equals("lfs:Section")) {
+            if ("lfs:Section".equals(datum.getString("jcr:primaryType"))) {
                 this.copyQuestions(datum, builder, seenTypes, seenElements);
             }
 
             // Copy over information from this object if this is a question
-            if (datum.getString("jcr:primaryType").equals("lfs:Question")) {
+            if ("lfs:Question".equals(datum.getString("jcr:primaryType"))) {
                 copyFields(datum, key, builder, seenTypes, seenElements);
             }
         }
