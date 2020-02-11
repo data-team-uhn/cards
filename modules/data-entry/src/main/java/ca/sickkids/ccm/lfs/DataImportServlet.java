@@ -46,6 +46,7 @@ import javax.servlet.ServletException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -406,7 +407,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
                     result = valueFactory.createValue(new BigDecimal(rawValue));
                     break;
                 case "boolean":
-                    result = valueFactory.createValue(Boolean.valueOf(rawValue));
+                    result = valueFactory.createValue(BooleanUtils.toBoolean(rawValue));
                     break;
                 case "date":
                     result = valueFactory.createValue(parseDate(rawValue));
