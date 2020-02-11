@@ -82,7 +82,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
 
             // JsonObjects are immutable, so we have to manually copy over non-questions to a new object
             JsonObjectBuilder builder = Json.createObjectBuilder();
-            this.copyFields(resource.adaptTo(JsonObject.class), builder);
+            this.copyQuestions(resource.adaptTo(JsonObject.class), builder);
             allProperties = builder.build();
         } else {
             // If there is no questionnaire specified, we return all fields by all questionnaires
@@ -209,7 +209,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
      * @param builder A JsonObjectBuilder to copy results to
      * @return the content matching the query
      */
-    private void copyFields(JsonObject questions, JsonObjectBuilder builder)
+    private void copyQuestions(JsonObject questions, JsonObjectBuilder builder)
     {
         this.copyQuestions(questions, builder, null, null);
     }
