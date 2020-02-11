@@ -124,7 +124,8 @@ const headerStyle = theme => ({
     backgroundColor: "orange"
   },
   highlightedText: {
-    fontWeight: "bold"
+    fontWeight: "bold",
+    backgroundColor: theme.palette.warning.light
   }
 });
 
