@@ -96,6 +96,7 @@ function SearchBar(props) {
             'matchText' : data[key]['value'].toString().slice(match_index, match_index + query.length),
             'matchAfter' : data[key]['value'].toString().slice(match_index + query.length)
           };
+          break;
         }
       }
       if (i >= json.rows.length) {
