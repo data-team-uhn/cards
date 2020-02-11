@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Stack;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -305,8 +306,44 @@ public class DataImportServlet extends SlingAllMethodsServlet
         Map<String, Object> answerProperties = new LinkedHashMap<>();
         answerProperties.put("jcr:primaryType", getAnswerNodeType(question));
         answerProperties.put("question", question);
-        return this.resolver.get().create(form, UUID.randomUUID().toString(), answerProperties);
+        Resource answerParent = findOrCreateParent(form, question);
+        return this.resolver.get().create(answerParent, UUID.randomUUID().toString(), answerProperties);
+    }
 
+    private Resource findOrCreateParent(final Resource form, final Node question)
+        throws PersistenceException, RepositoryException
+    {
+        // Find all the intermediate sections between the question and the questionnaire, bottom-to-top
+        Node questionParent = question.getParent();
+        final Stack<Node> sections = new Stack<>();
+        while (!"lfs:Questionnaire".equals(questionParent.getPrimaryNodeType().getName())) {
+            sections.push(questionParent);
+            questionParent = questionParent.getParent();
+        }
+        // Create all the needed intermediate answer sections between the form and the answer, top-to-bottom
+        Resource answerParent = form;
+        while (!sections.isEmpty()) {
+            Node section = sections.pop();
+            String sectionRef = section.getProperty("jcr:uuid").getString();
+            Resource answerSection = null;
+            Iterator<Resource> children = answerParent.getChildren().iterator();
+            while (children.hasNext()) {
+                Resource child = children.next();
+                if (sectionRef.equals(child.getValueMap().get("section", ""))) {
+                    answerSection = child;
+                }
+            }
+            if (answerSection != null) {
+                answerParent = answerSection;
+            } else {
+                Map<String, Object> answerSectionProperties = new LinkedHashMap<>();
+                answerSectionProperties.put("jcr:primaryType", "lfs:AnswerSection");
+                answerSectionProperties.put("section", section);
+                answerParent =
+                    this.resolver.get().create(answerParent, UUID.randomUUID().toString(), answerSectionProperties);
+            }
+        }
+        return answerParent;
     }
 
     /**
