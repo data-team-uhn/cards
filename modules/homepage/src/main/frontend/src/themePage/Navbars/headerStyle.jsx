@@ -125,7 +125,9 @@ const headerStyle = theme => ({
   },
   highlightedText: {
     fontWeight: "bold",
-    backgroundColor: theme.palette.warning.light
+    backgroundColor: theme.palette.warning.light,
+    padding: "1px 2px",
+    borderRadius: "4px"
   }
 });
 
