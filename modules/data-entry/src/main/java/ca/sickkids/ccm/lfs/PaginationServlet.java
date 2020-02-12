@@ -86,7 +86,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             ));
 
         // Check only for our fields
-        query.append(" where isdescendantnode(n, '" + request.getResource().getPath()
+        query.append(" where ischildnode(n, '" + request.getResource().getPath()
                 + "') and n.'sling:resourceSuperType' = 'lfs/Resource'");
 
         // Full text search; \ and ' must be escaped
