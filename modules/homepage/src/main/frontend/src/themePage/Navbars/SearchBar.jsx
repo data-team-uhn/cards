@@ -80,39 +80,8 @@ function SearchBar(props) {
     setRequestID(requestID+1);
     fetch(new_url)
       .then(response => response.ok ? response.json() : Promise.reject(response))
-      .then(function (json) { addMatchingContent(query, json) })
+      .then(displayResults)
       .catch(handleError);
-  }
-
-  let addMatchingContent = (query, json) => {
-    let i = 0;
-    let processNext = (data) => {
-      for (let key in data) {
-        let match_index = data[key]?.['value']?.toString().toLowerCase().indexOf(query.toLowerCase());
-        if (match_index > -1) {
-          json.rows[i-1]['queryMatch'] = {
-            'matchKey' : data[key]['question']['text'].toString(),
-            'matchBefore' : data[key]['value'].toString().slice(0, match_index),
-            'matchText' : data[key]['value'].toString().slice(match_index, match_index + query.length),
-            'matchAfter' : data[key]['value'].toString().slice(match_index + query.length)
-          };
-          break;
-        }
-      }
-      if (i >= json.rows.length) {
-        displayResults(json);
-      }
-      else {
-        let formUrl = json.rows[i]["@path"];
-        let new_url = new URL(formUrl + ".deep.json", window.location.origin);
-        i += 1;
-        fetch(new_url)
-          .then(response => response.ok ? response.json() : Promise.reject(response))
-          .then(processNext)
-          .catch(handleError);
-      }
-    }
-    processNext({});
   }
 
   // Callback to store the results of the top results, or to display 'No results'
@@ -180,28 +149,28 @@ function SearchBar(props) {
   }
 
   let getElementQueryMatchKey = (element) => {
-    return element["matchKey"] + " = ";
+    return element[0] + " = ";
   }
 
   let getElementQueryMatchBefore = (element) => {
-    if (element["matchBefore"].length <= MAX_CONTEXT_MATCH) {
-      return element["matchBefore"];
+    if (element[1].length <= MAX_CONTEXT_MATCH) {
+      return element[1];
     }
     else {
-      return "..." + element["matchBefore"].slice(-1 * MAX_CONTEXT_MATCH);
+      return "..." + element[1].slice(-1 * MAX_CONTEXT_MATCH);
     }
   }
 
   let getElementQueryMatchText = (element) => {
-    return element["matchText"];
+    return element[2];
   }
 
   let getElementQueryMatchAfter = (element) => {
-    if (element["matchAfter"].length <= MAX_CONTEXT_MATCH) {
-      return element["matchAfter"];
+    if (element[3].length <= MAX_CONTEXT_MATCH) {
+      return element[3];
     }
     else {
-      return element["matchAfter"].slice(0, MAX_CONTEXT_MATCH) + "...";
+      return element[3].slice(0, MAX_CONTEXT_MATCH) + "...";
     }
   }
 
