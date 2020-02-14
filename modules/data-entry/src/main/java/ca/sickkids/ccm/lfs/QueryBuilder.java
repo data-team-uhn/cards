@@ -19,9 +19,12 @@ package ca.sickkids.ccm.lfs;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.ListIterator;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -34,6 +37,8 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.scripting.sightly.pojo.Use;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A HTL Use-API that can run a JCR query and output the results as JSON. The query to execute is taken from the request
@@ -50,6 +55,8 @@ import org.apache.sling.scripting.sightly.pojo.Use;
  */
 public class QueryBuilder implements Use
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueryBuilder.class);
+
     private String content;
 
     private ResourceResolver resourceResolver;
@@ -58,6 +65,90 @@ public class QueryBuilder implements Use
 
     /* Whether or not the input should be escaped, if it is used in a contains() call. */
     private boolean shouldEscape;
+
+    /**
+     * Takes in an Iterator of Resource typed objects and returns a
+     * ListIterator of Resource typed objects. Depending on the value of
+     * augmentData, the returned ListIterator is either a simple copy of
+     * the input Iterator or it is a copy of the input Iterator where the
+     * Resource items are augmented with a queryMatch list describing how
+     * the query string, qs, matches the given item. PLEASE NOTE: Running
+     * this method consumes inputIterator and therefore any subsequent
+     * calls to the .next() method of the inputIterator object will
+     * invariably fail.
+     *
+     * @param inputIterator the Iterator of Resource typed objects to be used as input
+     * @param augmentData false if data should simply be copied, true otherwise
+     * @param qs the query string to augment matching Resource objects with
+     * @return a ListIterator of potentially data-augmented Resource objects
+     */
+    private ListIterator<Resource> augmentIterator(Iterator<Resource> inputIterator, boolean augmentData, String qs)
+    {
+        ArrayList<Resource> outputList = new ArrayList<Resource>();
+        Resource res;
+        while (inputIterator.hasNext())
+        {
+            res = inputIterator.next();
+            if (augmentData)
+            {
+                augmentResult(res, qs);
+            }
+            outputList.add(res);
+        }
+        return outputList.listIterator();
+    }
+
+    /**
+     * Take in a Resource object and, if there is any contained form
+     * data that matches with queryString, return a version of this
+     * resource with a property, "queryMatch", describing how queryString
+     * matches the given resource. PLEASE NOTE: The Resource object res,
+     * will be modified if there are query matches.
+     *
+     * @param res the Resource object to check for query matchess
+     * @param queryString the String object used as a query to res
+     */
+    private void augmentResult(Resource res, String queryString)
+    {
+        Iterator<Resource> reschildren;
+        Resource selectedchild;
+        reschildren = res.listChildren();
+        while (reschildren.hasNext()) {
+            selectedchild = reschildren.next();
+            String resourcevalue = selectedchild.getValueMap().get("value", (String) null);
+            if (resourcevalue != null && resourcevalue.toLowerCase().indexOf(queryString.toLowerCase()) > -1) {
+                String resourcequestion = selectedchild.getValueMap().get("question", (String) null);
+                if (resourcequestion != null) {
+                    try
+                    {
+                        Node questionNode = selectedchild.adaptTo(Node.class);
+                        questionNode = questionNode.getSession().getNodeByIdentifier(resourcequestion);
+                        String matchType = questionNode.getProperty("text").getValue().toString();
+                        LOGGER.info("Query: {}, Matches: {}, Type: {}",
+                            queryString,
+                            resourcevalue,
+                            matchType);
+                        int matchIndex = resourcevalue.toLowerCase().indexOf(queryString.toLowerCase());
+                        String matchBefore = resourcevalue.substring(0, matchIndex);
+                        String matchText = resourcevalue.substring(matchIndex, matchIndex + queryString.length());
+                        String matchAfter = resourcevalue.substring(matchIndex + queryString.length());
+                        String[] queryMatch = {
+                            matchType,
+                            matchBefore,
+                            matchText,
+                            matchAfter
+                        };
+                        Node resNode = res.adaptTo(Node.class);
+                        resNode.setProperty("queryMatch", queryMatch);
+                        //Break after 1st match
+                        break;
+                    } catch (RepositoryException ex) {
+                        continue;
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     public void init(Bindings bindings)
@@ -77,21 +168,28 @@ public class QueryBuilder implements Use
 
             // Try to use a JCR-SQL2 query first
             Iterator<Resource> results;
+            ListIterator<Resource> augmentedResults;
             if (StringUtils.isNotBlank(jcrQuery)) {
                 results = queryJCR(this.urlDecode(jcrQuery));
+                augmentedResults = augmentIterator(results, false, "");
             } else if (StringUtils.isNotBlank(luceneQuery)) {
                 results = queryLucene(this.urlDecode(luceneQuery));
+                augmentedResults = augmentIterator(results, false, "");
             } else if (StringUtils.isNotBlank(fullTextQuery)) {
                 results = fullTextSearch(this.urlDecode(fullTextQuery));
+                augmentedResults = augmentIterator(results, false, "");
             } else if (StringUtils.isNotBlank(quickQuery)) {
                 results = quickSearch(this.urlDecode(quickQuery));
+                //Augment the `results` with the matches
+                augmentedResults = augmentIterator(results, true, this.urlDecode(quickQuery));
             } else {
                 results = Collections.emptyIterator();
+                augmentedResults = augmentIterator(results, false, "");
             }
 
             // output the results into our content
             JsonObjectBuilder builder = Json.createObjectBuilder();
-            long[] metadata = this.addNodes(builder, results, offset, limit);
+            long[] metadata = this.addNodes(builder, augmentedResults, offset, limit);
             this.addSummary(builder, this.request, metadata);
             this.content = builder.build().toString();
         } catch (Exception e) {
