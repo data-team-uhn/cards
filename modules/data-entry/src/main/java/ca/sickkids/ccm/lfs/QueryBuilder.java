@@ -115,10 +115,10 @@ public class QueryBuilder implements Use
         reschildren = res.listChildren();
         while (reschildren.hasNext()) {
             selectedchild = reschildren.next();
-            String resourcevalue = selectedchild.getValueMap().get("value", (String) null);
-            if (resourcevalue != null && resourcevalue.toLowerCase().indexOf(queryString.toLowerCase()) > -1) {
-                String resourcequestion = selectedchild.getValueMap().get("question", (String) null);
-                if (resourcequestion != null) {
+            String resourcevalue = selectedchild.getValueMap().get("value", "");
+            if (!"".equals(resourcevalue) && resourcevalue.toLowerCase().indexOf(queryString.toLowerCase()) > -1) {
+                String resourcequestion = selectedchild.getValueMap().get("question", "");
+                if (!"".equals(resourcequestion)) {
                     try
                     {
                         Node questionNode = selectedchild.adaptTo(Node.class);
