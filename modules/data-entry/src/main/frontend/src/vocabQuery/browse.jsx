@@ -67,6 +67,7 @@ function VocabularyBrowser(props) {
     var escapedID = id.replace(":", "");  // JCR nodes do not have colons in their names
     var url = new URL(`./${vocabulary}/${escapedID}.info.json`, REST_URL);
     MakeRequest(url, rebuildTree);
+    setLastKnownTerm(id);
   }
 
   // Callback from an onload to generate the tree from a /suggest query about the parent
@@ -76,20 +77,19 @@ function VocabularyBrowser(props) {
       var parentBranches = null;
       if ("parents" in data) {
         parentBranches = data["parents"].map((row, index) => {
-          return constructBranch(row["id"], row["name"], false, false, false);
+          return constructBranch(row["id"], row["name"], false, false, false, row["lfs:hasChildren"]);
         });
       }
 
       setParentNode(parentBranches);
-      setCurrentNode(constructBranch(data["id"], data["name"], true, true, true));
+      setCurrentNode(constructBranch(data["id"], data["name"], true, true, true, data["lfs:hasChildren"]));
     } else {
       onError("Error: initial term lookup failed with code " + status);
     }
-    setLastKnownTerm(term);
   }
 
   // Construct a branch element for rendering
-  let constructBranch = (id, name, ischildnode, defaultexpanded, bolded) => {
+  let constructBranch = (id, name, ischildnode, defaultexpanded, bolded, hasChildren) => {
     return(
       <BrowseListChild
         id={id}
@@ -104,6 +104,7 @@ function VocabularyBrowser(props) {
         bolded={bolded}
         onError={onError}
         vocabulary={vocabulary}
+        knownHasChildren={hasChildren}
       />
     );
   }

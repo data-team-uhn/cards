@@ -104,7 +104,7 @@ export default function Search(props) {
       props.setParentFilterTable(true);
 
       // Then also make a request to recommender and update filtered list.
-      let url = new URL(vocabLinks["recommender"]["base"]);
+      let url = new URL(vocabLinks["recommender"]["base"], REST_URL);
       url.searchParams.set("apikey", vocabLinks["apikey"]);
       url.searchParams.set("input", encodeURIComponent(keywords));
       fetch(url)

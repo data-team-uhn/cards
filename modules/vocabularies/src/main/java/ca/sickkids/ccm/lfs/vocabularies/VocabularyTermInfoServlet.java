@@ -20,12 +20,14 @@ package ca.sickkids.ccm.lfs.vocabularies;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
@@ -58,6 +60,13 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -8244429250995709300L;
 
+    private static final String HAS_CHILDREN_PROPERTY = "lfs:hasChildren";
+
+    private static final String CHILDREN_PROPERTY = "lfs:children";
+
+    /* During tests, copying over every child tends to bloat the response, so we only copy a subset of the data */
+    private static final String[] KEYS_TO_COPY = {"id", "name"};
+
     @Reference
     private LogService logger;
 
@@ -87,12 +96,29 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
                 }
             }
 
+            // Check to see if we ourselves have children, and add it to the result
+            boolean hasChildren = false;
+            Iterator<Resource> children = getVocabularyTermChildren(
+                request.getResource().adaptTo(JsonObject.class),
+                resolver
+                );
+            jsonGen.writeStartArray(CHILDREN_PROPERTY);
+            while (children.hasNext()) {
+                hasChildren = true;
+                Resource child = children.next();
+                jsonGen.write(populateChildren(child.adaptTo(JsonObject.class), resolver));
+            }
+            jsonGen.writeEnd();
+            jsonGen.write(HAS_CHILDREN_PROPERTY, hasChildren);
+
             jsonGen.writeEnd().flush();
         }
     }
 
     /**
-     * Process the given array, following references (if any).
+     * Process the given array, following references (if any). Fill in an additional lfs:hasChildren field
+     * if the node has children.
+     *
      * @param array Array to iterate through
      * @param vocab Vocabulary object whose children are the vocabulary terms
      * @param resolver A reference to a ResourceResolver
@@ -116,7 +142,8 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
                     // We couldn't load the parent resource; leave it as is
                     builder.add(value);
                 } else {
-                    builder.add(linkedValue.adaptTo(JsonObject.class));
+                    JsonObject linkedObject = linkedValue.adaptTo(JsonObject.class);
+                    builder.add(populateChildren(linkedObject, resolver));
                 }
             } else {
                 // This is not a string, leave it as is
@@ -124,5 +151,54 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
             }
         }
         return builder.build();
+    }
+
+    private JsonObject populateChildren(JsonObject resource, ResourceResolver resolver)
+    {
+        // Add child terms
+        Iterator<Resource> children = getVocabularyTermChildren(resource, resolver);
+
+        // Copy the resource but add lfs:hasChildren to it
+        JsonObjectBuilder objectCopier = Json.createObjectBuilder();
+        for (String key : KEYS_TO_COPY) {
+            objectCopier.add(key, resource.get(key));
+        }
+        objectCopier.add(HAS_CHILDREN_PROPERTY, children.hasNext());
+
+        // Copy over our children to lfs:Children
+        JsonArrayBuilder childrenBuilder = Json.createArrayBuilder();
+        while (children.hasNext()) {
+            Resource child = children.next();
+
+            // Copying over the entire child bloats the response, so add only a subset of
+            // the child's properties
+            JsonObject childJson = child.adaptTo(JsonObject.class);
+            JsonObjectBuilder truncatedChild = Json.createObjectBuilder();
+            for (String key : KEYS_TO_COPY) {
+                truncatedChild.add(key, childJson.get(key));
+            }
+
+            childrenBuilder.add(truncatedChild.build());
+        }
+        objectCopier.add(CHILDREN_PROPERTY, childrenBuilder.build());
+
+        return objectCopier.build();
+    }
+
+    /**
+     * Determine if the given resource has children or not.
+     *
+     * @param resource The JsonObject to obtain the children of. Must have a child with key "id"
+     * @param resolver A reference to a ResourceResolver to use
+     * @return An iterator over the resource's children
+     */
+    private Iterator<Resource> getVocabularyTermChildren(JsonObject resource, ResourceResolver resolver)
+    {
+        // Check to see if this resource has children
+        String oakQuery = String.format(
+            "SELECT * FROM [lfs:VocabularyTerm] AS a WHERE a.parents = '%s'",
+            resource.getString("id")
+            );
+        return resolver.findResources(oakQuery, "JCR-SQL2");
     }
 }
