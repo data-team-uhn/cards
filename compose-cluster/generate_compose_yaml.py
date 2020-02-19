@@ -214,14 +214,26 @@ yaml_obj['services']['lfsinitial']['networks'] = {}
 yaml_obj['services']['lfsinitial']['networks']['internalnetwork'] = {}
 yaml_obj['services']['lfsinitial']['networks']['internalnetwork']['aliases'] = ['lfsinitial']
 
-yaml_obj['services']['lfsinitial']['ports'] = ["8080:8080"]
-
 yaml_obj['services']['lfsinitial']['environment'] = []
 yaml_obj['services']['lfsinitial']['environment'].append("INITIAL_SLING_NODE=true")
 yaml_obj['services']['lfsinitial']['environment'].append("INSIDE_DOCKER_COMPOSE=true")
 yaml_obj['services']['lfsinitial']['environment'].append("LFS_RELOAD=$LFS_RELOAD")
 
 yaml_obj['services']['lfsinitial']['depends_on'] = ['router']
+
+#Configure the proxy container
+print("Configuring service: proxy")
+yaml_obj['services']['proxy'] = {}
+yaml_obj['services']['proxy']['build'] = {}
+yaml_obj['services']['proxy']['build']['context'] = "proxy"
+
+yaml_obj['services']['proxy']['ports'] = ["8080:80"]
+
+yaml_obj['services']['proxy']['networks'] = {}
+yaml_obj['services']['proxy']['networks']['internalnetwork'] = {}
+yaml_obj['services']['proxy']['networks']['internalnetwork']['aliases'] = ['proxy']
+
+yaml_obj['services']['proxy']['depends_on'] = ['lfsinitial']
 
 #Setup the internal network
 print("Configuring the internal network")
