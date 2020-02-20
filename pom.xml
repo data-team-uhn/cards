@@ -233,12 +233,6 @@
         <artifactId>jcip-annotations</artifactId>
         <version>1.0</version>
       </dependency>
-      <!-- Lucene codecs for SolR -->
-      <dependency>
-        <groupId>org.apache.solr</groupId>
-        <artifactId>solr-solrj</artifactId>
-        <version>8.4.1</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -381,7 +375,6 @@
             <!-- Ignore file with data for testing -->
             <exclude>**/hpo-test.obo</exclude>
             <exclude>**/chebi-test.obo</exclude>
-            <exclude>**/solr/**</exclude>
           </excludes>
         </configuration>
         <executions>
