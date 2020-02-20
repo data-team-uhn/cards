@@ -55,8 +55,9 @@ function ListChild(props) {
   const [ expanded, setExpanded ] = useState(defaultOpen);
 
   let checkForChildren = () => {
-    // Determine if this node has children
     setLastKnownID(id);
+    setCurrentlyLoading(true);
+    // Determine if this node has children
     var escapedID = id.replace(":", "");  // JCR nodes do not have colons in their names
     var url = new URL(`./${vocabulary}/${escapedID}.info.json`, REST_URL);
     MakeRequest(url, updateChildrenData);
@@ -69,9 +70,7 @@ function ListChild(props) {
       setHasChildren(data["lfs:children"].length > 0);
       setChildrenData(data["lfs:children"]);
       setCurrentlyLoading(false);
-      if (expanded && !loadedChildren) {
-        buildChildren(data["lfs:children"]);
-      }
+      buildChildren(data["lfs:children"]);
     } else {
       onError("Error: children lookup failed with code " + status);
     }
@@ -101,30 +100,30 @@ function ListChild(props) {
 
   // Update state with children elements
   let loadChildren = () => {
-    // Prevent ourselves from loading children if we've already loaded children
-    if (loadedChildren || !hasChildren) {
+    // Prevent ourselves from reloading children if we've already loaded children or if we're
+    // in the middle of grabbing data
+    if (loadedChildren || !hasChildren || currentlyLoading) {
       return;
     }
 
     // See if we have the data necessary to build the children yet or not
     if (childrenData) {
       buildChildren(childrenData);
-    } else if (lastKnownID != id) {
+    } else {
       checkForChildren();
     }
   }
 
   // Ensure we know whether or not we have children, if this is expandable
   if (expands) {
-    if (lastKnownID != id) {
-      setLoadedChildren(false);
-      setChildren(null);
-      checkForChildren();
-    }
-
     // Ensure our child list entries are built, if this is currently expanded
     if (expanded) {
-      loadChildren();
+      // If our ID has changed, we need to fully reload our children
+      if (lastKnownID != id) {
+        checkForChildren();
+      } else {
+        loadChildren();
+      }
     }
   }
 
