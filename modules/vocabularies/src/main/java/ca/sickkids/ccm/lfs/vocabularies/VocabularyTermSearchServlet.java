@@ -122,7 +122,7 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
     private String handleFullTextQuery(String suggest, String parentpath) throws IOException
     {
         return (String.format(
-            "select a.* from [lfs:VocabularyTerm] as a where contains(a.*, '%s') and "
+            "select a.* from [lfs:VocabularyTerm] as a where contains(a.*, '*%s*') and "
             + "isdescendantnode(a, '%s')",
             suggest.replace("'", "''"),
             parentpath
