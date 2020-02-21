@@ -92,7 +92,16 @@ Docker-Compose can be employed to create a cluster of *N* MongoDB Shards, *M* Mo
 mvn clean install
 ```
 
-2. Now build the *docker-compose* environment.
+2. The `ccmsk/neuralcr` image is also required. Please build it based on
+the instructions available
+at [https://github.com/ccmbioinfo/NeuralCR](https://github.com/ccmbioinfo/NeuralCR).
+Use the **develop** branch.
+
+Download the pre-trained NCR models from [here](https://github.com/ccmbioinfo/NeuralCR/releases/download/1.0/ncr_model_params.tar.gz)
+and un-tar. Create the directory `NCR_MODEL` under `compose-cluster` and copy in the file `pmc_model_new.bin` along
+with the directories `0` and `1` from the `ncr_model_params` directory.
+
+3. Now build the *docker-compose* environment.
 
 ```bash
 cd compose-cluster
@@ -100,15 +109,15 @@ python3 generate_compose_yaml.py --shards 2 --replicas 3
 docker-compose build
 ```
 
-3. Start the *docker-compose* environment.
+4. Start the *docker-compose* environment.
 
 ```bash
 docker-compose up -d
 ```
 
-4. The LFS instance should be available at `http://localhost:8080/`
+5. The LFS instance should be available at `http://localhost:8080/`
 
-4.1. To inspect the data split between the MongoDB shards:
+5.1. To inspect the data split between the MongoDB shards:
 ```bash
 docker-compose exec router mongo
 sh.status()

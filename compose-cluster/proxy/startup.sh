@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,13 +17,5 @@
 # specific language governing permissions and limitations
 # under the License.
 
-<VirtualHost *:80>
-	ProxyPreserveHost On
-	
-	ProxyPass /ncr/ http://127.0.0.1:8600/
-	ProxyPassReverse /ncr/ http://127.0.0.1:8600/
-	
-	ProxyPass / http://lfsinitial:8080/
-	ProxyPassReverse / http://lfsinitial:8080/
-	
-</VirtualHost>
+nodejs /http_proxy.js &
+apachectl -D FOREGROUND

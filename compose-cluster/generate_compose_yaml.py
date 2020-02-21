@@ -221,6 +221,17 @@ yaml_obj['services']['lfsinitial']['environment'].append("LFS_RELOAD=$LFS_RELOAD
 
 yaml_obj['services']['lfsinitial']['depends_on'] = ['router']
 
+#Configure the NCR container - only one for now
+print("Configuring service: neuralcr")
+yaml_obj['services']['neuralcr'] = {}
+yaml_obj['services']['neuralcr']['image'] = "ccmsk/neuralcr"
+
+yaml_obj['services']['neuralcr']['volumes'] = ["./NCR_MODEL:/root/opt/ncr/model_params:ro"]
+
+yaml_obj['services']['neuralcr']['networks'] = {}
+yaml_obj['services']['neuralcr']['networks']['internalnetwork'] = {}
+yaml_obj['services']['neuralcr']['networks']['internalnetwork']['aliases'] = ['neuralcr']
+
 #Configure the proxy container
 print("Configuring service: proxy")
 yaml_obj['services']['proxy'] = {}
@@ -233,7 +244,7 @@ yaml_obj['services']['proxy']['networks'] = {}
 yaml_obj['services']['proxy']['networks']['internalnetwork'] = {}
 yaml_obj['services']['proxy']['networks']['internalnetwork']['aliases'] = ['proxy']
 
-yaml_obj['services']['proxy']['depends_on'] = ['lfsinitial']
+yaml_obj['services']['proxy']['depends_on'] = ['lfsinitial', 'neuralcr']
 
 #Setup the internal network
 print("Configuring the internal network")

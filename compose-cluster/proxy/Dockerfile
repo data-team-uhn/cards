@@ -19,6 +19,8 @@ FROM ubuntu:18.04
 
 RUN apt-get update
 RUN apt-get -y install \
+	nodejs \
+	node-fetch \
 	apache2
 
 RUN a2enmod proxy
@@ -26,4 +28,8 @@ RUN a2enmod proxy_http
 
 COPY 000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
-CMD apachectl -D FOREGROUND
+COPY http_proxy.js /http_proxy.js
+
+COPY startup.sh /startup.sh
+RUN chmod +x /startup.sh
+CMD /startup.sh
