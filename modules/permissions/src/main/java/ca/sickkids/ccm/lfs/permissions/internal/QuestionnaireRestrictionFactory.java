@@ -21,8 +21,6 @@ package ca.sickkids.ccm.lfs.permissions.internal;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 import ca.sickkids.ccm.lfs.permissions.spi.RestrictionFactory;
@@ -56,15 +54,5 @@ public class QuestionnaireRestrictionFactory implements RestrictionFactory
         // FIXME This should be Type.REFERENCE, but the current method of testing this restriction only works with
         // strings
         return Type.STRING;
-    }
-
-    /**
-     * Activate this bundle, refreshing the restriction provider bundle.
-     * @param context The context of this factory's bundle
-     */
-    @Activate
-    public void activate(ComponentContext context)
-    {
-        this.refreshProvider(context);
     }
 }

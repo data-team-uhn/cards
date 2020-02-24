@@ -32,7 +32,6 @@
 
     # Custom permission schemes
     ca.sickkids.ccm.lfs/lfs-permissions/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-permissions-provider/${lfs.version}
 
     # Common Utilities
     ca.sickkids.ccm.lfs/lfs-utils/${lfs.version}
