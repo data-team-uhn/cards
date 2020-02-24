@@ -17,8 +17,6 @@
 
 import React from "react";
 
-import PropTypes from "prop-types";
-
 import { withStyles } from "@material-ui/core/styles";
 
 import { Avatar, Button, Link, Card, CardHeader, CardContent, Grid, Table, TableBody, TableHead, TableRow, TableCell} from "@material-ui/core";
@@ -123,6 +121,8 @@ class UsersManager extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const headerBackground = this.props.theme.palette.grey['200'];
+
     return (
       <div>
         <CreateUserDialogue isOpen={this.state.deployCreateUser} handleClose={() => {this.setState({deployCreateUser: false});}} reload={() => this.handleReload()}/>
@@ -133,12 +133,11 @@ class UsersManager extends React.Component {
             <MaterialTable
               title="User list"
               style={{ boxShadow : 'none' }}
-              options={
-                { draggable: false },
-                { actionsColumnIndex: -1 },
-                { headerStyle: { backgroundColor: '#fafbfc'} },
-                { emptyRowsWhenPaging: false }
-              }
+              options={{
+                actionsColumnIndex: -1,
+                headerStyle: {backgroundColor: headerBackground},
+                emptyRowsWhenPaging: false
+              }}
               columns={[
                 { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.initials}</Avatar>},
                 { title: 'User Name', field: 'name' },
@@ -149,11 +148,6 @@ class UsersManager extends React.Component {
               ]}
               data={this.state.users}
               actions={[
-                /*{
-                  icon: 'edit',
-                  tooltip: 'Edit User',
-                  onClick: (event, rowData) => this.handleUserRowClick(rowData.tableData.id, rowData.name)
-                },*/
                 {
                   icon: 'delete',
                   tooltip: 'Delete User',
@@ -232,4 +226,4 @@ class UsersManager extends React.Component {
   }
 }
 
-export default withStyles (userboardStyle)(UsersManager);
+export default withStyles (userboardStyle, {withTheme: true})(UsersManager);

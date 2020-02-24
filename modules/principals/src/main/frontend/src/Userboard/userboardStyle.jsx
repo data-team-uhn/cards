@@ -16,25 +16,10 @@
 */
 
 // Taken from https://www.creative-tim.com/product/material-dashboard-react
-import {
-    grayColor,
-    infoColor
-  } from "./themeStyle.jsx";
 
-  const userboardStyle = {
-    cardCategory: {
-      color: grayColor[0],
-      margin: "0",
-      fontSize: "14px",
-      marginTop: "0",
-      paddingTop: "10px",
-      marginBottom: "0",
-      width: "20%",
-      paddingBottom: "0",
-      verticalAlign: "bottom"
-    },
+const userboardStyle = theme => ({
     cardTitle: {
-      color: grayColor[2],
+      color: theme.palette.grey['800'],
       marginTop: "0px",
       minHeight: "auto",
       fontWeight: "300",
@@ -44,10 +29,21 @@ import {
       paddingBottom: "0",
       verticalAlign: "bottom",
       "& small": {
-        color: grayColor[1],
+        color: theme.palette.grey['700'],
         fontWeight: "400",
         lineHeight: "1"
       }
+    },
+    cardCategory: {
+      color: theme.palette.grey['500'],
+      margin: "0",
+      fontSize: "14px",
+      marginTop: "0",
+      paddingTop: "10px",
+      marginBottom: "0",
+      width: "20%",
+      paddingBottom: "0",
+      verticalAlign: "bottom"
     },
     containerButton: {
       marginRight: "8px",
@@ -56,12 +52,12 @@ import {
       justifyContent: "flex-end",
       marginTop: "16px"
     },
-    cardRoot : {
+    cardRoot: {
       paddingLeft: "120px"
     },
     info: {
-      backgroundColor: infoColor[0]
+      backgroundColor: theme.palette.info.main
     }
-  };
+});
 
-  export default userboardStyle;
+export default userboardStyle;

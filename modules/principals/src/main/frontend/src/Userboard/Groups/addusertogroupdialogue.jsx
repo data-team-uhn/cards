@@ -17,9 +17,13 @@
 
 import React from "react";
 
+import { withTheme } from "@material-ui/core/styles";
+
 import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 
 import MaterialTable from 'material-table';
+
+const GROUP_URL="/system/userManager/group/";
 
 class AddUserToGroupDialogue extends React.Component {
     constructor(props) {
@@ -49,7 +53,7 @@ class AddUserToGroupDialogue extends React.Component {
             .then((data) => {
                 var names = [];
                 for (var username in data) {
-                    !username.startsWith("sling-") && names.push(this.addName(username));
+                    names = Object.keys(data).filter((username) => !username.startsWith("sling-")).map((username) => this.addName(username));
                 }
                 this.setState({ allUserNames: names });
             })
@@ -59,7 +63,6 @@ class AddUserToGroupDialogue extends React.Component {
     }
 
     handleAddUsers() {
-        let url = "/system/userManager/group/" + this.props.name + ".update.html";
         let formData = new FormData();
 
         var i;
@@ -67,7 +70,7 @@ class AddUserToGroupDialogue extends React.Component {
             formData.append(':member', this.state.selectedUsers[i]);
         }
 
-        fetch(url,
+        fetch(GROUP_URL + this.props.name + ".update.html",
             {
                 method: 'POST',
                 credentials: 'include',
@@ -87,19 +90,14 @@ class AddUserToGroupDialogue extends React.Component {
         this.handleLoadUsers();
     }
 
-    // TODO - find more efficient way to add and remove users from list
     handleSelectRowClick(rows) {
-        let chosens = [];
-        var i;
-        for (i = 0; i < rows.length; ++i) {
-            chosens.push(rows[i].name);
-        }
+        let chosens = rows.map((row) => row.name);
         this.setState({ selectedUsers: chosens });
     }
 
     handleEntering() {
         if (this.props.name != "") {
-          fetch("/system/userManager/group/" + this.props.name + ".1.json",
+          fetch(GROUP_URL + this.props.name + ".1.json",
             {
               method: 'GET',
               credentials: 'include'
@@ -108,16 +106,9 @@ class AddUserToGroupDialogue extends React.Component {
               return response.json();
             })
             .then((data) => {
-              var groupUsers = [];
-              var i;
-              for (i = 0; i < data.members.length; ++i) {
-                let username = data.members[i];
-                username = username.split('/').pop();
-                groupUsers.push(username);
-              }
+              var groupUsers = data?.members?.map((n) => n?.split('/').pop());
 
-              let filtered = [];
-              filtered = this.state.allUserNames.filter( function( el ) {
+              let filtered = this.state.allUserNames.filter( (el) => {
                   return !groupUsers.includes( el.name );
                 } );
               this.setState({ freeUserNames: filtered });
@@ -139,6 +130,8 @@ class AddUserToGroupDialogue extends React.Component {
     }
 
     render() {
+        const headerBackground = this.props.theme.palette.grey['200'];
+
         return (
             <Dialog
                 maxWidth="sm"
@@ -155,11 +148,10 @@ class AddUserToGroupDialogue extends React.Component {
                             <MaterialTable
                               title=""
                               style={{ boxShadow : 'none' }}
-                              options={
-                                { draggable: false },
-                                { headerStyle: { backgroundColor: '#fafbfc'} },
-                                { emptyRowsWhenPaging: false }
-                              }
+                              options={{
+                                headerStyle: { backgroundColor: headerBackground },
+                                emptyRowsWhenPaging: false
+                              }}
                               columns={[
                                 { title: 'User Name', field: 'name' },
                               ]}
@@ -186,4 +178,4 @@ class AddUserToGroupDialogue extends React.Component {
     }
 }
 
-export default AddUserToGroupDialogue;
+export default withTheme(AddUserToGroupDialogue);

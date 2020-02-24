@@ -17,8 +17,6 @@
 
 import React from "react";
 
-import PropTypes from "prop-types";
-
 import { withStyles } from "@material-ui/core/styles";
 
 import { Avatar, Button, Card, CardHeader, CardContent, Grid, Table, TableCell, TableBody, TableHead, TableRow } from "@material-ui/core";
@@ -106,6 +104,8 @@ class GroupsManager extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const headerBackground = this.props.theme.palette.grey['200'];
+
     return (
       <div>
         <CreateGroupDialogue isOpen={this.state.deployCreateGroup} handleClose={() => {this.setState({deployCreateGroup: false});}} reload={() => this.handleReload()} />
@@ -116,12 +116,11 @@ class GroupsManager extends React.Component {
           <MaterialTable
             title="Group list"
             style={{ boxShadow : 'none' }}
-            options={
-              { draggable: false },
-              { actionsColumnIndex: -1 },
-              { headerStyle: { backgroundColor: '#fafbfc'} },
-              { emptyRowsWhenPaging: false }
-            }
+            options={{
+              actionsColumnIndex: -1,
+              headerStyle: {backgroundColor: headerBackground},
+              emptyRowsWhenPaging: false
+            }}
             columns={[
               { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.name.charAt(0)}</Avatar> },
               { title: 'Name', field: 'name', cellStyle: {textAlign: 'left'} },
@@ -130,11 +129,6 @@ class GroupsManager extends React.Component {
             ]}
             data={this.state.groups}
             actions={[
-              /*{
-                icon: 'edit',
-                tooltip: 'Edit Group',
-                onClick: (event, rowData) => this.handleGroupRowClick(rowData.tableData.id, rowData.name)
-              },*/
               {
                 icon: 'delete',
                 tooltip: 'Delete Group',
@@ -206,4 +200,4 @@ class GroupsManager extends React.Component {
   }
 }
 
-export default withStyles (userboardStyle)(GroupsManager);
+export default withStyles (userboardStyle, {withTheme: true})(GroupsManager);

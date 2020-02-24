@@ -67,6 +67,7 @@ class ChangeUserPasswordDialogue extends React.Component {
                                 id="oldpwd"
                                 name="oldpwd"
                                 label="Old Password"
+                                type="password"
                                 onChange={(event) => { this.setState({ oldPwd: event.target.value }); }}
                                 autoFocus
                             />
@@ -76,6 +77,7 @@ class ChangeUserPasswordDialogue extends React.Component {
                                 id="newpwd"
                                 name="newpwd"
                                 label="New Password"
+                                type="password"
                                 onChange={(event) => { this.setState({ newPwd: event.target.value }); }}
                             />
                         </Grid>

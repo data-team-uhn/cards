@@ -17,9 +17,13 @@
 
 import React from "react";
 
+import { withTheme } from "@material-ui/core/styles";
+
 import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@material-ui/core";
 
 import MaterialTable from 'material-table';
+
+const GROUP_URL="/system/userManager/group/";
 
 class RemoveUserFromGroupDialogue extends React.Component {
   constructor(props) {
@@ -29,14 +33,14 @@ class RemoveUserFromGroupDialogue extends React.Component {
       selectedUsers: []
     };
   }
-
+  
   addName(name) {
     return { name }
   }
 
   handleEntering() {
     if (this.props.name != "") {
-      fetch("/system/userManager/group/" + this.props.name + ".1.json",
+      fetch(GROUP_URL + this.props.name + ".1.json",
         {
           method: 'GET',
           credentials: 'include'
@@ -45,13 +49,7 @@ class RemoveUserFromGroupDialogue extends React.Component {
           return response.json();
         })
         .then((data) => {
-          var names = [];
-          var i;
-          for (i = 0; i < data.members.length; ++i) {
-            let username = data.members[i];
-            username = username.split('/').pop();
-            names.push(this.addName(username));
-          }
+          var names = data?.members?.map((n) => this.addName(n?.split('/').pop()));
           this.setState({ groupUsers: names });
         })
         .catch((error) => {
@@ -61,8 +59,6 @@ class RemoveUserFromGroupDialogue extends React.Component {
   }
 
   handleRemoveUsers() {
-    let url = "/system/userManager/group/" + this.props.name + ".update.html";
-
     let formData = new FormData();
 
     var i;
@@ -70,7 +66,7 @@ class RemoveUserFromGroupDialogue extends React.Component {
       formData.append(':member@Delete', this.state.selectedUsers[i]);
     }
 
-    fetch(url,
+    fetch(GROUP_URL + this.props.name + ".update.html",
       {
         method: 'POST',
         credentials: 'include',
@@ -78,7 +74,7 @@ class RemoveUserFromGroupDialogue extends React.Component {
       })
       .then(() => {
         this.props.reload();
-        this.props.handleClose();
+        this.handleExit();
       })
       .catch((error) => {
         console.log(error);
@@ -86,21 +82,24 @@ class RemoveUserFromGroupDialogue extends React.Component {
   }
 
   handleSelectRowClick(rows) {
-    let chosens = [];
-    var i;
-    for (i = 0; i < rows.length; ++i) {
-        chosens.push(rows[i].name);
-    }
+    let chosens = rows.map((row) => row.name);
     this.setState({ selectedUsers: chosens });
   }
 
+  handleExit() {
+    this.setState({ selectedUsers: [] });
+    this.props.handleClose();
+  }
+
   render() {
+    const headerBackground = this.props.theme.palette.grey['200'];
+
     return (
       <Dialog
         maxWidth="sm"
         open={this.props.isOpen}
         onEntering={() => this.handleEntering()}
-        onClose={() => this.props.handleClose()}
+        onClose={() => this.handleExit()}
       >
         <DialogTitle>
           Remove users from group {this.props.name}
@@ -111,11 +110,10 @@ class RemoveUserFromGroupDialogue extends React.Component {
                 <MaterialTable
                   title=""
                   style={{ boxShadow : 'none' }}
-                  options={
-                    { draggable: false },
-                    { headerStyle: { backgroundColor: '#fafbfc'} },
-                    { emptyRowsWhenPaging: false }
-                  }
+                  options={{
+                    headerStyle: { backgroundColor: headerBackground },
+                    emptyRowsWhenPaging: false
+                  }}
                   columns={[
                     { title: 'User Name', field: 'name' },
                   ]}
@@ -135,11 +133,11 @@ class RemoveUserFromGroupDialogue extends React.Component {
         </DialogContent>
         <DialogActions>
           <Button variant="contained" size="small" color="primary" onClick={() => this.handleRemoveUsers()} disabled={this.state.selectedUsers.length == 0}>Remove</Button>
-          <Button variant="contained" size="small" onClick={() => this.props.handleClose()}>Close</Button>
+          <Button variant="contained" size="small" onClick={() => this.handleExit()}>Close</Button>
         </DialogActions>
       </Dialog>
     );
   }
 }
 
-export default RemoveUserFromGroupDialogue;
+export default withTheme(RemoveUserFromGroupDialogue);

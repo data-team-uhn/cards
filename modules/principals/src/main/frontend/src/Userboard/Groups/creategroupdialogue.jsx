@@ -50,7 +50,7 @@ class CreateGroupDialogue extends React.Component {
         return (
             <Dialog
                 open={this.props.isOpen}
-                onClose={() => this.props.handleClose()}
+                onClose={this.props.handleClose}
             >
                 <DialogTitle>Create New Group</DialogTitle>
                 <DialogContent>
@@ -68,7 +68,7 @@ class CreateGroupDialogue extends React.Component {
                 </DialogContent>
                 <DialogActions>
                     <Button color="primary" variant="contained" size="small" onClick={(event) => { event.preventDefault(); this.handleCreateGroup(); }}>Create Group</Button>
-                    <Button variant="contained" size="small" onClick={() => this.props.handleClose()}>Close</Button>
+                    <Button variant="contained" size="small" onClick={this.props.handleClose}>Close</Button>
                 </DialogActions>
             </Dialog>
         );

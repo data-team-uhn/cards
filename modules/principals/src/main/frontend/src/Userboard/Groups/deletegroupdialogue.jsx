@@ -48,7 +48,7 @@ class DeleteGroupDialogue extends React.Component {
         return (
             <Dialog
                 open={this.props.isOpen}
-                onClose={() => this.props.handleClose()}
+                onClose={this.props.handleClose}
             >
                 <DialogTitle disableTypography>
                   <Typography variant="h6">Delete {this.props.name}</Typography>
