@@ -56,7 +56,9 @@
 # start the Oak server instance after all components have been configured
 # and started to avoid restarting that component ( see SLING-4556 )
 [artifacts startLevel=16]
-    org.apache.sling/org.apache.sling.jcr.oak.server/1.2.0
+    # Use our customized server
+    # org.apache.sling/org.apache.sling.jcr.oak.server/1.2.0
+    ca.sickkids.ccm.lfs/custom.jcr.oak.server/0.1-SNAPSHOT
 
 # Configuration for authentication and authorization
 [configurations]
@@ -94,6 +96,9 @@
     enabledActions=["org.apache.jackrabbit.oak.spi.security.user.action.AccessControlAction"]
     userPrivilegeNames=["jcr:all"]
     groupPrivilegeNames=["jcr:read"]
+
+  ca.sickkids.ccm.lfs.sling.jcr.oak.server.internal.OakSlingRepositoryManager
+    dynamic=B"true"
 
 [configurations runModes=oak_tar]
   org.apache.jackrabbit.oak.segment.SegmentNodeStoreService

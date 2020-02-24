@@ -143,7 +143,7 @@
       "org.apache.sling.jcr.base",\
       "org.apache.sling.jcr.contentloader",\
       "org.apache.sling.jcr.jackrabbit.usermanager",\
-      "org.apache.sling.jcr.oak.server",\
+      "ca.sickkids.ccm.lfs.custom.jcr.oak.server",\
       "org.apache.sling.jcr.repoinit",\
       "org.apache.sling.jcr.webconsole",\
       "org.apache.sling.servlets.post",\
