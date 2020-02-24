@@ -167,25 +167,16 @@ public class QueryBuilder implements Use
      */
     private Iterator<Resource> quickSearch(String query) throws RepositoryException
     {
-        final String[] toSearch = {"lfs:Form", "lfs:Subject", "lfs:Questionnaire"};
-        final StringBuilder oakQuery = new StringBuilder();
-
-        for (int i = 0; i < toSearch.length; i++) {
-            oakQuery.append(
-                String.format(
-                    "select n.* from [%s] as n where contains(*, '*%s*')",
-                    toSearch[i],
-                    this.fullTextEscape(query)
-                )
-            );
-
-            // Union interstitial terms together
-            if (i + 1 != toSearch.length) {
-                oakQuery.append(" union ");
-            }
-        }
-        // Wrap our full-text query in JCR-SQL2 syntax for the resource resolver to understand
-        return queryJCR(oakQuery.toString());
+        final StringBuilder xpathQuery = new StringBuilder();
+        xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value)");
+        xpathQuery.append(",");
+        xpathQuery.append("\"");
+        xpathQuery.append("%");
+        xpathQuery.append(this.fullTextEscape(query.toLowerCase()));
+        xpathQuery.append("%");
+        xpathQuery.append("\"");
+        xpathQuery.append(" )]");
+        return queryXPATH(xpathQuery.toString());
     }
 
 
@@ -198,6 +189,17 @@ public class QueryBuilder implements Use
     private Iterator<Resource> queryJCR(String query) throws RepositoryException
     {
         return this.resourceResolver.findResources(query, "JCR-SQL2");
+    }
+
+    /**
+     * Finds content matching the given XPATH query.
+     *
+     * @param query a XPATH query
+     * @return the content matching the query
+     */
+    private Iterator<Resource> queryXPATH(String query) throws RepositoryException
+    {
+        return this.resourceResolver.findResources(query, "xpath");
     }
 
     /**
