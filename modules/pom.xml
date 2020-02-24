@@ -42,6 +42,7 @@
     <module>utils</module>
     <module>principals</module>
     <module>permissions</module>
+    <module>permissions-ownership</module>
     <module>vocabularies</module>
     <module>aggregated-frontend</module>
   </modules>
