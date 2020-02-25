@@ -75,6 +75,7 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
     {
         Resource vocab = request.getResource().getParent();
         ResourceResolver resolver = request.getResourceResolver();
+        String parentpath = this.findParentVocabulary(request.getResource()).getPath();
 
         // Our normal output would be ourselves as a JSONObject
         JsonObject json = request.getResource().adaptTo(JsonObject.class);
@@ -89,7 +90,7 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
                 JsonValue value = json.get(key);
                 if (value instanceof JsonArray) {
                     // Any arrays should be iterated through and written
-                    jsonGen.write(key, this.processArray((JsonArray) value, vocab, resolver));
+                    jsonGen.write(key, this.processArray((JsonArray) value, vocab, resolver, parentpath));
                 } else {
                     // Anything else should be left as-is
                     jsonGen.write(key, value);
@@ -100,13 +101,14 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
             boolean hasChildren = false;
             Iterator<Resource> children = getVocabularyTermChildren(
                 request.getResource().adaptTo(JsonObject.class),
-                resolver
+                resolver,
+                parentpath
                 );
             jsonGen.writeStartArray(CHILDREN_PROPERTY);
             while (children.hasNext()) {
                 hasChildren = true;
                 Resource child = children.next();
-                jsonGen.write(populateChildren(child.adaptTo(JsonObject.class), resolver));
+                jsonGen.write(populateChildren(child.adaptTo(JsonObject.class), resolver, parentpath));
             }
             jsonGen.writeEnd();
             jsonGen.write(HAS_CHILDREN_PROPERTY, hasChildren);
@@ -116,15 +118,32 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
     }
 
     /**
+     * Find the parent vocabulary for the given resource, or null if none is found.
+     *
+     * @param node The resource whose parent vocabulary we're finding
+     * @return The parent vocabulary node, or null if none is found
+     */
+    private Resource findParentVocabulary(Resource node)
+    {
+        Resource curNode = node;
+        while (curNode != null && !("lfs/Vocabulary".equals(curNode.getResourceType())))
+        {
+            curNode = curNode.getParent();
+        }
+        return curNode;
+    }
+
+    /**
      * Process the given array, following references (if any). Fill in an additional lfs:hasChildren field
      * if the node has children.
      *
      * @param array Array to iterate through
      * @param vocab Vocabulary object whose children are the vocabulary terms
      * @param resolver A reference to a ResourceResolver
+     * @param parentpath the location of the vocabulary whose children we're searching
      * @return The input array, but any strings whose names are vocabulary terms are replaced with the term itself
      */
-    private JsonValue processArray(JsonArray array, Resource vocab, ResourceResolver resolver)
+    private JsonValue processArray(JsonArray array, Resource vocab, ResourceResolver resolver, String parentpath)
     {
         JsonArrayBuilder builder = Json.createArrayBuilder();
         for (int i = 0; i < array.size(); i++) {
@@ -143,7 +162,7 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
                     builder.add(value);
                 } else {
                     JsonObject linkedObject = linkedValue.adaptTo(JsonObject.class);
-                    builder.add(populateChildren(linkedObject, resolver));
+                    builder.add(populateChildren(linkedObject, resolver, parentpath));
                 }
             } else {
                 // This is not a string, leave it as is
@@ -153,10 +172,17 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
         return builder.build();
     }
 
-    private JsonObject populateChildren(JsonObject resource, ResourceResolver resolver)
+    /**
+     * Add the children of the given node to itself.
+     * @param resource The resource whose children we're looking for
+     * @param resolver A reference to a resource resolver
+     * @param parentpath The path of the vocabulary to search through
+     * @return The input resource, with its children added as a property with key CHILDREN_PROPERTY
+     */
+    private JsonObject populateChildren(JsonObject resource, ResourceResolver resolver, String parentpath)
     {
         // Add child terms
-        Iterator<Resource> children = getVocabularyTermChildren(resource, resolver);
+        Iterator<Resource> children = getVocabularyTermChildren(resource, resolver, parentpath);
 
         // Copy the resource but add lfs:hasChildren to it
         JsonObjectBuilder objectCopier = Json.createObjectBuilder();
@@ -190,13 +216,16 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
      *
      * @param resource The JsonObject to obtain the children of. Must have a child with key "id"
      * @param resolver A reference to a ResourceResolver to use
+     * @param parentpath the location of the vocabulary whose children we're searching
      * @return An iterator over the resource's children
      */
-    private Iterator<Resource> getVocabularyTermChildren(JsonObject resource, ResourceResolver resolver)
+    private Iterator<Resource> getVocabularyTermChildren(JsonObject resource, ResourceResolver resolver,
+        String parentpath)
     {
         // Check to see if this resource has children
         String oakQuery = String.format(
-            "SELECT * FROM [lfs:VocabularyTerm] AS a WHERE a.parents = '%s'",
+            "SELECT * FROM [lfs:VocabularyTerm] AS a WHERE isdescendantnode(a, '%s') AND a.parents = '%s'",
+            parentpath,
             resource.getString("id")
             );
         return resolver.findResources(oakQuery, "JCR-SQL2");

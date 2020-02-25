@@ -117,6 +117,7 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
      * Outputs the results of a full-text query on the given string.
      *
      * @param suggest a string to perform full text matching upon
+     * @param parentpath the location of the vocabulary whose children we're searching
      * @return The JCR-SQL2 query to perform
      */
     private String handleFullTextQuery(String suggest, String parentpath) throws IOException
@@ -133,6 +134,7 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
      * Outputs the results of executing the given Lucene query.
      *
      * @param query the Lucene query to execute
+     * @param parentpath the location of the vocabulary whose children we're searching
      * @return The JCR-SQL2 query to perform
      */
     private String handleLuceneQuery(String query, String parentpath) throws IOException
