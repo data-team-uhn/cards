@@ -232,6 +232,7 @@ class VocabularyQuery extends React.Component {
                      avatar={
                       <Link className={classes.infoDataSource} color="textSecondary"
                         href={this.state.infoVocabURL || "."}  target="_blank"
+                        underline="none"
                         >
                         <Tooltip title={this.state.infoVocabDescription}>
                           <Avatar aria-label="source" className={classes.vocabularyAvatar}>
