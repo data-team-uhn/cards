@@ -53,7 +53,6 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
     service = SourceParser.class,
     scope = ServiceScope.PROTOTYPE,
     name = "SourceParser.OBO")
-@SuppressWarnings("checkstyle:ClassDataAbstractionCoupling")
 public class OboParser implements SourceParser
 {
     /** Marks the start of a new Frame. */
