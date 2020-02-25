@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,7 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
 
 @Component(
     service = SourceParser.class,
+    scope = ServiceScope.PROTOTYPE,
     name = "SourceParser.OBO")
 @SuppressWarnings("checkstyle:ClassDataAbstractionCoupling")
 public class OboParser implements SourceParser
@@ -67,10 +69,10 @@ public class OboParser implements SourceParser
     private static final String FIELD_NAME_VALUE_SEPARATOR = "(?<!\\\\)(?:\\\\\\\\)*:\\s*";
 
     /** Holds the term currently being . */
-    private InheritableThreadLocal<TermData> crtTerm = new InheritableThreadLocal<>();
+    private TermData crtTerm;
 
     /** Holds all the terms parsed so far. */
-    private InheritableThreadLocal<Map<String, TermData>> data = new InheritableThreadLocal<>();
+    private Map<String, TermData> data;
 
     /** Logger object used to handle thrown errors. */
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -88,11 +90,10 @@ public class OboParser implements SourceParser
         final Consumer<VocabularyTermSource> consumer) throws IOException, VocabularyIndexException
     {
         try {
-            this.data.set(new LinkedHashMap<>());
+            this.data = new LinkedHashMap<>();
             readLines(source);
             propagateAncestors();
             consumeData(consumer);
-            this.data.remove();
         } catch (IOException ex) {
             this.logger.error("IOException: {}", ex.getMessage());
         }
@@ -107,7 +108,7 @@ public class OboParser implements SourceParser
     private void readLines(final File source) throws IOException
     {
         // Start by examining a new term
-        this.crtTerm.set(new TermData());
+        this.crtTerm = new TermData();
         try (ConcatenatingLineReader br =
             new ConcatenatingLineReader(new InputStreamReader(new FileInputStream(source), StandardCharsets.UTF_8))) {
             String line;
@@ -147,17 +148,16 @@ public class OboParser implements SourceParser
     private void storeCrtTerm()
     {
         // Only terms with a valid identifier can be stored
-        TermData termToProcess = this.crtTerm.get();
-        if (termToProcess.getId() != null) {
+        if (this.crtTerm.getId() != null) {
             // Multiple frames can describe the same term, we must combine them into one
-            TermData existing = this.data.get().get(termToProcess.getId());
+            TermData existing = this.data.get(this.crtTerm.getId());
             if (existing == null) {
-                this.data.get().put(termToProcess.getId(), termToProcess);
+                this.data.put(this.crtTerm.getId(), this.crtTerm);
             } else {
-                existing.getAllProperties().putAll(termToProcess.getAllProperties());
+                existing.getAllProperties().putAll(this.crtTerm.getAllProperties());
             }
         }
-        this.crtTerm.set(new TermData());
+        this.crtTerm = new TermData();
     }
 
     /**
@@ -170,7 +170,7 @@ public class OboParser implements SourceParser
      */
     private void loadField(String name, String value)
     {
-        this.crtTerm.get().addTo(process(name), process(value));
+        this.crtTerm.addTo(process(name), process(value));
     }
 
     /**
@@ -285,7 +285,7 @@ public class OboParser implements SourceParser
      */
     private Collection<String> findAncestors(String termID)
     {
-        TermData term = this.data.get().get(termID);
+        TermData term = this.data.get(termID);
 
         if (term == null) {
             // Unknown parent
@@ -320,7 +320,7 @@ public class OboParser implements SourceParser
      */
     private void propagateAncestors()
     {
-        for (String id : this.data.get().keySet()) {
+        for (String id : this.data.keySet()) {
             findAncestors(id);
         }
     }
@@ -333,8 +333,8 @@ public class OboParser implements SourceParser
     private void consumeData(final Consumer<VocabularyTermSource> consumer)
     {
         String[] typeString = {};
-        for (String id : this.data.get().keySet()) {
-            TermData term = this.data.get().get(id);
+        for (String id : this.data.keySet()) {
+            TermData term = this.data.get(id);
             consumer.accept(new VocabularyTermSource(
                 term.getId(),
                 term.getLabel(),

@@ -49,6 +49,7 @@ import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ServiceScope;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.SourceParser;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescription;
@@ -63,6 +64,7 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
  */
 @Component(
     service = SourceParser.class,
+    scope = ServiceScope.PROTOTYPE,
     name = "SourceParser.OWL")
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class OwlParser implements SourceParser
@@ -70,7 +72,7 @@ public class OwlParser implements SourceParser
     @Reference
     private VocabularyParserUtils utils;
 
-    private InheritableThreadLocal<Property> labelProperty = new InheritableThreadLocal<>();
+    private Property labelProperty;
 
     @Override
     public boolean canParse(String format)
@@ -104,7 +106,7 @@ public class OwlParser implements SourceParser
             OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_LITE_MEM_TRANS_INF, rawModel);
 
             // Cache the rdf:label property, it will be used a lot later on
-            this.labelProperty.set(ontModel.getProperty("http://www.w3.org/2000/01/rdf-schema#label"));
+            this.labelProperty = ontModel.getProperty("http://www.w3.org/2000/01/rdf-schema#label");
 
             // This lists all the named classes, the actual terms of the vocabulary
             ExtendedIterator<OntClass> termIterator = ontModel.listNamedClasses();
@@ -127,8 +129,6 @@ public class OwlParser implements SourceParser
         } finally {
             // Delete the temporary data store
             FileUtils.deleteQuietly(temporaryDatasetPath.toFile());
-            // Clean up threadlocal variables so that memory can be reclaimed
-            this.labelProperty.remove();
         }
     }
 
@@ -144,8 +144,8 @@ public class OwlParser implements SourceParser
         while (properties.hasNext()) {
             Statement statement = properties.next();
             Property predicate = statement.getPredicate();
-            String label = predicate.hasProperty(this.labelProperty.get())
-                ? predicate.getProperty(this.labelProperty.get()).getString()
+            String label = predicate.hasProperty(this.labelProperty)
+                ? predicate.getProperty(this.labelProperty).getString()
                 : predicate.getLocalName();
             RDFNode object = statement.getObject();
             String value = object.isResource() ? object.asResource().getLocalName() : object.asLiteral().getString();
