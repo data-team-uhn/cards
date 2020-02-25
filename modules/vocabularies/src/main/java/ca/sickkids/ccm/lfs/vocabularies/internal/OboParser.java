@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ServiceScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +50,6 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
 
 @Component(
     service = SourceParser.class,
-    scope = ServiceScope.PROTOTYPE,
     name = "SourceParser.OBO")
 public class OboParser implements SourceParser
 {
@@ -68,10 +66,10 @@ public class OboParser implements SourceParser
     private static final String FIELD_NAME_VALUE_SEPARATOR = "(?<!\\\\)(?:\\\\\\\\)*:\\s*";
 
     /** Holds the term currently being . */
-    private TermData crtTerm;
+    private TermData crtTerm = new TermData();
 
     /** Holds all the terms parsed so far. */
-    private Map<String, TermData> data;
+    private Map<String, TermData> data = new LinkedHashMap<>();
 
     /** Logger object used to handle thrown errors. */
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -89,7 +87,6 @@ public class OboParser implements SourceParser
         final Consumer<VocabularyTermSource> consumer) throws IOException, VocabularyIndexException
     {
         try {
-            this.data = new LinkedHashMap<>();
             readLines(source);
             propagateAncestors();
             consumeData(consumer);
@@ -106,8 +103,6 @@ public class OboParser implements SourceParser
      */
     private void readLines(final File source) throws IOException
     {
-        // Start by examining a new term
-        this.crtTerm = new TermData();
         try (ConcatenatingLineReader br =
             new ConcatenatingLineReader(new InputStreamReader(new FileInputStream(source), StandardCharsets.UTF_8))) {
             String line;
