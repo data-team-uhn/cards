@@ -23,15 +23,16 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.Stack;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -311,40 +312,82 @@ public class DataImportServlet extends SlingAllMethodsServlet
         return this.resolver.get().create(answerParent, UUID.randomUUID().toString(), answerProperties);
     }
 
+    /**
+     * Gets the parent node under which an answer must be stored. This can be either the form directly, or a (possibly
+     * nested) {@code AnswerSection}.
+     *
+     * @param form the form being processed
+     * @param question the question being answered
+     * @return the resource node under which the answer must be stored
+     * @throws PersistenceException if a new resource must be created, but doing so fails
+     * @throws RepositoryException if accessing the repository fails
+     */
     private Resource findOrCreateParent(final Resource form, final Node question)
         throws PersistenceException, RepositoryException
     {
         // Find all the intermediate sections between the question and the questionnaire, bottom-to-top
+        final Iterator<Node> sections = getAncestorSections(question);
+        // Create all the needed intermediate answer sections between the form and the answer, top-to-bottom
+        Resource answerParent = form;
+        while (sections.hasNext()) {
+            answerParent = getAnswerSection(sections.next(), answerParent);
+        }
+        return answerParent;
+    }
+
+    /**
+     * Returns an iterator over the ancestor sections, in descending order from the questionnaire down to the question
+     * itself. The iterator may be empty, if the question is a direct child of the questionnaire.
+     *
+     * @param question the question whose ancestors are to be retrieved
+     * @return an iterator over {@code Section} nodes, may be empty
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private Iterator<Node> getAncestorSections(final Node question) throws RepositoryException
+    {
         Node questionParent = question.getParent();
-        final Stack<Node> sections = new Stack<>();
+        final Deque<Node> sections = new LinkedList<>();
         while (!"lfs:Questionnaire".equals(questionParent.getPrimaryNodeType().getName())) {
             sections.push(questionParent);
             questionParent = questionParent.getParent();
         }
-        // Create all the needed intermediate answer sections between the form and the answer, top-to-bottom
-        Resource answerParent = form;
-        while (!sections.isEmpty()) {
-            Node section = sections.pop();
-            String sectionRef = section.getProperty("jcr:uuid").getString();
-            Resource answerSection = null;
-            Iterator<Resource> children = answerParent.getChildren().iterator();
-            while (children.hasNext()) {
-                Resource child = children.next();
-                if (sectionRef.equals(child.getValueMap().get("section", ""))) {
-                    answerSection = child;
-                }
-            }
-            if (answerSection != null) {
-                answerParent = answerSection;
-            } else {
-                Map<String, Object> answerSectionProperties = new LinkedHashMap<>();
-                answerSectionProperties.put("jcr:primaryType", "lfs:AnswerSection");
-                answerSectionProperties.put("section", section);
-                answerParent =
-                    this.resolver.get().create(answerParent, UUID.randomUUID().toString(), answerSectionProperties);
+        return sections.iterator();
+    }
+
+    /**
+     * Finds or creates an {@code AnswerSection} node under {@code parent} corresponding to the given {@code section}.
+     *
+     * @param section the questionnaire section to be answered
+     * @param parent the parent node in which to look for the answer section, either a {@code Form} or another
+     *            {@code AnswerSection}
+     * @return a resource of type {@code lfs:AnswerSection} referencing the given questionnaire section, either one that
+     *         already existed, or a newly created one
+     * @throws PersistenceException if a new resource must be created, but doing so fails
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private Resource getAnswerSection(final Node section, final Resource parent)
+        throws PersistenceException, RepositoryException
+    {
+        String sectionRef = section.getProperty("jcr:uuid").getString();
+        Resource answerSection = null;
+        Resource result = null;
+        Iterator<Resource> children = parent.listChildren();
+        while (children.hasNext()) {
+            Resource child = children.next();
+            if (sectionRef.equals(child.getValueMap().get("section", ""))) {
+                answerSection = child;
+                break;
             }
         }
-        return answerParent;
+        if (answerSection != null) {
+            result = answerSection;
+        } else {
+            Map<String, Object> answerSectionProperties = new LinkedHashMap<>();
+            answerSectionProperties.put("jcr:primaryType", "lfs:AnswerSection");
+            answerSectionProperties.put("section", section);
+            result = this.resolver.get().create(parent, UUID.randomUUID().toString(), answerSectionProperties);
+        }
+        return result;
     }
 
     /**
