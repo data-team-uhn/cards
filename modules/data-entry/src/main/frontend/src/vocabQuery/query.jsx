@@ -382,6 +382,7 @@ class VocabularyQuery extends React.Component {
                   if (e.target.localName === "li") {
                     this.props.onClick(element["identifier"], name);
                     this.anchorEl.value = name;
+                    this.anchorEl.select();
                     this.closeDialog();
                   }}
                 }
