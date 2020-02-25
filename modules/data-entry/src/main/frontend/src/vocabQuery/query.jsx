@@ -230,15 +230,15 @@ class VocabularyQuery extends React.Component {
                 <ClickAwayListener onClickAway={this.clickAwayInfo}><div>
                    <CardHeader
                      avatar={
-                       <Tooltip title={this.state.infoVocabDescription}>
-                         <Link className={classes.infoDataSource} color="textSecondary"
-                            href={this.state.infoVocabURL || "."}  target="_blank"
-                          >
-                            <Avatar aria-label="source" className={classes.vocabularyAvatar}>
-                               {this.state.infoVocabAcronym}
-                            </Avatar>
-                         </Link>
-                       </Tooltip>
+                      <Link className={classes.infoDataSource} color="textSecondary"
+                        href={this.state.infoVocabURL || "."}  target="_blank"
+                        >
+                        <Tooltip title={this.state.infoVocabDescription}>
+                          <Avatar aria-label="source" className={classes.vocabularyAvatar}>
+                              {this.state.infoVocabAcronym}
+                          </Avatar>
+                        </Tooltip>
+                      </Link>
                     }
                     action={
                       <IconButton aria-label="close" onClick={this.closeInfo}>
