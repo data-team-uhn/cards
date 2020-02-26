@@ -51,10 +51,7 @@ class AddUserToGroupDialogue extends React.Component {
                 return response.json();
             })
             .then((data) => {
-                var names = [];
-                for (var username in data) {
-                    names = Object.keys(data).filter((username) => !username.startsWith("sling-")).map((username) => this.addName(username));
-                }
+                var names = Object.keys(data).filter((username) => !username.startsWith("sling-")).map((username) => this.addName(username));
                 this.setState({ allUserNames: names });
             })
             .catch((error) => {
