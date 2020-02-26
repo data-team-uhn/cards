@@ -52,7 +52,7 @@ class AddUserToGroupDialogue extends React.Component {
             })
             .then((data) => {
                 var names = Object.keys(data).filter((username) => !username.startsWith("sling-")).map((username) => this.addName(username));
-                this.setState({ allUserNames: names });
+                this.setState({ allUserNames: names,  freeUserNames: names});
             })
             .catch((error) => {
                 console.log(error);
@@ -93,26 +93,12 @@ class AddUserToGroupDialogue extends React.Component {
     }
 
     handleEntering() {
-        if (this.props.name != "") {
-          fetch(GROUP_URL + this.props.name + ".1.json",
-            {
-              method: 'GET',
-              credentials: 'include'
-            })
-            .then((response) => {
-              return response.json();
-            })
-            .then((data) => {
-              var groupUsers = data?.members?.map((n) => n?.split('/').pop());
-
-              let filtered = this.state.allUserNames.filter( (el) => {
-                  return !groupUsers.includes( el.name );
-                } );
-              this.setState({ freeUserNames: filtered });
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+        if (this.props.groupUsers != "") {
+          var groupUsersArray = this.props.groupUsers?.map((n) => n.name);
+          let filtered = this.state.allUserNames.filter( (el) => {
+              return !groupUsersArray.includes( el.name );
+            } );
+          this.setState({ freeUserNames: filtered });
         }
     }
 
@@ -147,13 +133,7 @@ class AddUserToGroupDialogue extends React.Component {
                               style={{ boxShadow : 'none' }}
                               options={{
                                 headerStyle: { backgroundColor: headerBackground },
-                                emptyRowsWhenPaging: false
-                              }}
-                              columns={[
-                                { title: 'User Name', field: 'name' },
-                              ]}
-                              data={this.state.freeUserNames}
-                              options={{
+                                emptyRowsWhenPaging: false,
                                 selection: true,
                                 showSelectAllCheckbox : false,
                                 showTextRowsSelected: false,
@@ -161,6 +141,10 @@ class AddUserToGroupDialogue extends React.Component {
                                     color: 'primary'
                                   })
                               }}
+                              columns={[
+                                { title: 'User Name', field: 'name' },
+                              ]}
+                              data={this.state.freeUserNames}
                               onSelectionChange={(rows) => {this.handleSelectRowClick(rows)}}
                             />
                         </div>

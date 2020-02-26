@@ -29,11 +29,15 @@ import RemoveUserFromGroupDialogue from "./removeuserfromgroup.jsx";
 
 import MaterialTable from 'material-table';
 
+const GROUP_URL="/system/userManager/group/";
+
 class GroupsManager extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       groups: [],
+      selectedUsers: [],
+      currentGroupUsers: [],
 
       currentGroupName: "",
       currentGroupIndex: -1,
@@ -41,7 +45,7 @@ class GroupsManager extends React.Component {
       deployCreateGroup: false,
       deployDeleteGroup: false,
       deployAddGroupUsers: false,
-      deployRemoveGroupUsers: false
+      groupUsersLoaded: false
     };
   }
 
@@ -50,8 +54,13 @@ class GroupsManager extends React.Component {
       {
         currentGroupName: "",
         currentGroupIndex: -1,
+        selectedUsers: [],
       }
     );
+  }
+
+  addName(name) {
+    return { name }
   }
 
   handleLoadGroups () {
@@ -68,16 +77,38 @@ class GroupsManager extends React.Component {
       return response.json();
     })
     .then((data) => {
-      this.clearSelectedGroup();
-      this.setState(
-        {
-          groups: data.rows
-        }
-      );
+      this.setState({ groups: data.rows });
     })
     .catch((error) => {
       console.log(error);
     })
+  }
+
+  handleSelectRowClick(rows) {
+    let chosens = rows.map((row) => row.name);
+    this.setState({ selectedUsers: chosens });
+  }
+
+  handleRemoveUsers() {
+    let formData = new FormData();
+
+    var i;
+    for (i = 0; i < this.state.selectedUsers.length; ++i) {
+      formData.append(':member@Delete', this.state.selectedUsers[i]);
+    }
+
+    fetch(GROUP_URL + this.state.currentGroupName + ".update.html",
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      })
+      .then(() => {
+        this.handleReload();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   componentWillMount () {
@@ -105,13 +136,11 @@ class GroupsManager extends React.Component {
   render() {
     const { classes } = this.props;
     const headerBackground = this.props.theme.palette.grey['200'];
-
     return (
       <div>
         <CreateGroupDialogue isOpen={this.state.deployCreateGroup} handleClose={() => {this.setState({deployCreateGroup: false});}} reload={() => this.handleReload()} />
         <DeleteGroupDialogue isOpen={this.state.deployDeleteGroup} handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName} reload={() => this.handleReload()} />
-        <AddUserToGroupDialogue isOpen={this.state.deployAddGroupUsers} handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName} reload={() => this.handleReload()} />
-        <RemoveUserFromGroupDialogue isOpen={this.state.deployRemoveGroupUsers} handleClose={() => {this.setState({deployRemoveGroupUsers: false});}} name={this.state.currentGroupName} reload={() => this.handleReload()} />
+        <AddUserToGroupDialogue isOpen={this.state.deployAddGroupUsers} handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName} groupUsers={this.state.currentGroupUsers} reload={() => this.handleReload()} />
         <div>
           <MaterialTable
             title="Group list"
@@ -144,28 +173,61 @@ class GroupsManager extends React.Component {
             onRowClick={(event, rowData, togglePanel) => {this.handleGroupRowClick(rowData.tableData.id, rowData.name); togglePanel()}}
             detailPanel={rowData => {
                 const group = rowData || this.state.groups[this.state.currentGroupIndex];
+
                 return (
                 <div>
                     <Card className={classes.cardRoot}>
                       <CardContent>
                         {
                           <div>
-                            <Table>
-                            <TableBody>
-                              <TableRow>
-                                <TableCell className={classes.cardCategory}>Principal Name</TableCell>
-                                <TableCell className={classes.cardTitle}>{group.principalName}</TableCell>
-                              </TableRow>
-                              <TableRow>
-                                <TableCell className={classes.cardCategory}>Members</TableCell>
-                                <TableCell className={classes.cardTitle}>{group.members}</TableCell>
-                              </TableRow>
-                              <TableRow>
-                                <TableCell className={classes.cardCategory}>Declared Members</TableCell>
-                                <TableCell className={classes.cardTitle}>{group.declaredMembers}</TableCell>
-                              </TableRow>
-                            </TableBody>
-                            </Table>
+                            <MaterialTable
+			                  title="Group users"
+			                  style={{ boxShadow : 'none' }}
+			                  options={{
+			                    
+			                  }}
+			                  options={{
+			                    emptyRowsWhenPaging: false,
+			                    selection: true,
+			                    showSelectAllCheckbox : false,
+			                    showTextRowsSelected: false,
+			                    headerStyle: {backgroundColor: headerBackground},
+			                    selectionProps: rowData => ({
+			                        color: 'primary'
+			                      })
+			                  }}
+			                  columns={[
+			                    { title: 'User Name', field: 'name' }
+			                  ]}
+				              data={query =>
+						          new Promise((resolve, reject) => {
+						            let url = GROUP_URL + group.principalName + ".1.json"
+						            fetch(url, {
+							            method: 'GET',
+							            credentials: 'include'
+							        })
+						            .then(response => response.json())
+						            .then(result => {
+						                let groupUsers = result?.members?.map((n) => this.addName(n?.split('/').pop()));
+						                let begin = query.pageSize*query.page;
+						                let end = Math.min((query.page+1)*query.pageSize, result.members.length);
+						                let pageUsers = groupUsers.slice(begin, end);
+
+						                this.setState({currentGroupUsers: groupUsers});
+
+						                resolve({
+						                  data: pageUsers,
+						                  page: query.page,
+						                  totalCount: result.members.length
+						                })
+						            })
+								    .catch((error) => {
+								        console.log(error);
+								    });
+								 })
+							  }
+			                  onSelectionChange={(rows) => {this.handleSelectRowClick(rows)}}
+			                />
                           </div>
                         }
                         <Grid container className={classes.cardActions}>
@@ -182,8 +244,8 @@ class GroupsManager extends React.Component {
                             variant="contained"
                             color="secondary"
                             size="small"
-                            disabled={group.members == 0}
-                            onClick={() => {this.setState({currentGroupName: group.principalName, deployRemoveGroupUsers: true});}}
+                            disabled={this.state.selectedUsers.length == 0}
+                            onClick={() => {this.setState({currentGroupName: group.principalName}); this.handleRemoveUsers();}}
                           >
                             Remove User from Group
                           </Button>
