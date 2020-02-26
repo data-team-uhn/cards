@@ -37,8 +37,6 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.scripting.sightly.pojo.Use;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A HTL Use-API that can run a JCR query and output the results as JSON. The query to execute is taken from the request
@@ -55,8 +53,6 @@ import org.slf4j.LoggerFactory;
  */
 public class QueryBuilder implements Use
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(QueryBuilder.class);
-
     private String content;
 
     private ResourceResolver resourceResolver;
@@ -227,7 +223,6 @@ public class QueryBuilder implements Use
                 String matchText = resourcevalue.substring(matchIndex, matchIndex + query.length());
                 String matchAfter = resourcevalue.substring(matchIndex + query.length());
                 String matchType = getQuestion(thisResource);
-                LOGGER.info("Found matchType: {}", matchType);
                 String[] queryMatch = {
                     matchType,
                     matchBefore,
