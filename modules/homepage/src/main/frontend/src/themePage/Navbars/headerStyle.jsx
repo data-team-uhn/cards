@@ -122,6 +122,12 @@ const headerStyle = theme => ({
   },
   searchResultSubjectIcon: {
     backgroundColor: "orange"
+  },
+  highlightedText: {
+    fontWeight: "bold",
+    backgroundColor: theme.palette.warning.light,
+    padding: "1px 2px",
+    borderRadius: "4px"
   }
 });
 

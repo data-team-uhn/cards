@@ -30,6 +30,7 @@ import HeaderStyle from "./headerStyle.jsx";
 
 const QUERY_URL = "/query";
 const MAX_RESULTS = 5;
+const MAX_CONTEXT_MATCH = 8;
 
 function SearchBar(props) {
   const { classes, className, closeSidebar, invertColors, doNotEscapeQuery } = props;
@@ -147,6 +148,32 @@ function SearchBar(props) {
       || element["jcr:uuid"];
   }
 
+  let getElementQueryMatchKey = (element) => {
+    return element[0] + " = ";
+  }
+
+  let getElementQueryMatchBefore = (element) => {
+    if (element[1].length <= MAX_CONTEXT_MATCH) {
+      return element[1];
+    }
+    else {
+      return "..." + element[1].slice(-1 * MAX_CONTEXT_MATCH);
+    }
+  }
+
+  let getElementQueryMatchText = (element) => {
+    return element[2];
+  }
+
+  let getElementQueryMatchAfter = (element) => {
+    if (element[3].length <= MAX_CONTEXT_MATCH) {
+      return element[3];
+    }
+    else {
+      return element[3].slice(0, MAX_CONTEXT_MATCH) + "...";
+    }
+  }
+
   return(
     <React.Fragment>
       <Input
@@ -241,6 +268,14 @@ function SearchBar(props) {
                             </Typography>
                             {getElementName(element)}
                           </div>)}
+                          secondary={("queryMatch" in element) ? (<React.Fragment>
+                            {getElementQueryMatchKey(element["queryMatch"])}
+                            {getElementQueryMatchBefore(element["queryMatch"])}
+                            <span className={classes.highlightedText}>
+                              {getElementQueryMatchText(element["queryMatch"])}
+                            </span>
+                            {getElementQueryMatchAfter(element["queryMatch"])}
+                          </React.Fragment>) : undefined}
                           className={classes.dropdownItem}
                           />
                     </MenuItem>
