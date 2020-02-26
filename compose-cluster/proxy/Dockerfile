@@ -19,9 +19,9 @@ FROM ubuntu:18.04
 
 RUN apt-get update
 RUN apt-get -y install \
+	apache2 \
 	nodejs \
-	node-fetch \
-	apache2
+	node-fetch
 
 RUN a2enmod proxy
 RUN a2enmod proxy_http
