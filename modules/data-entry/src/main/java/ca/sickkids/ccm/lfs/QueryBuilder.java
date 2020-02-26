@@ -19,9 +19,12 @@ package ca.sickkids.ccm.lfs;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -34,6 +37,8 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.scripting.sightly.pojo.Use;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A HTL Use-API that can run a JCR query and output the results as JSON. The query to execute is taken from the request
@@ -50,6 +55,8 @@ import org.apache.sling.scripting.sightly.pojo.Use;
  */
 public class QueryBuilder implements Use
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueryBuilder.class);
+
     private String content;
 
     private ResourceResolver resourceResolver;
@@ -157,6 +164,23 @@ public class QueryBuilder implements Use
     }
 
     /**
+     * Gets the question for a given answer JCR Resource.
+     *
+     * @param res the JCR Resource corresponding to an answer
+     * @return the question string corresponding to the passed answer
+     */
+    private String getQuestion(Resource res) throws ItemNotFoundException, RepositoryException
+    {
+        String questionNodeId = res.getValueMap().get("question", "");
+        if (!"".equals(questionNodeId))
+        {
+            Node questionNode = res.adaptTo(Node.class).getSession().getNodeByIdentifier(questionNodeId);
+            return questionNode.getProperty("text").getValue().toString();
+        }
+        return "";
+    }
+
+    /**
      * Finds [lfs:Form]s, [lfs:Subject]s, and [lfs:Questionnaire]s using the given full text search.
      * This performs the search in such a way that values in child nodes (e.g. lfs:Answers of an lfs:Form)
      * are aggregated to their parent.
@@ -167,16 +191,58 @@ public class QueryBuilder implements Use
      */
     private Iterator<Resource> quickSearch(String query) throws RepositoryException
     {
+        ArrayList<Resource> outputList = new ArrayList<Resource>();
+
         final StringBuilder xpathQuery = new StringBuilder();
-        xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value)");
-        xpathQuery.append(",");
-        xpathQuery.append("\"");
-        xpathQuery.append("%");
+        xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value),");
+        xpathQuery.append("\"%");
         xpathQuery.append(this.fullTextEscape(query.toLowerCase()));
-        xpathQuery.append("%");
-        xpathQuery.append("\"");
+        xpathQuery.append("%\"");
         xpathQuery.append(" )]");
-        return queryXPATH(xpathQuery.toString());
+
+        Iterator<Resource> foundResources = queryXPATH(xpathQuery.toString());
+        /*
+        * For each Resource in foundResources, move up the tree until
+        * we find an ancestor node of type `lfs:Form`
+        */
+        while (foundResources.hasNext())
+        {
+            Resource thisResource = foundResources.next();
+            Resource thisParent = thisResource;
+            String resourcevalue = thisResource.getValueMap().get("value", "");
+            while (true)
+            {
+                if (thisParent == null)
+                {
+                    break;
+                } else if ("lfs/Form".equals(thisParent.getResourceType())) {
+                    break;
+                }
+                thisParent = thisParent.getParent();
+            }
+            if (thisParent != null)
+            {
+                int matchIndex = resourcevalue.toLowerCase().indexOf(query.toLowerCase());
+                String matchBefore = resourcevalue.substring(0, matchIndex);
+                String matchText = resourcevalue.substring(matchIndex, matchIndex + query.length());
+                String matchAfter = resourcevalue.substring(matchIndex + query.length());
+                String matchType = getQuestion(thisResource);
+                LOGGER.info("Found matchType: {}", matchType);
+                String[] queryMatch = {
+                    matchType,
+                    matchBefore,
+                    matchText,
+                    matchAfter
+                };
+                Node thisParentNode = thisParent.adaptTo(Node.class);
+                if (!thisParentNode.hasProperty("queryMatch"))
+                {
+                    thisParentNode.setProperty("queryMatch", queryMatch);
+                    outputList.add(thisParent);
+                }
+            }
+        }
+        return outputList.listIterator();
     }
 
 
