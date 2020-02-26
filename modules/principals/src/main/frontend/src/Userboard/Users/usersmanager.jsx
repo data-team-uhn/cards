@@ -68,14 +68,7 @@ class UsersManager extends React.Component {
       return response.json();
     })
     .then((data) => {
-      var i;
-      for (i = 0; i < data.rows.length; ++i) {
-        if (data.rows[i].firstName && data.rows[i].lastName) {
-            data.rows[i].initials = data.rows[i].fistname.charAt(0)+data.rows[i].lastname.charAt(0);
-        } else {
-            data.rows[i].initials = data.rows[i].name.charAt(0);
-        }
-      }
+      data.rows?.forEach((r) => r.initials = (r.firstname?.charAt(0) + r.lastname?.charAt(0)) || r.name?.charAt(0) || '?')
 
       this.setState(
         {
