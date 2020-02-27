@@ -37,8 +37,6 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.scripting.sightly.pojo.Use;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A HTL Use-API that can run a JCR query and output the results as JSON. The query to execute is taken from the request
@@ -55,7 +53,6 @@ import org.slf4j.LoggerFactory;
  */
 public class QueryBuilder implements Use
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(QueryBuilder.class);
 
     private final int maxContextMatch = 8;
 
@@ -183,6 +180,27 @@ public class QueryBuilder implements Use
     }
 
     /**
+     * Searches through a list of Strings and returns the first String in that list
+     * for which in itself contains a given substring.
+     *
+     * @param arr the list of Strings to search through
+     * @param str the String to check if any array elements contain this substring
+     *
+     * @return the first String in the list that contains the given substring
+     */
+    private String getMatchingFromArray(String[] arr, String str)
+    {
+        for (int i = 0; i < arr.length; i++)
+        {
+            if (arr[i].toLowerCase().indexOf(str.toLowerCase()) > -1)
+            {
+                return arr[i];
+            }
+        }
+        return null;
+    }
+
+    /**
      * Finds [lfs:Form]s, [lfs:Subject]s, and [lfs:Questionnaire]s using the given full text search.
      * This performs the search in such a way that values in child nodes (e.g. lfs:Answers of an lfs:Form)
      * are aggregated to their parent.
@@ -191,8 +209,6 @@ public class QueryBuilder implements Use
      *
      * @return the content matching the query
      */
-    @SuppressWarnings({"checkstyle:ExecutableStatementCount",
-        "checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity"})
     private Iterator<Resource> quickSearch(String query) throws RepositoryException
     {
         ArrayList<Resource> outputList = new ArrayList<Resource>();
@@ -212,15 +228,7 @@ public class QueryBuilder implements Use
         {
             Resource thisResource = foundResources.next();
             Resource thisParent = thisResource;
-            //String resourcevalue = thisResource.getValueMap().get("value", "");
             String[] resourcevalues = thisResource.getValueMap().get("value", String[].class);
-            //String resourcevalue = resourcevalues[0];
-            String resourcevalue = "";
-            for (int i = 0; i < resourcevalues.length; i++) {
-                LOGGER.info("resourcevalues[{}] = {}", i, resourcevalues[i]);
-            }
-            //LOGGER.info("thisResource.getValueMap().keySet() = {}", thisResource.getValueMap().keySet());
-            //LOGGER.info("resourcevalue = " + resourcevalue);
             while (true)
             {
                 if (thisParent == null)
@@ -233,14 +241,7 @@ public class QueryBuilder implements Use
             }
             if (thisParent != null)
             {
-                for (int i = 0; i < resourcevalues.length; i++)
-                {
-                    if (resourcevalues[i].toLowerCase().indexOf(query.toLowerCase()) > -1)
-                    {
-                        resourcevalue = resourcevalues[i];
-                        break;
-                    }
-                }
+                String resourcevalue = getMatchingFromArray(resourcevalues, query);
                 int matchIndex = resourcevalue.toLowerCase().indexOf(query.toLowerCase());
                 String matchBefore = resourcevalue.substring(0, matchIndex);
                 if (matchBefore.length() > this.maxContextMatch) {
