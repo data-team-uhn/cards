@@ -228,22 +228,22 @@ public class QueryBuilder implements Use
         {
             Resource thisResource = foundResources.next();
             Resource thisParent = thisResource;
-            String[] resourcevalues = thisResource.getValueMap().get("value", String[].class);
+            String[] resourceValues = thisResource.getValueMap().get("value", String[].class);
             while (thisParent != null && !"lfs/Form".equals(thisParent.getResourceType())) {
                 thisParent = thisParent.getParent();
             }
             if (thisParent != null)
             {
-                String resourcevalue = getMatchingFromArray(resourcevalues, query);
-                int matchIndex = resourcevalue.toLowerCase().indexOf(query.toLowerCase());
-                String matchBefore = resourcevalue.substring(0, matchIndex);
+                String resourceValue = getMatchingFromArray(resourceValues, query);
+                int matchIndex = resourceValue.toLowerCase().indexOf(query.toLowerCase());
+                String matchBefore = resourceValue.substring(0, matchIndex);
                 if (matchBefore.length() > this.MAX_CONTEXT_MATCH) {
                     matchBefore = "..." + matchBefore.substring(
                         matchBefore.length() - this.MAX_CONTEXT_MATCH, matchBefore.length()
                     );
                 }
-                String matchText = resourcevalue.substring(matchIndex, matchIndex + query.length());
-                String matchAfter = resourcevalue.substring(matchIndex + query.length());
+                String matchText = resourceValue.substring(matchIndex, matchIndex + query.length());
+                String matchAfter = resourceValue.substring(matchIndex + query.length());
                 if (matchAfter.length() > this.MAX_CONTEXT_MATCH) {
                     matchAfter = matchAfter.substring(0, this.MAX_CONTEXT_MATCH) + "...";
                 }
