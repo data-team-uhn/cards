@@ -26,4 +26,7 @@ rm docker-compose.yml
 echo "Removing initializer/initialize_all.sh"
 rm initializer/initialize_all.sh
 
+echo "Removing mongos/mongo-router.conf"
+rm mongos/mongo-router.conf
+
 echo "Done"
