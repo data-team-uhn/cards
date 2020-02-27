@@ -34,6 +34,7 @@ import javax.json.JsonValue.ValueType;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
@@ -75,7 +76,9 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
     {
         Resource vocabulary = this.findParentVocabulary(request.getResource());
         ResourceResolver resolver = request.getResourceResolver();
+        String includeChildrenStr = request.getParameter("includeChildren");
         String parentPath = vocabulary == null ? request.getResource().getParent().getPath() : vocabulary.getPath();
+        boolean includeChildren = StringUtils.isNotBlank(includeChildrenStr) && "true".equals(includeChildrenStr);
 
         // Our normal output would be ourselves as a JSONObject
         JsonObject json = request.getResource().adaptTo(JsonObject.class);
@@ -90,7 +93,10 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
                 JsonValue value = json.get(key);
                 if (value instanceof JsonArray) {
                     // Any arrays should be iterated through and written
-                    jsonGen.write(key, this.processArray((JsonArray) value, vocabulary, resolver, parentPath));
+                    jsonGen.write(
+                        key,
+                        this.processArray((JsonArray) value, vocabulary, resolver, parentPath, includeChildren)
+                    );
                 } else {
                     // Anything else should be left as-is
                     jsonGen.write(key, value);
@@ -141,9 +147,11 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
      * @param vocab Vocabulary object whose children are the vocabulary terms
      * @param resolver A reference to a ResourceResolver
      * @param parentPath the location of the vocabulary whose children we're searching
+     * @param includeChildren whether or not we serialize our children
      * @return The input array, but any strings whose names are vocabulary terms are replaced with the term itself
      */
-    private JsonValue processArray(JsonArray array, Resource vocab, ResourceResolver resolver, String parentPath)
+    private JsonValue processArray(JsonArray array, Resource vocab, ResourceResolver resolver, String parentPath,
+        boolean includeChildren)
     {
         JsonArrayBuilder builder = Json.createArrayBuilder();
         for (int i = 0; i < array.size(); i++) {
@@ -162,7 +170,14 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
                     builder.add(value);
                 } else {
                     JsonObject linkedObject = linkedValue.adaptTo(JsonObject.class);
-                    builder.add(populateChildren(linkedObject, resolver, parentPath));
+                    // If necessary, we also populate this child's children
+                    if (includeChildren)
+                    {
+                        builder.add(populateChildren(linkedObject, resolver, parentPath));
+                    } else
+                    {
+                        builder.add(linkedObject);
+                    }
                 }
             } else {
                 // This is not a string, leave it as is
