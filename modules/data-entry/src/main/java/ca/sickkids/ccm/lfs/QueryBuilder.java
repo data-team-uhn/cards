@@ -37,6 +37,8 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.scripting.sightly.pojo.Use;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A HTL Use-API that can run a JCR query and output the results as JSON. The query to execute is taken from the request
@@ -53,6 +55,8 @@ import org.apache.sling.scripting.sightly.pojo.Use;
  */
 public class QueryBuilder implements Use
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueryBuilder.class);
+
     private final int maxContextMatch = 8;
 
     private String content;
@@ -187,13 +191,14 @@ public class QueryBuilder implements Use
      *
      * @return the content matching the query
      */
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount",
+        "checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity"})
     private Iterator<Resource> quickSearch(String query) throws RepositoryException
     {
         ArrayList<Resource> outputList = new ArrayList<Resource>();
 
         final StringBuilder xpathQuery = new StringBuilder();
-        xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value),");
-        xpathQuery.append("\"%");
+        xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value),\"%");
         xpathQuery.append(this.fullTextEscape(query.toLowerCase()));
         xpathQuery.append("%\"");
         xpathQuery.append(" )]");
@@ -207,7 +212,15 @@ public class QueryBuilder implements Use
         {
             Resource thisResource = foundResources.next();
             Resource thisParent = thisResource;
-            String resourcevalue = thisResource.getValueMap().get("value", "");
+            //String resourcevalue = thisResource.getValueMap().get("value", "");
+            String[] resourcevalues = thisResource.getValueMap().get("value", String[].class);
+            //String resourcevalue = resourcevalues[0];
+            String resourcevalue = "";
+            for (int i = 0; i < resourcevalues.length; i++) {
+                LOGGER.info("resourcevalues[{}] = {}", i, resourcevalues[i]);
+            }
+            //LOGGER.info("thisResource.getValueMap().keySet() = {}", thisResource.getValueMap().keySet());
+            //LOGGER.info("resourcevalue = " + resourcevalue);
             while (true)
             {
                 if (thisParent == null)
@@ -220,6 +233,14 @@ public class QueryBuilder implements Use
             }
             if (thisParent != null)
             {
+                for (int i = 0; i < resourcevalues.length; i++)
+                {
+                    if (resourcevalues[i].toLowerCase().indexOf(query.toLowerCase()) > -1)
+                    {
+                        resourcevalue = resourcevalues[i];
+                        break;
+                    }
+                }
                 int matchIndex = resourcevalue.toLowerCase().indexOf(query.toLowerCase());
                 String matchBefore = resourcevalue.substring(0, matchIndex);
                 if (matchBefore.length() > this.maxContextMatch) {
