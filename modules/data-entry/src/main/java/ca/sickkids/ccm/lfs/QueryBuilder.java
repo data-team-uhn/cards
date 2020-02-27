@@ -54,7 +54,7 @@ import org.apache.sling.scripting.sightly.pojo.Use;
 public class QueryBuilder implements Use
 {
 
-    private final int maxContextMatch = 8;
+    private static final int MAX_CONTEXT_MATCH = 8;
 
     private String content;
 
@@ -244,15 +244,15 @@ public class QueryBuilder implements Use
                 String resourcevalue = getMatchingFromArray(resourcevalues, query);
                 int matchIndex = resourcevalue.toLowerCase().indexOf(query.toLowerCase());
                 String matchBefore = resourcevalue.substring(0, matchIndex);
-                if (matchBefore.length() > this.maxContextMatch) {
+                if (matchBefore.length() > this.MAX_CONTEXT_MATCH) {
                     matchBefore = "..." + matchBefore.substring(
-                        matchBefore.length() - this.maxContextMatch, matchBefore.length()
+                        matchBefore.length() - this.MAX_CONTEXT_MATCH, matchBefore.length()
                     );
                 }
                 String matchText = resourcevalue.substring(matchIndex, matchIndex + query.length());
                 String matchAfter = resourcevalue.substring(matchIndex + query.length());
-                if (matchAfter.length() > this.maxContextMatch) {
-                    matchAfter = matchAfter.substring(0, this.maxContextMatch) + "...";
+                if (matchAfter.length() > this.MAX_CONTEXT_MATCH) {
+                    matchAfter = matchAfter.substring(0, this.MAX_CONTEXT_MATCH) + "...";
                 }
                 String matchType = getQuestion(thisResource);
                 String[] queryMatch = {
