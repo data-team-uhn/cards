@@ -229,14 +229,7 @@ public class QueryBuilder implements Use
             Resource thisResource = foundResources.next();
             Resource thisParent = thisResource;
             String[] resourcevalues = thisResource.getValueMap().get("value", String[].class);
-            while (true)
-            {
-                if (thisParent == null)
-                {
-                    break;
-                } else if ("lfs/Form".equals(thisParent.getResourceType())) {
-                    break;
-                }
+            while (thisParent != null && !"lfs/Form".equals(thisParent.getResourceType())) {
                 thisParent = thisParent.getParent();
             }
             if (thisParent != null)
