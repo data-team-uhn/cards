@@ -34,7 +34,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
@@ -75,12 +74,39 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
         // To avoid overloading the server, we set a limit on the number of nodes that can be returned
         limit = Math.min(limit, MAX_LIMIT);
 
+        // Parse and execute the given suggest or query
+        String parentPath = request.getResource().getPath();
+        String oakQuery = constructQuery(suggest, query, filter, sort, parentPath);
+        Iterator<Resource> results = request.getResourceResolver().findResources(oakQuery, "JCR-SQL2");
+
+        // Write the output
+        // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
+        response.setContentType("application/json");
+        final Writer out = response.getWriter();
+        try (JsonGenerator jsonGen = Json.createGenerator(out)) {
+            jsonGen.writeStartObject();
+            long[] limits = writeNodes(jsonGen, results, offset, limit);
+            writeSummary(jsonGen, request, limits, oakQuery);
+            jsonGen.writeEnd().flush();
+        }
+    }
+
+    /**
+     * Construct a JCR-SQL2 query with the given parameters.
+     * @param suggest A fulltext query to perform, or null if it was not given
+     * @param query A lucene query to perform, or null if it was not given
+     * @param filter A filter to apply
+     * @param sort Sorting to apply
+     * @param parentPath The path of the parent resource
+     * @return A formatted JCR-SQL2 query.
+     */
+    private String constructQuery(String suggest, String query, String filter, String sort, String parentPath)
+    {
         // Start by parsing the suggest or query
         String oakQuery = "";
-        String parentPath = request.getResource().getPath();
-        if (suggest != null) {
+        if (StringUtils.isNotBlank(suggest)) {
             oakQuery += handleFullTextQuery(suggest, parentPath);
-        } else if (query != null) {
+        } else if (StringUtils.isNotBlank(query)) {
             oakQuery += handleLuceneQuery(query, parentPath);
         } else {
             oakQuery += String.format("select a.* from [lfs:VocabularyTerm] as a where isdescendantnode(a, '%s')",
@@ -97,20 +123,7 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
             oakQuery += getOrderFromSort(sort);
         }
 
-        // Query the database
-        ResourceResolver resolver = request.getResourceResolver();
-        Iterator<Resource> results = resolver.findResources(oakQuery, "JCR-SQL2");
-
-        // Write the output
-        // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
-        response.setContentType("application/json");
-        final Writer out = response.getWriter();
-        try (JsonGenerator jsonGen = Json.createGenerator(out)) {
-            jsonGen.writeStartObject();
-            long[] limits = writeNodes(jsonGen, results, offset, limit);
-            writeSummary(jsonGen, request, limits, oakQuery);
-            jsonGen.writeEnd().flush();
-        }
+        return oakQuery;
     }
 
     /**
@@ -120,7 +133,7 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
      * @param parentPath the location of the vocabulary whose children we're searching
      * @return The JCR-SQL2 query to perform
      */
-    private String handleFullTextQuery(String suggest, String parentPath) throws IOException
+    private String handleFullTextQuery(String suggest, String parentPath)
     {
         return (String.format(
             "select a.* from [lfs:VocabularyTerm] as a where contains(a.*, '*%s*') and "
@@ -137,7 +150,7 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
      * @param parentPath the location of the vocabulary whose children we're searching
      * @return The JCR-SQL2 query to perform
      */
-    private String handleLuceneQuery(String query, String parentPath) throws IOException
+    private String handleLuceneQuery(String query, String parentPath)
     {
         return (String.format(
             "select a.* from [lfs:VocabularyTerm] as a where native('lucene', '%s') and "
@@ -154,7 +167,7 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
      * @param filters the SolR filters to convert
      * @return A JCR-SQL2 conditional, prepended with " AND "
      */
-    private String getConditionFromFilter(String filters) throws IOException
+    private String getConditionFromFilter(String filters)
     {
         // URL-decode the filters
         String decodedFilters = "";
