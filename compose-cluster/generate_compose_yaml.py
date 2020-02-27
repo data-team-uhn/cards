@@ -217,7 +217,7 @@ yaml_obj['services']['lfsinitial']['networks']['internalnetwork']['aliases'] = [
 yaml_obj['services']['lfsinitial']['environment'] = []
 yaml_obj['services']['lfsinitial']['environment'].append("INITIAL_SLING_NODE=true")
 yaml_obj['services']['lfsinitial']['environment'].append("INSIDE_DOCKER_COMPOSE=true")
-yaml_obj['services']['lfsinitial']['environment'].append("LFS_RELOAD=$LFS_RELOAD")
+yaml_obj['services']['lfsinitial']['environment'].append("LFS_RELOAD=${LFS_RELOAD:-}")
 
 yaml_obj['services']['lfsinitial']['depends_on'] = ['router']
 
