@@ -66,6 +66,7 @@ server.on('request', function(s_req, s_res) {
 		s_req.pipe(client_req, {end: true});
 	},
 	function() {
+		s_res.writeHead(403, {'Content-Type': 'text/html'});
 		s_res.write("ACCESS DENIED");
 		s_res.end();
 	});
