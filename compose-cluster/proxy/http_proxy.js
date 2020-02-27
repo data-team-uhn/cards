@@ -35,7 +35,7 @@ function checkAuthentication(opts, method_allow, method_deny) {
 			.then(res => res.json())
 			.then((json) => {
 				if ('userID' in json) {
-					if (json['userID'] == 'admin') {
+					if (json['userID'].toUpperCase() === 'ADMIN') {
 						method_allow();
 						return;
 					}
