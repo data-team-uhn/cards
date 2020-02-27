@@ -224,7 +224,8 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
     {
         // Check to see if this resource has children
         String oakQuery = String.format(
-            "SELECT * FROM [lfs:VocabularyTerm] AS a WHERE isdescendantnode(a, '%s') AND a.parents = '%s'",
+            "SELECT * FROM [lfs:VocabularyTerm] AS a WHERE isdescendantnode(a, '%s') AND a.parents = '%s'"
+            + " ORDER BY a.label",
             parentPath,
             resource.getString("id")
             );
