@@ -171,8 +171,7 @@ public class QueryBuilder implements Use
     private String getQuestion(Resource res) throws ItemNotFoundException, RepositoryException
     {
         String questionNodeId = res.getValueMap().get("question", "");
-        if (!"".equals(questionNodeId))
-        {
+        if (!"".equals(questionNodeId)) {
             Node questionNode = res.adaptTo(Node.class).getSession().getNodeByIdentifier(questionNodeId);
             return questionNode.getProperty("text").getValue().toString();
         }
@@ -190,10 +189,8 @@ public class QueryBuilder implements Use
      */
     private String getMatchingFromArray(String[] arr, String str)
     {
-        for (int i = 0; i < arr.length; i++)
-        {
-            if (arr[i].toLowerCase().indexOf(str.toLowerCase()) > -1)
-            {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i].toLowerCase().indexOf(str.toLowerCase()) > -1) {
                 return arr[i];
             }
         }
@@ -224,16 +221,14 @@ public class QueryBuilder implements Use
         * For each Resource in foundResources, move up the tree until
         * we find an ancestor node of type `lfs:Form`
         */
-        while (foundResources.hasNext())
-        {
+        while (foundResources.hasNext()) {
             Resource thisResource = foundResources.next();
             Resource thisParent = thisResource;
             String[] resourceValues = thisResource.getValueMap().get("value", String[].class);
             while (thisParent != null && !"lfs/Form".equals(thisParent.getResourceType())) {
                 thisParent = thisParent.getParent();
             }
-            if (thisParent != null)
-            {
+            if (thisParent != null) {
                 String resourceValue = getMatchingFromArray(resourceValues, query);
                 int matchIndex = resourceValue.toLowerCase().indexOf(query.toLowerCase());
                 String matchBefore = resourceValue.substring(0, matchIndex);
@@ -255,8 +250,7 @@ public class QueryBuilder implements Use
                     matchAfter
                 };
                 Node thisParentNode = thisParent.adaptTo(Node.class);
-                if (!thisParentNode.hasProperty("queryMatch"))
-                {
+                if (!thisParentNode.hasProperty("queryMatch")) {
                     thisParentNode.setProperty("queryMatch", queryMatch);
                     outputList.add(thisParent);
                 }
