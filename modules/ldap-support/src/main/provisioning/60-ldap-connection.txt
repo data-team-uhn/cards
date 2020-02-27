@@ -31,7 +31,7 @@
 
 # The actual configuration for the LDAP connection.
 # See the README file in this module for details about editing the configuration.
-[configurations]
+[configurations runModes=initial_sling_node]
   org.apache.jackrabbit.oak.security.authentication.ldap.impl.LdapIdentityProvider
     bind.dn="${lfs.ldap.dn}"
     bind.password="${lfs.ldap.password}"

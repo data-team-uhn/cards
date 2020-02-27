@@ -41,4 +41,6 @@ EXPOSE 8080
 EXPOSE 5005
 
 # This is the default command executed when starting the container
-ENTRYPOINT java -Dsling.run.modes=oak_mongo ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar ${project.artifactId}-${project.version}.jar ${DEV:+-Dsling.run.modes=dev}
+COPY docker_entry.sh /docker_entry.sh
+RUN chmod +x /docker_entry.sh
+ENTRYPOINT /docker_entry.sh ${project.artifactId} ${project.version}

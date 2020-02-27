@@ -28,6 +28,6 @@
     end
 
 #This configures the default login page for the sling form based authentication handler
-[configurations]
+[configurations runModes=initial_sling_node]
     org.apache.sling.auth.form.FormAuthenticationHandler
         form.login.form="/login"
