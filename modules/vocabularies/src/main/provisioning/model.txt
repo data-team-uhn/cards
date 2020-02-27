@@ -45,8 +45,3 @@
     set ACL for everyone
         allow   jcr:read    on /Vocabularies
     end
-
-#This configures the default SolR instance to use the embedded version
-[configurations]
-    org.apache.jackrabbit.oak.plugins.index.solr.osgi.SolrServerProviderService
-        server.type="embedded"
