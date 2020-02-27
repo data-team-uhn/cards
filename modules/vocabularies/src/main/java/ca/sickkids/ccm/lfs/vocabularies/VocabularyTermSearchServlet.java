@@ -77,14 +77,14 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
 
         // Start by parsing the suggest or query
         String oakQuery = "";
-        String parentpath = request.getResource().getPath();
+        String parentPath = request.getResource().getPath();
         if (suggest != null) {
-            oakQuery += handleFullTextQuery(suggest, parentpath);
+            oakQuery += handleFullTextQuery(suggest, parentPath);
         } else if (query != null) {
-            oakQuery += handleLuceneQuery(query, parentpath);
+            oakQuery += handleLuceneQuery(query, parentPath);
         } else {
             oakQuery += String.format("select a.* from [lfs:VocabularyTerm] as a where isdescendantnode(a, '%s')",
-                parentpath);
+                parentPath);
         }
 
         // Apply filters, if given
@@ -117,16 +117,16 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
      * Outputs the results of a full-text query on the given string.
      *
      * @param suggest a string to perform full text matching upon
-     * @param parentpath the location of the vocabulary whose children we're searching
+     * @param parentPath the location of the vocabulary whose children we're searching
      * @return The JCR-SQL2 query to perform
      */
-    private String handleFullTextQuery(String suggest, String parentpath) throws IOException
+    private String handleFullTextQuery(String suggest, String parentPath) throws IOException
     {
         return (String.format(
             "select a.* from [lfs:VocabularyTerm] as a where contains(a.*, '*%s*') and "
             + "isdescendantnode(a, '%s')",
             suggest.replace("'", "''"),
-            parentpath
+            parentPath
             ));
     }
 
@@ -134,16 +134,16 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
      * Outputs the results of executing the given Lucene query.
      *
      * @param query the Lucene query to execute
-     * @param parentpath the location of the vocabulary whose children we're searching
+     * @param parentPath the location of the vocabulary whose children we're searching
      * @return The JCR-SQL2 query to perform
      */
-    private String handleLuceneQuery(String query, String parentpath) throws IOException
+    private String handleLuceneQuery(String query, String parentPath) throws IOException
     {
         return (String.format(
             "select a.* from [lfs:VocabularyTerm] as a where native('lucene', '%s') and "
             + "isdescendantnode(a, '%s')",
             query.replace("'", "''"),
-            parentpath
+            parentPath
             ));
     }
 
