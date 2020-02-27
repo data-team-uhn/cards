@@ -171,11 +171,9 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
                 } else {
                     JsonObject linkedObject = linkedValue.adaptTo(JsonObject.class);
                     // If necessary, we also populate this child's children
-                    if (includeChildren)
-                    {
+                    if (includeChildren) {
                         builder.add(populateChildren(linkedObject, resolver, parentPath));
-                    } else
-                    {
+                    } else {
                         builder.add(linkedObject);
                     }
                 }
