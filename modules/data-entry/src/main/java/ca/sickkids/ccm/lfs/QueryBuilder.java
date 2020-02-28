@@ -159,7 +159,7 @@ public class QueryBuilder implements Use
         }
 
         // Escape sequence taken from https://jackrabbit.apache.org/archive/wiki/JCR/EncodingAndEscaping_115513396.html
-        return input.replaceAll("([\\Q+-&|!(){}[]^\"~*?:\\/\\E])", "\\\\$1").replaceAll("'", "''");
+        return input.replaceAll("([\\Q+-&|!(){}[]^\"~*?:\\_%/\\E])", "\\\\$1").replaceAll("'", "''");
     }
 
     /**
@@ -211,9 +211,9 @@ public class QueryBuilder implements Use
         ArrayList<Resource> outputList = new ArrayList<Resource>();
 
         final StringBuilder xpathQuery = new StringBuilder();
-        xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value),\"%");
+        xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value),'%");
         xpathQuery.append(this.fullTextEscape(query.toLowerCase()));
-        xpathQuery.append("%\"");
+        xpathQuery.append("%'");
         xpathQuery.append(" )]");
 
         Iterator<Resource> foundResources = queryXPATH(xpathQuery.toString());
