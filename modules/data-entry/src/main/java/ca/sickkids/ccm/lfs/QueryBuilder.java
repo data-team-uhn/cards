@@ -56,6 +56,8 @@ public class QueryBuilder implements Use
 
     private static final int MAX_CONTEXT_MATCH = 8;
 
+    private static final String LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
+
     private String content;
 
     private ResourceResolver resourceResolver;
@@ -250,8 +252,8 @@ public class QueryBuilder implements Use
                     matchAfter
                 };
                 Node thisParentNode = thisParent.adaptTo(Node.class);
-                if (!thisParentNode.hasProperty("queryMatch")) {
-                    thisParentNode.setProperty("queryMatch", queryMatch);
+                if (!thisParentNode.hasProperty(LFS_QUERY_MATCH_KEY)) {
+                    thisParentNode.setProperty(LFS_QUERY_MATCH_KEY, queryMatch);
                     outputList.add(thisParent);
                 }
             }

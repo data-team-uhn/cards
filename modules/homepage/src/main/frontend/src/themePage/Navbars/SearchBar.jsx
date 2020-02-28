@@ -30,6 +30,7 @@ import HeaderStyle from "./headerStyle.jsx";
 
 const QUERY_URL = "/query";
 const MAX_RESULTS = 5;
+const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
 
 function SearchBar(props) {
   const { classes, className, closeSidebar, invertColors, doNotEscapeQuery } = props;
@@ -257,13 +258,13 @@ function SearchBar(props) {
                             </Typography>
                             {getElementName(element)}
                           </div>)}
-                          secondary={("queryMatch" in element) ? (<React.Fragment>
-                            {getElementQueryMatchKey(element["queryMatch"])}
-                            {getElementQueryMatchBefore(element["queryMatch"])}
+                          secondary={(LFS_QUERY_MATCH_KEY in element) ? (<React.Fragment>
+                            {getElementQueryMatchKey(element[LFS_QUERY_MATCH_KEY])}
+                            {getElementQueryMatchBefore(element[LFS_QUERY_MATCH_KEY])}
                             <span className={classes.highlightedText}>
-                              {getElementQueryMatchText(element["queryMatch"])}
+                              {getElementQueryMatchText(element[LFS_QUERY_MATCH_KEY])}
                             </span>
-                            {getElementQueryMatchAfter(element["queryMatch"])}
+                            {getElementQueryMatchAfter(element[LFS_QUERY_MATCH_KEY])}
                           </React.Fragment>) : undefined}
                           className={classes.dropdownItem}
                           />
