@@ -153,7 +153,7 @@ public class QueryBuilder implements Use
         }
 
         // Escape sequence taken from https://jackrabbit.apache.org/archive/wiki/JCR/EncodingAndEscaping_115513396.html
-        return input.replaceAll("([\\Q+-&|!(){}[]^\"~*?:\\/\\E])", "\\$1").replaceAll("'", "''");
+        return input.replaceAll("([\\Q+-&|!(){}[]^\"~*?:\\/\\E])", "\\\\$1").replaceAll("'", "''");
     }
 
     /**
