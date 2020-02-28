@@ -225,11 +225,11 @@ public class QueryBuilder implements Use
             Resource thisResource = foundResources.next();
             Resource thisParent = thisResource;
             String[] resourceValues = thisResource.getValueMap().get("value", String[].class);
+            String resourceValue = getMatchingFromArray(resourceValues, query);
             while (thisParent != null && !"lfs/Form".equals(thisParent.getResourceType())) {
                 thisParent = thisParent.getParent();
             }
-            if (thisParent != null) {
-                String resourceValue = getMatchingFromArray(resourceValues, query);
+            if (thisParent != null && resourceValue != null) {
                 int matchIndex = resourceValue.toLowerCase().indexOf(query.toLowerCase());
                 String matchBefore = resourceValue.substring(0, matchIndex);
                 if (matchBefore.length() > this.MAX_CONTEXT_MATCH) {
