@@ -123,6 +123,15 @@ const headerStyle = theme => ({
   searchResultSubjectIcon: {
     backgroundColor: "orange"
   },
+  queryMatchKey : {
+    fontStyle: "italic"
+  },
+  queryMatchSeparator: {
+  },
+  queryMatchBefore: {
+  },
+  queryMatchAfter: {
+  },
   highlightedText: {
     fontWeight: "bold",
     backgroundColor: theme.palette.warning.light,

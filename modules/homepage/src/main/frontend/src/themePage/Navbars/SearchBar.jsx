@@ -148,20 +148,17 @@ function SearchBar(props) {
       || element["jcr:uuid"];
   }
 
-  let getElementQueryMatchKey = (element) => {
-    return element[0] + " = ";
-  }
-
-  let getElementQueryMatchBefore = (element) => {
-    return element[1];
-  }
-
-  let getElementQueryMatchText = (element) => {
-    return element[2];
-  }
-
-  let getElementQueryMatchAfter = (element) => {
-    return element[3];
+  function QuickSearchMatch(props) {
+    const {matchData} = props;
+    return matchData && (
+      <React.Fragment>
+        <span className={classes.queryMatchKey}>{matchData[0]}</span>
+        <span className={classes.queryMatchSeparator}>: </span>
+        <span className={classes.queryMatchBefore}>{matchData[1]}</span>
+        <span className={classes.highlightedText}>{matchData[2]}</span>
+        <span className={classes.queryMatchAfter}>{matchData[3]}</span>
+      </React.Fragment>
+    ) || null
   }
 
   return(
@@ -258,14 +255,7 @@ function SearchBar(props) {
                             </Typography>
                             {getElementName(element)}
                           </div>)}
-                          secondary={(LFS_QUERY_MATCH_KEY in element) ? (<React.Fragment>
-                            {getElementQueryMatchKey(element[LFS_QUERY_MATCH_KEY])}
-                            {getElementQueryMatchBefore(element[LFS_QUERY_MATCH_KEY])}
-                            <span className={classes.highlightedText}>
-                              {getElementQueryMatchText(element[LFS_QUERY_MATCH_KEY])}
-                            </span>
-                            {getElementQueryMatchAfter(element[LFS_QUERY_MATCH_KEY])}
-                          </React.Fragment>) : undefined}
+                          secondary={(<QuickSearchMatch matchData={element[LFS_QUERY_MATCH_KEY]} />)}
                           className={classes.dropdownItem}
                           />
                     </MenuItem>
