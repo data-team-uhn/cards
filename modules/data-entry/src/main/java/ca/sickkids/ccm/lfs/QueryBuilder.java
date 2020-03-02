@@ -170,7 +170,7 @@ public class QueryBuilder implements Use
      * @param res the JCR Resource corresponding to an answer
      * @return the question string corresponding to the passed answer
      */
-    private String getQuestion(Resource res) throws ItemNotFoundException, RepositoryException
+    private String getQuestion(Resource res) throws ItemNotFoundException
     {
         try {
             Node questionNode = res.adaptTo(Node.class).getProperty("question").getNode();
