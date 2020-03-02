@@ -172,12 +172,15 @@ public class QueryBuilder implements Use
      */
     private String getQuestion(Resource res) throws ItemNotFoundException, RepositoryException
     {
-        String questionNodeId = res.getValueMap().get("question", "");
-        if (!"".equals(questionNodeId)) {
-            Node questionNode = res.adaptTo(Node.class).getSession().getNodeByIdentifier(questionNodeId);
-            return questionNode.getProperty("text").getValue().toString();
+        try {
+            Node questionNode = res.adaptTo(Node.class).getProperty("question").getNode();
+            if (questionNode != null) {
+                return questionNode.getProperty("text").getString();
+            }
+        } catch (RepositoryException ex) {
+            return null;
         }
-        return "";
+        return null;
     }
 
     /**
@@ -245,6 +248,9 @@ public class QueryBuilder implements Use
                     matchAfter = matchAfter.substring(0, this.MAX_CONTEXT_MATCH) + "...";
                 }
                 String matchType = getQuestion(thisResource);
+                if (matchType == null) {
+                    continue;
+                }
                 String[] queryMatch = {
                     matchType,
                     matchBefore,
