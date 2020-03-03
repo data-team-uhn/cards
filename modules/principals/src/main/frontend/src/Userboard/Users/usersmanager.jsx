@@ -166,42 +166,22 @@ class UsersManager extends React.Component {
                       <CardContent>
                       {
                         <div>
-                          <Table>
-                            <TableBody>
-                              <TableRow>
-                                <TableCell className={classes.cardCategory}>Principal Name</TableCell>
-                                <TableCell className={classes.cardTitle}>{user.principalName}</TableCell>
-                              </TableRow>
-                              <TableRow>
-                                <TableCell className={classes.cardCategory}>First Name</TableCell>
-                                <TableCell className={classes.cardTitle}>{user.firstName}</TableCell>
-                              </TableRow>
-                              <TableRow>
-                                <TableCell className={classes.cardCategory}>Last Name</TableCell>
-                                <TableCell className={classes.cardTitle}>{user.lastName}</TableCell>
-                              </TableRow>
-                              <TableRow>
-                                <TableCell className={classes.cardCategory}>Admin Status</TableCell>
-                                <TableCell className={classes.cardTitle}>{isAdmin}</TableCell>
-                              </TableRow>
-                              <TableRow>
-                                <TableCell className={classes.cardCategory}>Disabled</TableCell>
-                                <TableCell className={classes.cardTitle}>{isDisabled}</TableCell>
-                              </TableRow>
-                              { hasGroup && <TableRow>
-                                <TableCell className={classes.cardCategory}>Groups</TableCell>
-                                <TableCell className={classes.cardTitle}>
-                                  {user.memberOf.map(
-                                    (row, index) => (
-                                        <Link href="#" key = {row.name} onClick={() => {this.handleGroupNameClick(row.name)}}>
-                                          {row.name}{(index < user.memberOf.length-1)&&<span>,</span>}
-                                        </Link>
-                                    )
-                                  )}
-                                </TableCell>
-                              </TableRow>}
-                            </TableBody>
-                          </Table>
+                          <MaterialTable
+                              title="User Groups"
+                              style={{ boxShadow : 'none' }}
+                              options={{
+                                headerStyle: { backgroundColor: headerBackground },
+                                emptyRowsWhenPaging: false
+                              }}
+                              columns={[
+                                {
+                                  title: 'Group Name',
+                                  field: 'name',
+                                  render: rowData => <Link href="#" key = {rowData.name} onClick={() => {this.handleGroupNameClick(rowData.name)}}>{rowData.name}</Link>
+                                  },
+                              ]}
+                              data={user.memberOf}
+                          />
                         </div>
                       }
                     <Grid container className={classes.cardActions}>

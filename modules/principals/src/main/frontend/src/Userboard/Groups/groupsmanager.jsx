@@ -25,7 +25,6 @@ import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";
 import DeleteGroupDialogue from "./deletegroupdialogue.jsx";
 import AddUserToGroupDialogue from "./addusertogroupdialogue.jsx";
-import RemoveUserFromGroupDialogue from "./removeuserfromgroup.jsx";
 
 import MaterialTable from 'material-table';
 
