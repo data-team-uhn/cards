@@ -111,12 +111,12 @@ function SearchBar(props) {
   function QuickSearchResultHeader(props) {
     const {resultData} = props;
     return resultData && (
-      <React.Fragment>
+      <div>
         <Typography variant="body2" color="textSecondary">
           {(resultData.questionnaire?.title?.concat(' ') || '') + (resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')}
         </Typography>
         {resultData.subject?.identifier || resultData["jcr:uuid"] || ''}
-      </React.Fragment>
+      </div>
     ) || null
   }
 
@@ -135,6 +135,8 @@ function SearchBar(props) {
   }
 
   // Display a quick search result
+  // If it's a resource, show avatar, category, and title
+  // Otherwise, if it's a generic entry, simply display the name
   function QuickSearchResult(props) {
     const {resultData} = props;
     return resultData["jcr:primaryType"] && (
@@ -146,6 +148,11 @@ function SearchBar(props) {
           className={classes.dropdownItem}
         />
       </React.Fragment>
+    ) || (
+       <ListItemText
+          primary={resultData.name || ''}
+          className={classes.dropdownItem}
+        />
     ) || null
   }
 
