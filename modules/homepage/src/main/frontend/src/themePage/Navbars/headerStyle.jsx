@@ -112,16 +112,8 @@ const headerStyle = theme => ({
     zIndex: "1301"
   },
   searchResultAvatar: {
-    color: "white",
-  },
-  searchResultFormIcon: {
-    backgroundColor: "cornflowerblue"
-  },
-  searchResultQuestionnaireIcon: {
-    backgroundColor: "limegreen"
-  },
-  searchResultSubjectIcon: {
-    backgroundColor: "orange"
+    color: theme.palette.getContrastText(theme.palette.info.main),
+    backgroundColor: theme.palette.info.main,
   },
   queryMatchKey : {
     fontStyle: "italic"
