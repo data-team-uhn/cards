@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import uuidv4 from "uuid/v4";
 
+import Comment from "./Comment";
 import { useFormWriterContext } from "./FormContext";
 
 export const LABEL_POS = 0;
@@ -29,7 +30,8 @@ export const VALUE_POS = 1;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType } = props;
+  let { answers, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, onChangeComment } = props;
+  let { enableComments } = { ...props, ...questionDefinition };
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
   // Hooks must be pulled from the top level, so this cannot be moved to inside the useEffect()
@@ -61,6 +63,12 @@ function Answer (props) {
       :
         <input type="hidden" name={`${answerPath}/value@Delete`} value="0"></input>
       }
+      {enableComments &&
+        <Comment
+          existingAnswer={existingAnswer}
+          answerPath={answerPath}
+          onChangeComment={onChangeComment}
+          />}
     </React.Fragment>
     );
 }

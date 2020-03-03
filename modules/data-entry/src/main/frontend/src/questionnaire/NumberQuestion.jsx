@@ -160,6 +160,7 @@ function NumberQuestion(props) {
   return (
     <Question
       text={text}
+      existingAnswer={existingAnswer}
       {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
@@ -179,13 +180,6 @@ function NumberQuestion(props) {
         /> :
       /* Otherwise just use a single text field */
       <React.Fragment>
-        <Answer
-          answers={answers}
-          existingAnswer={existingAnswer}
-          answerNodeType={answerNodeType}
-          valueType={valueType}
-          {...rest}
-          />
         <TextField
           className={classes.textField + " " + classes.answerField}
           onChange={(event) => {
@@ -196,6 +190,13 @@ function NumberQuestion(props) {
           value={input}
           InputProps={muiInputProps}
           />
+          <Answer
+            answers={answers}
+            existingAnswer={existingAnswer}
+            answerNodeType={answerNodeType}
+            valueType={valueType}
+            {...rest}
+            />
       </React.Fragment>
         }
       {isRange &&
