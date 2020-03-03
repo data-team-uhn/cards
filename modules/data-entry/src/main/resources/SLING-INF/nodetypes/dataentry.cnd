@@ -181,6 +181,10 @@
   // If defined, this must be a valid solr query that can be placed in the "fq" field.
   - vocabularyFilter (string)
 
+  // Some questions may be answered with long stories, which may have useful information but should not be stored as-is without curation.
+  // We allow users to place these answers in a Comments section
+  - enableComments (boolean)
+
   // Since not all properties are mandatory, customizing a question requires defining only
   // the properties of interest.
   //
@@ -414,6 +418,10 @@
 
   // The value, undefined yet, must be properly typed by the concrete subtypes.
   - value (undefined)
+
+  // Some questions may have been answered with long stories, which may have useful information.
+  // We allow users to place these answers in a Comment section
+  - comment (string)
 
   // We don't define any subchildren.
 

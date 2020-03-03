@@ -182,14 +182,6 @@ function DateQuestion(props) {
       {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
-      <Answer
-        answers={outputAnswers}
-        questionDefinition={props.questionDefinition}
-        existingAnswer={existingAnswer}
-        answerNodeType="lfs:DateAnswer"
-        valueType="Date"
-        {...rest}
-        />
       <TextField
         type={textFieldType}
         className={classes.textField + " " + classes.answerField}
@@ -241,6 +233,14 @@ function DateQuestion(props) {
         />
       </React.Fragment>
       }
+      <Answer
+        answers={outputAnswers}
+        questionDefinition={props.questionDefinition}
+        existingAnswer={existingAnswer}
+        answerNodeType="lfs:DateAnswer"
+        valueType="Date"
+        {...rest}
+        />
     </Question>);
 }
 

@@ -203,22 +203,17 @@ function MultipleChoice(props) {
   if (isBare) {
     return(
       <React.Fragment>
+        {ghostInput}
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
           {...rest}
           />
-        {ghostInput}
       </React.Fragment>
     )
   } else if (isRadio) {
     return (
       <React.Fragment>
-        <Answer
-          answers={answers}
-          existingAnswer={existingAnswer}
-          {...rest}
-          />
         <RadioGroup
           aria-label="selection"
           name="selection"
@@ -254,21 +249,26 @@ function MultipleChoice(props) {
         </RadioGroup>
         {ghostInput}
         {warning}
-      </React.Fragment>
-    );
-  } else {
-    return (
-      <React.Fragment>
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
           {...rest}
           />
+      </React.Fragment>
+    );
+  } else {
+    return (
+      <React.Fragment>
         <List className={classes.checkboxList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
         </List>
         {ghostInput}
         {warning}
+        <Answer
+          answers={answers}
+          existingAnswer={existingAnswer}
+          {...rest}
+          />
       </React.Fragment>
     )
   }
