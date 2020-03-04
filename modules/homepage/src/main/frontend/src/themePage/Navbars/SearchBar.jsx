@@ -42,7 +42,7 @@ function SearchBar(props) {
 
   let input = React.useRef();
   let suggestionMenu = React.useRef();
-  let searchButton = React.useRef();
+  let searchBar = React.useRef();
 
   // Callback to update the value of the search bar. Sends off a delayed fulltext request
   let changeSearch = (query) => {
@@ -154,6 +154,7 @@ function SearchBar(props) {
         type="text"
         placeholder="Search"
         value={search}
+        ref={searchBar}
         onChange={(event) => changeSearch(event.target.value)}
         onFocus={(event) => {
           // Rerun the query
@@ -170,7 +171,6 @@ function SearchBar(props) {
           <InputAdornment position="end">
             <IconButton
               className={invertColors ? classes.invertedColors : ""}
-              ref={searchButton}
               onClick={(event) => {
                 input?.current?.focus();
               }}
@@ -206,7 +206,7 @@ function SearchBar(props) {
             <Paper square className={classes.suggestionContainer}>
               <ClickAwayListener onClickAway={(event) => {
                 // Ignore clickaway events if they're just clicking on the input box or search button
-                if (!input.current.contains(event.target) && !searchButton.current.contains(event.target)) {
+                if (!searchBar.current.contains(event.target)) {
                   setPopperOpen(false)
                 }}}>
                 <MenuList role="menu" className={classes.suggestions} ref={suggestionMenu}>
