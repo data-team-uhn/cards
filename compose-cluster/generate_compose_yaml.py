@@ -31,11 +31,13 @@ argparser = argparse.ArgumentParser()
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
 argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
+argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer service to the cluster', action='store_true')
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
 MONGO_REPLICA_COUNT = args.replicas
 CONFIGDB_REPLICA_COUNT = args.config_replicas
+ENABLE_NCR = args.enable_ncr
 
 #Validate before doing anything else
 if (MONGO_REPLICA_COUNT % 2) != 1:
@@ -221,16 +223,17 @@ yaml_obj['services']['lfsinitial']['environment'].append("LFS_RELOAD=${LFS_RELOA
 
 yaml_obj['services']['lfsinitial']['depends_on'] = ['router']
 
-#Configure the NCR container - only one for now
-print("Configuring service: neuralcr")
-yaml_obj['services']['neuralcr'] = {}
-yaml_obj['services']['neuralcr']['image'] = "ccmsk/neuralcr"
-
-yaml_obj['services']['neuralcr']['volumes'] = ["./NCR_MODEL:/root/opt/ncr/model_params:ro"]
-
-yaml_obj['services']['neuralcr']['networks'] = {}
-yaml_obj['services']['neuralcr']['networks']['internalnetwork'] = {}
-yaml_obj['services']['neuralcr']['networks']['internalnetwork']['aliases'] = ['neuralcr']
+#Configure the NCR container (if enabled) - only one for now
+if ENABLE_NCR:
+	print("Configuring service: neuralcr")
+	yaml_obj['services']['neuralcr'] = {}
+	yaml_obj['services']['neuralcr']['image'] = "ccmsk/neuralcr"
+	
+	yaml_obj['services']['neuralcr']['volumes'] = ["./NCR_MODEL:/root/opt/ncr/model_params:ro"]
+	
+	yaml_obj['services']['neuralcr']['networks'] = {}
+	yaml_obj['services']['neuralcr']['networks']['internalnetwork'] = {}
+	yaml_obj['services']['neuralcr']['networks']['internalnetwork']['aliases'] = ['neuralcr']
 
 #Configure the proxy container
 print("Configuring service: proxy")
@@ -244,7 +247,9 @@ yaml_obj['services']['proxy']['networks'] = {}
 yaml_obj['services']['proxy']['networks']['internalnetwork'] = {}
 yaml_obj['services']['proxy']['networks']['internalnetwork']['aliases'] = ['proxy']
 
-yaml_obj['services']['proxy']['depends_on'] = ['lfsinitial', 'neuralcr']
+yaml_obj['services']['proxy']['depends_on'] = ['lfsinitial']
+if ENABLE_NCR:
+	yaml_obj['services']['proxy']['depends_on'].append('neuralcr')
 
 #Setup the internal network
 print("Configuring the internal network")
