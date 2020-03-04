@@ -21,6 +21,7 @@ import React, {useState} from "react";
 import PropTypes from "prop-types";
 
 import { Button, Collapse, TextField, Tooltip, withStyles } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 import UnfoldMore from "@material-ui/icons/UnfoldMore";
 import UnfoldLess from "@material-ui/icons/UnfoldLess";
 
@@ -36,21 +37,28 @@ function Comment (props) {
     setComment(event.target.value);
   }
 
+  const commentIsEmpty = comment == null;
+
   return (<React.Fragment>
     <div className = {classes.showCommentsContainer}>
-      <Button
-        color = "default"
-        onClick = {() => {
-          setVisible(!visible);
-        }}
-        startIcon = {visible ?
-          <UnfoldLess fontSize="small" />
-          : <UnfoldMore fontSize="small" />
-        }
-        disableFocusRipple
+      <Tooltip
+        title = {visible ? "Hide notes" : (commentIsEmpty ? "Add notes" : "Show notes")}
         >
-        {visible ? "Hide additional comments" : "Show additional comments"}
-      </Button>
+        <Button
+          color = "default"
+          className = {classes.showCommentsButton}
+          onClick = {() => {
+            setVisible(!visible);
+          }}
+          startIcon = {visible ?
+            <UnfoldLess fontSize="small" />
+            : (commentIsEmpty ? <AddIcon fontSize="small" /> : <UnfoldMore fontSize="small" />)
+          }
+          disableFocusRipple
+          >
+          Notes
+        </Button>
+      </Tooltip>
     </div>
     <Collapse
       in={visible}

@@ -173,6 +173,9 @@ const questionnaireStyle = theme => ({
     showCommentsContainer: {
         padding: theme.spacing(1, 0, 1, 2)
     },
+    showCommentsButton: {
+        textTransform: "none"
+    },
     commentSection: {
         display: "block",
         marginLeft: theme.spacing(6)
