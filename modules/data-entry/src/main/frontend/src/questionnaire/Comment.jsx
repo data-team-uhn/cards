@@ -30,14 +30,14 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 function Comment (props) {
   const { answerPath, existingAnswer, classes, onChangeComment } = {...props};
   let [ comment, setComment ] = useState((existingAnswer?.[1]?.comment));
-  let [ visible, setVisible ] = useState(Boolean(existingAnswer));
+  let [ visible, setVisible ] = useState(Boolean(comment));
 
   let changeComment = (event) => {
     onChangeComment && onChangeComment(event.target.value);
     setComment(event.target.value);
   }
 
-  const commentIsEmpty = comment == null;
+  const commentIsEmpty = comment == null || comment == "";
 
   return (<React.Fragment>
     <div className = {classes.showCommentsContainer}>
@@ -76,7 +76,9 @@ function Comment (props) {
         placeholder = "Please place any additional comments here."
         />
     </Collapse>
-    <input type="hidden" name={`${answerPath}/comment`} value={comment} />
+    {commentIsEmpty ?
+      <input type="hidden" name={`${answerPath}/comment@Delete`} value="0" />
+      : <input type="hidden" name={`${answerPath}/comment`} value={comment} />}
   </React.Fragment>);
 }
 
