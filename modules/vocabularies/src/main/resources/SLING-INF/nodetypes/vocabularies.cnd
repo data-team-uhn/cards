@@ -54,7 +54,7 @@
   - description (STRING)
 
   // Optional list of synonyms for the term.
-  - synonyms (STRING) multiple
+  - synonym (STRING) multiple
 
   // Optional list of parents of the term.
   - parents (STRING) multiple

@@ -183,11 +183,9 @@ function VocabularySelector(props) {
       }
 
       // Determine the name from our vocab
-      var testId = id;
-      var escapedId = id.replace(":", "\\:"); // URI Escape the : from HP: for SolR
-      var customFilter = encodeURIComponent(`id:${escapedId}`);
-      var URL = `${REST_URL}/${source}/suggest?sort=nameSort%20asc&maxResults=1&input=${id}&customFilter=${customFilter}`
-      MakeRequest(URL, (status, data) => addDefaultSuggestion(status, data, testId));
+      var escapedId = id.replace(":", "");  // Vocabulary terms have no colons in their JCR node names
+      var url = new URL(`./${source}/${escapedId}.json`, REST_URL);
+      MakeRequest(url, (status, data) => addDefaultSuggestion(status, data, id));
     };
 
     // If any answers are existing (i.e. we are loading an old form), also populate these
@@ -198,11 +196,9 @@ function VocabularySelector(props) {
           return;
         }
         // Determine the name from our vocab
-        var testId = id;
-        var escapedId = id.replace(":", "\\:"); // URI Escape the : from HP: for SolR
-        var customFilter = encodeURIComponent(`id:${escapedId}`);
-        var URL = `${REST_URL}/${source}/suggest?sort=nameSort%20asc&maxResults=1&input=${id}&customFilter=${customFilter}`
-        MakeRequest(URL, (status, data) => addDefaultSuggestion(status, data, testId, false));
+        var escapedId = id.replace(":", "");  // Vocabulary terms have no colons in their JCR node names
+        var url = new URL(`./${source}/${escapedId}.json`, REST_URL);
+        MakeRequest(url, (status, data) => addDefaultSuggestion(status, data, id, false));
       });
     }
 
@@ -213,12 +209,8 @@ function VocabularySelector(props) {
     const hasExistingAnswers = existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value;
     const existingAnswers = existingAnswer && existingAnswer[1].value;
     if (status === null) {
-      var name = id;
-      // Determine if we can find the name from here
-      if (data["rows"].length > 0) {
-        name = data["rows"][0]["name"];
-      }
-      // If the name could not be found, use the ID as the name
+      // Use the name from the response (if available) or the ID if not
+      var name = data["name"] || id;
 
       // Avoid the race condition by using updater functions
       var newChild = [name, id, isSuggestion, hasExistingAnswers && existingAnswers.includes(id)];

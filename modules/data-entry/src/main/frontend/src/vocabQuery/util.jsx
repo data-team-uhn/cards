@@ -17,8 +17,8 @@
 //  under the License.
 //
 
-// Do not place an ending / in the URL below
-export const REST_URL = "https://services.phenotips.org/rest/vocabularies";
+// Ensure there is an endling / in the URL below
+export const REST_URL = window.location.origin + "/Vocabularies/";
 
 // Make a request for a json file, calling callback with parameters (xhr status, json data)
 export function MakeRequest(URL, callback) {
@@ -36,25 +36,21 @@ export function MakeRequest(URL, callback) {
 export function MakeChildrenFindingRequest(vocabulary, requestOpt, callback) {
     const CHILDREN_FINDING_REQUEST_DEFAULTS = {
         'sort': 'nameSort asc',
-        'maxResults': '10000',
-        'customFilter': 'is_a:' + requestOpt['input'].replace(":", "\\:")
+        'limit': '10000',
+        'customFilter': 'is_a:' + requestOpt['input']
     };
 
     // Start with the suggest URL
-    var URL = `${REST_URL}/${vocabulary}/suggest?`;
-    var requestObj = {};
-    Object.assign(requestObj, CHILDREN_FINDING_REQUEST_DEFAULTS);
-    Object.assign(requestObj, requestOpt);
+    var url = new URL(`./${vocabulary}.search.json`, REST_URL);
+    var requestObj = {...CHILDREN_FINDING_REQUEST_DEFAULTS, ...requestOpt};
 
     // Construct URL
-    var ret = []
     for (let request in requestObj) {
         if (request === "") {
             continue;
         }
-        ret.push(encodeURIComponent(request) + '=' + encodeURIComponent(requestObj[request]));
+        url.searchParams.set(request, requestObj[request]);
     }
-    URL += ret.join('&');
 
-    MakeRequest(URL, callback);
+    MakeRequest(url, callback);
 }
