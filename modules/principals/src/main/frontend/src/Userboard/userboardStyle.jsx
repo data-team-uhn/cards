@@ -57,6 +57,9 @@ const userboardStyle = theme => ({
     },
     info: {
       backgroundColor: theme.palette.info.main
+    },
+    closeButton: {
+      float: 'right'
     }
 });
 

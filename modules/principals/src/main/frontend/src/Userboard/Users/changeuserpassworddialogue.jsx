@@ -66,6 +66,7 @@ class ChangeUserPasswordDialogue extends React.Component {
                             <TextField
                                 id="oldpwd"
                                 name="oldpwd"
+                                autoComplete="current-password"
                                 label="Old Password"
                                 type="password"
                                 onChange={(event) => { this.setState({ oldPwd: event.target.value }); }}
@@ -76,6 +77,7 @@ class ChangeUserPasswordDialogue extends React.Component {
                             <TextField
                                 id="newpwd"
                                 name="newpwd"
+                                autoComplete="new-password"
                                 label="New Password"
                                 type="password"
                                 onChange={(event) => { this.setState({ newPwd: event.target.value }); }}
@@ -85,6 +87,7 @@ class ChangeUserPasswordDialogue extends React.Component {
                             <TextField
                                 id="newpwdconfirm"
                                 name="newpwdconfirm"
+                                autoComplete="new-password"
                                 label="Confirm New Password"
                                 onChange={(event) => { this.setState({ newPwdConfirm: event.target.value }); }}
                             />

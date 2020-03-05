@@ -20,8 +20,6 @@ import { withStyles } from "@material-ui/core/styles";
 import { Button, Dialog, DialogTitle, DialogActions, DialogContent, IconButton, Typography} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
-import userboardStyle from '../userboardStyle.jsx';
-
 class DeleteGroupDialogue extends React.Component {
     constructor(props) {
         super(props);
@@ -44,7 +42,6 @@ class DeleteGroupDialogue extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
         return (
             <Dialog
                 open={this.props.isOpen}
@@ -65,4 +62,4 @@ class DeleteGroupDialogue extends React.Component {
     }
 }
 
-export default withStyles (userboardStyle)(DeleteGroupDialogue);
+export default DeleteGroupDialogue;

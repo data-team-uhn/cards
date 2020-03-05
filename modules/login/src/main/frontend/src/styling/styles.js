@@ -39,11 +39,12 @@ const styles = theme => ({
     marginBottom: theme.spacing(2),
   },
   buttonIcon: {
-    marginRight: theme.spacing(1),
+    verticalAlign: 'middle',
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
+    verticalAlign: 'middle',
   },
   form: {
     width: '100%', // Fix IE 11 issue.

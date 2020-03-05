@@ -55,7 +55,7 @@ class DialogueLoginContainer extends React.Component {
         open={this.state.opened}
         onClose={() => this.handleClose()}
       >
-        {this.state.signInShown ? <SignIn swapForm={this.handleSwap} /> : <SignUpForm swapForm={this.handleSwap} />}
+        {this.state.signInShown ? <SignIn /> : <SignUpForm loginOnSuccess={true} />}
         <Button onClick={()=>this.handleClose()}>Close</Button>
       </Dialog>
     );

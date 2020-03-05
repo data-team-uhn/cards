@@ -18,16 +18,12 @@
 //
 import React from 'react';
 import {
-    Avatar,
     Button,
     Paper,
-    Typography,
     TextField,
     Tooltip,
     withStyles
 } from '@material-ui/core';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -231,7 +227,8 @@ class SignUpForm extends React.Component {
       })
       .then(handleErrors) // Handle errors first
       .then(() => {
-        this.signIn(username, password);
+        this.props.handleSuccess && this.props.handleSuccess();
+        this.props.loginOnSuccess && this.signIn(username, password);
       })
       .catch(error => {
         this.setState({
@@ -265,35 +262,13 @@ class SignUpForm extends React.Component {
           <UsernameTakenDialog handleClose={this.hideError} ></UsernameTakenDialog>
         }
         <div className={classes.main}>
-          <Paper elevation={1} className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
-            <Typography component="h1" variant="overline">
-              LFS Data Core
-            </Typography>
-            <Typography component="h2" variant="h5">
-              Sign Up
-            </Typography>
-            <Avatar className={classes.avatar}>
-              <PersonAddIcon/>
-            </Avatar>
-            <Formik
-              render={props => <FormFieldsComponent {...props} />}
-              initialValues={values}
-              validationSchema={validationSchema}
-              onSubmit={this.submitValues}
-              ref={el => (this.form = el)}
-            />
-            <Typography>
-              Already have an account?
-            </Typography>
-            <Button
-              fullWidth
-              variant="contained"
-              color="default"
-              onClick={this.props.swapForm}
-            >
-              <ExitToAppIcon/> Sign In
-            </Button>
-          </Paper>
+          <Formik
+            render={props => <FormFieldsComponent {...props} />}
+            initialValues={values}
+            validationSchema={validationSchema}
+            onSubmit={this.submitValues}
+            ref={el => (this.form = el)}
+          />
         </div>
       </React.Fragment>
     );
