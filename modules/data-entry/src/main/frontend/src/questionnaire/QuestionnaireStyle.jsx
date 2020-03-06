@@ -173,7 +173,7 @@ const questionnaireStyle = theme => ({
     showCommentsContainer: {
         padding: theme.spacing(1, 0, 1, 2)
     },
-    showCommentsButton: {
+    toggleCommentsButton: {
         textTransform: "none"
     },
     commentSection: {

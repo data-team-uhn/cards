@@ -46,7 +46,7 @@ function Comment (props) {
         >
         <Button
           color = "default"
-          className = {classes.showCommentsButton}
+          className = {classes.toggleCommentsButton}
           onClick = {() => {
             setVisible(!visible);
           }}
