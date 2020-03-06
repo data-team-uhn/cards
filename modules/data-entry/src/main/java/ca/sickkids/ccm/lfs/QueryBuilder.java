@@ -269,7 +269,7 @@ public class QueryBuilder implements Use
             String noteValue = thisResource.getValueMap().get("note", String.class);
 
             // As a fallback for when the query isn't in the value field, attempt to use the note field
-            if (resourceValue == null && StringUtils.containsIgnoreCase(query, noteValue)) {
+            if (resourceValue == null && StringUtils.containsIgnoreCase(noteValue, query)) {
                 resourceValue = noteValue;
             }
 
