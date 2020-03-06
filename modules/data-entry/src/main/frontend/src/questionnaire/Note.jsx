@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, {useState} from "react";
+import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 
 import { Button, Collapse, TextField, Tooltip, withStyles } from "@material-ui/core";
@@ -31,10 +31,15 @@ function Note (props) {
   const { answerPath, existingAnswer, classes, onChangeNote } = {...props};
   let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
   let [ visible, setVisible ] = useState(Boolean(note));
+  let inputRef = useRef();
 
   let changeNote = (event) => {
     onChangeNote && onChangeNote(event.target.value);
     setNote(event.target.value);
+  }
+
+  let focusInput = () => {
+    inputRef.current.focus();
   }
 
   const noteIsEmpty = note == null || note == "";
@@ -54,14 +59,14 @@ function Note (props) {
             <UnfoldLess fontSize="small" />
             : (noteIsEmpty ? <AddIcon fontSize="small" /> : <UnfoldMore fontSize="small" />)
           }
-          disableFocusRipple
           >
           Notes
         </Button>
       </Tooltip>
     </div>
     <Collapse
-      in={visible}
+      in = {visible}
+      onEntered = {focusInput}
       >
       <TextField
         value = {note}
@@ -74,6 +79,7 @@ function Note (props) {
           className: classes.textField
         }}
         placeholder = "Please place any additional notes here."
+        inputRef = {inputRef}
         />
     </Collapse>
     {noteIsEmpty ?
