@@ -32,7 +32,6 @@
 
     # Custom permission schemes
     ca.sickkids.ccm.lfs/lfs-permissions/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-permissions-provider/${lfs.version}
 
     # Common Utilities
     ca.sickkids.ccm.lfs/lfs-utils/${lfs.version}
@@ -46,3 +45,6 @@
     ca.sickkids.ccm.lfs/lfs-principals/${lfs.version}
     ca.sickkids.ccm.lfs/lfs-vocabularies/${lfs.version}/slingfeature/slingfeature
     ca.sickkids.ccm.lfs/lfs-aggregated-frontend/${lfs.version}
+
+[artifacts runModes=permissions_ownership]
+    ca.sickkids.ccm.lfs/lfs-permissions-ownership/${lfs.version}

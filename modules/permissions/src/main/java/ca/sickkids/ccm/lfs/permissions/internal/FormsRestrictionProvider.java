@@ -16,11 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.permissionsprovider.internal;
+package ca.sickkids.ccm.lfs.permissions.internal;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.jackrabbit.oak.api.Tree;
@@ -33,7 +34,7 @@ import org.apache.jackrabbit.oak.spi.security.authorization.restriction.Restrict
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,11 +63,11 @@ public class FormsRestrictionProvider extends AbstractRestrictionProvider
      */
     @Activate
     public FormsRestrictionProvider(
-        @Reference(cardinality = ReferenceCardinality.AT_LEAST_ONE) List<RestrictionFactory> factories)
+        @Reference(policyOption = ReferencePolicyOption.GREEDY) List<RestrictionFactory> factories)
     {
         super(factories.stream()
             .map(f -> new RestrictionDefinitionImpl(f.getName(), f.getType(), false))
-            .collect(Collectors.toMap(RestrictionDefinitionImpl::getName, f -> f)));
+            .collect(Collectors.toMap(RestrictionDefinitionImpl::getName, Function.identity())));
         this.factories = factories;
     }
 

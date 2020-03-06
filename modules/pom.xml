@@ -32,6 +32,7 @@
 
   <modules>
     <module>startup-customization</module>
+    <module>custom-jcr-oak-server</module>
     <module>commons</module>
     <module>ui-extension</module>
     <module>login</module>
@@ -41,7 +42,7 @@
     <module>utils</module>
     <module>principals</module>
     <module>permissions</module>
-    <module>permissions-provider</module>
+    <module>permissions-ownership</module>
     <module>vocabularies</module>
     <module>aggregated-frontend</module>
   </modules>
