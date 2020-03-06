@@ -170,13 +170,13 @@ const questionnaireStyle = theme => ({
     highlightedTitle: {
         color: theme.palette.primary.light,
     },
-    showCommentsContainer: {
+    toggleNotesContainer: {
         padding: theme.spacing(1, 0, 1, 2)
     },
-    toggleCommentsButton: {
+    toggleNotesButton: {
         textTransform: "none"
     },
-    commentSection: {
+    noteSection: {
         display: "block",
         marginLeft: theme.spacing(6)
     }

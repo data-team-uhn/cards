@@ -27,32 +27,32 @@ import UnfoldLess from "@material-ui/icons/UnfoldLess";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
-function Comment (props) {
-  const { answerPath, existingAnswer, classes, onChangeComment } = {...props};
-  let [ comment, setComment ] = useState((existingAnswer?.[1]?.comment));
-  let [ visible, setVisible ] = useState(Boolean(comment));
+function Note (props) {
+  const { answerPath, existingAnswer, classes, onChangeNote } = {...props};
+  let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
+  let [ visible, setVisible ] = useState(Boolean(note));
 
-  let changeComment = (event) => {
-    onChangeComment && onChangeComment(event.target.value);
-    setComment(event.target.value);
+  let changeNote = (event) => {
+    onChangeNote && onChangeNote(event.target.value);
+    setNote(event.target.value);
   }
 
-  const commentIsEmpty = comment == null || comment == "";
+  const noteIsEmpty = note == null || note == "";
 
   return (<React.Fragment>
-    <div className = {classes.showCommentsContainer}>
+    <div className = {classes.toggleNotesContainer}>
       <Tooltip
-        title = {visible ? "Hide notes" : (commentIsEmpty ? "Add notes" : "Show notes")}
+        title = {visible ? "Hide notes" : (noteIsEmpty ? "Add notes" : "Show notes")}
         >
         <Button
           color = "default"
-          className = {classes.toggleCommentsButton}
+          className = {classes.toggleNotesButton}
           onClick = {() => {
             setVisible(!visible);
           }}
           startIcon = {visible ?
             <UnfoldLess fontSize="small" />
-            : (commentIsEmpty ? <AddIcon fontSize="small" /> : <UnfoldMore fontSize="small" />)
+            : (noteIsEmpty ? <AddIcon fontSize="small" /> : <UnfoldMore fontSize="small" />)
           }
           disableFocusRipple
           >
@@ -64,22 +64,22 @@ function Comment (props) {
       in={visible}
       >
       <TextField
-        value = {comment}
-        onChange = {changeComment}
+        value = {note}
+        onChange = {changeNote}
         variant = "outlined"
         multiline
         rows = "4"
-        className = {classes.commentSection}
+        className = {classes.noteSection}
         InputProps = {{
           className: classes.textField
         }}
-        placeholder = "Please place any additional comments here."
+        placeholder = "Please place any additional notes here."
         />
     </Collapse>
-    {commentIsEmpty ?
-      <input type="hidden" name={`${answerPath}/comment@Delete`} value="0" />
-      : <input type="hidden" name={`${answerPath}/comment`} value={comment} />}
+    {noteIsEmpty ?
+      <input type="hidden" name={`${answerPath}/note@Delete`} value="0" />
+      : <input type="hidden" name={`${answerPath}/note`} value={note} />}
   </React.Fragment>);
 }
 
-export default withStyles(QuestionnaireStyle)(Comment);
+export default withStyles(QuestionnaireStyle)(Note);
