@@ -136,8 +136,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     }
 
     /**
-     * Parse out filter data into a series of JCR_SQL2 joins.
-     * This should be used in conjuction with parseFilter later on.
+     * Parse out filter data into a series of JCR_SQL2 joins. This should be used in conjunction with parseFilter later
+     * on.
      *
      * @param nodetype node types to join
      * @param filternames user input field names
@@ -188,7 +188,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         for (int i = 0; i < joins.length; i++) {
             joindata.append(
                 String.format(
-                    " inner join [%s] as %s%d on ischildnode(%s%d, n)",
+                    " inner join [%s] as %s%d on isdescendantnode(%s%d, n)",
                     nodetype,
                     childprefix,
                     i,

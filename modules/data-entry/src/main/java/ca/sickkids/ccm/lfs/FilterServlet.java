@@ -82,14 +82,14 @@ public class FilterServlet extends SlingSafeMethodsServlet
 
             // JsonObjects are immutable, so we have to manually copy over non-questions to a new object
             JsonObjectBuilder builder = Json.createObjectBuilder();
-            this.copyFields(resource.adaptTo(JsonObject.class), builder);
+            this.copyQuestions(resource.adaptTo(JsonObject.class), builder);
             allProperties = builder.build();
         } else {
             // If there is no questionnaire specified, we return all fields by all questionnaires
             // visible by the user
             final StringBuilder query =
                 // We select all child nodes of the homepage, filtering out nodes that aren't ours, such as rep:policy
-                new StringBuilder("select n from [lfs:Questionnaire] as n where ischildnode(n, '"
+                new StringBuilder("select n from [lfs:Questionnaire] as n where isdescendantnode(n, '"
                     + request.getResource().getPath() + "') and n.'sling:resourceSuperType' = 'lfs/Resource'");
             final Iterator<Resource> results =
                 request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
@@ -100,7 +100,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
                 Resource resource = results.next();
                 String path = resource.getResourceMetadata().getResolutionPath();
                 resource = request.getResourceResolver().resolve(path.concat(DEEP_JSON_SUFFIX));
-                this.copyFields(resource.adaptTo(JsonObject.class), builder, seenTypes, seenElements);
+                this.copyQuestions(resource.adaptTo(JsonObject.class), builder, seenTypes, seenElements);
             }
             allProperties = builder.build();
         }
@@ -116,65 +116,89 @@ public class FilterServlet extends SlingSafeMethodsServlet
      * Copies over lfs:Question fields from the input JsonObject, optionally handling questions that
      * may already exist in the builder.
      *
-     * @param questions A JsonObject (from an lfs:Questionnaire) whose fields may be lfs:Questions
+     * @param questions A JsonObject (from an lfs:Questionnaire or lfs:Section) whose fields may be lfs:Questions
      * @param builder A JsonObjectBuilder to copy results to
      * @param seenTypes Either a map from field names to dataTypes, or null to disable tracking
      * @param seenElements Either a map from field names to jcr:uuids, or null to disable tracking
      * @return the content matching the query
      */
-    private void copyFields(JsonObject questions, JsonObjectBuilder builder, Map<String, String> seenTypes,
+    private void copyQuestions(JsonObject questions, JsonObjectBuilder builder, Map<String, String> seenTypes,
             Map<String, String> seenElements)
     {
         // Copy over the keys
         for (String key : questions.keySet()) {
             // Skip over non-questions (non-objects)
-            if (questions.get(key).getValueType() != ValueType.OBJECT
-                || !questions.getJsonObject(key).getString("jcr:primaryType").equals("lfs:Question")) {
+            if (questions.get(key).getValueType() != ValueType.OBJECT) {
                 continue;
             }
+            JsonObject datum = questions.getJsonObject(key);
 
-            if (seenTypes == null) {
-                // No map to keep track of dataTypes provided: add blindly to the builder
-                builder.add(key, questions.get(key));
-                continue;
+            // Copy over information from children of sections
+            if ("lfs:Section".equals(datum.getString("jcr:primaryType"))) {
+                this.copyQuestions(datum, builder, seenTypes, seenElements);
             }
 
-            JsonObject question = questions.getJsonObject(key);
-            if (seenTypes.containsKey(key)) {
-                // If this question already exists, make sure that it has the same dataType
-                String questionType = question.getString("dataType");
-                if (seenTypes.get(key) != questionType) {
-                    // DIFFERENT -- prepend a slightly differently named version
-                    String newKey = questionType.concat("|").concat(key);
-                    seenTypes.put(newKey, questionType);
-                    seenElements.put(newKey, question.getString(JCR_UUID));
-                    builder.add(newKey, question);
-                } else {
-                    // SAME -- append our jcr:uuid to the question
-                    // JsonObjects are immutable, so we need to copy and overwrite the UUID
-                    JsonObjectBuilder amended = Json.createObjectBuilder();
-                    for (String amendKey : question.keySet()) {
-                        if (amendKey.equals(JCR_UUID)) {
-                            // Append our jcr:uuid to the existing one
-                            String newUUID = String.format(
-                                "%s,%s",
-                                seenElements.get(key),
-                                question.getString(JCR_UUID)
-                            );
-                            amended.add(JCR_UUID, newUUID);
-                            seenElements.put(key, newUUID);
-                        } else {
-                            amended.add(amendKey, question.get(amendKey));
-                        }
-                    }
-                    builder.add(key, amended.build());
-                }
+            // Copy over information from this object if this is a question
+            if ("lfs:Question".equals(datum.getString("jcr:primaryType"))) {
+                copyFields(datum, key, builder, seenTypes, seenElements);
+            }
+        }
+    }
+
+    /**
+     * Copies over every field from the input JsonObject, optionally handling questions that
+     * may already exist in the builder.
+     *
+     * @param question A JsonObject from an lfs:Question
+     * @param key The name of the lfs:Question
+     * @param builder A JsonObjectBuilder to copy results to
+     * @param seenTypes Either a map from field names to dataTypes, or null to disable tracking
+     * @param seenElements Either a map from field names to jcr:uuids, or null to disable tracking
+     * @return the content matching the query
+     */
+    private void copyFields(JsonObject question, String key, JsonObjectBuilder builder, Map<String, String> seenTypes,
+            Map<String, String> seenElements)
+    {
+        if (seenTypes == null) {
+            // No map to keep track of dataTypes provided: add blindly to the builder
+            builder.add(key, question);
+            return;
+        }
+
+        if (seenTypes.containsKey(key)) {
+            // If this question already exists, make sure that it has the same dataType
+            String questionType = question.getString("dataType");
+            if (seenTypes.get(key) != questionType) {
+                // DIFFERENT -- prepend a slightly differently named version
+                String newKey = questionType.concat("|").concat(key);
+                seenTypes.put(newKey, questionType);
+                seenElements.put(newKey, question.getString(JCR_UUID));
+                builder.add(newKey, question);
             } else {
-                // If this question does not exist, just add it
-                seenTypes.put(key, question.getString("dataType"));
-                seenElements.put(key, question.getString(JCR_UUID));
-                builder.add(key, question);
+                // SAME -- append our jcr:uuid to the question
+                // JsonObjects are immutable, so we need to copy and overwrite the UUID
+                JsonObjectBuilder amended = Json.createObjectBuilder();
+                for (String amendKey : question.keySet()) {
+                    if (amendKey.equals(JCR_UUID)) {
+                        // Append our jcr:uuid to the existing one
+                        String newUUID = String.format(
+                            "%s,%s",
+                            seenElements.get(key),
+                            question.getString(JCR_UUID)
+                        );
+                        amended.add(JCR_UUID, newUUID);
+                        seenElements.put(key, newUUID);
+                    } else {
+                        amended.add(amendKey, question.get(amendKey));
+                    }
+                }
+                builder.add(key, amended.build());
             }
+        } else {
+            // If this question does not exist, just add it
+            seenTypes.put(key, question.getString("dataType"));
+            seenElements.put(key, question.getString(JCR_UUID));
+            builder.add(key, question);
         }
     }
 
@@ -185,8 +209,8 @@ public class FilterServlet extends SlingSafeMethodsServlet
      * @param builder A JsonObjectBuilder to copy results to
      * @return the content matching the query
      */
-    private void copyFields(JsonObject questions, JsonObjectBuilder builder)
+    private void copyQuestions(JsonObject questions, JsonObjectBuilder builder)
     {
-        this.copyFields(questions, builder, null, null);
+        this.copyQuestions(questions, builder, null, null);
     }
 }

@@ -27,10 +27,13 @@ from distutils.dir_util import copy_tree
 
 package_name = 'lfs-aggregated-frontend'
 
-def merge_packache_json_files(modules_dir, project_to_name_map, package_json_file):
+def merge_packache_json_files(modules_dir, project_to_name_map, package_json_file, base_dir):
     package_merged = {}
 
     for name in os.listdir(modules_dir):
+        # Exclude our own directory
+        if os.path.samefile(os.path.join(modules_dir, name), base_dir):
+            continue
 
         fl = os.path.join(modules_dir, name, 'src', 'main', 'frontend', 'package.json')
         if path.exists(fl):
@@ -60,7 +63,8 @@ def merge_webpack_files(base_dir, modules_dir, project_to_name_map, webpack_merg
     entries = []
 
     for name in os.listdir(modules_dir):
-        if name == 'aggregated-frontend':
+        # Exclude our own directory
+        if os.path.samefile(os.path.join(modules_dir, name), base_dir):
             continue
 
         fl = os.path.join(modules_dir, name, 'src', 'main', 'frontend', 'webpack.config.js')
@@ -112,7 +116,7 @@ def main(args=sys.argv[1:]):
     package_json_file = os.path.join(base_dir, 'src', 'main', 'frontend', 'package.json')
     
     project_to_name_map = {}
-    merge_packache_json_files(modules_dir, project_to_name_map, package_json_file)
+    merge_packache_json_files(modules_dir, project_to_name_map, package_json_file, base_dir)
     merge_webpack_files(base_dir, modules_dir, project_to_name_map, webpack_merged_template_file, webpack_merged_file)
 
 if __name__ == '__main__':

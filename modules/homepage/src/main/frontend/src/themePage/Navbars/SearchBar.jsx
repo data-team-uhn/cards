@@ -22,9 +22,7 @@ import { withRouter } from "react-router-dom";
 
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar}  from "@material-ui/core";
 import { MenuList, Paper, Popper, Typography, withStyles } from "@material-ui/core";
-import AssignmentIcon from "@material-ui/icons/Assignment";
 import DescriptionIcon from "@material-ui/icons/Description";
-import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import Search from "@material-ui/icons/Search";
 import HeaderStyle from "./headerStyle.jsx";
 
@@ -75,16 +73,16 @@ function SearchBar(props) {
     doNotEscapeQuery && new_url.searchParams.set("doNotEscapeQuery", "true");
     new_url.searchParams.set("limit", MAX_RESULTS);
     new_url.searchParams.set("req", requestID);
-    // In the closure generated, displayResults will look for req_id, instead of requestID+1
+    // In the closure generated, postprocessResults will look for req_id, instead of requestID+1
     setRequestID(requestID+1);
     fetch(new_url)
       .then(response => response.ok ? response.json() : Promise.reject(response))
-      .then(displayResults)
+      .then(postprocessResults)
       .catch(handleError);
   }
 
   // Callback to store the results of the top results, or to display 'No results'
-  let displayResults = (json) => {
+  let postprocessResults = (json) => {
     // Ignore this result if the request ID does not match our last request
     if (json["req"] != requestID) {
       return;
@@ -107,44 +105,55 @@ function SearchBar(props) {
     setError(response);
   }
 
-  const categoryToAvatar = {
-    ["lfs:Form"]: <Avatar className={classes.searchResultFormIcon + " " + classes.searchResultAvatar}>
-        <DescriptionIcon />
-      </Avatar>,
-    ["lfs:Questionnaire"]: <Avatar className={classes.searchResultQuestionnaireIcon + " " + classes.searchResultAvatar}>
-        <AssignmentIcon />
-      </Avatar>,
-    ["lfs:Subject"]: <Avatar className={classes.searchResultSubjectIcon + " " + classes.searchResultAvatar}>
-        <AssignmentIndIcon />
-      </Avatar>
+  // Generate a human-readable info about the resource (form) matching the query:
+  // * questionnaire title (if available) and result type, followed by
+  // * the form's subject name (if available) or the resource's uuid
+  function QuickSearchResultHeader(props) {
+    const {resultData} = props;
+    return resultData && (
+      <div>
+        <Typography variant="body2" color="textSecondary">
+          {(resultData.questionnaire?.title?.concat(' ') || '') + (resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')}
+        </Typography>
+        {resultData.subject?.identifier || resultData["jcr:uuid"] || ''}
+      </div>
+    ) || null
   }
 
-  // Get a user friendly version of the icon
-  let getCategoryIcon = (element) => (
-    categoryToAvatar[element["jcr:primaryType"]] ?
-      <ListItemAvatar>{categoryToAvatar[element["jcr:primaryType"]]}</ListItemAvatar>
-      : " "
-  );
-
-  // Get a user friendly version of the category
-  let getFriendlyCategory = (element) => {
-    const friendlyType = element["jcr:primaryType"] && element["jcr:primaryType"].replace(/lfs:/,"");
-    /* Prepend the questionnaire title, if this has it */
-    return (element["questionnaire"] ? element["questionnaire"]["title"] + " " + friendlyType
-    /* Otherwise just use the user-friendly element name */
-      : friendlyType);
+  // Display how the query matched the result
+  function QuickSearchMatch(props) {
+    const {matchData} = props;
+    return matchData && (
+      <React.Fragment>
+        <span className={classes.queryMatchKey}>{matchData[0]}</span>
+        <span className={classes.queryMatchSeparator}>: </span>
+        <span className={classes.queryMatchBefore}>{matchData[1]}</span>
+        <span className={classes.highlightedText}>{matchData[2]}</span>
+        <span className={classes.queryMatchAfter}>{matchData[3]}</span>
+      </React.Fragment>
+    ) || null
   }
 
-  // Attempt a few different methods of getting the name of an element from <code>/query?quick</code>
-  let getElementName = (element) => {
-    /* Form data: grab the subject name */
-    return (element["subject"] && element["subject"]["identifier"])
-      /* Questionnaire: grab the title */
-      || element["name"] || element["title"]
-      /* Subject: grab the subject ID */
-      || element["identifier"]
-      /* Could not find any of the above: return the uuid */
-      || element["jcr:uuid"];
+  // Display a quick search result
+  // If it's a resource, show avatar, category, and title
+  // Otherwise, if it's a generic entry, simply display the name
+  function QuickSearchResult(props) {
+    const {resultData} = props;
+    return resultData["jcr:primaryType"] && (
+      <React.Fragment>
+        <ListItemAvatar><Avatar className={classes.searchResultAvatar}><DescriptionIcon /></Avatar></ListItemAvatar>
+        <ListItemText
+          primary={(<QuickSearchResultHeader resultData={resultData} />)}
+          secondary={(<QuickSearchMatch matchData={resultData["lfs:queryMatch"]} />)}
+          className={classes.dropdownItem}
+        />
+      </React.Fragment>
+    ) || (
+       <ListItemText
+          primary={resultData.name || ''}
+          className={classes.dropdownItem}
+        />
+    ) || null
   }
 
   return(
@@ -217,32 +226,22 @@ function SearchBar(props) {
                         primaryTypographyProps={{color: "error"}}
                         />
                     </MenuItem>
-                  : results.map( (element) => (
+                  : results.map( (result) => (
                     /* Results if no errors occurred */
                     <MenuItem
                       className={classes.dropdownItem}
-                      key={element["@path"]}
-                      disabled={element["disabled"]}
+                      key={result["@path"]}
+                      disabled={result["disabled"]}
                       onClick={(e) => {
                         // Redirect using React-router
-                        if (element["@path"]) {
-                          props.history.push("/content.html" + element["@path"]);
+                        if (result["@path"]) {
+                          props.history.push("/content.html" + result["@path"]);
                           closeSidebar && closeSidebar();
                           setPopperOpen(false);
                         }
                         }}
                       >
-                        {getCategoryIcon(element)}
-                        {/* for now, nothing in the secondary until we get the suggest() API working */}
-                        <ListItemText
-                          primary={(<div>
-                            <Typography variant="body2" color="textSecondary">
-                              {getFriendlyCategory(element)}
-                            </Typography>
-                            {getElementName(element)}
-                          </div>)}
-                          className={classes.dropdownItem}
-                          />
+                      <QuickSearchResult resultData={result} />
                     </MenuItem>
                   ))}
                 </MenuList>

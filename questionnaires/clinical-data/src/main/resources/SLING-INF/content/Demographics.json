@@ -406,29 +406,43 @@
     "dataType": "boolean",
     "enableUnknown" : true
   },
-  "surveilled_since": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Survielled since",
-    "minAnswers": 1,
-    "maxAnswers": 1,
-    "dataType": "date",
-    "dateFormat": "yyyy-MM-dd"
-  },
-  "surveilled_until": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Surveilled until",
-    "minAnswers": 1,
-    "maxAnswers": 1,
-    "dataType": "date",
-    "dateFormat": "yyyy-MM-dd"
-  },
-  "surveillance_info": {
-    "jcr:primaryType": "lfs:Question",
-    "text": "Additional information about surveillance",
-    "minAnswers": 0,
-    "maxAnswers": 0,
-    "displayMode": "textbox",
-    "dataType": "text"
+  "surveillance_details": {
+    "jcr:primaryType": "lfs:Section",
+    "condition": {
+      "jcr:primaryType": "lfs:Conditional",
+      "operandA": {
+        "jcr:primaryType": "lfs:ConditionalValue",
+        "value": ["undergoing_surveillance"],
+        "isReference": true
+      },
+      "comparator": "=",
+      "operandB": {
+        "jcr:primaryType": "lfs:ConditionalValue",
+        "value": ["true"]
+      }
+    },
+    "surveilled_since": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Surveilled since",
+      "minAnswers": 1,
+      "maxAnswers": 1,
+      "dataType": "date",
+      "dateFormat": "yyyy-MM-dd"
+    },
+    "surveilled_until": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Surveilled until",
+      "minAnswers": 1,
+      "maxAnswers": 1,
+      "dataType": "date",
+      "dateFormat": "yyyy-MM-dd"
+    },
+    "surveillance_info": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Additional information about surveillance",
+      "displayMode": "textbox",
+      "dataType": "text"
+    }
   },
   "total_number_of_lesions": {
     "jcr:primaryType": "lfs:Question",
@@ -462,7 +476,7 @@
     "maxAnswers": 0,
     "displayMode": "input",
     "dataType": "vocabulary",
-    "sourceVocabulary": "HPO",
+    "sourceVocabulary": "HP",
     "vocabularyFilter": ["HP:0000118"]
   },
   "inherited_from": {

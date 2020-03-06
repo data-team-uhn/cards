@@ -67,11 +67,6 @@
       <version>1.4.0</version>
     </dependency>
     <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.framework</artifactId>
-      <version>1.9.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.jackrabbit</groupId>
       <artifactId>oak-security-spi</artifactId>
       <version>${oak.version}</version>

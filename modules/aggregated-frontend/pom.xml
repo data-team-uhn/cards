@@ -85,6 +85,26 @@
           </excludes>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <!-- Delete our aggregated files as well -->
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>src/main/frontend/</directory>
+              <excludes>
+                <exclude>**/webpack.config-template.js</exclude>
+                <exclude>**/node/**</exclude>
+                <exclude>**/node_modules/**</exclude>
+                <exclude>**/*.py</exclude>
+                <exclude>**/yarn.lock</exclude>
+              </excludes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>

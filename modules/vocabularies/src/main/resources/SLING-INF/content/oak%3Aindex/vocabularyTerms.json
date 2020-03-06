@@ -27,7 +27,7 @@
                     "ordered": true,
                     "propertyIndex": true
                 },
-                "synonyms": {
+                "synonym": {
                     "analyzed": true,
                     "boost": 30,
                     "nodeScopeIndex": true,

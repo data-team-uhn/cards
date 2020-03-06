@@ -25,7 +25,7 @@ import { Button, CircularProgress, Typography } from '@material-ui/core';
 import Info from "@material-ui/icons/Info";
 
 import BrowseTheme from "./browseStyle.jsx";
-import { MakeChildrenFindingRequest } from "./util.jsx";
+import { REST_URL, MakeRequest } from "./util.jsx";
 
 // Component that renders an element of the VocabularyBrowser, with expandable children.
 //
@@ -44,74 +44,87 @@ import { MakeChildrenFindingRequest } from "./util.jsx";
 // Optional arguments:
 //  fullscreen: whether or not the dialog is fullscreen (default: false)
 function ListChild(props) {
-  const { classes, defaultOpen, id, name, changeId, registerInfo, getInfo, expands, headNode, bolded, onError, vocabulary } = props;
+  const { classes, defaultOpen, id, name, changeId, registerInfo, getInfo, expands, headNode, bolded, onError, vocabulary, knownHasChildren } = props;
 
-  const [ currentlyLoading, setCurrentlyLoading ] = useState(true);
+  const [ lastKnownID, setLastKnownID ] = useState();
+  const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined");
   const [ loadedChildren, setLoadedChildren ] = useState(false);
-  const [ checkedForChildren, setCheckedForChildren ] = useState(false);
-  const [ hasChildren, setHasChildren ] = useState(false);
+  const [ hasChildren, setHasChildren ] = useState(knownHasChildren);
   const [ childrenData, setChildrenData ] = useState();
   const [ children, setChildren ] = useState([]);
   const [ expanded, setExpanded ] = useState(defaultOpen);
 
   let checkForChildren = () => {
-    // Prevent ourselves for checking for children if we've already checked for children
-    if (checkedForChildren) {
-      return;
-    }
-
+    setLastKnownID(id);
+    setCurrentlyLoading(true);
     // Determine if this node has children
-    MakeChildrenFindingRequest(
-      vocabulary,
-      {input: id},
-      updateChildrenStatus
-      );
+    var escapedID = id.replace(":", "");  // JCR nodes do not have colons in their names
+    var url = new URL(`./${vocabulary}/${escapedID}.info.json`, REST_URL);
+    MakeRequest(url, updateChildrenData);
   }
 
   // Callback from checkForChildren to update whether or not this node has children
   // This does not recreate the child elements
-  let updateChildrenStatus = (status, data) => {
+  let updateChildrenData = (status, data) => {
     if (status === null) {
-      setHasChildren(data["rows"].length > 0);
-      setChildrenData(data["rows"]);
-      setCheckedForChildren(true);
+      setHasChildren(data["lfs:children"].length > 0);
+      setChildrenData(data["lfs:children"]);
       setCurrentlyLoading(false);
-      if (expanded && !loadedChildren) {
-        loadChildren(data["rows"]);
-      }
+      buildChildren(data["lfs:children"]);
     } else {
       onError("Error: children lookup failed with code " + status);
     }
   }
 
-  // Update state with children elements
-  let loadChildren = (data) => {
-    // Prevent ourselves from loading children if we've already loaded children
-    if (loadedChildren || !hasChildren) {
-      return;
-    }
-
-    var children = data.map((row, index) => {
-      return (<BrowseListChild
-                id={row["id"]}
-                name={row["name"]}
-                changeId={changeId}
-                registerInfo={registerInfo}
-                getInfo={getInfo}
-                expands={true}
-                defaultOpen={false}
-                key={index}
-                headNode={false}
-                onError={onError}
-                vocabulary={vocabulary}
-              />);
-    });
+  // Given information about our children, create elements to display their data
+  let buildChildren = (data) => {
+    var children = data.map((row, index) =>
+      (<BrowseListChild
+        id={row["id"]}
+        name={row["name"]}
+        changeId={changeId}
+        registerInfo={registerInfo}
+        getInfo={getInfo}
+        expands={true}
+        defaultOpen={false}
+        key={index}
+        headNode={false}
+        onError={onError}
+        vocabulary={vocabulary}
+        knownHasChildren={row["lfs:hasChildren"]}
+      />)
+      );
     setLoadedChildren(true);
     setChildren(children);
   }
 
+  // Update state with children elements
+  let loadChildren = () => {
+    // Prevent ourselves from reloading children if we've already loaded children or if we're
+    // in the middle of grabbing data
+    if (loadedChildren || !hasChildren || currentlyLoading) {
+      return;
+    }
+
+    // See if we have the data necessary to build the children yet or not
+    if (childrenData) {
+      buildChildren(childrenData);
+    } else {
+      checkForChildren();
+    }
+  }
+
+  // Ensure we know whether or not we have children, if this is expandable
   if (expands) {
-    checkForChildren();
+    // Ensure our child list entries are built, if this is currently expanded
+    if (expanded) {
+      // If our ID has changed, we need to fully reload our children
+      if (lastKnownID != id) {
+        checkForChildren();
+      } else {
+        loadChildren();
+      }
+    }
   }
 
   return(
@@ -125,7 +138,7 @@ function ListChild(props) {
               // by loading children here, and stopping it from loading
               // children again
               if (!loadedChildren) {
-                loadChildren(childrenData);
+                loadChildren();
               }
 
               setExpanded(!expanded);

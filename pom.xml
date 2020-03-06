@@ -375,6 +375,11 @@
             <!-- Ignore file with data for testing -->
             <exclude>**/hpo-test.obo</exclude>
             <exclude>**/chebi-test.obo</exclude>
+            <!-- Ignore generated files that are not checked into git anyways -->
+            <exclude>compose-cluster/docker-compose.yml</exclude>
+            <exclude>compose-cluster/initializer/initialize_all.sh</exclude>
+            <exclude>compose-cluster/mongos/mongo-router.conf</exclude>
+            <exclude>compose-cluster/shard*/**</exclude>
           </excludes>
         </configuration>
         <executions>

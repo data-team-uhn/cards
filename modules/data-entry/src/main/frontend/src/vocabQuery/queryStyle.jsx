@@ -109,6 +109,8 @@ const thesaurusStyle = theme => ({
     minWidth: 64,
     width: "auto",
     padding: theme.spacing(0.5),
+    backgroundColor: theme.palette.info.main,
+    color: theme.palette.getContrastText(theme.palette.info.main)
   },
   infoSection: {
     padding: theme.spacing(1, 0),

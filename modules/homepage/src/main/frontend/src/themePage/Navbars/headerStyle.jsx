@@ -112,16 +112,23 @@ const headerStyle = theme => ({
     zIndex: "1301"
   },
   searchResultAvatar: {
-    color: "white",
+    color: theme.palette.getContrastText(theme.palette.info.main),
+    backgroundColor: theme.palette.info.main,
   },
-  searchResultFormIcon: {
-    backgroundColor: "cornflowerblue"
+  queryMatchKey : {
+    fontStyle: "italic"
   },
-  searchResultQuestionnaireIcon: {
-    backgroundColor: "limegreen"
+  queryMatchSeparator: {
   },
-  searchResultSubjectIcon: {
-    backgroundColor: "orange"
+  queryMatchBefore: {
+  },
+  queryMatchAfter: {
+  },
+  highlightedText: {
+    fontWeight: "bold",
+    backgroundColor: theme.palette.warning.light,
+    padding: "1px 2px",
+    borderRadius: "4px"
   }
 });
 

@@ -24,6 +24,7 @@
     org.apache.sling/org.apache.sling.scripting.sightly/1.1.2-1.4.0
     org.apache.sling/org.apache.sling.scripting.sightly.runtime/1.1.0-1.4.0
     org.apache.sling/org.apache.sling.api/2.18.4
+    ca.sickkids.ccm.lfs/lfs-permissions
     javax.json/javax.json-api/1.1.4
     javax.jcr/jcr/2.0
     javax.servlet/javax.servlet-api/3.1.0
@@ -72,5 +73,21 @@
 \
             set ACL on /Questionnaires \
                 allow jcr:read for TrustedUsers \
+            end \
+          "]
+
+[configurations runModes=forms,permissions_ownership]
+    org.apache.sling.jcr.repoinit.RepositoryInitializer-forms_open
+        scripts=["\
+            create path (lfs:QuestionnairesHomepage) /Questionnaires \
+            create path (lfs:FormsHomepage) /Forms \
+            create path (lfs:SubjectsHomepage) /Subjects \
+\
+            set ACL on /Forms,/Subjects \
+                allow jcr:all for everyone restriction(lfs:owner) \
+            end \
+\
+            set ACL on /Questionnaires \
+                allow jcr:read for everyone \
             end \
           "]

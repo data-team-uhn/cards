@@ -19,9 +19,12 @@ package ca.sickkids.ccm.lfs;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -50,6 +53,11 @@ import org.apache.sling.scripting.sightly.pojo.Use;
  */
 public class QueryBuilder implements Use
 {
+
+    private static final int MAX_CONTEXT_MATCH = 8;
+
+    private static final String LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
+
     private String content;
 
     private ResourceResolver resourceResolver;
@@ -153,7 +161,45 @@ public class QueryBuilder implements Use
         }
 
         // Escape sequence taken from https://jackrabbit.apache.org/archive/wiki/JCR/EncodingAndEscaping_115513396.html
-        return input.replaceAll("([\\Q+-&|!(){}[]^\"~*?:\\/\\E])", "\\$1").replaceAll("'", "''");
+        return input.replaceAll("([\\Q+-&|!(){}[]^\"~*?:\\_%/\\E])", "\\\\$1").replaceAll("'", "''");
+    }
+
+    /**
+     * Gets the question for a given answer JCR Resource.
+     *
+     * @param res the JCR Resource corresponding to an answer
+     * @return the question string corresponding to the passed answer
+     */
+    private String getQuestion(Resource res) throws ItemNotFoundException
+    {
+        try {
+            Node questionNode = res.adaptTo(Node.class).getProperty("question").getNode();
+            if (questionNode != null) {
+                return questionNode.getProperty("text").getString();
+            }
+        } catch (RepositoryException ex) {
+            return null;
+        }
+        return null;
+    }
+
+    /**
+     * Searches through a list of Strings and returns the first String in that list
+     * for which in itself contains a given substring.
+     *
+     * @param arr the list of Strings to search through
+     * @param str the String to check if any array elements contain this substring
+     *
+     * @return the first String in the list that contains the given substring
+     */
+    private String getMatchingFromArray(String[] arr, String str)
+    {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i].toLowerCase().indexOf(str.toLowerCase()) > -1) {
+                return arr[i];
+            }
+        }
+        return null;
     }
 
     /**
@@ -167,25 +213,58 @@ public class QueryBuilder implements Use
      */
     private Iterator<Resource> quickSearch(String query) throws RepositoryException
     {
-        final String[] toSearch = {"lfs:Form", "lfs:Subject", "lfs:Questionnaire"};
-        final StringBuilder oakQuery = new StringBuilder();
+        ArrayList<Resource> outputList = new ArrayList<Resource>();
 
-        for (int i = 0; i < toSearch.length; i++) {
-            oakQuery.append(
-                String.format(
-                    "select n.* from [%s] as n where contains(*, '*%s*')",
-                    toSearch[i],
-                    this.fullTextEscape(query)
-                )
-            );
+        final StringBuilder xpathQuery = new StringBuilder();
+        xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value),'%");
+        xpathQuery.append(this.fullTextEscape(query.toLowerCase()));
+        xpathQuery.append("%'");
+        xpathQuery.append(" )]");
 
-            // Union interstitial terms together
-            if (i + 1 != toSearch.length) {
-                oakQuery.append(" union ");
+        Iterator<Resource> foundResources = queryXPATH(xpathQuery.toString());
+        /*
+        * For each Resource in foundResources, move up the tree until
+        * we find an ancestor node of type `lfs:Form`
+        */
+        while (foundResources.hasNext()) {
+            Resource thisResource = foundResources.next();
+            Resource thisParent = thisResource;
+            String[] resourceValues = thisResource.getValueMap().get("value", String[].class);
+            String resourceValue = getMatchingFromArray(resourceValues, query);
+            while (thisParent != null && !"lfs/Form".equals(thisParent.getResourceType())) {
+                thisParent = thisParent.getParent();
+            }
+            if (thisParent != null && resourceValue != null) {
+                int matchIndex = resourceValue.toLowerCase().indexOf(query.toLowerCase());
+                String matchBefore = resourceValue.substring(0, matchIndex);
+                if (matchBefore.length() > this.MAX_CONTEXT_MATCH) {
+                    matchBefore = "..." + matchBefore.substring(
+                        matchBefore.length() - this.MAX_CONTEXT_MATCH, matchBefore.length()
+                    );
+                }
+                String matchText = resourceValue.substring(matchIndex, matchIndex + query.length());
+                String matchAfter = resourceValue.substring(matchIndex + query.length());
+                if (matchAfter.length() > this.MAX_CONTEXT_MATCH) {
+                    matchAfter = matchAfter.substring(0, this.MAX_CONTEXT_MATCH) + "...";
+                }
+                String matchType = getQuestion(thisResource);
+                if (matchType == null) {
+                    continue;
+                }
+                String[] queryMatch = {
+                    matchType,
+                    matchBefore,
+                    matchText,
+                    matchAfter
+                };
+                Node thisParentNode = thisParent.adaptTo(Node.class);
+                if (!thisParentNode.hasProperty(LFS_QUERY_MATCH_KEY)) {
+                    thisParentNode.setProperty(LFS_QUERY_MATCH_KEY, queryMatch);
+                    outputList.add(thisParent);
+                }
             }
         }
-        // Wrap our full-text query in JCR-SQL2 syntax for the resource resolver to understand
-        return queryJCR(oakQuery.toString());
+        return outputList.listIterator();
     }
 
 
@@ -198,6 +277,17 @@ public class QueryBuilder implements Use
     private Iterator<Resource> queryJCR(String query) throws RepositoryException
     {
         return this.resourceResolver.findResources(query, "JCR-SQL2");
+    }
+
+    /**
+     * Finds content matching the given XPATH query.
+     *
+     * @param query a XPATH query
+     * @return the content matching the query
+     */
+    private Iterator<Resource> queryXPATH(String query) throws RepositoryException
+    {
+        return this.resourceResolver.findResources(query, "xpath");
     }
 
     /**
