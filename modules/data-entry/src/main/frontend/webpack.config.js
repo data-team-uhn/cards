@@ -1,11 +1,13 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module_name = require("./package.json").name + ".";
 
 module.exports = {
   mode: 'development',
   entry: {
+    [module_name + 'Pedigree']: './src/pedigree/pedigree.js',
     [module_name + 'LiveTable']: './src/dataHomepage/LiveTable.jsx',
     [module_name + 'Questionnaires']: './src/dataHomepage/Questionnaires.jsx',
     [module_name + 'Subjects']: './src/dataHomepage/Subjects.jsx',
@@ -34,6 +36,21 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: ['babel-loader']
+      },
+      {
+        test:/\.css$/,
+        use:['style-loader','css-loader']
+      },
+      {
+        test: /\.(woff)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+            }
+          }
+        ]
       }
     ]
   },
