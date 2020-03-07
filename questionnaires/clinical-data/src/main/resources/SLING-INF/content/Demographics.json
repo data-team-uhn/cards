@@ -12,6 +12,11 @@
     "maxAnswers": 1,
     "dataType": "text"
   },
+  "pedigree": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Pedigree",
+    "dataType": "pedigree"
+  },
   "gender": {
     "jcr:primaryType": "lfs:Question",
     "text": "Gender",

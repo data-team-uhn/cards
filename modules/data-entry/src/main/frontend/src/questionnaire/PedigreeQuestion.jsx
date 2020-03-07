@@ -28,6 +28,8 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
+import PedigreeEditor from "../pedigree/pedigree";
+
 // Component that renders a pedigree, although answering these questions is not currently possible.
 //
 // Optional props:
@@ -45,16 +47,48 @@ import AnswerComponentManager from "./AnswerComponentManager";
 function PedigreeQuestion(props) {
   const { existingAnswer, classes, ...rest } = props;
   const [ expanded, setExpanded ] = useState(false);
-  var image_div = "";
-  var full_image_div = "";
+  const [ pedigreeData, setPedigree ] = useState({});
 
-  // If we have a valid image, render a small and a large version.
-  if (existingAnswer && existingAnswer.length > 1 && existingAnswer[1].image) {
-    // FIXME: Hardcoded height
-    var new_image = existingAnswer[1].image.replace(/(<svg[^>]+)height="\d+"/, "$1height=\"250px\"");
-    image_div = (<div className={classes.pedigreeSmall} dangerouslySetInnerHTML={{__html: new_image}}/>);
-    full_image_div = (<div className={classes.pedigreeSmall} dangerouslySetInnerHTML={{__html: existingAnswer[1].image}}/>);
+  var pedigreeJSON = null;
+  var displayedImage = "";
+
+  if (existingAnswer && existingAnswer.length > 0 && existingAnswer[0].image) {
+    displayedImage = existingAnswer[0].image;
+    pedigreeJSON = existingAnswer[0].pedigreeJSON;
+  } else if (pedigreeData && pedigreeData.image) {
+    // FIXME: temporary hack until pedigree is saved in LFS
+    displayedImage = pedigreeData.image;
+    pedigreeJSON = pedigreeData.pedigreeJSON;
+  } else {
+    // FIXME: default placeholder, should be replaced by a "no pedigree" or something like that
+    displayedImage = '<svg height="100" width="100"><circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="grey" /></svg> ';
   }
+  
+  // FIXME: Hardcoded height
+  var new_image = displayedImage.replace(/(<svg[^>]+)height="\d+"/, "$1height=\"250px\"");
+  var image_div = (<div className={classes.pedigreeSmall} dangerouslySetInnerHTML={{__html: new_image}}/>);
+
+  var closeDialog = function () {
+    setExpanded(false);
+  };
+
+  var openPedigree = function () {
+    window.pedigreeEditor = new PedigreeEditor({
+      "pedigreeJSON": pedigreeJSON,
+      "onCloseCallback": closeDialog,
+      "onPedigreeSaved": onNewPedigree });
+  };
+
+  var closePedigree = function () {
+    window.pedigreeEditor.unload();
+    delete window.pedigreeEditor;
+  };
+
+  var onNewPedigree = function (pedigreeJSON, pedigreeSVG) {
+    // FIXME: save in LFS
+    // state change should trigger re-render
+    setPedigree({"image": pedigreeSVG, "pedigreeJSON": pedigreeJSON});
+  };
 
   return (
     <Question
@@ -65,9 +99,12 @@ function PedigreeQuestion(props) {
           {image_div}
         </Link>
       )}
-      <Dialog maxWidth={false} open={expanded} onClose={() => {setExpanded(false);}}>
+      <Dialog fullScreen open={expanded}
+        onEntering={() => { openPedigree(); }}
+        onExit={() => { closePedigree(); }}
+        onClose={() => { setExpanded(false); }}>
         <DialogContent>
-          {full_image_div}
+          <div id="pedigreeEditor"></div>
         </DialogContent>
       </Dialog>
     </Question>);
