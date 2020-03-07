@@ -69,6 +69,11 @@
           <excludes combine.children="append">
             <exclude>**/vocabQuery/queryStyle.jsx</exclude>
             <exclude>**/vocabQuery/themeStyle.jsx</exclude>
+            <exclude>**/pedigree/*</exclude>
+            <exclude>**/pedigree/model/*</exclude>
+            <exclude>**/pedigree/view/*</exclude>
+            <exclude>**/pedigree/shims/*</exclude>
+            <exclude>**/pedigree/style/*</exclude>
           </excludes>
         </configuration>
       </plugin>
