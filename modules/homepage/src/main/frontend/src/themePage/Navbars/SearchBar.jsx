@@ -32,10 +32,11 @@ const MAX_RESULTS = 5;
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
 const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
 // Properties of the quick search result metadata
-const LFS_QUERY_QUESTION_KEY = "Question";
-const LFS_QUERY_MATCH_BEFORE_KEY = "Before";
-const LFS_QUERY_MATCH_TEXT_KEY = "Text";
-const LFS_QUERY_MATCH_AFTER_KEY = "After";
+const LFS_QUERY_QUESTION_KEY = "question";
+const LFS_QUERY_MATCH_BEFORE_KEY = "before";
+const LFS_QUERY_MATCH_TEXT_KEY = "text";
+const LFS_QUERY_MATCH_AFTER_KEY = "after";
+const LFS_QUERY_MATCH_NOTES_KEY = "isNotes";
 
 function SearchBar(props) {
   const { classes, className, closeSidebar, invertColors, doNotEscapeQuery } = props;
@@ -132,9 +133,11 @@ function SearchBar(props) {
   // Display how the query matched the result
   function QuickSearchMatch(props) {
     const {matchData} = props;
+    // Adjust the question text to reflect the notes, if the match was on the notes
+    let questionText = matchData[LFS_QUERY_QUESTION_KEY] + (matchData[LFS_QUERY_MATCH_NOTES_KEY] ? " / Notes" : "");
     return matchData && (
       <React.Fragment>
-        <span className={classes.queryMatchKey}>{matchData[LFS_QUERY_QUESTION_KEY]}</span>
+        <span className={classes.queryMatchKey}>{questionText}</span>
         <span className={classes.queryMatchSeparator}>: </span>
         <span className={classes.queryMatchBefore}>{matchData[LFS_QUERY_MATCH_BEFORE_KEY]}</span>
         <span className={classes.highlightedText}>{matchData[LFS_QUERY_MATCH_TEXT_KEY]}</span>
