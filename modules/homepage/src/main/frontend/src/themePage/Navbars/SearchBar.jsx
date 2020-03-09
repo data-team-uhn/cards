@@ -98,7 +98,7 @@ function SearchBar(props) {
       return;
     }
 
-    // Parse out the top 5 and display in popper
+    // Show the results, if any
     if (json["rows"].length > 0) {
       setResults(json["rows"]);
     } else {
@@ -244,11 +244,11 @@ function SearchBar(props) {
                         primaryTypographyProps={{color: "error"}}
                         />
                     </MenuItem>
-                  : results.map( (result) => (
+                  : results.map( (result, i) => (
                     /* Results if no errors occurred */
                     <MenuItem
                       className={classes.dropdownItem}
-                      key={result["@path"]}
+                      key={i}
                       disabled={result["disabled"]}
                       onClick={(e) => {
                         // Redirect using React-router
