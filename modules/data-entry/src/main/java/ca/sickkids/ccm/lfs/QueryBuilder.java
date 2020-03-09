@@ -59,10 +59,11 @@ public class QueryBuilder implements Use
     // Property of the parent node in an quick search, outlining what needs to be highlighted
     private static final String LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
     // Properties of the children nodes
-    private static final String LFS_QUERY_QUESTION_KEY = "Question";
-    private static final String LFS_QUERY_MATCH_BEFORE_KEY = "Before";
-    private static final String LFS_QUERY_MATCH_TEXT_KEY = "Text";
-    private static final String LFS_QUERY_MATCH_AFTER_KEY = "After";
+    private static final String LFS_QUERY_QUESTION_KEY = "question";
+    private static final String LFS_QUERY_MATCH_BEFORE_KEY = "before";
+    private static final String LFS_QUERY_MATCH_TEXT_KEY = "text";
+    private static final String LFS_QUERY_MATCH_AFTER_KEY = "after";
+    private static final String LFS_QUERY_MATCH_NOTES_KEY = "isNotes";
 
     private String content;
 
@@ -217,12 +218,14 @@ public class QueryBuilder implements Use
      * @param resourceValue The value that was matched
      * @param query The search value
      * @param question The text of the question itself
+     * @param isNoteMatch Whether or not the match is on the notes of the answer, rather than the answer
      * @return the metadata as a JsonObject
      */
-    private JsonObject getMatchMetadata(String resourceValue, String query, String question)
+    private JsonObject getMatchMetadata(String resourceValue, String query, String question, boolean isNoteMatch)
     {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add(QueryBuilder.LFS_QUERY_QUESTION_KEY, question);
+        builder.add(QueryBuilder.LFS_QUERY_MATCH_NOTES_KEY, isNoteMatch);
 
         // Add metadata about the text before the match
         int matchIndex = resourceValue.toLowerCase().indexOf(query.toLowerCase());
@@ -254,11 +257,13 @@ public class QueryBuilder implements Use
      * @param query The search value
      * @param question The text of the question itself
      * @param parent The parent of the matching node
+     * @param isNoteMatch Whether or not the match is on the notes of the answer, rather than the answer
      * @return The given JsonObject with metadata appended to it.
      */
-    private JsonObject addMatchMetadata(String resourceValue, String query, String question, JsonObject parent)
+    private JsonObject addMatchMetadata(String resourceValue, String query, String question, JsonObject parent,
+        boolean isNoteMatch)
     {
-        JsonObject metadata = getMatchMetadata(resourceValue, query, question);
+        JsonObject metadata = getMatchMetadata(resourceValue, query, question, isNoteMatch);
 
         // Construct a JsonObject that matches the parent, but with custom match metadata appended
         JsonObjectBuilder builder = Json.createObjectBuilder();
@@ -305,9 +310,7 @@ public class QueryBuilder implements Use
             // As a fallback for when the query isn't in the value field, attempt to use the note field
             if (resourceValue == null && StringUtils.containsIgnoreCase(noteValue, query)) {
                 resourceValue = noteValue;
-                if (question != null) {
-                    question += " / Notes";
-                }
+                matchedNotes = true;
             }
 
             // Find the Form parent of this question
@@ -316,9 +319,9 @@ public class QueryBuilder implements Use
             }
 
             if (thisParent != null && resourceValue != null && question != null) {
-                outputList.add(
-                    this.addMatchMetadata(resourceValue, query, question, thisParent.adaptTo(JsonObject.class))
-                );
+                outputList.add(this.addMatchMetadata(
+                    resourceValue, query, question, thisParent.adaptTo(JsonObject.class), matchedNotes
+                ));
             }
         }
         return outputList.listIterator();
