@@ -29,6 +29,14 @@ import HeaderStyle from "./headerStyle.jsx";
 const QUERY_URL = "/query";
 const MAX_RESULTS = 5;
 
+// Location of the quick search result metadata in a node, outlining what needs to be highlighted
+const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
+// Properties of the quick search result metadata
+const LFS_QUERY_QUESTION_KEY = "Question";
+const LFS_QUERY_MATCH_BEFORE_KEY = "Before";
+const LFS_QUERY_MATCH_TEXT_KEY = "Text";
+const LFS_QUERY_MATCH_AFTER_KEY = "After";
+
 function SearchBar(props) {
   const { classes, className, closeSidebar, invertColors, doNotEscapeQuery } = props;
   const [ search, setSearch ] = useState("");
@@ -126,11 +134,11 @@ function SearchBar(props) {
     const {matchData} = props;
     return matchData && (
       <React.Fragment>
-        <span className={classes.queryMatchKey}>{matchData[0]}</span>
+        <span className={classes.queryMatchKey}>{matchData[LFS_QUERY_QUESTION_KEY]}</span>
         <span className={classes.queryMatchSeparator}>: </span>
-        <span className={classes.queryMatchBefore}>{matchData[1]}</span>
-        <span className={classes.highlightedText}>{matchData[2]}</span>
-        <span className={classes.queryMatchAfter}>{matchData[3]}</span>
+        <span className={classes.queryMatchBefore}>{matchData[LFS_QUERY_MATCH_BEFORE_KEY]}</span>
+        <span className={classes.highlightedText}>{matchData[LFS_QUERY_MATCH_TEXT_KEY]}</span>
+        <span className={classes.queryMatchAfter}>{matchData[LFS_QUERY_MATCH_AFTER_KEY]}</span>
       </React.Fragment>
     ) || null
   }
@@ -145,7 +153,7 @@ function SearchBar(props) {
         <ListItemAvatar><Avatar className={classes.searchResultAvatar}><DescriptionIcon /></Avatar></ListItemAvatar>
         <ListItemText
           primary={(<QuickSearchResultHeader resultData={resultData} />)}
-          secondary={(<QuickSearchMatch matchData={resultData["lfs:queryMatch"]} />)}
+          secondary={(<QuickSearchMatch matchData={resultData[LFS_QUERY_MATCH_KEY]} />)}
           className={classes.dropdownItem}
         />
       </React.Fragment>
