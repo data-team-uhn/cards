@@ -56,7 +56,13 @@ public class QueryBuilder implements Use
 
     private static final int MAX_CONTEXT_MATCH = 8;
 
+    // Property of the parent node in an quick search, outlining what needs to be highlighted
     private static final String LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
+    // Properties of the children nodes
+    private static final String LFS_QUERY_QUESTION_KEY = "Question";
+    private static final String LFS_QUERY_MATCH_BEFORE_KEY = "Before";
+    private static final String LFS_QUERY_MATCH_TEXT_KEY = "Text";
+    private static final String LFS_QUERY_MATCH_AFTER_KEY = "After";
 
     private String content;
 
@@ -84,13 +90,13 @@ public class QueryBuilder implements Use
             this.shouldEscape = StringUtils.isBlank(doNotEscape) || !("true".equals(doNotEscape));
 
             // Try to use a JCR-SQL2 query first
-            Iterator<Resource> results;
+            Iterator<JsonObject> results;
             if (StringUtils.isNotBlank(jcrQuery)) {
-                results = queryJCR(this.urlDecode(jcrQuery));
+                results = QueryBuilder.adaptNodes(queryJCR(this.urlDecode(jcrQuery)));
             } else if (StringUtils.isNotBlank(luceneQuery)) {
-                results = queryLucene(this.urlDecode(luceneQuery));
+                results = QueryBuilder.adaptNodes(queryLucene(this.urlDecode(luceneQuery)));
             } else if (StringUtils.isNotBlank(fullTextQuery)) {
-                results = fullTextSearch(this.urlDecode(fullTextQuery));
+                results = QueryBuilder.adaptNodes(fullTextSearch(this.urlDecode(fullTextQuery)));
             } else if (StringUtils.isNotBlank(quickQuery)) {
                 results = quickSearch(this.urlDecode(quickQuery));
             } else {
@@ -99,7 +105,7 @@ public class QueryBuilder implements Use
 
             // output the results into our content
             JsonObjectBuilder builder = Json.createObjectBuilder();
-            long[] metadata = this.addNodes(builder, results, offset, limit);
+            long[] metadata = this.addObjects(builder, results, offset, limit);
             this.addSummary(builder, this.request, metadata);
             this.content = builder.build().toString();
         } catch (Exception e) {
@@ -211,31 +217,57 @@ public class QueryBuilder implements Use
      * @param resourceValue The value that was matched
      * @param query The search value
      * @param question The text of the question itself
-     * @return an array of size 4, giving the [0]: question text, [1]: previous few characters,
-     *         [2]: match, [3]: next few characters
+     * @return the metadata as a JsonObject
      */
-    private String[] getMatchMetadata(String resourceValue, String query, String question)
+    private JsonObject getMatchMetadata(String resourceValue, String query, String question)
     {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add(QueryBuilder.LFS_QUERY_QUESTION_KEY, question);
+
+        // Add metadata about the text before the match
         int matchIndex = resourceValue.toLowerCase().indexOf(query.toLowerCase());
         String matchBefore = resourceValue.substring(0, matchIndex);
-        if (matchBefore.length() > this.MAX_CONTEXT_MATCH) {
+        if (matchBefore.length() > QueryBuilder.MAX_CONTEXT_MATCH) {
             matchBefore = "..." + matchBefore.substring(
-                matchBefore.length() - this.MAX_CONTEXT_MATCH, matchBefore.length()
+                matchBefore.length() - QueryBuilder.MAX_CONTEXT_MATCH, matchBefore.length()
             );
         }
+        builder.add(QueryBuilder.LFS_QUERY_MATCH_BEFORE_KEY, matchBefore);
+
+        // Add metadata about the text matched
         String matchText = resourceValue.substring(matchIndex, matchIndex + query.length());
+        builder.add(QueryBuilder.LFS_QUERY_MATCH_TEXT_KEY, matchText);
+
+        // Add metadata about the text after the match
         String matchAfter = resourceValue.substring(matchIndex + query.length());
-        if (matchAfter.length() > this.MAX_CONTEXT_MATCH) {
-            matchAfter = matchAfter.substring(0, this.MAX_CONTEXT_MATCH) + "...";
+        if (matchAfter.length() > QueryBuilder.MAX_CONTEXT_MATCH) {
+            matchAfter = matchAfter.substring(0, QueryBuilder.MAX_CONTEXT_MATCH) + "...";
         }
-        return new String[] {
-            question,
-            matchBefore,
-            matchText,
-            matchAfter
-        };
+        builder.add(QueryBuilder.LFS_QUERY_MATCH_AFTER_KEY, matchAfter);
+
+        return builder.build();
     }
 
+    /**
+     * Add metadata about a match to the matching object's parent.
+     * @param resourceValue The value that was matched
+     * @param query The search value
+     * @param question The text of the question itself
+     * @param parent The parent of the matching node
+     * @return The given JsonObject with metadata appended to it.
+     */
+    private JsonObject addMatchMetadata(String resourceValue, String query, String question, JsonObject parent)
+    {
+        JsonObject metadata = getMatchMetadata(resourceValue, query, question);
+
+        // Construct a JsonObject that matches the parent, but with custom match metadata appended
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        for (String key : parent.keySet()) {
+            builder.add(key, parent.get(key));
+        }
+        builder.add(QueryBuilder.LFS_QUERY_MATCH_KEY, metadata);
+        return builder.build();
+    }
     /**
      * Finds [lfs:Form]s, [lfs:Subject]s, and [lfs:Questionnaire]s using the given full text search.
      * This performs the search in such a way that values in child nodes (e.g. lfs:Answers of an lfs:Form)
@@ -245,9 +277,9 @@ public class QueryBuilder implements Use
      *
      * @return the content matching the query
      */
-    private Iterator<Resource> quickSearch(String query) throws RepositoryException
+    private Iterator<JsonObject> quickSearch(String query) throws RepositoryException
     {
-        ArrayList<Resource> outputList = new ArrayList<Resource>();
+        ArrayList<JsonObject> outputList = new ArrayList<JsonObject>();
 
         final StringBuilder xpathQuery = new StringBuilder();
         xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value),'%");
@@ -267,10 +299,15 @@ public class QueryBuilder implements Use
             String[] resourceValues = thisResource.getValueMap().get("value", String[].class);
             String resourceValue = getMatchingFromArray(resourceValues, query);
             String noteValue = thisResource.getValueMap().get("note", String.class);
+            String question = getQuestion(thisResource);
+            boolean matchedNotes = false;
 
             // As a fallback for when the query isn't in the value field, attempt to use the note field
             if (resourceValue == null && StringUtils.containsIgnoreCase(noteValue, query)) {
                 resourceValue = noteValue;
+                if (question != null) {
+                    question += " / Notes";
+                }
             }
 
             // Find the Form parent of this question
@@ -278,20 +315,10 @@ public class QueryBuilder implements Use
                 thisParent = thisParent.getParent();
             }
 
-            if (thisParent != null && resourceValue != null) {
-                // Ensure we can read the question attached to this resource
-                String question = getQuestion(thisResource);
-                if (question == null) {
-                    continue;
-                }
-
-                // Append metadata about the match to the output list
-                String[] queryMatch = getMatchMetadata(resourceValue, query, question);
-                Node thisParentNode = thisParent.adaptTo(Node.class);
-                if (!thisParentNode.hasProperty(LFS_QUERY_MATCH_KEY)) {
-                    thisParentNode.setProperty(LFS_QUERY_MATCH_KEY, queryMatch);
-                    outputList.add(thisParent);
-                }
+            if (thisParent != null && resourceValue != null && question != null) {
+                outputList.add(
+                    this.addMatchMetadata(resourceValue, query, question, thisParent.adaptTo(JsonObject.class))
+                );
             }
         }
         return outputList.listIterator();
@@ -318,6 +345,20 @@ public class QueryBuilder implements Use
     private Iterator<Resource> queryXPATH(String query) throws RepositoryException
     {
         return this.resourceResolver.findResources(query, "xpath");
+    }
+
+    /**
+     * Convert an iterator of nodes into an iterator of JsonObjects.
+     * @param nodes the iterator to convert
+     * @return An iterator of the input nodes
+     */
+    private static Iterator<JsonObject> adaptNodes(Iterator<Resource> resources)
+    {
+        ArrayList<JsonObject> list = new ArrayList<JsonObject>();
+        while (resources.hasNext()) {
+            list.add(resources.next().adaptTo(JsonObject.class));
+        }
+        return list.iterator();
     }
 
     /**
@@ -350,12 +391,12 @@ public class QueryBuilder implements Use
      * Write the contents of the input nodes, subject to the an offset and a limit.
      *
      * @param jsonGen the JSON object generator where the results should be serialized
-     * @param nodes an iterator over the nodes to serialize, which will be consumed
+     * @param objects an iterator over the nodes to serialize, which will be consumed
      * @param offset the requested offset, may be the default value of {0}
      * @param limit the requested limit, may be the default value of {10}
      * @return an array of size 4, giving the [0]: offset, [1]: limit, [2]: results, [3]: total matches
      */
-    private long[] addNodes(final JsonObjectBuilder jsonGen, final Iterator<Resource> nodes,
+    private long[] addObjects(final JsonObjectBuilder jsonGen, final Iterator<JsonObject> objects,
         final long offset, final long limit)
     {
         final long[] counts = new long[4];
@@ -369,14 +410,14 @@ public class QueryBuilder implements Use
 
         final JsonArrayBuilder builder = Json.createArrayBuilder();
 
-        while (nodes.hasNext()) {
-            Resource n = nodes.next();
+        while (objects.hasNext()) {
+            JsonObject n = objects.next();
             // Skip results up to the offset provided
             if (offsetCounter > 0) {
                 --offsetCounter;
             // Count up to our limit
             } else if (limitCounter > 0) {
-                builder.add(n.adaptTo(JsonObject.class));
+                builder.add(n);
                 --limitCounter;
                 ++counts[2];
             }
