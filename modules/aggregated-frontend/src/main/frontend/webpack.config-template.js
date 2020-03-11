@@ -19,6 +19,7 @@
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module_name = require("./package.json").name + ".";
 
@@ -39,6 +40,10 @@ ENTRY_CONTENT
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: ['babel-loader']
+      },
+      {
+        test:/\.css$/,
+        use:['style-loader','css-loader']
       }
     ]
   },
