@@ -81,9 +81,14 @@ const questionnaireStyle = theme => ({
     warningTypography: {
         padding: theme.spacing(1, 1),
     },
-    pedigreeSmall: {
+    pedigreeThumbnail: {
         width: "100%",
         height: "100%"
+    },
+    pedigreeSmallSVG: {
+        cursor: "pointer",
+        border: "1px solid",
+        display: "inline-block"
     },
     saveButton: {
         position: "fixed",
