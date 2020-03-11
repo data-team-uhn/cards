@@ -44,4 +44,37 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <!-- Add AGPL license used by most pedigre eeditor files to the list of approved licenses -->
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.13</version>
+        <configuration>
+          <licenses>
+            <license implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
+              <licenseFamilyCategory>AGPL</licenseFamilyCategory>
+              <licenseFamilyName>AGPL</licenseFamilyName>
+              <notes></notes>
+              <patterns>
+                <pattern>under the terms of the GNU Affero General Public License</pattern>
+              </patterns>
+            </license>
+          </licenses>
+          <licenseFamilies>
+            <licenseFamily implementation="org.apache.rat.license.SimpleLicenseFamily">
+              <familyName>AGPL</familyName>
+            </licenseFamily>
+          </licenseFamilies>
+          <!-- Exclude a few files known to have other (open source) licenses -->
+          <excludes combine.children="append">
+            <exclude>**/pedigree/raphael.js</exclude>
+            <exclude>**/pedigree/shims/prototypeShim.js</exclude>
+            <exclude>**/pedigree/style/font-awesome.css</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+
 </project>
