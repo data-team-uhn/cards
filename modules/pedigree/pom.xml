@@ -22,31 +22,26 @@
 
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-parent</artifactId>
+    <artifactId>lfs-modules</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-modules</artifactId>
-  <packaging>pom</packaging>
-  <name>LFS Modules</name>
+  <artifactId>lfs-pedigree</artifactId>
+  <packaging>bundle</packaging>
+  <name>LFS - pedigree Editor</name>
 
-  <modules>
-    <module>startup-customization</module>
-    <module>form-completion-status</module>
-    <module>custom-jcr-oak-server</module>
-    <module>commons</module>
-    <module>ui-extension</module>
-    <module>login</module>
-    <module>homepage</module>
-    <module>pedigree</module>
-    <module>data-entry</module>
-    <module>ldap-support</module>
-    <module>utils</module>
-    <module>principals</module>
-    <module>permissions</module>
-    <module>permissions-ownership</module>
-    <module>vocabularies</module>
-    <module>variants</module>
-    <module>aggregated-frontend</module>
-  </modules>
+  <build>
+    <plugins>
+      <!-- This is an OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Include-Resource>{maven-resources}</Include-Resource>
+          </instructions>
+        </configuration>
+      </plugin>
+
 </project>
