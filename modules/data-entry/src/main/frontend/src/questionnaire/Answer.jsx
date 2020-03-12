@@ -23,6 +23,7 @@ import uuidv4 from "uuid/v4";
 
 import Note from "./Note";
 import { useFormWriterContext } from "./FormContext";
+import NCRNote from "./NCRNote";
 
 export const LABEL_POS = 0;
 export const VALUE_POS = 1;
@@ -30,8 +31,8 @@ export const VALUE_POS = 1;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, onChangeNote } = props;
-  let { enableNotes } = { ...props, ...questionDefinition };
+  let { answers, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, onChangeNote, onAddSuggestion } = props;
+  let { enableNotes, sourceVocabulary } = { ...props, ...questionDefinition };
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
   // Hooks must be pulled from the top level, so this cannot be moved to inside the useEffect()
@@ -64,11 +65,21 @@ function Answer (props) {
         <input type="hidden" name={`${answerPath}/value@Delete`} value="0"></input>
       }
       {enableNotes &&
-        <Note
-          existingAnswer={existingAnswer}
-          answerPath={answerPath}
-          onChangeNote={onChangeNote}
-          />}
+        (sourceVocabulary ?
+          <NCRNote
+            vocabulary={sourceVocabulary}
+            existingAnswer={existingAnswer}
+            answerPath={answerPath}
+            onChangeNote={onChangeNote}
+            onAddSuggestion={onAddSuggestion}
+          />
+        :
+          <Note
+            existingAnswer={existingAnswer}
+            answerPath={answerPath}
+            onChangeNote={onChangeNote}
+            />
+        )}
     </React.Fragment>
     );
 }

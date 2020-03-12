@@ -225,6 +225,12 @@ const questionnaireStyle = theme => ({
     },
     aboveBackground: {
         zIndex: 1300
+    },
+    NCRTooltip: {
+        color: theme.palette.primary.main
+    },
+    NCRLoadingIndicator: {
+        disable: "flex"
     }
 
 });

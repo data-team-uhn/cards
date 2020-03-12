@@ -26,6 +26,7 @@ import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
+import NCRNote from "./NCRNote";
 import VocabularySelector from "../vocabSelector/select.jsx";
 
 // Component that renders a vocabulary question.
@@ -62,7 +63,7 @@ import VocabularySelector from "../vocabSelector/select.jsx";
 //   />
 function VocabularyQuestion(props) {
   let { classes, ...rest } = props;
-  let { maxAnswers, sourceVocabulary, vocabularyFilter } = { ...props.questionDefinition, ...props };
+  let { enableNotes, maxAnswers, sourceVocabulary, vocabularyFilter } = { ...props.questionDefinition, ...props };
   let defaultSuggestions = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
