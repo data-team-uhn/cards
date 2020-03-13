@@ -17,6 +17,7 @@
 package ca.sickkids.ccm.lfs.answerflags;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -125,6 +126,18 @@ public class PropertyAdditionEditor extends DefaultEditor
         return null;
     }
 
+    private int iterableLength(Iterable iterable)
+    {
+        int len = 0;
+        Iterator iterator = iterable.iterator();
+        while (iterator.hasNext())
+        {
+            iterator.next();
+            len++;
+        }
+        return len;
+    }
+
     private void handlePropertyAdded(PropertyState state) throws CommitFailedException, ItemNotFoundException,
         PathNotFoundException, RepositoryException
     {
@@ -145,6 +158,22 @@ public class PropertyAdditionEditor extends DefaultEditor
         if (questionNode != null) {
             LOGGER.warn("PROPERTY CHANGED...This question is: {}",
                 questionNode.getProperty("text").getValue().toString());
+            long minAnswers = questionNode.getProperty("minAnswers").getLong();
+            long maxAnswers = questionNode.getProperty("maxAnswers").getLong();
+            Iterable<String> nodeAnswers = this.currentNodeBuilder.getProperty("value").getValue(Type.STRINGS);
+            int numAnswers = iterableLength(nodeAnswers);
+            LOGGER.warn("...the question contains {} answers.", numAnswers);
+            ArrayList<String> statusFlags = new ArrayList<String>();
+            if (numAnswers < minAnswers || numAnswers > maxAnswers) {
+                LOGGER.warn("...setting as INVALID and INCOMPLETE");
+                statusFlags.add("INVALID");
+                statusFlags.add("INCOMPLETE");
+                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
+            } else {
+                //TODO: Implement validation rules and check them here
+                //Remove INVALID and INCOMPLETE flags if all validation rules pass
+                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
+            }
         }
     }
 }
