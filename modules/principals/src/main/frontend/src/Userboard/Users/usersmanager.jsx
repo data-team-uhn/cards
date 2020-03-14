@@ -20,11 +20,11 @@ import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 
 import { Avatar, Button, Link, Card, CardHeader, CardContent, Grid, Table, TableBody, TableHead, TableRow, TableCell} from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateUserDialogue from "./createuserdialogue.jsx";
 import DeleteUserDialogue from "./deleteuserdialogue.jsx";
-import GroupDetailsDialogue from "./groupdetailsdialogue.jsx";
 import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx";
 
 import MaterialTable from 'material-table';
@@ -33,7 +33,6 @@ class UsersManager extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: [],
       userFilter: null,
 
       currentUserName: "",
@@ -42,9 +41,17 @@ class UsersManager extends React.Component {
 
       deployCreateUser: false,
       deployDeleteUser: false,
-      deployChangeUserPassword: false,
-      deployGroupDetails: false
+      deployChangeUserPassword: false
     };
+  }
+
+  getUserGroups (userGroups){
+    //Get groups filtering all groups by user name
+    let memberOf = userGroups.map((group) => group.name);
+    let groups = this.props.groups.filter( (group) => {
+              return memberOf.indexOf(group.name) > -1;
+          });
+    return groups;
   }
 
   clearSelectedUser () {
@@ -54,35 +61,6 @@ class UsersManager extends React.Component {
         currentUserIndex: -1,
       }
     );
-  }
-
-  handleLoadUsers () {
-    this.clearSelectedUser();
-
-    fetch("/home/users.json",
-      {
-        method: 'GET',
-        credentials: 'include'
-    })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      data.rows?.forEach((r) => r.initials = (r.firstname?.charAt(0) + r.lastname?.charAt(0)) || r.name?.charAt(0) || '?')
-
-      this.setState(
-        {
-          users: data.rows,
-        }
-      );
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-
-  componentWillMount () {
-    this.handleLoadUsers();
   }
 
   handleUserRowClick(index, name) {
@@ -97,8 +75,7 @@ class UsersManager extends React.Component {
   handleGroupNameClick(name) {
     this.setState(
       {
-        currentGroupName: name,
-        deployGroupDetails: true
+        currentGroupName: name
       }
     );
   }
@@ -107,9 +84,10 @@ class UsersManager extends React.Component {
     this.handleUserRowClick(index, name);
     this.setState({deployDeleteUser: true});
   }
-  
+
   handleReload () {
-    this.handleLoadUsers();
+    this.clearSelectedUser();
+    this.props.reload();
   }
 
   render() {
@@ -124,7 +102,7 @@ class UsersManager extends React.Component {
 
         <div>
             <MaterialTable
-              title="User list"
+              title=""
               style={{ boxShadow : 'none' }}
               options={{
                 actionsColumnIndex: -1,
@@ -134,20 +112,23 @@ class UsersManager extends React.Component {
               columns={[
                 { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.initials}</Avatar>},
                 { title: 'User Name', field: 'name' },
-                { title: 'First Name', field: 'firstName' },
-                { title: 'Last Name', field: 'lastName' },
                 { title: 'Admin', field: 'isAdmin', type: 'boolean' },
                 { title: 'Disabled', field: 'isDisabled', type: 'boolean' },
               ]}
-              data={this.state.users}
+              data={this.props.users}
               actions={[
+                {
+                  icon: 'lock',
+                  tooltip: 'Change Password',
+                  onClick: (event, rowData) => this.setState({currentUserName: rowData.name, deployChangeUserPassword: true})
+                },
                 {
                   icon: 'delete',
                   tooltip: 'Delete User',
                   onClick: (event, rowData) => this.handleUserDeleteClick(rowData.tableData.id, rowData.name)
                 },
                 {
-                  icon: 'add_circle',
+                  icon: () => {return (<Avatar className={classes.addIcon}><AddIcon /></Avatar>)},
                   tooltip: 'Create New User',
                   isFreeAction: true,
                   onClick: (event) => this.setState({deployCreateUser: true})
@@ -155,42 +136,37 @@ class UsersManager extends React.Component {
               ]}
               onRowClick={(event, rowData, togglePanel) => {this.handleUserRowClick(rowData.tableData.id, rowData.name); togglePanel()}}
               detailPanel={rowData => {
-                const user = rowData || this.state.users[this.state.currentUserIndex];
-                const isAdmin = user.isAdmin ? "True" : "False";
-                const isDisabled = user.isDisabled ? "True" : "False";
-                const hasGroup = user.memberOf.length > 0;
-                return (
-                <div>
-                  <GroupDetailsDialogue isOpen={this.state.deployGroupDetails} name={this.state.currentGroupName} handleClose={() => {this.setState({deployGroupDetails: false, currentUserName: ""});}} />
-                  <Card className={classes.cardRoot}>
+                const user = rowData || this.props.users[this.state.currentUserIndex];
+                const currentUserGroups = user.memberOf.length > 0 ? this.getUserGroups(user.memberOf) : [];
+                const tableTitle = "User " + user.name + " Groups";
+
+                return currentUserGroups.length > 0 && (
+                  <div>
+                    <Card className={classes.cardRoot}>
                       <CardContent>
                       {
                         <div>
                           <MaterialTable
-                              title="User Groups"
+                              title={tableTitle}
                               style={{ boxShadow : 'none' }}
                               options={{
                                 headerStyle: { backgroundColor: headerBackground },
                                 emptyRowsWhenPaging: false
                               }}
                               columns={[
-                                {
-                                  title: 'Group Name',
-                                  field: 'name',
-                                  render: rowData => <Link href="#" key = {rowData.name} onClick={() => {this.handleGroupNameClick(rowData.name)}}>{rowData.name}</Link>
-                                  },
-                              ]}
-                              data={user.memberOf}
+					              { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.name.charAt(0)}</Avatar> },
+					              { title: 'Name', field: 'name', cellStyle: {textAlign: 'left'} },
+					              { title: 'Members', field: 'members', type: 'numeric', cellStyle: {textAlign: 'left'}, headerStyle: {textAlign: 'left', flexDirection: 'initial'} },
+					              { title: 'Declared Members', field: 'declaredMembers', type: 'numeric', cellStyle: {textAlign: 'left'}, headerStyle: {textAlign: 'left', flexDirection: 'initial'} },
+					          ]}
+                              data={currentUserGroups}
                           />
                         </div>
                       }
-                    <Grid container className={classes.cardActions}>
-                      <Button variant="contained" size="small" color="primary" onClick={() => {this.setState({currentUserName: user.principalName, deployChangeUserPassword: true});}}>Change Password</Button>
-                    </Grid>
-                  </CardContent>
-                </Card>
-                </div>
-                )
+                    </CardContent>
+                  </Card>
+                </div> 
+                ) || (<div>User is not in any group</div>)
               }}
             />
         </div>

@@ -89,6 +89,7 @@ class ChangeUserPasswordDialogue extends React.Component {
                                 name="newpwdconfirm"
                                 autoComplete="new-password"
                                 label="Confirm New Password"
+                                type="password"
                                 onChange={(event) => { this.setState({ newPwdConfirm: event.target.value }); }}
                             />
                         </Grid>

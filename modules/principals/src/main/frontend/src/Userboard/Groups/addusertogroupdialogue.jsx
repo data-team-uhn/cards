@@ -17,9 +17,10 @@
 
 import React from "react";
 
-import { withTheme } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
+import userboardStyle from '../userboardStyle.jsx';
 
-import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
+import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 
 import MaterialTable from 'material-table';
 
@@ -29,34 +30,8 @@ class AddUserToGroupDialogue extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            allUserNames: [],
-            freeUserNames: [],
             selectedUsers: []
         }
-    }
-
-    addName(name) {
-        return { name }
-    }
-
-    handleLoadUsers() {
-        fetch("/system/userManager/user.1.json",
-            {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Basic ' + btoa('admin:admin')
-                }
-            })
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                var names = Object.keys(data).filter((username) => !username.startsWith("sling-")).map((username) => this.addName(username));
-                this.setState({ allUserNames: names,  freeUserNames: names});
-            })
-            .catch((error) => {
-                console.log(error);
-            });
     }
 
     handleAddUsers() {
@@ -83,28 +58,27 @@ class AddUserToGroupDialogue extends React.Component {
             });
     }
 
-    componentDidMount() {
-        this.handleLoadUsers();
-    }
-
     handleSelectRowClick(rows) {
         let chosens = rows.map((row) => row.name);
         this.setState({ selectedUsers: chosens });
     }
 
     handleEntering() {
+        this.setState({
+            freeUsers: this.props.allUsers
+        });
         if (this.props.groupUsers != "") {
           var groupUsersArray = this.props.groupUsers?.map((n) => n.name);
-          let filtered = this.state.allUserNames.filter( (el) => {
+          let filtered = this.props.allUsers.filter( (el) => {
               return !groupUsersArray.includes( el.name );
             } );
-          this.setState({ freeUserNames: filtered });
+          this.setState({ freeUsers: filtered });
         }
     }
 
     handleExit() {
         this.setState({ selectedUsers: [] });
-        this.state.allUserNames.forEach(function(item, index) {
+        this.props.allUsers.forEach(function(item, index) {
           if (item.tableData) {
               item.tableData.checked = false;
           }
@@ -113,6 +87,7 @@ class AddUserToGroupDialogue extends React.Component {
     }
 
     render() {
+        const { classes } = this.props;
         const headerBackground = this.props.theme.palette.grey['200'];
 
         return (
@@ -142,9 +117,12 @@ class AddUserToGroupDialogue extends React.Component {
                                   })
                               }}
                               columns={[
-                                { title: 'User Name', field: 'name' },
-                              ]}
-                              data={this.state.freeUserNames}
+				                { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.initials}</Avatar>},
+				                { title: 'User Name', field: 'name' },
+				                { title: 'Admin', field: 'isAdmin', type: 'boolean' },
+				                { title: 'Disabled', field: 'isDisabled', type: 'boolean' },
+				              ]}
+                              data={this.state.freeUsers}
                               onSelectionChange={(rows) => {this.handleSelectRowClick(rows)}}
                             />
                         </div>
@@ -159,4 +137,4 @@ class AddUserToGroupDialogue extends React.Component {
     }
 }
 
-export default withTheme(AddUserToGroupDialogue);
+export default withStyles (userboardStyle, {withTheme: true})(AddUserToGroupDialogue);

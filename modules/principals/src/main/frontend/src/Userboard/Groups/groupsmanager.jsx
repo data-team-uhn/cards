@@ -19,7 +19,8 @@ import React from "react";
 
 import { withStyles } from "@material-ui/core/styles";
 
-import { Avatar, Button, Card, CardHeader, CardContent, Grid, Table, TableCell, TableBody, TableHead, TableRow } from "@material-ui/core";
+import { Avatar, Button, Card, CardHeader, CardContent, Fab, Grid, Table, TableCell, TableBody, TableHead, TableRow } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";
@@ -34,7 +35,6 @@ class GroupsManager extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      groups: [],
       selectedUsers: [],
       currentGroupUsers: [],
 
@@ -46,6 +46,18 @@ class GroupsManager extends React.Component {
       deployAddGroupUsers: false,
       groupUsersLoaded: false
     };
+
+    this.tableRef = React.createRef();
+    this.openDetailsPanel = this.openDetailsPanel.bind(this);
+  }
+
+  getGroupUsers (groupName){
+    //Get groups filtering all users by group name
+    let users = this.props.users.filter( (user) => {
+            let memberOf = user.memberOf.map((group) => group.name);
+            return memberOf.indexOf(groupName) > -1;
+        });
+    return users;
   }
 
   clearSelectedGroup () {
@@ -58,29 +70,16 @@ class GroupsManager extends React.Component {
     );
   }
 
-  addName(name) {
-    return { name }
+  clearSelectedUsers () {
+    this.setState(
+      {
+        selectedUsers: [],
+      }
+    );
   }
 
-  handleLoadGroups () {
-    this.clearSelectedGroup();
-
-    fetch("/home/groups.json",
-      {
-        method: 'GET',
-        headers: {
-          'Authorization' : 'Basic' + btoa('admin:admin')
-        }
-    })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      this.setState({ groups: data.rows });
-    })
-    .catch((error) => {
-      console.log(error);
-    })
+  addName(name) {
+    return { name }
   }
 
   handleSelectRowClick(rows) {
@@ -103,15 +102,12 @@ class GroupsManager extends React.Component {
         body: formData
       })
       .then(() => {
+        this.clearSelectedUsers();
         this.handleReload();
       })
       .catch((error) => {
         console.log(error);
       });
-  }
-
-  componentWillMount () {
-    this.handleLoadGroups();
   }
 
   handleGroupRowClick(index, name) {
@@ -128,8 +124,27 @@ class GroupsManager extends React.Component {
     this.setState({deployDeleteGroup: true});
   }
 
-  handleReload () {
-    this.handleLoadGroups();
+  handleReload (doClear) {
+    doClear && this.clearSelectedGroup();
+    this.props.reload();
+  }
+
+  openDetailsPanel (event) {
+    event.preventDefault();
+    if (this.state.currentGroupIndex > -1 && this.props.groups[this.state.currentGroupIndex]) {
+      this.tableRef.current.onToggleDetailPanel(
+          [this.state.currentGroupIndex],
+          this.tableRef.current.props.detailPanel
+       );
+    }
+  }
+
+  componentDidMount () {
+    document.addEventListener("principals-reloaded", this.openDetailsPanel);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("principals-reloaded", this.openDetailsPanel);
   }
 
   render() {
@@ -137,12 +152,13 @@ class GroupsManager extends React.Component {
     const headerBackground = this.props.theme.palette.grey['200'];
     return (
       <div>
-        <CreateGroupDialogue isOpen={this.state.deployCreateGroup} handleClose={() => {this.setState({deployCreateGroup: false});}} reload={() => this.handleReload()} />
-        <DeleteGroupDialogue isOpen={this.state.deployDeleteGroup} handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName} reload={() => this.handleReload()} />
-        <AddUserToGroupDialogue isOpen={this.state.deployAddGroupUsers} handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName} groupUsers={this.state.currentGroupUsers} reload={() => this.handleReload()} />
+        <CreateGroupDialogue isOpen={this.state.deployCreateGroup} handleClose={() => {this.setState({deployCreateGroup: false});}} reload={() => this.handleReload(true)} />
+        <DeleteGroupDialogue isOpen={this.state.deployDeleteGroup} handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName} reload={() => this.handleReload(true)} />
+        <AddUserToGroupDialogue isOpen={this.state.deployAddGroupUsers} handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName} groupUsers={this.state.currentGroupUsers} allUsers={this.props.users}  reload={() => this.handleReload()} />
         <div>
           <MaterialTable
-            title="Group list"
+            tableRef={this.tableRef}
+            title=""
             style={{ boxShadow : 'none' }}
             options={{
               actionsColumnIndex: -1,
@@ -155,7 +171,7 @@ class GroupsManager extends React.Component {
               { title: 'Members', field: 'members', type: 'numeric', cellStyle: {textAlign: 'left'}, headerStyle: {textAlign: 'left', flexDirection: 'initial'} },
               { title: 'Declared Members', field: 'declaredMembers', type: 'numeric', cellStyle: {textAlign: 'left'}, headerStyle: {textAlign: 'left', flexDirection: 'initial'} },
             ]}
-            data={this.state.groups}
+            data={this.props.groups}
             actions={[
               {
                 icon: 'delete',
@@ -163,7 +179,7 @@ class GroupsManager extends React.Component {
                 onClick: (event, rowData) => this.handleGroupDeleteClick(rowData.tableData.id, rowData.name)
               },
               {
-                icon: 'add_circle',
+                icon: () => {return (<Avatar className={classes.addIcon}><AddIcon /></Avatar>)},
                 tooltip: 'Create New Group',
                 isFreeAction: true,
                 onClick: (event) => this.setState({deployCreateGroup: true})
@@ -171,62 +187,41 @@ class GroupsManager extends React.Component {
              ]}
             onRowClick={(event, rowData, togglePanel) => {this.handleGroupRowClick(rowData.tableData.id, rowData.name); togglePanel()}}
             detailPanel={rowData => {
-                const group = rowData || this.state.groups[this.state.currentGroupIndex];
+                const group = rowData || this.props.groups[this.state.currentGroupIndex];
+                const groupUsers = group.members > 0 ? this.getGroupUsers(group.name) : [];
+                const tableTitle = "Group " + group.name + " users";
 
                 return (
                 <div>
                     <Card className={classes.cardRoot}>
                       <CardContent>
-                        {
+                        { groupUsers.length > 0 && 
                           <div>
                             <MaterialTable
-			                  title="Group users"
-			                  style={{ boxShadow : 'none' }}
-			                  options={{
-			                    
-			                  }}
-			                  options={{
-			                    emptyRowsWhenPaging: false,
-			                    selection: true,
-			                    showSelectAllCheckbox : false,
-			                    showTextRowsSelected: false,
-			                    headerStyle: {backgroundColor: headerBackground},
-			                    selectionProps: rowData => ({
-			                        color: 'primary'
-			                      })
-			                  }}
-			                  columns={[
-			                    { title: 'User Name', field: 'name' }
-			                  ]}
-				              data={query =>
-						          new Promise((resolve, reject) => {
-						            let url = GROUP_URL + group.principalName + ".1.json"
-						            fetch(url, {
-							            method: 'GET',
-							            credentials: 'include'
-							        })
-						            .then(response => response.json())
-						            .then(result => {
-						                let groupUsers = result?.members?.map((n) => this.addName(n?.split('/').pop()));
-						                let begin = query.pageSize*query.page;
-						                let end = Math.min((query.page+1)*query.pageSize, result.members.length);
-						                let pageUsers = groupUsers.slice(begin, end);
-
-						                this.setState({currentGroupUsers: groupUsers});
-
-						                resolve({
-						                  data: pageUsers,
-						                  page: query.page,
-						                  totalCount: result.members.length
-						                })
-						            })
-								    .catch((error) => {
-								        console.log(error);
-								    });
-								 })
-							  }
-			                  onSelectionChange={(rows) => {this.handleSelectRowClick(rows)}}
-			                />
+      			                  title={tableTitle}
+      			                  style={{ boxShadow : 'none' }}
+      			                  options={{
+      			                    
+      			                  }}
+      			                  options={{
+      			                    emptyRowsWhenPaging: false,
+      			                    selection: true,
+      			                    showSelectAllCheckbox : false,
+      			                    showTextRowsSelected: false,
+      			                    headerStyle: {backgroundColor: headerBackground},
+      			                    selectionProps: rowData => ({
+      			                        color: 'primary'
+      			                      })
+      			                  }}
+                              columns={[
+                                { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.initials}</Avatar>},
+                                { title: 'User Name', field: 'name' },
+                                { title: 'Admin', field: 'isAdmin', type: 'boolean' },
+                                { title: 'Disabled', field: 'isDisabled', type: 'boolean' },
+                              ]}
+      				                data={groupUsers}
+      			                  onSelectionChange={(rows) => {this.handleSelectRowClick(rows)}}
+      			                />
                           </div>
                         }
                         <Grid container className={classes.cardActions}>
@@ -235,7 +230,7 @@ class GroupsManager extends React.Component {
                             color="primary"
                             size="small"
                             className={classes.containerButton}
-                            onClick={() => {this.setState({currentGroupName: group.principalName, deployAddGroupUsers: true});}}
+                            onClick={() => {this.setState({currentGroupName: group.principalName, currentGroupIndex: rowData.tableData.id, deployAddGroupUsers: true, currentGroupUsers: groupUsers});}}
                           >
                             Add User to Group
                           </Button>
@@ -244,7 +239,7 @@ class GroupsManager extends React.Component {
                             color="secondary"
                             size="small"
                             disabled={this.state.selectedUsers.length == 0}
-                            onClick={() => {this.setState({currentGroupName: group.principalName}); this.handleRemoveUsers();}}
+                            onClick={() => {this.setState({currentGroupName: group.principalName, currentGroupIndex: rowData.tableData.id}); this.handleRemoveUsers();}}
                           >
                             Remove User from Group
                           </Button>
