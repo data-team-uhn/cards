@@ -194,6 +194,7 @@
   margin: auto;
 }
 .view-controls-zoom .zoom-track {
+  display: none;  /* until zoom slider library is ported */
   width: 4px;
   height: 200px;
   position: relative;
