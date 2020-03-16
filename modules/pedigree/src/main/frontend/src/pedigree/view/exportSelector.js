@@ -47,8 +47,8 @@ var ExportSelector = Class.create( {
     var typeListElement = PElement('table');
     typeListElement._p_insert(_addTypeOption(true,  'PED', 'ped'));
 
-    var fileDownload = PElement('a', {'id': 'downloadLink', 'style': 'display:none'});
-    mainDiv._p_insert(fileDownload);
+    this.fileDownload = PElement('a', {'id': 'downloadLink', 'style': 'display:none'});
+    mainDiv._p_insert(this.fileDownload);
 
     var promptType = PElement('div', {'class': 'import-section'})._p_update('Data format:');
     var dataSection2 = PElement('div', {'class': 'import-block'});
@@ -110,6 +110,13 @@ var ExportSelector = Class.create( {
     }
   },
 
+  saveTextAs: function(text, fileName) {
+    var file = new Blob([text], {type: "text/plain"});
+    this.fileDownload.href = URL.createObjectURL(file);
+    this.fileDownload.download = fileName;
+    this.fileDownload.click();
+  },
+
   /**
      * Loads the template once it has been selected
      *
@@ -126,12 +133,11 @@ var ExportSelector = Class.create( {
       var idGenerationSetting = $$('input:checked[type=radio][name="ped-options"]')[0].value;
       if (exportType == 'ped') {
         var exportString = PedigreeExport.exportAsPED(editor.getGraph().DG, idGenerationSetting);
-        var fileName = 'open-pedigree.ped';
+        var fileName = 'pedigree.ped';
       }
-      var mimeType = 'text/plain';
     }
 
-    saveTextAs(exportString, fileName);
+    this.saveTextAs(exportString, fileName);
   },
 
   /**
