@@ -164,14 +164,28 @@ public class PropertyAdditionEditor extends DefaultEditor
             int numAnswers = iterableLength(nodeAnswers);
             LOGGER.warn("...the question contains {} answers.", numAnswers);
             ArrayList<String> statusFlags = new ArrayList<String>();
-            if (numAnswers < minAnswers || numAnswers > maxAnswers) {
+            if ((numAnswers < minAnswers && minAnswers != 0) || (numAnswers > maxAnswers && maxAnswers != 0)) {
                 LOGGER.warn("...setting as INVALID and INCOMPLETE");
                 statusFlags.add("INVALID");
                 statusFlags.add("INCOMPLETE");
                 this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
             } else {
+                /*
+                 * We are here because:
+                 *     - minAnswers == 0 && maxAnswers == 0
+                 *     - minAnswers == 0 && maxAnswers == 1 && numAnswers in range [0,1] (eg. optional radio button)
+                 *     - minAnswers == 1 && maxAnswers == 0 && numAnswers in range [1,+INF) (eg. mandatory checkboxes)
+                 *     - minAnswers == 1 && maxAnswers == 1 && numAnswers == 1 (eg. mandatory radio button)
+                 *     - minAnswers == N && maxAnswers == 0 && numAnswers in range [N,+INF)
+                 *         (eg. at least N (inclusive) checkboxes must be selected)
+                 *     - minAnswers == 0 && maxAnswers == M && numAnswers in range [0, M]
+                 *         (eg. at most M (inclusive) checkboxes must be selected)
+                 *     - minAnswers == N && maxAnswers == M && numAnswers in range [N,M]
+                 *         (eg. between N (inclusive) and M (inclusive) checkboxes must be selected)
+                 */
                 //TODO: Implement validation rules and check them here
                 //Remove INVALID and INCOMPLETE flags if all validation rules pass
+                LOGGER.warn("...removing INVALID and INCOMPLETE status flags");
                 this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
             }
         }
