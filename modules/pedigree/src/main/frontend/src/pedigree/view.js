@@ -452,6 +452,11 @@ var View = Class.create({
     this._nodeMap = newNodeMap;
 
     this._lineSet.replaceIDs(changedIdsSet);
+
+    var allLegends = editor.getAllLegends();
+    allLegends.forEach(function(legend) {
+      legend.replaceIDs(changedIdsSet);
+    });
   },
 
   /**

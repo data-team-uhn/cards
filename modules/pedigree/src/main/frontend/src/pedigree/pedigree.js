@@ -174,6 +174,7 @@ var PedigreeEditor = Class.create({
               return "All changes will be lost when navigating away from this page.";
           }
       };
+      editor._initialBeforeUnloadFunction = window.onbeforeunload;
       window.onbeforeunload = onLeavePageFunc;
     }
 
@@ -199,6 +200,7 @@ var PedigreeEditor = Class.create({
       PRemoveAllListeners();
       $(editor._topElementID)._p_update("");
       editor._onCloseCallback && editor._onCloseCallback();
+      window.onbeforeunload = window.editor._initialBeforeUnloadFunction;
       window._unloaded = true;
       delete window.editor;
     }
@@ -300,6 +302,13 @@ var PedigreeEditor = Class.create({
      */
   getGeneLegend: function() {
     return this._geneLegend;
+  },
+
+  /**
+   * Returns a list of all available legends
+   */
+  getAllLegends: function() {
+    return [ this.getHPOLegend(), this.getDisorderLegend(), this.getGeneLegend() ];
   },
 
   /**
