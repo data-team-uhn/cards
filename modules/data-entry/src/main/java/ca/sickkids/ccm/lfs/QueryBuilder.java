@@ -63,7 +63,7 @@ public class QueryBuilder implements Use
     private static final String LFS_QUERY_MATCH_BEFORE_KEY = "before";
     private static final String LFS_QUERY_MATCH_TEXT_KEY = "text";
     private static final String LFS_QUERY_MATCH_AFTER_KEY = "after";
-    private static final String LFS_QUERY_MATCH_NOTES_KEY = "isNotes";
+    private static final String LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
 
     private String content;
 
