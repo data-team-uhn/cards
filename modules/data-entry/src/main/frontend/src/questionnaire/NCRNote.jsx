@@ -100,9 +100,8 @@ function NCRNote (props) {
   const [ isLoading, setIsLoading ] = useState(false);
   const [ error, setError ] = useState();
 
-  let setNCRCallback = (event) => {
-    // Call super if necessary
-    onBlur && onBlur(event);
+  // Create an NCR request
+  let createNCRRequest = (event) => {
     
     // Clear our current search
     setIsLoading(true);
@@ -122,10 +121,21 @@ function NCRNote (props) {
     fetch(url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(parseNCRData)
-      .then(saveParsedText)
-      .catch(handleError);
+      .then(setParsedText)
+      .catch(handleError)
+      .finally(stopLoading);
   }
 
+  // Handle the user focusing away from our component by creating
+  // the NCR request
+  let handleBlur = (event) => {
+    // Call super if necessary
+    onBlur && onBlur(event);
+
+    createNCRRequest(event);
+  }
+
+  // Parse the return value from NCR
   let parseNCRData = (json) => {
     // Return nothing if we have no matches
     if (!("matches" in json)) {
@@ -143,25 +153,24 @@ function NCRNote (props) {
     </div>)
   }
 
-  let saveParsedText = (text) => {
-    setParsedText(text);
-    setIsLoading(false);
-  }
-
   let handleError = (error) => {
-    console.log(error);
-    setError(error.toString());
+    setError(`Error accessing NCR: ${error.status} ${error.statusText}`);
   }
 
+  // Pass our changes to note upwards (to answer) and record it within ourselves
   let storeAndChangeNote = (text) => {
     onChangeNote && onChangeNote(text);
     setCachedText(text);
   }
 
+  let stopLoading = () => {
+    setIsLoading(false);
+  }
+
   return (
     <Note
       onChangeNote = {storeAndChangeNote}
-      onBlur = {setNCRCallback}
+      onBlur = {handleBlur}
       existingAnswer = {existingAnswer}
       {...rest}
       >
