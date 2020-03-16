@@ -36,7 +36,7 @@ const LFS_QUERY_QUESTION_KEY = "question";
 const LFS_QUERY_MATCH_BEFORE_KEY = "before";
 const LFS_QUERY_MATCH_TEXT_KEY = "text";
 const LFS_QUERY_MATCH_AFTER_KEY = "after";
-const LFS_QUERY_MATCH_NOTES_KEY = "isNotes";
+const LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
 
 function SearchBar(props) {
   const { classes, className, closeSidebar, invertColors, doNotEscapeQuery } = props;
