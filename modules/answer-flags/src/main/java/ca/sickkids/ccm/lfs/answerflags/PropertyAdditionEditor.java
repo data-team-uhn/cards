@@ -145,9 +145,14 @@ public class PropertyAdditionEditor extends DefaultEditor
         if (questionNode != null) {
             LOGGER.warn("PROPERTY ADDED...This question is: {}",
                 questionNode.getProperty("text").getValue().toString());
-            ArrayList<String> statusFlags = new ArrayList<String>();
-            statusFlags.add("INCOMPLETE");
-            this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
+            if ("value".equals(state.getName())) {
+                LOGGER.warn("A value PROPERTY WAS ADDED");
+                handlePropertyChanged(null, null);
+            } else {
+                ArrayList<String> statusFlags = new ArrayList<String>();
+                statusFlags.add("INCOMPLETE");
+                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
+            }
         }
     }
 
