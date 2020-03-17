@@ -19,9 +19,7 @@ package ca.sickkids.ccm.lfs.answerflags;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -68,13 +66,7 @@ public class AnswerStatusFlagEditor extends DefaultEditor
     @Override
     public void propertyAdded(PropertyState after) throws CommitFailedException
     {
-        //only sets property INCOMPLETE
-        //This try..catch is a temporary hack. TODO: FIXME
-        try {
-            handlePropertyAdded(after);
-        } catch (Exception e) {
-            return;
-        }
+        handlePropertyAdded(after);
     }
 
     // Called when the value of an existing property gets changed
@@ -89,21 +81,17 @@ public class AnswerStatusFlagEditor extends DefaultEditor
     public void propertyDeleted(PropertyState before) throws CommitFailedException
     {
         //This try..catch is a temporary hack. TODO: FIXME
-        try {
-            Node questionNode = getQuestionNode();
-            if (questionNode != null) {
-                if ("value".equals(before.getName())) {
-                    ArrayList<String> statusFlags = new ArrayList<String>();
-                    //Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
-                    if (checkInvalidAnswer(questionNode, 0)) {
-                        statusFlags.add("INVALID");
-                        statusFlags.add("INCOMPLETE");
-                    }
-                    this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
+        Node questionNode = getQuestionNode();
+        if (questionNode != null) {
+            if ("value".equals(before.getName())) {
+                ArrayList<String> statusFlags = new ArrayList<String>();
+                //Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
+                if (checkInvalidAnswer(questionNode, 0)) {
+                    statusFlags.add("INVALID");
+                    statusFlags.add("INCOMPLETE");
                 }
+                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
             }
-        } catch (Exception e) {
-            return;
         }
     }
 
@@ -130,15 +118,15 @@ public class AnswerStatusFlagEditor extends DefaultEditor
      */
     private Node getQuestionNode()
     {
-        if (this.currentNodeBuilder.hasProperty("question")) {
-            try {
+        try {
+            if (this.currentNodeBuilder.hasProperty("question")) {
                 Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
                 String questionNodeReference = this.currentNodeBuilder.getProperty("question").getValue(Type.REFERENCE);
                 Node questionNode = resourceSession.getNodeByIdentifier(questionNodeReference);
                 return questionNode;
-            } catch (Exception e) {
-                return null;
             }
+        } catch (RepositoryException ex) {
+            return null;
         }
         return null;
     }
@@ -182,8 +170,7 @@ public class AnswerStatusFlagEditor extends DefaultEditor
         return false;
     }
 
-    private void handlePropertyAdded(PropertyState state) throws CommitFailedException, ItemNotFoundException,
-        PathNotFoundException, RepositoryException
+    private void handlePropertyAdded(PropertyState state)
     {
         Node questionNode = getQuestionNode();
         if (questionNode != null) {
