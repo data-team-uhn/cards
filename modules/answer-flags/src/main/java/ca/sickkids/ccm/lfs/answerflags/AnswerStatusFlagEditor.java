@@ -95,6 +95,34 @@ public class AnswerStatusFlagEditor extends DefaultEditor
         }
     }
 
+    // Called when a property is deleted
+    @Override
+    public void propertyDeleted(PropertyState before) throws CommitFailedException
+    {
+        LOGGER.warn("A property was deleted");
+        //This try..catch is a temporary hack. TODO: FIXME
+        try {
+            Node questionNode = getQuestionNode();
+            if (questionNode != null) {
+                LOGGER.warn("PROPERTY DELETED...This question is: {}",
+                    questionNode.getProperty("text").getValue().toString());
+                if ("value".equals(before.getName())) {
+                    LOGGER.warn("A value PROPERTY WAS DELETED");
+                    ArrayList<String> statusFlags = new ArrayList<String>();
+                    //Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
+                    long minAnswers = questionNode.getProperty("minAnswers").getLong();
+                    if (minAnswers > 0) {
+                        statusFlags.add("INVALID");
+                        statusFlags.add("INCOMPLETE");
+                    }
+                    this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
+                }
+            }
+        } catch (Exception e) {
+            return;
+        }
+    }
+
     // When something changes in a node deep in the content tree, the editor is invoked starting with the root node,
     // descending to the actually changed node through subsequent calls to childNodeChanged. The default behavior of
     // DefaultEditor is to stop at the root, so we must override the following two methods in order for the editor to be
