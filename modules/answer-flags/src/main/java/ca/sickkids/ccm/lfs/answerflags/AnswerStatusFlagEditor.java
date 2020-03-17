@@ -66,7 +66,19 @@ public class AnswerStatusFlagEditor extends DefaultEditor
     @Override
     public void propertyAdded(PropertyState after) throws CommitFailedException
     {
-        handlePropertyAdded(after);
+        Node questionNode = getQuestionNode();
+        if (questionNode != null) {
+            if ("value".equals(after.getName())) {
+                handlePropertyChanged();
+            } else {
+                ArrayList<String> statusFlags = new ArrayList<String>();
+                //Only add the INCOMPLETE flag if the given question requires more than zero answers
+                if (checkInvalidAnswer(questionNode, 0)) {
+                    statusFlags.add("INCOMPLETE");
+                }
+                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
+            }
+        }
     }
 
     // Called when the value of an existing property gets changed
@@ -170,22 +182,6 @@ public class AnswerStatusFlagEditor extends DefaultEditor
         return false;
     }
 
-    private void handlePropertyAdded(PropertyState state)
-    {
-        Node questionNode = getQuestionNode();
-        if (questionNode != null) {
-            if ("value".equals(state.getName())) {
-                handlePropertyChanged();
-            } else {
-                ArrayList<String> statusFlags = new ArrayList<String>();
-                //Only add the INCOMPLETE flag if the given question requires more than zero answers
-                if (checkInvalidAnswer(questionNode, 0)) {
-                    statusFlags.add("INCOMPLETE");
-                }
-                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
-            }
-        }
-    }
 
     private void handlePropertyChanged()
     {
