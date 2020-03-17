@@ -176,7 +176,7 @@ function NCRNote (props) {
       >
       {isLoading && <CircularProgress className={classes.NCRLoadingIndicator} />}
       {parsedText}
-      {error && <div>{error}</div>}
+      {error && <Typography color="error">{error}</Typography>}
     </Note>
     );
 }
