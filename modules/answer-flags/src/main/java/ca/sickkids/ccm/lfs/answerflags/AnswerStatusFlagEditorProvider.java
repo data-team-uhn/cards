@@ -30,8 +30,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.component.annotations.ServiceScope;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A {@link EditorProvider} returning {@link AnswerStatusFlagEditor}.
@@ -42,7 +40,6 @@ import org.slf4j.LoggerFactory;
     immediate = true)
 public class AnswerStatusFlagEditorProvider implements EditorProvider
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnswerStatusFlagEditor.class);
 
     @Reference(fieldOption = FieldOption.REPLACE,
         cardinality = ReferenceCardinality.OPTIONAL,
@@ -56,7 +53,6 @@ public class AnswerStatusFlagEditorProvider implements EditorProvider
         if (this.rrf != null) {
             ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
             if (myResolver != null) {
-                LOGGER.warn("Got the ResourceResolver...");
                 // Each AnswerStatusFlagEditor maintains a state, so a new instance must be returned each time
                 return new AnswerStatusFlagEditor(builder, myResolver);
             }
