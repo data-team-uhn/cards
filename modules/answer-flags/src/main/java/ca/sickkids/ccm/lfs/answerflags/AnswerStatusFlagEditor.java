@@ -122,7 +122,6 @@ public class AnswerStatusFlagEditor extends DefaultEditor
     @Override
     public void propertyDeleted(PropertyState before) throws CommitFailedException
     {
-        //This try..catch is a temporary hack. TODO: FIXME
         Node questionNode = getQuestionNode();
         if (questionNode != null) {
             if ("value".equals(before.getName())) {
