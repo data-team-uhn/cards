@@ -89,7 +89,7 @@ public class AnswerStatusFlagEditor extends DefaultEditor
         //sets/removes both properties INCOMPLETE and INVALID
         //This try..catch is a temporary hack. TODO: FIXME
         try {
-            handlePropertyChanged(before, after);
+            handlePropertyChanged();
         } catch (Exception e) {
             return;
         }
@@ -158,7 +158,7 @@ public class AnswerStatusFlagEditor extends DefaultEditor
                 questionNode.getProperty("text").getValue().toString());
             if ("value".equals(state.getName())) {
                 LOGGER.warn("A value PROPERTY WAS ADDED");
-                handlePropertyChanged(null, null);
+                handlePropertyChanged();
             } else {
                 ArrayList<String> statusFlags = new ArrayList<String>();
                 //Only add the INCOMPLETE flag if the given question requires more than zero answers
@@ -171,8 +171,8 @@ public class AnswerStatusFlagEditor extends DefaultEditor
         }
     }
 
-    private void handlePropertyChanged(PropertyState before, PropertyState after) throws CommitFailedException,
-        ItemNotFoundException, PathNotFoundException, RepositoryException
+    private void handlePropertyChanged()
+        throws CommitFailedException, ItemNotFoundException, PathNotFoundException, RepositoryException
     {
         Node questionNode = getQuestionNode();
         if (questionNode != null) {
