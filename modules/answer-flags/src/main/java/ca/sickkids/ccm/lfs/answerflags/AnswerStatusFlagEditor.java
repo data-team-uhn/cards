@@ -111,6 +111,11 @@ public class AnswerStatusFlagEditor extends DefaultEditor
         return new AnswerStatusFlagEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver);
     }
 
+    /**
+     * Gets the question node associated with the answer for which this AnswerStatusFlagEditor is an editor thereof.
+     *
+     * @return the question Node object associated with this answer
+     */
     private Node getQuestionNode()
     {
         if (this.currentNodeBuilder.hasProperty("question")) {
@@ -126,6 +131,12 @@ public class AnswerStatusFlagEditor extends DefaultEditor
         return null;
     }
 
+    /**
+     * Counts the number of items in an Iterable.
+     *
+     * @param iterable the Iterable object to be counted
+     * @return the number of objects in the Iterable
+     */
     private int iterableLength(Iterable iterable)
     {
         int len = 0;
