@@ -150,7 +150,11 @@ public class PropertyAdditionEditor extends DefaultEditor
                 handlePropertyChanged(null, null);
             } else {
                 ArrayList<String> statusFlags = new ArrayList<String>();
-                statusFlags.add("INCOMPLETE");
+                //Only add the INCOMPLETE flag if the given question requires more than zero answers
+                long minAnswers = questionNode.getProperty("minAnswers").getLong();
+                if (minAnswers > 0) {
+                    statusFlags.add("INCOMPLETE");
+                }
                 this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
             }
         }
