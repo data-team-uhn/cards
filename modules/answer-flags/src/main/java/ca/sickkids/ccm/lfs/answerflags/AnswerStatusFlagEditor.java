@@ -24,6 +24,7 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.ValueFormatException;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
@@ -110,8 +111,7 @@ public class AnswerStatusFlagEditor extends DefaultEditor
                     LOGGER.warn("A value PROPERTY WAS DELETED");
                     ArrayList<String> statusFlags = new ArrayList<String>();
                     //Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
-                    long minAnswers = questionNode.getProperty("minAnswers").getLong();
-                    if (minAnswers > 0) {
+                    if (checkInvalidAnswer(questionNode, 0)) {
                         statusFlags.add("INVALID");
                         statusFlags.add("INCOMPLETE");
                     }
@@ -177,6 +177,23 @@ public class AnswerStatusFlagEditor extends DefaultEditor
         return len;
     }
 
+    /**
+     * Reports if a given number of answers is invalid for a given question.
+     *
+     * @param questionNode the Node to provide the minAnswers and maxAnswers properties
+     * @return true if the number of answers is valid, false if it is not
+     */
+    private boolean checkInvalidAnswer(Node questionNode, int numAnswers) throws PathNotFoundException,
+        ValueFormatException, RepositoryException
+    {
+        long minAnswers = questionNode.getProperty("minAnswers").getLong();
+        long maxAnswers = questionNode.getProperty("maxAnswers").getLong();
+        if ((numAnswers < minAnswers && minAnswers != 0) || (numAnswers > maxAnswers && maxAnswers != 0)) {
+            return true;
+        }
+        return false;
+    }
+
     private void handlePropertyAdded(PropertyState state) throws CommitFailedException, ItemNotFoundException,
         PathNotFoundException, RepositoryException
     {
@@ -206,13 +223,11 @@ public class AnswerStatusFlagEditor extends DefaultEditor
         if (questionNode != null) {
             LOGGER.warn("PROPERTY CHANGED...This question is: {}",
                 questionNode.getProperty("text").getValue().toString());
-            long minAnswers = questionNode.getProperty("minAnswers").getLong();
-            long maxAnswers = questionNode.getProperty("maxAnswers").getLong();
             Iterable<String> nodeAnswers = this.currentNodeBuilder.getProperty("value").getValue(Type.STRINGS);
             int numAnswers = iterableLength(nodeAnswers);
             LOGGER.warn("...the question contains {} answers.", numAnswers);
             ArrayList<String> statusFlags = new ArrayList<String>();
-            if ((numAnswers < minAnswers && minAnswers != 0) || (numAnswers > maxAnswers && maxAnswers != 0)) {
+            if (checkInvalidAnswer(questionNode, numAnswers)) {
                 LOGGER.warn("...setting as INVALID and INCOMPLETE");
                 statusFlags.add("INVALID");
                 statusFlags.add("INCOMPLETE");
