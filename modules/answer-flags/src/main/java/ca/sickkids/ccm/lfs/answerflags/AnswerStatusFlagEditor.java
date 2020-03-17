@@ -24,7 +24,6 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.ValueFormatException;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
@@ -34,8 +33,6 @@ import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An {@link Editor} that verifies the correctness and completeness of
@@ -46,8 +43,6 @@ import org.slf4j.LoggerFactory;
  */
 public class AnswerStatusFlagEditor extends DefaultEditor
 {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnswerStatusFlagEditor.class);
 
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
     // actual parent node of those properties, so we must manually keep track of the current node.
@@ -65,7 +60,6 @@ public class AnswerStatusFlagEditor extends DefaultEditor
      */
     public AnswerStatusFlagEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver)
     {
-        LOGGER.warn("Constructed a AnswerStatusFlagEditor");
         this.currentNodeBuilder = nodeBuilder;
         this.currentResourceResolver = resourceResolver;
     }
@@ -87,28 +81,18 @@ public class AnswerStatusFlagEditor extends DefaultEditor
     @Override
     public void propertyChanged(PropertyState before, PropertyState after) throws CommitFailedException
     {
-        //sets/removes both properties INCOMPLETE and INVALID
-        //This try..catch is a temporary hack. TODO: FIXME
-        try {
-            handlePropertyChanged();
-        } catch (Exception e) {
-            return;
-        }
+        handlePropertyChanged();
     }
 
     // Called when a property is deleted
     @Override
     public void propertyDeleted(PropertyState before) throws CommitFailedException
     {
-        LOGGER.warn("A property was deleted");
         //This try..catch is a temporary hack. TODO: FIXME
         try {
             Node questionNode = getQuestionNode();
             if (questionNode != null) {
-                LOGGER.warn("PROPERTY DELETED...This question is: {}",
-                    questionNode.getProperty("text").getValue().toString());
                 if ("value".equals(before.getName())) {
-                    LOGGER.warn("A value PROPERTY WAS DELETED");
                     ArrayList<String> statusFlags = new ArrayList<String>();
                     //Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
                     if (checkInvalidAnswer(questionNode, 0)) {
@@ -183,12 +167,16 @@ public class AnswerStatusFlagEditor extends DefaultEditor
      * @param questionNode the Node to provide the minAnswers and maxAnswers properties
      * @return true if the number of answers is valid, false if it is not
      */
-    private boolean checkInvalidAnswer(Node questionNode, int numAnswers) throws PathNotFoundException,
-        ValueFormatException, RepositoryException
+    private boolean checkInvalidAnswer(Node questionNode, int numAnswers)
     {
-        long minAnswers = questionNode.getProperty("minAnswers").getLong();
-        long maxAnswers = questionNode.getProperty("maxAnswers").getLong();
-        if ((numAnswers < minAnswers && minAnswers != 0) || (numAnswers > maxAnswers && maxAnswers != 0)) {
+        try {
+            long minAnswers = questionNode.getProperty("minAnswers").getLong();
+            long maxAnswers = questionNode.getProperty("maxAnswers").getLong();
+            if ((numAnswers < minAnswers && minAnswers != 0) || (numAnswers > maxAnswers && maxAnswers != 0)) {
+                return true;
+            }
+        } catch (RepositoryException ex) {
+            //If something goes wrong then we definitely cannot have a valid answer
             return true;
         }
         return false;
@@ -199,10 +187,7 @@ public class AnswerStatusFlagEditor extends DefaultEditor
     {
         Node questionNode = getQuestionNode();
         if (questionNode != null) {
-            LOGGER.warn("PROPERTY ADDED...This question is: {}",
-                questionNode.getProperty("text").getValue().toString());
             if ("value".equals(state.getName())) {
-                LOGGER.warn("A value PROPERTY WAS ADDED");
                 handlePropertyChanged();
             } else {
                 ArrayList<String> statusFlags = new ArrayList<String>();
@@ -216,18 +201,13 @@ public class AnswerStatusFlagEditor extends DefaultEditor
     }
 
     private void handlePropertyChanged()
-        throws CommitFailedException, ItemNotFoundException, PathNotFoundException, RepositoryException
     {
         Node questionNode = getQuestionNode();
         if (questionNode != null) {
-            LOGGER.warn("PROPERTY CHANGED...This question is: {}",
-                questionNode.getProperty("text").getValue().toString());
             Iterable<String> nodeAnswers = this.currentNodeBuilder.getProperty("value").getValue(Type.STRINGS);
             int numAnswers = iterableLength(nodeAnswers);
-            LOGGER.warn("...the question contains {} answers.", numAnswers);
             ArrayList<String> statusFlags = new ArrayList<String>();
             if (checkInvalidAnswer(questionNode, numAnswers)) {
-                LOGGER.warn("...setting as INVALID and INCOMPLETE");
                 statusFlags.add("INVALID");
                 statusFlags.add("INCOMPLETE");
                 this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
@@ -250,7 +230,6 @@ public class AnswerStatusFlagEditor extends DefaultEditor
                  * TODO: Implement validation rules and check them here
                  * Remove INVALID and INCOMPLETE flags if all validation rules pass
                  */
-                LOGGER.warn("...removing INVALID and INCOMPLETE status flags");
                 this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
             }
         }
