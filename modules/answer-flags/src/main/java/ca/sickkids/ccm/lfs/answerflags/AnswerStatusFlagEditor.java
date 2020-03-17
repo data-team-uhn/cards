@@ -43,10 +43,10 @@ import org.slf4j.LoggerFactory;
  *
  * @version $Id$
  */
-public class PropertyAdditionEditor extends DefaultEditor
+public class AnswerStatusFlagEditor extends DefaultEditor
 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyAdditionEditor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnswerStatusFlagEditor.class);
 
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
     // actual parent node of those properties, so we must manually keep track of the current node.
@@ -62,9 +62,9 @@ public class PropertyAdditionEditor extends DefaultEditor
      * @param nodeBuilder the builder for the current node
      * @param resourceResolver a ResourceResolver object used to obtain answer constraints
      */
-    public PropertyAdditionEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver)
+    public AnswerStatusFlagEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver)
     {
-        LOGGER.warn("Constructed a PropertyAdditionEditor");
+        LOGGER.warn("Constructed a AnswerStatusFlagEditor");
         this.currentNodeBuilder = nodeBuilder;
         this.currentResourceResolver = resourceResolver;
     }
@@ -102,13 +102,13 @@ public class PropertyAdditionEditor extends DefaultEditor
     @Override
     public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
-        return new PropertyAdditionEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver);
+        return new AnswerStatusFlagEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver);
     }
 
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
-        return new PropertyAdditionEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver);
+        return new AnswerStatusFlagEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver);
     }
 
     private Node getQuestionNode()
@@ -192,8 +192,11 @@ public class PropertyAdditionEditor extends DefaultEditor
                  *     - minAnswers == N && maxAnswers == M && numAnswers in range [N,M]
                  *         (eg. between N (inclusive) and M (inclusive) checkboxes must be selected)
                  */
-                //TODO: Implement validation rules and check them here
-                //Remove INVALID and INCOMPLETE flags if all validation rules pass
+
+                /*
+                 * TODO: Implement validation rules and check them here
+                 * Remove INVALID and INCOMPLETE flags if all validation rules pass
+                 */
                 LOGGER.warn("...removing INVALID and INCOMPLETE status flags");
                 this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
             }

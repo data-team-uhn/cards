@@ -34,15 +34,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A {@link EditorProvider} returning {@link PropertyAdditionEditor}.
+ * A {@link EditorProvider} returning {@link AnswerStatusFlagEditor}.
  *
  * @version $Id$
  */
-@Component(name = "PropertyAdditionEditorProvider", service = EditorProvider.class, scope = ServiceScope.SINGLETON,
+@Component(name = "AnswerStatusFlagEditorProvider", service = EditorProvider.class, scope = ServiceScope.SINGLETON,
     immediate = true)
-public class PropertyAdditionEditorProvider implements EditorProvider
+public class AnswerStatusFlagEditorProvider implements EditorProvider
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyAdditionEditor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnswerStatusFlagEditor.class);
 
     @Reference(fieldOption = FieldOption.REPLACE,
         cardinality = ReferenceCardinality.OPTIONAL,
@@ -57,8 +57,8 @@ public class PropertyAdditionEditorProvider implements EditorProvider
             ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
             if (myResolver != null) {
                 LOGGER.warn("Got the ResourceResolver...");
-                // Each PropertyAdditionEditor maintains a state, so a new instance must be returned each time
-                return new PropertyAdditionEditor(builder, myResolver);
+                // Each AnswerStatusFlagEditor maintains a state, so a new instance must be returned each time
+                return new AnswerStatusFlagEditor(builder, myResolver);
             }
         }
         return null;
