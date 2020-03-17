@@ -207,8 +207,7 @@ public class AnswerStatusFlagEditor extends DefaultEditor
             } else {
                 ArrayList<String> statusFlags = new ArrayList<String>();
                 //Only add the INCOMPLETE flag if the given question requires more than zero answers
-                long minAnswers = questionNode.getProperty("minAnswers").getLong();
-                if (minAnswers > 0) {
+                if (checkInvalidAnswer(questionNode, 0)) {
                     statusFlags.add("INCOMPLETE");
                 }
                 this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
