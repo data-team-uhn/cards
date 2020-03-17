@@ -182,25 +182,6 @@ const questionnaireStyle = theme => ({
     },
     addNewSubjectButton: {
         width: "250px"
-    },
-    subjectFilterInput: {
-        width: "100%"
-    },
-    NewFormDialog: {
-        width: "500px"
-    },
-    deleteText: {
-        fontSize: "15px",
-        color: theme.palette.error.main,
-    },
-    newSubjectPopper: {
-        zIndex: "1301 !important"
-    },
-    createNewSubjectButton: {
-        marginRight: 'auto',
-    },
-    newSubjectInput: {
-        width: '100%'
     }
 });
 

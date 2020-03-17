@@ -20,43 +20,54 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import uuid from "uuid/v4";
 
-import { CircularProgress, Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Input, List} from "@material-ui/core";
+import { Avatar, CircularProgress, Dialog, DialogContent, DialogTitle, Fab, Grid, List, ListItem, ListItemAvatar, Input, DialogActions, Button} from "@material-ui/core";
 import { ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core";
+import AssignmentIcon from "@material-ui/icons/Assignment";
 import AddIcon from "@material-ui/icons/Add";
 
 import SubjectSelectorList, { createSubjects, SubjectListItem } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
-const PROGRESS_SELECT_QUESTIONNAIRE = 0;
-const PROGRESS_SELECT_SUBJECT = 1;
+// Helper function to simplify the many kinds of subject list items
+// This is outside of NewFormDialog to prevent rerenders from losing focus on the children
+function SubjectListItem(props) {
+  let { avatarIcon, children, ...rest } = props;
+  let AvatarIcon = avatarIcon;  // Rename to let JSX know this is a prop
+  return (<ListItem
+    button
+    {...rest}
+    >
+    <ListItemAvatar>
+      <Avatar><AvatarIcon /></Avatar>
+    </ListItemAvatar>
+    {children}
+  </ListItem>);
+}
 
-/**
- * A component that renders a FAB to open a dialog to create a new form.
- *
- * @param {presetPath} string The questionnaire to use automatically, if any.
- */
+SubjectListItem.defaultProps = {
+  avatarIcon: AssignmentIcon
+}
+
 function NewFormDialog(props) {
   const { children, classes, presetPath } = props;
   const [ open, setOpen ] = useState(false);
-  const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
-  const [ newSubjectName, setNewSubjectName ] = useState("");
   const [ initialized, setInitialized ] = useState(false);
   const [ questionnaires, setQuestionnaires ] = useState([]);
   const [ subjects, setSubjects ] = useState([]);
-  const [ presetQuestionnaire, setPresetQuestionnaire ] = useState();
-  const [ selectedQuestionnaire, setSelectedQuestionnaire ] = useState();
+  const [ newSubjects, setNewSubjects ] = useState([]);
+  const [ selectedQuestionnaire, setSelectedQuestionnaire ] = useState(presetPath);
   const [ selectedSubject, setSelectedSubject ] = useState();
-  const [ progress, setProgress ] = useState();
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
+  const [ numActivePostRequests, setNumActivePostRequests ] = useState(0);
   const [ error, setError ] = useState("");
 
   let initiateFormCreation = () => {
-    if (newSubjectName == "") {
+    if (newSubjects.length == 0) {
       // No new subjects need to be created, just create the form
       createForm();
     } else {
       // New subjects need to be created
-      createSubjects([newSubjectName], newSubjectName, createForm, setError);
+      createSubjects();
     }
   }
 
@@ -92,34 +103,50 @@ function NewFormDialog(props) {
     setNumFetchRequests((num) => (num+1));
   }
 
+  // Create all pending subjects
+  let createSubjects = () => {
+    setError("");
+
+    setNumActivePostRequests(newSubjects.length);
+    let selectedURL = selectedSubject["@path"];
+    for (let subjectName of newSubjects) {
+      let URL = "/Subjects/" + uuid();
+      if (subjectName == selectedSubject) {
+        selectedURL = URL;
+      }
+
+      // Make a POST request to create a new subject
+      let request_data = new FormData();
+      request_data.append('jcr:primaryType', 'lfs:Subject');
+      request_data.append('identifier', subjectName);
+      fetch( URL, { method: 'POST', body: request_data })
+        .then( (response) => {setNumActivePostRequests((num) => {
+          // If we're finished creating subjects, create the rest of the form
+          if (num == 1) {
+            createForm(selectedURL);
+          }
+          return (num-1);
+        })})
+        .catch(parseErrorResponse);
+    }
+  }
+
   let openDialog = () => {
     // Determine what questionnaires and subjects are available
     if (!initialized) {
       fetchAndPopulate("select * from [lfs:Questionnaire]", setQuestionnaires);
+      fetchAndPopulate("select * from [lfs:Subject]", setSubjects);
       setInitialized(true);
     }
     setOpen(true);
     setError("");
-    if (presetQuestionnaire) {
-      setSelectedQuestionnaire(presetQuestionnaire);
-    }
-    setProgress(presetPath ? PROGRESS_SELECT_SUBJECT : PROGRESS_SELECT_QUESTIONNAIRE);
   }
 
   let fetchAndPopulate = (query, setter) => {
     // Send a fetch request to determine the subjects available
     fetch('/query?query=' + encodeURIComponent(query))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        // If the selectedQuestionnaire is currently presetPath, we need to turn it into
-        // the actual questionnaire object in this step
-        if (typeof presetPath === 'string') {
-          let foundQuestionnaire = json["rows"].filter((object) => object["@path"] === presetPath)[0]
-          setSelectedQuestionnaire(foundQuestionnaire);
-          setPresetQuestionnaire(foundQuestionnaire);
-        }
-        setter(json["rows"])
-      })
+      .then((json) => {setter(json["rows"])})
       .catch(parseErrorResponse)
       .finally(() => {setNumFetchRequests((num) => (num-1))});
   }
@@ -127,48 +154,6 @@ function NewFormDialog(props) {
   // Parse an errored response object
   let parseErrorResponse = (response) => {
     setError(`New form request failed with error code ${response.status}: ${response.statusText}`);
-  }
-
-  // Offer the ability to select a subject or create the form, depending on what step the user is on
-  let progressThroughDialog = () => {
-    if (progress === PROGRESS_SELECT_QUESTIONNAIRE) {
-      if (!selectedQuestionnaire) {
-        setError("Please select a questionnaire.");
-        return;
-      } else {
-        setProgress(PROGRESS_SELECT_SUBJECT);
-      }
-    } else {
-      if (!selectedSubject) {
-        setError("Please select a subject.");
-        return;
-      } else {
-        initiateFormCreation();
-      }
-    }
-  }
-
-  // Set the currently selected subject and remove all errors.
-  let selectSubject = (subject) => {
-    setSelectedSubject(subject);
-    setError(false);
-  }
-
-  let goBack = () => {
-    setError(false);
-    // Exit the dialog if we're at the first page or if there is a preset path
-    if (progress === PROGRESS_SELECT_QUESTIONNAIRE || presetPath) {
-      setOpen(false);
-    } else {
-      setProgress(PROGRESS_SELECT_QUESTIONNAIRE);
-    }
-  }
-
-  // Unselect the given subject if it is currently selected
-  let unselectSubject = (subject) => {
-    if (selectedSubject["@path"] == subject["@path"]) {
-      setSelectedSubject(null);
-    }
   }
 
   const isFetching = numFetchRequests > 0;
@@ -179,11 +164,11 @@ function NewFormDialog(props) {
         <DialogTitle id="new-form-title">
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ? "Select a questionnaire" : "Select a subject"}
         </DialogTitle>
-        <DialogContent dividers className={classes.NewFormDialog}>
-          {error && (!newSubjectPopperOpen) && <Typography color='error'>{error}</Typography>}
-          {isFetching && <div className={classes.newFormTypePlaceholder}><CircularProgress size={24} className={classes.newFormTypeLoadingIndicator} /></div>}
-          {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
-          <React.Fragment>
+        <DialogContent dividers>
+        {error && <Typography color='error'>{error}</Typography>}
+        {isFetching && <div className={classes.newFormTypePlaceholder}><CircularProgress size={24} className={classes.newFormTypeLoadingIndicator} /></div>}
+        <Grid container>
+          <Grid item xs={6}>
             <Typography variant="h4">Questionnaire</Typography>
             {questionnaires &&
               <List>
@@ -200,81 +185,60 @@ function NewFormDialog(props) {
                 })}
               </List>
             }
-          </React.Fragment>
-          :
-          <React.Fragment>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="h4">Subject</Typography>
             {subjects &&
-              <SubjectSelectorList
-                disabled={isFetching}
-                onDelete={unselectSubject}
-                onError={setError}
-                onSelect={selectSubject}
-                setSubjects={setSubjects}
-                subjects={subjects}
-                selectedSubject={selectedSubject}
-                />
+              <List>
+                {subjects.map((subject, idx) => (
+                  <SubjectListItem
+                    key={subject["jcr:uuid"]}
+                    onClick={() => {setSelectedSubject(subject)}}
+                    disabled={isFetching}
+                    selected={subject["jcr:uuid"] === selectedSubject?.["jcr:uuid"]}
+                    >
+                    <ListItemText primary={subject["identifier"]} />
+                  </SubjectListItem>
+                ))}
+                {newSubjects.map((subject, idx) => (
+                  <SubjectListItem
+                    key={idx}
+                    onClick={() => {setSelectedSubject(subject)}}
+                    disabled={isFetching}
+                    selected={subject === selectedSubject}
+                    >
+                    <Input
+                      value={subject}
+                      onChange={(event) => {
+                        let updated = newSubjects.slice();
+                        updated[idx] = event.target.value;
+                        setSelectedSubject(event.target.value);
+                        setNewSubjects(updated);
+                      }}
+                      />
+                  </SubjectListItem>
+                ))}
+                <SubjectListItem
+                  avatarIcon={AddIcon}
+                  onClick={() => {setNewSubjects((old) => {
+                    var newSubjects = old.slice();
+                    newSubjects.push("");
+                    return newSubjects;
+                  })}}
+                  disabled={isFetching}
+                  >
+                  <ListItemText primary="Add new subject" className={classes.addNewSubjectButton} />
+                </SubjectListItem>
+              </List>
             }
-          </React.Fragment>}
+          </Grid>
+        </Grid>
         </DialogContent>
         <DialogActions>
-          {progress === PROGRESS_SELECT_SUBJECT &&
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => { setNewSubjectPopperOpen(true); setError(); }}
-              className={classes.createNewSubjectButton}
-              >
-              New subject
-            </Button>
-          }
-          <Button
-            variant="contained"
-            color="default"
-            onClick={goBack}
-            >
-            { (progress == PROGRESS_SELECT_QUESTIONNAIRE || presetPath) ?
-              "Cancel"
-            :
-              "Back"
-            }
-          </Button>
           <Button
             variant="contained"
             color="primary"
-            onClick={progressThroughDialog}
-            >
-            { progress == PROGRESS_SELECT_QUESTIONNAIRE ?
-              "Continue"
-            :
-              "Create Form"
-            }
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog open={newSubjectPopperOpen} onClose={() => { setNewSubjectPopperOpen(false); }} className={classes.newSubjectPopper}>
-        <DialogTitle id="new-form-title">
-          Create new subject
-        </DialogTitle>
-        <DialogContent dividers className={classes.NewFormDialog}>
-          {error && <Typography color='error'>{error}</Typography>}
-          <Input
-            value={newSubjectName}
-            onChange={(event) => {setNewSubjectName(event.target.value);}}
-            className={classes.newSubjectInput}
-            />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {setNewSubjectPopperOpen(false); setError();}}
-            variant="contained"
-            color="default"
-            >
-            Cancel
-          </Button>
-          <Button
             onClick={initiateFormCreation}
-            variant="contained"
-            color="primary"
             >
             Create
           </Button>
