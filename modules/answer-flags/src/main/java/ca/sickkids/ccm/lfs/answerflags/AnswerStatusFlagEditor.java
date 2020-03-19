@@ -42,6 +42,10 @@ import org.apache.sling.api.resource.ResourceResolver;
 public class AnswerStatusFlagEditor extends DefaultEditor
 {
 
+    private static final String STATUS_FLAGS = "statusFlags";
+    private static final String STATUS_FLAG_INCOMPLETE = "INCOMPLETE";
+    private static final String STATUS_FLAG_INVALID = "INVALID";
+
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
     // actual parent node of those properties, so we must manually keep track of the current node.
     private final NodeBuilder currentNodeBuilder;
@@ -74,9 +78,9 @@ public class AnswerStatusFlagEditor extends DefaultEditor
                 ArrayList<String> statusFlags = new ArrayList<String>();
                 //Only add the INCOMPLETE flag if the given question requires more than zero answers
                 if (checkInvalidAnswer(questionNode, 0)) {
-                    statusFlags.add("INCOMPLETE");
+                    statusFlags.add(STATUS_FLAG_INCOMPLETE);
                 }
-                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
+                this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
             }
         }
     }
@@ -91,9 +95,9 @@ public class AnswerStatusFlagEditor extends DefaultEditor
             int numAnswers = iterableLength(nodeAnswers);
             ArrayList<String> statusFlags = new ArrayList<String>();
             if (checkInvalidAnswer(questionNode, numAnswers)) {
-                statusFlags.add("INVALID");
-                statusFlags.add("INCOMPLETE");
-                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
+                statusFlags.add(STATUS_FLAG_INVALID);
+                statusFlags.add(STATUS_FLAG_INCOMPLETE);
+                this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
             } else {
                 /*
                  * We are here because:
@@ -113,7 +117,7 @@ public class AnswerStatusFlagEditor extends DefaultEditor
                  * TODO: Implement validation rules and check them here
                  * Remove INVALID and INCOMPLETE flags if all validation rules pass
                  */
-                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
+                this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
             }
         }
     }
@@ -128,10 +132,10 @@ public class AnswerStatusFlagEditor extends DefaultEditor
                 ArrayList<String> statusFlags = new ArrayList<String>();
                 //Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
                 if (checkInvalidAnswer(questionNode, 0)) {
-                    statusFlags.add("INVALID");
-                    statusFlags.add("INCOMPLETE");
+                    statusFlags.add(STATUS_FLAG_INVALID);
+                    statusFlags.add(STATUS_FLAG_INCOMPLETE);
                 }
-                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
+                this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
             }
         }
     }
