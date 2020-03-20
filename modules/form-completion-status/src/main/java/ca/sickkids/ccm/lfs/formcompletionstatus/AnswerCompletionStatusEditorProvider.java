@@ -54,7 +54,7 @@ public class AnswerCompletionStatusEditorProvider implements EditorProvider
             ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
             if (myResolver != null) {
                 // Each AnswerCompletionStatusEditor maintains a state, so a new instance must be returned each time
-                return new AnswerCompletionStatusEditor(builder, myResolver);
+                return new AnswerCompletionStatusEditor(builder, myResolver, "");
             }
         }
         return null;

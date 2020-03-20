@@ -31,6 +31,8 @@ import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An {@link Editor} that verifies the correctness and completeness of
@@ -41,6 +43,8 @@ import org.apache.sling.api.resource.ResourceResolver;
  */
 public class AnswerCompletionStatusEditor extends DefaultEditor
 {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnswerCompletionStatusEditor.class);
 
     private static final String STATUS_FLAGS = "statusFlags";
     private static final String STATUS_FLAG_INCOMPLETE = "INCOMPLETE";
@@ -54,16 +58,21 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     // is later used for obtaining the constraints on the answers submitted to a question.
     private final ResourceResolver currentResourceResolver;
 
+    private final String currentPath;
+
     /**
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
      * @param resourceResolver a ResourceResolver object used to obtain answer constraints
+     * @param path the JCR path of this node
      */
-    public AnswerCompletionStatusEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver)
+    public AnswerCompletionStatusEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver, String path)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.currentResourceResolver = resourceResolver;
+        this.currentPath = path;
+        LOGGER.warn("Constructing AnswerCompletionStatusEditor with path: {}", path);
     }
 
     // Called when a new property is added
@@ -134,6 +143,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     @Override
     public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
+        LOGGER.warn("[AnswerCompletionStatusEditor] childNodeAdded: {}", name);
         Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
         if (questionNode != null) {
             if (this.currentNodeBuilder.getChildNode(name).hasProperty("question")) {
@@ -145,15 +155,24 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 this.currentNodeBuilder.getChildNode(name).setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
             }
         }
+        String newNodeName = "";
+        if (!"".equals(name)) {
+            newNodeName = this.currentPath + "/" + name;
+        }
         return new AnswerCompletionStatusEditor(this.currentNodeBuilder.getChildNode(name),
-            this.currentResourceResolver);
+            this.currentResourceResolver, newNodeName);
     }
 
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
+        LOGGER.warn("[AnswerCompletionStatusEditor] childNodeChanged: {}", name);
+        String newNodeName = "";
+        if (!"".equals(name)) {
+            newNodeName = this.currentPath + "/" + name;
+        }
         return new AnswerCompletionStatusEditor(this.currentNodeBuilder.getChildNode(name),
-            this.currentResourceResolver);
+            this.currentResourceResolver, newNodeName);
     }
 
     /**
