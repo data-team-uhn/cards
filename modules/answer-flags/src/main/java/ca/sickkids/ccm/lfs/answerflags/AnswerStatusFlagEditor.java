@@ -31,6 +31,8 @@ import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An {@link Editor} that verifies the correctness and completeness of
@@ -41,6 +43,8 @@ import org.apache.sling.api.resource.ResourceResolver;
  */
 public class AnswerStatusFlagEditor extends DefaultEditor
 {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnswerStatusFlagEditor.class);
 
     private static final String STATUS_FLAGS = "statusFlags";
     private static final String STATUS_FLAG_INCOMPLETE = "INCOMPLETE";
@@ -54,16 +58,21 @@ public class AnswerStatusFlagEditor extends DefaultEditor
     // is later used for obtaining the constraints on the answers submitted to a question.
     private final ResourceResolver currentResourceResolver;
 
+    private final String currentPath;
+
     /**
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
      * @param resourceResolver a ResourceResolver object used to obtain answer constraints
+     * @param path the JCR path of this node
      */
-    public AnswerStatusFlagEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver)
+    public AnswerStatusFlagEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver, String path)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.currentResourceResolver = resourceResolver;
+        this.currentPath = path;
+        LOGGER.warn("Constructing AnswerStatusFlagEditor with path: {}", path);
     }
 
     // Called when a new property is added
@@ -147,13 +156,25 @@ public class AnswerStatusFlagEditor extends DefaultEditor
     @Override
     public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
-        return new AnswerStatusFlagEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver);
+        LOGGER.warn("[AnswerStatusFlagEditor] childNodeAdded: {}", name);
+        String newNodeName = "";
+        if (!"".equals(name)) {
+            newNodeName = this.currentPath + "/" + name;
+        }
+        return new AnswerStatusFlagEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver,
+            newNodeName);
     }
 
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
-        return new AnswerStatusFlagEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver);
+        LOGGER.warn("[AnswerStatusFlagEditor] childNodeChanged: {}", name);
+        String newNodeName = "";
+        if (!"".equals(name)) {
+            newNodeName = this.currentPath + "/" + name;
+        }
+        return new AnswerStatusFlagEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver,
+            newNodeName);
     }
 
     /**
