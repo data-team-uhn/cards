@@ -100,7 +100,7 @@ const headerStyle = theme => ({
     whiteSpace: "normal"
   },
   suggestions: {
-    width: theme.spacing(32)
+    width: theme.spacing(64)
   },
   suggestionContainer: {
     minHeight: "10px"
@@ -109,7 +109,8 @@ const headerStyle = theme => ({
     color: whiteColor
   },
   aboveBackground: {
-    zIndex: "1301"
+    zIndex: "1301",
+    left: -theme.spacing(3) + "!important"
   },
   searchResultAvatar: {
     color: theme.palette.getContrastText(theme.palette.info.main),
