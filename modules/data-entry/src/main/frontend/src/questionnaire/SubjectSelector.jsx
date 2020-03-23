@@ -1,0 +1,216 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one
+//  or more contributor license agreements.  See the NOTICE file
+//  distributed with this work for additional information
+//  regarding copyright ownership.  The ASF licenses this file
+//  to you under the Apache License, Version 2.0 (the
+//  "License"); you may not use this file except in compliance
+//  with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing,
+//  software distributed under the License is distributed on an
+//  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+//  KIND, either express or implied.  See the License for the
+//  specific language governing permissions and limitations
+//  under the License.
+//
+
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import uuid from "uuid/v4";
+
+import { Avatar, Dialog, DialogContent, List, ListItem, ListItemAvatar, ListItemText, Input, withStyles } from "@material-ui/core";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import AddIcon from "@material-ui/icons/Add";
+
+import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+
+export function SelectorDialog (props) {
+  const { classes, open, onChange, onClose, onError, ...rest } = props;
+  const [ subjects, setSubjects ] = useState([]);
+  const [ newSubjects, setNewSubjects ] = useState([]);
+  const [ selectedSubject, setSelectedSubject ] = useState();
+  const [ isPosting, setIsPosting ] = useState();
+
+  // Add a new subject to us to track
+  let addNewSubject = () => {
+    setNewSubjects((old) => {
+      let updated = old.slice();
+      updated.push("");
+      return(updated);
+    })
+  }
+
+  let selectSubject = (subject) => {
+    if (selectedSubject == subject) {
+      // We should submit this select
+      handleSubmit();
+    } else {
+      setSelectedSubject(subject);
+    }
+  }
+
+  // Handle the SubjectSelector clicking on a subject, selecting it
+  let handleSubmit = () => {
+    // Submit the new subjects
+    setIsPosting(true);
+    createSubjects(newSubjects, selectedSubject, grabNewSubject, console.log);
+  }
+
+  // Con
+  let grabNewSubject = (subjectPath) => {
+    let url = new URL(subjectPath + ".json", window.location.origin);
+
+    fetch(url)
+      .then(response => response.ok ? response.json() : Promise.reject(response))
+      .then(json => appendPath(json, subjectPath))
+      .then(onChange)
+      .catch(onError);
+  }
+
+  let appendPath = (json, path) => {
+    json["@path"] = path;
+    return json;
+  }
+
+  return (<Dialog open={open} onClose={onClose}>
+    <DialogContent>
+      <StyledSubjectSelectorList
+        disabled={isPosting}
+        onAddSubject={addNewSubject}
+        onChangeNewSubjects={setNewSubjects}
+        onError={onError}
+        onSelect={selectSubject}
+        newSubjects={newSubjects}
+        setSubjects={setSubjects}
+        selectedSubject={selectedSubject}
+        subjects={subjects}
+        {...rest}
+        />
+    </DialogContent>
+  </Dialog>);
+}
+
+// Create all pending subjects
+export function createSubjects(newSubjects, selected, returnCall, onError) {
+  let selectedURL = selected["@path"];
+  let lastPromise = null;
+  for (let subjectName of newSubjects) {
+    let URL = "/Subjects/" + uuid();
+
+    // If this is the subject the user has selected, make a note of the output URL
+    if (subjectName == selected) {
+      selectedURL = URL;
+    }
+
+    // Make a POST request to create a new subject
+    let request_data = new FormData();
+    request_data.append('jcr:primaryType', 'lfs:Subject');
+    request_data.append('identifier', subjectName);
+
+    // Either chain the promise or create a new one
+    if (lastPromise) {
+      lastPromise.then(() => {fetch( URL, { method: 'POST', body: request_data })});
+    } else {
+      lastPromise = fetch( URL, { method: 'POST', body: request_data });
+    }
+  }
+  // If we're finished creating subjects, create the rest of the form
+  if (lastPromise) {
+    lastPromise
+      .then((response) => {returnCall(selectedURL)})
+      .catch(onError);
+  } else {
+    returnCall(selectedURL);
+  }
+}
+
+// Helper function to simplify the many kinds of subject list items
+// This is outside of NewFormDialog to prevent rerenders from losing focus on the children
+function SubjectListItem(props) {
+  let { avatarIcon, children, ...rest } = props;
+  let AvatarIcon = avatarIcon;  // Rename to let JSX know this is a prop
+  return (<ListItem
+    button
+    {...rest}
+    >
+    <ListItemAvatar>
+      <Avatar><AvatarIcon /></Avatar>
+    </ListItemAvatar>
+    {children}
+  </ListItem>);
+}
+
+SubjectListItem.defaultProps = {
+  avatarIcon: AssignmentIcon
+}
+
+function SubjectSelectorList(props) {
+  const { classes, disabled, onAddSubject, onChangeNewSubjects, onError, onSelect, newSubjects, selectedSubject, setSubjects, subjects, ...rest } = props;
+
+  // Send a fetch request to get all of the subjects available to the user
+  let fetchSubjects = () => {
+    let url = new URL("/query", window.location.origin);
+    url.searchParams.set("query", "SELECT * FROM [lfs:Subject]");
+
+    fetch(url)
+      .then(response => response.ok ? response.json() : Promise.reject(response))
+      .then(parseSubjects)
+      .catch(onError)
+  }
+
+  // Parse out only the subjects
+  let parseSubjects = (data) => {
+    setSubjects(data["rows"]);
+  }
+
+  if (subjects.length == 0) {
+    fetchSubjects();
+  }
+
+  return(
+    <List {...rest} >
+      {subjects.map((subject, idx) => (
+        <SubjectListItem
+          key={subject["jcr:uuid"]}
+          onClick={() => {onSelect(subject)}}
+          disabled={disabled}
+          selected={subject["jcr:uuid"] === selectedSubject?.["jcr:uuid"]}
+          >
+          <ListItemText primary={subject["identifier"]} />
+        </SubjectListItem>
+      ))}
+      {newSubjects.map((subject, idx) => (
+        <SubjectListItem
+          key={idx}
+          onClick={() => {onSelect(subject)}}
+          disabled={disabled}
+          selected={subject === selectedSubject}
+          >
+          <Input
+            value={subject}
+            onChange={(event) => {
+              let updated = newSubjects.slice();
+              updated[idx] = event.target.value;
+              onSelect(event.target.value);
+              onChangeNewSubjects(updated);
+            }}
+            />
+        </SubjectListItem>
+      ))}
+      <SubjectListItem
+        avatarIcon={AddIcon}
+        onClick={onAddSubject}
+        disabled={disabled}
+        >
+        <ListItemText primary="Add new subject" className={classes.addNewSubjectButton} />
+      </SubjectListItem>
+    </List>
+  )
+};
+
+const StyledSubjectSelectorList = withStyles(QuestionnaireStyle)(SubjectSelectorList)
+
+export default StyledSubjectSelectorList;
