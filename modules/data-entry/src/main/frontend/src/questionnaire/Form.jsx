@@ -31,6 +31,7 @@ import {
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import moment from "moment";
+import SubjectSelectorList, { SelectorDialog } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
@@ -59,6 +60,8 @@ function Form (props) {
   // - false -> the save attempt failed
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
+  let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
+  let [ changedSubject, setChangedSubject ] = useState();
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
@@ -127,6 +130,17 @@ function Form (props) {
     setLastSaveStatus(undefined);
   }
 
+  // Handle when the subject of the form changes
+  let changeSubject = (subject) => {
+    setData( (old) => {
+      let updated = {...old}
+      updated.subject = subject;
+      return(updated);
+    })
+    setChangedSubject(subject);
+    setSelectorDialogOpen(false);
+  }
+
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     fetchData();
@@ -169,6 +183,23 @@ function Form (props) {
           }
         </Grid>
         <FormProvider>
+          <Button
+            variant="contained"
+            onClick={() => {setSelectorDialogOpen(true)}}
+            >
+            {data?.subject?.identifier || "Set subject"}
+          </Button>
+          <SelectorDialog
+            open={selectorDialogOpen}
+            onChange={changeSubject}
+            onClose={() => {setSelectorDialogOpen(false)}}
+            />
+          {changedSubject &&
+            <React.Fragment>
+              <input type="hidden" name={`${data["@path"]}/subject`} value={changedSubject["@path"]}></input>
+              <input type="hidden" name={`${data["@path"]}/subject@TypeHint`} value="Reference"></input>
+            </React.Fragment>
+          }
           {
             Object.entries(data.questionnaire)
               .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))

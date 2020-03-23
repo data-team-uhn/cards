@@ -25,6 +25,8 @@ import { ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import AddIcon from "@material-ui/icons/Add";
 
+//import SubjectSelectorList, { createSubjects } from "../questionnaire/SubjectSelector.jsx";
+import SubjectSelectorList from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 // Helper function to simplify the many kinds of subject list items
@@ -57,7 +59,6 @@ function NewFormDialog(props) {
   const [ selectedQuestionnaire, setSelectedQuestionnaire ] = useState(presetPath);
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
-  const [ numActivePostRequests, setNumActivePostRequests ] = useState(0);
   const [ error, setError ] = useState("");
 
   let initiateFormCreation = () => {
@@ -66,7 +67,7 @@ function NewFormDialog(props) {
       createForm();
     } else {
       // New subjects need to be created
-      createSubjects();
+      createSubjects(newSubjects, selectedSubject, createForm);
     }
   }
 
@@ -102,34 +103,6 @@ function NewFormDialog(props) {
     setNumFetchRequests((num) => (num+1));
   }
 
-  // Create all pending subjects
-  let createSubjects = () => {
-    setError("");
-
-    setNumActivePostRequests(newSubjects.length);
-    let selectedURL = selectedSubject["@path"];
-    for (let subjectName of newSubjects) {
-      let URL = "/Subjects/" + uuid();
-      if (subjectName == selectedSubject) {
-        selectedURL = URL;
-      }
-
-      // Make a POST request to create a new subject
-      let request_data = new FormData();
-      request_data.append('jcr:primaryType', 'lfs:Subject');
-      request_data.append('identifier', subjectName);
-      fetch( URL, { method: 'POST', body: request_data })
-        .then( (response) => {setNumActivePostRequests((num) => {
-          // If we're finished creating subjects, create the rest of the form
-          if (num == 1) {
-            createForm(selectedURL);
-          }
-          return (num-1);
-        })})
-        .catch(parseErrorResponse);
-    }
-  }
-
   let openDialog = () => {
     // Determine what questionnaires and subjects are available
     if (!initialized) {
@@ -153,6 +126,14 @@ function NewFormDialog(props) {
   // Parse an errored response object
   let parseErrorResponse = (response) => {
     setError(`New form request failed with error code ${response.status}: ${response.statusText}`);
+  }
+
+  // Add a new subject
+  let addNewSubject = () => {
+    setNewSubjects((old) => {
+      let updated = old.slice().push();
+      return updated;
+    });
   }
 
   const isFetching = numFetchRequests > 0;
@@ -188,47 +169,17 @@ function NewFormDialog(props) {
           <Grid item xs={6}>
             <Typography variant="h4">Subject</Typography>
             {subjects &&
-              <List>
-                {subjects.map((subject, idx) => (
-                  <SubjectListItem
-                    key={subject["jcr:uuid"]}
-                    onClick={() => {setSelectedSubject(subject)}}
-                    disabled={isFetching}
-                    selected={subject["jcr:uuid"] === selectedSubject?.["jcr:uuid"]}
-                    >
-                    <ListItemText primary={subject["identifier"]} />
-                  </SubjectListItem>
-                ))}
-                {newSubjects.map((subject, idx) => (
-                  <SubjectListItem
-                    key={idx}
-                    onClick={() => {setSelectedSubject(subject)}}
-                    disabled={isFetching}
-                    selected={subject === selectedSubject}
-                    >
-                    <Input
-                      value={subject}
-                      onChange={(event) => {
-                        let updated = newSubjects.slice();
-                        updated[idx] = event.target.value;
-                        setSelectedSubject(event.target.value);
-                        setNewSubjects(updated);
-                      }}
-                      />
-                  </SubjectListItem>
-                ))}
-                <SubjectListItem
-                  avatarIcon={AddIcon}
-                  onClick={() => {setNewSubjects((old) => {
-                    var newSubjects = old.slice();
-                    newSubjects.push("");
-                    return newSubjects;
-                  })}}
-                  disabled={isFetching}
-                  >
-                  <ListItemText primary="Add new subject" className={classes.addNewSubjectButton} />
-                </SubjectListItem>
-              </List>
+              <SubjectSelectorList
+                disabled={isFetching}
+                onAddSubject={addNewSubject}
+                onChangeNewSubjects={setNewSubjects}
+                onError={setError}
+                onSelect={setSelectedSubject}
+                newSubjects={newSubjects}
+                setSubjects={setSubjects}
+                subjects={subjects}
+                selectedSubject={selectedSubject}
+                />
             }
           </Grid>
         </Grid>
