@@ -18,211 +18,103 @@
 //
 
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import uuid from "uuid/v4";
 
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, Input, ListItem, ListItemAvatar, Typography, withStyles } from "@material-ui/core";
-import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
-import MaterialTable from "material-table";
+import { Avatar, Dialog, DialogContent, List, ListItem, ListItemAvatar, ListItemText, Input, withStyles } from "@material-ui/core";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import AddIcon from "@material-ui/icons/Add";
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
-/***
- * Create a URL that checks for the existance of a subject
- */
-let createQueryURL = (query) => {
-  let url = new URL("/query", window.location.origin);
-  url.searchParams.set("query", "SELECT * FROM [lfs:Subject] as n" + query);
-  return url;
-}
-
-/**
- * Component that displays the list of subjects in a dialog. Double clicking a subject selects it.
- *
- * @param {open} bool Whether or not this dialog is open
- * @param {func} onChange Callback for when the user changes their selection
- * @param {func} onClose Callback for when the user closes this dialog
- * @param {func} onError Callback for when an error occurs during subject selection
- * @param {string} title Title of the dialog, if any
- */
-function UnstyledSelectorDialog (props) {
-  const { classes, open, onChange, onClose, onError, title, ...rest } = props;
+export function SelectorDialog (props) {
+  const { classes, open, onChange, onClose, onError, ...rest } = props;
   const [ subjects, setSubjects ] = useState([]);
+  const [ newSubjects, setNewSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ isPosting, setIsPosting ] = useState();
-  const [ newSubjectError, setNewSubjectError ] = useState();
-  const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
-  const [ newSubjectName, setNewSubjectName ] = useState("");
 
-  // Handle the user clicking on a subject, potentially submitting it
+  // Add a new subject to us to track
+  let addNewSubject = () => {
+    setNewSubjects((old) => {
+      let updated = old.slice();
+      updated.push("");
+      return(updated);
+    })
+  }
+
   let selectSubject = (subject) => {
-    setSelectedSubject(subject);
-  }
-
-  // Handle an error when creating a new subject
-  let handleCreateSubjectsError = (message) => {
-    setNewSubjectError(message);
-    setIsPosting(false);
-  }
-
-  // Handle the SubjectSelector clicking on a subject, selecting it
-  let handleSubmit = (useNewSubject) => {
-    // Submit the new subjects
-    if (useNewSubject) {
-      setIsPosting(true);
-      createSubjects([newSubjectName], newSubjectName, grabNewSubject, handleCreateSubjectsError);
+    if (selectedSubject == subject) {
+      // We should submit this select
+      handleSubmit();
     } else {
-      onChange(selectedSubject);
-      setNewSubjectPopperOpen(false);
+      setSelectedSubject(subject);
     }
   }
 
-  // Obtain the full details on a new subject
+  // Handle the SubjectSelector clicking on a subject, selecting it
+  let handleSubmit = () => {
+    // Submit the new subjects
+    setIsPosting(true);
+    createSubjects(newSubjects, selectedSubject, grabNewSubject, console.log);
+  }
+
+  // Con
   let grabNewSubject = (subjectPath) => {
     let url = new URL(subjectPath + ".json", window.location.origin);
 
     fetch(url)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((data) => appendPath(data, subjectPath))
+      .then(response => response.ok ? response.json() : Promise.reject(response))
+      .then(json => appendPath(json, subjectPath))
       .then(onChange)
-      .then(() => setNewSubjectPopperOpen(false))
-      .catch((err) => {console.log(err); onError(err);})
-      .finally(() => {setIsPosting(false);});
+      .catch(onError);
   }
 
-  // Append the @path attribute to an object
   let appendPath = (json, path) => {
     json["@path"] = path;
     return json;
   }
 
-  let closeNewSubjectPopper = () => {
-    setNewSubjectError();
-    setNewSubjectPopperOpen(false);
-  }
-
-  return (<React.Fragment>
-    <Dialog open={newSubjectPopperOpen} onClose={closeNewSubjectPopper} className={classes.newSubjectPopper}>
-      <DialogTitle id="new-form-title">
-        Create new subject
-      </DialogTitle>
-      <DialogContent dividers className={classes.NewFormDialog}>
-        { newSubjectError && <Typography color="error">{newSubjectError}</Typography>}
-        <Input
-          autoFocus
-          disabled={isPosting}
-          value={newSubjectName}
-          onChange={(event) => {setNewSubjectName(event.target.value);}}
-          className={classes.newSubjectInput}
-          />
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={closeNewSubjectPopper}
-          variant="contained"
-          color="default"
-          disabled={isPosting}
-          >
-          Cancel
-        </Button>
-        <Button
-          onClick={() => {handleSubmit(true);}}
-          variant="contained"
-          color="primary"
-          disabled={isPosting}
-          >
-          Create
-        </Button>
-      </DialogActions>
-    </Dialog>
-    <Dialog open={open} onClose={onClose}>
-      {title && <DialogTitle>{title}</DialogTitle>}
-      <DialogContent className={classes.NewFormDialog}>
-        <StyledSubjectSelectorList
-          disabled={isPosting}
-          onError={onError}
-          onSelect={(data) => {selectSubject(data);}}
-          setSubjects={setSubjects}
-          selectedSubject={selectedSubject}
-          subjects={subjects}
-          {...rest}
-          />
-      </DialogContent>
-      <DialogActions>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => { setNewSubjectPopperOpen(true); }}
-          className={classes.createNewSubjectButton}
-          >
-          New subject
-        </Button>
-        <Button
-          onClick={onClose}
-          variant="contained"
-          color="default"
-          >
-          Cancel
-        </Button>
-        <Button
-          onClick={() => handleSubmit()}
-          variant="contained"
-          color="primary"
-          >
-          Confirm
-        </Button>
-      </DialogActions>
-    </Dialog>
-  </React.Fragment>);
+  return (<Dialog open={open} onClose={onClose}>
+    <DialogContent>
+      <StyledSubjectSelectorList
+        disabled={isPosting}
+        onAddSubject={addNewSubject}
+        onChangeNewSubjects={setNewSubjects}
+        onError={onError}
+        onSelect={selectSubject}
+        newSubjects={newSubjects}
+        setSubjects={setSubjects}
+        selectedSubject={selectedSubject}
+        subjects={subjects}
+        {...rest}
+        />
+    </DialogContent>
+  </Dialog>);
 }
 
-export const SelectorDialog = withStyles(QuestionnaireStyle)(UnstyledSelectorDialog)
-
-/**
- * Create new subjects from an array of identifiers.
- *
- * @param {array} newSubjects The new subjects to add to the repository, as an array of strings.
- * @param {object or string} subjectToTrack The selected subject to return the URL for
- * @param {func} returnCall The callback after all subjects have been created
- * @param {func} onError The callback if an error occurs during subject creation
- */
-export function createSubjects(newSubjects, subjectToTrack, returnCall, onError) {
-  let selectedURL = subjectToTrack["@path"];
+// Create all pending subjects
+export function createSubjects(newSubjects, selected, returnCall, onError) {
+  let selectedURL = selected["@path"];
   let lastPromise = null;
   for (let subjectName of newSubjects) {
-    // Do not allow blank subjects
-    if (subjectName == "") {
-      continue;
-    }
-
-    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${subjectName}'`);
-
-    let url = "/Subjects/" + uuid();
+    let URL = "/Subjects/" + uuid();
 
     // If this is the subject the user has selected, make a note of the output URL
-    if (subjectName == subjectToTrack) {
-      selectedURL = url;
+    if (subjectName == selected) {
+      selectedURL = URL;
     }
 
     // Make a POST request to create a new subject
-    let requestData = new FormData();
-    requestData.append('jcr:primaryType', 'lfs:Subject');
-    requestData.append('identifier', subjectName);
-
-    let newPromise = fetch( checkAlreadyExistsURL )
-      .then( (response) => response.ok ? response.json() : Promise.reject(response))
-      .then( (json) => {
-        if (json?.rows?.length > 0) {
-          return Promise.reject(`Subject ${subjectName} already exists`);
-        }
-      });
+    let request_data = new FormData();
+    request_data.append('jcr:primaryType', 'lfs:Subject');
+    request_data.append('identifier', subjectName);
 
     // Either chain the promise or create a new one
     if (lastPromise) {
-      lastPromise
-        .then(newPromise)
-        .then(() => {fetch( url, { method: 'POST', body: requestData })});
+      lastPromise.then(() => {fetch( URL, { method: 'POST', body: request_data })});
     } else {
-      lastPromise = newPromise.then(() => fetch( url, { method: 'POST', body: requestData }));
+      lastPromise = fetch( URL, { method: 'POST', body: request_data });
     }
   }
   // If we're finished creating subjects, create the rest of the form
@@ -237,7 +129,7 @@ export function createSubjects(newSubjects, subjectToTrack, returnCall, onError)
 
 // Helper function to simplify the many kinds of subject list items
 // This is outside of NewFormDialog to prevent rerenders from losing focus on the children
-export function SubjectListItem(props) {
+function SubjectListItem(props) {
   let { avatarIcon, children, ...rest } = props;
   let AvatarIcon = avatarIcon;  // Rename to let JSX know this is a prop
   return (<ListItem
@@ -252,137 +144,73 @@ export function SubjectListItem(props) {
 }
 
 SubjectListItem.defaultProps = {
-  avatarIcon: AssignmentIndIcon
+  avatarIcon: AssignmentIcon
 }
 
-/**
- * Component that displays the list of subjects.
- *
- * @example
- * <Form id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
- *
- * @param {disabled} bool whether selections should be disabled on this element
- * @param {onDelete} func Callback for the deletion of a subject. The only parameter is the subject deleted.
- * @param {onError} func Callback for an issue in the reading or editing of subjects. The only parameter is a response object.
- * @param {onSelect} func Callback for when the user selects a subject.
- * @param {selectedSubject} object The currently selected subject
- * @param {setSubjects} func A callback for setting the currently available subjects. The parameter is a list of subjects
- * @param {subjects} array A list of (potentially filtered) subjects that the user has available
- */
 function SubjectSelectorList(props) {
-  const { allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject,
-      setSubjects, subjects, theme, ...rest } = props;
-  const COLUMNS = [
-    { title: 'Identifier', field: 'identifier' },
-  ];
+  const { classes, disabled, onAddSubject, onChangeNewSubjects, onError, onSelect, newSubjects, selectedSubject, setSubjects, subjects, ...rest } = props;
+
+  // Send a fetch request to get all of the subjects available to the user
+  let fetchSubjects = () => {
+    let url = new URL("/query", window.location.origin);
+    url.searchParams.set("query", "SELECT * FROM [lfs:Subject]");
+
+    fetch(url)
+      .then(response => response.ok ? response.json() : Promise.reject(response))
+      .then(parseSubjects)
+      .catch(onError)
+  }
+
+  // Parse out only the subjects
+  let parseSubjects = (data) => {
+    setSubjects(data["rows"]);
+  }
+
+  if (subjects.length == 0) {
+    fetchSubjects();
+  }
 
   return(
-    <React.Fragment>
-      <MaterialTable
-        title=""
-        columns={COLUMNS}
-        data={query => {
-            let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.identifier, '*${query.search}*')` : "");
-            url.searchParams.set("limit", query.pageSize);
-            url.searchParams.set("offset", query.page*query.pageSize);
-            return fetch(url)
-              .then(response => response.json())
-              .then(result => {
-                return {
-                  data: result["rows"],
-                  page: Math.trunc(result["offset"]/result["limit"]),
-                  totalCount: result["totalrows"],
-                }}
-              )
-          }
-        }
-        editable={{
-          onRowAdd: (allowAddSubjects ? newData => {
-            // Do not allow blank subjects
-            if (!newData["identifier"]) {
-              onError("You cannot create a blank subject");
-              return Promise.resolve();
-            }
-
-            // Prevent the user from creating a user that already exists
-            let check_already_exists_url = new URL("/Subjects/" + newData["identifier"], window.location.origin);
-
-            // Add the new data
-            let url = new URL("/Subjects/" + uuid(), window.location.origin);
-
-            // Make a POST request to create a new subject
-            let request_data = new FormData();
-            request_data.append('jcr:primaryType', 'lfs:Subject');
-            request_data.append('identifier', newData["identifier"]);
-
-            let check_url = createQueryURL(` WHERE n.'identifier'='${newData["identifier"]}'`);
-            return fetch( check_url )
-              .then( (response) => response.ok ? response.json() : Promise.reject(response))
-              .then( (json) => {
-                if (json?.rows?.length > 0) {
-                  onError("Subject already exists");
-                  return Promise.reject();
-                }
-              })
-              .then( () => (
-                fetch( url, { method: 'POST', body: request_data })
-                  .then( () => (
-                    // Continually attempt to query the newly inserted data until we are certain it is findable
-                    new Promise((resolve, reject) => {
-                      let checkForNew = () => {
-                        fetch(check_url)
-                        .then((response) => response.ok ? response.json() : Promise.reject(response))
-                        .then((json) => {
-                          if (json.returnedrows > 0) {
-                            onError();
-                            resolve();
-                          } else {
-                            return Promise.reject(json);
-                          }
-                        })
-                        .catch((error) => {console.log(error); setTimeout(checkForNew, 1000)});
-                      }
-                      setTimeout(checkForNew, 1000);
-                    }))
-                  )
-                )
-              );
-          } : undefined),
-          onRowDelete: (allowDeleteSubjects ? oldData => {
-            // Get the URL of the old data
-            let url = new URL(oldData["@path"], window.location.origin);
-
-            // Make a POST request to delete the given subject
-            let request_data = new FormData();
-            request_data.append(':operation', 'delete');
-            onDelete(oldData);
-            return fetch( url, { method: 'POST', body: request_data })
-            } : undefined),
-        }}
-        options={{
-          search: true,
-          actionsColumnIndex: -1,
-          addRowPosition: 'first',
-          rowStyle: rowData => ({
-            /* It doesn't seem possible to alter the className from here */
-            backgroundColor: (selectedSubject?.["identifier"] === rowData["identifier"]) ? theme.palette.grey["200"] : theme.palette.background.default
-          })
-        }}
-        localization={{
-          body: {
-            addTooltip: "Add a new subject",
-            editRow: {
-              /* NB: We can't escape the h6 placed around the delete text, so we instead override the style */
-              deleteText: <span className={classes.deleteText}>Are you sure you want to delete this row?</span>
-            }
-          }
-        }}
-        onRowClick={(event, rowData) => {onSelect(rowData)}}
-      />
-    </React.Fragment>
+    <List {...rest} >
+      {subjects.map((subject, idx) => (
+        <SubjectListItem
+          key={subject["jcr:uuid"]}
+          onClick={() => {onSelect(subject)}}
+          disabled={disabled}
+          selected={subject["jcr:uuid"] === selectedSubject?.["jcr:uuid"]}
+          >
+          <ListItemText primary={subject["identifier"]} />
+        </SubjectListItem>
+      ))}
+      {newSubjects.map((subject, idx) => (
+        <SubjectListItem
+          key={idx}
+          onClick={() => {onSelect(subject)}}
+          disabled={disabled}
+          selected={subject === selectedSubject}
+          >
+          <Input
+            value={subject}
+            onChange={(event) => {
+              let updated = newSubjects.slice();
+              updated[idx] = event.target.value;
+              onSelect(event.target.value);
+              onChangeNewSubjects(updated);
+            }}
+            />
+        </SubjectListItem>
+      ))}
+      <SubjectListItem
+        avatarIcon={AddIcon}
+        onClick={onAddSubject}
+        disabled={disabled}
+        >
+        <ListItemText primary="Add new subject" className={classes.addNewSubjectButton} />
+      </SubjectListItem>
+    </List>
   )
 };
 
-const StyledSubjectSelectorList = withStyles(QuestionnaireStyle, {withTheme: true})(SubjectSelectorList)
+const StyledSubjectSelectorList = withStyles(QuestionnaireStyle)(SubjectSelectorList)
 
 export default StyledSubjectSelectorList;

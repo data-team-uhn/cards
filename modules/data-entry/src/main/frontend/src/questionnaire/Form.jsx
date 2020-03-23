@@ -32,7 +32,7 @@ import {
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import moment from "moment";
-import { SelectorDialog } from "./SubjectSelector";
+import SubjectSelectorList, { SelectorDialog } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
@@ -186,11 +186,16 @@ function Form (props) {
           }
         </Grid>
         <FormProvider>
+          <Button
+            variant="contained"
+            onClick={() => {setSelectorDialogOpen(true)}}
+            >
+            {data?.subject?.identifier || "Set subject"}
+          </Button>
           <SelectorDialog
             open={selectorDialogOpen}
             onChange={changeSubject}
             onClose={() => {setSelectorDialogOpen(false)}}
-            title="Set subject"
             />
           {changedSubject &&
             <React.Fragment>
