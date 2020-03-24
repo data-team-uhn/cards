@@ -182,6 +182,9 @@ const questionnaireStyle = theme => ({
     },
     addNewSubjectButton: {
         width: "250px"
+    },
+    subjectFilterInput: {
+        width: "100%"
     }
 });
 
