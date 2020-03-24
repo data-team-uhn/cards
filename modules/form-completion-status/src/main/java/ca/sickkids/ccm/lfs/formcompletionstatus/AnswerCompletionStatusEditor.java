@@ -142,6 +142,13 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                     statusFlags.add(STATUS_FLAG_INCOMPLETE);
                 }
                 this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
+
+                //Summarize all parents
+                try {
+                    summarizeBuilders(this.currentNodeBuilderPath);
+                } catch (RepositoryException e) {
+                    LOGGER.warn("Could not run summarize()");
+                }
             }
         }
     }
@@ -252,7 +259,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
          * i == 1 --> jcr:root/Forms
          * i == 2 --> jcr:root/Forms/<some form object>
          */
-        for (int i = nodeBuilders.size() - 1; i >= 2; i--) {
+        for (int i = nodeBuilders.size() - 2; i >= 2; i--) {
             summarizeBuilder(nodeBuilders.get(i));
         }
     }
