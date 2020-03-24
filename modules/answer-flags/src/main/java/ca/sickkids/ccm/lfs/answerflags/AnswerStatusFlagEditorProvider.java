@@ -59,7 +59,7 @@ public class AnswerStatusFlagEditorProvider implements EditorProvider
                 ArrayList<NodeBuilder> tmpList = new ArrayList<NodeBuilder>();
                 tmpList.add(builder);
                 //return new AnswerStatusFlagEditor(builder, myResolver, "");
-                return new AnswerStatusFlagEditor(tmpList, myResolver, "");
+                return new AnswerStatusFlagEditor(tmpList, myResolver);
             }
         }
         return null;
