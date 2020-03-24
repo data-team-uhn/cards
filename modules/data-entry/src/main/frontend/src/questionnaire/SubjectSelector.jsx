@@ -21,13 +21,15 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
 
-import { Avatar, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemAvatar, ListItemText } from "@material-ui/core";
+import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemAvatar, ListItemText } from "@material-ui/core";
 import { Input, InputAdornment, withStyles } from "@material-ui/core";
-import AssignmentIcon from "@material-ui/icons/Assignment";
+import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import AddIcon from "@material-ui/icons/Add";
 import SearchIcon from "@material-ui/icons/Search";
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+
+const NUM_SUBJECTS_VISIBLE_DEFAULT = 10;
 
 /**
  * Component that displays the list of subjects in a dialog. Double clicking a subject selects it.
@@ -178,7 +180,7 @@ export function SubjectListItem(props) {
 }
 
 SubjectListItem.defaultProps = {
-  avatarIcon: AssignmentIcon
+  avatarIcon: AssignmentIndIcon
 }
 
 /**
@@ -203,24 +205,40 @@ function SubjectSelectorList(props) {
   const [ delayFilterTimer, setDelayFilterTimer ] = useState();
   const [ initialized, setInitialized ] = useState();
   const [ busy, setBusy ] = useState(false);
+  const [ numVisible, setNumVisible ] = useState(NUM_SUBJECTS_VISIBLE_DEFAULT);
+  const [ numSubjects, setNumSubjects ] = useState(0);
 
   // Send a fetch request to get all of the subjects available to the user
-  let fetchSubjects = (newSearch) => {
+  let fetchSubjects = (overwrite, newSearch) => {
     let url = new URL("/query", window.location.origin);
     let term = newSearch || search; // The search term is either overridden or given in the state
-    let query = "SELECT * FROM [lfs:Subject]" + (term ? ` WHERE CONTAINS(*, '*${term}*')` : "");
+    let query = "SELECT * FROM [lfs:Subject]" + (term ? ` WHERE CONTAINS(identifier, '*${term}*')` : "");
     url.searchParams.set("query", query);
+
+    if (overwrite) {
+      // Reset the number of visible items if we're overwriting the output
+      setNumVisible(NUM_SUBJECTS_VISIBLE_DEFAULT);
+    } else {
+      // Use an offset if we're appending to the output
+      url.searchParams.set("offset", subjects.length);
+    }
 
     fetch(url)
       .then(response => response.ok ? response.json() : Promise.reject(response))
-      .then(parseSubjects)
+      .then((data) => {parseSubjects(overwrite, data)})
       .catch(onError)
       .finally(() => {setBusy(false);})
   }
 
-  // Parse out only the subjects
-  let parseSubjects = (data) => {
-    setSubjects(data["rows"]);
+  // Parse out only the subjects and add them to the amount we have, either via appending or overwriting
+  let parseSubjects = (overwrite, data) => {
+    if (overwrite) {
+      setSubjects(data["rows"]);
+      setNumSubjects(data["totalrows"]);
+    } else {
+      setSubjects((old) => old.concat(data["rows"]));
+      setNumSubjects(data["totalrows"]);
+    }
   }
 
   // Filter the search results after a short delay
@@ -230,11 +248,17 @@ function SubjectSelectorList(props) {
     }
 
     setBusy(true);
-    setDelayFilterTimer(setTimeout(fetchSubjects, 500, newQuery));
+    setDelayFilterTimer(setTimeout(fetchSubjects, 500, true, newQuery));
+  }
+
+  // Expand the list, making more subjects visible
+  let addMoreVisible = () => {
+    setNumVisible(old => old+10);
+    fetchSubjects(false);
   }
 
   if (!initialized) {
-    fetchSubjects();
+    fetchSubjects(true);
     setInitialized(true);
   }
 
@@ -251,18 +275,29 @@ function SubjectSelectorList(props) {
             {busy ? <CircularProgress size={24} /> : <SearchIcon /> }
           </InputAdornment>
         )}
+        placeholder="Filter subjects..."
         className={classes.subjectFilterInput}
         />
+      <SubjectListItem
+        avatarIcon={AddIcon}
+        onClick={onAddSubject}
+        disabled={disabled}
+        >
+        <ListItemText primary="Add new subject" className={classes.addNewSubjectButton} />
+      </SubjectListItem>
       <List {...rest} >
         {subjects.map((subject, idx) => (
-          <SubjectListItem
-            key={subject["jcr:uuid"]}
-            onClick={() => {onSelect(subject)}}
-            disabled={disabled}
-            selected={subject["jcr:uuid"] === selectedSubject?.["jcr:uuid"]}
-            >
-            <ListItemText primary={subject["identifier"]} />
-          </SubjectListItem>
+          idx > numVisible ?
+            null
+          :
+            <SubjectListItem
+              key={subject["jcr:uuid"]}
+              onClick={() => {onSelect(subject)}}
+              disabled={disabled}
+              selected={subject["jcr:uuid"] === selectedSubject?.["jcr:uuid"]}
+              >
+              <ListItemText primary={subject["identifier"]} />
+            </SubjectListItem>
         ))}
         {newSubjects.map((subject, idx) => (
           <SubjectListItem
@@ -282,13 +317,15 @@ function SubjectSelectorList(props) {
               />
           </SubjectListItem>
         ))}
-        <SubjectListItem
-          avatarIcon={AddIcon}
-          onClick={onAddSubject}
-          disabled={disabled}
-          >
-          <ListItemText primary="Add new subject" className={classes.addNewSubjectButton} />
-        </SubjectListItem>
+        {numVisible < numSubjects &&
+          <ListItem>
+            <Button
+              onClick={addMoreVisible}
+              >
+              View more results ({Math.min(numVisible, subjects.length)} of {numSubjects} displayed)
+            </Button>
+          </ListItem>
+        }
       </List>
     </React.Fragment>
   )
