@@ -20,10 +20,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
@@ -82,8 +80,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         LOGGER.warn("this.currentNodeBuilderPath = {}", this.currentNodeBuilderPath);
         /*
         try {
-            summarize(this.currentPath);
-            summarizeBuilders(this.currentNodeBuilderPath, this.currentPath);
+            summarizeBuilders(this.currentNodeBuilderPath);
         } catch (RepositoryException e) {
             LOGGER.warn("Could not run summarize()");
         }
@@ -148,8 +145,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 LOGGER.warn("WILL SUMMARIZE: {}", subsection);
                 LOGGER.warn("OBJECTS...: {}", this.currentNodeBuilderPath.get(i));
                 try {
-                    summarize(this.currentPath);
-                    summarizeBuilders(this.currentNodeBuilderPath, this.currentPath);
+                    summarizeBuilders(this.currentNodeBuilderPath);
                 } catch (RepositoryException e) {
                     LOGGER.warn("Could not run summarize()");
                 }
@@ -282,52 +278,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return false;
     }
 
-    private void summarize(String nodePath) throws RepositoryException
+    private void summarizeBuilders(ArrayList<NodeBuilder> nodeBuilders) throws RepositoryException
     {
-        //Get the JCR node for nodePath
-        Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
-        Node selectedNode = resourceSession.getNode(nodePath);
-        //Iterate through all children of this node
-        NodeIterator childNodes = selectedNode.getNodes();
-        boolean isInvalid = false;
-        boolean isIncomplete = false;
-        while (childNodes.hasNext()) {
-            Node selectedChild = childNodes.nextNode();
-            //Is selectedChild - invalid? , incomplete?
-            if (selectedChild.hasProperty(STATUS_FLAGS)) {
-                Value[] selectedPropsValues;
-                selectedPropsValues = selectedChild.getProperty(STATUS_FLAGS).getValues();
-                for (int i = 0; i < selectedPropsValues.length; i++) {
-                    String thisStr = selectedPropsValues[i].getString();
-                    LOGGER.warn("...checking for... {}", thisStr);
-                    if (STATUS_FLAG_INVALID.equals(thisStr)) {
-                        isInvalid = true;
-                    }
-                    if (STATUS_FLAG_INCOMPLETE.equals(thisStr)) {
-                        isIncomplete = true;
-                    }
-                }
-            }
-        }
-        //Set the flags in selectedNode accordingly
-        ArrayList<String> statusFlags = new ArrayList<String>();
-        if (isInvalid) {
-            statusFlags.add(STATUS_FLAG_INVALID);
-        }
-        if (isIncomplete) {
-            statusFlags.add(STATUS_FLAG_INCOMPLETE);
-        }
-        //Debug logging
-        LOGGER.warn("Setting statusFlags for {} to {}.", nodePath, statusFlags);
-        //Write these statusFlags to the JCR repo
-        selectedNode.setProperty(STATUS_FLAGS, statusFlags.toArray(new String[0]));
-    }
-
-    private void summarizeBuilders(ArrayList<NodeBuilder> nodeBuilders, String nodePath) throws RepositoryException
-    {
-        //Get the JCR node for nodePath
-        Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
-        //Node selectedNode = resourceSession.getNode(nodePath);
         if (nodeBuilders.size() < 3) {
             return;
         }
@@ -341,7 +293,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         boolean isIncomplete = false;
         while (childrenNamesIter.hasNext()) {
             String selectedChildName = childrenNamesIter.next();
-            LOGGER.warn("Path: {}, Inspecting: {}", nodePath, selectedChildName);
             NodeBuilder selectedChild = selectedNodeBuilder.getChildNode(selectedChildName);
             //Is selectedChild - invalid? , incomplete?
             if (selectedChild.hasProperty(STATUS_FLAGS)) {
@@ -367,8 +318,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         if (isIncomplete) {
             statusFlags.add(STATUS_FLAG_INCOMPLETE);
         }
-        //Debug logging
-        LOGGER.warn("Setting statusFlags for {} to {}.", nodePath, statusFlags);
         //Write these statusFlags to the JCR repo
         //selectedNode.setProperty(STATUS_FLAGS, statusFlags.toArray(new String[0]));
         selectedNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
