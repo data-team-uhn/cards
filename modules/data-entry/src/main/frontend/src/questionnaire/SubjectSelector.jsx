@@ -129,6 +129,11 @@ export function createSubjects(newSubjects, subjectToTrack, returnCall, onError)
   for (let subjectName of newSubjects) {
     let URL = "/Subjects/" + uuid();
 
+    // Do not allow blank subjects
+    if (subjectName == "") {
+      continue;
+    }
+
     // If this is the subject the user has selected, make a note of the output URL
     if (subjectName == subjectToTrack) {
       selectedURL = URL;
