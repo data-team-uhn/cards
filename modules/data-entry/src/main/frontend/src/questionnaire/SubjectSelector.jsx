@@ -29,6 +29,15 @@ import SearchIcon from "@material-ui/icons/Search";
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
+/**
+ * Component that displays the list of subjects in a dialog. Double clicking a subject selects it.
+ *
+ * @param {open} bool Whether or not this dialog is open
+ * @param {func} onChange Callback for when the user changes their selection
+ * @param {func} onClose Callback for when the user closes this dialog
+ * @param {func} onError Callback for when an error occurs during subject selection
+ * @param {string} title Title of the dialog, if any
+ */
 export function SelectorDialog (props) {
   const { classes, open, onChange, onClose, onError, title, ...rest } = props;
   const [ subjects, setSubjects ] = useState([]);
@@ -45,6 +54,7 @@ export function SelectorDialog (props) {
     })
   }
 
+  // Handle the user clicking on a subject, potentially submitting it
   let selectSubject = (subject) => {
     if (selectedSubject == subject) {
       // We should submit this select
@@ -61,7 +71,7 @@ export function SelectorDialog (props) {
     createSubjects(newSubjects, selectedSubject, grabNewSubject, console.log);
   }
 
-  // Con
+  // Obtain the full details on a new subject
   let grabNewSubject = (subjectPath) => {
     let url = new URL(subjectPath + ".json", window.location.origin);
 
@@ -72,6 +82,7 @@ export function SelectorDialog (props) {
       .catch(onError);
   }
 
+  // Append the @path attribute to an object
   let appendPath = (json, path) => {
     json["@path"] = path;
     return json;
@@ -96,15 +107,22 @@ export function SelectorDialog (props) {
   </Dialog>);
 }
 
-// Create all pending subjects
-export function createSubjects(newSubjects, selected, returnCall, onError) {
-  let selectedURL = selected["@path"];
+/**
+ * Create new subjects from an array of identifiers.
+ *
+ * @param {array} newSubjects The new subjects to add to the repository, as an array of strings.
+ * @param {object or string} subjectToTrack The selected subject to return the URL for
+ * @param {func} returnCall The callback after all subjects have been created
+ * @param {func} onError The callback if an error occurs during subject creation
+ */
+export function createSubjects(newSubjects, subjectToTrack, returnCall, onError) {
+  let selectedURL = subjectToTrack["@path"];
   let lastPromise = null;
   for (let subjectName of newSubjects) {
     let URL = "/Subjects/" + uuid();
 
     // If this is the subject the user has selected, make a note of the output URL
-    if (subjectName == selected) {
+    if (subjectName == subjectToTrack) {
       selectedURL = URL;
     }
 
@@ -132,7 +150,7 @@ export function createSubjects(newSubjects, selected, returnCall, onError) {
 
 // Helper function to simplify the many kinds of subject list items
 // This is outside of NewFormDialog to prevent rerenders from losing focus on the children
-function SubjectListItem(props) {
+export function SubjectListItem(props) {
   let { avatarIcon, children, ...rest } = props;
   let AvatarIcon = avatarIcon;  // Rename to let JSX know this is a prop
   return (<ListItem
@@ -150,6 +168,22 @@ SubjectListItem.defaultProps = {
   avatarIcon: AssignmentIcon
 }
 
+/**
+ * Component that displays the list of subjects.
+ *
+ * @example
+ * <Form id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
+ *
+ * @param {disabled} bool whether selections should be disabled on this element
+ * @param {onAddSubject} func Callback for when the user wishes to add a new subject. There are no parameters.
+ * @param {onChangeNewSubjects} func Callback for when the user wishes to change the list of subjects they wish to add. The parameter is the list of new subjects.
+ * @param {onError} func Callback for an issue in the reading or editing of subjects. The only parameter is a response object.
+ * @param {onSelect} func Callback for when the user selects a subject.
+ * @param {newSubjects} array A list of subjects with editable names that the user has added this session
+ * @param {selectedSubject} object The currently selected subject
+ * @param {setSubjects} func A callback for setting the currently available subjects. The parameter is a list of subjects
+ * @param {subjects} array A list of (potentially filtered) subjects that the user has available
+ */
 function SubjectSelectorList(props) {
   const { classes, disabled, onAddSubject, onChangeNewSubjects, onError, onSelect, newSubjects, selectedSubject, setSubjects, subjects, ...rest } = props;
   const [ search, setSearch ] = useState("");
