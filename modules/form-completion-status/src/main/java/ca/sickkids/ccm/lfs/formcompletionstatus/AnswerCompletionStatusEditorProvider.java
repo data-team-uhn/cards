@@ -58,7 +58,7 @@ public class AnswerCompletionStatusEditorProvider implements EditorProvider
                 // Each AnswerCompletionStatusEditor maintains a state, so a new instance must be returned each time
                 ArrayList<NodeBuilder> tmpList = new ArrayList<NodeBuilder>();
                 tmpList.add(builder);
-                return new AnswerCompletionStatusEditor(tmpList, myResolver, "");
+                return new AnswerCompletionStatusEditor(tmpList, myResolver);
             }
         }
         return null;

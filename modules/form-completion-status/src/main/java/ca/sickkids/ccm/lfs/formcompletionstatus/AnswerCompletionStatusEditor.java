@@ -58,8 +58,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     // is later used for obtaining the constraints on the answers submitted to a question.
     private final ResourceResolver currentResourceResolver;
 
-    private final String currentPath;
-
     private final ArrayList<NodeBuilder> currentNodeBuilderPath;
 
     /**
@@ -67,16 +65,12 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      *
      * @param nodeBuilder the builder for the current node
      * @param resourceResolver a ResourceResolver object used to obtain answer constraints
-     * @param path the JCR path of this node
      */
-    public AnswerCompletionStatusEditor(ArrayList<NodeBuilder> nodeBuilder, ResourceResolver resourceResolver,
-        String path)
+    public AnswerCompletionStatusEditor(ArrayList<NodeBuilder> nodeBuilder, ResourceResolver resourceResolver)
     {
         this.currentNodeBuilderPath = nodeBuilder;
         this.currentNodeBuilder = nodeBuilder.get(nodeBuilder.size() - 1);
         this.currentResourceResolver = resourceResolver;
-        this.currentPath = path;
-        LOGGER.warn("Constructing AnswerCompletionStatusEditor with path: {}", path);
         LOGGER.warn("this.currentNodeBuilderPath = {}", this.currentNodeBuilderPath);
         /*
         try {
@@ -128,27 +122,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             }
             this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
             //Summarize all parents
-            for (int i = this.currentNodeBuilderPath.size() - 1; i >= 0; i--) {
-                String[] sections = this.currentPath.split("/");
-                String subsection = "";
-                //ArrayList<NodeBuilder> subsectionNodeBuilder = new ArrayList<NodeBuilder>();
-                for (int j = 0; j <= i; j++) {
-                    if ("".equals(sections[j])) {
-                        continue;
-                    }
-                    subsection += "/" + sections[j];
-                    //subsectionNodeBuilder.add(this.currentNodeBuilderPath.get(j));
-                }
-                if (!subsection.startsWith("/Forms/")) {
-                    continue;
-                }
-                LOGGER.warn("WILL SUMMARIZE: {}", subsection);
-                LOGGER.warn("OBJECTS...: {}", this.currentNodeBuilderPath.get(i));
-                try {
-                    summarizeBuilders(this.currentNodeBuilderPath);
-                } catch (RepositoryException e) {
-                    LOGGER.warn("Could not run summarize()");
-                }
+            try {
+                summarizeBuilders(this.currentNodeBuilderPath);
+            } catch (RepositoryException e) {
+                LOGGER.warn("Could not run summarize()");
             }
         }
     }
@@ -190,32 +167,24 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 this.currentNodeBuilder.getChildNode(name).setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
             }
         }
-        String newNodeName = "";
-        if (!"".equals(name)) {
-            newNodeName = this.currentPath + "/" + name;
-        }
         ArrayList<NodeBuilder> tmpList = new ArrayList<NodeBuilder>();
         for (int i = 0; i < this.currentNodeBuilderPath.size(); i++) {
             tmpList.add(this.currentNodeBuilderPath.get(i));
         }
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new AnswerCompletionStatusEditor(tmpList, this.currentResourceResolver, newNodeName);
+        return new AnswerCompletionStatusEditor(tmpList, this.currentResourceResolver);
     }
 
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
-        LOGGER.warn("[AnswerCompletionStatusEditor] childNodeChanged: {}", name);
-        String newNodeName = "";
-        if (!"".equals(name)) {
-            newNodeName = this.currentPath + "/" + name;
-        }
+        LOGGER.warn("[AnswerStatusFlagEditor] childNodeChanged: {}", name);
         ArrayList<NodeBuilder> tmpList = new ArrayList<NodeBuilder>();
         for (int i = 0; i < this.currentNodeBuilderPath.size(); i++) {
             tmpList.add(this.currentNodeBuilderPath.get(i));
         }
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new AnswerCompletionStatusEditor(tmpList, this.currentResourceResolver, newNodeName);
+        return new AnswerCompletionStatusEditor(tmpList, this.currentResourceResolver);
     }
 
     /**
