@@ -58,12 +58,17 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     // is later used for obtaining the constraints on the answers submitted to a question.
     private final ResourceResolver currentResourceResolver;
 
+    // This holds a list of NodeBuilders with the first item corresponding to the root of the JCR tree
+    // and the last item corresponding to the current node. By keeping this list, one is capable of
+    // moving up the tree and setting status flags of ancestor nodes based on the status flags of a
+    // descendant node.
     private final ArrayList<NodeBuilder> currentNodeBuilderPath;
 
     /**
      * Simple constructor.
      *
-     * @param nodeBuilder the builder for the current node
+     * @param nodeBuilder an ArrayList of NodeBuilder objects starting from the root of the JCR tree
+     *     and moving down towards the current node.
      * @param resourceResolver a ResourceResolver object used to obtain answer constraints
      */
     public AnswerCompletionStatusEditor(ArrayList<NodeBuilder> nodeBuilder, ResourceResolver resourceResolver)
@@ -72,13 +77,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         this.currentNodeBuilder = nodeBuilder.get(nodeBuilder.size() - 1);
         this.currentResourceResolver = resourceResolver;
         LOGGER.warn("this.currentNodeBuilderPath = {}", this.currentNodeBuilderPath);
-        /*
-        try {
-            summarizeBuilders(this.currentNodeBuilderPath);
-        } catch (RepositoryException e) {
-            LOGGER.warn("Could not run summarize()");
-        }
-        */
     }
 
     // Called when a new property is added
@@ -263,7 +261,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     {
         LOGGER.warn("WORKING WITH: {}", selectedNodeBuilder);
         //Iterate through all children of this node
-        //NodeIterator childNodes = selectedNode.getNodes();
         Iterable<String> childrenNames = selectedNodeBuilder.getChildNodeNames();
         Iterator<String> childrenNamesIter = childrenNames.iterator();
         boolean isInvalid = false;
@@ -287,7 +284,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 }
             }
         }
-        //Set the flags in selectedNode accordingly
+        //Set the flags in selectedNodeBuilder accordingly
         ArrayList<String> statusFlags = new ArrayList<String>();
         if (isInvalid) {
             statusFlags.add(STATUS_FLAG_INVALID);
@@ -296,7 +293,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             statusFlags.add(STATUS_FLAG_INCOMPLETE);
         }
         //Write these statusFlags to the JCR repo
-        //selectedNode.setProperty(STATUS_FLAGS, statusFlags.toArray(new String[0]));
         selectedNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
     }
 }
