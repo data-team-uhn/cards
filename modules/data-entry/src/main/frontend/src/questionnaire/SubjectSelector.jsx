@@ -21,7 +21,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
 
-import { Avatar, CircularProgress, Dialog, DialogContent, DialogTitle, List, ListItem, ListItemAvatar, ListItemText } from "@material-ui/core";
+import { Avatar, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemAvatar, ListItemText } from "@material-ui/core";
 import { Input, InputAdornment, withStyles } from "@material-ui/core";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import AddIcon from "@material-ui/icons/Add";
@@ -104,6 +104,14 @@ export function SelectorDialog (props) {
         {...rest}
         />
     </DialogContent>
+    <DialogActions>
+      <Button
+        onClick={handleSubmit}
+        variant="contained"
+        >
+        Confirm
+      </Button>
+    </DialogActions>
   </Dialog>);
 }
 
