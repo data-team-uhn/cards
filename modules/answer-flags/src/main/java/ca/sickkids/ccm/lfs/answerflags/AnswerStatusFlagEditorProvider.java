@@ -16,6 +16,8 @@
  */
 package ca.sickkids.ccm.lfs.answerflags;
 
+import java.util.ArrayList;
+
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
@@ -54,7 +56,10 @@ public class AnswerStatusFlagEditorProvider implements EditorProvider
             ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
             if (myResolver != null) {
                 // Each AnswerStatusFlagEditor maintains a state, so a new instance must be returned each time
-                return new AnswerStatusFlagEditor(builder, myResolver, "");
+                ArrayList<NodeBuilder> tmpList = new ArrayList<NodeBuilder>();
+                tmpList.add(builder);
+                //return new AnswerStatusFlagEditor(builder, myResolver, "");
+                return new AnswerStatusFlagEditor(tmpList, myResolver, "");
             }
         }
         return null;
