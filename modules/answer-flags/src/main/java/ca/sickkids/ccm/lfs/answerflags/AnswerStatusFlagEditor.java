@@ -94,6 +94,13 @@ public class AnswerStatusFlagEditor extends DefaultEditor
                     statusFlags.add(STATUS_FLAG_INCOMPLETE);
                 }
                 this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
+
+                //Summarize all parents
+                try {
+                    summarizeBuilders(this.currentNodeBuilderPath);
+                } catch (RepositoryException e) {
+                    LOGGER.warn("Could not run summarize()");
+                }
             }
         }
     }
