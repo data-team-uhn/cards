@@ -25,8 +25,7 @@ import { ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import AddIcon from "@material-ui/icons/Add";
 
-//import SubjectSelectorList, { createSubjects } from "../questionnaire/SubjectSelector.jsx";
-import SubjectSelectorList from "../questionnaire/SubjectSelector.jsx";
+import SubjectSelectorList, { createSubjects } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 // Helper function to simplify the many kinds of subject list items
@@ -107,7 +106,6 @@ function NewFormDialog(props) {
     // Determine what questionnaires and subjects are available
     if (!initialized) {
       fetchAndPopulate("select * from [lfs:Questionnaire]", setQuestionnaires);
-      fetchAndPopulate("select * from [lfs:Subject]", setSubjects);
       setInitialized(true);
     }
     setOpen(true);
@@ -131,7 +129,8 @@ function NewFormDialog(props) {
   // Add a new subject
   let addNewSubject = () => {
     setNewSubjects((old) => {
-      let updated = old.slice().push();
+      let updated = old.slice();
+      updated.push("");
       return updated;
     });
   }
