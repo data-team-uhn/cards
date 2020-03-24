@@ -21,14 +21,16 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
 
-import { Avatar, Dialog, DialogContent, List, ListItem, ListItemAvatar, ListItemText, Input, withStyles } from "@material-ui/core";
+import { Avatar, CircularProgress, Dialog, DialogContent, DialogTitle, List, ListItem, ListItemAvatar, ListItemText } from "@material-ui/core";
+import { Input, InputAdornment, withStyles } from "@material-ui/core";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import AddIcon from "@material-ui/icons/Add";
+import SearchIcon from "@material-ui/icons/Search";
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 export function SelectorDialog (props) {
-  const { classes, open, onChange, onClose, onError, ...rest } = props;
+  const { classes, open, onChange, onClose, onError, title, ...rest } = props;
   const [ subjects, setSubjects ] = useState([]);
   const [ newSubjects, setNewSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
@@ -76,6 +78,7 @@ export function SelectorDialog (props) {
   }
 
   return (<Dialog open={open} onClose={onClose}>
+    {title && <DialogTitle>{title}</DialogTitle>}
     <DialogContent>
       <StyledSubjectSelectorList
         disabled={isPosting}
@@ -149,16 +152,23 @@ SubjectListItem.defaultProps = {
 
 function SubjectSelectorList(props) {
   const { classes, disabled, onAddSubject, onChangeNewSubjects, onError, onSelect, newSubjects, selectedSubject, setSubjects, subjects, ...rest } = props;
+  const [ search, setSearch ] = useState("");
+  const [ delayFilterTimer, setDelayFilterTimer ] = useState();
+  const [ initialized, setInitialized ] = useState();
+  const [ busy, setBusy ] = useState(false);
 
   // Send a fetch request to get all of the subjects available to the user
-  let fetchSubjects = () => {
+  let fetchSubjects = (newSearch) => {
     let url = new URL("/query", window.location.origin);
-    url.searchParams.set("query", "SELECT * FROM [lfs:Subject]");
+    let term = newSearch || search; // The search term is either overridden or given in the state
+    let query = "SELECT * FROM [lfs:Subject]" + (term ? ` WHERE CONTAINS(*, '*${term}*')` : "");
+    url.searchParams.set("query", query);
 
     fetch(url)
       .then(response => response.ok ? response.json() : Promise.reject(response))
       .then(parseSubjects)
       .catch(onError)
+      .finally(() => {setBusy(false);})
   }
 
   // Parse out only the subjects
@@ -166,48 +176,74 @@ function SubjectSelectorList(props) {
     setSubjects(data["rows"]);
   }
 
-  if (subjects.length == 0) {
+  // Filter the search results after a short delay
+  let delayFilter = (newQuery) => {
+    if (delayFilterTimer !== null) {
+      clearTimeout(delayFilterTimer);
+    }
+
+    setBusy(true);
+    setDelayFilterTimer(setTimeout(fetchSubjects, 500, newQuery));
+  }
+
+  if (!initialized) {
     fetchSubjects();
+    setInitialized(true);
   }
 
   return(
-    <List {...rest} >
-      {subjects.map((subject, idx) => (
+    <React.Fragment>
+      <Input
+        value={search}
+        onChange={(event) => {
+          setSearch(event.target.value);
+          delayFilter(event.target.value);
+        }}
+        endAdornment={(
+          <InputAdornment position="end" onClick={() => {setBusy(true); fetchSubjects();}}>
+            {busy ? <CircularProgress size={24} /> : <SearchIcon /> }
+          </InputAdornment>
+        )}
+        className={classes.subjectFilterInput}
+        />
+      <List {...rest} >
+        {subjects.map((subject, idx) => (
+          <SubjectListItem
+            key={subject["jcr:uuid"]}
+            onClick={() => {onSelect(subject)}}
+            disabled={disabled}
+            selected={subject["jcr:uuid"] === selectedSubject?.["jcr:uuid"]}
+            >
+            <ListItemText primary={subject["identifier"]} />
+          </SubjectListItem>
+        ))}
+        {newSubjects.map((subject, idx) => (
+          <SubjectListItem
+            key={idx}
+            onClick={() => {onSelect(subject)}}
+            disabled={disabled}
+            selected={subject === selectedSubject}
+            >
+            <Input
+              value={subject}
+              onChange={(event) => {
+                let updated = newSubjects.slice();
+                updated[idx] = event.target.value;
+                onSelect(event.target.value);
+                onChangeNewSubjects(updated);
+              }}
+              />
+          </SubjectListItem>
+        ))}
         <SubjectListItem
-          key={subject["jcr:uuid"]}
-          onClick={() => {onSelect(subject)}}
+          avatarIcon={AddIcon}
+          onClick={onAddSubject}
           disabled={disabled}
-          selected={subject["jcr:uuid"] === selectedSubject?.["jcr:uuid"]}
           >
-          <ListItemText primary={subject["identifier"]} />
+          <ListItemText primary="Add new subject" className={classes.addNewSubjectButton} />
         </SubjectListItem>
-      ))}
-      {newSubjects.map((subject, idx) => (
-        <SubjectListItem
-          key={idx}
-          onClick={() => {onSelect(subject)}}
-          disabled={disabled}
-          selected={subject === selectedSubject}
-          >
-          <Input
-            value={subject}
-            onChange={(event) => {
-              let updated = newSubjects.slice();
-              updated[idx] = event.target.value;
-              onSelect(event.target.value);
-              onChangeNewSubjects(updated);
-            }}
-            />
-        </SubjectListItem>
-      ))}
-      <SubjectListItem
-        avatarIcon={AddIcon}
-        onClick={onAddSubject}
-        disabled={disabled}
-        >
-        <ListItemText primary="Add new subject" className={classes.addNewSubjectButton} />
-      </SubjectListItem>
-    </List>
+      </List>
+    </React.Fragment>
   )
 };
 
