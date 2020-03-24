@@ -24,6 +24,7 @@ import {
   Button,
   CircularProgress,
   Grid,
+  Link,
   Typography,
   withStyles
 } from "@material-ui/core";
@@ -31,7 +32,7 @@ import {
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import moment from "moment";
-import SubjectSelectorList, { SelectorDialog } from "./SubjectSelector";
+import { SelectorDialog } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
@@ -171,11 +172,13 @@ function Form (props) {
               <Typography variant="overline">{data.questionnaire.title}</Typography>
             : ""
           }
-          {
-            data && data.subject && data.subject.identifier ?
-              <Typography variant="h2">{data.subject.identifier}</Typography>
-            : <Typography variant="h2">{id}</Typography>
-          }
+          <Link href="#" onClick={() => {setSelectorDialogOpen(true)}}>
+            {
+              data?.subject?.identifier ?
+                <Typography variant="h2">{data.subject.identifier}</Typography>
+              : <Typography variant="h2">{id}</Typography>
+            }
+          </Link>
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
             <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
@@ -183,16 +186,11 @@ function Form (props) {
           }
         </Grid>
         <FormProvider>
-          <Button
-            variant="contained"
-            onClick={() => {setSelectorDialogOpen(true)}}
-            >
-            {data?.subject?.identifier || "Set subject"}
-          </Button>
           <SelectorDialog
             open={selectorDialogOpen}
             onChange={changeSubject}
             onClose={() => {setSelectorDialogOpen(false)}}
+            title="Set subject"
             />
           {changedSubject &&
             <React.Fragment>
