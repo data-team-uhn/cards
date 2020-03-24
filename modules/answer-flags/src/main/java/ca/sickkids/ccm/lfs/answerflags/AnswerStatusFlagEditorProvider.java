@@ -58,7 +58,6 @@ public class AnswerStatusFlagEditorProvider implements EditorProvider
                 // Each AnswerStatusFlagEditor maintains a state, so a new instance must be returned each time
                 ArrayList<NodeBuilder> tmpList = new ArrayList<NodeBuilder>();
                 tmpList.add(builder);
-                //return new AnswerStatusFlagEditor(builder, myResolver, "");
                 return new AnswerStatusFlagEditor(tmpList, myResolver);
             }
         }
