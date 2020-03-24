@@ -31,8 +31,6 @@ import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An {@link Editor} that verifies the correctness and completeness of
@@ -43,8 +41,6 @@ import org.slf4j.LoggerFactory;
  */
 public class AnswerStatusFlagEditor extends DefaultEditor
 {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnswerStatusFlagEditor.class);
 
     private static final String STATUS_FLAGS = "statusFlags";
     private static final String STATUS_FLAG_INCOMPLETE = "INCOMPLETE";
@@ -76,7 +72,6 @@ public class AnswerStatusFlagEditor extends DefaultEditor
         this.currentNodeBuilderPath = nodeBuilder;
         this.currentNodeBuilder = nodeBuilder.get(nodeBuilder.size() - 1);
         this.currentResourceResolver = resourceResolver;
-        LOGGER.warn("this.currentNodeBuilderPath = {}", this.currentNodeBuilderPath);
     }
 
     // Called when a new property is added
@@ -99,7 +94,7 @@ public class AnswerStatusFlagEditor extends DefaultEditor
                 try {
                     summarizeBuilders(this.currentNodeBuilderPath);
                 } catch (RepositoryException e) {
-                    LOGGER.warn("Could not run summarize()");
+                    return;
                 }
             }
         }
@@ -144,7 +139,7 @@ public class AnswerStatusFlagEditor extends DefaultEditor
             try {
                 summarizeBuilders(this.currentNodeBuilderPath);
             } catch (RepositoryException e) {
-                LOGGER.warn("Could not run summarize()");
+                return;
             }
         }
     }
@@ -168,7 +163,7 @@ public class AnswerStatusFlagEditor extends DefaultEditor
                 try {
                     summarizeBuilders(this.currentNodeBuilderPath);
                 } catch (RepositoryException e) {
-                    LOGGER.warn("Could not run summarize()");
+                    return;
                 }
             }
         }
@@ -181,7 +176,6 @@ public class AnswerStatusFlagEditor extends DefaultEditor
     @Override
     public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
-        LOGGER.warn("[AnswerStatusFlagEditor] childNodeAdded: {}", name);
         ArrayList<NodeBuilder> tmpList = new ArrayList<NodeBuilder>();
         for (int i = 0; i < this.currentNodeBuilderPath.size(); i++) {
             tmpList.add(this.currentNodeBuilderPath.get(i));
@@ -193,7 +187,6 @@ public class AnswerStatusFlagEditor extends DefaultEditor
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
-        LOGGER.warn("[AnswerStatusFlagEditor] childNodeChanged: {}", name);
         ArrayList<NodeBuilder> tmpList = new ArrayList<NodeBuilder>();
         for (int i = 0; i < this.currentNodeBuilderPath.size(); i++) {
             tmpList.add(this.currentNodeBuilderPath.get(i));
@@ -275,7 +268,6 @@ public class AnswerStatusFlagEditor extends DefaultEditor
 
     private void summarizeBuilder(NodeBuilder selectedNodeBuilder) throws RepositoryException
     {
-        LOGGER.warn("WORKING WITH: {}", selectedNodeBuilder);
         //Iterate through all children of this node
         Iterable<String> childrenNames = selectedNodeBuilder.getChildNodeNames();
         Iterator<String> childrenNamesIter = childrenNames.iterator();
@@ -290,7 +282,6 @@ public class AnswerStatusFlagEditor extends DefaultEditor
                 Iterator<String> selectedPropsIter = selectedProps.iterator();
                 while (selectedPropsIter.hasNext()) {
                     String thisStr = selectedPropsIter.next();
-                    LOGGER.warn("...checking for... {}", thisStr);
                     if (STATUS_FLAG_INVALID.equals(thisStr)) {
                         isInvalid = true;
                     }
