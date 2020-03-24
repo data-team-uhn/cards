@@ -280,10 +280,18 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     private void summarizeBuilders(ArrayList<NodeBuilder> nodeBuilders) throws RepositoryException
     {
-        if (nodeBuilders.size() < 3) {
-            return;
+        /*
+         * i == 0 --> jcr:root
+         * i == 1 --> jcr:root/Forms
+         * i == 2 --> jcr:root/Forms/<some form object>
+         */
+        for (int i = nodeBuilders.size() - 1; i >= 2; i--) {
+            summarizeBuilder(nodeBuilders.get(i));
         }
-        NodeBuilder selectedNodeBuilder = nodeBuilders.get(nodeBuilders.size() - 2);
+    }
+
+    private void summarizeBuilder(NodeBuilder selectedNodeBuilder) throws RepositoryException
+    {
         LOGGER.warn("WORKING WITH: {}", selectedNodeBuilder);
         //Iterate through all children of this node
         //NodeIterator childNodes = selectedNode.getNodes();
