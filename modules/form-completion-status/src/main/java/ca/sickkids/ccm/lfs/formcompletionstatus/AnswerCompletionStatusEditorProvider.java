@@ -16,6 +16,8 @@
  */
 package ca.sickkids.ccm.lfs.formcompletionstatus;
 
+import java.util.ArrayList;
+
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
@@ -54,7 +56,9 @@ public class AnswerCompletionStatusEditorProvider implements EditorProvider
             ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
             if (myResolver != null) {
                 // Each AnswerCompletionStatusEditor maintains a state, so a new instance must be returned each time
-                return new AnswerCompletionStatusEditor(builder, myResolver, "");
+                ArrayList<NodeBuilder> tmpList = new ArrayList<NodeBuilder>();
+                tmpList.add(builder);
+                return new AnswerCompletionStatusEditor(tmpList, myResolver, "");
             }
         }
         return null;
