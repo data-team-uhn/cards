@@ -20,34 +20,18 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import uuid from "uuid/v4";
 
-import { Avatar, CircularProgress, Dialog, DialogContent, DialogTitle, Fab, Grid, List, ListItem, ListItemAvatar, Input, DialogActions, Button} from "@material-ui/core";
+import { CircularProgress, Dialog, DialogContent, DialogTitle, Fab, Grid, List, DialogActions, Button} from "@material-ui/core";
 import { ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core";
-import AssignmentIcon from "@material-ui/icons/Assignment";
 import AddIcon from "@material-ui/icons/Add";
 
-import SubjectSelectorList, { createSubjects } from "../questionnaire/SubjectSelector.jsx";
+import SubjectSelectorList, { createSubjects, SubjectListItem } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
-// Helper function to simplify the many kinds of subject list items
-// This is outside of NewFormDialog to prevent rerenders from losing focus on the children
-function SubjectListItem(props) {
-  let { avatarIcon, children, ...rest } = props;
-  let AvatarIcon = avatarIcon;  // Rename to let JSX know this is a prop
-  return (<ListItem
-    button
-    {...rest}
-    >
-    <ListItemAvatar>
-      <Avatar><AvatarIcon /></Avatar>
-    </ListItemAvatar>
-    {children}
-  </ListItem>);
-}
-
-SubjectListItem.defaultProps = {
-  avatarIcon: AssignmentIcon
-}
-
+/**
+ * A component that renders a FAB to open a dialog to create a new form.
+ *
+ * @param {presetPath} string The questionnaire to use automatically, if any.
+ */
 function NewFormDialog(props) {
   const { children, classes, presetPath } = props;
   const [ open, setOpen ] = useState(false);
