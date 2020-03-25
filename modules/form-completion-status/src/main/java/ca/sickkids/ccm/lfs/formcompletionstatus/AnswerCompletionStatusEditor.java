@@ -39,7 +39,7 @@ import org.apache.sling.api.resource.ResourceResolver;
  *
  * @version $Id$
  */
-public class FormCompletionStatusFlagEditor extends DefaultEditor
+public class AnswerCompletionStatusEditor extends DefaultEditor
 {
 
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
@@ -56,7 +56,7 @@ public class FormCompletionStatusFlagEditor extends DefaultEditor
      * @param nodeBuilder the builder for the current node
      * @param resourceResolver a ResourceResolver object used to obtain answer constraints
      */
-    public FormCompletionStatusFlagEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver)
+    public AnswerCompletionStatusEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.currentResourceResolver = resourceResolver;
@@ -142,20 +142,20 @@ public class FormCompletionStatusFlagEditor extends DefaultEditor
     @Override
     public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
-        return new FormCompletionStatusFlagEditor(this.currentNodeBuilder.getChildNode(name),
+        return new AnswerCompletionStatusEditor(this.currentNodeBuilder.getChildNode(name),
             this.currentResourceResolver);
     }
 
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
-        return new FormCompletionStatusFlagEditor(this.currentNodeBuilder.getChildNode(name),
+        return new AnswerCompletionStatusEditor(this.currentNodeBuilder.getChildNode(name),
             this.currentResourceResolver);
     }
 
     /**
      * Gets the question node associated with the answer for which this
-     * FormCompletionStatusFlagEditor is an editor thereof.
+     * AnswerCompletionStatusEditor is an editor thereof.
      *
      * @return the question Node object associated with this answer
      */

@@ -32,13 +32,13 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.component.annotations.ServiceScope;
 
 /**
- * A {@link EditorProvider} returning {@link FormCompletionStatusFlagEditor}.
+ * A {@link EditorProvider} returning {@link AnswerCompletionStatusEditor}.
  *
  * @version $Id$
  */
-@Component(name = "FormCompletionStatusFlagEditorProvider", service = EditorProvider.class,
+@Component(name = "AnswerCompletionStatusEditorProvider", service = EditorProvider.class,
     scope = ServiceScope.SINGLETON, immediate = true)
-public class FormCompletionStatusFlagEditorProvider implements EditorProvider
+public class AnswerCompletionStatusEditorProvider implements EditorProvider
 {
 
     @Reference(fieldOption = FieldOption.REPLACE,
@@ -53,8 +53,8 @@ public class FormCompletionStatusFlagEditorProvider implements EditorProvider
         if (this.rrf != null) {
             ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
             if (myResolver != null) {
-                // Each FormCompletionStatusFlagEditor maintains a state, so a new instance must be returned each time
-                return new FormCompletionStatusFlagEditor(builder, myResolver);
+                // Each AnswerCompletionStatusEditor maintains a state, so a new instance must be returned each time
+                return new AnswerCompletionStatusEditor(builder, myResolver);
             }
         }
         return null;
