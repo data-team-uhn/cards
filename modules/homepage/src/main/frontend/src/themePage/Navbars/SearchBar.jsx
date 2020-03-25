@@ -1,4 +1,4 @@
-//
+ //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
 //  distributed with this work for additional information
@@ -120,12 +120,13 @@ function SearchBar(props) {
   // * the form's subject name (if available) or the resource's uuid
   function QuickSearchResultHeader(props) {
     const {resultData} = props;
+    const entry = /Forms\/(.+)/.exec(resultData["@path"]);
     return resultData && (
       <div>
         <Typography variant="body2" color="textSecondary">
           {(resultData.questionnaire?.title?.concat(' ') || '') + (resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')}
         </Typography>
-        {resultData.subject?.identifier || resultData["jcr:uuid"] || ''}
+        {resultData.subject?.identifier || entry ? entry[1] : ''}
       </div>
     ) || null
   }
