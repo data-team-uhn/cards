@@ -78,6 +78,7 @@ function ParsedNoteSection (props) {
                 text={containedMatter}
                 offset={firstMatch.start}
                 classes={classes}
+                onAddSuggestion={onAddSuggestion}
                 />
             </span>
           </Link>
@@ -87,6 +88,7 @@ function ParsedNoteSection (props) {
           text={middleMatter}
           offset={firstMatch.end}
           classes={classes}
+          onAddSuggestion={onAddSuggestion}
           />
         <Typography display="inline">{endMatter}</Typography>
       </React.Fragment>}

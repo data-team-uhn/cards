@@ -164,10 +164,12 @@ function VocabularySelector(props) {
       setRadioSelect(name);
     } else {
       // As per React specs, we do not modify the state array directly, but slice and add
-      var newChildren = listChildren.slice();
-      newChildren.push([name, id, false, true]);
-      setListChildren(newChildren);
-      setSelected(selected + 1);
+      setListChildren(oldChildren => {
+        let newChildren = oldChildren.slice();
+        newChildren.push([name, id, false, true]);
+        return newChildren;
+      });
+      setSelected(num => num + 1);
     }
   }
 
