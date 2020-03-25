@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.sickkids.ccm.lfs.answerflags;
+package ca.sickkids.ccm.lfs.formcompletionstatus;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,7 +39,7 @@ import org.apache.sling.api.resource.ResourceResolver;
  *
  * @version $Id$
  */
-public class AnswerStatusFlagEditor extends DefaultEditor
+public class FormCompletionStatusFlagEditor extends DefaultEditor
 {
 
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
@@ -56,7 +56,7 @@ public class AnswerStatusFlagEditor extends DefaultEditor
      * @param nodeBuilder the builder for the current node
      * @param resourceResolver a ResourceResolver object used to obtain answer constraints
      */
-    public AnswerStatusFlagEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver)
+    public FormCompletionStatusFlagEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.currentResourceResolver = resourceResolver;
@@ -143,17 +143,20 @@ public class AnswerStatusFlagEditor extends DefaultEditor
     @Override
     public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
-        return new AnswerStatusFlagEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver);
+        return new FormCompletionStatusFlagEditor(this.currentNodeBuilder.getChildNode(name),
+            this.currentResourceResolver);
     }
 
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
-        return new AnswerStatusFlagEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver);
+        return new FormCompletionStatusFlagEditor(this.currentNodeBuilder.getChildNode(name),
+            this.currentResourceResolver);
     }
 
     /**
-     * Gets the question node associated with the answer for which this AnswerStatusFlagEditor is an editor thereof.
+     * Gets the question node associated with the answer for which this
+     * FormCompletionStatusFlagEditor is an editor thereof.
      *
      * @return the question Node object associated with this answer
      */

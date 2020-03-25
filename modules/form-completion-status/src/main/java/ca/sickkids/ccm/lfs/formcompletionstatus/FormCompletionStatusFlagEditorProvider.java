@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.sickkids.ccm.lfs.answerflags;
+package ca.sickkids.ccm.lfs.formcompletionstatus;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
@@ -32,13 +32,13 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.component.annotations.ServiceScope;
 
 /**
- * A {@link EditorProvider} returning {@link AnswerStatusFlagEditor}.
+ * A {@link EditorProvider} returning {@link FormCompletionStatusFlagEditor}.
  *
  * @version $Id$
  */
-@Component(name = "AnswerStatusFlagEditorProvider", service = EditorProvider.class, scope = ServiceScope.SINGLETON,
-    immediate = true)
-public class AnswerStatusFlagEditorProvider implements EditorProvider
+@Component(name = "FormCompletionStatusFlagEditorProvider", service = EditorProvider.class,
+    scope = ServiceScope.SINGLETON, immediate = true)
+public class FormCompletionStatusFlagEditorProvider implements EditorProvider
 {
 
     @Reference(fieldOption = FieldOption.REPLACE,
@@ -53,8 +53,8 @@ public class AnswerStatusFlagEditorProvider implements EditorProvider
         if (this.rrf != null) {
             ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
             if (myResolver != null) {
-                // Each AnswerStatusFlagEditor maintains a state, so a new instance must be returned each time
-                return new AnswerStatusFlagEditor(builder, myResolver);
+                // Each FormCompletionStatusFlagEditor maintains a state, so a new instance must be returned each time
+                return new FormCompletionStatusFlagEditor(builder, myResolver);
             }
         }
         return null;
