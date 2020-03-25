@@ -93,7 +93,6 @@ public class FormCompletionStatusFlagEditor extends DefaultEditor
             if (checkInvalidAnswer(questionNode, numAnswers)) {
                 statusFlags.add("INVALID");
                 statusFlags.add("INCOMPLETE");
-                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
             } else {
                 /*
                  * We are here because:
@@ -113,8 +112,8 @@ public class FormCompletionStatusFlagEditor extends DefaultEditor
                  * TODO: Implement validation rules and check them here
                  * Remove INVALID and INCOMPLETE flags if all validation rules pass
                  */
-                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
             }
+            this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
         }
     }
 
