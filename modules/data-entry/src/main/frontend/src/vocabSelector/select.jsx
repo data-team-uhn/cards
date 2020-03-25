@@ -210,17 +210,21 @@ function VocabularySelector(props) {
   let addDefaultSuggestion = (status, data, id, isSuggestion) => {
     const hasExistingAnswers = existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value;
     const existingAnswers = existingAnswer && existingAnswer[1].value;
+    var name;
     if (status === null) {
       // Use the name from the response (if available) or the ID if not
-      var name = data["name"] || id;
-
-      // Avoid the race condition by using updater functions
-      var newChild = [name, id, isSuggestion, hasExistingAnswers && existingAnswers.includes(id)];
-      setDefaultListChildren(oldDefaultListChildren => {var newList = oldDefaultListChildren.slice(); newList.push(newChild); return(newList);});
-      setListChildren(oldListChildren => {var newList = oldListChildren.slice(); newList.push(newChild); return(newList);});
+      name = data["name"] || id;
     } else {
       console.log("Error: Thesaurus lookup failed with code " + status);
+
+      // Fallback by using the ID
+      name = id;
     }
+
+    // Avoid the race condition by using updater functions
+    var newChild = [name, id, isSuggestion, hasExistingAnswers && existingAnswers.includes(id)];
+    setDefaultListChildren(oldDefaultListChildren => {var newList = oldDefaultListChildren.slice(); newList.push(newChild); return(newList);});
+    setListChildren(oldListChildren => {var newList = oldListChildren.slice(); newList.push(newChild); return(newList);});
   }
 
   let removeSelection = (id, name, wasSelected=false) => {
