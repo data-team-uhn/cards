@@ -69,7 +69,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         Node questionNode = getQuestionNode();
         if (questionNode != null) {
             if ("value".equals(after.getName())) {
-                propertyChanged(null, null);
+                propertyChanged(null, after);
             } else {
                 ArrayList<String> statusFlags = new ArrayList<String>();
                 //Only add the INCOMPLETE flag if the given question requires more than zero answers
@@ -86,8 +86,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     public void propertyChanged(PropertyState before, PropertyState after) throws CommitFailedException
     {
         Node questionNode = getQuestionNode();
-        if (questionNode != null) {
-            Iterable<String> nodeAnswers = this.currentNodeBuilder.getProperty("value").getValue(Type.STRINGS);
+        if (questionNode != null && "value".equals(after.getName())) {
+            Iterable<String> nodeAnswers = after.getValue(Type.STRINGS);
             int numAnswers = iterableLength(nodeAnswers);
             ArrayList<String> statusFlags = new ArrayList<String>();
             if (checkInvalidAnswer(questionNode, numAnswers)) {
