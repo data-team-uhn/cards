@@ -27,6 +27,9 @@ import AddIcon from "@material-ui/icons/Add";
 import SubjectSelectorList, { createSubjects, SubjectListItem } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
+const PROGRESS_SELECT_QUESTIONNAIRE = 0;
+const PROGRESS_SELECT_SUBJECT = 1;
+
 /**
  * A component that renders a FAB to open a dialog to create a new form.
  *
@@ -41,6 +44,7 @@ function NewFormDialog(props) {
   const [ newSubjects, setNewSubjects ] = useState([]);
   const [ selectedQuestionnaire, setSelectedQuestionnaire ] = useState(presetPath);
   const [ selectedSubject, setSelectedSubject ] = useState();
+  const [ progress, setProgress ] = useState(PROGRESS_SELECT_QUESTIONNAIRE);
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ error, setError ] = useState("");
 
@@ -100,7 +104,14 @@ function NewFormDialog(props) {
     // Send a fetch request to determine the subjects available
     fetch('/query?query=' + encodeURIComponent(query))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {setter(json["rows"])})
+      .then((json) => {
+        // If the selectedQuestionnaire is currently presetPath, we need to turn it into
+        // the actual questionnaire object in this step
+        if (typeof selectedQuestionnaire === 'string') {
+          setSelectedQuestionnaire(json["rows"].filter((object) => object["@path"] === selectedQuestionnaire)[0]);
+        }
+        setter(json["rows"])
+      })
       .catch(parseErrorResponse)
       .finally(() => {setNumFetchRequests((num) => (num-1))});
   }
@@ -119,6 +130,25 @@ function NewFormDialog(props) {
     });
   }
 
+  // Offer the ability to select a subject or create the form, depending on what step the user is on
+  let progressThroughDialog = () => {
+    if (progress === PROGRESS_SELECT_QUESTIONNAIRE) {
+      if (!selectedQuestionnaire) {
+        onError("Please select a questionnaire.");
+        return;
+      } else {
+        setProgress(PROGRESS_SELECT_SUBJECT);
+      }
+    } else {
+      if (!selectedSubject) {
+        onError("Please select a subject.");
+        return;
+      } else {
+        initiateFormCreation();
+      }
+    }
+  }
+
   const isFetching = numFetchRequests > 0;
 
   return (
@@ -128,10 +158,10 @@ function NewFormDialog(props) {
           Select a questionnaire
         </DialogTitle>
         <DialogContent dividers>
-        {error && <Typography color='error'>{error}</Typography>}
-        {isFetching && <div className={classes.newFormTypePlaceholder}><CircularProgress size={24} className={classes.newFormTypeLoadingIndicator} /></div>}
-        <Grid container>
-          <Grid item xs={6}>
+          {error && <Typography color='error'>{error}</Typography>}
+          {isFetching && <div className={classes.newFormTypePlaceholder}><CircularProgress size={24} className={classes.newFormTypeLoadingIndicator} /></div>}
+          {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
+          <React.Fragment>
             <Typography variant="h4">Questionnaire</Typography>
             {questionnaires &&
               <List>
@@ -148,8 +178,9 @@ function NewFormDialog(props) {
                 })}
               </List>
             }
-          </Grid>
-          <Grid item xs={6}>
+          </React.Fragment>
+          :
+          <React.Fragment>
             <Typography variant="h4">Subject</Typography>
             {subjects &&
               <SubjectSelectorList
@@ -164,16 +195,19 @@ function NewFormDialog(props) {
                 selectedSubject={selectedSubject}
                 />
             }
-          </Grid>
-        </Grid>
+          </React.Fragment>}
         </DialogContent>
         <DialogActions>
           <Button
             variant="contained"
             color="primary"
-            onClick={initiateFormCreation}
+            onClick={progressThroughDialog}
             >
-            Create
+            { progress == PROGRESS_SELECT_QUESTIONNAIRE ?
+              "Continue"
+            :
+              "Create"
+            }
           </Button>
         </DialogActions>
       </Dialog>
