@@ -66,26 +66,14 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     @Override
     public void propertyAdded(PropertyState after) throws CommitFailedException
     {
-        Node questionNode = getQuestionNode();
-        if (questionNode != null) {
-            if ("value".equals(after.getName())) {
-                propertyChanged(null, after);
-            } else {
-                ArrayList<String> statusFlags = new ArrayList<String>();
-                //Only add the INCOMPLETE flag if the given question requires more than zero answers
-                if (checkInvalidAnswer(questionNode, 0)) {
-                    statusFlags.add("INCOMPLETE");
-                }
-                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
-            }
-        }
+        propertyChanged(null, after);
     }
 
     // Called when the value of an existing property gets changed
     @Override
     public void propertyChanged(PropertyState before, PropertyState after) throws CommitFailedException
     {
-        Node questionNode = getQuestionNode();
+        Node questionNode = getQuestionNode(this.currentNodeBuilder);
         if (questionNode != null && "value".equals(after.getName())) {
             Iterable<String> nodeAnswers = after.getValue(Type.STRINGS);
             int numAnswers = iterableLength(nodeAnswers);
@@ -121,7 +109,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     @Override
     public void propertyDeleted(PropertyState before) throws CommitFailedException
     {
-        Node questionNode = getQuestionNode();
+        Node questionNode = getQuestionNode(this.currentNodeBuilder);
         if (questionNode != null) {
             if ("value".equals(before.getName())) {
                 ArrayList<String> statusFlags = new ArrayList<String>();
@@ -142,6 +130,17 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     @Override
     public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
+        Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
+        if (questionNode != null) {
+            if (this.currentNodeBuilder.getChildNode(name).hasProperty("question")) {
+                ArrayList<String> statusFlags = new ArrayList<String>();
+                //Only add the INCOMPLETE flag if the given question requires more than zero answers
+                if (checkInvalidAnswer(questionNode, 0)) {
+                    statusFlags.add("INCOMPLETE");
+                }
+                this.currentNodeBuilder.getChildNode(name).setProperty("statusFlags", statusFlags, Type.STRINGS);
+            }
+        }
         return new AnswerCompletionStatusEditor(this.currentNodeBuilder.getChildNode(name),
             this.currentResourceResolver);
     }
@@ -159,12 +158,12 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      *
      * @return the question Node object associated with this answer
      */
-    private Node getQuestionNode()
+    private Node getQuestionNode(NodeBuilder nb)
     {
         try {
-            if (this.currentNodeBuilder.hasProperty("question")) {
+            if (nb.hasProperty("question")) {
                 Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
-                String questionNodeReference = this.currentNodeBuilder.getProperty("question").getValue(Type.REFERENCE);
+                String questionNodeReference = nb.getProperty("question").getValue(Type.REFERENCE);
                 Node questionNode = resourceSession.getNodeByIdentifier(questionNodeReference);
                 return questionNode;
             }
