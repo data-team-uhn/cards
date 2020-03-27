@@ -179,6 +179,9 @@ const questionnaireStyle = theme => ({
     noteSection: {
         display: "block",
         marginLeft: theme.spacing(6)
+    },
+    displayNone: {
+        display: "none"
     }
 });
 

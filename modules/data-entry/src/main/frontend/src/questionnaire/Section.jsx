@@ -185,7 +185,7 @@ function Section(props) {
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                     Object.entries(sectionDefinition)
                       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                      .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingSectionAnswer, key))
+                      .map(([key, definition]) => <FormEntry entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} key={key}></FormEntry>)
                   }
                 </Grid>
               </Collapse>
