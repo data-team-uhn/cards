@@ -109,6 +109,26 @@ function UserDashboard(props) {
   return (
     <React.Fragment>
       <Grid container spacing={3}>
+        <Grid item lg={12} xl={6}>
+          <Card>
+            <CardHeader
+              title={
+                  <Button className={classes.cardHeaderButton}>
+                    Incomplete Forms
+                  </Button>
+              }
+            />
+            <CardContent>
+              <LiveTable
+                columns={columns}
+                customUrl='/Forms.paginate?fieldname=statusFlags&fieldvalue=INCOMPLETE'
+                defaultLimit={10}
+                joinChildren="lfs:Answer"
+                filters
+              />
+            </CardContent>
+          </Card>
+        </Grid>
         {questionnaires.map( (questionnaire) => {
           const customUrl='/Forms.paginate?fieldname=questionnaire&fieldvalue='
             + encodeURIComponent(questionnaire["jcr:uuid"]);
