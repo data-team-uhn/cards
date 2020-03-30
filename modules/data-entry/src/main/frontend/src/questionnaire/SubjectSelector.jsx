@@ -21,11 +21,9 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
 
-import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemAvatar, ListItemText } from "@material-ui/core";
-import { Input, InputAdornment, withStyles } from "@material-ui/core";
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, ListItem, ListItemAvatar, withStyles } from "@material-ui/core";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
-import AddIcon from "@material-ui/icons/Add";
-import SearchIcon from "@material-ui/icons/Search";
+import MaterialTable from "material-table";
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
@@ -200,137 +198,79 @@ SubjectListItem.defaultProps = {
  * @param {subjects} array A list of (potentially filtered) subjects that the user has available
  */
 function SubjectSelectorList(props) {
-  const { classes, disabled, onAddSubject, onChangeNewSubjects, onError, onSelect, newSubjects, selectedSubject, setSubjects, subjects, ...rest } = props;
-  const [ search, setSearch ] = useState("");
-  const [ delayFilterTimer, setDelayFilterTimer ] = useState();
-  const [ initialized, setInitialized ] = useState();
-  const [ busy, setBusy ] = useState(false);
-  const [ numVisible, setNumVisible ] = useState(NUM_SUBJECTS_VISIBLE_DEFAULT);
-  const [ numSubjects, setNumSubjects ] = useState(0);
-
-  // Send a fetch request to get all of the subjects available to the user
-  let fetchSubjects = (overwrite, newSearch) => {
-    let url = new URL("/query", window.location.origin);
-    let term = newSearch || search; // The search term is either overridden or given in the state
-    let query = "SELECT * FROM [lfs:Subject]" + (term ? ` WHERE CONTAINS(identifier, '*${term}*')` : "");
-    url.searchParams.set("query", query);
-
-    if (overwrite) {
-      // Reset the number of visible items if we're overwriting the output
-      setNumVisible(NUM_SUBJECTS_VISIBLE_DEFAULT);
-    } else {
-      // Use an offset if we're appending to the output
-      url.searchParams.set("offset", subjects.length);
-    }
-
-    fetch(url)
-      .then(response => response.ok ? response.json() : Promise.reject(response))
-      .then((data) => {parseSubjects(overwrite, data)})
-      .catch(onError)
-      .finally(() => {setBusy(false);})
-  }
-
-  // Parse out only the subjects and add them to the amount we have, either via appending or overwriting
-  let parseSubjects = (overwrite, data) => {
-    if (overwrite) {
-      setSubjects(data["rows"]);
-      setNumSubjects(data["totalrows"]);
-    } else {
-      setSubjects((old) => old.concat(data["rows"]));
-      setNumSubjects(data["totalrows"]);
-    }
-  }
-
-  // Filter the search results after a short delay
-  let delayFilter = (newQuery) => {
-    if (delayFilterTimer !== null) {
-      clearTimeout(delayFilterTimer);
-    }
-
-    setBusy(true);
-    setDelayFilterTimer(setTimeout(fetchSubjects, 500, true, newQuery));
-  }
-
-  // Expand the list, making more subjects visible
-  let addMoreVisible = () => {
-    setNumVisible(old => old+10);
-    fetchSubjects(false);
-  }
-
-  if (!initialized) {
-    fetchSubjects(true);
-    setInitialized(true);
-  }
+  const { classes, disabled, onAddSubject, onChangeNewSubjects, onError, onSelect, newSubjects, selectedSubject, setSubjects, subjects, theme, ...rest } = props;
+  const COLUMNS = [
+    { title: 'UUID', field: 'jcr:uuid', initialEditValue: 'auto-generated', editable: 'never' },
+    { title: 'Identifier', field: 'identifier' },
+  ]
 
   return(
     <React.Fragment>
-      <Input
-        value={search}
-        onChange={(event) => {
-          setSearch(event.target.value);
-          delayFilter(event.target.value);
-        }}
-        endAdornment={(
-          <InputAdornment position="end" onClick={() => {setBusy(true); fetchSubjects();}}>
-            {busy ? <CircularProgress size={24} /> : <SearchIcon /> }
-          </InputAdornment>
-        )}
-        placeholder="Filter subjects..."
-        className={classes.subjectFilterInput}
-        />
-      <SubjectListItem
-        avatarIcon={AddIcon}
-        onClick={onAddSubject}
-        disabled={disabled}
-        >
-        <ListItemText primary="Add new subject" className={classes.addNewSubjectButton} />
-      </SubjectListItem>
-      <List {...rest} >
-        {subjects.map((subject, idx) => (
-          idx > numVisible ?
-            null
-          :
-            <SubjectListItem
-              key={subject["jcr:uuid"]}
-              onClick={() => {onSelect(subject)}}
-              disabled={disabled}
-              selected={subject["jcr:uuid"] === selectedSubject?.["jcr:uuid"]}
-              >
-              <ListItemText primary={subject["identifier"]} />
-            </SubjectListItem>
-        ))}
-        {newSubjects.map((subject, idx) => (
-          <SubjectListItem
-            key={idx}
-            onClick={() => {onSelect(subject)}}
-            disabled={disabled}
-            selected={subject === selectedSubject}
-            >
-            <Input
-              value={subject}
-              onChange={(event) => {
-                let updated = newSubjects.slice();
-                updated[idx] = event.target.value;
-                onSelect(event.target.value);
-                onChangeNewSubjects(updated);
-              }}
-              />
-          </SubjectListItem>
-        ))}
-        {numVisible < numSubjects &&
-          <ListItem>
-            <Button
-              onClick={addMoreVisible}
-              >
-              View more results ({Math.min(numVisible, subjects.length)} of {numSubjects} displayed)
-            </Button>
-          </ListItem>
+      <MaterialTable
+        columns={COLUMNS}
+        data={query => {
+            let url = new URL("/query", window.location.origin);
+            let sqlquery = "SELECT * FROM [lfs:Subject]" + (query.search ? ` WHERE CONTAINS(identifier, '*${query.search}*')` : "");
+            url.searchParams.set("query", sqlquery);
+            url.searchParams.set("limit", query.pageSize);
+            url.searchParams.set("offset", query.page*query.pageSize);
+            return fetch(url)
+              .then(response => response.json())
+              .then(result => {
+                return {
+                  data: result["rows"],
+                  page: Math.trunc(result["offset"]/result["limit"]),
+                  totalCount: Math.ceil(result["totalrows"]/result["limit"]),
+                }}
+              )
+          }
         }
-      </List>
+        editable={{
+          onRowAdd: newData => {
+            // Add the new data
+            let url = new URL("/Subjects/" + uuid(), window.location.origin);
+
+            // Do not allow blank subjects
+            if (!newData["identifier"]) {
+              return;
+            }
+
+            // Make a POST request to create a new subject
+            let request_data = new FormData();
+            request_data.append('jcr:primaryType', 'lfs:Subject');
+            request_data.append('identifier', newData["identifier"]);
+            return fetch( url, { method: 'POST', body: request_data })
+              .then(
+                // TODO: A better solution might be to continually attempt to query the newly inserted data until we are certain it is findable
+                new Promise((resolve, reject) => {
+                  setTimeOut(resolve, 5000);  // The timeout for an Oak reindex is 5 seconds
+                })
+              );
+          },
+          onRowDelete: oldData => {
+            // Get the URL of the old data
+            let url = new URL(oldData["@path"], window.location.origin);
+
+            // Make a POST request to delete the given subject
+            let request_data = new FormData();
+            request_data.append(':operation', 'delete');
+            return fetch( url, { method: 'POST', body: request_data })
+            },
+        }}
+        options={{
+          search: true,
+          actionsColumnIndex: -1,
+          rowStyle: rowData => ({
+            /* It doesn't seem possible to alter the className from here */
+            backgroundColor: (selectedSubject?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
+          })
+        }}
+        onRowClick={(event, rowData) => {onSelect(rowData); console.log(rowData)}}
+      />
     </React.Fragment>
   )
 };
 
-const StyledSubjectSelectorList = withStyles(QuestionnaireStyle)(SubjectSelectorList)
+const StyledSubjectSelectorList = withStyles(QuestionnaireStyle, {withTheme: true})(SubjectSelectorList)
 
 export default StyledSubjectSelectorList;
