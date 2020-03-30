@@ -23,6 +23,7 @@ import uuid from "uuid/v4";
 import { CircularProgress, Dialog, DialogContent, DialogTitle, Fab, Grid, List, DialogActions, Button} from "@material-ui/core";
 import { ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import MaterialTable from "material-table";
 
 import SubjectSelectorList, { createSubjects, SubjectListItem } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -155,7 +156,7 @@ function NewFormDialog(props) {
     <React.Fragment>
       <Dialog open={open} onClose={() => { setOpen(false); }}>
         <DialogTitle id="new-form-title">
-          Select a questionnaire
+          {progress === PROGRESS_SELECT_QUESTIONNAIRE ? "Select a questionnaire" : "Select a subject"}
         </DialogTitle>
         <DialogContent dividers>
           {error && <Typography color='error'>{error}</Typography>}
@@ -181,7 +182,6 @@ function NewFormDialog(props) {
           </React.Fragment>
           :
           <React.Fragment>
-            <Typography variant="h4">Subject</Typography>
             {subjects &&
               <SubjectSelectorList
                 disabled={isFetching}
