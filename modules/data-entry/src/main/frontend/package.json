@@ -37,6 +37,7 @@
   "dependencies": {
     "@material-ui/core": "^4.4.3",
     "@material-ui/icons": "^4.4.3",
+    "material-table": "^1.57.2",
     "moment-jdateformatparser": "^1.2.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
