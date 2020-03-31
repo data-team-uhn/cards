@@ -185,6 +185,9 @@ const questionnaireStyle = theme => ({
     },
     subjectFilterInput: {
         width: "100%"
+    },
+    NewFormDialog: {
+        width: "500px"
     }
 });
 

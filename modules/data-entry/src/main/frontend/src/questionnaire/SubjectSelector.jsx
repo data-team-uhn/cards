@@ -200,13 +200,13 @@ SubjectListItem.defaultProps = {
 function SubjectSelectorList(props) {
   const { classes, disabled, onAddSubject, onChangeNewSubjects, onError, onSelect, newSubjects, selectedSubject, setSubjects, subjects, theme, ...rest } = props;
   const COLUMNS = [
-    { title: 'UUID', field: 'jcr:uuid', initialEditValue: 'auto-generated', editable: 'never' },
     { title: 'Identifier', field: 'identifier' },
   ]
 
   return(
     <React.Fragment>
       <MaterialTable
+        title=""
         columns={COLUMNS}
         data={query => {
             let url = new URL("/query", window.location.origin);
@@ -260,10 +260,16 @@ function SubjectSelectorList(props) {
         options={{
           search: true,
           actionsColumnIndex: -1,
+          addRowPosition: 'first',
           rowStyle: rowData => ({
             /* It doesn't seem possible to alter the className from here */
-            backgroundColor: (selectedSubject?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
+            backgroundColor: (selectedSubject?.["identifier"] === rowData["identifier"]) ? theme.palette.grey["200"] : theme.palette.background.default
           })
+        }}
+        localization={{
+          body: {
+            addTooltip: "Add a new subject"
+          }
         }}
         onRowClick={(event, rowData) => {onSelect(rowData); console.log(rowData)}}
       />
