@@ -43,9 +43,10 @@ function NewFormDialog(props) {
   const [ questionnaires, setQuestionnaires ] = useState([]);
   const [ subjects, setSubjects ] = useState([]);
   const [ newSubjects, setNewSubjects ] = useState([]);
-  const [ selectedQuestionnaire, setSelectedQuestionnaire ] = useState(presetPath);
+  const [ presetQuestionnaire, setPresetQuestionnaire ] = useState();
+  const [ selectedQuestionnaire, setSelectedQuestionnaire ] = useState();
   const [ selectedSubject, setSelectedSubject ] = useState();
-  const [ progress, setProgress ] = useState(PROGRESS_SELECT_QUESTIONNAIRE);
+  const [ progress, setProgress ] = useState();
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ error, setError ] = useState("");
 
@@ -99,6 +100,10 @@ function NewFormDialog(props) {
     }
     setOpen(true);
     setError("");
+    if (presetQuestionnaire) {
+      setSelectedQuestionnaire(presetQuestionnaire);
+    }
+    setProgress(presetPath ? PROGRESS_SELECT_SUBJECT : PROGRESS_SELECT_QUESTIONNAIRE);
   }
 
   let fetchAndPopulate = (query, setter) => {
@@ -108,8 +113,11 @@ function NewFormDialog(props) {
       .then((json) => {
         // If the selectedQuestionnaire is currently presetPath, we need to turn it into
         // the actual questionnaire object in this step
-        if (typeof selectedQuestionnaire === 'string') {
-          setSelectedQuestionnaire(json["rows"].filter((object) => object["@path"] === selectedQuestionnaire)[0]);
+        if (typeof presetPath === 'string') {
+          let foundQuestionnaire = json["rows"].filter((object) => object["@path"] === presetPath)[0]
+          setSelectedQuestionnaire(foundQuestionnaire);
+          setPresetQuestionnaire(foundQuestionnaire);
+          console.log(foundQuestionnaire);
         }
         setter(json["rows"])
       })
@@ -135,18 +143,26 @@ function NewFormDialog(props) {
   let progressThroughDialog = () => {
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE) {
       if (!selectedQuestionnaire) {
-        onError("Please select a questionnaire.");
+        setError("Please select a questionnaire.");
         return;
       } else {
         setProgress(PROGRESS_SELECT_SUBJECT);
       }
     } else {
       if (!selectedSubject) {
-        onError("Please select a subject.");
+        setError("Please select a subject.");
         return;
       } else {
         initiateFormCreation();
       }
+    }
+  }
+
+  let goBack = () => {
+    if (progress === PROGRESS_SELECT_QUESTIONNAIRE) {
+      setOpen(false);
+    } else {
+      setProgress(PROGRESS_SELECT_QUESTIONNAIRE);
     }
   }
 
@@ -158,7 +174,7 @@ function NewFormDialog(props) {
         <DialogTitle id="new-form-title">
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ? "Select a questionnaire" : "Select a subject"}
         </DialogTitle>
-        <DialogContent dividers>
+        <DialogContent dividers className={classes.NewFormDialog}>
           {error && <Typography color='error'>{error}</Typography>}
           {isFetching && <div className={classes.newFormTypePlaceholder}><CircularProgress size={24} className={classes.newFormTypeLoadingIndicator} /></div>}
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
@@ -198,6 +214,17 @@ function NewFormDialog(props) {
           </React.Fragment>}
         </DialogContent>
         <DialogActions>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={goBack}
+            >
+            { progress == PROGRESS_SELECT_QUESTIONNAIRE ?
+              "Cancel"
+            :
+              "Back"
+            }
+          </Button>
           <Button
             variant="contained"
             color="primary"
