@@ -84,6 +84,12 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     public void propertyAdded(PropertyState after) throws CommitFailedException
     {
         propertyChanged(null, after);
+        //Summarize all parents
+        try {
+            summarizeBuilders(this.currentNodeBuilderPath);
+        } catch (RepositoryException e) {
+            return;
+        }
     }
 
     // Called when the value of an existing property gets changed
