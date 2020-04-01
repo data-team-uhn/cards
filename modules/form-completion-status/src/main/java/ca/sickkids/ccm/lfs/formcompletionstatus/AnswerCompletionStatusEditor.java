@@ -76,7 +76,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         this.currentNodeBuilderPath = nodeBuilder;
         this.currentNodeBuilder = nodeBuilder.get(nodeBuilder.size() - 1);
         this.currentResourceResolver = resourceResolver;
-        LOGGER.warn("this.currentNodeBuilderPath = {}", this.currentNodeBuilderPath);
     }
 
     // Called when a new property is added
@@ -166,7 +165,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     @Override
     public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
-        LOGGER.warn("[AnswerCompletionStatusEditor] childNodeAdded: {}", name);
         Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
         if (questionNode != null) {
             if (this.currentNodeBuilder.getChildNode(name).hasProperty("question")) {
@@ -189,7 +187,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
-        LOGGER.warn("[AnswerStatusFlagEditor] childNodeChanged: {}", name);
         ArrayList<NodeBuilder> tmpList = new ArrayList<NodeBuilder>();
         for (int i = 0; i < this.currentNodeBuilderPath.size(); i++) {
             tmpList.add(this.currentNodeBuilderPath.get(i));
@@ -272,7 +269,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     private void summarizeBuilder(NodeBuilder selectedNodeBuilder) throws RepositoryException
     {
-        LOGGER.warn("WORKING WITH: {}", selectedNodeBuilder);
         //Iterate through all children of this node
         Iterable<String> childrenNames = selectedNodeBuilder.getChildNodeNames();
         Iterator<String> childrenNamesIter = childrenNames.iterator();
@@ -287,7 +283,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 Iterator<String> selectedPropsIter = selectedProps.iterator();
                 while (selectedPropsIter.hasNext()) {
                     String thisStr = selectedPropsIter.next();
-                    LOGGER.warn("...checking for... {}", thisStr);
                     if (STATUS_FLAG_INVALID.equals(thisStr)) {
                         isInvalid = true;
                     }
