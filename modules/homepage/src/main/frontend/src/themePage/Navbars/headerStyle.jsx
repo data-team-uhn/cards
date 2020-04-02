@@ -94,7 +94,8 @@ const headerStyle = theme => ({
     width: theme.spacing(32)
   },
   search: {
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
+    width: theme.spacing(59)
   },
   dropdownItem: {
     whiteSpace: "normal"
