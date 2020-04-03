@@ -34,6 +34,7 @@ import ListFilter from "./FilterComponents/ListFilter.jsx";
 import NumericFilter from "./FilterComponents/NumericFilter.jsx";
 import VocabularyFilter from "./FilterComponents/VocabularyFilter.jsx";
 import TextFilter from "./FilterComponents/TextFilter.jsx";
+import SubjectFilter from "./FilterComponents/SubjectFilter.jsx";
 import { UNARY_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
 
 const FILTER_URL = "/Questionnaires.filters";
@@ -47,8 +48,6 @@ function Filters(props) {
   const [filterableAnswers, setFilterableAnswers] = useState({});
   const [filterableFields, setFilterableFields] = useState([]);
   const [filterableTitles, setFilterableTitles] = useState({});
-  const [filterableDataTypes, setFilterableDataTypes] = useState({});
-  const [filterableDisplayModes, setFilterableDisplayModes] = useState({});
   const [filterableUUIDs, setFilterableUUIDs] = useState({});
   const [filterComparators, setFilterComparators] = useState({});
   const [questionDefinitions, setQuestionDefinitions] = useState({});
@@ -95,30 +94,22 @@ function Filters(props) {
 
   // Parse the response from our FilterServlet
   let parseFilterData = (filterJson) => {
-    let dataTypes = {};
-    let fields = [];
-    let displayModes = {};
-    let uuids = {};
-    let titles = {};
+    // Parse through, but keep a custom field for the subject
+    let fields = ["Subject"];
+    let uuids = {Subject: "Subject"};
+    let titles = {Subject: "Subject"};
     for (let [questionName, question] of Object.entries(filterJson)) {
       // For each question, save the name, data type, and answers (if necessary)
       fields.push(questionName);
-      dataTypes[questionName] = question["dataType"];
-      displayModes[questionName] = question["displayMode"];
       uuids[questionName] = question["jcr:uuid"];
       titles[questionName] = question["text"];
     }
-    // In addition, add a custom field for the subject
-    fields.push("Subject");
-    dataTypes["Subject"] = "Subject";
-    displayModes["Subject"] = "";
-    uuids["Subject"] = "";
-    titles["Subject"] = "Subject";
+    filterJson["Subject"] = {
+      dataType: "subject"
+    };
     setFilterableFields(fields);
     setQuestionDefinitions(filterJson);
     setFilterableTitles(titles);
-    setFilterableDataTypes(dataTypes);
-    setFilterableDisplayModes(displayModes);
     setFilterableUUIDs(uuids);
   }
 
@@ -245,7 +236,7 @@ function Filters(props) {
         ref={focusRef}
         questionDefinition={questionDefinitions[filterDatum.name]}
         defaultValue={/*overrideFilters ? overrideFilters.value : editingFilters[index].value*/ undefined}
-        onChangeInput={(newValue) => {handleChangeOutput(index, newValue);}}
+        onChangeInput={(newValue, label) => {handleChangeOutput(index, newValue, label);}}
         />);
   }
 
@@ -336,11 +327,9 @@ function Filters(props) {
                         <MenuItem value="" disabled>
                           <span className={classes.selectPlaceholder}>Add new filter...</span>
                         </MenuItem>
-                        {(filterableFields.map( (name) => {
-                          return(
+                        {(filterableFields.map( (name) =>
                             <MenuItem value={name} key={name} className={classes.categoryOption}>{filterableTitles[name]}</MenuItem>
-                          );
-                        }))}
+                        ))}
                     </Select>
                   </Grid>
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}
