@@ -13,7 +13,7 @@ import {
   drawerWidth,
   transition,
   container
-} from "./themeStyle.jsx";
+} from "../themeStyle.jsx";
 
 const appStyle = theme => ({
   wrapper: {

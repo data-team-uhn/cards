@@ -24,7 +24,7 @@ import {
     grayColor,
     blackColor,
     hexToRgb
-  } from "../themeStyle.jsx";
+  } from "../../themeStyle.jsx";
 
   const sidebarStyle = theme => ({
     drawerPaper: {

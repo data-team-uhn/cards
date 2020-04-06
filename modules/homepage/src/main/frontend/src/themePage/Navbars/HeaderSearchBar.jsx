@@ -22,7 +22,7 @@ import { withRouter } from "react-router-dom";
 
 import { Avatar, ListItemText, ListItemAvatar, Typography, withStyles }  from "@material-ui/core";
 import DescriptionIcon from "@material-ui/icons/Description";
-import HeaderStyle from "./headerStyle.jsx";
+import HeaderStyle from "../../headerStyle.jsx";
 import SearchBar, { DEFAULT_QUERY_URL, DEFAULT_MAX_RESULTS } from "../../SearchBar.jsx"; // In the commons module
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
