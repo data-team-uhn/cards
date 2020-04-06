@@ -20,7 +20,7 @@ import Menu from "@material-ui/icons/Menu";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
 
-import headerStyle from "./headerStyle.jsx";
+import headerStyle from "../../headerStyle.jsx";
 
 function Header({ ...props }) {
   // Create the "brand", i.e. the route taken to get to the current page
