@@ -96,7 +96,7 @@ function Filters(props) {
   let parseFilterData = (filterJson) => {
     // Parse through, but keep a custom field for the subject
     let fields = ["Subject"];
-    let uuids = {Subject: "Subject"};
+    let uuids = {Subject: "lfs:Subject"};
     let titles = {Subject: "Subject"};
     for (let [questionName, question] of Object.entries(filterJson)) {
       // For each question, save the name, data type, and answers (if necessary)
@@ -122,7 +122,7 @@ function Filters(props) {
 
     // Bugfix: also reload every active outputChoice, in order to refresh its copy of the state variables
     newFilters.forEach( (newFilter) => {
-      getOutputChoices(newFilter.name, newFilter);
+      getOutputChoices(newFilter.name);
     });
 
     addFilter();
@@ -235,7 +235,7 @@ function Filters(props) {
       <CachedComponent
         ref={focusRef}
         questionDefinition={questionDefinitions[filterDatum.name]}
-        defaultValue={/*overrideFilters ? overrideFilters.value : editingFilters[index].value*/ undefined}
+        defaultValue={editingFilters[index].value}
         onChangeInput={(newValue, label) => {handleChangeOutput(index, newValue, label);}}
         />);
   }
