@@ -11,6 +11,7 @@
 */
 import PropTypes from "prop-types";
 import React from "react";
+import { withRouter } from "react-router-dom";
 // @material-ui/core components
 import { Button, Hidden, IconButton, withStyles } from "@material-ui/core";
 // @material-ui/icons
@@ -21,7 +22,7 @@ import headerLinksStyle from "./headerLinksStyle.jsx";
 
 class HeaderLinks extends React.Component {
   render() {
-    const { classes, closeSidebar } = this.props;
+    const { classes, closeSidebar, history } = this.props;
 
     // When the screen is larger than "MdUp" size, we alter some menu items
     // so that they show up white in the sidebar (rather than black on the
@@ -30,7 +31,7 @@ class HeaderLinks extends React.Component {
 
     let redirectSearch = (event, row) => {
       if (row["@path"]) {
-        props.history.push("/content.html" + row["@path"]);
+        history.push("/content.html" + row["@path"]);
         expand || closeSidebar;
       }
     }
@@ -63,4 +64,4 @@ HeaderLinks.propTypes = {
   closeSidebar: PropTypes.func
 }
 
-export default withStyles(headerLinksStyle, {withTheme: true})(HeaderLinks);
+export default withStyles(headerLinksStyle, {withTheme: true})(withRouter(HeaderLinks));
