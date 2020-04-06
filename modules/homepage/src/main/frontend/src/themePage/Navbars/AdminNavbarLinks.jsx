@@ -16,7 +16,7 @@ import { Button, Hidden, IconButton, withStyles } from "@material-ui/core";
 // @material-ui/icons
 import ExitToApp from "@material-ui/icons/ExitToApp";
 
-import SearchBar from "./SearchBar.jsx";
+import HeaderSearchBar from "./HeaderSearchBar.jsx";
 import headerLinksStyle from "./headerLinksStyle.jsx";
 
 class HeaderLinks extends React.Component {
@@ -28,13 +28,20 @@ class HeaderLinks extends React.Component {
     // main page)
     const expand = window.innerWidth >= this.props.theme.breakpoints.values.md;
 
+    let redirectSearch = (event, row) => {
+      if (row["@path"]) {
+        props.history.push("/content.html" + row["@path"]);
+        expand || closeSidebar;
+      }
+    }
+
     return (
       <div>
-        <SearchBar
+        <HeaderSearchBar
           invertColors={!expand}
-          closeSidebar={expand ? undefined : closeSidebar}
+          onSelect={redirectSearch}
           className={expand ? undefined : classes.buttonLink}
-          />
+        />
         {/* Log out */}
         <IconButton
           aria-label="Log out"
