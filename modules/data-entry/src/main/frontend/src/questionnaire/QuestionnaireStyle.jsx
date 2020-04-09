@@ -188,6 +188,10 @@ const questionnaireStyle = theme => ({
     },
     NewFormDialog: {
         width: "500px"
+    },
+    deleteText: {
+        fontSize: "15px",
+        color: theme.palette.error.main,
     }
 });
 
