@@ -157,6 +157,12 @@ function NewFormDialog(props) {
     }
   }
 
+  // Set the currently selected subject and remove all errors.
+  let selectSubject = (subject) => {
+    setSelectedSubject(subject);
+    setError(false);
+  }
+
   let goBack = () => {
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE) {
       setOpen(false);
@@ -203,7 +209,7 @@ function NewFormDialog(props) {
                 onAddSubject={addNewSubject}
                 onChangeNewSubjects={setNewSubjects}
                 onError={setError}
-                onSelect={setSelectedSubject}
+                onSelect={selectSubject}
                 newSubjects={newSubjects}
                 setSubjects={setSubjects}
                 subjects={subjects}
