@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
 
@@ -127,12 +127,12 @@ export function createSubjects(newSubjects, subjectToTrack, returnCall, onError)
   let selectedURL = subjectToTrack["@path"];
   let lastPromise = null;
   for (let subjectName of newSubjects) {
-    let URL = "/Subjects/" + uuid();
-
     // Do not allow blank subjects
     if (subjectName == "") {
       continue;
     }
+
+    let URL = "/Subjects/" + subjectName;
 
     // If this is the subject the user has selected, make a note of the output URL
     if (subjectName == subjectToTrack) {
@@ -198,10 +198,10 @@ SubjectListItem.defaultProps = {
  * @param {subjects} array A list of (potentially filtered) subjects that the user has available
  */
 function SubjectSelectorList(props) {
-  const { classes, disabled, onAddSubject, onChangeNewSubjects, onError, onSelect, newSubjects, selectedSubject, setSubjects, subjects, theme, ...rest } = props;
+  const { classes, disabled, onAddSubject, onChangeNewSubjects, onEdit, onError, onSelect, newSubjects, selectedSubject, setSubjects, subjects, theme, ...rest } = props;
   const COLUMNS = [
     { title: 'Identifier', field: 'identifier' },
-  ]
+  ];
 
   return(
     <React.Fragment>
@@ -220,31 +220,37 @@ function SubjectSelectorList(props) {
                 return {
                   data: result["rows"],
                   page: Math.trunc(result["offset"]/result["limit"]),
-                  totalCount: Math.ceil(result["totalrows"]/result["limit"]),
+                  totalCount: result["totalrows"],
                 }}
               )
           }
         }
         editable={{
           onRowAdd: newData => {
-            // Add the new data
-            let url = new URL("/Subjects/" + uuid(), window.location.origin);
-
             // Do not allow blank subjects
             if (!newData["identifier"]) {
               return;
             }
+
+            // Add the new data
+            let url = new URL("/Subjects/" + newData["identifier"], window.location.origin);
 
             // Make a POST request to create a new subject
             let request_data = new FormData();
             request_data.append('jcr:primaryType', 'lfs:Subject');
             request_data.append('identifier', newData["identifier"]);
             return fetch( url, { method: 'POST', body: request_data })
-              .then(
+              .then( () => (
                 // TODO: A better solution might be to continually attempt to query the newly inserted data until we are certain it is findable
                 new Promise((resolve, reject) => {
-                  setTimeOut(resolve, 5000);  // The timeout for an Oak reindex is 5 seconds
-                })
+                  let checkForNew = () => {
+                    fetch(url)
+                     .then((response) => response.ok ? response.text() : Promise.reject(response))
+                     .then((html) => {console.log(html); resolve();})
+                     .catch((error) => {console.log(error); setTimeout(checkForNew, 1000)});
+                  }
+                  setTimeout(checkForNew, 1000);
+                }))
               );
           },
           onRowDelete: oldData => {
@@ -268,7 +274,11 @@ function SubjectSelectorList(props) {
         }}
         localization={{
           body: {
-            addTooltip: "Add a new subject"
+            addTooltip: "Add a new subject",
+            editRow: {
+              /* NB: We can't escape the h6 placed around the delete text, so we instead override the style */
+              deleteText: <span className={classes.deleteText}>Are you sure you want to delete this row?</span>
+            }
           }
         }}
         onRowClick={(event, rowData) => {onSelect(rowData); console.log(rowData)}}
