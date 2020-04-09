@@ -117,7 +117,6 @@ function NewFormDialog(props) {
           let foundQuestionnaire = json["rows"].filter((object) => object["@path"] === presetPath)[0]
           setSelectedQuestionnaire(foundQuestionnaire);
           setPresetQuestionnaire(foundQuestionnaire);
-          console.log(foundQuestionnaire);
         }
         setter(json["rows"])
       })
