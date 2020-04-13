@@ -16,15 +16,12 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { Chip, Typography, Button, Dialog, CircularProgress, IconButton } from "@material-ui/core";
 import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import CloseIcon from '@material-ui/icons/Close';
 
-import { DATE_FORMATS } from "../questionnaire/DateQuestion.jsx";
-import { NumberFormatCustom } from "../questionnaire/NumberQuestion";
-import VocabularySelector from "../vocabQuery/query.jsx";
 import LiveTableStyle from "./tableStyle.jsx";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";
 

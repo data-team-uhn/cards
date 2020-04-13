@@ -23,13 +23,12 @@ import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
-import { DATE_FORMATS } from "../../questionnaire/DateQuestion.jsx";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
 
 const TextFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, onChange, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
   // Manage our own state inside here as well
   const [ input, setInput ] = useState(defaultValue || "");
 

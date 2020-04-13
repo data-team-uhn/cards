@@ -23,16 +23,14 @@ import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
-import { DATE_FORMATS } from "../../questionnaire/DateQuestion.jsx";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
 
 const ListFilter = forwardRef((props, ref) => {
-  const { classes, comparator, defaultValue, onChange, onChangeComparator, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, comparator, defaultValue, onChangeComparator, onChangeInput, questionDefinition, ...rest } = props;
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(defaultValue || "");
-  const isUnary = comparator && UNARY_COMPARATORS.includes(comparator);
 
   return (
     <Select
@@ -76,7 +74,7 @@ const StyledListFilter = withStyles(QuestionnaireStyle)(ListFilter)
 export default StyledListFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
-  if (questionDefinition.dataType === "list") {
-    return [COMPARATORS, StyledListFilter, 50];
+  if (questionDefinition.displayMode === "list") {
+    return [COMPARATORS, StyledListFilter, 60];
   }
 });
