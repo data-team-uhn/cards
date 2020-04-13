@@ -203,15 +203,19 @@ function SubjectSelectorList(props) {
     { title: 'Identifier', field: 'identifier' },
   ];
 
+  let createQueryURL = (query) => {
+    let url = new URL("/query", window.location.origin);
+    url.searchParams.set("query", "SELECT * FROM [lfs:Subject] as n" + query);
+    return url;
+  }
+
   return(
     <React.Fragment>
       <MaterialTable
         title=""
         columns={COLUMNS}
         data={query => {
-            let url = new URL("/query", window.location.origin);
-            let sqlquery = "SELECT * FROM [lfs:Subject]" + (query.search ? ` WHERE CONTAINS(identifier, '*${query.search}*')` : "");
-            url.searchParams.set("query", sqlquery);
+            let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.identifier, '*${query.search}*')` : "");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
             return fetch(url)
@@ -239,14 +243,16 @@ function SubjectSelectorList(props) {
             let request_data = new FormData();
             request_data.append('jcr:primaryType', 'lfs:Subject');
             request_data.append('identifier', newData["identifier"]);
+
+            let check_url = createQueryURL(` WHERE n.'identifier'='${newData["identifier"]}'`);
             return fetch( url, { method: 'POST', body: request_data })
               .then( () => (
-                // TODO: A better solution might be to continually attempt to query the newly inserted data until we are certain it is findable
+                // Continually attempt to query the newly inserted data until we are certain it is findable
                 new Promise((resolve, reject) => {
                   let checkForNew = () => {
-                    fetch(url)
-                     .then((response) => response.ok ? response.text() : Promise.reject(response))
-                     .then((html) => {console.log(html); resolve();})
+                    fetch(check_url)
+                     .then((response) => response.ok ? response.json() : Promise.reject(response))
+                     .then((json) => {json.returnedrows > 0 ? resolve() : Promise.reject(response);})
                      .catch((error) => {console.log(error); setTimeout(checkForNew, 1000)});
                   }
                   setTimeout(checkForNew, 1000);
