@@ -28,6 +28,7 @@ import FilterComponentManager from "./FilterComponents/FilterComponentManager.js
 // We have to import each filter dependency here to load them properly into the FilterComponentManager
 import DateFilter from "./FilterComponents/DateFilter.jsx";
 import ListFilter from "./FilterComponents/ListFilter.jsx";
+import BooleanFilter from "./FilterComponents/BooleanFilter.jsx";
 import NumericFilter from "./FilterComponents/NumericFilter.jsx";
 import VocabularyFilter from "./FilterComponents/VocabularyFilter.jsx";
 import TextFilter from "./FilterComponents/TextFilter.jsx";
