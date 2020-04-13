@@ -26,6 +26,7 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 import Note from "./Note.jsx";
 
 const NCRURL = window.location.origin + "/ncr/annotate/";
+const ONTOLOGY_KEY = "hp_id";
 
 // Attempt to split up the given text & tooltips to highlight
 function ParsedNoteSection (props) {
@@ -37,7 +38,7 @@ function ParsedNoteSection (props) {
     var firstMatch = matches[0];
     // The front matter is the text before the first match begins
     frontMatter = text.substring(0, firstMatch.start-offset);
-    var matchID = firstMatch["hp_id"]; // TODO: Handle more than just HPO
+    var matchID = firstMatch[ONTOLOGY_KEY]; // TODO: Handle more than just HPO
     var matchName = firstMatch["names"][0];
 
     // The contained matter is the text inside the first match
@@ -59,7 +60,7 @@ function ParsedNoteSection (props) {
   // Handle the user clicking on a link which corresponds to a suggestion
   let addSuggestion = (event) => {
     event.preventDefault();
-    onAddSuggestion(firstMatch["hp_id"], firstMatch["names"][0])
+    onAddSuggestion(firstMatch[ONTOLOGY_KEY], firstMatch["names"][0])
   }
 
   return (<React.Fragment>
