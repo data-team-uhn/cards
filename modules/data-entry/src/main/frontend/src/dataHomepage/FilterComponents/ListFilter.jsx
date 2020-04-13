@@ -37,10 +37,8 @@ const ListFilter = forwardRef((props, ref) => {
       value={selection}
       onChange={(event) => {
         setSelection(event.target.value);
-        onChange(event);
+        onChangeInput(event.target.value);
       }}
-      defaultValue={defaultValue}
-      onChange={(event) => {onChangeInput(event.target.value)}}
       className={classes.answerField}
       ref={ref}
       {...rest}
