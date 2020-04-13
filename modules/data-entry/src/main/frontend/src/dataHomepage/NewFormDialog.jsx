@@ -164,6 +164,7 @@ function NewFormDialog(props) {
   }
 
   let goBack = () => {
+    setError(false);
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE) {
       setOpen(false);
     } else {
