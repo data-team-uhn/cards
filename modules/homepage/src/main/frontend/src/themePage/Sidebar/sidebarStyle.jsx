@@ -33,7 +33,7 @@ import {
       top: "0",
       bottom: "0",
       left: "0",
-      zIndex: "1",
+      zIndex: "1030",
       ...boxShadow,
       width: drawerWidth,
       // At medium size and up, use the full sidebar

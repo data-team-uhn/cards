@@ -179,6 +179,17 @@ const questionnaireStyle = theme => ({
     noteSection: {
         display: "block",
         marginLeft: theme.spacing(6)
+    },
+    formHeader: {
+        position: "fixed",
+        width: "100%",
+        top: theme.spacing(4),
+        backgroundColor: "white",
+        opacity: 1,
+        zIndex: "1010"
+    },
+    formProvider: {
+        paddingTop: theme.spacing(20)
     }
 });
 
