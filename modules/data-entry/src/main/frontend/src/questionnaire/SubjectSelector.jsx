@@ -287,7 +287,7 @@ function SubjectSelectorList(props) {
             }
           }
         }}
-        onRowClick={(event, rowData) => {onSelect(rowData); console.log(rowData)}}
+        onRowClick={(event, rowData) => {onSelect(rowData)}}
       />
     </React.Fragment>
   )
