@@ -66,6 +66,9 @@ const useStyles = makeStyles(theme => ({
       background: "#a36c1f"
     }
   },
+  exit: {
+    background: "blue",
+  },
   wrapper: {
     position: "relative",
     display: "inline-block"
@@ -106,6 +109,11 @@ export default function VocabularyAction(props) {
     {(props.phase == Phase["Latest"]) && (
       <Tooltip title="Remove this vocabulary">
         <Button onClick={props.uninstall} variant="contained" className={classes.button + " " + classes.uninstall}>Uninstall</Button>
+      </Tooltip>
+    )}
+    {props.exit && (
+      <Tooltip title="Close">
+        <Button onClick={props.exit} variant="contained" className={classes.button + " " + classes.exit}>Close</Button>
       </Tooltip>
     )}
     </React.Fragment>
