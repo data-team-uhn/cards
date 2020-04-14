@@ -172,6 +172,13 @@ function NewFormDialog(props) {
     }
   }
 
+  // Unselect the given subject if it is currently selected
+  let unselectSubject = (subject) => {
+    if (selectedSubject["@path"] == subject["@path"]) {
+      setSelectedSubject(null);
+    }
+  }
+
   const isFetching = numFetchRequests > 0;
 
   return (
@@ -209,6 +216,7 @@ function NewFormDialog(props) {
                 disabled={isFetching}
                 onAddSubject={addNewSubject}
                 onChangeNewSubjects={setNewSubjects}
+                onDelete={unselectSubject}
                 onError={setError}
                 onSelect={selectSubject}
                 newSubjects={newSubjects}
