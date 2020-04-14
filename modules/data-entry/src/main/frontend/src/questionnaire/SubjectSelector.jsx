@@ -190,6 +190,7 @@ SubjectListItem.defaultProps = {
  * @param {disabled} bool whether selections should be disabled on this element
  * @param {onAddSubject} func Callback for when the user wishes to add a new subject. There are no parameters.
  * @param {onChangeNewSubjects} func Callback for when the user wishes to change the list of subjects they wish to add. The parameter is the list of new subjects.
+ * @param {onDelete} func Callback for the deletion of a subject. The only parameter is the subject deleted.
  * @param {onError} func Callback for an issue in the reading or editing of subjects. The only parameter is a response object.
  * @param {onSelect} func Callback for when the user selects a subject.
  * @param {newSubjects} array A list of subjects with editable names that the user has added this session
@@ -198,7 +199,7 @@ SubjectListItem.defaultProps = {
  * @param {subjects} array A list of (potentially filtered) subjects that the user has available
  */
 function SubjectSelectorList(props) {
-  const { classes, disabled, onAddSubject, onChangeNewSubjects, onEdit, onError, onSelect, newSubjects, selectedSubject, setSubjects, subjects, theme, ...rest } = props;
+  const { classes, disabled, onAddSubject, onChangeNewSubjects, onDelete, onEdit, onError, onSelect, newSubjects, selectedSubject, setSubjects, subjects, theme, ...rest } = props;
   const COLUMNS = [
     { title: 'Identifier', field: 'identifier' },
   ];
@@ -266,6 +267,7 @@ function SubjectSelectorList(props) {
             // Make a POST request to delete the given subject
             let request_data = new FormData();
             request_data.append(':operation', 'delete');
+            onDelete(oldData);
             return fetch( url, { method: 'POST', body: request_data })
             },
         }}
