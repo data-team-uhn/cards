@@ -20,10 +20,9 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import uuid from "uuid/v4";
 
-import { CircularProgress, Dialog, DialogContent, DialogTitle, Fab, Grid, List, DialogActions, Button} from "@material-ui/core";
+import { CircularProgress, Dialog, DialogContent, DialogTitle, Fab, List, DialogActions, Button} from "@material-ui/core";
 import { ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import MaterialTable from "material-table";
 
 import SubjectSelectorList, { createSubjects, SubjectListItem } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
