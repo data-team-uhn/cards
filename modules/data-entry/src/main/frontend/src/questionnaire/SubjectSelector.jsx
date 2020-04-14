@@ -237,6 +237,9 @@ function SubjectSelectorList(props) {
               return;
             }
 
+            // Prevent the user from creating a user that already exists
+            let check_already_exists_url = new URL("/Subjects/" + newData["identifier"], window.location.origin);
+
             // Add the new data
             let url = new URL("/Subjects/" + newData["identifier"], window.location.origin);
 
@@ -246,18 +249,35 @@ function SubjectSelectorList(props) {
             request_data.append('identifier', newData["identifier"]);
 
             let check_url = createQueryURL(` WHERE n.'identifier'='${newData["identifier"]}'`);
-            return fetch( url, { method: 'POST', body: request_data })
+            return fetch( check_already_exists_url )
+              .then ( (response) => {
+                if (response.ok) {
+                  onError("Subject already exists");
+                  return Promise.reject();
+                }
+              })
               .then( () => (
-                // Continually attempt to query the newly inserted data until we are certain it is findable
-                new Promise((resolve, reject) => {
-                  let checkForNew = () => {
-                    fetch(check_url)
-                     .then((response) => response.ok ? response.json() : Promise.reject(response))
-                     .then((json) => {json.returnedrows > 0 ? resolve() : Promise.reject(response);})
-                     .catch((error) => {console.log(error); setTimeout(checkForNew, 1000)});
-                  }
-                  setTimeout(checkForNew, 1000);
-                }))
+                fetch( url, { method: 'POST', body: request_data })
+                  .then( () => (
+                    // Continually attempt to query the newly inserted data until we are certain it is findable
+                    new Promise((resolve, reject) => {
+                      let checkForNew = () => {
+                        fetch(check_url)
+                        .then((response) => response.ok ? response.json() : Promise.reject(response))
+                        .then((json) => {
+                          if (json.returnedrows > 0) {
+                            onError();
+                            resolve();
+                          } else {
+                            Promise.reject(response);
+                          }
+                        })
+                        .catch((error) => {console.log(error); setTimeout(checkForNew, 1000)});
+                      }
+                      setTimeout(checkForNew, 1000);
+                    }))
+                  )
+                )
               );
           },
           onRowDelete: oldData => {
