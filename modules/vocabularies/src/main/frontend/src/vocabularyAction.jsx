@@ -21,8 +21,13 @@ import React from "react";
 
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   CircularProgress,
   makeStyles,
+  Typography,
   Tooltip
 } from "@material-ui/core";
 
@@ -74,6 +79,11 @@ const useStyles = makeStyles(theme => ({
 
 export default function VocabularyAction(props) {
   const classes = useStyles();
+  const [displayPopup, setDisplayPopup] = React.useState(false);
+  const handleOpen = () => {setDisplayPopup(true);}
+  const handleClose = () => {setDisplayPopup(false);}
+  const handleUninstall = () => {setDisplayPopup(false); props.uninstall();}
+
   return(
     <React.Fragment>
     {(props.phase == Phase["Not Installed"]) && (
@@ -105,9 +115,26 @@ export default function VocabularyAction(props) {
     )}
     {(props.phase == Phase["Latest"]) && (
       <Tooltip title="Remove this vocabulary">
-        <Button onClick={props.uninstall} variant="contained" className={classes.button + " " + classes.uninstall}>Uninstall</Button>
+        <Button onClick={handleOpen} variant="contained" className={classes.button + " " + classes.uninstall}>Uninstall</Button>
       </Tooltip>
     )}
+    <Dialog onClose={handleClose} open={displayPopup}>
+
+      <DialogTitle disableTypography>
+        <Typography variant="h4" className={classes.dialogTitle}>{props.acronym}</Typography>
+      </DialogTitle>
+
+      <DialogContent dividers>
+        <Typography variant="h6">{props.name}</Typography>
+        <Typography variant="body1">Uninstalling this vocabulary may result in data not being properly standardized. Proceed?</Typography>
+      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={handleUninstall} variant="contained" className={classes.button + " " + classes.uninstall}>Uninstall</Button>
+        <Button onClick={handleClose} variant="contained" className={classes.button + " " + classes.exit}>Cancel</Button>
+      </DialogActions>
+
+    </Dialog>
     </React.Fragment>
   );
 }
