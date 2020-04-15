@@ -234,7 +234,8 @@ function SubjectSelectorList(props) {
           onRowAdd: newData => {
             // Do not allow blank subjects
             if (!newData["identifier"]) {
-              return;
+              onError("You cannot create a blank subject");
+              return Promise.resolve();
             }
 
             // Prevent the user from creating a user that already exists
