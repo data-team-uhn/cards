@@ -81,9 +81,6 @@ export default function VocabularyDetails(props) {
 
         <DialogTitle disableTypography>
           <Typography variant="h4" className={classes.dialogTitle}>{props.acronym}</Typography>
-          <IconButton className={classes.closeButton} onClick={handleClose}>
-            <CloseIcon />
-          </IconButton>
         </DialogTitle>
 
         <DialogContent dividers>
