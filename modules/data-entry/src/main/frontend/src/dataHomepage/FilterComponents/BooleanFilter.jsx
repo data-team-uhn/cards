@@ -45,7 +45,7 @@ const BooleanFilter = forwardRef((props, ref) => {
       >
       <MenuItem value={'true'} key={'yes'}>Yes</MenuItem>
       <MenuItem value={'false'} key={'no'}>No</MenuItem>
-      <MenuItem value={'undefined'} key={'undefined'}>Undefined</MenuItem>
+      <MenuItem value={'undefined'} key={'undefined'}>Unknown</MenuItem>
     </Select>
   );
 });
