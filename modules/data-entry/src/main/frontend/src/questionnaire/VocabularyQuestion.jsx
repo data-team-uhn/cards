@@ -26,7 +26,6 @@ import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
-import NCRNote from "./NCRNote";
 import VocabularySelector from "../vocabSelector/select.jsx";
 
 // Component that renders a vocabulary question.

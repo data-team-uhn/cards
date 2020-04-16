@@ -114,12 +114,7 @@ function NCRNote (props) {
     // Access the NCR URL
     let url = new URL(NCRURL);
     url.searchParams.set("text", cachedText);
-    // NCR calls HP HPO, so we do a quick conversion here
-    if (vocabulary == "HP") {
-      url.searchParams.set("model", "HPO");
-    } else {
-      url.searchParams.set("model", vocabulary);
-    }
+    url.searchParams.set("model", vocabulary);
 
     fetch(url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
