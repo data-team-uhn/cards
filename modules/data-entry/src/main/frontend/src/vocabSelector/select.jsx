@@ -145,32 +145,35 @@ function VocabularySelector(props) {
 
   // Create a new child from the selection with parent
   let addSelection = (id, name) => {
-    // Also do not add anything if we are at our maximum number of selections
+    // Do not add anything if we are at our maximum number of selections
     if (selected >= max && max > 1 ) {
-      return;
+      return old;
     }
 
-    // Also do not add duplicates
-    if (listChildren.some(element => {return element[ID_POS] === id})) {
-      return;
-    }
+    // Prevent closures from mucking up logic by placing everything in an updater function
+    setListChildren((oldChildren) => {
+      console.log(id);
+      console.log(oldChildren);
+      // Do not add duplicates
+      if (oldChildren.some(element => {return element[ID_POS] === id})) {
+        return oldChildren;
+      }
 
-    if (max == 1) {
-      // If only 1 child is allowed, replace it instead of copying our array
-      var newChildren = defaultListChildren.slice();
-      newChildren.push([name, id, false, true]);
-      setListChildren(newChildren);
-      setSelected(1);
-      setRadioSelect(name);
-    } else {
-      // As per React specs, we do not modify the state array directly, but slice and add
-      setListChildren(oldChildren => {
+      if (max == 1) {
+        // If only 1 child is allowed, replace it instead of copying our array
+        var newChildren = defaultListChildren.slice();
+        newChildren.push([name, id, false, true]);
+        setSelected(1);
+        setRadioSelect(name);
+        return newChildren;
+      } else {
+        // As per React specs, we do not modify the state array directly, but slice and add
+        setSelected(num => num + 1);
         let newChildren = oldChildren.slice();
         newChildren.push([name, id, false, true]);
         return newChildren;
-      });
-      setSelected(num => num + 1);
-    }
+      }
+    });
   }
 
   let populateDefaults = () => {
