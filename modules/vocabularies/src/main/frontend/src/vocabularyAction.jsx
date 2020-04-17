@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Button,
@@ -26,6 +26,7 @@ import {
   DialogContent,
   DialogTitle,
   CircularProgress,
+  List, ListItem, ListItemText, 
   makeStyles,
   Typography,
   Tooltip
@@ -80,9 +81,62 @@ const useStyles = makeStyles(theme => ({
 export default function VocabularyAction(props) {
   const classes = useStyles();
   const [displayPopup, setDisplayPopup] = React.useState(false);
-  const handleOpen = () => {setDisplayPopup(true);}
+  const [linkedQuestions, setLinkedQuestions] = useState([]);
+  const [questionnaires, setQuestionnaires] = useState([]);
+  const handleOpen = () => {fetchQuestionnaires();}
   const handleClose = () => {setDisplayPopup(false);}
   const handleUninstall = () => {setDisplayPopup(false); props.uninstall();}
+
+  let fetchQuestionnaires = () => {
+    if (questionnaires.length === 0) {
+      // Send a fetch request to determine the questionnaires available
+      fetch('/query?query=' + encodeURIComponent('select * from [lfs:Questionnaire]'))
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((json) => {
+          setQuestionnaires(json["rows"]);
+          fetchData(json["rows"]);
+        });
+    } else {
+      fetchData(questionnaires);
+    }
+  };
+
+  let fetchData = (questionnairesData) => {
+    setLinkedQuestions([]);
+    let aggregatedQuestions = [];
+    let i = 0;
+
+    questionnairesData.forEach( (questionnaire) => {
+      fetch(`${questionnaire["@path"]}.deep.json`)
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((data) => {
+          aggregatedQuestions = aggregatedQuestions.concat(getVocabularyQuestions(data, questionnaire.title));
+
+          if (++i == questionnairesData.length) {
+            setLinkedQuestions(aggregatedQuestions);
+            setDisplayPopup(true);
+          }
+        });
+
+    });
+  };
+
+  let getVocabularyQuestions = (data, title) => {
+    let vocQuestions = [];
+
+    data && Object.entries(data)
+      .forEach( ([key, value]) => {
+        if (value["jcr:primaryType"] == "lfs:Question" && value['dataType'] == 'vocabulary' && value['sourceVocabulary'] == props.acronym) {
+          value.questionnaireName = title;
+          vocQuestions.push(value);
+        }
+        if (value["jcr:primaryType"] == "lfs:Section") {
+            vocQuestions = vocQuestions.concat(getVocabularyQuestions(value, title));
+        }
+      });
+
+      return vocQuestions;
+  }
 
   return(
     <React.Fragment>
@@ -125,6 +179,25 @@ export default function VocabularyAction(props) {
       </DialogTitle>
 
       <DialogContent dividers>
+        {(linkedQuestions.length > 0) && (
+          <span className={classes.wrapper}>
+          <Typography variant="body1">The following variables are linked to this vocabulary:</Typography>
+          <ul>
+            {linkedQuestions.map((question) => {
+              return (
+                <li key={question["jcr:uuid"]}>
+                  <ListItemText primary={question.text + " (" + question.questionnaireName + ")"}>
+                  </ListItemText>
+                </li>
+              );
+            })}
+          </ul>
+          </span>
+        )}
+        {(linkedQuestions.length == 0) && (
+          <Typography variant="body1">No variables are linked to this vocabulary.</Typography>
+        )}
+
         <Typography variant="h6">{props.name}</Typography>
         <Typography variant="body1">Uninstalling this vocabulary may result in data not being properly standardized. Proceed?</Typography>
       </DialogContent>
