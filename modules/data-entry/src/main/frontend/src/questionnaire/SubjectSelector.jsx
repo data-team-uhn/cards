@@ -45,15 +45,6 @@ export function SelectorDialog (props) {
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ isPosting, setIsPosting ] = useState();
 
-  // Add a new subject to us to track
-  let addNewSubject = () => {
-    setNewSubjects((old) => {
-      let updated = old.slice();
-      updated.push("");
-      return(updated);
-    })
-  }
-
   // Handle the user clicking on a subject, potentially submitting it
   let selectSubject = (subject) => {
     if (selectedSubject == subject) {
@@ -93,11 +84,8 @@ export function SelectorDialog (props) {
     <DialogContent>
       <StyledSubjectSelectorList
         disabled={isPosting}
-        onAddSubject={addNewSubject}
-        onChangeNewSubjects={setNewSubjects}
         onError={onError}
         onSelect={selectSubject}
-        newSubjects={newSubjects}
         setSubjects={setSubjects}
         selectedSubject={selectedSubject}
         subjects={subjects}
@@ -188,18 +176,16 @@ SubjectListItem.defaultProps = {
  * <Form id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
  *
  * @param {disabled} bool whether selections should be disabled on this element
- * @param {onAddSubject} func Callback for when the user wishes to add a new subject. There are no parameters.
- * @param {onChangeNewSubjects} func Callback for when the user wishes to change the list of subjects they wish to add. The parameter is the list of new subjects.
  * @param {onDelete} func Callback for the deletion of a subject. The only parameter is the subject deleted.
  * @param {onError} func Callback for an issue in the reading or editing of subjects. The only parameter is a response object.
  * @param {onSelect} func Callback for when the user selects a subject.
- * @param {newSubjects} array A list of subjects with editable names that the user has added this session
  * @param {selectedSubject} object The currently selected subject
  * @param {setSubjects} func A callback for setting the currently available subjects. The parameter is a list of subjects
  * @param {subjects} array A list of (potentially filtered) subjects that the user has available
  */
 function SubjectSelectorList(props) {
-  const { classes, disabled, onAddSubject, onChangeNewSubjects, onDelete, onEdit, onError, onSelect, newSubjects, selectedSubject, setSubjects, subjects, theme, ...rest } = props;
+  const { allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject,
+      setSubjects, subjects, theme, ...rest } = props;
   const COLUMNS = [
     { title: 'Identifier', field: 'identifier' },
   ];
@@ -231,7 +217,7 @@ function SubjectSelectorList(props) {
           }
         }
         editable={{
-          onRowAdd: newData => {
+          onRowAdd: (allowAddSubjects ? newData => {
             // Do not allow blank subjects
             if (!newData["identifier"]) {
               onError("You cannot create a blank subject");
@@ -280,8 +266,8 @@ function SubjectSelectorList(props) {
                   )
                 )
               );
-          },
-          onRowDelete: oldData => {
+          } : undefined),
+          onRowDelete: (allowDeleteSubjects ? oldData => {
             // Get the URL of the old data
             let url = new URL(oldData["@path"], window.location.origin);
 
@@ -290,7 +276,7 @@ function SubjectSelectorList(props) {
             request_data.append(':operation', 'delete');
             onDelete(oldData);
             return fetch( url, { method: 'POST', body: request_data })
-            },
+            } : undefined),
         }}
         options={{
           search: true,
