@@ -20,7 +20,7 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import uuid from "uuid/v4";
 
-import { CircularProgress, Dialog, DialogContent, DialogTitle, Fab, List, DialogActions, Button} from "@material-ui/core";
+import { CircularProgress, Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Input, List} from "@material-ui/core";
 import { ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
@@ -38,10 +38,11 @@ const PROGRESS_SELECT_SUBJECT = 1;
 function NewFormDialog(props) {
   const { children, classes, presetPath } = props;
   const [ open, setOpen ] = useState(false);
+  const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
+  const [ newSubjectName, setNewSubjectName ] = useState("");
   const [ initialized, setInitialized ] = useState(false);
   const [ questionnaires, setQuestionnaires ] = useState([]);
   const [ subjects, setSubjects ] = useState([]);
-  const [ newSubjects, setNewSubjects ] = useState([]);
   const [ presetQuestionnaire, setPresetQuestionnaire ] = useState();
   const [ selectedQuestionnaire, setSelectedQuestionnaire ] = useState();
   const [ selectedSubject, setSelectedSubject ] = useState();
@@ -50,12 +51,12 @@ function NewFormDialog(props) {
   const [ error, setError ] = useState("");
 
   let initiateFormCreation = () => {
-    if (newSubjects.length == 0) {
+    if (newSubjectName == "") {
       // No new subjects need to be created, just create the form
       createForm();
     } else {
       // New subjects need to be created
-      createSubjects(newSubjects, selectedSubject, createForm);
+      createSubjects([newSubjectName], newSubjectName, createForm);
     }
   }
 
@@ -128,15 +129,6 @@ function NewFormDialog(props) {
     setError(`New form request failed with error code ${response.status}: ${response.statusText}`);
   }
 
-  // Add a new subject
-  let addNewSubject = () => {
-    setNewSubjects((old) => {
-      let updated = old.slice();
-      updated.push("");
-      return updated;
-    });
-  }
-
   // Offer the ability to select a subject or create the form, depending on what step the user is on
   let progressThroughDialog = () => {
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE) {
@@ -164,7 +156,8 @@ function NewFormDialog(props) {
 
   let goBack = () => {
     setError(false);
-    if (progress === PROGRESS_SELECT_QUESTIONNAIRE) {
+    // Exit the dialog if we're at the first page or if there is a preset path
+    if (progress === PROGRESS_SELECT_QUESTIONNAIRE || presetPath) {
       setOpen(false);
     } else {
       setProgress(PROGRESS_SELECT_QUESTIONNAIRE);
@@ -213,17 +206,22 @@ function NewFormDialog(props) {
             {subjects &&
               <SubjectSelectorList
                 disabled={isFetching}
-                onAddSubject={addNewSubject}
-                onChangeNewSubjects={setNewSubjects}
                 onDelete={unselectSubject}
                 onError={setError}
                 onSelect={selectSubject}
-                newSubjects={newSubjects}
                 setSubjects={setSubjects}
                 subjects={subjects}
                 selectedSubject={selectedSubject}
                 />
             }
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => { setNewSubjectPopperOpen(true); }}
+              className={classes.createNewSubjectButton}
+              >
+              Create and use new Subject
+            </Button>
           </React.Fragment>}
         </DialogContent>
         <DialogActions>
@@ -232,7 +230,7 @@ function NewFormDialog(props) {
             color="secondary"
             onClick={goBack}
             >
-            { progress == PROGRESS_SELECT_QUESTIONNAIRE ?
+            { (progress == PROGRESS_SELECT_QUESTIONNAIRE || presetPath) ?
               "Cancel"
             :
               "Back"
@@ -248,6 +246,30 @@ function NewFormDialog(props) {
             :
               "Create"
             }
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={newSubjectPopperOpen} onClose={() => { setNewSubjectPopperOpen(false); }} className={classes.newSubjectPopper}>
+        <DialogTitle id="new-form-title">
+          Create new subject
+        </DialogTitle>
+        <DialogContent dividers className={classes.NewFormDialog}>
+          <Input
+            value={newSubjectName}
+            onChange={(event) => {setNewSubjectName(event.target.value);}}
+            className={classes.newSubjectInput}
+            />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {setNewSubjectPopperOpen(false);}}
+            variant="contained"
+            color="secondary"
+            >
+            Cancel
+          </Button>
+          <Button onClick={initiateFormCreation}>
+            Create
           </Button>
         </DialogActions>
       </Dialog>
