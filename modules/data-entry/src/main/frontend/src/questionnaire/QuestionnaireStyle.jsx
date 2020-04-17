@@ -192,6 +192,18 @@ const questionnaireStyle = theme => ({
     deleteText: {
         fontSize: "15px",
         color: theme.palette.error.main,
+    },
+    newSubjectPopper: {
+        zIndex: "1301 !important"
+    },
+    createNewSubjectButton: {
+        display: 'block',
+        width: '60%',
+        margin: 'auto',
+        marginTop: theme.spacing(2)
+    },
+    newSubjectInput: {
+        width: '100%'
     }
 });
 
