@@ -32,6 +32,15 @@ const BooleanFilter = forwardRef((props, ref) => {
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(defaultValue || "");
 
+  const {yesLabel, noLabel, unknownLabel, enableUnknown} = { ...props.questionDefinition, ...props }
+  // Define the defaults for yesLabel, etc. here because we want questionDefinition to be able to
+  // override them, and the props to be able to override the questionDefinition
+  let options = [[yesLabel || "Yes", "true"], [noLabel || "No", "false"]];
+  if (enableUnknown) {
+    options.push([unknownLabel || "Unknown", "undefined"]);
+  }
+
+
   return (
     <Select
       value={selection}
@@ -43,9 +52,12 @@ const BooleanFilter = forwardRef((props, ref) => {
       ref={ref}
       {...rest}
       >
-      <MenuItem value={'true'} key={'yes'}>Yes</MenuItem>
-      <MenuItem value={'false'} key={'no'}>No</MenuItem>
-      <MenuItem value={'undefined'} key={'undefined'}>Unknown</MenuItem>
+      { options.map( (answer) => {
+          return(
+            <MenuItem value={answer[1]} key={answer[1]}>{answer[0]}</MenuItem>
+          );
+        })
+      }
     </Select>
   );
 });
