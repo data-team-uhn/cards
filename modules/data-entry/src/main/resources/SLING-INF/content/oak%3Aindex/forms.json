@@ -26,6 +26,13 @@
                     "useInExcerpt": true,
                     "ordered": true,
                     "propertyIndex": true
+                },
+                "created": {
+                    "name": "jcr:created",
+                    "ordered": true,
+                    "propertyIndex": true,
+                    "nodeScopeIndex": false,
+                    "jcr:primaryType": "nt:unstructured"
                 }
             }
         }
