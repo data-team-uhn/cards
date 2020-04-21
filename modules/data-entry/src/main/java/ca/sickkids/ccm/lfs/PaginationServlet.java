@@ -80,9 +80,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         response.setCharacterEncoding("UTF-8");
         final long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
         final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
+        // If we want this query to be fast, we need to use the exact nodetype requested.
+        // This isn't very pretty, but it's fast: just remove the 'homepage' part of the resource type.
+        final String nodeType =
+            request.getResource().getResourceType().replace('/', ':').replaceFirst("sHomepage$", "");
         final StringBuilder query =
-            // We select all child nodes of the homepage, filtering out nodes that aren't ours, such as rep:policy
-            new StringBuilder("select n.* from [nt:base] as n");
+            // We select all child nodes of the homepage having the right type
+            new StringBuilder("select n.* from [").append(nodeType).append("] as n");
 
         // If child nodes are required for this query, also grab them
         final String[] filternames = request.getParameterValues("filternames");
@@ -93,9 +97,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             request.getParameterValues("filternotempty")
             ));
 
-        // Check only for our fields
-        query.append(" where ischildnode(n, '" + request.getResource().getPath()
-                + "') and n.'sling:resourceSuperType' = 'lfs/Resource'");
+        // Check only for the children of the requested homepage
+        query.append(" where ischildnode(n, '" + request.getResource().getPath() + "')");
 
         // Full text search; \ and ' must be escaped
         final String filter = request.getParameter("filter");
