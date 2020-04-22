@@ -197,10 +197,7 @@ const questionnaireStyle = theme => ({
         zIndex: "1301 !important"
     },
     createNewSubjectButton: {
-        display: 'block',
-        width: '60%',
-        margin: 'auto',
-        marginTop: theme.spacing(2)
+        marginRight: 'auto',
     },
     newSubjectInput: {
         width: '100%'
