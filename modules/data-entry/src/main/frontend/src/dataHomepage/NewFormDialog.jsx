@@ -56,7 +56,7 @@ function NewFormDialog(props) {
       createForm();
     } else {
       // New subjects need to be created
-      createSubjects([newSubjectName], newSubjectName, createForm);
+      createSubjects([newSubjectName], newSubjectName, createForm, setError);
     }
   }
 
@@ -180,7 +180,7 @@ function NewFormDialog(props) {
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ? "Select a questionnaire" : "Select a subject"}
         </DialogTitle>
         <DialogContent dividers className={classes.NewFormDialog}>
-          {error && <Typography color='error'>{error}</Typography>}
+          {error && (!newSubjectPopperOpen) && <Typography color='error'>{error}</Typography>}
           {isFetching && <div className={classes.newFormTypePlaceholder}><CircularProgress size={24} className={classes.newFormTypeLoadingIndicator} /></div>}
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
           <React.Fragment>
@@ -221,7 +221,7 @@ function NewFormDialog(props) {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => { setNewSubjectPopperOpen(true); }}
+              onClick={() => { setNewSubjectPopperOpen(true); setError(); }}
               className={classes.createNewSubjectButton}
               >
               Create Subject
@@ -256,6 +256,7 @@ function NewFormDialog(props) {
           Create new subject
         </DialogTitle>
         <DialogContent dividers className={classes.NewFormDialog}>
+          {error && <Typography color='error'>{error}</Typography>}
           <Input
             value={newSubjectName}
             onChange={(event) => {setNewSubjectName(event.target.value);}}
@@ -264,7 +265,7 @@ function NewFormDialog(props) {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => {setNewSubjectPopperOpen(false);}}
+            onClick={() => {setNewSubjectPopperOpen(false); setError();}}
             variant="contained"
             color="secondary"
             >
