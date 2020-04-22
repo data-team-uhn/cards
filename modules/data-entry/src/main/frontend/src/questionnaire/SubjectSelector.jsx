@@ -17,17 +17,13 @@
 //  under the License.
 //
 
-import React, { useCallback, useRef, useState } from "react";
-import PropTypes from "prop-types";
-import uuid from "uuid/v4";
+import React, { useState } from "react";
 
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, ListItem, ListItemAvatar, withStyles } from "@material-ui/core";
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, Input, ListItem, ListItemAvatar, withStyles } from "@material-ui/core";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import MaterialTable from "material-table";
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
-
-const NUM_SUBJECTS_VISIBLE_DEFAULT = 10;
 
 /**
  * Component that displays the list of subjects in a dialog. Double clicking a subject selects it.
@@ -38,12 +34,13 @@ const NUM_SUBJECTS_VISIBLE_DEFAULT = 10;
  * @param {func} onError Callback for when an error occurs during subject selection
  * @param {string} title Title of the dialog, if any
  */
-export function SelectorDialog (props) {
+function UnstyledSelectorDialog (props) {
   const { classes, open, onChange, onClose, onError, title, ...rest } = props;
   const [ subjects, setSubjects ] = useState([]);
-  const [ newSubjects, setNewSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ isPosting, setIsPosting ] = useState();
+  const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
+  const [ newSubjectName, setNewSubjectName ] = useState("");
 
   // Handle the user clicking on a subject, potentially submitting it
   let selectSubject = (subject) => {
@@ -56,10 +53,10 @@ export function SelectorDialog (props) {
   }
 
   // Handle the SubjectSelector clicking on a subject, selecting it
-  let handleSubmit = () => {
+  let handleSubmit = (useNewSubject) => {
     // Submit the new subjects
     setIsPosting(true);
-    createSubjects(newSubjects, selectedSubject, grabNewSubject, console.log);
+    createSubjects([newSubjectName], useNewSubject ? newSubjectName : selectedSubject, grabNewSubject, console.log);
   }
 
   // Obtain the full details on a new subject
@@ -70,7 +67,9 @@ export function SelectorDialog (props) {
       .then(response => response.ok ? response.json() : Promise.reject(response))
       .then(json => appendPath(json, subjectPath))
       .then(onChange)
-      .catch(onError);
+      .then(() => setNewSubjectPopperOpen(false))
+      .catch(onError)
+      .finally(() => setIsPosting(false));
   }
 
   // Append the @path attribute to an object
@@ -79,29 +78,72 @@ export function SelectorDialog (props) {
     return json;
   }
 
-  return (<Dialog open={open} onClose={onClose}>
-    {title && <DialogTitle>{title}</DialogTitle>}
-    <DialogContent>
-      <StyledSubjectSelectorList
-        disabled={isPosting}
-        onError={onError}
-        onSelect={selectSubject}
-        setSubjects={setSubjects}
-        selectedSubject={selectedSubject}
-        subjects={subjects}
-        {...rest}
-        />
-    </DialogContent>
-    <DialogActions>
-      <Button
-        onClick={handleSubmit}
-        variant="contained"
-        >
-        Confirm
-      </Button>
-    </DialogActions>
-  </Dialog>);
+  return (<React.Fragment>
+    <Dialog open={newSubjectPopperOpen} onClose={() => { setNewSubjectPopperOpen(false); }} className={classes.newSubjectPopper}>
+      <DialogTitle id="new-form-title">
+        Create new subject
+      </DialogTitle>
+      <DialogContent dividers className={classes.NewFormDialog}>
+        <Input
+          disabled={isPosting}
+          value={newSubjectName}
+          onChange={(event) => {setNewSubjectName(event.target.value);}}
+          className={classes.newSubjectInput}
+          />
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={() => {setNewSubjectPopperOpen(false);}}
+          variant="contained"
+          color="secondary"
+          disabled={isPosting}
+          >
+          Cancel
+        </Button>
+        <Button
+          onClick={() => {handleSubmit(newSubjectName);}}
+          variant="contained"
+          color="primary"
+          disabled={isPosting}
+          >
+          Create
+        </Button>
+      </DialogActions>
+    </Dialog>
+    <Dialog open={open} onClose={onClose}>
+      {title && <DialogTitle>{title}</DialogTitle>}
+      <DialogContent>
+        <StyledSubjectSelectorList
+          disabled={isPosting}
+          onError={onError}
+          onSelect={selectSubject}
+          setSubjects={setSubjects}
+          selectedSubject={selectedSubject}
+          subjects={subjects}
+          {...rest}
+          />
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={() => {setNewSubjectPopperOpen(true);}}
+          variant="contained"
+          color="primary"
+          >
+          Create Subject
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          color="primary"
+          >
+          Confirm
+        </Button>
+      </DialogActions>
+    </Dialog>
+  </React.Fragment>);
 }
+
+export const SelectorDialog = withStyles(QuestionnaireStyle)(UnstyledSelectorDialog)
 
 /**
  * Create new subjects from an array of identifiers.
