@@ -162,23 +162,34 @@ export function createSubjects(newSubjects, subjectToTrack, returnCall, onError)
       continue;
     }
 
-    let URL = "/Subjects/" + subjectName;
+    let checkAlreadyExistsURL = new URL("/Subjects/" + subjectName, window.location.origin);
+
+    let url = "/Subjects/" + subjectName;
 
     // If this is the subject the user has selected, make a note of the output URL
     if (subjectName == subjectToTrack) {
-      selectedURL = URL;
+      selectedURL = url;
     }
 
     // Make a POST request to create a new subject
-    let request_data = new FormData();
-    request_data.append('jcr:primaryType', 'lfs:Subject');
-    request_data.append('identifier', subjectName);
+    let requestData = new FormData();
+    requestData.append('jcr:primaryType', 'lfs:Subject');
+    requestData.append('identifier', subjectName);
+
+    let newPromise = fetch( checkAlreadyExistsURL )
+      .then ( (response) => {
+        if (response.ok) {
+          return Promise.reject(`Subject ${subjectName} already exists`);
+        }
+      });
 
     // Either chain the promise or create a new one
     if (lastPromise) {
-      lastPromise.then(() => {fetch( URL, { method: 'POST', body: request_data })});
+      lastPromise
+        .then(newPromise)
+        .then(() => {fetch( url, { method: 'POST', body: requestData })});
     } else {
-      lastPromise = fetch( URL, { method: 'POST', body: request_data });
+      lastPromise = newPromise.then(() => fetch( url, { method: 'POST', body: requestData }));
     }
   }
   // If we're finished creating subjects, create the rest of the form
