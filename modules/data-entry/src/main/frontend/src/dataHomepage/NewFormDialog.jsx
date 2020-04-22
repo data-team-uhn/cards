@@ -214,17 +214,19 @@ function NewFormDialog(props) {
                 selectedSubject={selectedSubject}
                 />
             }
+          </React.Fragment>}
+        </DialogContent>
+        <DialogActions>
+          {progress === PROGRESS_SELECT_SUBJECT &&
             <Button
               variant="contained"
               color="primary"
               onClick={() => { setNewSubjectPopperOpen(true); }}
               className={classes.createNewSubjectButton}
               >
-              Create and use new Subject
+              Create Subject
             </Button>
-          </React.Fragment>}
-        </DialogContent>
-        <DialogActions>
+          }
           <Button
             variant="contained"
             color="secondary"
@@ -244,7 +246,7 @@ function NewFormDialog(props) {
             { progress == PROGRESS_SELECT_QUESTIONNAIRE ?
               "Continue"
             :
-              "Create"
+              "Create Form"
             }
           </Button>
         </DialogActions>
@@ -268,7 +270,11 @@ function NewFormDialog(props) {
             >
             Cancel
           </Button>
-          <Button onClick={initiateFormCreation}>
+          <Button
+            onClick={initiateFormCreation}
+            variant="contained"
+            color="primary"
+            >
             Create
           </Button>
         </DialogActions>
