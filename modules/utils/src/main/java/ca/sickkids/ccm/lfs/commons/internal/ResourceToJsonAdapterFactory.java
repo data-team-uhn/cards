@@ -63,8 +63,19 @@ public class ResourceToJsonAdapterFactory
     implements AdapterFactory
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceToJsonAdapterFactory.class);
+    private static final String JCR_PRIMARY_TYPE = "jcr:primaryType";
+    private static final String PATH_PROP = "@path";
 
     private ThreadLocal<Boolean> deep = new ThreadLocal<Boolean>()
+    {
+        @Override
+        protected Boolean initialValue()
+        {
+            return Boolean.FALSE;
+        }
+    };
+
+    private ThreadLocal<Boolean> simple = new ThreadLocal<Boolean>()
     {
         @Override
         protected Boolean initialValue()
@@ -94,6 +105,9 @@ public class ResourceToJsonAdapterFactory
             if (".deep.json".equals(resource.getResourceMetadata().getResolutionPathInfo())) {
                 this.deep.set(Boolean.TRUE);
             }
+            if (".simple.json".equals(resource.getResourceMetadata().getResolutionPathInfo())) {
+                this.simple.set(Boolean.TRUE);
+            }
             final JsonObjectBuilder result = adapt(node);
             if (result != null) {
                 return type.cast(result.build());
@@ -102,8 +116,24 @@ public class ResourceToJsonAdapterFactory
             LOGGER.error("Failed to serialize resource [{}] to JSON: {}", resource.getPath(), e.getMessage(), e);
         } finally {
             this.deep.remove();
+            this.simple.remove();
         }
         return null;
+    }
+
+    private void handleChild(Node parent, Node child, JsonObjectBuilder result) throws RepositoryException
+    {
+        if (this.deep.get()) {
+            result.add(child.getName(), adapt(child));
+        } else if (this.simple.get()) {
+            String parentPropertyType = parent.getProperty("sling:resourceType").getString();
+            if (!"lfs/Questionnaire".equals(parentPropertyType)
+                && !"lfs/Question".equals(parentPropertyType)
+                && !"lfs/Section".equals(parentPropertyType)
+                ) {
+                result.add(child.getName(), adapt(child));
+            }
+        }
     }
 
     private JsonObjectBuilder adapt(final Node node) throws RepositoryException
@@ -119,20 +149,27 @@ public class ResourceToJsonAdapterFactory
             if (!alreadyProcessed) {
                 final PropertyIterator properties = node.getProperties();
                 while (properties.hasNext()) {
-                    addProperty(result, properties.nextProperty());
+                    Property thisProp = properties.nextProperty();
+                    if (this.simple.get()) {
+                        //String primaryType = node.getProperty("jcr:primaryType").getString();
+                        String slingResourceSuperType = node.getProperty("sling:resourceSuperType").getString();
+                        String slingResourceType = node.getProperty("sling:resourceType").getString();
+                        conditionalAddProperty(slingResourceSuperType, slingResourceType, result, thisProp);
+                    } else {
+                        addProperty(result, thisProp);
+                    }
                 }
                 // If this is a deep serialization, also serialize child nodes
-                if (this.deep.get()) {
+                if (this.deep.get() || this.simple.get()) {
                     final NodeIterator children = node.getNodes();
                     while (children.hasNext()) {
                         final Node child = children.nextNode();
-                        result.add(child.getName(), adapt(child));
+                        handleChild(node, child, result);
                     }
                 }
             }
             // Since the node itself doesn't contain the path as a property, we must manually add it.
-            result.add("@path", node.getPath());
-            result.add("@name", node.getName());
+            result.add(PATH_PROP, node.getPath());
             return result;
         } catch (RepositoryException e) {
             LOGGER.error("Failed to serialize node [{}] to JSON: {}", node.getPath(), e.getMessage(), e);
@@ -140,6 +177,69 @@ public class ResourceToJsonAdapterFactory
             this.processedNodes.get().pop();
         }
         return null;
+    }
+
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
+    private void conditionalAddProperty(String slingResourceSuperType,
+        String slingResourceType, final JsonObjectBuilder ob,
+        final Property prop) throws RepositoryException
+    {
+        if ("lfs/Form".equals(slingResourceType)) {
+            if (JCR_PRIMARY_TYPE.equals(prop.getName())
+                || "jcr:created".equals(prop.getName())
+                || "jcr:createdBy".equals(prop.getName())
+                || "questionnaire".equals(prop.getName())
+                ) {
+                addProperty(ob, prop);
+            }
+        } else if ("lfs/Questionnaire".equals(slingResourceType)) {
+            if (JCR_PRIMARY_TYPE.equals(prop.getName())
+                || "title".equals(prop.getName())
+                || PATH_PROP.equals(prop.getName())
+                ) {
+                addProperty(ob, prop);
+            }
+        } else if ("lfs/Question".equals(slingResourceType)) {
+            if (JCR_PRIMARY_TYPE.equals(prop.getName())
+                || "text".equals(prop.getName())
+                || PATH_PROP.equals(prop.getName())
+                ) {
+                addProperty(ob, prop);
+            }
+        } else if ("lfs/Answer".equals(slingResourceSuperType)) {
+            if (JCR_PRIMARY_TYPE.equals(prop.getName())
+                || "value".equals(prop.getName())
+                || "note".equals(prop.getName())
+                || PATH_PROP.equals(prop.getName())
+                ) {
+                addProperty(ob, prop);
+            }
+            if ("question".equals(prop.getName())) {
+                addProperty(ob, prop);
+            }
+        } else if ("lfs/AnswerSection".equals(slingResourceType)) {
+            if (JCR_PRIMARY_TYPE.equals(prop.getName())) {
+                addProperty(ob, prop);
+            }
+            if ("section".equals(prop.getName())) {
+                addProperty(ob, prop);
+            }
+            if (PATH_PROP.equals(prop.getName())) {
+                addProperty(ob, prop);
+            }
+        } else if ("lfs/Section".equals(slingResourceType)) {
+            if (JCR_PRIMARY_TYPE.equals(prop.getName())) {
+                addProperty(ob, prop);
+            }
+            if ("label".equals(prop.getName())) {
+                addProperty(ob, prop);
+            }
+            if (PATH_PROP.equals(prop.getName())) {
+                addProperty(ob, prop);
+            }
+        } else {
+            addProperty(ob, prop);
+        }
     }
 
     private void addProperty(final JsonObjectBuilder objectBuilder, final Property property) throws RepositoryException
