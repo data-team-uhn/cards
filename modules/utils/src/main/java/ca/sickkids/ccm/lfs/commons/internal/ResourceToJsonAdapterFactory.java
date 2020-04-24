@@ -64,6 +64,7 @@ public class ResourceToJsonAdapterFactory
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceToJsonAdapterFactory.class);
 
+    //String constants for JCR properties
     private static final String JCR_PRIMARY_TYPE_PROP = "jcr:primaryType";
     private static final String PATH_PROP = "@path";
     private static final String JCR_CREATED_PROP = "jcr:created";
@@ -77,6 +78,7 @@ public class ResourceToJsonAdapterFactory
     private static final String SECTION_PROP = "section";
     private static final String LABEL_PROP = "label";
 
+    //String constants for Sling Resource Types
     private static final String QUESTIONNAIRE_SLINGTYPE = "lfs/Questionnaire";
     private static final String QUESTION_SLINGTYPE = "lfs/Question";
     private static final String SECTION_SLINGTYPE = "lfs/Section";
@@ -169,7 +171,6 @@ public class ResourceToJsonAdapterFactory
                 while (properties.hasNext()) {
                     Property thisProp = properties.nextProperty();
                     if (this.simple.get()) {
-                        //String primaryType = node.getProperty("jcr:primaryType").getString();
                         String slingResourceSuperType = node.getProperty("sling:resourceSuperType").getString();
                         String slingResourceType = node.getProperty("sling:resourceType").getString();
                         conditionalAddProperty(slingResourceSuperType, slingResourceType, result, thisProp);
