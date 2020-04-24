@@ -77,6 +77,13 @@ public class ResourceToJsonAdapterFactory
     private static final String SECTION_PROP = "section";
     private static final String LABEL_PROP = "label";
 
+    private static final String QUESTIONNAIRE_SLINGTYPE = "lfs/Questionnaire";
+    private static final String QUESTION_SLINGTYPE = "lfs/Question";
+    private static final String SECTION_SLINGTYPE = "lfs/Section";
+    private static final String FORM_SLINGTYPE = "lfs/Form";
+    private static final String ANSWER_SLINGTYPE = "lfs/Answer";
+    private static final String ANSWER_SECTION_SLINGTYPE = "lfs/AnswerSection";
+
     private ThreadLocal<Boolean> deep = new ThreadLocal<Boolean>()
     {
         @Override
@@ -138,9 +145,9 @@ public class ResourceToJsonAdapterFactory
             result.add(child.getName(), adapt(child));
         } else if (this.simple.get()) {
             String parentPropertyType = parent.getProperty("sling:resourceType").getString();
-            if (!"lfs/Questionnaire".equals(parentPropertyType)
-                && !"lfs/Question".equals(parentPropertyType)
-                && !"lfs/Section".equals(parentPropertyType)
+            if (!QUESTIONNAIRE_SLINGTYPE.equals(parentPropertyType)
+                && !QUESTION_SLINGTYPE.equals(parentPropertyType)
+                && !SECTION_SLINGTYPE.equals(parentPropertyType)
                 ) {
                 result.add(child.getName(), adapt(child));
             }
@@ -195,7 +202,7 @@ public class ResourceToJsonAdapterFactory
         String slingResourceType, final JsonObjectBuilder ob,
         final Property prop) throws RepositoryException
     {
-        if ("lfs/Form".equals(slingResourceType)) {
+        if (FORM_SLINGTYPE.equals(slingResourceType)) {
             if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())
                 || JCR_CREATED_PROP.equals(prop.getName())
                 || JCR_CREATED_BY_PROP.equals(prop.getName())
@@ -203,21 +210,21 @@ public class ResourceToJsonAdapterFactory
                 ) {
                 addProperty(ob, prop);
             }
-        } else if ("lfs/Questionnaire".equals(slingResourceType)) {
+        } else if (QUESTIONNAIRE_SLINGTYPE.equals(slingResourceType)) {
             if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())
                 || TITLE_PROP.equals(prop.getName())
                 || PATH_PROP.equals(prop.getName())
                 ) {
                 addProperty(ob, prop);
             }
-        } else if ("lfs/Question".equals(slingResourceType)) {
+        } else if (QUESTION_SLINGTYPE.equals(slingResourceType)) {
             if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())
                 || TEXT_PROP.equals(prop.getName())
                 || PATH_PROP.equals(prop.getName())
                 ) {
                 addProperty(ob, prop);
             }
-        } else if ("lfs/Answer".equals(slingResourceSuperType)) {
+        } else if (ANSWER_SLINGTYPE.equals(slingResourceSuperType)) {
             if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())
                 || VALUE_PROP.equals(prop.getName())
                 || NOTE_PROP.equals(prop.getName())
@@ -228,7 +235,7 @@ public class ResourceToJsonAdapterFactory
             if (QUESTION_PROP.equals(prop.getName())) {
                 addProperty(ob, prop);
             }
-        } else if ("lfs/AnswerSection".equals(slingResourceType)) {
+        } else if (ANSWER_SECTION_SLINGTYPE.equals(slingResourceType)) {
             if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
                 addProperty(ob, prop);
             }
@@ -238,7 +245,7 @@ public class ResourceToJsonAdapterFactory
             if (PATH_PROP.equals(prop.getName())) {
                 addProperty(ob, prop);
             }
-        } else if ("lfs/Section".equals(slingResourceType)) {
+        } else if (SECTION_SLINGTYPE.equals(slingResourceType)) {
             if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
                 addProperty(ob, prop);
             }
