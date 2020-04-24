@@ -18,12 +18,22 @@
 //
 
 import React, { useState } from "react";
+import uuid from "uuid/v4";
 
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, Input, ListItem, ListItemAvatar, withStyles } from "@material-ui/core";
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, Input, ListItem, ListItemAvatar, Typography, withStyles } from "@material-ui/core";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import MaterialTable from "material-table";
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+
+/***
+ * Create a URL that checks for the existance of a subject
+ */
+let createQueryURL = (query) => {
+  let url = new URL("/query", window.location.origin);
+  url.searchParams.set("query", "SELECT * FROM [lfs:Subject] as n" + query);
+  return url;
+}
 
 /**
  * Component that displays the list of subjects in a dialog. Double clicking a subject selects it.
@@ -39,6 +49,7 @@ function UnstyledSelectorDialog (props) {
   const [ subjects, setSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ isPosting, setIsPosting ] = useState();
+  const [ newSubjectError, setNewSubjectError ] = useState();
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ newSubjectName, setNewSubjectName ] = useState("");
 
@@ -52,11 +63,17 @@ function UnstyledSelectorDialog (props) {
     }
   }
 
+  // Handle an error when creating a new subject
+  let handleCreateSubjectsError = (message) => {
+    setNewSubjectError(message);
+    setIsPosting(false);
+  }
+
   // Handle the SubjectSelector clicking on a subject, selecting it
   let handleSubmit = (useNewSubject) => {
     // Submit the new subjects
     setIsPosting(true);
-    createSubjects([newSubjectName], useNewSubject ? newSubjectName : selectedSubject, grabNewSubject, console.log);
+    createSubjects([newSubjectName], useNewSubject ? newSubjectName : selectedSubject, grabNewSubject, handleCreateSubjectsError);
   }
 
   // Obtain the full details on a new subject
@@ -78,13 +95,20 @@ function UnstyledSelectorDialog (props) {
     return json;
   }
 
+  let closeNewSubjectPopper = () => {
+    setNewSubjectError();
+    setNewSubjectPopperOpen(false);
+  }
+
   return (<React.Fragment>
-    <Dialog open={newSubjectPopperOpen} onClose={() => { setNewSubjectPopperOpen(false); }} className={classes.newSubjectPopper}>
+    <Dialog open={newSubjectPopperOpen} onClose={closeNewSubjectPopper} className={classes.newSubjectPopper}>
       <DialogTitle id="new-form-title">
         Create new subject
       </DialogTitle>
       <DialogContent dividers className={classes.NewFormDialog}>
+        { newSubjectError && <Typography color="error">{newSubjectError}</Typography>}
         <Input
+          autoFocus
           disabled={isPosting}
           value={newSubjectName}
           onChange={(event) => {setNewSubjectName(event.target.value);}}
@@ -93,7 +117,7 @@ function UnstyledSelectorDialog (props) {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={() => {setNewSubjectPopperOpen(false);}}
+          onClick={closeNewSubjectPopper}
           variant="contained"
           color="secondary"
           disabled={isPosting}
@@ -112,7 +136,7 @@ function UnstyledSelectorDialog (props) {
     </Dialog>
     <Dialog open={open} onClose={onClose}>
       {title && <DialogTitle>{title}</DialogTitle>}
-      <DialogContent>
+      <DialogContent className={classes.NewFormDialog}>
         <StyledSubjectSelectorList
           disabled={isPosting}
           onError={onError}
@@ -125,11 +149,19 @@ function UnstyledSelectorDialog (props) {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={() => {setNewSubjectPopperOpen(true);}}
           variant="contained"
           color="primary"
+          onClick={() => { setNewSubjectPopperOpen(true); }}
+          className={classes.createNewSubjectButton}
           >
           Create Subject
+        </Button>
+        <Button
+          onClick={onClose}
+          variant="contained"
+          color="secondary"
+          >
+          Cancel
         </Button>
         <Button
           onClick={handleSubmit}
@@ -162,9 +194,9 @@ export function createSubjects(newSubjects, subjectToTrack, returnCall, onError)
       continue;
     }
 
-    let checkAlreadyExistsURL = new URL("/Subjects/" + subjectName, window.location.origin);
+    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${subjectName}'`);
 
-    let url = "/Subjects/" + subjectName;
+    let url = "/Subjects/" + uuid();
 
     // If this is the subject the user has selected, make a note of the output URL
     if (subjectName == subjectToTrack) {
@@ -177,8 +209,9 @@ export function createSubjects(newSubjects, subjectToTrack, returnCall, onError)
     requestData.append('identifier', subjectName);
 
     let newPromise = fetch( checkAlreadyExistsURL )
-      .then ( (response) => {
-        if (response.ok) {
+      .then( (response) => response.ok ? response.json() : Promise.reject(response))
+      .then( (json) => {
+        if (json?.rows?.length > 0) {
           return Promise.reject(`Subject ${subjectName} already exists`);
         }
       });
@@ -243,12 +276,6 @@ function SubjectSelectorList(props) {
     { title: 'Identifier', field: 'identifier' },
   ];
 
-  let createQueryURL = (query) => {
-    let url = new URL("/query", window.location.origin);
-    url.searchParams.set("query", "SELECT * FROM [lfs:Subject] as n" + query);
-    return url;
-  }
-
   return(
     <React.Fragment>
       <MaterialTable
@@ -281,7 +308,7 @@ function SubjectSelectorList(props) {
             let check_already_exists_url = new URL("/Subjects/" + newData["identifier"], window.location.origin);
 
             // Add the new data
-            let url = new URL("/Subjects/" + newData["identifier"], window.location.origin);
+            let url = new URL("/Subjects/" + uuid(), window.location.origin);
 
             // Make a POST request to create a new subject
             let request_data = new FormData();
@@ -289,9 +316,10 @@ function SubjectSelectorList(props) {
             request_data.append('identifier', newData["identifier"]);
 
             let check_url = createQueryURL(` WHERE n.'identifier'='${newData["identifier"]}'`);
-            return fetch( check_already_exists_url )
-              .then ( (response) => {
-                if (response.ok) {
+            return fetch( check_url )
+              .then( (response) => response.ok ? response.json() : Promise.reject(response))
+              .then( (json) => {
+                if (json?.rows?.length > 0) {
                   onError("Subject already exists");
                   return Promise.reject();
                 }
