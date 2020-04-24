@@ -63,8 +63,19 @@ public class ResourceToJsonAdapterFactory
     implements AdapterFactory
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceToJsonAdapterFactory.class);
-    private static final String JCR_PRIMARY_TYPE = "jcr:primaryType";
+
+    private static final String JCR_PRIMARY_TYPE_PROP = "jcr:primaryType";
     private static final String PATH_PROP = "@path";
+    private static final String JCR_CREATED_PROP = "jcr:created";
+    private static final String JCR_CREATED_BY_PROP = "jcr:createdBy";
+    private static final String QUESTIONNAIRE_PROP = "questionnaire";
+    private static final String TITLE_PROP = "title";
+    private static final String TEXT_PROP = "text";
+    private static final String VALUE_PROP = "value";
+    private static final String NOTE_PROP = "note";
+    private static final String QUESTION_PROP = "question";
+    private static final String SECTION_PROP = "section";
+    private static final String LABEL_PROP = "label";
 
     private ThreadLocal<Boolean> deep = new ThreadLocal<Boolean>()
     {
@@ -185,53 +196,53 @@ public class ResourceToJsonAdapterFactory
         final Property prop) throws RepositoryException
     {
         if ("lfs/Form".equals(slingResourceType)) {
-            if (JCR_PRIMARY_TYPE.equals(prop.getName())
-                || "jcr:created".equals(prop.getName())
-                || "jcr:createdBy".equals(prop.getName())
-                || "questionnaire".equals(prop.getName())
+            if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())
+                || JCR_CREATED_PROP.equals(prop.getName())
+                || JCR_CREATED_BY_PROP.equals(prop.getName())
+                || QUESTIONNAIRE_PROP.equals(prop.getName())
                 ) {
                 addProperty(ob, prop);
             }
         } else if ("lfs/Questionnaire".equals(slingResourceType)) {
-            if (JCR_PRIMARY_TYPE.equals(prop.getName())
-                || "title".equals(prop.getName())
+            if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())
+                || TITLE_PROP.equals(prop.getName())
                 || PATH_PROP.equals(prop.getName())
                 ) {
                 addProperty(ob, prop);
             }
         } else if ("lfs/Question".equals(slingResourceType)) {
-            if (JCR_PRIMARY_TYPE.equals(prop.getName())
-                || "text".equals(prop.getName())
+            if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())
+                || TEXT_PROP.equals(prop.getName())
                 || PATH_PROP.equals(prop.getName())
                 ) {
                 addProperty(ob, prop);
             }
         } else if ("lfs/Answer".equals(slingResourceSuperType)) {
-            if (JCR_PRIMARY_TYPE.equals(prop.getName())
-                || "value".equals(prop.getName())
-                || "note".equals(prop.getName())
+            if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())
+                || VALUE_PROP.equals(prop.getName())
+                || NOTE_PROP.equals(prop.getName())
                 || PATH_PROP.equals(prop.getName())
                 ) {
                 addProperty(ob, prop);
             }
-            if ("question".equals(prop.getName())) {
+            if (QUESTION_PROP.equals(prop.getName())) {
                 addProperty(ob, prop);
             }
         } else if ("lfs/AnswerSection".equals(slingResourceType)) {
-            if (JCR_PRIMARY_TYPE.equals(prop.getName())) {
+            if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
                 addProperty(ob, prop);
             }
-            if ("section".equals(prop.getName())) {
+            if (SECTION_PROP.equals(prop.getName())) {
                 addProperty(ob, prop);
             }
             if (PATH_PROP.equals(prop.getName())) {
                 addProperty(ob, prop);
             }
         } else if ("lfs/Section".equals(slingResourceType)) {
-            if (JCR_PRIMARY_TYPE.equals(prop.getName())) {
+            if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
                 addProperty(ob, prop);
             }
-            if ("label".equals(prop.getName())) {
+            if (LABEL_PROP.equals(prop.getName())) {
                 addProperty(ob, prop);
             }
             if (PATH_PROP.equals(prop.getName())) {
