@@ -198,64 +198,138 @@ public class ResourceToJsonAdapterFactory
         return null;
     }
 
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
+    /*
+     * Filters which JCR properties are added to a lfs/Form when it is
+     * serialized to JSON under .simple.json
+     */
+    private void addSimpleFormProperty(final JsonObjectBuilder ob, final Property prop) throws RepositoryException
+    {
+        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (JCR_CREATED_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (JCR_CREATED_BY_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (QUESTIONNAIRE_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+    }
+
+    /*
+     * Filters which JCR properties are added to a lfs/Questionnaire when
+     * it is serialized to JSON under .simple.json
+     */
+    private void addSimpleQuestionnaireProperty(final JsonObjectBuilder ob, final Property prop)
+        throws RepositoryException
+    {
+        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (TITLE_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (PATH_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+    }
+
+    /*
+     * Filters which JCR properties are added to a lfs/Question when it is
+     * serialized to JSON under .simple.json
+     */
+    private void addSimpleQuestionProperty(final JsonObjectBuilder ob, final Property prop)
+        throws RepositoryException
+    {
+        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (TEXT_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (PATH_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+    }
+
+    /*
+     * Filters which JCR properties are added to a lfs/Answer when it is
+     * serialized to JSON under .simple.json
+     */
+    private void addSimpleAnswerProperty(final JsonObjectBuilder ob, final Property prop)
+        throws RepositoryException
+    {
+        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (VALUE_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (NOTE_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (PATH_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (QUESTION_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+    }
+
+    /*
+     * Filters which JCR properties are added to a lfs/AnswerSection when
+     * it is serialized to JSON under .simple.json
+     */
+    private void addSimpleAnswerSectionProperty(final JsonObjectBuilder ob, final Property prop)
+        throws RepositoryException
+    {
+        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (SECTION_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (PATH_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+    }
+
+    /*
+     * Filters which JCR properties are added to a lfs/Section when it is
+     * serialized to JSON under .simple.json
+     */
+    private void addSimpleSectionProperty(final JsonObjectBuilder ob, final Property prop)
+        throws RepositoryException
+    {
+        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (LABEL_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (PATH_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+    }
+
     private void conditionalAddProperty(String slingResourceSuperType,
         String slingResourceType, final JsonObjectBuilder ob,
         final Property prop) throws RepositoryException
     {
         if (FORM_SLINGTYPE.equals(slingResourceType)) {
-            if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())
-                || JCR_CREATED_PROP.equals(prop.getName())
-                || JCR_CREATED_BY_PROP.equals(prop.getName())
-                || QUESTIONNAIRE_PROP.equals(prop.getName())
-                ) {
-                addProperty(ob, prop);
-            }
+            addSimpleFormProperty(ob, prop);
         } else if (QUESTIONNAIRE_SLINGTYPE.equals(slingResourceType)) {
-            if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())
-                || TITLE_PROP.equals(prop.getName())
-                || PATH_PROP.equals(prop.getName())
-                ) {
-                addProperty(ob, prop);
-            }
+            addSimpleQuestionnaireProperty(ob, prop);
         } else if (QUESTION_SLINGTYPE.equals(slingResourceType)) {
-            if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())
-                || TEXT_PROP.equals(prop.getName())
-                || PATH_PROP.equals(prop.getName())
-                ) {
-                addProperty(ob, prop);
-            }
+            addSimpleQuestionProperty(ob, prop);
         } else if (ANSWER_SLINGTYPE.equals(slingResourceSuperType)) {
-            if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())
-                || VALUE_PROP.equals(prop.getName())
-                || NOTE_PROP.equals(prop.getName())
-                || PATH_PROP.equals(prop.getName())
-                ) {
-                addProperty(ob, prop);
-            }
-            if (QUESTION_PROP.equals(prop.getName())) {
-                addProperty(ob, prop);
-            }
+            addSimpleAnswerProperty(ob, prop);
         } else if (ANSWER_SECTION_SLINGTYPE.equals(slingResourceType)) {
-            if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
-                addProperty(ob, prop);
-            }
-            if (SECTION_PROP.equals(prop.getName())) {
-                addProperty(ob, prop);
-            }
-            if (PATH_PROP.equals(prop.getName())) {
-                addProperty(ob, prop);
-            }
+            addSimpleAnswerSectionProperty(ob, prop);
         } else if (SECTION_SLINGTYPE.equals(slingResourceType)) {
-            if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
-                addProperty(ob, prop);
-            }
-            if (LABEL_PROP.equals(prop.getName())) {
-                addProperty(ob, prop);
-            }
-            if (PATH_PROP.equals(prop.getName())) {
-                addProperty(ob, prop);
-            }
+            addSimpleSectionProperty(ob, prop);
         } else {
             addProperty(ob, prop);
         }
