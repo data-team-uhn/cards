@@ -55,12 +55,7 @@ function UnstyledSelectorDialog (props) {
 
   // Handle the user clicking on a subject, potentially submitting it
   let selectSubject = (subject) => {
-    if (selectedSubject == subject) {
-      // We should submit this select
-      handleSubmit();
-    } else {
-      setSelectedSubject(subject);
-    }
+    setSelectedSubject(subject);
   }
 
   // Handle an error when creating a new subject
@@ -72,8 +67,13 @@ function UnstyledSelectorDialog (props) {
   // Handle the SubjectSelector clicking on a subject, selecting it
   let handleSubmit = (useNewSubject) => {
     // Submit the new subjects
-    setIsPosting(true);
-    createSubjects([newSubjectName], useNewSubject ? newSubjectName : selectedSubject, grabNewSubject, handleCreateSubjectsError);
+    if (useNewSubject) {
+      setIsPosting(true);
+      createSubjects([newSubjectName], newSubjectName, grabNewSubject, handleCreateSubjectsError);
+    } else {
+      onChange(selectedSubject);
+      setNewSubjectPopperOpen(false);
+    }
   }
 
   // Obtain the full details on a new subject
@@ -81,12 +81,12 @@ function UnstyledSelectorDialog (props) {
     let url = new URL(subjectPath + ".json", window.location.origin);
 
     fetch(url)
-      .then(response => response.ok ? response.json() : Promise.reject(response))
-      .then(json => appendPath(json, subjectPath))
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((data) => appendPath(data, subjectPath))
       .then(onChange)
       .then(() => setNewSubjectPopperOpen(false))
-      .catch(onError)
-      .finally(() => setIsPosting(false));
+      .catch((err) => {console.log(err); onError(err);})
+      .finally(() => {setIsPosting(false);});
   }
 
   // Append the @path attribute to an object
@@ -125,7 +125,7 @@ function UnstyledSelectorDialog (props) {
           Cancel
         </Button>
         <Button
-          onClick={() => {handleSubmit(newSubjectName);}}
+          onClick={() => {handleSubmit(true);}}
           variant="contained"
           color="primary"
           disabled={isPosting}
@@ -140,7 +140,7 @@ function UnstyledSelectorDialog (props) {
         <StyledSubjectSelectorList
           disabled={isPosting}
           onError={onError}
-          onSelect={selectSubject}
+          onSelect={(data) => {selectSubject(data);}}
           setSubjects={setSubjects}
           selectedSubject={selectedSubject}
           subjects={subjects}
@@ -164,7 +164,7 @@ function UnstyledSelectorDialog (props) {
           Cancel
         </Button>
         <Button
-          onClick={handleSubmit}
+          onClick={() => handleSubmit()}
           variant="contained"
           color="primary"
           >
@@ -337,7 +337,7 @@ function SubjectSelectorList(props) {
                             onError();
                             resolve();
                           } else {
-                            Promise.reject(response);
+                            return Promise.reject(json);
                           }
                         })
                         .catch((error) => {console.log(error); setTimeout(checkForNew, 1000)});
