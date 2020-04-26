@@ -22,12 +22,11 @@ import {
     Paper,
     TextField,
     Tooltip,
+    Typography,
     withStyles
 } from '@material-ui/core';
 import { Formik } from "formik";
 import * as Yup from "yup";
-
-import UsernameTakenDialog from './ErrorDialogues';
 
 import styles from "../styling/styles";
 
@@ -46,6 +45,7 @@ class FormFields extends React.Component {
       touched,
       handleSubmit,
       handleChange,
+      handleReset,
       isValid,
       setFieldTouched
     } = this.props;
@@ -155,25 +155,8 @@ const FormFieldsComponent = withStyles(styles)(FormFields);
 class SignUpForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      usernameError: false
-    };
 
-    this.displayError = this.displayError.bind(this);
     this.submitValues = this.submitValues.bind(this);
-    this.hideError = this.hideError.bind(this);
-  }
-
-  displayError() {
-    this.setState({
-      usernameError: true
-    });
-  }
-
-  hideError() {
-    this.setState({
-      usernameError: false
-    });
   }
 
   signIn(username, password) {
@@ -231,9 +214,7 @@ class SignUpForm extends React.Component {
         this.props.loginOnSuccess && this.signIn(username, password);
       })
       .catch(error => {
-        this.setState({
-          usernameError: true
-        });
+        this.form.setFieldError("username", "Looks like this user is taken. Please try a different username.");
       });
   }
 
@@ -258,9 +239,6 @@ class SignUpForm extends React.Component {
     // Hooks only work inside functional components
     return (
       <React.Fragment>
-        {(this.state.usernameError) &&
-          <UsernameTakenDialog handleClose={this.hideError} ></UsernameTakenDialog>
-        }
         <div className={classes.main}>
           <Formik
             render={props => <FormFieldsComponent {...props} />}

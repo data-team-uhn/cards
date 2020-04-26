@@ -44,11 +44,9 @@ class CreateUserDialogue extends React.Component {
                 open={this.props.isOpen}
                 onClose={() => this.props.handleClose()}
             >
-                <DialogTitle>
-                    <Typography component="h2" variant="h5"> Create New User 
-                      <Button size="small" className={classes.closeButton} onClick={() => this.props.handleClose()}><ClearIcon/></Button>
-                    </Typography>
-        		</DialogTitle>
+                <Typography component="h2" variant="h5" className={classes.dialogTitle}> Create New User 
+                  <Button size="small" className={classes.closeButton} onClick={() => this.props.handleClose()}><ClearIcon/></Button>
+                </Typography>
         		<DialogContent>
                   <Grid container>
                     <SignUpForm loginOnSuccess={false} handleSuccess={() => this.handleCreateUser()} />

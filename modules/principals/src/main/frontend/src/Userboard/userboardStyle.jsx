@@ -63,6 +63,9 @@ const userboardStyle = theme => ({
     },
     closeButton: {
       float: 'right'
+    },
+    dialogTitle: {
+      padding: "16px 0 0 24px"
     }
 });
 
