@@ -67,7 +67,7 @@ function FormEntry(props) {
     );
   }
 
-  const entry = /#(.+)/.exec(location.href);
+  const entry = location.hash.substr(1);
   const anchor = entry ? entry[1] : '';
   // create a ref to store the question container DOM element
   const questionRef = useCallback(node => {
