@@ -19,13 +19,13 @@
 
 import React,  { useCallback } from "react";
 
-import { Grid, withStyles, } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import Section from "./Section";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 
 // FIXME In order for the questions to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all question types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
+
 import BooleanQuestion from "./BooleanQuestion";
 import DateQuestion from "./DateQuestion";
 import NumberQuestion from "./NumberQuestion";
@@ -38,35 +38,16 @@ const SECTION_TYPES = ["lfs:Section"];
 export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
 
 /**
- * Display a question or section from the questionnaire, along with its answer(s).
+ * Method responsible for displaying a question from the questionnaire, along with its answer(s).
  *
- * @param {Object} entryDefinition the definition for this entry JSON
- * @param {string} path the path to the parent of the entry
- * @param {int} depth the section nesting depth
- * @param {Object} existingAnswers form data that may include answers already submitted for this component
- * @param {string} key the node name of the section definition JCR node
- * @returns a React component that renders the section
+ * @param {Object} questionDefinition the question definition JSON
+ * @param {string} path the path to the parent of the question
+ * @param {Object} existingAnswer form data that may include answers already submitted for this component
+ * @param {string} key the node name of the question definition JCR node
+ * @param {Object} classes style classes
+ * @returns a React component that renders the question
  */
-function FormEntry(props) {
-  let { classes, entryDefinition, path, depth, existingAnswers, key } = props;
-
-  if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-      // Find the existing AnswerSection for this section, if available
-    const existingQuestionAnswer = existingAnswers && Object.entries(existingAnswers)
-      .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
-        && value["section"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
-
-    return (
-      <Section
-        key={key}
-        depth={depth}
-        sectionDefinition={entryDefinition}
-        existingAnswer={existingQuestionAnswer}
-        path={path}
-        />
-    );
-  }
-
+let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) => {
   const entry = location.hash.substr(1);
   const anchor = entry ? entry[1] : '';
   // create a ref to store the question container DOM element
@@ -76,30 +57,73 @@ function FormEntry(props) {
     }
   }, []);
 
+  // if autofocus is needed and specified in the url
+  const questionText = questionDefinition["text"].replace(/\s/g, '').substring(0, 10);
+  const doHighlight = (anchor == questionText);
+
+  const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
+    .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
+      && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
+  // This variable must start with an upper case letter so that React treats it as a component
+  const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
+  return (
+    <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={(doHighlight ? classes.highlightedSection : undefined)}>
+      <QuestionDisplay
+        questionDefinition={questionDefinition}
+        existingAnswer={existingQuestionAnswer}
+        path={path}
+        questionName={key}
+        />
+    </Grid>
+  );
+};
+
+/**
+ * Method responsible for displaying a section from the questionnaire, along with its answer(s).
+ * TODO: Somehow pass the conditional state upwards from here
+ *
+ * @param {Object} sectionDefinition the section definition JSON
+ * @param {string} path the path to the parent of the section
+ * @param {int} depth the section nesting depth
+ * @param {Object} existingAnswer form data that may include answers already submitted for this component
+ * @param {string} key the node name of the section definition JCR node
+ * @returns a React component that renders the section
+ */
+let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
+  // Find the existing AnswerSection for this section, if available
+  const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
+    .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
+      && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
+
+  return (
+    <Section
+      key={key}
+      depth={depth}
+      sectionDefinition={sectionDefinition}
+      existingAnswer={existingQuestionAnswer}
+      path={path}
+      />
+  );
+}
+
+/**
+ * Display a question or section from the questionnaire, along with its answer(s).
+ *
+ * @param {Object} entryDefinition the definition for this entry JSON
+ * @param {string} path the path to the parent of the entry
+ * @param {int} depth the section nesting depth
+ * @param {Object} existingAnswers form data that may include answers already submitted for this component
+ * @param {string} key the node name of the section definition JCR node
+ * @param {Object} classes style classes
+ * @returns a React component that renders the section
+ */
+ export default function FormEntry(props) {
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp } = props;
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    // if autofocus is needed and specified in the url
-    
-    const questionText = entryDefinition["text"].replace(/\s/g, '').substring(0, 10);
-    const doHighlight = (anchor == questionText);
-
-    const existingQuestionAnswer = existingAnswers && Object.entries(existingAnswers)
-      .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
-        && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
-    // This variable must start with an upper case letter so that React treats it as a component
-    const QuestionDisplay = AnswerComponentManager.getAnswerComponent(entryDefinition);
-    return (
-      <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={(doHighlight ? classes.highlightedSection : undefined)}>
-        <QuestionDisplay
-          questionDefinition={entryDefinition}
-          existingAnswer={existingQuestionAnswer}
-          path={path}
-          questionName={key}
-          />
-      </Grid>
-    );
+    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes);
+  } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp);
   }
-};
-
-export default withStyles(QuestionnaireStyle)(FormEntry);
+}
