@@ -66,9 +66,6 @@ const useStyles = makeStyles(theme => ({
       background: "#a36c1f"
     }
   },
-  exit: {
-    background: "blue",
-  },
   wrapper: {
     position: "relative",
     display: "inline-block"
@@ -113,7 +110,7 @@ export default function VocabularyAction(props) {
     )}
     {props.exit && (
       <Tooltip title="Close">
-        <Button onClick={props.exit} variant="contained" className={classes.button + " " + classes.exit}>Close</Button>
+        <Button onClick={props.exit} variant="contained" color="default">Close</Button>
       </Tooltip>
     )}
     </React.Fragment>
