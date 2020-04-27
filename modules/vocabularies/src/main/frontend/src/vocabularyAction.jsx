@@ -49,27 +49,27 @@ const useStyles = makeStyles(theme => ({
     textTransform: "none"
   },
   install: {
-    background: "green",
+    background: theme.palette.success.main,
     "&:hover": {
-      background: "#075706"
+      background: theme.palette.success.dark
     }
   },
   uninstall: {
-    background: "red",
+    background: theme.palette.error.main,
     "&:hover": {
-      background: "#a3211f"
+      background: theme.palette.error.dark
     }
   },
   installingColor: {
-    color: "green",
+    color: theme.palette.success.main
   },
   uninstallingColor: {
-    color: "red",
+    color: theme.palette.error.main
   },
   update: {
-    background: "orange",
+    background: theme.palette.warning.main,
     "&:hover": {
-      background: "#a36c1f"
+      background: theme.palette.warning.dark
     }
   },
   wrapper: {
@@ -103,24 +103,27 @@ export default function VocabularyAction(props) {
   };
 
   let fetchData = (questionnairesData) => {
-    setLinkedQuestions([]);
-    let aggregatedQuestions = [];
-    let i = 0;
-
-    questionnairesData.forEach( (questionnaire) => {
-      fetch(`${questionnaire["@path"]}.deep.json`)
-        .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then((data) => {
-          aggregatedQuestions = aggregatedQuestions.concat(getVocabularyQuestions(data, questionnaire.title));
-        })
-        .finally(() => {
-          if (++i == questionnairesData.length) {
-            setLinkedQuestions(aggregatedQuestions);
-            setDisplayPopup(true);
-          }
-        });
-
-    });
+    if (questionnairesData.length == 0) {
+      setDisplayPopup(true);
+    } else {
+	    setLinkedQuestions([]);
+	    let aggregatedQuestions = [];
+	    let i = 0;
+	
+	    questionnairesData.forEach( (questionnaire) => {
+	      fetch(`${questionnaire["@path"]}.deep.json`)
+	        .then((response) => response.ok ? response.json() : Promise.reject(response))
+	        .then((data) => {
+	          aggregatedQuestions = aggregatedQuestions.concat(getVocabularyQuestions(data, questionnaire.title));
+	        })
+	        .finally(() => {
+	          if (++i == questionnairesData.length) {
+	            setLinkedQuestions(aggregatedQuestions);
+	            setDisplayPopup(true);
+	          }
+	        });
+	    });
+    }
   };
 
   let getVocabularyQuestions = (data, title) => {
@@ -205,8 +208,8 @@ export default function VocabularyAction(props) {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={handleUninstall} variant="contained" className={classes.button + " " + classes.uninstall}>Uninstall</Button>
-        <Button onClick={handleClose} variant="contained" className={classes.button + " " + classes.exit}>Cancel</Button>
+        <Button onClick={handleUninstall} variant="contained" color="primary" className={classes.button}>Uninstall</Button>
+        <Button onClick={handleClose} variant="contained" color="default" className={classes.button}>Cancel</Button>
       </DialogActions>
 
     </Dialog>
