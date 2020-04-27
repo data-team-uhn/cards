@@ -152,8 +152,6 @@ function VocabularySelector(props) {
 
     // Prevent closures from mucking up logic by placing everything in an updater function
     setListChildren((oldChildren) => {
-      console.log(id);
-      console.log(oldChildren);
       // Do not add duplicates
       if (oldChildren.some(element => {return element[ID_POS] === id})) {
         return oldChildren;
