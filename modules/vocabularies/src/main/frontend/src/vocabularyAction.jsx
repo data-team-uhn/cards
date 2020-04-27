@@ -90,7 +90,8 @@ export default function VocabularyAction(props) {
   let fetchQuestionnaires = () => {
     if (questionnaires.length === 0) {
       // Send a fetch request to determine the questionnaires available
-      fetch('/query?query=' + encodeURIComponent('select * from [lfs:Questionnaire]'))
+      const query = `select n.* from [lfs:Questionnaire] as n inner join [lfs:Question] as q on isdescendantnode(q, n) where q.sourceVocabulary='${props.acronym}'`;
+      fetch(`/query?query=${encodeURIComponent(query)}&limit=100`)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {
           setQuestionnaires(json["rows"]);
