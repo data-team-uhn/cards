@@ -112,7 +112,8 @@ export default function VocabularyAction(props) {
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((data) => {
           aggregatedQuestions = aggregatedQuestions.concat(getVocabularyQuestions(data, questionnaire.title));
-
+        })
+        .finally(() => {
           if (++i == questionnairesData.length) {
             setLinkedQuestions(aggregatedQuestions);
             setDisplayPopup(true);
