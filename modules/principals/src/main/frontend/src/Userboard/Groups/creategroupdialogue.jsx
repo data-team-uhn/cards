@@ -17,17 +17,19 @@
 
 import React from "react";
 
-import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField} from "@material-ui/core";
+import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField, Typography } from "@material-ui/core";
 
 class CreateGroupDialogue extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            newName: ""
+            newName: "",
+            error: ""
         };
     }
 
     handleCreateGroup() {
+        this.setState({ error: "" });
         let formData = new FormData();
         formData.append(':name', this.state.newName);
         let url = "/system/userManager/group.create.json";
@@ -38,12 +40,13 @@ class CreateGroupDialogue extends React.Component {
             body: formData
         })
         .then((response) => {
+            if (!response.ok) {
+              this.setState({ error: response.statusText });
+		      return;
+		    }
             this.props.reload();
             this.props.handleClose();
-        })
-        .catch((error) => {
-            console.log(error);
-        })
+        });
     }
 
     render() {
@@ -60,11 +63,12 @@ class CreateGroupDialogue extends React.Component {
                                 id="name"
                                 name="name"
                                 label="Name"
-                                onChange={(event) => { this.setState({ newName: event.target.value }); }}
+                                onChange={(event) => { this.setState({ newName: event.target.value, error: "" }); }}
                                 autoFocus
                             />
                         </Grid>
                     </Grid>
+                    {this.state.error && <Typography color='error'>{this.state.error}</Typography>}
                 </DialogContent>
                 <DialogActions>
                     <Button color="primary" variant="contained" size="small" onClick={(event) => { event.preventDefault(); this.handleCreateGroup(); }}>Create Group</Button>
