@@ -40,11 +40,11 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
 const SubjectFilter = forwardRef((props, ref) => {
   const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
   const [ error, setError ] = useState();
-  const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(false);
+  const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(true); // Default true since having nothing entered is valid
 
   let invalidateInput = (event) => {
-    // The user has input text, so the results are no longer valid
-    setHasSelectedValidSubject(false);
+    // The results are only valid after new text has been typed if they have emptied the input box
+    setHasSelectedValidSubject(event.target.value == "");
   }
 
   // Pass information about a selected subject upwards
