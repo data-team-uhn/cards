@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useState, useCallback } from "react";
 import { Select, MenuItem,  withStyles } from "@material-ui/core";
 import PropTypes from "prop-types";
 
@@ -42,28 +42,36 @@ const ListFilter = forwardRef((props, ref) => {
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(defaultValue || "");
 
+  // Populate our our map of options and labels if questionDefinition changes
+  let valueToLabel = {};
+  let options = Object.entries(questionDefinition)
+    // answers are nodes with "jcr:primaryType" = "lfs:AnswerOption"
+    .filter( (answer) => {
+      return answer[1]['jcr:primaryType'] && answer[1]['jcr:primaryType'] === 'lfs:AnswerOption'
+    })
+    // turn these answers into options and populate our valueToLabel
+    .map( (answer) => {
+      let value = answer[1]['value'];
+      let label = answer[1]['label'] || value;
+      valueToLabel[value] = label;
+      return value;
+    });
+
   return (
     <Select
       value={selection}
       onChange={(event) => {
-        setSelection(event.target.value);
-        onChangeInput(event.target.value);
+        let value = event.target.value;
+        setSelection(value);
+        onChangeInput(value, valueToLabel[value]);
       }}
       className={classes.answerField}
       ref={ref}
       {...rest}
       >
-      {Object.entries(questionDefinition)
-        // answers are nodes with "jcr:primaryType" = "lfs:AnswerOption"
-        .filter( (answer) => {
-          return answer[1]['jcr:primaryType'] && answer[1]['jcr:primaryType'] === 'lfs:AnswerOption'
-        })
-        // turn these answers into menuItems
-        .map( (answer) => {
-          return(
-            <MenuItem value={answer[1]['value']} key={answer[1]['value']}>{answer[1]['value']}</MenuItem>
-          );
-        })
+      {options.map((value) => (
+        <MenuItem value={value} key={value}>{valueToLabel[value]}</MenuItem>
+      ))
       }
     </Select>
   );
