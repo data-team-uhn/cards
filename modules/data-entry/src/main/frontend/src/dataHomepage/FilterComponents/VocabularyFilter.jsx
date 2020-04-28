@@ -41,7 +41,9 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
 const VocabularyFilter = forwardRef((props, ref) => {
   const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
   let vocabulary = questionDefinition["sourceVocabulary"];
-  let vocabularyFilter = questionDefinition["vocabularyFilter"];
+  // Currently there's an issue where some of our fields are strings while the vocab selector only allows arrays
+  // We'll capture and refuse to pass it here
+  let vocabularyFilter = (typeof questionDefinition?.["vocabularyFilter"]) == "string" ? null : questionDefinition?.["vocabularyFilter"];
 
   return (
     <VocabularySelector
@@ -51,7 +53,7 @@ const VocabularyFilter = forwardRef((props, ref) => {
       defaultValue={defaultValue}
       vocabulary={vocabulary}
       placeholder="empty"
-      ref={ref}
+      inputRef={ref}
       noMargin
       {...rest}
       />
@@ -63,7 +65,7 @@ VocabularyFilter.propTypes = {
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.shape({
     sourceVocabulary: PropTypes.string,
-    vocabularyFilter: PropTypes.string,
+    vocabularyFilter: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
   })
 }
 

@@ -53,7 +53,7 @@ const DateFilter = forwardRef((props, ref) => {
     <TextField
       id="date"
       type={textFieldType}
-      className={classes.textField + " " + classes.answerField}
+      className={classes.textField}
       InputLabelProps={{
         shrink: true,
       }}
