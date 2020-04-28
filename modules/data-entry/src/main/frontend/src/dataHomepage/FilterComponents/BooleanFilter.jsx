@@ -27,8 +27,18 @@ import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
 
+/**
+ * Display a filter on a boolean answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
+ * getFilterComparatorsAndComponent method.
+ *
+ * @param {string} defaultValue The default value to place in the boolean filter
+ * @param {func} onChangeInput Callback for when the value select has changed
+ * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is lfs:AnswerOption
+ * Other props are forwarded to the Select component
+ *
+ */
 const BooleanFilter = forwardRef((props, ref) => {
-  const { classes, comparator, defaultValue, onChange, onChangeComparator, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(defaultValue || "");
 
@@ -63,11 +73,9 @@ const BooleanFilter = forwardRef((props, ref) => {
 });
 
 BooleanFilter.propTypes = {
-  onChangeComparator: PropTypes.func,
+  defaultValue: PropTypes.string,
   onChangeInput: PropTypes.func,
-  questionDefinition: PropTypes.shape({
-    dateFormat: PropTypes.string
-  })
+  questionDefinition: PropTypes.object
 }
 
 const StyledBooleanFilter = withStyles(QuestionnaireStyle)(BooleanFilter)
