@@ -78,6 +78,7 @@ const ListFilter = forwardRef((props, ref) => {
 });
 
 ListFilter.propTypes = {
+  defaultValue: PropTypes.string,
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.object
 }

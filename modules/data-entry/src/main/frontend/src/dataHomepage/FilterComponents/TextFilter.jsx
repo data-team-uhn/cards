@@ -65,7 +65,6 @@ const TextFilter = forwardRef((props, ref) => {
 });
 
 TextFilter.propTypes = {
-  onChangeComparator: PropTypes.func,
   onChangeInput: PropTypes.func
 }
 
