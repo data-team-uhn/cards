@@ -203,8 +203,11 @@ function Filters(props) {
     let newFilters = deepCopyFilters(editingFilters)
     // Remove filters that are not complete
       .filter( (toCheck) => (toCheck.uuid && toCheck.comparator))
-    // Replace filters with empty output to use the "is empty" comparator
-      .map( (toCheck) => (toCheck.value || UNARY_COMPARATORS.includes(toCheck.comparator) ? toCheck: {...toCheck, comparator: "is empty"}));
+    // Replace filters with empty output to use either the "is empty" or "is not empty" comparator
+      .map( (toCheck) => ((toCheck.value || UNARY_COMPARATORS.includes(toCheck.comparator)) ?
+        toCheck
+        :
+        {...toCheck, comparator: (toCheck.comparator == "=" ? "is empty" : "is not empty")}));
     setActiveFilters(newFilters);
     onChangeFilters && onChangeFilters(newFilters);
     setDialogOpen(false);
