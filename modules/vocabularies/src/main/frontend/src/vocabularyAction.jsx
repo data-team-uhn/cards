@@ -106,23 +106,22 @@ export default function VocabularyAction(props) {
     if (questionnairesData.length == 0) {
       setDisplayPopup(true);
     } else {
-	    setLinkedQuestions([]);
-	    let aggregatedQuestions = [];
-	    let i = 0;
-	
-	    questionnairesData.forEach( (questionnaire) => {
-	      fetch(`${questionnaire["@path"]}.deep.json`)
-	        .then((response) => response.ok ? response.json() : Promise.reject(response))
-	        .then((data) => {
-	          aggregatedQuestions = aggregatedQuestions.concat(getVocabularyQuestions(data, questionnaire.title));
-	        })
-	        .finally(() => {
-	          if (++i == questionnairesData.length) {
-	            setLinkedQuestions(aggregatedQuestions);
-	            setDisplayPopup(true);
-	          }
-	        });
-	    });
+      setLinkedQuestions([]);
+      let aggregatedQuestions = [];
+      let i = 0;
+      questionnairesData.forEach( (questionnaire) => {
+        fetch(`${questionnaire["@path"]}.deep.json`)
+          .then((response) => response.ok ? response.json() : Promise.reject(response))
+          .then((data) => {
+            aggregatedQuestions = aggregatedQuestions.concat(getVocabularyQuestions(data, questionnaire.title));
+          })
+          .finally(() => {
+            if (++i == questionnairesData.length) {
+              setLinkedQuestions(aggregatedQuestions);
+              setDisplayPopup(true);
+            }
+          });
+      });
     }
   };
 
