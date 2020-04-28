@@ -27,13 +27,23 @@ import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
 
+/**
+ * Display a filter on a numeric answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
+ * getFilterComparatorsAndComponent method.
+ *
+ * @param {string} defaultValue The default value to place in the text field
+ * @param {func} onChangeInput Callback for when the value select has changed
+ * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is lfs:AnswerOption
+ * Other props are forwarded to the TextField component
+ *
+ */
 const NumericFilter = forwardRef((props, ref) => {
   const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
   return (
     <TextField
       className={classes.textField + " " + classes.answerField}
       inputProps={{
-        decimalScale: questionDefinition[dataType] === "long" ? 0 : undefined
+        decimalScale: questionDefinition["dataType"] === "long" ? 0 : undefined
       }}
       InputProps={{
         inputComponent: NumberFormatCustom, // Used to override a TextField's type
@@ -52,7 +62,7 @@ NumericFilter.propTypes = {
   onChangeComparator: PropTypes.func,
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.shape({
-    dateFormat: PropTypes.string
+    dataType: PropTypes.string
   })
 }
 

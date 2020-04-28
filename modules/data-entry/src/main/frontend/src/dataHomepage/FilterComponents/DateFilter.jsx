@@ -28,8 +28,18 @@ import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
 
+/**
+ * Display a filter on a date answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
+ * getFilterComparatorsAndComponent method.
+ *
+ * @param {date} defaultValue Default value to place in the textfield
+ * @param {func} onChangeInput Callback for when the value select has changed
+ * @param {object} questionDefinition Object containing the definition of the question. May include a dateFormat
+ * Other props are forwarded to the TextField component
+ *
+ */
 const DateFilter = forwardRef((props, ref) => {
-  const { classes, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
 
   // Dates should have a dateFormat, or default to "yyyy-MM-dd"
   let dateFormat = questionDefinition["dateFormat"] || "yyyy-MM-dd";

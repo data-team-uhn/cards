@@ -28,8 +28,18 @@ import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
 
+/**
+ * Display a filter on a vocabulary answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
+ * getFilterComparatorsAndComponent method.
+ *
+ * @param {string} defaultValue The default value to place in the vocabulary filter
+ * @param {func} onChangeInput Callback for when the value select has changed
+ * @param {object} questionDefinition Object containing the definition of the question. Should include "sourceVocabulary" and "vocabularyFilter" children.
+ * Other props are forwarded to the VocabularySelector component
+ *
+ */
 const VocabularyFilter = forwardRef((props, ref) => {
-  const { classes, comparator, onChangeComparator, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
   let vocabulary = questionDefinition["sourceVocabulary"];
   let vocabularyFilter = questionDefinition["vocabularyFilter"];
 
@@ -49,10 +59,11 @@ const VocabularyFilter = forwardRef((props, ref) => {
 });
 
 VocabularyFilter.propTypes = {
-  onChangeComparator: PropTypes.func,
+  defaultValue: PropTypes.string,
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.shape({
-    dateFormat: PropTypes.string
+    sourceVocabulary: PropTypes.string,
+    vocabularyFilter: PropTypes.string,
   })
 }
 

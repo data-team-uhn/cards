@@ -31,14 +31,15 @@ import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
 
 /**
- * Renders a search bar for subjects.
+ * Display a filter on the associated subject of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
+ * getFilterComparatorsAndComponent method.
  * 
  * @param {func} onChangeInput Function to call when this filter has chosen a new subject
  * @param {func} questionDefinition Unused, here to stop a warning when it is passed to the SearchBar component
  * Other props will be forwarded to the SearchBar component
  */
 const SubjectFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, onChangeInput, questionDefinition, ...rest } = props;
   const [ error, setError ] = useState();
   const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(true); // Default true since having nothing entered is valid
 
