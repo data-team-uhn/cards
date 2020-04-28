@@ -184,6 +184,11 @@ export default function VocabularyAction(props) {
         <Button onClick={handleOpen} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
       </Tooltip>
     )}
+    {props.exit && (
+      <Tooltip title="Close">
+        <Button onClick={props.exit} variant="contained" color="default" className={classes.vocabularyAction}>Close</Button>
+      </Tooltip>
+    )}
     <Dialog onClose={handleClose} open={displayPopup}>
 
       <DialogTitle disableTypography>
