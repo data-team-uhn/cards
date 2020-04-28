@@ -46,7 +46,7 @@ const BooleanFilter = forwardRef((props, ref) => {
       value={selection}
       onChange={(event) => {
         setSelection(event.target.value);
-        onChangeInput(event.target.value);
+        onChangeInput(event.target.value, event.currentTarget.dataset.label);
       }}
       className={classes.answerField}
       ref={ref}
@@ -54,7 +54,7 @@ const BooleanFilter = forwardRef((props, ref) => {
       >
       { options.map( (answer) => {
           return(
-            <MenuItem value={answer[1]} key={answer[1]}>{answer[0]}</MenuItem>
+            <MenuItem value={answer[1]} key={answer[1]} data-label={answer[0]}>{answer[0]}</MenuItem>
           );
         })
       }
