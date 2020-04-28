@@ -69,7 +69,7 @@ const DateFilter = forwardRef((props, ref) => {
 });
 
 DateFilter.propTypes = {
-  onChangeComparator: PropTypes.func,
+  defaultValue: PropTypes.string,
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.shape({
     dateFormat: PropTypes.string

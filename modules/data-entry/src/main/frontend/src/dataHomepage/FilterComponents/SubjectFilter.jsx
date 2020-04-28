@@ -117,7 +117,6 @@ const SubjectFilter = forwardRef((props, ref) => {
 });
 
 SubjectFilter.propTypes = {
-  onChangeComparator: PropTypes.func,
   onChangeInput: PropTypes.func
 }
 

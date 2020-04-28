@@ -23,6 +23,7 @@ import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
+import { NumberFormatCustom } from "../../questionnaire/NumberQuestion";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
@@ -41,7 +42,7 @@ const NumericFilter = forwardRef((props, ref) => {
   const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
   return (
     <TextField
-      className={classes.textField + " " + classes.answerField}
+      className={classes.textField}
       inputProps={{
         decimalScale: questionDefinition["dataType"] === "long" ? 0 : undefined
       }}
@@ -59,7 +60,6 @@ const NumericFilter = forwardRef((props, ref) => {
 });
 
 NumericFilter.propTypes = {
-  onChangeComparator: PropTypes.func,
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.shape({
     dataType: PropTypes.string
