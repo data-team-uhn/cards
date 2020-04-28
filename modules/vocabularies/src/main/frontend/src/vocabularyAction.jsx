@@ -35,10 +35,9 @@ import {
 const Phase = require("./phaseCodes.json");
 
 const useStyles = makeStyles(theme => ({
-  button: {
+  vocabularyAction: {
     margin: theme.spacing(1),
-    textTransform: "none",
-    color: "white"
+    textTransform: "none"
   },
   buttonProgress: {
     top: "50%",
@@ -50,12 +49,14 @@ const useStyles = makeStyles(theme => ({
   },
   install: {
     background: theme.palette.success.main,
+    color: theme.palette.success.contrastText,
     "&:hover": {
       background: theme.palette.success.dark
     }
   },
   uninstall: {
     background: theme.palette.error.main,
+    color: theme.palette.error.contrastText,
     "&:hover": {
       background: theme.palette.error.dark
     }
@@ -68,6 +69,7 @@ const useStyles = makeStyles(theme => ({
   },
   update: {
     background: theme.palette.warning.main,
+    color: theme.palette.warning.contrastText,
     "&:hover": {
       background: theme.palette.warning.dark
     }
@@ -146,34 +148,34 @@ export default function VocabularyAction(props) {
     <React.Fragment>
     {(props.phase == Phase["Not Installed"]) && (
       <Tooltip title="Install this vocabulary">
-        <Button onClick={props.install} variant="contained" className={classes.button + " " + classes.install}>Install</Button>
+        <Button onClick={props.install} variant="contained" className={classes.vocabularyAction + " " + classes.install}>Install</Button>
       </Tooltip>
     )}
     {(props.phase == Phase["Installing"]) && (
       <span className={classes.wrapper}>
-        <Button disabled variant="contained" className={classes.button}>Installing</Button>
+        <Button disabled variant="contained" className={classes.vocabularyAction}>Installing</Button>
         <CircularProgress size={24} className={classes.buttonProgress + " " + classes.installingColor} />
       </span>
     )}
     {(props.phase == Phase["Update Available"]) && (
       <React.Fragment>
         <Tooltip title="Update this vocabulary">
-          <Button onClick={props.install} variant="contained" className={classes.button + " " + classes.update}>Update</Button>
+          <Button onClick={props.install} variant="contained" className={classes.vocabularyAction + " " + classes.update}>Update</Button>
         </Tooltip>
         <Tooltip title="Remove this vocabulary">
-          <Button onClick={props.uninstall} variant="contained" className={classes.button + " " + classes.uninstall}>Uninstall</Button>
+          <Button onClick={props.uninstall} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
         </Tooltip>
       </React.Fragment> 
     )}
     {(props.phase == Phase["Uninstalling"]) && (
       <span className={classes.wrapper}>
-        <Button disabled variant="contained" className={classes.button}>Uninstalling</Button>
+        <Button disabled variant="contained" className={classes.vocabularyAction}>Uninstalling</Button>
         <CircularProgress size={24} className={classes.buttonProgress + " " + classes.uninstallingColor} />
       </span>
     )}
     {(props.phase == Phase["Latest"]) && (
       <Tooltip title="Remove this vocabulary">
-        <Button onClick={handleOpen} variant="contained" className={classes.button + " " + classes.uninstall}>Uninstall</Button>
+        <Button onClick={handleOpen} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
       </Tooltip>
     )}
     <Dialog onClose={handleClose} open={displayPopup}>
@@ -207,8 +209,8 @@ export default function VocabularyAction(props) {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={handleUninstall} variant="contained" color="primary" className={classes.button}>Uninstall</Button>
-        <Button onClick={handleClose} variant="contained" color="default" className={classes.button}>Cancel</Button>
+        <Button onClick={handleUninstall} variant="contained" color="primary" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
+        <Button onClick={handleClose} variant="contained" color="default" className={classes.vocabularyAction}>Cancel</Button>
       </DialogActions>
 
     </Dialog>
