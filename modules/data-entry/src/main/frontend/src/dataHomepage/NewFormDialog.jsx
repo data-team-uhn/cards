@@ -220,16 +220,16 @@ function NewFormDialog(props) {
           {progress === PROGRESS_SELECT_SUBJECT &&
             <Button
               variant="contained"
-              color="primary"
+              color="secondary"
               onClick={() => { setNewSubjectPopperOpen(true); setError(); }}
               className={classes.createNewSubjectButton}
               >
-              Create Subject
+              New subject
             </Button>
           }
           <Button
             variant="contained"
-            color="secondary"
+            color="default"
             onClick={goBack}
             >
             { (progress == PROGRESS_SELECT_QUESTIONNAIRE || presetPath) ?
@@ -267,7 +267,7 @@ function NewFormDialog(props) {
           <Button
             onClick={() => {setNewSubjectPopperOpen(false); setError();}}
             variant="contained"
-            color="secondary"
+            color="default"
             >
             Cancel
           </Button>

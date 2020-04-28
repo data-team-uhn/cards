@@ -119,7 +119,7 @@ function UnstyledSelectorDialog (props) {
         <Button
           onClick={closeNewSubjectPopper}
           variant="contained"
-          color="secondary"
+          color="default"
           disabled={isPosting}
           >
           Cancel
@@ -150,16 +150,16 @@ function UnstyledSelectorDialog (props) {
       <DialogActions>
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           onClick={() => { setNewSubjectPopperOpen(true); }}
           className={classes.createNewSubjectButton}
           >
-          Create Subject
+          New subject
         </Button>
         <Button
           onClick={onClose}
           variant="contained"
-          color="secondary"
+          color="default"
           >
           Cancel
         </Button>
