@@ -93,6 +93,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     // Called when the value of an existing property gets changed
     @Override
+    @SuppressWarnings("MultipleStringLiterals")
     public void propertyChanged(PropertyState before, PropertyState after) throws CommitFailedException
     {
         Node questionNode = getQuestionNode(this.currentNodeBuilder);
@@ -163,6 +164,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     // DefaultEditor is to stop at the root, so we must override the following two methods in order for the editor to be
     // invoked on non-root nodes.
     @Override
+    @SuppressWarnings("MultipleStringLiterals")
     public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
         Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
@@ -216,6 +218,21 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return null;
     }
 
+    private Node getSectionNode(NodeBuilder nb)
+    {
+        try {
+            if (nb.hasProperty("section")) {
+                Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
+                String sectionNodeReference = nb.getProperty("section").getValue(Type.REFERENCE);
+                Node sectionNode = resourceSession.getNodeByIdentifier(sectionNodeReference);
+                return sectionNode;
+            }
+        } catch (RepositoryException ex) {
+            return null;
+        }
+        return null;
+    }
+
     /**
      * Counts the number of items in an Iterable.
      *
@@ -262,12 +279,66 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
          * i == 1 --> jcr:root/Forms
          * i == 2 --> jcr:root/Forms/<some form object>
          */
+        LOGGER.warn("Running summarizeBuilders() on size: {}", nodeBuilders.size());
         for (int i = nodeBuilders.size() - 2; i >= 2; i--) {
-            summarizeBuilder(nodeBuilders.get(i));
+            LOGGER.warn("Running summarizeBuilder() for {}", nodeBuilders.get(i));
+            summarizeBuilder(nodeBuilders.get(i), nodeBuilders.get(i - 1));
         }
     }
 
-    private void summarizeBuilder(NodeBuilder selectedNodeBuilder) throws RepositoryException
+    @SuppressWarnings("checkstyle:NestedIfDepth")
+    private boolean getSectionCondition(NodeBuilder nb, NodeBuilder prevNb) throws RepositoryException
+    {
+        Node sectionNode = getSectionNode(nb);
+        if (sectionNode.hasNode("condition")) {
+            //LOGGER.warn("This node specifies a condition!!");
+            Node conditionNode = sectionNode.getNode("condition");
+            LOGGER.warn("...The condition node is {}", conditionNode.getIdentifier());
+            String comparator = conditionNode.getProperty("comparator").getString();
+            LOGGER.warn("....The comparator operator is {}", comparator);
+            Iterator<Node> conditionChildren = conditionNode.getNodes();
+            while (conditionChildren.hasNext()) {
+                LOGGER.warn("---> has child: {}", conditionChildren.next().getIdentifier());
+            }
+            if (conditionNode.hasNode("operandB") && conditionNode.hasNode("operandA")) {
+                //LOGGER.warn("===> We have children - operandB and operandA");
+                Node operandB = conditionNode.getNode("operandB");
+                //LOGGER.warn("=====> Got operandB");
+                Node operandA = conditionNode.getNode("operandA");
+                //LOGGER.warn("=====> Got operandA");
+                String valueB = operandB.getProperty("value").getValues()[0].getString();
+                LOGGER.warn("Value of operandB is {}", valueB);
+                //Sanitize?
+                String keyA = operandA.getProperty("value").getValues()[0].getString();
+                LOGGER.warn("Value of keyA is {}", keyA);
+                //Get the node from the Questionnaire corresponding to keyA
+                Node sectionNodeParent = sectionNode.getParent();
+                Node keyANode = sectionNodeParent.getNode(keyA);
+                String keyANodeUUID = keyANode.getIdentifier();
+                LOGGER.warn("Checking for a match to {}...", keyANodeUUID);
+                //Get the node from the Form containg the answer to keyANode
+                Iterable<String> childrenNames = prevNb.getChildNodeNames();
+                Iterator<String> childrenNamesIter = childrenNames.iterator();
+                while (childrenNamesIter.hasNext()) {
+                    String selectedChildName = childrenNamesIter.next();
+                    NodeBuilder selectedChild = prevNb.getChildNode(selectedChildName);
+                    if (selectedChild.hasProperty("question")) {
+                        if (keyANodeUUID.equals(selectedChild.getProperty("question").getValue(Type.STRING))) {
+                            LOGGER.warn("....found the match!!");
+                            if (selectedChild.getProperty("value").getValue(Type.STRING).equals(valueB)) {
+                                LOGGER.warn("VALUE({}) = {}", keyA, valueB);
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
+    private void summarizeBuilder(NodeBuilder selectedNodeBuilder, NodeBuilder prevNb) throws RepositoryException
     {
         //Iterate through all children of this node
         Iterable<String> childrenNames = selectedNodeBuilder.getChildNodeNames();
@@ -276,7 +347,17 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         boolean isIncomplete = false;
         while (childrenNamesIter.hasNext()) {
             String selectedChildName = childrenNamesIter.next();
+            LOGGER.warn("Checking child ----> {}", selectedChildName);
             NodeBuilder selectedChild = selectedNodeBuilder.getChildNode(selectedChildName);
+            if ("lfs:AnswerSection".equals(selectedChild.getProperty("jcr:primaryType").getValue(Type.STRING))) {
+                LOGGER.warn("........ {} is an AnswerSection, we may not need to include it.", selectedChildName);
+                if (getSectionCondition(selectedChild, selectedNodeBuilder)) {
+                    LOGGER.warn(" **** INCLUDE IT! ****");
+                } else {
+                    LOGGER.warn(" **** SKIP IT! ****");
+                    continue;
+                }
+            }
             //Is selectedChild - invalid? , incomplete?
             if (selectedChild.hasProperty(STATUS_FLAGS)) {
                 Iterable<String> selectedProps = selectedChild.getProperty(STATUS_FLAGS).getValue(Type.STRINGS);
