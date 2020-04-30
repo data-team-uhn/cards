@@ -199,9 +199,9 @@ var PedigreeEditor = Class.create({
       console.log("pedigree editor unloading..");
       PRemoveAllListeners();
       $(editor._topElementID)._p_update("");
-      editor._onCloseCallback && editor._onCloseCallback();
       window.onbeforeunload = window.editor._initialBeforeUnloadFunction;
       window._unloaded = true;
+      editor._onCloseCallback && editor._onCloseCallback();
       delete window.editor;
     }
   },

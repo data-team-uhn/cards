@@ -176,7 +176,7 @@ var Person = Class.create(AbstractPerson, {
      */
   setComments: function ($super, comment) {
     if (comment != this.getComments()) {
-      $super(x, y, id);
+      $super(comment);
       this.getGraphics().updateCommentsLabel();
     }
   },
