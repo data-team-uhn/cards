@@ -218,6 +218,12 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return null;
     }
 
+    /**
+     * Gets the questionnaire section node referenced by the AnswerSection
+     *     NodeBuilder nb.
+     *
+     * @return the section Node object referenced by NodeBuilder nb
+     */
     private Node getSectionNode(NodeBuilder nb)
     {
         try {
