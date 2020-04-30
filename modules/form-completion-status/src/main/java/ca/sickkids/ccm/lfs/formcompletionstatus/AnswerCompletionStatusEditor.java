@@ -330,8 +330,12 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         throws RepositoryException, ValueFormatException
     {
         if ("=".equals(operator)) {
-            if (propA.getValue(Type.STRING).equals(propB.getValues()[0].getString())) {
-                return true;
+            LOGGER.warn("propA is of type {}", propA.getType().toString());
+            if (Type.BOOLEAN.equals(propA.getType())) {
+                LOGGER.warn("COMPARING BOOLEAN TYPES...");
+                if (propA.getValue(Type.BOOLEAN) == propB.getValues()[0].getBoolean()) {
+                    return true;
+                }
             }
         }
         //If we can't evaluate it, assume it to be false
