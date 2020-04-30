@@ -286,6 +286,35 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         }
     }
 
+    /**
+     * Returns the first NodeBuilder with a question value equal to the
+     * String uuid that is a child of the NodeBuilder nb. If no such
+     * child can be found, null is returned
+     *
+     * @param nb the NodeBuilder to search through its children
+     * @param uuid the UUID String for which the child's question
+     *     property must be equal to
+     * @return the first NodeBuilder with a question value equal to the
+     *     String uuid that is a child of the NodeBuilder nb, or null if
+     *     such node does not exist.
+     */
+    private NodeBuilder getChildNodeWithQuestion(NodeBuilder nb, String uuid)
+    {
+        Iterable<String> childrenNames = nb.getChildNodeNames();
+        Iterator<String> childrenNamesIter = childrenNames.iterator();
+        while (childrenNamesIter.hasNext()) {
+            String selectedChildName = childrenNamesIter.next();
+            NodeBuilder selectedChild = nb.getChildNode(selectedChildName);
+            if (selectedChild.hasProperty("question")) {
+                if (uuid.equals(selectedChild.getProperty("question").getValue(Type.STRING))) {
+                    LOGGER.warn("....found the match!!");
+                    return selectedChild;
+                }
+            }
+        }
+        return null;
+    }
+
     @SuppressWarnings("checkstyle:NestedIfDepth")
     private boolean getSectionCondition(NodeBuilder nb, NodeBuilder prevNb) throws RepositoryException
     {
@@ -317,22 +346,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 String keyANodeUUID = keyANode.getIdentifier();
                 LOGGER.warn("Checking for a match to {}...", keyANodeUUID);
                 //Get the node from the Form containg the answer to keyANode
-                Iterable<String> childrenNames = prevNb.getChildNodeNames();
-                Iterator<String> childrenNamesIter = childrenNames.iterator();
-                while (childrenNamesIter.hasNext()) {
-                    String selectedChildName = childrenNamesIter.next();
-                    NodeBuilder selectedChild = prevNb.getChildNode(selectedChildName);
-                    if (selectedChild.hasProperty("question")) {
-                        if (keyANodeUUID.equals(selectedChild.getProperty("question").getValue(Type.STRING))) {
-                            LOGGER.warn("....found the match!!");
-                            LOGGER.warn("VALUE({}) = {}", keyA,
-                                selectedChild.getProperty("value").getValue(Type.STRING));
-                            if (selectedChild.getProperty("value").getValue(Type.STRING).equals(valueB)) {
-                                //LOGGER.warn("VALUE({}) = {}", keyA, valueB);
-                                return true;
-                            }
-                        }
-                    }
+                NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyANodeUUID);
+                if (conditionalFormNode.getProperty("value").getValue(Type.STRING).equals(valueB)) {
+                    return true;
                 }
             }
         }
