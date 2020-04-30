@@ -325,8 +325,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                     if (selectedChild.hasProperty("question")) {
                         if (keyANodeUUID.equals(selectedChild.getProperty("question").getValue(Type.STRING))) {
                             LOGGER.warn("....found the match!!");
+                            LOGGER.warn("VALUE({}) = {}", keyA,
+                                selectedChild.getProperty("value").getValue(Type.STRING));
                             if (selectedChild.getProperty("value").getValue(Type.STRING).equals(valueB)) {
-                                LOGGER.warn("VALUE({}) = {}", keyA, valueB);
+                                //LOGGER.warn("VALUE({}) = {}", keyA, valueB);
                                 return true;
                             }
                         }
