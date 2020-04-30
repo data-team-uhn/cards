@@ -126,7 +126,7 @@ function SearchBar(props) {
         <Typography variant="body2" color="textSecondary">
           {(resultData.questionnaire?.title?.concat(' ') || '') + (resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')}
         </Typography>
-        {resultData.subject?.identifier || entry ? entry[1] : ''}
+        {resultData.subject?.identifier || entry?.[1] : ''}
       </div>
     ) || null
   }
