@@ -343,7 +343,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     {
         Node sectionNode = getSectionNode(nb);
         if (sectionNode.hasNode("condition")) {
-            //LOGGER.warn("This node specifies a condition!!");
             Node conditionNode = sectionNode.getNode("condition");
             LOGGER.warn("...The condition node is {}", conditionNode.getIdentifier());
             String comparator = conditionNode.getProperty("comparator").getString();
@@ -353,11 +352,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 LOGGER.warn("---> has child: {}", conditionChildren.next().getIdentifier());
             }
             if (conditionNode.hasNode("operandB") && conditionNode.hasNode("operandA")) {
-                //LOGGER.warn("===> We have children - operandB and operandA");
                 Node operandB = conditionNode.getNode("operandB");
-                //LOGGER.warn("=====> Got operandB");
                 Node operandA = conditionNode.getNode("operandA");
-                //LOGGER.warn("=====> Got operandA");
                 //Sanitize?
                 String keyA = operandA.getProperty("value").getValues()[0].getString();
                 LOGGER.warn("Value of keyA is {}", keyA);
