@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.ValueFormatException;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
@@ -321,6 +323,21 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return null;
     }
 
+    /**
+     * Evaluates the boolean expression {propA} {operator} {propB}.
+     */
+    private boolean evalSectionCondition(PropertyState propA, Property propB, String operator)
+        throws RepositoryException, ValueFormatException
+    {
+        if ("=".equals(operator)) {
+            if (propA.getValue(Type.STRING).equals(propB.getValues()[0].getString())) {
+                return true;
+            }
+        }
+        //If we can't evaluate it, assume it to be false
+        return false;
+    }
+
     @SuppressWarnings("checkstyle:NestedIfDepth")
     private boolean getSectionCondition(NodeBuilder nb, NodeBuilder prevNb) throws RepositoryException
     {
@@ -341,8 +358,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 //LOGGER.warn("=====> Got operandB");
                 Node operandA = conditionNode.getNode("operandA");
                 //LOGGER.warn("=====> Got operandA");
-                String valueB = operandB.getProperty("value").getValues()[0].getString();
-                LOGGER.warn("Value of operandB is {}", valueB);
                 //Sanitize?
                 String keyA = operandA.getProperty("value").getValues()[0].getString();
                 LOGGER.warn("Value of keyA is {}", keyA);
@@ -353,7 +368,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 LOGGER.warn("Checking for a match to {}...", keyANodeUUID);
                 //Get the node from the Form containg the answer to keyANode
                 NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyANodeUUID);
-                if (conditionalFormNode.getProperty("value").getValue(Type.STRING).equals(valueB)) {
+                PropertyState comparedProp = conditionalFormNode.getProperty("value");
+                Property referenceProp = operandB.getProperty("value");
+                if (evalSectionCondition(comparedProp, referenceProp, comparator)) {
                     return true;
                 }
             }
