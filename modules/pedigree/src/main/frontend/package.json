@@ -7,7 +7,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ccmbioinfo/lfs.git",
-    "directory": "modules/data-entry/src/main/frontend"
+    "directory": "modules/pedigree/src/main/frontend"
   },
   "babel": {
     "presets": [
