@@ -342,6 +342,32 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return false;
     }
 
+    private boolean evaluateConditionNodeRecursive(Node conditionNode, Node sectionNode, NodeBuilder prevNb) {
+        if ("lfs:ConditionalGroup".equals(conditionNode.getProperty("jcr:primaryType").getString())) {
+            //Evaluate recursively
+            Iterator<Node> conditionChildren = conditionNode.getNodes();
+            while (conditionChildren.hasNext()) {
+                evaluateConditionNodeRecursive(conditionChildren.next(), sectionNode, NodeBuilder);
+            }
+        } else if ("lfs:Conditional".equals(conditionNode.getProperty("jcr:primaryType").getString())) {
+            Node operandB = conditionNode.getNode("operandB");
+            Node operandA = conditionNode.getNode("operandA");
+            //TODO: Sanitize?
+            String keyA = operandA.getProperty("value").getValues()[0].getString();
+            LOGGER.warn("Value of keyA is {}", keyA);
+            //Get the node from the Questionnaire corresponding to keyA
+            Node sectionNodeParent = sectionNode.getParent();
+            Node keyANode = sectionNodeParent.getNode(keyA);
+            String keyANodeUUID = keyANode.getIdentifier();
+            LOGGER.warn("Checking for a match to {}...", keyANodeUUID);
+            //Get the node from the Form containg the answer to keyANode
+            NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyANodeUUID);
+            PropertyState comparedProp = conditionalFormNode.getProperty("value");
+            Property referenceProp = operandB.getProperty("value");
+            return evalSectionCondition(comparedProp, referenceProp, comparator);
+        }
+    }
+
     @SuppressWarnings("checkstyle:NestedIfDepth")
     private boolean getSectionCondition(NodeBuilder nb, NodeBuilder prevNb) throws RepositoryException
     {
@@ -349,6 +375,13 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         if (sectionNode.hasNode("condition")) {
             Node conditionNode = sectionNode.getNode("condition");
             LOGGER.warn("...The condition node is {}", conditionNode.getIdentifier());
+            /*
+             * Recursively go through all children of the condition node
+             * and determine if this condition node evaluates to True or
+             * False.
+             */
+            //TODO
+            //evaluateConditionNodeRecursive(conditionNode);
             String comparator = conditionNode.getProperty("comparator").getString();
             LOGGER.warn("....The comparator operator is {}", comparator);
             Iterator<Node> conditionChildren = conditionNode.getNodes();
@@ -358,7 +391,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             if (conditionNode.hasNode("operandB") && conditionNode.hasNode("operandA")) {
                 Node operandB = conditionNode.getNode("operandB");
                 Node operandA = conditionNode.getNode("operandA");
-                //Sanitize?
+                //TODO: Sanitize?
                 String keyA = operandA.getProperty("value").getValues()[0].getString();
                 LOGGER.warn("Value of keyA is {}", keyA);
                 //Get the node from the Questionnaire corresponding to keyA
