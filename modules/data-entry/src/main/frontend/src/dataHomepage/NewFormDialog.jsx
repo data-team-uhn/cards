@@ -42,7 +42,6 @@ function NewFormDialog(props) {
   const [ newSubjectName, setNewSubjectName ] = useState("");
   const [ initialized, setInitialized ] = useState(false);
   const [ questionnaires, setQuestionnaires ] = useState([]);
-  const [ subjects, setSubjects ] = useState([]);
   const [ presetQuestionnaire, setPresetQuestionnaire ] = useState();
   const [ selectedQuestionnaire, setSelectedQuestionnaire ] = useState();
   const [ selectedSubject, setSelectedSubject ] = useState();
@@ -209,8 +208,6 @@ function NewFormDialog(props) {
                 onDelete={unselectSubject}
                 onError={setError}
                 onSelect={selectSubject}
-                setSubjects={setSubjects}
-                subjects={subjects}
                 selectedSubject={selectedSubject}
                 />
             }
