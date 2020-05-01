@@ -112,6 +112,14 @@ function UnstyledSelectorDialog (props) {
           disabled={isPosting}
           value={newSubjectName}
           onChange={(event) => {setNewSubjectName(event.target.value);}}
+          inputProps={{
+            onkeydown: (event) => {
+              // Detect an enter key and submit
+              if (event.keyCode === 13) {
+                handleSubmit(true);
+              }
+            }
+          }}
           className={classes.newSubjectInput}
           />
       </DialogContent>

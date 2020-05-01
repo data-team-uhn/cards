@@ -202,14 +202,13 @@ function NewFormDialog(props) {
           </React.Fragment>
           :
           <React.Fragment>
-            {subjects &&
-              <SubjectSelectorList
-                disabled={isFetching}
-                onDelete={unselectSubject}
-                onError={setError}
-                onSelect={selectSubject}
-                selectedSubject={selectedSubject}
-                />
+            {<SubjectSelectorList
+              disabled={isFetching}
+              onDelete={unselectSubject}
+              onError={setError}
+              onSelect={selectSubject}
+              selectedSubject={selectedSubject}
+              />
             }
           </React.Fragment>}
         </DialogContent>
@@ -255,8 +254,17 @@ function NewFormDialog(props) {
         <DialogContent dividers className={classes.NewFormDialog}>
           {error && <Typography color='error'>{error}</Typography>}
           <Input
+            autoFocus
             value={newSubjectName}
             onChange={(event) => {setNewSubjectName(event.target.value);}}
+            inputProps={{
+              onKeyDown: (event) => {
+                // Detect an enter key and submit
+                if (event.keyCode === 13) {
+                  initiateFormCreation();
+                }
+              }
+            }}
             className={classes.newSubjectInput}
             />
         </DialogContent>
