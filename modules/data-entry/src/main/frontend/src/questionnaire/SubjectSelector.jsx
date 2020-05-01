@@ -259,19 +259,20 @@ SubjectListItem.defaultProps = {
  * Component that displays the list of subjects.
  *
  * @example
- * <Form id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
+ * <SubjectSelectorList
+ *   disabled={false}
+ *   onSelect={(subject) => {setSelectedSubject(subject)}}
+ *   />
  *
  * @param {disabled} bool whether selections should be disabled on this element
  * @param {onDelete} func Callback for the deletion of a subject. The only parameter is the subject deleted.
  * @param {onError} func Callback for an issue in the reading or editing of subjects. The only parameter is a response object.
  * @param {onSelect} func Callback for when the user selects a subject.
- * @param {selectedSubject} object The currently selected subject
- * @param {setSubjects} func A callback for setting the currently available subjects. The parameter is a list of subjects
- * @param {subjects} array A list of (potentially filtered) subjects that the user has available
+ * @param {selectedSubject} object The currently selected subject.
  */
 function SubjectSelectorList(props) {
   const { allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject,
-      setSubjects, subjects, theme, ...rest } = props;
+      theme, ...rest } = props;
   const COLUMNS = [
     { title: 'Identifier', field: 'identifier' },
   ];
