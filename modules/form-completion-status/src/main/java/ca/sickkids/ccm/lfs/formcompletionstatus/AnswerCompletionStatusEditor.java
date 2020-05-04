@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.ValueFormatException;
@@ -330,13 +331,44 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         throws RepositoryException, ValueFormatException
     {
         if ("=".equals(operator)) {
+            /*
+             * Type.STRING uses .equals()
+             * Everything else uses ==
+             */
             LOGGER.warn("propA is of type {}", propA.getType().toString());
-            if (Type.BOOLEAN.equals(propA.getType())) {
-                LOGGER.warn("COMPARING BOOLEAN TYPES...");
+            /*
+            if (Type.STRING.equals(propA.getType())) {
+                if (propA.getValue(Type.STRING).equals(propB.getValues()[0].getString())) {
+                    return true;
+                }
+            } else {
+                LOGGER.warn("COMPARING WITH == ...");
                 if (propA.getValue(Type.BOOLEAN) == propB.getValues()[0].getBoolean()) {
                     return true;
                 }
             }
+            */
+            boolean testResult = false;
+            switch (propB.getValues()[0].getType()) {
+                case PropertyType.STRING:
+                    testResult = propA.getValue(Type.STRING).equals(propB.getValues()[0].getString());
+                    break;
+                case PropertyType.LONG:
+                    testResult = (propA.getValue(Type.LONG) == propB.getValues()[0].getLong());
+                    break;
+                case PropertyType.DOUBLE:
+                    testResult = (propA.getValue(Type.DOUBLE) == propB.getValues()[0].getDouble());
+                    break;
+                case PropertyType.DECIMAL:
+                    testResult = (propA.getValue(Type.DECIMAL) == propB.getValues()[0].getDecimal());
+                    break;
+                case PropertyType.BOOLEAN:
+                    testResult = (propA.getValue(Type.BOOLEAN) == propB.getValues()[0].getBoolean());
+                    break;
+                default:
+                    break;
+            }
+            return testResult;
         }
         //If we can't evaluate it, assume it to be false
         return false;
