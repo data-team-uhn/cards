@@ -342,14 +342,36 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return false;
     }
 
-    private boolean evaluateConditionNodeRecursive(Node conditionNode, Node sectionNode, NodeBuilder prevNb) {
+    /*
+     * Given a "condition" node from the "Questionnaires" and a
+     * "lfs:AnswerSection" node from the "Forms" and a NodeBuilder type
+     * object referring to the parent of the "lfs:AnswerSection" node,
+     * evaluate the boolean expression defined by the descendants of
+     * the "condition" Node.
+     */
+    private boolean evaluateConditionNodeRecursive(Node conditionNode, Node sectionNode, NodeBuilder prevNb)
+        throws RepositoryException
+    {
         if ("lfs:ConditionalGroup".equals(conditionNode.getProperty("jcr:primaryType").getString())) {
+            //Is this an OR or an AND
+            boolean requireAll = conditionNode.getProperty("requireAll").getBoolean();
             //Evaluate recursively
             Iterator<Node> conditionChildren = conditionNode.getNodes();
-            while (conditionChildren.hasNext()) {
-                evaluateConditionNodeRecursive(conditionChildren.next(), sectionNode, NodeBuilder);
+            boolean downstreamResult = false;
+            if (requireAll) {
+                downstreamResult = true;
             }
+            while (conditionChildren.hasNext()) {
+                boolean partialRes = evaluateConditionNodeRecursive(conditionChildren.next(), sectionNode, prevNb);
+                if (requireAll) {
+                    downstreamResult = downstreamResult && partialRes;
+                } else {
+                    downstreamResult = downstreamResult || partialRes;
+                }
+            }
+            return downstreamResult;
         } else if ("lfs:Conditional".equals(conditionNode.getProperty("jcr:primaryType").getString())) {
+            String comparator = conditionNode.getProperty("comparator").getString();
             Node operandB = conditionNode.getNode("operandB");
             Node operandA = conditionNode.getNode("operandA");
             //TODO: Sanitize?
@@ -366,6 +388,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             Property referenceProp = operandB.getProperty("value");
             return evalSectionCondition(comparedProp, referenceProp, comparator);
         }
+        //If all goes wrong
+        return false;
     }
 
     @SuppressWarnings("checkstyle:NestedIfDepth")
@@ -380,32 +404,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
              * and determine if this condition node evaluates to True or
              * False.
              */
-            //TODO
-            //evaluateConditionNodeRecursive(conditionNode);
-            String comparator = conditionNode.getProperty("comparator").getString();
-            LOGGER.warn("....The comparator operator is {}", comparator);
-            Iterator<Node> conditionChildren = conditionNode.getNodes();
-            while (conditionChildren.hasNext()) {
-                LOGGER.warn("---> has child: {}", conditionChildren.next().getIdentifier());
-            }
-            if (conditionNode.hasNode("operandB") && conditionNode.hasNode("operandA")) {
-                Node operandB = conditionNode.getNode("operandB");
-                Node operandA = conditionNode.getNode("operandA");
-                //TODO: Sanitize?
-                String keyA = operandA.getProperty("value").getValues()[0].getString();
-                LOGGER.warn("Value of keyA is {}", keyA);
-                //Get the node from the Questionnaire corresponding to keyA
-                Node sectionNodeParent = sectionNode.getParent();
-                Node keyANode = sectionNodeParent.getNode(keyA);
-                String keyANodeUUID = keyANode.getIdentifier();
-                LOGGER.warn("Checking for a match to {}...", keyANodeUUID);
-                //Get the node from the Form containg the answer to keyANode
-                NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyANodeUUID);
-                PropertyState comparedProp = conditionalFormNode.getProperty("value");
-                Property referenceProp = operandB.getProperty("value");
-                if (evalSectionCondition(comparedProp, referenceProp, comparator)) {
-                    return true;
-                }
+            if (evaluateConditionNodeRecursive(conditionNode, sectionNode, prevNb)) {
+                return true;
             }
         }
         return false;
