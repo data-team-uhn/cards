@@ -336,18 +336,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
              * Everything else uses ==
              */
             LOGGER.warn("propA is of type {}", propA.getType().toString());
-            /*
-            if (Type.STRING.equals(propA.getType())) {
-                if (propA.getValue(Type.STRING).equals(propB.getValues()[0].getString())) {
-                    return true;
-                }
-            } else {
-                LOGGER.warn("COMPARING WITH == ...");
-                if (propA.getValue(Type.BOOLEAN) == propB.getValues()[0].getBoolean()) {
-                    return true;
-                }
-            }
-            */
             boolean testResult = false;
             switch (propB.getValues()[0].getType()) {
                 case PropertyType.STRING:
