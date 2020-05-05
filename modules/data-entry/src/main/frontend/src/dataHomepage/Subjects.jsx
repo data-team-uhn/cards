@@ -20,7 +20,10 @@ import React from "react";
 import LiveTable from "./LiveTable.jsx";
 import Subject from "../questionnaire/Subject.jsx";
 
+import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles } from "@material-ui/core";
+
 export default function Subjects(props) {
+
   const columns = [
     {
       "key": "identifier",
@@ -46,6 +49,11 @@ export default function Subjects(props) {
   }
 
   return (
-    <LiveTable columns={columns} />
+    <Card>
+      <CardHeader/>
+      <CardContent>
+        <LiveTable columns={columns} />
+      </CardContent>
+    </Card>
   );
 }
