@@ -325,6 +325,86 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return null;
     }
 
+    private int getPropertyStateType(PropertyState ps)
+    {
+        if (Type.LONG.equals(ps.getType())) {
+            return PropertyType.LONG;
+        }
+        if (Type.DOUBLE.equals(ps.getType())) {
+            return PropertyType.DOUBLE;
+        }
+        if (Type.DECIMAL.equals(ps.getType())) {
+            return PropertyType.DECIMAL;
+        }
+        if (Type.BOOLEAN.equals(ps.getType())) {
+            return PropertyType.BOOLEAN;
+        }
+        return PropertyType.STRING;
+    }
+
+    private boolean evalSectionEq(PropertyState propA, Value valB)
+        throws RepositoryException, ValueFormatException
+    {
+        boolean testResult = false;
+        //switch (valB.getType()) {
+        switch (getPropertyStateType(propA)) {
+            case PropertyType.STRING:
+                testResult = propA.getValue(Type.STRING).equals(valB.getString());
+                break;
+            case PropertyType.LONG:
+                testResult = (propA.getValue(Type.LONG) == valB.getLong());
+                break;
+            case PropertyType.DOUBLE:
+                testResult = (propA.getValue(Type.DOUBLE) == valB.getDouble());
+                break;
+            case PropertyType.DECIMAL:
+                testResult = (propA.getValue(Type.DECIMAL) == valB.getDecimal());
+                break;
+            case PropertyType.BOOLEAN:
+                testResult = (propA.getValue(Type.BOOLEAN) == valB.getBoolean());
+                break;
+            default:
+                break;
+        }
+        return testResult;
+    }
+
+    private boolean evalSectionLt(PropertyState propA, Value valB)
+        throws RepositoryException, ValueFormatException
+    {
+        boolean testResult = false;
+        //switch (valB.getType()) {
+        switch (getPropertyStateType(propA)) {
+            case PropertyType.LONG:
+                testResult = (propA.getValue(Type.LONG) < valB.getLong());
+                break;
+            case PropertyType.DOUBLE:
+                testResult = (propA.getValue(Type.DOUBLE) < valB.getDouble());
+                break;
+            default:
+                break;
+        }
+        return testResult;
+    }
+
+    private boolean evalSectionGt(PropertyState propA, Value valB)
+        throws RepositoryException, ValueFormatException
+    {
+        boolean testResult = false;
+        //switch (valB.getType()) {
+        switch (getPropertyStateType(propA)) {
+            case PropertyType.LONG:
+                testResult = (propA.getValue(Type.LONG) > valB.getLong());
+                break;
+            case PropertyType.DOUBLE:
+                testResult = (propA.getValue(Type.DOUBLE) > valB.getDouble());
+                break;
+            default:
+                break;
+        }
+        return testResult;
+    }
+
     /**
      * Evaluates the boolean expression {propA} {operator} {propB}.
      */
@@ -344,26 +424,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
              * Everything else uses ==
              */
             LOGGER.warn("propA is of type {}", propA.getType().toString());
-            boolean testResult = false;
-            switch (valB.getType()) {
-                case PropertyType.STRING:
-                    testResult = propA.getValue(Type.STRING).equals(valB.getString());
-                    break;
-                case PropertyType.LONG:
-                    testResult = (propA.getValue(Type.LONG) == valB.getLong());
-                    break;
-                case PropertyType.DOUBLE:
-                    testResult = (propA.getValue(Type.DOUBLE) == valB.getDouble());
-                    break;
-                case PropertyType.DECIMAL:
-                    testResult = (propA.getValue(Type.DECIMAL) == valB.getDecimal());
-                    break;
-                case PropertyType.BOOLEAN:
-                    testResult = (propA.getValue(Type.BOOLEAN) == valB.getBoolean());
-                    break;
-                default:
-                    break;
-            }
+            boolean testResult = evalSectionEq(propA, valB);
             if ("<>".equals(operator)) {
                 testResult = !testResult;
             }
@@ -374,6 +435,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 testResult = !testResult;
             }
             return testResult;
+        } else if ("<".equals(operator)) {
+            return evalSectionLt(propA, valB);
+        } else if (">".equals(operator)) {
+            return evalSectionGt(propA, valB);
         }
         //If we can't evaluate it, assume it to be false
         return false;
