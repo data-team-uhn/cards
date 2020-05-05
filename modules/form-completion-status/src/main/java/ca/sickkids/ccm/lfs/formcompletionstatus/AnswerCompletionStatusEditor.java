@@ -24,6 +24,7 @@ import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
@@ -330,31 +331,40 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     private boolean evalSectionCondition(PropertyState propA, Property propB, String operator)
         throws RepositoryException, ValueFormatException
     {
-        if ("=".equals(operator)) {
+        Value valB;
+        if (propB.isMultiple()) {
+            valB = propB.getValues()[0];
+        } else {
+            valB = propB.getValue();
+        }
+        if ("=".equals(operator) || "<>".equals(operator)) {
             /*
              * Type.STRING uses .equals()
              * Everything else uses ==
              */
             LOGGER.warn("propA is of type {}", propA.getType().toString());
             boolean testResult = false;
-            switch (propB.getValues()[0].getType()) {
+            switch (valB.getType()) {
                 case PropertyType.STRING:
-                    testResult = propA.getValue(Type.STRING).equals(propB.getValues()[0].getString());
+                    testResult = propA.getValue(Type.STRING).equals(valB.getString());
                     break;
                 case PropertyType.LONG:
-                    testResult = (propA.getValue(Type.LONG) == propB.getValues()[0].getLong());
+                    testResult = (propA.getValue(Type.LONG) == valB.getLong());
                     break;
                 case PropertyType.DOUBLE:
-                    testResult = (propA.getValue(Type.DOUBLE) == propB.getValues()[0].getDouble());
+                    testResult = (propA.getValue(Type.DOUBLE) == valB.getDouble());
                     break;
                 case PropertyType.DECIMAL:
-                    testResult = (propA.getValue(Type.DECIMAL) == propB.getValues()[0].getDecimal());
+                    testResult = (propA.getValue(Type.DECIMAL) == valB.getDecimal());
                     break;
                 case PropertyType.BOOLEAN:
-                    testResult = (propA.getValue(Type.BOOLEAN) == propB.getValues()[0].getBoolean());
+                    testResult = (propA.getValue(Type.BOOLEAN) == valB.getBoolean());
                     break;
                 default:
                     break;
+            }
+            if ("<>".equals(operator)) {
+                testResult = !testResult;
             }
             return testResult;
         }
