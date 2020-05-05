@@ -328,6 +328,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     /**
      * Evaluates the boolean expression {propA} {operator} {propB}.
      */
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private boolean evalSectionCondition(PropertyState propA, Property propB, String operator)
         throws RepositoryException, ValueFormatException
     {
@@ -364,6 +365,12 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                     break;
             }
             if ("<>".equals(operator)) {
+                testResult = !testResult;
+            }
+            return testResult;
+        } else if ("is empty".equals(operator) || "is not empty".equals(operator)) {
+            boolean testResult = (propA == null);
+            if ("is not empty".equals(operator)) {
                 testResult = !testResult;
             }
             return testResult;
