@@ -16,7 +16,11 @@
  */
 package ca.sickkids.ccm.lfs.formcompletionstatus;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.jcr.Node;
@@ -84,7 +88,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     // Called when a new property is added
     @Override
-    public void propertyAdded(PropertyState after) throws CommitFailedException
+    public void propertyAdded(PropertyState after)
+        throws CommitFailedException
     {
         propertyChanged(null, after);
         //Summarize all parents
@@ -98,7 +103,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     // Called when the value of an existing property gets changed
     @Override
     @SuppressWarnings("MultipleStringLiterals")
-    public void propertyChanged(PropertyState before, PropertyState after) throws CommitFailedException
+    public void propertyChanged(PropertyState before, PropertyState after)
+        throws CommitFailedException
     {
         Node questionNode = getQuestionNode(this.currentNodeBuilder);
         if (questionNode != null && "value".equals(after.getName())) {
@@ -140,7 +146,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     // Called when a property is deleted
     @Override
-    public void propertyDeleted(PropertyState before) throws CommitFailedException
+    public void propertyDeleted(PropertyState before)
+        throws CommitFailedException
     {
         Node questionNode = getQuestionNode(this.currentNodeBuilder);
         if (questionNode != null) {
@@ -169,7 +176,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     // invoked on non-root nodes.
     @Override
     @SuppressWarnings("MultipleStringLiterals")
-    public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
+    public Editor childNodeAdded(String name, NodeState after)
+        throws CommitFailedException
     {
         Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
         if (questionNode != null) {
@@ -191,7 +199,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     }
 
     @Override
-    public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
+    public Editor childNodeChanged(String name, NodeState before, NodeState after)
+        throws CommitFailedException
     {
         ArrayList<NodeBuilder> tmpList = new ArrayList<NodeBuilder>();
         for (int i = 0; i < this.currentNodeBuilderPath.size(); i++) {
@@ -282,7 +291,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return false;
     }
 
-    private void summarizeBuilders(ArrayList<NodeBuilder> nodeBuilders) throws RepositoryException
+    private void summarizeBuilders(ArrayList<NodeBuilder> nodeBuilders)
+        throws RepositoryException
     {
         /*
          * i == 0 --> jcr:root
@@ -325,20 +335,52 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return null;
     }
 
+    /**
+     * Parses a date from the given input string.
+     *
+     * @param str the serialized date to parse
+     * @return the parsed date, or {@code null} if the date cannot be parsed
+     */
+    private Calendar parseDate(final String str)
+    {
+        LOGGER.warn("PARSING DATE: {}", str);
+        try {
+            //SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = fmt.parse(str.split("T")[0]);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            return calendar;
+        } catch (ParseException e) {
+            LOGGER.warn("PARSING DATE FAILED");
+            return null;
+        }
+    }
+
+    @SuppressWarnings("checkstyle:ReturnCount")
     private int getPropertyStateType(PropertyState ps)
     {
         if (Type.LONG.equals(ps.getType())) {
+            LOGGER.warn("{} is a PropertyType.LONG", ps.getValue(Type.LONG));
             return PropertyType.LONG;
         }
         if (Type.DOUBLE.equals(ps.getType())) {
+            LOGGER.warn("{} is a PropertyType.DOUBLE", ps.getValue(Type.DOUBLE));
             return PropertyType.DOUBLE;
         }
         if (Type.DECIMAL.equals(ps.getType())) {
+            LOGGER.warn("{} is a PropertyType.DECIMAL", ps.getValue(Type.DECIMAL));
             return PropertyType.DECIMAL;
         }
         if (Type.BOOLEAN.equals(ps.getType())) {
+            LOGGER.warn("{} is a PropertyType.BOOLEAN", ps.getValue(Type.BOOLEAN));
             return PropertyType.BOOLEAN;
         }
+        if (Type.DATE.equals(ps.getType())) {
+            LOGGER.warn("{} is a PropertyType.DATE", ps.getValue(Type.DATE));
+            return PropertyType.DATE;
+        }
+        LOGGER.warn("{} is a PropertyType.STRING", ps.getValue(Type.STRING));
         return PropertyType.STRING;
     }
 
@@ -363,6 +405,23 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             case PropertyType.BOOLEAN:
                 testResult = (propA.getValue(Type.BOOLEAN) == valB.getBoolean());
                 break;
+            case PropertyType.DATE:
+                LOGGER.warn("The property being compared is PropertyType.DATE");
+                /*
+                LOGGER.warn("Going to compare {} TO {}",
+                    parseDate(propA.getValue(Type.DATE)),
+                    valB.getDate());
+                */
+                LOGGER.warn("The property being compared is A = {}",
+                    propA.getValue(Type.STRING));
+                LOGGER.warn("The property being compared is B = {}",
+                    valB.getString());
+                testResult = parseDate(propA.getValue(Type.DATE)).equals(parseDate(valB.getString()));
+                LOGGER.warn("Checking equality of {} == {} --> {}",
+                    parseDate(propA.getValue(Type.DATE)),
+                    valB.getString(),
+                    testResult);
+                break;
             default:
                 break;
         }
@@ -381,6 +440,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             case PropertyType.DOUBLE:
                 testResult = (propA.getValue(Type.DOUBLE) < valB.getDouble());
                 break;
+            case PropertyType.DATE:
+                testResult = parseDate(propA.getValue(Type.DATE)).before(valB.getDate());
+                break;
             default:
                 break;
         }
@@ -398,6 +460,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 break;
             case PropertyType.DOUBLE:
                 testResult = (propA.getValue(Type.DOUBLE) > valB.getDouble());
+                break;
+            case PropertyType.DATE:
+                testResult = parseDate(propA.getValue(Type.DATE)).after(valB.getDate());
                 break;
             default:
                 break;
@@ -495,7 +560,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     }
 
     @SuppressWarnings("checkstyle:NestedIfDepth")
-    private boolean getSectionCondition(NodeBuilder nb, NodeBuilder prevNb) throws RepositoryException
+    private boolean getSectionCondition(NodeBuilder nb, NodeBuilder prevNb)
+        throws RepositoryException
     {
         Node sectionNode = getSectionNode(nb);
         if (sectionNode.hasNode("condition")) {
@@ -514,7 +580,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     }
 
     @SuppressWarnings("checkstyle:CyclomaticComplexity")
-    private void summarizeBuilder(NodeBuilder selectedNodeBuilder, NodeBuilder prevNb) throws RepositoryException
+    private void summarizeBuilder(NodeBuilder selectedNodeBuilder, NodeBuilder prevNb)
+        throws RepositoryException
     {
         //Iterate through all children of this node
         Iterable<String> childrenNames = selectedNodeBuilder.getChildNodeNames();
