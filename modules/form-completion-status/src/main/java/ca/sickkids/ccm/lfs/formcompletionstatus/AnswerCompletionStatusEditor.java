@@ -442,7 +442,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     /**
      * Evaluates the boolean expression {propA} {operator} {propB}.
      */
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private boolean evalSectionCondition(PropertyState propA, Property propB, String operator)
         throws RepositoryException, ValueFormatException
     {
@@ -543,7 +542,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return false;
     }
 
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private void summarizeBuilder(NodeBuilder selectedNodeBuilder, NodeBuilder prevNb)
         throws RepositoryException
     {
