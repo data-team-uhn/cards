@@ -524,7 +524,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return false;
     }
 
-    @SuppressWarnings("checkstyle:NestedIfDepth")
     private boolean getSectionCondition(NodeBuilder nb, NodeBuilder prevNb)
         throws RepositoryException
     {
