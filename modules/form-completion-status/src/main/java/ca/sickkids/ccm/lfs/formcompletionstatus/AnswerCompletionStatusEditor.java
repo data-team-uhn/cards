@@ -54,6 +54,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AnswerCompletionStatusEditor.class);
 
+    private static final String PROP_VALUE = "value";
+    private static final String PROP_QUESTION = "question";
+
     private static final String STATUS_FLAGS = "statusFlags";
     private static final String STATUS_FLAG_INCOMPLETE = "INCOMPLETE";
     private static final String STATUS_FLAG_INVALID = "INVALID";
@@ -102,12 +105,11 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     // Called when the value of an existing property gets changed
     @Override
-    @SuppressWarnings("MultipleStringLiterals")
     public void propertyChanged(PropertyState before, PropertyState after)
         throws CommitFailedException
     {
         Node questionNode = getQuestionNode(this.currentNodeBuilder);
-        if (questionNode != null && "value".equals(after.getName())) {
+        if (questionNode != null && PROP_VALUE.equals(after.getName())) {
             Iterable<String> nodeAnswers = after.getValue(Type.STRINGS);
             int numAnswers = iterableLength(nodeAnswers);
             ArrayList<String> statusFlags = new ArrayList<String>();
@@ -151,7 +153,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     {
         Node questionNode = getQuestionNode(this.currentNodeBuilder);
         if (questionNode != null) {
-            if ("value".equals(before.getName())) {
+            if (PROP_VALUE.equals(before.getName())) {
                 ArrayList<String> statusFlags = new ArrayList<String>();
                 //Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
                 if (checkInvalidAnswer(questionNode, 0)) {
@@ -175,13 +177,12 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     // DefaultEditor is to stop at the root, so we must override the following two methods in order for the editor to be
     // invoked on non-root nodes.
     @Override
-    @SuppressWarnings("MultipleStringLiterals")
     public Editor childNodeAdded(String name, NodeState after)
         throws CommitFailedException
     {
         Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
         if (questionNode != null) {
-            if (this.currentNodeBuilder.getChildNode(name).hasProperty("question")) {
+            if (this.currentNodeBuilder.getChildNode(name).hasProperty(PROP_QUESTION)) {
                 ArrayList<String> statusFlags = new ArrayList<String>();
                 //Only add the INCOMPLETE flag if the given question requires more than zero answers
                 if (checkInvalidAnswer(questionNode, 0)) {
@@ -219,9 +220,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     private Node getQuestionNode(NodeBuilder nb)
     {
         try {
-            if (nb.hasProperty("question")) {
+            if (nb.hasProperty(PROP_QUESTION)) {
                 Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
-                String questionNodeReference = nb.getProperty("question").getValue(Type.REFERENCE);
+                String questionNodeReference = nb.getProperty(PROP_QUESTION).getValue(Type.REFERENCE);
                 Node questionNode = resourceSession.getNodeByIdentifier(questionNodeReference);
                 return questionNode;
             }
@@ -323,8 +324,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         while (childrenNamesIter.hasNext()) {
             String selectedChildName = childrenNamesIter.next();
             NodeBuilder selectedChild = nb.getChildNode(selectedChildName);
-            if (selectedChild.hasProperty("question")) {
-                if (uuid.equals(selectedChild.getProperty("question").getValue(Type.STRING))) {
+            if (selectedChild.hasProperty(PROP_QUESTION)) {
+                if (uuid.equals(selectedChild.getProperty(PROP_QUESTION).getValue(Type.STRING))) {
                     return selectedChild;
                 }
             }
@@ -509,15 +510,15 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             Node operandB = conditionNode.getNode("operandB");
             Node operandA = conditionNode.getNode("operandA");
             //TODO: Sanitize?
-            String keyA = operandA.getProperty("value").getValues()[0].getString();
+            String keyA = operandA.getProperty(PROP_VALUE).getValues()[0].getString();
             //Get the node from the Questionnaire corresponding to keyA
             Node sectionNodeParent = sectionNode.getParent();
             Node keyANode = sectionNodeParent.getNode(keyA);
             String keyANodeUUID = keyANode.getIdentifier();
             //Get the node from the Form containg the answer to keyANode
             NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyANodeUUID);
-            PropertyState comparedProp = conditionalFormNode.getProperty("value");
-            Property referenceProp = operandB.getProperty("value");
+            PropertyState comparedProp = conditionalFormNode.getProperty(PROP_VALUE);
+            Property referenceProp = operandB.getProperty(PROP_VALUE);
             return evalSectionCondition(comparedProp, referenceProp, comparator);
         }
         //If all goes wrong
