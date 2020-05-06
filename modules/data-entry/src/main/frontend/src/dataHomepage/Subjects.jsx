@@ -16,14 +16,21 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
+import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Subject from "../questionnaire/Subject.jsx";
-// import SubjectSelectorList, { createSubjects, SubjectListItem } from "../questionnaire/SubjectSelector.jsx";
+import { SelectorDialog } from "../questionnaire/SubjectSelector.jsx";
 
-import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 
 function Subjects(props) {
+
+  // const { children, classes } = props;
+  // fix issue with classes
+
+  let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false); // will open or not
+  let [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
 
   const columns = [
     {
@@ -51,12 +58,6 @@ function Subjects(props) {
 
   return (
     <div>
-      // add the subject dialog!
-      //import the WHOLE new form dialog
-
-      //the button will only set the subject popper state to true
-
-      //make a new function for the subject popper so that it can have different return calls?
     <Card>
       <CardHeader
       />
@@ -64,6 +65,23 @@ function Subjects(props) {
         <LiveTable columns={columns} />
       </CardContent>
     </Card>
+    <div>
+      <Tooltip aria-label="add">
+        <Fab
+          color="primary"
+          aria-label="add"
+          onClick={() => {setNewSubjectPopperOpen(true)}}
+        >
+          <AddIcon />
+        </Fab>
+      </Tooltip>
+    </div>
+
+      <SelectorDialog
+        popperOpen={newSubjectPopperOpen}
+        onPopperClose={() => {setNewSubjectPopperOpen(false)}}
+      />
+
     </div>
   );
 }

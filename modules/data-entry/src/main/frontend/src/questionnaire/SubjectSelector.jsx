@@ -43,9 +43,11 @@ let createQueryURL = (query) => {
  * @param {func} onClose Callback for when the user closes this dialog
  * @param {func} onError Callback for when an error occurs during subject selection
  * @param {string} title Title of the dialog, if any
+ * @param {bool} popperOpen
+ * @param {func} onPopperClose
  */
 function UnstyledSelectorDialog (props) {
-  const { classes, open, onChange, onClose, onError, title, ...rest } = props;
+  const { classes, open, onChange, onClose, onError, title, popperOpen, onPopperClose, ...rest } = props;
   const [ subjects, setSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ isPosting, setIsPosting ] = useState();
@@ -101,7 +103,11 @@ function UnstyledSelectorDialog (props) {
   }
 
   return (<React.Fragment>
-    <Dialog open={newSubjectPopperOpen} onClose={closeNewSubjectPopper} className={classes.newSubjectPopper}>
+    <Dialog
+      open={newSubjectPopperOpen || popperOpen} 
+      onClose={closeNewSubjectPopper || onPopperClose} 
+      className={classes.newSubjectPopper}
+    >
       <DialogTitle id="new-form-title">
         Create new subject
       </DialogTitle>

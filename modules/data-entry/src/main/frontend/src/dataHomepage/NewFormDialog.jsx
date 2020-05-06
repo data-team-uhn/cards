@@ -26,7 +26,6 @@ import AddIcon from "@material-ui/icons/Add";
 
 import SubjectSelectorList, { createSubjects, SubjectListItem } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import NewSubjectDialog from "./NewSubjectDialog.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
 const PROGRESS_SELECT_SUBJECT = 1;
@@ -49,10 +48,6 @@ function NewFormDialog(props) {
   const [ progress, setProgress ] = useState();
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ error, setError ] = useState("");
-
-  let getData = (val) => {
-    newSubjectName = val;
-  }
 
   let initiateFormCreation = () => {
     if (newSubjectName == "") {
@@ -219,15 +214,15 @@ function NewFormDialog(props) {
         </DialogContent>
         <DialogActions>
           {progress === PROGRESS_SELECT_SUBJECT &&
-          <NewSubjectDialog 
-              returnCall = {initiateFormCreation}
-              sendData = {getData}
-            />
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => { setNewSubjectPopperOpen(true); setError(); }}
+              className={classes.createNewSubjectButton}
+              >
+              New subject
+            </Button>
           }
-          <NewSubjectDialog 
-              returnCall = {initiateFormCreation}
-              sendData = {getData}
-            />
           <Button
             variant="contained"
             color="default"
