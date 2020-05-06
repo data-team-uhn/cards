@@ -26,7 +26,6 @@ import AddIcon from "@material-ui/icons/Add";
 
 import SubjectSelectorList, { createSubjects, SubjectListItem } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import NewSubjectDialog from "./NewSubjectDialog.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
 const PROGRESS_SELECT_SUBJECT = 1;
@@ -36,9 +35,11 @@ const PROGRESS_SELECT_SUBJECT = 1;
  *
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
-function NewFormDialog(props) {
+
+// props: return call, fab ui
+function NewSubjectDialog(props) {
   const { children, classes, presetPath } = props;
-  const [ open, setOpen ] = useState(false);
+  // const [ open, setOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ newSubjectName, setNewSubjectName ] = useState("");
   const [ initialized, setInitialized ] = useState(false);
@@ -49,10 +50,6 @@ function NewFormDialog(props) {
   const [ progress, setProgress ] = useState();
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ error, setError ] = useState("");
-
-  let getData = (val) => {
-    newSubjectName = val;
-  }
 
   let initiateFormCreation = () => {
     if (newSubjectName == "") {
@@ -175,83 +172,15 @@ function NewFormDialog(props) {
     }
   }
 
+  let setSubject = () => {
+    props.sendData(newSubjectName);
+  }
+
   const isFetching = numFetchRequests > 0;
 
   return (
     <React.Fragment>
-      <Dialog open={open} onClose={() => { setOpen(false); }}>
-        <DialogTitle id="new-form-title">
-          {progress === PROGRESS_SELECT_QUESTIONNAIRE ? "Select a questionnaire" : "Select a subject"}
-        </DialogTitle>
-        <DialogContent dividers className={classes.NewFormDialog}>
-          {error && (!newSubjectPopperOpen) && <Typography color='error'>{error}</Typography>}
-          {isFetching && <div className={classes.newFormTypePlaceholder}><CircularProgress size={24} className={classes.newFormTypeLoadingIndicator} /></div>}
-          {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
-          <React.Fragment>
-            <Typography variant="h4">Questionnaire</Typography>
-            {questionnaires &&
-              <List>
-                {questionnaires.map((questionnaire) => {
-                  return (
-                  <SubjectListItem
-                    key={questionnaire["jcr:uuid"]}
-                    onClick={() => {setSelectedQuestionnaire(questionnaire)}}
-                    disabled={isFetching}
-                    selected={questionnaire["jcr:uuid"] === selectedQuestionnaire?.["jcr:uuid"]}
-                    >
-                    <ListItemText primary={questionnaire["title"]} />
-                  </SubjectListItem>);
-                })}
-              </List>
-            }
-          </React.Fragment>
-          :
-          <React.Fragment>
-            {<SubjectSelectorList
-              disabled={isFetching}
-              onDelete={unselectSubject}
-              onError={setError}
-              onSelect={selectSubject}
-              selectedSubject={selectedSubject}
-              />
-            }
-          </React.Fragment>}
-        </DialogContent>
-        <DialogActions>
-          {progress === PROGRESS_SELECT_SUBJECT &&
-          <NewSubjectDialog 
-              returnCall = {initiateFormCreation}
-              sendData = {getData}
-            />
-          }
-          <NewSubjectDialog 
-              returnCall = {initiateFormCreation}
-              sendData = {getData}
-            />
-          <Button
-            variant="contained"
-            color="default"
-            onClick={goBack}
-            >
-            { (progress == PROGRESS_SELECT_QUESTIONNAIRE || presetPath) ?
-              "Cancel"
-            :
-              "Back"
-            }
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={progressThroughDialog}
-            >
-            { progress == PROGRESS_SELECT_QUESTIONNAIRE ?
-              "Continue"
-            :
-              "Create Form"
-            }
-          </Button>
-        </DialogActions>
-      </Dialog>
+
       <Dialog open={newSubjectPopperOpen} onClose={() => { setNewSubjectPopperOpen(false); }} className={classes.newSubjectPopper}>
         <DialogTitle id="new-form-title">
           Create new subject
@@ -282,7 +211,7 @@ function NewFormDialog(props) {
             Cancel
           </Button>
           <Button
-            onClick={initiateFormCreation}
+            onClick={() => {props.returnCall; setSubject();}}
             variant="contained"
             color="primary"
             >
@@ -290,21 +219,19 @@ function NewFormDialog(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      <div className={classes.newFormButtonWrapper}>
-        <Tooltip title={children} aria-label="add">
-          <Fab
-            color="primary"
-            aria-label="add"
-            onClick={openDialog}
-            disabled={!open && isFetching}
-          >
-            <AddIcon />
-          </Fab>
-        </Tooltip>
-        {!open && isFetching && <CircularProgress size={56} className={classes.newFormLoadingIndicator} />}
-      </div>
+
+
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => { setNewSubjectPopperOpen(true); setError(); }}
+        className={classes.createNewSubjectButton}
+        >
+        Testing this new subject
+      </Button>
+
     </React.Fragment>
   )
 }
 
-export default withStyles(QuestionnaireStyle)(withRouter(NewFormDialog));
+export default withStyles(QuestionnaireStyle)(withRouter(NewSubjectDialog));

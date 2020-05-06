@@ -19,10 +19,11 @@
 import React from "react";
 import LiveTable from "./LiveTable.jsx";
 import Subject from "../questionnaire/Subject.jsx";
+// import SubjectSelectorList, { createSubjects, SubjectListItem } from "../questionnaire/SubjectSelector.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles } from "@material-ui/core";
 
-export default function Subjects(props) {
+function Subjects(props) {
 
   const columns = [
     {
@@ -49,11 +50,23 @@ export default function Subjects(props) {
   }
 
   return (
+    <div>
+      // add the subject dialog!
+      //import the WHOLE new form dialog
+
+      //the button will only set the subject popper state to true
+
+      //make a new function for the subject popper so that it can have different return calls?
     <Card>
-      <CardHeader/>
+      <CardHeader
+      />
       <CardContent>
         <LiveTable columns={columns} />
       </CardContent>
     </Card>
+    </div>
   );
 }
+
+export default Subjects;
+
