@@ -477,6 +477,22 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     }
 
     /*
+     * Read in a string, inStr, and return it with any non-allowed
+     * chars removed.
+     */
+    private String sanitizeNodeName(String inStr)
+    {
+        String inStrLower = inStr.toLowerCase();
+        String outStr = "";
+        for (int i = 0; i < inStr.length(); i++) {
+            if ("abcdefghijklmnopqrstuvwxyz 0123456789_-".indexOf(inStrLower.charAt(i)) > -1) {
+                outStr += inStr.charAt(i);
+            }
+        }
+        return outStr;
+    }
+
+    /*
      * Given a "condition" node from the "Questionnaires" and a
      * "lfs:AnswerSection" node from the "Forms" and a NodeBuilder type
      * object referring to the parent of the "lfs:AnswerSection" node,
@@ -508,8 +524,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             String comparator = conditionNode.getProperty("comparator").getString();
             Node operandB = conditionNode.getNode("operandB");
             Node operandA = conditionNode.getNode("operandA");
-            //TODO: Sanitize?
             String keyA = operandA.getProperty(PROP_VALUE).getValues()[0].getString();
+            //Sanitize
+            keyA = sanitizeNodeName(keyA);
             //Get the node from the Questionnaire corresponding to keyA
             Node sectionNodeParent = sectionNode.getParent();
             Node keyANode = sectionNodeParent.getNode(keyA);
