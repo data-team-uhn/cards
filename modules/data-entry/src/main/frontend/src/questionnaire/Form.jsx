@@ -35,6 +35,7 @@ import moment from "moment";
 import { getHierarchy } from "./Subject";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
+import DialogueLoginContainer from "../login/loginDialogue.js";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -65,6 +66,7 @@ function Form (props) {
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
   let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
+  let [ loginDialogShow, setLoginDialogShow ] = useState(false);
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
@@ -123,14 +125,17 @@ function Form (props) {
 
   // Open the login page in a new popup window, centered wrt the parent window
   let loginToSave = () => {
-    const width = 600;
-    const height = 800;
-    const top = window.top.outerHeight / 2 + window.top.screenY - ( height / 2);
-    const left = window.top.outerWidth / 2 + window.top.screenX - ( width / 2);
-    // After a successful log in, the login dialog code will "open" the specified resource, which results in executing the specified javascript code
-    window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${width}, height=${height}, top=${top}, left=${left}`);
-    // Display 'save' on button
     setLastSaveStatus(undefined);
+    setLoginDialogShow(true);
+  }
+
+  let handleLogin = (success) => {
+    success && saveData();
+    setLoginDialogShow(false);
+  }
+
+  let handleLoginClose= (success) => {
+    setLoginDialogShow(false);
   }
 
   // Handle when the subject of the form changes
@@ -221,6 +226,7 @@ function Form (props) {
         lastSaveStatus === false ? 'Save failed, log in and try again?' :
         'Save'}
       </Button>
+      <DialogueLoginContainer isOpen={loginDialogShow} handleLogin={handleLogin}/>
     </form>
   );
 };

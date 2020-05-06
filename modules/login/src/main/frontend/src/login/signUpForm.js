@@ -162,21 +162,16 @@ class SignUpForm extends React.Component {
         }
       }
     ).then(() => {
-      window.location = new URLSearchParams(window.location.search).get('resource') || '/';
+      if (this.props.handleLogin) {
+        this.props.handleLogin(true);
+      } else {
+        window.location = new URLSearchParams(window.location.search).get('resource') || '/';
+      }
     });
   }
 
   // submit function
   submitValues({ username, email, confirmPassword, password }) {
-    // Important note about native fetch, it does not reject failed
-    // HTTP codes, it'll only fail when network error
-    // Therefore, you must handle the error code yourself.
-    function handleErrors(response) {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      return response;
-    }
 
     // Build formData object.
     // We need to do this because sling does not accept JSON, need
@@ -197,18 +192,28 @@ class SignUpForm extends React.Component {
         },
         body: formData
       })
-      .then(handleErrors) // Handle errors first
-      .then(() => {
+      .then((response) => {
+
+        // Important note about native fetch, it does not reject failed
+        // HTTP codes, it'll only fail when network error
+        // Therefore, you must handle the error code yourself.
+        if (!response.ok) {
+          this.props.handleLogin && this.props.handleLogin(false);
+          throw Error(response.statusText);
+        }
+
         this.props.handleSuccess && this.props.handleSuccess();
         this.props.loginOnSuccess && this.signIn(username, password);
       })
       .catch(error => {
+        console.log(error);
         this.form.setFieldError("username", "Looks like this user is taken. Please try a different username.");
+        this.props.handleLogin && this.props.handleLogin(false);
       });
   }
 
   render() {
-    const { classes, selfContained } = this.props;
+    const { classes } = this.props;
     const values = { username: "", email: "", confirmPassword: "", password: "", loginOnSuccess: this.props.loginOnSuccess };
 
     const validationSchema = Yup.object({
