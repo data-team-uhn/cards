@@ -299,9 +299,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
          * i == 1 --> jcr:root/Forms
          * i == 2 --> jcr:root/Forms/<some form object>
          */
-        LOGGER.warn("Running summarizeBuilders() on size: {}", nodeBuilders.size());
         for (int i = nodeBuilders.size() - 2; i >= 2; i--) {
-            LOGGER.warn("Running summarizeBuilder() for {}", nodeBuilders.get(i));
             summarizeBuilder(nodeBuilders.get(i), nodeBuilders.get(i - 1));
         }
     }
@@ -327,7 +325,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             NodeBuilder selectedChild = nb.getChildNode(selectedChildName);
             if (selectedChild.hasProperty("question")) {
                 if (uuid.equals(selectedChild.getProperty("question").getValue(Type.STRING))) {
-                    LOGGER.warn("....found the match!!");
                     return selectedChild;
                 }
             }
@@ -343,7 +340,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      */
     private Calendar parseDate(final String str)
     {
-        LOGGER.warn("PARSING DATE: {}", str);
         try {
             //SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
@@ -361,26 +357,20 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     private int getPropertyStateType(PropertyState ps)
     {
         if (Type.LONG.equals(ps.getType())) {
-            LOGGER.warn("{} is a PropertyType.LONG", ps.getValue(Type.LONG));
             return PropertyType.LONG;
         }
         if (Type.DOUBLE.equals(ps.getType())) {
-            LOGGER.warn("{} is a PropertyType.DOUBLE", ps.getValue(Type.DOUBLE));
             return PropertyType.DOUBLE;
         }
         if (Type.DECIMAL.equals(ps.getType())) {
-            LOGGER.warn("{} is a PropertyType.DECIMAL", ps.getValue(Type.DECIMAL));
             return PropertyType.DECIMAL;
         }
         if (Type.BOOLEAN.equals(ps.getType())) {
-            LOGGER.warn("{} is a PropertyType.BOOLEAN", ps.getValue(Type.BOOLEAN));
             return PropertyType.BOOLEAN;
         }
         if (Type.DATE.equals(ps.getType())) {
-            LOGGER.warn("{} is a PropertyType.DATE", ps.getValue(Type.DATE));
             return PropertyType.DATE;
         }
-        LOGGER.warn("{} is a PropertyType.STRING", ps.getValue(Type.STRING));
         return PropertyType.STRING;
     }
 
@@ -474,7 +464,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
              * Type.STRING uses .equals()
              * Everything else uses ==
              */
-            LOGGER.warn("propA is of type {}", propA.getType().toString());
             boolean testResult = evalSectionEq(propA, valB);
             if ("<>".equals(operator)) {
                 testResult = !testResult;
@@ -529,12 +518,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             Node operandA = conditionNode.getNode("operandA");
             //TODO: Sanitize?
             String keyA = operandA.getProperty("value").getValues()[0].getString();
-            LOGGER.warn("Value of keyA is {}", keyA);
             //Get the node from the Questionnaire corresponding to keyA
             Node sectionNodeParent = sectionNode.getParent();
             Node keyANode = sectionNodeParent.getNode(keyA);
             String keyANodeUUID = keyANode.getIdentifier();
-            LOGGER.warn("Checking for a match to {}...", keyANodeUUID);
             //Get the node from the Form containg the answer to keyANode
             NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyANodeUUID);
             PropertyState comparedProp = conditionalFormNode.getProperty("value");
@@ -552,7 +539,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         Node sectionNode = getSectionNode(nb);
         if (sectionNode.hasNode("condition")) {
             Node conditionNode = sectionNode.getNode("condition");
-            LOGGER.warn("...The condition node is {}", conditionNode.getIdentifier());
             /*
              * Recursively go through all children of the condition node
              * and determine if this condition node evaluates to True or
@@ -576,14 +562,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         boolean isIncomplete = false;
         while (childrenNamesIter.hasNext()) {
             String selectedChildName = childrenNamesIter.next();
-            LOGGER.warn("Checking child ----> {}", selectedChildName);
             NodeBuilder selectedChild = selectedNodeBuilder.getChildNode(selectedChildName);
             if ("lfs:AnswerSection".equals(selectedChild.getProperty("jcr:primaryType").getValue(Type.STRING))) {
-                LOGGER.warn("........ {} is an AnswerSection, we may not need to include it.", selectedChildName);
-                if (getSectionCondition(selectedChild, selectedNodeBuilder)) {
-                    LOGGER.warn(" **** INCLUDE IT! ****");
-                } else {
-                    LOGGER.warn(" **** SKIP IT! ****");
+                if (!getSectionCondition(selectedChild, selectedNodeBuilder)) {
                     continue;
                 }
             }
