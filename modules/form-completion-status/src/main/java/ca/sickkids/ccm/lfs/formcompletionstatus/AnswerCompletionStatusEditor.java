@@ -406,21 +406,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 testResult = (propA.getValue(Type.BOOLEAN) == valB.getBoolean());
                 break;
             case PropertyType.DATE:
-                LOGGER.warn("The property being compared is PropertyType.DATE");
-                /*
-                LOGGER.warn("Going to compare {} TO {}",
-                    parseDate(propA.getValue(Type.DATE)),
-                    valB.getDate());
-                */
-                LOGGER.warn("The property being compared is A = {}",
-                    propA.getValue(Type.STRING));
-                LOGGER.warn("The property being compared is B = {}",
-                    valB.getString());
                 testResult = parseDate(propA.getValue(Type.DATE)).equals(parseDate(valB.getString()));
-                LOGGER.warn("Checking equality of {} == {} --> {}",
-                    parseDate(propA.getValue(Type.DATE)),
-                    valB.getString(),
-                    testResult);
                 break;
             default:
                 break;
@@ -441,7 +427,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 testResult = (propA.getValue(Type.DOUBLE) < valB.getDouble());
                 break;
             case PropertyType.DATE:
-                testResult = parseDate(propA.getValue(Type.DATE)).before(valB.getDate());
+                testResult = parseDate(propA.getValue(Type.DATE)).before(parseDate(valB.getString()));
                 break;
             default:
                 break;
@@ -462,7 +448,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 testResult = (propA.getValue(Type.DOUBLE) > valB.getDouble());
                 break;
             case PropertyType.DATE:
-                testResult = parseDate(propA.getValue(Type.DATE)).after(valB.getDate());
+                testResult = parseDate(propA.getValue(Type.DATE)).after(parseDate(valB.getString()));
                 break;
             default:
                 break;
