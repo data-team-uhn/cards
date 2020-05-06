@@ -352,25 +352,21 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         }
     }
 
-    @SuppressWarnings("checkstyle:ReturnCount")
     private int getPropertyStateType(PropertyState ps)
     {
+        int ret = PropertyType.STRING;
         if (Type.LONG.equals(ps.getType())) {
-            return PropertyType.LONG;
+            ret = PropertyType.LONG;
+        } else if (Type.DOUBLE.equals(ps.getType())) {
+            ret = PropertyType.DOUBLE;
+        } else if (Type.DECIMAL.equals(ps.getType())) {
+            ret = PropertyType.DECIMAL;
+        } else if (Type.BOOLEAN.equals(ps.getType())) {
+            ret = PropertyType.BOOLEAN;
+        } else if (Type.DATE.equals(ps.getType())) {
+            ret = PropertyType.DATE;
         }
-        if (Type.DOUBLE.equals(ps.getType())) {
-            return PropertyType.DOUBLE;
-        }
-        if (Type.DECIMAL.equals(ps.getType())) {
-            return PropertyType.DECIMAL;
-        }
-        if (Type.BOOLEAN.equals(ps.getType())) {
-            return PropertyType.BOOLEAN;
-        }
-        if (Type.DATE.equals(ps.getType())) {
-            return PropertyType.DATE;
-        }
-        return PropertyType.STRING;
+        return ret;
     }
 
     private boolean evalSectionEq(PropertyState propA, Value valB)
