@@ -341,7 +341,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     private Calendar parseDate(final String str)
     {
         try {
-            //SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
             Date date = fmt.parse(str.split("T")[0]);
             Calendar calendar = Calendar.getInstance();
@@ -378,7 +377,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         throws RepositoryException, ValueFormatException
     {
         boolean testResult = false;
-        //switch (valB.getType()) {
         switch (getPropertyStateType(propA)) {
             case PropertyType.STRING:
                 testResult = propA.getValue(Type.STRING).equals(valB.getString());
@@ -408,7 +406,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         throws RepositoryException, ValueFormatException
     {
         boolean testResult = false;
-        //switch (valB.getType()) {
         switch (getPropertyStateType(propA)) {
             case PropertyType.LONG:
                 testResult = (propA.getValue(Type.LONG) < valB.getLong());
@@ -429,7 +426,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         throws RepositoryException, ValueFormatException
     {
         boolean testResult = false;
-        //switch (valB.getType()) {
         switch (getPropertyStateType(propA)) {
             case PropertyType.LONG:
                 testResult = (propA.getValue(Type.LONG) > valB.getLong());
