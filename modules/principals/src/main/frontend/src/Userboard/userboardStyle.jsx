@@ -65,7 +65,7 @@ const userboardStyle = theme => ({
       float: 'right'
     },
     dialogTitle: {
-      padding: "16px 0 0 24px"
+      padding: theme.spacing(2,0,0,4)
     }
 });
 
