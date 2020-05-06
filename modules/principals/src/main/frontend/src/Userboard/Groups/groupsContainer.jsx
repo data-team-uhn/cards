@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React from 'react';
-import PricipalsContainer from '../principalsMain.jsx';
+import PrincipalsContainer from '../principalsContainer.jsx';
 
 class GroupsContainer extends React.Component {
   constructor(props) {
@@ -26,7 +26,7 @@ class GroupsContainer extends React.Component {
 
   render () {
     return (
-      <PricipalsContainer isUserListPage={true}/>
+      <PrincipalsContainer isUserListPage={false}/>
     );
   }
 }

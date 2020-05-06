@@ -21,7 +21,7 @@ import React from 'react';
 import UsersManager from './Users/usersmanager.jsx';
 import GroupsManager from './Groups/groupsmanager.jsx';
 
-class PricipalsContainer extends React.Component {
+class PrincipalsContainer extends React.Component {
   constructor(props) {
     super(props);
 
@@ -98,4 +98,4 @@ class PricipalsContainer extends React.Component {
   }
 }
 
-export default PricipalsContainer;
+export default PrincipalsContainer;

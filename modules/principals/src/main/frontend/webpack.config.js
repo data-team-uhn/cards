@@ -7,8 +7,8 @@ module.exports = {
   mode: 'development',
   entry: {
     [module_name + 'userboardIcon']: '@material-ui/icons/AccountBox.js',
-    [module_name + 'usersmanager']: './src/Userboard/Users/usersMain.jsx',
-    [module_name + 'groupsmanager']: './src/Userboard/Groups/groupsMain.jsx'
+    [module_name + 'userscontainer']: './src/Userboard/Users/usersContainer.jsx',
+    [module_name + 'groupscontainer']: './src/Userboard/Groups/groupsContainer.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),
