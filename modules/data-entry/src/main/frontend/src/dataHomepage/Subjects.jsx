@@ -51,6 +51,8 @@ function Subjects(props) {
     },
   ]
 
+  //todo: after the click to 'create', fetch and update the subject table
+
   const entry = /Subjects\/(.+)/.exec(location.pathname);
   if (entry) {
     return <Subject id={entry[1]}/>;
@@ -58,30 +60,30 @@ function Subjects(props) {
 
   return (
     <div>
-    <Card>
-      <CardHeader
-      />
-      <CardContent>
-        <LiveTable columns={columns} />
-      </CardContent>
-    </Card>
-    <div>
-      <Tooltip aria-label="add">
-        <Fab
-          color="primary"
-          aria-label="add"
-          onClick={() => {setNewSubjectPopperOpen(true)}}
-        >
-          <AddIcon />
-        </Fab>
-      </Tooltip>
-    </div>
-
+      <Card>
+        <CardHeader
+          title="Subjects"
+          action={
+            <Tooltip aria-label="add" title="Add a New Subject">
+              <Fab
+                color="primary"
+                aria-label="add"
+                onClick={() => {setNewSubjectPopperOpen(true)}}
+              >
+                <AddIcon />
+              </Fab>
+            </Tooltip>
+          }
+        />
+        <CardContent>
+          <LiveTable columns={columns} />
+        </CardContent>
+      </Card>
       <SelectorDialog
+        open={false}
         popperOpen={newSubjectPopperOpen}
         onPopperClose={() => {setNewSubjectPopperOpen(false)}}
       />
-
     </div>
   );
 }
