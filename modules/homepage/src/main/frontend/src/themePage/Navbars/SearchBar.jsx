@@ -120,7 +120,6 @@ function SearchBar(props) {
   // * the form's subject name (if available) or the resource's uuid
   function QuickSearchResultHeader(props) {
     const {resultData} = props;
-    const entry = /Forms\/(.+)/.exec(resultData["@path"]);
     return resultData && (
       <div>
         <Typography variant="body2" color="textSecondary">
