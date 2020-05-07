@@ -176,7 +176,7 @@ public class ResourceToJsonAdapterFactory
                     if (this.simple.get()) {
                         String slingResourceSuperType = node.getProperty("sling:resourceSuperType").getString();
                         String slingResourceType = node.getProperty("sling:resourceType").getString();
-                        conditionalAddProperty(slingResourceSuperType, slingResourceType, result, thisProp);
+                        simplifiedAddProperty(slingResourceSuperType, slingResourceType, result, thisProp);
                     } else {
                         addProperty(result, thisProp);
                     }
@@ -366,7 +366,11 @@ public class ResourceToJsonAdapterFactory
         }
     }
 
-    private void conditionalAddProperty(String slingResourceSuperType,
+    /*
+     * Adds a property to the serialized JSON data structure and if
+     * necessary, simplifies the added property structure
+     */
+    private void simplifiedAddProperty(String slingResourceSuperType,
         String slingResourceType, final JsonObjectBuilder ob,
         final Property prop) throws RepositoryException
     {
