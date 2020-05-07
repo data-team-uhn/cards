@@ -70,6 +70,8 @@ public class ResourceToJsonAdapterFactory
     private static final String JCR_CREATED_PROP = "jcr:created";
     private static final String JCR_CREATED_BY_PROP = "jcr:createdBy";
     private static final String QUESTIONNAIRE_PROP = "questionnaire";
+    private static final String SUBJECT_PROP = "subject";
+    private static final String IDENTIFIER_PROP = "identifier";
     private static final String TITLE_PROP = "title";
     private static final String TEXT_PROP = "text";
     private static final String VALUE_PROP = "value";
@@ -85,6 +87,7 @@ public class ResourceToJsonAdapterFactory
     private static final String FORM_SLINGTYPE = "lfs/Form";
     private static final String ANSWER_SLINGTYPE = "lfs/Answer";
     private static final String ANSWER_SECTION_SLINGTYPE = "lfs/AnswerSection";
+    private static final String SUBJECT_SLINGTYPE = "lfs/Subject";
 
     private ThreadLocal<Boolean> deep = new ThreadLocal<Boolean>()
     {
@@ -216,6 +219,9 @@ public class ResourceToJsonAdapterFactory
         if (QUESTIONNAIRE_PROP.equals(prop.getName())) {
             addProperty(ob, prop);
         }
+        if (SUBJECT_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
     }
 
     /*
@@ -229,6 +235,24 @@ public class ResourceToJsonAdapterFactory
             addProperty(ob, prop);
         }
         if (TITLE_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (PATH_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+    }
+
+    /*
+     * Filters which JCR properties are added to a lfs/Subject when it
+     * is serialized to JSON under .simple.json
+     */
+    private void addSimpleSubjectProperty(final JsonObjectBuilder ob, final Property prop)
+        throws RepositoryException
+    {
+        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
+            addProperty(ob, prop);
+        }
+        if (IDENTIFIER_PROP.equals(prop.getName())) {
             addProperty(ob, prop);
         }
         if (PATH_PROP.equals(prop.getName())) {
@@ -322,6 +346,8 @@ public class ResourceToJsonAdapterFactory
             addSimpleFormProperty(ob, prop);
         } else if (QUESTIONNAIRE_SLINGTYPE.equals(slingResourceType)) {
             addSimpleQuestionnaireProperty(ob, prop);
+        } else if (SUBJECT_SLINGTYPE.equals(slingResourceType)) {
+            addSimpleSubjectProperty(ob, prop);
         } else if (QUESTION_SLINGTYPE.equals(slingResourceType)) {
             addSimpleQuestionProperty(ob, prop);
         } else if (ANSWER_SLINGTYPE.equals(slingResourceSuperType)) {
