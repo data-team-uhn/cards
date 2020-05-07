@@ -144,7 +144,14 @@ public class ResourceToJsonAdapterFactory
         return null;
     }
 
-    private void handleChild(Node parent, Node child, JsonObjectBuilder result) throws RepositoryException
+    /*
+     * Adds a child node onto the (JsonObjectBuilder result) serialized
+     * data structure. If we are in "deep" serialization mode, serialize
+     * all children. If we are in "simple" serialization mode, serialize
+     * only the children whose parents are not Questionnaires, Questions,
+     * or Sections.
+     */
+    private void addChild(Node parent, Node child, JsonObjectBuilder result) throws RepositoryException
     {
         if (this.deep.get()) {
             result.add(child.getName(), adapt(child));
@@ -181,12 +188,12 @@ public class ResourceToJsonAdapterFactory
                         addProperty(result, thisProp);
                     }
                 }
-                // If this is a deep serialization, also serialize child nodes
+                // If this is a deep or simple serialization, also serialize child nodes
                 if (this.deep.get() || this.simple.get()) {
                     final NodeIterator children = node.getNodes();
                     while (children.hasNext()) {
                         final Node child = children.nextNode();
-                        handleChild(node, child, result);
+                        addChild(node, child, result);
                     }
                 }
             }
