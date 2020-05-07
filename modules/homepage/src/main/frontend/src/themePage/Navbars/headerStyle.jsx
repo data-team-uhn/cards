@@ -111,7 +111,7 @@ const headerStyle = theme => ({
   },
   aboveBackground: {
     zIndex: "1301",
-    left: -theme.spacing(3) + "!important"
+    left: -theme.spacing(3) + "px !important"
   },
   searchResultAvatar: {
     color: theme.palette.getContrastText(theme.palette.info.main),
