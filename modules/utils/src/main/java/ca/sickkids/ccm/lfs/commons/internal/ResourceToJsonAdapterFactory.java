@@ -207,20 +207,24 @@ public class ResourceToJsonAdapterFactory
      */
     private void addSimpleFormProperty(final JsonObjectBuilder ob, final Property prop) throws RepositoryException
     {
-        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (JCR_CREATED_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (JCR_CREATED_BY_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (QUESTIONNAIRE_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (SUBJECT_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
+        switch (prop.getName()) {
+            case JCR_PRIMARY_TYPE_PROP:
+                addProperty(ob, prop);
+                break;
+            case JCR_CREATED_PROP:
+                addProperty(ob, prop);
+                break;
+            case JCR_CREATED_BY_PROP:
+                addProperty(ob, prop);
+                break;
+            case QUESTIONNAIRE_PROP:
+                addProperty(ob, prop);
+                break;
+            case SUBJECT_PROP:
+                addProperty(ob, prop);
+                break;
+            default:
+                break;
         }
     }
 
@@ -231,14 +235,18 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleQuestionnaireProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (TITLE_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (PATH_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
+        switch (prop.getName()) {
+            case JCR_PRIMARY_TYPE_PROP:
+                addProperty(ob, prop);
+                break;
+            case TITLE_PROP:
+                addProperty(ob, prop);
+                break;
+            case PATH_PROP:
+                addProperty(ob, prop);
+                break;
+            default:
+                break;
         }
     }
 
@@ -249,14 +257,18 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleSubjectProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (IDENTIFIER_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (PATH_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
+        switch (prop.getName()) {
+            case JCR_PRIMARY_TYPE_PROP:
+                addProperty(ob, prop);
+                break;
+            case IDENTIFIER_PROP:
+                addProperty(ob, prop);
+                break;
+            case PATH_PROP:
+                addProperty(ob, prop);
+                break;
+            default:
+                break;
         }
     }
 
@@ -267,14 +279,18 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleQuestionProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (TEXT_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (PATH_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
+        switch (prop.getName()) {
+            case JCR_PRIMARY_TYPE_PROP:
+                addProperty(ob, prop);
+                break;
+            case TEXT_PROP:
+                addProperty(ob, prop);
+                break;
+            case PATH_PROP:
+                addProperty(ob, prop);
+                break;
+            default:
+                break;
         }
     }
 
@@ -285,20 +301,24 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleAnswerProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (VALUE_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (NOTE_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (PATH_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (QUESTION_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
+        switch (prop.getName()) {
+            case JCR_PRIMARY_TYPE_PROP:
+                addProperty(ob, prop);
+                break;
+            case VALUE_PROP:
+                addProperty(ob, prop);
+                break;
+            case NOTE_PROP:
+                addProperty(ob, prop);
+                break;
+            case PATH_PROP:
+                addProperty(ob, prop);
+                break;
+            case QUESTION_PROP:
+                addProperty(ob, prop);
+                break;
+            default:
+                break;
         }
     }
 
@@ -309,14 +329,18 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleAnswerSectionProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (SECTION_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (PATH_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
+        switch (prop.getName()) {
+            case JCR_PRIMARY_TYPE_PROP:
+                addProperty(ob, prop);
+                break;
+            case SECTION_PROP:
+                addProperty(ob, prop);
+                break;
+            case PATH_PROP:
+                addProperty(ob, prop);
+                break;
+            default:
+                break;
         }
     }
 
@@ -327,14 +351,18 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleSectionProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        if (JCR_PRIMARY_TYPE_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (LABEL_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
-        }
-        if (PATH_PROP.equals(prop.getName())) {
-            addProperty(ob, prop);
+        switch (prop.getName()) {
+            case JCR_PRIMARY_TYPE_PROP:
+                addProperty(ob, prop);
+                break;
+            case LABEL_PROP:
+                addProperty(ob, prop);
+                break;
+            case PATH_PROP:
+                addProperty(ob, prop);
+                break;
+            default:
+                break;
         }
     }
 
