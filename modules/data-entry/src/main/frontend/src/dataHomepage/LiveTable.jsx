@@ -71,9 +71,12 @@ function LiveTable(props) {
       new URL(window.location.pathname.substring(window.location.pathname.lastIndexOf("/")) + ".paginate", window.location.origin)
   );
 
+  // When new data is added, trigger a new fetch
   useEffect(() => {
     if (refreshDataOnRender){
-      console.log("fetch here");
+      setFetchStatus(Object.assign({}, fetchStatus, {
+        "currentRequestNumber": -1,
+      }));
     }
   }, [refreshDataOnRender]);
 

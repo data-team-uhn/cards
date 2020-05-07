@@ -76,7 +76,8 @@ function UnstyledSelectorDialog (props) {
       onChange(selectedSubject);
       setNewSubjectPopperOpen(false);
     }
-    //todo: clear the input field
+    //clear the input field
+    setNewSubjectName("");
   }
 
   // Obtain the full details on a new subject
@@ -103,7 +104,8 @@ function UnstyledSelectorDialog (props) {
     setNewSubjectError();
     setNewSubjectPopperOpen(false);
     onPopperClose();
-    //todo: clear the input field
+    //clear the input field
+    setNewSubjectName("");
   }
 
   return (<React.Fragment>
