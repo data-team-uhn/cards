@@ -51,8 +51,6 @@ function Subjects(props) {
     },
   ]
 
-  //todo: after the click to 'create', fetch and update the subject table
-
   const entry = /Subjects\/(.+)/.exec(location.pathname);
   if (entry) {
     return <Subject id={entry[1]}/>;
@@ -76,7 +74,7 @@ function Subjects(props) {
           }
         />
         <CardContent>
-          <LiveTable columns={columns} />
+          <LiveTable columns={columns} refreshDataOnRender={true}/>
         </CardContent>
       </Card>
       <SelectorDialog

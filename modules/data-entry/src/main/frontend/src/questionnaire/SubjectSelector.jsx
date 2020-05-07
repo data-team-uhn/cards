@@ -103,6 +103,7 @@ function UnstyledSelectorDialog (props) {
     setNewSubjectError();
     setNewSubjectPopperOpen(false);
     onPopperClose();
+    //todo: clear the input field
   }
 
   return (<React.Fragment>
