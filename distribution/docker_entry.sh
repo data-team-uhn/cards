@@ -21,6 +21,10 @@
 [ -z $LFS_RELOAD ] || WAIT_FOR_LFSINIT=''
 [ -z $LFS_RELOAD ] || INITIAL_SLING_NODE=''
 
+# If we have not explicitly specified the file system as the Oak Repo
+# back-end for data storage, use MongoDB
+[ -z $OAK_FILESYSTEM ] && OAK_MONGO=true
+
 #If inside a docker-compose environment, wait for a signal...
 [ -z $INSIDE_DOCKER_COMPOSE ] || (while true; do (echo "LFS" | nc router 9999) && break; sleep 5; done)
 
@@ -30,10 +34,18 @@
 PROJECT_ARTIFACTID=$1
 PROJECT_VERSION=$2
 
+echo "OAK_MONGO = $OAK_MONGO"
 echo "INITIAL_SLING_NODE = $INITIAL_SLING_NODE"
 echo "DEV = $DEV"
 echo "DEBUG = $DEBUG"
 echo "PROJECT_ARTIFACTID = $PROJECT_ARTIFACTID"
 echo "PROJECT_VERSION = $PROJECT_VERSION"
 
-java -Dsling.run.modes=${INITIAL_SLING_NODE:+initial_sling_node,}oak_mongo${DEV:+,dev} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar ${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar
+[ -z $INITIAL_SLING_NODE ] || SLING_RUN_MODES_CUSTOM=true
+[ -z $OAK_MONGO ] || SLING_RUN_MODES_CUSTOM=true
+[ -z $DEV ] || SLING_RUN_MODES_CUSTOM=true
+
+SLING_RUN_MODES_LIST="${INITIAL_SLING_NODE:+initial_sling_node,}${OAK_MONGO:+oak_mongo,}${DEV:+dev}"
+SLING_RUN_MODES_LIST="${SLING_RUN_MODES_LIST/%,}"
+
+java ${SLING_RUN_MODES_CUSTOM:+-Dsling.run.modes=}$SLING_RUN_MODES_LIST ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar ${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar
