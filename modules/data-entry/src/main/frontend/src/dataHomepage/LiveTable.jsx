@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
 import { Card, CardHeader, CardContent, CardActions, Chip, Typography, Button, withStyles } from "@material-ui/core";
 import { Link } from 'react-router-dom';
@@ -70,6 +70,12 @@ function LiveTable(props) {
     :
       new URL(window.location.pathname.substring(window.location.pathname.lastIndexOf("/")) + ".paginate", window.location.origin)
   );
+
+  useEffect(() => {
+    if (refreshDataOnRender){
+      console.log("fetch here");
+    }
+  }, [refreshDataOnRender]);
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's behavior
@@ -282,10 +288,6 @@ function LiveTable(props) {
     <Paper elevation={0}>
       {filters && <Filters onChangeFilters={handleChangeFilters} {...rest} />}
       <div>
-        {console.log("livetable")}
-        {if (refreshDataOnRender && (fetchStatus.currentRequestNumber !== -1)) {
-          fetchData(paginationData);
-        }}
         {paginationControls}
       </div>
       {/*

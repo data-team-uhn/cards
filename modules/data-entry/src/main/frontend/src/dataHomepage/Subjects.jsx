@@ -29,8 +29,8 @@ function Subjects(props) {
   // const { children, classes } = props;
   // fix issue with classes
 
-  let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false); // will open or not
   let [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
+  const [ count, setCount ] = useState(0);
 
   const columns = [
     {
@@ -56,6 +56,8 @@ function Subjects(props) {
     return <Subject id={entry[1]}/>;
   }
 
+  // import the function
+
   return (
     <div>
       <Card>
@@ -74,13 +76,13 @@ function Subjects(props) {
           }
         />
         <CardContent>
-          <LiveTable columns={columns} refreshDataOnRender={true}/>
+          <LiveTable columns={columns} refreshDataOnRender={count}/>
         </CardContent>
       </Card>
       <SelectorDialog
         open={false}
         popperOpen={newSubjectPopperOpen}
-        onPopperClose={() => {setNewSubjectPopperOpen(false)}}
+        onPopperClose={() => {setNewSubjectPopperOpen(false); setCount(count+1);}}
       />
     </div>
   );
