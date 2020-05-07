@@ -253,6 +253,8 @@
   // Hardcode the resource supertype: each section link is a resource.
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
 
+  - requireAll (BOOLEAN) = false mandatory autocreated
+
   // This conditional may contain any number of conditionals or conditional groups
   + * (lfs:ConditionalGroup, lfs:Conditional) = lfs:Question
 
