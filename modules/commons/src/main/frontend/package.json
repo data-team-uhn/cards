@@ -3,7 +3,7 @@
   "name": "lfs-commons", 
   "repository": {
     "url": "https://github.com/ccmbioinfo/lfs.git", 
-    "directory": "modules", 
+    "directory": "modules/commons/src/main/frontend",
     "type": "git"
   }, 
   "author": "SickKids", 

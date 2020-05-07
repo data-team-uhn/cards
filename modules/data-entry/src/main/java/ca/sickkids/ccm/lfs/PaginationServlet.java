@@ -130,7 +130,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
         query.append(" order by n.'jcr:created'");
         String finalquery = query.toString();
-        LOGGER.info("Final query: {}", finalquery);
+        LOGGER.debug("Computed final query: {}", finalquery);
 
         final Iterator<Resource> results =
             request.getResourceResolver().findResources(finalquery, Query.JCR_SQL2);
