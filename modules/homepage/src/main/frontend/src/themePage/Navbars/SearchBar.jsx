@@ -252,7 +252,7 @@ function SearchBar(props) {
                       key={i}
                       disabled={result["disabled"]}
                       onClick={(e) => {
-                        const anchor = result[LFS_QUERY_MATCH_KEY][LFS_QUERY_QUESTION_KEY].replace(/\s/g, '').substring(0, 10);
+                        const anchor = result[LFS_QUERY_MATCH_KEY][LFS_QUERY_QUESTION_KEY].replace(/\s/g, '');
                         // Redirect using React-router
                         if (result["@path"]) {
                           props.history.push({

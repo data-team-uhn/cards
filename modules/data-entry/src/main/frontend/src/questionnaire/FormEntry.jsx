@@ -48,8 +48,7 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
  * @returns a React component that renders the question
  */
 let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) => {
-  const entry = location.hash.substr(1);
-  const anchor = entry ? entry[1] : '';
+  const anchor = location.hash.substr(1);
   // create a ref to store the question container DOM element
   const questionRef = useCallback(node => {
     if (node !== null) {
@@ -58,7 +57,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) =
   }, []);
 
   // if autofocus is needed and specified in the url
-  const questionText = questionDefinition["text"].replace(/\s/g, '').substring(0, 10);
+  const questionText = questionDefinition["text"].replace(/\s/g, '');
   const doHighlight = (anchor == questionText);
 
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
