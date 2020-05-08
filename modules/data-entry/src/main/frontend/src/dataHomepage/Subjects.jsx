@@ -30,7 +30,8 @@ function Subjects(props) {
   // fix issue with classes
 
   let [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
-  const [ count, setCount ] = useState(0);
+  // When a new subject is added, state will be updated and trigger a livetable refresh
+  const [ requestFetchData, setRequestFetchData ] = useState(0);
 
   const columns = [
     {
@@ -64,7 +65,7 @@ function Subjects(props) {
         <CardHeader
           title="Subjects"
           action={
-            <Tooltip aria-label="add" title="Add a New Subject">
+            <Tooltip aria-label="add" title="New Subject">
               <Fab
                 color="primary"
                 aria-label="add"
@@ -76,13 +77,13 @@ function Subjects(props) {
           }
         />
         <CardContent>
-          <LiveTable columns={columns} refreshDataOnRender={count}/>
+          <LiveTable columns={columns} updateData={requestFetchData}/>
         </CardContent>
       </Card>
       <SelectorDialog
         open={false}
         popperOpen={newSubjectPopperOpen}
-        onPopperClose={() => {setNewSubjectPopperOpen(false); setCount(count+1);}}
+        onPopperClose={() => {setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
       />
     </div>
   );

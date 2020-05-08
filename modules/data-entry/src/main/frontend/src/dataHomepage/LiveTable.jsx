@@ -41,7 +41,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, refreshDataOnRender, classes, filters, ...rest } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -73,12 +73,12 @@ function LiveTable(props) {
 
   // When new data is added, trigger a new fetch
   useEffect(() => {
-    if (refreshDataOnRender){
+    if (updateData){
       setFetchStatus(Object.assign({}, fetchStatus, {
         "currentRequestNumber": -1,
       }));
     }
-  }, [refreshDataOnRender]);
+  }, [updateData]);
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's behavior

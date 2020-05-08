@@ -76,8 +76,6 @@ function UnstyledSelectorDialog (props) {
       onChange(selectedSubject);
       setNewSubjectPopperOpen(false);
     }
-    //clear the input field
-    setNewSubjectName("");
   }
 
   // Obtain the full details on a new subject
@@ -90,6 +88,7 @@ function UnstyledSelectorDialog (props) {
       .then(onChange)
       .then(() => setNewSubjectPopperOpen(false))
       .then(() => onPopperClose())
+      .then(() => setNewSubjectName(""))
       .catch((err) => {console.log(err); onError(err);})
       .finally(() => {setIsPosting(false);});
   }
