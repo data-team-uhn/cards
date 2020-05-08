@@ -39,9 +39,9 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * Other props will be forwarded to the SearchBar component
  */
 const SubjectFilter = forwardRef((props, ref) => {
-  const { classes, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
   const [ error, setError ] = useState();
-  const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(true); // Default true since having nothing entered is valid
+  const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(true); // Default true since having nothing entered or a default value is valid
 
   let invalidateInput = (event) => {
     // The results are only valid after new text has been typed if they have emptied the input box
@@ -97,6 +97,7 @@ const SubjectFilter = forwardRef((props, ref) => {
 
   return (
     <SearchBar
+      defaultValue={defaultLabel}
       onChange={invalidateInput}
       onPopperClose={closePopper}
       onSelect={selectSubject}

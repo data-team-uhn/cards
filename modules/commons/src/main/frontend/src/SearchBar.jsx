@@ -44,6 +44,7 @@ const LFS_QUERY_MATCH_PATH_KEY = "@path";
  * 
  * @param {func} closeSidebar Function to call when the sidebar is closed
  * @param {bool} invertColors If true, inverts the colours of various elements
+ * @param {string} defaultValue The default string to place in the search bar
  * @param {func} onChange Function to call when the input has changed. Default: redirect the user to the found node.
  * @param {func} onPopperClose Function to call when the suggestions list is closed.
  * @param {func} onSelect Function that takes (event, row), called when an option from the autocomplete list is seleeted.
@@ -53,8 +54,8 @@ const LFS_QUERY_MATCH_PATH_KEY = "@path";
  * Other props will be forwarded to the Input element
  */
 function SearchBar(props) {
-  const { classes, className, closeSidebar, invertColors, onChange, onPopperClose, onSelect, queryConstructor, resultConstructor, staticContext, ...rest } = props;
-  const [ search, setSearch ] = useState("");
+  const { classes, className, closeSidebar, defaultValue, invertColors, onChange, onPopperClose, onSelect, queryConstructor, resultConstructor, staticContext, ...rest } = props;
+  const [ search, setSearch ] = useState(defaultValue);
   const [ results, setResults ] = useState([]);
   const [ popperOpen, setPopperOpen ] = useState(false);
   const [ timer, setTimer ] = useState();
@@ -315,6 +316,7 @@ let defaultRedirect = (event, row) => {
 
 SearchBar.propTypes = {
   invertColors: PropTypes.bool,
+  defaultValue: PropTypes.string,
   onChange: PropTypes.func,
   onPopperClose: PropTypes.func,
   onSelect: PropTypes.func,
@@ -323,6 +325,7 @@ SearchBar.propTypes = {
 }
 
 SearchBar.defaultProps = {
+  defaultValue: "",
   queryConstructor: defaultQueryConstructor,
   resultConstructor: defaultResultConstructor,
   onSelect: defaultRedirect

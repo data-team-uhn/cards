@@ -237,6 +237,7 @@ function Filters(props) {
         ref={focusRef}
         questionDefinition={questionDefinitions[filterDatum.name]}
         defaultValue={editingFilters[index].value}
+        defaultLabel={editingFilters[index].label}
         onChangeInput={(newValue, label) => {handleChangeOutput(index, newValue, label);}}
         />);
   }
