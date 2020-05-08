@@ -74,6 +74,7 @@ function UnstyledSelectorDialog (props) {
       createSubjects([newSubjectName], newSubjectName, grabNewSubject, handleCreateSubjectsError);
     } else {
       onChange(selectedSubject);
+      setNewSubjectError();
       setNewSubjectPopperOpen(false);
     }
   }
@@ -90,6 +91,7 @@ function UnstyledSelectorDialog (props) {
       .then(() => onPopperClose())
       .then(() => setNewSubjectName(""))
       .catch((err) => {console.log(err); onError(err);})
+      .then(() => setNewSubjectError())
       .finally(() => {setIsPosting(false);});
   }
 

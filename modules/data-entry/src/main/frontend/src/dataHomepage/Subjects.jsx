@@ -23,10 +23,11 @@ import { SelectorDialog } from "../questionnaire/SubjectSelector.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function Subjects(props) {
 
-  // const { children, classes } = props;
+  const { classes } = props;
   // fix issue with classes
 
   let [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
@@ -63,17 +64,23 @@ function Subjects(props) {
     <div>
       <Card>
         <CardHeader
-          title="Subjects"
+          title={
+            <Button className={classes.cardHeaderButton}>
+              Subjects
+            </Button>
+          }
           action={
-            <Tooltip aria-label="add" title="New Subject">
-              <Fab
-                color="primary"
-                aria-label="add"
-                onClick={() => {setNewSubjectPopperOpen(true)}}
-              >
-                <AddIcon />
-              </Fab>
-            </Tooltip>
+            <div className={classes.newFormButtonWrapper}>
+              <Tooltip aria-label="add" title="New Subject">
+                <Fab
+                  color="primary"
+                  aria-label="add"
+                  onClick={() => {setNewSubjectPopperOpen(true)}}
+                >
+                  <AddIcon />
+                </Fab>
+              </Tooltip>
+            </div>
           }
         />
         <CardContent>
@@ -89,5 +96,5 @@ function Subjects(props) {
   );
 }
 
-export default Subjects;
+export default withStyles(QuestionnaireStyle)(Subjects);
 
