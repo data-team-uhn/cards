@@ -32,9 +32,12 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
+// This has a unique HTML date handler, so we export it for easier access
+export const MONTH_FORMAT = "yyyy-MM";
+
 export const DATE_FORMATS = [
   "yyyy",
-  "yyyy-MM",
+  MONTH_FORMAT,
   "yyyy-MM-dd"
 ]
 

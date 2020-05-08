@@ -23,7 +23,7 @@ import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
-import { DATE_FORMATS } from "../../questionnaire/DateQuestion.jsx";
+import { DATE_FORMATS, MONTH_FORMAT } from "../../questionnaire/DateQuestion.jsx";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
@@ -43,9 +43,9 @@ const DateFilter = forwardRef((props, ref) => {
 
   // Dates should have a dateFormat, or default to "yyyy-MM-dd"
   let dateFormat = questionDefinition["dateFormat"] || "yyyy-MM-dd";
-  let isMonth = dateFormat === DATE_FORMATS[1];
+  let isMonth = dateFormat === MONTH_FORMAT;
   let isDate = DATE_FORMATS.includes(dateFormat);
-  let textFieldType = isMonth ? "month" :
+  let textFieldType = dateFormat === MONTH_FORMAT ? "month" :
     isDate ? "date" :
     "datetime-local";
 
