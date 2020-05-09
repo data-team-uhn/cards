@@ -37,6 +37,7 @@ const LFS_QUERY_MATCH_BEFORE_KEY = "before";
 const LFS_QUERY_MATCH_TEXT_KEY = "text";
 const LFS_QUERY_MATCH_AFTER_KEY = "after";
 const LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
+const LFS_QUERY_MATCH_PATH_KEY = "@path";
 
 function SearchBar(props) {
   const { classes, className, closeSidebar, invertColors, doNotEscapeQuery } = props;
@@ -251,7 +252,7 @@ function SearchBar(props) {
                       key={i}
                       disabled={result["disabled"]}
                       onClick={(e) => {
-                        const anchor = result[LFS_QUERY_MATCH_KEY][LFS_QUERY_QUESTION_KEY].replace(/\s/g, '');
+                        const anchor = result[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY];
                         // Redirect using React-router
                         if (result["@path"]) {
                           props.history.push({

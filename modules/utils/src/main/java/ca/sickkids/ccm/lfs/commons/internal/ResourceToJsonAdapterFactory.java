@@ -132,6 +132,7 @@ public class ResourceToJsonAdapterFactory
             }
             // Since the node itself doesn't contain the path as a property, we must manually add it.
             result.add("@path", node.getPath());
+            result.add("@name", node.getName());
             return result;
         } catch (RepositoryException e) {
             LOGGER.error("Failed to serialize node [{}] to JSON: {}", node.getPath(), e.getMessage(), e);

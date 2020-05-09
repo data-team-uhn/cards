@@ -57,8 +57,8 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) =
   }, []);
 
   // if autofocus is needed and specified in the url
-  const questionText = questionDefinition["text"].replace(/\s/g, '');
-  const doHighlight = (anchor == questionText);
+  const questionPath = questionDefinition["@path"];
+  const doHighlight = (anchor == questionPath);
 
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"

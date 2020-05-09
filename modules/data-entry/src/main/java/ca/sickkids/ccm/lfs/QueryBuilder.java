@@ -64,6 +64,7 @@ public class QueryBuilder implements Use
     private static final String LFS_QUERY_MATCH_TEXT_KEY = "text";
     private static final String LFS_QUERY_MATCH_AFTER_KEY = "after";
     private static final String LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
+    private static final String LFS_QUERY_MATCH_PATH_KEY = "@path";
 
     private String content;
 
@@ -191,6 +192,25 @@ public class QueryBuilder implements Use
     }
 
     /**
+     * Gets the answer's question path for a given answer JCR Resource.
+     *
+     * @param res the JCR Resource corresponding to an answer
+     * @return the question path string corresponding to the passed answer
+     */
+    private String getQuestionPath(Resource res) throws ItemNotFoundException
+    {
+        try {
+            Node questionNode = res.adaptTo(Node.class).getProperty("question").getNode();
+            if (questionNode != null) {
+                return questionNode.getPath();
+            }
+        } catch (RepositoryException ex) {
+            return null;
+        }
+        return null;
+    }
+
+    /**
      * Searches through a list of Strings and returns the first String in that list
      * for which in itself contains a given substring.
      *
@@ -219,13 +239,16 @@ public class QueryBuilder implements Use
      * @param query The search value
      * @param question The text of the question itself
      * @param isNoteMatch Whether or not the match is on the notes of the answer, rather than the answer
+     * @param path the matching answer question node path
      * @return the metadata as a JsonObject
      */
-    private JsonObject getMatchMetadata(String resourceValue, String query, String question, boolean isNoteMatch)
+    private JsonObject getMatchMetadata(String resourceValue, String query, String question, boolean isNoteMatch,
+        String path)
     {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add(QueryBuilder.LFS_QUERY_QUESTION_KEY, question);
         builder.add(QueryBuilder.LFS_QUERY_MATCH_NOTES_KEY, isNoteMatch);
+        builder.add(QueryBuilder.LFS_QUERY_MATCH_PATH_KEY, path);
 
         // Add metadata about the text before the match
         int matchIndex = resourceValue.toLowerCase().indexOf(query.toLowerCase());
@@ -258,12 +281,13 @@ public class QueryBuilder implements Use
      * @param question The text of the question itself
      * @param parent The parent of the matching node
      * @param isNoteMatch Whether or not the match is on the notes of the answer, rather than the answer
+     * @param path the matching answer question node path
      * @return The given JsonObject with metadata appended to it.
      */
     private JsonObject addMatchMetadata(String resourceValue, String query, String question, JsonObject parent,
-        boolean isNoteMatch)
+        boolean isNoteMatch, String path)
     {
-        JsonObject metadata = getMatchMetadata(resourceValue, query, question, isNoteMatch);
+        JsonObject metadata = getMatchMetadata(resourceValue, query, question, isNoteMatch, path);
 
         // Construct a JsonObject that matches the parent, but with custom match metadata appended
         JsonObjectBuilder builder = Json.createObjectBuilder();
@@ -305,6 +329,7 @@ public class QueryBuilder implements Use
             String resourceValue = getMatchingFromArray(resourceValues, query);
             String noteValue = thisResource.getValueMap().get("note", String.class);
             String question = getQuestion(thisResource);
+            String path = getQuestionPath(thisResource);
             boolean matchedNotes = false;
 
             // As a fallback for when the query isn't in the value field, attempt to use the note field
@@ -320,7 +345,7 @@ public class QueryBuilder implements Use
 
             if (thisParent != null && resourceValue != null && question != null) {
                 outputList.add(this.addMatchMetadata(
-                    resourceValue, query, question, thisParent.adaptTo(JsonObject.class), matchedNotes
+                    resourceValue, query, question, thisParent.adaptTo(JsonObject.class), matchedNotes, path
                 ));
             }
         }
