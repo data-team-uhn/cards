@@ -16,7 +16,7 @@
  * along with this program.  If not, see http://www.gnu.org/licenses/
  */
 
-import { Class } from './shims/prototypeShim';
+import { Class, Ajax } from './shims/prototypeShim';
 import { isInt } from './model/helpers';
 /*
  * Disorder is a class for storing genetic disorder info and loading it from the

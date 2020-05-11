@@ -16,7 +16,7 @@
  * along with this program.  If not, see http://www.gnu.org/licenses/
  */
 
-import { Class } from './shims/prototypeShim';
+import { Class, Ajax } from './shims/prototypeShim';
 
 /*
  * HPOTerm is a class for storing phenotype information and loading it from the
