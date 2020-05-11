@@ -69,6 +69,7 @@
           <excludes combine.children="append">
             <exclude>**/pedigree/raphael.js</exclude>
             <exclude>**/pedigree/shims/prototypeShim.js</exclude>
+            <exclude>**/pedigree/shims/xwikiShim.js</exclude>
             <exclude>**/pedigree/style/font-awesome.css</exclude>
           </excludes>
         </configuration>
