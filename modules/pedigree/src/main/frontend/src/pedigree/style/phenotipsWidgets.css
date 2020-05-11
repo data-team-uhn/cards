@@ -16,16 +16,54 @@
  * along with this program.  If not, see http://www.gnu.org/licenses/
  */
 
+.invisible {
+  visibility: hidden !important;
+}
+.clear-tool {
+  display: block;
+}
+.accepted-suggestions li .delete-tool, .clear-tool {
+  display: none;
+  color: #a00;
+  line-height: 1em;
+  font-size: 87%;
+  margin: 0 0.5em;
+  cursor: pointer;
+  float: right;
+}
+div.suggestItems .hide-button-wrapper {
+  text-align: right;
+  line-height: 1em;
+  border-bottom: 1px dotted;
+}
+div.suggestItems * {
+  line-height: 1.6em;
+}
+ul.xlist li.xitem div.xitemcontainer {
+  text-indent: 1.5em;
+}
+.xlist .xitem .xitemcontainer {
+  padding: 0;
+}
+div.suggestItem, li.noSuggestion div {
+  color: #333;
+  font-size: 0.875em;
+}
+div.suggestItem, li.noSuggestion div {
+  color: #636B75;
+  font-size: .875em;
+}
+
 .msdialog-modal-container {
- position:absolute;
- top:0;
- bottom:0;
- left:0;
- right:0;
- width:100%;
- height:100%;
- text-align:center;
- z-index:100014
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  z-index: 100014
 }
 * html .msdialog-modal-container {
  position:absolute
