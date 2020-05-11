@@ -17,6 +17,7 @@
  */
 
 import { Class, $, PElement, getDocumentHeight, PObserveEvent, PStopObserving, PFireEvent, getEventMatchingParentElement } from '../shims/prototypeShim';
+import { PSuggestWidget, PSuggestPicker } from '../shims/suggestShim';
 import Disorder from '../disorder';
 import HPOTerm from '../hpoTerm';
 import Helpers from '../model/helpers';
@@ -130,23 +131,12 @@ var NodeMenu = Class.create({
       }
     });*/
 
-    //FIXME
-    /*
-    // disease
+    // disorders
     this.form.querySelectorAll('input.suggest-omim').forEach(function (item) {
       if (!item._p_hasClassName('initialized')) {
         // Create the Suggest.
-        item._suggest = new PhenoTips.widgets.Suggest(item, {
-          script: Disorder.getOMIMServiceURL() + '&',
-          queryProcessor: typeof(PhenoTips.widgets.SolrQueryProcessor) == 'undefined' ? null : new PhenoTips.widgets.SolrQueryProcessor({
-            'name' : {'wordBoost': 20, 'phraseBoost': 40},
-            'nameSpell' : {'wordBoost': 50, 'phraseBoost': 100, 'stubBoost': 20},
-            'keywords' : {'wordBoost': 2, 'phraseBoost': 6, 'stubBoost': 2},
-            'text' : {'wordBoost': 1, 'phraseBoost': 3, 'stubBoost': 1},
-            'textSpell' : {'wordBoost': 2, 'phraseBoost': 5, 'stubBoost': 2, 'stubTrigger': true}
-          }, {
-            '-nameSort': ['\\**', '\\+*', '\\^*']
-          }),
+        item._suggest = new PSuggestWidget(item, {
+          script: "",
           varname: 'q',
           noresults: 'No matching terms',
           json: true,
@@ -159,8 +149,8 @@ var NodeMenu = Class.create({
           timeout : 30000,
           parentContainer : $('body')
         });
-        if (item._p_hasClassName('multi') && typeof(PhenoTips.widgets.SuggestPicker) != 'undefined') {
-          item._suggestPicker = new PhenoTips.widgets.SuggestPicker(item, item._suggest, {
+        if (item._p_hasClassName('multi') && typeof(PSuggestPicker) != 'undefined') {
+          item._suggestPicker = new PSuggestPicker(item, item._suggest, {
             'showKey' : false,
             'showTooltip' : false,
             'showDeleteTool' : true,
@@ -183,14 +173,14 @@ var NodeMenu = Class.create({
     // genes
     this.form.querySelectorAll('input.suggest-genes').forEach(function(item) {
       if (!item._p_hasClassName('initialized')) {
-        var geneServiceURL = ""; // FIXME: new XWiki.Document('GeneNameService', 'PhenoTips').getURL('get', 'outputSyntax=plain');
-        item._suggest = new PhenoTips.widgets.Suggest(item, {
-          script: geneServiceURL + '&json=true&',
-          varname: 'q',
+        var geneServiceURL = "";
+        item._suggest = new PSuggestWidget(item, {
+          script: geneServiceURL,
+          varname: 'input',
           noresults: 'No matching terms',
-          resultsParameter : 'docs',
+          resultsParameter : 'rows',
           json: true,
-          resultId : 'symbol',
+          resultId : 'ensembl_gene_id',
           resultValue : 'symbol',
           resultInfo : {},
           enableHierarchy: false,
@@ -199,8 +189,8 @@ var NodeMenu = Class.create({
           timeout : 30000,
           parentContainer : $('body')
         });
-        if (item._p_hasClassName('multi') && typeof(PhenoTips.widgets.SuggestPicker) != 'undefined') {
-          item._suggestPicker = new PhenoTips.widgets.SuggestPicker(item, item._suggest, {
+        if (item._p_hasClassName('multi') && typeof(PSuggestPicker) != 'undefined') {
+          item._suggestPicker = new PSuggestPicker(item, item._suggest, {
             'showKey' : false,
             'showTooltip' : false,
             'showDeleteTool' : true,
@@ -223,30 +213,8 @@ var NodeMenu = Class.create({
     // HPO terms
     this.form.querySelectorAll('input.suggest-hpo').forEach(function(item) {
       if (!item._p_hasClassName('initialized')) {
-        var solrServiceURL = HPOTerm.getServiceURL();
-        item._suggest = new PhenoTips.widgets.Suggest(item, {
-          script: solrServiceURL + 'rows=100&',
-          queryProcessor: typeof(PhenoTips.widgets.SolrQueryProcessor) == 'undefined' ? null : new PhenoTips.widgets.SolrQueryProcessor({
-            'name' : {'wordBoost': 10, 'phraseBoost': 20},
-            'nameSpell' : {'wordBoost': 18, 'phraseBoost': 36, 'stubBoost': 14},
-            'nameExact' : {'phraseBoost': 100},
-            'namePrefix' : {'phraseBoost': 30},
-            'synonym' : {'wordBoost': 6, 'phraseBoost': 15},
-            'synonymSpell' : {'wordBoost': 10, 'phraseBoost': 25, 'stubBoost': 7},
-            'synonymExact' : {'phraseBoost': 70},
-            'synonymPrefix' : {'phraseBoost': 20},
-            'text' : {'wordBoost': 1, 'phraseBoost': 3, 'stubBoost': 1},
-            'textSpell' : {'wordBoost': 2, 'phraseBoost': 5, 'stubBoost': 2, 'stubTrigger': true},
-            'id' : {'activationRegex' : /^HP:[0-9]+$/i, 'mandatory' : true, 'transform': function(query) {
-              return query.toUpperCase().replace(/:/g, '\\:');
-            }},
-            'alt_id' : {'activationRegex' : /^HP:[0-9]+$/i, 'mandatory' : true, 'transform': function(query) {
-              return query.toUpperCase().replace(/:/g, '\\:');
-            }}
-          }, {
-            'term_category': ['HP:0000118']
-          }
-          ),
+        item._suggest = new PSuggestWidget(item, {
+          script: "",
           varname: 'q',
           noresults: 'No matching terms',
           json: true,
@@ -262,8 +230,8 @@ var NodeMenu = Class.create({
           timeout : 30000,
           parentContainer : $('body')
         });
-        if (item._p_hasClassName('multi') && typeof(PhenoTips.widgets.SuggestPicker) != 'undefined') {
-          item._suggestPicker = new PhenoTips.widgets.SuggestPicker(item, item._suggest, {
+        if (item._p_hasClassName('multi') && typeof(PSuggestPicker) != 'undefined') {
+          item._suggestPicker = new PSuggestPicker(item, item._suggest, {
             'showKey' : false,
             'showTooltip' : false,
             'showDeleteTool' : true,
@@ -283,7 +251,6 @@ var NodeMenu = Class.create({
         });
       }
     });
-    */
 
     // Update disorder colors
     this._updateDisorderColor = function(id, color) {
@@ -463,7 +430,7 @@ var NodeMenu = Class.create({
         var container = this._p_up('.field-box');
         if (container) {
           container.querySelectorAll('input[type=hidden][name=' + data.name + ']').forEach(function(item){
-            results.push(new Disorder(item.value, item.next('.value') && item.next('.value').firstChild.nodeValue || item.value));
+            results.push(new Disorder(item.value, item._p_next('.value') && item._p_next('.value').firstChild.nodeValue || item.value));
           });
         }
         return [results];
@@ -488,7 +455,7 @@ var NodeMenu = Class.create({
         var container = this._p_up('.field-box');
         if (container) {
           container.querySelectorAll('input[type=hidden][name=' + data.name + ']').forEach(function(item){
-            results.push(new HPOTerm(item.value, item.next('.value') && item.next('.value').firstChild.nodeValue || item.value));
+            results.push(new HPOTerm(item.value, item._p_next('.value') && item._p_next('.value').firstChild.nodeValue || item.value));
           });
         }
         return [results];
@@ -513,7 +480,7 @@ var NodeMenu = Class.create({
         var container = this._p_up('.field-box');
         if (container) {
           container.querySelectorAll('input[type=hidden][name=' + data.name + ']').forEach(function(item){
-            results.push(item.next('.value') && item.next('.value').firstChild.nodeValue || item.value);
+            results.push(item._p_next('.value') && item._p_next('.value').firstChild.nodeValue || item.value);
           });
         }
         return [results];
