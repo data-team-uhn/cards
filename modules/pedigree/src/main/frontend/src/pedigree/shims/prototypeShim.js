@@ -7,6 +7,26 @@
  *
  *--------------------------------------------------------------------------*/
 
+/****************************************************************************
+ *
+ * The shim is fully compatible with React and does not overwrite base
+ * classes such as Element or Array.
+ *
+ * - implements a fully compatible Class and Class.create
+ * - implements a fully compatible $ and $$
+ * - implements a mostly compatible Ajax implementation
+ * - implements many Element methods such as insert/up/getStyle/observe/etc.,
+ *   all with a "_p_" prefix (_p_insert(), etc.). In a few cases methods
+ *   are not fully compatible, e.g. basic element.insert() is implemented
+ *   fully, but .insert({'top': ...}) is implemented as insert_top()
+ * - to generate compatible "Elements" use a call to "PElement(...)"
+ *   instead of "new Element(...)", since default Element contructor does
+ *   not support prototype-style parameters and was not overwritten
+ * - all event handlers added through the shim can be removed by a single call
+ * - workarounds for older browsers are not included
+ *
+ ****************************************************************************/
+
 "use strict";
 
 //==========================================================================================
@@ -43,6 +63,17 @@ class EventCache {
 
   getAll() {
     return this._p_allEventListeners;
+  }
+
+  getAllForElement(element) {
+    result = [];
+    for (var i = 0; i < this._p_allEventListeners.length; i++) {
+      var eventInfo = this._p_allEventListeners[i];
+      if (eventInfo.element == element) {
+        result.push(eventInfo);
+      }
+    };
+    return result;
   }
 }
 
@@ -101,6 +132,12 @@ function isUndefined(object) {
   return typeof object === "undefined";
 }
 
+function isBody(element) {
+  return element.nodeName.toUpperCase() === 'BODY';
+}
+
+function emptyFunction() { }
+
 function _p_update(array, args) {
   var arrayLength = array.length, length = args.length;
   while (length--) array[arrayLength + length] = args[length];
@@ -113,6 +150,15 @@ function _p_extend(destination, source) {
   return destination;
 }
 
+var _p_cloneObject = function(obj) {
+  var target = {};
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      target[i] = obj[i];
+    }
+  }
+  return target;
+};
 
 function _p_argumentNames(o) {
   var names = o.toString().match(/^[\s\(]*function[^(]*\(([^)]*)\)/)[1]
@@ -303,7 +349,7 @@ window.Element.prototype._p_setStyle = function(styles) {
 
   if (isString(styles)) {
     elementStyle.cssText += ';' + styles;
-    if (styles.include('opacity')) {
+    if (styles.includes('opacity')) {
       var opacity = styles.match(/opacity:\s*(\d?\.?\d*)/)[1];
       this._p_setOpacity(opacity);
     }
@@ -388,6 +434,17 @@ window.Element.prototype._p_insert = function(content) {
   this.insertAdjacentHTML("beforeend", content);
   return this;
 }
+window.Element.prototype._p_insert_after = function (content) {
+  // insert after this element in parent
+  if (isElement(content)) {
+    this.parentNode.insertBefore(content, this.nextSibling);
+    return this;
+  }
+  content = toHTML(content);
+  // https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML
+  this.insertAdjacentHTML("afterend", content);
+  return this;
+}
 
 window.Element.prototype._p_wrap = function(wrapper, attributes) {
 
@@ -455,6 +512,29 @@ window.Element.prototype._p_cumulativeOffset = function() {
       element = element.offsetParent;
     } while (element);
   }
+  return new POffset(valueL, valueT);
+}
+
+window.Element.prototype._p_positionedOffset = function() {
+  var element = this;
+
+  //var layout = element.getLayout();
+
+  var valueT = 0, valueL = 0;
+  do {
+    valueT += element.offsetTop  || 0;
+    valueL += element.offsetLeft || 0;
+    element = element.offsetParent;
+    if (element) {
+      if (isBody(element)) break;
+      var p = element._p_getStyle('position');
+      if (p !== 'static') break;
+    }
+  } while (element);
+
+  //valueL -= layout.get('margin-left');
+  //valueT -= layout.get('margin-top');
+
   return new POffset(valueL, valueT);
 }
 
@@ -526,7 +606,7 @@ function fireEvent_DOM(element, eventName, memo, bubble) {
 }
 
 function findEventElement(event) {
-  var node = event.target, type = event.type,
+  var node = event.srcElement, type = event.type,
     currentTarget = event.currentTarget;
 
   if (currentTarget && currentTarget.tagName) {
@@ -596,6 +676,13 @@ function PStopObserving(eventName, callback, element = document) {
   return _p_stopObserving(element, eventName, callback);
 }
 
+function PStopObservingAll(element) {
+  var allElementObservations = eventCache.getAllForElement(element);
+  allElementObservations.forEach(function (eventInfo) {
+    _p_stopObserving(eventInfo.element, eventInfo.eventName, eventInfo.callback);
+  });
+}
+
 function PRemoveAllListeners() {
   var events = eventCache.getAll().slice();
   events.forEach(function (eventInfo) {
@@ -626,7 +713,11 @@ window.Element.prototype._p_hasClassName = function(className) {
 }
 
 window.Element.prototype._p_addClassName = function(className) {
-  this.classList.add(className);
+  // .add() does not work when className is a list of class names separated by a space
+  var classes = className.split(" ");
+  classes.forEach(function(cName) {
+    this.classList.add(cName);
+  }.bind(this));
   return this;
 }
 
@@ -667,6 +758,14 @@ window.Element.prototype._p_down = function(expression) {
   return this.querySelector(expression);
 }
 
+window.Element.prototype._p_previous = function(expression) {
+  return _recursivelyFind(this, 'previousSibling', expression);
+}
+
+window.Element.prototype._p_next = function(expression) {
+  return _recursivelyFind(this, 'nextSibling', expression);
+}
+
 //================================================================
 
 // This method returns the first DOM element with a given tag name, upwards from the one on which the event occurred.
@@ -699,9 +798,338 @@ function $$(expression) {
 
 //================================================================
 
+window.Function.prototype._p_delay = function(timeout) {
+  var slice = Array.prototype.slice;
+  var __method = this, args = slice.call(arguments, 1);
+  timeout = timeout * 1000;
+  return window.setTimeout(function() {
+    return __method.apply(__method, args);
+  }, timeout);
+}
+
+window.Function.prototype._p_defer = function() {
+  var args = _p_update([0.01], arguments);
+  return this._p_delay.apply(this, args);
+}
+
+window.Function.prototype._p_bindAsEventListener = function(context) {
+  var slice = Array.prototype.slice;
+  var __method = this, args = slice.call(arguments, 1);
+  return function(event) {
+    var a = _p_update([event || window.event], args);
+    return __method.apply(context, a);
+  }
+}
+
+//================================================================
+
+/*function toQueryParams(param, separator) {
+  var match = _p_strip(param).match(/([^?#]*)(#.*)?$/);
+  if (!match) return { };
+
+  return match[1].split(separator || '&').inject({ }, function(hash, pair) {
+    if ((pair = pair.split('='))[0]) {
+      var key = decodeURIComponent(pair.shift()),
+          value = pair.length > 1 ? pair.join('=') : pair[0];
+
+      if (value != undefined) {
+        value = value.gsub('+', ' ');
+        value = decodeURIComponent(value);
+      }
+
+      if (key in hash) {
+        if (!Object.isArray(hash[key])) hash[key] = [hash[key]];
+        hash[key].push(value);
+      }
+      else hash[key] = value;
+    }
+    return hash;
+  });
+}*/
+
+function toQueryPair(key, value) {
+  if (Object.isUndefined(value)) return key;
+
+  value = (value == null) ? "" : value;
+
+  value = value.replace(/(\r)?\n/g, '\r\n');
+  value = encodeURIComponent(value);
+  value = value.replace(/%20/g, '+');
+  return key + '=' + value;
+}
+
+function toQueryString(obj) {
+  var paramList = [];
+  for (var prop in obj) {
+    if (obj.hasOwnProperty(prop)) {
+      var key = encodeURIComponent(prop);
+      var value = obj[prop];
+      // FIXME: for simplicity there no support when a value is an array, which is not used in pedigree
+      paramList.push(toQueryPair(key, value));
+    }
+    return paramList.join('&');
+  }
+}
+
+var Ajax = {};
+
+Ajax.Base = Class.create({
+  initialize: function(options) {
+    this.options = {
+      method:       'post',
+      asynchronous: true,
+      contentType:  'application/x-www-form-urlencoded',
+      encoding:     'UTF-8',
+      parameters:   '',
+      evalJSON:     true,
+      evalJS:       true
+    };
+    this.options = _p_extend(_p_cloneObject(this.options), options || { });
+
+    this.options.method = this.options.method.toLowerCase();
+  }
+});
+
+Ajax.Request = Class.create(Ajax.Base, {
+  _complete: false,
+
+  initialize: function($super, url, options) {
+    $super(options);
+    this.transport = new XMLHttpRequest();
+    this.request(url);
+  },
+
+  request: function(url) {
+    this.url = url;
+    this.method = this.options.method;
+    var params = isString(this.options.parameters) ?
+          this.options.parameters :
+          toQueryString(this.options.parameters);
+
+    if (this.method != 'get' && this.method != 'post') {
+      params += (params ? '&' : '') + "_method=" + this.method;
+      this.method = 'post';
+    }
+
+    if (params && this.method === 'get') {
+      this.url += (this.url.includes('?') ? '&' : '?') + params;
+    }
+
+    //FIXME: not used in pedigree
+    /*this.parameters = params.toQueryParams();*/
+
+    try {
+      var response = new Ajax.Response(this);
+      if (this.options.onCreate) this.options.onCreate(response);
+
+      this.transport.open(this.method.toUpperCase(), this.url,
+        this.options.asynchronous);
+
+      if (this.options.asynchronous) this.respondToReadyState.bind(this)._p_defer(1);
+
+      this.transport.onreadystatechange = this.onStateChange.bind(this);
+      this.setRequestHeaders();
+
+      this.body = this.method == 'post' ? (this.options.postBody || params) : null;
+      this.transport.send(this.body);
+
+      /* Force Firefox to handle ready state 4 for synchronous requests */
+      if (!this.options.asynchronous && this.transport.overrideMimeType)
+        this.onStateChange();
+
+    }
+    catch (e) {
+      this.dispatchException(e);
+    }
+  },
+
+  onStateChange: function() {
+    var readyState = this.transport.readyState;
+    if (readyState > 1 && !((readyState == 4) && this._complete))
+      this.respondToReadyState(this.transport.readyState);
+  },
+
+  setRequestHeaders: function() {
+    var headers = {
+      'X-Requested-With': 'XMLHttpRequest',
+      'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'
+    };
+
+    if (this.method == 'post') {
+      headers['Content-type'] = this.options.contentType +
+        (this.options.encoding ? '; charset=' + this.options.encoding : '');
+    }
+
+    if (typeof this.options.requestHeaders == 'object') {
+      var extras = this.options.requestHeaders;
+
+      for (var key in extras) {
+        if (extras.hasOwnProperty(key)) {
+          headers[key] = extras[key];
+        }
+      }
+    }
+  },
+
+  success: function() {
+    var status = this.getStatus();
+    return !status || (status >= 200 && status < 300) || status == 304;
+  },
+
+  getStatus: function() {
+    try {
+      if (this.transport.status === 1223) return 204;
+      return this.transport.status || 0;
+    } catch (e) { return 0 }
+  },
+
+  respondToReadyState: function(readyState) {
+    var state = Ajax.Request.Events[readyState], response = new Ajax.Response(this);
+
+    if (state == 'Complete') {
+      try {
+        this._complete = true;
+        (this.options['on' + response.status]
+         || this.options['on' + (this.success() ? 'Success' : 'Failure')]
+         || emptyFunction)(response, response.headerJSON);
+      } catch (e) {
+        this.dispatchException(e);
+      }
+
+      var contentType = response.getHeader('Content-type');
+      if (this.options.evalJS == 'force'
+          || (this.options.evalJS && this.isSameOrigin() && contentType
+          && contentType.match(/^\s*(text|application)\/(x-)?(java|ecma)script(;.*)?\s*$/i)))
+        this.evalResponse();
+    }
+
+    try {
+      (this.options['on' + state] || emptyFunction)(response, response.headerJSON);
+    } catch (e) {
+      this.dispatchException(e);
+    }
+
+    if (state == 'Complete') {
+      this.transport.onreadystatechange = emptyFunction;
+    }
+  },
+
+  isSameOrigin: function() {
+    var m = this.url.match(/^\s*https?:\/\/[^\/]*/);
+    return !m || (m[0] == '#{protocol}//#{domain}#{port}'.interpolate({
+      protocol: location.protocol,
+      domain: document.domain,
+      port: location.port ? ':' + location.port : ''
+    }));
+  },
+
+  getHeader: function(name) {
+    try {
+      return this.transport.getResponseHeader(name) || null;
+    } catch (e) { return null; }
+  },
+
+  evalResponse: function() {
+    try {
+      return eval((this.transport.responseText || '').unfilterJSON());
+    } catch (e) {
+      this.dispatchException(e);
+    }
+  },
+
+  dispatchException: function(exception) {
+    (this.options.onException || emptyFunction)(this, exception);
+  }
+});
+
+Ajax.Request.Events =
+  ['Uninitialized', 'Loading', 'Loaded', 'Interactive', 'Complete'];
+
+Ajax.Response = Class.create({
+  initialize: function(request){
+    this.request = request;
+    var transport  = this.transport  = request.transport,
+        readyState = this.readyState = transport.readyState;
+
+    if ((readyState > 2 /*&& !Prototype.Browser.IE&*/) || readyState == 4) {
+      this.status       = this.getStatus();
+      this.statusText   = this.getStatusText();
+      this.responseText = (transport.responseText == null) ? "" : transport.responseText;
+      this.headerJSON   = this._getHeaderJSON();
+    }
+
+    if (readyState == 4) {
+      var xml = transport.responseXML;
+      this.responseXML  = isUndefined(xml) ? null : xml;
+      this.responseJSON = this._getResponseJSON();
+    }
+  },
+
+  status:      0,
+
+  statusText: '',
+
+  getStatus: Ajax.Request.prototype.getStatus,
+
+  getStatusText: function() {
+    try {
+      return this.transport.statusText || '';
+    } catch (e) { return '' }
+  },
+
+  getHeader: Ajax.Request.prototype.getHeader,
+
+  getAllHeaders: function() {
+    try {
+      return this.getAllResponseHeaders();
+    } catch (e) { return null }
+  },
+
+  getResponseHeader: function(name) {
+    return this.transport.getResponseHeader(name);
+  },
+
+  getAllResponseHeaders: function() {
+    return this.transport.getAllResponseHeaders();
+  },
+
+  _getHeaderJSON: function() {
+    var json = this.getHeader('X-JSON');
+    if (!json) return null;
+
+    try {
+      json = decodeURIComponent(escape(json));
+    } catch(e) {
+    }
+
+    try {
+      return json.evalJSON(this.request.options.sanitizeJSON ||
+        !this.request.isSameOrigin());
+    } catch (e) {
+      this.request.dispatchException(e);
+    }
+  },
+
+  _getResponseJSON: function() {
+    var options = this.request.options;
+    if (!options.evalJSON || (options.evalJSON != 'force' &&
+      !(this.getHeader('Content-type') || '').includes('application/json')) ||
+        this.responseText.blank())
+          return null;
+    try {
+      return this.responseText.evalJSON(options.sanitizeJSON ||
+        !this.request.isSameOrigin());
+    } catch (e) {
+      this.request.dispatchException(e);
+    }
+  }
+});
+
+//================================================================
+
 export {
-  Class, $, $$, $A, PElement,
+  Class, $, $$, $A, PElement, Ajax,
   isFunction, isArray, isElement, isString, isNumber, isUndefined,
-  PObserveEvent, PStopObserving, PFireEvent, PRemoveAllListeners, getEventMatchingParentElement,
+  PObserveEvent, PStopObserving, PStopObservingAll, PFireEvent, PRemoveAllListeners, getEventMatchingParentElement,
   getDocumentDimensions, getDocumentWidth, getDocumentHeight
 };
