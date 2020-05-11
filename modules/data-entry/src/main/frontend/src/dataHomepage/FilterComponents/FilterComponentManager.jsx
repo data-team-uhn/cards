@@ -18,6 +18,7 @@
 //
 
 let _registeredComponents = [];
+let _registeredTextFilterComponents = [];
 
 // This is a utility class which helps the Filter component determine how to handle different filters.
 export default class FilterComponentManager {
@@ -28,6 +29,17 @@ export default class FilterComponentManager {
   //     The confidence is a number between 0 and 100, with a bigger number indicating more confidence. The registered component with the highest confidence will be used to display the question.
   static registerFilterComponent(component) {
     _registeredComponents.push(component);
+  }
+
+  static registerTextFilterComponent(component) {
+    _registeredTextFilterComponents.push(component);
+  }
+
+  static getTextFilterComponent(questionDefinition) {
+    return (_registeredTextFilterComponents
+      .map(component => (component)(questionDefinition))
+      .reduce(([displayer]) => displayer)
+    )
   }
 
   // Picks and returns the registered component with the highest confidence that it can display a filter for the given question,

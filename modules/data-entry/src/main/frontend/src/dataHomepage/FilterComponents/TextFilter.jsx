@@ -69,9 +69,13 @@ TextFilter.propTypes = {
 }
 
 const StyledTextFilter = withStyles(QuestionnaireStyle)(TextFilter)
-
 export default StyledTextFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   return [COMPARATORS, StyledTextFilter, 10];
 });
+
+FilterComponentManager.registerTextFilterComponent((questionDefinition) => {
+  return StyledTextFilter;
+});
+

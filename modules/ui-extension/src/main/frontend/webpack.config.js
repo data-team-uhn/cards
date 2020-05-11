@@ -28,6 +28,6 @@ module.exports = {
   output: {
     path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
     publicPath: '/',
-    filename: '[name].[contenthash].js',
+    filename: '[name].js',
   }
 };
