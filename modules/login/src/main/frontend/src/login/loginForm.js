@@ -26,6 +26,7 @@ import {
     InputAdornment,
     InputLabel,
     Tooltip,
+    Typography,
     withStyles
 } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';

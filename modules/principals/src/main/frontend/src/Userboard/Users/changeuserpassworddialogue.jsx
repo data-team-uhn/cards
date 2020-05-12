@@ -16,44 +16,171 @@
 */
 
 import React from "react";
-import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField } from "@material-ui/core";
+import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField, Tooltip, Typography, withStyles } from "@material-ui/core";
+import { Formik } from "formik";
+import * as Yup from "yup";
+
+import styles from "../../styling/styles";
+
+class FormFields extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+
+    const { classes } = this.props;
+
+    const {
+      values: { oldPwd, newPwd, newPwdConfirm },
+      errors,
+      touched,
+      handleSubmit,
+      handleChange,
+      handleReset,
+      isValid,
+      setFieldTouched
+    } = this.props;
+
+    const change = (name, e) => {
+      e.persist();
+      handleChange(e);
+      setFieldTouched(name, true, false);
+    };
+
+    return (
+      <form
+        onSubmit={handleSubmit}
+        className={classes.form}
+      >
+        <TextField
+          id="oldPwd"
+          name="oldPwd"
+          helperText={touched.oldPwd ? errors.oldPwd : ""}
+          error={touched.oldPwd && Boolean(errors.oldPwd)}
+          label="Old Password"
+          fullWidth
+          type="password"
+          value={oldPwd}
+          onChange={change.bind(null, "oldPwd")}
+          className={classes.form}
+          required
+        />
+        <TextField
+          id="newPwd"
+          name="newPwd"
+          helperText={touched.newPwd ? errors.newPwd : ""}
+          error={touched.newPwd && Boolean(errors.newPwd)}
+          label="New Password"
+          fullWidth
+          type="password"
+          value={newPwd}
+          onChange={change.bind(null, "newPwd")}
+          className={classes.form}
+          required
+        />
+        <TextField
+          id="newPwdConfirm"
+          name="newPwdConfirm"
+          helperText={touched.newPwdConfirm ? errors.newPwdConfirm : ""}
+          error={touched.newPwdConfirm && Boolean(errors.newPwdConfirm)}
+          label="Confirm New Password"
+          fullWidth
+          type="password"
+          value={newPwdConfirm}
+          onChange={change.bind(null, "newPwdConfirm")}
+          className={classes.form}
+          required
+        />
+        <Button variant="contained" color="default" size="small" className={classes.formAction} onClick={handleReset}>Close</Button>
+	    { !isValid ?
+	      // Render hover over and button
+          <React.Fragment>
+            <Tooltip title="You must fill in all fields.">
+              <span>
+                <Button type="submit" variant="contained" color="primary" size="small" className={classes.formAction} disabled={!isValid}>Change User Password</Button>
+              </span>
+            </Tooltip>
+          </React.Fragment> :
+          // Else just render the button
+          <Button type="submit" variant="contained" color="primary" size="small" className={classes.formAction} disabled={!isValid}>Change User Password</Button>
+	    }
+      </form>
+    );
+  }
+}
+
+const FormFieldsComponent = withStyles(styles)(FormFields);
 
 class ChangeUserPasswordDialogue extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            oldPwd: "",
-            newPwd: "",
-            newPwdConfirm: ""
-        }
+          error: ""
+        };
+
+        this.handlePasswordChange = this.handlePasswordChange.bind(this);
     }
 
-    handlePasswordChange(name) {
+    handlePasswordChange({ oldPwd, newPwd, newPwdConfirm }) {
+        // Important note about native fetch, it does not reject failed
+	    // HTTP codes, it'll only fail when network error
+	    // Therefore, you must handle the error code yourself.
+	    function handleErrors(response) {
+	      if (!response.ok) {
+	        throw Error(response.statusText);
+	      }
+	      return response;
+	    }
+
+	    // Build formData object.
+	    // We need to do this because sling does not accept JSON, need url encoded data
         let formData = new FormData();
-        formData.append('oldPwd', this.state.oldPwd);
-        formData.append('newPwd', this.state.newPwd);
-        formData.append('newPwdConfirm', this.state.newPwdConfirm);
+        formData.append('oldPwd', oldPwd);
+        formData.append('newPwd', newPwd);
+        formData.append('newPwdConfirm', newPwdConfirm);
         let url = "/system/userManager/user/" + this.props.name + ".changePassword.html";
 
+        // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
         fetch(url, {
             method: 'POST',
-            credentials: 'include',
+            headers: {
+	          'Accept': 'application/json',
+	          'Content-Type': 'application/x-www-form-urlencoded'
+	        },
             body: formData
         })
+        .then(handleErrors) // Handle errors first
         .then(() => {
             this.props.handleClose();
         })
         .catch((error) => {
             if (error.getElementById("Status") === 404) {
-                console.log("missing user 404");
+                this.setState({error: "Missing user"});
             } else {
-                console.log("other error 505");
+                this.setState({error: "Invalid old password. Please try again"});
             }
+
             console.log(error);
         });
     }
 
     render() {
+        const { classes, selfContained } = this.props;
+        const values = { oldPwd: "", newPwd: "", newPwdConfirm: "" };
+
+        const validationSchema = Yup.object({
+          oldPwd: Yup.string("")
+	        .min(8, "Password must contain at least 8 characters")
+	        .required("Enter your password"),
+	      newPwd: Yup.string("")
+	        .min(8, "Password must contain at least 8 characters")
+	        .required("Enter your password"),
+	      newPwdConfirm: Yup.string("Enter new password")
+	        .required("Confirm new password")
+	        .oneOf([Yup.ref("newPwd")], "New password does not match"),
+	    });
+
         return (
             <Dialog
                 open={this.props.isOpen}
@@ -62,46 +189,20 @@ class ChangeUserPasswordDialogue extends React.Component {
                 <DialogTitle>Change User Password of {this.props.name}</DialogTitle>
                 <DialogContent>
                     <Grid container>
-                        <Grid item xs={12} sm={12} md={12}>
-                            <TextField
-                                id="oldpwd"
-                                name="oldpwd"
-                                autoComplete="current-password"
-                                label="Old Password"
-                                type="password"
-                                onChange={(event) => { this.setState({ oldPwd: event.target.value }); }}
-                                autoFocus
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12}>
-                            <TextField
-                                id="newpwd"
-                                name="newpwd"
-                                autoComplete="new-password"
-                                label="New Password"
-                                type="password"
-                                onChange={(event) => { this.setState({ newPwd: event.target.value }); }}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12}>
-                            <TextField
-                                id="newpwdconfirm"
-                                name="newpwdconfirm"
-                                autoComplete="new-password"
-                                label="Confirm New Password"
-                                type="password"
-                                onChange={(event) => { this.setState({ newPwdConfirm: event.target.value }); }}
-                            />
-                        </Grid>
+                        {this.state.error && <Typography component="h2" className={classes.errorMessage}>{this.state.error}</Typography>}
+                        <Formik
+				            render={props => <FormFieldsComponent {...props} />}
+				            initialValues={values}
+				            validationSchema={validationSchema}
+				            onSubmit={this.handlePasswordChange}
+				            onReset={this.props.handleClose}
+				            ref={el => (this.form = el)}
+				          />
                     </Grid>
                 </DialogContent>
-                <DialogActions>
-                    <Button variant="contained" color="primary" size="small" onClick={(event) => { event.preventDefault(); this.handlePasswordChange(); }}>Change User Password</Button>
-                    <Button variant="contained" color="default" size="small" onClick={() => this.props.handleClose()}>Close</Button>
-                </DialogActions>
             </Dialog>
         );
     }
 }
 
-export default ChangeUserPasswordDialogue;
+export default withStyles(styles)(ChangeUserPasswordDialogue);

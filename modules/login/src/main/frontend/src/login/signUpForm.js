@@ -19,7 +19,6 @@
 import React from 'react';
 import {
     Button,
-    Paper,
     TextField,
     Tooltip,
     Typography,
@@ -179,7 +178,9 @@ class SignUpForm extends React.Component {
 
   // submit function
   submitValues({ username, email, confirmPassword, password }) {
-    // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
+    // Important note about native fetch, it does not reject failed
+    // HTTP codes, it'll only fail when network error
+    // Therefore, you must handle the error code yourself.
     function handleErrors(response) {
       if (!response.ok) {
         throw Error(response.statusText);
@@ -196,9 +197,7 @@ class SignUpForm extends React.Component {
     formData.append('pwdConfirm', confirmPassword);
     formData.append('email', email);
 
-    // Important note about native fetch, it does not reject failed
-    // HTTP codes, it'll only fail when network error
-    // Therefore, you must handle the error code yourself.
+    // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
     fetch('/system/userManager/user.create.html',
       {
         method: 'POST',

@@ -46,11 +46,11 @@ const userboardStyle = theme => ({
       verticalAlign: "bottom"
     },
     containerButton: {
-      marginRight: "8px",
+      marginRight: theme.spacing(1),
     },
     cardActions: {
       justifyContent: "flex-end",
-      marginTop: "16px"
+      marginTop: theme.spacing(2)
     },
     cardRoot: {
       paddingLeft: "120px"
