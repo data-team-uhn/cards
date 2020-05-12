@@ -166,7 +166,7 @@ class ChangeUserPasswordDialogue extends React.Component {
                 open={this.props.isOpen}
                 onClose={this.handleCloseDialog}
             >
-                <DialogTitle>Change User Password of {this.props.name}</DialogTitle>
+                <DialogTitle>Change User Password for {this.props.name}</DialogTitle>
                 <DialogContent>
                     <Grid container>
                         {this.state.error && <Typography component="h2" className={classes.errorMessage}>{this.state.error}</Typography>}
