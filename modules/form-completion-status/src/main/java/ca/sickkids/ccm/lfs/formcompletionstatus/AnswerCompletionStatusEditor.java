@@ -166,7 +166,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 try {
                     summarizeBuilders(this.currentNodeBuilderPath);
                 } catch (RepositoryException e) {
-                    LOGGER.warn("Could not run summarize()");
+                    LOGGER.warn("Could not run summarizeBuilders()");
+                    LOGGER.warn(e.toString());
                 }
             }
         }
