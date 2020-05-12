@@ -98,6 +98,17 @@ function Section(props) {
     sectionDefinition,
     formContext);
 
+    // If any conditionals unmet, all the conditional fields should be cleared
+  // This ensures that upon form submission, previously inputed values are removed from the form json
+  // if (!displayed) {
+  //   console.log(sectionDefinition);
+    // Object.entries(sectionDefinition)
+    // .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+    // .map(([key, definition]) => console.log(key))
+  //     // FormEntry(definition, sectionPath, depth+1, existingSectionAnswer, key) <-- this part needs to be replaced with something that will clear
+    
+  // };
+
   let closeDialog = () => {
     setSelectedUUID(undefined);
     setDialogOpen(false);
@@ -190,6 +201,14 @@ function Section(props) {
                       .map(([key, definition]) =><FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>)
                   }
                 </Grid>
+                {displayed
+                  ? ""
+                  : (
+                    Object.entries(sectionDefinition)
+                    .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+                    .map(([key, definition]) => console.log(definition))
+                  )
+                }
               </Collapse>
             </Grid>
           </div>

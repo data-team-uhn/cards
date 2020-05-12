@@ -97,6 +97,8 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
     .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
       && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
 
+  console.log(existingAnswer);
+  console.log(sectionDefinition);
   return (
     <Section
       key={key}
