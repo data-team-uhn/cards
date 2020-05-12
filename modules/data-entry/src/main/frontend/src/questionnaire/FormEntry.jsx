@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React,  { useCallback } from "react";
+import React,  { useRef, useEffect } from "react";
 
 import { Grid } from "@material-ui/core";
 
@@ -48,13 +48,15 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
  * @returns a React component that renders the question
  */
 let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) => {
+  const questionRef = useRef();
   const anchor = location.hash.substr(1);
   // create a ref to store the question container DOM element
-  const questionRef = useCallback(node => {
-    if (node !== null) {
-      node.scrollIntoView();
-    }
-  }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+	  questionRef?.current?.scrollIntoView();
+	}, 500);
+	return () => clearTimeout(timer);
+  }, [questionRef]);
 
   // if autofocus is needed and specified in the url
   const questionPath = questionDefinition["@path"];

@@ -176,6 +176,8 @@ function Section(props) {
                   </Grid>
               }
               <Collapse
+                mountOnEnter
+                unmountOnExit
                 in={!hiddenSection}
                 component={Grid}
                 className={(uuid == selectedUUID ? classes.highlightedSection : undefined)}
