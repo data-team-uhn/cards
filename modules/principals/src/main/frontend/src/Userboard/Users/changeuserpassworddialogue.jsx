@@ -16,7 +16,7 @@
 */
 
 import React from "react";
-import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField, Tooltip, Typography, withStyles } from "@material-ui/core";
+import { Button, Grid, Dialog, DialogTitle, DialogContent, TextField, Tooltip, Typography, withStyles } from "@material-ui/core";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -32,7 +32,7 @@ class FormFields extends React.Component {
     const { classes } = this.props;
 
     const {
-      values: { oldPwd, newPwd, newPwdConfirm },
+      values: { newPwd, newPwdConfirm },
       errors,
       touched,
       handleSubmit,
@@ -53,19 +53,6 @@ class FormFields extends React.Component {
         onSubmit={handleSubmit}
         className={classes.form}
       >
-        <TextField
-          id="oldPwd"
-          name="oldPwd"
-          helperText={touched.oldPwd ? errors.oldPwd : ""}
-          error={touched.oldPwd && Boolean(errors.oldPwd)}
-          label="Old Password"
-          fullWidth
-          type="password"
-          value={oldPwd}
-          onChange={change.bind(null, "oldPwd")}
-          className={classes.form}
-          required
-        />
         <TextField
           id="newPwd"
           name="newPwd"
@@ -120,9 +107,10 @@ class ChangeUserPasswordDialogue extends React.Component {
         };
 
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handleCloseDialog = this.handleCloseDialog.bind(this);
     }
 
-    handlePasswordChange({ oldPwd, newPwd, newPwdConfirm }) {
+    handlePasswordChange({ newPwd, newPwdConfirm }) {
         // Important note about native fetch, it does not reject failed
 	    // HTTP codes, it'll only fail when network error
 	    // Therefore, you must handle the error code yourself.
@@ -136,7 +124,6 @@ class ChangeUserPasswordDialogue extends React.Component {
 	    // Build formData object.
 	    // We need to do this because sling does not accept JSON, need url encoded data
         let formData = new FormData();
-        formData.append('oldPwd', oldPwd);
         formData.append('newPwd', newPwd);
         formData.append('newPwdConfirm', newPwdConfirm);
         let url = "/system/userManager/user/" + this.props.name + ".changePassword.html";
@@ -144,38 +131,31 @@ class ChangeUserPasswordDialogue extends React.Component {
         // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
         fetch(url, {
             method: 'POST',
-            headers: {
-	          'Accept': 'application/json',
-	          'Content-Type': 'application/x-www-form-urlencoded'
-	        },
+            credentials: 'include',
             body: formData
         })
         .then(handleErrors) // Handle errors first
         .then(() => {
-            this.props.handleClose();
+            this.handleCloseDialog();
         })
         .catch((error) => {
-            if (error.getElementById("Status") === 404) {
-                this.setState({error: "Missing user"});
-            } else {
-                this.setState({error: "Invalid old password. Please try again"});
-            }
-
-            console.log(error);
+            this.setState({error: error.message});
         });
+    }
+    
+    handleCloseDialog() {
+        this.setState({error: ""});
+        this.props.handleClose();
     }
 
     render() {
         const { classes, selfContained } = this.props;
-        const values = { oldPwd: "", newPwd: "", newPwdConfirm: "" };
+        const values = { newPwd: "", newPwdConfirm: "" };
 
         const validationSchema = Yup.object({
-          oldPwd: Yup.string("")
-	        .min(8, "Password must contain at least 8 characters")
-	        .required("Enter your password"),
 	      newPwd: Yup.string("")
 	        .min(8, "Password must contain at least 8 characters")
-	        .required("Enter your password"),
+	        .required("Enter new password"),
 	      newPwdConfirm: Yup.string("Enter new password")
 	        .required("Confirm new password")
 	        .oneOf([Yup.ref("newPwd")], "New password does not match"),
@@ -184,7 +164,7 @@ class ChangeUserPasswordDialogue extends React.Component {
         return (
             <Dialog
                 open={this.props.isOpen}
-                onClose={() => this.props.handleClose()}
+                onClose={this.handleCloseDialog}
             >
                 <DialogTitle>Change User Password of {this.props.name}</DialogTitle>
                 <DialogContent>
@@ -195,7 +175,7 @@ class ChangeUserPasswordDialogue extends React.Component {
 				            initialValues={values}
 				            validationSchema={validationSchema}
 				            onSubmit={this.handlePasswordChange}
-				            onReset={this.props.handleClose}
+				            onReset={this.handleCloseDialog}
 				            ref={el => (this.form = el)}
 				          />
                     </Grid>
