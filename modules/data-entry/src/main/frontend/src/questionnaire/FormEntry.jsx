@@ -76,7 +76,6 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) =
         path={path}
         questionName={key}
         />
-        <input type="hidden" name={`${sectionPath}/${sectionID}/value`} value="0"></input> 
     </Grid>
   );
 };

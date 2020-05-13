@@ -450,8 +450,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
                     result = valueFactory.createValue(new BigDecimal(rawValue));
                     break;
                 case "boolean":
-                    result = valueFactory.createValue(
-                        BooleanUtils.toInteger(BooleanUtils.toBooleanObject(rawValue), 1, 0, -1));
+                    result = valueFactory.createValue(BooleanUtils.toBoolean(rawValue));
                     break;
                 case "date":
                     result = valueFactory.createValue(parseDate(rawValue));

@@ -205,17 +205,12 @@ function Section(props) {
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                   Object.entries(sectionDefinition)
                       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                      .map(([key, definition]) => (
-                        displayed
-                         ? <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>
-                         : (
-                            console.log(existingSectionAnswer), console.log(definition)
-                         )
+                      .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>
                       ))
                   }
-                  {(!displayed  && existingSectionAnswer?.length > 0)
-                    ? <input type="hidden" name={`${path + "/" + uuid + "/" + sectionID}@Delete`} value="0" key={uuid}></input>
-                    : null
+                  {(displayed)
+                    ?  ""
+                    : <input type="hidden" name={`${path + "/" + uuid + "/" + sectionID}/value@Delete`} value="0" key={uuid}></input>
                   }
                 </Grid>
                 {displayed
