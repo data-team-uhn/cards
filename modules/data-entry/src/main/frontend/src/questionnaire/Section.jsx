@@ -147,6 +147,7 @@ function Section(props) {
             <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
             <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
             <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
+            <input type="hidden" name={`${path + "/" + uuid + "/" + sectionID}/value@Delete`} value="0"></input>
 
             <Grid
               container
@@ -210,7 +211,7 @@ function Section(props) {
                   }
                   {(displayed)
                     ?  ""
-                    : <input type="hidden" name={`${path + "/" + uuid + "/" + sectionID}/value@Delete`} value="0" key={uuid}></input>
+                    : <input type="hidden" name={`${path + "/" + uuid + "/" + sectionID}/value@Delete`} value="0"></input>
                   }
                 </Grid>
                 {displayed

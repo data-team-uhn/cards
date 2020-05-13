@@ -52,10 +52,6 @@ function Answer (props) {
       <input type="hidden" name={`${answerPath}/question`} value={questionDefinition['jcr:uuid']}></input>
       <input type="hidden" name={`${answerPath}/question@TypeHint`} value="Reference"></input>
 
-      {console.log(answerPath)}
-      {console.log(answers)}
-
-
       {/* Add the answers, if any exist, or otherwise delete them */}
       {(answers && answers.length) ?
         (<React.Fragment>
