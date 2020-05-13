@@ -114,6 +114,8 @@ function Section(props) {
     setDialogOpen(false);
   }
 
+  let sectionID;
+
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
   return useCallback(
@@ -132,6 +134,11 @@ function Section(props) {
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;
           const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
+          
+          if (existingAnswer?.length > 0) {
+            sectionID = Object.entries(existingSectionAnswer).map(element => element[0])[6];
+          }
+          
           const hiddenSection = displayed && labelsToHide[uuid];
           return <div
             key={uuid}
@@ -196,9 +203,19 @@ function Section(props) {
                 >
                 <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
-                    Object.entries(sectionDefinition)
+                  Object.entries(sectionDefinition)
                       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                      .map(([key, definition]) =><FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>)
+                      .map(([key, definition]) => (
+                        displayed
+                         ? <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>
+                         : (
+                            console.log(existingSectionAnswer), console.log(definition)
+                         )
+                      ))
+                  }
+                  {(!displayed  && existingSectionAnswer?.length > 0)
+                    ? <input type="hidden" name={`${path + "/" + uuid + "/" + sectionID}@Delete`} value="0" key={uuid}></input>
+                    : null
                   }
                 </Grid>
                 {displayed
@@ -230,7 +247,7 @@ function Section(props) {
         </Grid>}
         {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
         UUIDsToRemove.map( (uuid) =>
-          <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
+          <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input> // how does this work....
         )}
       </Collapse>
     <Dialog

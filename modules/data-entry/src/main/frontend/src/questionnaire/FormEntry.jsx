@@ -76,6 +76,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) =
         path={path}
         questionName={key}
         />
+        <input type="hidden" name={`${sectionPath}/${sectionID}/value`} value="0"></input> 
     </Grid>
   );
 };
@@ -99,6 +100,7 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
 
   console.log(existingAnswer);
   console.log(sectionDefinition);
+
   return (
     <Section
       key={key}
