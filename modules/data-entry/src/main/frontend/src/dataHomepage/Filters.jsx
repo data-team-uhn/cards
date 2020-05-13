@@ -354,7 +354,7 @@ function Filters(props) {
                     </Select>
                   </Grid>
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}
-                  <Grid item xs={ isUnary ? 6 : (isNotesContain ? 3 : 1) } className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                  <Grid item xs={isUnary ? 6 : (isNotesContain ? 3 : 1)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <Select
                       value={filterDatum.comparator || ""}
                       onChange={(event) => {handleChangeComparator(index, event.target.value);}}
