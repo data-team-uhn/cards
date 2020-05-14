@@ -21,7 +21,7 @@
       "comparator": "=",
       "operandB": {
         "jcr:primaryType": "lfs:ConditionalValue",
-        "value": ["true"]
+        "value": ["1"]
       }
     },
     "weight_at_start": {
@@ -119,7 +119,7 @@
         "comparator": "=",
         "operandB": {
           "jcr:primaryType": "lfs:ConditionalValue",
-          "value": ["true"]
+          "value": ["1"]
         }
       },
       "boost_technique": {
@@ -172,7 +172,7 @@
         "comparator": "=",
         "operandB": {
           "jcr:primaryType": "lfs:ConditionalValue",
-          "value": ["true"]
+          "value": ["1"]
         }
       },
       "tbi_start_date": {

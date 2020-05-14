@@ -71,7 +71,7 @@ function BooleanQuestion(props) {
       >
       <MultipleChoice
         answerNodeType="lfs:BooleanAnswer"
-        valueType="long" /* Notably not "Boolean", since we need it to be stored as a long in the backend */
+        valueType="Long" /* Notably not "Boolean", since we need it to be stored as a long in the backend */
         maxAnswers={1}
         defaults={options}
         {...rest}
