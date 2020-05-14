@@ -115,6 +115,7 @@ function Section(props) {
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
   return useCallback(
+  
   <React.Fragment>
     <Collapse
       in={displayed}
@@ -140,7 +141,11 @@ function Section(props) {
             key={uuid}
             className={"recurrentSectionInstance " + classes.recurrentSectionInstance}
             >
-            <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
+
+            {displayed 
+            ? <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
+            : <input type="hidden" name={`${path + "/" + uuid}/jcr:primaryType@Delete`} value="0" key={uuid}></input>
+            }
             <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
             <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
     
@@ -198,21 +203,14 @@ function Section(props) {
                 item
                 >
                 <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-                  {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
+                  {
                   Object.entries(sectionDefinition)
                       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
                       .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>
                       ))
                   }
+                  {console.log(existingSectionAnswer)}
                 </Grid>
-                {displayed
-                  ? ""
-                  : (
-                    Object.entries(sectionDefinition)
-                    .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                    .map(([key, definition]) => console.log(definition))
-                  )
-                }
               </Collapse>
             </Grid>
           </div>
@@ -232,11 +230,13 @@ function Section(props) {
             <Add fontSize="small" /> {sectionDefinition["label"]}
           </Button>
         </Grid>}
-        {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
-        testuuid.map( (uuid) =>
-          <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input> // how does this work....
-        )}
       </Collapse>
+      {console.log(testuuid[0])}
+      {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
+      testuuid.map( (uuid) => 
+        <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
+      )}
+      <input type="hidden" name={`${path + "/" + testuuid[0]}@Delete`} value="0" key={testuuid[0]}></input>
     <Dialog
       open={dialogOpen}
       onClose={closeDialog}
