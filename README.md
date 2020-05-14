@@ -39,6 +39,17 @@ To specify a different URL, use `-Dsling.url=https://lfs.server:8443/system/cons
 
 If Docker is installed, then the build will also create a new image named `lfs/lfs:latest`
 
+### Test/Development Environments
+
+LFS can be ran as a *single* Docker container using the file system (instead of Mongo)
+as a data storage back-end for Apache Sling.
+
+```bash
+docker run --rm -e INITIAL_SLING_NODE=true -e OAK_FILESYSTEM=true -p 127.0.0.1:8080:8080 -it lfs/lfs
+```
+
+### Production Environments
+
 Before the LFS Docker container can be started, an isolated network providing MongoDB must be established. To do so:
 
 ```bash
@@ -109,6 +120,11 @@ cd compose-cluster
 python3 generate_compose_yaml.py --shards 2 --replicas 3
 docker-compose build
 ```
+
+3.1 Replacing `python3 generate_compose_yaml.py --shards 2 --replicas 3` with
+`python3 generate_compose_yaml.py --oak_filesystem` will not start a Mongo
+cluster and instead will use the file system as a data storage back-end for
+Apache Sling
 
 4. Start the *docker-compose* environment.
 
