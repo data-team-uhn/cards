@@ -16,17 +16,17 @@
 */
 
 import React from "react";
-import { withStyles } from "@material-ui/core/styles";
-import { Button, Dialog, DialogTitle, DialogActions, DialogContent, IconButton, Typography} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Typography, withStyles } from "@material-ui/core";
 
-class DeleteGroupDialogue extends React.Component {
+import userboardStyle from './userboardStyle.jsx';
+
+class DeletePrincipalDialogue extends React.Component {
     constructor(props) {
         super(props);
     }
 
-    handleDeleteGroup() {
-        let url = "/system/userManager/group/" + this.props.name + ".delete.html";
+    handleDelete() {
+        let url = this.props.url + this.props.name + ".delete.html";
 
         fetch(url, {
             method: 'POST',
@@ -42,24 +42,26 @@ class DeleteGroupDialogue extends React.Component {
     }
 
     render() {
+        const { classes } = this.props;
+
         return (
             <Dialog
                 open={this.props.isOpen}
-                onClose={this.props.handleClose}
+                onClose={() => this.props.handleClose()}
             >
                 <DialogTitle disableTypography>
                   <Typography variant="h6">Delete {this.props.name}</Typography>
                 </DialogTitle>
                 <DialogContent>
-                    <Typography variant="body1">Are you sure you want to delete group {this.props.name}?</Typography>
+                    <Typography variant="body1">Are you sure you want to delete {this.props.type} {this.props.name}?</Typography>
                 </DialogContent>
-                <DialogActions>
-                    <Button variant="contained" color="secondary" size="small" onClick={() => this.handleDeleteGroup(this.props.name)}>Delete</Button>
-                    <Button variant="contained" size="small" onClick={() => this.props.handleClose()}>Cancel</Button>
+                <DialogActions className={classes.dialogActions}>
+                    <Button variant="contained" color="secondary" size="small" onClick={() => this.handleDelete(this.props.name)}>Delete</Button>
+                    <Button variant="contained" size="small" onClick={() => this.props.handleClose()}>Close</Button>
                 </DialogActions>
             </Dialog>
         );
     }
 }
 
-export default DeleteGroupDialogue;
+export default withStyles(userboardStyle)(DeletePrincipalDialogue);

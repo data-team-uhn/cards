@@ -20,7 +20,7 @@ import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import userboardStyle from '../userboardStyle.jsx';
 
-import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
+import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@material-ui/core";
 
 import MaterialTable from 'material-table';
 
@@ -117,18 +117,18 @@ class AddUserToGroupDialogue extends React.Component {
                                   })
                               }}
                               columns={[
-				                { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.initials}</Avatar>},
-				                { title: 'User Name', field: 'name' },
-				                { title: 'Admin', field: 'isAdmin', type: 'boolean' },
-				                { title: 'Disabled', field: 'isDisabled', type: 'boolean' },
-				              ]}
+                                { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.initials}</Avatar>},
+                                { title: 'User Name', field: 'name' },
+                                { title: 'Admin', field: 'isAdmin', type: 'boolean' },
+                                { title: 'Disabled', field: 'isDisabled', type: 'boolean' },
+                              ]}
                               data={this.state.freeUsers}
                               onSelectionChange={(rows) => {this.handleSelectRowClick(rows)}}
                             />
                         </div>
                     </Grid>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={classes.dialogActions}>
                     <Button variant="contained" size="small" color="primary" onClick={() => this.handleAddUsers()} disabled={this.state.selectedUsers.length == 0}>Add</Button>
                     <Button variant="contained" size="small" onClick={() => this.handleExit()}>Close</Button>
                 </DialogActions>

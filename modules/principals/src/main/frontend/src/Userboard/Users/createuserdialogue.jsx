@@ -29,27 +29,26 @@ class CreateUserDialogue extends React.Component {
     }
 
     handleCreateUser() {
-	    this.props.reload();
-	    this.props.handleClose();
+        this.props.reload();
+        this.props.handleClose();
     }
 
     handleError(error) {
-	    console.log(error);
-	}
+        console.log(error);
+    }
 
     render() {
         const { classes } = this.props;
+
         return (
             <Dialog
                 open={this.props.isOpen}
                 onClose={() => this.props.handleClose()}
             >
-                <Typography component="h2" variant="h5" className={classes.dialogTitle}> Create New User 
-                  <Button size="small" className={classes.closeButton} onClick={() => this.props.handleClose()}><ClearIcon/></Button>
-                </Typography>
-        		<DialogContent>
+                <Typography component="h2" variant="h5" className={classes.dialogTitle}>Create New User</Typography>
+                <DialogContent>
                   <Grid container>
-                    <SignUpForm loginOnSuccess={false} handleSuccess={() => this.handleCreateUser()} />
+                    <SignUpForm loginOnSuccess={false} handleSuccess={() => this.handleCreateUser()} handleExit={() => this.props.handleClose()}/>
                   </Grid>
                 </DialogContent>
             </Dialog>

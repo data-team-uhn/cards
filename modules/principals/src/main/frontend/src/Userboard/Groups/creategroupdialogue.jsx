@@ -17,7 +17,9 @@
 
 import React from "react";
 
-import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField, Typography } from "@material-ui/core";
+import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField, Typography, withStyles  } from "@material-ui/core";
+
+import userboardStyle from '../userboardStyle.jsx';
 
 class CreateGroupDialogue extends React.Component {
     constructor(props) {
@@ -42,14 +44,16 @@ class CreateGroupDialogue extends React.Component {
         .then((response) => {
             if (!response.ok) {
               this.setState({ error: response.statusText });
-		      return;
-		    }
+              return;
+            }
             this.props.reload();
             this.props.handleClose();
         });
     }
 
     render() {
+        const { classes } = this.props;
+
         return (
             <Dialog
                 open={this.props.isOpen}
@@ -70,7 +74,7 @@ class CreateGroupDialogue extends React.Component {
                     </Grid>
                     {this.state.error && <Typography color='error'>{this.state.error}</Typography>}
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={classes.dialogActions}>
                     <Button color="primary" variant="contained" size="small" onClick={(event) => { event.preventDefault(); this.handleCreateGroup(); }}>Create Group</Button>
                     <Button variant="contained" size="small" onClick={this.props.handleClose}>Close</Button>
                 </DialogActions>
@@ -79,4 +83,4 @@ class CreateGroupDialogue extends React.Component {
     }
 }
 
-export default CreateGroupDialogue;
+export default withStyles(userboardStyle)(CreateGroupDialogue);

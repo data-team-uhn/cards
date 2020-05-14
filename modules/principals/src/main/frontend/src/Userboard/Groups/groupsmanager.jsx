@@ -24,12 +24,12 @@ import AddIcon from "@material-ui/icons/Add";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";
-import DeleteGroupDialogue from "./deletegroupdialogue.jsx";
+import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
 import AddUserToGroupDialogue from "./addusertogroupdialogue.jsx";
 
 import MaterialTable from 'material-table';
 
-const GROUP_URL="/system/userManager/group/";
+const GROUP_URL = "/system/userManager/group/";
 
 class GroupsManager extends React.Component {
   constructor(props) {
@@ -153,7 +153,7 @@ class GroupsManager extends React.Component {
     return (
       <div>
         <CreateGroupDialogue isOpen={this.state.deployCreateGroup} handleClose={() => {this.setState({deployCreateGroup: false});}} reload={() => this.handleReload(true)} />
-        <DeleteGroupDialogue isOpen={this.state.deployDeleteGroup} handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName} reload={() => this.handleReload(true)} />
+        <DeletePrincipalDialogue isOpen={this.state.deployDeleteGroup} handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName} reload={() => this.handleReload(true)} url={GROUP_URL} type={"group"} />
         <AddUserToGroupDialogue isOpen={this.state.deployAddGroupUsers} handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName} groupUsers={this.state.currentGroupUsers} allUsers={this.props.users}  reload={() => this.handleReload()} />
         <div>
           <MaterialTable
@@ -198,30 +198,27 @@ class GroupsManager extends React.Component {
                         { groupUsers.length > 0 && 
                           <div>
                             <MaterialTable
-      			                  title={tableTitle}
-      			                  style={{ boxShadow : 'none' }}
-      			                  options={{
-      			                    
-      			                  }}
-      			                  options={{
-      			                    emptyRowsWhenPaging: false,
-      			                    selection: true,
-      			                    showSelectAllCheckbox : false,
-      			                    showTextRowsSelected: false,
-      			                    headerStyle: {backgroundColor: headerBackground},
-      			                    selectionProps: rowData => ({
-      			                        color: 'primary'
-      			                      })
-      			                  }}
+                                title={tableTitle}
+                                style={{ boxShadow : 'none' }}
+                                options={{
+                                  emptyRowsWhenPaging: false,
+                                  selection: true,
+                                  showSelectAllCheckbox : false,
+                                  showTextRowsSelected: false,
+                                  headerStyle: {backgroundColor: headerBackground},
+                                  selectionProps: rowData => ({
+                                    color: 'primary'
+                                  })
+                                }}
                               columns={[
                                 { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.initials}</Avatar>},
                                 { title: 'User Name', field: 'name' },
                                 { title: 'Admin', field: 'isAdmin', type: 'boolean' },
                                 { title: 'Disabled', field: 'isDisabled', type: 'boolean' },
                               ]}
-      				                data={groupUsers}
-      			                  onSelectionChange={(rows) => {this.handleSelectRowClick(rows)}}
-      			                />
+                              data={groupUsers}
+                                onSelectionChange={(rows) => {this.handleSelectRowClick(rows)}}
+                              />
                           </div>
                         }
                         <Grid container className={classes.cardActions}>

@@ -80,8 +80,8 @@ class FormFields extends React.Component {
           required
         />
         <Button variant="contained" color="default" size="small" className={classes.formAction} onClick={handleReset}>Close</Button>
-	    { !isValid ?
-	      // Render hover over and button
+        { !isValid ?
+          // Render hover over and button
           <React.Fragment>
             <Tooltip title="You must fill in all fields.">
               <span>
@@ -91,7 +91,7 @@ class FormFields extends React.Component {
           </React.Fragment> :
           // Else just render the button
           <Button type="submit" variant="contained" color="primary" size="small" className={classes.formAction} disabled={!isValid}>Change User Password</Button>
-	    }
+        }
       </form>
     );
   }
@@ -112,17 +112,17 @@ class ChangeUserPasswordDialogue extends React.Component {
 
     handlePasswordChange({ newPwd, newPwdConfirm }) {
         // Important note about native fetch, it does not reject failed
-	    // HTTP codes, it'll only fail when network error
-	    // Therefore, you must handle the error code yourself.
-	    function handleErrors(response) {
-	      if (!response.ok) {
-	        throw Error(response.statusText);
-	      }
-	      return response;
-	    }
+        // HTTP codes, it'll only fail when network error
+        // Therefore, you must handle the error code yourself.
+        function handleErrors(response) {
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+          return response;
+        }
 
-	    // Build formData object.
-	    // We need to do this because sling does not accept JSON, need url encoded data
+        // Build formData object.
+        // We need to do this because sling does not accept JSON, need url encoded data
         let formData = new FormData();
         formData.append('newPwd', newPwd);
         formData.append('newPwdConfirm', newPwdConfirm);
@@ -153,13 +153,13 @@ class ChangeUserPasswordDialogue extends React.Component {
         const values = { newPwd: "", newPwdConfirm: "" };
 
         const validationSchema = Yup.object({
-	      newPwd: Yup.string("")
-	        .min(8, "Password must contain at least 8 characters")
-	        .required("Enter new password"),
-	      newPwdConfirm: Yup.string("Enter new password")
-	        .required("Confirm new password")
-	        .oneOf([Yup.ref("newPwd")], "New password does not match"),
-	    });
+          newPwd: Yup.string("")
+            .min(8, "Password must contain at least 8 characters")
+            .required("Enter new password"),
+          newPwdConfirm: Yup.string("Enter new password")
+            .required("Confirm new password")
+            .oneOf([Yup.ref("newPwd")], "New password does not match"),
+        });
 
         return (
             <Dialog
@@ -171,13 +171,13 @@ class ChangeUserPasswordDialogue extends React.Component {
                     <Grid container>
                         {this.state.error && <Typography component="h2" className={classes.errorMessage}>{this.state.error}</Typography>}
                         <Formik
-				            render={props => <FormFieldsComponent {...props} />}
-				            initialValues={values}
-				            validationSchema={validationSchema}
-				            onSubmit={this.handlePasswordChange}
-				            onReset={this.handleCloseDialog}
-				            ref={el => (this.form = el)}
-				          />
+                            render={props => <FormFieldsComponent {...props} />}
+                            initialValues={values}
+                            validationSchema={validationSchema}
+                            onSubmit={this.handlePasswordChange}
+                            onReset={this.handleCloseDialog}
+                            ref={el => (this.form = el)}
+                          />
                     </Grid>
                 </DialogContent>
             </Dialog>

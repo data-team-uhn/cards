@@ -74,10 +74,10 @@ class PrincipalsContainer extends React.Component {
      // This event is needed in cases we do not want to collapse details panel after reload
       var reloadedEvent = new CustomEvent('principals-reloaded', {
           bubbles: true,
-	      cancelable: true
-	    });
-	  document.dispatchEvent(reloadedEvent);
-	})
+          cancelable: true
+        });
+      document.dispatchEvent(reloadedEvent);
+    })
   }
 
   componentWillMount () {

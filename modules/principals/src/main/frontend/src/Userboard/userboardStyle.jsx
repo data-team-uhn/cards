@@ -18,33 +18,6 @@
 // Taken from https://www.creative-tim.com/product/material-dashboard-react
 
 const userboardStyle = theme => ({
-    cardTitle: {
-      color: theme.palette.grey['800'],
-      marginTop: "0px",
-      minHeight: "auto",
-      fontWeight: "300",
-      fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-      marginBottom: "3px",
-      textDecoration: "none",
-      paddingBottom: "0",
-      verticalAlign: "bottom",
-      "& small": {
-        color: theme.palette.grey['700'],
-        fontWeight: "400",
-        lineHeight: "1"
-      }
-    },
-    cardCategory: {
-      color: theme.palette.grey['500'],
-      margin: "0",
-      fontSize: "14px",
-      marginTop: "0",
-      paddingTop: "10px",
-      marginBottom: "0",
-      width: "20%",
-      paddingBottom: "0",
-      verticalAlign: "bottom"
-    },
     containerButton: {
       marginRight: theme.spacing(1),
     },
@@ -61,11 +34,11 @@ const userboardStyle = theme => ({
     addIcon: {
       backgroundColor: theme.palette.primary.main
     },
-    closeButton: {
-      float: 'right'
-    },
     dialogTitle: {
-      padding: theme.spacing(2,0,0,4)
+      padding: theme.spacing(2,0,2,3)
+    },
+    dialogActions: {
+      padding: theme.spacing(2, 3)
     }
 });
 

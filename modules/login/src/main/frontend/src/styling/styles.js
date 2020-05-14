@@ -52,11 +52,19 @@ const styles = theme => ({
   },
   formAction: {
     float: 'right',
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(3),
     marginLeft: theme.spacing(2)
   },
   submit: {
     marginTop: theme.spacing(3)
+  },
+  closeButton: {
+    float: 'right',
+    marginLeft: theme.spacing(2),
+    marginBottom: theme.spacing(2)
+  },
+  dialogTitle: {
+    padding: theme.spacing(2,0,2,3)
   },
   errorMessage: {
     background: theme.palette.error.dark,

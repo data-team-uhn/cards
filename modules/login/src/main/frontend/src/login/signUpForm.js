@@ -39,7 +39,7 @@ class FormFields extends React.Component {
     const { classes } = this.props;
 
     const {
-      values: { username, email, password, confirmPassword },
+      values: { username, email, password, confirmPassword, loginOnSuccess },
       errors,
       touched,
       handleSubmit,
@@ -48,7 +48,6 @@ class FormFields extends React.Component {
       isValid,
       setFieldTouched
     } = this.props;
-
 
     const change = (name, e) => {
       e.persist();
@@ -114,35 +113,26 @@ class FormFields extends React.Component {
           required
 
         />
+        { !loginOnSuccess &&
+          <Button variant="contained" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>Close</Button>
+        }
         {!isValid ?
           // Render hover over and button
           <React.Fragment>
             <Tooltip title="You must fill in all fields.">
               <div>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  disabled={!isValid}
-                  className={classes.submit}
-                >
-                  Submit
-                </Button>
+                { loginOnSuccess ?
+                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >Submit</Button> :
+                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">Submit</Button>
+                }
               </div>
             </Tooltip>
           </React.Fragment> :
           // Else just render the button
-          <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          disabled={!isValid}
-          className={classes.submit}
-          >
-            Submit
-          </Button>
+          ( loginOnSuccess ?
+            <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >Submit</Button> :
+            <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">Submit</Button>
+          )
         }
       </form>
     );
@@ -219,7 +209,7 @@ class SignUpForm extends React.Component {
 
   render() {
     const { classes, selfContained } = this.props;
-    const values = { username: "", email: "", confirmPassword: "", password: "" };
+    const values = { username: "", email: "", confirmPassword: "", password: "", loginOnSuccess: this.props.loginOnSuccess };
 
     const validationSchema = Yup.object({
       email: Yup.string("Enter your email")
@@ -244,6 +234,7 @@ class SignUpForm extends React.Component {
             initialValues={values}
             validationSchema={validationSchema}
             onSubmit={this.submitValues}
+            onReset={this.props.handleExit}
             ref={el => (this.form = el)}
           />
         </div>

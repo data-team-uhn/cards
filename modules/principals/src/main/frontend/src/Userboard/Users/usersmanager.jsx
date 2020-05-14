@@ -24,10 +24,12 @@ import AddIcon from "@material-ui/icons/Add";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateUserDialogue from "./createuserdialogue.jsx";
-import DeleteUserDialogue from "./deleteuserdialogue.jsx";
+import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
 import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx";
 
 import MaterialTable from 'material-table';
+
+const USER_URL = "/system/userManager/user/";
 
 class UsersManager extends React.Component {
   constructor(props) {
@@ -97,7 +99,7 @@ class UsersManager extends React.Component {
     return (
       <div>
         <CreateUserDialogue isOpen={this.state.deployCreateUser} handleClose={() => {this.setState({deployCreateUser: false});}} reload={() => this.handleReload()}/>
-        <DeleteUserDialogue isOpen={this.state.deployDeleteUser} handleClose={() => {this.setState({deployDeleteUser: false});}} name={this.state.currentUserName} reload={() => this.handleReload()}/>
+        <DeletePrincipalDialogue isOpen={this.state.deployDeleteUser} handleClose={() => {this.setState({deployDeleteUser: false});}} name={this.state.currentUserName} reload={() => this.handleReload()} url={USER_URL} type={"user"} />
         <ChangeUserPasswordDialogue isOpen={this.state.deployChangeUserPassword} handleClose={() => {this.setState({deployChangeUserPassword: false});}} name={this.state.currentUserName}/>
 
         <div>
@@ -154,11 +156,11 @@ class UsersManager extends React.Component {
                                 emptyRowsWhenPaging: false
                               }}
                               columns={[
-					              { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.name.charAt(0)}</Avatar> },
-					              { title: 'Name', field: 'name', cellStyle: {textAlign: 'left'} },
-					              { title: 'Members', field: 'members', type: 'numeric', cellStyle: {textAlign: 'left'}, headerStyle: {textAlign: 'left', flexDirection: 'initial'} },
-					              { title: 'Declared Members', field: 'declaredMembers', type: 'numeric', cellStyle: {textAlign: 'left'}, headerStyle: {textAlign: 'left', flexDirection: 'initial'} },
-					          ]}
+                                  { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.name.charAt(0)}</Avatar> },
+                                  { title: 'Name', field: 'name', cellStyle: {textAlign: 'left'} },
+                                  { title: 'Members', field: 'members', type: 'numeric', cellStyle: {textAlign: 'left'}, headerStyle: {textAlign: 'left', flexDirection: 'initial'} },
+                                  { title: 'Declared Members', field: 'declaredMembers', type: 'numeric', cellStyle: {textAlign: 'left'}, headerStyle: {textAlign: 'left', flexDirection: 'initial'} },
+                              ]}
                               data={currentUserGroups}
                           />
                         </div>
