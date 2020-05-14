@@ -418,7 +418,7 @@
       "comparator": "=",
       "operandB": {
         "jcr:primaryType": "lfs:ConditionalValue",
-        "value": ["true"]
+        "value": ["1"]
       }
     },
     "surveilled_since": {
