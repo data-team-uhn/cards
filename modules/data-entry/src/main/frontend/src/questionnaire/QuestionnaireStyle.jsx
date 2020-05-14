@@ -62,7 +62,10 @@ const questionnaireStyle = theme => ({
     },
     noteTextField: {
         // the input in notes should be the width of the form
-        width: "100%",
+        width: "50%",
+        "&.Mui-focused": {
+            width: "100%",
+        }
     },
     checkboxList: {
         padding: theme.spacing(0),
