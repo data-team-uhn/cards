@@ -97,20 +97,11 @@ function Section(props) {
   const displayed = ConditionalComponentManager.evaluateCondition(
     sectionDefinition,
     formContext);
-  
-  // const [ displayed, setDisplayed ] = useState(
-  //   ConditionalComponentManager.evaluateCondition(
-  //     sectionDefinition,
-  //     formContext
-  //   )
-  // );
 
   let closeDialog = () => {
     setSelectedUUID(undefined);
     setDialogOpen(false);
   }
-
-  let testuuid = [];
 
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
@@ -131,21 +122,14 @@ function Section(props) {
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;
           const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
-
-          testuuid.push(uuid);
-
-          // issue: if NOT displayed, need to add the current uuid setUUIDstoremove. issue: too many rerenders? maybe do a onchange?? check if prev displayed state was changed
-   
           const hiddenSection = displayed && labelsToHide[uuid];
+
           return <div
             key={uuid}
             className={"recurrentSectionInstance " + classes.recurrentSectionInstance}
             >
 
-            {displayed 
-            ? <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
-            : <input type="hidden" name={`${path + "/" + uuid}/jcr:primaryType@Delete`} value="0" key={uuid}></input>
-            }
+            <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
             <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
             <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
     
@@ -209,7 +193,6 @@ function Section(props) {
                       .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>
                       ))
                   }
-                  {console.log(existingSectionAnswer)}
                 </Grid>
               </Collapse>
             </Grid>
@@ -230,13 +213,16 @@ function Section(props) {
             <Add fontSize="small" /> {sectionDefinition["label"]}
           </Button>
         </Grid>}
+        {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
+          UUIDsToRemove.map((uuid) => 
+            <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
+        )}
       </Collapse>
-      {console.log(testuuid[0])}
-      {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
-      testuuid.map( (uuid) => 
+      {/* Removes any lfs:AnswerSections that are now not displayed by using an @Delete suffix */
+      instanceLabels.map((uuid) => 
         <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
       )}
-      <input type="hidden" name={`${path + "/" + testuuid[0]}@Delete`} value="0" key={testuuid[0]}></input>
+      
     <Dialog
       open={dialogOpen}
       onClose={closeDialog}

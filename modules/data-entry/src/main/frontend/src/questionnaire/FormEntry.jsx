@@ -68,11 +68,6 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) =
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
   // This variable must start with an upper case letter so that React treats it as a component
   const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
-
-  console.log("displayQuestion called");
-  console.log(questionDefinition);
-  console.log(existingQuestionAnswer);
-  
   return (
     <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={(doHighlight ? classes.highlightedSection : undefined)}>
       <QuestionDisplay
@@ -101,10 +96,7 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
       && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
-
-  console.log(existingAnswer);
-  console.log(sectionDefinition);
-
+      
   return (
     <Section
       key={key}
