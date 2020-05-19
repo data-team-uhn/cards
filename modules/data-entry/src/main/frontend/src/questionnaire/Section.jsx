@@ -108,7 +108,10 @@ function Section(props) {
   return useCallback(
   
   <React.Fragment>
-    <Collapse
+    {/* if conditional is true, the collapse component is rendered and displayed.
+        else, the corresponding input tag to the conditional section is deleted  */}
+    {displayed
+      ? (<Collapse
       in={displayed}
       component={Grid}
       item
@@ -217,12 +220,11 @@ function Section(props) {
           UUIDsToRemove.map((uuid) => 
             <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
         )}
-      </Collapse>
-      {/* Removes any lfs:AnswerSections that are now not displayed by using an @Delete suffix */
-      instanceLabels.map((uuid) => 
+      </Collapse>)
+      : instanceLabels.map((uuid) => 
         <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
-      )}
-      
+      )
+      }
     <Dialog
       open={dialogOpen}
       onClose={closeDialog}
