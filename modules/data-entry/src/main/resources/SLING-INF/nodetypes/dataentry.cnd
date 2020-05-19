@@ -453,7 +453,8 @@
 //-----------------------------------------------------------------------------
 // Yes/No
 [lfs:BooleanAnswer] > lfs:Answer
-  - value (boolean)
+  // Though we could use a boolean here, we want to handle three states (true/false/undefined), which is best defined by long.
+  - value (long)
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "lfs/BooleanAnswer" mandatory autocreated protected
