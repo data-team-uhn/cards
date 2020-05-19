@@ -192,9 +192,10 @@ function MultipleChoice(props) {
     selectOption(...args);
   }
 
+  // display error if minimum is not met, display 'at least' if there is no maximum or if max is greater than min
   const warning = selection.length < minAnswers && (
     <Typography color={error ? 'error' : 'textSecondary'} className={classes.warningTypography}>
-      Please select at least {minAnswers} option{minAnswers > 1 && "s"}.
+      Please select {maxAnswers !== minAnswers && "at least"} {minAnswers} option{minAnswers > 1 && "s"}.
     </Typography>
     );
 
