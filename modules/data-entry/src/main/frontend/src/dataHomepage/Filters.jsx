@@ -55,6 +55,7 @@ function Filters(props) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [filterRequestSent, setFilterRequestSent] = useState(false);
   const [toFocus, setFocusRow] = useState(null);
+  const notesComparator = "notes contain";
 
   // Focus on inputs as they are flagged for focus
   const focusRef = useRef();
@@ -111,7 +112,6 @@ function Filters(props) {
     setFilterableTitles(titles);
     setFilterableUUIDs(uuids);
   }
-
 
   // Open the filter selection dialog
   let openDialogAndAdd = () => {
@@ -188,9 +188,13 @@ function Filters(props) {
 
   let getOutputChoices = (field, overridefilters) => {
     let [comparators, component] = FilterComponentManager.getFilterComparatorsAndComponent(questionDefinitions[field]);
-   
-    if (!questionDefinitions[field].enableNotes && comparators.includes("notes contain")){
-      comparators.pop("notes contain");
+    if (questionDefinitions[field].enableNotes && !comparators.includes(notesComparator)) {
+      comparators = comparators.slice();
+      comparators.push(notesComparator);
+      setTextFilterComponent(old => ({
+        ...old,
+        [field]: FilterComponentManager.getTextFilterComponent(questionDefinitions[field])
+      }));
     }
     setFilterComparators( old => ({
       ...old,
@@ -200,14 +204,6 @@ function Filters(props) {
       ...old,
       [field]: component
     }));
-
-    if (questionDefinitions[field].enableNotes && !comparators.includes("notes contain")) {
-      setTextFilterComponent(old => ({
-        ...old,
-        [field]: FilterComponentManager.getTextFilterComponent(questionDefinitions[field])})
-      );
-      comparators.push("notes contain");
-    }
     return [comparators, component]
   }
 
@@ -246,7 +242,7 @@ function Filters(props) {
   // Return the pre-computed input element, and focus it if we were asked to
   let getCachedInput = (filterDatum, index, focusRef) => {
 
-    let CachedComponent = filterDatum.comparator === "notes contain" && textFilterComponent ?
+    let CachedComponent = filterDatum.comparator === notesComparator ?
       textFilterComponent[filterDatum.name]
       :
       filterableAnswers[filterDatum.name];
@@ -330,7 +326,7 @@ function Filters(props) {
             {editingFilters.map( (filterDatum, index) => {
               // We grab focus on the field if we were asked to
               let isUnary = filterDatum.comparator && UNARY_COMPARATORS.includes(filterDatum.comparator);
-              let isNotesContain = filterDatum.comparator && (filterDatum.comparator === "notes contain");
+              let isNotesContain = filterDatum.comparator && (filterDatum.comparator === notesComparator);
               return(
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}

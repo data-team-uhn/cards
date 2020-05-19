@@ -271,9 +271,10 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 filterdata.append(" and (");
                 for (int j = 0; j < possibleQuestions.length; j++) {
                     filterdata.append(
-                        String.format(" child%d.'question'='%s'",
-                        i,
-                        this.sanitizeField(possibleQuestions[j])
+                        String.format(
+                            " child%d.'question'='%s'",
+                            i,
+                            this.sanitizeField(possibleQuestions[j])
                         )
                     );
                     // Add an 'or' if there are more possible conditions
