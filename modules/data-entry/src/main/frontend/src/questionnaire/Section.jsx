@@ -176,6 +176,8 @@ function Section(props) {
                   </Grid>
               }
               <Collapse
+                mountOnEnter
+                unmountOnExit
                 in={!hiddenSection}
                 component={Grid}
                 className={(uuid == selectedUUID ? classes.highlightedSection : undefined)}
@@ -185,7 +187,7 @@ function Section(props) {
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                     Object.entries(sectionDefinition)
                       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                      .map(([key, definition]) => FormEntry(definition, sectionPath, depth+1, existingSectionAnswer, key))
+                      .map(([key, definition]) =><FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>)
                   }
                 </Grid>
               </Collapse>

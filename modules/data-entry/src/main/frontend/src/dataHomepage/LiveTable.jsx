@@ -180,6 +180,14 @@ function LiveTable(props) {
   };
 
   let getNestedValue = (entry, path) => {
+    // Display the JCR node id
+    if (path == 'jcr:uuid') {
+      let el = /Forms\/(.+)/.exec(entry["@path"]);
+      if (el && el[1]) {
+        return el[1];
+      }
+    }
+
     let result = entry;
     for (let subpath of path.split('/')) {
       result = result && result[subpath];

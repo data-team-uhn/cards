@@ -37,7 +37,7 @@ function UserDashboard(props) {
   // Column configuration for the LiveTables
   const columns = [
     {
-      "key": "jcr:uuid",
+      "key": "@name",
       "label": "Identifier",
       "format": "string",
       "link": "dashboard+path",

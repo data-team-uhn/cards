@@ -37,6 +37,7 @@ const LFS_QUERY_MATCH_BEFORE_KEY = "before";
 const LFS_QUERY_MATCH_TEXT_KEY = "text";
 const LFS_QUERY_MATCH_AFTER_KEY = "after";
 const LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
+const LFS_QUERY_MATCH_PATH_KEY = "@path";
 
 function SearchBar(props) {
   const { classes, className, closeSidebar, invertColors, doNotEscapeQuery } = props;
@@ -125,7 +126,7 @@ function SearchBar(props) {
         <Typography variant="body2" color="textSecondary">
           {(resultData.questionnaire?.title?.concat(' ') || '') + (resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')}
         </Typography>
-        {resultData.subject?.identifier || resultData["jcr:uuid"] || ''}
+        {resultData.subject?.identifier || resultData["@name"] || ''}
       </div>
     ) || null
   }
@@ -251,9 +252,13 @@ function SearchBar(props) {
                       key={i}
                       disabled={result["disabled"]}
                       onClick={(e) => {
+                        const anchor = result[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY];
                         // Redirect using React-router
                         if (result["@path"]) {
-                          props.history.push("/content.html" + result["@path"]);
+                          props.history.push({
+                            pathname: "/content.html" + result["@path"],
+                            hash: anchor
+                          });
                           closeSidebar && closeSidebar();
                           setPopperOpen(false);
                         }

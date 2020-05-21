@@ -58,7 +58,7 @@ function Forms(props) {
   }
   const columns = [
     {
-      "key": "jcr:uuid",
+      "key": "@name",
       "label": "Identifier",
       "format": "string",
       "link": "dashboard+path",

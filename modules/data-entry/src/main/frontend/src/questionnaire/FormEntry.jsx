@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React from "react";
+import React,  { useRef, useEffect } from "react";
 
 import { Grid } from "@material-ui/core";
 
@@ -44,16 +44,31 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
  * @param {string} path the path to the parent of the question
  * @param {Object} existingAnswer form data that may include answers already submitted for this component
  * @param {string} key the node name of the question definition JCR node
+ * @param {Object} classes style classes
  * @returns a React component that renders the question
  */
-let displayQuestion = (questionDefinition, path, existingAnswer, key) => {
+let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) => {
+  const questionRef = useRef();
+  const anchor = location.hash.substr(1);
+  // create a ref to store the question container DOM element
+  useEffect(() => {
+    const timer = setTimeout(() => {
+	  questionRef?.current?.scrollIntoView();
+	}, 500);
+	return () => clearTimeout(timer);
+  }, [questionRef]);
+
+  // if autofocus is needed and specified in the url
+  const questionPath = questionDefinition["@path"];
+  const doHighlight = (anchor == questionPath);
+
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
   // This variable must start with an upper case letter so that React treats it as a component
   const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
   return (
-    <Grid item key={key} className={"questionContainer"}>
+    <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={(doHighlight ? classes.highlightedSection : undefined)}>
       <QuestionDisplay
         questionDefinition={questionDefinition}
         existingAnswer={existingQuestionAnswer}
@@ -76,13 +91,6 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key) => {
  * @returns a React component that renders the section
  */
 let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
-  // Catch an invalid section
-  if (!sectionDefinition || sectionDefinition["jcr:primaryType"] != "lfs:Section") {
-    console.log("Error: an invalid section was passed to displaySection:");
-    console.log(sectionDefinition);
-    return(<React.Fragment></React.Fragment>);
-  }
-
   // Find the existing AnswerSection for this section, if available
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
@@ -107,14 +115,16 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
  * @param {int} depth the section nesting depth
  * @param {Object} existingAnswers form data that may include answers already submitted for this component
  * @param {string} key the node name of the section definition JCR node
+ * @param {Object} classes style classes
  * @returns a React component that renders the section
  */
-export default function FormEntry(entryDefinition, path, depth, existingAnswers, key) {
+ export default function FormEntry(props) {
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp } = props;
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-      return displayQuestion(entryDefinition, path, existingAnswers, key);
+    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-      return displaySection(entryDefinition, path, depth, existingAnswers, key);
+    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp);
   }
 }
