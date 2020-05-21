@@ -21,6 +21,12 @@ import ReactDOM from 'react-dom';
 import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
 
+import { Avatar, Button, Paper, Typography, withStyles } from '@material-ui/core';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+
+import styles from "../styling/styles";
+
 class MainLoginContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -37,15 +43,60 @@ class MainLoginContainer extends React.Component {
     }));
   }
 
+  signIn(username, password) {
+    fetch('/j_security_check',
+      {
+        method: 'POST',
+        body: new URLSearchParams({
+          "j_username": username,
+          "j_password": password,
+          "j_validate": true
+        }),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
+    ).then(() => {
+      window.location = new URLSearchParams(window.location.search).get('resource') || '/';
+    });
+  }
+
   render () {
+    const { classes, selfContained } = this.props;
+
     return (
       <div>
-        {this.state.signInShown ? <SignIn swapForm={this.handleSwap} selfContained /> : <SignUpForm swapForm={this.handleSwap} selfContained />}
+        <Paper elevation={1} className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
+          <Typography component="h1" variant="overline">
+            LFS Data Core
+          </Typography>
+          <Typography component="h2" variant="h5">
+            {this.state.signInShown ? "Sign In" : "Sign Up" }
+          </Typography>
+          <Avatar className={classes.avatar}>
+            { this.state.signInShown ? <ExitToAppIcon/> : <PersonAddIcon/> }
+          </Avatar>
+          { this.state.signInShown ? <SignIn selfContained /> : <SignUpForm loginOnSuccess={true} selfContained /> }
+          <Typography>
+            { this.state.signInShown ? "Don't have an account?" : "Already have an account?" }
+          </Typography>
+          <Button
+            fullWidth
+            variant="contained"
+            color="default"
+            className={classes.main}
+            onClick={this.handleSwap}
+          >
+          { this.state.signInShown ? <span><PersonAddIcon className={classes.buttonIcon}/> Request an account</span> : <span><ExitToAppIcon className={classes.buttonIcon}/> Sign In</span> }
+          </Button>
+        </Paper>
       </div>
     );
   }
 }
 
-export default MainLoginContainer;
+const MainLoginComponent = withStyles(styles)(MainLoginContainer);
 
-ReactDOM.render(<MainLoginContainer/>, document.getElementById('main-login-container'));
+export default MainLoginComponent;
+
+ReactDOM.render(<MainLoginComponent/>, document.getElementById('main-login-container'));

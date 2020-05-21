@@ -19,20 +19,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-    Avatar,
     Button,
     FormControl,
     IconButton,
     Input,
     InputAdornment,
     InputLabel,
-    Paper,
     Tooltip,
     Typography,
     withStyles
 } from '@material-ui/core';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import styles from "../styling/styles";
@@ -97,16 +93,6 @@ class SignIn extends React.Component {
 
     return (
         <div className={classes.main}>
-          <Paper elevation={1} className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
-            <Typography component="h1" variant="overline">
-              LFS Data Core
-            </Typography>
-            <Typography component="h2" variant="h5">
-              Sign In
-            </Typography>
-            <Avatar className={classes.avatar}>
-              <ExitToAppIcon />
-            </Avatar>
             {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>Invalid username or password</Typography>}
 
             <form className={classes.form} onSubmit={(event)=>{event.preventDefault(); this.submitLogin();}} >
@@ -143,15 +129,6 @@ class SignIn extends React.Component {
                 Sign in
               </Button>
             </form>
-            <Typography>Don't have an account?</Typography>
-            <Button
-              fullWidth
-              color="default"
-              onClick={this.props.swapForm}
-            >
-              <PersonAddIcon/> Request an account
-            </Button>
-          </Paper>
         </div>
     );
   }

@@ -1,0 +1,31 @@
+{
+    "jcr:primaryType": "sling:Folder",
+    "Userlist": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionName": "Users List",
+        "lfs:defaultOrder": 92,
+        "lfs:targetURL": "admin/userlist",
+        "lfs:icon": "asset:lfs-principals.userboardIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-principals.userscontainer.js",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "test",
+            "jcr:mimeType": "text/html"
+        }
+    },
+    "Grouplist": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionName": "Groups List",
+        "lfs:defaultOrder": 93,
+        "lfs:targetURL": "admin/grouplist",
+        "lfs:icon": "asset:lfs-principals.userboardIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-principals.groupscontainer.js",
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "test",
+            "jcr:mimeType": "text/html"
+        }
+    }
+}

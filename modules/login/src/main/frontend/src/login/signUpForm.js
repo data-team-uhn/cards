@@ -18,20 +18,14 @@
 //
 import React from 'react';
 import {
-    Avatar,
     Button,
-    Paper,
-    Typography,
     TextField,
     Tooltip,
+    Typography,
     withStyles
 } from '@material-ui/core';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import { Formik } from "formik";
 import * as Yup from "yup";
-
-import UsernameTakenDialog from './ErrorDialogues';
 
 import styles from "../styling/styles";
 
@@ -45,15 +39,15 @@ class FormFields extends React.Component {
     const { classes } = this.props;
 
     const {
-      values: { username, email, password, confirmPassword },
+      values: { username, email, password, confirmPassword, loginOnSuccess },
       errors,
       touched,
       handleSubmit,
       handleChange,
+      handleReset,
       isValid,
       setFieldTouched
     } = this.props;
-
 
     const change = (name, e) => {
       e.persist();
@@ -119,35 +113,26 @@ class FormFields extends React.Component {
           required
 
         />
+        { !loginOnSuccess &&
+          <Button variant="contained" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>Close</Button>
+        }
         {!isValid ?
           // Render hover over and button
           <React.Fragment>
             <Tooltip title="You must fill in all fields.">
               <div>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  disabled={!isValid}
-                  className={classes.submit}
-                >
-                  Submit
-                </Button>
+                { loginOnSuccess ?
+                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >Submit</Button> :
+                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">Submit</Button>
+                }
               </div>
             </Tooltip>
           </React.Fragment> :
           // Else just render the button
-          <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          disabled={!isValid}
-          className={classes.submit}
-          >
-            Submit
-          </Button>
+          ( loginOnSuccess ?
+            <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >Submit</Button> :
+            <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">Submit</Button>
+          )
         }
       </form>
     );
@@ -159,25 +144,8 @@ const FormFieldsComponent = withStyles(styles)(FormFields);
 class SignUpForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      usernameError: false
-    };
 
-    this.displayError = this.displayError.bind(this);
     this.submitValues = this.submitValues.bind(this);
-    this.hideError = this.hideError.bind(this);
-  }
-
-  displayError() {
-    this.setState({
-      usernameError: true
-    });
-  }
-
-  hideError() {
-    this.setState({
-      usernameError: false
-    });
   }
 
   signIn(username, password) {
@@ -200,7 +168,9 @@ class SignUpForm extends React.Component {
 
   // submit function
   submitValues({ username, email, confirmPassword, password }) {
-    // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
+    // Important note about native fetch, it does not reject failed
+    // HTTP codes, it'll only fail when network error
+    // Therefore, you must handle the error code yourself.
     function handleErrors(response) {
       if (!response.ok) {
         throw Error(response.statusText);
@@ -217,9 +187,7 @@ class SignUpForm extends React.Component {
     formData.append('pwdConfirm', confirmPassword);
     formData.append('email', email);
 
-    // Important note about native fetch, it does not reject failed
-    // HTTP codes, it'll only fail when network error
-    // Therefore, you must handle the error code yourself.
+    // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
     fetch('/system/userManager/user.create.html',
       {
         method: 'POST',
@@ -231,18 +199,17 @@ class SignUpForm extends React.Component {
       })
       .then(handleErrors) // Handle errors first
       .then(() => {
-        this.signIn(username, password);
+        this.props.handleSuccess && this.props.handleSuccess();
+        this.props.loginOnSuccess && this.signIn(username, password);
       })
       .catch(error => {
-        this.setState({
-          usernameError: true
-        });
+        this.form.setFieldError("username", "Looks like this user is taken. Please try a different username.");
       });
   }
 
   render() {
     const { classes, selfContained } = this.props;
-    const values = { username: "", email: "", confirmPassword: "", password: "" };
+    const values = { username: "", email: "", confirmPassword: "", password: "", loginOnSuccess: this.props.loginOnSuccess };
 
     const validationSchema = Yup.object({
       email: Yup.string("Enter your email")
@@ -261,39 +228,15 @@ class SignUpForm extends React.Component {
     // Hooks only work inside functional components
     return (
       <React.Fragment>
-        {(this.state.usernameError) &&
-          <UsernameTakenDialog handleClose={this.hideError} ></UsernameTakenDialog>
-        }
         <div className={classes.main}>
-          <Paper elevation={1} className={`${classes.paper} ${selfContained ? classes.selfContained : ''}`}>
-            <Typography component="h1" variant="overline">
-              LFS Data Core
-            </Typography>
-            <Typography component="h2" variant="h5">
-              Sign Up
-            </Typography>
-            <Avatar className={classes.avatar}>
-              <PersonAddIcon/>
-            </Avatar>
-            <Formik
-              render={props => <FormFieldsComponent {...props} />}
-              initialValues={values}
-              validationSchema={validationSchema}
-              onSubmit={this.submitValues}
-              ref={el => (this.form = el)}
-            />
-            <Typography>
-              Already have an account?
-            </Typography>
-            <Button
-              fullWidth
-              variant="contained"
-              color="default"
-              onClick={this.props.swapForm}
-            >
-              <ExitToAppIcon/> Sign In
-            </Button>
-          </Paper>
+          <Formik
+            render={props => <FormFieldsComponent {...props} />}
+            initialValues={values}
+            validationSchema={validationSchema}
+            onSubmit={this.submitValues}
+            onReset={this.props.handleExit}
+            ref={el => (this.form = el)}
+          />
         </div>
       </React.Fragment>
     );

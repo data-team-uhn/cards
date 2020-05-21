@@ -39,18 +39,32 @@ const styles = theme => ({
     marginBottom: theme.spacing(2),
   },
   buttonIcon: {
-    marginRight: theme.spacing(1),
+    verticalAlign: 'middle',
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
+    verticalAlign: 'middle',
   },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
+  formAction: {
+    float: 'right',
+    marginTop: theme.spacing(3),
+    marginLeft: theme.spacing(2)
+  },
   submit: {
     marginTop: theme.spacing(3)
+  },
+  closeButton: {
+    float: 'right',
+    marginLeft: theme.spacing(2),
+    marginBottom: theme.spacing(2)
+  },
+  dialogTitle: {
+    padding: theme.spacing(2,0,2,3)
   },
   errorMessage: {
     background: theme.palette.error.dark,

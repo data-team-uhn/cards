@@ -56,7 +56,7 @@ import org.osgi.service.log.LogService;
  * <ul>
  * <li><tt>filter</tt>: a lucene search term, such as "david" or "adm*"; no filter set by default</li>
  * <li><tt>offset</tt>: a 0-based number representing how many principals to skip; 0 by default</li>
- * <li><tt>limit</tt>: a number representing how many principals to include at most in the result; 10 by default</li>
+ * <li><tt>limit</tt>: a number representing how many principals to include at most in the result; 0 by default</li>
  * </ul>
  *
  * @version $Id$
@@ -112,7 +112,9 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
             builder.setSelector(this.type.getAuthorizableClass());
             // Pagination parameters
             // TODO Maybe use the value-bound method instead of fixed pages?
-            builder.setLimit(this.offset, this.limit);
+            if (this.limit > 0) {
+                builder.setLimit(this.offset, this.limit);
+            }
         }
     }
 
@@ -127,7 +129,7 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String filter = request.getParameter("filter");
-        final long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
+        final long limit = getLongValueOrDefault(request.getParameter("limit"), 0);
         final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
         Session session = request.getResourceResolver().adaptTo(Session.class);
 
@@ -216,8 +218,8 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
      * @param jsonGen the JSON generator where the results should be serialized
      * @param principals the list of authorizables to serialize
      * @param urlPrefix an URL prefix for the server, used for computing an URL for accessing a principal
-     * @param offset the requested offset, may be the default vlaue of {0}
-     * @param limit the requested limit, may be the default value of {10}
+     * @param offset the requested offset, may be the default value of {0}
+     * @param limit the requested limit, may be the default value of {0}
      * @return a long array of length 2 where the element at index [0] is the number of matching principals included
      *            in the response, and the element at index [1] is the total number of accessible principals
      *            matching the requested filters
@@ -238,10 +240,16 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
             Authorizable authorizable = principals.next();
             if (offsetCounter > 0) {
                 --offsetCounter;
-            } else if (limitCounter > 0) {
-                writeAuthorizable(jsonGen, authorizable, urlPrefix);
-                --limitCounter;
-                ++principalCount[0];
+            } else {
+                if (limit > 0) {
+                    if (limitCounter > 0) {
+                        writeAuthorizable(jsonGen, authorizable, urlPrefix);
+                        --limitCounter;
+                        ++principalCount[0];
+                    }
+                } else {
+                    writeAuthorizable(jsonGen, authorizable, urlPrefix);
+                }
             }
             ++principalCount[1];
         }
