@@ -26,7 +26,7 @@ import ConditionalComponentManager from "./ConditionalComponentManager";
  */
 export function isConditionalGroupSatisfied(conditional, context) {
   let conditionalChildren = Object.values(conditional)
-    .filter((child) => ConditionalComponentManager.isValidConditional(child));
+    .filter((child) => ConditionalComponentManager.isValidConditional(child) && child?.["jcr:primaryType"] != "lfs:Section");
 
   if (conditionalChildren.length == 0) {
     return true;
