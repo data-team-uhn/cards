@@ -60,6 +60,13 @@ const questionnaireStyle = theme => ({
         // is insufficient in making sure all components are the same size
         minWidth: "250px",
     },
+    noteTextField: {
+        // the input in notes should be the width of the form
+        width: "50%",
+        "&.Mui-focused": {
+            width: "100%",
+        }
+    },
     checkboxList: {
         padding: theme.spacing(0),
     },

@@ -76,7 +76,7 @@ function Note (props) {
         rows = "4"
         className = {classes.noteSection}
         InputProps = {{
-          className: classes.textField
+          className: classes.noteTextField
         }}
         placeholder = "Please place any additional notes here."
         inputRef = {inputRef}
