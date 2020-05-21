@@ -32,6 +32,8 @@ import {
 
 import SearchIcon from "@material-ui/icons/Search";
 
+import fetchBioPortalApiKey from "./bioportalApiKey";
+
 const vocabLinks = require('./vocabularyLinks.json');
 
 const useStyles = makeStyles(theme => ({
@@ -103,23 +105,29 @@ export default function Search(props) {
       props.setParentAcronymList(acronymList);
       props.setParentFilterTable(true);
 
-      // Then also make a request to recommender and update filtered list.
-      let url = new URL(vocabLinks["recommender"]["base"]);
-      url.searchParams.set("apikey", vocabLinks["apikey"]);
-      url.searchParams.set("input", encodeURIComponent(keywords));
-      fetch(url)
-        .then((response) => (response.ok ? response.json() : Promise.reject(response)))
-        .then((data) => {
-          props.concatParentAcronymList(extractList(data));
-          setFilterTable(true);
-          props.setParentFilterTable(true);
-        })
-        .catch(() => {
-          setError(true);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      fetchBioPortalApiKey((apiKey) => {
+        // Then also make a request to recommender and update filtered list.
+        let url = new URL(vocabLinks["recommender"]["base"]);
+        url.searchParams.set("apikey", apiKey);
+        url.searchParams.set("input", encodeURIComponent(keywords));
+        fetch(url)
+          .then((response) => (response.ok ? response.json() : Promise.reject(response)))
+          .then((data) => {
+            props.concatParentAcronymList(extractList(data));
+            setFilterTable(true);
+            props.setParentFilterTable(true);
+          })
+          .catch(() => {
+            setError(true);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+        },
+        () => {
+            setError(true);
+        }
+      );
     }
   }
 
