@@ -133,7 +133,7 @@ function Section(props) {
             <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
             <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
             <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
-    
+
             <Grid
               container
               className={
@@ -189,10 +189,9 @@ function Section(props) {
                 >
                 <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
-                  Object.entries(sectionDefinition)
+                    Object.entries(sectionDefinition)
                       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                      .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>
-                      ))
+                      .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>)
                   }
                 </Grid>
               </Collapse>
