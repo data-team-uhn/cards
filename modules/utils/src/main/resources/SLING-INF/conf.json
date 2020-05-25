@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "sling:Folder",
+  "Version": {
+    "jcr:primaryType": "nt:unstructured",
+    "Version": "${lfs.version}"
+  }
+}
