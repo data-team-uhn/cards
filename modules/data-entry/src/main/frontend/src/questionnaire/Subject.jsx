@@ -106,7 +106,7 @@ function Subject (props) {
       <Grid container justify="center">
         <Grid item>
           <Typography variant="h2" color="error">
-            Error obtaining subject data: {error.status} {error.statusText}
+            Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
           </Typography>
         </Grid>
       </Grid>

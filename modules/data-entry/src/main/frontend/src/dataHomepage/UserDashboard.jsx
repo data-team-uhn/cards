@@ -21,7 +21,7 @@ import LiveTable from "./LiveTable.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
-import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, Grid, Link, Typography, withStyles } from "@material-ui/core";
 import NewFormDialog from "./NewFormDialog.jsx";
 
 // Component that renders the user's dashboard, with one LiveTable per questionnaire
@@ -33,6 +33,8 @@ function UserDashboard(props) {
   // initialized
   let [questionnaires, setQuestionnaires] = useState([]);
   let [initialized, setInitialized] = useState(false);
+  // Error message set when fetching the data from the server fails
+  let [ error, setError ] = useState();
 
   // Column configuration for the LiveTables
   const columns = [
@@ -73,12 +75,36 @@ function UserDashboard(props) {
     // Fetch the questionnaires
     fetch("/query?query=select * from [lfs:Questionnaire]")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((response) => setQuestionnaires(response["rows"]));
+      .then((response) => {
+        if (response.totalrows == 0) {
+          setError("Access to data is pending the approval of your account");
+        }
+        setQuestionnaires(response["rows"]);
+      })
+      .catch(handleError);
   }
+
+  // Callback method for the `fetchData` method, invoked when the request failed.
+  let handleError = (response) => {
+    setError(response.statusText ? response.statusText : response.toString());
+    setQuestionnaires([]);  // Prevent an infinite loop if data was not set
+  };
 
   // If no forms can be obtained, we do not want to keep on re-obtaining questionnaires
   if (!initialized) {
     initialize();
+  }
+
+  // If an error was returned, report the error
+  if (error) {
+    return (
+      <Card>
+        <CardHeader title="Error"/>
+        <CardContent>
+          <Typography>{error}</Typography>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
