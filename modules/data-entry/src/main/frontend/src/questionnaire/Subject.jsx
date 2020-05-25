@@ -24,7 +24,9 @@ import moment from "moment";
 import {
   CircularProgress,
   Grid,
-  Typography
+  Typography,
+  TableRow,
+  TableCell
 } from "@material-ui/core";
 
 import LiveTable from "../dataHomepage/LiveTable.jsx";
@@ -41,32 +43,42 @@ function Subject (props) {
   let { id } = props;
   // This holds the full subject JSON, once it is received from the server
   let [ data, setData ] = useState();
+  // This holds the full form JSONs, once it is received from the server
+  let [ formData, setFormData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
 
+  let [ formID, setFormID ] = useState("");
+
   // Column configuration for the LiveTables
   const columns = [
+    // {
+    //   "key": "@name",
+    //   "label": "Identifier",
+    //   "format": "string",
+    //   "link": "dashboard+path",
+    // },
+    // {
+    //   "key": "questionnaire/title",
+    //   "label": "Questionnaire",
+    //   "format": "string",
+    //   "link": "dashboard+field:questionnaire/@path",
+    // },
+    // {
+    //   "key": "jcr:createdBy",
+    //   "label": "Created by",
+    //   "format": "string",
+    // },
+    // {
+    //   "key": "jcr:created",
+    //   "label": "Created on",
+    //   "format": "date:YYYY-MM-DD HH:mm",
+    // },
     {
-      "key": "@name",
-      "label": "Identifier",
-      "format": "string",
-      "link": "dashboard+path",
-    },
-    {
-      "key": "questionnaire/title",
+      "key": "questionnaire/@name",
       "label": "Questionnaire",
       "format": "string",
-      "link": "dashboard+field:questionnaire/@path",
-    },
-    {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
-    },
-    {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
+      "link": "dashboard+path",  
     },
   ]
 
@@ -100,6 +112,35 @@ function Subject (props) {
     );
   }
 
+  // Fetch each form's data as JSON from the server.
+  // todo: get form id from each form associated with subject (this data gets fetched in livetable - send to parent somehow?)
+  // load first n (by default 2) questions with their answers
+  let fetchFormData = () => {
+    //fetch data the same way as forms do
+    fetch(`/Forms/${id}.deep.json`)
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
+    .then(handleFormResponse)
+    .catch(handleFormError);
+    // to display first n question, 'see more' links to full form
+  }
+
+   // Callback method for the `fetchFormData` method, invoked when the data successfully arrived from the server.
+   let handleFormResponse = (json) => {
+    setFormData(json);
+  };
+
+  // Callback method for the `fetchFormData` method, invoked when the request failed.
+  let handleFormError = (response) => {
+    setError(response);
+    setFormData([]);  // Prevent an infinite loop if data was not set
+  };
+
+  // Callback to receive formID
+  let getID = (childData) => {
+    console.log(childData);
+    setFormID(childData);
+  };
+
   // If an error was returned, do not display a subject at all, but report the error
   if (error) {
     return (
@@ -116,14 +157,18 @@ function Subject (props) {
   const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
 
+  
+  // todo later: get subjects related to current subject, repeat everything for each related subject - maybe put rendered grid with livetable in its own function
+  // todo later: add 'subject type' button
+
   return (
     <div>
       <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
         <Grid item>
           {
             data && data.identifier ?
-              <Typography variant="h2">Subject: {data.identifier}</Typography>
-            : <Typography variant="h2">Subject: {id}</Typography>
+              <Typography variant="h2">SubjectType {data.identifier}</Typography>
+            : <Typography variant="h2">SubjectType {id}</Typography>
           }
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
@@ -132,11 +177,13 @@ function Subject (props) {
           }
         </Grid>
         <Grid item>
-          <Typography variant="h4">Forms involving {data && (data.identifier || id)} </Typography>
+          {/* <Typography variant="h4">Forms involving {data && (data.identifier || id)} </Typography> */}
           <LiveTable
             columns={columns}
             customUrl={customUrl}
             defaultLimit={10}
+            formPreview={true}
+            getID={getID}
             />
         </Grid>
       </Grid>

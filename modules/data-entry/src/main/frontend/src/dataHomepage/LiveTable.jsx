@@ -41,7 +41,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, classes, filters, ...rest } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, formPreview, getData, classes, filters, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -132,17 +132,25 @@ function LiveTable(props) {
 
   let makeRow = (entry) => {
     return (
-      <TableRow key={entry["@path"]}>
-        { columns ?
-          (
-            columns.map((column, index) => makeCell(entry, column, index))
-          )
-        :
-          (
-            <TableCell><a href={entry["@path"]}>{entry.title}</a></TableCell>
-          )
+      <React.Fragment>
+        <TableRow key={entry["@path"]}>
+          { columns ?
+            (
+              columns.map((column, index) => makeCell(entry, column, index))
+            )
+          :
+            (
+              <TableCell><a href={entry["@path"]}>{entry.title}</a></TableCell>
+            )
+          }
+        </TableRow>
+        {formPreview 
+          ? getData("this is the name")
+          : ""
         }
-      </TableRow>
+        
+        {/* render the form preview and fetch here OR send entry[@name] to subject (contains the form id) and perform fetch there */}
+      </React.Fragment>
     );
   };
 
