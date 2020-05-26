@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
 import { Card, CardHeader, CardContent, CardActions, Chip, Typography, Button, withStyles } from "@material-ui/core";
 import { Link } from 'react-router-dom';
@@ -41,7 +41,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, formPreview, getData, classes, filters, ...rest } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, formPreview, onSendFormIds, classes, filters, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -60,6 +60,8 @@ function LiveTable(props) {
       "fetchError": false,
     }
   );
+  // This holds the full form JSONs, once it is received from the server
+  let [ formData, setFormData ] = useState();
   // The base URL to fetch from.
   // This can either be a custom URL provided in props,
   // or an URL obtained from the current location by extracting the last path segment and appending .paginate
@@ -130,6 +132,48 @@ function LiveTable(props) {
     setTableData();
   };
 
+  // FORM
+
+  // Fetch each form's data as JSON from the server.
+  let fetchFormData = (formID) => {
+    fetch(`/Forms/${formID}.deep.json`)
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
+    .then(handleFormResponse)
+    .catch(handleFormError);
+    // to display first n question, 'see more' links to full form
+  }
+
+   // Callback method for the `fetchFormData` method, invoked when the data successfully arrived from the server.
+   let handleFormResponse = (json) => {
+    console.log(json);
+    // setFormData(json);
+    formresponse = json;
+  };
+
+  // Callback method for the `fetchFormData` method, invoked when the request failed.
+  let handleFormError = (response) => {
+    setError(response);
+    setFormData([]);  // Prevent an infinite loop if data was not set
+  };
+
+  let formresponse;
+  // useEffect(() => {
+  //   if (tableData && formPreview) {
+  //     let makeExtra = (entry) => {
+  //       return (
+  //         <div>
+  //           {fetchFormData(entry["@name"])}
+  //           {
+  //             formresponse && formresponse.questionnaire && formresponse.questionnaire.title ?
+  //               <Typography variant="overline">{formresponse.questionnaire.title}</Typography>
+  //             : ""
+  //           }
+  //         </div>
+  //       )
+  //     }
+  //   }
+  // }, [tableData]);
+
   let makeRow = (entry) => {
     return (
       <React.Fragment>
@@ -144,8 +188,17 @@ function LiveTable(props) {
             )
           }
         </TableRow>
-        {formPreview 
-          ? getData("this is the name")
+        {formPreview
+          ? (
+            <div>
+              {fetchFormData(entry["@name"])}
+              {
+                formresponse && formresponse.questionnaire && formresponse.questionnaire.title ?
+                  <Typography variant="overline">{formresponse.questionnaire.title}</Typography>
+                : ""
+              }
+            </div>
+          )
           : ""
         }
         
@@ -274,6 +327,12 @@ function LiveTable(props) {
     fetchData(paginationData);
   }
 
+  
+  // if (tableData && formPreview) {
+  //   console.log("this gets called")
+  //   onSendFormIds(tableData);
+  // }
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // The rendering code
 
@@ -341,7 +400,7 @@ function LiveTable(props) {
             )
             :
             tableData ?
-              ( tableData.map(makeRow) )
+              ( tableData.map(makeRow))
               :
               ( <TableRow><TableCell colSpan={columns ? columns.length : 1}>Please wait...</TableCell></TableRow> )
             /* TODO: Better progress bar, add some Suspense */

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 
@@ -48,32 +48,10 @@ function Subject (props) {
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
 
-  let [ formID, setFormID ] = useState("");
+  let [ formIDs, setFormIDs ] = useState("");
 
   // Column configuration for the LiveTables
   const columns = [
-    // {
-    //   "key": "@name",
-    //   "label": "Identifier",
-    //   "format": "string",
-    //   "link": "dashboard+path",
-    // },
-    // {
-    //   "key": "questionnaire/title",
-    //   "label": "Questionnaire",
-    //   "format": "string",
-    //   "link": "dashboard+field:questionnaire/@path",
-    // },
-    // {
-    //   "key": "jcr:createdBy",
-    //   "label": "Created by",
-    //   "format": "string",
-    // },
-    // {
-    //   "key": "jcr:created",
-    //   "label": "Created on",
-    //   "format": "date:YYYY-MM-DD HH:mm",
-    // },
     {
       "key": "questionnaire/@name",
       "label": "Questionnaire",
@@ -113,11 +91,9 @@ function Subject (props) {
   }
 
   // Fetch each form's data as JSON from the server.
-  // todo: get form id from each form associated with subject (this data gets fetched in livetable - send to parent somehow?)
-  // load first n (by default 2) questions with their answers
-  let fetchFormData = () => {
+  let fetchFormData = (formID) => {
     //fetch data the same way as forms do
-    fetch(`/Forms/${id}.deep.json`)
+    fetch(`/Forms/${formID}.deep.json`)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then(handleFormResponse)
     .catch(handleFormError);
@@ -135,11 +111,30 @@ function Subject (props) {
     setFormData([]);  // Prevent an infinite loop if data was not set
   };
 
-  // Callback to receive formID
-  let getID = (childData) => {
-    console.log(childData);
-    setFormID(childData);
+  // Callback to receive formIDs
+  let handleFormIds = (childData) => {
+    {console.log(childData)};
+    setFormIDs(childData);
   };
+
+  // let testList;
+  // useEffect(() => {
+  //     testList = formIDs.map(makeRow);
+  // }, [formIDs]);
+
+  // let makeRow = (entry) => {
+  //   {console.log(entry)};
+  //   fetchFormData(entry["@name"]); // fetch the form data for each form id
+  //   return (
+  //     <div>
+  //       {
+  //         formData && formData.questionnaire && formData.questionnaire.title ?
+  //           <Typography variant="overline">{formData.questionnaire.title}</Typography>
+  //         : ""
+  //       }
+  //     </div>
+  //   );
+  // };
 
   // If an error was returned, do not display a subject at all, but report the error
   if (error) {
@@ -183,7 +178,7 @@ function Subject (props) {
             customUrl={customUrl}
             defaultLimit={10}
             formPreview={true}
-            getID={getID}
+            onSendFormIds={handleFormIds}
             />
         </Grid>
       </Grid>
