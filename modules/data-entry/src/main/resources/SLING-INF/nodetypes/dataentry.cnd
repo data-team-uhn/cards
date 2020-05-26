@@ -656,3 +656,28 @@
 
   // Set a default title.
   - title (String) = "Subjects" mandatory autocreated
+
+//-----------------------------------------------------------------------------
+// A type of subject
+[lfs:SubjectType] > sling:Folder
+  // Attributes:
+
+  // We can query subject types.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/SubjectType" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the SubjectType is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // The name of this subject type displayed to the user.
+  - label (String) mandatory
+
+  // A description outlining the subject type.
+  - description (String)
+
+  // Any number of parent subject types that are required by this subject type
+  - requiredParentType (String) multiple
