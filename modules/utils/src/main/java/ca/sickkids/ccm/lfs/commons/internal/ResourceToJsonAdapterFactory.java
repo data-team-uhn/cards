@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.jcr.Node;
@@ -214,24 +215,15 @@ public class ResourceToJsonAdapterFactory
      */
     private void addSimpleFormProperty(final JsonObjectBuilder ob, final Property prop) throws RepositoryException
     {
-        switch (prop.getName()) {
-            case JCR_PRIMARY_TYPE_PROP:
-                addProperty(ob, prop);
-                break;
-            case JCR_CREATED_PROP:
-                addProperty(ob, prop);
-                break;
-            case JCR_CREATED_BY_PROP:
-                addProperty(ob, prop);
-                break;
-            case QUESTIONNAIRE_PROP:
-                addProperty(ob, prop);
-                break;
-            case SUBJECT_PROP:
-                addProperty(ob, prop);
-                break;
-            default:
-                break;
+        final Set<String> props = Set.of(
+            JCR_PRIMARY_TYPE_PROP,
+            JCR_CREATED_PROP,
+            JCR_CREATED_BY_PROP,
+            QUESTIONNAIRE_PROP,
+            SUBJECT_PROP
+        );
+        if (props.contains(prop.getName())) {
+            addProperty(ob, prop);
         }
     }
 
@@ -242,18 +234,13 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleQuestionnaireProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        switch (prop.getName()) {
-            case JCR_PRIMARY_TYPE_PROP:
-                addProperty(ob, prop);
-                break;
-            case TITLE_PROP:
-                addProperty(ob, prop);
-                break;
-            case PATH_PROP:
-                addProperty(ob, prop);
-                break;
-            default:
-                break;
+        final Set<String> props = Set.of(
+            JCR_PRIMARY_TYPE_PROP,
+            TITLE_PROP,
+            PATH_PROP
+        );
+        if (props.contains(prop.getName())) {
+            addProperty(ob, prop);
         }
     }
 
@@ -264,18 +251,13 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleSubjectProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        switch (prop.getName()) {
-            case JCR_PRIMARY_TYPE_PROP:
-                addProperty(ob, prop);
-                break;
-            case IDENTIFIER_PROP:
-                addProperty(ob, prop);
-                break;
-            case PATH_PROP:
-                addProperty(ob, prop);
-                break;
-            default:
-                break;
+        final Set<String> props = Set.of(
+            JCR_PRIMARY_TYPE_PROP,
+            IDENTIFIER_PROP,
+            PATH_PROP
+        );
+        if (props.contains(prop.getName())) {
+            addProperty(ob, prop);
         }
     }
 
@@ -286,18 +268,13 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleQuestionProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        switch (prop.getName()) {
-            case JCR_PRIMARY_TYPE_PROP:
-                addProperty(ob, prop);
-                break;
-            case TEXT_PROP:
-                addProperty(ob, prop);
-                break;
-            case PATH_PROP:
-                addProperty(ob, prop);
-                break;
-            default:
-                break;
+        final Set<String> props = Set.of(
+            JCR_PRIMARY_TYPE_PROP,
+            TEXT_PROP,
+            PATH_PROP
+        );
+        if (props.contains(prop.getName())) {
+            addProperty(ob, prop);
         }
     }
 
@@ -308,24 +285,15 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleAnswerProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        switch (prop.getName()) {
-            case JCR_PRIMARY_TYPE_PROP:
-                addProperty(ob, prop);
-                break;
-            case VALUE_PROP:
-                addProperty(ob, prop);
-                break;
-            case NOTE_PROP:
-                addProperty(ob, prop);
-                break;
-            case PATH_PROP:
-                addProperty(ob, prop);
-                break;
-            case QUESTION_PROP:
-                addProperty(ob, prop);
-                break;
-            default:
-                break;
+        final Set<String> props = Set.of(
+            JCR_PRIMARY_TYPE_PROP,
+            VALUE_PROP,
+            NOTE_PROP,
+            PATH_PROP,
+            QUESTION_PROP
+        );
+        if (props.contains(prop.getName())) {
+            addProperty(ob, prop);
         }
     }
 
@@ -336,18 +304,13 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleAnswerSectionProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        switch (prop.getName()) {
-            case JCR_PRIMARY_TYPE_PROP:
-                addProperty(ob, prop);
-                break;
-            case SECTION_PROP:
-                addProperty(ob, prop);
-                break;
-            case PATH_PROP:
-                addProperty(ob, prop);
-                break;
-            default:
-                break;
+        final Set<String> props = Set.of(
+            JCR_PRIMARY_TYPE_PROP,
+            SECTION_PROP,
+            PATH_PROP
+        );
+        if (props.contains(prop.getName())) {
+            addProperty(ob, prop);
         }
     }
 
@@ -358,18 +321,13 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleSectionProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        switch (prop.getName()) {
-            case JCR_PRIMARY_TYPE_PROP:
-                addProperty(ob, prop);
-                break;
-            case LABEL_PROP:
-                addProperty(ob, prop);
-                break;
-            case PATH_PROP:
-                addProperty(ob, prop);
-                break;
-            default:
-                break;
+        final Set<String> props = Set.of(
+            JCR_PRIMARY_TYPE_PROP,
+            LABEL_PROP,
+            PATH_PROP
+        );
+        if (props.contains(prop.getName())) {
+            addProperty(ob, prop);
         }
     }
 
