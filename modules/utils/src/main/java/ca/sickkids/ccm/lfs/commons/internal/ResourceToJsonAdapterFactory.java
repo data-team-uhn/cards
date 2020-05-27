@@ -68,6 +68,7 @@ public class ResourceToJsonAdapterFactory
     //String constants for JCR properties
     private static final String JCR_PRIMARY_TYPE_PROP = "jcr:primaryType";
     private static final String PATH_PROP = "@path";
+    private static final String NAME_PROP = "@name";
     private static final String JCR_CREATED_PROP = "jcr:created";
     private static final String JCR_CREATED_BY_PROP = "jcr:createdBy";
     private static final String QUESTIONNAIRE_PROP = "questionnaire";
@@ -198,8 +199,9 @@ public class ResourceToJsonAdapterFactory
                     }
                 }
             }
-            // Since the node itself doesn't contain the path as a property, we must manually add it.
+            // Since the node itself doesn't contain the path and name as properties, we must manually add them.
             result.add(PATH_PROP, node.getPath());
+            result.add(NAME_PROP, node.getName());
             return result;
         } catch (RepositoryException e) {
             LOGGER.error("Failed to serialize node [{}] to JSON: {}", node.getPath(), e.getMessage(), e);
