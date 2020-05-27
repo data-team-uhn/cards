@@ -134,21 +134,7 @@ function LiveTable(props) {
 
   // FORM
 
-  // Fetch each form's data as JSON from the server.
-  let fetchFormData = (formID) => {
-    fetch(`/Forms/${formID}.deep.json`)
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then(handleFormResponse)
-    .catch(handleFormError);
-    // to display first n question, 'see more' links to full form
-  }
-
-   // Callback method for the `fetchFormData` method, invoked when the data successfully arrived from the server.
-   let handleFormResponse = (json) => {
-    console.log(json);
-    // setFormData(json);
-    formresponse = json;
-  };
+  const requests = [];
 
   // Callback method for the `fetchFormData` method, invoked when the request failed.
   let handleFormError = (response) => {
@@ -156,25 +142,30 @@ function LiveTable(props) {
     setFormData([]);  // Prevent an infinite loop if data was not set
   };
 
-  let formresponse;
-  // useEffect(() => {
-  //   if (tableData && formPreview) {
-  //     let makeExtra = (entry) => {
-  //       return (
-  //         <div>
-  //           {fetchFormData(entry["@name"])}
-  //           {
-  //             formresponse && formresponse.questionnaire && formresponse.questionnaire.title ?
-  //               <Typography variant="overline">{formresponse.questionnaire.title}</Typography>
-  //             : ""
-  //           }
-  //         </div>
-  //       )
-  //     }
-  //   }
-  // }, [tableData]);
+  // Fetch data for each related form (e.g. in Subject table)
+  useEffect(() => {
+    if (tableData && formPreview) {
+      tableData.map((entry) => {
+        console.log(entry["@name"]);
+        requests.push(
+          fetch(`/Forms/${entry["@name"]}.deep.json`)
+          .then((response) => response.ok ? response.json() : Promise.reject(response))
+          .then((json) => requests.push(json))
+          .catch(handleFormError)
+        )
+      });
+      
+      // update formData state once data for all forms have been fetched
+      Promise.all(requests).then(() => {
+        console.log(requests)
+        setFormData(requests.filter((data) => data["jcr:primaryType"] == "lfs:Form"));
+        console.log(formData);
+      });
+    }
+  }, [tableData]);
 
-  let makeRow = (entry) => {
+
+  let makeRow = (entry, index) => {
     return (
       <React.Fragment>
         <TableRow key={entry["@path"]}>
@@ -188,13 +179,15 @@ function LiveTable(props) {
             )
           }
         </TableRow>
-        {formPreview
-          ? (
+        
+        {/* if a form preview is needed (e.g. in Subject table, render the rest) */}
+        {/* todo: place below in a separate function/component */}
+        {formData ?
+          (
             <div>
-              {fetchFormData(entry["@name"])}
               {
-                formresponse && formresponse.questionnaire && formresponse.questionnaire.title ?
-                  <Typography variant="overline">{formresponse.questionnaire.title}</Typography>
+                formData[index] && formData[index].questionnaire && formData[index].questionnaire.title ?
+                  <Typography variant="overline">{formData[index].questionnaire.title}</Typography>
                 : ""
               }
             </div>
