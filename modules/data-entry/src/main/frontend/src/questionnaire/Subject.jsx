@@ -141,6 +141,7 @@ function Subject (props) {
   const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
 
+  //todo: make the slice a variable
   let makeRow = (entry) => {
     return (
         <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
@@ -148,7 +149,8 @@ function Subject (props) {
             {
               Object.entries(entry.questionnaire)
                 .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                .map(([key, entryDefinition]) => <FormEntry key={key} entryDefinition={entryDefinition} path={"."} depth={0} existingAnswers={entry} keyProp={key} classes={classes}></FormEntry>)
+                .slice(0, 4)
+                .map(([key, entryDefinition]) => <FormEntry key={key} entryDefinition={entryDefinition} path={"."} depth={0} existingAnswers={entry} keyProp={key} classes={classes} defaultDisplay={false}></FormEntry>)
             }
           </FormProvider>
         </Grid>
