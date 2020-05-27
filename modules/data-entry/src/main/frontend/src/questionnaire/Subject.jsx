@@ -30,6 +30,12 @@ import {
 } from "@material-ui/core";
 
 import LiveTable from "../dataHomepage/LiveTable.jsx";
+import Form from "./Form";
+import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
+import FormEntry, { ENTRY_TYPES } from "./FormEntry";
+import { FormProvider } from "./FormContext";
+
+
 
 /**
  * Component that displays a Subject.
@@ -40,7 +46,7 @@ import LiveTable from "../dataHomepage/LiveTable.jsx";
  * @param {string} id the identifier of a subject; this is the JCR node name
  */
 function Subject (props) {
-  let { id } = props;
+  let { id, classes } = props;
   // This holds the full subject JSON, once it is received from the server
   let [ data, setData ] = useState();
   // This holds the full form JSONs, once it is received from the server
@@ -90,52 +96,6 @@ function Subject (props) {
     );
   }
 
-  // Fetch each form's data as JSON from the server.
-  let fetchFormData = (formID) => {
-    //fetch data the same way as forms do
-    fetch(`/Forms/${formID}.deep.json`)
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then(handleFormResponse)
-    .catch(handleFormError);
-    // to display first n question, 'see more' links to full form
-  }
-
-   // Callback method for the `fetchFormData` method, invoked when the data successfully arrived from the server.
-   let handleFormResponse = (json) => {
-    setFormData(json);
-  };
-
-  // Callback method for the `fetchFormData` method, invoked when the request failed.
-  let handleFormError = (response) => {
-    setError(response);
-    setFormData([]);  // Prevent an infinite loop if data was not set
-  };
-
-  // Callback to receive formIDs
-  let handleFormIds = (childData) => {
-    {console.log(childData)};
-    setFormIDs(childData);
-  };
-
-  // let testList;
-  // useEffect(() => {
-  //     testList = formIDs.map(makeRow);
-  // }, [formIDs]);
-
-  // let makeRow = (entry) => {
-  //   {console.log(entry)};
-  //   fetchFormData(entry["@name"]); // fetch the form data for each form id
-  //   return (
-  //     <div>
-  //       {
-  //         formData && formData.questionnaire && formData.questionnaire.title ?
-  //           <Typography variant="overline">{formData.questionnaire.title}</Typography>
-  //         : ""
-  //       }
-  //     </div>
-  //   );
-  // };
-
   // If an error was returned, do not display a subject at all, but report the error
   if (error) {
     return (
@@ -149,11 +109,56 @@ function Subject (props) {
     );
   }
 
+  const requests = [];
+
+  // Callback method for the `fetchFormData` method, invoked when the request failed.
+  let handleFormError = (response) => {
+    setError(response);
+    setFormData([]);  // Prevent an infinite loop if data was not set
+  };
+
+  // Callback to receive formIDs
+  let handleFormIds = (childData) => {
+    console.log(childData);
+    childData.map((entry) => {
+      console.log(entry["@name"]);
+      requests.push(
+        fetch(`/Forms/${entry["@name"]}.deep.json`)
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((json) => requests.push(json))
+        .catch(handleFormError)
+      )
+    });
+    
+    // update formData state once data for all forms have been fetched
+    Promise.all(requests).then(() => {
+      console.log(requests)
+      setFormData(requests.filter((data) => data["jcr:primaryType"] == "lfs:Form"));
+      console.log(formData);
+    });
+  };
+
   const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
 
+  let makeRow = (entry) => {
+    return (
+        <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
+          <FormProvider>
+            {
+              Object.entries(entry.questionnaire)
+                .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+                .map(([key, entryDefinition]) => <FormEntry key={key} entryDefinition={entryDefinition} path={"."} depth={0} existingAnswers={entry} keyProp={key} classes={classes}></FormEntry>)
+            }
+          </FormProvider>
+        </Grid>
+    );
+  };
+
   
-  // todo later: get subjects related to current subject, repeat everything for each related subject - maybe put rendered grid with livetable in its own function
+  // todo later:  get subjects related to current subject
+  //              if subject has related subjects, rerender a livetable with formPreview=true for each related subject
+  //              make subject recursive somehow?
   // todo later: add 'subject type' button
 
   return (
@@ -180,6 +185,13 @@ function Subject (props) {
             formPreview={true}
             onSendFormIds={handleFormIds}
             />
+        </Grid>
+        <Grid item>
+          {formData ? 
+          (
+            formData.map((makeRow))
+          ) 
+          : ""}
         </Grid>
       </Grid>
     </div>

@@ -23,6 +23,7 @@ import { Card, CardHeader, CardContent, CardActions, Chip, Typography, Button, w
 import { Link } from 'react-router-dom';
 import moment from "moment";
 
+
 import Filters from "./Filters.jsx";
 
 import LiveTableStyle from "./tableStyle.jsx";
@@ -132,38 +133,12 @@ function LiveTable(props) {
     setTableData();
   };
 
-  // FORM
-
-  const requests = [];
-
-  // Callback method for the `fetchFormData` method, invoked when the request failed.
-  let handleFormError = (response) => {
-    setError(response);
-    setFormData([]);  // Prevent an infinite loop if data was not set
-  };
-
-  // Fetch data for each related form (e.g. in Subject table)
+  // send data to subject.jsx on tableData change
   useEffect(() => {
     if (tableData && formPreview) {
-      tableData.map((entry) => {
-        console.log(entry["@name"]);
-        requests.push(
-          fetch(`/Forms/${entry["@name"]}.deep.json`)
-          .then((response) => response.ok ? response.json() : Promise.reject(response))
-          .then((json) => requests.push(json))
-          .catch(handleFormError)
-        )
-      });
-      
-      // update formData state once data for all forms have been fetched
-      Promise.all(requests).then(() => {
-        console.log(requests)
-        setFormData(requests.filter((data) => data["jcr:primaryType"] == "lfs:Form"));
-        console.log(formData);
-      });
+      onSendFormIds(tableData);
     }
   }, [tableData]);
-
 
   let makeRow = (entry, index) => {
     return (
@@ -178,24 +153,8 @@ function LiveTable(props) {
               <TableCell><a href={entry["@path"]}>{entry.title}</a></TableCell>
             )
           }
-        </TableRow>
-        
-        {/* if a form preview is needed (e.g. in Subject table, render the rest) */}
-        {/* todo: place below in a separate function/component */}
-        {formData ?
-          (
-            <div>
-              {
-                formData[index] && formData[index].questionnaire && formData[index].questionnaire.title ?
-                  <Typography variant="overline">{formData[index].questionnaire.title}</Typography>
-                : ""
-              }
-            </div>
-          )
-          : ""
-        }
-        
-        {/* render the form preview and fetch here OR send entry[@name] to subject (contains the form id) and perform fetch there */}
+        </TableRow>   
+        {/* render the form preview here?*/}
       </React.Fragment>
     );
   };
