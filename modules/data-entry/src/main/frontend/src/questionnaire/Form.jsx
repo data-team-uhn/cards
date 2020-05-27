@@ -166,7 +166,7 @@ function Form (props) {
   return (
     <form action={data["@path"]} method="POST" onSubmit={saveData} onChange={()=>setLastSaveStatus(undefined)} key={id}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
-        <Grid item>
+        <Grid item className={classes.formHeader}>
           {
             data && data.questionnaire && data.questionnaire.title ?
               <Typography variant="overline">{data.questionnaire.title}</Typography>
@@ -185,6 +185,7 @@ function Form (props) {
             : ""
           }
         </Grid>
+        <div className={classes.formProvider}></div>
         <FormProvider>
           <SelectorDialog
             open={selectorDialogOpen}

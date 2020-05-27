@@ -25,13 +25,9 @@ import {
 
 const headerStyle = theme => ({
   appBar: {
-    backgroundColor: "transparent",
+    backgroundColor: "white",
     boxShadow: "none",
-    borderBottom: "0",
-    marginBottom: "0",
-    position: "absolute",
     width: "100%",
-    paddingTop: "10px",
     zIndex: "1029",
     color: grayColor[7],
     border: "0",
@@ -43,7 +39,9 @@ const headerStyle = theme => ({
   },
   container: {
     ...container,
-    minHeight: "50px"
+    minHeight: "50px",
+    paddingLeft: theme.spacing(36),
+    backgroundColor: "white"
   },
   flex: {
     flex: 1
