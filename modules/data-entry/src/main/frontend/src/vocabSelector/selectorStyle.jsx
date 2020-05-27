@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { dangerColor, grayColor } from "../vocabQuery/themeStyle.jsx";
+import { dangerColor, grayColor } from "../themeStyle.jsx";
 
 const selectorStyle = theme => ({
     selectionChild: {

@@ -21,13 +21,13 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar}  from "@material-ui/core";
-import { MenuList, Paper, Popper, Typography, withStyles } from "@material-ui/core";
+import { MenuList, Paper, Popper, withStyles } from "@material-ui/core";
 import DescriptionIcon from "@material-ui/icons/Description";
 import Search from "@material-ui/icons/Search";
 import HeaderStyle from "./headerStyle.jsx";
 
-const QUERY_URL = "/query";
-const MAX_RESULTS = 5;
+export const DEFAULT_QUERY_URL = "/query";
+export const DEFAULT_MAX_RESULTS = 5;
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
 const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
@@ -39,9 +39,23 @@ const LFS_QUERY_MATCH_AFTER_KEY = "after";
 const LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
 const LFS_QUERY_MATCH_PATH_KEY = "@path";
 
+/**
+ * A component that renders a search bar, similar to autocomplete. It will fire off a query to /query, and parse the results as a selectable list.
+ * 
+ * @param {bool} invertColors If true, inverts the colours of various elements
+ * @param {string} defaultValue The default string to place in the search bar
+ * @param {func} onChange Function to call when the input has changed. Default: redirect the user to the found node.
+ * @param {func} onPopperClose Function to call when the suggestions list is closed.
+ * @param {func} onSelect Function that takes (event, row), called when an option from the autocomplete list is seleceted.
+ * @param {func} onSelectFinish Function to call after onSelect
+ * @param {func} queryConstructor Function that takes (query, requestID) and returns a URL to query for suggestions. Default: use /query?query
+ * @param {func} resultConstructor Function that constructs a DOM element from a row of results.
+ * @param {object} staticContext Unused, defined here to trap the inserted prop from being passed on with ...rest to the Input, where it is invalid
+ * Other props will be forwarded to the Input element
+ */
 function SearchBar(props) {
-  const { classes, className, closeSidebar, invertColors, doNotEscapeQuery } = props;
-  const [ search, setSearch ] = useState("");
+  const { classes, className, defaultValue, invertColors, onChange, onPopperClose, onSelect, onSelectFinish, queryConstructor, resultConstructor, staticContext, ...rest } = props;
+  const [ search, setSearch ] = useState(defaultValue);
   const [ results, setResults ] = useState([]);
   const [ popperOpen, setPopperOpen ] = useState(false);
   const [ timer, setTimer ] = useState();
@@ -79,11 +93,7 @@ function SearchBar(props) {
 
   // Runs a fulltext request
   let runQuery = (query) => {
-    let new_url = new URL(QUERY_URL, window.location.origin);
-    new_url.searchParams.set("quick", encodeURIComponent(query));
-    doNotEscapeQuery && new_url.searchParams.set("doNotEscapeQuery", "true");
-    new_url.searchParams.set("limit", MAX_RESULTS);
-    new_url.searchParams.set("req", requestID);
+    let new_url = queryConstructor(query, requestID);
     // In the closure generated, postprocessResults will look for req_id, instead of requestID+1
     setRequestID(requestID+1);
     fetch(new_url)
@@ -116,57 +126,20 @@ function SearchBar(props) {
     setError(response);
   }
 
-  // Generate a human-readable info about the resource (form) matching the query:
-  // * questionnaire title (if available) and result type, followed by
-  // * the form's subject name (if available) or the resource's uuid
-  function QuickSearchResultHeader(props) {
-    const {resultData} = props;
-    return resultData && (
-      <div>
-        <Typography variant="body2" color="textSecondary">
-          {(resultData.questionnaire?.title?.concat(' ') || '') + (resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')}
-        </Typography>
-        {resultData.subject?.identifier || resultData["@name"] || ''}
-      </div>
-    ) || null
-  }
-
-  // Display how the query matched the result
-  function QuickSearchMatch(props) {
-    const {matchData} = props;
-    // Adjust the question text to reflect the notes, if the match was on the notes
-    let questionText = matchData[LFS_QUERY_QUESTION_KEY] + (matchData[LFS_QUERY_MATCH_NOTES_KEY] ? " / Notes" : "");
-    return matchData && (
-      <React.Fragment>
-        <span className={classes.queryMatchKey}>{questionText}</span>
-        <span className={classes.queryMatchSeparator}>: </span>
-        <span className={classes.queryMatchBefore}>{matchData[LFS_QUERY_MATCH_BEFORE_KEY]}</span>
-        <span className={classes.highlightedText}>{matchData[LFS_QUERY_MATCH_TEXT_KEY]}</span>
-        <span className={classes.queryMatchAfter}>{matchData[LFS_QUERY_MATCH_AFTER_KEY]}</span>
-      </React.Fragment>
-    ) || null
-  }
-
   // Display a quick search result
   // If it's a resource, show avatar, category, and title
   // Otherwise, if it's a generic entry, simply display the name
   function QuickSearchResult(props) {
     const {resultData} = props;
+    let ResultConstructor = resultConstructor;
     return resultData["jcr:primaryType"] && (
-      <React.Fragment>
-        <ListItemAvatar><Avatar className={classes.searchResultAvatar}><DescriptionIcon /></Avatar></ListItemAvatar>
-        <ListItemText
-          primary={(<QuickSearchResultHeader resultData={resultData} />)}
-          secondary={(<QuickSearchMatch matchData={resultData[LFS_QUERY_MATCH_KEY]} />)}
-          className={classes.dropdownItem}
-        />
-      </React.Fragment>
+      <ResultConstructor resultData={resultData} />
     ) || (
        <ListItemText
           primary={resultData.name || ''}
           className={classes.dropdownItem}
         />
-    ) || null
+    )
   }
 
   return(
@@ -176,7 +149,10 @@ function SearchBar(props) {
         placeholder="Search"
         value={search}
         ref={searchBar}
-        onChange={(event) => changeSearch(event.target.value)}
+        onChange={(event) => {
+          onChange && onChange(event);
+          changeSearch(event.target.value);
+        }}
         onFocus={(event) => {
           // Rerun the query
           changeSearch(search);
@@ -206,6 +182,7 @@ function SearchBar(props) {
           + " " + (className ? className : "")
         }
         inputRef={input}
+        {...rest}
         />
       {/* Suggestions list using Popper */}
       <Popper
@@ -228,7 +205,8 @@ function SearchBar(props) {
               <ClickAwayListener onClickAway={(event) => {
                 // Ignore clickaway events if they're just clicking on the input box or search button
                 if (!searchBar.current.contains(event.target)) {
-                  setPopperOpen(false)
+                  onPopperClose && onPopperClose();
+                  setPopperOpen(false);
                 }}}>
                 <MenuList role="menu" className={classes.suggestions} ref={suggestionMenu}>
                   {error ?
@@ -252,16 +230,11 @@ function SearchBar(props) {
                       key={i}
                       disabled={result["disabled"]}
                       onClick={(e) => {
-                        const anchor = result[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY];
                         // Redirect using React-router
-                        if (result["@path"]) {
-                          props.history.push({
-                            pathname: "/content.html" + result["@path"],
-                            hash: anchor
-                          });
-                          closeSidebar && closeSidebar();
-                          setPopperOpen(false);
-                        }
+                        onSelect(event, result, props);
+                        setSearch(result["identifier"]);
+                        onSelectFinish && onSelectFinish();
+                        setPopperOpen(false);
                         }}
                       >
                       <QuickSearchResult resultData={result} />
@@ -277,9 +250,51 @@ function SearchBar(props) {
   );
 }
 
+let defaultQueryConstructor = (query, requestID) => {
+  let new_url = new URL(DEFAULT_QUERY_URL, window.location.origin);
+  new_url.searchParams.set("quick", encodeURIComponent(query));
+  new_url.searchParams.set("doNotEscapeQuery", "true");
+  new_url.searchParams.set("limit", DEFAULT_MAX_RESULTS);
+  new_url.searchParams.set("req", requestID);
+  return new_url;
+}
+
+let defaultResultConstructor = (props) => (
+  <React.Fragment>
+    <ListItemAvatar><Avatar className={classes.searchResultAvatar}><DescriptionIcon /></Avatar></ListItemAvatar>
+    <ListItemText
+      primary={(props.resultData["jcr:uuid"])}
+      className={classes.dropdownItem}
+    />
+  </React.Fragment>
+);
+
+let defaultRedirect = (event, row, props) => {
+  // Redirect using React-router
+  const anchor = row[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY];
+  if (row["@path"]) {
+    props.history.push({
+      pathname: "/content.html" + row["@path"],
+      hash: anchor
+    });
+  }
+}
+
 SearchBar.propTypes = {
   invertColors: PropTypes.bool,
-  doNotEscapeQuery: PropTypes.bool
+  defaultValue: PropTypes.string,
+  onChange: PropTypes.func,
+  onPopperClose: PropTypes.func,
+  onSelect: PropTypes.func,
+  queryConstructor: PropTypes.func,
+  resultConstructor: PropTypes.func
+}
+
+SearchBar.defaultProps = {
+  defaultValue: "",
+  queryConstructor: defaultQueryConstructor,
+  resultConstructor: defaultResultConstructor,
+  onSelect: defaultRedirect
 }
 
 export default withStyles(HeaderStyle)(withRouter(SearchBar));

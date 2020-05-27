@@ -219,7 +219,14 @@ const questionnaireStyle = theme => ({
     },
     newSubjectInput: {
         width: '100%'
+    },
+    invalidSubjectText: {
+        fontStyle: "italic"
+    },
+    aboveBackground: {
+        zIndex: 1300
     }
+
 });
 
 export default questionnaireStyle;
