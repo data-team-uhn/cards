@@ -22,25 +22,18 @@ import headerLinksStyle from "./headerLinksStyle.jsx";
 
 class HeaderLinks extends React.Component {
   render() {
-    const { classes, closeSidebar, history } = this.props;
+    const { classes, closeSidebar } = this.props;
 
     // When the screen is larger than "MdUp" size, we alter some menu items
     // so that they show up white in the sidebar (rather than black on the
     // main page)
     const expand = window.innerWidth >= this.props.theme.breakpoints.values.md;
 
-    let redirectSearch = (event, row) => {
-      if (row["@path"]) {
-        history.push("/content.html" + row["@path"]);
-        expand || closeSidebar;
-      }
-    }
-
     return (
       <div>
         <HeaderSearchBar
           invertColors={!expand}
-          onSelect={redirectSearch}
+          onSelectFinish={expand ? undefined : closeSidebar}
           className={expand ? undefined : classes.buttonLink}
         />
         {/* Log out */}
@@ -64,4 +57,4 @@ HeaderLinks.propTypes = {
   closeSidebar: PropTypes.func
 }
 
-export default withStyles(headerLinksStyle, {withTheme: true})(withRouter(HeaderLinks));
+export default withStyles(headerLinksStyle, {withTheme: true})(HeaderLinks);

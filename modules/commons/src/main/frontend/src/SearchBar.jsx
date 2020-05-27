@@ -42,19 +42,19 @@ const LFS_QUERY_MATCH_PATH_KEY = "@path";
 /**
  * A component that renders a search bar, similar to autocomplete. It will fire off a query to /query, and parse the results as a selectable list.
  * 
- * @param {func} closeSidebar Function to call when the sidebar is closed
  * @param {bool} invertColors If true, inverts the colours of various elements
  * @param {string} defaultValue The default string to place in the search bar
  * @param {func} onChange Function to call when the input has changed. Default: redirect the user to the found node.
  * @param {func} onPopperClose Function to call when the suggestions list is closed.
- * @param {func} onSelect Function that takes (event, row), called when an option from the autocomplete list is seleeted.
+ * @param {func} onSelect Function that takes (event, row), called when an option from the autocomplete list is seleceted.
+ * @param {func} onSelectFinish Function to call after onSelect
  * @param {func} queryConstructor Function that takes (query, requestID) and returns a URL to query for suggestions. Default: use /query?query
  * @param {func} resultConstructor Function that constructs a DOM element from a row of results.
  * @param {object} staticContext Unused, defined here to trap the inserted prop from being passed on with ...rest to the Input, where it is invalid
  * Other props will be forwarded to the Input element
  */
 function SearchBar(props) {
-  const { classes, className, closeSidebar, defaultValue, invertColors, onChange, onPopperClose, onSelect, queryConstructor, resultConstructor, staticContext, ...rest } = props;
+  const { classes, className, defaultValue, invertColors, onChange, onPopperClose, onSelect, onSelectFinish, queryConstructor, resultConstructor, staticContext, ...rest } = props;
   const [ search, setSearch ] = useState(defaultValue);
   const [ results, setResults ] = useState([]);
   const [ popperOpen, setPopperOpen ] = useState(false);
@@ -124,37 +124,6 @@ function SearchBar(props) {
   // Error handling
   let handleError = (response) => {
     setError(response);
-  }
-
-  // Generate a human-readable info about the resource (form) matching the query:
-  // * questionnaire title (if available) and result type, followed by
-  // * the form's subject name (if available) or the resource's uuid
-  function QuickSearchResultHeader(props) {
-    const {resultData} = props;
-    return resultData && (
-      <div>
-        <Typography variant="body2" color="textSecondary">
-          {(resultData.questionnaire?.title?.concat(' ') || '') + (resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')}
-        </Typography>
-        {resultData.subject?.identifier || resultData["@name"] || ''}
-      </div>
-    ) || null
-  }
-
-  // Display how the query matched the result
-  function QuickSearchMatch(props) {
-    const {matchData} = props;
-    // Adjust the question text to reflect the notes, if the match was on the notes
-    let questionText = matchData[LFS_QUERY_QUESTION_KEY] + (matchData[LFS_QUERY_MATCH_NOTES_KEY] ? " / Notes" : "");
-    return matchData && (
-      <React.Fragment>
-        <span className={classes.queryMatchKey}>{questionText}</span>
-        <span className={classes.queryMatchSeparator}>: </span>
-        <span className={classes.queryMatchBefore}>{matchData[LFS_QUERY_MATCH_BEFORE_KEY]}</span>
-        <span className={classes.highlightedText}>{matchData[LFS_QUERY_MATCH_TEXT_KEY]}</span>
-        <span className={classes.queryMatchAfter}>{matchData[LFS_QUERY_MATCH_AFTER_KEY]}</span>
-      </React.Fragment>
-    ) || null
   }
 
   // Display a quick search result
@@ -261,18 +230,11 @@ function SearchBar(props) {
                       key={i}
                       disabled={result["disabled"]}
                       onClick={(e) => {
-                        const anchor = result[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY];
                         // Redirect using React-router
-                        onSelect(event, result);
+                        onSelect(event, result, props);
                         setSearch(result["identifier"]);
-                        if (result["@path"]) {
-                          props.history.push({
-                            pathname: "/content.html" + result["@path"],
-                            hash: anchor
-                          });
-                          closeSidebar && closeSidebar();
-                          setPopperOpen(false);
-                        }
+                        onSelectFinish && onSelectFinish();
+                        setPopperOpen(false);
                         }}
                       >
                       <QuickSearchResult resultData={result} />
@@ -307,10 +269,14 @@ let defaultResultConstructor = (props) => (
   </React.Fragment>
 );
 
-let defaultRedirect = (event, row) => {
+let defaultRedirect = (event, row, props) => {
   // Redirect using React-router
+  const anchor = row[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY];
   if (row["@path"]) {
-    props.history.push("/content.html" + row["@path"]);
+    props.history.push({
+      pathname: "/content.html" + row["@path"],
+      hash: anchor
+    });
   }
 }
 

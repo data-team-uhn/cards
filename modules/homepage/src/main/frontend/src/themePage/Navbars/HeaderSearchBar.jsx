@@ -57,7 +57,7 @@ function HeaderSearchBar(props) {
         <Typography variant="body2" color="textSecondary">
           {(resultData.questionnaire?.title?.concat(' ') || '') + (resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')}
         </Typography>
-        {resultData.subject?.identifier || resultData["jcr:uuid"] || ''}
+        {resultData.subject?.identifier || resultData["@name"] || ''}
       </div>
     ) || null
   }
@@ -93,20 +93,10 @@ function HeaderSearchBar(props) {
     </React.Fragment>
   }
 
-  let redirectAndClose = (event, row) => {
-    // Redirect using React-router
-    if (row["@path"]) {
-      props.history.push("/content.html" + row["@path"]);
-      closeSidebar && closeSidebar();
-      setPopperOpen(false);
-    }
-  }
-
   return(
     <SearchBar
       queryConstructor={createQuery}
       resultConstructor={quickSearchResult}
-      onSelect={redirectAndClose}
       {...rest}
       />
   );
