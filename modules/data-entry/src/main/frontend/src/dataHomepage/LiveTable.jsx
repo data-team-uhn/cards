@@ -123,9 +123,13 @@ function LiveTable(props) {
   };
 
   let handleError = (response) => {
+    let err = response.statusText ? response.statusText : response.toString();
+    if (response.status == 404) {
+      err = "Access to data is pending the approval of your account";
+    }
     setFetchStatus(Object.assign({}, fetchStatus, {
       "currentFetch": false,
-      "fetchError": (response.statusText ? response.statusText : response.toString()),
+      "fetchError": err,
     }));
     setTableData();
   };
