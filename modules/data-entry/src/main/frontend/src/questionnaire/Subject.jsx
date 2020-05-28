@@ -17,24 +17,62 @@
 //  under the License.
 //
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
+import { Link } from 'react-router-dom';
 
 import {
   CircularProgress,
   Grid,
   Typography,
+  Table,
+  TableBody,
   TableRow,
   TableCell
 } from "@material-ui/core";
 
-import LiveTable from "../dataHomepage/LiveTable.jsx";
-import Form from "./Form";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
-import FormEntry, { ENTRY_TYPES } from "./FormEntry";
-import { FormProvider } from "./FormContext";
+// import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
+// import { Card, CardHeader, CardContent, CardActions, Chip, Typography, Button, withStyles } from "@material-ui/core";
+// import { Link } from 'react-router-dom';
 
+import LiveTable from "../dataHomepage/LiveTable.jsx";
+
+
+const QUESTION_TYPES = ["lfs:Question"];
+const SECTION_TYPES = ["lfs:Section"];
+const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
+
+
+// FIX: not rendering boolean/sections correctly
+let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) => {
+
+  const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
+    .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
+      && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
+
+  // question title, to be used when 'previewing' the form
+  const questionTitle = questionDefinition["text"];
+
+  let content = `${questionTitle}: null`
+
+  if (existingQuestionAnswer && existingQuestionAnswer[1]["value"]) {
+    content = `${questionTitle}: ${existingQuestionAnswer[1]["value"]}`
+  }
+
+  // component will either render the default question display, or a list of questions/answers from the form (used for subjects)
+  return (
+    <TableRow key={key}>{content}</TableRow>
+  );
+};
+
+function SubjectEntry(props) {
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp } = props;
+  if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes);
+  }
+  else return null;
+}
 
 
 /**
@@ -53,8 +91,18 @@ function Subject (props) {
   let [ formData, setFormData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
+  // table data: related forms
+  const [tableData, setTableData] = useState();
 
   let [ formIDs, setFormIDs ] = useState("");
+
+  const [fetchStatus, setFetchStatus] = useState(
+    {
+      "currentRequestNumber": -1,
+      "currentFetch": false,
+      "fetchError": false,
+    }
+  );
 
   // Column configuration for the LiveTables
   const columns = [
@@ -109,59 +157,123 @@ function Subject (props) {
     );
   }
 
-  const requests = [];
-
-  // Callback method for the `fetchFormData` method, invoked when the request failed.
+  // Callback method for the `fetchFormData` method, invoked when the request failed. // put this in handleError
   let handleFormError = (response) => {
     setError(response);
     setFormData([]);  // Prevent an infinite loop if data was not set
   };
 
   // Callback to receive formIDs
-  let handleFormIds = (childData) => {
-    console.log(childData);
-    childData.map((entry) => {
-      console.log(entry["@name"]);
-      requests.push(
-        fetch(`/Forms/${entry["@name"]}.deep.json`)
-        .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then((json) => requests.push(json))
-        .catch(handleFormError)
-      )
-    });
+  // let handleFormIds = (childData) => {
+  //   console.log(childData);
+  //   childData.map((entry) => {
+  //     console.log(entry["@name"]);
+  //     requests.push(
+  //       fetch(`/Forms/${entry["@name"]}.deep.json`)
+  //       .then((response) => response.ok ? response.json() : Promise.reject(response))
+  //       .then((json) => requests.push(json))
+  //       .catch(handleFormError)
+  //     )
+  //   });
     
-    // update formData state once data for all forms have been fetched
-    Promise.all(requests).then(() => {
-      console.log(requests)
-      setFormData(requests.filter((data) => data["jcr:primaryType"] == "lfs:Form"));
-      console.log(formData);
-    });
-  };
+  //   // update formData state once data for all forms have been fetched
+  //   Promise.all(requests).then(() => {
+  //     console.log(requests)
+  //     setFormData(requests.filter((data) => data["jcr:primaryType"] == "lfs:Form"));
+  //     console.log(formData);
+  //   });
+  // };
 
   const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
 
+  //function to create a row
   //todo: make the slice a variable
   let makeRow = (entry) => {
     return (
-        <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
-          <FormProvider>
-            {
-              Object.entries(entry.questionnaire)
-                .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                .slice(0, 4)
-                .map(([key, entryDefinition]) => <FormEntry key={key} entryDefinition={entryDefinition} path={"."} depth={0} existingAnswers={entry} keyProp={key} classes={classes} defaultDisplay={false}></FormEntry>)
-            }
-          </FormProvider>
-        </Grid>
+        <TableRow key={entry["@path"]}>
+            <TableCell colSpan={6}>
+                <Table>
+                {
+                  Object.entries(entry.questionnaire)
+                    .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+                    .slice(0, 4)
+                    .map(([key, entryDefinition]) => <SubjectEntry key={key} entryDefinition={entryDefinition} path={"."} depth={0} existingAnswers={entry} keyProp={key} classes={classes}></SubjectEntry>)
+                }
+              </Table>
+            </TableCell>
+        </TableRow>
     );
   };
-
+ 
   
   // todo later:  get subjects related to current subject
   //              if subject has related subjects, rerender a livetable with formPreview=true for each related subject
   //              make subject recursive somehow?
   // todo later: add 'subject type' button
+
+  // FETCHING THE FORMS RELATED TO SUBJECTS
+
+  let fetchSubjectData = () => {
+    let url = new URL(customUrl, window.location.origin);
+
+    let currentFetch = fetch(url);
+    setFetchStatus(Object.assign({}, fetchStatus, {
+      "currentFetch": currentFetch,
+      "fetchError": false,
+    }));
+
+    currentFetch
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
+    .then(handleSubjectResponse)
+    .catch(handleSubjectError);
+  }
+
+  let handleSubjectResponse = (json) => {
+    if (+json.req !== fetchStatus.currentRequestNumber) {
+      // This is the response for an older request. Discard it, wait for the right one.
+      return;
+    }
+    setTableData(json.rows);
+  }
+
+  let handleSubjectError = (response) => {
+    setFetchStatus(Object.assign({}, fetchStatus, {
+      "currentFetch": false,
+      "fetchError": (response.statusText ? response.statusText : response.toString()),
+    }));
+    setError(response);
+    setTableData();
+  }
+
+  useEffect(() => {
+    if (tableData) {
+      const requests = [];
+
+      console.log(tableData);
+      tableData.map((entry) => {
+        console.log(entry["@name"]);
+        requests.push(
+          fetch(`/Forms/${entry["@name"]}.deep.json`)
+          .then((response) => response.ok ? response.json() : Promise.reject(response))
+          .then((json) => requests.push(json))
+          .catch(handleFormError)
+        )
+      });
+      
+      // update formData state once data for all forms have been fetched
+      Promise.all(requests).then(() => {
+        console.log(requests)
+        setFormData(requests.filter((data) => data["jcr:primaryType"] == "lfs:Form"));
+        console.log(formData);
+      });
+    }
+  }, [tableData]);
+
+  // initialize fetch
+  if (fetchStatus.currentRequestNumber == -1) {
+    fetchSubjectData();
+  }
 
   return (
     <div>
@@ -184,21 +296,40 @@ function Subject (props) {
             columns={columns}
             customUrl={customUrl}
             defaultLimit={10}
-            formPreview={true}
-            onSendFormIds={handleFormIds}
+            // formPreview={true}
+            // onSendFormIds={handleFormIds}
             />
         </Grid>
         <Grid item>
-          {formData ? 
-          (
-            formData.map((makeRow))
-          ) 
-          : ""}
+          <Table><TableBody>{formData ? (formData.map((makeRow))) : null}</TableBody></Table>
         </Grid>
       </Grid>
     </div>
   );
+
+  // return (
+  //   <React.Fragment>
+  //     <Grid container spacing={3}>
+  //       {questionnaires.map( (questionnaire) => { // map each result from the subject fetch
+  //         return(
+  //           <Grid item lg={12} xl={6} key={questionnaire["jcr:uuid"]}>
+  //             <Card>
+  //               <CardHeader
+  //                 this is the header
+  //               />
+  //               <CardContent>
+  //                 <Table><TableBody>{formData ? (formData.map((makeRow))) : null}</TableBody></Table>
+  //               </CardContent>
+  //             </Card>
+  //           </Grid>
+  //         )
+  //       })}
+  //     </Grid>
+  //   </React.Fragment>
+  // );
 };
+
+
 
 Subject.propTypes = {
   id: PropTypes.string

@@ -18,7 +18,7 @@
 //
 
 import React, { useState, useEffect } from "react";
-import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
+import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination, Box } from "@material-ui/core";
 import { Card, CardHeader, CardContent, CardActions, Chip, Typography, Button, withStyles } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import moment from "moment";
@@ -61,8 +61,6 @@ function LiveTable(props) {
       "fetchError": false,
     }
   );
-  // This holds the full form JSONs, once it is received from the server
-  let [ formData, setFormData ] = useState();
   // The base URL to fetch from.
   // This can either be a custom URL provided in props,
   // or an URL obtained from the current location by extracting the last path segment and appending .paginate
@@ -140,9 +138,8 @@ function LiveTable(props) {
     }
   }, [tableData]);
 
-  let makeRow = (entry, index) => {
+  let makeRow = (entry) => {
     return (
-      <React.Fragment>
         <TableRow key={entry["@path"]}>
           { columns ?
             (
@@ -153,9 +150,7 @@ function LiveTable(props) {
               <TableCell><a href={entry["@path"]}>{entry.title}</a></TableCell>
             )
           }
-        </TableRow>   
-        {/* render the form preview here?*/}
-      </React.Fragment>
+        </TableRow> 
     );
   };
 

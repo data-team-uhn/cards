@@ -47,7 +47,7 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
  * @param {Object} classes style classes
  * @returns a React component that renders the question
  */
-let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, defaultDisplay) => {
+let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) => {
   const questionRef = useRef();
   const anchor = location.hash.substr(1);
   // create a ref to store the question container DOM element
@@ -69,33 +69,17 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, d
   const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
 
   // question title, to be used when 'previewing' the form
-  const questionTitle = questionDefinition["text"];
-
-  // handle objects TODO: fix this
-  if (typeof questionTitle == "object") {
-    questionTitle = "error"
-  }
-
-    // todo: this cannot be set
-  if (typeof existingQuestionAnswer == "object") {
-    existingQuestionAnswer = "error"
-  }
+  // const questionTitle = questionDefinition["text"];
 
   // component will either render the default question display, or a list of questions/answers from the form (used for subjects)
   return (
     <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={(doHighlight ? classes.highlightedSection : undefined)}>
-      {defaultDisplay ?
-        (
-          <QuestionDisplay
-          questionDefinition={questionDefinition}
-          existingAnswer={existingQuestionAnswer}
-          path={path}
-          questionName={key}
-          />
-        )
-        : <div>{questionTitle}, {existingQuestionAnswer}</div>
-      }
-      {console.log(questionDefinition.text, existingQuestionAnswer)}
+      <QuestionDisplay
+      questionDefinition={questionDefinition}
+      existingAnswer={existingQuestionAnswer}
+      path={path}
+      questionName={key}
+      />
     </Grid>
   );
 };
@@ -140,11 +124,11 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
  * @returns a React component that renders the section
  */
  export default function FormEntry(props) {
-  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, defaultDisplay } = props;
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp } = props;
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, defaultDisplay);
+    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displaySection(entryDefinition, path, depth, existingAnswers, keyProp);
   }
