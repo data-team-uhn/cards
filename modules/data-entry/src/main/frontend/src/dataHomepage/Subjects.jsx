@@ -16,11 +16,24 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
+import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Subject from "../questionnaire/Subject.jsx";
+import { SelectorDialog } from "../questionnaire/SubjectSelector.jsx";
 
-export default function Subjects(props) {
+import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+
+function Subjects(props) {
+
+  const { classes } = props;
+  // fix issue with classes
+
+  let [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
+  // When a new subject is added, state will be updated and trigger a livetable refresh
+  const [ requestFetchData, setRequestFetchData ] = useState(0);
+
   const columns = [
     {
       "key": "identifier",
@@ -45,7 +58,43 @@ export default function Subjects(props) {
     return <Subject id={entry[1]}/>;
   }
 
+  // import the function
+
   return (
-    <LiveTable columns={columns} />
+    <div>
+      <Card>
+        <CardHeader
+          title={
+            <Button className={classes.cardHeaderButton}>
+              Subjects
+            </Button>
+          }
+          action={
+            <div className={classes.newFormButtonWrapper}>
+              <Tooltip aria-label="add" title="New Subject">
+                <Fab
+                  color="primary"
+                  aria-label="add"
+                  onClick={() => {setNewSubjectPopperOpen(true)}}
+                >
+                  <AddIcon />
+                </Fab>
+              </Tooltip>
+            </div>
+          }
+        />
+        <CardContent>
+          <LiveTable columns={columns} updateData={requestFetchData}/>
+        </CardContent>
+      </Card>
+      <SelectorDialog
+        open={false}
+        popperOpen={newSubjectPopperOpen}
+        onPopperClose={() => {setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
+      />
+    </div>
   );
 }
+
+export default withStyles(QuestionnaireStyle)(Subjects);
+

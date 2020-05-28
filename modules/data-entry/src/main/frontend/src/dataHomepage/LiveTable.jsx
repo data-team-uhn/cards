@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
 import { Card, CardHeader, CardContent, CardActions, Chip, Typography, Button, withStyles } from "@material-ui/core";
 import { Link } from 'react-router-dom';
@@ -41,7 +41,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, classes, filters, ...rest } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -70,6 +70,15 @@ function LiveTable(props) {
     :
       new URL(window.location.pathname.substring(window.location.pathname.lastIndexOf("/")) + ".paginate", window.location.origin)
   );
+
+  // When new data is added, trigger a new fetch
+  useEffect(() => {
+    if (updateData){
+      setFetchStatus(Object.assign({}, fetchStatus, {
+        "currentRequestNumber": -1,
+      }));
+    }
+  }, [updateData]);
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's behavior

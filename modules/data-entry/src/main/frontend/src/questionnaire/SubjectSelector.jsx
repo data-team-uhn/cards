@@ -43,9 +43,11 @@ let createQueryURL = (query) => {
  * @param {func} onClose Callback for when the user closes this dialog
  * @param {func} onError Callback for when an error occurs during subject selection
  * @param {string} title Title of the dialog, if any
+ * @param {bool} popperOpen Whether or not the 'Create a new subject' dialog is open - allows it to be open on its own
+ * @param {func} onPopperClose Callback for when user closes the 'Create a new subject' dialog
  */
 function UnstyledSelectorDialog (props) {
-  const { classes, open, onChange, onClose, onError, title, ...rest } = props;
+  const { classes, open, onChange, onClose, onError, title, popperOpen, onPopperClose, ...rest } = props;
   const [ subjects, setSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ isPosting, setIsPosting ] = useState();
@@ -72,6 +74,7 @@ function UnstyledSelectorDialog (props) {
       createSubjects([newSubjectName], newSubjectName, grabNewSubject, handleCreateSubjectsError);
     } else {
       onChange(selectedSubject);
+      setNewSubjectError();
       setNewSubjectPopperOpen(false);
     }
   }
@@ -85,7 +88,10 @@ function UnstyledSelectorDialog (props) {
       .then((data) => appendPath(data, subjectPath))
       .then(onChange)
       .then(() => setNewSubjectPopperOpen(false))
+      .then(() => onPopperClose())
+      .then(() => setNewSubjectName(""))
       .catch((err) => {console.log(err); onError(err);})
+      .then(() => setNewSubjectError())
       .finally(() => {setIsPosting(false);});
   }
 
@@ -98,10 +104,17 @@ function UnstyledSelectorDialog (props) {
   let closeNewSubjectPopper = () => {
     setNewSubjectError();
     setNewSubjectPopperOpen(false);
+    onPopperClose();
+    //clear the input field
+    setNewSubjectName("");
   }
 
   return (<React.Fragment>
-    <Dialog open={newSubjectPopperOpen} onClose={closeNewSubjectPopper} className={classes.newSubjectPopper}>
+    <Dialog
+      open={newSubjectPopperOpen || popperOpen} 
+      onClose={closeNewSubjectPopper} 
+      className={classes.newSubjectPopper}
+    >
       <DialogTitle id="new-form-title">
         Create new subject
       </DialogTitle>
@@ -113,7 +126,7 @@ function UnstyledSelectorDialog (props) {
           value={newSubjectName}
           onChange={(event) => {setNewSubjectName(event.target.value);}}
           inputProps={{
-            onkeydown: (event) => {
+            onKeyDown: (event) => {
               // Detect an enter key and submit
               if (event.keyCode === 13) {
                 handleSubmit(true);
