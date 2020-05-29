@@ -638,6 +638,9 @@
   // Additional identifiers may be defined in forms.
   - identifier (STRING)
 
+  // A link to the SubjectType for this subject
+  - type (reference) mandatory
+
 //-----------------------------------------------------------------------------
 // The homepage for the Subjects space.
 [lfs:SubjectsHomepage] > sling:Folder
@@ -659,7 +662,7 @@
 
 //-----------------------------------------------------------------------------
 // A type of subject
-[lfs:SubjectType] > sling:Folder
+[lfs:SubjectType] > sling:Folder, mix:referenceable
   // Attributes:
 
   // We can query subject types.
