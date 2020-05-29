@@ -24,7 +24,7 @@ import { CircularProgress, Button, Dialog, DialogActions, DialogContent, DialogT
 import { ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
-import SubjectSelectorList, { createSubjects, SubjectListItem } from "../questionnaire/SubjectSelector.jsx";
+import SubjectSelectorList, { createSubjects, NewSubjectDialog, SubjectListItem } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
@@ -45,6 +45,7 @@ function NewFormDialog(props) {
   const [ presetQuestionnaire, setPresetQuestionnaire ] = useState();
   const [ selectedQuestionnaire, setSelectedQuestionnaire ] = useState();
   const [ selectedSubject, setSelectedSubject ] = useState();
+  const [ selectedSubjectType, setSelectedSubjectType ] = useState();
   const [ progress, setProgress ] = useState();
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ error, setError ] = useState("");
@@ -55,7 +56,7 @@ function NewFormDialog(props) {
       createForm();
     } else {
       // New subjects need to be created
-      createSubjects([newSubjectName], newSubjectName, createForm, setError);
+      createSubjects([newSubjectName], selectedSubjectType, newSubjectName, createForm, setError);
     }
   }
 
@@ -247,44 +248,17 @@ function NewFormDialog(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={newSubjectPopperOpen} onClose={() => { setNewSubjectPopperOpen(false); }} className={classes.newSubjectPopper}>
-        <DialogTitle id="new-form-title">
-          Create new subject
-        </DialogTitle>
-        <DialogContent dividers className={classes.NewFormDialog}>
-          {error && <Typography color='error'>{error}</Typography>}
-          <Input
-            autoFocus
-            value={newSubjectName}
-            onChange={(event) => {setNewSubjectName(event.target.value);}}
-            inputProps={{
-              onKeyDown: (event) => {
-                // Detect an enter key and submit
-                if (event.keyCode === 13) {
-                  initiateFormCreation();
-                }
-              }
-            }}
-            className={classes.newSubjectInput}
-            />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {setNewSubjectPopperOpen(false); setError();}}
-            variant="contained"
-            color="default"
-            >
-            Cancel
-          </Button>
-          <Button
-            onClick={initiateFormCreation}
-            variant="contained"
-            color="primary"
-            >
-            Create
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <NewSubjectDialog
+        open={newSubjectPopperOpen}
+        disabled={isFetching}
+        error={error}
+        onClose={() => { setNewSubjectPopperOpen(false); setError();}}
+        onChangeSubject={setNewSubjectName}
+        onChangeType={setSelectedSubjectType}
+        onSubmit={initiateFormCreation}
+        open={newSubjectPopperOpen}
+        value={newSubjectName}
+        />
       <div className={classes.newFormButtonWrapper}>
         <Tooltip title={children} aria-label="add">
           <Fab

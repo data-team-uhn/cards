@@ -29,11 +29,94 @@ import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 /***
  * Create a URL that checks for the existance of a subject
  */
-let createQueryURL = (query) => {
+let createQueryURL = (query, type) => {
   let url = new URL("/query", window.location.origin);
-  url.searchParams.set("query", "SELECT * FROM [lfs:Subject] as n" + query);
+  url.searchParams.set("query", `SELECT * FROM [${type}] as n` + query);
   return url;
 }
+
+function UnstyledNewSubjectDialog (props) {
+  const { classes, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, theme, value } = props;
+  const [ selectedType, setSelectedType ] = useState();
+
+  const COLUMNS = [
+    { title: 'Subject type', field: 'label' },
+  ];
+
+  return(
+    <Dialog open={open} onClose={onClose} className={classes.newSubjectPopper}>
+      <DialogTitle id="new-form-title">
+        Create new subject
+      </DialogTitle>
+      <DialogContent dividers className={classes.NewFormDialog}>
+        { error && <Typography color="error">{error}</Typography>}
+        <Input
+          autoFocus
+          disabled={disabled}
+          value={value}
+          onChange={(event) => {onChangeSubject(event.target.value);}}
+          inputProps={{
+            onKeyDown: (event) => {
+              // Detect an enter key and submit
+              if (event.keyCode === 13) {
+                handleSubmit(true);
+              }
+            }
+          }}
+          className={classes.newSubjectInput}
+          />
+        <MaterialTable
+          title=""
+          columns={COLUMNS}
+          data={query => {
+              let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.identifier, '*${query.search}*')` : "", "lfs:SubjectType");
+              url.searchParams.set("limit", query.pageSize);
+              url.searchParams.set("offset", query.page*query.pageSize);
+              return fetch(url)
+                .then(response => response.json())
+                .then(result => {
+                  return {
+                    data: result["rows"],
+                    page: Math.trunc(result["offset"]/result["limit"]),
+                    totalCount: result["totalrows"],
+                  }}
+                )
+            }
+          }
+          options={{
+            search: true,
+            addRowPosition: 'first',
+            rowStyle: rowData => ({
+              /* It doesn't seem possible to alter the className from here */
+              backgroundColor: (selectedType?.["label"] === rowData["label"]) ? theme.palette.grey["200"] : theme.palette.background.default
+            })
+          }}
+          onRowClick={(event, rowData) => {onChangeType(rowData); setSelectedType(rowData);}}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={onClose}
+          variant="contained"
+          color="default"
+          disabled={disabled}
+          >
+          Cancel
+        </Button>
+        <Button
+          onClick={onSubmit}
+          variant="contained"
+          color="primary"
+          disabled={disabled}
+          >
+          Create
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
+export const NewSubjectDialog = withStyles(QuestionnaireStyle, {withTheme: true})(UnstyledNewSubjectDialog)
 
 /**
  * Component that displays the list of subjects in a dialog. Double clicking a subject selects it.
@@ -51,9 +134,9 @@ function UnstyledSelectorDialog (props) {
   const [ subjects, setSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ isPosting, setIsPosting ] = useState();
-  const [ newSubjectError, setNewSubjectError ] = useState();
-  const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ newSubjectName, setNewSubjectName ] = useState("");
+  const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
+  const [ newSubjectError, setNewSubjectError ] = useState();
 
   // Handle the user clicking on a subject, potentially submitting it
   let selectSubject = (subject) => {
@@ -71,7 +154,7 @@ function UnstyledSelectorDialog (props) {
     // Submit the new subjects
     if (useNewSubject) {
       setIsPosting(true);
-      createSubjects([newSubjectName], newSubjectName, grabNewSubject, handleCreateSubjectsError);
+      createSubjects([newSubjectName], selectedSubject, newSubjectName, grabNewSubject, handleCreateSubjectsError);
     } else {
       onChange(selectedSubject);
       setNewSubjectError();
@@ -110,51 +193,15 @@ function UnstyledSelectorDialog (props) {
   }
 
   return (<React.Fragment>
-    <Dialog
-      open={newSubjectPopperOpen || popperOpen} 
-      onClose={closeNewSubjectPopper} 
-      className={classes.newSubjectPopper}
-    >
-      <DialogTitle id="new-form-title">
-        Create new subject
-      </DialogTitle>
-      <DialogContent dividers className={classes.NewFormDialog}>
-        { newSubjectError && <Typography color="error">{newSubjectError}</Typography>}
-        <Input
-          autoFocus
-          disabled={isPosting}
-          value={newSubjectName}
-          onChange={(event) => {setNewSubjectName(event.target.value);}}
-          inputProps={{
-            onKeyDown: (event) => {
-              // Detect an enter key and submit
-              if (event.keyCode === 13) {
-                handleSubmit(true);
-              }
-            }
-          }}
-          className={classes.newSubjectInput}
-          />
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={closeNewSubjectPopper}
-          variant="contained"
-          color="default"
-          disabled={isPosting}
-          >
-          Cancel
-        </Button>
-        <Button
-          onClick={() => {handleSubmit(true);}}
-          variant="contained"
-          color="primary"
-          disabled={isPosting}
-          >
-          Create
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <NewSubjectDialog
+      disabled={isPosting}
+      error={newSubjectError}
+      onClose={closeNewSubjectPopper}
+      onChange={setNewSubjectName}
+      onSubmit={() => {handleSubmit(true);}}
+      open={newSubjectPopperOpen}
+      value={newSubjectName}
+      />
     <Dialog open={open} onClose={onClose}>
       {title && <DialogTitle>{title}</DialogTitle>}
       <DialogContent className={classes.NewFormDialog}>
@@ -202,12 +249,14 @@ export const SelectorDialog = withStyles(QuestionnaireStyle)(UnstyledSelectorDia
  * Create new subjects from an array of identifiers.
  *
  * @param {array} newSubjects The new subjects to add to the repository, as an array of strings.
+ * @param {array} subjectType The subjectType uuid to use for the new subjects
  * @param {object or string} subjectToTrack The selected subject to return the URL for
  * @param {func} returnCall The callback after all subjects have been created
  * @param {func} onError The callback if an error occurs during subject creation
  */
-export function createSubjects(newSubjects, subjectToTrack, returnCall, onError) {
+export function createSubjects(newSubjects, subjectType, subjectToTrack, returnCall, onError) {
   let selectedURL = subjectToTrack["@path"];
+  let subjectTypeToUse = subjectType["jcr:uuid"] ? subjectType["jcr:uuid"] : subjectType;
   let lastPromise = null;
   for (let subjectName of newSubjects) {
     // Do not allow blank subjects
@@ -215,7 +264,7 @@ export function createSubjects(newSubjects, subjectToTrack, returnCall, onError)
       continue;
     }
 
-    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${subjectName}'`);
+    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${subjectName}'`, "lfs:Subject");
 
     let url = "/Subjects/" + uuid();
 
@@ -228,6 +277,8 @@ export function createSubjects(newSubjects, subjectToTrack, returnCall, onError)
     let requestData = new FormData();
     requestData.append('jcr:primaryType', 'lfs:Subject');
     requestData.append('identifier', subjectName);
+    requestData.append('type', subjectTypeToUse);
+    requestData.append('type@TypeHint', 'Reference');
 
     let newPromise = fetch( checkAlreadyExistsURL )
       .then( (response) => response.ok ? response.json() : Promise.reject(response))
@@ -304,7 +355,7 @@ function SubjectSelectorList(props) {
         title=""
         columns={COLUMNS}
         data={query => {
-            let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.identifier, '*${query.search}*')` : "");
+            let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.identifier, '*${query.search}*')` : "", "lfs:Subject");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
             return fetch(url)
@@ -337,7 +388,7 @@ function SubjectSelectorList(props) {
             request_data.append('jcr:primaryType', 'lfs:Subject');
             request_data.append('identifier', newData["identifier"]);
 
-            let check_url = createQueryURL(` WHERE n.'identifier'='${newData["identifier"]}'`);
+            let check_url = createQueryURL(` WHERE n.'identifier'='${newData["identifier"]}'`, "lfs:Subject");
             return fetch( check_url )
               .then( (response) => response.ok ? response.json() : Promise.reject(response))
               .then( (json) => {
