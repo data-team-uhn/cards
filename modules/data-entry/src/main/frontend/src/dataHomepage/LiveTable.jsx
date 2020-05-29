@@ -42,7 +42,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, formPreview, onSendFormIds, classes, filters, ...rest } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, classes, filters, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -133,13 +133,6 @@ function LiveTable(props) {
     }));
     setTableData();
   };
-
-  // send data to subject.jsx on tableData change
-  // useEffect(() => {
-  //   if (tableData && formPreview) {
-  //     onSendFormIds(tableData);
-  //   }
-  // }, [tableData]);
 
   let makeRow = (entry) => {
     return (
@@ -276,12 +269,6 @@ function LiveTable(props) {
   if (fetchStatus.currentRequestNumber == -1) {
     fetchData(paginationData);
   }
-
-  
-  // if (tableData && formPreview) {
-  //   console.log("this gets called")
-  //   onSendFormIds(tableData);
-  // }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // The rendering code

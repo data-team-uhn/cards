@@ -26,30 +26,20 @@ import {
   CircularProgress,
   Grid,
   Typography,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
   Card,
   CardHeader,
   CardContent,
   CardActions,
-  withStyles
+  withStyles,
+  Button
 } from "@material-ui/core";
-
-// import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
-// import { Card, CardHeader, CardContent, CardActions, Chip, Typography, Button, withStyles } from "@material-ui/core";
-// import { Link } from 'react-router-dom';
-
-import LiveTable from "../dataHomepage/LiveTable.jsx";
-
 
 const QUESTION_TYPES = ["lfs:Question"];
 const SECTION_TYPES = ["lfs:Section"];
 const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
 
 
-// FIX: not rendering boolean/sections correctly
+// FIX: not rendering boolean/sections correctly. maybe place in formentry 
 let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) => {
 
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
@@ -59,15 +49,14 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) =
   // question title, to be used when 'previewing' the form
   const questionTitle = questionDefinition["text"];
 
-  let content = `${questionTitle}: null`
+  let content = null;
 
   if (existingQuestionAnswer && existingQuestionAnswer[1]["value"]) {
     content = `${questionTitle}: ${existingQuestionAnswer[1]["value"]}`
   }
 
-  // component will either render the default question display, or a list of questions/answers from the form (used for subjects)
   return (
-    <TableRow key={key}>{content}</TableRow>
+    <Typography variant="body2" component="p">{content}</Typography>
   );
 };
 
@@ -76,9 +65,97 @@ function SubjectEntry(props) {
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes);
   }
+  // TODO: handle filtering to get the questions from the section --> displayQuestion
   else return null;
 }
 
+  function FormData(props) {
+    let { classes, formID, maxDisplayed } = props; // set maxDisplayed default to 2
+    // This holds the full form JSON, once it is received from the server
+    let [ data, setData ] = useState();
+
+    let getFormData = (formID) => {
+      fetch(`/Forms/${formID}.deep.json`)
+          .then((response) => response.ok ? response.json() : Promise.reject(response))
+          .then((json) => setData(json))
+          .catch(handleFormError)
+    }
+
+    let handleFormError = (response) => {
+      // setError(response); // TODO: display for error handling
+      setData([]);  // Prevent an infinite loop if data was not set
+    };
+
+    if (!data) {
+      getFormData(formID);
+      return (
+        <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      );
+    }
+
+    // TODO: rearrange: if data --> object.entries --> return the 'subject entry' - no need for separate component
+
+    // if form is not filled out, should display 'No data yet'
+
+    // console.log(data.questionnaire);
+
+    // if (data && data.questionnaire) {
+    //   return (
+    //     <React.Fragment>
+    //       {
+    //         Object.entries(data.questionnaire)
+    //         .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+    //         .slice(0, maxDisplayed) // should it be sliced here or just display first filled values
+    //         .map(([key, entryDefinition]) => displayData(key, entryDefinition, data))
+    //       }
+    //     </React.Fragment>
+    //   );
+ 
+    // }
+
+    // //fix error: displaydata is not a function??
+    // let displayData = (key, entryDefinition, existingAnswer) => {
+    //   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+
+    //     const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
+    //     .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
+    //       && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
+
+    //     // question title, to be used when 'previewing' the form
+    //     const questionTitle = entryDefinition["text"];
+
+    //     let content = null;
+
+    //     if (existingQuestionAnswer && existingQuestionAnswer[1]["value"]) {
+    //       content = `${questionTitle}: ${existingQuestionAnswer[1]["value"]}`
+    //     }
+
+    //     return (
+    //       <Typography variant="body2" component="p" key={key}>{content}</Typography>
+    //     );
+    //   }
+    //   // else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+    //   //   // get the questions from within the section and call the same displayData function
+    //   // }
+    // }
+
+    // return (
+    //   <Typography>Form not found</Typography> // retry button?
+    // );
+
+    return (
+      <React.Fragment>
+        {data && data.questionnaire ?
+          (Object.entries(data.questionnaire)
+            .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+            .slice(0, maxDisplayed) // should it be sliced here or just display first filled values
+            .map(([key, entryDefinition]) => <SubjectEntry key={key} entryDefinition={entryDefinition} path={"."} depth={0} existingAnswers={data} keyProp={key} classes={classes}></SubjectEntry>)
+        )
+        : <Typography>Form not found</Typography> // retry button?
+        }
+      </React.Fragment>
+    );
+  }
 
 /**
  * Component that displays a Subject.
@@ -92,14 +169,10 @@ function Subject (props) {
   let { id, classes } = props;
   // This holds the full subject JSON, once it is received from the server
   let [ data, setData ] = useState();
-  // This holds the full form JSONs, once it is received from the server
-  let [ formData, setFormData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // table data: related forms
   const [tableData, setTableData] = useState();
-
-  let [ formIDs, setFormIDs ] = useState("");
 
   const [fetchStatus, setFetchStatus] = useState(
     {
@@ -108,16 +181,6 @@ function Subject (props) {
       "fetchError": false,
     }
   );
-
-  // Column configuration for the LiveTables
-  const columns = [
-    {
-      "key": "questionnaire/@name",
-      "label": "Questionnaire",
-      "format": "string",
-      "link": "dashboard+path",  
-    },
-  ]
 
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
@@ -162,55 +225,8 @@ function Subject (props) {
     );
   }
 
-  // Callback method for the `fetchFormData` method, invoked when the request failed. // put this in handleError
-  let handleFormError = (response) => {
-    setError(response);
-    setFormData([]);  // Prevent an infinite loop if data was not set
-  };
-
-  // Callback to receive formIDs
-  // let handleFormIds = (childData) => {
-  //   console.log(childData);
-  //   childData.map((entry) => {
-  //     console.log(entry["@name"]);
-  //     requests.push(
-  //       fetch(`/Forms/${entry["@name"]}.deep.json`)
-  //       .then((response) => response.ok ? response.json() : Promise.reject(response))
-  //       .then((json) => requests.push(json))
-  //       .catch(handleFormError)
-  //     )
-  //   });
-    
-  //   // update formData state once data for all forms have been fetched
-  //   Promise.all(requests).then(() => {
-  //     console.log(requests)
-  //     setFormData(requests.filter((data) => data["jcr:primaryType"] == "lfs:Form"));
-  //     console.log(formData);
-  //   });
-  // };
-
   const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
-
-  //function to create a row
-  //todo: make the slice a variable
-  let makeRow = (entry) => {
-    return (
-        <TableRow key={entry["@path"]}>
-            <TableCell colSpan={6}>
-                <Table>
-                {
-                  Object.entries(entry.questionnaire)
-                    .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                    .slice(0, 4)
-                    .map(([key, entryDefinition]) => <SubjectEntry key={key} entryDefinition={entryDefinition} path={"."} depth={0} existingAnswers={entry} keyProp={key} classes={classes}></SubjectEntry>)
-                }
-              </Table>
-            </TableCell>
-        </TableRow>
-    );
-  };
- 
   
   // todo later:  get subjects related to current subject
   //              if subject has related subjects, rerender a livetable with formPreview=true for each related subject
@@ -236,8 +252,6 @@ function Subject (props) {
 
     let url = new URL(urlBase);
 
-    console.log(url);
-
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
 
     let currentFetch = fetch(url);
@@ -246,7 +260,6 @@ function Subject (props) {
       "fetchError": false,
     }));
     currentFetch.then((response) => response.ok ? response.json() : Promise.reject(response)).then(handleSubjectResponse).catch(handleSubjectError);
-    // TODO: update the displayed URL with pagination details, so that we can share/reload at the same page
   };
 
   let handleSubjectResponse = (json) => {
@@ -264,93 +277,12 @@ function Subject (props) {
       "fetchError": (response.statusText ? response.statusText : response.toString()),
     }));
     setTableData();
-  };
-
-
-  // useEffect(() => {
-  //   if (tableData) {
-  //     const requests = [];
-
-  //     console.log(tableData);
-  //     tableData.map((entry) => {
-  //       console.log(entry["@name"]);
-  //       requests.push(
-  //         fetch(`/Forms/${entry["@name"]}.deep.json`)
-  //         .then((response) => response.ok ? response.json() : Promise.reject(response))
-  //         .then((json) => requests.push(json))
-  //         .catch(handleFormError)
-  //       )
-  //     });
-      
-  //     // update formData state once data for all forms have been fetched
-  //     Promise.all(requests).then(() => {
-  //       console.log(requests)
-  //       setFormData(requests.filter((data) => data["jcr:primaryType"] == "lfs:Form"));
-  //       console.log(formData);
-  //     });
-  //   }
-  // }, [tableData]);
+  }; // TODO: handle all errors the same?
 
   // initialize fetch
   if (fetchStatus.currentRequestNumber == -1) {
     fetchSubjectData();
   }
-
-
-  //pass entry 'name' --> get form data --> make list for that ONE from
-
-  let getFormData = (formID) => {
-    fetch(`/Forms/${formID}.deep.json`)
-        .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then((json) => displayFormData(json))
-        .catch(handleFormError)
-  }
-
-  let displayFormData = (data) => {
-    console.log(data);
-    // return (
-    //       <Table>
-    //       {
-    //         Object.entries(entry.questionnaire)
-    //           .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-    //           .slice(0, 4)
-    //           .map(([key, entryDefinition]) => <SubjectEntry key={key} entryDefinition={entryDefinition} path={"."} depth={0} existingAnswers={entry} keyProp={key} classes={classes}></SubjectEntry>)
-    //       }
-    //     </Table>
-    // );
-  }
-
-  // return (
-  //   <div>
-  //     <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
-  //       <Grid item>
-  //         {
-  //           data && data.identifier ?
-  //             <Typography variant="h2">SubjectType {data.identifier}</Typography>
-  //           : <Typography variant="h2">SubjectType {id}</Typography>
-  //         }
-  //         {
-  //           data && data['jcr:createdBy'] && data['jcr:created'] ?
-  //           <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
-  //           : ""
-  //         }
-  //       </Grid>
-  //       <Grid item>
-  //         {/* <Typography variant="h4">Forms involving {data && (data.identifier || id)} </Typography> */}
-  //         <LiveTable
-  //           columns={columns}
-  //           customUrl={customUrl}
-  //           defaultLimit={10}
-  //           formPreview={true}
-  //           // onSendFormIds={handleFormIds}
-  //           />
-  //       </Grid>
-  //       <Grid item>
-  //         {/* <Table><TableBody>{formData ? (formData.map((makeRow))) : null}</TableBody></Table> */}
-  //       </Grid>
-  //     </Grid>
-  //   </div>
-  // );
 
   return (
     <React.Fragment>
@@ -370,20 +302,30 @@ function Subject (props) {
           (<Grid container spacing={3}>
             {tableData.map( (entry) => { // map each result from the subject fetch (each form)
               return(
-                <Grid item lg={12} xl={6}>
+                <Grid item lg={12} xl={6} key={entry.questionnaire["jcr:uuid"]}>
                   <Card>
                     <CardHeader
-                      title = {entry.questionnaire["@name"]}
+                      title={
+                        <Link to={"/content.html" + entry["@path"]}>
+                        <Button size="small"> 
+                          {/* classname styling - import from livetable styling? or add new styles to questionnaire */}
+                          {entry.questionnaire["@name"]}
+                        </Button>
+                      </Link>
+                    }
                     />
                     <CardContent>
-                      {(entry["@name"]) ? getFormData(entry["@name"]) : null}
+                      <FormData formID={entry["@name"]} maxDisplayed={4}/>
+                      <Link to={"/content.html" + entry["@path"]}>
+                        <Button size="small">See More...</Button>
+                      </Link>
                     </CardContent>
                   </Card>
                 </Grid>
               )
             })}
           </Grid>
-          ) : <div>Please Wait...</div>
+          ) : <Typography>Loading...</Typography>
         }
     </React.Fragment>
   );
