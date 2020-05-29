@@ -45,6 +45,7 @@
     <module>permissions</module>
     <module>permissions-ownership</module>
     <module>vocabularies</module>
+    <module>variants</module>
     <module>aggregated-frontend</module>
   </modules>
 </project>
