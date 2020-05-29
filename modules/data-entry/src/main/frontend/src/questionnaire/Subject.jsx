@@ -29,7 +29,12 @@ import {
   Table,
   TableBody,
   TableRow,
-  TableCell
+  TableCell,
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  withStyles
 } from "@material-ui/core";
 
 // import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
@@ -214,122 +219,175 @@ function Subject (props) {
 
   // FETCHING THE FORMS RELATED TO SUBJECTS
 
+  const urlBase = (
+    customUrl ?
+      new URL(customUrl, window.location.origin)
+    :
+      new URL(window.location.pathname.substring(window.location.pathname.lastIndexOf("/")) + ".paginate", window.location.origin)
+  );
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Define the component's behavior
+
   let fetchSubjectData = () => {
-    let url = new URL(customUrl, window.location.origin);
+    if (fetchStatus.currentFetch) {
+      // TODO: abort previous request
+    }
+
+    let url = new URL(urlBase);
+
+    console.log(url);
+
+    url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
 
     let currentFetch = fetch(url);
     setFetchStatus(Object.assign({}, fetchStatus, {
       "currentFetch": currentFetch,
       "fetchError": false,
     }));
-
-    currentFetch
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then(handleSubjectResponse)
-    .catch(handleSubjectError);
-  }
+    currentFetch.then((response) => response.ok ? response.json() : Promise.reject(response)).then(handleSubjectResponse).catch(handleSubjectError);
+    // TODO: update the displayed URL with pagination details, so that we can share/reload at the same page
+  };
 
   let handleSubjectResponse = (json) => {
     if (+json.req !== fetchStatus.currentRequestNumber) {
       // This is the response for an older request. Discard it, wait for the right one.
       return;
     }
+    console.log(json.rows);
     setTableData(json.rows);
-  }
+  };
 
   let handleSubjectError = (response) => {
     setFetchStatus(Object.assign({}, fetchStatus, {
       "currentFetch": false,
       "fetchError": (response.statusText ? response.statusText : response.toString()),
     }));
-    setError(response);
     setTableData();
-  }
+  };
 
-  useEffect(() => {
-    if (tableData) {
-      const requests = [];
 
-      console.log(tableData);
-      tableData.map((entry) => {
-        console.log(entry["@name"]);
-        requests.push(
-          fetch(`/Forms/${entry["@name"]}.deep.json`)
-          .then((response) => response.ok ? response.json() : Promise.reject(response))
-          .then((json) => requests.push(json))
-          .catch(handleFormError)
-        )
-      });
+  // useEffect(() => {
+  //   if (tableData) {
+  //     const requests = [];
+
+  //     console.log(tableData);
+  //     tableData.map((entry) => {
+  //       console.log(entry["@name"]);
+  //       requests.push(
+  //         fetch(`/Forms/${entry["@name"]}.deep.json`)
+  //         .then((response) => response.ok ? response.json() : Promise.reject(response))
+  //         .then((json) => requests.push(json))
+  //         .catch(handleFormError)
+  //       )
+  //     });
       
-      // update formData state once data for all forms have been fetched
-      Promise.all(requests).then(() => {
-        console.log(requests)
-        setFormData(requests.filter((data) => data["jcr:primaryType"] == "lfs:Form"));
-        console.log(formData);
-      });
-    }
-  }, [tableData]);
+  //     // update formData state once data for all forms have been fetched
+  //     Promise.all(requests).then(() => {
+  //       console.log(requests)
+  //       setFormData(requests.filter((data) => data["jcr:primaryType"] == "lfs:Form"));
+  //       console.log(formData);
+  //     });
+  //   }
+  // }, [tableData]);
 
   // initialize fetch
   if (fetchStatus.currentRequestNumber == -1) {
     fetchSubjectData();
   }
 
-  return (
-    <div>
-      <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
-        <Grid item>
-          {
-            data && data.identifier ?
-              <Typography variant="h2">SubjectType {data.identifier}</Typography>
-            : <Typography variant="h2">SubjectType {id}</Typography>
-          }
-          {
-            data && data['jcr:createdBy'] && data['jcr:created'] ?
-            <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
-            : ""
-          }
-        </Grid>
-        <Grid item>
-          {/* <Typography variant="h4">Forms involving {data && (data.identifier || id)} </Typography> */}
-          <LiveTable
-            columns={columns}
-            customUrl={customUrl}
-            defaultLimit={10}
-            // formPreview={true}
-            // onSendFormIds={handleFormIds}
-            />
-        </Grid>
-        <Grid item>
-          <Table><TableBody>{formData ? (formData.map((makeRow))) : null}</TableBody></Table>
-        </Grid>
-      </Grid>
-    </div>
-  );
+
+  //pass entry 'name' --> get form data --> make list for that ONE from
+
+  let getFormData = (formID) => {
+    fetch(`/Forms/${formID}.deep.json`)
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((json) => displayFormData(json))
+        .catch(handleFormError)
+  }
+
+  let displayFormData = (data) => {
+    console.log(data);
+    // return (
+    //       <Table>
+    //       {
+    //         Object.entries(entry.questionnaire)
+    //           .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+    //           .slice(0, 4)
+    //           .map(([key, entryDefinition]) => <SubjectEntry key={key} entryDefinition={entryDefinition} path={"."} depth={0} existingAnswers={entry} keyProp={key} classes={classes}></SubjectEntry>)
+    //       }
+    //     </Table>
+    // );
+  }
 
   // return (
-  //   <React.Fragment>
-  //     <Grid container spacing={3}>
-  //       {questionnaires.map( (questionnaire) => { // map each result from the subject fetch
-  //         return(
-  //           <Grid item lg={12} xl={6} key={questionnaire["jcr:uuid"]}>
-  //             <Card>
-  //               <CardHeader
-  //                 this is the header
-  //               />
-  //               <CardContent>
-  //                 <Table><TableBody>{formData ? (formData.map((makeRow))) : null}</TableBody></Table>
-  //               </CardContent>
-  //             </Card>
-  //           </Grid>
-  //         )
-  //       })}
+  //   <div>
+  //     <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
+  //       <Grid item>
+  //         {
+  //           data && data.identifier ?
+  //             <Typography variant="h2">SubjectType {data.identifier}</Typography>
+  //           : <Typography variant="h2">SubjectType {id}</Typography>
+  //         }
+  //         {
+  //           data && data['jcr:createdBy'] && data['jcr:created'] ?
+  //           <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
+  //           : ""
+  //         }
+  //       </Grid>
+  //       <Grid item>
+  //         {/* <Typography variant="h4">Forms involving {data && (data.identifier || id)} </Typography> */}
+  //         <LiveTable
+  //           columns={columns}
+  //           customUrl={customUrl}
+  //           defaultLimit={10}
+  //           formPreview={true}
+  //           // onSendFormIds={handleFormIds}
+  //           />
+  //       </Grid>
+  //       <Grid item>
+  //         {/* <Table><TableBody>{formData ? (formData.map((makeRow))) : null}</TableBody></Table> */}
+  //       </Grid>
   //     </Grid>
-  //   </React.Fragment>
+  //   </div>
   // );
+
+  return (
+    <React.Fragment>
+      <Grid item>
+        {
+          data && data.identifier ?
+            <Typography variant="h2">SubjectType {data.identifier}</Typography>
+          : <Typography variant="h2">SubjectType {id}</Typography>
+        }
+        {
+          data && data['jcr:createdBy'] && data['jcr:created'] ?
+          <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
+          : ""
+        }
+      </Grid>
+      {tableData ?
+          (<Grid container spacing={3}>
+            {tableData.map( (entry) => { // map each result from the subject fetch (each form)
+              return(
+                <Grid item lg={12} xl={6}>
+                  <Card>
+                    <CardHeader
+                      title = {entry.questionnaire["@name"]}
+                    />
+                    <CardContent>
+                      {(entry["@name"]) ? getFormData(entry["@name"]) : null}
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )
+            })}
+          </Grid>
+          ) : <div>Please Wait...</div>
+        }
+    </React.Fragment>
+  );
 };
-
-
 
 Subject.propTypes = {
   id: PropTypes.string

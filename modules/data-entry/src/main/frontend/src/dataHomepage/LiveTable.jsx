@@ -81,6 +81,9 @@ function LiveTable(props) {
     }
 
     let url = new URL(urlBase);
+
+    console.log(url);
+
     url.searchParams.set("offset", newPage.offset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
@@ -132,11 +135,11 @@ function LiveTable(props) {
   };
 
   // send data to subject.jsx on tableData change
-  useEffect(() => {
-    if (tableData && formPreview) {
-      onSendFormIds(tableData);
-    }
-  }, [tableData]);
+  // useEffect(() => {
+  //   if (tableData && formPreview) {
+  //     onSendFormIds(tableData);
+  //   }
+  // }, [tableData]);
 
   let makeRow = (entry) => {
     return (
