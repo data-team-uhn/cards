@@ -681,3 +681,22 @@
 
   // Any number of parent subject types that are required by this subject type
   - requiredParentType (String) multiple
+
+//-----------------------------------------------------------------------------
+// The homepage for any SubjectTypes.
+[lfs:SubjectTypesHomepage] > sling:Folder
+  // Attributes:
+
+  // We can use this homepage in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/SubjectTypesHomepage" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the SubjectTypesHomepage is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // Set a default title.
+  - title (String) = "Subject Types" mandatory autocreated
