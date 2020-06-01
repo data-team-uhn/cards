@@ -52,7 +52,7 @@ public class VocabularyBioPortalApiKeyServlet extends SlingSafeMethodsServlet
     private static final String APIKEY_ENVIRONMENT_VARIABLE =
         "BIOPORTAL_APIKEY";
 
-    /** The response form this service is a JSON objct with this JSON key containing the API key. */
+    /** The response from this service is a JSON object with this key holding the BioPortal API key as its value. */
     private static final String RESPONSE_JSON_KEY =
         "apikey";
 
