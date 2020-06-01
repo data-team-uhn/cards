@@ -120,6 +120,18 @@ const questionnaireStyle = theme => ({
         paddingBottom: "0 !important",
         marginBottom: theme.spacing(-1)
     },
+    subjectCard: {
+        minHeight: "200px",
+    },
+    subjectFormHeader: {
+        paddingBottom: "0 !important",
+    },
+    subjectFormHeaderButton: {
+        padding: "0 !important"
+    },
+    subjectHeader: {
+        paddingBottom: "12px !important",
+    },
     collapsedSection: {
         padding: "0 !important"
     },

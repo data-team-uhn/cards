@@ -171,7 +171,7 @@ function Subject (props) {
 
   return (
     <React.Fragment>
-      <Grid item>
+      <Grid item className={classes.subjectHeader}>
         {
           data && data.identifier ?
             <Typography variant="h2">SubjectType {data.identifier}</Typography>
@@ -188,15 +188,15 @@ function Subject (props) {
             {tableData.map( (entry) => { // map each result from the subject fetch (each form)
               return(
                 <Grid item lg={12} xl={6} key={entry.questionnaire["jcr:uuid"]}>
-                  <Card>
+                  <Card className={classes.subjectCard}>
                     <CardHeader
                       title={
-                        <Link to={"/content.html" + entry["@path"]}>
-                        <Button size="small"> 
+                        <Button size="large" className={classes.subjectFormHeaderButton}>
+                          {/* TODO: size will be dependent on subject 'level' */}
                           {entry.questionnaire["@name"]}
-                        </Button>
-                      </Link>
-                    }
+                        </Button> 
+                      }
+                    className={classes.subjectFormHeader}
                     />
                     <CardContent>
                       <FormData formID={entry["@name"]} maxDisplayed={4}/>
@@ -226,15 +226,14 @@ let displayQuestion = (questionDefinition, existingAnswer) => {
   // question title, to be used when 'previewing' the form
   const questionTitle = questionDefinition["text"];
 
-  let content = null;
-
   if (existingQuestionAnswer && existingQuestionAnswer[1]["value"]) {
-    content = `${questionTitle}: ${existingQuestionAnswer[1]["value"]}`
+    let content = `${questionTitle}: ${existingQuestionAnswer[1]["value"]}`
+    return (
+      <Typography variant="body2" component="p">{content}</Typography>
+    );
   }
 
-  return (
-    <Typography variant="body2" component="p">{content}</Typography>
-  );
+  else return null;
 };
 
 // Component that displays a preview of the saved form answers
@@ -242,6 +241,8 @@ function FormData(props) {
   let { classes, formID, maxDisplayed } = props; // todo: set maxDisplayed default to 2
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
+  // Error message set when fetching the data from the server fails
+  let [ error, setError ] = useState();
 
   let getFormData = (formID) => {
     fetch(`/Forms/${formID}.deep.json`)
@@ -272,6 +273,8 @@ function FormData(props) {
 
   console.log(data.questionnaire);
 
+  // before slicing turn the section --> question
+
   if (data && data.questionnaire) {
     return (
       <React.Fragment>
@@ -287,7 +290,7 @@ function FormData(props) {
   }
   //TODO fix: return this if nothing was returned (not working)
   else return (
-    <Typography variant="body2" component="p">No data inputted yet</Typography> 
+    <Typography variant="body2" component="p">No form data yet</Typography> 
   );
 }
 
