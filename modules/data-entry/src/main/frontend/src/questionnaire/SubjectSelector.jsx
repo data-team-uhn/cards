@@ -66,7 +66,7 @@ function UnstyledNewSubjectDialog (props) {
           className={classes.newSubjectInput}
           />
         <MaterialTable
-          title=""
+          title="Select a SubjectType"
           columns={COLUMNS}
           data={query => {
               let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.identifier, '*${query.search}*')` : "", "lfs:SubjectType");
