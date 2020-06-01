@@ -215,7 +215,16 @@ function Subject (props) {
   );
 };
 
-let displayQuestion = (questionDefinition, existingAnswer) => {
+let displayQuestion = (questionDefinition, existingAnswer, key) => {
+
+  if (SECTION_TYPES.includes(questionDefinition["jcr:primaryType"])) {
+    console.log(existingAnswer);
+    // Object.entries(existingAnswer.questionnaire)
+    // .filter(([key, value]) => SECTION_TYPES.includes(value['jcr:primaryType']))
+    // .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']))
+    // .map(([key, questionDefinition]) => displayQuestion(questionDefinition, existingAnswer, key))
+    // return displaySection(entryDefinition, path, depth, existingAnswers, keyProp);
+  }
 
   // TODO: section (get questions --> displayQuestion)
 
@@ -229,12 +238,27 @@ let displayQuestion = (questionDefinition, existingAnswer) => {
   if (existingQuestionAnswer && existingQuestionAnswer[1]["value"]) {
     let content = `${questionTitle}: ${existingQuestionAnswer[1]["value"]}`
     return (
-      <Typography variant="body2" component="p">{content}</Typography>
+      <Typography variant="body2" component="p" key="key">{content}</Typography>
     );
   }
 
   else return null;
 };
+
+// let getQuestions = (questionDefinition, existingAnswer, key) => {
+//   console.log(questionDefinition);
+//   console.log(existingAnswer)
+
+//   const existingQuestionAnswer = questionDefinition && Object.entries(questionDefinition)
+//   .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']));
+
+//   if (existingQuestionAnswer) {
+//     console.log(existingQuestionAnswer);
+//     return (existingQuestionAnswer);
+//   }
+
+//   else return;
+// }
 
 // Component that displays a preview of the saved form answers
 function FormData(props) {
@@ -271,18 +295,23 @@ function FormData(props) {
     );
   } 
 
-  console.log(data.questionnaire);
-
-  // before slicing turn the section --> question
-
   if (data && data.questionnaire) {
     return (
       <React.Fragment>
+        {/* sections --> questions */}
+        {/* {console.log(data.questionnaire)}
+        {
+          Object.entries(data.questionnaire)
+          .filter(([key, value]) => SECTION_TYPES.includes(value['jcr:primaryType']))
+          .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']))
+        }
+        {console.log(data.questionnaire)} */}
+        {/* display questions */}
         {
           Object.entries(data.questionnaire)
           .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
           .slice(0, maxDisplayed) // should it be sliced here or just display first filled values
-          .map(([key, entryDefinition]) => displayQuestion(entryDefinition, data))
+          .map(([key, entryDefinition]) => displayQuestion(entryDefinition, data, key))
         }
       </React.Fragment>
     );
