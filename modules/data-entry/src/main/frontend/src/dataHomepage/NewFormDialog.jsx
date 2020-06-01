@@ -45,15 +45,17 @@ function NewFormDialog(props) {
   const [ presetQuestionnaire, setPresetQuestionnaire ] = useState();
   const [ selectedQuestionnaire, setSelectedQuestionnaire ] = useState();
   const [ selectedSubject, setSelectedSubject ] = useState();
-  const [ selectedSubjectType, setSelectedSubjectType ] = useState();
+  const [ selectedSubjectType, setSelectedSubjectType ] = useState("");
   const [ progress, setProgress ] = useState();
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ error, setError ] = useState("");
 
-  let initiateFormCreation = () => {
+  // Called when creating a new subject
+  let createNewSubject = () => {
     if (newSubjectName == "") {
-      // No new subjects need to be created, just create the form
-      createForm();
+      setError("Please enter a name for this subject.");
+    } else if (selectedSubjectType == "") {
+      setError("Please select a subject type.");
     } else {
       // New subjects need to be created
       createSubjects([newSubjectName], selectedSubjectType, newSubjectName, createForm, setError);
@@ -143,7 +145,7 @@ function NewFormDialog(props) {
         setError("Please select a subject.");
         return;
       } else {
-        initiateFormCreation();
+        createForm();
       }
     }
   }
@@ -253,9 +255,9 @@ function NewFormDialog(props) {
         disabled={isFetching}
         error={error}
         onClose={() => { setNewSubjectPopperOpen(false); setError();}}
-        onChangeSubject={setNewSubjectName}
+        onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
         onChangeType={setSelectedSubjectType}
-        onSubmit={initiateFormCreation}
+        onSubmit={createNewSubject}
         open={newSubjectPopperOpen}
         value={newSubjectName}
         />

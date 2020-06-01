@@ -54,15 +54,7 @@ function UnstyledNewSubjectDialog (props) {
           autoFocus
           disabled={disabled}
           value={value}
-          onChange={(event) => {onChangeSubject(event.target.value);}}
-          inputProps={{
-            onKeyDown: (event) => {
-              // Detect an enter key and submit
-              if (event.keyCode === 13) {
-                handleSubmit(true);
-              }
-            }
-          }}
+          onChange={onChangeSubject}
           className={classes.newSubjectInput}
           />
         <MaterialTable
@@ -197,7 +189,7 @@ function UnstyledSelectorDialog (props) {
       disabled={isPosting}
       error={newSubjectError}
       onClose={closeNewSubjectPopper}
-      onChange={setNewSubjectName}
+      onChange={(event) => {setNewSubjectName(event.target.value);}}
       onSubmit={() => {handleSubmit(true);}}
       open={newSubjectPopperOpen}
       value={newSubjectName}
