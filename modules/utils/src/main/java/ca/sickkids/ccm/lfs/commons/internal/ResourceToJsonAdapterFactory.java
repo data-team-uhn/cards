@@ -212,6 +212,33 @@ public class ResourceToJsonAdapterFactory
     }
 
     /*
+     * Adds a property to the serialized JSON data structure and if
+     * necessary, simplifies the added property structure
+     */
+    private void simplifiedAddProperty(String slingResourceSuperType,
+        String slingResourceType, final JsonObjectBuilder ob,
+        final Property prop) throws RepositoryException
+    {
+        if (FORM_SLINGTYPE.equals(slingResourceType)) {
+            addSimpleFormProperty(ob, prop);
+        } else if (QUESTIONNAIRE_SLINGTYPE.equals(slingResourceType)) {
+            addSimpleQuestionnaireProperty(ob, prop);
+        } else if (SUBJECT_SLINGTYPE.equals(slingResourceType)) {
+            addSimpleSubjectProperty(ob, prop);
+        } else if (QUESTION_SLINGTYPE.equals(slingResourceType)) {
+            addSimpleQuestionProperty(ob, prop);
+        } else if (ANSWER_SLINGTYPE.equals(slingResourceSuperType)) {
+            addSimpleAnswerProperty(ob, prop);
+        } else if (ANSWER_SECTION_SLINGTYPE.equals(slingResourceType)) {
+            addSimpleAnswerSectionProperty(ob, prop);
+        } else if (SECTION_SLINGTYPE.equals(slingResourceType)) {
+            addSimpleSectionProperty(ob, prop);
+        } else {
+            addProperty(ob, prop);
+        }
+    }
+
+    /*
      * Filters which JCR properties are added to a lfs/Form when it is
      * serialized to JSON under .simple.json
      */
@@ -329,33 +356,6 @@ public class ResourceToJsonAdapterFactory
             PATH_PROP
         );
         if (props.contains(prop.getName())) {
-            addProperty(ob, prop);
-        }
-    }
-
-    /*
-     * Adds a property to the serialized JSON data structure and if
-     * necessary, simplifies the added property structure
-     */
-    private void simplifiedAddProperty(String slingResourceSuperType,
-        String slingResourceType, final JsonObjectBuilder ob,
-        final Property prop) throws RepositoryException
-    {
-        if (FORM_SLINGTYPE.equals(slingResourceType)) {
-            addSimpleFormProperty(ob, prop);
-        } else if (QUESTIONNAIRE_SLINGTYPE.equals(slingResourceType)) {
-            addSimpleQuestionnaireProperty(ob, prop);
-        } else if (SUBJECT_SLINGTYPE.equals(slingResourceType)) {
-            addSimpleSubjectProperty(ob, prop);
-        } else if (QUESTION_SLINGTYPE.equals(slingResourceType)) {
-            addSimpleQuestionProperty(ob, prop);
-        } else if (ANSWER_SLINGTYPE.equals(slingResourceSuperType)) {
-            addSimpleAnswerProperty(ob, prop);
-        } else if (ANSWER_SECTION_SLINGTYPE.equals(slingResourceType)) {
-            addSimpleAnswerSectionProperty(ob, prop);
-        } else if (SECTION_SLINGTYPE.equals(slingResourceType)) {
-            addSimpleSectionProperty(ob, prop);
-        } else {
             addProperty(ob, prop);
         }
     }
