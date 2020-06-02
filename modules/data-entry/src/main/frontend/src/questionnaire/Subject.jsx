@@ -224,6 +224,10 @@ function FormData(props) {
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
+  // Hold number of form items displayed
+  // let [displayed, setDisplayed] = useState(0);
+
+  let displayed = 0;
 
   let getFormData = (formID) => {
     fetch(`/Forms/${formID}.deep.json`)
@@ -280,8 +284,10 @@ function FormData(props) {
     // question title, to be used when 'previewing' the form
     const questionTitle = entryDefinition["text"];
   
-    if (existingQuestionAnswer && existingQuestionAnswer[1]["value"] ) {
-      let content = `${questionTitle}: ${existingQuestionAnswer[1]["value"]}`
+    if (existingQuestionAnswer && existingQuestionAnswer[1]["value"] && (displayed < maxDisplayed)) { // and if count of displayed <= max
+      let content = `${questionTitle}: ${existingQuestionAnswer[1]["value"]}`;
+      // increase count of displayed
+      displayed++;
       return (
         <Typography variant="body2" component="p" key={key}>{content}</Typography>
       );
@@ -299,12 +305,14 @@ function FormData(props) {
         }
       </React.Fragment>
     );
-
   }
-  //TODO fix: return this if nothing was returned (not working)
-  else return (
-    <Typography variant="body2" component="p">No form data yet</Typography> 
-  );
+  //TODO fix: return this if nothing was returned
+  // display if count of displayed = 0
+  if (displayed = 0) {
+    return (<Typography variant="body2" component="p">No form data yet</Typography>);
+  }
+
+  else return;
 }
 
 Subject.propTypes = {
