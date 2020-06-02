@@ -132,6 +132,8 @@ function Subject (props) {
   const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
   
+  // Fetch the forms associated with the subject as JSON from the server
+  // It will be stored in the `tableData` state variable
   let fetchTableData = () => {
     fetch(customUrl)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -215,51 +217,6 @@ function Subject (props) {
   );
 };
 
-let displayQuestion = (questionDefinition, existingAnswer, key) => {
-
-  if (SECTION_TYPES.includes(questionDefinition["jcr:primaryType"])) {
-    console.log(existingAnswer);
-    // Object.entries(existingAnswer.questionnaire)
-    // .filter(([key, value]) => SECTION_TYPES.includes(value['jcr:primaryType']))
-    // .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']))
-    // .map(([key, questionDefinition]) => displayQuestion(questionDefinition, existingAnswer, key))
-    // return displaySection(entryDefinition, path, depth, existingAnswers, keyProp);
-  }
-
-  // TODO: section (get questions --> displayQuestion)
-
-  const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
-    .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
-      && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
-
-  // question title, to be used when 'previewing' the form
-  const questionTitle = questionDefinition["text"];
-
-  if (existingQuestionAnswer && existingQuestionAnswer[1]["value"]) {
-    let content = `${questionTitle}: ${existingQuestionAnswer[1]["value"]}`
-    return (
-      <Typography variant="body2" component="p" key="key">{content}</Typography>
-    );
-  }
-
-  else return null;
-};
-
-// let getQuestions = (questionDefinition, existingAnswer, key) => {
-//   console.log(questionDefinition);
-//   console.log(existingAnswer)
-
-//   const existingQuestionAnswer = questionDefinition && Object.entries(questionDefinition)
-//   .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']));
-
-//   if (existingQuestionAnswer) {
-//     console.log(existingQuestionAnswer);
-//     return (existingQuestionAnswer);
-//   }
-
-//   else return;
-// }
-
 // Component that displays a preview of the saved form answers
 function FormData(props) {
   let { classes, formID, maxDisplayed } = props; // todo: set maxDisplayed default to 2
@@ -293,25 +250,52 @@ function FormData(props) {
         Error obtaining form data: {error.status} {error.statusText}
       </Typography>
     );
-  } 
+  }
+
+  let handleDisplay = (entryDefinition, data, key) => {
+    if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+      return displayQuestion(entryDefinition, data, key);
+    } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+      // get questions inside the section
+      let currentSection = (
+        Object.entries(data.questionnaire).filter(([key, value]) => SECTION_TYPES.includes(value['jcr:primaryType']))[0][1]
+      );
+      let currentAnswers = (
+        (Object.entries(data).filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection")[0])
+        ? (Object.entries(data).filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection")[0][1]) : ""
+      )
+      return (
+        Object.entries(currentSection)
+        .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']))
+        .map(([key, entryDefinition]) => displayQuestion(entryDefinition, currentAnswers, key))
+      )
+    }
+  }
+  
+  let displayQuestion = (entryDefinition, data, key) => {
+    const existingQuestionAnswer = data && Object.entries(data)
+      .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
+        && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
+  
+    // question title, to be used when 'previewing' the form
+    const questionTitle = entryDefinition["text"];
+  
+    if (existingQuestionAnswer && existingQuestionAnswer[1]["value"] ) {
+      let content = `${questionTitle}: ${existingQuestionAnswer[1]["value"]}`
+      return (
+        <Typography variant="body2" component="p" key={key}>{content}</Typography>
+      );
+    }
+    else return;
+  };
 
   if (data && data.questionnaire) {
     return (
       <React.Fragment>
-        {/* sections --> questions */}
-        {/* {console.log(data.questionnaire)}
-        {
-          Object.entries(data.questionnaire)
-          .filter(([key, value]) => SECTION_TYPES.includes(value['jcr:primaryType']))
-          .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']))
-        }
-        {console.log(data.questionnaire)} */}
-        {/* display questions */}
         {
           Object.entries(data.questionnaire)
           .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-          .slice(0, maxDisplayed) // should it be sliced here or just display first filled values
-          .map(([key, entryDefinition]) => displayQuestion(entryDefinition, data, key))
+          .map(([key, entryDefinition]) => handleDisplay(entryDefinition, data, key))
         }
       </React.Fragment>
     );
@@ -322,7 +306,6 @@ function FormData(props) {
     <Typography variant="body2" component="p">No form data yet</Typography> 
   );
 }
-
 
 Subject.propTypes = {
   id: PropTypes.string
