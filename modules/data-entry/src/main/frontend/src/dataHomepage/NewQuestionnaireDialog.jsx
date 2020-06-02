@@ -19,9 +19,9 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
-import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Tooltip, TextField, withStyles } from "@material-ui/core";
+import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Tooltip, TextField, Typography, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-
+import uuid from "uuid/v4";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function NewQuestionnaireDialog(props) {
@@ -47,7 +47,33 @@ function NewQuestionnaireDialog(props) {
       setFetching(true);
     }
   }
+  let createForm = () => {
+    setError("");
 
+    // Make a POST request to create a new form, with a randomly generated UUID
+    const URL = "/Questionnaires/" + uuid();
+    var request_data = new FormData();
+    request_data.append('jcr:primaryType', 'lfs:Questionnaire');
+    request_data.append('title', title);
+    fetch( URL, { method: 'POST', body: request_data })
+      .then( (response) => {
+        setFetching(false);
+        if (response.ok) {
+          // Redirect the user to the new uuid
+          // FIXME: Would be better to somehow obtain the router prefix from props
+          // but that is not currently possible
+          props.history.push("/content.html" + URL);
+        } else {
+          return(Promise.reject(response));
+        }
+      })
+      .catch(parseErrorResponse);
+    setFetching(true);
+  }
+  let parseErrorResponse = (response) => {
+    setFetching(false);
+    setError(`New questionnaire request failed with error code ${response.status}: ${response.statusText}`);
+  }
   let handleChangeTitle = (value) => {
     // Check if a questionnaire with the given title exists already
     const titles = questionnaires.filter(questionnaire => questionnaire.title == value);
@@ -68,6 +94,7 @@ function NewQuestionnaireDialog(props) {
           Create a new questionnaire
         </DialogTitle>
         <DialogContent>
+        {error && <Typography color='error'>{error}</Typography>}
           <TextField
             autoFocus
             placeholder="Enter a title"
@@ -83,7 +110,7 @@ function NewQuestionnaireDialog(props) {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => { setOpen(false); }}
+            onClick={() => {  createForm();  }}
             disabled={!title}
             >
             {'Create'}
@@ -114,4 +141,4 @@ function NewQuestionnaireDialog(props) {
   )
 }
 
-export default withStyles(QuestionnaireStyle)(NewQuestionnaireDialog);
+export default withStyles(QuestionnaireStyle)(withRouter(NewQuestionnaireDialog));

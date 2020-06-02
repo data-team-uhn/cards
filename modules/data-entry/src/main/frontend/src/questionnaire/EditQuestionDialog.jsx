@@ -30,6 +30,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Typography,
   withStyles
 } from "@material-ui/core";
 
@@ -116,7 +117,6 @@ let EditQuestionDialog = (props) => {
   }
 
   let addAnswerOption = (item) => {
-    console.log("ding");
     var request = new FormData();
     request.append('jcr:primaryType', 'lfs:AnswerOption');
     request.append('value', item);
@@ -138,8 +138,10 @@ let EditQuestionDialog = (props) => {
   }
 
   let deleteAnswerOption = (item) => {
+    // Find the path of the item
     let record = props.data;
     Object.values(record).filter(value => (value['jcr:primaryType'] == 'lfs:AnswerOption'));
+    // Delete the item
     fetch(record[item]["@path"], {
       method: "DELETE",
     }).then((response) => response.ok ? true : Promise.reject(response))
@@ -214,7 +216,7 @@ let EditQuestionDialog = (props) => {
     return dataTypes.map(dataType => {
       return (
         <MenuItem key={dataTypes.lastIndexOf(dataType)} value={dataType} primaryText={dataType}>
-          {dataType}
+          <Typography>{dataType}</Typography>
         </MenuItem>
       );
     });
@@ -230,7 +232,7 @@ let EditQuestionDialog = (props) => {
           <DialogContent>
             <Grid container alignItems="flex-end" spacing={2}>
               <Grid item xs={6}>
-                Label:
+                <Typography>Label:</Typography>
               </Grid>
               <Grid item xs={6}>
                 <TextField
@@ -241,7 +243,7 @@ let EditQuestionDialog = (props) => {
                 />
               </Grid>
               <Grid item xs={6}>
-                Description:
+                <Typography>Description:</Typography>
               </Grid>
               <Grid item xs={6}>
                 <TextField
@@ -252,7 +254,7 @@ let EditQuestionDialog = (props) => {
                 />
               </Grid>
               <Grid item xs={6}>
-                Answer type:
+                <Typography>Answer type:</Typography>
               </Grid>
               <Grid item xs={6}>
                 <Select 
@@ -265,7 +267,7 @@ let EditQuestionDialog = (props) => {
                 </Select>
               </Grid>
               <Grid item xs={6}>
-                Minimum number of selected options:
+                <Typography>Minimum number of selected options:</Typography>
               </Grid>
               <Grid item xs={6}>
                 <TextField
@@ -275,7 +277,7 @@ let EditQuestionDialog = (props) => {
                 />
               </Grid>
               <Grid item xs={6}>
-                Maximum number of selected options:
+                <Typography>Maximum number of selected options:</Typography>
               </Grid>
               <Grid item xs={6}>
                 <TextField
@@ -285,7 +287,7 @@ let EditQuestionDialog = (props) => {
                 />
               </Grid>
               <Grid item xs={6}>
-                Answer choices:
+                <Typography>Answer choices:</Typography>
               </Grid>
               <Grid item>
                 { answerChoicesFields() }
