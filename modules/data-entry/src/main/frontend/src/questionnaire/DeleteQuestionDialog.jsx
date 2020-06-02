@@ -26,6 +26,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Typography,
   withStyles
 } from "@material-ui/core";
 
@@ -66,10 +67,10 @@ let DeleteQuestionDialog = (props) => {
       <Dialog id="deleteDialog" open={openDeleteDialog} onClose={() => { setOpenDeleteDialog(false); }}>
         <form action={props.data["@path"]} method="DELETE" key={props.id}>
           <DialogTitle>
-            Confirm question deletion
+            <Typography>Confirm question deletion</Typography>
           </DialogTitle>
           <DialogContent>
-            { deleteQuestionWarningMessage() }
+            <Typography>{ deleteQuestionWarningMessage() }</Typography>
           </DialogContent>
           <DialogActions>
             <Button

@@ -174,17 +174,39 @@ let Question = (props) => {
       />
       <CardContent>
         <dl>
-          <dt>Label:</dt>
-          <dd>{props.data.text}</dd>
-          <dt>Description:</dt>
-          <dd>{props.data.description}</dd>
-          <dt>Answer type:</dt>
-          <dd>{props.data.dataType}</dd>
-          <dt>Minimum number of selected options:</dt>
-          <dd>{props.data.minAnswers || 0}</dd>
-          <dt>Maximum number of selected options:</dt>
-          <dd>{props.data.maxAnswers || 0}</dd>
-          <dt>Answer choices:</dt>
+          <dt>
+            <Typography>Label:</Typography>
+          </dt>
+          <dd>
+            <Typography>{props.data.text}</Typography>
+          </dd>
+          <dt>
+            <Typography>Description:</Typography>
+          </dt>
+          <dd>
+            <Typography>{props.data.description}</Typography>
+          </dd>
+          <dt>
+            <Typography>Answer type:</Typography>
+          </dt>
+          <dd>
+            <Typography>{props.data.dataType}</Typography>
+          </dd>
+          <dt>
+            <Typography>Minimum number of selected options:</Typography>
+          </dt>
+          <dd>
+            <Typography>{props.data.minAnswers || 0}</Typography>
+          </dd>
+          <dt>
+            <Typography>Maximum number of selected options:</Typography>
+          </dt>
+          <dd>
+            <Typography>{props.data.maxAnswers || 0}</Typography>
+          </dd>
+          <dt>
+            <Typography>Answer choices:</Typography>
+          </dt>
           {
             Object.values(props.data)
               .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
