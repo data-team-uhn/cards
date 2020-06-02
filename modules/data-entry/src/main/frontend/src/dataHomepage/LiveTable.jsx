@@ -19,13 +19,16 @@
 
 import React, { useState, useEffect } from "react";
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
-import { Card, CardHeader, CardContent, CardActions, Chip, Typography, Button, withStyles } from "@material-ui/core";
+import { Card, CardHeader, CardContent, CardActions, Chip, IconButton, Typography, Button, withStyles } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import moment from "moment";
 
 import Filters from "./Filters.jsx";
 
 import LiveTableStyle from "./tableStyle.jsx";
+
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 // Convert a date into the given format string
 // If the date is invalid (usually because it is missing), return ""
@@ -172,9 +175,24 @@ function LiveTable(props) {
       let format = column.format.substring(5) || 'YYYY-MM-dd';
       content = _formatDate(content, format);
     }
-
+    
     // Handle links
-    if (column.link) {
+    if (column.edit || column.delete) {
+      content = ( 
+        <div>
+          { column.edit && <Link to={column.edit}>
+            <IconButton>
+              <EditIcon />
+            </IconButton>
+          </Link> } 
+          { column.delete && <Link to={column.delete}>
+            <IconButton>
+              <DeleteIcon />
+          </IconButton>
+        </Link> } 
+      </div>
+      )
+    } else if (column.link) {
       // allow livetable to link to components in the admin dashboard
       // if livetable item must link to a component within the admin dashboard, set "admin": true
       let pathPrefix = (column.admin ? "/content.html/admin" : "/content.html");
