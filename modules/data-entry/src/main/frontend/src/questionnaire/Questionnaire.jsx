@@ -21,20 +21,26 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import {
+  Button,
   Card,
   CardContent,
   CardHeader,
   CircularProgress,
   Grid,
   IconButton,
+  Menu,
+  MenuItem,
   Typography,
   withStyles
 } from "@material-ui/core";
 
 import moment from "moment";
 
+import uuid from "uuid/v4";
+
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import EditQuestionnaireDialog from "./EditQuestionnaireDialog"
+import EditQuestionDialog from "./EditQuestionDialog"
+import DeleteQuestionDialog from "./DeleteQuestionDialog"
 import OpenWithIcon from "@material-ui/icons/OpenWith";
 
 // GUI for displaying details about a questionnaire.
@@ -42,6 +48,10 @@ let Questionnaire = (props) => {
   let { id } = props;
   let [ data, setData ] = useState();
   let [ error, setError ] = useState();
+  let [ openDialog, setOpenDialog ] = useState(false);
+  const [ isFetching, setFetching ] = useState(false);
+  let [edit, setEdit ] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   let fetchData = () => {
     fetch(`/Questionnaires/${id}.deep.json`)
@@ -58,6 +68,38 @@ let Questionnaire = (props) => {
     // FIXME Display errors to the users
     setError(response);
     setData([]);
+  }
+
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  }
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleNewQuestion = () => {
+    setError("");
+    // Make a POST request to create a new form, with a randomly generated UUID
+    const URL = `/Questionnaires/${id}` + uuid();
+    var request_data = new FormData();
+    request_data.append('jcr:primaryType', 'lfs:Question');
+    fetch( URL, { method: 'POST', body: request_data })
+      .then( (response) => {
+        setFetching(false);
+        if (response.ok) {
+        } else {
+          return(Promise.reject(response));
+        }
+      })
+      .catch(parseErrorResponse);
+    setFetching(true);
+    setAnchorEl(null);
+  };
+
+  let parseErrorResponse = (response) => {
+    setFetching(false);
+    setError(`New question request failed with error code ${response.status}: ${response.statusText}`);
   }
 
   if (!data) {
@@ -79,6 +121,21 @@ let Questionnaire = (props) => {
             <Typography variant="overline">Created by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
             : ""
         }
+      </Grid>
+      <Grid item>
+        <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleOpenMenu}>
+          Add...
+        </Button>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleCloseMenu}
+        >
+          <MenuItem onClick={handleNewQuestion}>Question</MenuItem>
+          <MenuItem onClick={handleCloseMenu}>Section</MenuItem>
+        </Menu>
       </Grid>
         {
           data ?
@@ -102,7 +159,7 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
-  let { data, id } = props;
+  let { data, id, edit, open } = props;
   return (
     <Card>
       <CardHeader title={props.data.text} action={
@@ -110,8 +167,9 @@ let Question = (props) => {
           <IconButton>
             <OpenWithIcon />
           </IconButton>
-          <EditQuestionnaireDialog key={location.pathname} edit={true} data={props.data} id={id}></EditQuestionnaireDialog>
-          </div>
+          <EditQuestionDialog key={location.pathname} edit={true} data={props.data} id={id} open={props.open}></EditQuestionDialog>
+          <DeleteQuestionDialog data={props.data} id={id}></DeleteQuestionDialog>
+        </div>
       }
       />
       <CardContent>
