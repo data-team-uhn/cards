@@ -21,6 +21,8 @@ package ca.sickkids.ccm.lfs.vocabularies.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -57,6 +59,16 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
     /** Extra query parameters to send to authenticate the request and make the response more compact. */
     private static final String REQUEST_CONFIGURATION =
         "?display_context=false&display_links=false&apikey=";
+
+    /** The list of vocabulary format names that are not supported by the current parser. Such
+        vocabularies should be explicitly requested to be downloaded in some other supported format. */
+    private static final Set<String> UNSUPPORTED_VOCABULARY_FORMATS =
+        Collections.singleton("OWL");
+
+    /** Extra query parameter to request a vocabulary in RDF format (thagt is suported by our parser).
+        See http://data.bioontology.org/documentation for full API documentation. */
+    private static final String REQUEST_DOWNLOAD_FORMAT_RDF =
+        "&download_format=rdf";
 
     /** OS environment variable which has the api key for bioontology portal. */
     private static final String APIKEY_ENVIRONMENT_VARIABLE =
@@ -99,6 +111,9 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
                     .orElseThrow(() -> new IllegalArgumentException(
                         "Failed to find the requested version [" + version + "] of vocabulary [" + identifier + "]"));
 
+                String ontologyLanguage = submission.getString("hasOntologyLanguage", null);
+                Boolean requreRDFDownload = UNSUPPORTED_VOCABULARY_FORMATS.contains(ontologyLanguage.toUpperCase());
+
                 VocabularyDescriptionBuilder desc = new VocabularyDescriptionBuilder();
                 desc.withIdentifier(identifier)
                     .withVersion(getVersion(submission))
@@ -106,8 +121,8 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
                     .withDescription(submission.getString("description", null))
                     .withWebsite(submission.getString("homepage", null))
                     .withCitation(submission.getString("publication", null))
-                    .withSource(submission.getString("@id") + "/download" + this.getRequestConfiguration())
-                    .withSourceFormat(submission.getString("hasOntologyLanguage", null));
+                    .withSource(submission.getString("@id") + "/download" + getSourceConfiguration(requreRDFDownload))
+                    .withSourceFormat(ontologyLanguage);
                 return desc.build();
             } else {
                 // If the HTTP request is not successful, throw an exception
@@ -199,6 +214,19 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
     private String getRequestConfiguration()
     {
         return REQUEST_CONFIGURATION + this.getAPIKeyFromEnvironment();
+    }
+
+    /**
+     * Returns extra query parameters specific to vocabulary download requests.
+     * This includes the API key, as well as vocabulary format specification.
+     *
+     * @param requestRDF when true, an extra parameter is added to explicitly
+     *                   request the vocabulary to be in RDF format
+     * @return extra query parameters completed with the latest API key
+     */
+    private String getSourceConfiguration(boolean requestRDF)
+    {
+        return getRequestConfiguration() + (requestRDF ? REQUEST_DOWNLOAD_FORMAT_RDF : "");
     }
 
     /**
