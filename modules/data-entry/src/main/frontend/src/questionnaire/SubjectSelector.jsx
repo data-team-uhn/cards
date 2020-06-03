@@ -118,7 +118,7 @@ export const NewSubjectDialog = withStyles(QuestionnaireStyle, {withTheme: true}
  * @param {} props 
  */
 function UnstyledSelectParentDialog (props) {
-  const { classes, defaultValue, disabled, error, isLast, open, onBack, onChangeParent, onClose, onSubmit, parentType, childType, theme } = props;
+  const { classes, childType, defaultValue, disabled, error, isLast, open, onBack, onChangeParent, onClose, onSubmit, parentType, tableRef, theme } = props;
   const [ selectedParent, setSelectedParent ] = useState(defaultValue);
 
   const COLUMNS = [
@@ -137,7 +137,7 @@ function UnstyledSelectParentDialog (props) {
         {
           initialized &&
             <MaterialTable
-              title="Select a Subject"
+              title={"Select a " + parentType?.['label']}
               columns={COLUMNS}
               data={query => {
                   let url = createQueryURL(` WHERE n.type='${parentType?.["jcr:uuid"]}'` + (query.search ? ` AND CONTAINS(n.identifier, '*${query.search}*')` : ""), "lfs:Subject");
@@ -166,6 +166,7 @@ function UnstyledSelectParentDialog (props) {
                 setSelectedParent(rowData);
                 onChangeParent(rowData);
               }}
+              tableRef={tableRef}
             />
         }
       </DialogContent>

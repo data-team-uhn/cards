@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { withRouter } from "react-router-dom";
 import uuid from "uuid/v4";
 
@@ -54,6 +54,8 @@ function NewFormDialog(props) {
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ error, setError ] = useState("");
 
+  const tableRef = useRef();
+
   // The value of a subjectType's parents are either an array, or if it is length 1 it will just be an object
   // We must cast each case into an array to handle it properly
   let parseSelectedParentTypes = (subjectType) => {
@@ -85,6 +87,7 @@ function NewFormDialog(props) {
       setNewSubjectPopperOpen(false);
       setNewSubjectParentPopperOpen(true);
       setSelectedSubjectParentNumber(old => old+1);
+      tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
       console.log(selectedSubjectParentNumber, selectedParentTypes);
     } else {
       createSubjects([newSubjectName], selectedSubjectType, newSubjectName, createForm, setError);
@@ -326,6 +329,7 @@ function NewFormDialog(props) {
         onSubmit={createNewSubject}
         open={newSubjectParentPopperOpen}
         parentType={selectedParentTypes[selectedSubjectParentNumber]}
+        tableRef={tableRef}
       />
       <div className={classes.newFormButtonWrapper}>
         <Tooltip title={children} aria-label="add">
