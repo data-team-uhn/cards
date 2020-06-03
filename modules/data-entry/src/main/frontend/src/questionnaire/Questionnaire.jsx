@@ -139,9 +139,13 @@ let Questionnaire = (props) => {
       </Grid>
         {
           data ?
-            Object.entries(data)
-              .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question')
-              .map(([key, value]) => <Grid item key={key}><Question data={value} id={id} uuid={data["jcr:uuid"]}/></Grid>)
+          Object.entries(data)
+          .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
+          .map(([key, value]) => 
+            value['jcr:primaryType'] == 'lfs:Question' 
+            ? <Grid item key={key}><Question data={value} id={id} uuid={data["jcr:uuid"]}/></Grid>
+            : <Grid item key={key}><Section data={value} id={id} uuid={data["jcr:uuid"]}></Section></Grid>
+          )
           :
             <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
         }
@@ -151,7 +155,7 @@ let Questionnaire = (props) => {
 };
 
 Questionnaire.propTypes = {
-    id: PropTypes.string.isRequired
+  id: PropTypes.string.isRequired
 };
 
 export default withStyles(QuestionnaireStyle)(Questionnaire);
@@ -218,9 +222,39 @@ let Question = (props) => {
   );
 };
 
+let Section = (props) => {
+  let { data, id, uuid } = props;
+  return (
+    <Card>
+      <CardHeader title={data["name"]}></CardHeader>
+      <CardContent>
+        <Grid container direction="column" spacing={8}>
+          {
+            data ?
+              Object.entries(data)
+              .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
+              .map(([key, value]) => 
+                value['jcr:primaryType'] == 'lfs:Question' 
+                ? <Grid item key={key}><Question data={value} id={id} uuid={data["jcr:uuid"]}/></Grid>
+                : <Grid item key={key}><Section data={value} id={id} uuid={data["jcr:uuid"]}></Section></Grid>
+              )
+              :
+              <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+          }
+        </Grid>
+      </CardContent>
+    </Card>
+  );
+};
+
 Question.propTypes = {
-    data: PropTypes.object.isRequired,
-    id: PropTypes.string.isRequired
+  data: PropTypes.object.isRequired,
+  id: PropTypes.string.isRequired
+};
+
+Section.propTypes = {
+  data: PropTypes.object.isRequired,
+  id: PropTypes.string.isRequired
 };
 
 // A predefined answer option for a question.
@@ -229,5 +263,5 @@ let AnswerOption = (props) => {
 };
 
 AnswerOption.propTypes = {
-    data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired
 };
