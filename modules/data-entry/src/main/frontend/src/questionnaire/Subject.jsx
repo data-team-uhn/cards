@@ -39,49 +39,6 @@ const QUESTION_TYPES = ["lfs:Question"];
 const SECTION_TYPES = ["lfs:Section"];
 const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
 
-// TODO: new recursive subject component
-// function SubjectWrapper(props) {
-//   let { id, classes, level } = props;
-//   // hold related subjects
-//   let [ relatedSubjects, setRelatedSubjects ] = useState();
-
-//   //TODO: fetch related subjects --> setRelatedSubjects. get the id's of each related subject ? need to somehow loop through
-
-//   const currentLevel = level || 0;
-
-//   //currentLevel will also decide styling (header style, etc)
-
-//   return (
-//     <React.Fragment>
-//       {/* title goes in this component */}
-//       <Grid item>
-//         {
-//           data && data.identifier ?
-//             <Typography variant="h2">SubjectType {data.identifier}</Typography>
-//           : <Typography variant="h2">SubjectType {id}</Typography>
-//         }
-//         {
-//           data && data['jcr:createdBy'] && data['jcr:created'] ?
-//           <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
-//           : ""
-//         }
-//       </Grid>
-//       {/* place the following in its own grid ? */}
-//       {/* return the current subject AND it's related subjects. then calls this component again, each previously related subject is returned with THEIR related subjects.  */}
-//       {id.map((subject, i) => {
-//         return (
-//           <Grid item key={`level-${currentLevel}-${i}`}>
-//             <Subject id={id}/> 
-//             {/* set props for above subject (render as usual) */}
-//             {relatedSubjects && <SubjectWrapper id={id.relatedSubjects} level={currentLevel+1}/>}
-//           </Grid>
-//         )
-//       })}
-      
-//     </React.Fragment>
-//   );
-// }
-
 /**
  * Component that displays a Subject.
  *
@@ -90,16 +47,54 @@ const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
  *
  * @param {string} id the identifier of a subject; this is the JCR node name
  */
-function Subject (props) {
-  let { id, classes } = props;
-  // This holds the full subject JSON, once it is received from the server
+
+// TODO: new recursive subject component
+function Subject(props) {
+  let { id, classes, level } = props;
+  // Error message set when fetching the data from the server fails
+  let [ error, setError ] = useState();
+  // hold related subjects
+  let [relatedSubjects, setRelatedSubjects] = useState();
+  // hold current subjecttype
+  let [subjectType, setSubjectType] = useState("<SubjectType>");
+
+  const currentLevel = level || 0;
+
+  //TODO: get subjecttype --> setSubjectType
+
+  //TODO: fetch related subjects --> setRelatedSubjects. get the id's of each related subject (return array of children's id)
+
+  // map through the array of children's id --> call this component again for each id
+  // {relatedSubjects.map((subjectID, i) => {
+  //   <Grid item key={`level-${currentLevel}-${i}`}>
+  //     {/* below: if related subjects for the current subjectID exists, render */}
+  //     {subjectID && <Subject classes={classes} id={subjectID} level={currentLevel+1}/>}
+  //   </Grid>
+  // })}
+
+  console.log(id);
+
+  return (
+    <React.Fragment>
+      <Grid item>
+        <SubjectMember classes={classes} id={id} level={currentLevel} subjectType={subjectType}/> 
+      </Grid>
+      {/* return the current subject AND it's related subjects. then calls this component again, each previously related subject is returned with THEIR related subjects.  */}
+    </React.Fragment>
+  );
+}
+
+// component to ...
+function SubjectMember (props) {
+  let { id, classes, level, subjectType } = props;
+  // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // table data: related forms to the subject
   let [tableData, setTableData] = useState();
 
-  // Fetch the subject's data as JSON from the server.
+    // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
   // such as authorship and versioning information.
   // Once the data arrives from the server, it will be stored in the `data` state variable.
@@ -124,6 +119,7 @@ function Subject (props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     fetchData();
+    // call get subjecttype
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
@@ -171,13 +167,17 @@ function Subject (props) {
     );
   }  
 
+  let buttonSize = "large"
+  if (level == 1) {buttonSize = "medium"}
+  if (level > 1) {buttonSize = "small"}
+
   return (
     <React.Fragment>
       <Grid item className={classes.subjectHeader}>
         {
           data && data.identifier ?
-            <Typography variant="h2">SubjectType {data.identifier}</Typography>
-          : <Typography variant="h2">SubjectType {id}</Typography>
+            <Typography variant="h2">{subjectType} {data.identifier}</Typography>
+          : <Typography variant="h2">{subjectType} {id}</Typography>
         }
         {
           data && data['jcr:createdBy'] && data['jcr:created'] ?
@@ -193,7 +193,7 @@ function Subject (props) {
                   <Card className={classes.subjectCard}>
                     <CardHeader
                       title={
-                        <Button size="large" className={classes.subjectFormHeaderButton}>
+                        <Button size={buttonSize} className={classes.subjectFormHeaderButton}>
                           {/* TODO: size will be dependent on subject 'level' */}
                           {entry.questionnaire["@name"]}
                         </Button> 
