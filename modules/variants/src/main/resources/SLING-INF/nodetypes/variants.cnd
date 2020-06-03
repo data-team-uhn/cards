@@ -28,13 +28,11 @@
 // Special answer to store variants .csv files
 [lfs:SomaticVariantsAnswer] > lfs:Answer
 
-  // Hardcode the resource type
-  - jcr:reference:question (STRING) = "/Questionnaires/SomaticVariants/file" mandatory autocreated protected
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/SomaticVariantAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
 
-  // Children
-
-  // will always have a child node a variant file as a .csv file
-  + (nt:file) = nt:file
+  // The variant file is stored here as a .csv file
+  + * = nt:file
