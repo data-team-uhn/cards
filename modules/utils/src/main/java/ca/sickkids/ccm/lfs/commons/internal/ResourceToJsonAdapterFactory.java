@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
@@ -244,13 +245,13 @@ public class ResourceToJsonAdapterFactory
      */
     private void addSimpleFormProperty(final JsonObjectBuilder ob, final Property prop) throws RepositoryException
     {
-        final Set<String> props = Set.of(
-            JCR_PRIMARY_TYPE_PROP,
-            JCR_CREATED_PROP,
-            JCR_CREATED_BY_PROP,
-            QUESTIONNAIRE_PROP,
-            SUBJECT_PROP
-        );
+        final Set<String> props = new HashSet<String>();
+        props.add(JCR_PRIMARY_TYPE_PROP);
+        props.add(JCR_CREATED_PROP);
+        props.add(JCR_CREATED_BY_PROP);
+        props.add(QUESTIONNAIRE_PROP);
+        props.add(SUBJECT_PROP);
+
         if (props.contains(prop.getName())) {
             addProperty(ob, prop);
         }
@@ -263,11 +264,11 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleQuestionnaireProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        final Set<String> props = Set.of(
-            JCR_PRIMARY_TYPE_PROP,
-            TITLE_PROP,
-            PATH_PROP
-        );
+        final Set<String> props = new HashSet<String>();
+        props.add(JCR_PRIMARY_TYPE_PROP);
+        props.add(TITLE_PROP);
+        props.add(PATH_PROP);
+
         if (props.contains(prop.getName())) {
             addProperty(ob, prop);
         }
@@ -280,11 +281,11 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleSubjectProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        final Set<String> props = Set.of(
-            JCR_PRIMARY_TYPE_PROP,
-            IDENTIFIER_PROP,
-            PATH_PROP
-        );
+        final Set<String> props = new HashSet<String>();
+        props.add(JCR_PRIMARY_TYPE_PROP);
+        props.add(IDENTIFIER_PROP);
+        props.add(PATH_PROP);
+
         if (props.contains(prop.getName())) {
             addProperty(ob, prop);
         }
@@ -297,11 +298,11 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleQuestionProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        final Set<String> props = Set.of(
-            JCR_PRIMARY_TYPE_PROP,
-            TEXT_PROP,
-            PATH_PROP
-        );
+        final Set<String> props = new HashSet<String>();
+        props.add(JCR_PRIMARY_TYPE_PROP);
+        props.add(TEXT_PROP);
+        props.add(PATH_PROP);
+
         if (props.contains(prop.getName())) {
             addProperty(ob, prop);
         }
@@ -314,13 +315,13 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleAnswerProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        final Set<String> props = Set.of(
-            JCR_PRIMARY_TYPE_PROP,
-            VALUE_PROP,
-            NOTE_PROP,
-            PATH_PROP,
-            QUESTION_PROP
-        );
+        final Set<String> props = new HashSet<String>();
+        props.add(JCR_PRIMARY_TYPE_PROP);
+        props.add(VALUE_PROP);
+        props.add(NOTE_PROP);
+        props.add(PATH_PROP);
+        props.add(QUESTION_PROP);
+
         if (props.contains(prop.getName())) {
             addProperty(ob, prop);
         }
@@ -333,11 +334,11 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleAnswerSectionProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        final Set<String> props = Set.of(
-            JCR_PRIMARY_TYPE_PROP,
-            SECTION_PROP,
-            PATH_PROP
-        );
+        final Set<String> props = new HashSet<String>();
+        props.add(JCR_PRIMARY_TYPE_PROP);
+        props.add(SECTION_PROP);
+        props.add(PATH_PROP);
+
         if (props.contains(prop.getName())) {
             addProperty(ob, prop);
         }
@@ -350,11 +351,11 @@ public class ResourceToJsonAdapterFactory
     private void addSimpleSectionProperty(final JsonObjectBuilder ob, final Property prop)
         throws RepositoryException
     {
-        final Set<String> props = Set.of(
-            JCR_PRIMARY_TYPE_PROP,
-            LABEL_PROP,
-            PATH_PROP
-        );
+        final Set<String> props = new HashSet<String>();
+        props.add(JCR_PRIMARY_TYPE_PROP);
+        props.add(LABEL_PROP);
+        props.add(PATH_PROP);
+
         if (props.contains(prop.getName())) {
             addProperty(ob, prop);
         }
