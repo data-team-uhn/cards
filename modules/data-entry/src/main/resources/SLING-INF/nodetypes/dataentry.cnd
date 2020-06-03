@@ -641,6 +641,9 @@
   // A link to the SubjectType for this subject
   - type (reference) mandatory
 
+  // A link to any parent Subjects
+  - parents (reference) multiple
+
 //-----------------------------------------------------------------------------
 // The homepage for the Subjects space.
 [lfs:SubjectsHomepage] > sling:Folder

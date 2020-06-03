@@ -7,11 +7,11 @@
   "Tumor": {
     "jcr:primaryType": "lfs:SubjectType",
     "label": "Tumor",
-    "parent": "../Patient"
+    "jcr:reference:parent": "../Patient"
   },
   "TumorRegion": {
     "jcr:primaryType": "lfs:SubjectType",
     "label": "Tumor region",
-    "parent": "../Tumor"
+    "jcr:reference:parent": "../Tumor"
   }
 }

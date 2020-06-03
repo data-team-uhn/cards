@@ -36,7 +36,7 @@ let createQueryURL = (query, type) => {
 }
 
 function UnstyledNewSubjectDialog (props) {
-  const { classes, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, theme, value } = props;
+  const { classes, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
   const [ selectedType, setSelectedType ] = useState();
 
   const COLUMNS = [
@@ -83,7 +83,10 @@ function UnstyledNewSubjectDialog (props) {
               backgroundColor: (selectedType?.["label"] === rowData["label"]) ? theme.palette.grey["200"] : theme.palette.background.default
             })
           }}
-          onRowClick={(event, rowData) => {onChangeType(rowData); setSelectedType(rowData);}}
+          onRowClick={(event, rowData) => {
+            onChangeType(rowData);
+            setSelectedType(rowData);
+          }}
         />
       </DialogContent>
       <DialogActions>
@@ -101,7 +104,7 @@ function UnstyledNewSubjectDialog (props) {
           color="primary"
           disabled={disabled}
           >
-          Create
+          {requiresParents ? "Continue" : "Create"}
         </Button>
       </DialogActions>
     </Dialog>
@@ -109,6 +112,94 @@ function UnstyledNewSubjectDialog (props) {
 }
 
 export const NewSubjectDialog = withStyles(QuestionnaireStyle, {withTheme: true})(UnstyledNewSubjectDialog)
+
+/**
+ * Component that displays a selection for parent references
+ * @param {} props 
+ */
+function UnstyledSelectParentDialog (props) {
+  const { classes, defaultValue, disabled, error, isLast, open, onBack, onChangeParent, onClose, onSubmit, parentType, childType, theme } = props;
+  const [ selectedParent, setSelectedParent ] = useState(defaultValue);
+
+  const COLUMNS = [
+    { title: 'Subject', field: 'identifier' },
+  ];
+
+  let initialized = parentType && childType;
+
+  return(
+    <Dialog open={open} onClose={onClose} className={classes.newSubjectPopper}>
+      <DialogTitle id="new-form-title">
+        Select parent {parentType?.['label']} for new {childType?.['label']}.
+      </DialogTitle>
+      <DialogContent dividers className={classes.NewFormDialog}>
+        { error && <Typography color="error">{error}</Typography>}
+        {
+          initialized &&
+            <MaterialTable
+              title="Select a Subject"
+              columns={COLUMNS}
+              data={query => {
+                  let url = createQueryURL(` WHERE n.type='${parentType?.["jcr:uuid"]}'` + (query.search ? ` AND CONTAINS(n.identifier, '*${query.search}*')` : ""), "lfs:Subject");
+                  url.searchParams.set("limit", query.pageSize);
+                  url.searchParams.set("offset", query.page*query.pageSize);
+                  return fetch(url)
+                    .then(response => response.json())
+                    .then(result => {
+                      return {
+                        data: result["rows"],
+                        page: Math.trunc(result["offset"]/result["limit"]),
+                        totalCount: result["totalrows"],
+                      }}
+                    )
+                }
+              }
+              options={{
+                search: true,
+                addRowPosition: 'first',
+                rowStyle: rowData => ({
+                  /* It doesn't seem possible to alter the className from here */
+                  backgroundColor: (selectedParent?.["identifier"] === rowData["identifier"]) ? theme.palette.grey["200"] : theme.palette.background.default
+                })
+              }}
+              onRowClick={(event, rowData) => {
+                setSelectedParent(rowData);
+                onChangeParent(rowData);
+              }}
+            />
+        }
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={onClose}
+          variant="contained"
+          color="default"
+          disabled={disabled}
+          >
+          Cancel
+        </Button>
+        <Button
+          onClick={onBack}
+          variant="contained"
+          color="default"
+          disabled={disabled}
+          >
+          Back
+        </Button>
+        <Button
+          onClick={onSubmit}
+          variant="contained"
+          color="primary"
+          disabled={disabled}
+          >
+          { isLast ? "Create" : "Continue" }
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
+export const SelectParentDialog = withStyles(QuestionnaireStyle, {withTheme: true})(UnstyledSelectParentDialog)
 
 /**
  * Component that displays the list of subjects in a dialog. Double clicking a subject selects it.
