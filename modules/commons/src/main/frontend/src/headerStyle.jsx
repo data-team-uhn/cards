@@ -21,7 +21,7 @@ import {
   whiteColor,
   grayColor,
   hexToRgb
-} from "../themeStyle.jsx";
+} from "./themeStyle.jsx";
 
 const headerStyle = theme => ({
   appBar: {
@@ -94,14 +94,13 @@ const headerStyle = theme => ({
     width: theme.spacing(32)
   },
   search: {
-    marginTop: theme.spacing(1),
-    width: theme.spacing(59)
+    marginTop: theme.spacing(1)
   },
   dropdownItem: {
     whiteSpace: "normal"
   },
   suggestions: {
-    width: theme.spacing(64)
+    width: theme.spacing(32)
   },
   suggestionContainer: {
     minHeight: "10px"
@@ -110,8 +109,7 @@ const headerStyle = theme => ({
     color: whiteColor
   },
   aboveBackground: {
-    zIndex: "1301",
-    left: -theme.spacing(3) + "px !important"
+    zIndex: "1301"
   },
   searchResultAvatar: {
     color: theme.palette.getContrastText(theme.palette.info.main),

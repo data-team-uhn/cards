@@ -17,7 +17,7 @@ import {
   blackColor,
   grayColor,
   hexToRgb
-} from "../themeStyle.jsx";
+} from "../../themeStyle.jsx";
 
 const dropdownStyle = theme => ({
   buttonLink: {

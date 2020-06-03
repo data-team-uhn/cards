@@ -14,7 +14,7 @@ import {
     whiteColor,
     grayColor,
     hexToRgb
-  } from "./themeStyle.jsx";
+  } from "../themeStyle.jsx";
 
 const thesaurusStyle = theme => ({
   closeButton: {

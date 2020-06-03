@@ -42,7 +42,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, classes, filters, ...rest } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -71,6 +71,15 @@ function LiveTable(props) {
     :
       new URL(window.location.pathname.substring(window.location.pathname.lastIndexOf("/")) + ".paginate", window.location.origin)
   );
+
+  // When new data is added, trigger a new fetch
+  useEffect(() => {
+    if (updateData){
+      setFetchStatus(Object.assign({}, fetchStatus, {
+        "currentRequestNumber": -1,
+      }));
+    }
+  }, [updateData]);
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's behavior
@@ -127,9 +136,13 @@ function LiveTable(props) {
   };
 
   let handleError = (response) => {
+    let err = response.statusText ? response.statusText : response.toString();
+    if (response.status == 404) {
+      err = "Access to data is pending the approval of your account";
+    }
     setFetchStatus(Object.assign({}, fetchStatus, {
       "currentFetch": false,
-      "fetchError": (response.statusText ? response.statusText : response.toString()),
+      "fetchError": err,
     }));
     setTableData();
   };

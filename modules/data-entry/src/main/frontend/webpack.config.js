@@ -9,6 +9,7 @@ module.exports = {
     [module_name + 'LiveTable']: './src/dataHomepage/LiveTable.jsx',
     [module_name + 'Questionnaires']: './src/dataHomepage/Questionnaires.jsx',
     [module_name + 'Subjects']: './src/dataHomepage/Subjects.jsx',
+    [module_name + 'SubjectTypes']: './src/dataHomepage/SubjectTypes.jsx',
     [module_name + 'Forms']: './src/dataHomepage/Forms.jsx',
     [module_name + 'multipleChoice']: './src/questionnaire/MultipleChoice.jsx',
     [module_name + 'textQuestion']: './src/questionnaire/TextQuestion.jsx',

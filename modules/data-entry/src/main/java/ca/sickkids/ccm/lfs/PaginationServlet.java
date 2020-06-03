@@ -37,6 +37,8 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A servlet that lists resources of a specific type, depending on which "homepage" resource the request is targeting.
@@ -54,14 +56,19 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
-    resourceTypes = { "lfs/QuestionnairesHomepage", "lfs/FormsHomepage", "lfs/SubjectsHomepage" },
+    resourceTypes = { "lfs/QuestionnairesHomepage", "lfs/FormsHomepage", "lfs/SubjectsHomepage",
+        "lfs/SubjectTypesHomepage" },
     selectors = { "paginate" })
 public class PaginationServlet extends SlingSafeMethodsServlet
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataImportServlet.class);
+
     private static final long serialVersionUID = -6068156942302219324L;
 
     // Allowed JCR-SQL2 operators (from https://docs.adobe.com/docs/en/spec/jcr/2.0/6_Query.html#6.7.17%20Operator)
     private static final List<String> COMPARATORS = Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE");
+
+    private static final String SUBJECT_IDENTIFIER = "lfs:Subject";
 
     @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     @Override
@@ -123,8 +130,11 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         query.append(parseExistence(filterempty, filternotempty));
 
         query.append(" order by n.'jcr:created'");
+        String finalquery = query.toString();
+        LOGGER.debug("Computed final query: {}", finalquery);
+
         final Iterator<Resource> results =
-            request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
+            request.getResourceResolver().findResources(finalquery, Query.JCR_SQL2);
         // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
         final Writer out = response.getWriter();
         try (JsonGenerator jsonGen = Json.createGenerator(out)) {
@@ -186,6 +196,11 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // Append an inner join for each pipe-delimited identifier in joins
         StringBuilder joindata = new StringBuilder();
         for (int i = 0; i < joins.length; i++) {
+            // Skip this join if it is on lfs:Subject, which does not require a child inner join
+            if (SUBJECT_IDENTIFIER.equals(joins[i])) {
+                continue;
+            }
+
             joindata.append(
                 String.format(
                     " inner join [%s] as %s%d on isdescendantnode(%s%d, n)",
@@ -209,6 +224,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @param comparator user input comparators
      * @throws IllegalArgumentException when the number of input fields are not equal
      */
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private String parseFilter(final String[] fields, final String[] values, final String[] comparator)
         throws IllegalArgumentException
     {
@@ -241,31 +257,41 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         StringBuilder filterdata = new StringBuilder();
         // TODO: Double check the sanitization on the comparator
         for (int i = 0; i < fields.length; i++) {
-            // Condition 1: the question uuid must match one of the given (comma delimited)
-            String[] possibleQuestions = fields[i].split(",");
-            filterdata.append(" and (");
-            for (int j = 0; j < possibleQuestions.length; j++) {
+            // If the question is lfs:Subject, we match on the parent rather than the child
+            if (SUBJECT_IDENTIFIER.equals(fields[i])) {
                 filterdata.append(
-                    String.format(" child%d.'question'='%s'",
-                        i,
-                        this.sanitizeField(possibleQuestions[j])
+                    String.format(" and n.'subject'%s'%s'",
+                        this.sanitizeComparator(comparators[i]),
+                        this.sanitizeField(values[i])
                     )
                 );
-                // Add an 'or' if there are more possible conditions
-                if (j + 1 != possibleQuestions.length) {
-                    filterdata.append(" or");
+            } else {
+                // Condition 1: the question uuid must match one of the given (comma delimited)
+                String[] possibleQuestions = fields[i].split(",");
+                filterdata.append(" and (");
+                for (int j = 0; j < possibleQuestions.length; j++) {
+                    filterdata.append(
+                        String.format(" child%d.'question'='%s'",
+                            i,
+                            this.sanitizeField(possibleQuestions[j])
+                        )
+                    );
+                    // Add an 'or' if there are more possible conditions
+                    if (j + 1 != possibleQuestions.length) {
+                        filterdata.append(" or");
+                    }
                 }
-            }
 
-            // Condition 2: the value must exactly match
-            filterdata.append(
-                String.format(
-                    ") and child%d.'value'%s'%s'",
-                    i,
-                    this.sanitizeComparator(comparators[i]),
-                    this.sanitizeField(values[i])
-                )
-            );
+                // Condition 2: the value must exactly match
+                filterdata.append(
+                    String.format(
+                        ") and child%d.'value'%s'%s'",
+                        i,
+                        this.sanitizeComparator(comparators[i]),
+                        this.sanitizeField(values[i])
+                    )
+                );
+            }
         }
         return filterdata.toString();
     }
@@ -305,17 +331,27 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         StringBuilder joindata = new StringBuilder();
         for (int i = 0; i < fieldnames.length; i++) {
             String sanitizedFieldName = sanitizeField(fieldnames[i]);
-            joindata.append(
-                String.format(
-                    " and %s%d.'question'='%s' and %s%d.'value'%s",
-                    childprefix,
-                    i,
-                    sanitizedFieldName,
-                    childprefix,
-                    i,
-                    comparison
-                )
-            );
+            // lfs:Subject is handled differently, since it is on the Form itself
+            if (fieldnames[i].equals("lfs:Subject")) {
+                joindata.append(
+                    String.format(
+                        " and n.'subject'%s",
+                        comparison
+                    )
+                );
+            } else {
+                joindata.append(
+                    String.format(
+                        " and %s%d.'question'='%s' and %s%d.'value'%s",
+                        childprefix,
+                        i,
+                        sanitizedFieldName,
+                        childprefix,
+                        i,
+                        comparison
+                    )
+                );
+            }
         }
         return joindata.toString();
     }

@@ -13,7 +13,7 @@ import {
   defaultFont,
   dangerColor,
   whiteColor
-} from "../themeStyle.jsx";
+} from "../../themeStyle.jsx";
 
 import dropdownStyle from "./dropdownStyle.jsx";
 

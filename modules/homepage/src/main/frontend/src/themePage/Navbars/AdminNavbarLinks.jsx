@@ -11,12 +11,13 @@
 */
 import PropTypes from "prop-types";
 import React from "react";
+import { withRouter } from "react-router-dom";
 // @material-ui/core components
 import { Button, Hidden, IconButton, withStyles } from "@material-ui/core";
 // @material-ui/icons
 import ExitToApp from "@material-ui/icons/ExitToApp";
 
-import SearchBar from "./SearchBar.jsx";
+import HeaderSearchBar from "./HeaderSearchBar.jsx";
 import headerLinksStyle from "./headerLinksStyle.jsx";
 
 class HeaderLinks extends React.Component {
@@ -30,11 +31,11 @@ class HeaderLinks extends React.Component {
 
     return (
       <div>
-        <SearchBar
+        <HeaderSearchBar
           invertColors={!expand}
-          closeSidebar={expand ? undefined : closeSidebar}
+          onSelectFinish={expand ? undefined : closeSidebar}
           className={expand ? undefined : classes.buttonLink}
-          />
+        />
         {/* Log out */}
         <IconButton
           aria-label="Log out"
