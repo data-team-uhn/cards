@@ -300,7 +300,6 @@ function NewFormDialog(props) {
         />
       <SelectParentDialog
         childType={selectedSubjectType}
-        defaultValue={selectedNewSubjectParents?.[selectedSubjectParentNumber]}
         disabled={isFetching}
         error={error}
         onBack={() => {
@@ -330,6 +329,7 @@ function NewFormDialog(props) {
         open={newSubjectParentPopperOpen}
         parentType={selectedParentTypes[selectedSubjectParentNumber]}
         tableRef={tableRef}
+        value={selectedNewSubjectParents?.[selectedSubjectParentNumber]}
       />
       <div className={classes.newFormButtonWrapper}>
         <Tooltip title={children} aria-label="add">

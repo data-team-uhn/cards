@@ -35,6 +35,19 @@ let createQueryURL = (query, type) => {
   return url;
 }
 
+/**
+ * Component that displays a dialog to create a new subject
+ *
+ * @param {bool} disabled If true, all controls are disabled
+ * @param {string} error Error message to display
+ * @param {bool} open If true, this dialog is open
+ * @param {func} onClose Callback fired when the user tries to close this dialog
+ * @param {func} onChangeSubject Callback fired when the user changes the name of the subject
+ * @param {func} onChangeType Callback fired when the user selects a subject type
+ * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
+ * @param {bool} requiresParents If true, the button to continue will read "Continue" instead of "Create"
+ * @param {string} value The current name of the subject
+ */
 function UnstyledNewSubjectDialog (props) {
   const { classes, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
   const [ selectedType, setSelectedType ] = useState();
@@ -114,12 +127,23 @@ function UnstyledNewSubjectDialog (props) {
 export const NewSubjectDialog = withStyles(QuestionnaireStyle, {withTheme: true})(UnstyledNewSubjectDialog)
 
 /**
- * Component that displays a selection for parent references
- * @param {} props 
+ * Component that displays a dialog to select parents for a new subject
+ *
+ * @param {object} childType The object representing the lfs:SubjectType of the child that is being created
+ * @param {bool} disabled If true, all controls are disabled
+ * @param {string} error Error message to display
+ * @param {bool} isLast If true, the button to continue will read "Continue" instead of "Create"
+ * @param {bool} open If true, this dialog is open
+ * @param {func} onBack Callback fired when the user clicks the "Back" button
+ * @param {func} onChangeParent Callback fired when the user changes the parent subject
+ * @param {func} onClose Callback fired when the user tries to close this dialog
+ * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
+ * @param {object} parentType The object representing the lfs:SubjectType of the parent that is being selected
+ * @param {ref} tableRef Pass a reference to the MaterialTable object
+ * @param {object} value The currently selected parent
  */
 function UnstyledSelectParentDialog (props) {
-  const { classes, childType, defaultValue, disabled, error, isLast, open, onBack, onChangeParent, onClose, onSubmit, parentType, tableRef, theme } = props;
-  const [ selectedParent, setSelectedParent ] = useState(defaultValue);
+  const { classes, childType, disabled, error, isLast, open, onBack, onChangeParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
   const COLUMNS = [
     { title: 'Subject', field: 'identifier' },
@@ -159,13 +183,10 @@ function UnstyledSelectParentDialog (props) {
                 addRowPosition: 'first',
                 rowStyle: rowData => ({
                   /* It doesn't seem possible to alter the className from here */
-                  backgroundColor: (selectedParent?.["identifier"] === rowData["identifier"]) ? theme.palette.grey["200"] : theme.palette.background.default
+                  backgroundColor: (value?.["identifier"] === rowData["identifier"]) ? theme.palette.grey["200"] : theme.palette.background.default
                 })
               }}
-              onRowClick={(event, rowData) => {
-                setSelectedParent(rowData);
-                onChangeParent(rowData);
-              }}
+              onRowClick={(event, rowData) => {onChangeParent(rowData);}}
               tableRef={tableRef}
             />
         }
