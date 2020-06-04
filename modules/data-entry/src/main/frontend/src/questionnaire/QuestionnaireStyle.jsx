@@ -132,6 +132,14 @@ const questionnaireStyle = theme => ({
     subjectHeader: {
         paddingBottom: "12px !important",
     },
+    subjectNewButton: {
+        margin: theme.spacing(1),
+        top: theme.spacing(6.5),
+        right: theme.spacing(6.5),
+        bottom: 'auto',
+        left: 'auto',
+        position: 'fixed',
+    },
     collapsedSection: {
         padding: "0 !important"
     },

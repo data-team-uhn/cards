@@ -31,8 +31,12 @@ import {
   CardHeader,
   CardContent,
   withStyles,
-  Button
+  Button,
+  Fab
 } from "@material-ui/core";
+
+import AddIcon from "@material-ui/icons/Add";
+
 
 const QUESTION_TYPES = ["lfs:Question"];
 const SECTION_TYPES = ["lfs:Section"];
@@ -54,10 +58,33 @@ let createQueryURL = (query, type) => {
  * <Subject id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
  *
  * @param {string} id the identifier of a subject; this is the JCR node name
- * @param {int} level the 'level' of the subject component, used for styling based on nesting level
  */
 
 function Subject(props) {
+  let { id, classes} = props;
+
+  // TODO: import/reference dialog here
+
+  return (
+    <React.Fragment>
+      <div className={classes.subjectNewButton}>
+          <Fab
+            color="primary"
+            aria-label="add"
+            // onClick={openDialog}
+            // disabled={!open && isFetching}
+          >
+            <AddIcon />
+          </Fab>
+        {/* {!open && isFetching && <CircularProgress size={56} className={classes.newFormLoadingIndicator} />} */}
+      </div>
+      <SubjectContainer id={id} classes={classes}/>
+    </React.Fragment>
+  );
+}
+
+// TODO: rename to 'helper' or something similar
+function SubjectContainer(props) {
   let { id, classes, level } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
@@ -226,7 +253,6 @@ function SubjectMember (props) {
                     <CardHeader
                       title={
                         <Button size={buttonSize} className={classes.subjectFormHeaderButton}>
-                          {/* TODO: size will be dependent on subject 'level' */}
                           {entry.questionnaire["@name"]}
                         </Button> 
                       }
