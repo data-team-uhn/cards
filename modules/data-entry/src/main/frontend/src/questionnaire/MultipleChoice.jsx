@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { Checkbox, FormControlLabel, IconButton, List, ListItem, Radio, RadioGroup, TextField, Typography, withStyles } from "@material-ui/core";
+import { Checkbox, FormControlLabel, IconButton, List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField, Typography, withStyles } from "@material-ui/core";
 import Close from "@material-ui/icons/Close";
 import PropTypes from 'prop-types';
 
@@ -33,7 +33,7 @@ const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
   let { classes, existingAnswer, ghostAnchor, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
-  let { maxAnswers, minAnswers } = {...props.questionDefinition, ...props};
+  let { maxAnswers, minAnswers, dataType } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
@@ -42,6 +42,7 @@ function MultipleChoice(props) {
     .map(value => [value.label || value.value, value.value, true]);
   const isBare = defaults.length === 0 && maxAnswers === 1;
   const isRadio = defaults.length > 0 && maxAnswers === 1;
+  const isSelect = dataType === "chromosome";
   let initialSelection =
     // If there's no existing answer, there's no initial selection
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
@@ -201,7 +202,48 @@ function MultipleChoice(props) {
 
   const answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
 
-  if (isBare) {
+  if (isSelect) {
+    return (
+      <React.Fragment>
+        <Select
+          value={ghostName}
+          onChange={(event) => {
+            setGhostName(event.target.value);
+            updateGhost(GHOST_SENTINEL, event.target.value);
+            onChange && onChange(event.target.value);
+          }
+        }>
+          <MenuItem value={1}>1</MenuItem>
+          <MenuItem value={2}>2</MenuItem>
+          <MenuItem value={3}>3</MenuItem>
+          <MenuItem value={4}>4</MenuItem>
+          <MenuItem value={5}>5</MenuItem>
+          <MenuItem value={6}>6</MenuItem>
+          <MenuItem value={7}>7</MenuItem>
+          <MenuItem value={8}>8</MenuItem>
+          <MenuItem value={9}>9</MenuItem>
+          <MenuItem value={10}>10</MenuItem>
+          <MenuItem value={11}>11</MenuItem>
+          <MenuItem value={12}>12</MenuItem>
+          <MenuItem value={13}>13</MenuItem>
+          <MenuItem value={14}>14</MenuItem>
+          <MenuItem value={15}>15</MenuItem>
+          <MenuItem value={16}>16</MenuItem>
+          <MenuItem value={17}>17</MenuItem>
+          <MenuItem value={18}>18</MenuItem>
+          <MenuItem value={19}>19</MenuItem>
+          <MenuItem value={20}>20</MenuItem>
+          <MenuItem value={21}>21</MenuItem>
+          <MenuItem value={22}>22</MenuItem>
+        </Select>
+        <Answer
+          answers={answers}
+          existingAnswer={existingAnswer}
+          {...rest}
+          />
+      </React.Fragment>
+    )
+  } else if (isBare) {
     return(
       <React.Fragment>
         {ghostInput}
