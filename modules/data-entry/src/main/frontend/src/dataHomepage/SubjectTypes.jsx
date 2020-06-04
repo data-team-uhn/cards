@@ -23,10 +23,9 @@ import Subject from "../questionnaire/Subject.jsx";
 export default function SubjectTypes(props) {
   const columns = [
     {
-      "key": "identifier",
-      "label": "Identifier",
+      "key": "label",
+      "label": "Label",
       "format": "string",
-      "link": "dashboard+field:@path",
     },
     {
       "key": "jcr:createdBy",

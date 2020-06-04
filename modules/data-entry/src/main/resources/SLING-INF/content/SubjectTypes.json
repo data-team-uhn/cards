@@ -1,5 +1,5 @@
 {
-  "jcr:primaryType": "sling:Folder",
+  "jcr:primaryType": "lfs:SubjectTypesHomepage",
   "Patient": {
     "jcr:primaryType": "lfs:SubjectType",
     "label": "Patient"

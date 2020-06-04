@@ -35,7 +35,7 @@
         "lfs:extensionName": "Subject Types",
         "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectTypes.js",
-        "lfs:defaultOrder": 2,
+        "lfs:defaultOrder": 95,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "",
