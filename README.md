@@ -35,6 +35,8 @@ To specify a different URL, use `-Dsling.url=https://lfs.server:8443/system/cons
 
 `java -jar distribution/target/lfs-*.jar -Dsling.run.modes=dev` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
 
+In order to use "Vocabularies" section and load vocabularies from BioPortal (bioontology.org) `BIOPORTAL_APIKEY` environment variable should be set to a valid BioPortal API key. You can [request a new account](https://bioportal.bioontology.org/accounts/new) if you don't already have one, and the API key can be found [in your profile](https://bioportal.bioontology.org/account).
+
 ## Running with Docker
 
 If Docker is installed, then the build will also create a new image named `lfs/lfs:latest`

@@ -56,7 +56,11 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
 
     /** Extra query parameters to send to authenticate the request and make the response more compact. */
     private static final String REQUEST_CONFIGURATION =
-        "?apikey=8ac0298d-99f4-4793-8c70-fb7d3400f279&display_context=false&display_links=false";
+        "?display_context=false&display_links=false&apikey=";
+
+    /** OS environment variable which has the api key for bioontology portal. */
+    private static final String APIKEY_ENVIRONMENT_VARIABLE =
+        "BIOPORTAL_APIKEY";
 
     @Override
     public String getRepositoryName()
@@ -76,7 +80,7 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
         throws IllegalArgumentException, IOException
     {
         final String submissionsURL = "https://data.bioontology.org/ontologies/" + identifier
-            + "/submissions" + REQUEST_CONFIGURATION;
+            + "/submissions" + this.getRequestConfiguration();
         HttpGet httpget = new HttpGet(submissionsURL);
         httpget.setHeader("Accept", "application/json");
         try (CloseableHttpClient httpclient = HttpClientBuilder.create().build();
@@ -102,7 +106,7 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
                     .withDescription(submission.getString("description", null))
                     .withWebsite(submission.getString("homepage", null))
                     .withCitation(submission.getString("publication", null))
-                    .withSource(submission.getString("@id") + "/download" + REQUEST_CONFIGURATION)
+                    .withSource(submission.getString("@id") + "/download" + this.getRequestConfiguration())
                     .withSourceFormat(submission.getString("hasOntologyLanguage", null));
                 return desc.build();
             } else {
@@ -185,5 +189,27 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
             return released;
         }
         return creationDate;
+    }
+
+    /**
+     * Returns extra query parameters completed with the current API key.
+     *
+     * @return extra query parameters completed with the latest API key
+     */
+    private String getRequestConfiguration()
+    {
+        return REQUEST_CONFIGURATION + this.getAPIKeyFromEnvironment();
+    }
+
+    /**
+     * Retrieves BioPortal API key from the OS environment variable.
+     * If the environment variable is not specified returns an empty string.
+     *
+     * @return BioPortal API key
+     */
+    private String getAPIKeyFromEnvironment()
+    {
+        String apiKey = System.getenv(APIKEY_ENVIRONMENT_VARIABLE);
+        return StringUtils.isBlank(apiKey) ? "" : apiKey;
     }
 }

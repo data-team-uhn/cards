@@ -36,6 +36,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -322,7 +323,9 @@ public class VocabularyIndexerServletTest
 
         // Compare the error message
         String expectedError = "NCIT Flat indexing error: Error: Failed to load zip vocabulary locally. "
-            + "./someLocation (No such file or directory)";
+            + (SystemUtils.IS_OS_WINDOWS
+            ? ".\\someLocation (The system cannot find the file specified)"
+            : "./someLocation (No such file or directory)");
         String obtainedError = responseJson.getString("error");
         Assert.assertEquals(expectedError, obtainedError);
 
