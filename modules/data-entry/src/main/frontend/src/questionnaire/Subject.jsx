@@ -30,7 +30,6 @@ import {
   Card,
   CardHeader,
   CardContent,
-  CardActions,
   withStyles,
   Button
 } from "@material-ui/core";
@@ -49,15 +48,15 @@ let createQueryURL = (query, type) => {
 }
 
 /**
- * Component that displays a Subject.
+ * Component that displays a Subject. Component recursively displays 'SubjectMember' components.
  *
  * @example
  * <Subject id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
  *
  * @param {string} id the identifier of a subject; this is the JCR node name
+ * @param {int} level the 'level' of the subject component, used for styling based on nesting level
  */
 
-// TODO: new recursive subject component
 function Subject(props) {
   let { id, classes, level } = props;
   // This holds the full form JSON, once it is received from the server
@@ -66,7 +65,7 @@ function Subject(props) {
   let [ error, setError ] = useState();
   // hold related subjects
   let [relatedSubjects, setRelatedSubjects] = useState();
-
+  // 'level' of subject component
   const currentLevel = level || 0;
 
   // Fetch the subject's data as JSON from the server.
@@ -99,17 +98,14 @@ function Subject(props) {
     );
   }
 
-  // get related subjects!
+  // get related SubjectTypes
   let check_url = createQueryURL(` WHERE n.'parents'='${data['jcr:uuid']}'`, "lfs:Subject");
   // let check_url = createQueryURL(` WHERE CONTAINS (n.'parents', '${data['jcr:uuid']}')`, "lfs:Subject");
   let fetchRelated = () => { 
-    fetch( check_url )
-    .then( (response) => response.ok ? response.json() : Promise.reject(response))
-    .then( (json) => {
-      console.log(json.rows);
-      setRelatedSubjects(json.rows);
-    })
-  } //handle error
+    fetch(check_url)
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
+    .then((json) => {setRelatedSubjects(json.rows);})
+  } //TODO: handle error
 
   if (!relatedSubjects) {
     fetchRelated();
@@ -117,38 +113,6 @@ function Subject(props) {
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
-
-  if (relatedSubjects) {
-    console.log(relatedSubjects);
-  }
-
-  // get ID of each related subject
-        // loop through rows --> @name --> use as id to render the rest
-
-  //TODO: fetch related subjects --> setRelatedSubjects. get the id's of each related subject (return array of children's id)
-
-  // look through all subjects --> find where current id = looped.parent --> push to relatedSubjects
-
-  // map through the array of children's id --> call this component again for each id
-  // {relatedSubjects.map((subjectID, i) => {
-  //   <Grid item key={`level-${currentLevel}-${i}`}>
-  //     {/* below: if related subjects for the current subjectID exists, render */}
-  //     {subjectID && <Subject classes={classes} id={subjectID} level={currentLevel+1}/>}
-  //   </Grid>
-  // })}
-
-  // {relatedSubjects ?
-  //   (<Grid item>
-  //     {relatedSubjects.map( (subject, i) => { // map each result from the subject fetch (each form)
-  //       return(
-  //         <Grid item key={`level-${currentLevel}-${i}`}>
-  //           <Typography variant="h2">{subject["@name"]}</Typography>
-  //         </Grid>
-  //       )
-  //     })}
-  //   </Grid>
-  //   ) : <Typography variant="body2" component="p">Loading...</Typography>
-  // }
 
   if (error) {
     return (
@@ -164,28 +128,24 @@ function Subject(props) {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <SubjectMember classes={classes} id={id} level={currentLevel} data={data}/> 
-      </Grid>
+      <SubjectMember classes={classes} id={id} level={currentLevel} data={data}/> 
       {relatedSubjects ?
         (<Grid item xs={12}>
           {relatedSubjects.map( (subject, i) => { // map each result from the subject fetch (each form)
             return(
-              <Grid item key={i}>
-                {console.log(subject)}
-                <Typography variant="h2">{subject["@name"]}</Typography>
-              </Grid>
+                <Subject key={i} classes={classes} id={subject["@name"]} level={currentLevel+1}/>
             )
           })}
         </Grid>
-        ) : <Grid item><Typography variant="body2" component="p">Loading...</Typography></Grid> // doesnt work
+        ) : <Grid item><Typography variant="body2" component="p">Loading...</Typography></Grid> // TODO: fix, doesnt work
       }
-      {/* return the current subject AND it's related subjects. then calls this component again, each previously related subject is returned with THEIR related subjects.  */}
     </Grid>
   );
 }
 
-// component to ...
+/**
+ * Component that displays all forms related to a Subject.
+ */
 function SubjectMember (props) {
   let { id, classes, level, data } = props;
   // Error message set when fetching the data from the server fails
@@ -235,17 +195,20 @@ function SubjectMember (props) {
     );
   } 
 
-  let buttonSize = "large"
-  if (level == 1) {buttonSize = "medium"}
-  if (level > 1) {buttonSize = "small"}
+  let buttonSize = "large";
+  let headerStyle = "h2";
+  if (level == 1) {buttonSize = "medium"; headerStyle="h4"};
+  if (level > 1) {buttonSize = "small"; headerStyle="h5"};
+
+  //TODO: fix loading symbol, too many circles
 
   return (
-    <React.Fragment>
+    <Grid item xs={12}>
       <Grid item className={classes.subjectHeader}>
         {
           data && data.identifier ?
-            <Typography variant="h2">{data.type.label} {data.identifier}</Typography>
-          : <Typography variant="h2">{data.type.label} {id}</Typography>
+            <Typography variant={headerStyle}>{data.type.label} {data.identifier}</Typography>
+          : <Typography variant={headerStyle}>{data.type.label} {id}</Typography>
         }
         {
           data && data['jcr:createdBy'] && data['jcr:created'] ?
@@ -256,9 +219,9 @@ function SubjectMember (props) {
       <Grid item>
       {tableData ?
           (<Grid container spacing={3}>
-            {tableData.map( (entry) => { // map each result from the subject fetch (each form)
+            {tableData.map( (entry, i) => {
               return(
-                <Grid item lg={12} xl={6} key={entry.questionnaire["jcr:uuid"]}>
+                <Grid item lg={12} xl={6} key={`${entry.questionnaire["jcr:uuid"]}-${i}`}>
                   <Card className={classes.subjectCard}>
                     <CardHeader
                       title={
@@ -283,13 +246,13 @@ function SubjectMember (props) {
           ) : <Typography variant="body2" component="p">Loading...</Typography>
         }
       </Grid>
-    </React.Fragment>
+    </Grid>
   );
 };
 
 // Component that displays a preview of the saved form answers
 function FormData(props) {
-  let { classes, formID, maxDisplayed } = props; // todo: set maxDisplayed default to 2
+  let { formID, maxDisplayed } = props; // todo: set maxDisplayed default to 2
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
