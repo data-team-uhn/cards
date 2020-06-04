@@ -89,7 +89,8 @@ function NewFormDialog(props) {
       setSelectedSubjectParentNumber(old => old+1);
       tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
     } else {
-      createSubjects([newSubjectName], selectedSubjectType, newSubjectName, createForm, setError);
+      let parent_uuids = selectedNewSubjectParents.map((parent) => parent["jcr:uuid"]);
+      createSubjects([newSubjectName], selectedSubjectType, parent_uuids, newSubjectName, createForm, setError);
     }
   }
 

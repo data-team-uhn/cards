@@ -355,12 +355,13 @@ export const SelectorDialog = withStyles(QuestionnaireStyle)(UnstyledSelectorDia
  * Create new subjects from an array of identifiers.
  *
  * @param {array} newSubjects The new subjects to add to the repository, as an array of strings.
- * @param {array} subjectType The subjectType uuid to use for the new subjects
+ * @param {array} subjectType The subjectType uuid to use for the new subjects.
+ * @param {array} subjectParents Parent subjects required by the subject type.
  * @param {object or string} subjectToTrack The selected subject to return the URL for
  * @param {func} returnCall The callback after all subjects have been created
  * @param {func} onError The callback if an error occurs during subject creation
  */
-export function createSubjects(newSubjects, subjectType, subjectToTrack, returnCall, onError) {
+export function createSubjects(newSubjects, subjectType, subjectParents, subjectToTrack, returnCall, onError) {
   let selectedURL = subjectToTrack["@path"];
   let subjectTypeToUse = subjectType["jcr:uuid"] ? subjectType["jcr:uuid"] : subjectType;
   let lastPromise = null;
@@ -385,6 +386,10 @@ export function createSubjects(newSubjects, subjectType, subjectToTrack, returnC
     requestData.append('identifier', subjectName);
     requestData.append('type', subjectTypeToUse);
     requestData.append('type@TypeHint', 'Reference');
+    subjectParents.forEach((parent) => {
+      requestData.append('parents', parent);
+    })
+    requestData.append('parents@TypeHint', 'Reference');
 
     let newPromise = fetch( checkAlreadyExistsURL )
       .then( (response) => response.ok ? response.json() : Promise.reject(response))
