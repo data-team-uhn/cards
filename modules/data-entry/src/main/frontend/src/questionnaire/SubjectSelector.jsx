@@ -69,6 +69,7 @@ function UnstyledNewSubjectDialog (props) {
           value={value}
           onChange={onChangeSubject}
           className={classes.newSubjectInput}
+          placeholder={"Enter subject identifier here"}
           />
         <MaterialTable
           title="Select a SubjectType"

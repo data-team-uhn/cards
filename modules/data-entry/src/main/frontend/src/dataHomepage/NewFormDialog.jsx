@@ -88,7 +88,6 @@ function NewFormDialog(props) {
       setNewSubjectParentPopperOpen(true);
       setSelectedSubjectParentNumber(old => old+1);
       tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
-      console.log(selectedSubjectParentNumber, selectedParentTypes);
     } else {
       createSubjects([newSubjectName], selectedSubjectType, newSubjectName, createForm, setError);
     }
