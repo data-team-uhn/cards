@@ -61,8 +61,6 @@ public class VocabularyBioPortalApiKeyServlet extends SlingSafeMethodsServlet
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
-        // Our normal output would be ourselves as a JSONObject
-        JsonObject json = request.getResource().adaptTo(JsonObject.class);
         response.setContentType("application/json");
         final Writer out = response.getWriter();
         try (JsonGenerator jsonGen = Json.createGenerator(out)) {
