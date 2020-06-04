@@ -364,6 +364,10 @@
   // If present, it will be displayed to the user between the label and the sections.
   - description (string)
 
+  // An optional list of lfs:SubjectTypes.
+  // Any Forms for this questionnaire must have a subject with a type on the list.
+  - requiredSubjectTypes (reference) mandatory
+
   // Children
 
   // The sections and standalone questions that make up this questionnaire.
