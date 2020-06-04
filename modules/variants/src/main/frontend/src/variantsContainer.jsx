@@ -71,14 +71,14 @@ export default function variantsContainer() {
   let [ lastUploadStatus, setLastUploadStatus ] = useState(undefined);
 
   const [selectedFiles, setSelectedFiles] = useState();
-  
+
   let constructQuery = (nodeType, query) => {
     let url = new URL("/query", window.location.origin);
     let sqlquery = "SELECT s.* FROM [" + nodeType + "] as s" + query;
     url.searchParams.set("query", sqlquery);
     return url;
   };
-  
+
   // Fetch the uploaded files data as JSON from the server.
   // Once the data arrives from the server, it will be stored in the `uploadedFiles` state variable.
   let url = constructQuery("lfs:SomaticVariantsAnswer", "");
@@ -91,7 +91,7 @@ export default function variantsContainer() {
 
   // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
   let handleResponse = (json) => {
-    setUploadedFiles(json);
+    json.rows && setUploadedFiles(json.rows);
   };
 
   // Callback method for the `fetchData` method, invoked when the request failed.
@@ -104,16 +104,19 @@ export default function variantsContainer() {
     cleanForm();
 
     let chosenFiles = event.target.files;
-    if (files.length == 0) { return; }
+    if (chosenFiles.length == 0) { return; }
 
     let files = []; 
     //Check naming convention
-    for (let file in chosenFiles) {
+    var i;
+    var count = 0;
+    for (i = 0; i < chosenFiles.length; i++) {
+      let file = chosenFiles[i];
       if (!(/^(.+)_(.+)_(.+).csv$/.test(file.name))) {
         setError("File name " + file.name + " is not in the expected name convention <[Subject]_[tumor nb]_[region nb].csv>.");
         return;
       }
-      
+
       let parsed = file.name.split('.csv')[0].split('_');
       file.subject = {}
       file.subject.id = parsed[0];
@@ -122,64 +125,65 @@ export default function variantsContainer() {
       file.region   = {}
       file.region.id = parsed[2];
       
+      let checkSubjectExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.subject.id}'`);
+      let checkTumorExistsURL = "";
+      let checkRegionExistsURL = "";
+                    
+      // Fire a fetch request for a region subject with the tumor subject as its parent
+      let RegionPromise = fetch( checkRegionExistsURL )
+        .then( (response) => {
+          // If a region subject is found
+          if (response.ok && response.json()?.rows?.length > 0) {
+            let subject = response.json().rows[0];
+            // get the path
+            file.region.path = subject["@path"];
+            file.region.existed = true;
+          } else {
+            //if a region subject is not found
+            // record in variables that a region didn’t exist, and generate a new random uuid as its path
+            file.region.path = "Subjects/" + uuid();
+            file.region.existed = false;
+          }
+          return Promise.resolve();
+        })
+        .catch(handleError);
+
+      // Fire a fetch request for a tumor subject with the patient subject as its parent
+      let TumorPromise = fetch( checkTumorExistsURL )
+        .then( (response) => {
+          // If a tumor subject is found
+          if (response.ok && response.json()?.rows?.length > 0) {
+            let subject = response.json().rows[0];
+            // get the path
+            file.tumor.path = subject["@path"];
+            file.tumor.existed = true;
+            checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.region.id}' AND n.'jcr:reference:parent'='${file.tumor.path}'`);
+            return RegionPromise();
+          } else {
+            //if a tumor subject is not found
+            // record in variables that a tumor didn’t exist, and generate a new random uuid as its path
+            file.tumor.path = "Subjects/" + uuid();
+            file.tumor.existed = false;
+            // record in variables that a region didn’t exist, and generate a new random uuid as its path
+            file.region.path = "Subjects/" + uuid();
+            file.region.existed = false;
+            return Promise.resolve();
+          }
+        })
+        .catch(handleError);
+
       // fetch subject, tumor, region links
       // Fire a fetch request for the patient subject
-      //  Create a URL that checks for the existence of a subject
-      let checkAlreadyExistsURL = createQueryURL("lfs:Subject", ` WHERE n.'identifier'='${file.subject.id}'`);
-      fetch( checkAlreadyExistsURL )
+      fetch( checkSubjectExistsURL )
         .then( (response) => {
-        
           // If a patient subject is found
           if (response.ok && response.json()?.rows?.length > 0) {
             let subject = response.json().rows[0];
             // get the path
             file.subject.path = subject["@path"];
             file.subject.existed = true;
-
-            // Fire a fetch request for a tumor subject with the patient subject as its parent
-            let checkAlreadyExistsURL = createQueryURL("lfs:Subject", ` WHERE n.'identifier'='${file.tumor.id}' AND n.'jcr:reference:parent'='${file.subject.path}'`);
-            fetch( checkAlreadyExistsURL )
-                .then( (response) => {
-                
-                  // If a tumor subject is found
-                  if (response.ok && response.json()?.rows?.length > 0) {
-                    let subject = response.json().rows[0];
-                    // get the path
-                    file.tumor.path = subject["@path"];
-                    file.tumor.existed = true;
-        
-                    // Fire a fetch request for a region subject with the tumor subject as its parent
-                    let checkAlreadyExistsURL = createQueryURL("lfs:Subject", ` WHERE n.'identifier'='${file.region.id}' AND n.'jcr:reference:parent'='${file.tumor.path}'`);
-                    fetch( checkAlreadyExistsURL )
-                        .then( (response) => {
-                        
-                          // If a region subject is found
-                          if (response.ok && response.json()?.rows?.length > 0) {
-                            let subject = response.json().rows[0];
-                            // get the path
-                            file.region.path = subject["@path"];
-                            file.region.existed = true;
-                          } else {
-                            //if a region subject is not found
-                            // record in variables that a region didn’t exist, and generate a new random uuid as its path
-                            file.region.path = "Subjects/" + uuid();
-                            file.region.existed = false;
-                          }
-                    })
-                    .catch(handleError)
-
-                  } else {
-                      //if a tumor subject is not found
-                      // record in variables that a tumor didn’t exist, and generate a new random uuid as its path
-                      file.tumor.path = "Subjects/" + uuid();
-                      file.tumor.existed = false;
-                      // record in variables that a region didn’t exist, and generate a new random uuid as its path
-                      file.region.path = "Subjects/" + uuid();
-                      file.region.existed = false;
-                  }
-            })
-            .catch(handleError)
-
+            checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.tumor.id}' AND n.'jcr:reference:parent'='${file.subject.path}'`);
+            return TumorPromise();
           } else {
             // If a patient subject is not found:
             // record in variables that it didn’t exist, and generate a new random uuid as its path
@@ -192,16 +196,18 @@ export default function variantsContainer() {
             file.region.path = "Subjects/" + uuid();
             file.region.existed = false;
           }
-      })
-      .catch(handleError)
-      .finally(() => {
-        files.add(file);
-        setSelectedFiles(files);
-      });
-    }
+        })
+        .catch(handleError)
+        .finally(() => {
+          // !!!TODO find all files with this name
+          //file.sameFiles = getSameFiles();
 
-    // !!!TODO find all files with this name
-    //setSameFiles()
+          files.push(file);
+          count++;
+          (count == chosenFiles.length) && setSelectedFiles(files);
+        });
+
+    }
   };
 
 
@@ -217,18 +223,16 @@ export default function variantsContainer() {
     }
 
     setUploadInProgress(true);
-    
-    //!!TODO see what is in event.currentTarget id multiple files
-    let filteredFiles = seletedFiles.filter( (file) => {
-      return file.name === event.currentTarget.name;
-    })
-    
-    let json = assembleJson(filteredFiles[0]);
 
-    let data = new FormData(event.currentTarget);
+    // TODO!! for each file
+    let json = assembleJson(selectedFiles[0]);
+
+    //TODO progress and drop in
+
+    let data = new FormData();
     data.append(':contentType', 'json');
     data.append(':operation', 'import');
-    data.append(':content', json);
+    data.append(':content', JSON.stringify(json));
 
     fetch(`/`, {
       method: "POST",
@@ -249,6 +253,7 @@ export default function variantsContainer() {
   let cleanForm = () => {
     setUploadInProgress(false);
     setSelectedFiles(undefined);
+    setLastUploadStatus(undefined);
     setError("");
   };
 
@@ -283,20 +288,20 @@ export default function variantsContainer() {
 
     let formInfo = {};
     formInfo["jcr:primaryType"] = "lfs:Form";
-    formInfo["jcr:reference:questionnaire"] = "/Questionnaires/SomaticVariants";
+    formInfo["questionnaire"] = "/Questionnaires/SomaticVariants";
     // The subject of the questionnaire is the region
-    formInfo["jcr:reference:subject"] = file.region.path;
+    formInfo["subject"] = file.region.path;
 
     let fileInfo = {};
     fileInfo["jcr:primaryType"] = "lfs:SomaticVariantsAnswer";
     fileInfo["jcr:reference:question"] = "/Questionnaires/SomaticVariants/file";
-    
+
     let fileDetails = {};
     fileDetails["jcr:primaryType"] = "nt:file";
     fileDetails["jcr:content"] = {};
     fileDetails["jcr:content"]["jcr:primaryType"] = "nt:resource";
     fileDetails["jcr:content"]["jcr:data"] = file.data;
-    
+
     fileInfo[file.name] = fileDetails;
 
     formInfo[uuid()] = fileInfo;
@@ -316,7 +321,6 @@ export default function variantsContainer() {
     <form method="POST"
           encType="multipart/form-data"
           onSubmit={upload}
-          onChange={() => setLastUploadStatus(undefined)}
           key="file-upload">
       <Typography component="h2" variant="h5" className={classes.dialogTitle}>Variants Upload</Typography>
       {uploadInProgress && (
@@ -337,10 +341,9 @@ export default function variantsContainer() {
         type="file"
         name="*"
         multiple
-        onChange={onFileChange}
+        onChange={(event) => onFileChange(event)}
       />
       <input type="hidden" name="*@TypeHint" value="nt:file" />
-      <Input value={selectedFile ? selectedFile.name : ""} readOnly />
       <label htmlFor="contained-button-file">
         <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress} className={classes.uploadButton}>
           <span><BackupIcon className={classes.buttonIcon}/>
@@ -352,63 +355,60 @@ export default function variantsContainer() {
         </Button>
       </label>
     </form>
-    {selectedFile && <div>
-      <List>
-        <ListItem>
-          <TextField
-              id="subject"
-              name="subject"
-              label="Subject id"
-              value={subject}
-              onChange={(event) => setSubject(event.target.value)}
-              required
-            />
-            </ListItem>
-            <ListItem>
-          <TextField
-              id="tumor"
-              name="tumor"
-              label="Tumor nb"
-              value={tumor}
-              onChange={(event) => setTumor(event.target.value)}
-              required
-            />
-            </ListItem>
-            <ListItem>
-           <TextField
-              id="region"
-              name="region"
-              label="Region nb"
-              value={region}
-              onChange={(event) => setRegion(event.target.value)}
-              required
-           />
-         </ListItem>
-      </List>
-      <Typography variant="body1">
-        { selectedFiles.map( (file, i) => (
-          file.sameFiles.length == 0
-              ?
-             <span>There are no versions of this file</span>
-             :
-             <span>Other versions of this file :
-                 <ul>
-                   {sameFiles.map( (file, index) => {
-                    return (
-                     <li key={index}>
-                       {file.date} uploaded by {file.user} 
-                       <IconButton size="small">
-                         <a href={file["jcr:lastModified"]} download={file["jcr:lastModifiedBy"]}></a>
-                         <GetApp />
-                        </IconButton>
-                     </li>
-                   )})}
-                 </ul>
-             </span>
-        )) }
-      </Typography>
-      </div>
-    }
+    <Typography variant="body1">Selected files info</Typography>
+    {selectedFiles && selectedFiles.map( (file, i) => {
+      return (
+        <div key={file.name}>
+	      <Typography variant="body1">File {file.name}:</Typography>
+	      <List>
+	        <ListItem>
+	          <TextField
+	              label="Subject id"
+	              value={file.subject.id}
+	              onChange={(event) => setSubject(event.target.value)}
+	              required
+	            />
+	            </ListItem>
+	            <ListItem>
+	          <TextField
+	              label="Tumor nb"
+	              value={file.tumor.id}
+	              onChange={(event) => setTumor(event.target.value)}
+	              required
+	            />
+	            </ListItem>
+	            <ListItem>
+	           <TextField
+	              label="Region nb"
+	              value={file.region.id}
+	              onChange={(event) => setRegion(event.target.value)}
+	              required
+	           />
+	         </ListItem>
+	      </List>
+	      <Typography variant="body1">
+	          {(!file.sameFiles || file.sameFiles.length == 0)
+	              ?
+	             <span>There are no versions of this file</span>
+	             :
+	             <span>Other versions of this file :
+	                 <ul>
+	                   {file.sameFiles && file.sameFiles.map( (samefile, index) => {
+	                    return (
+	                     <li key={index}>
+	                       {samefile.date} uploaded by {samefile.user} 
+	                       <IconButton size="small">
+	                         <a href={samefile["jcr:lastModified"]} download={samefile["jcr:lastModifiedBy"]}></a>
+	                         <GetApp />
+	                        </IconButton>
+	                     </li>
+	                   )})}
+	                 </ul>
+	             </span>
+	           }
+	      </Typography>
+        </div>
+    ) } ) }
   </React.Fragment>
   );
 }
