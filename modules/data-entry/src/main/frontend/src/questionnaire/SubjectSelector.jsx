@@ -72,10 +72,10 @@ function UnstyledNewSubjectDialog (props) {
           placeholder={"Enter subject identifier here"}
           />
         <MaterialTable
-          title="Select a SubjectType"
+          title="Select a type"
           columns={COLUMNS}
           data={query => {
-              let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.identifier, '*${query.search}*')` : "", "lfs:SubjectType");
+              let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType");
               url.searchParams.set("limit", query.pageSize);
               url.searchParams.set("offset", query.page*query.pageSize);
               return fetch(url)

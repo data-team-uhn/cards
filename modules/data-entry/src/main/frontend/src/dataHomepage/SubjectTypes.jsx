@@ -18,14 +18,19 @@
 //
 import React from "react";
 import LiveTable from "./LiveTable.jsx";
-import Subject from "../questionnaire/Subject.jsx";
 
-export default function SubjectTypes(props) {
+import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
+import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+
+function SubjectTypes(props) {
+  const { classes } = props;
+
   const columns = [
     {
       "key": "label",
       "label": "Label",
       "format": "string",
+      "link": "dashboard+field:@path",
     },
     {
       "key": "jcr:createdBy",
@@ -41,10 +46,23 @@ export default function SubjectTypes(props) {
 
   const entry = /SubjectTypes\/(.+)/.exec(location.pathname);
   if (entry) {
-    return <Subject id={entry[1]}/>;
+    return <div>Individual SubjectType view not yet implemented</div>;
   }
 
   return (
-    <LiveTable columns={columns} />
+    <Card>
+      <CardHeader
+        title={
+          <Button className={classes.cardHeaderButton}>
+            Subject Types
+          </Button>
+        }
+      />
+      <CardContent>
+        <LiveTable columns={columns} />
+      </CardContent>
+    </Card>
   );
 }
+
+export default withStyles(QuestionnaireStyle)(SubjectTypes);
