@@ -71,6 +71,7 @@ export default function variantsContainer() {
   let [ lastUploadStatus, setLastUploadStatus ] = useState(undefined);
 
   const [selectedFiles, setSelectedFiles] = useState();
+  const [selectedFilesData, setSelectedFilesData] = useState();
 
   let constructQuery = (nodeType, query) => {
     let url = new URL("/query", window.location.origin);
@@ -105,6 +106,7 @@ export default function variantsContainer() {
 
     let chosenFiles = event.target.files;
     if (chosenFiles.length == 0) { return; }
+    setSelectedFilesData(event.target.files);
 
     let files = []; 
     //Check naming convention
@@ -210,6 +212,12 @@ export default function variantsContainer() {
     }
   };
 
+  let cleanForm = () => {
+    setUploadInProgress(false);
+    setSelectedFiles(undefined);
+    setLastUploadStatus(undefined);
+    setError("");
+  };
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
   let upload = (event) => {
@@ -224,91 +232,90 @@ export default function variantsContainer() {
 
     setUploadInProgress(true);
 
-    // TODO!! for each file
-    let json = assembleJson(selectedFiles[0]);
+    //1. TODO!! for each file
+    //2. TODO progress and drop in
+    
+    var file = selectedFiles[0];
 
-    //TODO progress and drop in
+    var reader = new FileReader();
+    reader.readAsText(selectedFilesData[0]);
+    //When the file finish load
+    reader.onload = function(event) {
+      //get the file.
+      var csv = event.target.result;
+      
+	    let json = {};
+	
+	    if (!file.subject.existed) {
+	      let info = {};
+	      info["jcr:primaryType"] = "lfs:Subject";
+	      info["type"] = "/SubjectTypes/Patient";
+	      info["identifier"] = file.subject.id;
+	      json[file.subject.path] = info;
+	
+	      if (!file.tumor.existed) {
+	          let tumorInfo = {};
+	          tumorInfo["jcr:primaryType"] = "lfs:Subject";
+	          tumorInfo["jcr:reference:type"] = "/SubjectTypes/Tumor";
+	          tumorInfo["jcr:reference:parent"] = file.subject.path;
+	          tumorInfo["identifier"] = file.tumor.id;
+	          json[file.tumor.path] = tumorInfo;
+	
+	          if (!file.region.existed) {
+	              let regionInfo = {};
+	              regionInfo["jcr:primaryType"] = "lfs:Subject";
+	              regionInfo["jcr:reference:type"] = "/SubjectTypes/TumorRegion";
+	              regionInfo["jcr:reference:parent"] = file.tumor.path;
+	              regionInfo["identifier"] = file.region.id;
+	              json[file.region.path] = regionInfo;
+	          }
+	      }
+	    }
+	
+	    let formInfo = {};
+	    formInfo["jcr:primaryType"] = "lfs:Form";
+	    formInfo["jcr:reference:questionnaire"] = "/Questionnaires/SomaticVariants";
+	    // The subject of the questionnaire is the region
+	    formInfo["jcr:reference:subject"] = file.region.path;
+	
+	    let fileInfo = {};
+	    fileInfo["jcr:primaryType"] = "lfs:SomaticVariantsAnswer";
+	    fileInfo["jcr:reference:question"] = "/Questionnaires/SomaticVariants/file";
+	
+	    let fileDetails = {};
+	    fileDetails["jcr:primaryType"] = "nt:file";
+	    fileDetails["jcr:content"] = {};
+	    fileDetails["jcr:content"]["jcr:primaryType"] = "nt:resource";
+    
+    
+      fileDetails["jcr:content"]["jcr:data"] = csv;
 
-    let data = new FormData();
-    data.append(':contentType', 'json');
-    data.append(':operation', 'import');
-    data.append(':content', JSON.stringify(json));
+      fileInfo[file.name] = fileDetails;
 
-    fetch(`/`, {
-      method: "POST",
-      body: data
-    }).then((response) => response.ok ? true : Promise.reject(response))
-      .then(() => setLastUploadStatus(true))
-      .catch(() => {
-        // If the user is not logged in, offer to log in
-        const sessionInfo = window.Sling.getSessionInfo();
-        if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-          // On first attempt to upload while logged out, set status to false to make button text inform user
-          setLastUploadStatus(false);
-        }
-      })
-      .finally(() => cleanForm());
-  };
+      formInfo[uuid()] = fileInfo;
 
-  let cleanForm = () => {
-    setUploadInProgress(false);
-    setSelectedFiles(undefined);
-    setLastUploadStatus(undefined);
-    setError("");
-  };
+      json["Forms/" + uuid()] = formInfo;
 
-  let assembleJson = (file) => {
-    let json = {};
-
-    if (!file.subject.existed) {
-      let info = {};
-      info["jcr:primaryType"] = "lfs:Subject";
-      info["type"] = "/SubjectTypes/Patient";
-      info["identifier"] = file.subject.id;
-      json[file.subject.path] = info;
-
-      if (!file.tumor.existed) {
-          let tumorInfo = {};
-          tumorInfo["jcr:primaryType"] = "lfs:Subject";
-          tumorInfo["type"] = "/SubjectTypes/Tumor";
-          tumorInfo["jcr:reference:parent"] = file.subject.path;
-          tumorInfo["identifier"] = file.tumor.id;
-          json[file.tumor.path] = tumorInfo;
-
-          if (!file.region.existed) {
-              let regionInfo = {};
-              regionInfo["jcr:primaryType"] = "lfs:Subject";
-              regionInfo["type"] = "/SubjectTypes/TumorRegion";
-              regionInfo["jcr:reference:parent"] = file.tumor.path;
-              regionInfo["identifier"] = file.region.id;
-              json[file.region.path] = regionInfo;
-          }
-      }
+       let data = new FormData();
+	    data.append(':contentType', 'json');
+	    data.append(':operation', 'import');
+	    data.append(':content', JSON.stringify(json));
+	
+	    fetch(`/`, {
+	      method: "POST",
+	      body: data
+	    }).then((response) => response.ok ? true : Promise.reject(response))
+	      .then(() => setLastUploadStatus(true))
+	      .catch(() => {
+	        // If the user is not logged in, offer to log in
+	        const sessionInfo = window.Sling.getSessionInfo();
+	        if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
+	          // On first attempt to upload while logged out, set status to false to make button text inform user
+	          setLastUploadStatus(false);
+	        }
+	      })
+	      .finally(() => cleanForm());
     }
-
-    let formInfo = {};
-    formInfo["jcr:primaryType"] = "lfs:Form";
-    formInfo["questionnaire"] = "/Questionnaires/SomaticVariants";
-    // The subject of the questionnaire is the region
-    formInfo["subject"] = file.region.path;
-
-    let fileInfo = {};
-    fileInfo["jcr:primaryType"] = "lfs:SomaticVariantsAnswer";
-    fileInfo["jcr:reference:question"] = "/Questionnaires/SomaticVariants/file";
-
-    let fileDetails = {};
-    fileDetails["jcr:primaryType"] = "nt:file";
-    fileDetails["jcr:content"] = {};
-    fileDetails["jcr:content"]["jcr:primaryType"] = "nt:resource";
-    fileDetails["jcr:content"]["jcr:data"] = file.data;
-
-    fileInfo[file.name] = fileDetails;
-
-    formInfo[uuid()] = fileInfo;
-
-    json["Forms/" + uuid()] = formInfo;
-
-    return json;
   };
 
   // If the data has not yet been fetched, return an in-progress symbol
