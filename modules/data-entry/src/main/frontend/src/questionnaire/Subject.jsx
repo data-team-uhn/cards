@@ -39,6 +39,15 @@ const QUESTION_TYPES = ["lfs:Question"];
 const SECTION_TYPES = ["lfs:Section"];
 const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
 
+/***
+ * Create a URL that checks for the existance of a subject
+ */
+let createQueryURL = (query, type) => {
+  let url = new URL("/query", window.location.origin);
+  url.searchParams.set("query", `SELECT * FROM [${type}] as n` + query);
+  return url;
+}
+
 /**
  * Component that displays a Subject.
  *
@@ -51,50 +60,16 @@ const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
 // TODO: new recursive subject component
 function Subject(props) {
   let { id, classes, level } = props;
-  // Error message set when fetching the data from the server fails
-  let [ error, setError ] = useState();
-  // hold related subjects
-  let [relatedSubjects, setRelatedSubjects] = useState();
-  // hold current subjecttype
-  let [subjectType, setSubjectType] = useState("<SubjectType>");
-
-  const currentLevel = level || 0;
-
-  //TODO: get subjecttype --> setSubjectType
-
-  //TODO: fetch related subjects --> setRelatedSubjects. get the id's of each related subject (return array of children's id)
-
-  // map through the array of children's id --> call this component again for each id
-  // {relatedSubjects.map((subjectID, i) => {
-  //   <Grid item key={`level-${currentLevel}-${i}`}>
-  //     {/* below: if related subjects for the current subjectID exists, render */}
-  //     {subjectID && <Subject classes={classes} id={subjectID} level={currentLevel+1}/>}
-  //   </Grid>
-  // })}
-
-  console.log(id);
-
-  return (
-    <React.Fragment>
-      <Grid item>
-        <SubjectMember classes={classes} id={id} level={currentLevel} subjectType={subjectType}/> 
-      </Grid>
-      {/* return the current subject AND it's related subjects. then calls this component again, each previously related subject is returned with THEIR related subjects.  */}
-    </React.Fragment>
-  );
-}
-
-// component to ...
-function SubjectMember (props) {
-  let { id, classes, level, subjectType } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
-  // table data: related forms to the subject
-  let [tableData, setTableData] = useState();
+  // hold related subjects
+  let [relatedSubjects, setRelatedSubjects] = useState();
 
-    // Fetch the subject's data as JSON from the server.
+  const currentLevel = level || 0;
+
+  // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
   // such as authorship and versioning information.
   // Once the data arrives from the server, it will be stored in the `data` state variable.
@@ -119,11 +94,104 @@ function SubjectMember (props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     fetchData();
-    // call get subjecttype
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
+
+  // get related subjects!
+  let check_url = createQueryURL(` WHERE n.'parents'='${data['jcr:uuid']}'`, "lfs:Subject");
+  // let check_url = createQueryURL(` WHERE CONTAINS (n.'parents', '${data['jcr:uuid']}')`, "lfs:Subject");
+  let fetchRelated = () => { 
+    fetch( check_url )
+    .then( (response) => response.ok ? response.json() : Promise.reject(response))
+    .then( (json) => {
+      console.log(json.rows);
+      setRelatedSubjects(json.rows);
+    })
+  } //handle error
+
+  if (!relatedSubjects) {
+    fetchRelated();
+    return (
+      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+    );
+  }
+
+  if (relatedSubjects) {
+    console.log(relatedSubjects);
+  }
+
+  // get ID of each related subject
+        // loop through rows --> @name --> use as id to render the rest
+
+  //TODO: fetch related subjects --> setRelatedSubjects. get the id's of each related subject (return array of children's id)
+
+  // look through all subjects --> find where current id = looped.parent --> push to relatedSubjects
+
+  // map through the array of children's id --> call this component again for each id
+  // {relatedSubjects.map((subjectID, i) => {
+  //   <Grid item key={`level-${currentLevel}-${i}`}>
+  //     {/* below: if related subjects for the current subjectID exists, render */}
+  //     {subjectID && <Subject classes={classes} id={subjectID} level={currentLevel+1}/>}
+  //   </Grid>
+  // })}
+
+  // {relatedSubjects ?
+  //   (<Grid item>
+  //     {relatedSubjects.map( (subject, i) => { // map each result from the subject fetch (each form)
+  //       return(
+  //         <Grid item key={`level-${currentLevel}-${i}`}>
+  //           <Typography variant="h2">{subject["@name"]}</Typography>
+  //         </Grid>
+  //       )
+  //     })}
+  //   </Grid>
+  //   ) : <Typography variant="body2" component="p">Loading...</Typography>
+  // }
+
+  if (error) {
+    return (
+      <Grid container justify="center">
+        <Grid item>
+          <Typography variant="h2" color="error">
+            Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
+          </Typography>
+        </Grid>
+      </Grid>
+    );
+  } 
+
+  return (
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <SubjectMember classes={classes} id={id} level={currentLevel} data={data}/> 
+      </Grid>
+      {relatedSubjects ?
+        (<Grid item xs={12}>
+          {relatedSubjects.map( (subject, i) => { // map each result from the subject fetch (each form)
+            return(
+              <Grid item key={i}>
+                {console.log(subject)}
+                <Typography variant="h2">{subject["@name"]}</Typography>
+              </Grid>
+            )
+          })}
+        </Grid>
+        ) : <Grid item><Typography variant="body2" component="p">Loading...</Typography></Grid> // doesnt work
+      }
+      {/* return the current subject AND it's related subjects. then calls this component again, each previously related subject is returned with THEIR related subjects.  */}
+    </Grid>
+  );
+}
+
+// component to ...
+function SubjectMember (props) {
+  let { id, classes, level, data } = props;
+  // Error message set when fetching the data from the server fails
+  let [ error, setError ] = useState();
+  // table data: related forms to the subject
+  let [tableData, setTableData] = useState();
 
   const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
@@ -165,7 +233,7 @@ function SubjectMember (props) {
         </Grid>
       </Grid>
     );
-  }  
+  } 
 
   let buttonSize = "large"
   if (level == 1) {buttonSize = "medium"}
@@ -176,8 +244,8 @@ function SubjectMember (props) {
       <Grid item className={classes.subjectHeader}>
         {
           data && data.identifier ?
-            <Typography variant="h2">{subjectType} {data.identifier}</Typography>
-          : <Typography variant="h2">{subjectType} {id}</Typography>
+            <Typography variant="h2">{data.type.label} {data.identifier}</Typography>
+          : <Typography variant="h2">{data.type.label} {id}</Typography>
         }
         {
           data && data['jcr:createdBy'] && data['jcr:created'] ?
@@ -185,6 +253,7 @@ function SubjectMember (props) {
           : ""
         }
       </Grid>
+      <Grid item>
       {tableData ?
           (<Grid container spacing={3}>
             {tableData.map( (entry) => { // map each result from the subject fetch (each form)
@@ -213,6 +282,7 @@ function SubjectMember (props) {
           </Grid>
           ) : <Typography variant="body2" component="p">Loading...</Typography>
         }
+      </Grid>
     </React.Fragment>
   );
 };
