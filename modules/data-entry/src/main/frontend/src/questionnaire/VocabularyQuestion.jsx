@@ -62,7 +62,7 @@ import VocabularySelector from "../vocabSelector/select.jsx";
 //   />
 function VocabularyQuestion(props) {
   let { classes, ...rest } = props;
-  let { maxAnswers, sourceVocabulary, vocabularyFilter } = { ...props.questionDefinition, ...props };
+  let { enableNotes, maxAnswers, sourceVocabulary, vocabularyFilter } = { ...props.questionDefinition, ...props };
   let defaultSuggestions = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively

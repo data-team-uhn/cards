@@ -16,18 +16,18 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { FormControlLabel, List, RadioGroup, Typography, withStyles, Radio } from "@material-ui/core";
 
+import { MakeRequest, REST_URL } from "../vocabQuery/util.jsx";
 import Answer from "../questionnaire/Answer.jsx";
 import Thesaurus from "../vocabQuery/query.jsx";
 import SelectorStyle from "./selectorStyle.jsx";
 import VocabularyEntry from "./selectEntry.jsx";
 import SelectionResults from "./selectionResults.jsx";
-import { MakeRequest, REST_URL } from "../vocabQuery/util.jsx";
-import { useEffect } from "react";
+import NCRNote from "../questionnaire/NCRNote.jsx";
 
 // Enumeration for how to store the output
 const NAME_POS = 0;
@@ -145,30 +145,33 @@ function VocabularySelector(props) {
 
   // Create a new child from the selection with parent
   let addSelection = (id, name) => {
-    // Also do not add anything if we are at our maximum number of selections
+    // Do not add anything if we are at our maximum number of selections
     if (selected >= max && max > 1 ) {
-      return;
+      return old;
     }
 
-    // Also do not add duplicates
-    if (listChildren.some(element => {return element[ID_POS] === id})) {
-      return;
-    }
+    // Prevent closures from mucking up logic by placing everything in an updater function
+    setListChildren((oldChildren) => {
+      // Do not add duplicates
+      if (oldChildren.some(element => {return element[ID_POS] === id})) {
+        return oldChildren;
+      }
 
-    if (max == 1) {
-      // If only 1 child is allowed, replace it instead of copying our array
-      var newChildren = defaultListChildren.slice();
-      newChildren.push([name, id, false, true]);
-      setListChildren(newChildren);
-      setSelected(1);
-      setRadioSelect(name);
-    } else {
-      // As per React specs, we do not modify the state array directly, but slice and add
-      var newChildren = listChildren.slice();
-      newChildren.push([name, id, false, true]);
-      setListChildren(newChildren);
-      setSelected(selected + 1);
-    }
+      if (max == 1) {
+        // If only 1 child is allowed, replace it instead of copying our array
+        var newChildren = defaultListChildren.slice();
+        newChildren.push([name, id, false, true]);
+        setSelected(1);
+        setRadioSelect(name);
+        return newChildren;
+      } else {
+        // As per React specs, we do not modify the state array directly, but slice and add
+        setSelected(num => num + 1);
+        let newChildren = oldChildren.slice();
+        newChildren.push([name, id, false, true]);
+        return newChildren;
+      }
+    });
   }
 
   let populateDefaults = () => {
@@ -208,17 +211,21 @@ function VocabularySelector(props) {
   let addDefaultSuggestion = (status, data, id, isSuggestion) => {
     const hasExistingAnswers = existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value;
     const existingAnswers = existingAnswer && existingAnswer[1].value;
+    var name;
     if (status === null) {
       // Use the name from the response (if available) or the ID if not
-      var name = data["name"] || id;
-
-      // Avoid the race condition by using updater functions
-      var newChild = [name, id, isSuggestion, hasExistingAnswers && existingAnswers.includes(id)];
-      setDefaultListChildren(oldDefaultListChildren => {var newList = oldDefaultListChildren.slice(); newList.push(newChild); return(newList);});
-      setListChildren(oldListChildren => {var newList = oldListChildren.slice(); newList.push(newChild); return(newList);});
+      name = data["name"] || id;
     } else {
       console.log("Error: Thesaurus lookup failed with code " + status);
+
+      // Fallback by using the ID
+      name = id;
     }
+
+    // Avoid the race condition by using updater functions
+    var newChild = [name, id, isSuggestion, hasExistingAnswers && existingAnswers.includes(id)];
+    setDefaultListChildren(oldDefaultListChildren => {var newList = oldDefaultListChildren.slice(); newList.push(newChild); return(newList);});
+    setListChildren(oldListChildren => {var newList = oldListChildren.slice(); newList.push(newChild); return(newList);});
   }
 
   let removeSelection = (id, name, wasSelected=false) => {
@@ -287,6 +294,11 @@ function VocabularySelector(props) {
         answerNodeType={'lfs:VocabularyAnswer'}
         questionDefinition={questionDefinition}
         existingAnswer={existingAnswer}
+        noteComponent={NCRNote}
+        noteProps={{
+          vocabulary: source,
+          onAddSuggestion: addSelection
+        }}
         {...rest}
       />
     </React.Fragment>

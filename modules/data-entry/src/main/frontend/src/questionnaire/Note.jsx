@@ -20,7 +20,7 @@
 import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 
-import { Button, Collapse, TextField, Tooltip, withStyles } from "@material-ui/core";
+import { Button, Collapse, Grid, TextField, Tooltip, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import UnfoldMore from "@material-ui/icons/UnfoldMore";
 import UnfoldLess from "@material-ui/icons/UnfoldLess";
@@ -28,7 +28,7 @@ import UnfoldLess from "@material-ui/icons/UnfoldLess";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function Note (props) {
-  const { answerPath, existingAnswer, classes, onChangeNote } = {...props};
+  const { answerPath, children, existingAnswer, classes, onChangeNote, ...rest } = {...props};
   let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
   let [ visible, setVisible ] = useState(Boolean(note));
   let inputRef = useRef();
@@ -39,7 +39,7 @@ function Note (props) {
   }
 
   let focusInput = () => {
-    inputRef.current.focus();
+    inputRef.current && inputRef.current.focus();
   }
 
   const noteIsEmpty = note == null || note == "";
@@ -68,19 +68,27 @@ function Note (props) {
       in = {visible}
       onEntered = {focusInput}
       >
-      <TextField
-        value = {note}
-        onChange = {changeNote}
-        variant = "outlined"
-        multiline
-        rows = "4"
-        className = {classes.noteSection}
-        InputProps = {{
-          className: classes.noteTextField
-        }}
-        placeholder = "Please place any additional notes here."
-        inputRef = {inputRef}
-        />
+      <Grid container>
+        <Grid item xs={6}>
+          <TextField
+            value = {note}
+            onChange = {changeNote}
+            variant = "outlined"
+            multiline
+            rows = "4"
+            className = {classes.noteSection}
+            InputProps = {{
+              className: classes.noteTextField
+            }}
+            placeholder = "Please place any additional notes here."
+            inputRef = {inputRef}
+            {...rest}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            {children}
+          </Grid>
+        </Grid>
     </Collapse>
     {noteIsEmpty ?
       <input type="hidden" name={`${answerPath}/note@Delete`} value="0" />
