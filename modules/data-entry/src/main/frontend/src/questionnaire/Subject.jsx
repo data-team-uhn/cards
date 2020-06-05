@@ -116,6 +116,10 @@ function Subject (props) {
   const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
 
+  let parentDetails = data && data['parents'] && (Array.isArray(data['parents']) ?
+    data['parents'].map((parent) => (parent.type.label + " " + parent.identifier)).join(" / ")
+    : data.parents.type.label + " " + data.parents.identifier);
+
   return (
     <div>
       <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
@@ -124,6 +128,9 @@ function Subject (props) {
             data && data.identifier ?
               <Typography variant="h2">Subject: {data.identifier}</Typography>
             : <Typography variant="h2">Subject: {id}</Typography>
+          }
+          {
+            parentDetails && <Typography variant="h3">{parentDetails}</Typography>
           }
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
