@@ -65,10 +65,16 @@ ChromosomeQuestion.propTypes = {
     text: PropTypes.string.isRequired,
     minAnswers: PropTypes.number,
     maxAnswers: PropTypes.number,
+    chromosomeNumber: PropTypes.number
   }).isRequired,
   text: PropTypes.string,
   minAnswers: PropTypes.number,
-  maxAnswers: PropTypes.number
+  maxAnswers: PropTypes.number,
+  chromosomeNumber: PropTypes.number
+};
+
+ChromosomeQuestion.defaultProps = {
+  chromosomeNumber: 22
 };
 
 const StyledChromosomeQuestion = withStyles(QuestionnaireStyle)(ChromosomeQuestion)

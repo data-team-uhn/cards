@@ -33,7 +33,7 @@ const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
   let { classes, existingAnswer, ghostAnchor, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
-  let { maxAnswers, minAnswers, dataType } = {...props.questionDefinition, ...props};
+  let { maxAnswers, minAnswers, dataType, chromosomeNumber } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
@@ -213,28 +213,9 @@ function MultipleChoice(props) {
             onChange && onChange(event.target.value);
           }
         }>
-          <MenuItem value={1}>1</MenuItem>
-          <MenuItem value={2}>2</MenuItem>
-          <MenuItem value={3}>3</MenuItem>
-          <MenuItem value={4}>4</MenuItem>
-          <MenuItem value={5}>5</MenuItem>
-          <MenuItem value={6}>6</MenuItem>
-          <MenuItem value={7}>7</MenuItem>
-          <MenuItem value={8}>8</MenuItem>
-          <MenuItem value={9}>9</MenuItem>
-          <MenuItem value={10}>10</MenuItem>
-          <MenuItem value={11}>11</MenuItem>
-          <MenuItem value={12}>12</MenuItem>
-          <MenuItem value={13}>13</MenuItem>
-          <MenuItem value={14}>14</MenuItem>
-          <MenuItem value={15}>15</MenuItem>
-          <MenuItem value={16}>16</MenuItem>
-          <MenuItem value={17}>17</MenuItem>
-          <MenuItem value={18}>18</MenuItem>
-          <MenuItem value={19}>19</MenuItem>
-          <MenuItem value={20}>20</MenuItem>
-          <MenuItem value={21}>21</MenuItem>
-          <MenuItem value={22}>22</MenuItem>
+        {Array(chromosomeNumber).fill(1).map(function(name, index) {
+            return <MenuItem value={index+1}>{index+1}</MenuItem>;
+        })}
         </Select>
         <Answer
           answers={answers}
