@@ -1,6 +1,7 @@
 {
   "jcr:primaryType": "lfs:Questionnaire",
   "title": "Radiotherapy Data",
+  "jcr:path:requiredSubjectTypes": "/SubjectTypes/Patient",
   "radiation": {
     "jcr:primaryType": "lfs:Question",
     "text": "Radiation therapy",

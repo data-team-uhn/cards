@@ -38,6 +38,7 @@ let createQueryURL = (query, type) => {
 /**
  * Component that displays a dialog to create a new subject
  *
+ * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
  * @param {bool} disabled If true, all controls are disabled
  * @param {string} error Error message to display
  * @param {bool} open If true, this dialog is open
@@ -49,7 +50,7 @@ let createQueryURL = (query, type) => {
  * @param {string} value The current name of the subject
  */
 function UnstyledNewSubjectDialog (props) {
-  const { classes, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
+  const { allowedTypes, classes, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
   const [ selectedType, setSelectedType ] = useState();
 
   const COLUMNS = [
@@ -469,10 +470,17 @@ function SubjectSelectorList(props) {
         title=""
         columns={COLUMNS}
         data={query => {
-            let url = createQueryURL(
-              " WHERE " + (allowedTypes ? "(" + allowedTypes.map((type) => `n.'type' = '${type}'`).join(" OR ") + ")" : "")
-              + (query.search ? ` CONTAINS(n.identifier, '*${query.search}*')` : ""),
-              "lfs:Subject");
+            let condition = "";
+            if (allowedTypes || query.search) {
+              condition = " WHERE ";
+            }
+            if (allowedTypes) {
+              condition += "(" + allowedTypes.map((type) => `n.'type' = '${type}'`).join(" OR ") + ")";
+            }
+            if (query.search) {
+              condition += ` CONTAINS(n.identifier, '*${query.search}*')`;
+            }
+            let url = createQueryURL( condition, "lfs:Subject");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
             return fetch(url)

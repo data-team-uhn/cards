@@ -1,6 +1,7 @@
 {
   "jcr:primaryType": "lfs:Questionnaire",
   "title": "Demographics Data",
+  "jcr:path:requiredSubjectTypes": "/SubjectTypes/Patient",
   "patient_id": {
     "jcr:primaryType": "lfs:Question",
     "text": "Patient ID"

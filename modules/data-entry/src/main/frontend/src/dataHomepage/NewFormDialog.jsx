@@ -237,14 +237,15 @@ function NewFormDialog(props) {
           </React.Fragment>
           :
           <React.Fragment>
-            {<SubjectSelectorList
+            { /* We need selectedQuestionnaire to be filled out before this renders, or it will try grabbing the wrong subjects */
+            selectedQuestionnaire && <SubjectSelectorList
+              allowedTypes={selectedQuestionnaire["requiredSubjectTypes"]}
               disabled={isFetching}
               onDelete={unselectSubject}
               onError={setError}
               onSelect={selectSubject}
               selectedSubject={selectedSubject}
-              />
-            }
+              />}
           </React.Fragment>}
         </DialogContent>
         <DialogActions>
