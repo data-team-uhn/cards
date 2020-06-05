@@ -33,7 +33,7 @@ const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
   let { classes, existingAnswer, ghostAnchor, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
-  let { maxAnswers, minAnswers, dataType, chromosomeNumber, chromosomeX, chromosomeY, chromosomeZ, chromosomeW } = {...props.questionDefinition, ...props};
+  let { maxAnswers, minAnswers, dataType, chromosomeNumber, chromosomeX, chromosomeY, chromosomeZ, chromosomeW, chromosomeMT } = {...props.questionDefinition, ...props};
   chromosomeNumber = chromosomeNumber || 22;
   if (chromosomeX === false) {
     chromosomeX = false;
@@ -54,6 +54,11 @@ function MultipleChoice(props) {
       chromosomeW = true;
   } else {
     chromosomeW = false;
+  }
+  if (chromosomeMT === true) {
+      chromosomeMT = true;
+  } else {
+    chromosomeMT = false;
   }
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
@@ -241,6 +246,7 @@ function MultipleChoice(props) {
         {chromosomeY && <MenuItem value='Y'>Y</MenuItem>}
         {chromosomeZ && <MenuItem value='Z'>Z</MenuItem>}
         {chromosomeW && <MenuItem value='W'>W</MenuItem>}
+        {chromosomeMT && <MenuItem value='MT'>MT</MenuItem>}
         </Select>
         <Answer
           answers={answers}
