@@ -22,6 +22,7 @@ import PropTypes from "prop-types";
 import moment from "moment";
 import { Link } from 'react-router-dom';
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+import NewFormDialog from "../dataHomepage/NewFormDialog";
 
 import {
   CircularProgress,
@@ -32,11 +33,7 @@ import {
   CardContent,
   withStyles,
   Button,
-  Fab
 } from "@material-ui/core";
-
-import AddIcon from "@material-ui/icons/Add";
-
 
 const QUESTION_TYPES = ["lfs:Question"];
 const SECTION_TYPES = ["lfs:Section"];
@@ -52,40 +49,35 @@ let createQueryURL = (query, type) => {
 }
 
 /**
- * Component that displays a Subject. Component recursively displays 'SubjectMember' components.
+ * Component that displays a Subject.
  *
  * @example
  * <Subject id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
  *
  * @param {string} id the identifier of a subject; this is the JCR node name
+ * @param {int} maxDisplayed the maximum number of form question/answers to be displayed. defaults to 4
  */
 
 function Subject(props) {
-  let { id, classes} = props;
-
-  // TODO: import/reference dialog here
+  let { id, classes, maxDisplayed } = props;
 
   return (
     <React.Fragment>
       <div className={classes.subjectNewButton}>
-          <Fab
-            color="primary"
-            aria-label="add"
-            // onClick={openDialog}
-            // disabled={!open && isFetching}
-          >
-            <AddIcon />
-          </Fab>
-        {/* {!open && isFetching && <CircularProgress size={56} className={classes.newFormLoadingIndicator} />} */}
+          <NewFormDialog>
+            New form
+          </NewFormDialog>
       </div>
-      <SubjectContainer id={id} classes={classes}/>
+      <SubjectContainer id={id} classes={classes} maxDisplayed={maxDisplayed}/>
     </React.Fragment>
   );
 }
 
-// TODO: rename to 'helper' or something similar
+/**
+ * Component that recursively gets and displays the selected subject and its related SubjectTypes
+ */
 function SubjectContainer(props) {
-  let { id, classes, level } = props;
+  let { id, classes, level, maxDisplayed } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -132,13 +124,11 @@ function SubjectContainer(props) {
     fetch(check_url)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((json) => {setRelatedSubjects(json.rows);})
-  } //TODO: handle error
+    .catch(handleError);
+  }
 
   if (!relatedSubjects) {
     fetchRelated();
-    return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
-    );
   }
 
   if (error) {
@@ -155,16 +145,16 @@ function SubjectContainer(props) {
 
   return (
     <Grid container spacing={3}>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={data}/> 
+      <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed}/> 
       {relatedSubjects ?
         (<Grid item xs={12}>
-          {relatedSubjects.map( (subject, i) => { // map each result from the subject fetch (each form)
+          {relatedSubjects.map( (subject, i) => { // render component again for each related subjet
             return(
-                <Subject key={i} classes={classes} id={subject["@name"]} level={currentLevel+1}/>
+              <SubjectContainer key={i} classes={classes} id={subject["@name"]} level={currentLevel+1}/>
             )
           })}
         </Grid>
-        ) : <Grid item><Typography variant="body2" component="p">Loading...</Typography></Grid> // TODO: fix, doesnt work
+        ) : ""
       }
     </Grid>
   );
@@ -174,7 +164,7 @@ function SubjectContainer(props) {
  * Component that displays all forms related to a Subject.
  */
 function SubjectMember (props) {
-  let { id, classes, level, data } = props;
+  let { id, classes, level, data, maxDisplayed } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // table data: related forms to the subject
@@ -201,12 +191,9 @@ function SubjectMember (props) {
     setTableData([]);
   };
 
-  // If the data has not yet been fetched, return an in-progress symbol
+  // If the data has not yet been fetched, fetch
   if (!tableData) {
     fetchTableData();
-    return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
-    );
   }
 
   // If an error was returned, do not display a subject at all, but report the error
@@ -220,14 +207,12 @@ function SubjectMember (props) {
         </Grid>
       </Grid>
     );
-  } 
-
+  }
+  // change styling based on 'level'
   let buttonSize = "large";
   let headerStyle = "h2";
   if (level == 1) {buttonSize = "medium"; headerStyle="h4"};
   if (level > 1) {buttonSize = "small"; headerStyle="h5"};
-
-  //TODO: fix loading symbol, too many circles
 
   return (
     <Grid item xs={12}>
@@ -259,7 +244,7 @@ function SubjectMember (props) {
                     className={classes.subjectFormHeader}
                     />
                     <CardContent>
-                      <FormData formID={entry["@name"]} maxDisplayed={4}/>
+                      <FormData formID={entry["@name"]} maxDisplayed={maxDisplayed}/>
                       <Link to={"/content.html" + entry["@path"]}>
                         <Typography variant="body2" component="p">See More...</Typography>
                       </Link>
@@ -269,7 +254,7 @@ function SubjectMember (props) {
               )
             })}
           </Grid>
-          ) : <Typography variant="body2" component="p">Loading...</Typography>
+          ) : ""
         }
       </Grid>
     </Grid>
@@ -278,16 +263,16 @@ function SubjectMember (props) {
 
 // Component that displays a preview of the saved form answers
 function FormData(props) {
-  let { formID, maxDisplayed } = props; // todo: set maxDisplayed default to 2
+  let { formID, maxDisplayed } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
-  // Hold number of form items displayed
-  // let [displayed, setDisplayed] = useState(0);
-
+  // number of form question/answers listed, will increase
   let displayed = 0;
 
+  // Fetch the form's data from the server
+  // It will be stored in the `data` state variable
   let getFormData = (formID) => {
     fetch(`/Forms/${formID}.deep.json`)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -300,6 +285,7 @@ function FormData(props) {
     setData([]);  // Prevent an infinite loop if data was not set
   };
 
+  // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     getFormData(formID);
     return (
@@ -314,12 +300,12 @@ function FormData(props) {
       </Typography>
     );
   }
-
+  // Handle questions and sections differently
   let handleDisplay = (entryDefinition, data, key) => {
     if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
       return displayQuestion(entryDefinition, data, key);
     } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-      // get questions inside the section
+      // If a section is found, filter questions inside the section
       let currentSection = (
         Object.entries(data.questionnaire).filter(([key, value]) => SECTION_TYPES.includes(value['jcr:primaryType']))[0][1]
       );
@@ -334,7 +320,7 @@ function FormData(props) {
       )
     }
   }
-  
+  // Display the questions/question found within sections
   let displayQuestion = (entryDefinition, data, key) => {
     const existingQuestionAnswer = data && Object.entries(data)
       .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
@@ -365,17 +351,15 @@ function FormData(props) {
       </React.Fragment>
     );
   }
-  //TODO fix: return this if nothing was returned
-  // display if count of displayed = 0
-  if (displayed = 0) {
-    return (<Typography variant="body2" component="p">No form data yet</Typography>);
-  }
-
   else return;
 }
 
 Subject.propTypes = {
   id: PropTypes.string
+}
+
+Subject.defaultProps = {
+  maxDisplayed: 4
 }
 
 export default withStyles(QuestionnaireStyle)(Subject);
