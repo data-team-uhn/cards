@@ -34,6 +34,7 @@ const GHOST_SENTINEL = "custom-input";
 function MultipleChoice(props) {
   let { classes, existingAnswer, ghostAnchor, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
   let { maxAnswers, minAnswers, dataType, chromosomeNumber } = {...props.questionDefinition, ...props};
+  chromosomeNumber = chromosomeNumber || 22;
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
