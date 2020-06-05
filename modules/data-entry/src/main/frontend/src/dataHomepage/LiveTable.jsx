@@ -23,7 +23,6 @@ import { Card, CardHeader, CardContent, CardActions, Chip, Typography, Button, w
 import { Link } from 'react-router-dom';
 import moment from "moment";
 
-
 import Filters from "./Filters.jsx";
 
 import LiveTableStyle from "./tableStyle.jsx";
@@ -90,7 +89,6 @@ function LiveTable(props) {
     }
 
     let url = new URL(urlBase);
-
     url.searchParams.set("offset", newPage.offset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
@@ -147,17 +145,17 @@ function LiveTable(props) {
 
   let makeRow = (entry) => {
     return (
-        <TableRow key={entry["@path"]}>
-          { columns ?
-            (
-              columns.map((column, index) => makeCell(entry, column, index))
-            )
-          :
-            (
-              <TableCell><a href={entry["@path"]}>{entry.title}</a></TableCell>
-            )
-          }
-        </TableRow> 
+      <TableRow key={entry["@path"]}>
+        { columns ?
+          (
+            columns.map((column, index) => makeCell(entry, column, index))
+          )
+        :
+          (
+            <TableCell><a href={entry["@path"]}>{entry.title}</a></TableCell>
+          )
+        }
+      </TableRow> 
     );
   };
 
@@ -348,7 +346,7 @@ function LiveTable(props) {
             )
             :
             tableData ?
-              ( tableData.map(makeRow))
+              ( tableData.map(makeRow) )
               :
               ( <TableRow><TableCell colSpan={columns ? columns.length : 1}>Please wait...</TableCell></TableRow> )
             /* TODO: Better progress bar, add some Suspense */
