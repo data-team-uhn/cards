@@ -150,7 +150,7 @@ function SubjectContainer(props) {
         (<Grid item xs={12}>
           {relatedSubjects.map( (subject, i) => { // render component again for each related subjet
             return(
-              <SubjectContainer key={i} classes={classes} id={subject["@name"]} level={currentLevel+1}/>
+              <SubjectContainer key={i} classes={classes} id={subject["@name"]} level={currentLevel+1} maxDisplayed={maxDisplayed}/>
             )
           })}
         </Grid>
