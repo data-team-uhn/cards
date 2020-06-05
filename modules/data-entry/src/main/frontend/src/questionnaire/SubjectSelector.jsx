@@ -57,6 +57,16 @@ function UnstyledNewSubjectDialog (props) {
     { title: 'Subject type', field: 'label' },
   ];
 
+  let changeType = (type) => {
+    onChangeType(type);
+    setSelectedType(type);
+  }
+
+  // Auto-select if there's only one valid SubjectType
+  if (allowedTypes?.length === 1 && !selectedType) {
+    changeType(allowedTypes[0]);
+  }
+
   return(
     <Dialog open={open} onClose={onClose} className={classes.newSubjectPopper}>
       <DialogTitle id="new-form-title">
@@ -75,7 +85,11 @@ function UnstyledNewSubjectDialog (props) {
         <MaterialTable
           title="Select a type"
           columns={COLUMNS}
-          data={query => {
+          data={allowedTypes ? allowedTypes :
+            query => {
+              if (allowedTypes) {
+                console.log("Test");
+              }
               let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType");
               url.searchParams.set("limit", query.pageSize);
               url.searchParams.set("offset", query.page*query.pageSize);
@@ -99,8 +113,7 @@ function UnstyledNewSubjectDialog (props) {
             })
           }}
           onRowClick={(event, rowData) => {
-            onChangeType(rowData);
-            setSelectedType(rowData);
+            changeType(rowData);
           }}
         />
       </DialogContent>
@@ -475,7 +488,7 @@ function SubjectSelectorList(props) {
               condition = " WHERE ";
             }
             if (allowedTypes) {
-              condition += "(" + allowedTypes.map((type) => `n.'type' = '${type}'`).join(" OR ") + ")";
+              condition += "(" + allowedTypes.map((type) => `n.'type' = '${type["jcr:uuid"]}'`).join(" OR ") + ")";
             }
             if (query.search) {
               condition += ` CONTAINS(n.identifier, '*${query.search}*')`;

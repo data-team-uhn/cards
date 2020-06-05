@@ -58,17 +58,17 @@ function NewFormDialog(props) {
 
   // The value of a subjectType's parents are either an array, or if it is length 1 it will just be an object
   // We must cast each case into an array to handle it properly
-  let parseSelectedParentTypes = (subjectType) => {
+  let parseToArray = (object) => {
     // Null or undefined is length 0
-    if (!subjectType?.["parent"]) {
+    if (!object) {
       return [];
     }
 
     // A non-array is length 1
-    if (!Array.isArray(subjectType["parent"])) {
-      return [subjectType["parent"]];
+    if (!Array.isArray(object)) {
+      return [object];
     } else {
-      return subjectType["parent"];
+      return object;
     }
   }
 
@@ -239,7 +239,7 @@ function NewFormDialog(props) {
           <React.Fragment>
             { /* We need selectedQuestionnaire to be filled out before this renders, or it will try grabbing the wrong subjects */
             selectedQuestionnaire && <SubjectSelectorList
-              allowedTypes={selectedQuestionnaire["requiredSubjectTypes"]}
+              allowedTypes={parseToArray(selectedQuestionnaire["requiredSubjectTypes"])}
               disabled={isFetching}
               onDelete={unselectSubject}
               onError={setError}
@@ -284,13 +284,14 @@ function NewFormDialog(props) {
         </DialogActions>
       </Dialog>
       <NewSubjectDialog
+        allowedTypes={parseToArray(selectedQuestionnaire?.["requiredSubjectTypes"])}
         disabled={isFetching}
         error={error}
         onClose={() => { setNewSubjectPopperOpen(false); setError();}}
         onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
         onChangeType={(e) => {
           setSelectedSubjectType(e);
-          setSelectedParentTypes(parseSelectedParentTypes(e));
+          setSelectedParentTypes(parseToArray(e?.["parent"]));
           setSelectedNewSubjectParents([]);
           setSelectedSubjectParentNumber(-1);
         }}
