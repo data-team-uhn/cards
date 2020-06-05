@@ -73,6 +73,10 @@ ChromosomeQuestion.propTypes = {
   chromosomeNumber: PropTypes.number
 };
 
+ChromosomeQuestion.defaultProps = {
+  displayType: "select"
+};
+
 const StyledChromosomeQuestion = withStyles(QuestionnaireStyle)(ChromosomeQuestion)
 export default StyledChromosomeQuestion;
 
