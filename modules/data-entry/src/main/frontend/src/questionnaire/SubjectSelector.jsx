@@ -447,6 +447,9 @@ SubjectListItem.defaultProps = {
  *   onSelect={(subject) => {setSelectedSubject(subject)}}
  *   />
  *
+ * @param {allowedTypes} array A list of allowed SubjectTypes
+ * @param {allowAddSubjects} bool If true, enables an "add user" button on this list
+ * @param {allowDeleteSubjects} bool If true, enables an "delete user" button on this list
  * @param {disabled} bool whether selections should be disabled on this element
  * @param {onDelete} func Callback for the deletion of a subject. The only parameter is the subject deleted.
  * @param {onError} func Callback for an issue in the reading or editing of subjects. The only parameter is a response object.
@@ -454,7 +457,7 @@ SubjectListItem.defaultProps = {
  * @param {selectedSubject} object The currently selected subject.
  */
 function SubjectSelectorList(props) {
-  const { allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject,
+  const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject,
       theme, ...rest } = props;
   const COLUMNS = [
     { title: 'Identifier', field: 'identifier' },
@@ -466,7 +469,10 @@ function SubjectSelectorList(props) {
         title=""
         columns={COLUMNS}
         data={query => {
-            let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.identifier, '*${query.search}*')` : "", "lfs:Subject");
+            let url = createQueryURL(
+              " WHERE " + (allowedTypes ? "(" + allowedTypes.map((type) => `n.'type' = '${type}'`).join(" OR ") + ")" : "")
+              + (query.search ? ` CONTAINS(n.identifier, '*${query.search}*')` : ""),
+              "lfs:Subject");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
             return fetch(url)
