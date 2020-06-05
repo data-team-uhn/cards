@@ -321,7 +321,6 @@ function NewFormDialog(props) {
             } else {
               newParents[selectedSubjectParentNumber] = e;
             }
-            console.log("selectedNewSubjectParents: ", newParents);
             return newParents;
           });
         }}
