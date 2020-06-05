@@ -17,17 +17,14 @@
 //  under the License.
 //
 import React, { useState } from "react";
-import LiveTable from "./LiveTable.jsx";
-import Subject from "../questionnaire/Subject.jsx";
-import { SelectorDialog } from "../questionnaire/SubjectSelector.jsx";
+import LiveTable from "../dataHomepage/LiveTable.jsx";
+import { SelectorDialog } from "./SubjectSelector.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
-import SubjectDirectory from "../questionnaire/SubjectDirectory.jsx"; //TODO: remove this, just for testing LFS-429
-
-function Subjects(props) {
+function SubjectDirectory(props) {
 
   const { classes } = props;
   // fix issue with classes
@@ -55,15 +52,14 @@ function Subjects(props) {
     },
   ]
 
-  const entry = /Subjects\/(.+)/.exec(location.pathname);
-  if (entry) {
-    return <Subject id={entry[1]}/>;
-  }
+//   const entry = /Subjects\/(.+)/.exec(location.pathname);
+//   if (entry) {
+//     return <Subject id={entry[1]}/>;
+//   }
 
   // import the function
 
   return (
-    <React.Fragment>
     <div>
       <Card>
         <CardHeader
@@ -95,11 +91,9 @@ function Subjects(props) {
         popperOpen={newSubjectPopperOpen}
         onPopperClose={() => {setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
       />
-    </div>   
-    <SubjectDirectory/>
-    </React.Fragment>
+    </div>
   );
 }
 
-export default withStyles(QuestionnaireStyle)(Subjects);
+export default withStyles(QuestionnaireStyle)(SubjectDirectory);
 
