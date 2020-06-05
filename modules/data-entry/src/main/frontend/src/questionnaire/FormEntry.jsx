@@ -74,12 +74,12 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) =
   // component will either render the default question display, or a list of questions/answers from the form (used for subjects)
   return (
     <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={(doHighlight ? classes.highlightedSection : undefined)}>
-      <QuestionDisplay
-      questionDefinition={questionDefinition}
-      existingAnswer={existingQuestionAnswer}
-      path={path}
-      questionName={key}
-      />
+        <QuestionDisplay
+        questionDefinition={questionDefinition}
+        existingAnswer={existingQuestionAnswer}
+        path={path}
+        questionName={key}
+        />
     </Grid>
   );
 };
@@ -102,13 +102,13 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
       && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
 
   return (
-      <Section
-        key={key}
-        depth={depth}
-        sectionDefinition={sectionDefinition}
-        existingAnswer={existingQuestionAnswer}
-        path={path}
-        />
+    <Section
+      key={key}
+      depth={depth}
+      sectionDefinition={sectionDefinition}
+      existingAnswer={existingQuestionAnswer}
+      path={path}
+      />
   );
 }
 
@@ -132,8 +132,4 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displaySection(entryDefinition, path, depth, existingAnswers, keyProp);
   }
-}
-
-FormEntry.defaultProps = {
-  defaultDisplay: true
 }

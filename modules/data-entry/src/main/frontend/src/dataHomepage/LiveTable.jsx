@@ -155,7 +155,7 @@ function LiveTable(props) {
             <TableCell><a href={entry["@path"]}>{entry.title}</a></TableCell>
           )
         }
-      </TableRow> 
+      </TableRow>
     );
   };
 
