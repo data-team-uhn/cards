@@ -32,34 +32,8 @@ const IS_DEFAULT_POS = 2;
 const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
-  let { classes, existingAnswer, ghostAnchor, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
-  let { maxAnswers, minAnswers, displayType, chromosomeNumber, chromosomeX, chromosomeY, chromosomeZ, chromosomeW, chromosomeMT } = {...props.questionDefinition, ...props};
-  chromosomeNumber = chromosomeNumber || 22;
-  if (chromosomeX === false) {
-    chromosomeX = false;
-  } else {
-    chromosomeX = true;
-  }
-  if (chromosomeY === false) {
-    chromosomeY = false;
-  } else {
-    chromosomeY = true;
-  }
-  if (chromosomeZ === true) {
-      chromosomeZ = true;
-  } else {
-    chromosomeZ = false;
-  }
-  if (chromosomeW === true) {
-      chromosomeW = true;
-  } else {
-    chromosomeW = false;
-  }
-  if (chromosomeMT === true) {
-      chromosomeMT = true;
-  } else {
-    chromosomeMT = false;
-  }
+  let { classes, existingAnswer, ghostAnchor, input, textbox, menuitems, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { maxAnswers, minAnswers, displayType } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
@@ -239,14 +213,9 @@ function MultipleChoice(props) {
             onChange && onChange(event.target.value);
           }
         }>
-        {Array(chromosomeNumber).fill(1).map(function(name, index) {
-            return <MenuItem value={index+1}>{index+1}</MenuItem>;
+        {menuitems.map(function(name, index) {
+            return <MenuItem value={name}>{name}</MenuItem>;
         })}
-        {chromosomeX && <MenuItem value='X'>X</MenuItem>}
-        {chromosomeY && <MenuItem value='Y'>Y</MenuItem>}
-        {chromosomeZ && <MenuItem value='Z'>Z</MenuItem>}
-        {chromosomeW && <MenuItem value='W'>W</MenuItem>}
-        {chromosomeMT && <MenuItem value='MT'>MT</MenuItem>}
         </Select>
         <Answer
           answers={answers}

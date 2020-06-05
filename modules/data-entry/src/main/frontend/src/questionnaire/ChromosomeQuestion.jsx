@@ -45,6 +45,42 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    />
 function ChromosomeQuestion(props) {
   let { ...rest } = props;
+  let { chromosomeNumber,  chromosomeX, chromosomeY, chromosomeZ, chromosomeW, chromosomeMT } = {...props.questionDefinition, ...props};
+  chromosomeNumber = chromosomeNumber || 22;
+  let menuitems_list = [];
+  for (let i = 1; i <= chromosomeNumber; i++) {
+    menuitems_list.push(i.toString());
+  }
+  if (chromosomeX === false) {
+    chromosomeX = false;
+  } else {
+    chromosomeX = true;
+    menuitems_list.push("X");
+  }
+  if (chromosomeY === false) {
+    chromosomeY = false;
+  } else {
+    chromosomeY = true;
+    menuitems_list.push("Y");
+  }
+  if (chromosomeZ === true) {
+      chromosomeZ = true;
+      menuitems_list.push("Z");
+  } else {
+    chromosomeZ = false;
+  }
+  if (chromosomeW === true) {
+      chromosomeW = true;
+      menuitems_list.push("W");
+  } else {
+    chromosomeW = false;
+  }
+  if (chromosomeMT === true) {
+      chromosomeMT = true;
+      menuitems_list.push("MT");
+  } else {
+    chromosomeMT = false;
+  }
 
   return (
     <Question
@@ -54,6 +90,7 @@ function ChromosomeQuestion(props) {
         answerNodeType="lfs:ChromosomeAnswer"
         input="input"
         textbox="textbox"
+        menuitems={menuitems_list}
         {...rest}
         />
     </Question>);
