@@ -18,6 +18,7 @@
 //
 
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 
@@ -116,21 +117,30 @@ function Subject (props) {
   const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
 
-  let parentDetails = data && data['parents'] && (Array.isArray(data['parents']) ?
-    data['parents'].map((parent) => (parent.type.label + " " + parent.identifier)).join(" / ")
-    : data.parents.type.label + " " + data.parents.identifier);
+  // Recursive function to get a flat list of parents
+  let getParents = (node) => {
+    let output = <React.Fragment>{node.type.label} <Link to={"/content.html" + node["@path"]}>{node.identifier}</Link></React.Fragment>;
+    if (node["parents"]) {
+      let parent = getParents(node["parents"]);
+      return <React.Fragment>{parent} / {output}</React.Fragment>
+    } else {
+      return output;
+    }
+  }
+
+  let parentDetails = data && data['parents'] && getParents(data['parents']);
 
   return (
     <div>
       <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
         <Grid item>
           {
-            data && data.identifier ?
-              <Typography variant="h2">Subject: {data.identifier}</Typography>
-            : <Typography variant="h2">Subject: {id}</Typography>
+            parentDetails && <Typography variant="overline">{parentDetails}</Typography>
           }
           {
-            parentDetails && <Typography variant="h3">{parentDetails}</Typography>
+            data && data.identifier ?
+              <Typography variant="h2">{data?.type?.label || "Subject"}: {data.identifier}</Typography>
+            : <Typography variant="h2">Subject: {id}</Typography>
           }
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
