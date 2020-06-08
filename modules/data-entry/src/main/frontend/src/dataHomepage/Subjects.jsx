@@ -102,7 +102,7 @@ function Subjects(props) {
         onPopperClose={() => {setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
       />
     </div>   
-    <SubjectDirectory/>
+    <SubjectDirectory id="Patient"/>
     </React.Fragment>
   );
 }
