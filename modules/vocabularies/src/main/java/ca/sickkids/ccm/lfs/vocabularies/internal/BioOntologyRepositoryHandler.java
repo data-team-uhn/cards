@@ -60,12 +60,13 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
     private static final String REQUEST_CONFIGURATION =
         "?display_context=false&display_links=false&apikey=";
 
-    /** The list of vocabulary format names that are not supported by the current parser. Such
-        vocabularies should be explicitly requested to be downloaded in some other supported format. */
-    private static final Set<String> UNSUPPORTED_VOCABULARY_FORMATS =
+    /** The list of vocabulary format names that may be available in the supported RDF format,
+        but where the default download may be in an unsupported format. Such vocabularies
+        should be explicitly requested to be downloaded in RDF format. */
+    private static final Set<String> RDF_VOCABULARY_FORMATS =
         Collections.singleton("OWL");
 
-    /** Extra query parameter to request a vocabulary in RDF format (thagt is suported by our parser).
+    /** Extra query parameter to request a vocabulary in RDF format (that is supported by our parser).
         See http://data.bioontology.org/documentation for full API documentation. */
     private static final String REQUEST_DOWNLOAD_FORMAT_RDF =
         "&download_format=rdf";
@@ -112,7 +113,7 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
                         "Failed to find the requested version [" + version + "] of vocabulary [" + identifier + "]"));
 
                 String ontologyLanguage = submission.getString("hasOntologyLanguage", null);
-                Boolean requreRDFDownload = UNSUPPORTED_VOCABULARY_FORMATS.contains(ontologyLanguage.toUpperCase());
+                Boolean requireRDFDownload = RDF_VOCABULARY_FORMATS.contains(ontologyLanguage.toUpperCase());
 
                 VocabularyDescriptionBuilder desc = new VocabularyDescriptionBuilder();
                 desc.withIdentifier(identifier)
@@ -121,7 +122,7 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
                     .withDescription(submission.getString("description", null))
                     .withWebsite(submission.getString("homepage", null))
                     .withCitation(submission.getString("publication", null))
-                    .withSource(submission.getString("@id") + "/download" + getSourceConfiguration(requreRDFDownload))
+                    .withSource(submission.getString("@id") + "/download" + getSourceConfiguration(requireRDFDownload))
                     .withSourceFormat(ontologyLanguage);
                 return desc.build();
             } else {
