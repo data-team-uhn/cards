@@ -18,18 +18,16 @@
 //
 
 /**
- * Component that displays a Subject.
+ * Component that displays all subjects of a specified SubjectType.
  *
  * @example
  * <SubjectDirectory id="ae137c46-c22e-4bf1-8238-953e6315cffc" title="Tumors"/>
  *
- * @param {string} id the identifier of a subjectType; this is the JCR node name
+ * @param {string} id the identifier of a SubjectType
  * @param {string} title the title of the displayed title
  */
 
- // TODO: would the user inupt the uuid or the label
-
-import React, { useState } from "react";
+import React from "react";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 
 import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";

@@ -32,6 +32,23 @@ let createQueryURL = (query, type) => {
   return url;
 }
 
+//TODO: create helper function to be used in other SubjectType displays
+export function getSubjectTypeId() {
+  // inspect the URL to get the 'label' of the current SubjectType
+  const currSubjectType = /content.html\/(.+)/.exec(location.pathname)[1];
+  const typeLabel = currSubjectType.substring(0, currSubjectType.length - 1);
+
+  let url = createQueryURL(` WHERE n.label='${typeLabel}'`, "lfs:SubjectType");
+    fetch(url)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((response) => {
+        console.log(response);
+        // jcr:uuid of current SubjectType will be stored in `subjectID`
+        return (response["rows"][0]["jcr:uuid"]);
+      })
+      .catch((response) => {return (response)});
+}
+
 /**
  * Component that displays the subjects related to SubjectType Tumor.
  *
@@ -42,21 +59,23 @@ function Tumors(props) {
   let [ error, setError ] = useState();
   let [initialized, setInitialized] = useState(false);
 
-  // get uuid of current SubjectType (TODO: fix, not sure what the best way to do this)
-  // get name of current subjecttype
+  // inspect the URL to get the 'label' of the current SubjectType
   const currSubjectType = /content.html\/(.+)/.exec(location.pathname)[1];
-  const subjectName = currSubjectType.substring(0, currSubjectType.length - 1);
+  const typeLabel = currSubjectType.substring(0, currSubjectType.length - 1);
 
   let initialize = () => {
     setInitialized(true);
 
-    // Fetch the subjectID
-    let url = createQueryURL(` WHERE n.label='${subjectName}'`, "lfs:SubjectType");
+    //TODO: use the helper function!
+    // console.log(getSubjectTypeId());
+
+    // Fetch the jcr:uuid of the current SubjectType, based on the 'label'
+    let url = createQueryURL(` WHERE n.label='${typeLabel}'`, "lfs:SubjectType");
     fetch(url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
         console.log(response);
-        // subjectID = uuid of desired subjecttype
+        // jcr:uuid of current SubjectType will be stored in `subjectID`
         setSubjectID(response["rows"][0]["jcr:uuid"]);
       })
       .catch(handleError);
