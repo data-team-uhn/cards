@@ -26,8 +26,6 @@ import AddIcon from "@material-ui/icons/Add";
 import { getHierarchy } from "../questionnaire/Subject.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
-import SubjectDirectory from "../questionnaire/SubjectDirectory.jsx"; //TODO: remove this, just for testing LFS-429
-
 function Subjects(props) {
 
   const { classes } = props;
@@ -101,8 +99,7 @@ function Subjects(props) {
         popperOpen={newSubjectPopperOpen}
         onPopperClose={() => {setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
       />
-    </div>   
-    <SubjectDirectory id="Patient"/>
+    </div> 
     </React.Fragment>
   );
 }
