@@ -118,17 +118,17 @@ function Subject (props) {
         + encodeURIComponent(data['jcr:uuid']);
 
   // Recursive function to get a flat list of parents
-  let getParents = (node) => {
+  let getHierarchy = (node) => {
     let output = <React.Fragment>{node.type.label} <Link to={"/content.html" + node["@path"]}>{node.identifier}</Link></React.Fragment>;
     if (node["parents"]) {
-      let parent = getParents(node["parents"]);
-      return <React.Fragment>{parent} / {output}</React.Fragment>
+      let ancestors = getHierarchy(node["parents"]);
+      return <React.Fragment>{ancestors} / {output}</React.Fragment>
     } else {
       return output;
     }
   }
 
-  let parentDetails = data && data['parents'] && getParents(data['parents']);
+  let parentDetails = data && data['parents'] && getHierarchy(data['parents']);
 
   return (
     <div>
@@ -139,8 +139,8 @@ function Subject (props) {
           }
           {
             data && data.identifier ?
-              <Typography variant="h2">{data?.type?.label || "Subject"}: {data.identifier}</Typography>
-            : <Typography variant="h2">Subject: {id}</Typography>
+              <Typography variant="h2">{data?.type?.label || "Subject"} {data.identifier}</Typography>
+            : <Typography variant="h2">Subject {id}</Typography>
           }
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
