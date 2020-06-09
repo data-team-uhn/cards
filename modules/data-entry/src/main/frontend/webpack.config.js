@@ -23,7 +23,8 @@ module.exports = {
     [module_name + 'formsIcon']: '@material-ui/icons/Description.js',
     [module_name + 'dateQuestion']: './src/questionnaire/DateQuestion.jsx',
     [module_name + 'userDashboard']: './src/dataHomepage/UserDashboard.jsx',
-    [module_name + 'Tumors']: './src/dataHomepage/Tumors.jsx'
+    [module_name + 'Tumors']: './src/dataHomepage/Tumors.jsx',
+    [module_name + 'Patients']: './src/dataHomepage/Patients.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),

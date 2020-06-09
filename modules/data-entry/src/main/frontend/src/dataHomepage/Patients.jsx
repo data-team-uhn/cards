@@ -36,7 +36,7 @@ let createQueryURL = (query, type) => {
  * Component that displays the subjects related to SubjectType Tumor.
  *
  */
-function Tumors(props) {
+function Patients(props) {
   const { classes } = props;
   let [subjectID, setSubjectID] = useState();
   let [ error, setError ] = useState();
@@ -91,9 +91,9 @@ function Tumors(props) {
 
   return (
       <React.Fragment>
-        {subjectID && <SubjectDirectory id={subjectID} title="Tumors"/>}
+        {subjectID && <SubjectDirectory id={subjectID} title="Patients"/>}
       </React.Fragment>
   );
 }
 
-export default withStyles(QuestionnaireStyle)(Tumors);
+export default withStyles(QuestionnaireStyle)(Patients);
