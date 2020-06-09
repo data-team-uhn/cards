@@ -18,6 +18,7 @@
 //
 import React from "react";
 import LiveTable from "./LiveTable.jsx";
+import SubjectType from "../questionnaire/SubjectType.jsx";
 
 import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -46,7 +47,7 @@ function SubjectTypes(props) {
 
   const entry = /SubjectTypes\/(.+)/.exec(location.pathname);
   if (entry) {
-    return <div>Individual SubjectType view not yet implemented</div>;
+    return <SubjectType id={entry[1]}/>;
   }
 
   return (
