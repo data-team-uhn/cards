@@ -23,15 +23,6 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { Card, CardContent, CardHeader, Typography, withStyles } from "@material-ui/core";
 import SubjectDirectory from "../questionnaire/SubjectDirectory.jsx";
 
-/***
- * Create a query URL
- */
-let createQueryURL = (query, type) => {
-  let url = new URL("/query", window.location.origin);
-  url.searchParams.set("query", `SELECT * FROM [${type}] as n` + query);
-  return url;
-}
-
 /**
  * Component that displays the subjects related to SubjectType Tumor.
  *
@@ -49,7 +40,7 @@ function Tumors(props) {
     setInitialized(true);
 
     // Fetch the jcr:uuid of the current SubjectType, based on the 'label'
-    let url = createQueryURL(` WHERE n.label='${typeLabel}'`, "lfs:SubjectType");
+    let url = (`/query?query=SELECT * FROM [lfs:SubjectType] as n WHERE n.label='${typeLabel}'`)
     fetch(url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
