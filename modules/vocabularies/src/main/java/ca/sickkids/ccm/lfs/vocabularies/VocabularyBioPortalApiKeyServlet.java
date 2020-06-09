@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.Writer;
 
 import javax.json.Json;
-import javax.json.JsonObject;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 
