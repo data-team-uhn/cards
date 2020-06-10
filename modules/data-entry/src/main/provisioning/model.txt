@@ -48,12 +48,13 @@
             create path (lfs:QuestionnairesHomepage) /Questionnaires \
             create path (lfs:FormsHomepage) /Forms \
             create path (lfs:SubjectsHomepage) /Subjects \
+            create path (lfs:SubjectTypesHomepage) /SubjectTypes \
 \
             set ACL on /Forms,/Subjects \
                 allow jcr:all for everyone \
             end \
 \
-            set ACL on /Questionnaires \
+            set ACL on /Questionnaires,/SubjectTypes \
                 allow jcr:read for everyone \
             end \
           "]
@@ -64,6 +65,7 @@
             create path (lfs:QuestionnairesHomepage) /Questionnaires \
             create path (lfs:FormsHomepage) /Forms \
             create path (lfs:SubjectsHomepage) /Subjects \
+            create path (lfs:SubjectTypesHomepage) /SubjectTypes \
 \
             create group TrustedUsers \
 \
@@ -71,7 +73,7 @@
                 allow jcr:all for TrustedUsers \
             end \
 \
-            set ACL on /Questionnaires \
+            set ACL on /Questionnaires,/SubjectTypes \
                 allow jcr:read for TrustedUsers \
             end \
           "]
@@ -82,12 +84,13 @@
             create path (lfs:QuestionnairesHomepage) /Questionnaires \
             create path (lfs:FormsHomepage) /Forms \
             create path (lfs:SubjectsHomepage) /Subjects \
+            create path (lfs:SubjectTypesHomepage) /SubjectTypes \
 \
             set ACL on /Forms,/Subjects \
                 allow jcr:all for everyone restriction(lfs:owner) \
             end \
 \
-            set ACL on /Questionnaires \
+            set ACL on /Questionnaires,/SubjectTypes \
                 allow jcr:read for everyone \
             end \
           "]
