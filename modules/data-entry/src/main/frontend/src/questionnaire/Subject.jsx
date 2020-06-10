@@ -30,6 +30,18 @@ import {
 
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 
+// Recursive function to get a flat list of parents
+export function getHierarchy (node, RenderComponent, propsCreator) {
+  let props = propsCreator(node);
+  let output = <React.Fragment>{node.type.label} <RenderComponent {...props}>{node.identifier}</RenderComponent></React.Fragment>;
+  if (node["parents"]) {
+    let ancestors = getHierarchy(node["parents"], RenderComponent, propsCreator);
+    return <React.Fragment>{ancestors} / {output}</React.Fragment>
+  } else {
+    return output;
+  }
+}
+
 /**
  * Component that displays a Subject.
  *
@@ -117,18 +129,7 @@ function Subject (props) {
   const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
 
-  // Recursive function to get a flat list of parents
-  let getHierarchy = (node) => {
-    let output = <React.Fragment>{node.type.label} <Link to={"/content.html" + node["@path"]}>{node.identifier}</Link></React.Fragment>;
-    if (node["parents"]) {
-      let ancestors = getHierarchy(node["parents"]);
-      return <React.Fragment>{ancestors} / {output}</React.Fragment>
-    } else {
-      return output;
-    }
-  }
-
-  let parentDetails = data && data['parents'] && getHierarchy(data['parents']);
+  let parentDetails = data && data['parents'] && getHierarchy(data['parents'], Link, (node) => ({to: "/content.html" + node["@path"]}));
 
   return (
     <div>
