@@ -207,6 +207,7 @@ function MultipleChoice(props) {
       <React.Fragment>
         <Select
           value={ghostName}
+          className={classes.textField + ' ' + classes.answerField}
           onChange={(event) => {
             setGhostName(event.target.value);
             updateGhost(GHOST_SENTINEL, event.target.value);
