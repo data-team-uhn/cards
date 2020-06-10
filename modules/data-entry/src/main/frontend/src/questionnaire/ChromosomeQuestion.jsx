@@ -52,41 +52,31 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    text="Test text question (lowercase only)"
 //    />
 function ChromosomeQuestion(props) {
-  let { chromosomeNumber,  chromosomeX, chromosomeY, chromosomeZ, chromosomeW, chromosomeMT } = {...props.questionDefinition, ...props};
-  chromosomeNumber = chromosomeNumber || 22;
+  // By default we enable 22 numbered chromosomes plus X and Y
+  const defaultValues = {
+    chromosomeNumber : 22,
+    'X' : true,
+    'Y' : true,
+    'Z' : false,
+    'W' : false,
+    'MT': false
+  };
+
+  let { chromosomeNumber } = {...defaultValues, ...props.questionDefinition, ...props};
   let defaults = [];
   for (let i = 1; i <= chromosomeNumber; i++) {
     defaults.push([i.toString(), i.toString(), true]);
   }
-  if (chromosomeX === false) {
-    chromosomeX = false;
-  } else {
-    chromosomeX = true;
-    defaults.push(["X", "X", true]);
-  }
-  if (chromosomeY === false) {
-    chromosomeY = false;
-  } else {
-    chromosomeY = true;
-    defaults.push(["Y", "Y", true]);
-  }
-  if (chromosomeZ === true) {
-      chromosomeZ = true;
-      defaults.push(["Z", "Z", true]);
-  } else {
-    chromosomeZ = false;
-  }
-  if (chromosomeW === true) {
-      chromosomeW = true;
-      defaults.push(["W", "W", true]);
-  } else {
-    chromosomeW = false;
-  }
-  if (chromosomeMT === true) {
-      chromosomeMT = true;
-      defaults.push(["MT", "MT", true]);
-  } else {
-    chromosomeMT = false;
+
+  // We override the defaults above with the questionnaire definition,
+  // and then we override with explicit properties
+  const enabledChromosomes = {...Object.entries(defaultValues).reduce((accumulator, [key, value]) => {accumulator[`enable${key}`] = value; return accumulator;}, {}), ...props.questionDefinition, ...props};
+
+  // Whatever is left enabled, we display
+  for (let chromosome of Object.keys(defaultValues)) {
+    if (enabledChromosomes[`enable${chromosome}`] === true) {
+      defaults.push([chromosome, chromosome, true]);
+    }
   }
 
   return (
