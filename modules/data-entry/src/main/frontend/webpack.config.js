@@ -12,6 +12,7 @@ module.exports = {
     [module_name + 'Forms']: './src/dataHomepage/Forms.jsx',
     [module_name + 'multipleChoice']: './src/questionnaire/MultipleChoice.jsx',
     [module_name + 'textQuestion']: './src/questionnaire/TextQuestion.jsx',
+    [module_name + 'chromosomeQuestion']: './src/questionnaire/ChromosomeQuestion.jsx',
     [module_name + 'question']: './src/questionnaire/Question.jsx',
     [module_name + 'answer']: './src/questionnaire/Answer.jsx',
     [module_name + 'booleanQuestion']: './src/questionnaire/BooleanQuestion.jsx',

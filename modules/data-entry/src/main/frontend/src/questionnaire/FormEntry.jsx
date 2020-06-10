@@ -29,6 +29,7 @@ import Section from "./Section";
 import BooleanQuestion from "./BooleanQuestion";
 import DateQuestion from "./DateQuestion";
 import NumberQuestion from "./NumberQuestion";
+import ChromosomeQuestion from "./ChromosomeQuestion";
 import PedigreeQuestion from "./PedigreeQuestion";
 import TextQuestion from "./TextQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";

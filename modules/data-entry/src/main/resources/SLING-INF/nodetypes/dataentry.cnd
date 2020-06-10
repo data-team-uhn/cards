@@ -181,6 +181,25 @@
   // If defined, this must be a valid solr query that can be placed in the "fq" field.
   - vocabularyFilter (string)
 
+  // For chromosome answers, display the number (N) amount of chromosomes. For example,
+  // in humans, this number would be 22, displaying chromosomes 1-22.
+  - chromosomeNumber (long)
+
+  // For chromosome answers, should the X chromosome be displayed
+  - chromosomeX (boolean)
+
+  // For chromosome answers, should the Y chromosome be displayed
+  - chromosomeY (boolean)
+
+  // For chromosome answers, should the Z chromosome be displayed
+  - chromosomeZ (boolean)
+
+  // For chromosome answers, should the W chromosome be displayed
+  - chromosomeW (boolean)
+
+  // For chromosome answers, should MT (mitochondria) be listed
+  - chromosomeMT (boolean)
+
   // Some questions may be answered with long stories, which may have useful information but should not be stored as-is without curation.
   // We allow users to place these answers in a Notes section
   - enableNotes (boolean)
@@ -522,6 +541,18 @@
   - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
+// Chromosome answers, stored as strings
+[lfs:ChromosomeAnswer] > lfs:Answer
+  - value (string)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/ChromosomeAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
+
 // Section object, which can contain multiple other answers. The "question" element here
 // should be the section we're answering
 [lfs:AnswerSection] > sling:Folder
