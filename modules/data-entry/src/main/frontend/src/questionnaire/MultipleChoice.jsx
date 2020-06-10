@@ -32,7 +32,7 @@ const IS_DEFAULT_POS = 2;
 const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
-  let { classes, existingAnswer, ghostAnchor, input, textbox, menuitems, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { classes, existingAnswer, ghostAnchor, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
@@ -213,8 +213,8 @@ function MultipleChoice(props) {
             onChange && onChange(event.target.value);
           }
         }>
-        {menuitems.map(function(name, index) {
-            return <MenuItem value={name}>{name}</MenuItem>;
+        {defaults.map(function([name, key], index) {
+            return <MenuItem value={key}>{name}</MenuItem>;
         })}
         </Select>
         <Answer

@@ -54,37 +54,37 @@ import AnswerComponentManager from "./AnswerComponentManager";
 function ChromosomeQuestion(props) {
   let { chromosomeNumber,  chromosomeX, chromosomeY, chromosomeZ, chromosomeW, chromosomeMT } = {...props.questionDefinition, ...props};
   chromosomeNumber = chromosomeNumber || 22;
-  let menuitems_list = [];
+  let defaults = [];
   for (let i = 1; i <= chromosomeNumber; i++) {
-    menuitems_list.push(i.toString());
+    defaults.push([i.toString(), i.toString(), true]);
   }
   if (chromosomeX === false) {
     chromosomeX = false;
   } else {
     chromosomeX = true;
-    menuitems_list.push("X");
+    defaults.push(["X", "X", true]);
   }
   if (chromosomeY === false) {
     chromosomeY = false;
   } else {
     chromosomeY = true;
-    menuitems_list.push("Y");
+    defaults.push(["Y", "Y", true]);
   }
   if (chromosomeZ === true) {
       chromosomeZ = true;
-      menuitems_list.push("Z");
+      defaults.push(["Z", "Z", true]);
   } else {
     chromosomeZ = false;
   }
   if (chromosomeW === true) {
       chromosomeW = true;
-      menuitems_list.push("W");
+      defaults.push(["W", "W", true]);
   } else {
     chromosomeW = false;
   }
   if (chromosomeMT === true) {
       chromosomeMT = true;
-      menuitems_list.push("MT");
+      defaults.push(["MT", "MT", true]);
   } else {
     chromosomeMT = false;
   }
@@ -95,7 +95,7 @@ function ChromosomeQuestion(props) {
       >
       <MultipleChoice
         answerNodeType="lfs:ChromosomeAnswer"
-        menuitems={menuitems_list}
+        defaults={defaults}
         {...props}
         />
     </Question>);
