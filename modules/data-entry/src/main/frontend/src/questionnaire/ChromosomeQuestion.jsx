@@ -52,7 +52,6 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    text="Test text question (lowercase only)"
 //    />
 function ChromosomeQuestion(props) {
-  let { ...rest } = props;
   let { chromosomeNumber,  chromosomeX, chromosomeY, chromosomeZ, chromosomeW, chromosomeMT } = {...props.questionDefinition, ...props};
   chromosomeNumber = chromosomeNumber || 22;
   let menuitems_list = [];
@@ -92,14 +91,14 @@ function ChromosomeQuestion(props) {
 
   return (
     <Question
-      {...rest}
+      {...props}
       >
       <MultipleChoice
         answerNodeType="lfs:ChromosomeAnswer"
         input="input"
         textbox="textbox"
         menuitems={menuitems_list}
-        {...rest}
+        {...props}
         />
     </Question>);
 }
