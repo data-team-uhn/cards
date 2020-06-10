@@ -33,7 +33,7 @@ const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
   let { classes, existingAnswer, ghostAnchor, input, textbox, menuitems, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
-  let { maxAnswers, minAnswers, displayType } = {...props.questionDefinition, ...props};
+  let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
@@ -42,7 +42,7 @@ function MultipleChoice(props) {
     .map(value => [value.label || value.value, value.value, true]);
   const isBare = defaults.length === 0 && maxAnswers === 1;
   const isRadio = defaults.length > 0 && maxAnswers === 1;
-  const isSelect = displayType === "select";
+  const isSelect = displayMode === "select";
   let initialSelection =
     // If there's no existing answer, there's no initial selection
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
