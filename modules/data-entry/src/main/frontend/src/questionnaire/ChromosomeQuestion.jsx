@@ -32,12 +32,20 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // Component that renders a multiple choice question, with the choices being
 // the set of chromosomes in an organism.
 // Selected answers are placed in a series of <input type="hidden"> tags for
-// submission.
+// submission. By default the chromosome for humans are disabled: 22 numbered
+// chromosomes, plus X and Y. The question supports any number of chromosomes,
+// and any of the X, Y, Z, W, and MT chromosomes can be enabled.
 //
 // Optional arguments:
 //  max: Integer denoting maximum number of arguments that may be selected
 //  min: Integer denoting minimum number of arguments that may be selected
 //  text: String containing the question to ask
+//  chromosomeNumber: Integer denoting how many numbered chromosomes to display (22 by default)
+//  enableX: Boolean, whether the X chromosome is enabled or not (true by default)
+//  enableY: Boolean, whether the Y chromosome is enabled or not (true by default)
+//  enableZ: Boolean, whether the Z chromosome is enabled or not (false by default)
+//  enableW: Boolean, whether the W chromosome is enabled or not (false by default)
+//  enableMT: Boolean, whether the Mitochondrial DNA chromosome is enabled or not (false by default)
 //
 // sample usage:
 // <ChromosomeQuestion
