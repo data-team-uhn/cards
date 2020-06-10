@@ -215,7 +215,7 @@ function MultipleChoice(props) {
           }
         }>
         {defaults.map(function([name, key], index) {
-            return <MenuItem value={key}>{name}</MenuItem>;
+            return <MenuItem value={key} key={key}>{name}</MenuItem>;
         })}
         </Select>
         <Answer
