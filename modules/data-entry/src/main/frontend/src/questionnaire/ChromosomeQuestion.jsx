@@ -95,8 +95,6 @@ function ChromosomeQuestion(props) {
       >
       <MultipleChoice
         answerNodeType="lfs:ChromosomeAnswer"
-        input="input"
-        textbox="textbox"
         menuitems={menuitems_list}
         {...props}
         />
