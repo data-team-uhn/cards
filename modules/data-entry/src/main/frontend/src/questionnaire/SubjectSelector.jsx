@@ -87,9 +87,6 @@ function UnstyledNewSubjectDialog (props) {
           columns={COLUMNS}
           data={allowedTypes ? allowedTypes :
             query => {
-              if (allowedTypes) {
-                console.log("Test");
-              }
               let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType");
               url.searchParams.set("limit", query.pageSize);
               url.searchParams.set("offset", query.page*query.pageSize);
