@@ -113,7 +113,9 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
                         "Failed to find the requested version [" + version + "] of vocabulary [" + identifier + "]"));
 
                 String ontologyLanguage = submission.getString("hasOntologyLanguage", null);
-                Boolean requireRDFDownload = RDF_VOCABULARY_FORMATS.contains(ontologyLanguage.toUpperCase());
+                Boolean requireRDFDownload = (ontologyLanguage == null)
+                    ? false
+                    : RDF_VOCABULARY_FORMATS.contains(ontologyLanguage.toUpperCase());
 
                 VocabularyDescriptionBuilder desc = new VocabularyDescriptionBuilder();
                 desc.withIdentifier(identifier)
