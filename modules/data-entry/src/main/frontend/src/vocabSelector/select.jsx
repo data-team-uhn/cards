@@ -56,9 +56,12 @@ function VocabularySelector(props) {
   const [radioName, setRadioName] = useState("");
   const [radioSelect, setRadioSelect] = useState("");
   const [radioValue, setRadioValue] = useState("&nbsp;");
+
+  //check for preset answers
+  const numPresets = Object.entries(questionDefinition).filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerOption").length;
   
-  const disabled = max > 1 && selected >= max;
-  const isRadio = max === 1;
+  const disabled = (max > 1 || numPresets === 0) && selected >= max;
+  const isRadio = max === 1 && numPresets > 0;
   const reminderText = `Please select at most ${max} options.`;
   const selectedListChildren = listChildren.filter( (element) => element[IS_SELECTED_POS] );
 
@@ -132,7 +135,7 @@ function VocabularySelector(props) {
   }
 
   let handleThesaurus = (id, name) => {
-    var isRadio = max === 1;
+    var isRadio = (max === 1 && numPresets > 0);
     if (isRadio) {
       setRadioName(name);
       setRadioValue(id);
@@ -146,7 +149,7 @@ function VocabularySelector(props) {
   // Create a new child from the selection with parent
   let addSelection = (id, name) => {
     // Do not add anything if we are at our maximum number of selections
-    if (selected >= max && max > 1 ) {
+    if (selected >= max && (max > 1 || numPresets === 0) ) {
       return old;
     }
 
@@ -271,7 +274,7 @@ function VocabularySelector(props) {
         onInputFocus = {() => {setRadioSelect(radioValue);}}
         {...rest}
       >
-        {max > 1 ?(<Typography>{reminderText}</Typography>) : ''}
+        {(max > 1 || numPresets === 0) ?(<Typography>{reminderText}</Typography>) : ''}
         {
           // If we don't have an external container, add results here
           typeof selectionContainer === "undefined" && generateList(disabled, isRadio)
