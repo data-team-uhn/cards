@@ -198,6 +198,7 @@ function VocabularySelector(props) {
 
     // If any answers are existing (i.e. we are loading an old form), also populate these
     if (hasExistingAnswers) {
+      setSelected(existingAnswer[1].value.length);
       Array.of(existingAnswer[1].value).flat().forEach( (id) => {
         // Do not add a pre-existing answer if it is a default
         if (id in defaultSuggestions) {
