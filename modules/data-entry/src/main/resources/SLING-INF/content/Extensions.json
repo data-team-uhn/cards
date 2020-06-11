@@ -28,6 +28,20 @@
             "jcr:mimeType": "text/html"
         }
     },
+    "SubjectTypes": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:targetURL": "SubjectTypes",
+        "lfs:extensionName": "Subject Types",
+        "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectTypes.js",
+        "lfs:defaultOrder": 95,
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "",
+            "jcr:mimeType": "text/html"
+        }
+    },
     "Forms": {
         "jcr:primaryType": "lfs:Extension",
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
@@ -35,7 +49,7 @@
         "lfs:extensionName": "Forms",
         "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.Forms.js",
-        "lfs:defaultOrder": 2,
+        "lfs:defaultOrder": 3,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "",

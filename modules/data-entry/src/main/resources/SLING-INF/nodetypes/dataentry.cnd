@@ -364,6 +364,10 @@
   // If present, it will be displayed to the user between the label and the sections.
   - description (string)
 
+  // An optional list of lfs:SubjectTypes.
+  // Any Forms for this questionnaire must have a subject with a type on the list.
+  - requiredSubjectTypes (REFERENCE) mandatory multiple
+
   // Children
 
   // The sections and standalone questions that make up this questionnaire.
@@ -669,6 +673,12 @@
   // Additional identifiers may be defined in forms.
   - identifier (STRING)
 
+  // A reference to an lfs:SubjectType defining this subject
+  - type (reference) mandatory
+
+  // A link to any parent Subjects
+  - parents (reference) multiple
+
 //-----------------------------------------------------------------------------
 // The homepage for the Subjects space.
 [lfs:SubjectsHomepage] > sling:Folder
@@ -690,7 +700,7 @@
 
 //-----------------------------------------------------------------------------
 // A type of subject
-[lfs:SubjectType] > sling:Folder
+[lfs:SubjectType] > sling:Folder, mix:referenceable
   // Attributes:
 
   // We can query subject types.
@@ -712,3 +722,22 @@
 
   // Any number of parent subject types that are required by this subject type
   - requiredParentType (String) multiple
+
+//-----------------------------------------------------------------------------
+// The homepage for any SubjectTypes.
+[lfs:SubjectTypesHomepage] > sling:Folder
+  // Attributes:
+
+  // We can use this homepage in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/SubjectTypesHomepage" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the SubjectTypesHomepage is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // Set a default title.
+  - title (String) = "Subject Types" mandatory autocreated

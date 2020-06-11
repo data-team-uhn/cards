@@ -1,6 +1,7 @@
 {
   "jcr:primaryType": "lfs:Questionnaire",
   "title": "Tumors Data",
+  "jcr:reference:requiredSubjectTypes": ["/SubjectTypes/Tumor"],
   "lesion_number": {
     "jcr:primaryType": "lfs:Question",
     "text": "Lesion Number",
