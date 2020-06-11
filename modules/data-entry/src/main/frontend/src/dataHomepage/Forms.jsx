@@ -35,6 +35,7 @@ function Forms(props) {
   const [ title, setTitle ] = useState("Forms");
   const [ titleFetchSent, setFetchStatus ] = useState(false);
   const [ questionnairePath, setQuestionnairePath ] = useState(undefined);
+  const [ questionnaireDetails, setQuestionnaireDetails ] = useState();
   const questionnaireID = /questionnaire=([^&]+)/.exec(location.search);
 
   // Convert from a questionnaire ID to the title of the form we're editing
@@ -42,7 +43,11 @@ function Forms(props) {
     setFetchStatus(true);
     fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Questionnaire] as n WHERE n.'jcr:uuid'='${id}'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {setTitle(json["rows"][0]["title"]); setQuestionnairePath(json["rows"][0]["@path"])});
+      .then((json) => {
+        setTitle(json["rows"][0]["title"]);
+        setQuestionnairePath(json["rows"][0]["@path"]);
+        setQuestionnaireDetails(json["rows"][0]);
+      });
   }
 
   let customUrl = undefined;
