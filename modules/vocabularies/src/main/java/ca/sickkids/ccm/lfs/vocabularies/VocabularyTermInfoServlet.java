@@ -112,9 +112,13 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
                 );
             jsonGen.writeStartArray(CHILDREN_PROPERTY);
             while (children.hasNext()) {
-                hasChildren = true;
                 Resource child = children.next();
-                jsonGen.write(populateChildren(child.adaptTo(JsonObject.class), resolver, parentPath));
+                JsonObject nxtChild = child.adaptTo(JsonObject.class);
+                if (nxtChild == null || resolver == null || parentPath == null) {
+                    continue;
+                }
+                hasChildren = true;
+                jsonGen.write(populateChildren(nxtChild, resolver, parentPath));
             }
             jsonGen.writeEnd();
             jsonGen.write(HAS_CHILDREN_PROPERTY, hasChildren);
@@ -200,6 +204,9 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
         // Copy the resource but add lfs:hasChildren to it
         JsonObjectBuilder objectCopier = Json.createObjectBuilder();
         for (String key : KEYS_TO_COPY) {
+            if (resource.get(key) == null) {
+                continue;
+            }
             objectCopier.add(key, resource.get(key));
         }
         objectCopier.add(HAS_CHILDREN_PROPERTY, children.hasNext());
@@ -214,6 +221,9 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
             JsonObject childJson = child.adaptTo(JsonObject.class);
             JsonObjectBuilder truncatedChild = Json.createObjectBuilder();
             for (String key : KEYS_TO_COPY) {
+                if (childJson.get(key) == null) {
+                    continue;
+                }
                 truncatedChild.add(key, childJson.get(key));
             }
 
