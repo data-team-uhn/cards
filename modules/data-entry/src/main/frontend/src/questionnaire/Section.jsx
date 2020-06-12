@@ -188,6 +188,11 @@ function Section(props) {
                 item
                 >
                 <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
+                  {console.log(existingSectionAnswer)}
+                  {/* delete any existing answer section before inputting new answers in section */}
+                  {instanceLabels.map((uuid) => 
+                    <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
+                  )}
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                     Object.entries(sectionDefinition)
                       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
