@@ -117,7 +117,7 @@ export default function VocabularyTable(props) {
 
             <TableBody>
               {vocabList.map((vocab) => {
-                if (props.type === "local" || vocab.status === "production") {
+                if (props.type === "local" || vocab.status === "production" || vocab.status === "beta") {
                   return(
                     <VocabularyEntry
                       key={vocab.ontology.acronym}
