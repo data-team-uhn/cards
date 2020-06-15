@@ -39,7 +39,7 @@ import LiveTable from "../dataHomepage/LiveTable.jsx";
  */
 function SubjectType (props) {
   let { id } = props;
-  // This holds the full subject JSON, once it is received from the server
+  // This holds the full SubjectType JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
@@ -64,9 +64,8 @@ function SubjectType (props) {
     },
   ]
 
-  // Fetch the subject's data as JSON from the server.
-  // The data will contain the subject metadata,
-  // such as authorship and versioning information.
+  // Fetch the subject type as JSON from the server.
+  // The response will contain metadata, such as authorship and versioning information.
   // Once the data arrives from the server, it will be stored in the `data` state variable.
   let fetchData = () => {
     fetch(`/SubjectTypes/${id}.deep.json`)
@@ -94,13 +93,13 @@ function SubjectType (props) {
     );
   }
 
-  // If an error was returned, do not display a subject at all, but report the error
+  // If an error was returned, do not display any information, just report the error
   if (error) {
     return (
       <Grid container justify="center">
         <Grid item>
           <Typography variant="h2" color="error">
-            Error obtaining SubjectType data: {error.status} {error.statusText ? error.statusText : error.toString()}
+            Error retrieving details about this subject type: {error.status} {error.statusText ? error.statusText : error.toString()}
           </Typography>
         </Grid>
       </Grid>
@@ -116,8 +115,8 @@ function SubjectType (props) {
         <Grid item>
           {
             data && data.identifier ?
-              <Typography variant="h2">SubjectType: {data.identifier}</Typography>
-            : <Typography variant="h2">SubjectType: {id}</Typography>
+              <Typography variant="h2">Subject Type: {data.identifier}</Typography>
+            : <Typography variant="h2">Subject Type: {id}</Typography>
           }
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
@@ -126,7 +125,7 @@ function SubjectType (props) {
           }
         </Grid>
         <Grid item>
-          <Typography variant="h4">Subjects involving {data && (data.identifier || id)} </Typography>
+          <Typography variant="h4">Subjects of type {data && (data.identifier || id)} </Typography>
           <LiveTable
             columns={columns}
             customUrl={customUrl}
