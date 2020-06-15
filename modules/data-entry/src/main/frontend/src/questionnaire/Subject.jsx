@@ -60,15 +60,21 @@ let createQueryURL = (query, type) => {
 
 function Subject(props) {
   let { id, classes, maxDisplayed } = props;
+  const [currentSubject, setCurrentSubject] = useState();
+
+  // the subject data, fetched in the SubjectContainer component, will be stored in the `type` state
+  function handleSubject(e) {
+    setCurrentSubject(e);
+  }
 
   return (
     <React.Fragment>
       <div className={classes.subjectNewButton}>
-          <NewFormDialog>
+          <NewFormDialog currentSubject={currentSubject}>
             New form
           </NewFormDialog>
       </div>
-      <SubjectContainer id={id} classes={classes} maxDisplayed={maxDisplayed}/>
+      <SubjectContainer id={id} classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject}/>
     </React.Fragment>
   );
 }
@@ -77,7 +83,7 @@ function Subject(props) {
  * Component that recursively gets and displays the selected subject and its related SubjectTypes
  */
 function SubjectContainer(props) {
-  let { id, classes, level, maxDisplayed } = props;
+  let { id, classes, level, maxDisplayed, getSubject } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -100,6 +106,10 @@ function SubjectContainer(props) {
 
   // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
   let handleResponse = (json) => {
+    if (currentLevel == 0) {
+      // sends the data to the parent component
+      getSubject(json);
+    } 
     setData(json);
   };
 

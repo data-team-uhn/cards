@@ -36,7 +36,7 @@ const PROGRESS_SELECT_SUBJECT = 1;
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
 function NewFormDialog(props) {
-  const { children, classes, presetPath } = props;
+  const { children, classes, presetPath, currentSubject } = props;
   const [ open, setOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ newSubjectParentPopperOpen, setNewSubjectParentPopperOpen ] = useState(false);
@@ -55,6 +55,8 @@ function NewFormDialog(props) {
   const [ error, setError ] = useState("");
 
   const tableRef = useRef();
+
+  console.log(currentSubject);
 
   // The value of a subjectType's parents are either an array, or if it is length 1 it will just be an object
   // We must cast each case into an array to handle it properly
