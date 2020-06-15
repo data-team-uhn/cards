@@ -477,7 +477,8 @@
     "maxAnswers": 0,
     "displayMode": "input",
     "dataType": "vocabulary",
-    "sourceVocabulary": "ICD-O-3-T"
+    "sourceVocabulary": "HP",
+    "vocabularyFilter": ["HP:0000118"]
   },
   "inherited_from": {
     "jcr:primaryType": "lfs:Question",
