@@ -67,6 +67,8 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class OwlParser implements SourceParser
 {
+    private static final String THING_NAME = "Thing";
+
     @Reference
     private VocabularyParserUtils utils;
 
@@ -116,6 +118,15 @@ public class OwlParser implements SourceParser
             // Close iterator for terms and OntModel to save memory
             termIterator.close();
             ontModel.close();
+
+            // Add the Thing node, which is the base of all other nodes
+            String[] thingParents = {THING_NAME};
+            String[] thingAncestors = {THING_NAME};
+            MultiValuedMap<String, String> thingProperties = new ArrayListValuedHashMap<>();
+            thingProperties.put("id", THING_NAME);
+            consumer.accept(new VocabularyTermSource(THING_NAME, THING_NAME, thingParents,
+                thingAncestors, thingProperties));
+
             // Close the transaction
             store.end();
         } catch (FileNotFoundException e) {
@@ -157,6 +168,9 @@ public class OwlParser implements SourceParser
 
         // The label is the term label. The language option is null because the OWL file doesn't specify a language.
         String label = term.getLabel(null);
+
+        // Add a "name" property which holds the same value as the "label" property
+        gatheredProperties.put("name", label);
 
         // Create VocabularyTerm node as child of vocabularyNode using inherited protected method
         consumer.accept(new VocabularyTermSource(identifier, label, parents, ancestors, gatheredProperties));
