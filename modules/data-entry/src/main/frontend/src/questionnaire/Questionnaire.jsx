@@ -39,8 +39,8 @@ import moment from "moment";
 import uuid from "uuid/v4";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import EditQuestionDialog from "./EditQuestionDialog"
-import DeleteQuestionDialog from "./DeleteQuestionDialog"
+import EditDialog from "./EditDialog"
+import DeleteDialog from "./DeleteDialog"
 import OpenWithIcon from "@material-ui/icons/OpenWith";
 
 // GUI for displaying details about a questionnaire.
@@ -62,6 +62,7 @@ let Questionnaire = (props) => {
 
   let handleResponse = (json) => {
     setData(json);
+    console.log(json);
   };
 
   let handleError = (response) => {
@@ -75,25 +76,6 @@ let Questionnaire = (props) => {
   }
 
   const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-
-  const handleNewQuestion = () => {
-    setError("");
-    // Make a POST request to create a new form, with a randomly generated UUID
-    const URL = `/Questionnaires/${id}` + uuid();
-    var request_data = new FormData();
-    request_data.append('jcr:primaryType', 'lfs:Question');
-    fetch( URL, { method: 'POST', body: request_data })
-      .then( (response) => {
-        setFetching(false);
-        if (response.ok) {
-        } else {
-          return(Promise.reject(response));
-        }
-      })
-      .catch(parseErrorResponse);
-    setFetching(true);
     setAnchorEl(null);
   };
 
@@ -133,8 +115,8 @@ let Questionnaire = (props) => {
           open={Boolean(anchorEl)}
           onClose={handleCloseMenu}
         >
-          <MenuItem onClick={handleNewQuestion}>Question</MenuItem>
-          <MenuItem onClick={handleCloseMenu}>Section</MenuItem>
+          {/* <MenuItem>Question<EditDialog edit={false} data={data} type="Question" /></MenuItem>
+          <MenuItem >Section<EditDialog edit={false} data={data} type="Section" /></MenuItem> */}
         </Menu>
       </Grid>
         {
@@ -143,8 +125,8 @@ let Questionnaire = (props) => {
           .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
           .map(([key, value]) => 
             value['jcr:primaryType'] == 'lfs:Question' 
-            ? <Grid item key={key}><Question data={value} id={id} uuid={data["jcr:uuid"]}/></Grid>
-            : <Grid item key={key}><Section data={value} id={id} uuid={data["jcr:uuid"]}></Section></Grid>
+            ? <Grid item key={key}><Question data={value}/></Grid>
+            : <Grid item key={key}><Section data={value}></Section></Grid>
           )
           :
             <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
@@ -163,7 +145,7 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
-  let { data, id, edit, open, uuid } = props;
+  let { data, id, edit } = props;
   return (
     <Card>
       <CardHeader title={props.data.text} action={
@@ -171,8 +153,8 @@ let Question = (props) => {
           <IconButton>
             <OpenWithIcon />
           </IconButton>
-          <EditQuestionDialog key={location.pathname} edit={true} data={props.data} id={id} open={props.open}></EditQuestionDialog>
-          <DeleteQuestionDialog data={props.data} uuid={uuid}></DeleteQuestionDialog>
+          <EditDialog data={props.data} type="Question" edit={true}/>
+          <DeleteDialog data={props.data} type="Question" edit={true} />
         </div>
       }
       />
@@ -222,11 +204,26 @@ let Question = (props) => {
   );
 };
 
+Question.propTypes = {
+  data: PropTypes.object.isRequired
+};
+
 let Section = (props) => {
   let { data, id, uuid } = props;
   return (
     <Card>
-      <CardHeader title={data["name"]}></CardHeader>
+      <CardHeader title={data['title'] || ''}
+        action={
+          <div>
+          <IconButton>
+            <OpenWithIcon />
+          </IconButton>
+          <EditDialog key={location.pathname} edit={true} data={props.data} type="Section" />
+          <DeleteDialog data={props.data} type="Section" />
+          <Typography>{data['description'] || ''}</Typography>
+          </div>
+        }>
+      </CardHeader>
       <CardContent>
         <Grid container direction="column" spacing={8}>
           {
@@ -235,8 +232,8 @@ let Section = (props) => {
               .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
               .map(([key, value]) => 
                 value['jcr:primaryType'] == 'lfs:Question' 
-                ? <Grid item key={key}><Question data={value} id={id} uuid={data["jcr:uuid"]}/></Grid>
-                : <Grid item key={key}><Section data={value} id={id} uuid={data["jcr:uuid"]}></Section></Grid>
+                ? <Grid item key={key}><Question data={value}/></Grid>
+                : <Grid item key={key}><Section data={value}></Section></Grid>
               )
               :
               <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
@@ -247,14 +244,8 @@ let Section = (props) => {
   );
 };
 
-Question.propTypes = {
-  data: PropTypes.object.isRequired,
-  id: PropTypes.string.isRequired
-};
-
 Section.propTypes = {
-  data: PropTypes.object.isRequired,
-  id: PropTypes.string.isRequired
+  data: PropTypes.object.isRequired
 };
 
 // A predefined answer option for a question.
