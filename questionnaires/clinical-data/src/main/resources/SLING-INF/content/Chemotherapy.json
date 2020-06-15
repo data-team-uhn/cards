@@ -1,6 +1,7 @@
 {
   "jcr:primaryType": "lfs:Questionnaire",
   "title": "Chemotherapy Data",
+  "jcr:reference:requiredSubjectTypes": ["/SubjectTypes/Patient"],
   "chemotherapy": {
     "jcr:primaryType": "lfs:Question",
     "text": "Chemotherapy",

@@ -48,12 +48,14 @@ function Filters(props) {
   const [filterableTitles, setFilterableTitles] = useState({});
   const [filterableUUIDs, setFilterableUUIDs] = useState({});
   const [filterComparators, setFilterComparators] = useState({});
+  const [textFilterComponent, setTextFilterComponent] = useState({});
   const [questionDefinitions, setQuestionDefinitions] = useState({});
   // Other state variables
   const [error, setError] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [filterRequestSent, setFilterRequestSent] = useState(false);
   const [toFocus, setFocusRow] = useState(null);
+  const notesComparator = "notes contain";
 
   // Focus on inputs as they are flagged for focus
   const focusRef = useRef();
@@ -186,6 +188,14 @@ function Filters(props) {
 
   let getOutputChoices = (field, overridefilters) => {
     let [comparators, component] = FilterComponentManager.getFilterComparatorsAndComponent(questionDefinitions[field]);
+    if (questionDefinitions[field].enableNotes && !comparators.includes(notesComparator)) {
+      comparators = comparators.slice();
+      comparators.push(notesComparator);
+      setTextFilterComponent(old => ({
+        ...old,
+        [field]: FilterComponentManager.getTextFilterComponent(questionDefinitions[field])
+      }));
+    }
     setFilterComparators( old => ({
       ...old,
       [field]: comparators
@@ -231,7 +241,11 @@ function Filters(props) {
 
   // Return the pre-computed input element, and focus it if we were asked to
   let getCachedInput = (filterDatum, index, focusRef) => {
-    let CachedComponent = filterableAnswers[filterDatum.name];
+
+    let CachedComponent = filterDatum.comparator === notesComparator ?
+      textFilterComponent[filterDatum.name]
+      :
+      filterableAnswers[filterDatum.name];
     return (
       <CachedComponent
         ref={focusRef}
@@ -312,12 +326,13 @@ function Filters(props) {
             {editingFilters.map( (filterDatum, index) => {
               // We grab focus on the field if we were asked to
               let isUnary = filterDatum.comparator && UNARY_COMPARATORS.includes(filterDatum.comparator);
+              let isNotesContain = filterDatum.comparator && (filterDatum.comparator === notesComparator);
               return(
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
                   <Grid item xs={5}>
                     <Select
-                      value={filterDatum.name || ""}
+                      value={(filterDatum.name || "")}
                       onChange={(event) => {handleChangeFilter(index, event);}}
                       MenuProps={{
                         onExited: forceRegrabFocus
@@ -335,7 +350,7 @@ function Filters(props) {
                     </Select>
                   </Grid>
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}
-                  <Grid item xs={isUnary ? 6 : 1} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                  <Grid item xs={isUnary ? 6 : (isNotesContain ? 3 : 1)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <Select
                       value={filterDatum.comparator || ""}
                       onChange={(event) => {handleChangeComparator(index, event.target.value);}}
@@ -349,7 +364,7 @@ function Filters(props) {
                   </Grid>
                   {/* Look up whether or not the component can be loaded */}
                   {!isUnary &&
-                    <Grid item xs={5} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                    <Grid item xs={isNotesContain ? 3 : 5} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                       {filterDatum.comparator ?
                           getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
                         : <TextField disabled className={classes.answerField}></TextField>

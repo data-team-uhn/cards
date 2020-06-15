@@ -29,6 +29,9 @@ export function MakeRequest(URL, callback) {
         var status = (xhr.status === 200 ? null : xhr.status);
         callback(status, xhr.response);
     }
+    xhr.onerror = () => {
+        callback(xhr.status, xhr.response);
+    }
     xhr.send();
 }
 

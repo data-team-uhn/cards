@@ -26,13 +26,19 @@ import React from "react";
 
 import VocabularyDirectory from "./vocabularyDirectory";
 
+import fetchBioPortalApiKey from "./bioportalApiKey";
+
 const Phase = require("./phaseCodes.json");
 const vocabLinks = require("./vocabularyLinks.json");
 
 // Generates a URL to the vocabulary listing page
-function generateRemoteLink() {
+function generateRemoteLink(apiKey) {
+  if (apiKey === null) {
+    // never returned an incomplete URL without a valid key
+    return "";
+  }
   let url = new URL(vocabLinks["remote"]["base"]);
-  url.searchParams.set("apikey", vocabLinks["apikey"]);
+  url.searchParams.set("apikey", apiKey);
   Object.keys(vocabLinks["remote"]["params"]).forEach(
     (key) => {
       (key === "include" ? 
@@ -66,6 +72,10 @@ export default function VocabulariesAdminPage() {
   const [remoteLoaded, setRemoteLoaded] = React.useState(false);
   const [localLoaded, setLocalLoaded] = React.useState(false);
   const [displayTables, setDisplayTables] = React.useState(false);
+  /*
+    Initially the key will be fetched from a script service.
+  */
+  const [bioPortalApiKey, setBioPortalApiKey] = React.useState(null);
 
   function processLocalVocabList(vocabList) {
     setLocalVocabList(vocabList);
@@ -138,6 +148,10 @@ export default function VocabulariesAdminPage() {
     setDisplayTables(true);
   }
 
+  if (bioPortalApiKey === null) {
+    fetchBioPortalApiKey(setBioPortalApiKey, () => { console.error("Can't fetch bioPortal API key"); });
+  }
+
   return (
     <Grid container direction="column" spacing={4} justify="space-between">
 
@@ -167,7 +181,7 @@ export default function VocabulariesAdminPage() {
        
       <VocabularyDirectory 
         type="remote"
-        link={generateRemoteLink()} 
+        link={generateRemoteLink(bioPortalApiKey)}
         vocabList={remoteVocabList}
         setVocabList={processRemoteVocabList}
         acronymPhaseObject={acronymPhaseObject}

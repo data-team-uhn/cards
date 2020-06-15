@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { Checkbox, FormControlLabel, IconButton, List, ListItem, Radio, RadioGroup, TextField, Typography, withStyles } from "@material-ui/core";
+import { Checkbox, FormControlLabel, IconButton, List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField, Typography, withStyles } from "@material-ui/core";
 import Close from "@material-ui/icons/Close";
 import PropTypes from 'prop-types';
 
@@ -33,7 +33,7 @@ const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
   let { classes, existingAnswer, ghostAnchor, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
-  let { maxAnswers, minAnswers } = {...props.questionDefinition, ...props};
+  let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
@@ -42,6 +42,7 @@ function MultipleChoice(props) {
     .map(value => [value.label || value.value, value.value, true]);
   const isBare = defaults.length === 0 && maxAnswers === 1;
   const isRadio = defaults.length > 0 && maxAnswers === 1;
+  const isSelect = displayMode === "select";
   let initialSelection =
     // If there's no existing answer, there's no initial selection
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
@@ -201,7 +202,28 @@ function MultipleChoice(props) {
 
   const answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
 
-  if (isBare) {
+  if (isSelect) {
+    return (
+      <React.Fragment>
+        <Select
+          value={selection?.[0]?.[0] || ''}
+          className={classes.textField + ' ' + classes.answerField}
+          onChange={(event) => {
+            setSelection([[event.target.value, event.target.value]]);
+          }
+        }>
+        {defaults.map(function([name, key], index) {
+            return <MenuItem value={key} key={key}>{name}</MenuItem>;
+        })}
+        </Select>
+        <Answer
+          answers={answers}
+          existingAnswer={existingAnswer}
+          {...rest}
+          />
+      </React.Fragment>
+    )
+  } else if (isBare) {
     return(
       <React.Fragment>
         {ghostInput}

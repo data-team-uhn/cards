@@ -66,7 +66,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     private static final long serialVersionUID = -6068156942302219324L;
 
     // Allowed JCR-SQL2 operators (from https://docs.adobe.com/docs/en/spec/jcr/2.0/6_Query.html#6.7.17%20Operator)
-    private static final List<String> COMPARATORS = Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE");
+    private static final List<String> COMPARATORS =
+        Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE", "notes contain");
 
     private static final String SUBJECT_IDENTIFIER = "lfs:Subject";
 
@@ -271,7 +272,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 filterdata.append(" and (");
                 for (int j = 0; j < possibleQuestions.length; j++) {
                     filterdata.append(
-                        String.format(" child%d.'question'='%s'",
+                        String.format(
+                            " child%d.'question'='%s'",
                             i,
                             this.sanitizeField(possibleQuestions[j])
                         )
@@ -281,16 +283,25 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                         filterdata.append(" or");
                     }
                 }
-
                 // Condition 2: the value must exactly match
-                filterdata.append(
-                    String.format(
-                        ") and child%d.'value'%s'%s'",
-                        i,
-                        this.sanitizeComparator(comparators[i]),
-                        this.sanitizeField(values[i])
-                    )
-                );
+                if (comparators[i].equals("notes contain")) {
+                    filterdata.append(
+                        String.format(
+                            ") and contains(child%d.'note', '*%s*')",
+                            i,
+                            this.sanitizeField(values[i])
+                        )
+                    );
+                } else {
+                    filterdata.append(
+                        String.format(
+                            ") and child%d.'value'%s'%s'",
+                            i,
+                            this.sanitizeComparator(comparators[i]),
+                            this.sanitizeField(values[i])
+                        )
+                    );
+                }
             }
         }
         return filterdata.toString();

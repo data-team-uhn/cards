@@ -27,6 +27,8 @@
     # Customizes the page displayed during startup, before all the bundles are activated
     ca.sickkids.ccm.lfs/lfs-startup-customization/${lfs.version}
 
+    ca.sickkids.ccm.lfs/lfs-form-completion-status/${lfs.version}
+
     # Add support for external authenticators
     ca.sickkids.ccm.lfs/lfs-ldap-support/${lfs.version}/slingfeature
 

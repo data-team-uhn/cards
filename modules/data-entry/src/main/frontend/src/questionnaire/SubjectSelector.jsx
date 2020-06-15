@@ -38,6 +38,7 @@ let createQueryURL = (query, type) => {
 /**
  * Component that displays a dialog to create a new subject
  *
+ * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
  * @param {bool} disabled If true, all controls are disabled
  * @param {string} error Error message to display
  * @param {bool} open If true, this dialog is open
@@ -49,12 +50,22 @@ let createQueryURL = (query, type) => {
  * @param {string} value The current name of the subject
  */
 function UnstyledNewSubjectDialog (props) {
-  const { classes, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
+  const { allowedTypes, classes, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
   const [ selectedType, setSelectedType ] = useState();
 
   const COLUMNS = [
     { title: 'Subject type', field: 'label' },
   ];
+
+  let changeType = (type) => {
+    onChangeType(type);
+    setSelectedType(type);
+  }
+
+  // Auto-select if there's only one valid SubjectType
+  if (allowedTypes?.length === 1 && !selectedType) {
+    changeType(allowedTypes[0]);
+  }
 
   return(
     <Dialog open={open} onClose={onClose} className={classes.newSubjectPopper}>
@@ -72,10 +83,11 @@ function UnstyledNewSubjectDialog (props) {
           placeholder={"Enter subject identifier here"}
           />
         <MaterialTable
-          title="Select a SubjectType"
+          title="Select a type"
           columns={COLUMNS}
-          data={query => {
-              let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.identifier, '*${query.search}*')` : "", "lfs:SubjectType");
+          data={allowedTypes ? allowedTypes :
+            query => {
+              let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType");
               url.searchParams.set("limit", query.pageSize);
               url.searchParams.set("offset", query.page*query.pageSize);
               return fetch(url)
@@ -98,8 +110,7 @@ function UnstyledNewSubjectDialog (props) {
             })
           }}
           onRowClick={(event, rowData) => {
-            onChangeType(rowData);
-            setSelectedType(rowData);
+            changeType(rowData);
           }}
         />
       </DialogContent>
@@ -447,6 +458,9 @@ SubjectListItem.defaultProps = {
  *   onSelect={(subject) => {setSelectedSubject(subject)}}
  *   />
  *
+ * @param {allowedTypes} array A list of allowed SubjectTypes
+ * @param {allowAddSubjects} bool If true, enables an "add user" button on this list
+ * @param {allowDeleteSubjects} bool If true, enables an "delete user" button on this list
  * @param {disabled} bool whether selections should be disabled on this element
  * @param {onDelete} func Callback for the deletion of a subject. The only parameter is the subject deleted.
  * @param {onError} func Callback for an issue in the reading or editing of subjects. The only parameter is a response object.
@@ -454,7 +468,7 @@ SubjectListItem.defaultProps = {
  * @param {selectedSubject} object The currently selected subject.
  */
 function SubjectSelectorList(props) {
-  const { allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject,
+  const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject,
       theme, ...rest } = props;
   const COLUMNS = [
     { title: 'Identifier', field: 'identifier' },
@@ -466,7 +480,17 @@ function SubjectSelectorList(props) {
         title=""
         columns={COLUMNS}
         data={query => {
-            let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.identifier, '*${query.search}*')` : "", "lfs:Subject");
+            let condition = "";
+            if (allowedTypes || query.search) {
+              condition = " WHERE ";
+            }
+            if (allowedTypes) {
+              condition += "(" + allowedTypes.map((type) => `n.'type' = '${type["jcr:uuid"]}'`).join(" OR ") + ")";
+            }
+            if (query.search) {
+              condition += ` CONTAINS(n.identifier, '*${query.search}*')`;
+            }
+            let url = createQueryURL( condition, "lfs:Subject");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
             return fetch(url)
