@@ -30,11 +30,10 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import moment from "moment";
 import DeleteIcon from "@material-ui/icons/Delete";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
-let DeleteQuestionDialog = (props) => {
+let DeleteDialog = (props) => {
   let [openDeleteDialog, setOpenDeleteDialog ] = useState(false);
   let [ forms, setForms] = useState(0);
   let [ saveInProgress, setSaveInProgress ] = useState();
@@ -45,25 +44,7 @@ let DeleteQuestionDialog = (props) => {
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   
-  let deleteQuestionWarningMessage = () => {
-    const formsExist = forms && forms > 0;
-    if (!formsExist) {
-      // Find all forms with that questionnaire uuid
-      fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Form] as n WHERE n.'questionnaire'='${props.uuid}'`))
-        .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then((json) => { parseResult(json); });
-    }
-    // Count the number of returned forms
-    let parseResult = (forms) => {
-      let filteredForms = Object.values(forms['rows']).length;
-      setForms(filteredForms);
-   }
-    return formsExist
-      ? `There are ${forms} forms filled out for this questionnaire. Are you sure you wish to proceed ?`
-      : "Are you sure you wish to proceed ?"
-  }
-
-  let deleteQuestion = () => {
+  let deleteData = () => {
     event.preventDefault();
 
     // If the previous save attempt failed, instead of trying to save again, open a login popup
@@ -105,12 +86,12 @@ let DeleteQuestionDialog = (props) => {
   return (
     <React.Fragment>
       <Dialog id="deleteDialog" open={openDeleteDialog} onClose={() => { setOpenDeleteDialog(false); }}>
-        <form action={props.data["@path"]} onSubmit={deleteQuestion} method="DELETE" key={props.id}>
+        <form action={props.data["@path"]} onSubmit={deleteData} method="DELETE" key={props.id}>
           <DialogTitle>
-            Confirm question deletion
+            <Typography>{props.type.includes("Question") ? "Confirm question deletion" : "Confirm Section Deletion"}</Typography>
           </DialogTitle>
           <DialogContent>
-            <Typography>{ deleteQuestionWarningMessage() }</Typography>
+            <Typography></Typography>
           </DialogContent>
           <DialogActions>
             <Button
@@ -137,9 +118,9 @@ let DeleteQuestionDialog = (props) => {
   );
 };
 
-DeleteQuestionDialog.propTypes = {
+DeleteDialog.propTypes = {
   data: PropTypes.object.isRequired,
-  uuid: PropTypes.string.isRequired
+  type: PropTypes.string.isRequired
 };
 
-export default withStyles(QuestionnaireStyle)(DeleteQuestionDialog);
+export default withStyles(QuestionnaireStyle)(DeleteDialog);
