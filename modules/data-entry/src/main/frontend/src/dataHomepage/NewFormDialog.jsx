@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import uuid from "uuid/v4";
 
@@ -55,8 +55,6 @@ function NewFormDialog(props) {
   const [ error, setError ] = useState("");
 
   const tableRef = useRef();
-
-  console.log(currentSubject);
 
   // The value of a subjectType's parents are either an array, or if it is length 1 it will just be an object
   // We must cast each case into an array to handle it properly
@@ -171,7 +169,11 @@ function NewFormDialog(props) {
       if (!selectedQuestionnaire) {
         setError("Please select a questionnaire.");
         return;
-      } else {
+      } 
+      if (selectedSubject) { //TODO: add another condition here? (fromSubject, etc)
+        createForm();
+      }
+      else {
         setProgress(PROGRESS_SELECT_SUBJECT);
       }
     } else {
@@ -208,6 +210,34 @@ function NewFormDialog(props) {
   }
 
   const isFetching = numFetchRequests > 0;
+
+  useEffect(() => {
+    if (currentSubject && selectedQuestionnaire) {
+      console.log(currentSubject);
+      console.log(parseToArray(selectedQuestionnaire["requiredSubjectTypes"]));
+  
+      const test = parseToArray(selectedQuestionnaire["requiredSubjectTypes"]);
+      //TODO: loop through array instead of [0]
+  
+      if (currentSubject.type["@path"] == test[0]["@path"]) {
+        // current subject is required type for form
+        setSelectedSubject(currentSubject); // now that selectedsubject is set, will create form with current subject as subject
+      }
+
+      if (test[0]["parent"] && (currentSubject.type["@path"] == test[0]["parent"]["@path"])) {
+        // current subject's type is the parent of required type for form
+        setSelectedSubject(null); // remove selectedsubject so next dialog can open (should not create form right away)
+        console.log("required parent");
+        // TODO: handle this
+      }
+  
+      // if the current subjecttype = required type for form, it should just skip the selecting and automatically make the current subject be the selected
+      // if equal on 'questionnaire' page, the 'continue' button should just create the form
+      // if equal to the 'parent'
+        // should only display the children who's parent is the current exact subject??
+        // on new subject creation, 'continue' should just create the form (instead of going on to select the parent)
+    }
+  }, [selectedQuestionnaire])
 
   return (
     <React.Fragment>
@@ -277,7 +307,7 @@ function NewFormDialog(props) {
             color="primary"
             onClick={progressThroughDialog}
             >
-            { progress == PROGRESS_SELECT_QUESTIONNAIRE ?
+            { progress == PROGRESS_SELECT_QUESTIONNAIRE ? // TODO: fix conditions for this
               "Continue"
             :
               "Create Form"

@@ -71,7 +71,7 @@ function Subject(props) {
     <React.Fragment>
       <div className={classes.subjectNewButton}>
           <NewFormDialog currentSubject={currentSubject}>
-            New form
+            New form for this Subject
           </NewFormDialog>
       </div>
       <SubjectContainer id={id} classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject}/>
