@@ -44,9 +44,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An {@link Editor} that verifies the correctness and completeness of
- * submitted questionnaire answers and sets the INVALID and INCOMPLETE
- * status flags accordingly.
+ * An {@link Editor} that verifies the correctness and completeness of submitted questionnaire answers and sets the
+ * INVALID and INCOMPLETE status flags accordingly.
  *
  * @version $Id$
  */
@@ -56,10 +55,13 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     private static final Logger LOGGER = LoggerFactory.getLogger(AnswerCompletionStatusEditor.class);
 
     private static final String PROP_VALUE = "value";
+
     private static final String PROP_QUESTION = "question";
 
     private static final String STATUS_FLAGS = "statusFlags";
+
     private static final String STATUS_FLAG_INCOMPLETE = "INCOMPLETE";
+
     private static final String STATUS_FLAG_INVALID = "INVALID";
 
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
@@ -92,28 +94,28 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     // Called when a new property is added
     @Override
-    public void propertyAdded(PropertyState after)
+    public void propertyAdded(final PropertyState after)
         throws CommitFailedException
     {
         propertyChanged(null, after);
-        //Summarize all parents
+        // Summarize all parents
         try {
             summarizeBuilders(this.currentNodeBuilderPath);
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             return;
         }
     }
 
     // Called when the value of an existing property gets changed
     @Override
-    public void propertyChanged(PropertyState before, PropertyState after)
+    public void propertyChanged(final PropertyState before, final PropertyState after)
         throws CommitFailedException
     {
-        Node questionNode = getQuestionNode(this.currentNodeBuilder);
+        final Node questionNode = getQuestionNode(this.currentNodeBuilder);
         if (questionNode != null && PROP_VALUE.equals(after.getName())) {
-            Iterable<String> nodeAnswers = after.getValue(Type.STRINGS);
-            int numAnswers = iterableLength(nodeAnswers);
-            List<String> statusFlags = new ArrayList<>();
+            final Iterable<String> nodeAnswers = after.getValue(Type.STRINGS);
+            final int numAnswers = iterableLength(nodeAnswers);
+            final List<String> statusFlags = new ArrayList<>();
             if (checkInvalidAnswer(questionNode, numAnswers)) {
                 statusFlags.add(STATUS_FLAG_INVALID);
                 statusFlags.add(STATUS_FLAG_INCOMPLETE);
@@ -138,10 +140,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                  */
             }
             this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
-            //Summarize all parents
+            // Summarize all parents
             try {
                 summarizeBuilders(this.currentNodeBuilderPath);
-            } catch (RepositoryException e) {
+            } catch (final RepositoryException e) {
                 LOGGER.warn("Could not run summarize()");
             }
         }
@@ -149,10 +151,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     // Called when a property is deleted
     @Override
-    public void propertyDeleted(PropertyState before)
+    public void propertyDeleted(final PropertyState before)
         throws CommitFailedException
     {
-        Node questionNode = getQuestionNode(this.currentNodeBuilder);
+        final Node questionNode = getQuestionNode(this.currentNodeBuilder);
         if (questionNode != null) {
             if (PROP_VALUE.equals(before.getName())) {
                 final List<String> statusFlags = new ArrayList<>();
@@ -163,10 +165,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 }
                 this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
 
-                //Summarize all parents
+                // Summarize all parents
                 try {
                     summarizeBuilders(this.currentNodeBuilderPath);
-                } catch (RepositoryException e) {
+                } catch (final RepositoryException e) {
                     LOGGER.warn("Could not run summarizeBuilders()");
                     LOGGER.warn(e.toString());
                 }
@@ -179,10 +181,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     // DefaultEditor is to stop at the root, so we must override the following two methods in order for the editor to be
     // invoked on non-root nodes.
     @Override
-    public Editor childNodeAdded(String name, NodeState after)
+    public Editor childNodeAdded(final String name, final NodeState after)
         throws CommitFailedException
     {
-        Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
+        final Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
         if (questionNode != null) {
             if (this.currentNodeBuilder.getChildNode(name).hasProperty(PROP_QUESTION)) {
                 final List<String> statusFlags = new ArrayList<>();
@@ -199,7 +201,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     }
 
     @Override
-    public Editor childNodeChanged(String name, NodeState before, NodeState after)
+    public Editor childNodeChanged(final String name, final NodeState before, final NodeState after)
         throws CommitFailedException
     {
         final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
@@ -208,42 +210,41 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     }
 
     /**
-     * Gets the question node associated with the answer for which this
-     * AnswerCompletionStatusEditor is an editor thereof.
+     * Gets the question node associated with the answer for which this AnswerCompletionStatusEditor is an editor
+     * thereof.
      *
      * @return the question Node object associated with this answer
      */
-    private Node getQuestionNode(NodeBuilder nb)
+    private Node getQuestionNode(final NodeBuilder nb)
     {
         try {
             if (nb.hasProperty(PROP_QUESTION)) {
-                Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
-                String questionNodeReference = nb.getProperty(PROP_QUESTION).getValue(Type.REFERENCE);
-                Node questionNode = resourceSession.getNodeByIdentifier(questionNodeReference);
+                final Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
+                final String questionNodeReference = nb.getProperty(PROP_QUESTION).getValue(Type.REFERENCE);
+                final Node questionNode = resourceSession.getNodeByIdentifier(questionNodeReference);
                 return questionNode;
             }
-        } catch (RepositoryException ex) {
+        } catch (final RepositoryException ex) {
             return null;
         }
         return null;
     }
 
     /**
-     * Gets the questionnaire section node referenced by the AnswerSection
-     *     NodeBuilder nb.
+     * Gets the questionnaire section node referenced by the AnswerSection NodeBuilder nb.
      *
      * @return the section Node object referenced by NodeBuilder nb
      */
-    private Node getSectionNode(NodeBuilder nb)
+    private Node getSectionNode(final NodeBuilder nb)
     {
         try {
             if (nb.hasProperty("section")) {
-                Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
-                String sectionNodeReference = nb.getProperty("section").getValue(Type.REFERENCE);
-                Node sectionNode = resourceSession.getNodeByIdentifier(sectionNodeReference);
+                final Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
+                final String sectionNodeReference = nb.getProperty("section").getValue(Type.REFERENCE);
+                final Node sectionNode = resourceSession.getNodeByIdentifier(sectionNodeReference);
                 return sectionNode;
             }
-        } catch (RepositoryException ex) {
+        } catch (final RepositoryException ex) {
             return null;
         }
         return null;
@@ -255,12 +256,11 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      * @param iterable the Iterable object to be counted
      * @return the number of objects in the Iterable
      */
-    private int iterableLength(Iterable iterable)
+    private int iterableLength(final Iterable<?> iterable)
     {
         int len = 0;
-        Iterator iterator = iterable.iterator();
-        while (iterator.hasNext())
-        {
+        final Iterator<?> iterator = iterable.iterator();
+        while (iterator.hasNext()) {
             iterator.next();
             len++;
         }
@@ -273,16 +273,16 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      * @param questionNode the Node to provide the minAnswers and maxAnswers properties
      * @return true if the number of answers is valid, false if it is not
      */
-    private boolean checkInvalidAnswer(Node questionNode, int numAnswers)
+    private boolean checkInvalidAnswer(final Node questionNode, final int numAnswers)
     {
         try {
-            long minAnswers = questionNode.getProperty("minAnswers").getLong();
-            long maxAnswers = questionNode.getProperty("maxAnswers").getLong();
+            final long minAnswers = questionNode.getProperty("minAnswers").getLong();
+            final long maxAnswers = questionNode.getProperty("maxAnswers").getLong();
             if ((numAnswers < minAnswers && minAnswers != 0) || (numAnswers > maxAnswers && maxAnswers != 0)) {
                 return true;
             }
-        } catch (RepositoryException ex) {
-            //If something goes wrong then we definitely cannot have a valid answer
+        } catch (final RepositoryException ex) {
+            // If something goes wrong then we definitely cannot have a valid answer
             return true;
         }
         return false;
@@ -302,24 +302,21 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     }
 
     /**
-     * Returns the first NodeBuilder with a question value equal to the
-     * String uuid that is a child of the NodeBuilder nb. If no such
-     * child can be found, null is returned
+     * Returns the first NodeBuilder with a question value equal to the String uuid that is a child of the NodeBuilder
+     * nb. If no such child can be found, null is returned
      *
      * @param nb the NodeBuilder to search through its children
-     * @param uuid the UUID String for which the child's question
-     *     property must be equal to
-     * @return the first NodeBuilder with a question value equal to the
-     *     String uuid that is a child of the NodeBuilder nb, or null if
-     *     such node does not exist.
+     * @param uuid the UUID String for which the child's question property must be equal to
+     * @return the first NodeBuilder with a question value equal to the String uuid that is a child of the NodeBuilder
+     *         nb, or null if such node does not exist.
      */
-    private NodeBuilder getChildNodeWithQuestion(NodeBuilder nb, String uuid)
+    private NodeBuilder getChildNodeWithQuestion(final NodeBuilder nb, final String uuid)
     {
-        Iterable<String> childrenNames = nb.getChildNodeNames();
-        Iterator<String> childrenNamesIter = childrenNames.iterator();
+        final Iterable<String> childrenNames = nb.getChildNodeNames();
+        final Iterator<String> childrenNamesIter = childrenNames.iterator();
         while (childrenNamesIter.hasNext()) {
-            String selectedChildName = childrenNamesIter.next();
-            NodeBuilder selectedChild = nb.getChildNode(selectedChildName);
+            final String selectedChildName = childrenNamesIter.next();
+            final NodeBuilder selectedChild = nb.getChildNode(selectedChildName);
             if (selectedChild.hasProperty(PROP_QUESTION)) {
                 if (uuid.equals(selectedChild.getProperty(PROP_QUESTION).getValue(Type.STRING))) {
                     return selectedChild;
@@ -338,18 +335,18 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     private Calendar parseDate(final String str)
     {
         try {
-            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = fmt.parse(str.split("T")[0]);
-            Calendar calendar = Calendar.getInstance();
+            final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+            final Date date = fmt.parse(str.split("T")[0]);
+            final Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             return calendar;
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             LOGGER.warn("PARSING DATE FAILED");
             return null;
         }
     }
 
-    private int getPropertyStateType(PropertyState ps)
+    private int getPropertyStateType(final PropertyState ps)
     {
         int ret = PropertyType.STRING;
         if (Type.LONG.equals(ps.getType())) {
@@ -366,7 +363,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return ret;
     }
 
-    private boolean evalSectionEq(PropertyState propA, Value valB)
+    private boolean evalSectionEq(final PropertyState propA, final Value valB)
         throws RepositoryException, ValueFormatException
     {
         boolean testResult = false;
@@ -395,7 +392,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return testResult;
     }
 
-    private boolean evalSectionLt(PropertyState propA, Value valB)
+    private boolean evalSectionLt(final PropertyState propA, final Value valB)
         throws RepositoryException, ValueFormatException
     {
         boolean testResult = false;
@@ -415,7 +412,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return testResult;
     }
 
-    private boolean evalSectionGt(PropertyState propA, Value valB)
+    private boolean evalSectionGt(final PropertyState propA, final Value valB)
         throws RepositoryException, ValueFormatException
     {
         boolean testResult = false;
@@ -438,7 +435,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     /**
      * Evaluates the boolean expression {propA} {operator} {propB}.
      */
-    private boolean evalSectionCondition(PropertyState propA, Property propB, String operator)
+    private boolean evalSectionCondition(final PropertyState propA, final Property propB, final String operator)
         throws RepositoryException, ValueFormatException
     {
         Value valB;
@@ -468,17 +465,16 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         } else if (">".equals(operator)) {
             return evalSectionGt(propA, valB);
         }
-        //If we can't evaluate it, assume it to be false
+        // If we can't evaluate it, assume it to be false
         return false;
     }
 
     /*
-     * Read in a string, inStr, and return it with any non-allowed
-     * chars removed.
+     * Read in a string, inStr, and return it with any non-allowed chars removed.
      */
-    private String sanitizeNodeName(String inStr)
+    private String sanitizeNodeName(final String inStr)
     {
-        String inStrLower = inStr.toLowerCase();
+        final String inStrLower = inStr.toLowerCase();
         String outStr = "";
         for (int i = 0; i < inStr.length(); i++) {
             if ("abcdefghijklmnopqrstuvwxyz 0123456789_-".indexOf(inStrLower.charAt(i)) > -1) {
@@ -489,26 +485,26 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     }
 
     /*
-     * Given a "condition" node from the "Questionnaires" and a
-     * "lfs:AnswerSection" node from the "Forms" and a NodeBuilder type
-     * object referring to the parent of the "lfs:AnswerSection" node,
-     * evaluate the boolean expression defined by the descendants of
-     * the "condition" Node.
+     * Given a "condition" node from the "Questionnaires" and a "lfs:AnswerSection" node from the "Forms" and a
+     * NodeBuilder type object referring to the parent of the "lfs:AnswerSection" node, evaluate the boolean expression
+     * defined by the descendants of the "condition" Node.
      */
-    private boolean evaluateConditionNodeRecursive(Node conditionNode, Node sectionNode, NodeBuilder prevNb)
+    private boolean evaluateConditionNodeRecursive(final Node conditionNode, final Node sectionNode,
+        final NodeBuilder prevNb)
         throws RepositoryException
     {
         if ("lfs:ConditionalGroup".equals(conditionNode.getProperty("jcr:primaryType").getString())) {
-            //Is this an OR or an AND
-            boolean requireAll = conditionNode.getProperty("requireAll").getBoolean();
-            //Evaluate recursively
-            Iterator<Node> conditionChildren = conditionNode.getNodes();
+            // Is this an OR or an AND
+            final boolean requireAll = conditionNode.getProperty("requireAll").getBoolean();
+            // Evaluate recursively
+            final Iterator<Node> conditionChildren = conditionNode.getNodes();
             boolean downstreamResult = false;
             if (requireAll) {
                 downstreamResult = true;
             }
             while (conditionChildren.hasNext()) {
-                boolean partialRes = evaluateConditionNodeRecursive(conditionChildren.next(), sectionNode, prevNb);
+                final boolean partialRes =
+                    evaluateConditionNodeRecursive(conditionChildren.next(), sectionNode, prevNb);
                 if (requireAll) {
                     downstreamResult = downstreamResult && partialRes;
                 } else {
@@ -517,36 +513,35 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             }
             return downstreamResult;
         } else if ("lfs:Conditional".equals(conditionNode.getProperty("jcr:primaryType").getString())) {
-            String comparator = conditionNode.getProperty("comparator").getString();
-            Node operandB = conditionNode.getNode("operandB");
-            Node operandA = conditionNode.getNode("operandA");
+            final String comparator = conditionNode.getProperty("comparator").getString();
+            final Node operandB = conditionNode.getNode("operandB");
+            final Node operandA = conditionNode.getNode("operandA");
             String keyA = operandA.getProperty(PROP_VALUE).getValues()[0].getString();
-            //Sanitize
+            // Sanitize
             keyA = sanitizeNodeName(keyA);
-            //Get the node from the Questionnaire corresponding to keyA
-            Node sectionNodeParent = sectionNode.getParent();
-            Node keyANode = sectionNodeParent.getNode(keyA);
-            String keyANodeUUID = keyANode.getIdentifier();
-            //Get the node from the Form containg the answer to keyANode
-            NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyANodeUUID);
-            PropertyState comparedProp = conditionalFormNode.getProperty(PROP_VALUE);
-            Property referenceProp = operandB.getProperty(PROP_VALUE);
+            // Get the node from the Questionnaire corresponding to keyA
+            final Node sectionNodeParent = sectionNode.getParent();
+            final Node keyANode = sectionNodeParent.getNode(keyA);
+            final String keyANodeUUID = keyANode.getIdentifier();
+            // Get the node from the Form containing the answer to keyANode
+            final NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyANodeUUID);
+            final PropertyState comparedProp = conditionalFormNode.getProperty(PROP_VALUE);
+            final Property referenceProp = operandB.getProperty(PROP_VALUE);
             return evalSectionCondition(comparedProp, referenceProp, comparator);
         }
-        //If all goes wrong
+        // If all goes wrong
         return false;
     }
 
-    private boolean getSectionCondition(NodeBuilder nb, NodeBuilder prevNb)
+    private boolean getSectionCondition(final NodeBuilder nb, final NodeBuilder prevNb)
         throws RepositoryException
     {
-        Node sectionNode = getSectionNode(nb);
+        final Node sectionNode = getSectionNode(nb);
         if (sectionNode.hasNode("condition")) {
-            Node conditionNode = sectionNode.getNode("condition");
+            final Node conditionNode = sectionNode.getNode("condition");
             /*
-             * Recursively go through all children of the condition node
-             * and determine if this condition node evaluates to True or
-             * False.
+             * Recursively go through all children of the condition node and determine if this condition node evaluates
+             * to True or False.
              */
             if (evaluateConditionNodeRecursive(conditionNode, sectionNode, prevNb)) {
                 return true;
@@ -555,28 +550,28 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return false;
     }
 
-    private void summarizeBuilder(NodeBuilder selectedNodeBuilder, NodeBuilder prevNb)
+    private void summarizeBuilder(final NodeBuilder selectedNodeBuilder, final NodeBuilder prevNb)
         throws RepositoryException
     {
-        //Iterate through all children of this node
-        Iterable<String> childrenNames = selectedNodeBuilder.getChildNodeNames();
-        Iterator<String> childrenNamesIter = childrenNames.iterator();
+        // Iterate through all children of this node
+        final Iterable<String> childrenNames = selectedNodeBuilder.getChildNodeNames();
+        final Iterator<String> childrenNamesIter = childrenNames.iterator();
         boolean isInvalid = false;
         boolean isIncomplete = false;
         while (childrenNamesIter.hasNext()) {
-            String selectedChildName = childrenNamesIter.next();
-            NodeBuilder selectedChild = selectedNodeBuilder.getChildNode(selectedChildName);
+            final String selectedChildName = childrenNamesIter.next();
+            final NodeBuilder selectedChild = selectedNodeBuilder.getChildNode(selectedChildName);
             if ("lfs:AnswerSection".equals(selectedChild.getProperty("jcr:primaryType").getValue(Type.STRING))) {
                 if (!getSectionCondition(selectedChild, selectedNodeBuilder)) {
                     continue;
                 }
             }
-            //Is selectedChild - invalid? , incomplete?
+            // Is selectedChild - invalid? , incomplete?
             if (selectedChild.hasProperty(STATUS_FLAGS)) {
-                Iterable<String> selectedProps = selectedChild.getProperty(STATUS_FLAGS).getValue(Type.STRINGS);
-                Iterator<String> selectedPropsIter = selectedProps.iterator();
+                final Iterable<String> selectedProps = selectedChild.getProperty(STATUS_FLAGS).getValue(Type.STRINGS);
+                final Iterator<String> selectedPropsIter = selectedProps.iterator();
                 while (selectedPropsIter.hasNext()) {
-                    String thisStr = selectedPropsIter.next();
+                    final String thisStr = selectedPropsIter.next();
                     if (STATUS_FLAG_INVALID.equals(thisStr)) {
                         isInvalid = true;
                     }
@@ -594,7 +589,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         if (isIncomplete) {
             statusFlags.add(STATUS_FLAG_INCOMPLETE);
         }
-        //Write these statusFlags to the JCR repo
+        // Write these statusFlags to the JCR repo
         selectedNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
     }
 }
