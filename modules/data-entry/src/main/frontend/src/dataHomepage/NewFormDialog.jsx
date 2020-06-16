@@ -213,31 +213,46 @@ function NewFormDialog(props) {
 
   useEffect(() => {
     if (currentSubject && selectedQuestionnaire) {
-      console.log(currentSubject);
-      console.log(parseToArray(selectedQuestionnaire["requiredSubjectTypes"]));
   
-      const test = parseToArray(selectedQuestionnaire["requiredSubjectTypes"]);
-      //TODO: loop through array instead of [0]
-  
-      if (currentSubject.type["@path"] == test[0]["@path"]) {
-        // current subject is required type for form
+      // current subject is required type for form
+      if (currentSubject.type["@path"] == selectedQuestionnaire["requiredSubjectTypes"]["@path"]) {
         setSelectedSubject(currentSubject); // now that selectedsubject is set, will create form with current subject as subject
       }
-
-      if (test[0]["parent"] && (currentSubject.type["@path"] == test[0]["parent"]["@path"])) {
-        // current subject's type is the parent of required type for form
+      else {
         setSelectedSubject(null); // remove selectedsubject so next dialog can open (should not create form right away)
+      }
+      // current subject's type is the parent of required type for form
+      if (selectedQuestionnaire["requiredSubjectTypes"]["parent"] && (currentSubject.type["@path"] == selectedQuestionnaire["requiredSubjectTypes"]["parent"]["@path"])) {
         console.log("required parent");
-        // TODO: handle this
+        //call 'handlenewparent' from here ? idk
       }
   
-      // if the current subjecttype = required type for form, it should just skip the selecting and automatically make the current subject be the selected
-      // if equal on 'questionnaire' page, the 'continue' button should just create the form
-      // if equal to the 'parent'
-        // should only display the children who's parent is the current exact subject??
-        // on new subject creation, 'continue' should just create the form (instead of going on to select the parent)
+      // todo: only display forms/subjects that are related to the currentSubject ?
     }
   }, [selectedQuestionnaire])
+
+  let handleNewParent = (e) => {
+    var toAdd = e;
+    // handle SubjectType
+    if (currentSubject && (e["parent"]?.["@path"] == currentSubject.type["@path"])) {
+      toAdd = currentSubject;
+      //todo: update state to update button text
+    }
+    //handle Subject
+    if (currentSubject && (e["parents"]?.["type"]["@path"] == currentSubject.type["@path"])) {
+      handleNewParent(currentSubject);
+    }
+
+    setSelectedNewSubjectParents((old) => {
+      let newParents = old.slice();
+      if (old.length < selectedSubjectParentNumber) {
+        newParents.append(selectedSubjectParentNumber);
+      } else {
+        newParents[selectedSubjectParentNumber] = toAdd;      
+      }
+      return newParents;
+    });
+  }
 
   return (
     <React.Fragment>
@@ -324,8 +339,14 @@ function NewFormDialog(props) {
         onChangeType={(e) => {
           setSelectedSubjectType(e);
           setSelectedParentTypes(parseToArray(e?.["parent"]));
-          setSelectedNewSubjectParents([]);
-          setSelectedSubjectParentNumber(-1);
+          //todo: add comment
+          if (currentSubject && (e["parent"]?.["@path"] == currentSubject.type["@path"])){
+            handleNewParent(e);
+          }
+          else {
+            setSelectedNewSubjectParents([]);
+            setSelectedSubjectParentNumber(-1);
+          }
         }}
         onSubmit={createNewSubject}
         requiresParents={selectedSubjectType?.["parent"]}
@@ -348,15 +369,7 @@ function NewFormDialog(props) {
         }}
         onClose={() => { setNewSubjectParentPopperOpen(false); setError();}}
         onChangeParent={(e) => {
-          setSelectedNewSubjectParents((old) => {
-            let newParents = old.slice();
-            if (old.length < selectedSubjectParentNumber) {
-              newParents.append(selectedSubjectParentNumber);
-            } else {
-              newParents[selectedSubjectParentNumber] = e;
-            }
-            return newParents;
-          });
+          handleNewParent(e);
         }}
         onSubmit={createNewSubject}
         open={newSubjectParentPopperOpen}
