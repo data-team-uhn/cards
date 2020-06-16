@@ -276,7 +276,6 @@ export const parseToArray = (object) => {
  */
 export function NewSubjectDialog (props) {
   const { allowedTypes, disabled, onClose, onSubmit, open } = props;
-  const [ curAllowedTypes, setCurAllowedTypes ] = useState([]);
   const [ error, setError ] = useState("");
   const [ newSubjectName, setNewSubjectName ] = useState([""]);
   const [ newSubjectType, setNewSubjectType ] = useState([""]);
@@ -338,9 +337,12 @@ export function NewSubjectDialog (props) {
   }
 
   let changeNewSubjectType = (type) => {
-    setNewSubjectType(parseToArray(type?.["parent"]));
     // Unselect all parents after this one
-    setNewSubjectParent((old) => old.slice(0, newSubjectIndex));
+    setNewSubjectParent((old) => {
+      let newParents = old.slice(0, newSubjectIndex);
+      newParents.push("");
+      return newParents;
+    });
     setNewSubjectType((old) => {
       let newTypes = old.slice();
       newTypes[newSubjectIndex] = type;
@@ -352,7 +354,7 @@ export function NewSubjectDialog (props) {
     setNewSubjectParent((old) => {
       let newParents = old.slice();
       if (old.length < newSubjectIndex) {
-        newParents.append(parent);
+        newParents.push(parent);
       } else {
         newParents[newSubjectIndex] = parent;
       }
@@ -365,12 +367,12 @@ export function NewSubjectDialog (props) {
     setNewSubjectIndex((old) => old+1);
     setNewSubjectName((old) => {
       let newNames = old.slice();
-      newNames.append("");
+      newNames.push("");
       return newNames;
     })
     setNewSubjectType((old) => {
       let newTypes = old.slice();
-      newTypes.append("");
+      newTypes.push("");
       return newTypes;
     })
     setNewSubjectPopperOpen(true);
@@ -400,7 +402,7 @@ export function NewSubjectDialog (props) {
   return (
     <React.Fragment>
       <NewSubjectDialogChild
-        allowedTypes={newSubjectIndex == 0 ? allowedTypes : curAllowedTypes}
+        allowedTypes={newSubjectIndex == 0 ? allowedTypes : parseToArray(newSubjectType[newSubjectIndex-1]?.["parent"])}
         disabled={disabled}
         error={error}
         onClose={goBack}
