@@ -390,9 +390,3 @@ Subject.defaultProps = {
 }
 
 export default withStyles(QuestionnaireStyle)(Subject);
-
-
-// return (
-//   <div>
-//     <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
-      

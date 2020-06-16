@@ -480,6 +480,7 @@ function SubjectSelectorList(props) {
         title=""
         columns={COLUMNS}
         data={query => {
+            //todo: would check here
             let condition = "";
             if (allowedTypes || query.search) {
               condition = " WHERE ";
@@ -496,6 +497,7 @@ function SubjectSelectorList(props) {
             return fetch(url)
               .then(response => response.json())
               .then(result => {
+                console.log(result);
                 return {
                   data: result["rows"],
                   page: Math.trunc(result["offset"]/result["limit"]),

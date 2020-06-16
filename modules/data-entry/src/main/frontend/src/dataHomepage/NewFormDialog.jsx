@@ -170,7 +170,7 @@ function NewFormDialog(props) {
         setError("Please select a questionnaire.");
         return;
       } 
-      if (selectedSubject) { //TODO: add another condition here? (fromSubject, etc)
+      if (selectedSubject) {
         createForm();
       }
       else {
@@ -213,7 +213,6 @@ function NewFormDialog(props) {
 
   useEffect(() => {
     if (currentSubject && selectedQuestionnaire) {
-  
       // current subject is required type for form
       if (currentSubject.type["@path"] == selectedQuestionnaire["requiredSubjectTypes"][0]["@path"]) {
         setSelectedSubject(currentSubject); // now that selectedsubject is set, will create form with current subject as subject
@@ -221,22 +220,18 @@ function NewFormDialog(props) {
       else {
         setSelectedSubject(null); // remove selectedsubject so next dialog can open (should not create form right away)
       }
-      // current subject's type is the parent of required type for form
-      // if (selectedQuestionnaire["requiredSubjectTypes"]["parent"] && (currentSubject.type["@path"] == selectedQuestionnaire["requiredSubjectTypes"]["parent"]["@path"])) {
-      //   console.log("required parent");
-      //   //call 'handlenewparent' from here ? idk
-      // }
-  
       // todo: only display forms/subjects that are related to the currentSubject ?
+        //check if questionnaire's type or parents type
+        //list of subjects: check if parent.. is the current subject
     }
   }, [selectedQuestionnaire])
 
   let handleNewParent = (e) => {
     var toAdd = e;
+    //todo: add comment abt the following conditionals
     // handle SubjectType
     if (currentSubject && (e["parent"]?.["@path"] == currentSubject.type["@path"])) {
       toAdd = currentSubject;
-      //todo: update state to update button text
     }
     //handle Subject
     if (currentSubject && (e["parents"]?.["type"]["@path"] == currentSubject.type["@path"])) {
@@ -269,6 +264,7 @@ function NewFormDialog(props) {
             {questionnaires &&
               <List>
                 {questionnaires.map((questionnaire) => {
+                  //todo: would check here
                   return (
                   <SubjectListItem
                     key={questionnaire["jcr:uuid"]}
@@ -322,7 +318,7 @@ function NewFormDialog(props) {
             color="primary"
             onClick={progressThroughDialog}
             >
-            { progress == PROGRESS_SELECT_QUESTIONNAIRE ? // TODO: fix conditions for this
+            { progress == PROGRESS_SELECT_QUESTIONNAIRE ?
               "Continue"
             :
               "Create Form"
