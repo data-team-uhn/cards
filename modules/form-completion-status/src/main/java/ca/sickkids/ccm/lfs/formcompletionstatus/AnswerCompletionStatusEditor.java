@@ -144,7 +144,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             try {
                 summarizeBuilders(this.currentNodeBuilderPath);
             } catch (final RepositoryException e) {
-                LOGGER.warn("Could not run summarize()");
+                LOGGER.warn("Could not run summarize(): {}", e.getMessage(), e);
             }
         }
     }
@@ -169,8 +169,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 try {
                     summarizeBuilders(this.currentNodeBuilderPath);
                 } catch (final RepositoryException e) {
-                    LOGGER.warn("Could not run summarizeBuilders()");
-                    LOGGER.warn(e.toString());
+                    LOGGER.warn("Could not run summarizeBuilders(): {}", e.getMessage(), e);
                 }
             }
         }
@@ -341,7 +340,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             calendar.setTime(date);
             return calendar;
         } catch (final ParseException e) {
-            LOGGER.warn("PARSING DATE FAILED");
+            LOGGER.warn("PARSING DATE FAILED: Invalid date {}", str);
             return null;
         }
     }
