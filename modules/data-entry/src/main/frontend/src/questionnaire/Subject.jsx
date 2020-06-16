@@ -18,6 +18,7 @@
 //
 
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 
@@ -116,14 +117,30 @@ function Subject (props) {
   const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
 
+  // Recursive function to get a flat list of parents
+  let getHierarchy = (node) => {
+    let output = <React.Fragment>{node.type.label} <Link to={"/content.html" + node["@path"]}>{node.identifier}</Link></React.Fragment>;
+    if (node["parents"]) {
+      let ancestors = getHierarchy(node["parents"]);
+      return <React.Fragment>{ancestors} / {output}</React.Fragment>
+    } else {
+      return output;
+    }
+  }
+
+  let parentDetails = data && data['parents'] && getHierarchy(data['parents']);
+
   return (
     <div>
       <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
         <Grid item>
           {
+            parentDetails && <Typography variant="overline">{parentDetails}</Typography>
+          }
+          {
             data && data.identifier ?
-              <Typography variant="h2">Subject: {data.identifier}</Typography>
-            : <Typography variant="h2">Subject: {id}</Typography>
+              <Typography variant="h2">{data?.type?.label || "Subject"} {data.identifier}</Typography>
+            : <Typography variant="h2">Subject {id}</Typography>
           }
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
