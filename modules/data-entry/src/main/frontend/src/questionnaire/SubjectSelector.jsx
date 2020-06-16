@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import uuid from "uuid/v4";
 
 import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, Input, ListItem, ListItemAvatar, Typography, withStyles } from "@material-ui/core";
@@ -52,7 +52,7 @@ let createQueryURL = (query, type) => {
  */
 function UnstyledNewSubjectDialog (props) {
   const { allowedTypes, classes, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
-  const [ selectedType, setSelectedType ] = useState();
+  const [ newSubjectType, setNewSubjectType ] = useState();
 
   const COLUMNS = [
     { title: 'Subject type', field: 'label' },
@@ -60,84 +60,86 @@ function UnstyledNewSubjectDialog (props) {
 
   let changeType = (type) => {
     onChangeType(type);
-    setSelectedType(type);
+    setNewSubjectType(type);
   }
 
   // Auto-select if there's only one valid SubjectType
-  if (allowedTypes?.length === 1 && !selectedType) {
+  if (allowedTypes?.length === 1 && !newSubjectType) {
     changeType(allowedTypes[0]);
   }
 
   return(
-    <Dialog open={open} onClose={onClose} className={classes.newSubjectPopper}>
-      <DialogTitle id="new-form-title">
-        Create new subject
-      </DialogTitle>
-      <DialogContent dividers className={classes.NewFormDialog}>
-        { error && <Typography color="error">{error}</Typography>}
-        <Input
-          autoFocus
-          disabled={disabled}
-          value={value}
-          onChange={onChangeSubject}
-          className={classes.newSubjectInput}
-          placeholder={"Enter subject identifier here"}
-          />
-        <MaterialTable
-          title="Select a type"
-          columns={COLUMNS}
-          data={allowedTypes ? allowedTypes :
-            query => {
-              let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType");
-              url.searchParams.set("limit", query.pageSize);
-              url.searchParams.set("offset", query.page*query.pageSize);
-              return fetch(url)
-                .then(response => response.json())
-                .then(result => {
-                  return {
-                    data: result["rows"],
-                    page: Math.trunc(result["offset"]/result["limit"]),
-                    totalCount: result["totalrows"],
-                  }}
-                )
+    <React.Fragment>
+      <Dialog open={open} onClose={onClose} className={classes.newSubjectPopper}>
+        <DialogTitle id="new-form-title">
+          Create new subject
+        </DialogTitle>
+        <DialogContent dividers className={classes.NewFormDialog}>
+          { error && <Typography color="error">{error}</Typography>}
+          <Input
+            autoFocus
+            disabled={disabled}
+            value={value}
+            onChange={onChangeSubject}
+            className={classes.newSubjectInput}
+            placeholder={"Enter subject identifier here"}
+            />
+          <MaterialTable
+            title="Select a type"
+            columns={COLUMNS}
+            data={allowedTypes ? allowedTypes :
+              query => {
+                let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType");
+                url.searchParams.set("limit", query.pageSize);
+                url.searchParams.set("offset", query.page*query.pageSize);
+                return fetch(url)
+                  .then(response => response.json())
+                  .then(result => {
+                    return {
+                      data: result["rows"],
+                      page: Math.trunc(result["offset"]/result["limit"]),
+                      totalCount: result["totalrows"],
+                    }}
+                  )
+              }
             }
-          }
-          options={{
-            search: true,
-            addRowPosition: 'first',
-            rowStyle: rowData => ({
-              /* It doesn't seem possible to alter the className from here */
-              backgroundColor: (selectedType?.["label"] === rowData["label"]) ? theme.palette.grey["200"] : theme.palette.background.default
-            })
-          }}
-          onRowClick={(event, rowData) => {
-            changeType(rowData);
-          }}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={onClose}
-          variant="contained"
-          color="default"
-          disabled={disabled}
-          >
-          Cancel
-        </Button>
-        <Button
-          onClick={onSubmit}
-          variant="contained"
-          color="primary"
-          disabled={disabled}
-          >
-          {requiresParents ? "Continue" : "Create"}
-        </Button>
-      </DialogActions>
-    </Dialog>
+            options={{
+              search: true,
+              addRowPosition: 'first',
+              rowStyle: rowData => ({
+                /* It doesn't seem possible to alter the className from here */
+                backgroundColor: (newSubjectType?.["label"] === rowData["label"]) ? theme.palette.grey["200"] : theme.palette.background.default
+              })
+            }}
+            onRowClick={(event, rowData) => {
+              changeType(rowData);
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={onClose}
+            variant="contained"
+            color="default"
+            disabled={disabled}
+            >
+            Cancel
+          </Button>
+          <Button
+            onClick={onSubmit}
+            variant="contained"
+            color="primary"
+            disabled={disabled}
+            >
+            {requiresParents ? "Continue" : "Create"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
   )
 }
 
-export const NewSubjectDialog = withStyles(QuestionnaireStyle, {withTheme: true})(UnstyledNewSubjectDialog)
+const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(UnstyledNewSubjectDialog)
 
 /**
  * Component that displays a dialog to select parents for a new subject
@@ -149,6 +151,7 @@ export const NewSubjectDialog = withStyles(QuestionnaireStyle, {withTheme: true}
  * @param {bool} open If true, this dialog is open
  * @param {func} onBack Callback fired when the user clicks the "Back" button
  * @param {func} onChangeParent Callback fired when the user changes the parent subject
+ * @param {func} onCreateParent Callback fired when the user wants to create a new parent. If present, adds a "Create new subject" button.
  * @param {func} onClose Callback fired when the user tries to close this dialog
  * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
  * @param {object} parentType The object representing the lfs:SubjectType of the parent that is being selected
@@ -156,7 +159,7 @@ export const NewSubjectDialog = withStyles(QuestionnaireStyle, {withTheme: true}
  * @param {object} value The currently selected parent
  */
 function UnstyledSelectParentDialog (props) {
-  const { classes, childType, disabled, error, isLast, open, onBack, onChangeParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
+  const { classes, childType, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
   const COLUMNS = [
     { title: 'Subject', field: 'identifier' },
@@ -205,6 +208,16 @@ function UnstyledSelectParentDialog (props) {
         }
       </DialogContent>
       <DialogActions>
+        { onCreateParent &&
+          <Button
+              variant="contained"
+              color="secondary"
+              onClick={onCreateParent}
+              className={classes.createNewSubjectButton}
+              >
+              New subject
+            </Button>
+        }
         <Button
           onClick={onClose}
           variant="contained"
@@ -237,6 +250,179 @@ function UnstyledSelectParentDialog (props) {
 export const SelectParentDialog = withStyles(QuestionnaireStyle, {withTheme: true})(UnstyledSelectParentDialog)
 
 /**
+ * Component that displays a dialog to create a new subject
+ *
+ * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
+ * @param {bool} disabled If true, all controls are disabled
+ * @param {func} onClose Callback fired when the user tries to close this dialog
+ * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
+ * @param {bool} open If true, this dialog is open
+ */
+export function NewSubjectDialog (props) {
+  const { allowedTypes, disabled, onClose, onSubmit, open } = props;
+  const [ curAllowedTypes, setCurAllowedTypes ] = useState([]);
+  const [ error, setError ] = useState("");
+  const [ newSubjectName, setNewSubjectName ] = useState([""]);
+  const [ newSubjectType, setNewSubjectType ] = useState([""]);
+  const [ newSubjectParent, setNewSubjectParent ] = useState([]);
+  const [ newSubjectIndex, setNewSubjectIndex ] = useState(0);
+
+  const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(true);
+  const [ selectParentPopperOpen, setSelectParentPopperOpen ] = useState(false);
+
+  const tableRef = useRef();
+
+  let curSubjectRequiresParents = newSubjectType[newSubjectIndex]?.["parent"];
+
+  // The value of a subjectType's parents are either an array, or if it is length 1 it will just be an object
+  // We must cast each case into an array to handle it properly
+  let parseToArray = (object) => {
+    // Null or undefined is length 0
+    if (!object) {
+      return [];
+    }
+
+    // A non-array is length 1
+    if (!Array.isArray(object)) {
+      return [object];
+    } else {
+      return object;
+    }
+  }
+
+  // Called only by createNewSubject, a callback to create the next child on our list
+  let createNewSubjectRecursive = (subject, index) => {
+    if (index <= -1) {
+      // End of recursion
+      onSubmit(subject);
+    }
+
+    // TODO: Potential race condition with newSubjectIndex being updated after createSubject's callback?
+    createSubjects(
+      [newSubjectName[index]],
+      newSubjectType[index],
+      newSubjectParent[index]?.["jcr:uuid"] || [],
+      newSubjectName[index],
+      (subject) => {createNewSubjectRecursive(subject, index-1)},
+      console.log);
+  }
+  
+  // Called when creating a new subject
+  let createNewSubject = () => {
+    if (newSubjectName[newSubjectIndex] == "") {
+      setError("Please enter a name for this subject.");
+    } else if (newSubjectType[newSubjectIndex] == "") {
+      setError("Please select a subject type.");
+    } else if (selectParentPopperOpen && newSubjectParent.length < newSubjectIndex) {
+      // They haven't selected a parent for the current type yet
+      setError("Please select a valid parent.");
+    } else if (curSubjectRequiresParents) {
+      // Display the parent type to select
+      setError();
+      setNewSubjectPopperOpen(false);
+      setSelectParentPopperOpen(true);
+      tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
+    } else {
+      // Initiate the call
+      createNewSubjectRecursive(null, newSubjectIndex);
+    }
+  }
+
+  let changeNewSubjectName = (name) => {
+    setNewSubjectName((old) => {
+      let newNames = old.slice();
+      newNames[newSubjectIndex] = name;
+      return newNames;
+    })
+  }
+
+  let changeNewSubjectType = (type) => {
+    setNewSubjectType(parseToArray(type?.["parent"]));
+    // Unselect all parents after this one
+    setNewSubjectParent((old) => old.slice(0, newSubjectIndex));
+    setNewSubjectType((old) => {
+      let newTypes = old.slice();
+      newTypes[newSubjectIndex] = type;
+      return newTypes;
+    })
+  }
+
+  let changeNewSubjectParent = (parent) => {
+    setNewSubjectParent((old) => {
+      let newParents = old.slice();
+      if (old.length < newSubjectIndex) {
+        newParents.append(parent);
+      } else {
+        newParents[newSubjectIndex] = parent;
+      }
+      return newParents;
+    });
+  }
+
+  // Handle the case where the user wants to create a new subject to act as the parent
+  let addNewParentSubject = () => {
+    setNewSubjectIndex((old) => old+1);
+    setNewSubjectPopperOpen(true);
+    setSelectParentPopperOpen(false);
+  }
+
+  let goBack = () => {
+    // If we're at the "create a new subject" phase...
+    if (newSubjectPopperOpen) {
+      // And there are no new subjects...
+      if (newSubjectIndex == 0) {
+        // Close the entire dialog
+        onClose();
+      } else {
+        // Go back a stage, and reopen the select parent dialog
+        setNewSubjectIndex((old) => old-1);
+        setNewSubjectPopperOpen(false);
+        setSelectParentPopperOpen(true);
+      }
+    } else {
+      // Go back to the "new subject" stage
+        setNewSubjectPopperOpen(true);
+        setSelectParentPopperOpen(false);
+    }
+  }
+
+  return (
+    <React.Fragment>
+      <NewSubjectDialogChild
+        allowedTypes={newSubjectIndex == 0 ? allowedTypes : curAllowedTypes}
+        disabled={disabled}
+        error={error}
+        onClose={goBack}
+        onChangeSubject={(event) => {changeNewSubjectName(event.target.value)}}
+        onChangeType = {changeNewSubjectType}
+        onSubmit={createNewSubject}
+        requiresParents={curSubjectRequiresParents}
+        open={open && newSubjectPopperOpen}
+        value={newSubjectName[newSubjectIndex]}
+        />
+      <SelectParentDialog
+        childType={newSubjectType[newSubjectIndex]}
+        disabled={disabled}
+        error={error}
+        onBack={() => {
+          // Go back to the new subject popper
+          setNewSubjectPopperOpen(true);
+          setSelectParentPopperOpen(false);
+          setError();
+        }}
+        onClose={goBack}
+        onChangeParent={changeNewSubjectParent}
+        onCreateParent={addNewParentSubject}
+        onSubmit={createNewSubject}
+        open={open && selectParentPopperOpen}
+        parentType={newSubjectType[newSubjectIndex]?.["parent"]}
+        tableRef={tableRef}
+        value={newSubjectParent[newSubjectIndex]}
+        />
+    </React.Fragment>)
+}
+
+/**
  * Component that displays the list of subjects in a dialog. Double clicking a subject selects it.
  *
  * @param {open} bool Whether or not this dialog is open
@@ -253,6 +439,7 @@ function UnstyledSelectorDialog (props) {
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ isPosting, setIsPosting ] = useState();
   const [ newSubjectName, setNewSubjectName ] = useState("");
+  const [ newSubjectType, setNewSubjectType ] = useState();
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ newSubjectError, setNewSubjectError ] = useState();
 
@@ -315,7 +502,7 @@ function UnstyledSelectorDialog (props) {
       disabled={isPosting}
       error={newSubjectError}
       onClose={closeNewSubjectPopper}
-      onChange={(event) => {setNewSubjectName(event.target.value);}}
+      onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
       onSubmit={() => {handleSubmit(true);}}
       open={newSubjectPopperOpen}
       value={newSubjectName}
