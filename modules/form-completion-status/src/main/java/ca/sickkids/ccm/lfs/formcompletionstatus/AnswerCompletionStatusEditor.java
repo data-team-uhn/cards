@@ -532,7 +532,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return false;
     }
 
-    private boolean getSectionCondition(final NodeBuilder nb, final NodeBuilder prevNb)
+    private boolean isConditionSatisfied(final NodeBuilder nb, final NodeBuilder prevNb)
         throws RepositoryException
     {
         final Node sectionNode = getSectionNode(nb);
@@ -561,7 +561,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             final String selectedChildName = childrenNamesIter.next();
             final NodeBuilder selectedChild = selectedNodeBuilder.getChildNode(selectedChildName);
             if ("lfs:AnswerSection".equals(selectedChild.getProperty("jcr:primaryType").getValue(Type.STRING))) {
-                if (!getSectionCondition(selectedChild, selectedNodeBuilder)) {
+                if (!isConditionSatisfied(selectedChild, selectedNodeBuilder)) {
                     continue;
                 }
             }
