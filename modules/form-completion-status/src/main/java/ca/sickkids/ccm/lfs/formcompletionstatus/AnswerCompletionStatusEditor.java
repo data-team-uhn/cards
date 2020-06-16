@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -73,16 +74,16 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     // and the last item corresponding to the current node. By keeping this list, one is capable of
     // moving up the tree and setting status flags of ancestor nodes based on the status flags of a
     // descendant node.
-    private final ArrayList<NodeBuilder> currentNodeBuilderPath;
+    private final List<NodeBuilder> currentNodeBuilderPath;
 
     /**
      * Simple constructor.
      *
-     * @param nodeBuilder an ArrayList of NodeBuilder objects starting from the root of the JCR tree
-     *     and moving down towards the current node.
+     * @param nodeBuilder a list of NodeBuilder objects starting from the root of the JCR tree and moving down towards
+     *            the current node.
      * @param resourceResolver a ResourceResolver object used to obtain answer constraints
      */
-    public AnswerCompletionStatusEditor(ArrayList<NodeBuilder> nodeBuilder, ResourceResolver resourceResolver)
+    public AnswerCompletionStatusEditor(final List<NodeBuilder> nodeBuilder, final ResourceResolver resourceResolver)
     {
         this.currentNodeBuilderPath = nodeBuilder;
         this.currentNodeBuilder = nodeBuilder.get(nodeBuilder.size() - 1);
@@ -112,7 +113,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         if (questionNode != null && PROP_VALUE.equals(after.getName())) {
             Iterable<String> nodeAnswers = after.getValue(Type.STRINGS);
             int numAnswers = iterableLength(nodeAnswers);
-            ArrayList<String> statusFlags = new ArrayList<String>();
+            List<String> statusFlags = new ArrayList<>();
             if (checkInvalidAnswer(questionNode, numAnswers)) {
                 statusFlags.add(STATUS_FLAG_INVALID);
                 statusFlags.add(STATUS_FLAG_INCOMPLETE);
@@ -154,8 +155,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         Node questionNode = getQuestionNode(this.currentNodeBuilder);
         if (questionNode != null) {
             if (PROP_VALUE.equals(before.getName())) {
-                ArrayList<String> statusFlags = new ArrayList<String>();
-                //Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
+                final List<String> statusFlags = new ArrayList<>();
+                // Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
                 if (checkInvalidAnswer(questionNode, 0)) {
                     statusFlags.add(STATUS_FLAG_INVALID);
                     statusFlags.add(STATUS_FLAG_INCOMPLETE);
@@ -184,18 +185,15 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
         if (questionNode != null) {
             if (this.currentNodeBuilder.getChildNode(name).hasProperty(PROP_QUESTION)) {
-                ArrayList<String> statusFlags = new ArrayList<String>();
-                //Only add the INCOMPLETE flag if the given question requires more than zero answers
+                final List<String> statusFlags = new ArrayList<>();
+                // Only add the INCOMPLETE flag if the given question requires more than zero answers
                 if (checkInvalidAnswer(questionNode, 0)) {
                     statusFlags.add(STATUS_FLAG_INCOMPLETE);
                 }
                 this.currentNodeBuilder.getChildNode(name).setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
             }
         }
-        ArrayList<NodeBuilder> tmpList = new ArrayList<NodeBuilder>();
-        for (int i = 0; i < this.currentNodeBuilderPath.size(); i++) {
-            tmpList.add(this.currentNodeBuilderPath.get(i));
-        }
+        final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
         return new AnswerCompletionStatusEditor(tmpList, this.currentResourceResolver);
     }
@@ -204,10 +202,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     public Editor childNodeChanged(String name, NodeState before, NodeState after)
         throws CommitFailedException
     {
-        ArrayList<NodeBuilder> tmpList = new ArrayList<NodeBuilder>();
-        for (int i = 0; i < this.currentNodeBuilderPath.size(); i++) {
-            tmpList.add(this.currentNodeBuilderPath.get(i));
-        }
+        final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
         return new AnswerCompletionStatusEditor(tmpList, this.currentResourceResolver);
     }
@@ -293,7 +288,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return false;
     }
 
-    private void summarizeBuilders(ArrayList<NodeBuilder> nodeBuilders)
+    private void summarizeBuilders(final List<NodeBuilder> nodeBuilders)
         throws RepositoryException
     {
         /*
@@ -591,8 +586,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 }
             }
         }
-        //Set the flags in selectedNodeBuilder accordingly
-        ArrayList<String> statusFlags = new ArrayList<String>();
+        // Set the flags in selectedNodeBuilder accordingly
+        final List<String> statusFlags = new ArrayList<>();
         if (isInvalid) {
             statusFlags.add(STATUS_FLAG_INVALID);
         }
