@@ -524,6 +524,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             final String keyANodeUUID = keyANode.getIdentifier();
             // Get the node from the Form containing the answer to keyANode
             final NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyANodeUUID);
+            // ...if the answer node does not exist, return false - can't compare to something non-existant
+            if (conditionalFormNode == null) {
+                return false;
+            }
             final PropertyState comparedProp = conditionalFormNode.getProperty(PROP_VALUE);
             final Property referenceProp = operandB.getProperty(PROP_VALUE);
             return evalSectionCondition(comparedProp, referenceProp, comparator);
