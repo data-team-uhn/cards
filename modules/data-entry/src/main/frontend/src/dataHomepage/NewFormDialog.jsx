@@ -215,17 +215,17 @@ function NewFormDialog(props) {
     if (currentSubject && selectedQuestionnaire) {
   
       // current subject is required type for form
-      if (currentSubject.type["@path"] == selectedQuestionnaire["requiredSubjectTypes"]["@path"]) {
+      if (currentSubject.type["@path"] == selectedQuestionnaire["requiredSubjectTypes"][0]["@path"]) {
         setSelectedSubject(currentSubject); // now that selectedsubject is set, will create form with current subject as subject
       }
       else {
         setSelectedSubject(null); // remove selectedsubject so next dialog can open (should not create form right away)
       }
       // current subject's type is the parent of required type for form
-      if (selectedQuestionnaire["requiredSubjectTypes"]["parent"] && (currentSubject.type["@path"] == selectedQuestionnaire["requiredSubjectTypes"]["parent"]["@path"])) {
-        console.log("required parent");
-        //call 'handlenewparent' from here ? idk
-      }
+      // if (selectedQuestionnaire["requiredSubjectTypes"]["parent"] && (currentSubject.type["@path"] == selectedQuestionnaire["requiredSubjectTypes"]["parent"]["@path"])) {
+      //   console.log("required parent");
+      //   //call 'handlenewparent' from here ? idk
+      // }
   
       // todo: only display forms/subjects that are related to the currentSubject ?
     }

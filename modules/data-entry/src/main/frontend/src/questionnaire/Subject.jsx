@@ -18,9 +18,9 @@
 //
 
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
-import { Link } from 'react-router-dom';
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
 
@@ -46,6 +46,18 @@ let createQueryURL = (query, type) => {
   let url = new URL("/query", window.location.origin);
   url.searchParams.set("query", `SELECT * FROM [${type}] as n` + query);
   return url;
+}
+
+// Recursive function to get a flat list of parents
+export function getHierarchy (node, RenderComponent, propsCreator) {
+  let props = propsCreator(node);
+  let output = <React.Fragment>{node.type.label} <RenderComponent {...props}>{node.identifier}</RenderComponent></React.Fragment>;
+  if (node["parents"]) {
+    let ancestors = getHierarchy(node["parents"], RenderComponent, propsCreator);
+    return <React.Fragment>{ancestors} / {output}</React.Fragment>
+  } else {
+    return output;
+  }
 }
 
 /**
@@ -224,13 +236,18 @@ function SubjectMember (props) {
   if (level == 1) {buttonSize = "medium"; headerStyle="h4"};
   if (level > 1) {buttonSize = "small"; headerStyle="h5"};
 
+  let parentDetails = data && data['parents'] && getHierarchy(data['parents'], Link, (node) => ({to: "/content.html" + node["@path"]}));
+
   return (
     <Grid item xs={12}>
-      <Grid item className={classes.subjectHeader}>
+      <Grid item>
+        {
+          parentDetails && <Typography variant="overline">{parentDetails}</Typography>
+        }
         {
           data && data.identifier ?
-            <Typography variant={headerStyle}>{data.type.label} {data.identifier}</Typography>
-          : <Typography variant={headerStyle}>{data.type.label} {id}</Typography>
+            <Typography variant={headerStyle}>{data?.type?.label || "Subject"} {data.identifier}</Typography>
+          : <Typography variant={headerStyle}>Subject {id}</Typography>
         }
         {
           data && data['jcr:createdBy'] && data['jcr:created'] ?
@@ -373,3 +390,9 @@ Subject.defaultProps = {
 }
 
 export default withStyles(QuestionnaireStyle)(Subject);
+
+
+// return (
+//   <div>
+//     <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
+      
