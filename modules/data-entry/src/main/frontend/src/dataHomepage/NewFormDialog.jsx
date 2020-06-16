@@ -24,7 +24,7 @@ import { CircularProgress, Button, Dialog, DialogActions, DialogContent, DialogT
 import { ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
-import SubjectSelectorList, { createSubjects, NewSubjectDialog, SelectParentDialog, SubjectListItem } from "../questionnaire/SubjectSelector.jsx";
+import SubjectSelectorList, { NewSubjectDialog, SubjectListItem, parseToArray } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
@@ -47,22 +47,6 @@ function NewFormDialog(props) {
   const [ progress, setProgress ] = useState();
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ error, setError ] = useState("");
-
-  // The value of a subjectType's parents are either an array, or if it is length 1 it will just be an object
-  // We must cast each case into an array to handle it properly
-  let parseToArray = (object) => {
-    // Null or undefined is length 0
-    if (!object) {
-      return [];
-    }
-
-    // A non-array is length 1
-    if (!Array.isArray(object)) {
-      return [object];
-    } else {
-      return object;
-    }
-  }
 
   let createForm = (subject) => {
     setError("");

@@ -33,7 +33,7 @@ import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireS
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import moment from "moment";
 import { getHierarchy } from "./Subject";
-import { SelectorDialog } from "./SubjectSelector";
+import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
@@ -186,6 +186,7 @@ function Form (props) {
         <div className={classes.formProvider}></div>
         <FormProvider>
           <SelectorDialog
+            allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}
             open={selectorDialogOpen}
             onChange={changeSubject}
             onClose={() => {setSelectorDialogOpen(false)}}
