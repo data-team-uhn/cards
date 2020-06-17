@@ -382,8 +382,6 @@ export function createSubjects(newSubjects, subjectType, subjectParents, subject
       continue;
     }
 
-    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${subjectName}'`, "lfs:Subject");
-
     let url = "/Subjects/" + uuid();
 
     // If this is the subject the user has selected, make a note of the output URL
@@ -392,6 +390,7 @@ export function createSubjects(newSubjects, subjectType, subjectParents, subject
     }
 
     // Make a POST request to create a new subject
+    let parentCheckQuery = [];
     let requestData = new FormData();
     requestData.append('jcr:primaryType', 'lfs:Subject');
     requestData.append('identifier', subjectName);
@@ -399,14 +398,30 @@ export function createSubjects(newSubjects, subjectType, subjectParents, subject
     requestData.append('type@TypeHint', 'Reference');
     subjectParents.forEach((parent) => {
       requestData.append('parents', parent);
+      parentCheckQuery.push(`n.'parents'='${parent}'`);
     })
     requestData.append('parents@TypeHint', 'Reference');
 
+    let parentCheckQueryString = "";
+    if (parentCheckQuery.length) {
+      parentCheckQueryString = " AND (" + parentCheckQuery.join(" OR ") + ")";
+    } else {
+      parentCheckQueryString = " AND n.'parents' IS NULL";
+    }
+
+    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${subjectName}'` + parentCheckQueryString, "lfs:Subject");
     let newPromise = fetch( checkAlreadyExistsURL )
       .then( (response) => response.ok ? response.json() : Promise.reject(response))
       .then( (json) => {
         if (json?.rows?.length > 0) {
-          return Promise.reject(`Subject ${subjectName} already exists`);
+          // Create an error message, adding the parents if they exist
+          let error_msg = `Subject ${subjectName} already exists`;
+          let id = json["rows"][0]["parents"]?.["identifier"];
+          if (id) {
+            error_msg += " for parent " + id;
+          }
+
+          return Promise.reject(error_msg);
         }
       });
 
