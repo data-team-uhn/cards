@@ -39,6 +39,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import uuid from "uuid/v4";
 import ObjectInput from "./ObjectInput";
+import AnswerOptions from "./AnswerOptions";
 
 export function fields(data, JSON) {
   let formatString = (key) => {
@@ -52,27 +53,42 @@ export function fields(data, JSON) {
         dataType: "boolean",
         score: ( value === "boolean" ? 60 : 10),
         component: (
-          <Grid item xs={6}><Checkbox name={key} id={key} defaultValue={data[key]} /></Grid>
+          <Grid container alignItems="flex-end" spacing={2}>
+            <Grid item xs={6}>
+              <Typography>{ formatString(key) }</Typography>
+            </Grid>
+            <Grid item xs={6}><Checkbox name={key} id={key} defaultValue={data[key]} /></Grid>
+          </Grid>
         )
       },
       {
         dataType: "string",
         score: ( value === "string" ? 60 : 40),
         component: (
-          <Grid item xs={6}><TextField name={key} id={key} defaultValue={data[key]} /></Grid>
+          <Grid container alignItems="flex-end" spacing={2}>
+            <Grid item xs={6}>
+              <Typography>{ formatString(key) }</Typography>
+            </Grid>
+            <Grid item xs={6}><TextField name={key} id={key} defaultValue={data[key]} /></Grid>
+          </Grid>
         )
       },
       {
         dataType: "long",
         score: ( value === "long" ? 60 : 10),
         component: (
+        <Grid container alignItems="flex-end" spacing={2}>
+          <Grid item xs={6}>
+            <Typography>{ formatString(key) }</Typography>
+          </Grid>
           <Grid item xs={6}><TextField name={key} id={key} defaultValue={data[key]} /></Grid>
+        </Grid>
         )
       },
       {
         dataType: "object",
         score: ( typeof(value) === "object" ? 60 : 0),
-        component: (<ObjectInput key={key} value={value} data={data}></ObjectInput>
+        component: (<ObjectInput objectKey={key} value={value} data={data}></ObjectInput>
         )
       }
     ]
@@ -83,12 +99,7 @@ export function fields(data, JSON) {
   }
   
   return Object.entries(JSON).map(([key, value]) => (
-    <Grid container alignItems="flex-end" spacing={2}>
-      <Grid item xs={6}>
-        <Typography>{ formatString(key) }</Typography>
-      </Grid>
-        { fieldInput(key, value) }  
-    </Grid>
+   fieldInput(key, value)
   ));
 }
 
@@ -197,6 +208,7 @@ let EditDialog = (props) => {
         <form action={props.data["@path"]} method="POST" onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={props.id}>
           <DialogContent>
             { fields(props.data, json[0])}
+            <AnswerOptions data={props.data} />
           </DialogContent>
           <DialogActions>
             <Button
