@@ -21,6 +21,7 @@ import React, { useState, useRef } from "react";
 import { fields } from "./EditDialog"
 import PropTypes from "prop-types";
 import {
+  Grid,
   MenuItem,
   Select,
   Typography,
@@ -30,19 +31,28 @@ import {
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 let ObjectInput = (props) => {
-  let { key, value, data } = props;
-  let [ selectedValue, setSelectedValue] = useState(data[key] || '');
-
+  let { objectKey, value, data } = props;
+  let [ selectedValue, setSelectedValue] = useState(data[objectKey] || '');
+  
+  let formatString = (originalKey) => {
+    let formattedString = originalKey.charAt(0).toUpperCase() + originalKey.slice(1);
+    return formattedString.split(/(?=[A-Z])/).join(" ");
+  }
   return (
     <div>
+      <Grid container alignItems="flex-end" spacing={2}>
       <Grid item xs={6}>
-          <Select id={key} name={key} defaultValue={data[key] || ''} onChange={(event) => { setSelectedValue(event.target.value); }}>
+        <Typography>{ formatString(objectKey) }</Typography>
+      </Grid>
+      <Grid item xs={6}>
+          <Select id={objectKey} name={objectKey} defaultValue={data[objectKey] || ''} onChange={(event) => { setSelectedValue(event.target.value); }}>
           { typeof(value) === "object" && Object.keys(value).map((name, val) => 
             <MenuItem name={name} id={name} value={name}>
               <Typography>{name}</Typography>
             </MenuItem>
           )}
-        </Select>
+          </Select>
+        </Grid>
       </Grid>
       { typeof(value) === "object" && selectedValue != '' && fields(data, value[selectedValue]) }
     </div>
@@ -50,7 +60,7 @@ let ObjectInput = (props) => {
 }
 
 ObjectInput.propTypes = {
-  key: PropTypes.string.isRequired,
+  objectKey: PropTypes.string.isRequired,
   value: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
 };
