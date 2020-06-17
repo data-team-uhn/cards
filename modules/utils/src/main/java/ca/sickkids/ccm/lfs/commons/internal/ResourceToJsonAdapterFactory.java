@@ -169,6 +169,7 @@ public class ResourceToJsonAdapterFactory
         }
     }
 
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private JsonObjectBuilder adapt(final Node node) throws RepositoryException
     {
         if (node == null) {
@@ -181,8 +182,10 @@ public class ResourceToJsonAdapterFactory
             this.processedNodes.get().add(node.getPath());
             if (!alreadyProcessed) {
                 final PropertyIterator properties = node.getProperties();
-                String slingResourceSuperType = node.getProperty("sling:resourceSuperType").getString();
-                String slingResourceType = node.getProperty("sling:resourceType").getString();
+                String slingResourceSuperType = node.hasProperty("sling:resourceSuperType")
+                    ? node.getProperty("sling:resourceSuperType").getString() : "";
+                String slingResourceType = node.hasProperty("sling:resourceType")
+                    ? node.getProperty("sling:resourceType").getString() : "";
                 while (properties.hasNext()) {
                     Property thisProp = properties.nextProperty();
                     if (this.simple.get()) {
