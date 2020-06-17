@@ -21,12 +21,20 @@ import LiveTable from "./LiveTable.jsx";
 import Questionnaire from "../questionnaire/Questionnaire.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
 import NewQuestionnaireDialog from "../questionnaire/NewQuestionnaireDialog.jsx";
+import DeleteQuestionnaireDialog from "../questionnaire/DeleteQuestionnaireDialog.jsx";
 import { Button, Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
 
 function Questionnaires(props) {
   let [ forms, setForms ] = useState({});
+  let [ openDialog, setOpenDialog] = useState(false);
+  let [ deleteData, setDeleteData ] = useState(false);
   const { match, classes } = props;
   const entry = /Questionnaires\/(.+)/.exec(location.pathname);
+
+  let deleteQuestionnaire = (entry) => {
+    setDeleteData(entry);
+    setOpenDialog(true);
+  }
 
   if (entry) {
     return <Questionnaire id={entry[1]} key={location.pathname}/>;
@@ -51,10 +59,13 @@ function Questionnaires(props) {
       "format": "date:YYYY-MM-DD HH:mm",
     },
     {
-      "key":"jcr:uuid",
-      "label":"Actions",
-      "edit":"example",
-      "delete":"example"
+      "key":"forms",
+      "label":"Forms",
+      "link":"dashboard+field:forms"
+    },
+    {
+      "key":"actions",
+      "label":"Actions"
     }
   ]
   return (
@@ -75,8 +86,9 @@ function Questionnaires(props) {
         }}
       />
       <CardContent>
-        <LiveTable columns={columns} />
+        <LiveTable columns={columns} delete={deleteQuestionnaire} />
       </CardContent>
+      <DeleteQuestionnaireDialog open={openDialog} data={deleteData}></DeleteQuestionnaireDialog>
     </Card>
   );
 }
