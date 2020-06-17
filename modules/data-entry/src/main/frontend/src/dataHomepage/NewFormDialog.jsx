@@ -220,11 +220,8 @@ function NewFormDialog(props) {
       else {
         setSelectedSubject(null); // remove selectedsubject so next dialog can open (should not create form right away)
       }
-      // todo: only display forms/subjects that are related to the currentSubject ?
-        //check if questionnaire's type or parents type
-        //list of subjects: check if parent.. is the current subject
     }
-  }, [selectedQuestionnaire])
+  }, [selectedQuestionnaire, open])
 
   let handleNewParent = (e) => {
     var toAdd = e;
@@ -288,6 +285,7 @@ function NewFormDialog(props) {
               onError={setError}
               onSelect={selectSubject}
               selectedSubject={selectedSubject}
+              currentSubject={currentSubject}
               />}
           </React.Fragment>}
         </DialogContent>

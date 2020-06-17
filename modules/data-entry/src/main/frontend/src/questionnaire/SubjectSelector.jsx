@@ -469,7 +469,8 @@ SubjectListItem.defaultProps = {
  */
 function SubjectSelectorList(props) {
   const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject,
-      theme, ...rest } = props;
+    currentSubject, theme, ...rest } = props;
+
   const COLUMNS = [
     { title: 'Identifier', field: 'identifier' },
   ];
@@ -494,12 +495,44 @@ function SubjectSelectorList(props) {
             let url = createQueryURL( condition, "lfs:Subject");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
+
+            console.log(currentSubject)
+
             return fetch(url)
               .then(response => response.json())
               .then(result => {
-                console.log(result);
+                //todo: rename
+                let andAgain = (e) => {
+                  console.log("DOES contain")
+                  if (e['parents']?.['@path'] == currentSubject['@path']){
+                    return e;
+                  }
+                  else if (e['parents']) {
+                    andAgain(e['parents']); // get again with parents
+                  }
+                  else return;
+                }
+
+                let getAgain = (e) => {
+                  if (currentSubject && (e['parents']?.['type']['@path'] == currentSubject.type['@path'])){
+                    // check if this list is a descendant of the current type. if yes, will apply this
+                    return true;
+                  }
+                  else if (e['parents']) {
+                    getAgain(e['parents']); // get again with parents
+                  }
+                  else return;
+                }
+
+                let testing = result['rows'].map((row) => getAgain(row));
+
+                console.log(testing);
+
                 return {
-                  data: result["rows"],
+                  data: ((currentSubject && (result['rows'].map((e) => getAgain(e))) == true) //todo: fix, filterworks if == true but parent forms dont..
+                    ? result['rows'].filter((e) => andAgain(e)) 
+                    : result['rows']
+                  ),
                   page: Math.trunc(result["offset"]/result["limit"]),
                   totalCount: result["totalrows"],
                 }}
