@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import uuid from "uuid/v4";
 
 import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Input, ListItem, ListItemAvatar, Typography, withStyles } from "@material-ui/core";
@@ -63,10 +63,12 @@ function UnstyledNewSubjectDialog (props) {
     setNewSubjectType(type);
   }
 
-  // Auto-select if there's only one valid SubjectType
-  if (allowedTypes?.length === 1 && !newSubjectType) {
-    changeType(allowedTypes[0]);
-  }
+  // Auto-select if there's only one valid SubjectType given in allowedTypes
+  useEffect(() => {
+    if (allowedTypes?.length === 1) {
+      changeType(allowedTypes[0]);
+    }
+  }, [allowedTypes]);
 
   return(
     <React.Fragment>
@@ -281,6 +283,7 @@ export function NewSubjectDialog (props) {
   const [ newSubjectType, setNewSubjectType ] = useState([""]);
   const [ newSubjectParent, setNewSubjectParent ] = useState([]);
   const [ newSubjectIndex, setNewSubjectIndex ] = useState(0);
+  const [ newSubjectAllowedTypes, setNewSubjectAllowedTypes ] = useState([]);
 
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(true);
   const [ selectParentPopperOpen, setSelectParentPopperOpen ] = useState(false);
@@ -298,13 +301,16 @@ export function NewSubjectDialog (props) {
     }
 
     // TODO: Potential race condition with newSubjectIndex being updated after createSubject's callback?
+    // Grab the parent as an array if it exists, or use an empty array
+    let parent = newSubjectParent[index]?.["jcr:uuid"];
+    parent = parent ? [parent] : [];
     createSubjects(
       [newSubjectName[index]],
       newSubjectType[index],
-      newSubjectParent[index]?.["jcr:uuid"] || [],
+      parent,
       newSubjectName[index],
       (new_subject) => {createNewSubjectRecursive(new_subject, index-1)},
-      console.log);
+      (error) => {setError(error.message)});
   }
   
   // Called when creating a new subject
@@ -316,7 +322,7 @@ export function NewSubjectDialog (props) {
     } else if (selectParentPopperOpen && newSubjectParent.length < newSubjectIndex) {
       // They haven't selected a parent for the current type yet
       setError("Please select a valid parent.");
-    } else if (curSubjectRequiresParents) {
+    } else if (newSubjectPopperOpen && curSubjectRequiresParents) {
       // Display the parent type to select
       setError();
       setNewSubjectPopperOpen(false);
@@ -364,17 +370,23 @@ export function NewSubjectDialog (props) {
 
   // Handle the case where the user wants to create a new subject to act as the parent
   let addNewParentSubject = () => {
+    let newAllowedTypes = parseToArray(newSubjectType[newSubjectIndex]["parent"]);
+    setNewSubjectAllowedTypes((old) => {
+      let newTypes = old.slice();
+      newTypes.push(newAllowedTypes);
+      return newTypes;
+    });
     setNewSubjectIndex((old) => old+1);
     setNewSubjectName((old) => {
       let newNames = old.slice();
       newNames.push("");
       return newNames;
-    })
+    });
     setNewSubjectType((old) => {
       let newTypes = old.slice();
       newTypes.push("");
       return newTypes;
-    })
+    });
     setNewSubjectPopperOpen(true);
     setSelectParentPopperOpen(false);
   }
@@ -402,7 +414,7 @@ export function NewSubjectDialog (props) {
   return (
     <React.Fragment>
       <NewSubjectDialogChild
-        allowedTypes={newSubjectIndex == 0 ? allowedTypes : parseToArray(newSubjectType[newSubjectIndex-1]?.["parent"])}
+        allowedTypes={newSubjectIndex == 0 ? allowedTypes : newSubjectAllowedTypes[newSubjectIndex-1]}
         disabled={disabled}
         error={error}
         onClose={goBack}
@@ -493,8 +505,10 @@ function UnstyledSelectorDialog (props) {
 
   let closeNewSubjectPopper = () => {
     setNewSubjectPopperOpen(false);
-    onPopperClose();
+    onPopperClose && onPopperClose();
   }
+
+  let disabled_controls = isPosting || disabled;
 
   return (<React.Fragment>
     <NewSubjectDialog
@@ -508,7 +522,8 @@ function UnstyledSelectorDialog (props) {
       <DialogContent className={classes.NewFormDialog}>
         {isPosting && <CircularProgress />}
         <StyledSubjectSelectorList
-          disabled={isPosting || disabled}
+          allowedTypes={allowedTypes}
+          disabled={disabled_controls}
           onError={onError}
           onSelect={(data) => {selectSubject(data);}}
           setSubjects={setSubjects}
@@ -521,6 +536,7 @@ function UnstyledSelectorDialog (props) {
         <Button
           variant="contained"
           color="secondary"
+          disabled={disabled_controls}
           onClick={() => { setNewSubjectPopperOpen(true); }}
           className={classes.createNewSubjectButton}
           >
@@ -530,6 +546,7 @@ function UnstyledSelectorDialog (props) {
           onClick={onClose}
           variant="contained"
           color="default"
+          disabled={disabled_controls}
           >
           Cancel
         </Button>
@@ -537,6 +554,7 @@ function UnstyledSelectorDialog (props) {
           onClick={() => handleSubmit()}
           variant="contained"
           color="primary"
+          disabled={disabled_controls}
           >
           Confirm
         </Button>
