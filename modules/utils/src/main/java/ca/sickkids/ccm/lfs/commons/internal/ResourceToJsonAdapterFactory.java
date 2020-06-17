@@ -459,7 +459,7 @@ public class ResourceToJsonAdapterFactory
                     final Node referenced =
                         path.charAt(0) == '/' ? property.getSession().getNode(path)
                             : property.getParent().getNode(path);
-                    objectBuilder.add(name, adapt(referenced));
+                    arrayBuilder.add(adapt(referenced));
                     break;
                 default:
                     arrayBuilder.add(value.getString());
