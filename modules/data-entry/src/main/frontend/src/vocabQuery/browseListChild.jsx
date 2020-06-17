@@ -80,8 +80,8 @@ function ListChild(props) {
   let buildChildren = (data) => {
     var children = data.map((row, index) =>
       (<BrowseListChild
-        id={row["id"]}
-        name={row["name"]}
+        id={row["identifier"]}
+        name={row["label"]}
         changeId={changeId}
         registerInfo={registerInfo}
         getInfo={getInfo}
