@@ -26,6 +26,7 @@ let DeleteQuestionnaireDialog = (props) => {
     let [ openDialog, setOpenDialog ] = useState(props.open);
     let [ forms, setForms] = useState(0);
     let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
+    let [ saveInProgress, setSaveInProgress ] = useState();
     
     let deleteQuestionnaireWarningMessage = () => {
       const formsExist = forms && forms > 0;
@@ -70,7 +71,7 @@ let DeleteQuestionnaireDialog = (props) => {
           }
         })
       .finally(() => setSaveInProgress(false));
-      setOpenDeleteDialog(false);
+      setOpenDialog(false);
     }
   
     let loginToSave = () => {
@@ -89,7 +90,7 @@ let DeleteQuestionnaireDialog = (props) => {
       <Dialog id="deleteDialog" open={openDialog} onClose={() => { setOpenDialog(false); }}>
         <form action={props.data["@path"]} onSubmit={deleteQuestionnaire} method="DELETE" key={props.id}>
           <DialogTitle>
-            Confirm question deletion
+            Confirm questionnaire deletion
           </DialogTitle>
           <DialogContent>
             <Typography>{ deleteQuestionnaireWarningMessage() }</Typography>
