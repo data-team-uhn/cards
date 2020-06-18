@@ -213,7 +213,7 @@ function NewFormDialog(props) {
 
   useEffect(() => {
     if (currentSubject && selectedQuestionnaire) {
-      // current subject is required type for form
+      // if the current subject is the required type for the questionnaire
       if (currentSubject.type["@path"] == selectedQuestionnaire["requiredSubjectTypes"][0]["@path"]) {
         setSelectedSubject(currentSubject); // now that selectedsubject is set, will create form with current subject as subject
       }
@@ -223,9 +223,11 @@ function NewFormDialog(props) {
     }
   }, [selectedQuestionnaire, open])
 
+  // function that sets the parent of a subject
+  // if the newformdialog was accessed from the subject page, 'currentSubject'
+  // if the SubjectType of currentSubject is the parent SubjectType, it becomes the parent, allowing the form to be created sooner
   let handleNewParent = (e) => {
     var toAdd = e;
-    //todo: add comment abt the following conditionals
     // handle SubjectType
     if (currentSubject && (e["parent"]?.["@path"] == currentSubject.type["@path"])) {
       toAdd = currentSubject;
@@ -261,7 +263,6 @@ function NewFormDialog(props) {
             {questionnaires &&
               <List>
                 {questionnaires.map((questionnaire) => {
-                  //todo: would check here
                   return (
                   <SubjectListItem
                     key={questionnaire["jcr:uuid"]}
@@ -333,7 +334,6 @@ function NewFormDialog(props) {
         onChangeType={(e) => {
           setSelectedSubjectType(e);
           setSelectedParentTypes(parseToArray(e?.["parent"]));
-          //todo: add comment
           if (currentSubject && (e["parent"]?.["@path"] == currentSubject.type["@path"])){
             handleNewParent(e);
           }

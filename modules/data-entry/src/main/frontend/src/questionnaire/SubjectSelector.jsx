@@ -470,7 +470,6 @@ SubjectListItem.defaultProps = {
 function SubjectSelectorList(props) {
   const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject,
     currentSubject, theme, ...rest } = props;
-
   const COLUMNS = [
     { title: 'Identifier', field: 'identifier' },
   ];
@@ -481,7 +480,6 @@ function SubjectSelectorList(props) {
         title=""
         columns={COLUMNS}
         data={query => {
-            //todo: would check here
             let condition = "";
             if (allowedTypes || query.search) {
               condition = " WHERE ";
@@ -496,41 +494,35 @@ function SubjectSelectorList(props) {
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
 
-            console.log(currentSubject)
-
             return fetch(url)
               .then(response => response.json())
               .then(result => {
-                //todo: rename
-                let andAgain = (e) => {
-                  console.log("DOES contain")
+                // recursive function to filter and find related subjects to the currentSubject
+                let getRelatedSubject = (e) => {
                   if (e['parents']?.['@path'] == currentSubject['@path']){
                     return e;
                   }
                   else if (e['parents']) {
-                    andAgain(e['parents']); // get again with parents
+                    getRelatedSubject(e['parents']);
                   }
-                  else return;
+                  return;
                 }
-
-                let getAgain = (e) => {
+                // recursive function to check if the SubjectType of the data is a child of the 'currentSubject' SubjectType
+                // e.g. will return true if the table is currently rendering a list of Tumors and the currentSubject SubjectType is Patient
+                // if yes, will filter results to find related subjects
+                let isSubjectRelated = (e) => {
                   if (currentSubject && (e['parents']?.['type']['@path'] == currentSubject.type['@path'])){
-                    // check if this list is a descendant of the current type. if yes, will apply this
                     return true;
                   }
                   else if (e['parents']) {
-                    getAgain(e['parents']); // get again with parents
+                    isSubjectRelated(e['parents']);
                   }
-                  else return;
+                  return;
                 }
 
-                let testing = result['rows'].map((row) => getAgain(row));
-
-                console.log(testing);
-
                 return {
-                  data: ((currentSubject && (result['rows'].map((e) => getAgain(e))) == true) //todo: fix, filterworks if == true but parent forms dont..
-                    ? result['rows'].filter((e) => andAgain(e)) 
+                  data: ((currentSubject && result['rows'].map((row) => isSubjectRelated(row)).includes(true))
+                    ? result['rows'].filter((e) => getRelatedSubject(e)) 
                     : result['rows']
                   ),
                   page: Math.trunc(result["offset"]/result["limit"]),
