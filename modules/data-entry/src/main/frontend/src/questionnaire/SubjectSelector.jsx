@@ -167,6 +167,7 @@ function UnstyledSelectParentDialog (props) {
 
   const COLUMNS = [
     { title: 'Subject', field: 'identifier' },
+    { title: 'Hierarchy', field: 'hierarchy' },
   ];
 
   let initialized = parentType && childType;
@@ -191,7 +192,10 @@ function UnstyledSelectParentDialog (props) {
                     .then(response => response.json())
                     .then(result => {
                       return {
-                        data: result["rows"],
+                        data: result["rows"].map((row) => ({
+                          hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, ()=>({})) : "No parents",
+                          ...row
+                        })),
                         page: Math.trunc(result["offset"]/result["limit"]),
                         totalCount: result["totalrows"],
                       }}
