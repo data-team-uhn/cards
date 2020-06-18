@@ -27,8 +27,8 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import QuestionnaireStyle from "./QuestionnaireStyle";
-import uuid from "uuid/v4";
+import QuestionnaireStyle from './QuestionnaireStyle';
+import uuid from 'uuid/v4';
 import CloseIcon from '@material-ui/icons/Close';
 
 let AnswerOptions = (props) => {
@@ -36,7 +36,6 @@ let AnswerOptions = (props) => {
   let [ newUuid, setNewUuid ] = useState([]);
   let [ newValue, setNewValue ] = useState([]);
   let [ tempValue, setTempValue ] = useState('');
-  let [ insertedOptions, setInsertedOptions ] = useState([]);
 
   let deleteOption = (value) => {
     let updatedAnswerChoices = options.slice();
@@ -55,81 +54,78 @@ let AnswerOptions = (props) => {
     updatedNewValue.splice(updatedNewValue.indexOf(event.target.value), 1);
     setNewValue(updatedNewValue);
   }
-  let insertedOption = (index) => {
-    return (<Grid item xs={6}>
-      <input type="hidden" name={`${props.data['@path']}/${newValue[index]}/jcr:primaryType`} value={'lfs:AnswerOption'} />
-      <input type="hidden" name={`${props.data['@path']}/${newValue[index]}/jcr:uuid`} value={newUuid[index]} />
-      <TextField
-        name={`${props.data['@path']}/${newValue[index]}/value`}
-        value={newValue[index]}
-        onChange={(event) => { updateInsertedOption(index, event); }}>
-      </TextField>
-      <IconButton onClick={ (event) => { deleteInsertedOption(index, event) }}>
-        <CloseIcon/>
-      </IconButton>
-    </Grid>)
-  }
 
   let handleInputOption = () => {
     console.log(newUuid, newValue);
 
-    let Uuid = newUuid.slice();
-    Uuid.push(uuid());
-    let value = newValue.slice();
-    value.push(tempValue);
+    setNewUuid(oldUuid => {
+      var newUuid = oldUuid.slice();
+      newUuid.push(uuid());
+      return newUuid;
+    });
 
-    setNewUuid(Uuid);
-    setNewValue(value);
-
-    let index = newValue.indexOf(tempValue);
-
-    let newInsertedOptions = insertedOptions.slice();
-    newInsertedOptions.push(insertedOption(index));
-    setInsertedOptions(newInsertedOptions);
+    setNewValue(oldValue => {
+      var newValue = oldValue.slice();
+      newValue.push(tempValue);
+      return newValue;
+    });
 
     setTempValue('');
   }
   return (
-    <div>
-      <Grid container alignItems="flex-end" spacing={2}>
-        { options.map(value => 
-          <Grid item xs={6}>
-            <input type="hidden" name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
-            <input type="hidden" name={`${value['@path']}/jcr:uuid`} value={value['jcr:uuid']} />
-            <TextField
-              name={`${value['@path']}/value`}
-              defaultValue={value.value}
-            />
-            <IconButton onClick={ () => { deleteOption(value) }}>
-              <CloseIcon/>
-            </IconButton>
-          </Grid>
-        )}
-        { insertedOptions }
-        <Grid item xs={6}>
-          <TextField
-            value={tempValue}
-            helperText="Press ENTER to add a new line"
-            onChange={(event) => { setTempValue(event.target.value); }}
-            inputProps={Object.assign({
-              onKeyDown: (event) => {
-                if (event.key == 'Enter') {
-                  // We need to stop the event so that it doesn't trigger a form submission
-                  event.preventDefault();
-                  event.stopPropagation();
-                  handleInputOption();
-                }
-              }
-            })}>
-          </TextField>
-        </Grid>
+    <Grid container alignItems='flex-end' spacing={2}>
+      <Grid item xs={6}>
+        <Typography> Answer Options </Typography>
       </Grid>
-    </div>
+      { options.map(value =>
+        <Grid item xs={6} key={value['jcr:uuid']}>
+          <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
+          <TextField
+            name={`${value['@path']}/value`}
+            defaultValue={value.value}
+          />
+          <IconButton onClick={() => { deleteOption(value) }}>
+            <CloseIcon/>
+          </IconButton>
+        </Grid>
+      )}
+      { newUuid.map((value, index) =>
+        <Grid item xs={6} key={index}>
+          <input type='hidden' name={`${props.data['@path']}/${newValue[index]}/jcr:primaryType`} value={'lfs:AnswerOption'} />
+          {/* <input type='hidden' name={`${props.data['@path']}/${newValue[index]}/jcr:uuid`} value={value} /> */}
+          <TextField
+            name={`${props.data['@path']}/${newValue[index]}/value`}
+            value={newValue[index]}
+            onChange={(event) => { updateInsertedOption(index, event); }}>
+          </TextField>
+          <IconButton onClick={(event) => { deleteInsertedOption(index, event) }}>
+            <CloseIcon />
+          </IconButton>
+        </Grid> 
+      )}
+      <Grid item xs={6}>
+        <TextField
+          value={tempValue}
+          helperText='Press ENTER to add a new line'
+          onChange={(event) => { setTempValue(event.target.value); }}
+          inputProps={Object.assign({
+            onKeyDown: (event) => {
+              if (event.key == 'Enter') {
+                // We need to stop the event so that it doesn't trigger a form submission
+                event.preventDefault();
+                event.stopPropagation();
+                handleInputOption();
+              }
+            }
+          })}>
+        </TextField>
+      </Grid>
+    </Grid>
   )
 }
 
 AnswerOptions.propTypes = {
   data: PropTypes.object.isRequired
 };
-  
+
 export default withStyles(QuestionnaireStyle)(AnswerOptions);

@@ -25,7 +25,6 @@ import DeleteQuestionnaireDialog from "../questionnaire/DeleteQuestionnaireDialo
 import { Button, Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
 
 function Questionnaires(props) {
-  let [ forms, setForms ] = useState({});
   let [ openDialog, setOpenDialog] = useState(false);
   let [ deleteData, setDeleteData ] = useState(false);
   const { match, classes } = props;
@@ -69,7 +68,8 @@ function Questionnaires(props) {
     }
   ]
   return (
-    <Card>
+    <React.Fragment>
+      <Card>
        <CardHeader
         color={"warning"/* Does nothing */}
         title={
@@ -88,8 +88,9 @@ function Questionnaires(props) {
       <CardContent>
         <LiveTable columns={columns} delete={deleteQuestionnaire} />
       </CardContent>
-      <DeleteQuestionnaireDialog open={openDialog} data={deleteData}></DeleteQuestionnaireDialog>
     </Card>
+    <DeleteQuestionnaireDialog open={openDialog} onClose={() => {setOpenDialog(false);}} data={deleteData}></DeleteQuestionnaireDialog>
+    </React.Fragment>
   );
 }
 

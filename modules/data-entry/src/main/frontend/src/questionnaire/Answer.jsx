@@ -94,10 +94,10 @@ function Answer (props) {
 }
 
 Answer.propTypes = {
-    answers: PropTypes.array,
-    answerNodeType: PropTypes.string,
-    valueType: PropTypes.string,
-    noteComponent: PropTypes.elementType
+  answers: PropTypes.array,
+  answerNodeType: PropTypes.string,
+  valueType: PropTypes.string,
+  noteComponent: PropTypes.elementType
 };
 
 Answer.defaultProps = {

@@ -41,7 +41,6 @@ import uuid from "uuid/v4";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import EditDialog from "./EditDialog"
 import DeleteDialog from "./DeleteDialog"
-import OpenWithIcon from "@material-ui/icons/OpenWith";
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
@@ -69,6 +68,7 @@ let Questionnaire = (props) => {
     // FIXME Display errors to the users
     setError(response);
     setData([]);
+    console.log(data);
   }
 
   const handleOpenMenu = (event) => {
@@ -115,8 +115,8 @@ let Questionnaire = (props) => {
           open={Boolean(anchorEl)}
           onClose={handleCloseMenu}
         >
-          {/* <MenuItem>Question<EditDialog edit={false} data={data} type="Question" /></MenuItem>
-          <MenuItem >Section<EditDialog edit={false} data={data} type="Section" /></MenuItem> */}
+          <MenuItem>Question<EditDialog edit={false} data={data} type="Question" /></MenuItem>
+          <MenuItem >Section<EditDialog edit={false} data={data} type="Section" /></MenuItem>
         </Menu>
       </Grid>
         {
@@ -150,9 +150,6 @@ let Question = (props) => {
     <Card>
       <CardHeader title={props.data.text} action={
         <div>
-          <IconButton>
-            <OpenWithIcon />
-          </IconButton>
           <EditDialog data={props.data} type="Question" edit={true}/>
           <DeleteDialog data={props.data} type="Question" edit={true} />
         </div>
@@ -215,12 +212,9 @@ let Section = (props) => {
       <CardHeader title={data['title'] || ''}
         action={
           <div>
-          <IconButton>
-            <OpenWithIcon />
-          </IconButton>
-          <EditDialog key={location.pathname} edit={true} data={props.data} type="Section" />
-          <DeleteDialog data={props.data} type="Section" />
-          <Typography>{data['description'] || ''}</Typography>
+            <EditDialog key={location.pathname} edit={true} data={props.data} type="Section" />
+            <DeleteDialog data={props.data} type="Section" />
+            <Typography>{data['description'] || ''}</Typography>
           </div>
         }>
       </CardHeader>
