@@ -45,7 +45,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Include-Resource>{maven-resources},META-INF/maven/dependencies.properties=target/classes/META-INF/maven/dependencies.properties,@oak-lucene-*.jar!/org/apache/jackrabbit/oak/plugins/index/lucene/util/LuceneIndexHelper.*</Include-Resource>
+            <Include-Resource>{maven-resources},META-INF/maven/dependencies.properties=target/classes/META-INF/maven/dependencies.properties,@oak-lucene-*.jar!/org/apache/jackrabbit/oak/plugins/index/*</Include-Resource>
           </instructions>
         </configuration>
       </plugin>
