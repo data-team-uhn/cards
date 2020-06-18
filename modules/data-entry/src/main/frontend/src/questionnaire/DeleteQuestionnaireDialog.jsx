@@ -23,7 +23,6 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 let DeleteQuestionnaireDialog = (props) => {
-    let [ openDialog, setOpenDialog ] = useState(props.open);
     let [ forms, setForms] = useState(0);
     let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
     let [ saveInProgress, setSaveInProgress ] = useState();
@@ -87,7 +86,7 @@ let DeleteQuestionnaireDialog = (props) => {
   
   return (
     <React.Fragment>
-      <Dialog id="deleteDialog" open={openDialog} onClose={() => { setOpenDialog(false); }}>
+      <Dialog id="deleteDialog" open={props.open} onClose={props.onClose}>
         <form action={props.data["@path"]} onSubmit={deleteQuestionnaire} method="DELETE" key={props.id}>
           <DialogTitle>
             Confirm questionnaire deletion
@@ -106,7 +105,7 @@ let DeleteQuestionnaireDialog = (props) => {
             <Button
               variant="contained"
               color="default"
-              onClick={() => { setOpenDialog(false); }}
+              onClick={props.onClose}
               >
               {'Cancel'}
             </Button>

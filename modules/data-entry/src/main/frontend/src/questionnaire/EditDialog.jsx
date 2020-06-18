@@ -17,8 +17,8 @@
 //  under the License.
 //
 
-import React, { useState, useRef } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 import {
   Button,
   Checkbox,
@@ -28,85 +28,23 @@ import {
   DialogTitle,
   Grid,
   IconButton,
-  MenuItem,
-  Select,
   TextField,
   Typography,
   withStyles
 } from "@material-ui/core";
 
-import EditIcon from "@material-ui/icons/Edit";
-import QuestionnaireStyle from "./QuestionnaireStyle";
-import uuid from "uuid/v4";
-import ObjectInput from "./ObjectInput";
-import AnswerOptions from "./AnswerOptions";
-
-export function fields(data, JSON) {
-  let formatString = (key) => {
-    let formattedString = key.charAt(0).toUpperCase() + key.slice(1);
-      return formattedString.split(/(?=[A-Z])/).join(" ");
-    }
-
-    let inputTypes = (key, value) => {
-    return [
-      {
-        dataType: "boolean",
-        score: ( value === "boolean" ? 60 : 10),
-        component: (
-          <Grid container alignItems="flex-end" spacing={2}>
-            <Grid item xs={6}>
-              <Typography>{ formatString(key) }</Typography>
-            </Grid>
-            <Grid item xs={6}><Checkbox name={key} id={key} defaultValue={data[key]} /></Grid>
-          </Grid>
-        )
-      },
-      {
-        dataType: "string",
-        score: ( value === "string" ? 60 : 40),
-        component: (
-          <Grid container alignItems="flex-end" spacing={2}>
-            <Grid item xs={6}>
-              <Typography>{ formatString(key) }</Typography>
-            </Grid>
-            <Grid item xs={6}><TextField name={key} id={key} defaultValue={data[key]} /></Grid>
-          </Grid>
-        )
-      },
-      {
-        dataType: "long",
-        score: ( value === "long" ? 60 : 10),
-        component: (
-        <Grid container alignItems="flex-end" spacing={2}>
-          <Grid item xs={6}>
-            <Typography>{ formatString(key) }</Typography>
-          </Grid>
-          <Grid item xs={6}><TextField name={key} id={key} defaultValue={data[key]} /></Grid>
-        </Grid>
-        )
-      },
-      {
-        dataType: "object",
-        score: ( typeof(value) === "object" ? 60 : 0),
-        component: (<ObjectInput objectKey={key} value={value} data={data}></ObjectInput>
-        )
-      }
-    ]
-  }
-    
-  let fieldInput = (key, value) => {
-    return inputTypes(key, value).reduce((a,b) => a.score > b.score ? a : b).component;
-  }
-  
-  return Object.entries(JSON).map(([key, value]) => (
-   fieldInput(key, value)
-  ));
-}
+import EditIcon from '@material-ui/icons/Edit';
+import QuestionnaireStyle from './QuestionnaireStyle';
+import uuid from 'uuid/v4';
+import ObjectInput from './ObjectInput';
+import AnswerOptions from './AnswerOptions';
+import Fields from './Fields'
 
 let EditDialog = (props) => {
   let [ questionJSON, setQuestionJSON ] = useState( require('./Question.json'));
   let [ sectionJSON, setSectionJSON ] = useState( require('./Section.json'));
-  let [ json, setJson ] = useState(props.type.includes("Question") ? questionJSON : sectionJSON);
+  let [ title, setTitle ] = useState('');
+  let [ json, setJson ] = useState(props.type.includes('Question') ? questionJSON : sectionJSON);
   let [ openEditDialog, setOpenEditDialog ] = useState(false);
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
@@ -116,7 +54,9 @@ let EditDialog = (props) => {
   // - false -> the save attempt failed
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
-  let [error, setError ] = useState("");
+  let [error, setError ] = useState('');
+
+
   let saveData = (event) => {
     // This stops the normal browser form submission
     event.preventDefault();
@@ -129,11 +69,11 @@ let EditDialog = (props) => {
 
     setSaveInProgress(true);
 
-    if (props.data) {
+    if (props.edit) {
       // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
       let request_data = new FormData(event.currentTarget);
-      fetch(`${props.data["@path"]}`, {
-        method: "POST",
+      fetch(`${props.data['@path']}`, {
+        method: 'POST',
         body: request_data
       }).then((response) => response.ok ? true : Promise.reject(response))
         .then(() => setLastSaveStatus(true))
@@ -167,8 +107,8 @@ let EditDialog = (props) => {
         })
         .finally(() => setSaveInProgress(false));
           setOpenEditDialog(false);
-      }
     }
+  }
 
   // Open the login page in a new popup window, centered wrt the parent window
   let loginToSave = () => {
@@ -185,9 +125,9 @@ let EditDialog = (props) => {
   // If an error was returned, do not display a form at all, but report the error
   if (error) {
     return (
-      <Grid container justify="center">
+      <Grid container justify='center'>
         <Grid item>
-          <Typography variant="h2" color="error">
+          <Typography variant='h2' color='error'>
             Error obtaining form data: {error.status} {error.statusText}
           </Typography>
         </Grid>
@@ -196,25 +136,26 @@ let EditDialog = (props) => {
   }
 
   let dialogTitle = () => {
-    return (props.edit ? "Edit " : "New ").concat(props.type);
+    return (props.edit ? 'Edit ' : 'New ').concat(props.type);
   }
 
   return (
     <React.Fragment>
-      <Dialog id="editDialog" open={openEditDialog} onClose={() => { setOpenEditDialog(false); }}>
+      <Dialog id='editDialog' open={openEditDialog} onClose={() => { setOpenEditDialog(false); }}>
         <DialogTitle>
           { dialogTitle() }
         </DialogTitle>
-        <form action={props.data["@path"]} method="POST" onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={props.id}>
+        <form action={props.edit && props.data['@path'] || '' } method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={props.id}>
           <DialogContent>
-            { fields(props.data, json[0])}
-            <AnswerOptions data={props.data} />
+            { !props.edit && <TextField name='title' value={title} onChange={()=> { setTitle(event.target.value); }} />}
+            <Fields data={props.data} JSON={json[0]} />
+            <AnswerOptions data={props.data} /> 
           </DialogContent>
           <DialogActions>
             <Button
-              type="submit"
-              variant="contained"
-              color="primary"
+              type='submit'
+              variant='contained'
+              color='primary'
               disabled={saveInProgress}
             >
               {saveInProgress ? 'Saving' :
@@ -223,16 +164,16 @@ let EditDialog = (props) => {
               'Save'}
             </Button>
             <Button
-              variant="contained"
-              color="default"
-              onClick={ () => { setOpenEditDialog(false); }}
+              variant='contained'
+              color='default'
+              onClick={() => { setOpenEditDialog(false); }}
               >
               {'Cancel'}
             </Button>
           </DialogActions>
         </form>
       </Dialog>
-      <IconButton onClick={ () => { setOpenEditDialog(true); }}>
+      <IconButton onClick={() => { setOpenEditDialog(true); }}>
         <EditIcon />
       </IconButton>
     </React.Fragment>
