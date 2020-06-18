@@ -19,18 +19,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Grid,
-  Typography,
-  withStyles
-} from "@material-ui/core";
+import { Grid, Typography, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from './QuestionnaireStyle';
 import BooleanInput from './BooleanInput';
 import LongInput from './LongInput';
 import ObjectInput from './ObjectInput';
 import StringInput from './StringInput';
-
 
 let Fields = (props) => {
   let { data, JSON } = props;
@@ -46,10 +41,8 @@ let Fields = (props) => {
         dataType: 'boolean',
         score: ( value === 'boolean' ? 60 : 10),
         component: (
-          <Grid container alignItems='flex-end' spacing={2}>
-            <Grid item xs={6}>
-              <Typography>{ formatString(key) }</Typography>
-            </Grid>
+          <Grid container alignItems='flex-end' spacing={2} key={key}>
+            <Grid item xs={6}><Typography>{ formatString(key) }</Typography></Grid>
             <Grid item xs={6}><BooleanInput objectKey={key} data={data}/></Grid>
           </Grid>
         )
@@ -58,10 +51,8 @@ let Fields = (props) => {
         dataType: 'string',
         score: ( value === 'string' ? 60 : 40),
         component: (
-          <Grid container alignItems='flex-end' spacing={2}>
-            <Grid item xs={6}>
-              <Typography>{ formatString(key) }</Typography>
-            </Grid>
+          <Grid container alignItems='flex-end' spacing={2} key={key}>
+            <Grid item xs={6}><Typography>{ formatString(key) }</Typography></Grid>
             <Grid item xs={6}><StringInput objectKey={key} data={data}/></Grid>
           </Grid>
         )
@@ -70,19 +61,16 @@ let Fields = (props) => {
         dataType: 'long',
         score: ( value === 'long' ? 60 : 10),
         component: (
-        <Grid container alignItems='flex-end' spacing={2}>
-          <Grid item xs={6}>
-            <Typography>{ formatString(key) }</Typography>
+          <Grid container alignItems='flex-end' spacing={2} key={key}>
+            <Grid item xs={6}><Typography>{ formatString(key) }</Typography></Grid>
+            <Grid item xs={6}><LongInput objectKey={key} data={data}/></Grid>
           </Grid>
-          <Grid item xs={6}><LongInput objectKey={key} data={data}/></Grid>
-        </Grid>
         )
       },
       {
         dataType: 'object',
         score: ( typeof(value) === 'object' ? 60 : 0),
-        component: (<ObjectInput objectKey={key} value={value} data={data}></ObjectInput>
-        )
+        component: (<ObjectInput objectKey={key} value={value} data={data}></ObjectInput>)
       }
     ]
   }

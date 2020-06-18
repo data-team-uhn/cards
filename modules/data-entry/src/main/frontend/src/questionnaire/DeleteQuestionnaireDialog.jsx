@@ -28,10 +28,10 @@ let DeleteQuestionnaireDialog = (props) => {
     let [ saveInProgress, setSaveInProgress ] = useState();
     
     let deleteQuestionnaireWarningMessage = () => {
-      const formsExist = forms && forms > 0;
+      let formsExist = forms && forms > 0;
       if (!formsExist) {
         // Find all forms with that questionnaire uuid
-        fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Form] as n WHERE n.'questionnaire'='${props.uuid}'`))
+        fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Form] as n WHERE n.'questionnaire'='${props.data['jcr:uuid']}'`))
           .then((response) => response.ok ? response.json() : Promise.reject(response))
           .then((json) => { parseResult(json); });
       }
@@ -39,10 +39,11 @@ let DeleteQuestionnaireDialog = (props) => {
       let parseResult = (forms) => {
         let filteredForms = Object.values(forms['rows']).length;
         setForms(filteredForms);
+        formsExist = forms && forms > 0;
      }
       return formsExist
-        ? `There are ${forms} forms filled out for this questionnaire. Are you sure you wish to proceed ?`
-        : "Are you sure you wish to proceed ?"
+        ? `There are ${forms} forms filled out for this questionnaire. Are you sure you wish to proceed?`
+        : "Are you sure you wish to proceed?"
     }
   
     let deleteQuestionnaire = () => {
@@ -70,7 +71,7 @@ let DeleteQuestionnaireDialog = (props) => {
           }
         })
       .finally(() => setSaveInProgress(false));
-      setOpenDialog(false);
+      props.onClose();
     }
   
     let loginToSave = () => {
