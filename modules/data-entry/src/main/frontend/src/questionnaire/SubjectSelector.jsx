@@ -498,8 +498,14 @@ function SubjectSelectorList(props) {
               .then(response => response.json())
               .then(result => {
                 // recursive function to filter and find related subjects to the currentSubject
+                // should also include subject at the same SubjectType level as currentSubject, if they exist
                 let getRelatedSubject = (e) => {
+                  // include only related child SubjectTypes
                   if (e['parents']?.['@path'] == currentSubject['@path']){
+                    return e;
+                  }
+                  // include all subjects at same level
+                  if (e['type']?.['@path'] == currentSubject['type']['@path']) {
                     return e;
                   }
                   else if (e['parents']) {
