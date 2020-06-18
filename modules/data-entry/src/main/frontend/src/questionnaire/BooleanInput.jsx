@@ -26,11 +26,12 @@ import {
 
 import QuestionnaireStyle from './QuestionnaireStyle';
 
+// Boolean Input field used by Edit dialog component
+
 let BooleanInput = (props) => {
   let {  objectKey, data } = props;
-  let [ value, setValue ] = useState(data[objectKey] || '');
   return (
-    <Checkbox name={objectKey} id={objectKey} defaultValue={data[objectKey]} />
+    <Checkbox name={objectKey} id={objectKey} defaultValue={data[objectKey] || ''} />
   )
 }
 

@@ -26,11 +26,12 @@ import {
 
 import QuestionnaireStyle from './QuestionnaireStyle';
 
+// Long Input field used by Edit dialog component
+
 let StringInput = (props) => {
   let {  objectKey, data } = props;
-  let [ value, setValue ] = useState(data[objectKey] || '');
   return (
-    <TextField name={objectKey} id={objectKey} defaultValue={data[objectKey]} type='number'/>
+    <TextField name={objectKey} id={objectKey} defaultValue={data[objectKey] || ''} type='number'/>
   )
 }
 
