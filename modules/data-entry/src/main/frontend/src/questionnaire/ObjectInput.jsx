@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import Fields from "./Fields"
 import PropTypes from "prop-types";
 import {

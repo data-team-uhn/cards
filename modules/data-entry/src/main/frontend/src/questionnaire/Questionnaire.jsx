@@ -27,7 +27,6 @@ import {
   CardHeader,
   CircularProgress,
   Grid,
-  IconButton,
   Menu,
   MenuItem,
   Typography,
@@ -35,8 +34,6 @@ import {
 } from "@material-ui/core";
 
 import moment from "moment";
-
-import uuid from "uuid/v4";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import EditDialog from "./EditDialog"
@@ -47,9 +44,7 @@ let Questionnaire = (props) => {
   let { id } = props;
   let [ data, setData ] = useState();
   let [ error, setError ] = useState();
-  let [ openDialog, setOpenDialog ] = useState(false);
   const [ isFetching, setFetching ] = useState(false);
-  let [edit, setEdit ] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
   let fetchData = () => {
@@ -61,14 +56,12 @@ let Questionnaire = (props) => {
 
   let handleResponse = (json) => {
     setData(json);
-    console.log(json);
   };
 
   let handleError = (response) => {
     // FIXME Display errors to the users
     setError(response);
     setData([]);
-    console.log(data);
   }
 
   const handleOpenMenu = (event) => {
@@ -104,33 +97,35 @@ let Questionnaire = (props) => {
             : ""
         }
       </Grid>
-      <Grid item>
-        <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleOpenMenu}>
-          Add...
-        </Button>
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleCloseMenu}
-        >
-          <MenuItem>Question<EditDialog edit={false} data={data} type="Question" /></MenuItem>
-          <MenuItem >Section<EditDialog edit={false} data={data} type="Section" /></MenuItem>
-        </Menu>
-      </Grid>
-        {
-          data ?
-          Object.entries(data)
-          .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
-          .map(([key, value]) => 
-            value['jcr:primaryType'] == 'lfs:Question' 
-            ? <Grid item key={key}><Question data={value}/></Grid>
-            : <Grid item key={key}><Section data={value}></Section></Grid>
-          )
-          :
-            <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
-        }
+      { data &&
+        <Grid item>
+          <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleOpenMenu}>
+            Add...
+          </Button>
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleCloseMenu}
+          >
+            <MenuItem>Question<EditDialog edit={false} data={data} type='Question' /></MenuItem>
+            <MenuItem >Section<EditDialog edit={false} data={data} type='Section' /></MenuItem>
+          </Menu>
+        </Grid>
+      }
+      {
+        data ?
+        Object.entries(data)
+        .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
+        .map(([key, value]) => 
+          value['jcr:primaryType'] == 'lfs:Question' 
+          ? <Grid item key={key}><Question data={value}/></Grid>
+          : <Grid item key={key}><Section data={value}></Section></Grid>
+        )
+        :
+          <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      }
       </Grid>
     </div>
   );
@@ -145,7 +140,6 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
-  let { data, id, edit } = props;
   return (
     <Card>
       <CardHeader title={props.data.text} action={
@@ -206,14 +200,35 @@ Question.propTypes = {
 };
 
 let Section = (props) => {
-  let { data, id, uuid } = props;
+  let { data } = props;
+  const [ anchorEl, setAnchorEl ] = useState(null);
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  }
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
   return (
     <Card>
       <CardHeader title={data['title'] || ''}
         action={
           <div>
-            <EditDialog key={location.pathname} edit={true} data={props.data} type="Section" />
-            <DeleteDialog data={props.data} type="Section" />
+            <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleOpenMenu}>
+              Add...
+            </Button>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleCloseMenu}
+            >
+              <MenuItem>Question<EditDialog edit={false} data={props.data} type='Question' /></MenuItem>
+              <MenuItem >Section<EditDialog edit={false} data={props.data} type='Section' /></MenuItem>
+            </Menu>
+            <EditDialog edit={true} data={props.data} type='Section' />
+            <DeleteDialog data={props.data} type='Section' />
             <Typography>{data['description'] || ''}</Typography>
           </div>
         }>
