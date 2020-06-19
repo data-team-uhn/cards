@@ -478,7 +478,8 @@
     "displayMode": "input",
     "dataType": "vocabulary",
     "sourceVocabulary": "HP",
-    "vocabularyFilter": ["HP:0000118"]
+    "vocabularyFilter": ["HP:0000118"],
+    "enableNotes" : true
   },
   "inherited_from": {
     "jcr:primaryType": "lfs:Question",
