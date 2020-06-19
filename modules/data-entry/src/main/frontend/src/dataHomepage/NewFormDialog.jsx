@@ -164,16 +164,41 @@ function NewFormDialog(props) {
   }
 
   // get max
-  let getMaxPerSubject = () => {
-    console.log(selectedQuestionnaire?.["maxPerSubject"]);
-    if (selectedSubject) {
-      console.log(selectedSubject);
-      // get # of forms of this type associated with this subject
+  let handleMaxPerSubject = (currentNum) => {
+
+    console.log(currentNum);
+
+    // if questionnaire THEN subject
+    // any questionnaire can be picked at first
+    // need to check the selected subject type if it has less forms (of this type) than the max val
+    // OR should all subjects be checked before rendering in the list ? so they can be greyed out
+    // get # of forms of this type (selectedQuestionnaire) associated with this subject (selectedSubject)
+    // select all forms where (subject = selectedSubject["jcr:uuid"]) and (questionnaire = selectedQuestionnaire["jcr:uuid"]) . get number
+
+  
+    // if subject THEN questionnaire
+    // selectedSubject is preset
+    // on selecting a questionnaire, get # of forms of this type (selectedQuestionnaire) associated with this subject (selectedSubject)
+
+    //handle the SubjectSelectorList and dialog with list of questionnaires (PROGRESS_SELECT_QUESTIONNAIRE) slightly diff
+      // gets in diff orders
+      // will show error state diferently
+
+    if (currentNum == selectedQuestionnaire["maxPerSubject"]) {
+      console.log("not ok to add")
     }
+    else console.log("ok to add");
   }
 
-  if (selectedQuestionnaire) {
-    getMaxPerSubject();
+  if (selectedQuestionnaire && selectedQuestionnaire["maxPerSubject"] && selectedSubject) {
+    console.log(selectedSubject);
+    fetch(`/query?query=SELECT * from [lfs:Form] as n WHERE n.'subject'='${selectedSubject?.["jcr:uuid"]}' AND n.'questionnaire'='${selectedQuestionnaire?.["jcr:uuid"]}'`)
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
+    .then((response) => {
+      console.log(response);
+      handleMaxPerSubject(response.totalrows); // number of forms of that subject and of that form type
+    })
+    // .catch(parseErrorResponse); //fix
   }
 
   const isFetching = numFetchRequests > 0;
