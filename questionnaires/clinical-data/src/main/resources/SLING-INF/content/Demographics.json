@@ -496,6 +496,21 @@
       "value": "P",
       "label": "Paternal"
     },
+    "SM": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "SM",
+      "label": "Suspected Maternal"
+    },
+    "SP": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "SP",
+      "label": "Suspected Paternal"
+    },
+    "O": {
+      "jcr:primaryType": "lfs:AnswerOption",
+      "value": "O",
+      "label": "Other"
+    },
     "U": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "U",
