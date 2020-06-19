@@ -32,6 +32,11 @@
 		</values>
 		<type>Reference</type>
 	</property>
+	<property>
+		<name>maxPerSubject</name>
+		<value>1</value>
+		<type>Long</type>
+	</property>
 	<node>
 		<name>lesion_number</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>

@@ -163,6 +163,19 @@ function NewFormDialog(props) {
     }
   }
 
+  // get max
+  let getMaxPerSubject = () => {
+    console.log(selectedQuestionnaire?.["maxPerSubject"]);
+    if (selectedSubject) {
+      console.log(selectedSubject);
+      // get # of forms of this type associated with this subject
+    }
+  }
+
+  if (selectedQuestionnaire) {
+    getMaxPerSubject();
+  }
+
   const isFetching = numFetchRequests > 0;
 
   useEffect(() => {
