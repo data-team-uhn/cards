@@ -47,9 +47,11 @@ function NewFormDialog(props) {
   const [ progress, setProgress ] = useState();
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ error, setError ] = useState("");
+  const [ numForms, setNumForms ] = useState(0);
 
   let createForm = (subject) => {
     setError("");
+    setNumForms(0);
 
     // Get the subject identifier, if necessary
     if (!subject) {
@@ -88,6 +90,7 @@ function NewFormDialog(props) {
     }
     setOpen(true);
     setError("");
+    setNumForms(0);
     if (presetQuestionnaire) {
       setSelectedQuestionnaire(presetQuestionnaire);
     }
@@ -134,6 +137,9 @@ function NewFormDialog(props) {
       if (!selectedSubject) {
         setError("Please select a subject.");
         return;
+      } else if (numForms == selectedQuestionnaire?.["maxPerSubject"]) {
+        // TODO fix comment
+        return;
       } else {
         createForm();
       }
@@ -144,10 +150,12 @@ function NewFormDialog(props) {
   let selectSubject = (subject) => {
     setSelectedSubject(subject);
     setError(false);
+    setNumForms(0);
   }
 
   let goBack = () => {
     setError(false);
+    setNumForms(0);
     // Exit the dialog if we're at the first page or if there is a preset path
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE || presetPath) {
       setOpen(false);
@@ -163,44 +171,18 @@ function NewFormDialog(props) {
     }
   }
 
-  // get max
-  let handleMaxPerSubject = (currentNum) => {
-
-    console.log(currentNum);
-
-    // if questionnaire THEN subject
-    // any questionnaire can be picked at first
-    // need to check the selected subject type if it has less forms (of this type) than the max val
-    // OR should all subjects be checked before rendering in the list ? so they can be greyed out
-    // get # of forms of this type (selectedQuestionnaire) associated with this subject (selectedSubject)
-    // select all forms where (subject = selectedSubject["jcr:uuid"]) and (questionnaire = selectedQuestionnaire["jcr:uuid"]) . get number
-
-  
-    // if subject THEN questionnaire
-    // selectedSubject is preset
-    // on selecting a questionnaire, get # of forms of this type (selectedQuestionnaire) associated with this subject (selectedSubject)
-
-    //handle the SubjectSelectorList and dialog with list of questionnaires (PROGRESS_SELECT_QUESTIONNAIRE) slightly diff
-      // gets in diff orders
-      // will show error state diferently
-
-    if (currentNum == selectedQuestionnaire["maxPerSubject"]) {
-      console.log("not ok to add")
-    }
-    else console.log("ok to add");
-  }
-
   if (selectedQuestionnaire && selectedQuestionnaire["maxPerSubject"] && selectedSubject) {
-    console.log(selectedSubject);
     fetch(`/query?query=SELECT * from [lfs:Form] as n WHERE n.'subject'='${selectedSubject?.["jcr:uuid"]}' AND n.'questionnaire'='${selectedQuestionnaire?.["jcr:uuid"]}'`)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((response) => {
-      console.log(response);
-      handleMaxPerSubject(response.totalrows); // number of forms of that subject and of that form type
+      setNumForms(response.totalrows);
+      if (response.totalrows == selectedQuestionnaire?.["maxPerSubject"]) {
+        setError(`${selectedSubject?.["type"]["@name"]} ${selectedSubject?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
+      }
     })
-    // .catch(parseErrorResponse); //fix
+    .catch(parseErrorResponse);
   }
-
+  
   const isFetching = numFetchRequests > 0;
 
   useEffect(() => {
@@ -296,7 +278,7 @@ function NewFormDialog(props) {
       <NewSubjectDialog
         allowedTypes={parseToArray(selectedQuestionnaire?.["requiredSubjectTypes"])}
         disabled={isFetching}
-        onClose={() => { setNewSubjectPopperOpen(false); setError();}}
+        onClose={() => { setNewSubjectPopperOpen(false); setError(); setNumForms(0);}}
         onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
         currentSubject={currentSubject}
         onSubmit={createForm}
