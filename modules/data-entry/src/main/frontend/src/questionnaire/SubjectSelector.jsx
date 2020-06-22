@@ -259,12 +259,8 @@ export const parseToArray = (object) => {
     return [];
   }
 
-  // A non-array is length 1
-  if (!Array.isArray(object)) {
-    return [object];
-  } else {
-    return object;
-  }
+  // Convert a non-array to a length 1 array
+  return !Array.isArray(object) ? [object] : object;
 }
 
 /**
