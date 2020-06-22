@@ -300,10 +300,9 @@ export function NewSubjectDialog (props) {
       return;
     }
 
-    // TODO: Potential race condition with newSubjectIndex being updated after createSubject's callback?
-    // Grab the parent as an array if it exists, or use an empty array
-    let parent = newSubjectParent[index]?.["jcr:uuid"];
-    parent = parent ? [parent] : [];
+    // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
+    let parent = newSubjectParent[index]?.["jcr:uuid"] || subject;
+    parent = (parent ? [parent] : (subject ? [subject] : []));
     createSubjects(
       [newSubjectName[index]],
       newSubjectType[index],
