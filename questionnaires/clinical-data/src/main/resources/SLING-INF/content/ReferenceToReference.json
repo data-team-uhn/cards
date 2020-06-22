@@ -1,0 +1,40 @@
+{
+  "jcr:primaryType": "lfs:Questionnaire",
+  "title": "Reference-To-Reference Bug Test",
+  "jcr:reference:requiredSubjectTypes": ["/SubjectTypes/Patient"],
+  
+  "string_ref_one": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "String Value A",
+    "dataType": "text"
+  },
+  "string_ref_two": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "String Value B, make it equal to String Value A",
+    "dataType": "text"
+  },
+  "stringref_eq_stringref_details": {
+    "jcr:primaryType": "lfs:Section",
+    "condition": {
+      "jcr:primaryType": "lfs:Conditional",
+      "operandA": {
+        "jcr:primaryType": "lfs:ConditionalValue",
+        "value": ["string_ref_one"],
+        "isReference": true
+      },
+      "comparator": "=",
+      "operandB": {
+        "jcr:primaryType": "lfs:ConditionalValue",
+        "value": ["string_ref_two"],
+        "isReference": true
+      }
+    },
+    "test": {
+      "jcr:primaryType": "lfs:Question",
+      "text": "Confirm okay",
+      "dataType": "text",
+      "minAnswers": 1,
+      "maxAnswers": 1
+    }
+  }
+}
