@@ -325,7 +325,7 @@
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
 
   // The value which may be a reference to a field or a value (or multiple values)
-  - value (STRING) multiple
+  - value (undefined) multiple
 
   // Whether or not this value is a reference or not
   - isReference (BOOLEAN) = false autocreated
