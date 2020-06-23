@@ -178,10 +178,17 @@ function NewFormDialog(props) {
       setNumForms(response.totalrows);
       if (response.totalrows == selectedQuestionnaire?.["maxPerSubject"]) {
         setError(`${selectedSubject?.["type"]["@name"]} ${selectedSubject?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
-        console.log("max reached")
+        console.log("max reached");
+        // TODO: error should also appear on questionnaire dialog
       }
     })
     .catch(parseErrorResponse);
+  }
+  //TODO: fix, error should disappear when 'new subject' is chosen
+
+  let filterQuestionnaire = (questionnaire) => {
+    // if selectedsubject has already been set, THEN check how many forms of this questionnaire type the selectedsubject already has. 
+    // if it is > than maxpersubject --> return true --> make the text grey, display error.
   }
   
   const isFetching = numFetchRequests > 0;
@@ -214,7 +221,7 @@ function NewFormDialog(props) {
             {questionnaires &&
               <List>
                 {questionnaires.map((questionnaire) => {
-                  // check here 
+                  filterQuestionnaire(questionnaire); // should return true or false --> display error/make grey
                   return (
                   <SubjectListItem
                     key={questionnaire["jcr:uuid"]}
