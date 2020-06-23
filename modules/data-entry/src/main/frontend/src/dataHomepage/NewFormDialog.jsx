@@ -237,6 +237,7 @@ function NewFormDialog(props) {
               onSelect={selectSubject}
               selectedSubject={selectedSubject}
               currentSubject={currentSubject}
+              selectedQuestionnaire={selectedQuestionnaire}
               />}
           </React.Fragment>}
         </DialogContent>

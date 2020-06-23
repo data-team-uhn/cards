@@ -733,14 +733,17 @@ SubjectListItem.defaultProps = {
  * @param {onError} func Callback for an issue in the reading or editing of subjects. The only parameter is a response object.
  * @param {onSelect} func Callback for when the user selects a subject.
  * @param {selectedSubject} object The currently selected subject.
+ * @param {selectedQuestionnaire} object The currently selected questionnaire
  */
 function SubjectSelectorList(props) {
-  const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject,
+  const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject, selectedQuestionnaire,
     currentSubject, theme, ...rest } = props;
   const COLUMNS = [
     { title: 'Identifier', field: 'identifier' },
     { title: 'Hierarchy', field: 'hierarchy' },
   ];
+  const [ allSubjects, setAllSubjects ] = useState();
+  const [ subjectsAtMax, setSubjectAtMax ] = useState();
 
   return(
     <React.Fragment>
@@ -758,12 +761,36 @@ function SubjectSelectorList(props) {
             if (query.search) {
               condition += ` CONTAINS(n.identifier, '*${query.search}*')`;
             }
+            // fetch subjects that have reached max # of forms
+            // append to query --> get array of subjects that are at max forms
+            // loop through rowData, compare to a loop of the maxRowData. if match --> new style
+
+            
+
+            let filteredArray = (list) => {
+
+              fetch(`/query?query=SELECT distinct s.* FROM [lfs:Subject] AS s inner join [lfs:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'`)
+              .then(response => response.json())
+              .then(result => {
+                console.log(result.rows); 
+                console.log(list);
+
+                let newArr = Object.entries(list)
+                .map((i) => [i, Object.entries(result.rows).filter(j => (j[1].identifier == i.identifier)).length]) // new array containing subject and # of times the subject is used
+
+                console.log(newArr);
+                }
+              )
+            }
+
+            // fetch all subjects
             let url = createQueryURL( condition, "lfs:Subject");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
             return fetch(url)
               .then(response => response.json())
               .then(result => {
+                filteredArray(result.rows);
                 // recursive function to filter and find related subjects to the currentSubject
                 // should also include subject at the same SubjectType level as currentSubject, if they exist
 
@@ -801,7 +828,6 @@ function SubjectSelectorList(props) {
                     return output;
                   }
                 }
-
                 return {
                   data: (
                     (currentSubject && (result['rows'].map((row) => isSubjectRelated(row).includes(currentSubject.type.label)))[0])
