@@ -298,7 +298,7 @@ export function NewSubjectDialog (props) {
 
     // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
     let parent = newSubjectParent[index]?.["jcr:uuid"] || subject;
-    parent = (parent ? [parent] : (subject ? [subject] : []));
+    parent = (parent ? [parent] : []);
     createSubjects(
       [newSubjectName[index]],
       newSubjectType[index],
