@@ -33,6 +33,7 @@ import ChromosomeQuestion from "./ChromosomeQuestion";
 import PedigreeQuestion from "./PedigreeQuestion";
 import TextQuestion from "./TextQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
+import SomaticVariantsQuestion from "./SomaticVariantsQuestion";
 
 const QUESTION_TYPES = ["lfs:Question"];
 const SECTION_TYPES = ["lfs:Section"];

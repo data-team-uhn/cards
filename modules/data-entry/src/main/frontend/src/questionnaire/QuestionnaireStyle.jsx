@@ -240,8 +240,11 @@ const questionnaireStyle = theme => ({
     },
     dialogTitle: {
       marginRight: theme.spacing(5)
-    }
-
+    },
+    fileInfo: {
+      padding: theme.spacing(1),
+      fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    },
 });
 
 export default questionnaireStyle;
