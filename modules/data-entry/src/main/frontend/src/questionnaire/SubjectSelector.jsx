@@ -742,8 +742,21 @@ function SubjectSelectorList(props) {
     { title: 'Identifier', field: 'identifier' },
     { title: 'Hierarchy', field: 'hierarchy' },
   ];
-  const [ allSubjects, setAllSubjects ] = useState();
-  const [ subjectsAtMax, setSubjectAtMax ] = useState();
+  const [ atMax, setAtMax ] = useState();
+
+  // fetch the Subjects of each form of this questionnaire type
+  let filterArray = () => {
+    fetch(`/query?query=SELECT distinct s.* FROM [lfs:Subject] AS s inner join [lfs:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'`)
+    .then(response => response.json())
+    .then(result => {
+      setAtMax(result.rows);
+      }
+    )
+  }
+
+  if (!atMax) {
+    filterArray();
+  }
 
   return(
     <React.Fragment>
@@ -760,27 +773,6 @@ function SubjectSelectorList(props) {
             }
             if (query.search) {
               condition += ` CONTAINS(n.identifier, '*${query.search}*')`;
-            }
-            // fetch subjects that have reached max # of forms
-            // append to query --> get array of subjects that are at max forms
-            // loop through rowData, compare to a loop of the maxRowData. if match --> new style
-
-            
-
-            let filteredArray = (list) => {
-
-              fetch(`/query?query=SELECT distinct s.* FROM [lfs:Subject] AS s inner join [lfs:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'`)
-              .then(response => response.json())
-              .then(result => {
-                console.log(result.rows); 
-                console.log(list);
-
-                let newArr = Object.entries(list)
-                .map((i) => [i, Object.entries(result.rows).filter(j => (j[1].identifier == i.identifier)).length]) // new array containing subject and # of times the subject is used
-
-                console.log(newArr);
-                }
-              )
             }
 
             // fetch all subjects
@@ -910,7 +902,12 @@ function SubjectSelectorList(props) {
           addRowPosition: 'first',
           rowStyle: rowData => ({
             /* It doesn't seem possible to alter the className from here */
-            backgroundColor: (selectedSubject?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
+            backgroundColor: (selectedSubject?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
+            // grey out subjects that have already reached maxPerSubject
+            color: ((atMax.filter((i) => (i.identifier == rowData.identifier)).length >= selectedQuestionnaire?.["maxPerSubject"])
+            ? theme.palette.grey["500"]
+            : theme.palette.grey["900"]
+            )
           })
         }}
         localization={{

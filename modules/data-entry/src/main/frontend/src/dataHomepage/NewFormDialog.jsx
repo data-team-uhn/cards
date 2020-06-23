@@ -178,6 +178,7 @@ function NewFormDialog(props) {
       setNumForms(response.totalrows);
       if (response.totalrows == selectedQuestionnaire?.["maxPerSubject"]) {
         setError(`${selectedSubject?.["type"]["@name"]} ${selectedSubject?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
+        console.log("max reached")
       }
     })
     .catch(parseErrorResponse);
@@ -213,6 +214,7 @@ function NewFormDialog(props) {
             {questionnaires &&
               <List>
                 {questionnaires.map((questionnaire) => {
+                  // check here 
                   return (
                   <SubjectListItem
                     key={questionnaire["jcr:uuid"]}
