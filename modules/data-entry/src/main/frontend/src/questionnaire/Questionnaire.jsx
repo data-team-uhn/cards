@@ -147,6 +147,23 @@ let Questionnaire = (props) => {
           </Menu>
         </Grid>
       }
+      { data &&
+        <Grid item>
+          <Card>
+            <CardHeader title={'Questionnaire Properties'} action={<EditDialog edit={true} data={data} type='Info' />}/>
+            <CardContent>
+              <dl>
+                <dt>
+                  <Typography>Max per Subject:</Typography>
+                </dt>
+                <dd>
+                  <Typography>{data.maxPerSubject || 'Unlimited'}</Typography>
+                </dd>
+              </dl>
+            </CardContent>
+          </Card>
+        </Grid>
+      }
       {
         data ?
             DisplayFormEntries(data, {onClose: closeDialog})
@@ -309,4 +326,4 @@ let AnswerOption = (props) => {
 
 AnswerOption.propTypes = {
   data: PropTypes.object.isRequired
-};
+ };
