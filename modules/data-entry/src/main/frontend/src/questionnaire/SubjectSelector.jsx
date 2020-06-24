@@ -310,7 +310,17 @@ export function NewSubjectDialog (props) {
       parent,
       newSubjectName[index],
       (new_subject) => {createNewSubjectRecursive(new_subject, index-1)},
-      (error) => {setError(error.message)});
+      handleError);
+  }
+
+  // Callback when an error occurs during createNewSubjectRecursive
+  let handleError = (error) => {
+    setIsPosting(false);
+    setError(error);
+
+    // Since the error will always be during the creation of a subject, we'll revert back to the create subject page
+    setNewSubjectPopperOpen(true);
+    setSelectParentPopperOpen(false);
   }
   
   // Called when creating a new subject
