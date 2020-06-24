@@ -48,6 +48,7 @@ function NewFormDialog(props) {
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ error, setError ] = useState("");
   const [ numForms, setNumForms ] = useState(0);
+  const [ testData, setTestData ] = useState();
 
   let createForm = (subject) => {
     setError("");
@@ -178,7 +179,6 @@ function NewFormDialog(props) {
       setNumForms(response.totalrows);
       if (response.totalrows == selectedQuestionnaire?.["maxPerSubject"]) {
         setError(`${selectedSubject?.["type"]["@name"]} ${selectedSubject?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
-        console.log("max reached");
         // TODO: error should also appear on questionnaire dialog
       }
     })
@@ -186,10 +186,18 @@ function NewFormDialog(props) {
   }
   //TODO: fix, error should disappear when 'new subject' is chosen
 
-  let filterQuestionnaire = (questionnaire) => {
-    // if selectedsubject has already been set, THEN check how many forms of this questionnaire type the selectedsubject already has. 
-    // if it is > than maxpersubject --> return true --> make the text grey, display error.
+  let filterQuestionnaire = () => {
+    fetch(`/query?query=SELECT distinct q.* FROM [lfs:Questionnaire] AS q inner join [lfs:Form] as f on f.'questionnaire'=q.'jcr:uuid' where f.'subject'='${selectedSubject?.['jcr:uuid']}'`)
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
+    .then((response) => {
+      setTestData(response.rows);
+    })
   }
+
+  useEffect(() => {
+    if (selectedSubject) {filterQuestionnaire();}
+    else setTestData([])
+  }, [selectedSubject])
   
   const isFetching = numFetchRequests > 0;
 
@@ -218,10 +226,13 @@ function NewFormDialog(props) {
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
           <React.Fragment>
             <Typography variant="h4">Questionnaire</Typography>
-            {questionnaires &&
+            {questionnaires && testData &&
               <List>
                 {questionnaires.map((questionnaire) => {
-                  filterQuestionnaire(questionnaire); // should return true or false --> display error/make grey
+                  let atMax = (testData.length && (testData.filter((i) => (i["@name"] == questionnaire["@name"])).length >= questionnaire?.["maxPerSubject"]));
+                  if (atMax) {
+                    // display error, disable button
+                  }
                   return (
                   <SubjectListItem
                     key={questionnaire["jcr:uuid"]}
@@ -229,7 +240,9 @@ function NewFormDialog(props) {
                     disabled={isFetching}
                     selected={questionnaire["jcr:uuid"] === selectedQuestionnaire?.["jcr:uuid"]}
                     >
-                    <ListItemText primary={questionnaire["title"]} />
+                    <div className={`${atMax ? classes.questionnaireDisabledListItem : classes.questionnaireListItem}`}>
+                      <ListItemText primary={questionnaire["title"]} />
+                    </div>
                   </SubjectListItem>);
                 })}
               </List>

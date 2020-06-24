@@ -271,6 +271,12 @@ const questionnaireStyle = theme => ({
     warningIcon: {
       color: theme.palette.warning.main
     },
+    questionnaireDisabledListItem: {
+        color: theme.palette.grey["500"]
+    },
+    questionnaireListItem: {
+        color: theme.palette.grey["900"]
+    },
 });
 
 export default questionnaireStyle;
