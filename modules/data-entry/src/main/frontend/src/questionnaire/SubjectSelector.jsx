@@ -40,6 +40,7 @@ let createQueryURL = (query, type) => {
  * Component that displays a dialog to create a new subject
  *
  * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
+ * @param {bool} continueDisabled If true, the continue button is disabled.
  * @param {bool} disabled If true, all controls are disabled
  * @param {string} error Error message to display
  * @param {bool} open If true, this dialog is open
@@ -51,7 +52,7 @@ let createQueryURL = (query, type) => {
  * @param {string} value The current name of the subject
  */
 function UnstyledNewSubjectDialog (props) {
-  const { allowedTypes, classes, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
+  const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
 
   const COLUMNS = [
@@ -131,7 +132,7 @@ function UnstyledNewSubjectDialog (props) {
             onClick={onSubmit}
             variant="contained"
             color="primary"
-            disabled={disabled}
+            disabled={disabled || continueDisabled}
             >
             {requiresParents ? "Continue" : "Create"}
           </Button>
@@ -147,6 +148,7 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
  * Component that displays a dialog to select parents for a new subject
  *
  * @param {object} childType The object representing the lfs:SubjectType of the child that is being created
+ * @param {bool} continueDisabled If true, the continue button is disabled
  * @param {bool} disabled If true, all controls are disabled
  * @param {string} error Error message to display
  * @param {bool} isLast If true, the button to continue will read "Continue" instead of "Create"
@@ -161,7 +163,7 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
  * @param {object} value The currently selected parent
  */
 function UnstyledSelectParentDialog (props) {
-  const { classes, childType, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
+  const { classes, childType, continueDisabled, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
   const COLUMNS = [
     { title: 'Subject', field: 'identifier' },
@@ -240,7 +242,7 @@ function UnstyledSelectParentDialog (props) {
           onClick={onSubmit}
           variant="contained"
           color="primary"
-          disabled={disabled}
+          disabled={disabled || continueDisabled}
           >
           { isLast ? "Create" : "Continue" }
         </Button>
@@ -280,6 +282,7 @@ export function NewSubjectDialog (props) {
   const [ newSubjectParent, setNewSubjectParent ] = useState([]);
   const [ newSubjectIndex, setNewSubjectIndex ] = useState(0);
   const [ newSubjectAllowedTypes, setNewSubjectAllowedTypes ] = useState([]);
+  const [ isPosting, setIsPosting ] = useState(false);
 
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(true);
   const [ selectParentPopperOpen, setSelectParentPopperOpen ] = useState(false);
@@ -287,11 +290,13 @@ export function NewSubjectDialog (props) {
   const tableRef = useRef();
 
   let curSubjectRequiresParents = newSubjectType[newSubjectIndex]?.["parent"];
+  let disabledControls = disabled || isPosting;
 
   // Called only by createNewSubject, a callback to create the next child on our list
   let createNewSubjectRecursive = (subject, index) => {
     if (index <= -1) {
       // End of recursion
+      setIsPosting(false);
       onSubmit(subject);
       return;
     }
@@ -325,6 +330,7 @@ export function NewSubjectDialog (props) {
       tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
     } else {
       // Initiate the call
+      setIsPosting(true);
       createNewSubjectRecursive(null, newSubjectIndex);
     }
   }
@@ -410,7 +416,8 @@ export function NewSubjectDialog (props) {
     <React.Fragment>
       <NewSubjectDialogChild
         allowedTypes={newSubjectIndex == 0 ? allowedTypes : newSubjectAllowedTypes[newSubjectIndex-1]}
-        disabled={disabled}
+        continueDisabled={!(newSubjectName[newSubjectIndex] && newSubjectType[newSubjectIndex])}
+        disabled={disabledControls}
         error={error}
         onClose={goBack}
         onChangeSubject={(event) => {changeNewSubjectName(event.target.value)}}
@@ -422,7 +429,8 @@ export function NewSubjectDialog (props) {
         />
       <SelectParentDialog
         childType={newSubjectType[newSubjectIndex]}
-        disabled={disabled}
+        continueDisabled={!newSubjectParent[newSubjectIndex]}
+        disabled={disabledControls}
         error={error}
         onBack={() => {
           // Go back to the new subject popper
