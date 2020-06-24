@@ -482,14 +482,14 @@ function UnstyledSelectorDialog (props) {
   // Handle the user clicking on a subject, potentially submitting it
   let selectSubject = (subject) => {
     if (selectedSubject == subject) {
-      onChange(subject);
+      handleSubmitExisting();
     }
     setSelectedSubject(subject);
   }
 
   // Obtain the full details on a new subject
   let grabNewSubject = (subjectPath) => {
-    let url = new URL(subjectPath + ".json", window.location.origin);
+    let url = new URL(subjectPath + ".deep.json", window.location.origin);
 
     setIsPosting(true);
 
@@ -510,9 +510,15 @@ function UnstyledSelectorDialog (props) {
   }
 
   // Handle the SubjectSelector clicking on a subject, selecting it
-  let handleSubmit = (subject) => {
+  let handleSubmitNew = (subject) => {
     setSelectedSubject(subject);
     grabNewSubject(subject);
+    setNewSubjectPopperOpen(false);
+  }
+
+  // Handle the user selecting a subject that already exists
+  let handleSubmitExisting = () => {
+    onChange(selectedSubject);
     setNewSubjectPopperOpen(false);
   }
 
@@ -527,7 +533,7 @@ function UnstyledSelectorDialog (props) {
     <NewSubjectDialog
       allowedTypes={allowedTypes}
       onClose={closeNewSubjectPopper}
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmitNew}
       open={open && newSubjectPopperOpen}
       />
     <Dialog open={open} onClose={onClose}>
@@ -564,7 +570,7 @@ function UnstyledSelectorDialog (props) {
           Cancel
         </Button>
         <Button
-          onClick={() => handleSubmit()}
+          onClick={handleSubmitExisting}
           variant="contained"
           color="primary"
           disabled={disabled_controls}

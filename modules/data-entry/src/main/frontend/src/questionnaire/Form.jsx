@@ -63,6 +63,7 @@ function Form (props) {
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
+  let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
 
   // Fetch the form's data as JSON from the server.
@@ -187,9 +188,11 @@ function Form (props) {
         <FormProvider>
           <SelectorDialog
             allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}
+            error={selectorDialogError}
             open={selectorDialogOpen}
             onChange={changeSubject}
             onClose={() => {setSelectorDialogOpen(false)}}
+            onError={setSelectorDialogError}
             title="Set subject"
             />
           {changedSubject &&
