@@ -106,7 +106,6 @@ function Section(props) {
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
   return useCallback(
-  
   <React.Fragment>
     {/* if conditional is true, the collapse component is rendered and displayed.
         else, the corresponding input tag to the conditional section is deleted  */}
@@ -188,9 +187,8 @@ function Section(props) {
                 item
                 >
                 <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-                  {console.log(existingSectionAnswer)}
                   {/* delete any existing answer section before inputting new answers in section */}
-                  {instanceLabels.map((uuid) => 
+                  {instanceLabels.map((uuid) =>
                     <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
                   )}
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
@@ -219,11 +217,11 @@ function Section(props) {
           </Button>
         </Grid>}
         {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
-          UUIDsToRemove.map((uuid) => 
+          UUIDsToRemove.map((uuid) =>
             <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
         )}
       </Collapse>)
-      : instanceLabels.map((uuid) => 
+      : instanceLabels.map((uuid) =>
         <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
       )
       }
