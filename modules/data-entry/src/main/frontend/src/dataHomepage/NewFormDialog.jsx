@@ -140,6 +140,7 @@ function NewFormDialog(props) {
         return;
       } else if (numForms == selectedQuestionnaire?.["maxPerSubject"]) {
         // TODO fix comment
+        // if on FORMS page, still lets you continue
         return;
       } else {
         createForm();
@@ -173,6 +174,7 @@ function NewFormDialog(props) {
   }
 
   if (selectedQuestionnaire && selectedQuestionnaire["maxPerSubject"] && selectedSubject) {
+    // instead of this, should an array 
     fetch(`/query?query=SELECT * from [lfs:Form] as n WHERE n.'subject'='${selectedSubject?.["jcr:uuid"]}' AND n.'questionnaire'='${selectedQuestionnaire?.["jcr:uuid"]}'`)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((response) => {
