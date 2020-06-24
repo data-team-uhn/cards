@@ -107,7 +107,10 @@ function Section(props) {
   // if it is not currently visible
   return useCallback(
   <React.Fragment>
-    <Collapse
+    {/* if conditional is true, the collapse component is rendered and displayed.
+        else, the corresponding input tag to the conditional section is deleted  */}
+    {displayed
+      ? (<Collapse
       in={displayed}
       component={Grid}
       item
@@ -184,10 +187,14 @@ function Section(props) {
                 item
                 >
                 <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
+                  {/* delete any existing answer section before inputting new answers in section */}
+                  {instanceLabels.map((uuid) =>
+                    <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
+                  )}
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                     Object.entries(sectionDefinition)
                       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                      .map(([key, definition]) =><FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>)
+                      .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>)
                   }
                 </Grid>
               </Collapse>
@@ -210,10 +217,14 @@ function Section(props) {
           </Button>
         </Grid>}
         {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
-        UUIDsToRemove.map( (uuid) =>
-          <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
+          UUIDsToRemove.map((uuid) =>
+            <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
         )}
-      </Collapse>
+      </Collapse>)
+      : instanceLabels.map((uuid) =>
+        <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
+      )
+      }
     <Dialog
       open={dialogOpen}
       onClose={closeDialog}
