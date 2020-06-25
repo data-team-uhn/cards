@@ -48,7 +48,7 @@ function NewFormDialog(props) {
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ error, setError ] = useState("");
   const [ numForms, setNumForms ] = useState(0);
-  const [ testData, setTestData ] = useState();
+  const [ relatedForms, setRelatedForms ] = useState();
 
   let createForm = (subject) => {
     setError("");
@@ -123,7 +123,10 @@ function NewFormDialog(props) {
 
   // Offer the ability to select a subject or create the form, depending on what step the user is on
   let progressThroughDialog = () => {
-    if (progress === PROGRESS_SELECT_QUESTIONNAIRE) {
+    if (numForms == selectedQuestionnaire?.["maxPerSubject"]) {
+      // don't allow user to progress if the maxPerSubject has been reached
+      return;
+    } else if (progress === PROGRESS_SELECT_QUESTIONNAIRE) {
       if (!selectedQuestionnaire) {
         setError("Please select a questionnaire.");
         return;
@@ -137,10 +140,6 @@ function NewFormDialog(props) {
     } else {
       if (!selectedSubject) {
         setError("Please select a subject.");
-        return;
-      } else if (numForms == selectedQuestionnaire?.["maxPerSubject"]) {
-        // TODO fix comment
-        // if on FORMS page, still lets you continue
         return;
       } else {
         createForm();
@@ -173,33 +172,36 @@ function NewFormDialog(props) {
     }
   }
 
-  if (selectedQuestionnaire && selectedQuestionnaire["maxPerSubject"] && selectedSubject) {
-    // instead of this, should an array 
-    fetch(`/query?query=SELECT * from [lfs:Form] as n WHERE n.'subject'='${selectedSubject?.["jcr:uuid"]}' AND n.'questionnaire'='${selectedQuestionnaire?.["jcr:uuid"]}'`)
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then((response) => {
-      setNumForms(response.totalrows);
-      if (response.totalrows == selectedQuestionnaire?.["maxPerSubject"]) {
-        setError(`${selectedSubject?.["type"]["@name"]} ${selectedSubject?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
-        // TODO: error should also appear on questionnaire dialog
-      }
-    })
-    .catch(parseErrorResponse);
-  }
-  //TODO: fix, error should disappear when 'new subject' is chosen
+  // when a subject or questionnaire is selected, get the number of forms related to that subject, saved in the `numForms` state
+  // if the number of related forms of a certain questionnaire type is at the maxPerSubject, an error is set
+  useEffect(() => {
+    if (selectedQuestionnaire && selectedQuestionnaire["maxPerSubject"] && selectedSubject) {
+      fetch(`/query?query=SELECT * from [lfs:Form] as n WHERE n.'subject'='${selectedSubject?.["jcr:uuid"]}' AND n.'questionnaire'='${selectedQuestionnaire?.["jcr:uuid"]}'`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((response) => {
+        setNumForms(response.totalrows);
+        if (response.totalrows == selectedQuestionnaire?.["maxPerSubject"]) {
+          setError(`${selectedSubject?.["type"]["@name"]} ${selectedSubject?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
+        }
+      })
+      .catch(parseErrorResponse);
+    } 
+    else setError("");
+  }, [selectedSubject, selectedQuestionnaire]);
 
+  // get all the forms related to the selectedSubject, saved in the `relatedForms` state
   let filterQuestionnaire = () => {
     fetch(`/query?query=SELECT distinct q.* FROM [lfs:Questionnaire] AS q inner join [lfs:Form] as f on f.'questionnaire'=q.'jcr:uuid' where f.'subject'='${selectedSubject?.['jcr:uuid']}'`)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((response) => {
-      setTestData(response.rows);
+      setRelatedForms(response.rows);
     })
   }
 
   useEffect(() => {
-    if (selectedSubject) {filterQuestionnaire();}
-    else setTestData([])
-  }, [selectedSubject])
+    if (progress === PROGRESS_SELECT_QUESTIONNAIRE && selectedSubject) {filterQuestionnaire();}
+    else setRelatedForms([]);
+  }, [progress]);
   
   const isFetching = numFetchRequests > 0;
 
@@ -228,13 +230,12 @@ function NewFormDialog(props) {
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
           <React.Fragment>
             <Typography variant="h4">Questionnaire</Typography>
-            {questionnaires && testData &&
+            {questionnaires && relatedForms &&
               <List>
                 {questionnaires.map((questionnaire) => {
-                  let atMax = (testData.length && (testData.filter((i) => (i["@name"] == questionnaire["@name"])).length >= questionnaire?.["maxPerSubject"]));
-                  if (atMax) {
-                    // display error, disable button
-                  }
+                  // if selectedSubject has already been set, check if maxPerSubject has been reached for each questionnaire
+                  // atMax returns true if the number of `relatedForms` is greater than the maxPerSubject
+                  let atMax = (relatedForms.length && (relatedForms.filter((i) => (i["@name"] == questionnaire["@name"])).length >= questionnaire?.["maxPerSubject"]));
                   return (
                   <SubjectListItem
                     key={questionnaire["jcr:uuid"]}
