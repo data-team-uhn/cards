@@ -782,7 +782,6 @@ function SubjectSelectorList(props) {
             return fetch(url)
               .then(response => response.json())
               .then(result => {
-                filteredArray(result.rows);
                 // recursive function to filter and find related subjects to the currentSubject
                 // should also include subject at the same SubjectType level as currentSubject, if they exist
 
