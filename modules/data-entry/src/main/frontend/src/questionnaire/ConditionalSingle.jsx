@@ -21,46 +21,47 @@ import { VALUE_POS } from "./Answer";
 import ConditionalComponentManager from "./ConditionalComponentManager";
 
 // A mapping from operands to conditionals
+const EMPTY = [null, undefined, ""];
 const COMPARE_MAP = {
   "text": {
-    "=": (a, b) => (a == b),
-    "<": (a, b) => (a < b),
-    ">": (a, b) => (a > b),
-    "<>": (a, b) => (a !== b),
-    "is empty": (a) => (a == null || a == undefined),
-    "is not empty": (a) => (a != null && a != undefined)
+    "=": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (a == b)),
+    "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (a < b)),
+    ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (a > b)),
+    "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (a !== b)),
+    "is empty": (a) => (EMPTY.indexOf(a) >= 0)
+    "is not empty": (a) => (EMPTY.indexOf(a) < 0)
   },
   "date": {
-    "=": (a, b) => (new Date(a).getTime() == new Date(b).getTime()),
-    "<": (a, b) => (new Date(a).getTime() < new Date(b).getTime()),
-    ">": (a, b) => (new Date(a).getTime() > new Date(b).getTime()),
-    "<>": (a, b) => (new Date(a).getTime() !== new Date(b).getTime()),
-    "is empty": (a) => (a == null || a == undefined),
-    "is not empty": (a) => (a != null && a != undefined)
+    "=": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (new Date(a).getTime() == new Date(b).getTime())),
+    "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (new Date(a).getTime() < new Date(b).getTime())),
+    ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (new Date(a).getTime() > new Date(b).getTime())),
+    "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (new Date(a).getTime() !== new Date(b).getTime())),
+    "is empty": (a) => (EMPTY.indexOf(a) >= 0)
+    "is not empty": (a) => (EMPTY.indexOf(a) < 0)
   },
   "long": {
-    "=": (a, b) => (parseInt(a) == parseInt(b)),
-    "<": (a, b) => (parseInt(a) < parseInt(b)),
-    ">": (a, b) => (parseInt(a) > parseInt(b)),
-    "<>": (a, b) => (parseInt(a) !== parseInt(b)),
-    "is empty": (a) => (a == null || a == undefined),
-    "is not empty": (a) => (a != null && a != undefined)
+    "=": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseInt(a) == parseInt(b))),
+    "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseInt(a) < parseInt(b))),
+    ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseInt(a) > parseInt(b))),
+    "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseInt(a) !== parseInt(b))),
+    "is empty": (a) => (EMPTY.indexOf(a) >= 0)
+    "is not empty": (a) => (EMPTY.indexOf(a) < 0)
   },
   "decimal": {
-    "=": (a, b) => (parseFloat(a) == parseFloat(b)),
-    "<": (a, b) => (parseFloat(a) < parseFloat(b)),
-    ">": (a, b) => (parseFloat(a) > parseFloat(b)),
-    "<>": (a, b) => (parseFloat(a) !== parseFloat(b)),
-    "is empty": (a) => (a == null || a == undefined),
-    "is not empty": (a) => (a != null && a != undefined)
+    "=": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) == parseFloat(b))),
+    "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) < parseFloat(b))),
+    ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) > parseFloat(b))),
+    "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) !== parseFloat(b))),
+    "is empty": (a) => (EMPTY.indexOf(a) >= 0)
+    "is not empty": (a) => (EMPTY.indexOf(a) < 0)
   },
   "double": {
-    "=": (a, b) => (parseFloat(a) == parseFloat(b)),
-    "<": (a, b) => (parseFloat(a) < parseFloat(b)),
-    ">": (a, b) => (parseFloat(a) > parseFloat(b)),
-    "<>": (a, b) => (parseFloat(a) !== parseFloat(b)),
-    "is empty": (a) => (a == null || a == undefined),
-    "is not empty": (a) => (a != null && a != undefined)
+    "=": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) == parseFloat(b))),
+    "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) < parseFloat(b))),
+    ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) > parseFloat(b))),
+    "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) !== parseFloat(b))),
+    "is empty": (a) => (EMPTY.indexOf(a) >= 0)
+    "is not empty": (a) => (EMPTY.indexOf(a) < 0)
   }
 }
 
@@ -88,6 +89,13 @@ export function isConditionalSatisfied(compareDataType, comparator, ...operands)
  * @param {Object} context The React Context from which to pull values
  */
 export function isConditionalObjSatisfied(conditional, context) {
+
+  //By default assume that we are comparing strings
+  var compareDataType = "string";
+  if ("dataType" in conditional) {
+    compareDataType = conditional["dataType"];
+  }
+
   const requireAllOperandA = conditional["operandA"]["requireAll"];
   const requireAllOperandB = conditional["operandB"]?.requireAll;
 
