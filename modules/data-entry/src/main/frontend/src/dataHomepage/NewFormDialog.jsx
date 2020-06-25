@@ -162,6 +162,7 @@ function NewFormDialog(props) {
       setOpen(false);
     } else {
       setProgress(PROGRESS_SELECT_QUESTIONNAIRE);
+      setSelectedSubject(null);
     }
   }
 
