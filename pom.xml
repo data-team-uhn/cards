@@ -146,8 +146,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <lfs.version>${project.version}</lfs.version>
     <slf4j.version>1.7.30</slf4j.version>
-    <jackrabbit.version>2.18.5</jackrabbit.version>
-    <oak.version>1.20.0</oak.version>
+    <jackrabbit.version>2.18.4</jackrabbit.version>
+    <!--<oak.version>1.22.3</oak.version> ...generates many more dependency errors... -->
+    <oak.version>1.10.8</oak.version>
 
     <enforcer.skip>false</enforcer.skip>
     <checkstyle.skip>false</checkstyle.skip>
