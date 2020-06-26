@@ -23,18 +23,22 @@ import { Chip, MenuItem, Select, Typography, withStyles } from "@material-ui/cor
 
 import QuestionnaireStyle from './QuestionnaireStyle';
 
-let ArrayInput = (props) => {
+let ListInput = (props) => {
   let { objectKey, data } = props;
-  const [ value, setValue ] = React.useState(data[objectKey].split(',') || []);
+  const [ value, setValue ] = React.useState((data[objectKey] && data[objectKey].split(',')) || []);
   const [ options, setOptions ] = React.useState(['Any','x', 'y', 'z'])
   
   const handleChange = (event) => {
-    if (objectKey.includes('subjectTypes') && event.target.value.includes('Any')) {
-      setValue(['Any']);
+    if (objectKey.includes('subjectTypes') && event.target.value.includes('Any') && event.target.value.length > 1) {
+      setValue(event.target.value.splice(event.target.value.indexOf('Any', 1)));
     } else {
       setValue(event.target.value);
     }
   };
+
+  if (objectKey.includes('subjectTypes') && value.length === 0) {
+    setValue(['Any']);
+  }
 
   return (
     <Select
@@ -42,7 +46,7 @@ let ArrayInput = (props) => {
       name={objectKey}
       multiple
       value={value}
-      defaultValue={data[objectKey].split(',') || []}
+      defaultValue={data[objectKey] && data[objectKey].split(',')}
       onChange={handleChange}
       renderValue={(selected) => (
         <div>
@@ -61,10 +65,10 @@ let ArrayInput = (props) => {
   )
 }
 
-ArrayInput.propTypes = {
+ListInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired
 };
 
-export default withStyles(QuestionnaireStyle)(ArrayInput);
+export default withStyles(QuestionnaireStyle)(ListInput);
   
