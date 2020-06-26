@@ -70,6 +70,14 @@ const COMPARE_MAP = {
     "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseInt(a) != parseInt(b))),
     "is empty": (a) => (EMPTY.indexOf(a) >= 0),
     "is not empty": (a) => (EMPTY.indexOf(a) < 0)
+  },
+  "decimal": {
+    "=": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) == parseFloat(b))),
+    "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) < parseFloat(b))),
+    ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) > parseFloat(b))),
+    "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) != parseFloat(b))),
+    "is empty": (a) => (EMPTY.indexOf(a) >= 0),
+    "is not empty": (a) => (EMPTY.indexOf(a) < 0)
   }
 }
 
