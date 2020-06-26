@@ -17,30 +17,33 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
-import { loadRemoteComponents, loadRemoteIcons, loadContentNodes } from "../themePage/routes"
+import { loadRemoteComponents, loadRemoteIcons, loadContentNodes } from "../themePage/routes";
+import { NavLink, Route } from "react-router-dom";
 
-// import { Button, Card, CardContent, CardHeader } from "@material-ui/core";
+import { CircularProgress, Grid, Typography, List, ListItem, ListItemText } from "@material-ui/core";
 
 function AdminDashboard() {
   let [ adminRoutes, setAdminRoutes ] = useState([]);
+  let [ loading, setLoading ] = useState(true);
+
+  let pathPrefix = "/content.html/admin.html"; //admin.html is the url for this component --> make this a variable?
 
   let handleRoutes = (uixData) => {
-    console.log(uixData);
-    // var routes = sidebarRoutes.slice();
-    // uixData.sort((firstEl, secondEl) => {return firstEl.order - secondEl.order;});
-    // for (var id in uixData) {
-    //   var uixDatum = uixData[id];
-    //   routes.push({
-    //     path: uixDatum.path,
-    //     name: uixDatum.name,
-    //     icon: uixDatum.icon,
-    //     component: uixDatum.reactComponent,
-    //     isAdmin: this._isAdministrativeButton(uixDatum.order),
-    //     rtlName: "rtl:test",
-    //     layout: "/content.html"
-    //   });
-    // }
+    var routes = adminRoutes.slice();
+    uixData.sort((firstEl, secondEl) => {return firstEl.order - secondEl.order;});
+    for (var id in uixData) {
+      var uixDatum = uixData[id];
+      routes.push({
+        path: uixDatum.path,
+        name: uixDatum.name,
+        icon: uixDatum.icon,
+        component: uixDatum.reactComponent,
+        layout: pathPrefix
+      });
+    }
     // this.setState({routes: routes, loading: false});
+    setAdminRoutes(routes);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -51,10 +54,48 @@ function AdminDashboard() {
     .catch(function(err) {
       console.log("Something went wrong: " + err);
     });
-  })
+  }, [])
+
+  if (loading) {
+    return (
+      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+    );
+  }
 
   return (
-    <div>This is the Admin Dashboard</div>
+    <div>
+      <Route exact path={pathPrefix} component={() => <AdminDashboardDefault adminRoutes={adminRoutes} />}/>
+      {adminRoutes.map((prop, key) => {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function AdminDashboardDefault(props) {
+  const { adminRoutes } = props;
+
+  return (
+    <div>
+      {
+        adminRoutes.map((route) => {
+          return (
+            <NavLink
+              to={route.layout + route.path}
+              key={route.path}
+            >
+              <Typography>{route.name}</Typography>
+            </NavLink>
+          )
+        })
+      }
+    </div>
   );
 }
 
