@@ -196,6 +196,12 @@ let Questionnaire = (props) => {
                 <dd>
                   <Typography>{data.maxPerSubject || 'Unlimited'}</Typography>
                 </dd>
+                <dt>
+                  <Typography>Subject Types:</Typography>
+                </dt>
+                <dd>
+                  <Typography>{data.subjectTypes || 'Any'}</Typography>
+                </dd>
               </dl>
             </CardContent>
           </Card>
