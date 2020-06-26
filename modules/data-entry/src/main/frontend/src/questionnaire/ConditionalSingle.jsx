@@ -99,13 +99,9 @@ export function isConditionalObjSatisfied(conditional, context) {
   const requireAllOperandA = conditional["operandA"]["requireAll"];
   const requireAllOperandB = conditional["operandB"]?.requireAll;
 
-  const operandA = getValue(context, conditional["operandA"]);
-  const operandB = getValue(context, conditional["operandB"]);
-
-  // Don't try to run if operandA isn't loaded yet
-  if (!operandA) {
-    return false;
-  }
+  // If the operands aren't loaded yet, treat them as being empty
+  const operandA = getValue(context, conditional["operandA"]) || [""];
+  const operandB = getValue(context, conditional["operandB"]) || [""];
 
   const firstCondition = requireAllOperandA ? ((func) => operandA.every(func)) : ((func) => operandA.some(func));
   const secondCondition = requireAllOperandB ? ((func) => operandB.every(func)) : ((func) => operandB.some(func));
