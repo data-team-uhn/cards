@@ -85,7 +85,7 @@ class Main extends React.Component {
 
   componentDidMount() {
     window.addEventListener("resize", this.autoCloseMobileMenus);
-    loadContentNodes()
+    loadContentNodes("SidebarEntry")
     .then(loadRemoteComponents)
     .then(loadRemoteIcons)
     .then(this._buildSidebar)

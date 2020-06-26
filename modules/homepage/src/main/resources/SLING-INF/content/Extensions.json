@@ -6,7 +6,7 @@
         "lfs:extensionName": "Administration",
         "lfs:icon": "asset:lfs-homepage.adminIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-homepage.adminDashboard.js",
-        "lfs:targetURL": "admin",
+        "lfs:targetURL": "admin.html",
         "lfs:defaultOrder": 90,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",

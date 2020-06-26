@@ -2,7 +2,7 @@
     "jcr:primaryType": "sling:Folder",
     "Questionnaires": {
         "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
         "lfs:targetURL": "Questionnaires",
         "lfs:extensionName": "Questionnaires",
         "lfs:icon": "asset:lfs-dataentry.questionnairesIcon.js",
@@ -30,7 +30,7 @@
     },
     "SubjectTypes": {
         "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
         "lfs:targetURL": "SubjectTypes",
         "lfs:extensionName": "Subject Types",
         "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
