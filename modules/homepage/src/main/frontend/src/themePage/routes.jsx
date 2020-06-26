@@ -94,8 +94,8 @@ var loadRemoteComponents = function(components) {
 };
 
 // Load the content nodes
-var loadContentNodes = function() {
-  return fetch("/apps/lfs/ExtensionPoints/SidebarEntry")
+var loadContentNodes = function(name) {
+  return fetch(`/apps/lfs/ExtensionPoints/${name}`)
     .then(response => response.ok ? response.json() : Promise.reject(response));
 }
 
