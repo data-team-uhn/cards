@@ -19,10 +19,12 @@
 import React, { useState, useEffect } from "react";
 import { loadRemoteComponents, loadRemoteIcons, loadContentNodes } from "../themePage/routes";
 import { NavLink, Route } from "react-router-dom";
+import adminStyle from "./AdminDashboardStyle.jsx";
 
-import { CircularProgress, Grid, Typography, List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
+import { CircularProgress, Grid, Typography, List, ListItem, ListItemText, ListItemIcon, withStyles } from "@material-ui/core";
 
-function AdminDashboard() {
+function AdminDashboard(props) {
+  const { classes } = props;
   let [ adminRoutes, setAdminRoutes ] = useState([]);
   let [ loading, setLoading ] = useState(true);
 
@@ -67,7 +69,7 @@ function AdminDashboard() {
   // render either the list of items in the admin dashboard or an item
   return (
     <div>
-      <Route exact path={pathPrefix} component={() => <AdminDashboardDefault adminRoutes={adminRoutes} />}/>
+      <Route exact path={pathPrefix} component={() => <AdminDashboardDefault adminRoutes={adminRoutes} classes={classes}/>}/>
       {adminRoutes.map((prop, key) => {
         return (
           <Route
@@ -82,8 +84,7 @@ function AdminDashboard() {
 }
 
 function AdminDashboardDefault(props) {
-  const { adminRoutes } = props;
-  // <Typography>{route.name}</Typography>
+  const { adminRoutes, classes } = props;
 
   return (
     <List>
@@ -93,17 +94,19 @@ function AdminDashboardDefault(props) {
             <NavLink
               to={route.layout + route.path}
               key={route.path}
+              className={classes.listItem}
             >
               <ListItem button>
                 <ListItemIcon>
-                  <route.icon/>
+                  <route.icon fontSize="large"/>
                 </ListItemIcon>
                 <ListItemText
-                  primary={route.name}
-                  secondary={route.hint}
+                  className={classes.listText}
+                  primary={<Typography variant="h6">{route.name}</Typography>}
+                  secondary={<Typography variant="caption">{route.hint}</Typography>}
+                  disableTypography={true}
                 />
               </ListItem>
-
             </NavLink>
           )
         })
@@ -112,4 +115,4 @@ function AdminDashboardDefault(props) {
   );
 }
 
-export default AdminDashboard;
+export default withStyles(adminStyle)(AdminDashboard);
