@@ -23,6 +23,35 @@ import adminStyle from "./AdminDashboardStyle.jsx";
 
 import { CircularProgress, Grid, Typography, List, ListItem, ListItemText, ListItemIcon, withStyles } from "@material-ui/core";
 
+export function getAdminRoutes(pathPrefix) {
+  let adminRoutes = [];
+
+  let handleRoutes = (uixData) => {
+    var routes = adminRoutes.slice();
+    uixData.sort((firstEl, secondEl) => {return firstEl.order - secondEl.order;});
+    for (var id in uixData) {
+      var uixDatum = uixData[id];
+      routes.push({
+        path: uixDatum.path,
+        name: uixDatum.name,
+        icon: uixDatum.icon,
+        component: uixDatum.reactComponent,
+        hint: uixDatum.hint,
+        layout: pathPrefix
+      });
+    }
+    return routes;
+  }
+
+  loadContentNodes("AdminDashboard")
+  .then(loadRemoteComponents)
+  .then(loadRemoteIcons)
+  .then(handleRoutes)
+  .catch(function(err) {
+    console.log("Something went wrong: " + err);
+  });
+}
+
 function AdminDashboard(props) {
   const { classes } = props;
   let [ adminRoutes, setAdminRoutes ] = useState([]);
@@ -64,6 +93,8 @@ function AdminDashboard(props) {
     );
   }
 
+  let newRoutes = getAdminRoutes(pathPrefix);
+
   // TODO: navbar header does not show up anymore (fix), adminRoutes should be passed to/also fetched in navbar
 
   // render either the list of items in the admin dashboard or an item
@@ -102,7 +133,7 @@ function AdminDashboardDefault(props) {
                 </ListItemIcon>
                 <ListItemText
                   className={classes.listText}
-                  primary={<Typography variant="h6">{route.name}</Typography>}
+                  primary={<Typography variant="body1">{route.name}</Typography>}
                   secondary={<Typography variant="caption">{route.hint}</Typography>}
                   disableTypography={true}
                 />
