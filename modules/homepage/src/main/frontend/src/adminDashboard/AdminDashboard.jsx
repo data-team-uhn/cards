@@ -20,7 +20,7 @@ import React, { useState, useEffect } from "react";
 import { loadRemoteComponents, loadRemoteIcons, loadContentNodes } from "../themePage/routes";
 import { NavLink, Route } from "react-router-dom";
 
-import { CircularProgress, Grid, Typography, List, ListItem, ListItemText } from "@material-ui/core";
+import { CircularProgress, Grid, Typography, List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 
 function AdminDashboard() {
   let [ adminRoutes, setAdminRoutes ] = useState([]);
@@ -38,10 +38,10 @@ function AdminDashboard() {
         name: uixDatum.name,
         icon: uixDatum.icon,
         component: uixDatum.reactComponent,
+        hint: uixDatum.hint,
         layout: pathPrefix
       });
     }
-    // this.setState({routes: routes, loading: false});
     setAdminRoutes(routes);
     setLoading(false);
   }
@@ -62,6 +62,9 @@ function AdminDashboard() {
     );
   }
 
+  // TODO: navbar header does not show up anymore (fix), adminRoutes should be passed to/also fetched in navbar
+
+  // render either the list of items in the admin dashboard or an item
   return (
     <div>
       <Route exact path={pathPrefix} component={() => <AdminDashboardDefault adminRoutes={adminRoutes} />}/>
@@ -80,9 +83,10 @@ function AdminDashboard() {
 
 function AdminDashboardDefault(props) {
   const { adminRoutes } = props;
+  // <Typography>{route.name}</Typography>
 
   return (
-    <div>
+    <List>
       {
         adminRoutes.map((route) => {
           return (
@@ -90,12 +94,21 @@ function AdminDashboardDefault(props) {
               to={route.layout + route.path}
               key={route.path}
             >
-              <Typography>{route.name}</Typography>
+              <ListItem button>
+                <ListItemIcon>
+                  <route.icon/>
+                </ListItemIcon>
+                <ListItemText
+                  primary={route.name}
+                  secondary={route.hint}
+                />
+              </ListItem>
+
             </NavLink>
           )
         })
       }
-    </div>
+    </List>
   );
 }
 
