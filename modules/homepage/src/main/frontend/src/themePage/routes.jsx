@@ -65,7 +65,8 @@ var loadRemoteComponent = function(component) {
           path: "/" + component["lfs:targetURL"],
           name: component["lfs:extensionName"],
           iconUrl: component["lfs:icon"],
-          order: component["lfs:defaultOrder"]
+          order: component["lfs:defaultOrder"],
+          hint: component["lfs:hint"]
         });
       }
 
@@ -78,7 +79,8 @@ var loadRemoteComponent = function(component) {
             path: "/" + component["lfs:targetURL"],
             name: component["lfs:extensionName"],
             iconUrl: component["lfs:icon"],
-            order: component["lfs:defaultOrder"]
+            order: component["lfs:defaultOrder"],
+            hint: component["lfs:hint"]
           })
         })
     });
