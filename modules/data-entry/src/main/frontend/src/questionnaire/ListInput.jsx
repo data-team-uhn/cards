@@ -19,15 +19,26 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Chip, MenuItem, Select, Typography, withStyles } from "@material-ui/core";
+import { Chip, Input, MenuItem, Select, Typography, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from './QuestionnaireStyle';
 
 let ListInput = (props) => {
   let { objectKey, data } = props;
   const [ value, setValue ] = React.useState((data[objectKey] && data[objectKey].split(',')) || []);
-  const [ options, setOptions ] = React.useState(['Any','x', 'y', 'z'])
+  const [ options, setOptions ] = React.useState([]);
   
+  if (objectKey.includes('subjectTypes')) {
+    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType'`))
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
+    .then((json)=> { let labels = (json["rows"].map((subjectType) => subjectType.label)); labels.push('Any'); setOptions(labels); })
+    .catch(handleError);
+  }
+
+  let handleError = () => {
+    console.log('error');
+  }
+
   const handleChange = (event) => {
     if (objectKey.includes('subjectTypes') && event.target.value.includes('Any') && event.target.value.length > 1) {
       setValue(event.target.value.splice(event.target.value.indexOf('Any', 1)));
@@ -48,6 +59,7 @@ let ListInput = (props) => {
       value={value}
       defaultValue={data[objectKey] && data[objectKey].split(',')}
       onChange={handleChange}
+      input={!objectKey.includes('subjectTypes') && <Input id={objectKey} />}
       renderValue={(selected) => (
         <div>
           {selected.map((value) => (

@@ -150,7 +150,7 @@ let EditDialog = (props) => {
 
   return (
     <React.Fragment>
-      <Dialog id='editDialog' open={open} onClose={onClose}>
+      <Dialog id='editDialog' open={open} onClose={onClose} fullWidth maxWidth='sm'>
         <DialogTitle>
           { dialogTitle() }
         </DialogTitle>
