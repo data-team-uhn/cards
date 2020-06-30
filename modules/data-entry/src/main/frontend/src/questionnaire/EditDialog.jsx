@@ -26,14 +26,11 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  IconButton,
   TextField,
   Typography,
   withStyles
 } from "@material-ui/core";
 
-import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
 import QuestionnaireStyle from './QuestionnaireStyle';
 import AnswerOptions from './AnswerOptions';
 import Fields from './Fields'
@@ -41,11 +38,11 @@ import Fields from './Fields'
 // Dialog for editing or creating questions and sections
 
 let EditDialog = (props) => {
-  let [ questionJSON, setQuestionJSON ] = useState(require('./Question.json'));
-  let [ sectionJSON, setSectionJSON ] = useState(require('./Section.json'));
+  let questionJSON = require('./Question.json');
+  let sectionJSON = require('./Section.json');
+  let propertiesJSON = require('./Properties.json');
   let [ title, setTitle ] = useState('');
-  let [ json, setJson ] = useState(props.type.includes('Question') ? questionJSON : sectionJSON);
-  let [ openEditDialog, setOpenEditDialog ] = useState(false);
+  let [ json ] = useState(props.type.includes('Question') ? questionJSON : props.type.includes('Section') ? sectionJSON : propertiesJSON);
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
   // Indicates whether the form has been saved or not. This has three possible values:
@@ -85,15 +82,14 @@ let EditDialog = (props) => {
             setLastSaveStatus(false);
           }
         })
-        .finally(() => setSaveInProgress(false));
-      setOpenEditDialog(false);
+        .finally(() => {setSaveInProgress(false); props.onClose();});
     } else {
       // If the question/section doesn't exist, create it
       const URL = `${props.data['@path']}/${title}`
       const primaryType = props.type.includes('Question') ? 'lfs:Question' : 'lfs:Section'
       var request_data = new FormData(event.currentTarget);
       request_data.append('jcr:primaryType', primaryType);
-      fetch( URL, { method: 'POST', body: request_data })
+      fetch(URL, { method: 'POST', body: request_data })
         .then((response) => response.ok ? true : Promise.reject(response))
         .then(() => setLastSaveStatus(true))
         // FIXME Use setError?
@@ -105,9 +101,9 @@ let EditDialog = (props) => {
             setLastSaveStatus(false);
           }
         })
-        .finally(() => setSaveInProgress(false));
-          setOpenEditDialog(false);
-    }
+        .finally(() => {setSaveInProgress(false); props.onClose();});
+      }
+     
   }
 
   // Open the login page in a new popup window, centered wrt the parent window
@@ -143,14 +139,14 @@ let EditDialog = (props) => {
     return (
       <Grid container alignItems='flex-end' spacing={2}>
         <Grid item xs={6}><Typography>{props.type === 'Question' ? 'Title' : 'Name' }</Typography></Grid>
-        <Grid item xs={6}><TextField name='title' value={title} onChange={()=> { setTitle(event.target.value); }} /></Grid>
+        <Grid item xs={6}><TextField name='title' value={title} onChange={(event)=> { setTitle(event.target.value); }} /></Grid>
       </Grid>
     )
   }
 
   return (
     <React.Fragment>
-      <Dialog id='editDialog' open={openEditDialog} onClose={() => { setOpenEditDialog(false); }}>
+      <Dialog id='editDialog' open={props.open} onClose={props.onClose}>
         <DialogTitle>
           { dialogTitle() }
         </DialogTitle>
@@ -175,28 +171,22 @@ let EditDialog = (props) => {
             <Button
               variant='contained'
               color='default'
-              onClick={() => { setOpenEditDialog(false); }}
+              onClick={props.onClose}
             >
               {'Cancel'}
             </Button>
           </DialogActions>
         </form>
       </Dialog>
-      <IconButton onClick={() => { setOpenEditDialog(true); }}>
-      { props.edit ? <EditIcon /> : <AddIcon />}
-      </IconButton>
     </React.Fragment>
   );
 };
 
 EditDialog.propTypes = {
-  type: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired,
-  edit: PropTypes.bool.isRequired
+  type: PropTypes.string.isRequired,
+  edit: PropTypes.bool.isRequired,
+  open: PropTypes.bool.isRequired
 };
 
 export default withStyles(QuestionnaireStyle)(EditDialog);
-
-
-
-
