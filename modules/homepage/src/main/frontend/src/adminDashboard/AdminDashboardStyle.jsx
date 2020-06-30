@@ -10,9 +10,12 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { blackColor } from "../themeStyle.jsx"
+import { blackColor, grayColor } from "../themeStyle.jsx"
 
 const adminStyle = theme => ({
+  listButton: {
+    color: grayColor[3]
+  },
   listItem: {
     textDecoration: "none",
   },
