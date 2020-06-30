@@ -23,33 +23,37 @@ import adminStyle from "./AdminDashboardStyle.jsx";
 
 import { CircularProgress, Grid, Typography, List, ListItem, ListItemText, ListItemIcon, withStyles } from "@material-ui/core";
 
+// function to get the routes for the admin dashboard
 export function getAdminRoutes(pathPrefix) {
-  let adminRoutes = [];
+  return new Promise(function(resolve, reject) {
+    let adminRoutes = [];
 
-  let handleRoutes = (uixData) => {
-    var routes = adminRoutes.slice();
-    uixData.sort((firstEl, secondEl) => {return firstEl.order - secondEl.order;});
-    for (var id in uixData) {
-      var uixDatum = uixData[id];
-      routes.push({
-        path: uixDatum.path,
-        name: uixDatum.name,
-        icon: uixDatum.icon,
-        component: uixDatum.reactComponent,
-        hint: uixDatum.hint,
-        layout: pathPrefix
-      });
+    let handleRoutes = (uixData) => {
+      var routes = adminRoutes.slice();
+      uixData.sort((firstEl, secondEl) => {return firstEl.order - secondEl.order;});
+      for (var id in uixData) {
+        var uixDatum = uixData[id];
+        routes.push({
+          path: uixDatum.path,
+          name: uixDatum.name,
+          icon: uixDatum.icon,
+          component: uixDatum.reactComponent,
+          hint: uixDatum.hint,
+          layout: pathPrefix
+        });
+      }
+      if (routes) {resolve(routes)}
+      else reject(Error("Something went wrong"))
     }
-    return routes;
-  }
 
-  loadContentNodes("AdminDashboard")
-  .then(loadRemoteComponents)
-  .then(loadRemoteIcons)
-  .then(handleRoutes)
-  .catch(function(err) {
-    console.log("Something went wrong: " + err);
-  });
+    loadContentNodes("AdminDashboard")
+    .then(loadRemoteComponents)
+    .then(loadRemoteIcons)
+    .then(handleRoutes)
+    .catch(function(err) {
+      console.log("Something went wrong: " + err);
+    });
+  })
 }
 
 function AdminDashboard(props) {
@@ -57,31 +61,14 @@ function AdminDashboard(props) {
   let [ adminRoutes, setAdminRoutes ] = useState([]);
   let [ loading, setLoading ] = useState(true);
 
-  let pathPrefix = "/content.html/admin.html"; //admin.html is the url for this component --> make this a variable?
-
-  let handleRoutes = (uixData) => {
-    var routes = adminRoutes.slice();
-    uixData.sort((firstEl, secondEl) => {return firstEl.order - secondEl.order;});
-    for (var id in uixData) {
-      var uixDatum = uixData[id];
-      routes.push({
-        path: uixDatum.path,
-        name: uixDatum.name,
-        icon: uixDatum.icon,
-        component: uixDatum.reactComponent,
-        hint: uixDatum.hint,
-        layout: pathPrefix
-      });
-    }
-    setAdminRoutes(routes);
-    setLoading(false);
-  }
+  let pathPrefix = "/content.html/admin.html"; //admin.html is the url for this component
 
   useEffect(() => {
-    loadContentNodes("AdminDashboard")
-    .then(loadRemoteComponents)
-    .then(loadRemoteIcons)
-    .then(handleRoutes)
+    getAdminRoutes(pathPrefix)
+    .then(function(response) {
+      setAdminRoutes(response);
+      setLoading(false);
+    })
     .catch(function(err) {
       console.log("Something went wrong: " + err);
     });
@@ -92,10 +79,6 @@ function AdminDashboard(props) {
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
-
-  let newRoutes = getAdminRoutes(pathPrefix);
-
-  // TODO: navbar header does not show up anymore (fix), adminRoutes should be passed to/also fetched in navbar
 
   // render either the list of items in the admin dashboard or an item
   return (
