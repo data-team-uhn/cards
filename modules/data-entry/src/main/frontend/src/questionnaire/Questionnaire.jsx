@@ -27,6 +27,7 @@ import {
   CardHeader,
   CircularProgress,
   Grid,
+  IconButton,
   Menu,
   MenuItem,
   Typography,
@@ -38,12 +39,17 @@ import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import EditDialog from "./EditDialog"
 import DeleteDialog from "./DeleteDialog"
+import EditIcon from '@material-ui/icons/Edit';
+import AddIcon from '@material-ui/icons/Add';
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
   let { id } = props;
   let [ data, setData ] = useState();
   let [ error, setError ] = useState();
+  let [ edit, setEdit ] = useState(false);
+  let [ open, setOpen ] = useState(false);
+  let [ type, setType ] = useState('Question');
   const [ isFetching, setFetching ] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -71,6 +77,12 @@ let Questionnaire = (props) => {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
+
+  let openDialog = (edit, type) => {
+    setEdit(edit);
+    setType(type);
+    setOpen(true);
+  }
 
   let parseErrorResponse = (response) => {
     setFetching(false);
@@ -105,14 +117,35 @@ let Questionnaire = (props) => {
           <Menu
             id="simple-menu"
             anchorEl={anchorEl}
-            keepMounted
             open={Boolean(anchorEl)}
             onClose={handleCloseMenu}
+            disableAutoFocusItem
           >
-            <MenuItem>Question<EditDialog edit={false} data={data} type='Question' /></MenuItem>
-            <MenuItem >Section<EditDialog edit={false} data={data} type='Section' /></MenuItem>
+            <MenuItem onClick={()=> { openDialog(false, 'Question'); handleCloseMenu}}>Question</MenuItem>
+            <MenuItem onClick={()=> { openDialog(false, 'Section'); handleCloseMenu}}>Section</MenuItem>
           </Menu>
         </Grid>
+      }
+      { data &&
+        <Grid item>
+          <Card>
+            <CardHeader title={'Questionnaire Properties'} action={
+              <IconButton onClick={() => { openDialog(true, 'Properties'); }}>
+                <EditIcon />
+              </IconButton>
+              }/>
+            <CardContent>
+              <dl>
+                <dt>
+                  <Typography>Max per Subject:</Typography>
+                </dt>
+                <dd>
+                  <Typography>{data.maxPerSubject || 'Unlimited'}</Typography>
+                </dd>
+              </dl>
+            </CardContent>
+          </Card>
+        </Grid> 
       }
       {
         data ?
@@ -127,9 +160,11 @@ let Questionnaire = (props) => {
           <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
       }
       </Grid>
+      {open && <EditDialog edit={edit} data={data} type={type} open={open} onClose={() => {setOpen(false);}} />}
     </div>
   );
 };
+
 
 Questionnaire.propTypes = {
   id: PropTypes.string.isRequired
@@ -140,12 +175,19 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
+  let [ open, setOpen ] = useState(false);
+  let openDialog = () => {
+    setOpen(true);
+  }
+
   return (
     <Card>
       <CardHeader title={props.data.text} action={
         <div>
-          <EditDialog data={props.data} type="Question" edit={true}/>
-          <DeleteDialog data={props.data} type="Question" edit={true} />
+          <IconButton onClick={() => { openDialog(); }}>
+            <EditIcon />
+          </IconButton>
+          <DeleteDialog data={props.data} type="Question" />
         </div>
       }
       />
@@ -191,6 +233,7 @@ let Question = (props) => {
           }
         </dl>
       </CardContent>
+      { open && <EditDialog edit={true} data={props.data} type='Question' open={open} onClose={() => {setOpen(false);}} /> }
     </Card>
   );
 };
@@ -209,6 +252,14 @@ let Section = (props) => {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
+  let [ edit, setEdit ] = useState(false);
+  let [ type, setType ] = useState('Question');
+  let [ open, setOpen ] = useState(false);
+  let openDialog = (edit, type) => {
+    setEdit(edit);
+    setType(type);
+    setOpen(true);
+  }
   return (
     <Card>
       <CardHeader title={data['title'] || ''}
@@ -224,10 +275,12 @@ let Section = (props) => {
               open={Boolean(anchorEl)}
               onClose={handleCloseMenu}
             >
-              <MenuItem>Question<EditDialog edit={false} data={props.data} type='Question' /></MenuItem>
-              <MenuItem >Section<EditDialog edit={false} data={props.data} type='Section' /></MenuItem>
+              <MenuItem onClick={()=> { openDialog(false, 'Question'); handleCloseMenu}}>Question</MenuItem>
+              <MenuItem onClick={()=> { openDialog(false, 'Section'); handleCloseMenu}}>Section</MenuItem>
             </Menu>
-            <EditDialog edit={true} data={props.data} type='Section' />
+            <IconButton onClick={() => { openDialog(true, 'Section'); }}>
+              <EditIcon />
+            </IconButton>
             <DeleteDialog data={props.data} type='Section' />
             <Typography>{data['description'] || ''}</Typography>
           </div>
@@ -249,6 +302,7 @@ let Section = (props) => {
           }
         </Grid>
       </CardContent>
+      { open && <EditDialog edit={edit} data={props.data} type={type} open={open} onClose={() => {setOpen(false);}} /> }
     </Card>
   );
 };
@@ -264,4 +318,4 @@ let AnswerOption = (props) => {
 
 AnswerOption.propTypes = {
   data: PropTypes.object.isRequired
-};
+ };
