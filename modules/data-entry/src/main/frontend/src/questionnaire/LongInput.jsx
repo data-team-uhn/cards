@@ -31,7 +31,14 @@ import QuestionnaireStyle from './QuestionnaireStyle';
 let StringInput = (props) => {
   let {  objectKey, data } = props;
   return (
-    <TextField name={objectKey} id={objectKey} defaultValue={data[objectKey] || ''} type='number'/>
+    <TextField
+      name={objectKey}
+      id={objectKey}
+      defaultValue={data[objectKey] || ''}
+      type='number' 
+      placeholder={objectKey.includes('maxPerSubject') ? 'Unlimited' : ''}
+      min={objectKey.includes('maxPerSubject') ? 0 : ''}
+    />
   )
 }
 
@@ -41,4 +48,3 @@ StringInput.propTypes = {
 };
 
 export default withStyles(QuestionnaireStyle)(StringInput);
-  
