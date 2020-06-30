@@ -326,4 +326,4 @@ let AnswerOption = (props) => {
 
 AnswerOption.propTypes = {
   data: PropTypes.object.isRequired
- };
+};
