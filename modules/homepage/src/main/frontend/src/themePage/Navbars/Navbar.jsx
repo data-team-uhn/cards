@@ -25,9 +25,6 @@ import headerStyle from "../../headerStyle.jsx";
 function Header({ ...props }) {
   // Create the "brand", i.e. the route taken to get to the current page
   // (Usually displayed at the top left)
-
-  // TODO: extend props.routes and adminroutes ? should also handle routes from admindashboard
-
   function makeBrand() {
     var matching_routes = props.routes.filter((prop) => {
       return (prop.layout + prop.path === props.location.pathname);
