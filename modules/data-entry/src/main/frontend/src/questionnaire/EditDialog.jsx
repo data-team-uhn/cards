@@ -40,9 +40,8 @@ import Fields from './Fields'
 let EditDialog = (props) => {
   let questionJSON = require('./Question.json');
   let sectionJSON = require('./Section.json');
-  let propertiesJSON = require('./Properties.json');
   let [ title, setTitle ] = useState('');
-  let [ json ] = useState(props.type.includes('Question') ? questionJSON : props.type.includes('Section') ? sectionJSON : propertiesJSON);
+  let [ json ] = useState(props.type.includes('Question') ? questionJSON : sectionJSON);
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
   // Indicates whether the form has been saved or not. This has three possible values:
