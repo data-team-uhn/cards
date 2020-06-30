@@ -38,37 +38,51 @@ let AnswerOptions = (props) => {
   let [ tempValue, setTempValue ] = useState('');
 
   let deleteOption = (value) => {
-    let updatedAnswerChoices = options.slice();
-    delete updatedAnswerChoices[value];
-    setOptions(updatedAnswerChoices);
+    setOptions(oldOptions => {
+      var newOptions = oldOptions.slice();
+      newOptions.splice(newOptions.indexOf(value), 1);
+      return newOptions;
+    })
   }
 
   let updateInsertedOption = (index, event) => {
-    let updatedNewValue = newValue.slice();
-    updatedNewValue[index] = event.target.value;
-    setNewValue(updatedNewValue);
+    setNewValue(oldValue => {
+      var value = oldValue.slice();
+      value[index] = event.target.value;
+      return value;
+    })
   }
 
   let deleteInsertedOption = (index, event) => {
-    let updatedNewValue = newValue.slice();
-    updatedNewValue.splice(updatedNewValue.indexOf(event.target.value), 1);
-    setNewValue(updatedNewValue);
+    setNewValue(oldValue => {
+      var value = oldValue.slice();
+      value.splice(index, 1);
+      return value;
+    })
+    setNewUuid(oldUuid => {
+      var newUuid = oldUuid.slice();
+      newUuid.splice(index, 1);
+      return newUuid;
+    });
   }
 
   let handleInputOption = () => {
-    console.log(newUuid, newValue);
 
-    setNewUuid(oldUuid => {
-      var newUuid = oldUuid.slice();
-      newUuid.push(uuid());
-      return newUuid;
-    });
+    if (!newValue.includes(tempValue)) {
+      console.log("newValue", newValue);
+      console.log("tempValue", tempValue);
+      setNewUuid(oldUuid => {
+        var newUuid = oldUuid.slice();
+        newUuid.push(uuid());
+        return newUuid;
+      });
 
-    setNewValue(oldValue => {
-      var newValue = oldValue.slice();
-      newValue.push(tempValue);
-      return newValue;
-    });
+      setNewValue(oldValue => {
+        var newValue = oldValue.slice();
+        newValue.push(tempValue);
+        return newValue;
+      });
+    }
 
     setTempValue('');
   }
