@@ -21,7 +21,7 @@ import { loadRemoteComponents, loadRemoteIcons, loadContentNodes } from "../them
 import { NavLink, Route } from "react-router-dom";
 import adminStyle from "./AdminDashboardStyle.jsx";
 
-import { CircularProgress, Grid, Typography, List, ListItem, ListItemText, ListItemIcon, withStyles } from "@material-ui/core";
+import { CircularProgress, Grid, Typography, List, ListItem, ListItemText, ListItemIcon, withStyles, Card, CardContent, CardHeader, Button } from "@material-ui/core";
 
 // function to get the routes for the admin dashboard
 export function getAdminRoutes(pathPrefix) {
@@ -101,31 +101,42 @@ function AdminDashboardDefault(props) {
   const { adminRoutes, classes } = props;
 
   return (
-    <List>
-      {
-        adminRoutes.map((route) => {
-          return (
-            <NavLink
-              to={route.layout + route.path}
-              key={route.path}
-              className={classes.listItem}
-            >
-              <ListItem button>
-                <ListItemIcon>
-                  <route.icon fontSize="large"/>
-                </ListItemIcon>
-                <ListItemText
-                  className={classes.listText}
-                  primary={<Typography variant="body1">{route.name}</Typography>}
-                  secondary={<Typography variant="caption">{route.hint}</Typography>}
-                  disableTypography={true}
-                />
-              </ListItem>
-            </NavLink>
-          )
-        })
-      }
-    </List>
+    <Card>
+      <CardHeader
+        title={
+          <Button>
+            Administration
+          </Button>
+        }
+      />
+      <CardContent>
+        <List>
+          {
+            adminRoutes.map((route) => {
+              return (
+                <NavLink
+                  to={route.layout + route.path}
+                  key={route.path}
+                  className={classes.listItem}
+                >
+                  <ListItem button>
+                    <ListItemIcon>
+                      <route.icon fontSize="large"/>
+                    </ListItemIcon>
+                    <ListItemText
+                      className={classes.listText}
+                      primary={<Typography variant="body1">{route.name}</Typography>}
+                      secondary={<Typography variant="caption">{route.hint}</Typography>}
+                      disableTypography={true}
+                    />
+                  </ListItem>
+                </NavLink>
+              )
+            })
+          }
+        </List>
+      </CardContent>
+    </Card>
   );
 }
 
