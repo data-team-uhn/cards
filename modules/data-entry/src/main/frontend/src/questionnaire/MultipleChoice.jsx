@@ -186,6 +186,8 @@ function MultipleChoice(props) {
         inputRef={ref => {inputEl = ref}}
       />
     </div>);
+    (maxAnswers !== 1) && addOption("", "");
+    (maxAnswers !== 1) && selectOption("", "");
 
   let selectNonGhostOption = (...args) => {
     // Clear the ghost input
@@ -200,7 +202,18 @@ function MultipleChoice(props) {
     </Typography>
     );
 
-  const answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
+  //Remove the ["", ""]
+  const tmp_answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
+  var answers = [];
+  if (tmp_answers.length < 2) {
+    answers = tmp_answers.slice();
+  } else {
+    for (var i = 0; i < tmp_answers.length; i++) {
+      if (tmp_answers[i][0] != "") {
+        answers.push(tmp_answers[i]);
+      }
+    }
+  }
 
   if (isSelect) {
     return (
@@ -354,7 +367,7 @@ function ResponseChild(props) {
                   label: classes.inputLabel
                 }}
               />
-            ) : (
+            ) : ((name !== "") && (
             <React.Fragment>
               <IconButton
                 onClick={() => {onDelete(id, name)}}
@@ -370,7 +383,7 @@ function ResponseChild(props) {
                 </Typography>
               </div>
             </React.Fragment>
-          )
+          ))
           }
       </ListItem>
     </React.Fragment>

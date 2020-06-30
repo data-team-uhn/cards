@@ -116,8 +116,15 @@ export function isConditionalObjSatisfied(conditional, context) {
   const requireAllOperandB = conditional["operandB"]?.requireAll;
 
   // If the operands aren't loaded yet, treat them as being empty
-  const operandA = getValue(context, conditional["operandA"]) || [""];
-  const operandB = getValue(context, conditional["operandB"]) || [""];
+  var operandA = getValue(context, conditional["operandA"]) || [""];
+  if (!allIsNull(operandA)) {
+      operandA = removeAllNull(operandA);
+  }
+
+  var operandB = getValue(context, conditional["operandB"]) || [""];
+  if (!allIsNull(operandB)) {
+      operandB = removeAllNull(operandB);
+  }
 
   const firstCondition = requireAllOperandA ? ((func) => operandA.every(func)) : ((func) => operandA.some(func));
   const secondCondition = requireAllOperandB ? ((func) => operandB.every(func)) : ((func) => operandB.some(func));
@@ -127,6 +134,25 @@ export function isConditionalObjSatisfied(conditional, context) {
       return isConditionalSatisfied(conditional["dataType"], conditional["comparator"], valueA, valueB);
     })
   })
+}
+
+function removeAllNull(lst) {
+  var new_lst = [];
+  for (var i = 0; i < lst.length; i++) {
+    if (EMPTY.indexOf(lst[i]) < 0) {
+      new_lst.push(lst[i]);
+    }
+  }
+  return new_lst;
+}
+
+function allIsNull(lst) {
+  for (var i = 0; i < lst.length; i++) {
+    if (EMPTY.indexOf(lst[i]) < 0) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /**
