@@ -32,6 +32,7 @@ export default function Questionnaires(props) {
       "label": "Title",
       "format": "string",
       "link": "dashboard+path",
+      "admin": true,
     },
     {
       "key": "jcr:createdBy",

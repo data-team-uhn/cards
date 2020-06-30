@@ -84,7 +84,7 @@ class Main extends React.Component {
     }
     // get the routes for the admin dashboard, the admin routes and sidebar routes are stored in the `allRoutes` state
     let curr = this;
-    getAdminRoutes("/content.html/admin.html")
+    getAdminRoutes("/content.html/admin")
     .then(function(response) {
       curr.setState({routes: routes, allRoutes: routes.concat(response), loading: false});
     })

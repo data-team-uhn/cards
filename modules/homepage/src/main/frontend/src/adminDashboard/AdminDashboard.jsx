@@ -61,7 +61,7 @@ function AdminDashboard(props) {
   let [ adminRoutes, setAdminRoutes ] = useState([]);
   let [ loading, setLoading ] = useState(true);
 
-  let pathPrefix = "/content.html/admin.html"; //admin.html is the url for this component
+  let pathPrefix = "/content.html/admin"; //admin is the url for this component
 
   useEffect(() => {
     getAdminRoutes(pathPrefix)
@@ -119,7 +119,7 @@ function AdminDashboardDefault(props) {
                   key={route.path}
                   className={classes.listItem}
                 >
-                  <ListItem button>
+                  <ListItem button className={classes.listButton}>
                     <ListItemIcon>
                       <route.icon fontSize="large"/>
                     </ListItemIcon>
