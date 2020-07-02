@@ -23,7 +23,7 @@ import adminStyle from "./AdminDashboardStyle.jsx";
 
 import { CircularProgress, Grid, Typography, List, ListItem, ListItemText, ListItemIcon, withStyles, Card, CardContent, CardHeader, Button } from "@material-ui/core";
 
-// function to get the routes for the admin dashboard
+// function to get the routes for the admin dashboard, also used in the navbar
 export function getAdminRoutes(pathPrefix) {
   return new Promise(function(resolve, reject) {
     let adminRoutes = [];
@@ -126,7 +126,7 @@ function AdminDashboardDefault(props) {
                     <ListItemText
                       className={classes.listText}
                       primary={<Typography variant="body1">{route.name}</Typography>}
-                      secondary={<Typography variant="caption">{route.hint}</Typography>}
+                      secondary={<Typography variant="body2">{route.hint}</Typography>}
                       disableTypography={true}
                     />
                   </ListItem>
