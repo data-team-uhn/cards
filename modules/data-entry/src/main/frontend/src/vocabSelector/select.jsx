@@ -60,7 +60,7 @@ function VocabularySelector(props) {
   //check for preset answers
   const numPresets = Object.entries(questionDefinition).filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerOption").length;
   //to handle questions with maxAnswers = 1 and no preset answers
-  const noPreset = (numPresets === 0 && max === 1);
+  const noPreset = (numPresets === 0 && max === 1); //TODO: check noPreset
   
   const disabled = (max > 1 || noPreset) && selected >= max;
   const isRadio = max === 1 && numPresets > 0;
@@ -235,6 +235,7 @@ function VocabularySelector(props) {
   }
 
   let removeSelection = (id, name, wasSelected=false) => {
+    // if removed --> reload page --> remains greyed out ?
     // Do not remove this element if it is in our default suggestions
     // Instead, just update the number of items selected
     if (typeof defaultSuggestions !== "undefined" && id in defaultSuggestions) {
