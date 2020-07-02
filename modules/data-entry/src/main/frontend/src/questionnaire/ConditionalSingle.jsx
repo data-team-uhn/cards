@@ -61,8 +61,8 @@ export function isConditionalObjSatisfied(conditional, context) {
     return false;
   }
 
-  const firstCondition = requireAllOperandA ? ((func) => operandA.some(func)) : ((func) => operandA.every(func));
-  const secondCondition = requireAllOperandB ? ((func) => operandB.some(func)) : ((func) => operandB.every(func));
+  const firstCondition = requireAllOperandA ? ((func) => operandA.every(func)) : ((func) => operandA.some(func));
+  const secondCondition = requireAllOperandB ? ((func) => operandB.every(func)) : ((func) => operandB.some(func));
 
   return firstCondition( (valueA) => {
     return secondCondition( (valueB) => {
