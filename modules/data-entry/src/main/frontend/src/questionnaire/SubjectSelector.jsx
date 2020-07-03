@@ -24,6 +24,7 @@ import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, Inpu
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import MaterialTable from "material-table";
 
+import { getHierarchy } from "./Subject.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 /***
@@ -487,6 +488,7 @@ function SubjectSelectorList(props) {
       theme, ...rest } = props;
   const COLUMNS = [
     { title: 'Identifier', field: 'identifier' },
+    { title: 'Hierarchy', field: 'hierarchy' },
   ];
 
   return(
@@ -512,7 +514,9 @@ function SubjectSelectorList(props) {
               .then(response => response.json())
               .then(result => {
                 return {
-                  data: result["rows"],
+                  data: result["rows"].map((row) => ({
+                    hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({})) : "No parents",
+                    ...row})),
                   page: Math.trunc(result["offset"]/result["limit"]),
                   totalCount: result["totalrows"],
                 }}
@@ -588,7 +592,7 @@ function SubjectSelectorList(props) {
           addRowPosition: 'first',
           rowStyle: rowData => ({
             /* It doesn't seem possible to alter the className from here */
-            backgroundColor: (selectedSubject?.["identifier"] === rowData["identifier"]) ? theme.palette.grey["200"] : theme.palette.background.default
+            backgroundColor: (selectedSubject?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
           })
         }}
         localization={{
