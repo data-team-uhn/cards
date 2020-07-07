@@ -17,10 +17,10 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import uuid from "uuid/v4";
 
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, Input, ListItem, ListItemAvatar, Typography, withStyles } from "@material-ui/core";
+import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Input, ListItem, ListItemAvatar, Typography, withStyles } from "@material-ui/core";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import MaterialTable from "material-table";
 
@@ -40,6 +40,7 @@ let createQueryURL = (query, type) => {
  * Component that displays a dialog to create a new subject
  *
  * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
+ * @param {bool} continueDisabled If true, the continue button is disabled.
  * @param {bool} disabled If true, all controls are disabled
  * @param {string} error Error message to display
  * @param {bool} open If true, this dialog is open
@@ -51,8 +52,8 @@ let createQueryURL = (query, type) => {
  * @param {string} value The current name of the subject
  */
 function UnstyledNewSubjectDialog (props) {
-  const { allowedTypes, classes, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
-  const [ selectedType, setSelectedType ] = useState();
+  const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
+  const [ newSubjectType, setNewSubjectType ] = useState();
 
   const COLUMNS = [
     { title: 'Subject type', field: 'label' },
@@ -60,95 +61,101 @@ function UnstyledNewSubjectDialog (props) {
 
   let changeType = (type) => {
     onChangeType(type);
-    setSelectedType(type);
+    setNewSubjectType(type);
   }
 
-  // Auto-select if there's only one valid SubjectType
-  if (allowedTypes?.length === 1 && !selectedType) {
-    changeType(allowedTypes[0]);
-  }
+  // Auto-select if there's only one valid SubjectType given in allowedTypes
+  useEffect(() => {
+    if (allowedTypes?.length === 1) {
+      changeType(allowedTypes[0]);
+    }
+  }, [allowedTypes]);
 
   return(
-    <Dialog open={open} onClose={onClose} className={classes.newSubjectPopper}>
-      <DialogTitle id="new-form-title">
-        Create new subject
-      </DialogTitle>
-      <DialogContent dividers className={classes.NewFormDialog}>
-        { error && <Typography color="error">{error}</Typography>}
-        <Input
-          autoFocus
-          disabled={disabled}
-          value={value}
-          onChange={onChangeSubject}
-          className={classes.newSubjectInput}
-          placeholder={"Enter subject identifier here"}
-          />
-        <MaterialTable
-          title="Select a type"
-          columns={COLUMNS}
-          data={allowedTypes ? allowedTypes :
-            query => {
-              let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType");
-              url.searchParams.set("limit", query.pageSize);
-              url.searchParams.set("offset", query.page*query.pageSize);
-              return fetch(url)
-                .then(response => response.json())
-                .then(result => {
-                  return {
-                    data: result["rows"],
-                    page: Math.trunc(result["offset"]/result["limit"]),
-                    totalCount: result["totalrows"],
-                  }}
-                )
+    <React.Fragment>
+      <Dialog open={open} onClose={onClose} className={classes.newSubjectPopper}>
+        <DialogTitle id="new-form-title">
+          Create new subject
+        </DialogTitle>
+        <DialogContent dividers className={classes.NewFormDialog}>
+          { error && <Typography color="error">{error}</Typography>}
+          <Input
+            autoFocus
+            disabled={disabled}
+            value={value}
+            onChange={onChangeSubject}
+            className={classes.newSubjectInput}
+            placeholder={"Enter subject identifier here"}
+            />
+          <MaterialTable
+            title="Select a type"
+            columns={COLUMNS}
+            data={allowedTypes ? allowedTypes :
+              query => {
+                let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType");
+                url.searchParams.set("limit", query.pageSize);
+                url.searchParams.set("offset", query.page*query.pageSize);
+                return fetch(url)
+                  .then(response => response.json())
+                  .then(result => {
+                    return {
+                      data: result["rows"],
+                      page: Math.trunc(result["offset"]/result["limit"]),
+                      totalCount: result["totalrows"],
+                    }}
+                  )
+              }
             }
-          }
-          options={{
-            search: true,
-            addRowPosition: 'first',
-            rowStyle: rowData => ({
-              /* It doesn't seem possible to alter the className from here */
-              backgroundColor: (selectedType?.["label"] === rowData["label"]) ? theme.palette.grey["200"] : theme.palette.background.default
-            })
-          }}
-          onRowClick={(event, rowData) => {
-            changeType(rowData);
-          }}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={onClose}
-          variant="contained"
-          color="default"
-          disabled={disabled}
-          >
-          Cancel
-        </Button>
-        <Button
-          onClick={onSubmit}
-          variant="contained"
-          color="primary"
-          disabled={disabled}
-          >
-          {requiresParents ? "Continue" : "Create"}
-        </Button>
-      </DialogActions>
-    </Dialog>
+            options={{
+              search: true,
+              addRowPosition: 'first',
+              rowStyle: rowData => ({
+                /* It doesn't seem possible to alter the className from here */
+                backgroundColor: (newSubjectType?.["label"] === rowData["label"]) ? theme.palette.grey["200"] : theme.palette.background.default
+              })
+            }}
+            onRowClick={(event, rowData) => {
+              changeType(rowData);
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={onClose}
+            variant="contained"
+            color="default"
+            disabled={disabled}
+            >
+            Cancel
+          </Button>
+          <Button
+            onClick={onSubmit}
+            variant="contained"
+            color="primary"
+            disabled={disabled || continueDisabled}
+            >
+            {requiresParents ? "Continue" : "Create"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
   )
 }
 
-export const NewSubjectDialog = withStyles(QuestionnaireStyle, {withTheme: true})(UnstyledNewSubjectDialog)
+const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(UnstyledNewSubjectDialog)
 
 /**
  * Component that displays a dialog to select parents for a new subject
  *
  * @param {object} childType The object representing the lfs:SubjectType of the child that is being created
+ * @param {bool} continueDisabled If true, the continue button is disabled
  * @param {bool} disabled If true, all controls are disabled
  * @param {string} error Error message to display
  * @param {bool} isLast If true, the button to continue will read "Continue" instead of "Create"
  * @param {bool} open If true, this dialog is open
  * @param {func} onBack Callback fired when the user clicks the "Back" button
  * @param {func} onChangeParent Callback fired when the user changes the parent subject
+ * @param {func} onCreateParent Callback fired when the user wants to create a new parent. If present, adds a "Create new subject" button.
  * @param {func} onClose Callback fired when the user tries to close this dialog
  * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
  * @param {object} parentType The object representing the lfs:SubjectType of the parent that is being selected
@@ -156,7 +163,7 @@ export const NewSubjectDialog = withStyles(QuestionnaireStyle, {withTheme: true}
  * @param {object} value The currently selected parent
  */
 function UnstyledSelectParentDialog (props) {
-  const { classes, childType, disabled, error, isLast, open, onBack, onChangeParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
+  const { classes, childType, continueDisabled, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
   const COLUMNS = [
     { title: 'Subject', field: 'identifier' },
@@ -165,7 +172,7 @@ function UnstyledSelectParentDialog (props) {
   let initialized = parentType && childType;
 
   return(
-    <Dialog open={open} onClose={onClose} className={classes.newSubjectPopper}>
+    <Dialog open={open} onClose={onClose} className={classes.newSubjectPopper} keepMounted>
       <DialogTitle id="new-form-title">
         Select parent {parentType?.['label']} for new {childType?.['label']}.
       </DialogTitle>
@@ -205,6 +212,16 @@ function UnstyledSelectParentDialog (props) {
         }
       </DialogContent>
       <DialogActions>
+        { onCreateParent &&
+          <Button
+              variant="contained"
+              color="secondary"
+              onClick={onCreateParent}
+              className={classes.createNewSubjectButton}
+              >
+              New subject
+            </Button>
+        }
         <Button
           onClick={onClose}
           variant="contained"
@@ -225,7 +242,7 @@ function UnstyledSelectParentDialog (props) {
           onClick={onSubmit}
           variant="contained"
           color="primary"
-          disabled={disabled}
+          disabled={disabled || continueDisabled}
           >
           { isLast ? "Create" : "Continue" }
         </Button>
@@ -236,9 +253,217 @@ function UnstyledSelectParentDialog (props) {
 
 export const SelectParentDialog = withStyles(QuestionnaireStyle, {withTheme: true})(UnstyledSelectParentDialog)
 
+// The value of a subjectType's parents are either an array, or if it is length 1 it will just be an object
+// We must cast each case into an array to handle it properly
+export const parseToArray = (object) => {
+  // Null or undefined is length 0
+  if (!object) {
+    return [];
+  }
+
+  // Convert a non-array to a length 1 array
+  return !Array.isArray(object) ? [object] : object;
+}
+
+/**
+ * Component that displays a dialog to create a new subject
+ *
+ * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
+ * @param {bool} disabled If true, all controls are disabled
+ * @param {func} onClose Callback fired when the user tries to close this dialog
+ * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
+ * @param {bool} open If true, this dialog is open
+ */
+export function NewSubjectDialog (props) {
+  const { allowedTypes, disabled, onClose, onSubmit, open } = props;
+  const [ error, setError ] = useState("");
+  const [ newSubjectName, setNewSubjectName ] = useState([""]);
+  const [ newSubjectType, setNewSubjectType ] = useState([""]);
+  const [ newSubjectParent, setNewSubjectParent ] = useState([]);
+  const [ newSubjectIndex, setNewSubjectIndex ] = useState(0);
+  const [ newSubjectAllowedTypes, setNewSubjectAllowedTypes ] = useState([]);
+  const [ isPosting, setIsPosting ] = useState(false);
+
+  const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(true);
+  const [ selectParentPopperOpen, setSelectParentPopperOpen ] = useState(false);
+
+  const tableRef = useRef();
+
+  let curSubjectRequiresParents = newSubjectType[newSubjectIndex]?.["parent"];
+  let disabledControls = disabled || isPosting;
+
+  // Called only by createNewSubject, a callback to create the next child on our list
+  let createNewSubjectRecursive = (subject, index) => {
+    if (index <= -1) {
+      // End of recursion
+      setIsPosting(false);
+      onSubmit(subject);
+      return;
+    }
+
+    // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
+    let parent = newSubjectParent[index]?.["jcr:uuid"] || subject;
+    parent = (parent ? [parent] : []);
+    createSubjects(
+      [newSubjectName[index]],
+      newSubjectType[index],
+      parent,
+      newSubjectName[index],
+      (new_subject) => {createNewSubjectRecursive(new_subject, index-1)},
+      handleError);
+  }
+
+  // Callback when an error occurs during createNewSubjectRecursive
+  let handleError = (error) => {
+    setIsPosting(false);
+    setError(error);
+
+    // Since the error will always be during the creation of a subject, we'll revert back to the create subject page
+    setNewSubjectPopperOpen(true);
+    setSelectParentPopperOpen(false);
+  }
+  
+  // Called when creating a new subject
+  let createNewSubject = () => {
+    if (newSubjectName[newSubjectIndex] == "") {
+      setError("Please enter a name for this subject.");
+    } else if (newSubjectType[newSubjectIndex] == "") {
+      setError("Please select a subject type.");
+    } else if (selectParentPopperOpen && newSubjectParent.length < newSubjectIndex) {
+      // They haven't selected a parent for the current type yet
+      setError("Please select a valid parent.");
+    } else if (newSubjectPopperOpen && curSubjectRequiresParents) {
+      // Display the parent type to select
+      setError();
+      setNewSubjectPopperOpen(false);
+      setSelectParentPopperOpen(true);
+      tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
+    } else {
+      // Initiate the call
+      setIsPosting(true);
+      createNewSubjectRecursive(null, newSubjectIndex);
+    }
+  }
+
+  let changeNewSubjectName = (name) => {
+    setNewSubjectName((old) => {
+      let newNames = old.slice();
+      newNames[newSubjectIndex] = name;
+      return newNames;
+    })
+  }
+
+  let changeNewSubjectType = (type) => {
+    // Unselect all parents after this one
+    setNewSubjectParent((old) => {
+      let newParents = old.slice(0, newSubjectIndex);
+      newParents.push("");
+      return newParents;
+    });
+    setNewSubjectType((old) => {
+      let newTypes = old.slice();
+      newTypes[newSubjectIndex] = type;
+      return newTypes;
+    })
+  }
+
+  let changeNewSubjectParent = (parent) => {
+    setNewSubjectParent((old) => {
+      let newParents = old.slice();
+      if (old.length < newSubjectIndex) {
+        newParents.push(parent);
+      } else {
+        newParents[newSubjectIndex] = parent;
+      }
+      return newParents;
+    });
+  }
+
+  // Handle the case where the user wants to create a new subject to act as the parent
+  let addNewParentSubject = () => {
+    let newAllowedTypes = parseToArray(newSubjectType[newSubjectIndex]["parent"]);
+    setNewSubjectAllowedTypes((old) => {
+      let newTypes = old.slice();
+      newTypes.push(newAllowedTypes);
+      return newTypes;
+    });
+    setNewSubjectIndex((old) => old+1);
+    setNewSubjectName((old) => {
+      let newNames = old.slice();
+      newNames.push("");
+      return newNames;
+    });
+    setNewSubjectType((old) => {
+      let newTypes = old.slice();
+      newTypes.push("");
+      return newTypes;
+    });
+    setNewSubjectPopperOpen(true);
+    setSelectParentPopperOpen(false);
+  }
+
+  let goBack = () => {
+    // If we're at the "create a new subject" phase...
+    if (newSubjectPopperOpen) {
+      // And there are no new subjects...
+      if (newSubjectIndex == 0) {
+        // Close the entire dialog
+        onClose();
+      } else {
+        // Go back a stage, and reopen the select parent dialog
+        setNewSubjectIndex((old) => old-1);
+        setNewSubjectPopperOpen(false);
+        setSelectParentPopperOpen(true);
+      }
+    } else {
+      // Go back to the "new subject" stage
+        setNewSubjectPopperOpen(true);
+        setSelectParentPopperOpen(false);
+    }
+  }
+
+  return (
+    <React.Fragment>
+      <NewSubjectDialogChild
+        allowedTypes={newSubjectIndex == 0 ? allowedTypes : newSubjectAllowedTypes[newSubjectIndex-1]}
+        continueDisabled={!(newSubjectName[newSubjectIndex] && newSubjectType[newSubjectIndex])}
+        disabled={disabledControls}
+        error={error}
+        onClose={goBack}
+        onChangeSubject={(event) => {changeNewSubjectName(event.target.value)}}
+        onChangeType = {changeNewSubjectType}
+        onSubmit={createNewSubject}
+        requiresParents={curSubjectRequiresParents}
+        open={open && newSubjectPopperOpen}
+        value={newSubjectName[newSubjectIndex]}
+        />
+      <SelectParentDialog
+        childType={newSubjectType[newSubjectIndex]}
+        continueDisabled={!newSubjectParent[newSubjectIndex]}
+        disabled={disabledControls}
+        error={error}
+        onBack={() => {
+          // Go back to the new subject popper
+          setNewSubjectPopperOpen(true);
+          setSelectParentPopperOpen(false);
+          setError();
+        }}
+        onClose={goBack}
+        onChangeParent={changeNewSubjectParent}
+        onCreateParent={addNewParentSubject}
+        onSubmit={createNewSubject}
+        open={open && selectParentPopperOpen}
+        parentType={newSubjectType[newSubjectIndex]?.["parent"]}
+        tableRef={tableRef}
+        value={newSubjectParent[newSubjectIndex]}
+        />
+    </React.Fragment>)
+}
+
 /**
  * Component that displays the list of subjects in a dialog. Double clicking a subject selects it.
  *
+ * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
  * @param {open} bool Whether or not this dialog is open
  * @param {func} onChange Callback for when the user changes their selection
  * @param {func} onClose Callback for when the user closes this dialog
@@ -248,51 +473,33 @@ export const SelectParentDialog = withStyles(QuestionnaireStyle, {withTheme: tru
  * @param {func} onPopperClose Callback for when user closes the 'Create a new subject' dialog
  */
 function UnstyledSelectorDialog (props) {
-  const { classes, open, onChange, onClose, onError, title, popperOpen, onPopperClose, ...rest } = props;
+  const { allowedTypes, classes, disabled, open, onChange, onClose, onError, title, popperOpen, onPopperClose, ...rest } = props;
   const [ subjects, setSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
-  const [ isPosting, setIsPosting ] = useState();
-  const [ newSubjectName, setNewSubjectName ] = useState("");
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
-  const [ newSubjectError, setNewSubjectError ] = useState();
+  const [ isPosting, setIsPosting ] = useState(false);
 
   // Handle the user clicking on a subject, potentially submitting it
   let selectSubject = (subject) => {
-    setSelectedSubject(subject);
-  }
-
-  // Handle an error when creating a new subject
-  let handleCreateSubjectsError = (message) => {
-    setNewSubjectError(message);
-    setIsPosting(false);
-  }
-
-  // Handle the SubjectSelector clicking on a subject, selecting it
-  let handleSubmit = (useNewSubject) => {
-    // Submit the new subjects
-    if (useNewSubject) {
-      setIsPosting(true);
-      createSubjects([newSubjectName], selectedSubject, newSubjectName, grabNewSubject, handleCreateSubjectsError);
-    } else {
-      onChange(selectedSubject);
-      setNewSubjectError();
-      setNewSubjectPopperOpen(false);
+    if (selectedSubject == subject) {
+      handleSubmitExisting();
     }
+    setSelectedSubject(subject);
   }
 
   // Obtain the full details on a new subject
   let grabNewSubject = (subjectPath) => {
-    let url = new URL(subjectPath + ".json", window.location.origin);
+    let url = new URL(subjectPath + ".deep.json", window.location.origin);
+
+    setIsPosting(true);
 
     fetch(url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((data) => appendPath(data, subjectPath))
       .then(onChange)
       .then(() => setNewSubjectPopperOpen(false))
-      .then(() => onPopperClose())
-      .then(() => setNewSubjectName(""))
+      .then(() => onPopperClose && onPopperClose())
       .catch((err) => {console.log(err); onError(err);})
-      .then(() => setNewSubjectError())
       .finally(() => {setIsPosting(false);});
   }
 
@@ -302,29 +509,40 @@ function UnstyledSelectorDialog (props) {
     return json;
   }
 
-  let closeNewSubjectPopper = () => {
-    setNewSubjectError();
+  // Handle the SubjectSelector clicking on a subject, selecting it
+  let handleSubmitNew = (subject) => {
+    setSelectedSubject(subject);
+    grabNewSubject(subject);
     setNewSubjectPopperOpen(false);
-    onPopperClose();
-    //clear the input field
-    setNewSubjectName("");
   }
+
+  // Handle the user selecting a subject that already exists
+  let handleSubmitExisting = () => {
+    onChange(selectedSubject);
+    setNewSubjectPopperOpen(false);
+  }
+
+  let closeNewSubjectPopper = () => {
+    setNewSubjectPopperOpen(false);
+    onPopperClose && onPopperClose();
+  }
+
+  let disabled_controls = isPosting || disabled;
 
   return (<React.Fragment>
     <NewSubjectDialog
-      disabled={isPosting}
-      error={newSubjectError}
+      allowedTypes={allowedTypes}
       onClose={closeNewSubjectPopper}
-      onChange={(event) => {setNewSubjectName(event.target.value);}}
-      onSubmit={() => {handleSubmit(true);}}
-      open={newSubjectPopperOpen}
-      value={newSubjectName}
+      onSubmit={handleSubmitNew}
+      open={open && newSubjectPopperOpen}
       />
     <Dialog open={open} onClose={onClose}>
       {title && <DialogTitle>{title}</DialogTitle>}
       <DialogContent className={classes.NewFormDialog}>
+        {isPosting && <CircularProgress />}
         <StyledSubjectSelectorList
-          disabled={isPosting}
+          allowedTypes={allowedTypes}
+          disabled={disabled_controls}
           onError={onError}
           onSelect={(data) => {selectSubject(data);}}
           setSubjects={setSubjects}
@@ -337,6 +555,7 @@ function UnstyledSelectorDialog (props) {
         <Button
           variant="contained"
           color="secondary"
+          disabled={disabled_controls}
           onClick={() => { setNewSubjectPopperOpen(true); }}
           className={classes.createNewSubjectButton}
           >
@@ -346,13 +565,15 @@ function UnstyledSelectorDialog (props) {
           onClick={onClose}
           variant="contained"
           color="default"
+          disabled={disabled_controls}
           >
           Cancel
         </Button>
         <Button
-          onClick={() => handleSubmit()}
+          onClick={handleSubmitExisting}
           variant="contained"
           color="primary"
+          disabled={disabled_controls}
           >
           Confirm
         </Button>

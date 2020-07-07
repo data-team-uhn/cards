@@ -24,7 +24,7 @@ import { CircularProgress, Button, Dialog, DialogActions, DialogContent, DialogT
 import { ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
-import SubjectSelectorList, { createSubjects, NewSubjectDialog, SelectParentDialog, SubjectListItem } from "../questionnaire/SubjectSelector.jsx";
+import SubjectSelectorList, { NewSubjectDialog, SubjectListItem, parseToArray } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
@@ -39,60 +39,14 @@ function NewFormDialog(props) {
   const { children, classes, presetPath } = props;
   const [ open, setOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
-  const [ newSubjectParentPopperOpen, setNewSubjectParentPopperOpen ] = useState(false);
-  const [ newSubjectName, setNewSubjectName ] = useState("");
   const [ initialized, setInitialized ] = useState(false);
   const [ questionnaires, setQuestionnaires ] = useState([]);
   const [ presetQuestionnaire, setPresetQuestionnaire ] = useState();
   const [ selectedQuestionnaire, setSelectedQuestionnaire ] = useState();
   const [ selectedSubject, setSelectedSubject ] = useState();
-  const [ selectedSubjectType, setSelectedSubjectType ] = useState("");
-  const [ selectedParentTypes, setSelectedParentTypes ] = useState([]);
-  const [ selectedSubjectParentNumber, setSelectedSubjectParentNumber ] = useState(0);
-  const [ selectedNewSubjectParents, setSelectedNewSubjectParents ] = useState([]);
   const [ progress, setProgress ] = useState();
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ error, setError ] = useState("");
-
-  const tableRef = useRef();
-
-  // The value of a subjectType's parents are either an array, or if it is length 1 it will just be an object
-  // We must cast each case into an array to handle it properly
-  let parseToArray = (object) => {
-    // Null or undefined is length 0
-    if (!object) {
-      return [];
-    }
-
-    // A non-array is length 1
-    if (!Array.isArray(object)) {
-      return [object];
-    } else {
-      return object;
-    }
-  }
-
-  // Called when creating a new subject
-  let createNewSubject = () => {
-    if (newSubjectName == "") {
-      setError("Please enter a name for this subject.");
-    } else if (selectedSubjectType == "") {
-      setError("Please select a subject type.");
-    } else if (selectedNewSubjectParents.length < selectedSubjectParentNumber) {
-      // They haven't selected a parent for the current type yet
-      setError("Please select a valid parent.");
-    } else if (selectedNewSubjectParents.length < selectedParentTypes.length) {
-      // Display the next parent type to select
-      setError();
-      setNewSubjectPopperOpen(false);
-      setNewSubjectParentPopperOpen(true);
-      setSelectedSubjectParentNumber(old => old+1);
-      tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
-    } else {
-      let parent_uuids = selectedNewSubjectParents.map((parent) => parent["jcr:uuid"]);
-      createSubjects([newSubjectName], selectedSubjectType, parent_uuids, newSubjectName, createForm, setError);
-    }
-  }
 
   let createForm = (subject) => {
     setError("");
@@ -286,52 +240,11 @@ function NewFormDialog(props) {
       <NewSubjectDialog
         allowedTypes={parseToArray(selectedQuestionnaire?.["requiredSubjectTypes"])}
         disabled={isFetching}
-        error={error}
         onClose={() => { setNewSubjectPopperOpen(false); setError();}}
         onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
-        onChangeType={(e) => {
-          setSelectedSubjectType(e);
-          setSelectedParentTypes(parseToArray(e?.["parent"]));
-          setSelectedNewSubjectParents([]);
-          setSelectedSubjectParentNumber(-1);
-        }}
-        onSubmit={createNewSubject}
-        requiresParents={selectedSubjectType?.["parent"]}
+        onSubmit={createForm}
         open={newSubjectPopperOpen}
-        value={newSubjectName}
         />
-      <SelectParentDialog
-        childType={selectedSubjectType}
-        disabled={isFetching}
-        error={error}
-        onBack={() => {
-          if (selectedSubjectParentNumber > 0) {
-            setSelectedSubjectParentNumber((old) => old-1);
-          } else {
-            // Go back to the new subject popper
-            setNewSubjectPopperOpen(true);
-            setNewSubjectParentPopperOpen(false);
-            setError();
-          }
-        }}
-        onClose={() => { setNewSubjectParentPopperOpen(false); setError();}}
-        onChangeParent={(e) => {
-          setSelectedNewSubjectParents((old) => {
-            let newParents = old.slice();
-            if (old.length < selectedSubjectParentNumber) {
-              newParents.append(selectedSubjectParentNumber);
-            } else {
-              newParents[selectedSubjectParentNumber] = e;
-            }
-            return newParents;
-          });
-        }}
-        onSubmit={createNewSubject}
-        open={newSubjectParentPopperOpen}
-        parentType={selectedParentTypes[selectedSubjectParentNumber]}
-        tableRef={tableRef}
-        value={selectedNewSubjectParents?.[selectedSubjectParentNumber]}
-      />
       <div className={classes.newFormButtonWrapper}>
         <Tooltip title={children} aria-label="add">
           <Fab
