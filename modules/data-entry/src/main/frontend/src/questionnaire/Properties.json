@@ -1,6 +1,6 @@
 [
   {
     "maxPerSubject": "long",
-    "subjectTypes": "list"
+    "requiredSubjectTypes": "list"
   }
 ]

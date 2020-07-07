@@ -25,14 +25,26 @@ import QuestionnaireStyle from './QuestionnaireStyle';
 
 let ListInput = (props) => {
   let { objectKey, data } = props;
-  const [ value, setValue ] = React.useState((data[objectKey] && data[objectKey].split(',')) || []);
+  let [ value, setValue ] = React.useState(data[objectKey] || []);
   const [ options, setOptions ] = React.useState([]);
+  const requiredSubjectTypes = React.useState(objectKey.includes('requiredSubjectTypes'));
   
-  if (objectKey.includes('subjectTypes')) {
+  if (requiredSubjectTypes && options.length === 0) {
     fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType'`))
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then((json)=> { let labels = (json["rows"].map((subjectType) => subjectType.label)); labels.push('Any'); setOptions(labels); })
-    .catch(handleError);
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => { 
+        let optionTypes = Array.from(json["rows"]); setOptions(optionTypes);
+        let updatedValues = [];
+        for (let option in optionTypes) {
+          for (let val in value) {
+            if (option.includes(val)) {
+              updatedValues.push(optionTypes[option]);
+            } 
+          }
+        }
+        setValue(updatedValues);
+      })
+      .catch(handleError);
   }
 
   let handleError = () => {
@@ -40,44 +52,41 @@ let ListInput = (props) => {
   }
 
   const handleChange = (event) => {
-    if (objectKey.includes('subjectTypes') && event.target.value.includes('Any') && event.target.value.length > 1) {
-      setValue(event.target.value.splice(event.target.value.indexOf('Any', 1)));
-    } else {
-      setValue(event.target.value);
-    }
+    setValue(event.target.value);
   };
 
-  if (objectKey.includes('subjectTypes') && value.length === 0) {
-    setValue(['Any']);
-  }
-
   return (
-    <Select
-      id={objectKey}
-      name={objectKey}
-      multiple
-      value={value}
-      defaultValue={data[objectKey] && data[objectKey].split(',')}
-      onChange={handleChange}
-      input={!objectKey.includes('subjectTypes') && <Input id={objectKey} />}
-      renderValue={(selected) => (
-        <div>
-          {selected.map((value) => (
-            <Chip key={value} label={value}/>
-          ))}
-        </div>
-      )}
-    >
-    {options.map((name) => (
-      <MenuItem key={name} value={name}>
-        <Typography>{name}</Typography>
-      </MenuItem>
-    ))}
-  </Select>
+    <React.Fragment>
+      <input type="hidden" name={objectKey + "@TypeHint"} value={"Reference"} />
+      { 
+        // Maps each selected object to a reference type for submitting
+        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject['jcr:uuid']} />)
+      }
+      <Select
+        id={objectKey}
+        multiple
+        value={value}
+        onChange={handleChange}
+        input={requiredSubjectTypes ? <Input id={objectKey} /> : null}
+        renderValue={(value) => (
+          <div>
+            {value.map((val) => (
+              <Chip key={val['jcr:uuid']} label={val['label']}/>
+            ))}
+          </div>
+        )}
+      >
+      {options.map((name) => (
+        <MenuItem key={name['jcr:uuid']} value={name}>
+          <Typography>{name['label']}</Typography>
+        </MenuItem>
+      ))}
+    </Select>
+  </React.Fragment>
   )
 }
 
-ListInput.propTypes = {
+ListInput.propTypes = { 
   objectKey: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired
 };

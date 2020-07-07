@@ -200,7 +200,7 @@ let Questionnaire = (props) => {
                   <Typography>Subject Types:</Typography>
                 </dt>
                 <dd>
-                  <Typography>{data.subjectTypes || 'Any'}</Typography>
+                  { data.requiredSubjectTypes.map(subjectType => <Typography>{subjectType.label}</Typography>) || <Typography>'Any'</Typography> }
                 </dd>
               </dl>
             </CardContent>
