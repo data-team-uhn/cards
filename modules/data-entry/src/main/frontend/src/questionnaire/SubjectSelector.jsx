@@ -172,7 +172,7 @@ function UnstyledSelectParentDialog (props) {
   let initialized = parentType && childType;
 
   return(
-    <Dialog open={open} onClose={onClose} className={classes.newSubjectPopper}>
+    <Dialog open={open} onClose={onClose} className={classes.newSubjectPopper} keepMounted>
       <DialogTitle id="new-form-title">
         Select parent {parentType?.['label']} for new {childType?.['label']}.
       </DialogTitle>
