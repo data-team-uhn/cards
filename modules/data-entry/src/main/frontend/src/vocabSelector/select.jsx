@@ -62,10 +62,17 @@ function VocabularySelector(props) {
   //to handle questions with maxAnswers = 1 and no preset answers
   const noPreset = (numPresets === 0 && max === 1); //TODO: check noPreset
   
-  const disabled = (max > 1 || noPreset) && selected >= max;
-  const isRadio = max === 1 && numPresets > 0;
+  // const disabled = (max > 1 || noPreset) && selected >= max;
+
+  const disabled = max > 1 && selected >= max;
+  const isRadio = max === 1;
   const reminderText = `Please select at most ${max} option${max > 1 ? "s" : ""}.`;
   const selectedListChildren = listChildren.filter( (element) => element[IS_SELECTED_POS] );
+
+  console.log(disabled); // when disabled, should not show the search at all!
+
+  //isRadio should only be true if there are no predefined options --> todo: how to check if there are predefined options
+  // lfs:AnswerOption --> if this exists, radio button function
 
   let thesaurusRef = null;
 
