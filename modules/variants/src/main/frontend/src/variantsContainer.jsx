@@ -35,6 +35,7 @@ import BackupIcon from '@material-ui/icons/Backup';
 import GetApp from '@material-ui/icons/GetApp';
 import uuidv4 from "uuid/v4";
 import moment from "moment";
+import DragAndDrop from "./dragAndDrop.jsx";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -80,6 +81,35 @@ const useStyles = makeStyles(theme => ({
     height: "100%",
     margin: "0",
     borderRadius: "2px",
+  },
+  active: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "20px",
+    width: "20em",
+    border: "4px dashed",
+    borderColor: theme.palette.primary.main,
+    padding: "2rem",
+    paddingLeft: "0",
+    textAlign: "center",
+    borderRadius: "0.5rem",
+    boxShadow: "5px 5px 10px #C0C0C0",
+    cursor: "pointer"
+  },
+  dropzone: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "20px",
+    width: "22em",
+    border: "2px dashed",
+    borderColor: theme.palette.primary.main,
+    padding: "2rem",
+    paddingLeft: "0",
+    textAlign: "center",
+    borderRadius: "0.5rem",
+    cursor: "pointer"
   }
 }));
 
@@ -140,11 +170,13 @@ export default function variantsContainer() {
     setError(response.status + " " + response.statusText);
   };
 
-  let onFileChange = (event) => {
-    cleanForm();
+  let onDrop = (accepted) => {
 
-    let chosenFiles = event.target.files;
-    if (chosenFiles.length == 0) { return; }
+    let chosenFiles = accepted;
+    if (chosenFiles.length == 0) {
+      setError("Please submit valid file type");
+      return;
+    }
 
     let files = [];
     // Can not use await due to `regeneratorRuntime is not defined` error
@@ -152,8 +184,8 @@ export default function variantsContainer() {
     (function loop(i) {
         if (i < chosenFiles.length) new Promise((resolve, reject) => {
           let file = chosenFiles[i];
-          if (!(/^(.+)_(.+)_(.+).csv$/.test(file.name))) {
-            setError("File name " + file.name + " does not follow the name convention <Subject>_<tumor nb>_<region nb>.csv");
+          if (!(/^(.+)_(.+).csv$/.test(file.name))) {
+            setError("File name " + file.name + " does not follow the name convention <Subject>_<tumor nb>***.csv");
             return;
           }
 
@@ -163,7 +195,7 @@ export default function variantsContainer() {
           file.tumor       = {}
           file.tumor.id    = parsed[1];
           file.region      = {}
-          file.region.id   = parsed[2];
+          file.region.id   = parsed.length > 2 ? parsed[2] : "";
 
           setSingleFileSubjectData(file, files)
             .then( (processedFile) => {
@@ -590,21 +622,13 @@ export default function variantsContainer() {
           <LinearProgress color="primary" />
         </Grid>
       ) }
-      { error && <Typography color='error'>{error}</Typography> }
-      <label htmlFor="contained-button-file">
-        <IconButton color="primary" aria-label="upload picture" component="span">
-          <AttachFile />
-        </IconButton>
-      </label>
-      <input
-        accept=".csv"
-        className={classes.fileinput}
-        id="contained-button-file"
-        type="file"
-        name="*"
-        multiple
-        onChange={(event) => onFileChange(event)}
+
+      <DragAndDrop
+        handleDrop={onDrop}
+        classes={classes}
+        error={error}
       />
+
       <input type="hidden" name="*@TypeHint" value="nt:file" />
       <label htmlFor="contained-button-file">
         <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error} className={classes.uploadButton}>
