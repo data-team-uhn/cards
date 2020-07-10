@@ -75,7 +75,7 @@
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
         "lfs:extensionName": "Tumors", 
         "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
-        "lfs:extensionRenderURL": "asset:lfs-dataentry.Tumors.js",
+        "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js",
         "lfs:targetURL": "Tumor", // note: URL should be the same as the SubjectType
         "lfs:defaultOrder": 6,
         "jcr:content": {
@@ -89,7 +89,7 @@
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
         "lfs:extensionName": "Patients",
         "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
-        "lfs:extensionRenderURL": "asset:lfs-dataentry.Patients.js",
+        "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js",
         "lfs:targetURL": "Patient", // note: URL should be the same as the SubjectType
         "lfs:defaultOrder": 5,
         "jcr:content": {

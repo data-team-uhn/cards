@@ -67,7 +67,6 @@ function Subjects(props) {
   // import the function
 
   return (
-    <React.Fragment>
     <div>
       <Card>
         <CardHeader
@@ -100,7 +99,6 @@ function Subjects(props) {
         onPopperClose={() => {setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
       />
     </div> 
-    </React.Fragment>
   );
 }
 
