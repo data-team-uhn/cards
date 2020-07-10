@@ -24,17 +24,18 @@ import { Card, CardContent, CardHeader, Typography, withStyles } from "@material
 import SubjectDirectory from "../questionnaire/SubjectDirectory.jsx";
 
 /**
- * Component that displays the subjects related to SubjectType Tumor.
+ * Component that displays the subjects related to a SubjectType (specified in url).
  *
  */
-function Patients(props) {
+function SubjectType(props) {
   const { classes } = props;
   let [subjectID, setSubjectID] = useState();
   let [ error, setError ] = useState();
   let [initialized, setInitialized] = useState(false);
 
-  // inspect the URL to get the 'label' of the current SubjectType
+  // inspect the URL to get the 'label' of the current SubjectType and the title to be used
   const typeLabel = /content.html\/(.+)/.exec(location.pathname)[1];
+  const currentTitle = `${typeLabel}s`;
 
   let initialize = () => {
     setInitialized(true);
@@ -82,9 +83,9 @@ function Patients(props) {
 
   return (
       <React.Fragment>
-        {subjectID && <SubjectDirectory id={subjectID} title="Patients"/>}
+        {subjectID && <SubjectDirectory id={subjectID} title={currentTitle}/>}
       </React.Fragment>
   );
 }
 
-export default withStyles(QuestionnaireStyle)(Patients);
+export default withStyles(QuestionnaireStyle)(SubjectType);
