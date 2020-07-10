@@ -75,8 +75,7 @@ const DATA_TO_VALUE_TYPE = {
 //    />
 function NumberQuestion(props) {
   const { existingAnswer, errorText, isRange, classes, ...rest} = props;
-  const { text, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
-  const dataType = props.questionDefinition.dataType;
+  const { text, dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
   const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
   const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
   const [error, setError] = useState(false);
@@ -266,7 +265,6 @@ NumberQuestion.propTypes = {
 
 NumberQuestion.defaultProps = {
   errorText: "Invalid input",
-  dataType: 'double',
   isRange: false
 };
 
