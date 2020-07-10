@@ -163,7 +163,9 @@ function LiveTable(props) {
     let content = getNestedValue(entry, column.key);
 
     // Handle display formatting
-    if (column.format && column.format.startsWith('date')) {
+    if (column.format && typeof column.format === "function") {
+      content = column.format(content);
+    } else if (column.format && column.format.startsWith('date')) {
       // The format can be either just "date", in which case a default date format is used, or "date:FORMAT".
       // Cutting after the fifth char means that either we skip "date:" and read the format,
       // or we just get the empty string and use the default format.
