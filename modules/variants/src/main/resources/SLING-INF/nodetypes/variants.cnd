@@ -29,7 +29,7 @@
 [lfs:SomaticVariantsAnswer] > lfs:Answer
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/SomaticVariantAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "lfs/SomaticVariantsAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
