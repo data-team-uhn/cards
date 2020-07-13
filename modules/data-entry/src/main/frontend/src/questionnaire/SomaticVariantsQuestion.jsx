@@ -30,7 +30,7 @@ import moment from "moment";
 
 function SomaticVariantsQuestion(props) {
   let { existingAnswer, classes, ...rest } = props;
-  let file = existingAnswer[1][Object.keys(existingAnswer[1]).find(key => existingAnswer[1][key]["jcr:primaryType"] === "nt:file")];
+  let file = existingAnswer?.[1][Object.keys(existingAnswer[1]).find(key => existingAnswer[1][key]["jcr:primaryType"] === "nt:file")];
 
   return (
     <Question
