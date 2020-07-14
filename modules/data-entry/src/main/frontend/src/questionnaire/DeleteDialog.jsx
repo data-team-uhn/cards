@@ -79,7 +79,7 @@ let DeleteDialog = (props) => {
     const left = window.top.outerWidth / 2 + window.top.screenX - ( width / 2);
     // After a successful log in, the login dialog code will "open" the specified resource, which results in executing the specified javascript code
     window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${width}, height=${height}, top=${top}, left=${left}`);
-    // Display 'save'ss on button
+    // Display 'save' on button
     setLastSaveStatus(undefined);
   }
 
