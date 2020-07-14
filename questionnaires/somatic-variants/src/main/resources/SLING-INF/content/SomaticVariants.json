@@ -5,6 +5,7 @@
     "jcr:primaryType": "lfs:Question",
     "text": "Somatic Variants File",
     "dataType": "somaticVariantsFile",
+    "minAnswers": 1,
     "maxAnswers": 1
   }
 }
