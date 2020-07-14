@@ -37,4 +37,3 @@ StringInput.propTypes = {
 };
 
 export default withStyles(QuestionnaireStyle)(StringInput);
-  
