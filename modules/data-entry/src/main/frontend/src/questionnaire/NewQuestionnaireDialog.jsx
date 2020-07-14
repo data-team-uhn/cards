@@ -47,6 +47,7 @@ function NewQuestionnaireDialog(props) {
       setFetching(true);
     }
   }
+
   let createForm = () => {
     setError("");
 
