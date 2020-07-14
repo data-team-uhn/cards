@@ -36,10 +36,10 @@ let ListInput = (props) => {
         let optionTypes = Array.from(json["rows"]); setOptions(optionTypes);
         let updatedValues = [];
         for (let option in optionTypes) {
-          for (let val in value) {
-            if (option.includes(val)) {
-              updatedValues.push(optionTypes[option]);
-            } 
+          for (let val in value) { 
+            if (value[val].label === optionTypes[option].label) {
+              updatedValues.push(optionTypes[option]); 
+            }
           }
         }
         setValue(updatedValues);
