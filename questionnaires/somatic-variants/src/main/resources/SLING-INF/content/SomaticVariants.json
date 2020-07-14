@@ -3,7 +3,7 @@
   "title": "Somatic Variants Data",
   "file": {
     "jcr:primaryType": "lfs:Question",
-    "text": "Somatic Variant File",
+    "text": "Somatic Variants File",
     "dataType": "somaticVariantsFile",
     "maxAnswers": 1
   }
