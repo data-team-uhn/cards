@@ -127,7 +127,7 @@ export default function variantsContainer() {
   let [ regionSubjectUUID, setRegionSubjectUUID ] = useState();
 
   // Numerical upload progress object measured in %, for all files
-  let [ uploadProgress, setUploadProgress ] = useState();
+  let [ uploadProgress, setUploadProgress ] = useState({});
   // Marks that a upload operation is in progress
   let [ uploadInProgress, setUploadInProgress ] = useState();
 
@@ -185,7 +185,7 @@ export default function variantsContainer() {
         if (i < chosenFiles.length) new Promise((resolve, reject) => {
           let file = chosenFiles[i];
           if (!(/^(.+)_(.+).csv$/.test(file.name))) {
-            setError("File name " + file.name + " does not follow the name convention <Subject>_<tumor nb>***.csv");
+            setError("File name " + file.name + " does not follow the name convention <Subject>_<tumour nb>***.csv");
             return;
           }
 
