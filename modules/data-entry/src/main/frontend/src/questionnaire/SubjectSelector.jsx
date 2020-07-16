@@ -90,7 +90,7 @@ function UnstyledNewSubjectDialog (props) {
           <MaterialTable
             title="Select a type"
             columns={COLUMNS}
-            data={allowedTypes ? allowedTypes :
+            data={allowedTypes?.length ? allowedTypes :
               query => {
                 let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType");
                 url.searchParams.set("limit", query.pageSize);
@@ -723,10 +723,10 @@ function SubjectSelectorList(props) {
         columns={COLUMNS}
         data={query => {
             let condition = "";
-            if (allowedTypes || query.search) {
+            if (allowedTypes?.length || query.search) {
               condition = " WHERE ";
             }
-            if (allowedTypes) {
+            if (allowedTypes?.length) {
               condition += "(" + allowedTypes.map((type) => `n.'type' = '${type["jcr:uuid"]}'`).join(" OR ") + ")";
             }
             if (query.search) {

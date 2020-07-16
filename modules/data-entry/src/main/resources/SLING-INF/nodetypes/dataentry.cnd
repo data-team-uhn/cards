@@ -366,7 +366,8 @@
 
   // An optional list of lfs:SubjectTypes.
   // Any Forms for this questionnaire must have a subject with a type on the list.
-  - requiredSubjectTypes (REFERENCE) mandatory multiple
+  // If the list is empty, then any subject type is accepted.
+  - requiredSubjectTypes (REFERENCE) multiple
 
   // Children
 

@@ -1,6 +1,7 @@
 {
   "jcr:primaryType": "lfs:Questionnaire",
   "title": "Tissue Metrix Data",
+  "jcr:reference:requiredSubjectTypes": ["/SubjectTypes/Patient"],
   "file1": {
     "jcr:primaryType": "lfs:Question",
     "text": "File1",
