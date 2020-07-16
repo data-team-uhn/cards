@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.query.Query;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -81,9 +83,14 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
         final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
         // If we want this query to be fast, we need to use the exact nodetype requested.
-        // This isn't very pretty, but it's fast: just remove the 'homepage' part of the resource type.
-        final String nodeType =
-            request.getResource().getResourceType().replace('/', ':').replaceFirst("sHomepage$", "");
+        final Node node = request.getResource().adaptTo(Node.class);
+        String nodeType = "";
+        try {
+            Property type = node.getProperty("childNodeType");
+            nodeType = type.getString();
+        } catch (Exception e) {
+            nodeType = request.getResource().getResourceType().replace('/', ':').replaceFirst("sHomepage$", "");
+        }
         final StringBuilder query =
             // We select all child nodes of the homepage having the right type
             new StringBuilder("select n.* from [").append(nodeType).append("] as n");
