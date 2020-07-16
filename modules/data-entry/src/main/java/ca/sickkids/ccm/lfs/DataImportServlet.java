@@ -467,6 +467,8 @@ public class DataImportServlet extends SlingAllMethodsServlet
                 default:
                     result = valueFactory.createValue(standardizeValue(rawValue, question));
             }
+        } catch (NumberFormatException | NullPointerException e) {
+            LOGGER.warn("Invalid value of type {}: {}", dataType, rawValue);
         } catch (RepositoryException e) {
             LOGGER.warn("Value factory is unexpectedly unavailable: {}", e.getMessage());
             return null;
