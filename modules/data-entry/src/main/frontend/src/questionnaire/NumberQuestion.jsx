@@ -265,7 +265,6 @@ NumberQuestion.propTypes = {
 
 NumberQuestion.defaultProps = {
   errorText: "Invalid input",
-  dataType: 'double',
   isRange: false
 };
 
