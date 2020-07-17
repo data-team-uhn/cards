@@ -134,10 +134,6 @@ function Form (props) {
     setLoginDialogShow(false);
   }
 
-  let handleLoginClose= (success) => {
-    setLoginDialogShow(false);
-  }
-
   // Handle when the subject of the form changes
   let changeSubject = (subject) => {
     setData( (old) => {
