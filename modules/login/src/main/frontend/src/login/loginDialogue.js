@@ -33,7 +33,7 @@ class DialogueLoginContainer extends React.Component {
       <Dialog
         open={this.props.isOpen}
       >
-        <MainLoginComponent handleLogin={this.props.handleLogin}/>
+        <MainLoginComponent handleLogin={this.props.handleLogin} redirectOnLogin={false}/>
       </Dialog>
     );
   }

@@ -57,7 +57,7 @@ class MainLoginContainer extends React.Component {
           <Avatar className={classes.avatar}>
             { this.state.signInShown ? <ExitToAppIcon/> : <PersonAddIcon/> }
           </Avatar>
-          { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} /> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }
+          { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} redirectOnLogin={this.props.redirectOnLogin}/> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }
           <Typography>
             { this.state.signInShown ? "Don't have an account?" : "Already have an account?" }
           </Typography>

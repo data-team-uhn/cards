@@ -82,7 +82,9 @@ class SignIn extends React.Component {
       }
       this.setState({failedLogin: false});
       this.props.handleLogin && this.props.handleLogin(true);
-      window.location = this.loginRedirectPath();
+      if (this.props.redirectOnLogin) {
+        window.location = this.loginRedirectPath();
+      }
     })
     .catch((error) => {
       this.setState({failedLogin: true});

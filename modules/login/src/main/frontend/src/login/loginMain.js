@@ -20,4 +20,4 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MainLoginComponent from './loginMainComponent';
 
-ReactDOM.render(<MainLoginComponent selfContained/>, document.getElementById('main-login-container'));
+ReactDOM.render(<MainLoginComponent selfContained redirectOnLogin={true} />, document.getElementById('main-login-container'));

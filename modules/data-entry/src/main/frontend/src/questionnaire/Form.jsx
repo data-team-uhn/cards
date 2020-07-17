@@ -68,6 +68,8 @@ function Form (props) {
   let [ changedSubject, setChangedSubject ] = useState();
   let [ loginDialogShow, setLoginDialogShow ] = useState(false);
 
+  let formNode = React.useRef();
+
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
   // such as authorship and versioning information, the associated subject,
@@ -95,7 +97,7 @@ function Form (props) {
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
   let saveData = (event) => {
     // This stops the normal browser form submission
-    event.preventDefault();
+    event && event.preventDefault();
 
     // If the previous save attempt failed, instead of trying to save again, open a login popup
     if (lastSaveStatus === false) {
@@ -105,7 +107,7 @@ function Form (props) {
 
     setSaveInProgress(true);
     // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
-    let data = new FormData(event.currentTarget);
+    let data = new FormData(event ? event.currentTarget : formNode.current);
     fetch(`/Forms/${id}`, {
       method: "POST",
       body: data
@@ -130,8 +132,8 @@ function Form (props) {
   }
 
   let handleLogin = (success) => {
+    success && setLoginDialogShow(false);
     success && saveData();
-    setLoginDialogShow(false);
   }
 
   // Handle when the subject of the form changes
@@ -169,7 +171,7 @@ function Form (props) {
   let parentDetails = data?.subject?.parents && getHierarchy(data.subject.parents, React.Fragment, () => ({}));
 
   return (
-    <form action={data["@path"]} method="POST" onSubmit={saveData} onChange={()=>setLastSaveStatus(undefined)} key={id}>
+    <form action={data["@path"]} method="POST" onSubmit={saveData} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         <Grid item className={classes.formHeader}>
           <Typography variant="overline">{parentDetails}</Typography>
