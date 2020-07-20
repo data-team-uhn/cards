@@ -45,7 +45,6 @@ function SubjectType(props) {
     fetch(url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
-        console.log(response);
         // jcr:uuid of current SubjectType will be stored in `subjectID`
         setSubjectID(response["rows"][0]["jcr:uuid"]);
       })

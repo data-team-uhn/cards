@@ -98,7 +98,7 @@ function Subjects(props) {
         popperOpen={newSubjectPopperOpen}
         onPopperClose={() => {setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
       />
-    </div> 
+    </div>
   );
 }
 
