@@ -58,26 +58,13 @@ function VocabularySelector(props) {
   const [radioValue, setRadioValue] = useState("&nbsp;");
 
   //check for preset answers
-  //if preset answers, show radio button/handle that way
   const numPresets = Object.entries(questionDefinition).filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerOption").length;
 
-  //to handle questions with maxAnswers = 1 and no preset answers
-  // const noPreset = (numPresets === 0 && max === 1); //TODO: check noPreset
-
-  console.log(numPresets);
-  
-  // const disabled = (max > 1 || noPreset) && selected >= max;
-
-  // const disabled = max > 1 && selected >= max;
-  // const isRadio = max === 1;
-
   const disabled = !numPresets && selected >= max;
-  const isRadio = Boolean(numPresets); 
+  const isRadio = Boolean(numPresets) && max===1; 
 
   const reminderText = `Please select at most ${max} option${max > 1 ? "s" : ""}.`;
   const selectedListChildren = listChildren.filter( (element) => element[IS_SELECTED_POS] );
-
-  console.log(disabled); // when disabled, should not show the search at all!
 
   let thesaurusRef = null;
 
@@ -290,7 +277,7 @@ function VocabularySelector(props) {
         onInputFocus = {() => {setRadioSelect(radioValue);}}
         {...rest}
       >
-        {(!isRadio) ?(<Typography color="textSecondary">{reminderText}</Typography>) : ''}
+        {(!numPresets) ?(<Typography color="textSecondary">{reminderText}</Typography>) : ''}
         {
           // If we don't have an external container, add results here
           typeof selectionContainer === "undefined" && generateList(disabled, isRadio)
