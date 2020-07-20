@@ -58,21 +58,26 @@ function VocabularySelector(props) {
   const [radioValue, setRadioValue] = useState("&nbsp;");
 
   //check for preset answers
+  //if preset answers, show radio button/handle that way
   const numPresets = Object.entries(questionDefinition).filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerOption").length;
+
   //to handle questions with maxAnswers = 1 and no preset answers
-  const noPreset = (numPresets === 0 && max === 1); //TODO: check noPreset
+  // const noPreset = (numPresets === 0 && max === 1); //TODO: check noPreset
+
+  console.log(numPresets);
   
   // const disabled = (max > 1 || noPreset) && selected >= max;
 
-  const disabled = max > 1 && selected >= max;
-  const isRadio = max === 1;
+  // const disabled = max > 1 && selected >= max;
+  // const isRadio = max === 1;
+
+  const disabled = !numPresets && selected >= max;
+  const isRadio = Boolean(numPresets); 
+
   const reminderText = `Please select at most ${max} option${max > 1 ? "s" : ""}.`;
   const selectedListChildren = listChildren.filter( (element) => element[IS_SELECTED_POS] );
 
   console.log(disabled); // when disabled, should not show the search at all!
-
-  //isRadio should only be true if there are no predefined options --> todo: how to check if there are predefined options
-  // lfs:AnswerOption --> if this exists, radio button function
 
   let thesaurusRef = null;
 
@@ -144,7 +149,7 @@ function VocabularySelector(props) {
   }
 
   let handleThesaurus = (id, name) => {
-    var isRadio = (max === 1 && numPresets > 0);
+    var isRadio = (isRadio);
     if (isRadio) {
       setRadioName(name);
       setRadioValue(id);
@@ -158,7 +163,7 @@ function VocabularySelector(props) {
   // Create a new child from the selection with parent
   let addSelection = (id, name) => {
     // Do not add anything if we are at our maximum number of selections
-    if (selected >= max && (max > 1 || noPreset) ) {
+    if (disabled) {
       return old;
     }
 
@@ -172,7 +177,7 @@ function VocabularySelector(props) {
       if (max == 1) {
         // If only 1 child is allowed, replace it instead of copying our array
         var newChildren = defaultListChildren.slice();
-        newChildren.push([name, id, false, true]);
+        newChildren[0] = ([name, id, false, true]);
         setSelected(1);
         setRadioSelect(name);
         return newChildren;
@@ -205,7 +210,8 @@ function VocabularySelector(props) {
 
     // If any answers are existing (i.e. we are loading an old form), also populate these
     if (hasExistingAnswers) {
-      setSelected(existingAnswer[1].value.length);
+      console.log(existingAnswer[1].value.length);
+      typeof(existingAnswer[1].value) == "string" ? setSelected(1) : setSelected(existingAnswer[1].value.length);
       Array.of(existingAnswer[1].value).flat().forEach( (id) => {
         // Do not add a pre-existing answer if it is a default
         if (id in defaultSuggestions) {
@@ -242,7 +248,6 @@ function VocabularySelector(props) {
   }
 
   let removeSelection = (id, name, wasSelected=false) => {
-    // if removed --> reload page --> remains greyed out ?
     // Do not remove this element if it is in our default suggestions
     // Instead, just update the number of items selected
     if (typeof defaultSuggestions !== "undefined" && id in defaultSuggestions) {
@@ -285,7 +290,7 @@ function VocabularySelector(props) {
         onInputFocus = {() => {setRadioSelect(radioValue);}}
         {...rest}
       >
-        {(max > 1 || noPreset) ?(<Typography color="textSecondary">{reminderText}</Typography>) : ''}
+        {(!isRadio) ?(<Typography color="textSecondary">{reminderText}</Typography>) : ''}
         {
           // If we don't have an external container, add results here
           typeof selectionContainer === "undefined" && generateList(disabled, isRadio)
