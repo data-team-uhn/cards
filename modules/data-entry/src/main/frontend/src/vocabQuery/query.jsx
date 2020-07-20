@@ -277,7 +277,7 @@ class VocabularyQuery extends React.Component {
                         </div>
                       )}
                       </CardContent>
-                      {this.state.infoTypeOf.length > 0 && !this.state.browserOpened &&
+                      {!this.state.browserOpened &&
                         <CardActions className={classes.infoPaper}>
                           <Button size="small" onClick={this.openDialog} variant='contained' color='primary'>Learn more</Button>
                         </CardActions>
@@ -489,7 +489,7 @@ class VocabularyQuery extends React.Component {
       if ("parents" in data) {
         typeOf = data["parents"].map(element =>
           element["label"] || element["name"] || element["identifier"] || element["id"]
-        );
+        ).filter(i => i);
       }
 
       this.setState({
