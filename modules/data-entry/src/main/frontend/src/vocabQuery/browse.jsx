@@ -77,8 +77,8 @@ function VocabularyBrowser(props) {
       var parentBranches = null;
       if ("parents" in data) {
         parentBranches = data["parents"].map((row, index) => {
-          return constructBranch(row["identifier"], row["label"], false, false, false, row["lfs:hasChildren"]);
-        });
+          return row["identifier"] ? constructBranch(row["identifier"], row["label"], false, false, false, row["lfs:hasChildren"]) : false;
+        }).filter(i => i);
       }
 
       setParentNode(parentBranches);
