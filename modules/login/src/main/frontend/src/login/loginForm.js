@@ -34,7 +34,7 @@ import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import styles from "../styling/styles";
 
 class SignIn extends React.Component {
-  constructor(props, selfContained) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -78,17 +78,22 @@ class SignIn extends React.Component {
     .then((response) => {
       if (!response.ok) {
         throw Error(response.statusText);
+        this.props.handleLogin && this.props.handleLogin(false);
       }
       this.setState({failedLogin: false});
-      window.location = this.loginRedirectPath();
+      this.props.handleLogin && this.props.handleLogin(true);
+      if (this.props.redirectOnLogin) {
+        window.location = this.loginRedirectPath();
+      }
     })
     .catch((error) => {
       this.setState({failedLogin: true});
+      this.props.handleLogin && this.props.handleLogin(false);
     });
   }
 
   render() {
-    const { classes, selfContained } = this.props;
+    const { classes } = this.props;
     const { passwordIsMasked } = this.state;
 
     return (
