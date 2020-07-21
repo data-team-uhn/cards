@@ -92,6 +92,7 @@ function Section(props) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
+  const [ removableAnswers, setRemovableAnswers ] = useState([]);
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const displayed = ConditionalComponentManager.evaluateCondition(
@@ -101,6 +102,13 @@ function Section(props) {
   let closeDialog = () => {
     setSelectedUUID(undefined);
     setDialogOpen(false);
+  }
+
+  var allAnswerIds = [];
+  function addAnswerId(id) {
+    console.log("Section.jsx: Adding answerId: " + id);
+    allAnswerIds.push(id);
+    console.log(allAnswerIds);
   }
 
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
@@ -187,14 +195,16 @@ function Section(props) {
                 item
                 >
                 <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-                  {/* delete any existing answer section before inputting new answers in section */}
-                  {instanceLabels.map((uuid) =>
-                    <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
-                  )}
+                  {console.log("instanceLabels = " + instanceLabels)}
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                     Object.entries(sectionDefinition)
                       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                      .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>)
+                      .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes} onConfigured={(id) => {addAnswerId(id)}}></FormEntry>)
+                  }
+                  {
+                    removableAnswers.map((path) =>
+                      <input type="hidden" name={`${path}@Delete`} value="0" key={path}></input>
+                    )
                   }
                 </Grid>
               </Collapse>
