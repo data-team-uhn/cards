@@ -23,6 +23,7 @@ import { SelectorDialog } from "../questionnaire/SubjectSelector.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import { getHierarchy } from "../questionnaire/Subject.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function Subjects(props) {
@@ -50,6 +51,11 @@ function Subjects(props) {
       "key": "jcr:created",
       "label": "Created on",
       "format": "date:YYYY-MM-DD HH:mm",
+    },
+    {
+      "key": "parents",
+      "label": "Hierarchy",
+      "format": (parent) => (parent ? getHierarchy(parent, React.Fragment, () => ({})) : "No parents"),
     },
   ]
 

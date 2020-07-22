@@ -314,7 +314,7 @@ function Filters(props) {
         <DialogTitle id="new-form-title">
           Modify filters
         </DialogTitle>
-        <DialogContent dividers className={classes.dialogContent}>
+        <DialogContent dividers>
           {error &&
             <Typography color="error" className={classes.filterLabel}>
               Error obtaining filter data: {error.status} {error.statusText}

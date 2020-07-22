@@ -17,51 +17,26 @@
 //  under the License.
 //
 import React from 'react';
-import ReactDOM from 'react-dom';
-import SignUpForm from './signUpForm';
-import SignIn from './loginForm';
-import { Button, Dialog } from '@material-ui/core';
+import { Dialog } from '@material-ui/core';
+
+import MainLoginComponent from './loginMainComponent';
 
 class DialogueLoginContainer extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      signInShown: true,
-      opened: false
-    }
-    {document.getElementById('login-homepage-button') && document.getElementById('login-homepage-button').addEventListener('click', () => {this.setState({signInShown: true}); this.handleOpen();})}
-    {document.getElementById('signup-homepage-button') && document.getElementById('signup-homepage-button').addEventListener('click', () => {this.setState({signInShown: false}); this.handleOpen();})}
-  }
-
-  handleOpen() {
-    this.setState({opened: true});
-  }
-
-  handleClose() {
-    this.setState({opened: false});
-  }
-
-  // Toggle between sign in and sign up
-  handleSwap = () => {
-    this.setState(prevState => ({
-      signInShown: !prevState.signInShown,
-    }));
   }
 
   render () {
+    const { classes } = this.props;
+
     return (
       <Dialog
-        open={this.state.opened}
-        onClose={() => this.handleClose()}
+        open={this.props.isOpen}
       >
-        {this.state.signInShown ? <SignIn /> : <SignUpForm loginOnSuccess={true} />}
-        <Button onClick={()=>this.handleClose()}>Close</Button>
+        <MainLoginComponent handleLogin={this.props.handleLogin} redirectOnLogin={false}/>
       </Dialog>
     );
   }
 }
 
 export default DialogueLoginContainer;
-
-ReactDOM.render(<DialogueLoginContainer/>, document.getElementById('dialogue-login-container'));

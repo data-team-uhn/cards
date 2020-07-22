@@ -69,5 +69,33 @@
             "jcr:data": "",
             "jcr:mimeType": "text/html"
         }
+    },
+    "Tumors": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionName": "Tumors", 
+        "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js",
+        "lfs:targetURL": "Tumor", // note: URL should be the same as the SubjectType
+        "lfs:defaultOrder": 6,
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "test",
+            "jcr:mimeType": "text/html"
+        }
+    },
+    "Patients": {
+        "jcr:primaryType": "lfs:Extension",
+        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionName": "Patients",
+        "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
+        "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js",
+        "lfs:targetURL": "Patient", // note: URL should be the same as the SubjectType
+        "lfs:defaultOrder": 5,
+        "jcr:content": {
+            "jcr:primaryType": "nt:resource",
+            "jcr:data": "test",
+            "jcr:mimeType": "text/html"
+        }
     }
 }

@@ -199,7 +199,8 @@ public class BioOntologyIndexer implements VocabularyIndexer
             Node vocabularyTermNode;
             try {
                 vocabularyTermNode = this.vocabularyNode.get()
-                                         .addNode("./" + term.getId().replaceAll("\\W", ""), "lfs:VocabularyTerm");
+                                         .addNode("./" + term.getId()
+                                         .replaceAll("[^A-Za-z0-9_\\.]", ""), "lfs:VocabularyTerm");
             } catch (ItemExistsException e) {
                 // Sometimes terms appear twice; we'll just update the existing node
                 vocabularyTermNode = this.vocabularyNode.get().getNode(term.getId());

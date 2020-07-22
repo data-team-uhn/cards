@@ -33,8 +33,9 @@ import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireS
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import moment from "moment";
 import { getHierarchy } from "./Subject";
-import { SelectorDialog } from "./SubjectSelector";
+import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
+import DialogueLoginContainer from "../login/loginDialogue.js";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -63,7 +64,11 @@ function Form (props) {
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
+  let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
+  let [ loginDialogShow, setLoginDialogShow ] = useState(false);
+
+  let formNode = React.useRef();
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
@@ -92,7 +97,7 @@ function Form (props) {
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
   let saveData = (event) => {
     // This stops the normal browser form submission
-    event.preventDefault();
+    event && event.preventDefault();
 
     // If the previous save attempt failed, instead of trying to save again, open a login popup
     if (lastSaveStatus === false) {
@@ -102,7 +107,7 @@ function Form (props) {
 
     setSaveInProgress(true);
     // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
-    let data = new FormData(event.currentTarget);
+    let data = new FormData(event ? event.currentTarget : formNode.current);
     fetch(`/Forms/${id}`, {
       method: "POST",
       body: data
@@ -122,14 +127,13 @@ function Form (props) {
 
   // Open the login page in a new popup window, centered wrt the parent window
   let loginToSave = () => {
-    const width = 600;
-    const height = 800;
-    const top = window.top.outerHeight / 2 + window.top.screenY - ( height / 2);
-    const left = window.top.outerWidth / 2 + window.top.screenX - ( width / 2);
-    // After a successful log in, the login dialog code will "open" the specified resource, which results in executing the specified javascript code
-    window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${width}, height=${height}, top=${top}, left=${left}`);
-    // Display 'save' on button
     setLastSaveStatus(undefined);
+    setLoginDialogShow(true);
+  }
+
+  let handleLogin = (success) => {
+    success && setLoginDialogShow(false);
+    success && saveData();
   }
 
   // Handle when the subject of the form changes
@@ -167,7 +171,7 @@ function Form (props) {
   let parentDetails = data?.subject?.parents && getHierarchy(data.subject.parents, React.Fragment, () => ({}));
 
   return (
-    <form action={data["@path"]} method="POST" onSubmit={saveData} onChange={()=>setLastSaveStatus(undefined)} key={id}>
+    <form action={data["@path"]} method="POST" onSubmit={saveData} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         <Grid item className={classes.formHeader}>
           <Typography variant="overline">{parentDetails}</Typography>
@@ -186,9 +190,12 @@ function Form (props) {
         <div className={classes.formProvider}></div>
         <FormProvider>
           <SelectorDialog
+            allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}
+            error={selectorDialogError}
             open={selectorDialogOpen}
             onChange={changeSubject}
             onClose={() => {setSelectorDialogOpen(false)}}
+            onError={setSelectorDialogError}
             title="Set subject"
             />
           {changedSubject &&
@@ -217,6 +224,7 @@ function Form (props) {
         lastSaveStatus === false ? 'Save failed, log in and try again?' :
         'Save'}
       </Button>
+      <DialogueLoginContainer isOpen={loginDialogShow} handleLogin={handleLogin}/>
     </form>
   );
 };
