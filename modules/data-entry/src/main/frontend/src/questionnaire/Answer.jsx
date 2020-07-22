@@ -30,12 +30,22 @@ export const VALUE_POS = 1;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, onChangeNote, noteComponent, noteProps, onConfigured } = props;
+  let { answers, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, onChangeNote, noteComponent, noteProps, onConfigured, didGrow } = props;
   let { enableNotes, sourceVocabulary } = { ...props, ...questionDefinition };
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
-  console.log("Answer.jsx: Creating Answer with answerPath=" + answerPath);
-  onConfigured(answerPath);
+  const [ isInitialized, setInitialized ] = useState(false);
+  if (isInitialized == false && onConfigured !== null) {
+    console.log("Answer.jsx: Creating Answer with answerPath=" + answerPath);
+    //onConfigured(answerPath);
+    //console.log("Answer.jsx: onConfigured = " + onConfigured);
+    //onConfigured.push(answerPath);
+    if (!(answerPath in onConfigured[0])) {
+      onConfigured[1](onConfigured[0].concat(answerPath));
+      didGrow(true);
+    }
+    setInitialized(true);
+  }
   // Hooks must be pulled from the top level, so this cannot be moved to inside the useEffect()
   const changeFormContext = useFormWriterContext();
   // Rename this variable to start with a capital letter so React knows it is a component

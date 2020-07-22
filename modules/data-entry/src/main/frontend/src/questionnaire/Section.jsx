@@ -93,6 +93,7 @@ function Section(props) {
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
   const [ removableAnswers, setRemovableAnswers ] = useState([]);
+  const [ needsUpdate, setNeedsUpdate ] = useState(false);
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const displayed = ConditionalComponentManager.evaluateCondition(
@@ -104,11 +105,71 @@ function Section(props) {
     setDialogOpen(false);
   }
 
-  var allAnswerIds = [];
+  if (needsUpdate == true) {
+    setNeedsUpdate(false);
+  }
+
+  const totalAnswers = Object.entries(sectionDefinition).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType'])).length;
+  const answerStateVars = [];
+  for (let i = 0; i < totalAnswers; i++) {
+    let [ stateVar, stateVarSetter ] = useState([]);
+    answerStateVars.push([stateVar, stateVarSetter]);
+  }
+  let renderedAnswers = 0;
+
+  function calculateDeletion() {
+    let delList = [];
+    for (let i = 0; i < answerStateVars.length; i++) {
+      for (let j = 0; j < answerStateVars[i][0].length - 1; j++) {
+        console.log("Section.jsx: ... DELETING: " + answerStateVars[i][0][j]);
+        delList.push(answerStateVars[i][0][j]);
+      }
+    }
+    return delList;
+  }
+
+  const allAnswerIds = ["Section.jsx"];
+  //this.addAnswerId = this.addAnswerId.bind(this);
   function addAnswerId(id) {
     console.log("Section.jsx: Adding answerId: " + id);
     allAnswerIds.push(id);
     console.log(allAnswerIds);
+    storeAnswerIds(allAnswerIds);
+  }
+  function storeAnswerIds(allAnswerIds) {
+    //setRemovableAnswers(removableAnswers.concat([allAnswerIds]));
+    /*
+    for (var i = 0; i < removableAnswers.length; i++) {
+      //Is there an array that is equal to allAnswerIds
+      if (removableAnswers[i].length != allAnswerIds.length) {
+        continue;
+      }
+      var foundMatch = true;
+      for (var j = 0; j < allAnswerIds.length; j++) {
+        if (removableAnswers[i][j] != allAnswerIds[j]) {
+          foundMatch = false;
+          break;
+        }
+      }
+      if (foundMatch) {
+        return;
+      }
+    }
+    */
+    //setRemovableAnswers(removableAnswers.concat([allAnswerIds]));
+    /*
+    for (var i = 0; i < allAnswerIds.length; i++) {
+      console.log("Section.jsx: Checking ... " + allAnswerIds[i]);
+      if (allAnswerIds[i] in removableAnswers) {
+        continue;
+      }
+      console.log("Section.jsx: Adding ... " + allAnswerIds[i]);
+      //setRemovableAnswers(removableAnswers.concat(allAnswerIds[i]));
+      //this.setState({removableAnswers: removableAnswers.concat(allAnswerIds[i])});
+    }
+    console.log("Section.jsx: storeAnswerIds()");
+    console.log(removableAnswers);
+    */
   }
 
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
@@ -199,13 +260,15 @@ function Section(props) {
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                     Object.entries(sectionDefinition)
                       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                      .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes} onConfigured={(id) => {addAnswerId(id)}}></FormEntry>)
+                      .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes} onConfigured={answerStateVars[renderedAnswers++]} didGrow={setNeedsUpdate}></FormEntry>)
                   }
+                  {console.log("N_ANSWERS=" + Object.entries(sectionDefinition).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType'])).length)}
+                  {console.log(answerStateVars)}
+                  {console.log("END OF ANSWER STATE VARS")}
                   {
-                    removableAnswers.map((path) =>
-                      <input type="hidden" name={`${path}@Delete`} value="0" key={path}></input>
-                    )
-                  }
+                    calculateDeletion().map((delPath) =>
+                      <input type="hidden" name={`${delPath}@Delete`} value="0" key={delPath}>{console.log("Calculated deleting of: " + delPath)}</input>
+                  )}
                 </Grid>
               </Collapse>
             </Grid>
@@ -259,7 +322,7 @@ function Section(props) {
       </DialogActions>
     </Dialog>
     </React.Fragment>
-    , [displayed, instanceLabels, labelsToHide, dialogOpen]);
+    , [displayed, instanceLabels, labelsToHide, dialogOpen, needsUpdate]);
 }
 
 Section.propTypes = {
