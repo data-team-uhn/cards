@@ -128,50 +128,6 @@ function Section(props) {
     return delList;
   }
 
-  const allAnswerIds = ["Section.jsx"];
-  //this.addAnswerId = this.addAnswerId.bind(this);
-  function addAnswerId(id) {
-    console.log("Section.jsx: Adding answerId: " + id);
-    allAnswerIds.push(id);
-    console.log(allAnswerIds);
-    storeAnswerIds(allAnswerIds);
-  }
-  function storeAnswerIds(allAnswerIds) {
-    //setRemovableAnswers(removableAnswers.concat([allAnswerIds]));
-    /*
-    for (var i = 0; i < removableAnswers.length; i++) {
-      //Is there an array that is equal to allAnswerIds
-      if (removableAnswers[i].length != allAnswerIds.length) {
-        continue;
-      }
-      var foundMatch = true;
-      for (var j = 0; j < allAnswerIds.length; j++) {
-        if (removableAnswers[i][j] != allAnswerIds[j]) {
-          foundMatch = false;
-          break;
-        }
-      }
-      if (foundMatch) {
-        return;
-      }
-    }
-    */
-    //setRemovableAnswers(removableAnswers.concat([allAnswerIds]));
-    /*
-    for (var i = 0; i < allAnswerIds.length; i++) {
-      console.log("Section.jsx: Checking ... " + allAnswerIds[i]);
-      if (allAnswerIds[i] in removableAnswers) {
-        continue;
-      }
-      console.log("Section.jsx: Adding ... " + allAnswerIds[i]);
-      //setRemovableAnswers(removableAnswers.concat(allAnswerIds[i]));
-      //this.setState({removableAnswers: removableAnswers.concat(allAnswerIds[i])});
-    }
-    console.log("Section.jsx: storeAnswerIds()");
-    console.log(removableAnswers);
-    */
-  }
-
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
   return useCallback(
