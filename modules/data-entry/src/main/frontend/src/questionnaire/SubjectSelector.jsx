@@ -795,24 +795,33 @@ function SubjectSelectorList(props) {
                 // e.g. will return true if the table is currently rendering a list of Tumors and the currentSubject SubjectType is Patient
                 // if yes, will filter results to find related subjects
                 let isSubjectRelated = (e) => {
+                  let toReturn = [];
+
                   if (currentSubject && (e['parents']?.['type']['@path'] == currentSubject.type['@path'])){
-                    return true;
+                    toReturn.push(true);
+                    // return true;
                   }
                   else if (e['parents']) {
                     isSubjectRelated(e['parents']);
                   }
-                  return;
+                  else {
+                    return toReturn;
+                    // console.log(toReturn);
+                  }
                 }
 
+                let includeSubject = (row) => {
+                  row["parents"] && getHierarchy(row["parents"], React.Fragment, () => ({})).includes(currentSubject.type.label)
+                }
+
+                console.log(result['rows'].map((row) => isSubjectRelated(row)));
+
+                console.log(result['rows'].map((row) => includeSubject(row)));
+
                 return {
-                  data: ((currentSubject && result['rows'].map((row) => isSubjectRelated(row)).includes(true))
-                    ? (result['rows'].filter((e) => getRelatedSubject(e)).map((row) => ({
+                  data: (result['rows'].filter((e) => getRelatedSubject(e)).map((row) => ({
                     hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({})) : "No parents",
-                    ...row})))
-                    : (result["rows"].map((row) => ({
-                    hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({})) : "No parents",
-                    ...row})))
-                  ),
+                    ...row}))),
                   page: Math.trunc(result["offset"]/result["limit"]),
                   totalCount: result["totalrows"],
                 }}
