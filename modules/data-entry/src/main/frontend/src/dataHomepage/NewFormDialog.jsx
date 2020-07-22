@@ -178,31 +178,6 @@ function NewFormDialog(props) {
     }
   }, [selectedQuestionnaire, open])
 
-  // function that sets the parent of a subject
-  // if the newformdialog was accessed from the subject page, 'currentSubject'
-  // if the SubjectType of currentSubject is the parent SubjectType, it becomes the parent, allowing the form to be created sooner
-  let handleNewParent = (e) => {
-    var toAdd = e;
-    // handle SubjectType
-    if (currentSubject && (e["parent"]?.["@path"] == currentSubject.type["@path"])) {
-      toAdd = currentSubject;
-    }
-    //handle Subject
-    if (currentSubject && (e["parents"]?.["type"]["@path"] == currentSubject.type["@path"])) {
-      handleNewParent(currentSubject);
-    }
-
-    setSelectedNewSubjectParents((old) => {
-      let newParents = old.slice();
-      if (old.length < selectedSubjectParentNumber) {
-        newParents.append(selectedSubjectParentNumber);
-      } else {
-        newParents[selectedSubjectParentNumber] = toAdd;      
-      }
-      return newParents;
-    });
-  }
-
   return (
     <React.Fragment>
       <Dialog open={open} onClose={() => { setOpen(false); }}>
@@ -285,17 +260,7 @@ function NewFormDialog(props) {
         disabled={isFetching}
         onClose={() => { setNewSubjectPopperOpen(false); setError();}}
         onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
-        onChangeType={(e) => {
-          setSelectedSubjectType(e);
-          setSelectedParentTypes(parseToArray(e?.["parent"]));
-          if (currentSubject && (e["parent"]?.["@path"] == currentSubject.type["@path"])){
-            handleNewParent(e);
-          }
-          else {
-            setSelectedNewSubjectParents([]);
-            setSelectedSubjectParentNumber(-1);
-          }
-        }}
+        currentSubject={currentSubject}
         onSubmit={createForm}
         open={newSubjectPopperOpen}
         />
