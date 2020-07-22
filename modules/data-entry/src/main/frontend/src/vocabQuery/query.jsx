@@ -231,7 +231,8 @@ class VocabularyQuery extends React.Component {
                    <CardHeader
                      avatar={
                       <Link className={classes.infoDataSource} color="textSecondary"
-                        href={this.state.infoVocabURL || "."}  target="_blank"
+                        href={this.state.infoVocabURL || ""}  target="_blank"
+                        component={this.state.infoVocabURL ? 'a' : 'span'}
                         underline="none"
                         >
                         <Tooltip title={this.state.infoVocabDescription}>
