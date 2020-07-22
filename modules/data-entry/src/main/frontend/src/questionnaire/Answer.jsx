@@ -36,10 +36,6 @@ function Answer (props) {
   let answerPath = path + "/" + answerID;
   const [ isInitialized, setInitialized ] = useState(false);
   if (isInitialized == false && onConfigured !== null) {
-    console.log("Answer.jsx: Creating Answer with answerPath=" + answerPath);
-    //onConfigured(answerPath);
-    //console.log("Answer.jsx: onConfigured = " + onConfigured);
-    //onConfigured.push(answerPath);
     if (!(answerPath in onConfigured[0])) {
       onConfigured[1](onConfigured[0].concat(answerPath));
       didGrow(true);

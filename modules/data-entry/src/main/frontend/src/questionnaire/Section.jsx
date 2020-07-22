@@ -121,7 +121,6 @@ function Section(props) {
     let delList = [];
     for (let i = 0; i < answerStateVars.length; i++) {
       for (let j = 0; j < answerStateVars[i][0].length - 1; j++) {
-        console.log("Section.jsx: ... DELETING: " + answerStateVars[i][0][j]);
         delList.push(answerStateVars[i][0][j]);
       }
     }
@@ -212,18 +211,14 @@ function Section(props) {
                 item
                 >
                 <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-                  {console.log("instanceLabels = " + instanceLabels)}
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                     Object.entries(sectionDefinition)
                       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
                       .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes} onConfigured={answerStateVars[renderedAnswers++]} didGrow={setNeedsUpdate}></FormEntry>)
                   }
-                  {console.log("N_ANSWERS=" + Object.entries(sectionDefinition).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType'])).length)}
-                  {console.log(answerStateVars)}
-                  {console.log("END OF ANSWER STATE VARS")}
                   {
                     calculateDeletion().map((delPath) =>
-                      <input type="hidden" name={`${delPath}@Delete`} value="0" key={delPath}>{console.log("Calculated deleting of: " + delPath)}</input>
+                      <input type="hidden" name={`${delPath}@Delete`} value="0" key={delPath}></input>
                   )}
                 </Grid>
               </Collapse>

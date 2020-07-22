@@ -126,12 +126,8 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    console.log("FormEntry.jsx: Creating a displayQuestion()");
     return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onConfigured, didGrow);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    console.log("FormEntry.jsx: Creating a displaySection()");
     return displaySection(entryDefinition, path, depth, existingAnswers, keyProp);
-  } else {
-    console.log("Unknown FormEntry Type");
   }
 }
