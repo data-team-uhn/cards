@@ -277,7 +277,7 @@ class VocabularyQuery extends React.Component {
                         </div>
                       )}
                       </CardContent>
-                      {this.state.infoTypeOf.length > 0 && !this.state.browserOpened &&
+                      {!this.state.browserOpened &&
                         <CardActions className={classes.infoPaper}>
                           <Button size="small" onClick={this.openDialog} variant='contained' color='primary'>Learn more</Button>
                         </CardActions>
@@ -374,7 +374,7 @@ class VocabularyQuery extends React.Component {
 
         if (data["rows"].length > 0) {
           data["rows"].forEach((element) => {
-            var name = element["name"] || element["identifier"];
+            var name = element["label"] || element["name"] || element["identifier"];
             suggestions.push(
               <MenuItem
                 className={this.props.classes.dropdownItem}
@@ -488,13 +488,13 @@ class VocabularyQuery extends React.Component {
       var typeOf = [];
       if ("parents" in data) {
         typeOf = data["parents"].map(element =>
-          element["name"] || element["identifier"] || element["id"]
-        );
+          element["label"] || element["name"] || element["identifier"] || element["id"]
+        ).filter(i => i);
       }
 
       this.setState({
         infoID: data["identifier"],
-        infoName: data["name"],
+        infoName: data["label"],
         infoDefinition: data["def"] || data["description"],
         infoAlsoKnownAs: synonym,
         infoTypeOf: typeOf,
