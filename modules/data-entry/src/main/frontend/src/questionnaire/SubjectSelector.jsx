@@ -769,9 +769,14 @@ function SubjectSelectorList(props) {
                 }
 
                 return {
-                  data: result["rows"].map((row) => ({
+                  data: ((currentSubject && result['rows'].map((row) => isSubjectRelated(row)).includes(true))
+                    ? (result['rows'].filter((e) => getRelatedSubject(e)).map((row) => ({
                     hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({})) : "No parents",
-                    ...row})),
+                    ...row})))
+                    : (result["rows"].map((row) => ({
+                    hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({})) : "No parents",
+                    ...row})))
+                  ),
                   page: Math.trunc(result["offset"]/result["limit"]),
                   totalCount: result["totalrows"],
                 }}
