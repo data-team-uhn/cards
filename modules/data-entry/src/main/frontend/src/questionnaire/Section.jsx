@@ -214,7 +214,7 @@ function Section(props) {
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                     Object.entries(sectionDefinition)
                       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                      .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes} onConfigured={answerStateVars[renderedAnswers++]} didGrow={setNeedsUpdate}></FormEntry>)
+                      .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes} answersTracker={answerStateVars[renderedAnswers++]} didGrow={setNeedsUpdate}></FormEntry>)
                   }
                   {
                     calculateDeletion().map((delPath) =>
