@@ -16,6 +16,7 @@
  */
 package ca.sickkids.ccm.lfs.formcompletionstatus;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,6 +58,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     private static final String PROP_VALUE = "value";
 
     private static final String PROP_QUESTION = "question";
+
+    private static final String PROP_IS_REFERENCE = "isReference";
 
     private static final String STATUS_FLAGS = "statusFlags";
 
@@ -362,28 +365,45 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return ret;
     }
 
-    private boolean evalSectionEq(final PropertyState propA, final Value valB)
+    private int getPropertyObjectType(final Object obj)
+    {
+        int ret = PropertyType.STRING;
+        if (obj instanceof Long) {
+            ret = PropertyType.LONG;
+        } else if (obj instanceof Double) {
+            ret = PropertyType.DOUBLE;
+        } else if (obj instanceof BigDecimal) {
+            ret = PropertyType.DECIMAL;
+        } else if (obj instanceof Boolean) {
+            ret = PropertyType.BOOLEAN;
+        } else if (obj instanceof Calendar) {
+            ret = PropertyType.DATE;
+        }
+        return ret;
+    }
+
+    private boolean evalSectionEq(final Object propA, final Object propB)
         throws RepositoryException, ValueFormatException
     {
         boolean testResult = false;
-        switch (getPropertyStateType(propA)) {
+        switch (getPropertyObjectType(propA)) {
             case PropertyType.STRING:
-                testResult = propA.getValue(Type.STRING).equals(valB.getString());
+                testResult = propA.equals(propB);
                 break;
             case PropertyType.LONG:
-                testResult = (propA.getValue(Type.LONG) == valB.getLong());
+                testResult = (propA == propB);
                 break;
             case PropertyType.DOUBLE:
-                testResult = (propA.getValue(Type.DOUBLE) == valB.getDouble());
+                testResult = (propA.equals(propB));
                 break;
             case PropertyType.DECIMAL:
-                testResult = (propA.getValue(Type.DECIMAL) == valB.getDecimal());
+                testResult = (((BigDecimal) propA).compareTo((BigDecimal) propB) == 0);
                 break;
             case PropertyType.BOOLEAN:
-                testResult = (propA.getValue(Type.BOOLEAN) == valB.getBoolean());
+                testResult = (propA == propB);
                 break;
             case PropertyType.DATE:
-                testResult = parseDate(propA.getValue(Type.DATE)).equals(parseDate(valB.getString()));
+                testResult = propA.equals(propB);
                 break;
             default:
                 break;
@@ -391,19 +411,19 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return testResult;
     }
 
-    private boolean evalSectionLt(final PropertyState propA, final Value valB)
+    private boolean evalSectionLt(final Object propA, final Object propB)
         throws RepositoryException, ValueFormatException
     {
         boolean testResult = false;
-        switch (getPropertyStateType(propA)) {
+        switch (getPropertyObjectType(propA)) {
             case PropertyType.LONG:
-                testResult = (propA.getValue(Type.LONG) < valB.getLong());
+                testResult = ((long) propA < (long) propB);
                 break;
             case PropertyType.DOUBLE:
-                testResult = (propA.getValue(Type.DOUBLE) < valB.getDouble());
+                testResult = ((double) propA < (double) propB);
                 break;
             case PropertyType.DATE:
-                testResult = parseDate(propA.getValue(Type.DATE)).before(parseDate(valB.getString()));
+                testResult = ((Calendar) propA).before((Calendar) propB);
                 break;
             default:
                 break;
@@ -411,19 +431,19 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return testResult;
     }
 
-    private boolean evalSectionGt(final PropertyState propA, final Value valB)
+    private boolean evalSectionGt(final Object propA, final Object propB)
         throws RepositoryException, ValueFormatException
     {
         boolean testResult = false;
-        switch (getPropertyStateType(propA)) {
+        switch (getPropertyObjectType(propA)) {
             case PropertyType.LONG:
-                testResult = (propA.getValue(Type.LONG) > valB.getLong());
+                testResult = ((long) propA > (long) propB);
                 break;
             case PropertyType.DOUBLE:
-                testResult = (propA.getValue(Type.DOUBLE) > valB.getDouble());
+                testResult = ((double) propA > (double) propB);
                 break;
             case PropertyType.DATE:
-                testResult = parseDate(propA.getValue(Type.DATE)).after(parseDate(valB.getString()));
+                testResult = ((Calendar) propA).after((Calendar) propB);
                 break;
             default:
                 break;
@@ -434,24 +454,20 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     /**
      * Evaluates the boolean expression {propA} {operator} {propB}.
      */
-    private boolean evalSectionCondition(final PropertyState propA, final Property propB, final String operator)
+    private boolean evalSectionCondition(final Object propA, final Object propB, final String operator)
         throws RepositoryException, ValueFormatException
     {
-        Value valB;
-        if (propB.isMultiple()) {
-            valB = propB.getValues()[0];
-        } else {
-            valB = propB.getValue();
-        }
+        LOGGER.warn("Comparing: {} {} {}", propA, operator, propB);
         if ("=".equals(operator) || "<>".equals(operator)) {
             /*
              * Type.STRING uses .equals()
              * Everything else uses ==
              */
-            boolean testResult = evalSectionEq(propA, valB);
+            boolean testResult = evalSectionEq(propA, propB);
             if ("<>".equals(operator)) {
                 testResult = !testResult;
             }
+            LOGGER.warn("...returning {}", testResult);
             return testResult;
         } else if ("is empty".equals(operator) || "is not empty".equals(operator)) {
             boolean testResult = (propA == null);
@@ -460,9 +476,12 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             }
             return testResult;
         } else if ("<".equals(operator)) {
-            return evalSectionLt(propA, valB);
+            return evalSectionLt(propA, propB);
         } else if (">".equals(operator)) {
-            return evalSectionGt(propA, valB);
+            //LOGGER.warn("...returning {}", testResult);
+            //return evalSectionGt(propA, propB);
+            boolean testResult = evalSectionGt(propA, propB);
+            LOGGER.warn("...returning {}", testResult);
         }
         // If we can't evaluate it, assume it to be false
         return false;
@@ -481,6 +500,84 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             }
         }
         return outStr;
+    }
+
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:JavaNCSS"})
+    private Object getOperandValue(final Node operand, final Node sectionNode, final NodeBuilder prevNb)
+        throws RepositoryException
+    {
+        //TODO: Implement me
+        Object returnedValue = null;
+        if (operand.getProperty(PROP_IS_REFERENCE).getValue().getBoolean()) {
+            String key = operand.getProperty(PROP_VALUE).getValues()[0].getString();
+            // Sanitize
+            key = sanitizeNodeName(key);
+            final Node sectionNodeParent = sectionNode.getParent();
+            final Node keyNode = sectionNodeParent.getNode(key);
+            final String keyNodeUUID = keyNode.getIdentifier();
+            // Get the node from the Form containing the answer to keyNode
+            final NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyNodeUUID);
+            if (conditionalFormNode == null) {
+                return null;
+            }
+            final PropertyState operandProp = conditionalFormNode.getProperty(PROP_VALUE);
+            switch (getPropertyStateType(operandProp))
+            {
+                case PropertyType.STRING:
+                    returnedValue = operandProp.getValue(Type.STRING);
+                    break;
+                case PropertyType.LONG:
+                    returnedValue = operandProp.getValue(Type.LONG);
+                    break;
+                case PropertyType.DOUBLE:
+                    returnedValue = operandProp.getValue(Type.DOUBLE);
+                    break;
+                case PropertyType.DECIMAL:
+                    returnedValue = operandProp.getValue(Type.DECIMAL);
+                    break;
+                case PropertyType.BOOLEAN:
+                    returnedValue = operandProp.getValue(Type.BOOLEAN);
+                    break;
+                case PropertyType.DATE:
+                    returnedValue = operandProp.getValue(Type.DATE);
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            //return operand.getProperty(PROP_VALUE);
+            Property nodeProp = operand.getProperty(PROP_VALUE);
+            Value nodeVal;
+            if (nodeProp.isMultiple()) {
+                nodeVal = nodeProp.getValues()[0];
+            } else {
+                nodeVal = nodeProp.getValue();
+            }
+            //return nodeVal;
+            switch (nodeVal.getType()) {
+                case PropertyType.STRING:
+                    returnedValue = nodeVal.getString();
+                    break;
+                case PropertyType.LONG:
+                    returnedValue = nodeVal.getLong();
+                    break;
+                case PropertyType.DOUBLE:
+                    returnedValue = nodeVal.getDouble();
+                    break;
+                case PropertyType.DECIMAL:
+                    returnedValue = nodeVal.getDecimal();
+                    break;
+                case PropertyType.BOOLEAN:
+                    returnedValue = nodeVal.getBoolean();
+                    break;
+                case PropertyType.DATE:
+                    returnedValue = nodeVal.getDate();
+                    break;
+                default:
+                    break;
+            }
+        }
+        return returnedValue;
     }
 
     /*
@@ -515,6 +612,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             final String comparator = conditionNode.getProperty("comparator").getString();
             final Node operandB = conditionNode.getNode("operandB");
             final Node operandA = conditionNode.getNode("operandA");
+
+            /*
             String keyA = operandA.getProperty(PROP_VALUE).getValues()[0].getString();
             // Sanitize
             keyA = sanitizeNodeName(keyA);
@@ -531,6 +630,11 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             final PropertyState comparedProp = conditionalFormNode.getProperty(PROP_VALUE);
             final Property referenceProp = operandB.getProperty(PROP_VALUE);
             return evalSectionCondition(comparedProp, referenceProp, comparator);
+            */
+
+            final Object valueA = getOperandValue(operandA, sectionNode, prevNb);
+            final Object valueB = getOperandValue(operandB, sectionNode, prevNb);
+            return evalSectionCondition(valueA, valueB, comparator);
         }
         // If all goes wrong
         return false;
