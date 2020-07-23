@@ -340,7 +340,12 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
             final Date date = fmt.parse(str.split("T")[0]);
             final Calendar calendar = Calendar.getInstance();
+            //calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
             calendar.setTime(date);
+            //calendar.set(Calendar.HOUR, 0);
+            //calendar.set(Calendar.MINUTE, 0);
+            //calendar.set(Calendar.SECOND, 0);
+            //calendar.set(Calendar.MILLISECOND, 0);
             return calendar;
         } catch (final ParseException e) {
             LOGGER.warn("PARSING DATE FAILED: Invalid date {}", str);
@@ -392,6 +397,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         boolean testResult = false;
         switch (getPropertyObjectType(propA)) {
             case PropertyType.STRING:
+                LOGGER.warn("Comparing PropertyType.STRING");
+                if (getPropertyObjectType(propA) != getPropertyObjectType(propB)) {
+                    LOGGER.warn("Ooops...PropertyType mismatch (string)!");
+                }
                 testResult = propA.equals(propB);
                 break;
             case PropertyType.LONG:
@@ -411,6 +420,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 testResult = (propA == propB);
                 break;
             case PropertyType.DATE:
+                LOGGER.warn("Comparing PropertyType.DATE");
+                if (getPropertyObjectType(propA) != getPropertyObjectType(propB)) {
+                    LOGGER.warn("Ooops...PropertyType mismatch (date)!");
+                }
                 testResult = propA.equals(propB);
                 break;
             default:
@@ -517,6 +530,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         switch (getPropertyStateType(ps))
         {
             case PropertyType.STRING:
+                LOGGER.warn("getObjectFromPropertyState() --> PropertyType.STRING");
                 ret = ps.getValue(Type.STRING);
                 break;
             case PropertyType.LONG:
@@ -532,7 +546,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 ret = ps.getValue(Type.BOOLEAN);
                 break;
             case PropertyType.DATE:
-                ret = ps.getValue(Type.DATE);
+                LOGGER.warn("getObjectFromPropertyState() --> PropertyType.DATE");
+                ret = parseDate(ps.getValue(Type.DATE));
                 break;
             default:
                 break;
@@ -545,6 +560,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         Object ret = null;
         switch (val.getType()) {
             case PropertyType.STRING:
+                LOGGER.warn("getObjectFromValue() --> PropertyType.STRING");
                 ret = val.getString();
                 break;
             case PropertyType.LONG:
@@ -560,7 +576,19 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 ret = val.getBoolean();
                 break;
             case PropertyType.DATE:
-                ret = val.getDate();
+                LOGGER.warn("getObjectFromValue() --> PropertyType.DATE");
+                //Calendar calendar = Calendar.getInstance();
+                //calendar.set(val.getDate().get(Calendar.YEAR),
+                //    val.getDate().get(Calendar.MONTH),
+                //    val.getDate().get(Calendar.DAY_OF_MONTH));
+                //ret = val.getDate();
+                Calendar calendar = parseDate(Integer.toString(val.getDate().get(Calendar.YEAR))
+                    + "-"
+                    + Integer.toString(val.getDate().get(Calendar.MONTH) + 1)
+                    + "-"
+                    + Integer.toString(val.getDate().get(Calendar.DAY_OF_MONTH))
+                    + "T00:00");
+                ret = calendar;
                 break;
             default:
                 break;
