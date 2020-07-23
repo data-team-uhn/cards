@@ -391,6 +391,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 testResult = propA.equals(propB);
                 break;
             case PropertyType.LONG:
+                LOGGER.warn("Comparing PropertyType.LONG");
+                if (getPropertyObjectType(propA) != getPropertyObjectType(propB)) {
+                    LOGGER.warn("Ooops...PropertyType mismatch!");
+                }
                 testResult = (propA == propB);
                 break;
             case PropertyType.DOUBLE:
@@ -482,6 +486,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             //return evalSectionGt(propA, propB);
             boolean testResult = evalSectionGt(propA, propB);
             LOGGER.warn("...returning {}", testResult);
+            return testResult;
         }
         // If we can't evaluate it, assume it to be false
         return false;
@@ -576,7 +581,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 return null;
             }
             final PropertyState operandProp = conditionalFormNode.getProperty(PROP_VALUE);
-            returnedValue = getObjectFromPropertyState(operandProp);
+            if (operandProp != null) {
+                returnedValue = getObjectFromPropertyState(operandProp);
+            }
         } else {
             Property nodeProp = operand.getProperty(PROP_VALUE);
             Value nodeVal;
