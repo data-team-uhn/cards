@@ -350,8 +350,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     private int getPropertyStateType(final PropertyState ps)
     {
-        int ret = PropertyType.STRING;
-        if (Type.LONG.equals(ps.getType())) {
+        int ret = PropertyType.UNDEFINED;
+        if (Type.STRING.equals(ps.getType())) {
+            ret = PropertyType.STRING;
+        } else if (Type.LONG.equals(ps.getType())) {
             ret = PropertyType.LONG;
         } else if (Type.DOUBLE.equals(ps.getType())) {
             ret = PropertyType.DOUBLE;
@@ -367,8 +369,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     private int getPropertyObjectType(final Object obj)
     {
-        int ret = PropertyType.STRING;
-        if (obj instanceof Long) {
+        int ret = PropertyType.UNDEFINED;
+        if (obj instanceof String) {
+            ret = PropertyType.STRING;
+        } else if (obj instanceof Long) {
             ret = PropertyType.LONG;
         } else if (obj instanceof Double) {
             ret = PropertyType.DOUBLE;
