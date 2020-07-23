@@ -502,11 +502,66 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return outStr;
     }
 
-    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:JavaNCSS"})
+    private Object getObjectFromPropertyState(PropertyState ps)
+    {
+        Object ret = null;
+        switch (getPropertyStateType(ps))
+        {
+            case PropertyType.STRING:
+                ret = ps.getValue(Type.STRING);
+                break;
+            case PropertyType.LONG:
+                ret = ps.getValue(Type.LONG);
+                break;
+            case PropertyType.DOUBLE:
+                ret = ps.getValue(Type.DOUBLE);
+                break;
+            case PropertyType.DECIMAL:
+                ret = ps.getValue(Type.DECIMAL);
+                break;
+            case PropertyType.BOOLEAN:
+                ret = ps.getValue(Type.BOOLEAN);
+                break;
+            case PropertyType.DATE:
+                ret = ps.getValue(Type.DATE);
+                break;
+            default:
+                break;
+        }
+        return ret;
+    }
+
+    private Object getObjectFromValue(Value val) throws RepositoryException, ValueFormatException
+    {
+        Object ret = null;
+        switch (val.getType()) {
+            case PropertyType.STRING:
+                ret = val.getString();
+                break;
+            case PropertyType.LONG:
+                ret = val.getLong();
+                break;
+            case PropertyType.DOUBLE:
+                ret = val.getDouble();
+                break;
+            case PropertyType.DECIMAL:
+                ret = val.getDecimal();
+                break;
+            case PropertyType.BOOLEAN:
+                ret = val.getBoolean();
+                break;
+            case PropertyType.DATE:
+                ret = val.getDate();
+                break;
+            default:
+                break;
+        }
+        return ret;
+    }
+
     private Object getOperandValue(final Node operand, final Node sectionNode, final NodeBuilder prevNb)
         throws RepositoryException
     {
-        //TODO: Implement me
         Object returnedValue = null;
         if (operand.getProperty(PROP_IS_REFERENCE).getValue().getBoolean()) {
             String key = operand.getProperty(PROP_VALUE).getValues()[0].getString();
@@ -521,31 +576,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 return null;
             }
             final PropertyState operandProp = conditionalFormNode.getProperty(PROP_VALUE);
-            switch (getPropertyStateType(operandProp))
-            {
-                case PropertyType.STRING:
-                    returnedValue = operandProp.getValue(Type.STRING);
-                    break;
-                case PropertyType.LONG:
-                    returnedValue = operandProp.getValue(Type.LONG);
-                    break;
-                case PropertyType.DOUBLE:
-                    returnedValue = operandProp.getValue(Type.DOUBLE);
-                    break;
-                case PropertyType.DECIMAL:
-                    returnedValue = operandProp.getValue(Type.DECIMAL);
-                    break;
-                case PropertyType.BOOLEAN:
-                    returnedValue = operandProp.getValue(Type.BOOLEAN);
-                    break;
-                case PropertyType.DATE:
-                    returnedValue = operandProp.getValue(Type.DATE);
-                    break;
-                default:
-                    break;
-            }
+            returnedValue = getObjectFromPropertyState(operandProp);
         } else {
-            //return operand.getProperty(PROP_VALUE);
             Property nodeProp = operand.getProperty(PROP_VALUE);
             Value nodeVal;
             if (nodeProp.isMultiple()) {
@@ -553,29 +585,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             } else {
                 nodeVal = nodeProp.getValue();
             }
-            //return nodeVal;
-            switch (nodeVal.getType()) {
-                case PropertyType.STRING:
-                    returnedValue = nodeVal.getString();
-                    break;
-                case PropertyType.LONG:
-                    returnedValue = nodeVal.getLong();
-                    break;
-                case PropertyType.DOUBLE:
-                    returnedValue = nodeVal.getDouble();
-                    break;
-                case PropertyType.DECIMAL:
-                    returnedValue = nodeVal.getDecimal();
-                    break;
-                case PropertyType.BOOLEAN:
-                    returnedValue = nodeVal.getBoolean();
-                    break;
-                case PropertyType.DATE:
-                    returnedValue = nodeVal.getDate();
-                    break;
-                default:
-                    break;
-            }
+            returnedValue = getObjectFromValue(nodeVal);
         }
         return returnedValue;
     }
@@ -612,25 +622,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             final String comparator = conditionNode.getProperty("comparator").getString();
             final Node operandB = conditionNode.getNode("operandB");
             final Node operandA = conditionNode.getNode("operandA");
-
-            /*
-            String keyA = operandA.getProperty(PROP_VALUE).getValues()[0].getString();
-            // Sanitize
-            keyA = sanitizeNodeName(keyA);
-            // Get the node from the Questionnaire corresponding to keyA
-            final Node sectionNodeParent = sectionNode.getParent();
-            final Node keyANode = sectionNodeParent.getNode(keyA);
-            final String keyANodeUUID = keyANode.getIdentifier();
-            // Get the node from the Form containing the answer to keyANode
-            final NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyANodeUUID);
-            // ...if the answer node does not exist, return false - can't compare to something non-existant
-            if (conditionalFormNode == null) {
-                return false;
-            }
-            final PropertyState comparedProp = conditionalFormNode.getProperty(PROP_VALUE);
-            final Property referenceProp = operandB.getProperty(PROP_VALUE);
-            return evalSectionCondition(comparedProp, referenceProp, comparator);
-            */
 
             final Object valueA = getOperandValue(operandA, sectionNode, prevNb);
             final Object valueB = getOperandValue(operandB, sectionNode, prevNb);
