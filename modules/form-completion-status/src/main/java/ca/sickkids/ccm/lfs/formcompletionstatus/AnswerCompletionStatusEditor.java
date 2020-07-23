@@ -397,17 +397,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         boolean testResult = false;
         switch (getPropertyObjectType(propA)) {
             case PropertyType.STRING:
-                LOGGER.warn("Comparing PropertyType.STRING");
-                if (getPropertyObjectType(propA) != getPropertyObjectType(propB)) {
-                    LOGGER.warn("Ooops...PropertyType mismatch (string)!");
-                }
                 testResult = propA.equals(propB);
                 break;
             case PropertyType.LONG:
-                LOGGER.warn("Comparing PropertyType.LONG");
-                if (getPropertyObjectType(propA) != getPropertyObjectType(propB)) {
-                    LOGGER.warn("Ooops...PropertyType mismatch!");
-                }
                 testResult = (propA == propB);
                 break;
             case PropertyType.DOUBLE:
@@ -420,10 +412,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 testResult = (propA == propB);
                 break;
             case PropertyType.DATE:
-                LOGGER.warn("Comparing PropertyType.DATE");
-                if (getPropertyObjectType(propA) != getPropertyObjectType(propB)) {
-                    LOGGER.warn("Ooops...PropertyType mismatch (date)!");
-                }
                 testResult = propA.equals(propB);
                 break;
             default:
@@ -478,7 +466,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     private boolean evalSectionCondition(final Object propA, final Object propB, final String operator)
         throws RepositoryException, ValueFormatException
     {
-        LOGGER.warn("Comparing: {} {} {}", propA, operator, propB);
         if ("=".equals(operator) || "<>".equals(operator)) {
             /*
              * Type.STRING uses .equals()
@@ -488,7 +475,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             if ("<>".equals(operator)) {
                 testResult = !testResult;
             }
-            LOGGER.warn("...returning {}", testResult);
             return testResult;
         } else if ("is empty".equals(operator) || "is not empty".equals(operator)) {
             boolean testResult = (propA == null);
@@ -499,11 +485,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         } else if ("<".equals(operator)) {
             return evalSectionLt(propA, propB);
         } else if (">".equals(operator)) {
-            //LOGGER.warn("...returning {}", testResult);
-            //return evalSectionGt(propA, propB);
-            boolean testResult = evalSectionGt(propA, propB);
-            LOGGER.warn("...returning {}", testResult);
-            return testResult;
+            return evalSectionGt(propA, propB);
         }
         // If we can't evaluate it, assume it to be false
         return false;
@@ -530,7 +512,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         switch (getPropertyStateType(ps))
         {
             case PropertyType.STRING:
-                LOGGER.warn("getObjectFromPropertyState() --> PropertyType.STRING");
                 ret = ps.getValue(Type.STRING);
                 break;
             case PropertyType.LONG:
@@ -546,7 +527,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 ret = ps.getValue(Type.BOOLEAN);
                 break;
             case PropertyType.DATE:
-                LOGGER.warn("getObjectFromPropertyState() --> PropertyType.DATE");
                 ret = parseDate(ps.getValue(Type.DATE));
                 break;
             default:
@@ -560,7 +540,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         Object ret = null;
         switch (val.getType()) {
             case PropertyType.STRING:
-                LOGGER.warn("getObjectFromValue() --> PropertyType.STRING");
                 ret = val.getString();
                 break;
             case PropertyType.LONG:
@@ -576,7 +555,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 ret = val.getBoolean();
                 break;
             case PropertyType.DATE:
-                LOGGER.warn("getObjectFromValue() --> PropertyType.DATE");
                 //Calendar calendar = Calendar.getInstance();
                 //calendar.set(val.getDate().get(Calendar.YEAR),
                 //    val.getDate().get(Calendar.MONTH),
