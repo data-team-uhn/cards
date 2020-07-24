@@ -36,7 +36,9 @@ let TextInput = (props) => {
   return (
     <Grid container alignItems='flex-end' spacing={2} key={objectKey}>
       <Grid item xs={6}><Typography>{ formatString(objectKey)}</Typography></Grid>
-      <Grid item xs={6}><TextField name={objectKey} id={objectKey} defaultValue={data[objectKey] || ''}/></Grid>
+      <Grid item xs={6}>
+        <TextField name={objectKey} id={objectKey} defaultValue={data[objectKey] || ''} required={objectKey.includes('text')}/>
+      </Grid>
     </Grid>
   )
 }

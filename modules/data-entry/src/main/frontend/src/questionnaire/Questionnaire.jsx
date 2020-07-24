@@ -39,26 +39,21 @@ import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import EditDialog from "./EditDialog"
 import DeleteDialog from "./DeleteDialog"
+import Fields from './Fields'
+import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
   let { id } = props;
   let [ data, setData ] = useState();
+  let [ questionKey, setQuestionKey ] = useState(Math.random());
   let [ error, setError ] = useState();
   let [ edit, setEdit ] = useState(false);
   let [ open, setOpen ] = useState(false);
   let [ type, setType ] = useState('Question');
   const [ isFetching, setFetching ] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-
-  let fetchData = () => {
-    fetch(`/Questionnaires/${id}.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(handleResponse)
-      .catch(handleError);
-  };
 
   let handleResponse = (json) => {
     setData(json);
@@ -84,9 +79,21 @@ let Questionnaire = (props) => {
     setOpen(true);
   }
 
+  let fetchData = () => {
+    fetch(`/Questionnaires/${id}.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(handleResponse)
+      .catch(handleError);
+  };
+
   let parseErrorResponse = (response) => {
     setFetching(false);
     setError(`New question request failed with error code ${response.status}: ${response.statusText}`);
+  }
+
+  let closeDialog = () => {
+    setData(null);
+    fetchData();
   }
 
   if (!data) {
@@ -126,41 +133,20 @@ let Questionnaire = (props) => {
           </Menu>
         </Grid>
       }
-      { data &&
-        <Grid item>
-          <Card>
-            <CardHeader title={'Questionnaire Properties'} action={
-              <IconButton onClick={() => { openDialog(true, 'Properties'); }}>
-                <EditIcon />
-              </IconButton>
-              }/>
-            <CardContent>
-              <dl>
-                <dt>
-                  <Typography>Max per Subject:</Typography>
-                </dt>
-                <dd>
-                  <Typography>{data.maxPerSubject || 'Unlimited'}</Typography>
-                </dd>
-              </dl>
-            </CardContent>
-          </Card>
-        </Grid> 
-      }
       {
         data ?
         Object.entries(data)
         .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
         .map(([key, value]) => 
           value['jcr:primaryType'] == 'lfs:Question' 
-          ? <Grid item key={key}><Question data={value}/></Grid>
-          : <Grid item key={key}><Section data={value}></Section></Grid>
+          ? <Grid item key={key}><Question data={value} closeDialog={closeDialog}/></Grid>
+          : <Grid item key={key}><Section data={value} closeDialog={closeDialog}/></Grid>
         )
         :
           <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
       }
       </Grid>
-      {open && <EditDialog edit={edit} data={data} type={type} open={open} onClose={() => {setOpen(false);}} />}
+      <EditDialog edit={edit} data={data} type={type} open={open} onClose={() => { closeDialog(); setOpen(false); handleCloseMenu(); }} />
     </div>
   );
 };
@@ -176,8 +162,12 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
   let [ open, setOpen ] = useState(false);
+  let [ openDelete, setOpenDelete ] = useState(false);
   let openDialog = () => {
     setOpen(true);
+  }
+  let openDeleteDialog = () => {
+    setOpenDelete(true);
   }
 
   return (
@@ -187,53 +177,19 @@ let Question = (props) => {
           <IconButton onClick={() => { openDialog(); }}>
             <EditIcon />
           </IconButton>
-          <DeleteDialog data={props.data} type="Question" />
-        </div>
+          <IconButton onClick={() => { openDeleteDialog() }}>
+            <DeleteIcon />
+          </IconButton>
+      </div>
       }
       />
       <CardContent>
         <dl>
-          <dt>
-            <Typography>Label:</Typography>
-          </dt>
-          <dd>
-            <Typography>{props.data.text}</Typography>
-          </dd>
-          <dt>
-            <Typography>Description:</Typography>
-          </dt>
-          <dd>
-            <Typography>{props.data.description}</Typography>
-          </dd>
-          <dt>
-            <Typography>Answer type:</Typography>
-          </dt>
-          <dd>
-            <Typography>{props.data.dataType}</Typography>
-          </dd>
-          <dt>
-            <Typography>Minimum number of selected options:</Typography>
-          </dt>
-          <dd>
-            <Typography>{props.data.minAnswers || 0}</Typography>
-          </dd>
-          <dt>
-            <Typography>Maximum number of selected options:</Typography>
-          </dt>
-          <dd>
-            <Typography>{props.data.maxAnswers || 0}</Typography>
-          </dd>
-          <dt>
-            <Typography>Answer choices:</Typography>
-          </dt>
-          {
-            Object.values(props.data)
-              .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
-              .map(value => <AnswerOption key={value['jcr:uuid']} data={value} />)
-          }
+          <Fields data={props.data} JSON={require('./Question.json')[0]} edit={false} />
         </dl>
       </CardContent>
-      { open && <EditDialog edit={true} data={props.data} type='Question' open={open} onClose={() => {setOpen(false);}} /> }
+      <EditDialog edit={true} data={props.data} type='Question' open={open} onClose={() => { props.closeDialog(); setOpen(false); }} />
+      <DeleteDialog open={openDelete} data={props.data} onClose={() => { props.closeDialog(); setOpenDelete(false); }} type="Question" />
     </Card>
   );
 };
@@ -243,7 +199,6 @@ Question.propTypes = {
 };
 
 let Section = (props) => {
-  let { data } = props;
   const [ anchorEl, setAnchorEl ] = useState(null);
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -255,14 +210,19 @@ let Section = (props) => {
   let [ edit, setEdit ] = useState(false);
   let [ type, setType ] = useState('Question');
   let [ open, setOpen ] = useState(false);
+  let [ openDelete, setOpenDelete ] = useState(false);
   let openDialog = (edit, type) => {
     setEdit(edit);
     setType(type);
     setOpen(true);
   }
+  let openDeleteDialog = () => {
+    setOpenDelete(true);
+  }
+  
   return (
     <Card>
-      <CardHeader title={data['title'] || ''}
+      <CardHeader title={props.data['title'] || ''}
         action={
           <div>
             <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleOpenMenu}>
@@ -281,28 +241,31 @@ let Section = (props) => {
             <IconButton onClick={() => { openDialog(true, 'Section'); }}>
               <EditIcon />
             </IconButton>
-            <DeleteDialog data={props.data} type='Section' />
-            <Typography>{data['description'] || ''}</Typography>
+            <IconButton onClick={() => { openDeleteDialog() }}>
+              <DeleteIcon />
+            </IconButton>
+            <Typography>{props.data['description'] || ''}</Typography>
           </div>
         }>
       </CardHeader>
       <CardContent>
         <Grid container direction="column" spacing={8}>
           {
-            data ?
-              Object.entries(data)
+            props.data ?
+              Object.entries(props.data)
               .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
               .map(([key, value]) => 
                 value['jcr:primaryType'] == 'lfs:Question' 
-                ? <Grid item key={key}><Question data={value}/></Grid>
-                : <Grid item key={key}><Section data={value}></Section></Grid>
+                ? <Grid item key={key}><Question data={value} closeDialog={props.closeDialog} /></Grid>
+                : <Grid item key={key}><Section data={value} closeDialog={props.closeDialog}></Section></Grid>
               )
               :
               <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
           }
         </Grid>
       </CardContent>
-      { open && <EditDialog edit={edit} data={props.data} type={type} open={open} onClose={() => {setOpen(false);}} /> }
+      <EditDialog edit={edit} data={props.data} type={type} open={open} onClose={() => { props.closeDialog(); setOpen(false); }} />
+      <DeleteDialog open={openDelete} data={props.data} onClose={() => { props.closeDialog(); setOpenDelete(false); }} type="Section" />
     </Card>
   );
 };
