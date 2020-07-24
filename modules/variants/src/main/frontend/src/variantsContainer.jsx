@@ -119,7 +119,7 @@ export default function variantsContainer() {
   // Error message set when file upload to the server fails
   let [ error, setError ] = useState();
 
-  // uuids of the Subjects and theSomaticVariants questionnaire
+  // uuids of the Subjects and the SomaticVariants questionnaire
   // To be fetch on page load
   let [ somaticVariantsUUID, setSomaticVariantsUUID ] = useState();
   let [ patientSubjectUUID, setPatientSubjectUUID ] = useState();
@@ -275,7 +275,7 @@ export default function variantsContainer() {
                 let subject = json.rows[0];
                 // get the path
                 file.subject = generateSubject(file.subject, subject["@path"], true, subject["jcr:uuid"]);
-                checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.tumor.id}' AND s.'parent'='${subject['jcr:uuid']}'`);
+                checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.tumor.id}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                 // Fire a fetch request for a tumor subject with the patient subject as its parent
                 fetch( checkTumorExistsURL )
@@ -286,7 +286,7 @@ export default function variantsContainer() {
                         let subject = json.rows[0];
                         // get the path
                         file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"]);
-                        checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.region.id}' AND s.'parent'='${subject['jcr:uuid']}'`);
+                        checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.region.id}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                         // Fire a fetch request for a region subject with the tumor subject as its parent
                         fetch( checkRegionExistsURL )
@@ -329,7 +329,7 @@ export default function variantsContainer() {
 
         } else {
           if (!file.tumor.path) {
-            checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.tumor.id}' AND s.'parent'='${file.subject.uuid}'`);
+            checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.tumor.id}' AND s.'parents'='${file.subject.uuid}'`);
 
             // Fire a fetch request for a tumor subject with the patient subject as its parent
             fetch( checkTumorExistsURL )
@@ -340,7 +340,7 @@ export default function variantsContainer() {
                     let subject = json.rows[0];
                     // get the path
                     file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"]);
-                    checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.region.id}' AND s.'parent'='${subject['jcr:uuid']}'`);
+                    checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.region.id}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                     // Fire a fetch request for a region subject with the tumor subject as its parent
                     fetch( checkRegionExistsURL )
@@ -372,7 +372,7 @@ export default function variantsContainer() {
 
           } else {
             if (!file.region.path) {
-              checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.region.id}' AND s.'parent'='${file.tumor.uuid}'`);
+              checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.region.id}' AND s.'parents'='${file.tumor.uuid}'`);
 
               // Fire a fetch request for a region subject with the tumor subject as its parent
               fetch( checkRegionExistsURL )
@@ -563,7 +563,7 @@ export default function variantsContainer() {
     info["jcr:primaryType"] = "lfs:Subject";
     info["jcr:reference:type"] = "/SubjectTypes/" + refType;
     info["identifier"] = id;
-    if (parent) { info["jcr:reference:parent"] = parent; }
+    if (parent) { info["jcr:reference:parents"] = parent; }
     return info;
   };
 
