@@ -304,6 +304,9 @@
   // A second child operandB may be specified, but leaving it as the default is OK if the comparator is singular
   + operandB (lfs:ConditionalValue) = lfs:ConditionalValue autocreated
 
+  // Specifies how the operands should be treated when performing the comparison (default: string)
+  - dataType (STRING) = "string" autocreated
+
 //-----------------------------------------------------------------------------
 // A conditional value is either a value or a method of getting a value.
 [lfs:ConditionalValue] > sling:Resource
