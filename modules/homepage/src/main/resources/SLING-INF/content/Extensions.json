@@ -14,20 +14,6 @@
             "jcr:mimeType": "text/html"
         }
     },
-    "Tumours": {
-        "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-        "lfs:extensionName": "Tumours",
-        "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
-        "lfs:extensionRenderURL": "",
-        "lfs:targetURL": "tumours",
-        "lfs:defaultOrder": 5,
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "test",
-            "jcr:mimeType": "text/html"
-        }
-    },
     "Treatments": {
         "jcr:primaryType": "lfs:Extension",
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
