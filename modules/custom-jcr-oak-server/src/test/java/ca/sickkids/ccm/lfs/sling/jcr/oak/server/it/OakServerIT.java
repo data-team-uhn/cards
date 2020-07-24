@@ -238,7 +238,7 @@ public class OakServerIT extends OakServerTestSupport
         final ServiceRegistration reg = listener.register(this.bundleContext, SlingConstants.TOPIC_RESOURCE_ADDED);
         final Session s = this.repository.loginAdministrative(null);
         final int nPaths = 2500 * TEST_SCALE;
-        final int timeoutMsec = 2 * nPaths;
+        final int timeoutMsec = 5 * nPaths;
         final String prefix = uniqueName("testOsgiResourceEvents");
 
         // Create N nodes with a unique name under /
@@ -303,7 +303,7 @@ public class OakServerIT extends OakServerTestSupport
             s.save();
 
             final JcrEventsCounter c = counter;
-            new Retry(5000)
+            new Retry(15000)
             {
                 @Override
                 protected void exec() throws Exception
@@ -330,7 +330,7 @@ public class OakServerIT extends OakServerTestSupport
             s.save();
 
             final JcrEventsCounter c = counter;
-            new Retry(5000)
+            new Retry(15000)
             {
                 @Override
                 protected void exec() throws Exception
