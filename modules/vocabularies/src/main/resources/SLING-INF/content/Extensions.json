@@ -8,7 +8,7 @@
     "lfs:extensionRenderURL": "asset:lfs-vocabularies.admin-page.js",
     "lfs:targetURL": "vocabularies",
     "lfs:defaultOrder": 92,
-    "lfs:hint": "Install and update medical ontologies used",
+    "lfs:hint": "Install and update medical vocabularies used",
     "jcr:content": {
       "jcr:primaryType": "nt:resource",
       "jcr:data": "test",

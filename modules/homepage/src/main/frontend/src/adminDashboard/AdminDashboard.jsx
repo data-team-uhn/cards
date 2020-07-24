@@ -21,7 +21,20 @@ import { loadRemoteComponents, loadRemoteIcons, loadContentNodes } from "../them
 import { NavLink, Route } from "react-router-dom";
 import adminStyle from "./AdminDashboardStyle.jsx";
 
-import { CircularProgress, Grid, Typography, List, ListItem, ListItemText, ListItemIcon, withStyles, Card, CardContent, CardHeader, Button } from "@material-ui/core";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CircularProgress,
+  Grid,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText, 
+  Typography,
+  withStyles
+} from "@material-ui/core";
 
 // function to get the routes for the admin dashboard, also used in the navbar
 export function getAdminRoutes(pathPrefix) {
