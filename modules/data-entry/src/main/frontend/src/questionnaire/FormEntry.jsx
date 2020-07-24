@@ -122,7 +122,7 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
  * @returns a React component that renders the section
  */
  export default function FormEntry(props) {
-  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, answersTracker, didGrow } = { ...{answersTracker: null, didGrow: null}, ...props };
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, answersTracker, didGrow } = props;
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {

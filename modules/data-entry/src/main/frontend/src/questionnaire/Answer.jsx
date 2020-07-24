@@ -35,7 +35,7 @@ function Answer (props) {
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
   const [ isInitialized, setInitialized ] = useState(false);
-  if (isInitialized == false && answersTracker !== null) {
+  if (isInitialized == false && answersTracker) {
     if (!(answerPath in answersTracker[0])) {
       answersTracker[1](answersTracker[0].concat(answerPath));
       didGrow(true);
