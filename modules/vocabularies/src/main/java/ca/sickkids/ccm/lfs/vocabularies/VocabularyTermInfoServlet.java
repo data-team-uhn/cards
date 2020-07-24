@@ -66,7 +66,7 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
     private static final String CHILDREN_PROPERTY = "lfs:children";
 
     /* Copying over every child tends to bloat the response, so we only copy a subset of the data */
-    private static final String[] KEYS_TO_COPY = {"id", "name"};
+    private static final String[] KEYS_TO_COPY = { "identifier", "label" };
 
     @Reference
     private LogService logger;
@@ -240,8 +240,7 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
             "SELECT * FROM [lfs:VocabularyTerm] AS a WHERE isdescendantnode(a, '%s') AND a.parents = '%s'"
             + " ORDER BY a.label",
             parentPath,
-            resource.getString("id")
-            );
+            resource.getString("identifier"));
         return resolver.findResources(oakQuery, "JCR-SQL2");
     }
 }
