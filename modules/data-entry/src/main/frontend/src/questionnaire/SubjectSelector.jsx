@@ -777,51 +777,50 @@ function SubjectSelectorList(props) {
               .then(result => {
                 // recursive function to filter and find related subjects to the currentSubject
                 // should also include subject at the same SubjectType level as currentSubject, if they exist
-                let getRelatedSubject = (e) => {
-                  // include only related child SubjectTypes
-                  if (e['parents']?.['@path'] == currentSubject['@path']){
-                    return e;
+
+                let getRelatedChild = (e, array) => {
+                  var array = array || [];
+                  let output = e['parents']?.['@path'];
+                  if (e["parents"]) {
+                    array.push(output);
+                    getRelatedChild(e["parents"], array);
+                    return array;
+                  } else {
+                    return output;
                   }
-                  // include all subjects at same level
-                  if (e['type']?.['@path'] == currentSubject['type']['@path']) {
-                    return e;
-                  }
-                  else if (e['parents']) {
-                    getRelatedSubject(e['parents']);
-                  }
-                  return;
                 }
-                // recursive function to check if the SubjectType of the data is a child of the 'currentSubject' SubjectType
-                // e.g. will return true if the table is currently rendering a list of Tumors and the currentSubject SubjectType is Patient
-                // if yes, will filter results to find related subjects
+
+                let filterRelated = (e) => {
+                  // if the selected questionnaire supports the type of current subject
+                  if (e['type']?.['@path'] == currentSubject['type']['@path']) return true;
+                  return getRelatedChild(e).includes(currentSubject['@path'])
+                }
+        
+                // recursive function to check if the SubjectType of the selected questionnaire is a child of the 'currentSubject' SubjectType
+                // e.g. will return true if the selected questionnaire supports Tumors and the currentSubject SubjectType is Patient
+                // if yes, will filter results to find related subjects (with filterRelated)
+                let toReturn = [];
+
                 let isSubjectRelated = (e) => {
-                  let toReturn = [];
-
-                  if (currentSubject && (e['parents']?.['type']['@path'] == currentSubject.type['@path'])){
-                    toReturn.push(true);
-                    // return true;
-                  }
-                  else if (e['parents']) {
-                    isSubjectRelated(e['parents']);
-                  }
-                  else {
+                  let output = e.type.label;
+                  if (e["parents"]) {
+                    let ancestors = isSubjectRelated(e["parents"]);
+                    toReturn.push(ancestors);
+                    toReturn.push(output);
                     return toReturn;
-                    // console.log(toReturn);
+                  } else {
+                    return output;
                   }
                 }
-
-                let includeSubject = (row) => {
-                  row["parents"] && getHierarchy(row["parents"], React.Fragment, () => ({})).includes(currentSubject.type.label)
-                }
-
-                console.log(result['rows'].map((row) => isSubjectRelated(row)));
-
-                console.log(result['rows'].map((row) => includeSubject(row)));
 
                 return {
-                  data: (result['rows'].filter((e) => getRelatedSubject(e)).map((row) => ({
+                  data: ((currentSubject && (result['rows'].map((row) => isSubjectRelated(row).includes(currentSubject.type.label)))[0])
+                  ? (result['rows'].filter((e) => filterRelated(e)).map((row) => ({
                     hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({})) : "No parents",
-                    ...row}))),
+                    ...row})))
+                  : (result["rows"].map((row) => ({
+                    hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({})) : "No parents", ...row})))
+                  ),
                   page: Math.trunc(result["offset"]/result["limit"]),
                   totalCount: result["totalrows"],
                 }}
