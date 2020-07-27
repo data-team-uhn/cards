@@ -16,36 +16,20 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
-import LiveTable from "./LiveTable.jsx";
-import Questionnaire from "../questionnaire/Questionnaire.jsx";
+import { blackColor, grayColor } from "../themeStyle.jsx"
 
-export default function Questionnaires(props) {
-  const { match, location } = props;
-  const entry = /Questionnaires\/(.+)/.exec(location.pathname);
-  if (entry) {
-    return <Questionnaire id={entry[1]} key={location.pathname}/>;
+const adminStyle = theme => ({
+  listButton: {
+    color: grayColor[3]
+  },
+  listItem: {
+    textDecoration: "none",
+  },
+  listText: {
+    "&:hover,&:focus,&:visited,&": {
+      color: blackColor
+    }
   }
-  const columns = [
-    {
-      "key": "title",
-      "label": "Title",
-      "format": "string",
-      "link": "dashboard+path",
-      "admin": true,
-    },
-    {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
-    },
-    {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
-    },
-  ]
-  return (
-    <LiveTable columns={columns} />
-  );
-}
+})
+
+export default adminStyle;

@@ -32,6 +32,7 @@ function SubjectTypes(props) {
       "label": "Label",
       "format": "string",
       "link": "dashboard+field:@path",
+      "admin": true,
     },
     {
       "key": "jcr:createdBy",

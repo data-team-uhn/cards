@@ -100,38 +100,10 @@ function SubjectContainer(props) {
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
-  // hold related subjects
   let [relatedSubjects, setRelatedSubjects] = useState();
   // 'level' of subject component
   const currentLevel = level || 0;
 
-  // Fetch the subject's data as JSON from the server.
-  // The data will contain the subject metadata,
-  // such as authorship and versioning information.
-  // Once the data arrives from the server, it will be stored in the `data` state variable.
-  let fetchData = () => {
-    fetch(`/Subjects/${id}.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(handleResponse)
-      .catch(handleError);
-  };
-
-  // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
-  let handleResponse = (json) => {
-    if (currentLevel == 0) {
-      // sends the data to the parent component
-      getSubject(json);
-    } 
-    setData(json);
-  };
-
-  // Callback method for the `fetchData` method, invoked when the request failed.
-  let handleError = (response) => {
-    setError(response);
-    setData([]);  // Prevent an infinite loop if data was not set
-  };
-
-  // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     fetchData();
     return (

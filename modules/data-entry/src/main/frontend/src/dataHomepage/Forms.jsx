@@ -72,7 +72,6 @@ function Forms(props) {
       "key": "questionnaire/title",
       "label": "Questionnaire",
       "format": "string",
-      "link": "dashboard+field:questionnaire/@path",
     },
     {
       "key": "subject/identifier",
