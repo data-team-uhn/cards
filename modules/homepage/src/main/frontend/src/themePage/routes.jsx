@@ -65,7 +65,8 @@ var loadRemoteComponent = function(component) {
           path: "/" + component["lfs:targetURL"],
           name: component["lfs:extensionName"],
           iconUrl: component["lfs:icon"],
-          order: component["lfs:defaultOrder"]
+          order: component["lfs:defaultOrder"],
+          hint: component["lfs:hint"]
         });
       }
 
@@ -78,7 +79,8 @@ var loadRemoteComponent = function(component) {
             path: "/" + component["lfs:targetURL"],
             name: component["lfs:extensionName"],
             iconUrl: component["lfs:icon"],
-            order: component["lfs:defaultOrder"]
+            order: component["lfs:defaultOrder"],
+            hint: component["lfs:hint"]
           })
         })
     });
@@ -94,8 +96,8 @@ var loadRemoteComponents = function(components) {
 };
 
 // Load the content nodes
-var loadContentNodes = function() {
-  return fetch("/apps/lfs/ExtensionPoints/SidebarEntry")
+var loadContentNodes = function(name) {
+  return fetch(`/apps/lfs/ExtensionPoints/${name}`)
     .then(response => response.ok ? response.json() : Promise.reject(response));
 }
 

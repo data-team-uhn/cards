@@ -2,12 +2,13 @@
   "jcr:primaryType": "sling:Folder",
   "AdminVocabularies": {
     "jcr:primaryType": "lfs:Extension",
-    "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+    "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
     "lfs:extensionName": "Vocabularies",
     "lfs:icon": "asset:lfs-vocabularies.vocabulariesIcon.js",
     "lfs:extensionRenderURL": "asset:lfs-vocabularies.admin-page.js",
-    "lfs:targetURL": "admin/vocabularies",
-    "lfs:defaultOrder": 94,
+    "lfs:targetURL": "vocabularies",
+    "lfs:defaultOrder": 92,
+    "lfs:hint": "Install and update medical vocabularies used",
     "jcr:content": {
       "jcr:primaryType": "nt:resource",
       "jcr:data": "test",

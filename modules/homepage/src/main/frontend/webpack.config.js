@@ -9,7 +9,8 @@ module.exports = {
     [module_name + 'themeindex']: './src/themePage/index.jsx',
     [module_name + 'modelOrganismsIcon']: '@material-ui/icons/Pets.js',
     [module_name + 'variantsIcon']: '@material-ui/icons/Subtitles.js',
-    [module_name + 'adminIcon']: '@material-ui/icons/Settings.js'
+    [module_name + 'adminIcon']: '@material-ui/icons/Settings.js',
+    [module_name + 'adminDashboard']: './src/adminDashboard/AdminDashboard.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),

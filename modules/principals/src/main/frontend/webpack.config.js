@@ -6,7 +6,8 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'userboardIcon']: '@material-ui/icons/AccountBox.js',
+    [module_name + 'userIcon']: '@material-ui/icons/Person.js',
+    [module_name + 'groupIcon']: '@material-ui/icons/Group.js',
     [module_name + 'userscontainer']: './src/Userboard/Users/usersContainer.jsx',
     [module_name + 'groupscontainer']: './src/Userboard/Groups/groupsContainer.jsx'
   },
