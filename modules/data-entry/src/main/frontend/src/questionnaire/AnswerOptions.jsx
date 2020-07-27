@@ -69,8 +69,6 @@ let AnswerOptions = (props) => {
   let handleInputOption = () => {
 
     if (!newValue.includes(tempValue)) {
-      console.log("newValue", newValue);
-      console.log("tempValue", tempValue);
       setNewUuid(oldUuid => {
         var newUuid = oldUuid.slice();
         newUuid.push(uuid());
