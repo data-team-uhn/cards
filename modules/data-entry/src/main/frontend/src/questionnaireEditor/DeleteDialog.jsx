@@ -30,7 +30,7 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 let DeleteDialog = (props) => {
   // Indicates whether the form has been saved or not. This has three possible values:

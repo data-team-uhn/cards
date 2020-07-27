@@ -19,9 +19,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, withStyles } from "@material-ui/core";
-import QuestionComponentManager from "./QuestionComponentManager";
-import QuestionnaireStyle from './QuestionnaireStyle';
+import { Grid, Typography, withStyles } from "@material-ui/core";
+import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
+import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 
 import BooleanInput from "./BooleanInput";
 import NumberInput from "./NumberInput";
@@ -33,18 +33,19 @@ let Fields = (props) => {
  /**
  * Method responsible for displaying a question from the questionnaire
  *
- * @param {String} key the lablel of the question
+ * @param {String} key the label of the question
  * @param {Object} value the data type of the question
  * @returns a React component that renders the question
  */
 
 let displayEditField = (key, value) => {
   // This variable must start with an upper case letter so that React treats it as a component
-  const FieldDisplay = QuestionComponentManager.getQuestionComponent(key);
+  const FieldDisplay = QuestionComponentManager.getQuestionComponent(value);
   return (
     <Grid item key={key}>
       <FieldDisplay
         objectKey={key}
+        value={value}
         data={data}
         />
     </Grid>
