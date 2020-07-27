@@ -23,7 +23,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 let DeleteQuestionnaireDialog = (props) => {
-    let [ forms, setForms] = useState(0);
+    let [ forms, setForms ] = useState(0);
     let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
     let [ saveInProgress, setSaveInProgress ] = useState();
     
