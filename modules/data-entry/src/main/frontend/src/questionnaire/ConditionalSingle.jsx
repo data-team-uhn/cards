@@ -22,12 +22,46 @@ import ConditionalComponentManager from "./ConditionalComponentManager";
 
 // A mapping from operands to conditionals
 const COMPARE_MAP = {
-  "=": (a, b) => (a == b),
-  "<": (a, b) => (a < b),
-  ">": (a, b) => (a > b),
-  "<>": (a, b) => (a !== b),
-  "is empty": (a) => (a == null || a == undefined),
-  "is not empty": (a) => (a != null && a != undefined)
+  "text": {
+    "=": (a, b) => (a == b),
+    "<": (a, b) => (a < b),
+    ">": (a, b) => (a > b),
+    "<>": (a, b) => (a !== b),
+    "is empty": (a) => (a == null || a == undefined),
+    "is not empty": (a) => (a != null && a != undefined)
+  },
+  "date": {
+    "=": (a, b) => (new Date(a).getTime() == new Date(b).getTime()),
+    "<": (a, b) => (new Date(a).getTime() < new Date(b).getTime()),
+    ">": (a, b) => (new Date(a).getTime() > new Date(b).getTime()),
+    "<>": (a, b) => (new Date(a).getTime() !== new Date(b).getTime()),
+    "is empty": (a) => (a == null || a == undefined),
+    "is not empty": (a) => (a != null && a != undefined)
+  },
+  "long": {
+    "=": (a, b) => (parseInt(a) == parseInt(b)),
+    "<": (a, b) => (parseInt(a) < parseInt(b)),
+    ">": (a, b) => (parseInt(a) > parseInt(b)),
+    "<>": (a, b) => (parseInt(a) !== parseInt(b)),
+    "is empty": (a) => (a == null || a == undefined),
+    "is not empty": (a) => (a != null && a != undefined)
+  },
+  "decimal": {
+    "=": (a, b) => (parseFloat(a) == parseFloat(b)),
+    "<": (a, b) => (parseFloat(a) < parseFloat(b)),
+    ">": (a, b) => (parseFloat(a) > parseFloat(b)),
+    "<>": (a, b) => (parseFloat(a) !== parseFloat(b)),
+    "is empty": (a) => (a == null || a == undefined),
+    "is not empty": (a) => (a != null && a != undefined)
+  },
+  "double": {
+    "=": (a, b) => (parseFloat(a) == parseFloat(b)),
+    "<": (a, b) => (parseFloat(a) < parseFloat(b)),
+    ">": (a, b) => (parseFloat(a) > parseFloat(b)),
+    "<>": (a, b) => (parseFloat(a) !== parseFloat(b)),
+    "is empty": (a) => (a == null || a == undefined),
+    "is not empty": (a) => (a != null && a != undefined)
+  }
 }
 
 /**
@@ -35,13 +69,17 @@ const COMPARE_MAP = {
  * @param {STRING} comparator The operator to use as a comparison
  * @param {STRING...} operands Any number of operands used for the comparison
  */
-export function isConditionalSatisfied(comparator, ...operands) {
-  if (!(comparator in COMPARE_MAP)) {
+export function isConditionalSatisfied(compareDataType, comparator, ...operands) {
+  if (!(compareDataType in COMPARE_MAP)) {
+    // Invalid data type
+    throw new Error("Invalid data type specified.")
+  }
+  if (!(comparator in COMPARE_MAP[compareDataType])) {
     // Invalid operand
     throw new Error("Invalid operand specified.")
   }
 
-  return COMPARE_MAP[comparator]?.apply(null, operands);
+  return COMPARE_MAP[compareDataType][comparator]?.apply(null, operands);
 }
 
 /**
@@ -66,7 +104,7 @@ export function isConditionalObjSatisfied(conditional, context) {
 
   return firstCondition( (valueA) => {
     return secondCondition( (valueB) => {
-      return isConditionalSatisfied(conditional["comparator"], valueA, valueB);
+      return isConditionalSatisfied(conditional["dataType"], conditional["comparator"], valueA, valueB);
     })
   })
 }
