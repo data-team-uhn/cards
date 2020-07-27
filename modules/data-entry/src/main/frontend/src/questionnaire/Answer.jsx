@@ -35,13 +35,17 @@ function Answer (props) {
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
   const [ isInitialized, setInitialized ] = useState(false);
-  if (isInitialized == false && answersTracker) {
-    if (!(answerPath in answersTracker[0])) {
-      answersTracker[1](answersTracker[0].concat(answerPath));
-      didGrow(true);
+
+  useEffect(() => {
+    if (isInitialized == false && answersTracker) {
+      if (!(answerPath in answersTracker[0])) {
+        answersTracker[1](answersTracker[0].concat(answerPath));
+        didGrow(true);
+      }
+      setInitialized(true);
     }
-    setInitialized(true);
-  }
+  });
+
   // Hooks must be pulled from the top level, so this cannot be moved to inside the useEffect()
   const changeFormContext = useFormWriterContext();
   // Rename this variable to start with a capital letter so React knows it is a component
