@@ -81,7 +81,7 @@ let DeleteDialog = (props) => {
       <Dialog id="deleteDialog" open={props.open} onClose={props.onClose}>
         <form action={props.data && props.data["@path"]} onSubmit={deleteData} method="DELETE" key={props.id}>
           <DialogTitle>
-            <Typography>{props.type.includes("Question") ? "Confirm question deletion" : "Confirm Section Deletion"}</Typography>
+            <Typography>{props.type.includes("Question") ? "Confirm Question Deletion" : "Confirm Section Deletion"}</Typography>
           </DialogTitle>
           <DialogActions>
             <Button
