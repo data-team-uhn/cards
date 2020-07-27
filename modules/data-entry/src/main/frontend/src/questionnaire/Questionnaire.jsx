@@ -37,9 +37,9 @@ import {
 import moment from "moment";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import EditDialog from "./EditDialog"
-import DeleteDialog from "./DeleteDialog"
-import Fields from './Fields'
+import EditDialog from "../questionnaireEditor/EditDialog"
+import DeleteDialog from "../questionnaireEditor/DeleteDialog"
+import Fields from '../questionnaireEditor/Fields'
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -185,8 +185,13 @@ let Question = (props) => {
       />
       <CardContent>
         <dl>
-          <Fields data={props.data} JSON={require('./Question.json')[0]} edit={false} />
+          <Fields data={props.data} JSON={require('../questionnaireEditor/Question.json')[0]} edit={false} />
         </dl>
+        {
+          Object.values(props.data)
+            .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
+            .map(value => <AnswerOption key={value['jcr:uuid']} data={value} />)
+        }
       </CardContent>
       <EditDialog edit={true} data={props.data} type='Question' open={open} onClose={() => { props.closeDialog(); setOpen(false); }} />
       <DeleteDialog open={openDelete} data={props.data} onClose={() => { props.closeDialog(); setOpenDelete(false); }} type="Question" />
@@ -276,9 +281,9 @@ Section.propTypes = {
 
 // A predefined answer option for a question.
 let AnswerOption = (props) => {
-  return <dd>{props.data.label} (<Typography variant="body2" component="span">{props.data.value}</Typography>)</dd>;
+  return <dd><Typography>{props.data.label}</Typography><Typography>{props.data.value}</Typography></dd>;
 };
 
 AnswerOption.propTypes = {
   data: PropTypes.object.isRequired
- };
+};

@@ -19,43 +19,38 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Checkbox,
-  Grid,
-  Typography,
-  withStyles
-} from "@material-ui/core";
+import { Grid, TextField, Typography, withStyles } from "@material-ui/core";
 
-import QuestionnaireStyle from './QuestionnaireStyle';
-import QuestionComponentManager from "./QuestionComponentManager";
+import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
+import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 
-// Boolean Input field used by Edit dialog component
+// Text Input field used by Edit dialog component
+let TextInput = (props) => {
+  let { objectKey, data } = props;
 
-let BooleanInput = (props) => {
-  let { objectKey, data, definition } = props;
   let formatString = (key) => {
     let formattedString = key.charAt(0).toUpperCase() + key.slice(1);
       return formattedString.split(/(?=[A-Z])/).join(' ');
   }
+
   return (
-    <Grid container alignItems='flex-end' spacing={2} key={objectKey || ''}>
-      <Grid item xs={6}><Typography>{ formatString(objectKey) || '' }</Typography></Grid>
-      <Grid item xs={6}><Checkbox name={objectKey || ''} id={objectKey || ''} defaultValue={data[objectKey] || ''} /></Grid>
+    <Grid container alignItems='flex-end' spacing={2} key={objectKey}>
+      <Grid item xs={6}><Typography>{ formatString(objectKey)}</Typography></Grid>
+      <Grid item xs={6}>
+        <TextField name={objectKey} id={objectKey} defaultValue={data[objectKey] || ''} required={objectKey.includes('text')}/>
+      </Grid>
     </Grid>
   )
 }
 
-BooleanInput.propTypes = {
+TextInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired
 };
 
-const StyledBooleanInput = withStyles(QuestionnaireStyle)(BooleanInput);
-export default StyledBooleanInput;
+const StyledTextInput = withStyles(QuestionnaireStyle)(TextInput);
+export default StyledTextInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
-  if (definition === 'boolean') {
-    return [StyledBooleanInput, 50];
-  }
+  return [StyledTextInput, 0];
 });
-

@@ -20,8 +20,8 @@ import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Questionnaire from "../questionnaire/Questionnaire.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
-import NewQuestionnaireDialog from "../questionnaire/NewQuestionnaireDialog.jsx";
-import DeleteQuestionnaireDialog from "../questionnaire/DeleteQuestionnaireDialog.jsx";
+import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialog.jsx";
+import DeleteQuestionnaireDialog from "../questionnaireEditor/DeleteQuestionnaireDialog.jsx";
 import { Button, Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
 
 function Questionnaires(props) {
