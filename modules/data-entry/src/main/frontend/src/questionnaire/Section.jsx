@@ -92,8 +92,8 @@ function Section(props) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
-  const [ removableAnswers, setRemovableAnswers ] = useState([]);
   const [ needsUpdate, setNeedsUpdate ] = useState(false);
+  const [ removableAnswers, setRemovableAnswers ] = useState({});
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const displayed = ConditionalComponentManager.evaluateCondition(
@@ -111,18 +111,14 @@ function Section(props) {
 
   const sectionAnswers = Object.entries(sectionDefinition).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']));
   const totalAnswers = sectionAnswers.length;
-  const answerStateVars = [];
-  for (let i = 0; i < totalAnswers; i++) {
-    let [ stateVar, stateVarSetter ] = useState([]);
-    answerStateVars.push([stateVar, stateVarSetter]);
-  }
-  let renderedAnswers = 0;
 
   function calculateDeletion() {
     let delList = [];
-    for (let i = 0; i < answerStateVars.length; i++) {
-      for (let j = 0; j < answerStateVars[i][0].length - 1; j++) {
-        delList.push(answerStateVars[i][0][j]);
+    let keySet = Object.keys(removableAnswers);
+    for (let i = 0; i < keySet.length; i++) {
+      let key = keySet[i];
+      for (let j = 0; j < removableAnswers[key].length-1; j++) {
+        delList.push(removableAnswers[key][j]);
       }
     }
     return delList;
@@ -222,8 +218,8 @@ function Section(props) {
                         existingAnswers={existingSectionAnswer}
                         keyProp={key}
                         classes={classes}
-                        answersTracker={answerStateVars[renderedAnswers++]}
-                        didGrow={setNeedsUpdate}>
+                        sectionAnswersState={[removableAnswers, setRemovableAnswers]}
+                        onAddedAnswerPath={setNeedsUpdate}>
                       </FormEntry>)
                   }
                   {

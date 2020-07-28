@@ -30,19 +30,24 @@ export const VALUE_POS = 1;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, onChangeNote, noteComponent, noteProps, answersTracker, didGrow } = props;
+  let { answers, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, sectionAnswersState } = props;
   let { enableNotes, sourceVocabulary } = { ...props, ...questionDefinition };
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
-  const [ isInitialized, setInitialized ] = useState(false);
 
   useEffect(() => {
-    if (isInitialized == false && answersTracker) {
-      if (!(answerPath in answersTracker[0])) {
-        answersTracker[1](answersTracker[0].concat(answerPath));
-        didGrow(true);
+    if (sectionAnswersState !== undefined) {
+      let idHistory = [];
+      if (questionName in sectionAnswersState[0]) {
+        idHistory = sectionAnswersState[0][questionName];
       }
-      setInitialized(true);
+      if (idHistory.indexOf(answerPath) < 0)
+      {
+        idHistory.push(answerPath);
+        sectionAnswersState[0][questionName] = idHistory;
+        sectionAnswersState[1](sectionAnswersState[0]);
+        onAddedAnswerPath(true);
+      }
     }
   });
 
