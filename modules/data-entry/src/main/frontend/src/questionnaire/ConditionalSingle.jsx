@@ -89,13 +89,6 @@ export function isConditionalSatisfied(compareDataType, comparator, ...operands)
  * @param {Object} context The React Context from which to pull values
  */
 export function isConditionalObjSatisfied(conditional, context) {
-
-  //By default assume that we are comparing strings
-  var compareDataType = "string";
-  if ("dataType" in conditional) {
-    compareDataType = conditional["dataType"];
-  }
-
   const requireAllOperandA = conditional["operandA"]["requireAll"];
   const requireAllOperandB = conditional["operandB"]?.requireAll;
 
