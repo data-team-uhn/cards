@@ -28,7 +28,7 @@ const COMPARE_MAP = {
     "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (a < b)),
     ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (a > b)),
     "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (a !== b)),
-    "is empty": (a) => (EMPTY.indexOf(a) >= 0)
+    "is empty": (a) => (EMPTY.indexOf(a) >= 0),
     "is not empty": (a) => (EMPTY.indexOf(a) < 0)
   },
   "date": {
@@ -36,7 +36,7 @@ const COMPARE_MAP = {
     "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (new Date(a).getTime() < new Date(b).getTime())),
     ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (new Date(a).getTime() > new Date(b).getTime())),
     "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (new Date(a).getTime() !== new Date(b).getTime())),
-    "is empty": (a) => (EMPTY.indexOf(a) >= 0)
+    "is empty": (a) => (EMPTY.indexOf(a) >= 0),
     "is not empty": (a) => (EMPTY.indexOf(a) < 0)
   },
   "long": {
@@ -44,7 +44,7 @@ const COMPARE_MAP = {
     "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseInt(a) < parseInt(b))),
     ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseInt(a) > parseInt(b))),
     "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseInt(a) !== parseInt(b))),
-    "is empty": (a) => (EMPTY.indexOf(a) >= 0)
+    "is empty": (a) => (EMPTY.indexOf(a) >= 0),
     "is not empty": (a) => (EMPTY.indexOf(a) < 0)
   },
   "decimal": {
@@ -52,7 +52,7 @@ const COMPARE_MAP = {
     "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) < parseFloat(b))),
     ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) > parseFloat(b))),
     "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) !== parseFloat(b))),
-    "is empty": (a) => (EMPTY.indexOf(a) >= 0)
+    "is empty": (a) => (EMPTY.indexOf(a) >= 0),
     "is not empty": (a) => (EMPTY.indexOf(a) < 0)
   },
   "double": {
@@ -60,7 +60,7 @@ const COMPARE_MAP = {
     "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) < parseFloat(b))),
     ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) > parseFloat(b))),
     "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) !== parseFloat(b))),
-    "is empty": (a) => (EMPTY.indexOf(a) >= 0)
+    "is empty": (a) => (EMPTY.indexOf(a) >= 0),
     "is not empty": (a) => (EMPTY.indexOf(a) < 0)
   }
 }
