@@ -27,13 +27,6 @@ import MaterialTable from "material-table";
 import { getHierarchy } from "./Subject.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
-// A configuration for columns in MaterialTable to prevent it from overwriting its own font
-const PREVENT_OVERRIDING_FONTS = {
-  fontSize: "",
-  fontFamily: "",
-  fontWeight: ""
-}
-
 /***
  * Create a URL that checks for the existance of a subject
  */
@@ -63,7 +56,7 @@ function UnstyledNewSubjectDialog (props) {
   const [ newSubjectType, setNewSubjectType ] = useState();
 
   const COLUMNS = [
-    { title: 'Subject type', field: 'label', cellStyle: PREVENT_OVERRIDING_FONTS },
+    { title: 'Subject type', field: 'label' },
   ];
 
   let changeType = (type) => {
@@ -173,8 +166,8 @@ function UnstyledSelectParentDialog (props) {
   const { classes, childType, continueDisabled, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
   const COLUMNS = [
-    { title: 'Subject', field: 'identifier', cellStyle: PREVENT_OVERRIDING_FONTS },
-    { title: 'Hierarchy', field: 'hierarchy', cellStyle: PREVENT_OVERRIDING_FONTS },
+    { title: 'Subject', field: 'identifier' },
+    { title: 'Hierarchy', field: 'hierarchy' },
   ];
 
   let initialized = parentType && childType;
@@ -719,8 +712,8 @@ function SubjectSelectorList(props) {
   const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject,
       theme, ...rest } = props;
   const COLUMNS = [
-    { title: 'Identifier', field: 'identifier', cellStyle: PREVENT_OVERRIDING_FONTS },
-    { title: 'Hierarchy', field: 'hierarchy', cellStyle: PREVENT_OVERRIDING_FONTS },
+    { title: 'Identifier', field: 'identifier' },
+    { title: 'Hierarchy', field: 'hierarchy' },
   ];
 
   return(
