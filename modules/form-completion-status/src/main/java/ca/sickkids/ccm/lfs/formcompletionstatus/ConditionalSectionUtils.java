@@ -45,6 +45,7 @@ public final class ConditionalSectionUtils
     private static final String PROP_QUESTION = "question";
     private static final String PROP_IS_REFERENCE = "isReference";
     private static final String PROP_VALUE = "value";
+    private static final String PROP_REQUIRE_ALL = "requireAll";
 
     /**
      * Hide the utility class constructor.
@@ -123,20 +124,50 @@ public final class ConditionalSectionUtils
         }
     }
 
+    private static boolean isLikeString(final PropertyState ps)
+    {
+        return (Type.STRING.equals(ps.getType()) || Type.STRINGS.equals(ps.getType()));
+    }
+
+    private static boolean isLikeLong(final PropertyState ps)
+    {
+        return (Type.LONG.equals(ps.getType()) || Type.LONGS.equals(ps.getType()));
+    }
+
+    private static boolean isLikeDouble(final PropertyState ps)
+    {
+        return (Type.DOUBLE.equals(ps.getType()) || Type.DOUBLES.equals(ps.getType()));
+    }
+
+    private static boolean isLikeDecimal(final PropertyState ps)
+    {
+        return (Type.DECIMAL.equals(ps.getType()) || Type.DECIMALS.equals(ps.getType()));
+    }
+
+    private static boolean isLikeBoolean(final PropertyState ps)
+    {
+        return (Type.BOOLEAN.equals(ps.getType()) || Type.BOOLEANS.equals(ps.getType()));
+    }
+
+    private static boolean isLikeDate(final PropertyState ps)
+    {
+        return (Type.DATE.equals(ps.getType()) || Type.DATES.equals(ps.getType()));
+    }
+
     private static int getPropertyStateType(final PropertyState ps)
     {
         int ret = PropertyType.UNDEFINED;
-        if (Type.STRING.equals(ps.getType())) {
+        if (isLikeString(ps)) {
             ret = PropertyType.STRING;
-        } else if (Type.LONG.equals(ps.getType())) {
+        } else if (isLikeLong(ps)) {
             ret = PropertyType.LONG;
-        } else if (Type.DOUBLE.equals(ps.getType())) {
+        } else if (isLikeDouble(ps)) {
             ret = PropertyType.DOUBLE;
-        } else if (Type.DECIMAL.equals(ps.getType())) {
+        } else if (isLikeDecimal(ps)) {
             ret = PropertyType.DECIMAL;
-        } else if (Type.BOOLEAN.equals(ps.getType())) {
+        } else if (isLikeBoolean(ps)) {
             ret = PropertyType.BOOLEAN;
-        } else if (Type.DATE.equals(ps.getType())) {
+        } else if (isLikeDate(ps)) {
             ret = PropertyType.DATE;
         }
         return ret;
@@ -236,6 +267,7 @@ public final class ConditionalSectionUtils
     private static boolean evalSectionCondition(final Object propA, final Object propB, final String operator)
         throws RepositoryException, ValueFormatException
     {
+        LOGGER.warn("evalSectionCondition: {} {} {}", propA, operator, propB);
         if ("=".equals(operator) || "<>".equals(operator)) {
             /*
              * Type.STRING uses .equals()
@@ -276,30 +308,32 @@ public final class ConditionalSectionUtils
         return outStr;
     }
 
-    private static Object getObjectFromPropertyState(PropertyState ps)
+    private static Object getObjectFromPropertyState(PropertyState ps, int index)
     {
         Object ret = null;
+        LOGGER.warn("This PropertyState has {} values.", ps.count());
         switch (getPropertyStateType(ps))
         {
             case PropertyType.STRING:
-                ret = ps.getValue(Type.STRING);
+                ret = ps.getValue(Type.STRING, index);
                 break;
             case PropertyType.LONG:
-                ret = ps.getValue(Type.LONG);
+                ret = ps.getValue(Type.LONG, index);
                 break;
             case PropertyType.DOUBLE:
-                ret = ps.getValue(Type.DOUBLE);
+                ret = ps.getValue(Type.DOUBLE, index);
                 break;
             case PropertyType.DECIMAL:
-                ret = ps.getValue(Type.DECIMAL);
+                ret = ps.getValue(Type.DECIMAL, index);
                 break;
             case PropertyType.BOOLEAN:
-                ret = ps.getValue(Type.BOOLEAN);
+                ret = ps.getValue(Type.BOOLEAN, index);
                 break;
             case PropertyType.DATE:
-                ret = parseDate(ps.getValue(Type.DATE));
+                ret = parseDate(ps.getValue(Type.DATE, index));
                 break;
             default:
+                LOGGER.warn("Unresolved type in getObjectFromPropertyState");
                 break;
         }
         return ret;
@@ -344,37 +378,91 @@ public final class ConditionalSectionUtils
         return ret;
     }
 
-    private static Object getOperandValue(final Node operand, final Node sectionNode, final NodeBuilder prevNb)
-        throws RepositoryException
+    private static PropertyState getPropertyStateFromRef(final Node operand,
+        final Node sectionNode, final NodeBuilder prevNb) throws RepositoryException
+    {
+        String key = operand.getProperty(PROP_VALUE).getValues()[0].getString();
+        // Sanitize
+        key = sanitizeNodeName(key);
+        final Node sectionNodeParent = sectionNode.getParent();
+        final Node keyNode = sectionNodeParent.getNode(key);
+        final String keyNodeUUID = keyNode.getIdentifier();
+        // Get the node from the Form containing the answer to keyNode
+        final NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyNodeUUID);
+        if (conditionalFormNode == null) {
+            return null;
+        }
+        return conditionalFormNode.getProperty(PROP_VALUE);
+    }
+
+    private static Object getOperandValue(final Node operand, final Node sectionNode,
+        final NodeBuilder prevNb, int index) throws RepositoryException
     {
         Object returnedValue = null;
         if (operand.getProperty(PROP_IS_REFERENCE).getValue().getBoolean()) {
-            String key = operand.getProperty(PROP_VALUE).getValues()[0].getString();
-            // Sanitize
-            key = sanitizeNodeName(key);
-            final Node sectionNodeParent = sectionNode.getParent();
-            final Node keyNode = sectionNodeParent.getNode(key);
-            final String keyNodeUUID = keyNode.getIdentifier();
-            // Get the node from the Form containing the answer to keyNode
-            final NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyNodeUUID);
-            if (conditionalFormNode == null) {
-                return null;
-            }
-            final PropertyState operandProp = conditionalFormNode.getProperty(PROP_VALUE);
+            PropertyState operandProp = getPropertyStateFromRef(operand, sectionNode, prevNb);
             if (operandProp != null) {
-                returnedValue = getObjectFromPropertyState(operandProp);
+                returnedValue = getObjectFromPropertyState(operandProp, index);
             }
         } else {
             Property nodeProp = operand.getProperty(PROP_VALUE);
             Value nodeVal;
             if (nodeProp.isMultiple()) {
-                nodeVal = nodeProp.getValues()[0];
+                Value[] nodeVals = nodeProp.getValues();
+                LOGGER.warn("This property has {} values.", nodeVals.length);
+                nodeVal = nodeProp.getValues()[index];
             } else {
                 nodeVal = nodeProp.getValue();
             }
             returnedValue = getObjectFromValue(nodeVal);
         }
         return returnedValue;
+    }
+
+    private static int getOperandLength(final Node operand, final Node sectionNode, final NodeBuilder prevNb)
+        throws RepositoryException
+    {
+        int returnedValue = -1;
+        if (operand.getProperty(PROP_IS_REFERENCE).getValue().getBoolean()) {
+            PropertyState operandProp = getPropertyStateFromRef(operand, sectionNode, prevNb);
+            if (operandProp != null) {
+                returnedValue = operandProp.count();
+            }
+        } else {
+            Property nodeProp = operand.getProperty(PROP_VALUE);
+            if (nodeProp.isMultiple()) {
+                Value[] nodeVals = nodeProp.getValues();
+                returnedValue = nodeVals.length;
+            } else {
+                returnedValue = 1;
+            }
+        }
+        return returnedValue;
+    }
+
+    private static boolean evalOperands(final Node operandA, final Node operandB,
+        final String comparator, final Node sectionNode, final NodeBuilder prevNb)
+        throws RepositoryException
+    {
+        final int lengthB = getOperandLength(operandB, sectionNode, prevNb);
+        final int lengthA = getOperandLength(operandA, sectionNode, prevNb);
+        final boolean requireAllB = operandB.getProperty(PROP_REQUIRE_ALL).getBoolean();
+        final boolean requireAllA = operandA.getProperty(PROP_REQUIRE_ALL).getBoolean();
+
+        //If at least one operand requires all to match
+        final boolean requireAllMulti = requireAllB | requireAllA;
+
+        boolean res = requireAllMulti;
+        for (int bi = 0; bi < lengthB; bi++) {
+            for (int ai = 0; ai < lengthA; ai++) {
+                final Object valueA = getOperandValue(operandA, sectionNode, prevNb, ai);
+                final Object valueB = getOperandValue(operandB, sectionNode, prevNb, bi);
+                if (evalSectionCondition(valueA, valueB, comparator) == !requireAllMulti) {
+                    res = !requireAllMulti;
+                }
+            }
+        }
+        return res;
     }
 
     /*
@@ -388,7 +476,7 @@ public final class ConditionalSectionUtils
     {
         if ("lfs:ConditionalGroup".equals(conditionNode.getProperty("jcr:primaryType").getString())) {
             // Is this an OR or an AND
-            final boolean requireAll = conditionNode.getProperty("requireAll").getBoolean();
+            final boolean requireAll = conditionNode.getProperty(PROP_REQUIRE_ALL).getBoolean();
             // Evaluate recursively
             final Iterator<Node> conditionChildren = conditionNode.getNodes();
             boolean downstreamResult = false;
@@ -410,9 +498,28 @@ public final class ConditionalSectionUtils
             final Node operandB = conditionNode.getNode("operandB");
             final Node operandA = conditionNode.getNode("operandA");
 
-            final Object valueA = getOperandValue(operandA, sectionNode, prevNb);
-            final Object valueB = getOperandValue(operandB, sectionNode, prevNb);
-            return evalSectionCondition(valueA, valueB, comparator);
+            LOGGER.warn("operandB is of length: {}", getOperandLength(operandB, sectionNode, prevNb));
+            LOGGER.warn("operandA is of length: {}", getOperandLength(operandA, sectionNode, prevNb));
+
+            //Get valueA[0..N] and valueB[0..N]
+            //If requireAll check that all combinations evaluate to true
+            //Otherwise check that at least one combination evaluates to true
+            final boolean requireAllB = operandB.getProperty(PROP_REQUIRE_ALL).getBoolean();
+            final boolean requireAllA = operandA.getProperty(PROP_REQUIRE_ALL).getBoolean();
+
+            //If at least one operand requires all to match
+            final boolean requireAllMulti = requireAllB | requireAllA;
+            //LOGGER.warn("requireAllMulti = {}, {}, {}", requireAllMulti, operandB, operandA);
+
+            //return res;
+            final boolean result = evalOperands(operandA, operandB, comparator, sectionNode, prevNb);
+            LOGGER.warn("RESULT = {}, requireAllMulti = {}, {}, {}", result, requireAllMulti, operandB, operandA);
+            return result;
+
+
+            //final Object valueA = getOperandValue(operandA, sectionNode, prevNb);
+            //final Object valueB = getOperandValue(operandB, sectionNode, prevNb);
+            //return evalSectionCondition(valueA, valueB, comparator);
         }
         // If all goes wrong
         return false;
