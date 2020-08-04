@@ -38,15 +38,14 @@ function Answer (props) {
   useEffect(() => {
     if (sectionAnswersState !== undefined) {
       let idHistory = [];
-      if (questionName in sectionAnswersState[0]) {
-        idHistory = sectionAnswersState[0][questionName];
+      if (questionName in sectionAnswersState) {
+        idHistory = sectionAnswersState[questionName];
       }
       if (idHistory.indexOf(answerPath) < 0)
       {
         idHistory.push(answerPath);
-        sectionAnswersState[0][questionName] = idHistory;
-        sectionAnswersState[1](sectionAnswersState[0]);
-        onAddedAnswerPath(true);
+        sectionAnswersState[questionName] = idHistory;
+        onAddedAnswerPath(sectionAnswersState);
       }
     }
   });
