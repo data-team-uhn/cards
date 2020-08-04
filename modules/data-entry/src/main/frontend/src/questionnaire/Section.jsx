@@ -35,6 +35,8 @@ import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireS
 import ConditionalGroup from "./ConditionalGroup";
 import ConditionalSingle from "./ConditionalSingle";
 
+const ID_STATE_KEY = ":AccessCount";
+
 // The heading levels that @material-ui supports
 const MAX_HEADING_LEVEL = 6;
 const MIN_HEADING_LEVEL = 4;
@@ -92,8 +94,7 @@ function Section(props) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
-  const [ needsUpdate, setNeedsUpdate ] = useState(false);
-  const [ removableAnswers, setRemovableAnswers ] = useState({});
+  const [ removableAnswers, setRemovableAnswers ] = useState({ID_STATE_KEY: 1});
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const displayed = ConditionalComponentManager.evaluateCondition(
@@ -105,12 +106,7 @@ function Section(props) {
     setDialogOpen(false);
   }
 
-  if (needsUpdate == true) {
-    setNeedsUpdate(false);
-  }
-
   const sectionAnswers = Object.entries(sectionDefinition).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']));
-  const totalAnswers = sectionAnswers.length;
 
   function calculateDeletion() {
     let delList = [];
@@ -218,8 +214,11 @@ function Section(props) {
                         existingAnswers={existingSectionAnswer}
                         keyProp={key}
                         classes={classes}
-                        sectionAnswersState={[removableAnswers, setRemovableAnswers]}
-                        onAddedAnswerPath={setNeedsUpdate}>
+                        sectionAnswersState={removableAnswers}
+                        onAddedAnswerPath={(newAnswers) => {
+                          newAnswers[ID_STATE_KEY] = newAnswers[ID_STATE_KEY] + 1;
+                          setRemovableAnswers(newAnswers);
+                        }}>
                       </FormEntry>)
                   }
                   {
@@ -279,7 +278,7 @@ function Section(props) {
       </DialogActions>
     </Dialog>
     </React.Fragment>
-    , [displayed, instanceLabels, labelsToHide, dialogOpen, needsUpdate]);
+    , [displayed, instanceLabels, labelsToHide, dialogOpen, removableAnswers[ID_STATE_KEY]]);
 }
 
 Section.propTypes = {
