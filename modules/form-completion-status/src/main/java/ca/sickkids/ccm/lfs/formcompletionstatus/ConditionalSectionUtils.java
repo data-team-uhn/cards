@@ -278,12 +278,6 @@ public final class ConditionalSectionUtils
                 testResult = !testResult;
             }
             return testResult;
-        } else if ("is empty".equals(operator) || "is not empty".equals(operator)) {
-            boolean testResult = (propA == null);
-            if ("is not empty".equals(operator)) {
-                testResult = !testResult;
-            }
-            return testResult;
         } else if ("<".equals(operator)) {
             return evalSectionLt(propA, propB);
         } else if (">".equals(operator)) {
@@ -448,6 +442,18 @@ public final class ConditionalSectionUtils
         final int lengthA = getOperandLength(operandA, sectionNode, prevNb);
         final boolean requireAllB = operandB.getProperty(PROP_REQUIRE_ALL).getBoolean();
         final boolean requireAllA = operandA.getProperty(PROP_REQUIRE_ALL).getBoolean();
+
+        /*
+         * Check for "is empty" / "is not empty" as requireAll is not
+         * relevant for these operators
+         */
+        if ("is empty".equals(comparator) || "is not empty".equals(comparator)) {
+            boolean testResult = (lengthB == -1 || lengthA == -1);
+            if ("is not empty".equals(comparator)) {
+                testResult = !testResult;
+            }
+            return testResult;
+        }
 
         //If at least one operand requires all to match
         final boolean requireAllMulti = requireAllB | requireAllA;
