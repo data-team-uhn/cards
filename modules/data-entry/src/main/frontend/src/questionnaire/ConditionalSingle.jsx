@@ -22,47 +22,30 @@ import ConditionalComponentManager from "./ConditionalComponentManager";
 
 // A mapping from operands to conditionals
 const EMPTY = [null, undefined, ""];
-const COMPARE_MAP = {
-  "text": {
-    "=": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (a == b)),
-    "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (a < b)),
-    ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (a > b)),
-    "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (a !== b)),
-    "is empty": (a) => (EMPTY.indexOf(a) >= 0),
-    "is not empty": (a) => (EMPTY.indexOf(a) < 0)
-  },
-  "date": {
-    "=": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (new Date(a).getTime() == new Date(b).getTime())),
-    "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (new Date(a).getTime() < new Date(b).getTime())),
-    ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (new Date(a).getTime() > new Date(b).getTime())),
-    "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (new Date(a).getTime() !== new Date(b).getTime())),
-    "is empty": (a) => (EMPTY.indexOf(a) >= 0),
-    "is not empty": (a) => (EMPTY.indexOf(a) < 0)
-  },
-  "long": {
-    "=": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseInt(a) == parseInt(b))),
-    "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseInt(a) < parseInt(b))),
-    ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseInt(a) > parseInt(b))),
-    "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseInt(a) !== parseInt(b))),
-    "is empty": (a) => (EMPTY.indexOf(a) >= 0),
-    "is not empty": (a) => (EMPTY.indexOf(a) < 0)
-  },
-  "decimal": {
-    "=": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) == parseFloat(b))),
-    "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) < parseFloat(b))),
-    ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) > parseFloat(b))),
-    "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) !== parseFloat(b))),
-    "is empty": (a) => (EMPTY.indexOf(a) >= 0),
-    "is not empty": (a) => (EMPTY.indexOf(a) < 0)
-  },
-  "double": {
-    "=": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) == parseFloat(b))),
-    "<": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) < parseFloat(b))),
-    ">": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) > parseFloat(b))),
-    "<>": (a, b) => ((EMPTY.indexOf(a) < 0) && (EMPTY.indexOf(b) < 0) && (parseFloat(a) !== parseFloat(b))),
-    "is empty": (a) => (EMPTY.indexOf(a) >= 0),
-    "is not empty": (a) => (EMPTY.indexOf(a) < 0)
+const TRANSFORMATIONS = {
+  "text": (a, b) => ([a, b]),
+  "date": (a, b) => ([new Date(a).getTime(), new Date(b).getTime()]),
+  "long": (a, b) => ([parseInt(a), parseInt(b)]),
+  "decimal": (a, b) => ([parseFloat(a), parseFloat(b)]),
+  "double": (a, b) => ([parseFloat(a), parseFloat(b)])
+};
+
+const OPERATIONS = {
+  "=": (a, b) => (a == b),
+  "<": (a, b) => (a < b),
+  ">": (a, b) => (a > b),
+  "<>": (a, b) => (a != b),
+  "is empty": (a, b) => (EMPTY.indexOf(a) >= 0 || EMPTY.indexOf(b) >= 0),
+  "is not empty": (a, b) => (EMPTY.indexOf(a) < 0 || EMPTY.indexOf(b) < 0)
+};
+
+let compare = function(a, b, type, operation) {
+  if (operation === "is empty" || operation === "is not empty") {
+    return OPERATIONS[operation](a, b);
+  } else if (EMPTY.indexOf(a) >= 0 || EMPTY.indexOf(b) >= 0) {
+    return false;
   }
+  return OPERATIONS?.[operation]?.(...(TRANSFORMATIONS[type] || TRANSFORMATIONS["text"])(a, b));
 }
 
 /**
@@ -71,16 +54,16 @@ const COMPARE_MAP = {
  * @param {STRING...} operands Any number of operands used for the comparison
  */
 export function isConditionalSatisfied(compareDataType, comparator, ...operands) {
-  if (!(compareDataType in COMPARE_MAP)) {
+  if (!(compareDataType in TRANSFORMATIONS)) {
     // Invalid data type
     throw new Error("Invalid data type specified.")
   }
-  if (!(comparator in COMPARE_MAP[compareDataType])) {
+  if (!(comparator in OPERATIONS)) {
     // Invalid operand
     throw new Error("Invalid operand specified.")
   }
 
-  return COMPARE_MAP[compareDataType][comparator]?.apply(null, operands);
+  return compare(...operands, compareDataType, comparator);
 }
 
 /**
