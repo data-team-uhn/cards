@@ -94,7 +94,7 @@ function Section(props) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
-  const [ removableAnswers, setRemovableAnswers ] = useState({ID_STATE_KEY: 1});
+  const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const displayed = ConditionalComponentManager.evaluateCondition(
