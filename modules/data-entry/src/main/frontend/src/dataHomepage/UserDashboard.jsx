@@ -22,6 +22,7 @@ import LiveTable from "./LiveTable.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, Typography, withStyles } from "@material-ui/core";
+import { Lock, Delete } from "@material-ui/icons"
 import NewFormDialog from "./NewFormDialog.jsx";
 
 // Component that renders the user's dashboard, with one LiveTable per questionnaire
@@ -66,6 +67,25 @@ function UserDashboard(props) {
       "format": "date:YYYY-MM-DD HH:mm",
     },
   ]
+  const actions =[
+    {
+      icon: <Lock />,
+      tooltip: 'Set Permissions',
+      onClick: (entry) => alert("permissions")/*this.setState({currentUserName: rowData.name, deployChangeUserPassword: true})*/
+    },
+    {
+      icon: <Delete />,
+      tooltip: 'Delete Form',
+      onClick: (entry, event) => handleDelete(entry)
+    }
+  ]
+
+  let handleDelete = (entry) => {
+    // Make a POST request to delete the given subject
+    let request_data = new FormData();
+    request_data.append(':operation', 'delete');
+    fetch( entry["@path"], { method: 'POST', body: request_data })
+  }
 
   // Obtain information about the questionnaires available to the user
   let initialize = () => {
@@ -160,6 +180,7 @@ function UserDashboard(props) {
                     joinChildren="lfs:Answer"
                     questionnaire={questionnaire["@path"]}
                     filters
+                    actions={actions}
                     />
                 </CardContent>
               </Card>

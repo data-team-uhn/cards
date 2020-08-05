@@ -19,13 +19,14 @@
 
 import React, { useState, useEffect } from "react";
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
-import { Card, CardHeader, CardContent, CardActions, Chip, IconButton, Typography, Button, LinearProgress, withStyles } from "@material-ui/core";
+import { Card, CardHeader, CardContent, CardActions, Chip, IconButton, Typography, Button, LinearProgress, withStyles, Tooltip } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import moment from "moment";
 
 import Filters from "./Filters.jsx";
 
 import LiveTableStyle from "./tableStyle.jsx";
+import Form from "../questionnaire/Form.jsx";
 
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -44,7 +45,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, ...rest } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, actions, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -172,6 +173,7 @@ function LiveTable(props) {
             <TableCell><a href={entry["@path"]}>{entry.title}</a></TableCell>
           )
         }
+        { actions ? (makeActions(entry, columns.count)) : null}
       </TableRow>
     );
   };
@@ -193,23 +195,23 @@ function LiveTable(props) {
     // allow livetable to link to components in the admin dashboard
     // if livetable item must link to a component within the admin dashboard, set "admin": true
     let pathPrefix = (column.admin ? "/content.html/admin" : "/content.html");
-    
+
     // Handle links
     if (column.key.startsWith('actions')) {
-      content = ( 
+      content = (
         <div>
           <Link to={pathPrefix + entry["@path"]}>
             <IconButton>
               <EditIcon />
             </IconButton>
-          </Link> 
+          </Link>
           <IconButton onClick={() => { props.delete(entry); }}>
             <DeleteIcon />
         </IconButton>
       </div>
       )
     }
-    
+
     if (column.link) {
       if (column.link === 'path') {
         content = (<a href={entry["@path"]}>{content}</a>);
@@ -229,6 +231,17 @@ function LiveTable(props) {
     // Render the cell
     return <TableCell key={index} {...column.props}>{content}</TableCell>
   };
+
+  let makeActions = (entry, index) => {
+    let content = actions.map((action, index) => {
+      let button = <IconButton key={index} component="span" size="small" onClick={action.onClick.bind(this, entry)}>{action.icon}</IconButton>;
+      if (action.tooltip) {
+        button = <Tooltip key={index} title={action.tooltip}>{button}</Tooltip>;
+      }
+      return button;
+    });
+    return <TableCell key={index}>{content}</TableCell>
+  }
 
   let getNestedValue = (entry, path) => {
     if (!path) return entry;
@@ -367,6 +380,7 @@ function LiveTable(props) {
               <TableCell>Name</TableCell>
             )
           }
+          { actions ? (<TableCell key={columns ? columns.count : 1} className={classes.tableHeader}>Actions</TableCell>) : null}
           </TableRow>
         </TableHead>
         <TableBody>
