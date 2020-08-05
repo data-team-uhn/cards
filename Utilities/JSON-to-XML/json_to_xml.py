@@ -45,10 +45,15 @@ def get_jcr_type(d):
     else:
         return "String"
 
+def convert_xml_safe(itm):
+    if str(itm) in ["<>", "<", ">"]:
+        return "<![CDATA[" + str(itm) + "]]>"
+    return str(itm)
+
 def save_list(l, indentation_level):
     print("\t"*indentation_level + "<values>")
     for itm in l:
-        print("\t"*(indentation_level+1) + "<value>" + str(itm) + "</value>")
+        print("\t"*(indentation_level+1) + "<value>" + convert_xml_safe(itm) + "</value>")
     print("\t"*indentation_level + "</values>")
 
 def save_as_xml(d, node_name="XmlQuestionnaire", indentation_level=0):
@@ -76,7 +81,7 @@ def save_as_xml(d, node_name="XmlQuestionnaire", indentation_level=0):
                     if (type(val) == list):
                         save_list(val, indentation_level+2)
                     else:
-                        print("\t"*(indentation_level+2) + "<value>" + str(val) +  "</value>")
+                        print("\t"*(indentation_level+2) + "<value>" + convert_xml_safe(val) +  "</value>")
                     print("\t"*(indentation_level+2) + "<type>" + get_jcr_type(val) + "</type>")
                 print("\t"*(indentation_level+1) + "</property>")
     
