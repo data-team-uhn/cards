@@ -61,6 +61,7 @@ class VocabularyQuery extends React.Component {
       lookupTimer: null,
       browserOpened: false,
       browseID: "",
+      browsePath: "",
       // Strings used by the info box
       infoID: "",
       infoName: "",
@@ -291,8 +292,9 @@ class VocabularyQuery extends React.Component {
         { /* Browse dialog box */}
         <VocabularyBrowser
           open={this.state.browserOpened}
-          term={this.state.browseID}
-          changeId={this.changeBrowseID}
+          id={this.state.browseID}
+          path={this.state.browsePath}
+          changeTerm={this.changeBrowseTerm}
           onClose={this.closeDialog}
           onError={this.logError}
           registerInfo={this.registerInfoButton}
@@ -396,7 +398,7 @@ class VocabularyQuery extends React.Component {
                   color="primary"
                   aria-owns={this.state.termInfoVisible ? "menu-list-grow" : null}
                   aria-haspopup={true}
-                  onClick={(e) => this.getInfo(element["identifier"])}
+                  onClick={(e) => this.getInfo(element["@path"])}
                   className={this.props.classes.buttonLink + " " + this.props.classes.infoButton}
                 >
                   <Info color="primary" />
@@ -451,15 +453,14 @@ class VocabularyQuery extends React.Component {
   }
 
   // Grab information about the given ID and populate the info box
-  getInfo = (id) => {
+  getInfo = (path) => {
     // If we don't yet know anything about our vocabulary, fill it in
     if (!this.state.infoVocabObtained) {
       var url = new URL(`./${this.props.vocabulary}.json`, REST_URL);
       MakeRequest(url, this.parseVocabInfo);
     }
 
-    var escapedId = id.replace(":", "");  // JCR Nodes do not contain colons
-    var url = new URL(`./${this.props.vocabulary}/${escapedId}.info.json`, REST_URL);
+    var url = new URL(path + ".info.json", window.location.origin);
     MakeRequest(url, this.showInfo);
   }
 
@@ -495,6 +496,7 @@ class VocabularyQuery extends React.Component {
 
       this.setState({
         infoID: data["identifier"],
+        infoPath: data["@path"],
         infoName: data["label"],
         infoDefinition: data["def"] || data["description"],
         infoAlsoKnownAs: synonym,
@@ -529,6 +531,7 @@ class VocabularyQuery extends React.Component {
     this.setState({
       browserOpened: true,
       browseID: this.state.infoID,
+      browsePath: this.state.infoPath,
     })
   }
 
@@ -551,9 +554,10 @@ class VocabularyQuery extends React.Component {
     });
   };
 
-  changeBrowseID = (id) => {
+  changeBrowseTerm = (id, path) => {
     this.setState({
       browseID: id,
+      browsePath: path,
     })
   }
 
