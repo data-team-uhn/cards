@@ -232,6 +232,9 @@ public final class ConditionalSectionUtils
             case PropertyType.DOUBLE:
                 testResult = ((double) propA < (double) propB);
                 break;
+            case PropertyType.DECIMAL:
+                testResult = (((BigDecimal) propA).compareTo((BigDecimal) propB) == -1);
+                break;
             case PropertyType.DATE:
                 testResult = ((Calendar) propA).before((Calendar) propB);
                 break;
@@ -251,6 +254,9 @@ public final class ConditionalSectionUtils
                 break;
             case PropertyType.DOUBLE:
                 testResult = ((double) propA > (double) propB);
+                break;
+            case PropertyType.DECIMAL:
+                testResult = (((BigDecimal) propA).compareTo((BigDecimal) propB) == 1);
                 break;
             case PropertyType.DATE:
                 testResult = ((Calendar) propA).after((Calendar) propB);
