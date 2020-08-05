@@ -152,6 +152,11 @@ public class OwlParser implements SourceParser
             gatheredProperties.put(label, value);
         }
 
+        // Backing up if rdf jena utils failed to get Identifier from term uri
+        if (identifier.length() == 0 && gatheredProperties.get("id").size() > 0) {
+            identifier = gatheredProperties.get("id").iterator().next();
+        }
+
         String[] parents = getAncestors(term, false);
         String[] ancestors = getAncestors(term, true);
 
