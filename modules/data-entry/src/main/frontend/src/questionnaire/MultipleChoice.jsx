@@ -204,18 +204,9 @@ function MultipleChoice(props) {
     </Typography>
     );
 
-  //Remove the ["", ""]
-  const tmp_answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
-  var answers = [];
-  if (tmp_answers.length < 2) {
-    answers = tmp_answers.slice();
-  } else {
-    for (var i = 0; i < tmp_answers.length; i++) {
-      if (tmp_answers[i][0] != "") {
-        answers.push(tmp_answers[i]);
-      }
-    }
-  }
+  // Remove the ["", ""] unless there are only zero or one answer items
+  var answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
+  answers = ((answers.length < 2) ? answers : answers.filter(item => item[0] !== ''));
 
   if (isSelect) {
     return (
