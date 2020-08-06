@@ -67,11 +67,11 @@ function UserDashboard(props) {
       "format": "date:YYYY-MM-DD HH:mm",
     },
   ]
-  const actions =[
+  const actions = [
     {
       icon: <Lock />,
       tooltip: 'Set Permissions',
-      onClick: (entry) => alert("permissions")/*this.setState({currentUserName: rowData.name, deployChangeUserPassword: true})*/
+      onClick: (event) => {}
     },
     {
       icon: <Delete />,
@@ -79,13 +79,6 @@ function UserDashboard(props) {
       onClick: (entry, event) => handleDelete(entry)
     }
   ]
-
-  let handleDelete = (entry) => {
-    // Make a POST request to delete the given subject
-    let request_data = new FormData();
-    request_data.append(':operation', 'delete');
-    fetch( entry["@path"], { method: 'POST', body: request_data })
-  }
 
   // Obtain information about the questionnaires available to the user
   let initialize = () => {
@@ -107,6 +100,13 @@ function UserDashboard(props) {
   let handleError = (response) => {
     setError(response.statusText ? response.statusText : response.toString());
     setQuestionnaires([]);  // Prevent an infinite loop if data was not set
+  };
+
+  let handleDelete = (entry) => {
+    // Make a POST request to delete the given form
+    let request_data = new FormData();
+    request_data.append(':operation', 'delete');
+    fetch( entry["@path"], { method: 'POST', body: request_data })
   };
 
   // If no forms can be obtained, we do not want to keep on re-obtaining questionnaires

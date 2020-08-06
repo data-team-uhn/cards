@@ -30,9 +30,11 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  IconButton
+  IconButton,
+  Tooltip
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import { Delete } from "@material-ui/icons"
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
@@ -215,13 +217,18 @@ function Form (props) {
   return (
     <form action={data["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
-        <Grid item className={classes.formHeader}>
+        <Grid item className={classes.formHeader} xs={12}>
           <Typography variant="overline">{parentDetails}</Typography>
           <Typography variant="h2">
             <Link href="#" onClick={() => {setSelectorDialogOpen(true)}}>
                 {data?.subject?.identifier}
             </Link>
             {": " + (data?.questionnaire?.title || id || "")}
+            <Tooltip key="0" title="Delete Form" className={classes.deleteButton}>
+              <IconButton component="span" onClick={() => {alert("TODO: Delete")}}>
+                <Delete fontSize="large"/>
+              </IconButton>
+            </Tooltip>
           </Typography>
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?

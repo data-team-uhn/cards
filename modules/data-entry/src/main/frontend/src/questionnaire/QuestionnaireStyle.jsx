@@ -205,15 +205,15 @@ const questionnaireStyle = theme => ({
         marginLeft: theme.spacing(6)
     },
     formHeader: {
-        position: "fixed",
+        position: "sticky",
         width: "100%",
         top: theme.spacing(4),
         backgroundColor: "white",
         opacity: 1,
         zIndex: "1010"
     },
-    formProvider: {
-        paddingTop: theme.spacing(20)
+    deleteButton: {
+        float: "right"
     },
     addNewSubjectButton: {
         width: "250px"

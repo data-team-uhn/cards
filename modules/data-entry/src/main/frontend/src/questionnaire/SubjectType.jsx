@@ -26,6 +26,7 @@ import {
   Grid,
   Typography
 } from "@material-ui/core";
+import { Lock, Delete } from "@material-ui/icons"
 
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 
@@ -63,6 +64,18 @@ function SubjectType (props) {
       "format": "date:YYYY-MM-DD HH:mm",
     },
   ]
+  const actions = [
+    {
+      icon: <Lock />,
+      tooltip: 'Set Permissions',
+      onClick: (event) => {}
+    },
+    {
+      icon: <Delete />,
+      tooltip: 'Delete Subject',
+      onClick: (entry, event) => handleDelete(entry)
+    }
+  ]
 
   // Fetch the subject type as JSON from the server.
   // The response will contain metadata, such as authorship and versioning information.
@@ -83,6 +96,13 @@ function SubjectType (props) {
   let handleError = (response) => {
     setError(response);
     setData([]);  // Prevent an infinite loop if data was not set
+  };
+
+  let handleDelete = (entry) => {
+    // Make a POST request to delete the given subject
+    let request_data = new FormData();
+    request_data.append(':operation', 'delete');
+    fetch( entry["@path"], { method: 'POST', body: request_data })
   };
 
   // If the data has not yet been fetched, return an in-progress symbol
@@ -130,6 +150,7 @@ function SubjectType (props) {
             columns={columns}
             customUrl={customUrl}
             defaultLimit={10}
+            actions={actions}
             />
         </Grid>
       </Grid>

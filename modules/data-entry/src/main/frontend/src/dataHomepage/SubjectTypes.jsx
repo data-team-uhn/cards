@@ -21,6 +21,7 @@ import LiveTable from "./LiveTable.jsx";
 import SubjectType from "../questionnaire/SubjectType.jsx";
 
 import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
+import { Lock, Delete } from "@material-ui/icons"
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function SubjectTypes(props) {
@@ -45,6 +46,25 @@ function SubjectTypes(props) {
       "format": "date:YYYY-MM-DD HH:mm",
     },
   ]
+  const actions = [
+    {
+      icon: <Lock />,
+      tooltip: 'Set Permissions',
+      onClick: (event) => {}
+    },
+    {
+      icon: <Delete />,
+      tooltip: 'Delete Subject Type',
+      onClick: (entry, event) => handleDelete(entry)
+    }
+  ]
+
+  let handleDelete = (entry) => {
+    // Make a POST request to delete the given subject type
+    let request_data = new FormData();
+    request_data.append(':operation', 'delete');
+    fetch( entry["@path"], { method: 'POST', body: request_data })
+  };
 
   const entry = /SubjectTypes\/(.+)/.exec(location.pathname);
   if (entry) {
@@ -61,7 +81,7 @@ function SubjectTypes(props) {
         }
       />
       <CardContent>
-        <LiveTable columns={columns} />
+        <LiveTable columns={columns} actions={actions} />
       </CardContent>
     </Card>
   );
