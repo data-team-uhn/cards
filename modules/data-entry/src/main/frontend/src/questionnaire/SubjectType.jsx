@@ -26,9 +26,9 @@ import {
   Grid,
   Typography
 } from "@material-ui/core";
-import { Lock, Delete } from "@material-ui/icons"
 
 import LiveTable from "../dataHomepage/LiveTable.jsx";
+import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 
 /**
  * Component that displays a SubjectType.
@@ -65,16 +65,7 @@ function SubjectType (props) {
     },
   ]
   const actions = [
-    {
-      icon: <Lock />,
-      tooltip: 'Set Permissions',
-      onClick: (event) => {}
-    },
-    {
-      icon: <Delete />,
-      tooltip: 'Delete Subject',
-      onClick: (entry, event) => handleDelete(entry)
-    }
+    DeleteButton
   ]
 
   // Fetch the subject type as JSON from the server.
@@ -98,12 +89,9 @@ function SubjectType (props) {
     setData([]);  // Prevent an infinite loop if data was not set
   };
 
-  let handleDelete = (entry) => {
-    // Make a POST request to delete the given subject
-    let request_data = new FormData();
-    request_data.append(':operation', 'delete');
-    fetch( entry["@path"], { method: 'POST', body: request_data })
-  };
+  let handleDelete = () => {
+    alert("TODO");
+  }
 
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
@@ -135,8 +123,9 @@ function SubjectType (props) {
         <Grid item>
           {
             data && data.identifier ?
-              <Typography variant="h2">Subject Type: {data.identifier}</Typography>
-            : <Typography variant="h2">Subject Type: {id}</Typography>
+              <Typography variant="h2">Subject Type: {data.identifier}<DeleteButton entry={data} reload={handleDelete} entryType={data.identifier} /></Typography>
+            : <Typography variant="h2">Subject Type: {id}<DeleteButton entry={data} reload={handleDelete} entryType={id} /></Typography>
+            // TODO: fix {data} where data not present
           }
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
@@ -151,6 +140,7 @@ function SubjectType (props) {
             customUrl={customUrl}
             defaultLimit={10}
             actions={actions}
+            entryType={(data && (data.identifier || id))}
             />
         </Grid>
       </Grid>

@@ -34,6 +34,7 @@ import {
   withStyles,
   Button,
 } from "@material-ui/core";
+import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 
 const QUESTION_TYPES = ["lfs:Question"];
 const SECTION_TYPES = ["lfs:Section"];
@@ -130,6 +131,10 @@ function SubjectContainer(props) {
     setError(response);
     setData([]);  // Prevent an infinite loop if data was not set
   };
+
+  let handleDelete = () => {
+    alert("TODO");
+  }
 
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
@@ -246,8 +251,13 @@ function SubjectMember (props) {
         }
         {
           data && data.identifier ?
-            <Typography variant={headerStyle}>{data?.type?.label || "Subject"} {data.identifier}</Typography>
-          : <Typography variant={headerStyle}>Subject {id}</Typography>
+            <Typography variant={headerStyle}>{data?.type?.label || "Subject"} {data.identifier}
+              <DeleteButton entry={data} reload={handleDelete} entryType={data.identifier} />
+            </Typography>
+          : <Typography variant={headerStyle}>Subject {id}
+              <DeleteButton entry={data} reload={handleDelete} entryType={id} />
+            </Typography>
+          // TODO: fix {data} where data not present
         }
         {
           data && data['jcr:createdBy'] && data['jcr:created'] ?

@@ -21,9 +21,9 @@ import LiveTable from "./LiveTable.jsx";
 import Form from "../questionnaire/Form.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles } from "@material-ui/core";
-import { Lock, Delete } from "@material-ui/icons"
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
+import DeleteButton from "./DeleteButton.jsx";
 
 function Forms(props) {
   const { match, location, classes } = props;
@@ -92,24 +92,8 @@ function Forms(props) {
     },
   ]
   const actions = [
-    {
-      icon: <Lock />,
-      tooltip: 'Set Permissions',
-      onClick: (event) => {}
-    },
-    {
-      icon: <Delete />,
-      tooltip: 'Delete Form',
-      onClick: (entry, event) => handleDelete(entry)
-    }
+    DeleteButton
   ]
-
-  let handleDelete = (entry) => {
-    // Make a POST request to delete the given form
-    let request_data = new FormData();
-    request_data.append(':operation', 'delete');
-    fetch( entry["@path"], { method: 'POST', body: request_data })
-  };
 
   return (
     <Card>
@@ -136,6 +120,7 @@ function Forms(props) {
           filters
           joinChildren="lfs:Answer"
           actions={actions}
+          entryType="Form"
           />
       </CardContent>
     </Card>

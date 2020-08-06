@@ -22,8 +22,9 @@ import LiveTable from "./LiveTable.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, Typography, withStyles } from "@material-ui/core";
-import { Lock, Delete } from "@material-ui/icons"
 import NewFormDialog from "./NewFormDialog.jsx";
+import DeleteButton from "./DeleteButton.jsx";
+import PermissionsButton from "./PermissionsButton.jsx";
 
 // Component that renders the user's dashboard, with one LiveTable per questionnaire
 // visible by the user. Each LiveTable contains all forms that use the given
@@ -68,16 +69,8 @@ function UserDashboard(props) {
     },
   ]
   const actions = [
-    {
-      icon: <Lock />,
-      tooltip: 'Set Permissions',
-      onClick: (event) => {}
-    },
-    {
-      icon: <Delete />,
-      tooltip: 'Delete Form',
-      onClick: (entry, event) => handleDelete(entry)
-    }
+    DeleteButton,
+    PermissionsButton
   ]
 
   // Obtain information about the questionnaires available to the user
@@ -100,13 +93,6 @@ function UserDashboard(props) {
   let handleError = (response) => {
     setError(response.statusText ? response.statusText : response.toString());
     setQuestionnaires([]);  // Prevent an infinite loop if data was not set
-  };
-
-  let handleDelete = (entry) => {
-    // Make a POST request to delete the given form
-    let request_data = new FormData();
-    request_data.append(':operation', 'delete');
-    fetch( entry["@path"], { method: 'POST', body: request_data })
   };
 
   // If no forms can be obtained, we do not want to keep on re-obtaining questionnaires
@@ -179,6 +165,7 @@ function UserDashboard(props) {
                     defaultLimit={10}
                     joinChildren="lfs:Answer"
                     questionnaire={questionnaire["@path"]}
+                    entryType={questionnaire["title"]}
                     filters
                     actions={actions}
                     />

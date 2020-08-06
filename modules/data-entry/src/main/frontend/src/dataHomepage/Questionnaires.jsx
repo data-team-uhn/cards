@@ -23,7 +23,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
 import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialog.jsx";
 import DeleteQuestionnaireDialog from "../questionnaireEditor/DeleteQuestionnaireDialog.jsx";
 import { Button, Card, CardHeader, CardContent, Typography, withStyles } from "@material-ui/core";
-import { Lock, Delete } from "@material-ui/icons";
+import DeleteButton from "./DeleteButton.jsx";
 
 function Questionnaires(props) {
   let [ openDialog, setOpenDialog ] = useState(false);
@@ -78,24 +78,8 @@ function Questionnaires(props) {
     }
   ]
   const actions = [
-    {
-      icon: <Lock />,
-      tooltip: 'Set Permissions',
-      onClick: (event) => {}
-    },
-    {
-      icon: <Delete />,
-      tooltip: 'Delete Questionnaire',
-      onClick: (entry, event) => handleDelete(entry)
-    }
+    DeleteButton
   ]
-
-  let handleDelete = (entry) => {
-    // Make a POST request to delete the given questionnaire
-    let request_data = new FormData();
-    request_data.append(':operation', 'delete');
-    fetch( entry["@path"], { method: 'POST', body: request_data })
-  };
 
   return (
     <React.Fragment>
@@ -115,7 +99,13 @@ function Questionnaires(props) {
         }}
         />
         <CardContent>
-          <LiveTable columns={columns} delete={deleteQuestionnaire} updateData={deletionCount} actions={actions}/>
+          <LiveTable
+            columns={columns}
+            delete={deleteQuestionnaire}
+            updateData={deletionCount}
+            actions={actions}
+            entryType={"Questionnaire"}
+            />
           { error &&
             <Typography color="error" variant="h3">
               {error}

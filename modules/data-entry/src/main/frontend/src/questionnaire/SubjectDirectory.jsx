@@ -31,8 +31,8 @@ import React from "react";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 
 import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
-import { Lock, Delete } from "@material-ui/icons"
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 
 function SubjectDirectory(props) {
 
@@ -57,24 +57,8 @@ function SubjectDirectory(props) {
     },
   ]
   const actions = [
-    {
-      icon: <Lock />,
-      tooltip: 'Set Permissions',
-      onClick: (event) => {}
-    },
-    {
-      icon: <Delete />,
-      tooltip: 'Delete Subject',
-      onClick: (entry, event) => handleDelete(entry)
-    }
+    DeleteButton
   ]
-
-  let handleDelete = (entry) => {
-    // Make a POST request to delete the given subject
-    let request_data = new FormData();
-    request_data.append(':operation', 'delete');
-    fetch( entry["@path"], { method: 'POST', body: request_data })
-  };
 
   return (
     <div>
@@ -92,6 +76,7 @@ function SubjectDirectory(props) {
             customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(id)}
             defaultLimit={10}
             actions={actions}
+            entryType={title}
             />
         </CardContent>
       </Card>

@@ -19,14 +19,13 @@
 
 import React, { useState, useEffect } from "react";
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
-import { Card, CardHeader, CardContent, CardActions, Chip, IconButton, Typography, Button, LinearProgress, withStyles, Tooltip } from "@material-ui/core";
+import { Card, CardHeader, CardContent, CardActions, Chip, IconButton, Typography, Button, LinearProgress, withStyles } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import moment from "moment";
 
 import Filters from "./Filters.jsx";
 
 import LiveTableStyle from "./tableStyle.jsx";
-import Form from "../questionnaire/Form.jsx";
 
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -45,7 +44,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, actions, ...rest } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, entryType, actions, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -78,18 +77,18 @@ function LiveTable(props) {
   // When new data is added, trigger a new fetch
   useEffect(() => {
     if (updateData){
-      triggerFetch();
+      refresh();
     }
   }, [updateData]);
 
   // When the data path is changed, trigger a new fetch
   useEffect(() => {
     if (customUrl){
-      triggerFetch();
+      refresh();
     }
   }, [customUrl]);
 
-  let triggerFetch = () => {
+  let refresh = () => {
     setFetchStatus(Object.assign({}, fetchStatus, {
       "currentRequestNumber": -1,
     }));
@@ -173,7 +172,7 @@ function LiveTable(props) {
             <TableCell><a href={entry["@path"]}>{entry.title}</a></TableCell>
           )
         }
-        { actions ? (makeActions(entry, columns.count)) : null}
+        { actions ? makeActions(entry, actions, columns ? columns.count : 0) : null}
       </TableRow>
     );
   };
@@ -232,15 +231,11 @@ function LiveTable(props) {
     return <TableCell key={index} {...column.props}>{content}</TableCell>
   };
 
-  let makeActions = (entry, index) => {
-    let content = actions.map((action, index) => {
-      let button = <IconButton key={index} component="span" size="small" onClick={action.onClick.bind(this, entry)}>{action.icon}</IconButton>;
-      if (action.tooltip) {
-        button = <Tooltip key={index} title={action.tooltip}>{button}</Tooltip>;
-      }
-      return button;
+  let makeActions = (entry, actions, index) => {
+    let content = actions.map((Action, index) => {
+      return <Action key={index} entry={entry} reload={refresh} entryType={entryType} size={"small"} />
     });
-    return <TableCell key={index}>{content}</TableCell>
+    return <TableCell key={index}>{content}</TableCell>;
   }
 
   let getNestedValue = (entry, path) => {
@@ -380,7 +375,7 @@ function LiveTable(props) {
               <TableCell>Name</TableCell>
             )
           }
-          { actions ? (<TableCell key={columns ? columns.count : 1} className={classes.tableHeader}>Actions</TableCell>) : null}
+          {actions ? <TableCell key={columns ? columns.count : 1} className={[classes.tableHeader, classes.tableActionsHeader].join(' ')}>Actions</TableCell> : null}
           </TableRow>
         </TableHead>
         <TableBody>

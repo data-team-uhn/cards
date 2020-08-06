@@ -26,15 +26,13 @@ import {
   Grid,
   Link,
   Typography,
-  withStyles,
   Dialog,
   DialogTitle,
   DialogContent,
   IconButton,
-  Tooltip
+  withStyles
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { Delete } from "@material-ui/icons"
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
@@ -43,6 +41,7 @@ import { getHierarchy } from "./Subject";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 import DialogueLoginContainer from "../login/loginDialogue.js";
+import DeleteButton from "../dataHomepage/DeleteButton";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -191,6 +190,10 @@ function Form (props) {
     saveData(event);
   }
 
+  let handleDelete = () => {
+    alert("TODO");
+  }
+
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     fetchData();
@@ -224,11 +227,7 @@ function Form (props) {
                 {data?.subject?.identifier}
             </Link>
             {": " + (data?.questionnaire?.title || id || "")}
-            <Tooltip key="0" title="Delete Form" className={classes.deleteButton}>
-              <IconButton component="span" onClick={() => {alert("TODO: Delete")}}>
-                <Delete fontSize="large"/>
-              </IconButton>
-            </Tooltip>
+            <DeleteButton entry={data} reload={handleDelete} entryType={data?.questionnaire?.title || id || "Form"} />
           </Typography>
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
