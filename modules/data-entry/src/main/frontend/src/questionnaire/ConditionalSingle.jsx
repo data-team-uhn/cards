@@ -97,13 +97,7 @@ export function isConditionalObjSatisfied(conditional, context) {
 }
 
 function removeAllNull(lst) {
-  var new_lst = [];
-  for (var i = 0; i < lst.length; i++) {
-    if (EMPTY.indexOf(lst[i]) < 0) {
-      new_lst.push(lst[i]);
-    }
-  }
-  return new_lst;
+  return lst.filter(item => (EMPTY.indexOf(item) < 0));
 }
 
 function allIsNull(lst) {
