@@ -37,6 +37,7 @@ import java.util.UUID;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
@@ -118,6 +119,16 @@ public class DataImportServlet extends SlingAllMethodsServlet
         }
     };
 
+    private final ThreadLocal<Map<String, Resource>> subjectTypeCache = new ThreadLocal<Map<String, Resource>>()
+    {
+        @Override
+        protected Map<String, Resource> initialValue()
+        {
+            return new HashMap<>();
+        }
+    };
+
+
     /** Cached Question nodes. */
     private final ThreadLocal<Set<String>> warnedCache = new ThreadLocal<Set<String>>()
     {
@@ -152,9 +163,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
             this.resolver.set(resourceResolver);
             this.formsHomepage.set(resourceResolver.getResource("/Forms"));
             this.subjectsHomepage.set(resourceResolver.getResource("/Subjects"));
-            this.subjectType.set(resourceResolver.getResource(
-                StringUtils.defaultIfBlank(request.getParameter(":subjectType"), "/SubjectTypes/Patient"))
-                .adaptTo(Node.class));
+            // this.subjectType.set(resourceResolver.getResource(
+            //     StringUtils.defaultIfBlank(request.getParameter(":subjectType"), "/SubjectTypes/Patient"))
+            //     .adaptTo(Node.class));
             parseData(request, StringUtils.equals("true", request.getParameter(":patch")));
         } catch (RepositoryException e) {
             LOGGER.error("Failed to import data: {}", e.getMessage(), e);
@@ -195,7 +206,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         try (CSVParser data = CSVParser.parse(dataFile.getInputStream(), StandardCharsets.UTF_8, format)) {
             data.forEach(row -> {
                 try {
-                    this.parseRow(row, patch);
+                    this.parseRow(row, patch, request);
                 } catch (PersistenceException e) {
                     LOGGER.warn("Failed to import row: {}", e.getMessage());
                 }
@@ -211,9 +222,10 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @param patch if {@code true}, try to find and update an existing form; if {@code false}, a new form is created
      * @throws PersistenceException if saving the processed data fails due to repository errors or incorrect data
      */
-    private void parseRow(CSVRecord row, boolean patch) throws PersistenceException
+    private void parseRow(CSVRecord row, boolean patch, final SlingHttpServletRequest request)
+        throws PersistenceException
     {
-        final Resource form = getOrCreateForm(row, patch);
+        final Resource form = getOrCreateForm(row, patch, request);
         row.toMap().forEach((fieldName, fieldValue) -> {
             try {
                 parseAnswer(fieldName, fieldValue, form);
@@ -268,6 +280,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @return the corresponding question node, or {@code null} if no question can be automatically identified from the
      *         given column name
      */
+    @SuppressWarnings({"MultipleStringLiterals"})
     private Node getQuestion(String columnName)
     {
         Map<String, Node> cache = this.questionCache.get();
@@ -557,9 +570,10 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @return the Resource to use for storing the row
      * @throws PersistenceException if creating a new Resource fails
      */
-    private Resource getOrCreateForm(final CSVRecord row, boolean patch) throws PersistenceException
+    private Resource getOrCreateForm(final CSVRecord row, boolean patch, final SlingHttpServletRequest request)
+        throws PersistenceException
     {
-        final Node subject = getOrCreateSubject(row).adaptTo(Node.class);
+        final Node subject = getOrCreateSubject(row, request).adaptTo(Node.class);
         Resource result = null;
         if (patch && subject != null) {
             result = findForm(subject);
@@ -610,28 +624,78 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @return the Resource where the Subject is stored; may be an existing or a newly created resource; may be
      *         {@code null} if a Subject identifier is not present in the row
      */
-    private Resource getOrCreateSubject(final CSVRecord row)
+    @SuppressWarnings({"RegexpSinglelineJava", "ExecutableStatementCount", "MultipleStringLiterals"})
+    private Resource getOrCreateSubject(final CSVRecord row, final SlingHttpServletRequest request)
+    // For each subject type, identify the target subject
+    // Given a parent subject (initially null) & a subject type path:
+    // 1. get the Node for the subject type (cached for future rows)
+    // 2. read label, look for a column with that label or label + “ ID” in the row, get value
+    // 3. search for a Subject with the right type, parent, and identifier
+    // If found, use it as the current subject. If not, create it,
+    // specifying the type, parent, and identifier, and use it as the current subject.
+    // Update the parent variable to be the current subject.
+    // If there are more entries in the subject types list, recurse with the new parent and new subject type.
+    // When the whole list of subject types is processed, return current subject as the subject to use for the row.
     {
-        final String subjectId = findSubjectId(row);
+        System.out.println("getOrCreateSubject( " + row + ", " + request + ")");
+        Resource current = null;
+        for (String type: request.getParameterValues(":subjectType")) {
+            System.out.println("type: " + type);
+            current = getOrCreateSubject(row, type, current, request);
+            if (current == null) {
+                return null;
+            }
+        }
+        System.out.println("getOrCreateSubject returns current: " + current);
+        return current;
+    }
+
+    @SuppressWarnings({"RegexpSinglelineJava", "ExecutableStatementCount", "MultipleStringLiterals"})
+    private Resource getOrCreateSubject(CSVRecord row, String type, Resource parent, SlingHttpServletRequest request)
+    {
+        System.out.println("getOrCreateSubject( " + row + ", " + type + ", " + parent);
+        String subjectId = findSubjectId(row, type, request);
+        System.out.println("subjectId: " + subjectId);
         if (StringUtils.isBlank(subjectId)) {
             return null;
         }
-        final String query =
+        String query =
             String.format("select n from [lfs:Subject] as n where n.identifier = '%s'", subjectId.replace("'", "''"));
+        if (parent != null) {
+            try {
+                query += " and n.parent = '" + parent.adaptTo(Node.class).getProperty("jcr:uuid") + "'";
+            } catch (PathNotFoundException ex) {
+                // No change to query
+            } catch (RepositoryException e) {
+                // No change to query
+            }
+        }
+        System.out.println("query: " + query);
         final Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
+        System.out.println("final Iterator<Resource> results : " + results);
+        Map<String, Resource> cache = this.subjectTypeCache.get();
+        System.out.println("cache : " + cache);
+        String subjectTypeString = this.subjectType.get().toString();
+        String parentString = parent.toString();
+        String subjectKey = subjectId.concat(subjectTypeString).concat(parentString);
+        System.out.println("subjectKey : " + subjectKey);
         if (results.hasNext()) {
+            System.out.println("results.next(): " + results.next());
+            cache.put(subjectKey, results.next());
             return results.next();
+        } else if (cache.containsKey(subjectKey)) {
+            System.out.println("cache.get(subjectKey): " + cache.get(subjectKey));
+            return cache.get(subjectKey);
         }
         final Map<String, Object> subjectProperties = new LinkedHashMap<>();
         subjectProperties.put("jcr:primaryType", "lfs:Subject");
-        subjectProperties.put("type", this.subjectType.get());
         subjectProperties.put("identifier", subjectId);
+        subjectProperties.put("type", this.subjectType.get());
+        subjectProperties.put("parent", parent);
         try {
             return this.resolver.get()
-                .create(this.subjectsHomepage.get(), UUID.randomUUID().toString(), subjectProperties);
+            .create(this.subjectsHomepage.get(), UUID.randomUUID().toString(), subjectProperties);
         } catch (PersistenceException e) {
-            LOGGER.warn("Unexpected exception while creating a new node for Subject [{}]: {}", subjectId,
-                e.getMessage());
             return null;
         }
     }
@@ -642,15 +706,56 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @param row the input CSV row to process, where the affected Subject identifier is to be found
      * @return a subject identifier, or {@code null} if one cannot be found
      */
-    private String findSubjectId(final CSVRecord row)
+    @SuppressWarnings({"RegexpSinglelineJava", "ExecutableStatementCount", "MultipleStringLiterals"})
+    String findSubjectId(CSVRecord row, String type, SlingHttpServletRequest request)
     {
-        final String result = SUBJECT_COLUMN_LABELS.stream().map(label -> {
+        System.out.println("findSubjectId( " + row + ", " + type + ")");
+        Node typeNode = getSubjectType(type);
+        System.out.println("typeNode" + typeNode);
+        String label;
+        try {
+            label = (typeNode.getProperty("label")).toString();
+        } catch (PathNotFoundException ex) {
+            return null;
+        } catch (RepositoryException e) {
+            return null;
+        }
+        System.out.println("label" + label);
+        String result = null;
+        String[] suffices = {"", " ID"};
+        for (String suffix: suffices) {
             try {
-                return row.get(label);
+                result = row.get(label + suffix);
+                if (StringUtils.isNotBlank(result)) {
+                    break;
+                }
+                System.out.println("result" + result);
             } catch (IllegalArgumentException ex) {
                 return null;
+                // Column is not mapped, continue;
             }
-        }).filter(Objects::nonNull).findFirst().orElse(row.get(0));
+        }
         return result;
+    }
+
+    @SuppressWarnings({"RegexpSinglelineJava"})
+    Node getSubjectType(String type)
+    // The :subjectType parameter should accept multiple values, ordered from the topmost to the most specific one
+    // eg ?:subjectType=/SubjectTypes/Patient&:subjectType=/SubjectTypes/Tumor
+    // If no value is set for this parameter, then /SubjectTypes/Patient should be assumed to be the default value
+    {
+        String[] typeArray = type.split("/");
+        System.out.println("getSubjectType( " + type + ")");
+        String query =
+            String.format("select n from [lfs:SubjectType] as n where n.identifier = '%s'",
+               typeArray[1]);
+        System.out.println("query" + query);
+        Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
+        System.out.println("results" + results);
+        if (results.hasNext()) {
+            //this.subjectType.set(results.next().adaptTo(Node.class));
+            return results.next().adaptTo(Node.class);
+        }
+        return null;
     }
 }
