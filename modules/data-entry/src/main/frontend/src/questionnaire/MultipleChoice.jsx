@@ -186,6 +186,8 @@ function MultipleChoice(props) {
         inputRef={ref => {inputEl = ref}}
       />
     </div>);
+    // If the field allows for multiple inputs (eg. maxAnswers !== 1),
+    // allow for the possibility of no user input (aka. an empty input)
     (maxAnswers !== 1) && addOption("", "");
     (maxAnswers !== 1) && selectOption("", "");
 
