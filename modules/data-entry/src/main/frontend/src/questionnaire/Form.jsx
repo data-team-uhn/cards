@@ -224,7 +224,8 @@ function Form (props) {
             </Link>
             {": " + (data?.questionnaire?.title || id || "")}
             <DeleteButton
-              entry={data ? data : {"@path": "/Forms/" + id, "@name": id}}
+              entryPath={data ? data["@path"] : "/Forms/"+id}
+              entryName={data?.subject?.identifier + ": " + (data?.questionnaire?.title || id || "")}
               entryType={data?.questionnaire?.title || "Form"}
               shouldGoBack={true}
             />

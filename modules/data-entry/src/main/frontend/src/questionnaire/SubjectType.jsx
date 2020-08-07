@@ -120,7 +120,8 @@ function SubjectType (props) {
           {
               <Typography variant="h2">Subject Type: {data && data.identifier ? data.identifier : id}
                 <DeleteButton
-                  entry={data ? data : {"@path": "/SubjectTypes/" + id, "@name": id}}
+                  entryPath={data ? data["@path"] : "/SubjectTypes/" + id}
+                  entryName={"Subject Type: " + (data && data.identifier ? data.identifier : id)}
                   entryType={"Subject Type"}
                   shouldGoBack={true}
                 />

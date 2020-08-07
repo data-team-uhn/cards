@@ -233,7 +233,7 @@ function LiveTable(props) {
 
   let makeActions = (entry, actions, index) => {
     let content = actions.map((Action, index) => {
-      return <Action key={index} entry={entry} onComplete={refresh} entryType={entryType} />
+      return <Action key={index} entryPath={entry["@path"]} entryName={columns ? getNestedValue(entry, columns[0].key) : entry["@name"]} onComplete={refresh} entryType={entryType} />
     });
     return <TableCell key={index}>{content}</TableCell>;
   }

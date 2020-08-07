@@ -29,7 +29,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  * A component that renders an icon to open a dialog to delete an entry.
  */
 function DeleteButton(props) {
-  const { classes, entry, onComplete, entryType, size, shouldGoBack } = props;
+  const { classes, entryPath, entryName, onComplete, entryType, size, shouldGoBack } = props;
   const [ open, setOpen ] = useState(false);
   const [ errorOpen, setErrorOpen ] = useState(false);
   const history = useHistory();
@@ -53,7 +53,7 @@ function DeleteButton(props) {
   let handleDelete = () => {
     let request_data = new FormData();
     request_data.append(':operation', 'delete');
-    fetch( entry["@path"], { method: 'POST', body: request_data }).then((json) => {
+    fetch( entryPath, { method: 'POST', body: request_data }).then((json) => {
       if (json.status && json.status === 500) {
         openError();
       } else {
@@ -79,7 +79,7 @@ function DeleteButton(props) {
           <Typography variant="h6">Error</Typography>
         </DialogTitle>
         <DialogContent>
-            <Typography variant="body1">{entry["@name"]} could not be removed. This can occur if completed forms reference this {entryType}.</Typography>
+            <Typography variant="body1">{entryName} could not be removed. This can occur if completed forms reference this {entryType}.</Typography>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
             <Button variant="contained" size="small" onClick={closeError}>Close</Button>
@@ -87,10 +87,10 @@ function DeleteButton(props) {
       </Dialog>
       <Dialog open={open} onClose={closeDialog}>
         <DialogTitle disableTypography>
-          <Typography variant="h6">Delete {entry["@name"]}</Typography>
+          <Typography variant="h6">Delete {entryName}</Typography>
         </DialogTitle>
         <DialogContent>
-            <Typography variant="body1">Are you sure you want to delete {entry["@name"]}?</Typography>
+            <Typography variant="body1">Are you sure you want to delete {entryName}?</Typography>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
             <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete()}>Delete</Button>

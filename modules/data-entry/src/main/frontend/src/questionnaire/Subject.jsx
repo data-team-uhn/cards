@@ -248,7 +248,8 @@ function SubjectMember (props) {
         {
           <Typography variant={headerStyle}>{data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
               <DeleteButton
-                entry={data ? data : {"@path": "/Subjects/" + id, "@name": id}}
+                entryPath={data ? data["@path"] : "/Subjects/" + id}
+                entryName={(data?.type?.label || "Subject") + " " + (data && data.identifier ? data.identifier : id)}
                 entryType={data?.type?.label || "Subject"}
                 shouldGoBack={true}
               />
