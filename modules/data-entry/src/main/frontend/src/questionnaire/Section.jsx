@@ -63,7 +63,7 @@ function createTitle(label, idx) {
  * @param {Object} sectionDefinition the section definition JSON
  */
 function Section(props) {
-  const { classes, depth, existingAnswer, path, sectionDefinition } = props;
+  const { classes, depth, existingAnswer, path, sectionDefinition, onChange } = props;
 
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
   const titleEl = sectionDefinition["label"] &&
@@ -218,7 +218,8 @@ function Section(props) {
                         onAddedAnswerPath={(newAnswers) => {
                           newAnswers[ID_STATE_KEY] = newAnswers[ID_STATE_KEY] + 1;
                           setRemovableAnswers(newAnswers);
-                        }}>
+                        }}
+                        onChange={onChange}>
                       </FormEntry>)
                   }
                   {

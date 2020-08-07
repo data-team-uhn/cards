@@ -32,7 +32,7 @@ const IS_DEFAULT_POS = 2;
 const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
-  let { classes, existingAnswer, ghostAnchor, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { classes, existingAnswer, ghostAnchor, input, textbox, onUpdate, additionalInputProps, muiInputProps, error, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
@@ -135,6 +135,7 @@ function MultipleChoice(props) {
 
   // Remove a non-default option
   let removeOption = (id, name) => {
+    onUpdate && onUpdate(id);
     setOptions(options.filter(
       (option) => {
         return !(option[VALUE_POS] === id && option[LABEL_POS] === name)
@@ -165,7 +166,7 @@ function MultipleChoice(props) {
         onChange={(event) => {
           setGhostName(event.target.value);
           updateGhost(GHOST_SENTINEL, event.target.value);
-          onChange && onChange(event.target.value);
+          onUpdate && onUpdate(event.target.value);
         }}
         onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
         onBlur={acceptEnteredOption}
@@ -193,7 +194,7 @@ function MultipleChoice(props) {
 
   let selectNonGhostOption = (...args) => {
     // Clear the ghost input
-    onChange && onChange(ghostSelected && !isRadio ? ghostName : undefined);
+    onUpdate && onUpdate(ghostSelected && !isRadio ? ghostName : undefined);
     selectOption(...args);
   }
 
@@ -258,7 +259,7 @@ function MultipleChoice(props) {
               <Radio
                 onChange={() => {
                   selectOption(ghostValue, ghostName);
-                  onChange && onChange(ghostSelected ? undefined : ghostName);
+                  onUpdate && onUpdate(ghostSelected ? undefined : ghostName);
                 }}
                 onClick={() => {inputEl && inputEl.select();}}
                 disabled={!ghostSelected && disabled}
@@ -287,7 +288,7 @@ function MultipleChoice(props) {
     );
   } else {
     return (
-      <React.Fragment>
+      <React.Fragment> 
         <List className={classes.checkboxList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
         </List>
