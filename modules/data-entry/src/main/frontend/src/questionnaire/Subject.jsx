@@ -18,7 +18,7 @@
 //
 
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
@@ -105,6 +105,7 @@ function SubjectContainer(props) {
   let [relatedSubjects, setRelatedSubjects] = useState();
   // 'level' of subject component
   const currentLevel = level || 0;
+  const history = useHistory();
 
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
@@ -133,7 +134,11 @@ function SubjectContainer(props) {
   };
 
   let handleDelete = () => {
-    alert("TODO");
+    if (history.length > 2) {
+      history.goBack();
+    } else {
+      history.replace("/");
+    }
   }
 
   // If the data has not yet been fetched, return an in-progress symbol
@@ -250,14 +255,13 @@ function SubjectMember (props) {
           parentDetails && <Typography variant="overline">{parentDetails}</Typography>
         }
         {
-          data && data.identifier ?
-            <Typography variant={headerStyle}>{data?.type?.label || "Subject"} {data.identifier}
-              <DeleteButton entry={data} reload={handleDelete} entryType={data.identifier} />
+          <Typography variant={headerStyle}>{data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
+              <DeleteButton
+                entry={data ? data : {"@path": "/Subjects/" + id, "@name": id}}
+                onComplete={handleDelete}
+                entryType={data?.type?.label || "Subject"}
+              />
             </Typography>
-          : <Typography variant={headerStyle}>Subject {id}
-              <DeleteButton entry={data} reload={handleDelete} entryType={id} />
-            </Typography>
-          // TODO: fix {data} where data not present
         }
         {
           data && data['jcr:createdBy'] && data['jcr:created'] ?

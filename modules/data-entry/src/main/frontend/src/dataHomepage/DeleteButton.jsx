@@ -29,26 +29,52 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  * A component that renders an icon to open a dialog to delete an entry.
  */
 function DeleteButton(props) {
-  const { classes, entry, reload, entryType, size } = props;
+  const { classes, entry, onComplete, entryType, size } = props;
   const [ open, setOpen ] = useState(false);
+  const [ errorOpen, setErrorOpen ] = useState(false);
 
   let openDialog = () => {
-    setOpen(true);
+    if (!open) {setOpen(true);}
   }
 
   let closeDialog = () => {
-    setOpen(false);
+    if (open) {setOpen(false);}
+  }
+
+  let openError = () => {
+    if (!errorOpen) {setErrorOpen(true);}
+  }
+
+  let closeError = () => {
+    if (errorOpen) {setErrorOpen(false);}
   }
 
   let handleDelete = () => {
     let request_data = new FormData();
     request_data.append(':operation', 'delete');
-    fetch( entry["@path"], { method: 'POST', body: request_data }).then(reload());
+    fetch( entry["@path"], { method: 'POST', body: request_data }).then((json) => {
+      if (json.status && json.status === 500) {
+        openError();
+      } else {
+        onComplete();
+      }
+    });
     closeDialog();
   }
 
   return (
     <React.Fragment>
+      <Dialog open={errorOpen} onClose={closeError}>
+        <DialogTitle disableTypography>
+          <Typography variant="h6">Error</Typography>
+        </DialogTitle>
+        <DialogContent>
+            <Typography variant="body1">{entry["@name"]} could not be removed. This can occur if completed forms reference this {entryType}.</Typography>
+        </DialogContent>
+        <DialogActions className={classes.dialogActions}>
+            <Button variant="contained" size="small" onClick={closeError}>Close</Button>
+        </DialogActions>
+      </Dialog>
       <Dialog open={open} onClose={closeDialog}>
         <DialogTitle disableTypography>
           <Typography variant="h6">Delete {entry["@name"]}</Typography>
@@ -63,7 +89,7 @@ function DeleteButton(props) {
       </Dialog>
       <Tooltip title={entryType ? "Delete " + entryType : "Delete"}>
         <IconButton component="span" onClick={openDialog} className={classes.iconButton}>
-          <Delete fontSize={size ? size : "medium"}/>
+          <Delete fontSize={size ? size : "default"}/>
         </IconButton>
       </Tooltip>
     </React.Fragment>

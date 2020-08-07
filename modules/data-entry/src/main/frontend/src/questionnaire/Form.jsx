@@ -18,6 +18,7 @@
 //
 
 import React, { useState } from "react";
+import { useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 
 import {
@@ -76,6 +77,8 @@ function Form (props) {
   let [ errorCode, setErrorCode ] = useState();
   let [ errorMessage, setErrorMessage ] = useState("");
   let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
+
+  const history = useHistory();
 
   let formNode = React.useRef();
 
@@ -191,7 +194,11 @@ function Form (props) {
   }
 
   let handleDelete = () => {
-    alert("TODO");
+    if (history.length > 2) {
+      history.goBack();
+    } else {
+      history.replace("/");
+    }
   }
 
   // If the data has not yet been fetched, return an in-progress symbol
@@ -227,7 +234,11 @@ function Form (props) {
                 {data?.subject?.identifier}
             </Link>
             {": " + (data?.questionnaire?.title || id || "")}
-            <DeleteButton entry={data} reload={handleDelete} entryType={data?.questionnaire?.title || id || "Form"} />
+            <DeleteButton
+              entry={data ? data : {"@path": "/Forms/" + id, "@name": id}}
+              onComplete={handleDelete}
+              entryType={data?.questionnaire?.title || "Form"}
+            />
           </Typography>
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?

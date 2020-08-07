@@ -233,7 +233,7 @@ function LiveTable(props) {
 
   let makeActions = (entry, actions, index) => {
     let content = actions.map((Action, index) => {
-      return <Action key={index} entry={entry} reload={refresh} entryType={entryType} size={"small"} />
+      return <Action key={index} entry={entry} onComplete={refresh} entryType={entryType} />
     });
     return <TableCell key={index}>{content}</TableCell>;
   }

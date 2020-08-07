@@ -18,6 +18,7 @@
 //
 
 import React, { useState } from "react";
+import { useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 
@@ -44,6 +45,8 @@ function SubjectType (props) {
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
+
+  const history = useHistory();
 
   // Column configuration for the LiveTables
   const columns = [
@@ -90,7 +93,11 @@ function SubjectType (props) {
   };
 
   let handleDelete = () => {
-    alert("TODO");
+    if (history.length > 2) {
+      history.goBack();
+    } else {
+      history.replace("/");
+    }
   }
 
   // If the data has not yet been fetched, return an in-progress symbol
@@ -122,10 +129,13 @@ function SubjectType (props) {
       <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
         <Grid item>
           {
-            data && data.identifier ?
-              <Typography variant="h2">Subject Type: {data.identifier}<DeleteButton entry={data} reload={handleDelete} entryType={data.identifier} /></Typography>
-            : <Typography variant="h2">Subject Type: {id}<DeleteButton entry={data} reload={handleDelete} entryType={id} /></Typography>
-            // TODO: fix {data} where data not present
+              <Typography variant="h2">Subject Type: {data && data.identifier ? data.identifier : id}
+                <DeleteButton
+                  entry={data ? data : {"@path": "/SubjectTypes/" + id, "@name": id}}
+                  onComplete={handleDelete}
+                  entryType={"Subject Type"}
+                />
+              </Typography>
           }
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?

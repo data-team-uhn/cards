@@ -30,18 +30,11 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 function PermissionsButton(props) {
   const { classes, entry, reload, entryType, size } = props;
 
-  let handleDelete = () => {
-    let request_data = new FormData();
-    request_data.append(':operation', 'delete');
-    fetch( entry["@path"], { method: 'POST', body: request_data }).then(reload());
-    closeDialog();
-  }
-
   return (
     <React.Fragment>
       <Tooltip title={"Set Permissions"}>
         <IconButton component="span" className={classes.iconButton}>
-          <Lock fontSize={size ? size : "medium"}/>
+          <Lock fontSize={size ? size : "default"}/>
         </IconButton>
       </Tooltip>
     </React.Fragment>

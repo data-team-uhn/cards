@@ -76,7 +76,7 @@ function SubjectDirectory(props) {
             customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(id)}
             defaultLimit={10}
             actions={actions}
-            entryType={title}
+            entryType={"Subject"}
             />
         </CardContent>
       </Card>
