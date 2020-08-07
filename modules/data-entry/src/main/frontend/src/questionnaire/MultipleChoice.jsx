@@ -206,7 +206,7 @@ function MultipleChoice(props) {
 
   // Remove the ["", ""] unless there are only zero or one answer items
   var answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
-  answers = ((answers.length < 2) ? answers : answers.filter(item => item[0] !== ''));
+  answers = ((answers.length < 2) ? answers : answers.filter(item => item[LABEL_POS] !== ''));
 
   if (isSelect) {
     return (
