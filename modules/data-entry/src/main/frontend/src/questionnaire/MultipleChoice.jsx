@@ -32,7 +32,7 @@ const IS_DEFAULT_POS = 2;
 const GHOST_SENTINEL = "custom-input";
 
 function MultipleChoice(props) {
-  let { classes, existingAnswer, ghostAnchor, input, textbox, onUpdate, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { classes, existingAnswer, ghostAnchor, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
@@ -135,7 +135,7 @@ function MultipleChoice(props) {
 
   // Remove a non-default option
   let removeOption = (id, name) => {
-    onUpdate && onUpdate(id);
+    onChange && onChange(id); // will trigger callback in Form.jsx
     setOptions(options.filter(
       (option) => {
         return !(option[VALUE_POS] === id && option[LABEL_POS] === name)

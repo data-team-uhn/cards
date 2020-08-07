@@ -64,9 +64,6 @@ function TextQuestion(props) {
 
   // Callback function if a regex is defined
   let checkRegex = (text) => {
-    // onChange;
-    onChange();
-    console.log(text);
     if (regexp) {
       setError(!regexTest.test(text));
     }
@@ -82,11 +79,6 @@ function TextQuestion(props) {
         textbox={displayMode === "textbox"}
         onUpdate={checkRegex}
         {...rest}
-        // classes={classes}
-        // path={path}
-        // questionDefinition={questionDefinition}
-        // questionName={questionName}
-        // existingAnswer={existingAnswer}
         />
     </Question>);
 }
