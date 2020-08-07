@@ -26,8 +26,13 @@ import {
   Grid,
   Link,
   Typography,
-  withStyles
+  withStyles,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton
 } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
@@ -67,6 +72,9 @@ function Form (props) {
   let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
   let [ loginDialogShow, setLoginDialogShow ] = useState(false);
+  let [ errorCode, setErrorCode ] = useState();
+  let [ errorMessage, setErrorMessage ] = useState("");
+  let [ showErrorDialog, setShowErrorDialog ] = useState(false);
 
   let formNode = React.useRef();
 
@@ -80,7 +88,7 @@ function Form (props) {
     fetch(`/Forms/${id}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleResponse)
-      .catch(handleError);
+      .catch(handleFetchError);
   };
 
   // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
@@ -89,7 +97,7 @@ function Form (props) {
   };
 
   // Callback method for the `fetchData` method, invoked when the request failed.
-  let handleError = (response) => {
+  let handleFetchError = (response) => {
     setError(response);
     setData([]);  // Prevent an infinite loop if data was not set
   };
@@ -110,17 +118,27 @@ function Form (props) {
     let data = new FormData(event ? event.currentTarget : formNode.current);
     fetch(`/Forms/${id}`, {
       method: "POST",
-      body: data
-    }).then((response) => response.ok ? true : Promise.reject(response))
-      .then(() => setLastSaveStatus(true))
-      // FIXME Use setError?
-      .catch(() => {
-        // If the user is not logged in, offer to log in
-        const sessionInfo = window.Sling.getSessionInfo();
-        if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-          // On first attempt to save while logged out, set status to false to make button text inform user
-          setLastSaveStatus(false);
-        }
+      body: data,
+      headers: {
+        Accept: "application/json"
+      }
+    }).then((response) => {
+      if (response.ok) {
+        setLastSaveStatus(true);
+      } else {
+        response.json().then((json) => {
+          // If the user is not logged in, offer to log in
+          const sessionInfo = window.Sling.getSessionInfo();
+          if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
+            // On first attempt to save while logged out, set status to false to make button text inform user
+            setLastSaveStatus(false);
+          } else {
+            setErrorCode(json["status.code"]);
+            setErrorMessage(json.error.message);
+            openErrorDialog();
+          }
+        })
+      }
       })
       .finally(() => setSaveInProgress(false));
   }
@@ -145,6 +163,18 @@ function Form (props) {
     })
     setChangedSubject(subject);
     setSelectorDialogOpen(false);
+  }
+
+  let openErrorDialog = () => {
+    if (!showErrorDialog) {
+      setShowErrorDialog(true);
+    }
+  }
+
+  let closeErrorDialog = () => {
+    if (showErrorDialog) {
+      setShowErrorDialog(false);
+    }
   }
 
   // If the data has not yet been fetched, return an in-progress symbol
@@ -225,6 +255,17 @@ function Form (props) {
         'Save'}
       </Button>
       <DialogueLoginContainer isOpen={loginDialogShow} handleLogin={handleLogin}/>
+      <Dialog open={showErrorDialog} onClose={closeErrorDialog}>
+        <DialogTitle disableTypography>
+          <Typography variant="h6" color="error" className={classes.dialogTitle}>Failed to save</Typography>
+          <IconButton onClick={closeErrorDialog} className={classes.closeButton}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+            <Typography variant="body1">Server responded with response code {errorCode}:<br />{errorMessage}</Typography>
+        </DialogContent>
+      </Dialog>
     </form>
   );
 };
