@@ -18,7 +18,6 @@
 //
 
 import React, { useState } from "react";
-import { useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 
 import {
@@ -77,8 +76,6 @@ function Form (props) {
   let [ errorCode, setErrorCode ] = useState();
   let [ errorMessage, setErrorMessage ] = useState("");
   let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
-
-  const history = useHistory();
 
   let formNode = React.useRef();
 
@@ -193,14 +190,6 @@ function Form (props) {
     saveData(event);
   }
 
-  let handleDelete = () => {
-    if (history.length > 2) {
-      history.goBack();
-    } else {
-      history.replace("/");
-    }
-  }
-
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     fetchData();
@@ -236,8 +225,8 @@ function Form (props) {
             {": " + (data?.questionnaire?.title || id || "")}
             <DeleteButton
               entry={data ? data : {"@path": "/Forms/" + id, "@name": id}}
-              onComplete={handleDelete}
               entryType={data?.questionnaire?.title || "Form"}
+              shouldGoBack={true}
             />
           </Typography>
           {

@@ -18,7 +18,7 @@
 //
 
 import React, { useState } from "react";
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
@@ -105,7 +105,6 @@ function SubjectContainer(props) {
   let [relatedSubjects, setRelatedSubjects] = useState();
   // 'level' of subject component
   const currentLevel = level || 0;
-  const history = useHistory();
 
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
@@ -132,14 +131,6 @@ function SubjectContainer(props) {
     setError(response);
     setData([]);  // Prevent an infinite loop if data was not set
   };
-
-  let handleDelete = () => {
-    if (history.length > 2) {
-      history.goBack();
-    } else {
-      history.replace("/");
-    }
-  }
 
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
@@ -258,8 +249,8 @@ function SubjectMember (props) {
           <Typography variant={headerStyle}>{data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
               <DeleteButton
                 entry={data ? data : {"@path": "/Subjects/" + id, "@name": id}}
-                onComplete={handleDelete}
                 entryType={data?.type?.label || "Subject"}
+                shouldGoBack={true}
               />
             </Typography>
         }

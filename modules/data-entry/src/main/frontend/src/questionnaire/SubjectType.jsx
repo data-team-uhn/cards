@@ -18,7 +18,6 @@
 //
 
 import React, { useState } from "react";
-import { useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 
@@ -45,8 +44,6 @@ function SubjectType (props) {
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
-
-  const history = useHistory();
 
   // Column configuration for the LiveTables
   const columns = [
@@ -92,14 +89,6 @@ function SubjectType (props) {
     setData([]);  // Prevent an infinite loop if data was not set
   };
 
-  let handleDelete = () => {
-    if (history.length > 2) {
-      history.goBack();
-    } else {
-      history.replace("/");
-    }
-  }
-
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     fetchData();
@@ -132,8 +121,8 @@ function SubjectType (props) {
               <Typography variant="h2">Subject Type: {data && data.identifier ? data.identifier : id}
                 <DeleteButton
                   entry={data ? data : {"@path": "/SubjectTypes/" + id, "@name": id}}
-                  onComplete={handleDelete}
                   entryType={"Subject Type"}
+                  shouldGoBack={true}
                 />
               </Typography>
           }

@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useState } from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, useHistory } from "react-router-dom";
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@material-ui/core";
 import { Tooltip, Typography, withStyles } from "@material-ui/core";
@@ -29,9 +29,10 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  * A component that renders an icon to open a dialog to delete an entry.
  */
 function DeleteButton(props) {
-  const { classes, entry, onComplete, entryType, size } = props;
+  const { classes, entry, onComplete, entryType, size, shouldGoBack } = props;
   const [ open, setOpen ] = useState(false);
   const [ errorOpen, setErrorOpen ] = useState(false);
+  const history = useHistory();
 
   let openDialog = () => {
     if (!open) {setOpen(true);}
@@ -56,10 +57,19 @@ function DeleteButton(props) {
       if (json.status && json.status === 500) {
         openError();
       } else {
-        onComplete();
+        if (onComplete) {onComplete()};
+        if (shouldGoBack) {goBack()};
       }
     });
     closeDialog();
+  }
+
+  let goBack = () => {
+    if (history.length > 2) {
+      history.goBack();
+    } else {
+      history.replace("/");
+    }
   }
 
   return (
