@@ -251,6 +251,7 @@ function SubjectMember (props) {
                 entryPath={data ? data["@path"] : "/Subjects/" + id}
                 entryName={(data?.type?.label || "Subject") + " " + (data && data.identifier ? data.identifier : id)}
                 entryType={data?.type?.label || "Subject"}
+                warning={data ? data["@referenced"] : false}
                 shouldGoBack={true}
               />
             </Typography>

@@ -232,8 +232,20 @@ function LiveTable(props) {
   };
 
   let makeActions = (entry, actions, index) => {
+    let name;
+    if (entry["jcr:primaryType"] === "lfs:Form") {
+      name = `${getNestedValue(entry, "subject/identifier") || "Subject"}: ${getNestedValue(entry, "questionnaire/title") || entry["@name"]}`
+    } else {
+      name = columns ? getNestedValue(entry, columns[0].key) : entry["@name"];
+    }
     let content = actions.map((Action, index) => {
-      return <Action key={index} entryPath={entry["@path"]} entryName={columns ? getNestedValue(entry, columns[0].key) : entry["@name"]} onComplete={refresh} entryType={entryType} />
+      return <Action
+        key={index}
+        entryPath={entry["@path"]}
+        entryName={name}
+        onComplete={refresh}
+        entryType={entryType}
+        warning={entry["@referenced"]} />
     });
     return <TableCell key={index}>{content}</TableCell>;
   }

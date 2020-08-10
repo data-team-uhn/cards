@@ -17,6 +17,8 @@
 //  under the License.
 //
 
+import { warningColor } from "../../../../../../commons/src/main/frontend/src/themeStyle";
+
 // Props used in grid containers for displaying Form entries
 export const FORM_ENTRY_CONTAINER_PROPS = {
     direction: "column",
@@ -261,6 +263,9 @@ const questionnaireStyle = theme => ({
     fileInfo: {
       padding: theme.spacing(1),
       fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    },
+    warningIcon: {
+      color: theme.palette.warning.main
     },
 });
 

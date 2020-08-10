@@ -225,8 +225,9 @@ function Form (props) {
             {": " + (data?.questionnaire?.title || id || "")}
             <DeleteButton
               entryPath={data ? data["@path"] : "/Forms/"+id}
-              entryName={data?.subject?.identifier + ": " + (data?.questionnaire?.title || id || "")}
+              entryName={(data?.subject?.identifier || "Subject") + ": " + (data?.questionnaire?.title || id || "")}
               entryType={data?.questionnaire?.title || "Form"}
+              warning={data ? data["@referenced"] : false}
               shouldGoBack={true}
             />
           </Typography>

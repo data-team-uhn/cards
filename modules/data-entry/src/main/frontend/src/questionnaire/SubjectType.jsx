@@ -123,6 +123,7 @@ function SubjectType (props) {
                   entryPath={data ? data["@path"] : "/SubjectTypes/" + id}
                   entryName={"Subject Type: " + (data && data.identifier ? data.identifier : id)}
                   entryType={"Subject Type"}
+                  warning={data ? data["@referenced"] : false}
                   shouldGoBack={true}
                 />
               </Typography>
