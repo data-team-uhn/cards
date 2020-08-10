@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/QuestionnairesHomepage", "cards/FormsHomepage", "cards/SubjectsHomepage",
-        "cards/SubjectTypesHomepage" },
+        "cards/SubjectTypesHomepage", "cards/StatisticsHomepage" },
     selectors = { "paginate" })
 public class PaginationServlet extends SlingSafeMethodsServlet
 {
