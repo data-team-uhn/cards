@@ -16,48 +16,46 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
-import LiveTable from "./LiveTable.jsx";
+import React, { useState } from "react";
 
-import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, Grid, withStyles, Select, MenuItem, Typography } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function AdminStatistics(props) {
   const { classes } = props;
+  let [statistics, setStatistics] = useState([1, 2, 3]); // each statistic becomes one chart
 
-  const columns = [
-    {
-      "key": "label",
-      "label": "Label",
-      "format": "string",
-      "link": "dashboard+field:@path",
-      "admin": true,
-    },
-    {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
-    },
-    {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
-    },
-  ]
+  //TODO:
+  // use filters
+  // y-axis: subjecttype --> get all forms that have that as a required subjecttype --> get all variables from all those forms
+
+  // OR just get all variable names. might still be able to use filters
+
+  //TODO: right now, questionnaire path is passed from userdash --> livetable --> filters. can filters be passed ALL questionnaires?
 
   return (
-    <Card>
-      <CardHeader
-        title={
-          <Button className={classes.cardHeaderButton}>
-            Subject Types
-          </Button>
-        }
-      />
-      <CardContent>
-        <LiveTable columns={columns} />
-      </CardContent>
-    </Card>
+    <React.Fragment>
+      <Grid container spacing={3}>
+        {statistics.map((statistic) => {
+          return(
+            <Grid item lg={12} xl={6}>
+              <Card>
+                <CardContent>
+                  <Grid container alignItems="flex-end" spacing={2} className={classes.filterTable}>
+                    {/* use select from filters! */}
+                    <Typography>Name:</Typography>
+                    <Typography>x-axis:</Typography>
+                    <Typography>y-axis:</Typography>
+                    <Typography>Split by:</Typography>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+          )
+        })}
+      </Grid>
+      <Button>New chart</Button>
+    </React.Fragment>
   );
 }
 
