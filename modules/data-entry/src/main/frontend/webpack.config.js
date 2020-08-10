@@ -27,6 +27,8 @@ module.exports = {
     [module_name + 'SubjectView']: './src/dataHomepage/SubjectView.jsx',
     [module_name + 'NewFormDialog']: './src/dataHomepage/NewFormDialog.jsx',
     [module_name + 'SubjectSelector']: './src/questionnaire/SubjectSelector.jsx',
+    [module_name + 'AdminStatistics']: './src/dataHomepage/AdminStatistics.jsx',
+    [module_name + 'UserStatistics']: './src/dataHomepage/UserStatistics.jsx',
   },
   plugins: [
     new CleanWebpackPlugin(),

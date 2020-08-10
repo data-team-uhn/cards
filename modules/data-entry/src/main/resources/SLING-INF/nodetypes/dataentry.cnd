@@ -887,3 +887,90 @@
   // Whether to show the total number of results.
   // Can be set to 'false' in case of performance issues.
   - showTotalRows (BOOLEAN) = 'true'
+
+//-----------------------------------------------------------------------------
+// StatisticVariable: questions/sections chosen to serve as variables in a Statistic.
+[lfs:StatisticVariable] > sling:Folder, mix:referenceable
+  // Attributes
+
+  // We can use statistic variables in a query.
+  query
+  // The main sub-item of a statistic variable is its text.
+  primaryitem text
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/StatisticVariable" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each statistic variable is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // The text of the statistic variable.
+  // Mandatory, every statistic variable needs a text
+  - text (string) mandatory
+
+  // Which type of variable
+  // - x: simple text, either from a list of predefined options, or free text entered by the user
+  // - y: a number
+  // - split: a date, with optional time
+  - variableType (string) = 'x' mandatory autocreated
+
+  // Children
+
+  // The questions and sections chosen as variables.
+  + * (lfs:Section, lfs:Question) = lfs:Section
+
+//-----------------------------------------------------------------------------
+// Statistic: a group of data to be visually displayed
+[lfs:Statistic] > sling:Folder, mix:referenceable, mix:versionable
+  // Attributes
+
+  // We can use statistics in a query.
+  query
+  // The main sub-item of a Statistic is its name.
+  primaryitem name
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/Statistic" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each statistic is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // A name for this Statistic.
+  // Mandatory, each Statistic must have a name.
+  - name (string) mandatory
+
+  // A reference to the x-axis variable (question or section)
+  // No full text search, since it's just a non-textual reference.
+  - xVar (string) mandatory
+
+  // A reference to the y-axis variable (subjectType)
+  // No full text search, since it's just a non-textual reference.
+  - yVar (string) mandatory
+
+  // A reference to the split variable (subjectType)
+  // Not mandatory
+  // No full text search, since it's just a non-textual reference.
+  - splitVar (reference) nofulltext
+
+//-----------------------------------------------------------------------------
+// The homepage for the Statistics space.
+[lfs:StatisticsHomepage] > sling:Folder
+  // Attributes:
+
+  // We can use this homepage in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/StatisticsHomepage" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the StatisticsHomepage is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // Set a default title.
+  - title (String) = "Statistics" mandatory autocreated

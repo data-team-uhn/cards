@@ -49,8 +49,9 @@
             create path (cards:FormsHomepage) /Forms \
             create path (cards:SubjectsHomepage) /Subjects \
             create path (cards:SubjectTypesHomepage) /SubjectTypes \
+            create path (cards:StatisticsHomepage) /Statistics \
 \
-            set ACL on /Forms,/Subjects \
+            set ACL on /Forms,/Subjects,/Statistics \
                 allow jcr:all for everyone \
             end \
 \
@@ -66,7 +67,7 @@
             create path (cards:FormsHomepage) /Forms \
             create path (cards:SubjectsHomepage) /Subjects \
 \
-            set ACL on /Forms,/Subjects \
+            set ACL on /Forms,/Subjects,/Statistics \
                 deny jcr:all for github \
             end \
           "]
@@ -78,10 +79,11 @@
             create path (cards:FormsHomepage) /Forms \
             create path (cards:SubjectsHomepage) /Subjects \
             create path (cards:SubjectTypesHomepage) /SubjectTypes \
+            create path (cards:StatisticsHomepage) /Statistics \
 \
             create group TrustedUsers \
 \
-            set ACL on /Forms,/Subjects \
+            set ACL on /Forms,/Subjects,/Statistics \
                 allow jcr:all for TrustedUsers \
             end \
 \
@@ -97,8 +99,9 @@
             create path (cards:FormsHomepage) /Forms \
             create path (cards:SubjectsHomepage) /Subjects \
             create path (cards:SubjectTypesHomepage) /SubjectTypes \
+            create path (cards:StatisticsHomepage) /Statistics \
 \
-            set ACL on /Forms,/Subjects \
+            set ACL on /Forms,/Subjects,/Statistics \
                 allow jcr:all for everyone restriction(cards:owner) \
             end \
 \
