@@ -43,11 +43,11 @@ const FILTER_URL = "/Questionnaires.filters";
 function Filters(props) {
   const { classes, disabled, onChangeFilters, questionnaire, filtersJsonString } = props;
   // Filters, as displayed in the dialog, and filters as actually saved
-  const [editingFilters, setEditingFilters] = useState([]);
+  const [editingFilters, setEditingFilters] = useState([]); // TODO: existing
   const [activeFilters, setActiveFilters] = useState([]);
   // Information on the questionnaires
   const [filterableAnswers, setFilterableAnswers] = useState({});
-  const [filterableFields, setFilterableFields] = useState([]);
+  const [filterableFields, setFilterableFields] = useState([]); // TODO: ALL options to appear
   const [filterableTitles, setFilterableTitles] = useState({});
   const [filterableUUIDs, setFilterableUUIDs] = useState({});
   const [filterComparators, setFilterComparators] = useState({});
