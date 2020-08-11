@@ -32,6 +32,7 @@ function AdminStatistics(props) {
   // OR just get all variable names. might still be able to use filters
 
   //TODO: right now, questionnaire path is passed from userdash --> livetable --> filters. can filters be passed ALL questionnaires?
+    // yes, just don't specify a questionnaire prop!
 
   return (
     <React.Fragment>
