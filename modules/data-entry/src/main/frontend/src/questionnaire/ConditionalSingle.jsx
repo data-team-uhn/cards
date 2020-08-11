@@ -21,47 +21,31 @@ import { VALUE_POS } from "./Answer";
 import ConditionalComponentManager from "./ConditionalComponentManager";
 
 // A mapping from operands to conditionals
-const COMPARE_MAP = {
-  "text": {
-    "=": (a, b) => (a == b),
-    "<": (a, b) => (a < b),
-    ">": (a, b) => (a > b),
-    "<>": (a, b) => (a !== b),
-    "is empty": (a) => (a == null || a == undefined),
-    "is not empty": (a) => (a != null && a != undefined)
-  },
-  "date": {
-    "=": (a, b) => (new Date(a).getTime() == new Date(b).getTime()),
-    "<": (a, b) => (new Date(a).getTime() < new Date(b).getTime()),
-    ">": (a, b) => (new Date(a).getTime() > new Date(b).getTime()),
-    "<>": (a, b) => (new Date(a).getTime() !== new Date(b).getTime()),
-    "is empty": (a) => (a == null || a == undefined),
-    "is not empty": (a) => (a != null && a != undefined)
-  },
-  "long": {
-    "=": (a, b) => (parseInt(a) == parseInt(b)),
-    "<": (a, b) => (parseInt(a) < parseInt(b)),
-    ">": (a, b) => (parseInt(a) > parseInt(b)),
-    "<>": (a, b) => (parseInt(a) !== parseInt(b)),
-    "is empty": (a) => (a == null || a == undefined),
-    "is not empty": (a) => (a != null && a != undefined)
-  },
-  "decimal": {
-    "=": (a, b) => (parseFloat(a) == parseFloat(b)),
-    "<": (a, b) => (parseFloat(a) < parseFloat(b)),
-    ">": (a, b) => (parseFloat(a) > parseFloat(b)),
-    "<>": (a, b) => (parseFloat(a) !== parseFloat(b)),
-    "is empty": (a) => (a == null || a == undefined),
-    "is not empty": (a) => (a != null && a != undefined)
-  },
-  "double": {
-    "=": (a, b) => (parseFloat(a) == parseFloat(b)),
-    "<": (a, b) => (parseFloat(a) < parseFloat(b)),
-    ">": (a, b) => (parseFloat(a) > parseFloat(b)),
-    "<>": (a, b) => (parseFloat(a) !== parseFloat(b)),
-    "is empty": (a) => (a == null || a == undefined),
-    "is not empty": (a) => (a != null && a != undefined)
+const EMPTY = [null, undefined, ""];
+const TRANSFORMATIONS = {
+  "text": (a, b) => ([a, b]),
+  "date": (a, b) => ([new Date(a).getTime(), new Date(b).getTime()]),
+  "long": (a, b) => ([parseInt(a), parseInt(b)]),
+  "decimal": (a, b) => ([parseFloat(a), parseFloat(b)]),
+  "double": (a, b) => ([parseFloat(a), parseFloat(b)])
+};
+
+const OPERATIONS = {
+  "=": (a, b) => (a == b),
+  "<": (a, b) => (a < b),
+  ">": (a, b) => (a > b),
+  "<>": (a, b) => (a != b),
+  "is empty": (a, b) => (EMPTY.indexOf(a) >= 0 || EMPTY.indexOf(b) >= 0),
+  "is not empty": (a, b) => (EMPTY.indexOf(a) < 0 || EMPTY.indexOf(b) < 0)
+};
+
+let compare = function(a, b, type, operation) {
+  if (operation === "is empty" || operation === "is not empty") {
+    return OPERATIONS[operation](a, b);
+  } else if (EMPTY.indexOf(a) >= 0 || EMPTY.indexOf(b) >= 0) {
+    return false;
   }
+  return OPERATIONS?.[operation]?.(...(TRANSFORMATIONS[type] || TRANSFORMATIONS["text"])(a, b));
 }
 
 /**
@@ -70,16 +54,16 @@ const COMPARE_MAP = {
  * @param {STRING...} operands Any number of operands used for the comparison
  */
 export function isConditionalSatisfied(compareDataType, comparator, ...operands) {
-  if (!(compareDataType in COMPARE_MAP)) {
+  if (!(compareDataType in TRANSFORMATIONS)) {
     // Invalid data type
     throw new Error("Invalid data type specified.")
   }
-  if (!(comparator in COMPARE_MAP[compareDataType])) {
+  if (!(comparator in OPERATIONS)) {
     // Invalid operand
     throw new Error("Invalid operand specified.")
   }
 
-  return COMPARE_MAP[compareDataType][comparator]?.apply(null, operands);
+  return compare(...operands, compareDataType, comparator);
 }
 
 /**
@@ -91,12 +75,15 @@ export function isConditionalObjSatisfied(conditional, context) {
   const requireAllOperandA = conditional["operandA"]["requireAll"];
   const requireAllOperandB = conditional["operandB"]?.requireAll;
 
-  const operandA = getValue(context, conditional["operandA"]);
-  const operandB = getValue(context, conditional["operandB"]);
+  // If the operands aren't loaded yet, treat them as being empty
+  var operandA = getValue(context, conditional["operandA"]) || [""];
+  if (!allIsNull(operandA)) {
+      operandA = removeAllNull(operandA);
+  }
 
-  // Don't try to run if operandA isn't loaded yet
-  if (!operandA) {
-    return false;
+  var operandB = getValue(context, conditional["operandB"]) || [""];
+  if (!allIsNull(operandB)) {
+      operandB = removeAllNull(operandB);
   }
 
   const firstCondition = requireAllOperandA ? ((func) => operandA.every(func)) : ((func) => operandA.some(func));
@@ -107,6 +94,19 @@ export function isConditionalObjSatisfied(conditional, context) {
       return isConditionalSatisfied(conditional["dataType"], conditional["comparator"], valueA, valueB);
     })
   })
+}
+
+function removeAllNull(lst) {
+  return lst.filter(item => (EMPTY.indexOf(item) < 0));
+}
+
+function allIsNull(lst) {
+  for (var i = 0; i < lst.length; i++) {
+    if (EMPTY.indexOf(lst[i]) < 0) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /**

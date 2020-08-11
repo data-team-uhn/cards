@@ -186,6 +186,10 @@ function MultipleChoice(props) {
         inputRef={ref => {inputEl = ref}}
       />
     </div>);
+    // If the field allows for multiple inputs (eg. maxAnswers !== 1),
+    // allow for the possibility of no user input (aka. an empty input)
+    (maxAnswers !== 1) && addOption("", "");
+    (maxAnswers !== 1) && selectOption("", "");
 
   let selectNonGhostOption = (...args) => {
     // Clear the ghost input
@@ -200,7 +204,9 @@ function MultipleChoice(props) {
     </Typography>
     );
 
-  const answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
+  // Remove the ["", ""] unless there are only zero or one answer items
+  var answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
+  answers = ((answers.length < 2) ? answers : answers.filter(item => item[LABEL_POS] !== ''));
 
   if (isSelect) {
     return (
@@ -354,7 +360,7 @@ function ResponseChild(props) {
                   label: classes.inputLabel
                 }}
               />
-            ) : (
+            ) : ((name !== "") && (
             <React.Fragment>
               <IconButton
                 onClick={() => {onDelete(id, name)}}
@@ -370,7 +376,7 @@ function ResponseChild(props) {
                 </Typography>
               </div>
             </React.Fragment>
-          )
+          ))
           }
       </ListItem>
     </React.Fragment>
