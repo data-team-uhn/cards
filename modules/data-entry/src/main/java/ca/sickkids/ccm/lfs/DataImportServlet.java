@@ -119,10 +119,10 @@ public class DataImportServlet extends SlingAllMethodsServlet
         }
     };
 
-    private final ThreadLocal<Map<String, Resource>> subjectTypeCache = new ThreadLocal<Map<String, Resource>>()
+    private final ThreadLocal<Map<String, Node>> subjectTypeCache = new ThreadLocal<Map<String, Node>>()
     {
         @Override
-        protected Map<String, Resource> initialValue()
+        protected Map<String, Node> initialValue()
         {
             return new HashMap<>();
         }
@@ -573,7 +573,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
     private Resource getOrCreateForm(final CSVRecord row, boolean patch, final SlingHttpServletRequest request)
         throws PersistenceException
     {
-        final Node subject = getOrCreateSubject(row, request).adaptTo(Node.class);
+        final Node subject = getOrCreateSubject(row, request);
         Resource result = null;
         if (patch && subject != null) {
             result = findForm(subject);
@@ -625,7 +625,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
      *         {@code null} if a Subject identifier is not present in the row
      */
     @SuppressWarnings({"RegexpSinglelineJava", "ExecutableStatementCount", "MultipleStringLiterals"})
-    private Resource getOrCreateSubject(final CSVRecord row, final SlingHttpServletRequest request)
+    private Node getOrCreateSubject(final CSVRecord row, final SlingHttpServletRequest request)
     // For each subject type, identify the target subject
     // Given a parent subject (initially null) & a subject type path:
     // 1. get the Node for the subject type (cached for future rows)
@@ -637,8 +637,8 @@ public class DataImportServlet extends SlingAllMethodsServlet
     // If there are more entries in the subject types list, recurse with the new parent and new subject type.
     // When the whole list of subject types is processed, return current subject as the subject to use for the row.
     {
-        System.out.println("getOrCreateSubject( " + row + ", " + request + ")");
-        Resource current = null;
+        System.out.println("getOrCreateSubject");
+        Node current = null;
         for (String type: request.getParameterValues(":subjectType")) {
             System.out.println("type: " + type);
             current = getOrCreateSubject(row, type, current, request);
@@ -646,55 +646,56 @@ public class DataImportServlet extends SlingAllMethodsServlet
                 return null;
             }
         }
-        System.out.println("getOrCreateSubject returns current: " + current);
+        System.out.println("getOrCreateSubject returns: " + current);
+        System.out.println("");
         return current;
     }
 
     @SuppressWarnings({"RegexpSinglelineJava", "ExecutableStatementCount", "MultipleStringLiterals"})
-    private Resource getOrCreateSubject(CSVRecord row, String type, Resource parent, SlingHttpServletRequest request)
+    private Node getOrCreateSubject(CSVRecord row, String type, Node parent, SlingHttpServletRequest request)
     {
-        System.out.println("getOrCreateSubject( " + row + ", " + type + ", " + parent);
-        String subjectId = findSubjectId(row, type, request);
-        System.out.println("subjectId: " + subjectId);
+        String subjectId = findSubjectId(row, type);
+        System.out.println("id  " + subjectId);
         if (StringUtils.isBlank(subjectId)) {
             return null;
         }
+        String subjectTypeString = type;
+        String subjectKey = subjectId.concat(subjectTypeString);
+        System.out.println(subjectKey);
+
         String query =
             String.format("select n from [lfs:Subject] as n where n.identifier = '%s'", subjectId.replace("'", "''"));
         if (parent != null) {
+            String parentString = parent.toString();
+            //subjectKey.concat(parentString);
             try {
-                query += " and n.parent = '" + parent.adaptTo(Node.class).getProperty("jcr:uuid") + "'";
+                query += " and n.parent = '" + parent.getProperty("jcr:uuid") + "'";
             } catch (PathNotFoundException ex) {
                 // No change to query
-            } catch (RepositoryException e) {
+            } catch (RepositoryException ex) {
                 // No change to query
             }
         }
-        System.out.println("query: " + query);
         final Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
-        System.out.println("final Iterator<Resource> results : " + results);
-        Map<String, Resource> cache = this.subjectTypeCache.get();
-        System.out.println("cache : " + cache);
-        String subjectTypeString = this.subjectType.get().toString();
-        String parentString = parent.toString();
-        String subjectKey = subjectId.concat(subjectTypeString).concat(parentString);
-        System.out.println("subjectKey : " + subjectKey);
+        Map<String, Node> cache = this.subjectTypeCache.get();
         if (results.hasNext()) {
-            System.out.println("results.next(): " + results.next());
-            cache.put(subjectKey, results.next());
-            return results.next();
+            System.out.println("Results.hasNext()");
+            cache.put(subjectKey, results.next().adaptTo(Node.class));
+            return results.next().adaptTo(Node.class);
         } else if (cache.containsKey(subjectKey)) {
-            System.out.println("cache.get(subjectKey): " + cache.get(subjectKey));
+            System.out.println("cache.containsKey(subjectKey)");
             return cache.get(subjectKey);
         }
         final Map<String, Object> subjectProperties = new LinkedHashMap<>();
         subjectProperties.put("jcr:primaryType", "lfs:Subject");
         subjectProperties.put("identifier", subjectId);
-        subjectProperties.put("type", this.subjectType.get());
-        subjectProperties.put("parent", parent);
+        subjectProperties.put("type", getSubjectType(type));
+        if (parent != null) {
+            subjectProperties.put("parent", parent);
+        }
         try {
             return this.resolver.get()
-            .create(this.subjectsHomepage.get(), UUID.randomUUID().toString(), subjectProperties);
+            .create(this.subjectsHomepage.get(), UUID.randomUUID().toString(), subjectProperties).adaptTo(Node.class);
         } catch (PersistenceException e) {
             return null;
         }
@@ -707,20 +708,18 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @return a subject identifier, or {@code null} if one cannot be found
      */
     @SuppressWarnings({"RegexpSinglelineJava", "ExecutableStatementCount", "MultipleStringLiterals"})
-    String findSubjectId(CSVRecord row, String type, SlingHttpServletRequest request)
+    String findSubjectId(CSVRecord row, String type)
     {
-        System.out.println("findSubjectId( " + row + ", " + type + ")");
         Node typeNode = getSubjectType(type);
-        System.out.println("typeNode" + typeNode);
         String label;
         try {
-            label = (typeNode.getProperty("label")).toString();
+            label = typeNode.getProperty("label").toString();
         } catch (PathNotFoundException ex) {
             return null;
         } catch (RepositoryException e) {
             return null;
         }
-        System.out.println("label" + label);
+        System.out.println(label);
         String result = null;
         String[] suffices = {"", " ID"};
         for (String suffix: suffices) {
@@ -729,9 +728,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
                 if (StringUtils.isNotBlank(result)) {
                     break;
                 }
-                System.out.println("result" + result);
             } catch (IllegalArgumentException ex) {
-                return null;
                 // Column is not mapped, continue;
             }
         }
@@ -744,16 +741,13 @@ public class DataImportServlet extends SlingAllMethodsServlet
     // eg ?:subjectType=/SubjectTypes/Patient&:subjectType=/SubjectTypes/Tumor
     // If no value is set for this parameter, then /SubjectTypes/Patient should be assumed to be the default value
     {
-        String[] typeArray = type.split("/");
-        System.out.println("getSubjectType( " + type + ")");
+        String finalType = type.split("/SubjectTypes/")[1];
+        System.out.println(finalType);
         String query =
-            String.format("select n from [lfs:SubjectType] as n where n.identifier = '%s'",
-               typeArray[1]);
-        System.out.println("query" + query);
+            String.format("select n from [lfs:SubjectType] as n where n.label = '%s'",
+               finalType.replaceAll("'", "''"));
         Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
-        System.out.println("results" + results);
         if (results.hasNext()) {
-            //this.subjectType.set(results.next().adaptTo(Node.class));
             return results.next().adaptTo(Node.class);
         }
         return null;
