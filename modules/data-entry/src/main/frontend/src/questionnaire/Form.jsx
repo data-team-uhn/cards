@@ -74,7 +74,7 @@ function Form (props) {
   let [ loginDialogShow, setLoginDialogShow ] = useState(false);
   let [ errorCode, setErrorCode ] = useState();
   let [ errorMessage, setErrorMessage ] = useState("");
-  let [ showErrorDialog, setShowErrorDialog ] = useState(false);
+  let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
 
   let formNode = React.useRef();
 
@@ -125,19 +125,21 @@ function Form (props) {
     }).then((response) => {
       if (response.ok) {
         setLastSaveStatus(true);
-      } else {
+      } else if (response.status === 500) {
         response.json().then((json) => {
-          // If the user is not logged in, offer to log in
-          const sessionInfo = window.Sling.getSessionInfo();
-          if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-            // On first attempt to save while logged out, set status to false to make button text inform user
-            setLastSaveStatus(false);
-          } else {
             setErrorCode(json["status.code"]);
             setErrorMessage(json.error.message);
             openErrorDialog();
-          }
         })
+        setLastSaveStatus(undefined);
+      } else {
+        // If the user is not logged in, offer to log in
+        const sessionInfo = window.Sling.getSessionInfo();
+        if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
+          // On first attempt to save while logged out, set status to false to make button text inform user
+          setLastSaveStatus(false);
+
+        }
       }
       })
       .finally(() => setSaveInProgress(false));
@@ -166,15 +168,25 @@ function Form (props) {
   }
 
   let openErrorDialog = () => {
-    if (!showErrorDialog) {
-      setShowErrorDialog(true);
+    if (!errorDialogDisplayed) {
+      setErrorDialogDisplayed(true);
     }
   }
 
   let closeErrorDialog = () => {
-    if (showErrorDialog) {
-      setShowErrorDialog(false);
+    if (errorDialogDisplayed) {
+      setErrorDialogDisplayed(false);
     }
+  }
+
+  let handleSubmit = (event) => {
+    // Do not save when login in progress
+    // Prevents issue where submitting login dialog would try to save twice,
+    // once before login complete and once after
+    if (loginDialogShow === true) {
+      return;
+    }
+    saveData(event);
   }
 
   // If the data has not yet been fetched, return an in-progress symbol
@@ -201,7 +213,7 @@ function Form (props) {
   let parentDetails = data?.subject?.parents && getHierarchy(data.subject.parents, React.Fragment, () => ({}));
 
   return (
-    <form action={data["@path"]} method="POST" onSubmit={saveData} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
+    <form action={data["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         <Grid item className={classes.formHeader}>
           <Typography variant="overline">{parentDetails}</Typography>
@@ -255,7 +267,7 @@ function Form (props) {
         'Save'}
       </Button>
       <DialogueLoginContainer isOpen={loginDialogShow} handleLogin={handleLogin}/>
-      <Dialog open={showErrorDialog} onClose={closeErrorDialog}>
+      <Dialog open={errorDialogDisplayed} onClose={closeErrorDialog}>
         <DialogTitle disableTypography>
           <Typography variant="h6" color="error" className={classes.dialogTitle}>Failed to save</Typography>
           <IconButton onClick={closeErrorDialog} className={classes.closeButton}>
