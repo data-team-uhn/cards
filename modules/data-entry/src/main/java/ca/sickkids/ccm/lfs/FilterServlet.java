@@ -62,23 +62,18 @@ public class FilterServlet extends SlingSafeMethodsServlet
 
     private static final String JCR_UUID = "jcr:uuid";
 
-    // TODO: Cleanup
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
         // Is there a questionnaire specified?
         String questionnaire = request.getParameter("questionnaire");
-        JsonObject allProperties;
+        String homepagePath = request.getResource().getPath();
 
-        if (questionnaire != null) {
-            // If a questionnaire is specified, return all fields by the given questionnaire
-            allProperties = getAllFields(request.getResourceResolver(), questionnaire);
-        } else {
-            // If there is no questionnaire specified, we return all fields by all questionnaires
-            // visible by the user
-            String homepagePath = request.getResource().getPath();
-            allProperties = getAllFieldsFromAllQuestionnaires(request.getResourceResolver(), homepagePath);
-        }
+        // If a questionnaire is specified, return all fields by the given questionnaire
+        // Otherwise, we return all questionnaires under this node that are visible by the user
+        JsonObject allProperties = questionnaire == null
+            ? getAllFieldsFromAllQuestionnaires(request.getResourceResolver(), homepagePath)
+            : getAllFields(request.getResourceResolver(), questionnaire);
 
         // Return the entire thing as a json file, except join together fields that have the same
         // name and type
@@ -96,10 +91,8 @@ public class FilterServlet extends SlingSafeMethodsServlet
     private JsonObject getAllFields(ResourceResolver resolver, String questionnairePath)
     {
         // First, ensure that we're accessing the deep jsonification of the questionnaire
-        String fullPath = questionnairePath;
-        if (!fullPath.endsWith(DEEP_JSON_SUFFIX)) {
-            fullPath = fullPath.concat(DEEP_JSON_SUFFIX);
-        }
+        String fullPath = questionnairePath.endsWith(DEEP_JSON_SUFFIX)
+            ? questionnairePath : questionnairePath.concat(DEEP_JSON_SUFFIX);
 
         // Next, convert it to a deep json object
         final Resource resource = resolver.resolve(fullPath);
