@@ -267,7 +267,6 @@ public final class ConditionalSectionUtils
     private static boolean evalSectionCondition(final Object propA, final Object propB, final String operator)
         throws RepositoryException, ValueFormatException
     {
-        LOGGER.warn("evalSectionCondition: {} {} {}", propA, operator, propB);
         if ("=".equals(operator) || "<>".equals(operator)) {
             /*
              * Type.STRING uses .equals()
@@ -305,7 +304,6 @@ public final class ConditionalSectionUtils
     private static Object getObjectFromPropertyState(PropertyState ps, int index)
     {
         Object ret = null;
-        LOGGER.warn("This PropertyState has {} values.", ps.count());
         switch (getPropertyStateType(ps))
         {
             case PropertyType.STRING:
@@ -327,7 +325,6 @@ public final class ConditionalSectionUtils
                 ret = parseDate(ps.getValue(Type.DATE, index));
                 break;
             default:
-                LOGGER.warn("Unresolved type in getObjectFromPropertyState");
                 break;
         }
         return ret;
@@ -398,7 +395,6 @@ public final class ConditionalSectionUtils
             Value nodeVal;
             if (nodeProp.isMultiple()) {
                 Value[] nodeVals = nodeProp.getValues();
-                LOGGER.warn("This property has {} values.", nodeVals.length);
                 nodeVal = nodeProp.getValues()[index];
             } else {
                 nodeVal = nodeProp.getValue();
@@ -499,9 +495,6 @@ public final class ConditionalSectionUtils
             final Node operandB = conditionNode.getNode("operandB");
             final Node operandA = conditionNode.getNode("operandA");
 
-            LOGGER.warn("operandB is of length: {}", getOperandLength(operandB, sectionNode, prevNb));
-            LOGGER.warn("operandA is of length: {}", getOperandLength(operandA, sectionNode, prevNb));
-
             //Get valueA[0..N] and valueB[0..N]
             //If requireAll check that all combinations evaluate to true
             //Otherwise check that at least one combination evaluates to true
@@ -511,9 +504,7 @@ public final class ConditionalSectionUtils
             //If at least one operand requires all to match
             final boolean requireAllMulti = requireAllB | requireAllA;
 
-            final boolean result = evalOperands(operandA, operandB, comparator, sectionNode, prevNb);
-            LOGGER.warn("RESULT = {}, requireAllMulti = {}, {}, {}", result, requireAllMulti, operandB, operandA);
-            return result;
+            return evalOperands(operandA, operandB, comparator, sectionNode, prevNb);
         }
         // If all goes wrong
         return false;
