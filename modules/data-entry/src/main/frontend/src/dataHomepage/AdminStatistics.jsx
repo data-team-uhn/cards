@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useState } from "react";
-import uuid from "uuid/v4";
+import { v4 as uuidv4 } from 'uuid';
 import { Button, Card, CardContent, Dialog, DialogActions, DialogContent, Grid, withStyles, Typography } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
@@ -79,9 +79,9 @@ function NewStatisticDialog(props) {
 
     //HOW CAN i test this (reference)
 
-    const URL = "/Statistics/" + uuid();
+    const URL = "/Statistics/" + uuidv4();
     var request_data = new FormData();
-    request_data.append('jcr:primaryType', 'lfs:Statistic');
+    request_data.append('jcr:primaryType', 'cards:Statistic');
     request_data.append('name', 'example name');
     request_data.append('xVar', 'x');
     request_data.append('yVar', 'y');

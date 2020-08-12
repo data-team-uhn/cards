@@ -41,7 +41,7 @@ const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";
 const FILTER_URL = "/Questionnaires.filters";
 
 function Filters(props) {
-  const { classes, disabled, onChangeFilters, questionnaire, filtersJsonString } = props;
+  const { classes, disabled, onChangeFilters, questionnaire, filtersJsonString, statisticFilters, parentHandler, statisticFiltersValue } = props;
   // Filters, as displayed in the dialog, and filters as actually saved
   const [editingFilters, setEditingFilters] = useState([]); // TODO: existing
   const [activeFilters, setActiveFilters] = useState([]);
@@ -59,6 +59,7 @@ function Filters(props) {
   const [filterRequestSent, setFilterRequestSent] = useState(false);
   const [toFocus, setFocusRow] = useState(null);
   const notesComparator = "notes contain";
+  const [statisticValue, setStatisticValue] = useState();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -414,6 +415,46 @@ function Filters(props) {
           GetReactComponentFromFields(path.slice(1), true)];
       }
     })
+  }
+
+  if (statisticFilters) {
+    if (!filterRequestSent) {
+      grabFilters(FILTER_URL);
+    }
+
+    let setFilterInfo = (e) => {
+      parentHandler(filterableUUIDs[e]);
+      setStatisticValue(e)
+    }
+
+    if (statisticFiltersValue) {
+      console.log(statisticFiltersValue)
+    }
+
+    return (
+      <Grid item xs={10}>
+        { /* If there is no error but also no data, show a progress circle */
+          !error && !filterableFields &&
+          <CircularProgress />
+        }
+        <Select
+          value={(statisticValue || statisticFiltersValue || "")}
+          onChange={(event) => {setFilterInfo(event.target.value)}}
+          MenuProps={{
+            onExited: forceRegrabFocus
+          }}
+          className={classes.answerField}
+          displayEmpty
+          >
+            <MenuItem value="" disabled>
+              <span className={classes.selectPlaceholder}>Select Variable</span>
+            </MenuItem>
+            {(filterableFields.map( (name) =>
+                <MenuItem value={name} key={name} className={classes.categoryOption}>{filterableTitles[name]}</MenuItem>
+            ))}
+        </Select>
+      </Grid>
+    )
   }
 
   return(

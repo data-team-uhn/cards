@@ -1,0 +1,23 @@
+{
+  "name": "string",
+  "type": {
+    "bar": {},
+    "line": {}
+  },
+  "xVar": {
+    "type": "reference",
+    "primaryType": "cards:Question",
+    "filter": "numeric"
+  },
+  "yVar": {
+    "type": "reference",
+    "primaryType": "cards:SubjectType",
+    "filter": "numeric"
+  },
+  "splitVar": {
+    "type": "reference",
+    "primaryType": "cards:Question"
+  },
+  "order": "long",
+  "//REQUIRED": ["name", "xVar", "yVar"]
+}
