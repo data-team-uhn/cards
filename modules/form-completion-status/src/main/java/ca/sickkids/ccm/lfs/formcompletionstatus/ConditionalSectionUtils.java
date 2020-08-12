@@ -63,7 +63,6 @@ public final class ConditionalSectionUtils
     {
         try {
             if (nb.hasProperty("section")) {
-                //final Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
                 final String sectionNodeReference = nb.getProperty("section").getValue(Type.REFERENCE);
                 final Node sectionNode = resourceSession.getNodeByIdentifier(sectionNodeReference);
                 return sectionNode;
@@ -111,12 +110,7 @@ public final class ConditionalSectionUtils
             final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
             final Date date = fmt.parse(str.split("T")[0]);
             final Calendar calendar = Calendar.getInstance();
-            //calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
             calendar.setTime(date);
-            //calendar.set(Calendar.HOUR, 0);
-            //calendar.set(Calendar.MINUTE, 0);
-            //calendar.set(Calendar.SECOND, 0);
-            //calendar.set(Calendar.MILLISECOND, 0);
             return calendar;
         } catch (final ParseException e) {
             LOGGER.warn("PARSING DATE FAILED: Invalid date {}", str);
@@ -359,11 +353,6 @@ public final class ConditionalSectionUtils
                 ret = val.getBoolean();
                 break;
             case PropertyType.DATE:
-                //Calendar calendar = Calendar.getInstance();
-                //calendar.set(val.getDate().get(Calendar.YEAR),
-                //    val.getDate().get(Calendar.MONTH),
-                //    val.getDate().get(Calendar.DAY_OF_MONTH));
-                //ret = val.getDate();
                 Calendar calendar = parseDate(Integer.toString(val.getDate().get(Calendar.YEAR))
                     + "-"
                     + Integer.toString(val.getDate().get(Calendar.MONTH) + 1)
@@ -521,17 +510,10 @@ public final class ConditionalSectionUtils
 
             //If at least one operand requires all to match
             final boolean requireAllMulti = requireAllB | requireAllA;
-            //LOGGER.warn("requireAllMulti = {}, {}, {}", requireAllMulti, operandB, operandA);
 
-            //return res;
             final boolean result = evalOperands(operandA, operandB, comparator, sectionNode, prevNb);
             LOGGER.warn("RESULT = {}, requireAllMulti = {}, {}, {}", result, requireAllMulti, operandB, operandA);
             return result;
-
-
-            //final Object valueA = getOperandValue(operandA, sectionNode, prevNb);
-            //final Object valueB = getOperandValue(operandB, sectionNode, prevNb);
-            //return evalSectionCondition(valueA, valueB, comparator);
         }
         // If all goes wrong
         return false;
