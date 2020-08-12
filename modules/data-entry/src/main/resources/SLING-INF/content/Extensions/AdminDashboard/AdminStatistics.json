@@ -1,7 +1,7 @@
 {
     "jcr:primaryType": "lfs:Extension",
     "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
-    "lfs:targetURL": "AdminStatistics",
+    "lfs:targetURL": "Statistics",
     "lfs:extensionName": "Statistics",
     "lfs:icon": "asset:lfs-dataentry.subjectTypeIcon.js",
     "lfs:extensionRenderURL": "asset:lfs-dataentry.AdminStatistics.js",

@@ -4,7 +4,7 @@
     "lfs:extensionName": "Statistics",
     "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
     "lfs:extensionRenderURL": "asset:lfs-dataentry.UserStatistics.js",
-    "lfs:targetURL": "UserStatistics",
+    "lfs:targetURL": "Statistics/User",
     "lfs:defaultOrder": 7,
     "jcr:content": {
         "jcr:primaryType": "nt:resource",

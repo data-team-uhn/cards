@@ -49,9 +49,9 @@
             create path (lfs:FormsHomepage) /Forms \
             create path (lfs:SubjectsHomepage) /Subjects \
             create path (lfs:SubjectTypesHomepage) /SubjectTypes \
-            create path (lfs:StatisticsHomepage) /AdminStatistics \
+            create path (lfs:StatisticsHomepage) /Statistics \
 \
-            set ACL on /Forms,/Subjects,/AdminStatistics \
+            set ACL on /Forms,/Subjects,/Statistics \
                 allow jcr:all for everyone \
             end \
 \
@@ -67,11 +67,11 @@
             create path (lfs:FormsHomepage) /Forms \
             create path (lfs:SubjectsHomepage) /Subjects \
             create path (lfs:SubjectTypesHomepage) /SubjectTypes \
-            create path (lfs:StatisticsHomepage) /AdminStatistics \
+            create path (lfs:StatisticsHomepage) /Statistics \
 \
             create group TrustedUsers \
 \
-            set ACL on /Forms,/Subjects,/AdminStatistics \
+            set ACL on /Forms,/Subjects,/Statistics \
                 allow jcr:all for TrustedUsers \
             end \
 \
@@ -87,9 +87,9 @@
             create path (lfs:FormsHomepage) /Forms \
             create path (lfs:SubjectsHomepage) /Subjects \
             create path (lfs:SubjectTypesHomepage) /SubjectTypes \
-            create path (lfs:StatisticsHomepage) /AdminStatistics \
+            create path (lfs:StatisticsHomepage) /Statistics \
 \
-            set ACL on /Forms,/Subjects,/AdminStatistics \
+            set ACL on /Forms,/Subjects,/Statistics \
                 allow jcr:all for everyone restriction(lfs:owner) \
             end \
 \
