@@ -945,11 +945,11 @@
 
   // A reference to the x-axis variable (question or section)
   // No full text search, since it's just a non-textual reference.
-  - xVar (string) mandatory
+  - xVar (reference) mandatory
 
   // A reference to the y-axis variable (subjectType)
   // No full text search, since it's just a non-textual reference.
-  - yVar (string) mandatory
+  - yVar (reference) mandatory
 
   // A reference to the split variable (subjectType)
   // Not mandatory
