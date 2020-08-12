@@ -44,7 +44,6 @@ import org.slf4j.LoggerFactory;
 /**
  * A servlet for querying Statistics that returns a JSON object containing values for the x and y axes
  *
- * @version $Id$
  */
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(

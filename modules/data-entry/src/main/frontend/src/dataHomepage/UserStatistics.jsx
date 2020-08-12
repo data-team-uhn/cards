@@ -32,6 +32,7 @@ function UserStatistics(props) {
   let initialize = () => {
     setInitialized(true);
 
+    //[uuid].query
     // Fetch the statistics
     fetch("/query?query=select * from [lfs:Statistics]")
       .then((response) => response.ok ? response.json() : Promise.reject(response))

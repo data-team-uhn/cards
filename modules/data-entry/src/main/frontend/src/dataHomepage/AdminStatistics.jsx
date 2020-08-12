@@ -18,22 +18,13 @@
 //
 import React, { useState } from "react";
 import uuid from "uuid/v4";
-import { Button, Card, CardContent, Dialog, DialogActions, DialogContent, Grid, withStyles, Typography } from "@material-ui/core";
+import { Button, Card, CardContent, Dialog, DialogActions, DialogContent, Grid, withStyles, TextField, Typography } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function AdminStatistics(props) {
   const { classes } = props;
   let [statistics, setStatistics] = useState([1, 2, 3]); // each statistic becomes one chart
   const [ dialogOpen, setDialogOpen ] = useState(false);
-
-  //TODO:
-  // use filters
-  // y-axis: subjecttype
-
-  // OR just get all variable names. might still be able to use filters
-
-  //TODO: right now, questionnaire path is passed from userdash --> livetable --> filters. can filters be passed ALL questionnaires?
-    // yes, just don't specify a questionnaire prop!
 
   let dialogClose = () => {
     setDialogOpen(false);
@@ -67,25 +58,24 @@ function NewStatisticDialog(props) {
   const { onClose, open, classes } = props;
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [availableFields, setAvailableFields] = useState([]);
-  const [availableSubjects, setAvailableSubjects] = useState([]); 
-
-  // add selected name, x, y, split to state
+  const [availableSubjects, setAvailableSubjects] = useState([]);
+  const [ name, setName ] = useState();
+  const [ xVar, setXVar ] = useState();
+  const [ yVar, setYVar ] = useState();
+  const [ splitVar, setSplitVar ] = useState();
   
   // fetch all variables in forms --> availableFields (xVar, splitVar)
   // fetch all subject types --> availableSubjects (yVar)
 
   let createStatistic = () => {
     // Make a POST request to create a new statistic, with a randomly generated UUID
-
-    //HOW CAN i test this (reference)
-
     const URL = "/Statistics/" + uuid();
     var request_data = new FormData();
     request_data.append('jcr:primaryType', 'lfs:Statistic');
-    request_data.append('name', 'example name');
-    request_data.append('xVar', 'x');
-    request_data.append('yVar', 'y');
-    request_data.append('splitVar', '');
+    request_data.append('name', name);
+    request_data.append('xVar', xVar);
+    request_data.append('yVar', yVar);
+    request_data.append('splitVar', splitVar);
     fetch( URL, { method: 'POST', body: request_data })
       .then( (response) => {
         setNumFetchRequests((num) => (num-1));
@@ -102,14 +92,24 @@ function NewStatisticDialog(props) {
 
   return (
     <Dialog open={open} onClose={onClose}>
-    <DialogContent>
+    <DialogContent className={classes.NewFormDialog}>
       {/* use select from filters! */}
-      <Typography variant="body2" component="p">Name:</Typography>
-      <Typography variant="body2" component="p">X-axis:</Typography>
-      <Typography variant="body2" component="p">Y-axis:</Typography>
-      <Typography variant="body2" component="p">Split:</Typography>
+      <Grid container alignItems='flex-end' spacing={2}>
+        <Grid item xs={6}><Typography>Name:</Typography></Grid>
+        <Grid item xs={6}><TextField value={name} onChange={(event)=> { setName(event.target.value); }} /></Grid>
+        <Grid item xs={6}><Typography>X-axis:</Typography></Grid>
+        <Grid item xs={6}><Typography>Y-axis:</Typography></Grid>
+        <Grid item xs={6}><Typography>Split:</Typography></Grid>
+      </Grid>
     </DialogContent>
     <DialogActions>
+      <Button
+          onClick={onClose}
+          variant="contained"
+          color="default"
+          >
+          Cancel
+        </Button>
         <Button
           onClick={createStatistic}
           variant="contained"
@@ -117,7 +117,7 @@ function NewStatisticDialog(props) {
           >
           Create
         </Button>
-      </DialogActions>
+    </DialogActions>
   </Dialog>
   )
 }
