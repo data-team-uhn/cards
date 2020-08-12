@@ -51,7 +51,7 @@
             create path (cards:SubjectTypesHomepage) /SubjectTypes \
             create path (cards:StatisticsHomepage) /Statistics \
 \
-            set ACL on /Forms,/Subjects,/Statistics \
+            set ACL on /Forms,/Subjects \
                 allow jcr:all for everyone \
             end \
 \
@@ -83,7 +83,7 @@
 \
             create group TrustedUsers \
 \
-            set ACL on /Forms,/Subjects,/Statistics \
+            set ACL on /Forms,/Subjects \
                 allow jcr:all for TrustedUsers \
             end \
 \

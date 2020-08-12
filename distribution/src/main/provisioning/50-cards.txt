@@ -51,6 +51,7 @@
     io.uhndata.cards/cards-principals/${cards.version}
     io.uhndata.cards/cards-vocabularies/${cards.version}/slingfeature/slingfeature
     io.uhndata.cards/cards-aggregated-frontend/${cards.version}
+    io.uhndata.cards/cards-statistics/${cards.version}/slingfeature/slingfeature
 
     # Favicon
     io.uhndata.cards/cards-modules-favicon/${cards.version}

@@ -51,5 +51,6 @@
     <module>favicon</module>
     <module>upgrade-marker</module>
     <module>vocabularies-ignore</module>
+    <module>statistics</module>
   </modules>
 </project>
