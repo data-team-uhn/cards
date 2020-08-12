@@ -608,6 +608,9 @@ const questionnaireStyle = theme => ({
       padding: theme.spacing(1.5, 0.5),
       borderRadius: theme.spacing(0.5),
     },
+    filterPlaceholder: {
+        opacity: 0.3
+    },
 });
 
 export default questionnaireStyle;

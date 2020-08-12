@@ -1,0 +1,81 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one
+//  or more contributor license agreements.  See the NOTICE file
+//  distributed with this work for additional information
+//  regarding copyright ownership.  The ASF licenses this file
+//  to you under the Apache License, Version 2.0 (the
+//  "License"); you may not use this file except in compliance
+//  with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing,
+//  software distributed under the License is distributed on an
+//  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+//  KIND, either express or implied.  See the License for the
+//  specific language governing permissions and limitations
+//  under the License.
+//
+
+<sling = 'http://sling.apache.org/jcr/sling/1.0'>
+<cards = 'https://cards.uhndata.io/'>
+
+//-----------------------------------------------------------------------------
+//
+// Statistics
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Statistic: a group of data to be visually displayed
+[cards:Statistic] > sling:Folder, mix:referenceable, mix:versionable
+  // Attributes
+
+  // We can use statistics in a query.
+  query
+  // The main sub-item of a Statistic is its name.
+  primaryitem name
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/Statistic" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each statistic is a resource.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // A name for this Statistic.
+  // Mandatory, each Statistic must have a name.
+  - name (string) mandatory
+
+  // A reference to the x-axis variable (question or section)
+  // No full text search, since it's just a non-textual reference.
+  - xVar (reference) mandatory
+
+  // A reference to the y-axis variable (subjectType)
+  // No full text search, since it's just a non-textual reference.
+  - yVar (reference) mandatory
+
+  // A reference to the split variable (subjectType)
+  // Not mandatory
+  // No full text search, since it's just a non-textual reference.
+  - splitVar (reference) nofulltext
+
+//-----------------------------------------------------------------------------
+// The homepage for the Statistics space.
+[cards:StatisticsHomepage] > sling:Folder
+  // Attributes:
+
+  // We can use this homepage in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/StatisticsHomepage" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the StatisticsHomepage is a resource.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // Set a default title.
+  - title (String) = "Statistics" mandatory autocreated
