@@ -28,7 +28,7 @@ import { getHierarchy } from "./Subject.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 /***
- * Create a URL that checks for the existance of a subject
+ * Create a URL that checks for the existence of a subject
  */
 let createQueryURL = (query, type) => {
   let url = new URL("/query", window.location.origin);
@@ -468,16 +468,14 @@ export function NewSubjectDialog (props) {
  * Component that displays the list of subjects in a dialog. Double clicking a subject selects it.
  *
  * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
- * @param {open} bool Whether or not this dialog is open
+ * @param {bool} open Whether or not this dialog is open
  * @param {func} onChange Callback for when the user changes their selection
  * @param {func} onClose Callback for when the user closes this dialog
  * @param {func} onError Callback for when an error occurs during subject selection
  * @param {string} title Title of the dialog, if any
- * @param {bool} popperOpen Whether or not the 'Create a new subject' dialog is open - allows it to be open on its own
- * @param {func} onPopperClose Callback for when user closes the 'Create a new subject' dialog
  */
 function UnstyledSelectorDialog (props) {
-  const { allowedTypes, classes, disabled, open, onChange, onClose, onError, title, popperOpen, onPopperClose, ...rest } = props;
+  const { allowedTypes, classes, disabled, open, onChange, onClose, onError, title, ...rest } = props;
   const [ subjects, setSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
@@ -502,7 +500,6 @@ function UnstyledSelectorDialog (props) {
       .then((data) => appendPath(data, subjectPath))
       .then(onChange)
       .then(() => setNewSubjectPopperOpen(false))
-      .then(() => onPopperClose && onPopperClose())
       .catch((err) => {console.log(err); onError(err);})
       .finally(() => {setIsPosting(false);});
   }
@@ -526,17 +523,12 @@ function UnstyledSelectorDialog (props) {
     setNewSubjectPopperOpen(false);
   }
 
-  let closeNewSubjectPopper = () => {
-    setNewSubjectPopperOpen(false);
-    onPopperClose && onPopperClose();
-  }
-
   let disabled_controls = isPosting || disabled;
 
   return (<React.Fragment>
     <NewSubjectDialog
       allowedTypes={allowedTypes}
-      onClose={closeNewSubjectPopper}
+      onClose={() => { setNewSubjectPopperOpen(false); }}
       onSubmit={handleSubmitNew}
       open={open && newSubjectPopperOpen}
       />
