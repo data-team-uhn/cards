@@ -20,10 +20,11 @@ import React, { useState } from "react";
 import uuid from "uuid/v4";
 import { Button, Card, CardContent, Dialog, DialogActions, DialogContent, Grid, withStyles, TextField, Typography } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import Filters from "./Filters";
 
 function AdminStatistics(props) {
   const { classes } = props;
-  let [statistics, setStatistics] = useState([1, 2, 3]); // each statistic becomes one chart
+  let [statistics, setStatistics] = useState([1, 2, 3]); // each statistic becomes one chart. TODO: fetch statistics
   const [ dialogOpen, setDialogOpen ] = useState(false);
 
   let dialogClose = () => {
@@ -64,8 +65,7 @@ function NewStatisticDialog(props) {
   const [ yVar, setYVar ] = useState();
   const [ splitVar, setSplitVar ] = useState();
   
-  // fetch all variables in forms --> availableFields (xVar, splitVar)
-  // fetch all subject types --> availableSubjects (yVar)
+  // TODO: fetch all subject types --> availableSubjects (yVar)
 
   let createStatistic = () => {
     // Make a POST request to create a new statistic, with a randomly generated UUID
@@ -74,8 +74,11 @@ function NewStatisticDialog(props) {
     request_data.append('jcr:primaryType', 'lfs:Statistic');
     request_data.append('name', name);
     request_data.append('xVar', xVar);
+    request_data.append('xVar@TypeHint', 'Reference');
     request_data.append('yVar', yVar);
+    request_data.append('yVar@TypeHint', 'Reference');
     request_data.append('splitVar', splitVar);
+    request_data.append('splitVar@TypeHint', 'Reference');
     fetch( URL, { method: 'POST', body: request_data })
       .then( (response) => {
         setNumFetchRequests((num) => (num-1));
@@ -85,9 +88,24 @@ function NewStatisticDialog(props) {
           onClose();
         } else {
           return(Promise.reject(response));
+          // TODO: error occurs if no forms have been created yet! not sure why (fix)
         }
       })
     setNumFetchRequests((num) => (num+1));
+
+    // TODO: clear state on submit / reset state when opening
+  }
+
+  let onXChange = (filterableUUID) => {
+    setXVar(filterableUUID);
+  }
+
+  let onYChange = (filterableUUID) => {
+    setYVar(filterableUUID);
+  }
+
+  let onSplitChange = (filterableUUID) => {
+    setSplitVar(filterableUUID);
   }
 
   return (
@@ -98,8 +116,11 @@ function NewStatisticDialog(props) {
         <Grid item xs={6}><Typography>Name:</Typography></Grid>
         <Grid item xs={6}><TextField value={name} onChange={(event)=> { setName(event.target.value); }} /></Grid>
         <Grid item xs={6}><Typography>X-axis:</Typography></Grid>
+        <Filters statisticFilters={true} parentHandler={onXChange}/>
         <Grid item xs={6}><Typography>Y-axis:</Typography></Grid>
+        <Filters statisticFilters={true} parentHandler={onYChange}/>
         <Grid item xs={6}><Typography>Split:</Typography></Grid>
+        <Filters statisticFilters={true} parentHandler={onSplitChange}/>
       </Grid>
     </DialogContent>
     <DialogActions>
