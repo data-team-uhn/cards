@@ -390,7 +390,8 @@ public class ResourceToJsonAdapterFactory
                 addDate(objectBuilder, name, value.getDate());
                 break;
             case PropertyType.DECIMAL:
-                objectBuilder.add(name, value.getDecimal());
+                // Send as string to prevent Javascript JSON parser from losing precision
+                objectBuilder.add(name, value.getString());
                 break;
             case PropertyType.DOUBLE:
                 objectBuilder.add(name, value.getDouble());
@@ -435,7 +436,8 @@ public class ResourceToJsonAdapterFactory
                     addDate(arrayBuilder, value.getDate());
                     break;
                 case PropertyType.DECIMAL:
-                    arrayBuilder.add(value.getDecimal());
+                    // Send as string to prevent Javascript JSON parser from losing precision
+                    arrayBuilder.add(value.getString());
                     break;
                 case PropertyType.DOUBLE:
                     arrayBuilder.add(value.getDouble());
