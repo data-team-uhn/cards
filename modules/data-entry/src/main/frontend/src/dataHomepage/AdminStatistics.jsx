@@ -18,7 +18,7 @@
 //
 import React, { useState } from "react";
 import uuid from "uuid/v4";
-import { Button, Card, CardContent, Dialog, DialogActions, DialogContent, Grid, withStyles, TextField, Typography } from "@material-ui/core";
+import { Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Grid, withStyles, MenuItem, Select, TextField, Typography } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import Filters from "./Filters";
 
@@ -29,6 +29,10 @@ function AdminStatistics(props) {
 
   let dialogClose = () => {
     setDialogOpen(false);
+  }
+
+  let addSuccess = () => {
+    console.log('success!')
   }
 
   return (
@@ -50,76 +54,145 @@ function AdminStatistics(props) {
         })}
       </Grid>
       <Button onClick={() => setDialogOpen(true)}>New chart</Button>
-      <NewStatisticDialog open={dialogOpen} onClose={dialogClose} classes={classes}/>
+      <NewStatisticDialog open={dialogOpen} onClose={dialogClose} classes={classes} onSuccess={addSuccess} />
     </React.Fragment>
   );
 }
 
 function NewStatisticDialog(props) {
-  const { onClose, open, classes } = props;
+  const { onClose, onSuccess, open, classes } = props;
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
-  const [availableFields, setAvailableFields] = useState([]);
-  const [availableSubjects, setAvailableSubjects] = useState([]);
-  const [ name, setName ] = useState();
+  const [ availableSubjects, setAvailableSubjects ] = useState([]);
+  const [ initialized, setInitialized ] = useState(false);
+  const [ error, setError ] = useState();
+
+  const [ name, setName ] = useState('');
   const [ xVar, setXVar ] = useState();
   const [ yVar, setYVar ] = useState();
   const [ splitVar, setSplitVar ] = useState();
-  
-  // TODO: fetch all subject types --> availableSubjects (yVar)
+  const [ subjectLabel, setSubjectLabel ] = useState('')
 
   let createStatistic = () => {
-    // Make a POST request to create a new statistic, with a randomly generated UUID
-    const URL = "/Statistics/" + uuid();
-    var request_data = new FormData();
-    request_data.append('jcr:primaryType', 'lfs:Statistic');
-    request_data.append('name', name);
-    request_data.append('xVar', xVar);
-    request_data.append('xVar@TypeHint', 'Reference');
-    request_data.append('yVar', yVar);
-    request_data.append('yVar@TypeHint', 'Reference');
-    request_data.append('splitVar', splitVar);
-    request_data.append('splitVar@TypeHint', 'Reference');
-    fetch( URL, { method: 'POST', body: request_data })
-      .then( (response) => {
-        setNumFetchRequests((num) => (num-1));
-        if (response.ok) {
-          // FIX: rerender content after this
-          console.log("success!")
-          onClose();
-        } else {
-          return(Promise.reject(response));
-          // TODO: error occurs if no forms have been created yet! not sure why (fix)
-        }
-      })
-    setNumFetchRequests((num) => (num+1));
-
-    // TODO: clear state on submit / reset state when opening
+    // Handle unfilled form errors
+    if (!name) {
+      setError("Please enter a name for this statistic.");
+    } else if (!xVar) {
+      setError("Please select a variable for the x-axis.");
+    } else if (!yVar) {
+      setError("Please select a variable for the y-axis.");
+    }
+    else {
+      // Make a POST request to create a new statistic, with a randomly generated UUID
+      const URL = "/Statistics/" + uuid();
+      var request_data = new FormData();
+      request_data.append('jcr:primaryType', 'lfs:Statistic');
+      request_data.append('name', name);
+      request_data.append('xVar', xVar);
+      request_data.append('xVar@TypeHint', 'Reference');
+      request_data.append('yVar', yVar);
+      request_data.append('yVar@TypeHint', 'Reference');
+      if (splitVar) {
+        request_data.append('splitVar', splitVar);
+        request_data.append('splitVar@TypeHint', 'Reference');
+      }
+      fetch( URL, { method: 'POST', body: request_data })
+        .then( (response) => {
+          setNumFetchRequests((num) => (num-1));
+          if (response.ok) {
+            // reset fields
+            setXVar(null);
+            setYVar(null);
+            setSplitVar(null);
+            setName('');
+            setSubjectLabel('');
+            setError();
+            // successful callback to parent
+            onSuccess();
+            // close dialog
+            onClose();
+          } else {
+            setError(response.statusText ? response.statusText : response.toString());
+            return(Promise.reject(response));
+          }
+        })
+      setNumFetchRequests((num) => (num+1));
+    }
   }
+
+  let initialize = () => {
+    setInitialized(true);
+    // Fetch the SubjectTypes
+    fetch("/query?query=select * from [lfs:SubjectType]")
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((response) => {
+        setAvailableSubjects(response["rows"]);
+      })
+      .catch(handleFetchError);
+  }
+
+  let handleFetchError = (response) => {
+    setError(response.statusText ? response.statusText : response.toString());
+    setAvailableSubjects([]);  // Prevent an infinite loop if data was not set
+  };
 
   let onXChange = (filterableUUID) => {
     setXVar(filterableUUID);
   }
 
-  let onYChange = (filterableUUID) => {
-    setYVar(filterableUUID);
+  let onYChange = (e) => {
+    setSubjectLabel(e);
+    setYVar(availableSubjects.filter((x) => x['label'] == e)[0]['jcr:uuid']);
   }
 
   let onSplitChange = (filterableUUID) => {
     setSplitVar(filterableUUID);
   }
 
+  if (!initialized) {
+    initialize();
+  }
+
+  const subjectTypeFilters = (
+    <Grid item xs={10}>
+        <Select
+          value={(subjectLabel || "")}
+          onChange={(event) => {onYChange(event.target.value)}}
+          className={classes.subjectFilterInput}
+          displayEmpty
+          >
+            <MenuItem value="" disabled>
+              <span className={classes.filterPlaceholder}>Select Variable</span>
+            </MenuItem>
+            {(availableSubjects.map( (subjectType) =>
+                <MenuItem value={subjectType.label} key={subjectType.label} className={classes.categoryOption}>{subjectType.label}</MenuItem>
+            ))}
+        </Select>
+      </Grid>
+  )
+
   return (
     <Dialog open={open} onClose={onClose}>
+    <DialogTitle>Create New Statistic</DialogTitle>
     <DialogContent className={classes.NewFormDialog}>
-      {/* use select from filters! */}
+      { error && <Typography color="error">{error}</Typography>}
       <Grid container alignItems='flex-end' spacing={2}>
-        <Grid item xs={6}><Typography>Name:</Typography></Grid>
-        <Grid item xs={6}><TextField value={name} onChange={(event)=> { setName(event.target.value); }} /></Grid>
-        <Grid item xs={6}><Typography>X-axis:</Typography></Grid>
+        <Grid item xs={2}>
+          <Typography>Name:</Typography>
+        </Grid>
+        <Grid item xs={10}>
+          <TextField value={name} onChange={(event)=> { setName(event.target.value); }} className={classes.subjectFilterInput} placeholder="Enter Statistic Name"/>
+        </Grid>
+        <Grid item xs={2}>
+          <Typography>X-axis:</Typography>
+        </Grid>
         <Filters statisticFilters={true} parentHandler={onXChange}/>
-        <Grid item xs={6}><Typography>Y-axis:</Typography></Grid>
-        <Filters statisticFilters={true} parentHandler={onYChange}/>
-        <Grid item xs={6}><Typography>Split:</Typography></Grid>
+        <Grid item xs={2}>
+          <Typography>Y-axis:</Typography>
+        </Grid>
+        {subjectTypeFilters}
+        <Grid item xs={2}>
+          <Typography>Split:</Typography>
+        </Grid>
         <Filters statisticFilters={true} parentHandler={onSplitChange}/>
       </Grid>
     </DialogContent>

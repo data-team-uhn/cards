@@ -469,7 +469,10 @@ const questionnaireStyle = theme => ({
     },
     warningStatus: {
       color: theme.palette.warning.main
-    }
+    },
+    filterPlaceholder: {
+        opacity: 0.3
+    },
 });
 
 export default questionnaireStyle;

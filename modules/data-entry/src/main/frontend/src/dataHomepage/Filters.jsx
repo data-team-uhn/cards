@@ -284,7 +284,7 @@ function Filters(props) {
     }
 
     return (
-      <Grid item xs={6}>
+      <Grid item xs={10}>
         { /* If there is no error but also no data, show a progress circle */
           !error && !filterableFields &&
           <CircularProgress />
@@ -298,6 +298,9 @@ function Filters(props) {
           className={classes.answerField}
           displayEmpty
           >
+            <MenuItem value="" disabled>
+              <span className={classes.selectPlaceholder}>Select Variable</span>
+            </MenuItem>
             {(filterableFields.map( (name) =>
                 <MenuItem value={name} key={name} className={classes.categoryOption}>{filterableTitles[name]}</MenuItem>
             ))}
