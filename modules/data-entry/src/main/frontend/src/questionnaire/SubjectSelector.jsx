@@ -302,6 +302,7 @@ export function NewSubjectDialog (props) {
       // End of recursion
       setIsPosting(false);
       onSubmit(subject);
+      clearDialog();
       return;
     }
 
@@ -407,23 +408,32 @@ export function NewSubjectDialog (props) {
   }
 
   let goBack = () => {
-    // If we're at the "create a new subject" phase...
-    if (newSubjectPopperOpen) {
-      // And there are no new subjects...
-      if (newSubjectIndex == 0) {
-        // Close the entire dialog
-        onClose();
-      } else {
-        // Go back a stage, and reopen the select parent dialog
-        setNewSubjectIndex((old) => old-1);
-        setNewSubjectPopperOpen(false);
-        setSelectParentPopperOpen(true);
-      }
+    // if there are no new subjects...
+    if (newSubjectIndex == 0) {
+      // Close the entire dialog
+      closeDialog();
     } else {
-      // Go back to the "new subject" stage
-        setNewSubjectPopperOpen(true);
-        setSelectParentPopperOpen(false);
+      // Go back a stage, and reopen the select parent dialog
+      setError();
+      setNewSubjectIndex((old) => old-1);
+      setNewSubjectPopperOpen(false);
+      setSelectParentPopperOpen(true);
     }
+  }
+
+  let clearDialog = () => {
+    setNewSubjectIndex(0);
+    setNewSubjectName([""]);
+    setNewSubjectType([""]);
+    setNewSubjectParent([]);
+    setNewSubjectPopperOpen(true);
+    setSelectParentPopperOpen(false);
+    setError();
+  }
+
+  let closeDialog = () => {
+    clearDialog();
+    onClose();
   }
 
   return (
@@ -440,7 +450,7 @@ export function NewSubjectDialog (props) {
         requiresParents={curSubjectRequiresParents}
         open={open && newSubjectPopperOpen}
         value={newSubjectName[newSubjectIndex]}
-        />
+      />
       <SelectParentDialog
         childType={newSubjectType[newSubjectIndex]}
         continueDisabled={!newSubjectParent[newSubjectIndex]}
@@ -452,7 +462,7 @@ export function NewSubjectDialog (props) {
           setSelectParentPopperOpen(false);
           setError();
         }}
-        onClose={goBack}
+        onClose={closeDialog}
         onChangeParent={changeNewSubjectParent}
         onCreateParent={addNewParentSubject}
         onSubmit={createNewSubject}
