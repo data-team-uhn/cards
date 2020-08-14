@@ -174,7 +174,7 @@ function StatisticDialog(props) {
 
   let saveStatistic = () => {
     console.log(currentUrl);
-    console.log(existingData);
+    console.log(existingData); // not fetching!
     // Handle unfilled form errors
     if (!name) {
       setError("Please enter a name for this statistic.");

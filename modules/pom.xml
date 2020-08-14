@@ -50,5 +50,6 @@
     <module>demo-banner</module>
     <module>aggregated-frontend</module>
     <module>versioning</module>
+    <module>statistics</module>
   </modules>
 </project>

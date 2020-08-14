@@ -51,6 +51,7 @@
     ca.sickkids.ccm.lfs/lfs-principals/${lfs.version}
     ca.sickkids.ccm.lfs/lfs-vocabularies/${lfs.version}/slingfeature/slingfeature
     ca.sickkids.ccm.lfs/lfs-aggregated-frontend/${lfs.version}
+    ca.sickkids.ccm.lfs/lfs-statistics/${lfs.version}/slingfeature/slingfeature
 
 [artifacts runModes=permissions_ownership]
     ca.sickkids.ccm.lfs/lfs-permissions-ownership/${lfs.version}
