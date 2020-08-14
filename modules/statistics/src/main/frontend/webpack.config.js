@@ -8,8 +8,8 @@ module.exports = {
   entry: {
     [module_name + 'subjectsIcon']: '@material-ui/icons/AssignmentInd.js',
     [module_name + 'subjectTypeIcon']: '@material-ui/icons/Category.js',
-    [module_name + 'AdminStatisticsAgain']: './src/Statistics/AdminStatisticsAgain.jsx',
-    [module_name + 'UserStatisticsAgain']: './src/Statistics/UserStatisticsAgain.jsx'
+    [module_name + 'AdminStatistics']: './src/Statistics/AdminStatistics.jsx',
+    [module_name + 'UserStatistics']: './src/Statistics/UserStatistics.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),

@@ -18,7 +18,7 @@
 //
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, Grid, withStyles, Typography } from "@material-ui/core";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import statisticsStyle from "./statisticsStyle.jsx";
 
 function UserStatistics(props) {
   const { classes } = props;
@@ -71,17 +71,16 @@ function UserStatistics(props) {
   return (
     <React.Fragment>
       <Grid container spacing={3}>
-        {statistics.map((statistic) => {
+        {statistics.map((stat) => {
           return(
-            <Grid item lg={12} xl={6}>
+            <Grid item lg={12} xl={6} key={stat["@path"]}>
               <Card>
                 <CardContent>
-                  <Grid container alignItems="flex-end" spacing={2} className={classes.filterTable}>
-                    {/* use select from filters! */}
-                    <Typography>Name:</Typography>
-                    <Typography>x-axis:</Typography>
-                    <Typography>y-axis:</Typography>
-                    <Typography>Split by:</Typography>
+                  <Grid container alignItems='flex-end' spacing={2}>
+                    <Grid item xs={12}><Typography variant="body2" component="p">Name: {stat.name}</Typography></Grid>
+                    <Grid item xs={12}><Typography variant="body2" component="p">X-axis: {stat.xVar.text}</Typography></Grid>
+                    <Grid item xs={12}><Typography variant="body2" component="p">Y-axis: {stat.yVar.label}</Typography></Grid>
+                    <Grid item xs={12}><Typography variant="body2" component="p">Split: {stat.splitVar ? stat.splitVar.text : "none"}</Typography></Grid>
                   </Grid>
                 </CardContent>
               </Card>
@@ -93,4 +92,4 @@ function UserStatistics(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(UserStatistics);
+export default withStyles(statisticsStyle)(UserStatistics);

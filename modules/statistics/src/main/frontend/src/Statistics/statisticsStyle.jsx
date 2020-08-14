@@ -17,29 +17,16 @@
 
 // Taken from https://www.creative-tim.com/product/material-dashboard-react
 
-const userboardStyle = theme => ({
-    containerButton: {
-      marginRight: theme.spacing(1),
-    },
-    cardActions: {
-      justifyContent: "flex-end",
-      marginTop: theme.spacing(2)
-    },
-    cardRoot: {
-      paddingLeft: "120px"
-    },
-    info: {
-      backgroundColor: theme.palette.info.main
-    },
-    addIcon: {
-      backgroundColor: theme.palette.primary.main
-    },
-    dialogTitle: {
-      padding: theme.spacing(2,0,2,3)
-    },
-    dialogActions: {
-      padding: theme.spacing(2, 3)
-    }
+const statisticsStyle = theme => ({
+  subjectFilterInput: {
+      width: "100%"
+  },
+  filterPlaceholder: {
+    opacity: 0.3
+  },
+  categoryOption: {
+    whiteSpace: "normal",
+  },
 });
 
-export default userboardStyle;
+export default statisticsStyle;

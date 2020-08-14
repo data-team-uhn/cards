@@ -28,7 +28,7 @@
 
 //-----------------------------------------------------------------------------
 // Statistic: a group of data to be visually displayed
-[lfs:AnotherStatistic] > sling:Folder, mix:referenceable, mix:versionable
+[lfs:Statistic] > sling:Folder, mix:referenceable, mix:versionable
   // Attributes
 
   // We can use statistics in a query.
@@ -39,7 +39,7 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/AnotherStatistic" mandatory autocreated protected
+  - sling:resourceType (STRING) = "lfs/Statistic" mandatory autocreated protected
 
   // Hardcode the resource supertype: each statistic is a resource.
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
@@ -48,9 +48,22 @@
   // Mandatory, each Statistic must have a name.
   - name (string) mandatory
 
+  // A reference to the x-axis variable (question or section)
+  // No full text search, since it's just a non-textual reference.
+  - xVar (reference) mandatory
+
+  // A reference to the y-axis variable (subjectType)
+  // No full text search, since it's just a non-textual reference.
+  - yVar (reference) mandatory
+
+  // A reference to the split variable (subjectType)
+  // Not mandatory
+  // No full text search, since it's just a non-textual reference.
+  - splitVar (reference) nofulltext
+
 //-----------------------------------------------------------------------------
 // The homepage for the Statistics space.
-[lfs:AnotherStatisticsHomepage] > sling:Folder
+[lfs:StatisticsHomepage] > sling:Folder
   // Attributes:
 
   // We can use this homepage in a query.
@@ -59,9 +72,9 @@
   // Properties:
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/AnotherStatisticsHomepage" mandatory autocreated protected
+  - sling:resourceType (STRING) = "lfs/StatisticsHomepage" mandatory autocreated protected
 
-  // Hardcode the resource supertype: the AnotherStatisticsHomepage is a resource.
+  // Hardcode the resource supertype: the StatisticsHomepage is a resource.
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
 
   // Set a default title.

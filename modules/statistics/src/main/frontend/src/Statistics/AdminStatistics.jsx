@@ -39,8 +39,8 @@ import {
 } from "@material-ui/core";
 import CreateIcon from "@material-ui/icons/Create";
 import DeleteIcon from "@material-ui/icons/Delete";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import Filters from "./Filters";
+import Filters from "../dataHomepage/Filters.jsx";
+import statisticsStyle from "./statisticsStyle.jsx";
 
 function AdminStatistics(props) {
   const { classes } = props;
@@ -150,7 +150,20 @@ function StatisticDialog(props) {
   const [ splitVar, setSplitVar ] = useState();
   const [ subjectLabel, setSubjectLabel ] = useState('');
 
+  let reset = () => {
+    // reset fields
+    setXVar(null);
+    setYVar(null);
+    setSplitVar(null);
+    setName('');
+    setSubjectLabel('');
+    setError();
+  }
+
   useEffect(() => {
+    if (!open) {
+      reset();
+    }
     if (!isNewStatistic && currentId) {
       setCurrentUrl("/Statistics/" + currentId);
       let fetchExistingData = () => {
@@ -200,13 +213,7 @@ function StatisticDialog(props) {
         .then( (response) => {
           setNumFetchRequests((num) => (num-1));
           if (response.ok) {
-            // reset fields
-            setXVar(null);
-            setYVar(null);
-            setSplitVar(null);
-            setName('');
-            setSubjectLabel('');
-            setError();
+            reset();
             // successful callback to parent
             onSuccess();
             // close dialog
@@ -277,7 +284,7 @@ function StatisticDialog(props) {
   return (
     <Dialog open={open} onClose={onClose}>
     <DialogTitle>{isNewStatistic ? "Create New Statistic" : "Edit Statistic"}</DialogTitle>
-    <DialogContent className={classes.newStatDialog}>
+    <DialogContent>
       { error && <Typography color="error">{error}</Typography>}
       <Grid container alignItems='flex-end' spacing={2}>
         <Grid item xs={2}>
@@ -320,4 +327,4 @@ function StatisticDialog(props) {
   )
 }
 
-export default withStyles(QuestionnaireStyle)(AdminStatistics);
+export default withStyles(statisticsStyle)(AdminStatistics);

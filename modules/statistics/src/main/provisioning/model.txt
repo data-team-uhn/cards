@@ -21,7 +21,7 @@
 [feature name=lfs-statistics]
 
 [:repoinit]
-    create path (lfs:AnotherStatisticsHomepage) /StatisticsAgain
+    create path (lfs:StatisticsHomepage) /Statistics
 
     set ACL for everyone
         allow   jcr:read    on /content
