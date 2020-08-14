@@ -16,63 +16,165 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import uuid from "uuid/v4";
-import { Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Grid, withStyles, MenuItem, Select, TextField, Typography } from "@material-ui/core";
+import { 
+  Button, 
+  Card, 
+  CardContent,
+  CardHeader,
+  CircularProgress, 
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
+  DialogTitle,
+  Fab,
+  Grid, 
+  withStyles, 
+  MenuItem, 
+  Select, 
+  TextField, 
+  Tooltip,
+  Typography 
+} from "@material-ui/core";
+import CreateIcon from "@material-ui/icons/Create";
+import DeleteIcon from "@material-ui/icons/Delete";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import Filters from "./Filters";
 
 function AdminStatistics(props) {
   const { classes } = props;
-  let [statistics, setStatistics] = useState([1, 2, 3]); // each statistic becomes one chart. TODO: fetch statistics
+  // This holds the statistics data, once it is received from the server
+  let [statistics, setStatistics] = useState();
   const [ dialogOpen, setDialogOpen ] = useState(false);
+  const [ error, setError ] = useState();
+  // If stat should be created or edited
+  const [ newStat, setNewStat ] = useState(true);
+  const [ currentId, setCurrentId ] = useState();
+
+  let fetchStatistics = () => {
+      fetch("/query?query=select * from [lfs:Statistic]")
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((response) => {
+        setStatistics(response["rows"]);
+      })
+      .catch(handleError);
+  };
+
+  // Callback method for the `fetchStatistics` method, invoked when the request failed.
+  let handleError = (response) => {
+    setError(response);
+    setStatistics([]);  // Prevent an infinite loop if data was not set
+  };
+
+  // If the data has not yet been fetched, initiate
+  if (!statistics) {
+    fetchStatistics();
+  }
+
+  // If an error was returned, do not display statistics at all, but report the error
+  if (error) {
+    return (
+      <Grid container justify="center">
+        <Grid item>
+          <Typography variant="h2" color="error">
+            Error obtaining statistics: {error.status} {error.statusText ? error.statusText : error.toString()}
+          </Typography>
+        </Grid>
+      </Grid>
+    );
+  }
 
   let dialogClose = () => {
     setDialogOpen(false);
   }
 
-  let addSuccess = () => {
-    console.log('success!')
+  // If a statistic was successfully added, perform fetch for new statistic
+  let dialogSuccess = () => {
+    fetchStatistics();
   }
 
   return (
-    <React.Fragment>
-      <Grid container spacing={3}>
-        {statistics.map((statistic) => {
-          return(
-            <Grid item lg={12} xl={6} key={statistic}>
-              <Card>
-                <CardContent>
-                  <Typography variant="body2" component="p">Name:</Typography>
-                  <Typography variant="body2" component="p">X-axis:</Typography>
-                  <Typography variant="body2" component="p">Y-axis:</Typography>
-                  <Typography variant="body2" component="p">Split:</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          )
-        })}
+    <Grid container spacing={3}>
+      {statistics && statistics.map((stat) => {
+        return(
+          <Grid item lg={12} xl={6} key={stat["@path"]}>
+            <Card>
+              <CardHeader
+                action={
+                  <div>
+                    <Tooltip aria-label="Edit" title="Edit Statistic">
+                      <Fab
+                        color="primary"
+                        aria-label="Edit"
+                        onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(stat["jcr:uuid"]);}}
+                      >
+                        <CreateIcon />
+                      </Fab>
+                    </Tooltip>
+                  </div>
+                }
+              />
+              <CardContent>
+                <Grid container alignItems='flex-end' spacing={2}>
+                  <Grid item xs={12}><Typography variant="body2" component="p">Name: {stat.name}</Typography></Grid>
+                  <Grid item xs={12}><Typography variant="body2" component="p">X-axis: {stat.xVar.text}</Typography></Grid>
+                  <Grid item xs={12}><Typography variant="body2" component="p">Y-axis: {stat.yVar.label}</Typography></Grid>
+                  <Grid item xs={12}><Typography variant="body2" component="p">Split: {stat.splitVar ? stat.splitVar.text : "none"}</Typography></Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+        )
+      })}
+      <Grid item xs={12}>
+        <Button onClick={() => {setDialogOpen(true); setNewStat(true); setCurrentId();}}>New Statistic</Button>
       </Grid>
-      <Button onClick={() => setDialogOpen(true)}>New chart</Button>
-      <NewStatisticDialog open={dialogOpen} onClose={dialogClose} classes={classes} onSuccess={addSuccess} />
-    </React.Fragment>
+      <StatisticDialog open={dialogOpen} onClose={dialogClose} classes={classes} onSuccess={dialogSuccess} isNewStatistic={newStat} currentId={currentId}/>
+    </Grid>
   );
 }
 
-function NewStatisticDialog(props) {
-  const { onClose, onSuccess, open, classes } = props;
+function StatisticDialog(props) {
+  const { onClose, onSuccess, open, classes, isNewStatistic, currentId } = props;
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ availableSubjects, setAvailableSubjects ] = useState([]);
+  const [ existingData, setExistingData ] = useState();
   const [ initialized, setInitialized ] = useState(false);
   const [ error, setError ] = useState();
+  const [ currentUrl, setCurrentUrl ] = useState();
 
   const [ name, setName ] = useState('');
   const [ xVar, setXVar ] = useState();
   const [ yVar, setYVar ] = useState();
   const [ splitVar, setSplitVar ] = useState();
-  const [ subjectLabel, setSubjectLabel ] = useState('')
+  const [ subjectLabel, setSubjectLabel ] = useState('');
 
-  let createStatistic = () => {
+  useEffect(() => {
+    if (!isNewStatistic && currentId) {
+      setCurrentUrl("/Statistics/" + currentId);
+      let fetchExistingData = () => {
+        fetch(`/Statistics/${currentId}.deep.json`)
+          .then((response) => response.ok ? response.json() : Promise.reject(response))
+          .then(handleResponse)
+          .catch(handleFetchError);
+      };
+    
+      let handleResponse = (json) => {
+        setExistingData(json);
+      };
+    
+      if (!existingData) {
+        fetchExistingData();
+      }
+    } else {
+      setCurrentUrl("/Statistics/" + uuid());
+    }
+  }, [open])
+
+  let saveStatistic = () => {
+    console.log(currentUrl);
+    console.log(existingData);
     // Handle unfilled form errors
     if (!name) {
       setError("Please enter a name for this statistic.");
@@ -82,8 +184,7 @@ function NewStatisticDialog(props) {
       setError("Please select a variable for the y-axis.");
     }
     else {
-      // Make a POST request to create a new statistic, with a randomly generated UUID
-      const URL = "/Statistics/" + uuid();
+      const URL = currentUrl;
       var request_data = new FormData();
       request_data.append('jcr:primaryType', 'lfs:Statistic');
       request_data.append('name', name);
@@ -133,8 +234,10 @@ function NewStatisticDialog(props) {
   let handleFetchError = (response) => {
     setError(response.statusText ? response.statusText : response.toString());
     setAvailableSubjects([]);  // Prevent an infinite loop if data was not set
+    setExistingData([]);
   };
 
+  // update each
   let onXChange = (filterableUUID) => {
     setXVar(filterableUUID);
   }
@@ -152,6 +255,7 @@ function NewStatisticDialog(props) {
     initialize();
   }
 
+  // 'filter' for y-axis
   const subjectTypeFilters = (
     <Grid item xs={10}>
         <Select
@@ -172,8 +276,8 @@ function NewStatisticDialog(props) {
 
   return (
     <Dialog open={open} onClose={onClose}>
-    <DialogTitle>Create New Statistic</DialogTitle>
-    <DialogContent className={classes.NewFormDialog}>
+    <DialogTitle>{isNewStatistic ? "Create New Statistic" : "Edit Statistic"}</DialogTitle>
+    <DialogContent className={classes.newStatDialog}>
       { error && <Typography color="error">{error}</Typography>}
       <Grid container alignItems='flex-end' spacing={2}>
         <Grid item xs={2}>
@@ -205,11 +309,11 @@ function NewStatisticDialog(props) {
           Cancel
         </Button>
         <Button
-          onClick={createStatistic}
+          onClick={saveStatistic}
           variant="contained"
           color="primary"
           >
-          Create
+          {isNewStatistic ? "Create" : "Save"}
         </Button>
     </DialogActions>
   </Dialog>
