@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A servlet for querying Statistics that returns a JSON object containing values for the x and y axes
+ * TODO: change to take in id as parameter ? not sure
  *
  */
 @Component(service = { Servlet.class })

@@ -94,6 +94,27 @@ function AdminStatistics(props) {
     fetchStatistics();
   }
 
+  // let getNestedValue = (entry, path) => {
+  //   console.log(entry);
+  //   console.log(path);
+  //   // Display the JCR node id
+  //   if (path == 'jcr:uuid') {
+  //     let el = /Forms\/(.+)/.exec(entry["@path"]);
+  //     if (el && el[1]) {
+  //       return el[1];
+  //     }
+  //   }
+
+  //   let result = entry;
+  //   for (let subpath of path.split('/')) {
+  //     result = result && result[subpath];
+  //   }
+  //   // return result;
+  //   setCurrentId(result)
+  //   setNewStat(false);
+  //   setDialogOpen(true);
+  // };
+
   return (
     <Grid container spacing={3}>
       {statistics && statistics.map((stat) => {
@@ -110,6 +131,14 @@ function AdminStatistics(props) {
                         onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(stat["jcr:uuid"]);}}
                       >
                         <CreateIcon />
+                      </Fab>
+                    </Tooltip>
+                    <Tooltip aria-label="Delete" title="Delete Statistic">
+                      <Fab
+                        color="primary"
+                        aria-label="Delete"
+                      >
+                        <DeleteIcon />
                       </Fab>
                     </Tooltip>
                   </div>
@@ -164,7 +193,7 @@ function StatisticDialog(props) {
     if (!open) {
       reset();
     }
-    if (!isNewStatistic && currentId) {
+    if (!isNewStatistic && currentId) {  // TO FIX: currentId is NOT the correct ID. should get the id like livetable?
       setCurrentUrl("/Statistics/" + currentId);
       let fetchExistingData = () => {
         fetch(`/Statistics/${currentId}.deep.json`)
