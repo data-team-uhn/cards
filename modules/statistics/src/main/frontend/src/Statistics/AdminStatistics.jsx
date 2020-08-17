@@ -48,6 +48,7 @@ function AdminStatistics(props) {
   let [statistics, setStatistics] = useState();
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ error, setError ] = useState();
+  const [ message, setMessage ] = useState();
   // If stat should be created or edited
   const [ newStat, setNewStat ] = useState(true);
   const [ currentId, setCurrentId ] = useState();
@@ -56,6 +57,9 @@ function AdminStatistics(props) {
       fetch("/query?query=select * from [lfs:Statistic]")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
+        if (response.totalrows == 0) {
+          setMessage("No statistics have been added yet.");
+        }
         setStatistics(response["rows"]);
       })
       .catch(handleError);
@@ -94,29 +98,17 @@ function AdminStatistics(props) {
     fetchStatistics();
   }
 
-  // let getNestedValue = (entry, path) => {
-  //   console.log(entry);
-  //   console.log(path);
-  //   // Display the JCR node id
-  //   if (path == 'jcr:uuid') {
-  //     let el = /Forms\/(.+)/.exec(entry["@path"]);
-  //     if (el && el[1]) {
-  //       return el[1];
-  //     }
-  //   }
-
-  //   let result = entry;
-  //   for (let subpath of path.split('/')) {
-  //     result = result && result[subpath];
-  //   }
-  //   // return result;
-  //   setCurrentId(result)
-  //   setNewStat(false);
-  //   setDialogOpen(true);
-  // };
-
   return (
     <Grid container spacing={3}>
+      {message ? (
+        <Grid item xs={12}>
+        <Card>
+          <CardContent>
+            <Typography>{error}</Typography>
+          </CardContent>
+        </Card>
+        </Grid>
+      ) : null }
       {statistics && statistics.map((stat) => {
         return(
           <Grid item lg={12} xl={6} key={stat["@path"]}>
@@ -128,7 +120,7 @@ function AdminStatistics(props) {
                       <Fab
                         color="primary"
                         aria-label="Edit"
-                        onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(stat["jcr:uuid"]);}}
+                        onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(stat["@name"]);}}
                       >
                         <CreateIcon />
                       </Fab>
@@ -168,7 +160,7 @@ function StatisticDialog(props) {
   const { onClose, onSuccess, open, classes, isNewStatistic, currentId } = props;
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ availableSubjects, setAvailableSubjects ] = useState([]);
-  const [ existingData, setExistingData ] = useState();
+  const [ existingData, setExistingData ] = useState(false);
   const [ initialized, setInitialized ] = useState(false);
   const [ error, setError ] = useState();
   const [ currentUrl, setCurrentUrl ] = useState();
@@ -177,7 +169,9 @@ function StatisticDialog(props) {
   const [ xVar, setXVar ] = useState();
   const [ yVar, setYVar ] = useState();
   const [ splitVar, setSplitVar ] = useState();
-  const [ subjectLabel, setSubjectLabel ] = useState('');
+  const [ yVarLabel, setYVarLabel ] = useState('');
+  const [ xVarLabel, setXVarLabel ] = useState('');
+  const [ splitVarLabel, setSplitVarLabel ] = useState('');
 
   let reset = () => {
     // reset fields
@@ -185,15 +179,18 @@ function StatisticDialog(props) {
     setYVar(null);
     setSplitVar(null);
     setName('');
-    setSubjectLabel('');
+    setYVarLabel('');
+    setXVarLabel('');
+    setSplitVarLabel('');
     setError();
+    setExistingData(false);
   }
 
   useEffect(() => {
     if (!open) {
       reset();
     }
-    if (!isNewStatistic && currentId) {  // TO FIX: currentId is NOT the correct ID. should get the id like livetable?
+    if (!isNewStatistic && currentId) { // TO FIX: date of birth appears twice (in 2 diff forms), so it has 2 uuids.
       setCurrentUrl("/Statistics/" + currentId);
       let fetchExistingData = () => {
         fetch(`/Statistics/${currentId}.deep.json`)
@@ -201,11 +198,13 @@ function StatisticDialog(props) {
           .then(handleResponse)
           .catch(handleFetchError);
       };
-    
       let handleResponse = (json) => {
-        setExistingData(json);
+        setExistingData(true);
+        setName(json.name);
+        setYVarLabel(json.yVar.label);
+        setXVarLabel(json.xVar.text);
+        setSplitVarLabel(json.splitVar ? json.splitVar.text : '');
       };
-    
       if (!existingData) {
         fetchExistingData();
       }
@@ -279,7 +278,7 @@ function StatisticDialog(props) {
   }
 
   let onYChange = (e) => {
-    setSubjectLabel(e);
+    setYVarLabel(e);
     setYVar(availableSubjects.filter((x) => x['label'] == e)[0]['jcr:uuid']);
   }
 
@@ -295,7 +294,7 @@ function StatisticDialog(props) {
   const subjectTypeFilters = (
     <Grid item xs={10}>
         <Select
-          value={(subjectLabel || "")}
+          value={(yVarLabel || "")}
           onChange={(event) => {onYChange(event.target.value)}}
           className={classes.subjectFilterInput}
           displayEmpty
@@ -325,7 +324,7 @@ function StatisticDialog(props) {
         <Grid item xs={2}>
           <Typography>X-axis:</Typography>
         </Grid>
-        <Filters statisticFilters={true} parentHandler={onXChange}/>
+        <Filters statisticFilters={true} parentHandler={onXChange} statisticFiltersValue={xVarLabel} />
         <Grid item xs={2}>
           <Typography>Y-axis:</Typography>
         </Grid>
@@ -333,7 +332,7 @@ function StatisticDialog(props) {
         <Grid item xs={2}>
           <Typography>Split:</Typography>
         </Grid>
-        <Filters statisticFilters={true} parentHandler={onSplitChange}/>
+        <Filters statisticFilters={true} parentHandler={onSplitChange} statisticFiltersValue={splitVarLabel} />
       </Grid>
     </DialogContent>
     <DialogActions>

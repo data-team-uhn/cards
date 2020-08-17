@@ -40,7 +40,7 @@ import { UNARY_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
 const FILTER_URL = "/Questionnaires.filters";
 
 function Filters(props) {
-  const { classes, disabled, onChangeFilters, questionnaire, statisticFilters, parentHandler } = props;
+  const { classes, disabled, onChangeFilters, questionnaire, statisticFilters, parentHandler, statisticFiltersValue } = props;
   // Filters, as displayed in the dialog, and filters as actually saved
   const [editingFilters, setEditingFilters] = useState([]); // TODO: existing
   const [activeFilters, setActiveFilters] = useState([]);
@@ -283,6 +283,10 @@ function Filters(props) {
       setStatisticValue(e)
     }
 
+    // if (statisticFiltersValue) {
+    //   setStatisticValue(statisticFiltersValue)
+    // }
+
     return (
       <Grid item xs={10}>
         { /* If there is no error but also no data, show a progress circle */
@@ -290,7 +294,7 @@ function Filters(props) {
           <CircularProgress />
         }
         <Select
-          value={(statisticValue || "")}
+          value={(statisticFiltersValue || statisticValue || "")}
           onChange={(event) => {setFilterInfo(event.target.value)}}
           MenuProps={{
             onExited: forceRegrabFocus

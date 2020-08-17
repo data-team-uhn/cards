@@ -34,7 +34,7 @@ function UserStatistics(props) {
 
     //[uuid].query
     // Fetch the statistics
-    fetch("/query?query=select * from [lfs:Statistics]")
+    fetch("/query?query=select * from [lfs:Statistic]")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
         if (response.totalrows == 0) {
@@ -60,7 +60,6 @@ function UserStatistics(props) {
   if (error) {
     return (
       <Card>
-        <CardHeader title="Error"/>
         <CardContent>
           <Typography>{error}</Typography>
         </CardContent>
