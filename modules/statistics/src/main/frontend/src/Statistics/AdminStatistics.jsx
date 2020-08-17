@@ -100,16 +100,7 @@ function AdminStatistics(props) {
 
   return (
     <Grid container spacing={3}>
-      {message ? (
-        <Grid item xs={12}>
-        <Card>
-          <CardContent>
-            <Typography>{error}</Typography>
-          </CardContent>
-        </Card>
-        </Grid>
-      ) : null }
-      {statistics && statistics.map((stat) => {
+      {statistics ? (statistics.map((stat) => {
         return(
           <Grid item lg={12} xl={6} key={stat["@path"]}>
             <Card>
@@ -147,7 +138,16 @@ function AdminStatistics(props) {
             </Card>
           </Grid>
         )
-      })}
+      })) : (
+        <Grid item xs={12}>
+          <Card>
+            <CardContent>
+              <Typography>{message}</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        )
+      }
       <Grid item xs={12}>
         <Button onClick={() => {setDialogOpen(true); setNewStat(true); setCurrentId();}}>New Statistic</Button>
       </Grid>

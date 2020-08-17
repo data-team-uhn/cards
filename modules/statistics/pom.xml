@@ -62,7 +62,7 @@
           <!-- This will automatically add an [artifacts] entry with the jar produced by this module in the provisioning file -->
           <attach>
             <type>jar</type>
-            <startLevel>5</startLevel>
+            <startLevel>12</startLevel>
           </attach>
         </configuration>
       </plugin>
