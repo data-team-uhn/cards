@@ -160,6 +160,28 @@ public class DeleteServlet extends SlingAllMethodsServlet
     }
 
     /**
+     * Convert an arraylist of strings to a readable comma and "and" seperated string.
+     *
+     * @param results the strings to combine
+     * @return a string in the format "string1, ..., stringN-1 and stringN" or an empty string
+     */
+    private String stringArrayToList(ArrayList<String> results)
+    {
+        String result;
+        if (results.size() > 1) {
+            result = String.format("%s and %s",
+                String.join(", ", results.subList(0, results.size() - 1)),
+                results.get(results.size() - 1));
+        } else if (results.size() == 1) {
+            result = results.get(0);
+        } else {
+            result = "";
+        }
+
+        return result;
+    }
+
+    /**
      * Get a string explaining which nodes refer to the node traversed by {@code traverseNode}.
      *
      * @param parentNode the node originally traversed
@@ -198,12 +220,12 @@ public class DeleteServlet extends SlingAllMethodsServlet
 
             ArrayList<String> results = new ArrayList<String>();
             addNodesToResult(results, "form", formCount);
+            addNodesToResult(results, "subject", subjects);
             addNodesToResult(results, "subject type", subjectTypes);
-            addNodesToResult(results, "subject type", subjectTypes);
-            addNodesToResult(results, "subject type", questionnaires);
+            addNodesToResult(results, "questionnaire", questionnaires);
             addNodesToResult(results, "other", otherCount);
 
-            return String.join(", ", results);
+            return stringArrayToList(results);
         } catch (RepositoryException e) {
             return null;
         }
