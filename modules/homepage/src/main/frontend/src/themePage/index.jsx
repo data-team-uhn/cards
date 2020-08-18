@@ -24,6 +24,8 @@ import sidebarRoutes, { loadRemoteComponents, loadRemoteIcons, loadContentNodes 
 import { withStyles } from '@material-ui/core';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
+import { createIntlCache } from "react-intl";
+
 import Navbar from "./Navbars/Navbar";
 import IndexStyle from "./indexStyle.jsx";
 import { getAdminRoutes } from "../adminDashboard/AdminDashboard.jsx"

@@ -35,5 +35,6 @@
     "webpack-cli": "^3.3.2"
   },
   "dependencies": {
+    "react-intl": "^5.6.3"
   }
 }

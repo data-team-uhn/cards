@@ -44,6 +44,7 @@
     <module>principals</module>
     <module>permissions</module>
     <module>permissions-ownership</module>
+    <module>translation</module>
     <module>vocabularies</module>
     <module>aggregated-frontend</module>
   </modules>
