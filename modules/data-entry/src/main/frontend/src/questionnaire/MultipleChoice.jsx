@@ -33,19 +33,18 @@ const GHOST_SENTINEL = "custom-input";
 
  /**
   * Component that displays a Multiple Choice question.
+  *
   * @param {Object} existingAnswer form data that may include answers already submitted for this component
-  * @param {Object} ghostAnchor
-  * @param {bool} input type of user input (either "input", "textbox", or undefined denotes the type of user input)
-  * @param {bool} textbox type of user input (either "input", "textbox", or undefined denotes the type of user input)
-  * @param {func} onUpdate Callback for when an input value is changed or an option is added
-  * @param {func} onChange Callback for when an option is removed
-  * @param {Object} additionalInputProps additional props
-  * @param {Object} muiInputProps additional props
-  * @param {bool} error
+  * @param {bool} input if true, display a free-text single-line input after the predefined options; at most one of "input" or "textbox" may be true
+  * @param {bool} textbox if true, display a free-text multi-line input after the predefined options; at most one of "input" or "textbox" may be true
+  * @param {func} onUpdate Callback for when an input value is changed or an option is added, receives as argument the new value of the changed option
+  * @param {func} onChange Callback for when an option is removed, receives as argument the value of the removed option
+  * @param {Object} additionalInputProps additional props to be set on the input element
+  * @param {Object} muiInputProps additional props to be forwarded to the MUI input element
+  * @param {bool} error indicates if the current selection is in a state of error
   */
-
 function MultipleChoice(props) {
-  let { classes, existingAnswer, ghostAnchor, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
@@ -404,7 +403,6 @@ MultipleChoice.propTypes = {
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
   input: PropTypes.bool,
-  ghostAnchor: PropTypes.object,
   additionalInputProps: PropTypes.object,
   muiInputProps: PropTypes.object,
   error: PropTypes.bool
