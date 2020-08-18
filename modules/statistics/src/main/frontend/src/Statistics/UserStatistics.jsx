@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, Grid, withStyles, Typography } from "@material-ui/core";
+import { Button, Card, CardActions, CardContent, CardHeader, Grid, withStyles, Typography } from "@material-ui/core";
 import statisticsStyle from "./statisticsStyle.jsx";
 
 function UserStatistics(props) {
@@ -67,6 +67,16 @@ function UserStatistics(props) {
     );
   }
 
+  let fetchStat = (stat) => {
+    const urlBase = "/Statistics.filters";
+    let url = new URL(urlBase, window.location.origin);
+    url.searchParams.set("xVar", stat.xVar);
+    url.searchParams.set("yVar", stat.yVar);
+
+    fetch(url)
+      .then((response) => response.ok ? console.log(response) : Promise.reject(response))
+  }
+
   return (
     <React.Fragment>
       <Grid container spacing={3}>
@@ -82,6 +92,9 @@ function UserStatistics(props) {
                     <Grid item xs={12}><Typography variant="body2" component="p">Split: {stat.splitVar ? stat.splitVar.text : "none"}</Typography></Grid>
                   </Grid>
                 </CardContent>
+                <CardActions>
+                  <Button onClick={() => {fetchStat(stat)}} size="small">Click to view</Button>
+                </CardActions>
               </Card>
             </Grid>
           )
