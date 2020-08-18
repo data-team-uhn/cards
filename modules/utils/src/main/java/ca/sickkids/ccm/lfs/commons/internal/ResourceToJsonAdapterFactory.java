@@ -169,6 +169,7 @@ public class ResourceToJsonAdapterFactory
         }
     }
 
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private JsonObjectBuilder adapt(final Node node) throws RepositoryException
     {
         if (node == null) {
@@ -181,8 +182,10 @@ public class ResourceToJsonAdapterFactory
             this.processedNodes.get().add(node.getPath());
             if (!alreadyProcessed) {
                 final PropertyIterator properties = node.getProperties();
-                String slingResourceSuperType = node.getProperty("sling:resourceSuperType").getString();
-                String slingResourceType = node.getProperty("sling:resourceType").getString();
+                String slingResourceSuperType = node.hasProperty("sling:resourceSuperType")
+                    ? node.getProperty("sling:resourceSuperType").getString() : "";
+                String slingResourceType = node.hasProperty("sling:resourceType")
+                    ? node.getProperty("sling:resourceType").getString() : "";
                 while (properties.hasNext()) {
                     Property thisProp = properties.nextProperty();
                     if (this.simple.get()) {
@@ -387,7 +390,8 @@ public class ResourceToJsonAdapterFactory
                 addDate(objectBuilder, name, value.getDate());
                 break;
             case PropertyType.DECIMAL:
-                objectBuilder.add(name, value.getDecimal());
+                // Send as string to prevent Javascript JSON parser from losing precision
+                objectBuilder.add(name, value.getString());
                 break;
             case PropertyType.DOUBLE:
                 objectBuilder.add(name, value.getDouble());
@@ -432,7 +436,8 @@ public class ResourceToJsonAdapterFactory
                     addDate(arrayBuilder, value.getDate());
                     break;
                 case PropertyType.DECIMAL:
-                    arrayBuilder.add(value.getDecimal());
+                    // Send as string to prevent Javascript JSON parser from losing precision
+                    arrayBuilder.add(value.getString());
                     break;
                 case PropertyType.DOUBLE:
                     arrayBuilder.add(value.getDouble());
@@ -456,7 +461,7 @@ public class ResourceToJsonAdapterFactory
                     final Node referenced =
                         path.charAt(0) == '/' ? property.getSession().getNode(path)
                             : property.getParent().getNode(path);
-                    objectBuilder.add(name, adapt(referenced));
+                    arrayBuilder.add(adapt(referenced));
                     break;
                 default:
                     arrayBuilder.add(value.getString());

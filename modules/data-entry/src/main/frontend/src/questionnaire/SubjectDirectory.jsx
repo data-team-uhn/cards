@@ -16,23 +16,33 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
+
+/**
+ * Component that displays all subjects of a specified SubjectType.
+ *
+ * @example
+ * <SubjectDirectory id="ae137c46-c22e-4bf1-8238-953e6315cffc" title="Tumors"/>
+ *
+ * @param {string} id the identifier of a SubjectType
+ * @param {string} title the title of the displayed title
+ */
+
 import React from "react";
-import LiveTable from "./LiveTable.jsx";
-import SubjectType from "../questionnaire/SubjectType.jsx";
+import LiveTable from "../dataHomepage/LiveTable.jsx";
 
 import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
-function SubjectTypes(props) {
-  const { classes } = props;
+function SubjectDirectory(props) {
+
+  const { classes, id, title } = props;
 
   const columns = [
     {
-      "key": "label",
-      "label": "Label",
+      "key": "identifier",
+      "label": "Identifier",
       "format": "string",
       "link": "dashboard+field:@path",
-      "admin": true,
     },
     {
       "key": "jcr:createdBy",
@@ -46,25 +56,27 @@ function SubjectTypes(props) {
     },
   ]
 
-  const entry = /SubjectTypes\/(.+)/.exec(location.pathname);
-  if (entry) {
-    return <SubjectType id={entry[1]}/>;
-  }
-
   return (
-    <Card>
-      <CardHeader
-        title={
-          <Button className={classes.cardHeaderButton}>
-            Subject Types
-          </Button>
-        }
-      />
-      <CardContent>
-        <LiveTable columns={columns} />
-      </CardContent>
-    </Card>
+    <div>
+      <Card>
+        <CardHeader
+          title={
+            <Button className={classes.cardHeaderButton}>
+              {title}
+            </Button>
+          }
+        />
+        <CardContent>
+          <LiveTable
+            columns={columns}
+            customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(id)}
+            defaultLimit={10}
+            />
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
-export default withStyles(QuestionnaireStyle)(SubjectTypes);
+export default withStyles(QuestionnaireStyle)(SubjectDirectory);
+

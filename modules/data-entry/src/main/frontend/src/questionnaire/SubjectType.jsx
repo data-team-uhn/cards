@@ -18,7 +18,6 @@
 //
 
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 
@@ -30,29 +29,17 @@ import {
 
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 
-// Recursive function to get a flat list of parents
-export function getHierarchy (node, RenderComponent, propsCreator) {
-  let props = propsCreator(node);
-  let output = <React.Fragment>{node.type.label} <RenderComponent {...props}>{node.identifier}</RenderComponent></React.Fragment>;
-  if (node["parents"]) {
-    let ancestors = getHierarchy(node["parents"], RenderComponent, propsCreator);
-    return <React.Fragment>{ancestors} / {output}</React.Fragment>
-  } else {
-    return output;
-  }
-}
-
 /**
- * Component that displays a Subject.
+ * Component that displays a SubjectType.
  *
  * @example
- * <Subject id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
+ * <SubjectType id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
  *
- * @param {string} id the identifier of a subject; this is the JCR node name
+ * @param {string} id the identifier of a SubjectType; this is the JCR node name
  */
-function Subject (props) {
+function SubjectType (props) {
   let { id } = props;
-  // This holds the full subject JSON, once it is received from the server
+  // This holds the full SubjectType JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
@@ -60,15 +47,10 @@ function Subject (props) {
   // Column configuration for the LiveTables
   const columns = [
     {
-      "key": "@name",
+      "key": "identifier",
       "label": "Identifier",
       "format": "string",
       "link": "dashboard+path",
-    },
-    {
-      "key": "questionnaire/title",
-      "label": "Questionnaire",
-      "format": "string",
     },
     {
       "key": "jcr:createdBy",
@@ -82,12 +64,11 @@ function Subject (props) {
     },
   ]
 
-  // Fetch the subject's data as JSON from the server.
-  // The data will contain the subject metadata,
-  // such as authorship and versioning information.
+  // Fetch the subject type as JSON from the server.
+  // The response will contain metadata, such as authorship and versioning information.
   // Once the data arrives from the server, it will be stored in the `data` state variable.
   let fetchData = () => {
-    fetch(`/Subjects/${id}.deep.json`)
+    fetch(`/SubjectTypes/${id}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleResponse)
       .catch(handleError);
@@ -112,35 +93,30 @@ function Subject (props) {
     );
   }
 
-  // If an error was returned, do not display a subject at all, but report the error
+  // If an error was returned, do not display any information, just report the error
   if (error) {
     return (
       <Grid container justify="center">
         <Grid item>
           <Typography variant="h2" color="error">
-            Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
+            Error retrieving details about this subject type: {error.status} {error.statusText ? error.statusText : error.toString()}
           </Typography>
         </Grid>
       </Grid>
     );
   }
 
-  const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
+  const customUrl='/Subjects.paginate?fieldname=type&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
-
-  let parentDetails = data && data['parents'] && getHierarchy(data['parents'], Link, (node) => ({to: "/content.html" + node["@path"]}));
 
   return (
     <div>
       <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
         <Grid item>
           {
-            parentDetails && <Typography variant="overline">{parentDetails}</Typography>
-          }
-          {
             data && data.identifier ?
-              <Typography variant="h2">{data?.type?.label || "Subject"} {data.identifier}</Typography>
-            : <Typography variant="h2">Subject {id}</Typography>
+              <Typography variant="h2">Subject Type: {data.identifier}</Typography>
+            : <Typography variant="h2">Subject Type: {id}</Typography>
           }
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
@@ -149,7 +125,7 @@ function Subject (props) {
           }
         </Grid>
         <Grid item>
-          <Typography variant="h4">Forms involving {data && (data.identifier || id)} </Typography>
+          <Typography variant="h4">Subjects of type {data && (data.identifier || id)} </Typography>
           <LiveTable
             columns={columns}
             customUrl={customUrl}
@@ -161,8 +137,8 @@ function Subject (props) {
   );
 };
 
-Subject.propTypes = {
+SubjectType.propTypes = {
   id: PropTypes.string
 }
 
-export default Subject;
+export default SubjectType;

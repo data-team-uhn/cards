@@ -48,7 +48,7 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
  * @param {Object} classes style classes
  * @returns a React component that renders the question
  */
-let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) => {
+let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState) => {
   const questionRef = useRef();
   const anchor = location.hash.substr(1);
   // create a ref to store the question container DOM element
@@ -75,6 +75,8 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) =
         existingAnswer={existingQuestionAnswer}
         path={path}
         questionName={key}
+        onAddedAnswerPath={onAddedAnswerPath}
+        sectionAnswersState={sectionAnswersState}
         />
     </Grid>
   );
@@ -120,11 +122,11 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
  * @returns a React component that renders the section
  */
  export default function FormEntry(props) {
-  let { classes, entryDefinition, path, depth, existingAnswers, keyProp } = props;
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState } = props;
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes);
+    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displaySection(entryDefinition, path, depth, existingAnswers, keyProp);
   }

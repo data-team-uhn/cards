@@ -26,14 +26,21 @@ import {
   Grid,
   Link,
   Typography,
-  withStyles
+  withStyles,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton
 } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import moment from "moment";
-import { SelectorDialog } from "./SubjectSelector";
+import { getHierarchy } from "./Subject";
+import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
+import DialogueLoginContainer from "../login/loginDialogue.js";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -62,7 +69,14 @@ function Form (props) {
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
+  let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
+  let [ loginDialogShow, setLoginDialogShow ] = useState(false);
+  let [ errorCode, setErrorCode ] = useState();
+  let [ errorMessage, setErrorMessage ] = useState("");
+  let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
+
+  let formNode = React.useRef();
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
@@ -74,7 +88,7 @@ function Form (props) {
     fetch(`/Forms/${id}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleResponse)
-      .catch(handleError);
+      .catch(handleFetchError);
   };
 
   // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
@@ -83,7 +97,7 @@ function Form (props) {
   };
 
   // Callback method for the `fetchData` method, invoked when the request failed.
-  let handleError = (response) => {
+  let handleFetchError = (response) => {
     setError(response);
     setData([]);  // Prevent an infinite loop if data was not set
   };
@@ -91,7 +105,7 @@ function Form (props) {
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
   let saveData = (event) => {
     // This stops the normal browser form submission
-    event.preventDefault();
+    event && event.preventDefault();
 
     // If the previous save attempt failed, instead of trying to save again, open a login popup
     if (lastSaveStatus === false) {
@@ -101,34 +115,45 @@ function Form (props) {
 
     setSaveInProgress(true);
     // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
-    let data = new FormData(event.currentTarget);
+    let data = new FormData(event ? event.currentTarget : formNode.current);
     fetch(`/Forms/${id}`, {
       method: "POST",
-      body: data
-    }).then((response) => response.ok ? true : Promise.reject(response))
-      .then(() => setLastSaveStatus(true))
-      // FIXME Use setError?
-      .catch(() => {
+      body: data,
+      headers: {
+        Accept: "application/json"
+      }
+    }).then((response) => {
+      if (response.ok) {
+        setLastSaveStatus(true);
+      } else if (response.status === 500) {
+        response.json().then((json) => {
+            setErrorCode(json["status.code"]);
+            setErrorMessage(json.error.message);
+            openErrorDialog();
+        })
+        setLastSaveStatus(undefined);
+      } else {
         // If the user is not logged in, offer to log in
         const sessionInfo = window.Sling.getSessionInfo();
         if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
           // On first attempt to save while logged out, set status to false to make button text inform user
           setLastSaveStatus(false);
+
         }
+      }
       })
       .finally(() => setSaveInProgress(false));
   }
 
   // Open the login page in a new popup window, centered wrt the parent window
   let loginToSave = () => {
-    const width = 600;
-    const height = 800;
-    const top = window.top.outerHeight / 2 + window.top.screenY - ( height / 2);
-    const left = window.top.outerWidth / 2 + window.top.screenX - ( width / 2);
-    // After a successful log in, the login dialog code will "open" the specified resource, which results in executing the specified javascript code
-    window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${width}, height=${height}, top=${top}, left=${left}`);
-    // Display 'save' on button
     setLastSaveStatus(undefined);
+    setLoginDialogShow(true);
+  }
+
+  let handleLogin = (success) => {
+    success && setLoginDialogShow(false);
+    success && saveData();
   }
 
   // Handle when the subject of the form changes
@@ -140,6 +165,28 @@ function Form (props) {
     })
     setChangedSubject(subject);
     setSelectorDialogOpen(false);
+  }
+
+  let openErrorDialog = () => {
+    if (!errorDialogDisplayed) {
+      setErrorDialogDisplayed(true);
+    }
+  }
+
+  let closeErrorDialog = () => {
+    if (errorDialogDisplayed) {
+      setErrorDialogDisplayed(false);
+    }
+  }
+
+  let handleSubmit = (event) => {
+    // Do not save when login in progress
+    // Prevents issue where submitting login dialog would try to save twice,
+    // once before login complete and once after
+    if (loginDialogShow === true) {
+      return;
+    }
+    saveData(event);
   }
 
   // If the data has not yet been fetched, return an in-progress symbol
@@ -163,22 +210,19 @@ function Form (props) {
     );
   }
 
+  let parentDetails = data?.subject?.parents && getHierarchy(data.subject.parents, React.Fragment, () => ({}));
+
   return (
-    <form action={data["@path"]} method="POST" onSubmit={saveData} onChange={()=>setLastSaveStatus(undefined)} key={id}>
+    <form action={data["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         <Grid item className={classes.formHeader}>
-          {
-            data && data.questionnaire && data.questionnaire.title ?
-              <Typography variant="overline">{data.questionnaire.title}</Typography>
-            : ""
-          }
-          <Link href="#" onClick={() => {setSelectorDialogOpen(true)}}>
-            {
-              data?.subject?.identifier ?
-                <Typography variant="h2">{data.subject.identifier}</Typography>
-              : <Typography variant="h2">{id}</Typography>
-            }
-          </Link>
+          <Typography variant="overline">{parentDetails}</Typography>
+          <Typography variant="h2">
+            <Link href="#" onClick={() => {setSelectorDialogOpen(true)}}>
+                {data?.subject?.identifier}
+            </Link>
+            {": " + (data?.questionnaire?.title || id || "")}
+          </Typography>
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
             <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
@@ -188,9 +232,12 @@ function Form (props) {
         <div className={classes.formProvider}></div>
         <FormProvider>
           <SelectorDialog
+            allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}
+            error={selectorDialogError}
             open={selectorDialogOpen}
             onChange={changeSubject}
             onClose={() => {setSelectorDialogOpen(false)}}
+            onError={setSelectorDialogError}
             title="Set subject"
             />
           {changedSubject &&
@@ -219,6 +266,18 @@ function Form (props) {
         lastSaveStatus === false ? 'Save failed, log in and try again?' :
         'Save'}
       </Button>
+      <DialogueLoginContainer isOpen={loginDialogShow} handleLogin={handleLogin}/>
+      <Dialog open={errorDialogDisplayed} onClose={closeErrorDialog}>
+        <DialogTitle disableTypography>
+          <Typography variant="h6" color="error" className={classes.dialogTitle}>Failed to save</Typography>
+          <IconButton onClick={closeErrorDialog} className={classes.closeButton}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+            <Typography variant="body1">Server responded with response code {errorCode}:<br />{errorMessage}</Typography>
+        </DialogContent>
+      </Dialog>
     </form>
   );
 };

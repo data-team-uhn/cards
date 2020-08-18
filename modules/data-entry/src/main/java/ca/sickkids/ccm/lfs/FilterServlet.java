@@ -34,6 +34,7 @@ import javax.servlet.Servlet;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
@@ -61,49 +62,18 @@ public class FilterServlet extends SlingSafeMethodsServlet
 
     private static final String JCR_UUID = "jcr:uuid";
 
-    // TODO: Cleanup
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
         // Is there a questionnaire specified?
         String questionnaire = request.getParameter("questionnaire");
-        JsonObject allProperties;
+        String homepagePath = request.getResource().getPath();
 
-        if (questionnaire != null) {
-            // If a questionnaire is specified, return all fields by the given questionnaire
-
-            // First, ensure that we're accessing the deep jsonification of the questionnaire
-            if (!questionnaire.endsWith(DEEP_JSON_SUFFIX)) {
-                questionnaire = questionnaire.concat(DEEP_JSON_SUFFIX);
-            }
-
-            // Next, convert it to a deep json object
-            final Resource resource = request.getResourceResolver().resolve(questionnaire);
-
-            // JsonObjects are immutable, so we have to manually copy over non-questions to a new object
-            JsonObjectBuilder builder = Json.createObjectBuilder();
-            this.copyQuestions(resource.adaptTo(JsonObject.class), builder);
-            allProperties = builder.build();
-        } else {
-            // If there is no questionnaire specified, we return all fields by all questionnaires
-            // visible by the user
-            final StringBuilder query =
-                // We select all child nodes of the homepage, filtering out nodes that aren't ours, such as rep:policy
-                new StringBuilder("select n from [lfs:Questionnaire] as n where isdescendantnode(n, '"
-                    + request.getResource().getPath() + "') and n.'sling:resourceSuperType' = 'lfs/Resource'");
-            final Iterator<Resource> results =
-                request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
-            JsonObjectBuilder builder = Json.createObjectBuilder();
-            Map<String, String> seenTypes = new HashMap<String, String>();
-            Map<String, String> seenElements = new HashMap<String, String>();
-            while (results.hasNext()) {
-                Resource resource = results.next();
-                String path = resource.getResourceMetadata().getResolutionPath();
-                resource = request.getResourceResolver().resolve(path.concat(DEEP_JSON_SUFFIX));
-                this.copyQuestions(resource.adaptTo(JsonObject.class), builder, seenTypes, seenElements);
-            }
-            allProperties = builder.build();
-        }
+        // If a questionnaire is specified, return all fields by the given questionnaire
+        // Otherwise, we return all questionnaires under this node that are visible by the user
+        JsonObject allProperties = questionnaire == null
+            ? getAllFieldsFromAllQuestionnaires(request.getResourceResolver(), homepagePath)
+            : getAllFields(request.getResourceResolver(), questionnaire);
 
         // Return the entire thing as a json file, except join together fields that have the same
         // name and type
@@ -111,6 +81,57 @@ public class FilterServlet extends SlingSafeMethodsServlet
         out.write(allProperties.toString());
     }
 
+    /**
+     * Create a JsonObject of all filterable fields from the given questionnaire.
+     *
+     * @param resolver a reference to a ResourceResolver
+     * @param questionnairePath the path to the questionnaire to look up
+     * @return a JsonObject of filterable fields
+     */
+    private JsonObject getAllFields(ResourceResolver resolver, String questionnairePath)
+    {
+        // First, ensure that we're accessing the deep jsonification of the questionnaire
+        String fullPath = questionnairePath.endsWith(DEEP_JSON_SUFFIX)
+            ? questionnairePath : questionnairePath.concat(DEEP_JSON_SUFFIX);
+
+        // Next, convert it to a deep json object
+        final Resource resource = resolver.resolve(fullPath);
+
+        // JsonObjects are immutable, so we have to manually copy over non-questions to a new object
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        this.copyQuestions(resource.adaptTo(JsonObject.class), builder);
+        return builder.build();
+    }
+
+    /**
+     * Creates a JsonObject of all filterable fields from every questionnaire under
+     * the given QuestionnaireHomepage node.
+     *
+     * @param resolver a reference to a ResourceResolver
+     * @param parentPath the path of the parent QuestionnaireHomepage
+     * @return a JsonObject of filterable fields
+     */
+    private JsonObject getAllFieldsFromAllQuestionnaires(ResourceResolver resolver, String parentPath)
+    {
+        final StringBuilder query =
+            // We select all child nodes of the homepage, filtering out nodes that aren't ours, such as rep:policy
+            new StringBuilder("select n from [lfs:Questionnaire] as n where isdescendantnode(n, '"
+                + parentPath + "') and n.'sling:resourceSuperType' = 'lfs/Resource'");
+        final Iterator<Resource> results =
+            resolver.findResources(query.toString(), Query.JCR_SQL2);
+
+        // Generate the output via recursively adding all fields from each questionnaire.
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        Map<String, String> seenTypes = new HashMap<String, String>();
+        Map<String, String> seenElements = new HashMap<String, String>();
+        while (results.hasNext()) {
+            Resource resource = results.next();
+            String path = resource.getResourceMetadata().getResolutionPath();
+            resource = resolver.resolve(path.concat(DEEP_JSON_SUFFIX));
+            this.copyQuestions(resource.adaptTo(JsonObject.class), builder, seenTypes, seenElements);
+        }
+        return builder.build();
+    }
 
     /**
      * Copies over lfs:Question fields from the input JsonObject, optionally handling questions that

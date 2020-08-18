@@ -77,12 +77,12 @@ function VocabularyBrowser(props) {
       var parentBranches = null;
       if ("parents" in data) {
         parentBranches = data["parents"].map((row, index) => {
-          return constructBranch(row["id"], row["name"], false, false, false, row["lfs:hasChildren"]);
-        });
+          return row["identifier"] ? constructBranch(row["identifier"], row["label"], false, false, false, row["lfs:hasChildren"]) : false;
+        }).filter(i => i);
       }
 
       setParentNode(parentBranches);
-      setCurrentNode(constructBranch(data["id"], data["name"], true, true, true, data["lfs:hasChildren"]));
+      setCurrentNode(constructBranch(data["identifier"], data["label"], true, true, true, data["lfs:hasChildren"]));
     } else {
       onError("Error: initial term lookup failed with code " + status);
     }

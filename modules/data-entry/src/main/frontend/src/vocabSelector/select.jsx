@@ -220,7 +220,7 @@ function VocabularySelector(props) {
     var name;
     if (status === null) {
       // Use the name from the response (if available) or the ID if not
-      name = data["name"] || id;
+      name = data["label"] || id;
     } else {
       console.log("Error: Thesaurus lookup failed with code " + status);
 

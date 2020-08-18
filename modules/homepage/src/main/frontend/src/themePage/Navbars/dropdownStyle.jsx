@@ -13,7 +13,6 @@ import {
   primaryColor,
   whiteColor,
   primaryBoxShadow,
-  defaultFont,
   blackColor,
   grayColor,
   hexToRgb
@@ -41,7 +40,6 @@ const dropdownStyle = theme => ({
   },
   linkText: {
     zIndex: "4",
-    ...defaultFont,
     fontSize: "14px"
   },
   popperClose: {
@@ -106,7 +104,6 @@ const dropdownStyle = theme => ({
     backgroundClip: "padding-box"
   },
   dropdownItem: {
-    ...defaultFont,
     fontSize: "13px",
     padding: "10px 20px",
     margin: "0 5px",

@@ -64,12 +64,6 @@ const container = {
   marginLeft: "auto"
 };
 
-const defaultFont = {
-  fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-  fontWeight: "300",
-  lineHeight: "1.5em"
-};
-
 const primaryColor = ["#9c27b0", "#ab47bc", "#8e24aa", "#af2cc5"];
 const warningColor = ["#ff9800", "#ffa726", "#fb8c00", "#ffa21a"];
 const dangerColor = ["#f44336", "#ef5350", "#e53935", "#f55a4e"];
@@ -188,8 +182,7 @@ const cardActions = {
   margin: "0 20px 10px",
   paddingTop: "10px",
   borderTop: "1px solid " + grayColor[10],
-  height: "auto",
-  ...defaultFont
+  height: "auto"
 };
 
 const cardHeader = {
@@ -269,7 +262,6 @@ export {
   container,
   boxShadow,
   card,
-  defaultFont,
   primaryColor,
   warningColor,
   dangerColor,

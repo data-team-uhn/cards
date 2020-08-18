@@ -149,7 +149,7 @@ class ChangeUserPasswordDialogue extends React.Component {
     }
 
     render() {
-        const { classes, selfContained } = this.props;
+        const { classes } = this.props;
         const values = { newPwd: "", newPwdConfirm: "" };
 
         const validationSchema = Yup.object({

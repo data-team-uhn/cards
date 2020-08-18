@@ -5,23 +5,9 @@
         "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
         "lfs:extensionName": "Administration",
         "lfs:icon": "asset:lfs-homepage.adminIcon.js",
-        "lfs:extensionRenderURL": "",
-        "lfs:targetURL": "admin.html",
+        "lfs:extensionRenderURL": "asset:lfs-homepage.adminDashboard.js",
+        "lfs:targetURL": "admin",
         "lfs:defaultOrder": 90,
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "test",
-            "jcr:mimeType": "text/html"
-        }
-    },
-    "Tumours": {
-        "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-        "lfs:extensionName": "Tumours",
-        "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
-        "lfs:extensionRenderURL": "",
-        "lfs:targetURL": "tumours",
-        "lfs:defaultOrder": 5,
         "jcr:content": {
             "jcr:primaryType": "nt:resource",
             "jcr:data": "test",

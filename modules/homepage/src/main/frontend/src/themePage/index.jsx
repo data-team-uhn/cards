@@ -26,6 +26,7 @@ import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
 import IndexStyle from "./indexStyle.jsx";
+import { getAdminRoutes } from "../adminDashboard/AdminDashboard.jsx"
 
 class Main extends React.Component {
   constructor(props) {
@@ -38,7 +39,8 @@ class Main extends React.Component {
       fixedClasses: "dropdown show",
       mobileOpen: false,
       loading: true,
-      routes: sidebarRoutes
+      routes: sidebarRoutes,
+      allRoutes: [],
     };
   }
 
@@ -80,12 +82,21 @@ class Main extends React.Component {
         layout: "/content.html"
       });
     }
-    this.setState({routes: routes, loading: false});
+    // get the routes for the admin dashboard, the admin routes and sidebar routes are stored in the `allRoutes` state
+    let curr = this;
+    getAdminRoutes("/content.html/admin")
+    .then(function(response) {
+      curr.setState({routes: routes, allRoutes: routes.concat(response), loading: false});
+    })
+    .catch(function(err) {
+      curr.setState({routes: routes, allRoutes: routes, loading: false});
+      console.log("Something went wrong: " + err);
+    });
   };
 
   componentDidMount() {
     window.addEventListener("resize", this.autoCloseMobileMenus);
-    loadContentNodes()
+    loadContentNodes("SidebarEntry")
     .then(loadRemoteComponents)
     .then(loadRemoteIcons)
     .then(this._buildSidebar)
@@ -130,7 +141,7 @@ class Main extends React.Component {
               <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
             </div>
             <Navbar
-              routes={ this.state.routes }
+              routes={ this.state.allRoutes }
               handleDrawerToggle={this.handleDrawerToggle}
               loading={this.state.loading}
               {...rest}

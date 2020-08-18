@@ -94,7 +94,7 @@ const Sidebar = ({ ...props }) => {
         return prop.isAdmin;
       }).map((prop, key) => {
         // To make it stand out, the admin link is also active
-        const isActive = prop.path === "/admin.html" || activeRoute(prop.layout + prop.path);
+        const isActive = prop.path === "/admin" || activeRoute(prop.layout + prop.path);
         return(generateListItem(prop, key, isActive));
       })}
     </List>

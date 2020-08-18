@@ -163,7 +163,9 @@ function LiveTable(props) {
     let content = getNestedValue(entry, column.key);
 
     // Handle display formatting
-    if (column.format && column.format.startsWith('date')) {
+    if (column.format && typeof column.format === "function") {
+      content = column.format(content);
+    } else if (column.format && column.format.startsWith('date')) {
       // The format can be either just "date", in which case a default date format is used, or "date:FORMAT".
       // Cutting after the fifth char means that either we skip "date:" and read the format,
       // or we just get the empty string and use the default format.
@@ -173,18 +175,21 @@ function LiveTable(props) {
 
     // Handle links
     if (column.link) {
+      // allow livetable to link to components in the admin dashboard
+      // if livetable item must link to a component within the admin dashboard, set "admin": true
+      let pathPrefix = (column.admin ? "/content.html/admin" : "/content.html");
       if (column.link === 'path') {
         content = (<a href={entry["@path"]}>{content}</a>);
       } else if (column.link === 'dashboard+path') {
-        content = (<Link to={"/content.html" + entry["@path"]}>{content}</Link>);
+        content = (<Link to={pathPrefix + entry["@path"]}>{content}</Link>);
       } else if (column.link === 'value') {
         content = (<a href={content}>{content}</a>);;
       } else if (column.link === 'dashboard+value') {
-        content = (<Link to={"/content.html" + content}>{content}</Link>);
+        content = (<Link to={pathPrefix + content}>{content}</Link>);
       } else if (column.link.startsWith('field:')) {
         content = (<a href={getNestedValue(entry, column.link.substring('field:'.length))}>{content}</a>);
       } else if (column.link.startsWith('dashboard+field:')) {
-        content = (<Link to={"/content.html" + getNestedValue(entry, column.link.substring('dashboard+field:'.length))}>{content}</Link>);
+        content = (<Link to={pathPrefix + getNestedValue(entry, column.link.substring('dashboard+field:'.length))}>{content}</Link>);
       }
     }
 

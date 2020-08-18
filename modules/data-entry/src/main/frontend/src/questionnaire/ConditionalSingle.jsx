@@ -21,13 +21,31 @@ import { VALUE_POS } from "./Answer";
 import ConditionalComponentManager from "./ConditionalComponentManager";
 
 // A mapping from operands to conditionals
-const COMPARE_MAP = {
+const EMPTY = [null, undefined, ""];
+const TRANSFORMATIONS = {
+  "text": (a, b) => ([a, b]),
+  "date": (a, b) => ([new Date(a).getTime(), new Date(b).getTime()]),
+  "long": (a, b) => ([parseInt(a), parseInt(b)]),
+  "decimal": (a, b) => ([parseFloat(a), parseFloat(b)]),
+  "double": (a, b) => ([parseFloat(a), parseFloat(b)])
+};
+
+const OPERATIONS = {
   "=": (a, b) => (a == b),
   "<": (a, b) => (a < b),
   ">": (a, b) => (a > b),
-  "<>": (a, b) => (a !== b),
-  "is empty": (a) => (a == null || a == undefined),
-  "is not empty": (a) => (a != null && a != undefined)
+  "<>": (a, b) => (a != b),
+  "is empty": (a, b) => (EMPTY.indexOf(a) >= 0 || EMPTY.indexOf(b) >= 0),
+  "is not empty": (a, b) => (EMPTY.indexOf(a) < 0 || EMPTY.indexOf(b) < 0)
+};
+
+let compare = function(a, b, type, operation) {
+  if (operation === "is empty" || operation === "is not empty") {
+    return OPERATIONS[operation](a, b);
+  } else if (EMPTY.indexOf(a) >= 0 || EMPTY.indexOf(b) >= 0) {
+    return false;
+  }
+  return OPERATIONS?.[operation]?.(...(TRANSFORMATIONS[type] || TRANSFORMATIONS["text"])(a, b));
 }
 
 /**
@@ -35,13 +53,17 @@ const COMPARE_MAP = {
  * @param {STRING} comparator The operator to use as a comparison
  * @param {STRING...} operands Any number of operands used for the comparison
  */
-export function isConditionalSatisfied(comparator, ...operands) {
-  if (!(comparator in COMPARE_MAP)) {
+export function isConditionalSatisfied(compareDataType, comparator, ...operands) {
+  if (!(compareDataType in TRANSFORMATIONS)) {
+    // Invalid data type
+    throw new Error("Invalid data type specified.")
+  }
+  if (!(comparator in OPERATIONS)) {
     // Invalid operand
     throw new Error("Invalid operand specified.")
   }
 
-  return COMPARE_MAP[comparator]?.apply(null, operands);
+  return compare(...operands, compareDataType, comparator);
 }
 
 /**
@@ -53,22 +75,38 @@ export function isConditionalObjSatisfied(conditional, context) {
   const requireAllOperandA = conditional["operandA"]["requireAll"];
   const requireAllOperandB = conditional["operandB"]?.requireAll;
 
-  const operandA = getValue(context, conditional["operandA"]);
-  const operandB = getValue(context, conditional["operandB"]);
-
-  // Don't try to run if operandA isn't loaded yet
-  if (!operandA) {
-    return false;
+  // If the operands aren't loaded yet, treat them as being empty
+  var operandA = getValue(context, conditional["operandA"]) || [""];
+  if (!allIsNull(operandA)) {
+      operandA = removeAllNull(operandA);
   }
 
-  const firstCondition = requireAllOperandA ? ((func) => operandA.some(func)) : ((func) => operandA.every(func));
-  const secondCondition = requireAllOperandB ? ((func) => operandB.some(func)) : ((func) => operandB.every(func));
+  var operandB = getValue(context, conditional["operandB"]) || [""];
+  if (!allIsNull(operandB)) {
+      operandB = removeAllNull(operandB);
+  }
+
+  const firstCondition = requireAllOperandA ? ((func) => operandA.every(func)) : ((func) => operandA.some(func));
+  const secondCondition = requireAllOperandB ? ((func) => operandB.every(func)) : ((func) => operandB.some(func));
 
   return firstCondition( (valueA) => {
     return secondCondition( (valueB) => {
-      return isConditionalSatisfied(conditional["comparator"], valueA, valueB);
+      return isConditionalSatisfied(conditional["dataType"], conditional["comparator"], valueA, valueB);
     })
   })
+}
+
+function removeAllNull(lst) {
+  return lst.filter(item => (EMPTY.indexOf(item) < 0));
+}
+
+function allIsNull(lst) {
+  for (var i = 0; i < lst.length; i++) {
+    if (EMPTY.indexOf(lst[i]) < 0) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /**

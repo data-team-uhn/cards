@@ -10,8 +10,6 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 import {
-  defaultFont,
-  dangerColor,
   whiteColor
 } from "../../themeStyle.jsx";
 
@@ -21,7 +19,6 @@ const headerLinksStyle = theme => ({
   ...dropdownStyle(theme),
   linkText: {
     zIndex: "4",
-    ...defaultFont,
     fontSize: "14px",
     margin: "0px"
   },

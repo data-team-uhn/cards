@@ -304,6 +304,9 @@
   // A second child operandB may be specified, but leaving it as the default is OK if the comparator is singular
   + operandB (lfs:ConditionalValue) = lfs:ConditionalValue autocreated
 
+  // Specifies how the operands should be treated when performing the comparison (default: string)
+  - dataType (STRING) = "text" autocreated
+
 //-----------------------------------------------------------------------------
 // A conditional value is either a value or a method of getting a value.
 [lfs:ConditionalValue] > sling:Resource
@@ -325,7 +328,7 @@
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
 
   // The value which may be a reference to a field or a value (or multiple values)
-  - value (STRING) multiple
+  - value (undefined) multiple
 
   // Whether or not this value is a reference or not
   - isReference (BOOLEAN) = false autocreated
@@ -366,7 +369,8 @@
 
   // An optional list of lfs:SubjectTypes.
   // Any Forms for this questionnaire must have a subject with a type on the list.
-  - requiredSubjectTypes (REFERENCE) mandatory multiple
+  // If the list is empty, then any subject type is accepted.
+  - requiredSubjectTypes (REFERENCE) multiple
 
   // Children
 

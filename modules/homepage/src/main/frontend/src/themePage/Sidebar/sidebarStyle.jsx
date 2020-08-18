@@ -13,7 +13,6 @@ import {
     drawerWidth,
     transition,
     boxShadow,
-    defaultFont,
     primaryColor,
     primaryBoxShadow,
     infoColor,
@@ -79,7 +78,6 @@ import {
       }
     },
     logoLink: {
-      ...defaultFont,
       textTransform: "uppercase",
       padding: "5px 0",
       display: "block",
@@ -153,8 +151,7 @@ import {
       position: "relative",
       display: "block",
       padding: "10px 15px",
-      backgroundColor: "transparent",
-      ...defaultFont
+      backgroundColor: "transparent"
     },
     itemIcon: {
       width: "24px",
@@ -168,7 +165,6 @@ import {
       color: "rgba(" + hexToRgb(whiteColor) + ", 0.8)"
     },
     itemText: {
-      ...defaultFont,
       margin: "0",
       lineHeight: "30px",
       fontSize: "14px",
