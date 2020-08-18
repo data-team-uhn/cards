@@ -175,7 +175,7 @@ function UnstyledSelectParentDialog (props) {
   return(
     <Dialog open={open} onClose={onClose} className={classes.newSubjectPopper} keepMounted>
       <DialogTitle id="new-form-title">
-        Select parent {parentType?.['label']} for new {childType?.['label']}.
+        Select parent {parentType?.['label']} for new {childType?.['label']}
       </DialogTitle>
       <DialogContent dividers className={classes.NewFormDialog}>
         { error && <Typography color="error">{error}</Typography>}
@@ -426,6 +426,7 @@ export function NewSubjectDialog (props) {
     setNewSubjectName([""]);
     setNewSubjectType([""]);
     setNewSubjectParent([]);
+    setNewSubjectAllowedTypes([]);
     setNewSubjectPopperOpen(true);
     setSelectParentPopperOpen(false);
     setError();
