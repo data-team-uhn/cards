@@ -171,7 +171,7 @@ function NumberQuestion(props) {
         valueType={valueType}
         input={displayMode === "input" || displayMode === "list+input"}
         textbox={displayMode === "textbox"}
-        onChange={findError}
+        onUpdate={findError}
         additionalInputProps={textFieldProps}
         muiInputProps={muiInputProps}
         error={error}

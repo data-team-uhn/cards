@@ -31,8 +31,20 @@ const IS_DEFAULT_POS = 2;
 // Sentinel value used for the user-controlled input
 const GHOST_SENTINEL = "custom-input";
 
+ /**
+  * Component that displays a Multiple Choice question.
+  *
+  * @param {Object} existingAnswer form data that may include answers already submitted for this component
+  * @param {bool} input if true, display a free-text single-line input after the predefined options; at most one of "input" or "textbox" may be true
+  * @param {bool} textbox if true, display a free-text multi-line input after the predefined options; at most one of "input" or "textbox" may be true
+  * @param {func} onUpdate Callback for when an input value is changed or an option is added, receives as argument the new value of the changed option
+  * @param {func} onChange Callback for when an option is removed, receives as argument the value of the removed option
+  * @param {Object} additionalInputProps additional props to be set on the input element
+  * @param {Object} muiInputProps additional props to be forwarded to the MUI input element
+  * @param {bool} error indicates if the current selection is in a state of error
+  */
 function MultipleChoice(props) {
-  let { classes, existingAnswer, ghostAnchor, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
@@ -135,6 +147,7 @@ function MultipleChoice(props) {
 
   // Remove a non-default option
   let removeOption = (id, name) => {
+    onChange && onChange(id); // will trigger callback in Form.jsx
     setOptions(options.filter(
       (option) => {
         return !(option[VALUE_POS] === id && option[LABEL_POS] === name)
@@ -165,7 +178,7 @@ function MultipleChoice(props) {
         onChange={(event) => {
           setGhostName(event.target.value);
           updateGhost(GHOST_SENTINEL, event.target.value);
-          onChange && onChange(event.target.value);
+          onUpdate && onUpdate(event.target.value);
         }}
         onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
         onBlur={acceptEnteredOption}
@@ -193,7 +206,7 @@ function MultipleChoice(props) {
 
   let selectNonGhostOption = (...args) => {
     // Clear the ghost input
-    onChange && onChange(ghostSelected && !isRadio ? ghostName : undefined);
+    onUpdate && onUpdate(ghostSelected && !isRadio ? ghostName : undefined);
     selectOption(...args);
   }
 
@@ -258,7 +271,7 @@ function MultipleChoice(props) {
               <Radio
                 onChange={() => {
                   selectOption(ghostValue, ghostName);
-                  onChange && onChange(ghostSelected ? undefined : ghostName);
+                  onUpdate && onUpdate(ghostSelected ? undefined : ghostName);
                 }}
                 onClick={() => {inputEl && inputEl.select();}}
                 disabled={!ghostSelected && disabled}
@@ -390,7 +403,6 @@ MultipleChoice.propTypes = {
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
   input: PropTypes.bool,
-  ghostAnchor: PropTypes.object,
   additionalInputProps: PropTypes.object,
   muiInputProps: PropTypes.object,
   error: PropTypes.bool

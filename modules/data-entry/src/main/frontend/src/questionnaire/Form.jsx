@@ -249,7 +249,7 @@ function Form (props) {
           {
             Object.entries(data.questionnaire)
               .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-              .map(([key, entryDefinition]) => <FormEntry key={key} entryDefinition={entryDefinition} path={"."} depth={0} existingAnswers={data} keyProp={key} classes={classes}></FormEntry>)
+              .map(([key, entryDefinition]) => <FormEntry key={key} entryDefinition={entryDefinition} path={"."} depth={0} existingAnswers={data} keyProp={key} classes={classes} onChange={()=>setLastSaveStatus(undefined)}></FormEntry>)
           }
         </FormProvider>
       </Grid>
