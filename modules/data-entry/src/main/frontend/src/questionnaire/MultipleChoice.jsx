@@ -31,6 +31,19 @@ const IS_DEFAULT_POS = 2;
 // Sentinel value used for the user-controlled input
 const GHOST_SENTINEL = "custom-input";
 
+ /**
+  * Component that displays a Multiple Choice question.
+  * @param {Object} existingAnswer form data that may include answers already submitted for this component
+  * @param {Object} ghostAnchor
+  * @param {bool} input type of user input (either "input", "textbox", or undefined denotes the type of user input)
+  * @param {bool} textbox type of user input (either "input", "textbox", or undefined denotes the type of user input)
+  * @param {func} onUpdate Callback for when an input value is changed or an option is added
+  * @param {func} onChange Callback for when an option is removed
+  * @param {Object} additionalInputProps additional props
+  * @param {Object} muiInputProps additional props
+  * @param {bool} error
+  */
+
 function MultipleChoice(props) {
   let { classes, existingAnswer, ghostAnchor, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
@@ -288,7 +301,7 @@ function MultipleChoice(props) {
     );
   } else {
     return (
-      <React.Fragment> 
+      <React.Fragment>
         <List className={classes.checkboxList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
         </List>

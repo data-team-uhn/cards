@@ -214,12 +214,12 @@ function Section(props) {
                         existingAnswers={existingSectionAnswer}
                         keyProp={key}
                         classes={classes}
+                        onChange={onChange}
                         sectionAnswersState={removableAnswers}
                         onAddedAnswerPath={(newAnswers) => {
                           newAnswers[ID_STATE_KEY] = newAnswers[ID_STATE_KEY] + 1;
                           setRemovableAnswers(newAnswers);
-                        }}
-                        onChange={onChange}>
+                        }}>
                       </FormEntry>)
                   }
                   {

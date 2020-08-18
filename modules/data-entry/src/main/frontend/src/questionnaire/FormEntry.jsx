@@ -75,9 +75,9 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
         existingAnswer={existingQuestionAnswer}
         path={path}
         questionName={key}
+        onChange={onChange}
         onAddedAnswerPath={onAddedAnswerPath}
         sectionAnswersState={sectionAnswersState}
-        onChange={onChange}
         />
     </Grid>
   );
