@@ -66,14 +66,11 @@ function UserStatistics(props) {
     );
   }
 
-  // generate json 
+  // generate json
+    // export statistic as json (similar to deep.json) - json adapter
+    // uuid -> paths
 
-  // json as request body
-
-  // send as paths
-
-  // export statistic as json (similar to deep.json) - json adapter
-  // front sends json to
+  // json as request body to statquery
 
   let fetchStat = (stat) => {
     const urlBase = "/Statistics.statquery";

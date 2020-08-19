@@ -21,6 +21,7 @@
 [feature name=lfs-statistics]
 
 [artifacts]
+    commons-io/commons-io/2.5
     org.apache.sling/org.apache.sling.scripting.sightly/1.1.2-1.4.0
     org.apache.sling/org.apache.sling.scripting.sightly.runtime/1.1.0-1.4.0
     org.apache.sling/org.apache.sling.api/2.18.4
@@ -31,7 +32,10 @@
 
 [:repoinit]
     create path (lfs:StatisticsHomepage) /Statistics
+    create path (sling:Folder) /libs/lfs
+    create path (sling:Folder) /libs/lfs/resources
 
     set ACL for everyone
+        allow   jcr:read    on /libs/lfs
         allow   jcr:read    on /content
     end
