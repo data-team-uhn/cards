@@ -201,9 +201,11 @@ function StatisticDialog(props) {
       let handleResponse = (json) => {
         setExistingData(true);
         setName(json.name);
-        setYVarLabel(json.yVar.label);
-        setXVarLabel(json.xVar.text);
-        setSplitVarLabel(json.splitVar ? json.splitVar.text : '');
+        onYChange(json.yVar.label);
+        onXChange(json.xVar, true);
+        if (json.splitVar) {
+          onSplitChange(json.splitVar, true);
+        }
       };
       if (!existingData) {
         fetchExistingData();
@@ -214,8 +216,6 @@ function StatisticDialog(props) {
   }, [open])
 
   let saveStatistic = () => {
-    console.log(currentUrl);
-    console.log(existingData); // not fetching!
     // Handle unfilled form errors
     if (!name) {
       setError("Please enter a name for this statistic.");
@@ -273,8 +273,13 @@ function StatisticDialog(props) {
   };
 
   // update each
-  let onXChange = (filterableUUID) => {
-    setXVar(filterableUUID);
+  let onXChange = (e, onLoad) => {
+    if (onLoad) {
+      setXVarLabel(e['@name']);
+      setXVar(e['jcr:uuid']);
+    } else {
+      setXVar(e);
+    }
   }
 
   let onYChange = (e) => {
@@ -282,8 +287,13 @@ function StatisticDialog(props) {
     setYVar(availableSubjects.filter((x) => x['label'] == e)[0]['jcr:uuid']);
   }
 
-  let onSplitChange = (filterableUUID) => {
-    setSplitVar(filterableUUID);
+  let onSplitChange = (e, onLoad) => {
+    if (onLoad) {
+      setSplitVarLabel(e['@name']);
+      setSplitVar(e['jcr:uuid']);
+    } else {
+      setSplitVar(e);
+    }
   }
 
   if (!initialized) {

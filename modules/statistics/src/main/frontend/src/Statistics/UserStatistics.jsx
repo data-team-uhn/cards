@@ -66,6 +66,15 @@ function UserStatistics(props) {
     );
   }
 
+  // generate json 
+
+  // json as request body
+
+  // send as paths
+
+  // export statistic as json (similar to deep.json) - json adapter
+  // front sends json to
+
   let fetchStat = (stat) => {
     const urlBase = "/Statistics.statquery";
     let url = new URL(urlBase, window.location.origin);

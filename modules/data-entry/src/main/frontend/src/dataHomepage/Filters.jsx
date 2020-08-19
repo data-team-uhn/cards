@@ -283,9 +283,9 @@ function Filters(props) {
       setStatisticValue(e)
     }
 
-    // if (statisticFiltersValue) {
-    //   setStatisticValue(statisticFiltersValue)
-    // }
+    if (statisticFiltersValue) {
+      console.log(statisticFiltersValue)
+    }
 
     return (
       <Grid item xs={10}>
@@ -294,7 +294,7 @@ function Filters(props) {
           <CircularProgress />
         }
         <Select
-          value={(statisticFiltersValue || statisticValue || "")}
+          value={(statisticValue || statisticFiltersValue || "")}
           onChange={(event) => {setFilterInfo(event.target.value)}}
           MenuProps={{
             onExited: forceRegrabFocus
