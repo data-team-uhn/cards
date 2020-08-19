@@ -128,20 +128,34 @@ let Questionnaire = (props) => {
             onClose={handleCloseMenu}
             disableAutoFocusItem
           >
-            <MenuItem onClick={()=> { openDialog(false, 'Question'); handleCloseMenu}}>Question</MenuItem>
-            <MenuItem onClick={()=> { openDialog(false, 'Section'); handleCloseMenu}}>Section</MenuItem>
+            <MenuItem
+              onClick={()=> {
+                openDialog(false, 'Question');
+                handleCloseMenu();
+              }}
+              >
+              Question
+            </MenuItem>
+            <MenuItem
+              onClick={()=> {
+                openDialog(false, 'Section');
+                handleCloseMenu();
+              }}
+              >
+              Section
+            </MenuItem>
           </Menu>
         </Grid>
       }
       {
         data ?
-        Object.entries(data)
-        .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
-        .map(([key, value]) => 
-          value['jcr:primaryType'] == 'lfs:Question' 
-          ? <Grid item key={key}><Question data={value} closeDialog={closeDialog}/></Grid>
-          : <Grid item key={key}><Section data={value} closeDialog={closeDialog}/></Grid>
-        )
+          Object.entries(data)
+            .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
+            .map(([key, value]) =>
+              value['jcr:primaryType'] == 'lfs:Question'
+              ? <Grid item key={key}><Question data={value} closeDialog={closeDialog}/></Grid>
+              : <Grid item key={key}><Section data={value} closeDialog={closeDialog}/></Grid>
+            )
         :
           <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
       }
