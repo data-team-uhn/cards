@@ -62,15 +62,13 @@ public class StatisticQueryServlet extends SlingSafeMethodsServlet
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
-        // Node statistic = request.getResource().adaptTo(Node.class);
+        String statisticName = request.getParameter("name");
         String xVariable = request.getParameter("xVar");
         String yVariable = request.getParameter("yVar");
 
         try {
             // Steps to returning the calculated statistic:
             // Grab the question that has data for the given x-axis (xVar)
-            // Node question = statistic.getProperty("xVar").getNode();
-
             Node question = request.getResourceResolver().adaptTo(Session.class).getNodeByIdentifier(xVariable);
 
             // Grab all answers that have this question filled out
@@ -80,18 +78,17 @@ public class StatisticQueryServlet extends SlingSafeMethodsServlet
             Node correctSubjectType = request.getResourceResolver().adaptTo(Session.class)
                 .getNodeByIdentifier(yVariable);
             answers = filterAnswersToSubjectType(answers, correctSubjectType);
-            // answers = filterAnswersToSubjectType(answers, statistic.getProperty("yVar").getNode());
 
             // Aggregate our counts
             Map<String, Integer> counts = aggregateCounts(answers);
 
-            // TODO: add name of statistic (check)
             String xLabel = question.getProperty("text").getString();
             String yLabel = correctSubjectType.getProperty("label").getString();
             Date date = new Date();
 
             // Return to user
             JsonObjectBuilder builder = Json.createObjectBuilder();
+            builder.add("name", statisticName);
             builder.add("X-label", xLabel);
             builder.add("Y-label", yLabel);
             builder.add("timeGenerated", date.toString());

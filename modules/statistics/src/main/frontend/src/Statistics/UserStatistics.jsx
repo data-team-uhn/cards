@@ -39,7 +39,8 @@ function UserStatistics(props) {
         if (response.totalrows == 0) {
           setError("No statistics have been added yet.");
         }
-        setStatistics(response["rows"]);
+        // setStatistics(response["rows"]);
+        fetchAll(response["rows"]);
       })
       .catch(handleError);
   }
@@ -47,7 +48,6 @@ function UserStatistics(props) {
   // Callback method for the `fetchData` method, invoked when the request failed.
   let handleError = (response) => {
     setError(response.statusText ? response.statusText : response.toString());
-    setStatistics([]);  // Prevent an infinite loop if data was not set
   };
 
   // If no forms can be obtained, we do not want to keep on re-obtaining statistics
@@ -69,33 +69,37 @@ function UserStatistics(props) {
   let fetchStat = (stat) => {
     const urlBase = "/Statistics.statquery";
     let url = new URL(urlBase, window.location.origin);
+    url.searchParams.set("name", stat.name);
     url.searchParams.set("xVar", stat.xVar['jcr:uuid']);
     url.searchParams.set("yVar", stat.yVar['jcr:uuid']);
 
     fetch(url)
-      .then((response) => response.ok ? setCurrentStatistic(response) : Promise.reject(response))
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((statJson) => {
+        console.log(JSON.stringify(statJson));
+        setCurrentStatistic(currentStatistic => [...currentStatistic, JSON.stringify(statJson)]);
+      })
+      .catch(handleError);
   }
 
-  // todo: for every statistic,  fetchStat --> currentStatistic
-  // maybe append to an array? then can access it like currentStatistic[i]
+  let fetchAll = (data) => {
+    data.map((stat) => fetchStat(stat))
+  }
+
+  // TO FIX: error occurs if not all fields used in statistics are filled out in each form (due to 'no response data available')
+  // handle this
 
   return (
     <React.Fragment>
       <Grid container spacing={3}>
-        {statistics.map((stat, i) => {
+        {currentStatistic && currentStatistic.map((stat) => {
           return(
             <Grid item lg={12} xl={6} key={stat["@path"]}>
               <Card>
-                <CardHeader title={stat.name}/>
-                <CardContent>         
-                    { currentStatistic ? (
-                      <Grid container alignItems='flex-end' spacing={2}>
-                        <Grid item xs={12}><Typography variant="body2">{currentStatistic[i]}</Typography></Grid>
-                      </Grid>
-                    ) : (
-                      <CircularProgress />
-                    )}
-
+                <CardContent>
+                    <Grid container alignItems='flex-end' spacing={2}>
+                      <Grid item xs={12}><Typography variant="body2">{stat}</Typography></Grid>
+                    </Grid>
                 </CardContent>
               </Card>
             </Grid>
