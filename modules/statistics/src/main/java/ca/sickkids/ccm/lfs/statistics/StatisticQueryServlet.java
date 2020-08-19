@@ -18,6 +18,7 @@ package ca.sickkids.ccm.lfs.statistics;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,6 +27,7 @@ import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
@@ -49,8 +51,8 @@ import org.slf4j.LoggerFactory;
  */
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
-    resourceTypes = { "lfs/Statistic" },
-    selectors = { "query" })
+    resourceTypes = { "lfs/Statistic", "lfs/StatisticsHomepage" },
+    selectors = { "statquery" })
 public class StatisticQueryServlet extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = 2558430802619674046L;
@@ -60,30 +62,49 @@ public class StatisticQueryServlet extends SlingSafeMethodsServlet
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
-        Node statistic = request.getResource().adaptTo(Node.class);
+        // Node statistic = request.getResource().adaptTo(Node.class);
+        String xVariable = request.getParameter("xVar");
+        String yVariable = request.getParameter("yVar");
 
         try {
             // Steps to returning the calculated statistic:
             // Grab the question that has data for the given x-axis (xVar)
-            Node question = statistic.getProperty("xVar").getNode();
+            // Node question = statistic.getProperty("xVar").getNode();
+
+            Node question = request.getResourceResolver().adaptTo(Session.class).getNodeByIdentifier(xVariable);
 
             // Grab all answers that have this question filled out
             Iterator<Resource> answers = getAnswersToQuestion(question, request.getResourceResolver());
 
             // Filter those answers based on whether or not their form's subject is of the correct SubjectType (yVar)
-            answers = filterAnswersToSubjectType(answers, statistic.getProperty("yVar").getNode());
+            Node correctSubjectType = request.getResourceResolver().adaptTo(Session.class)
+                .getNodeByIdentifier(yVariable);
+            answers = filterAnswersToSubjectType(answers, correctSubjectType);
+            // answers = filterAnswersToSubjectType(answers, statistic.getProperty("yVar").getNode());
 
-            // Aggregate our counts (TODO: Is this still necessary? Check with frontend)
+            // Aggregate our counts
             Map<String, Integer> counts = aggregateCounts(answers);
 
+            // TODO: add name of statistic (check)
+            String xLabel = question.getProperty("text").getString();
+            String yLabel = correctSubjectType.getProperty("label").getString();
+            Date date = new Date();
+
             // Return to user
-            // Convert our HashMap into a JsonObject
             JsonObjectBuilder builder = Json.createObjectBuilder();
+            builder.add("X-label", xLabel);
+            builder.add("Y-label", yLabel);
+            builder.add("timeGenerated", date.toString());
+            // Convert our HashMap into a JsonObject
+            JsonObjectBuilder dataBuilder = Json.createObjectBuilder();
             Iterator<String> keysMap = counts.keySet().iterator();
             while (keysMap.hasNext()) {
                 String key = keysMap.next();
-                builder.add(key, counts.get(key));
+                dataBuilder.add(key, counts.get(key));
             }
+            builder.add("data", dataBuilder.build());
+
+            // TODO: if aggregate exists --> split data, make new builder
 
             // Write the output
             final Writer out = response.getWriter();

@@ -17,13 +17,13 @@
 //  under the License.
 //
 import React, { useState } from "react";
-import { Button, Card, CardActions, CardContent, CardHeader, Grid, withStyles, Typography } from "@material-ui/core";
+import { Card, CardContent, CardHeader, CircularProgress, Grid, withStyles, Typography } from "@material-ui/core";
 import statisticsStyle from "./statisticsStyle.jsx";
 
 function UserStatistics(props) {
   const { classes } = props;
-  // Store information about each Statistic and whether or not we have initialized
   let [statistics, setStatistics] = useState([]);
+  let [ currentStatistic, setCurrentStatistic ] = useState([]);
   let [initialized, setInitialized] = useState(false);
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
@@ -32,7 +32,6 @@ function UserStatistics(props) {
   let initialize = () => {
     setInitialized(true);
 
-    //[uuid].query
     // Fetch the statistics
     fetch("/query?query=select * from [lfs:Statistic]")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -68,33 +67,36 @@ function UserStatistics(props) {
   }
 
   let fetchStat = (stat) => {
-    const urlBase = "/Statistics.filters";
+    const urlBase = "/Statistics.statquery";
     let url = new URL(urlBase, window.location.origin);
-    url.searchParams.set("xVar", stat.xVar);
-    url.searchParams.set("yVar", stat.yVar);
+    url.searchParams.set("xVar", stat.xVar['jcr:uuid']);
+    url.searchParams.set("yVar", stat.yVar['jcr:uuid']);
 
     fetch(url)
-      .then((response) => response.ok ? console.log(response) : Promise.reject(response))
+      .then((response) => response.ok ? setCurrentStatistic(response) : Promise.reject(response))
   }
+
+  // todo: for every statistic,  fetchStat --> currentStatistic
+  // maybe append to an array? then can access it like currentStatistic[i]
 
   return (
     <React.Fragment>
       <Grid container spacing={3}>
-        {statistics.map((stat) => {
+        {statistics.map((stat, i) => {
           return(
             <Grid item lg={12} xl={6} key={stat["@path"]}>
               <Card>
-                <CardContent>
-                  <Grid container alignItems='flex-end' spacing={2}>
-                    <Grid item xs={12}><Typography variant="body2" component="p">Name: {stat.name}</Typography></Grid>
-                    <Grid item xs={12}><Typography variant="body2" component="p">X-axis: {stat.xVar.text}</Typography></Grid>
-                    <Grid item xs={12}><Typography variant="body2" component="p">Y-axis: {stat.yVar.label}</Typography></Grid>
-                    <Grid item xs={12}><Typography variant="body2" component="p">Split: {stat.splitVar ? stat.splitVar.text : "none"}</Typography></Grid>
-                  </Grid>
+                <CardHeader title={stat.name}/>
+                <CardContent>         
+                    { currentStatistic ? (
+                      <Grid container alignItems='flex-end' spacing={2}>
+                        <Grid item xs={12}><Typography variant="body2">{currentStatistic[i]}</Typography></Grid>
+                      </Grid>
+                    ) : (
+                      <CircularProgress />
+                    )}
+
                 </CardContent>
-                <CardActions>
-                  <Button onClick={() => {fetchStat(stat)}} size="small">Click to view</Button>
-                </CardActions>
               </Card>
             </Grid>
           )
