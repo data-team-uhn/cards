@@ -48,8 +48,11 @@
     "maxAnswers": 0,
     "displayMode": "list+input",
     "dataType": "vocabulary",
-    "sourceVocabulary": "HANCESTRO",
-    "vocabularyFilter": "child of Ethnic group or Racial Group",
+    "sourceVocabulary": ["HANCESTRO"],
+    "vocabularyFilters": {
+      "jcr:primaryType": "lfs:VocabularyFilterGroup",
+      "HANCESTRO": ["child of Ethnic group or Racial Group"]
+    },
     "African race": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "African race"
@@ -347,8 +350,11 @@
     "maxAnswers": 0,
     "displayMode": "list+input",
     "dataType": "vocabulary",
-    "sourceVocabulary": "SNOMEDCT",
-    "vocabularyFilter": "children of Relative",
+    "sourceVocabulary": ["SNOMEDCT"],
+    "vocabularyFilters": {
+      "jcr:primaryType": "lfs:VocabularyFilterGroup",
+      "SNOMEDCT": ["children of Relative"]
+    },
     "Proband": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "Proband",
