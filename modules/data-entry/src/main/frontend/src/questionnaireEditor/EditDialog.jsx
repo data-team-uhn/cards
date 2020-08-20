@@ -41,7 +41,6 @@ let EditDialog = (props) => {
   let questionJSON = require('./Question.json');
   let sectionJSON = require('./Section.json');
   let [ title, setTitle ] = useState('');
-  let [ json ] = useState(props.type.includes('Question') ? questionJSON : sectionJSON);
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
   // Indicates whether the form has been saved or not. This has three possible values:
@@ -50,7 +49,8 @@ let EditDialog = (props) => {
   // - false -> the save attempt failed
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
-  let [error, setError ] = useState('');
+  let [ error, setError ] = useState('');
+  let json = props.type.includes('Question') ? questionJSON : sectionJSON;
 
   let saveData = (event) => {
     // This stops the normal browser form submission
