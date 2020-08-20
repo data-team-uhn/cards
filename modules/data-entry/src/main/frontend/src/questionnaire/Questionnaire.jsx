@@ -43,53 +43,52 @@ import Fields from '../questionnaireEditor/Fields'
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from '@material-ui/icons/Edit';
 
+// Given the JSON object for a section or question, display it and its children
+let DisplayFormEntries = (json, additionalProps) => {
+  return Object.entries(json)
+    .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
+    .map(([key, value]) =>
+      value['jcr:primaryType'] == 'lfs:Question'
+      ? <Grid item key={key}><Question data={value} {...additionalProps}/></Grid>
+      : <Grid item key={key}><Section data={value} {...additionalProps}/></Grid>
+    );
+}
+
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
   let { id } = props;
   let [ data, setData ] = useState();
-  let [ questionKey, setQuestionKey ] = useState(Math.random());
   let [ error, setError ] = useState();
-  let [ edit, setEdit ] = useState(false);
-  let [ open, setOpen ] = useState(false);
-  let [ type, setType ] = useState('Question');
-  const [ isFetching, setFetching ] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  let handleResponse = (json) => {
-    setData(json);
-  };
+  let [ isEditing, setIsEditing ] = useState(false);
+  let [ editDialogOpen, setEditDialogOpen ] = useState(false);
+  let [ curEntryType, setCurEntryType ] = useState('Question');
+  let [ anchorEl, setAnchorEl ] = useState(null);
 
   let handleError = (response) => {
-    // FIXME Display errors to the users
     setError(response);
     setData([]);
   }
 
-  const handleOpenMenu = (event) => {
+  let handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   }
 
-  const handleCloseMenu = () => {
+  let handleCloseMenu = () => {
     setAnchorEl(null);
   };
 
   let openDialog = (edit, type) => {
-    setEdit(edit);
-    setType(type);
-    setOpen(true);
+    setIsEditing(edit);
+    setCurEntryType(type);
+    setEditDialogOpen(true);
   }
 
   let fetchData = () => {
     fetch(`/Questionnaires/${id}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(handleResponse)
+      .then(setData)
       .catch(handleError);
   };
-
-  let parseErrorResponse = (response) => {
-    setFetching(false);
-    setError(`New question request failed with error code ${response.status}: ${response.statusText}`);
-  }
 
   let closeDialog = () => {
     setData(null);
@@ -102,18 +101,19 @@ let Questionnaire = (props) => {
 
   return (
     <div>
-      {
-        error && <Typography variant="h2" color="error">
-            Error obtaining questionnaire info: {error.status} {error.statusText}
-          </Typography>
+      { error &&
+        <Typography variant="h2" color="error">
+          Error obtaining questionnaire info: {error.status} {error.statusText}
+        </Typography>
       }
       <Grid container direction="column" spacing={8}>
       <Grid item>
         <Typography variant="h2">{data ? data['title'] : id} </Typography>
         {
-          data && data['jcr:createdBy'] && data['jcr:created'] ?
-            <Typography variant="overline">Created by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
-            : ""
+          data?.['jcr:createdBy'] && data?.['jcr:created'] &&
+            <Typography variant="overline">
+              Created by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}
+            </Typography>
         }
       </Grid>
       { data &&
@@ -149,18 +149,11 @@ let Questionnaire = (props) => {
       }
       {
         data ?
-          Object.entries(data)
-            .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
-            .map(([key, value]) =>
-              value['jcr:primaryType'] == 'lfs:Question'
-              ? <Grid item key={key}><Question data={value} closeDialog={closeDialog}/></Grid>
-              : <Grid item key={key}><Section data={value} closeDialog={closeDialog}/></Grid>
-            )
-        :
-          <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+            DisplayFormEntries(data, {onClose: closeDialog})
+          : <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
       }
       </Grid>
-      <EditDialog edit={edit} data={data} type={type} open={open} onClose={() => { closeDialog(); setOpen(false); handleCloseMenu(); }} />
+      <EditDialog edit={isEditing} data={data} type={curEntryType} open={editDialogOpen} onClose={() => { closeDialog(); setEditDialogOpen(false); handleCloseMenu(); }} />
     </div>
   );
 };
@@ -175,50 +168,79 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
-  let [ open, setOpen ] = useState(false);
-  let [ openDelete, setOpenDelete ] = useState(false);
-  let openDialog = () => {
-    setOpen(true);
+  let { onClose, data } = props;
+  let [ editOpen, setEditOpen ] = useState(false);
+  let [ deleteOpen, setDeleteOpen ] = useState(false);
+
+  let showEditDialog = (isOpen) => {
+    setEditOpen(isOpen);
+    if (!isOpen && onClose) {
+      onClose();
+    }
   }
-  let openDeleteDialog = () => {
-    setOpenDelete(true);
+
+  let showDeleteDialog = (isOpen) => {
+    setDeleteOpen(isOpen);
+    if (!isOpen && onClose) {
+      onClose();
+    }
   }
 
   return (
     <Card>
-      <CardHeader title={props.data.text} action={
-        <div>
-          <IconButton onClick={() => { openDialog(); }}>
-            <EditIcon />
-          </IconButton>
-          <IconButton onClick={() => { openDeleteDialog() }}>
-            <DeleteIcon />
-          </IconButton>
-      </div>
-      }
-      />
+      <CardHeader
+        title={data.text}
+        action={
+          <div>
+            <IconButton onClick={() => {showEditDialog(true)}}>
+              <EditIcon />
+            </IconButton>
+            <IconButton onClick={() => {showDeleteDialog(true)}}>
+              <DeleteIcon />
+            </IconButton>
+          </div>
+        }
+        />
       <CardContent>
         <dl>
-          <Fields data={props.data} JSON={require('../questionnaireEditor/Question.json')[0]} edit={false} />
+          <Fields data={data} JSON={require('../questionnaireEditor/Question.json')[0]} edit={false} />
         </dl>
         {
-          Object.values(props.data)
+          Object.values(data)
             .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
             .map(value => <AnswerOption key={value['jcr:uuid']} data={value} />)
         }
       </CardContent>
-      <EditDialog edit={true} data={props.data} type='Question' open={open} onClose={() => { props.closeDialog(); setOpen(false); }} />
-      <DeleteDialog open={openDelete} data={props.data} onClose={() => { props.closeDialog(); setOpenDelete(false); }} type="Question" />
+      <EditDialog
+        edit={true}
+        data={data}
+        type='Question'
+        open={editOpen}
+        onClose={() => {showEditDialog(false)}}
+        />
+      <DeleteDialog
+        open={deleteOpen}
+        data={data}
+        onClose={() => {showDeleteDialog(false)}}
+        type="Question"
+        />
     </Card>
   );
 };
 
 Question.propTypes = {
+  closeData: PropTypes.func,
   data: PropTypes.object.isRequired
 };
 
 let Section = (props) => {
-  const [ anchorEl, setAnchorEl ] = useState(null);
+  let { onClose, data } = props;
+  let [ anchorEl, setAnchorEl ] = useState(null);
+  let [ isEditing, setIsEditing ] = useState(false);
+  let [ newFieldType, setNewFieldType ] = useState('Question');
+  let [ editDialogOpen, setEditDialogOpen ] = useState(false);
+  let [ deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
+
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   }
@@ -226,17 +248,11 @@ let Section = (props) => {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
-  let [ edit, setEdit ] = useState(false);
-  let [ type, setType ] = useState('Question');
-  let [ open, setOpen ] = useState(false);
-  let [ openDelete, setOpenDelete ] = useState(false);
-  let openDialog = (edit, type) => {
-    setEdit(edit);
-    setType(type);
-    setOpen(true);
-  }
-  let openDeleteDialog = () => {
-    setOpenDelete(true);
+
+  const openDialog = (isNew, type) => {
+    setIsEditing(!isNew);
+    setNewFieldType(type);
+    setEditDialogOpen(true);
   }
   
   return (
@@ -254,37 +270,30 @@ let Section = (props) => {
               open={Boolean(anchorEl)}
               onClose={handleCloseMenu}
             >
-              <MenuItem onClick={()=> { openDialog(false, 'Question'); handleCloseMenu}}>Question</MenuItem>
-              <MenuItem onClick={()=> { openDialog(false, 'Section'); handleCloseMenu}}>Section</MenuItem>
+              <MenuItem onClick={()=> { openDialog(true, 'Question'); handleCloseMenu(); }}>Question</MenuItem>
+              <MenuItem onClick={()=> { openDialog(true, 'Section'); handleCloseMenu(); }}>Section</MenuItem>
             </Menu>
-            <IconButton onClick={() => { openDialog(true, 'Section'); }}>
+            <IconButton onClick={() => { openDialog(false, 'Section'); }}>
               <EditIcon />
             </IconButton>
-            <IconButton onClick={() => { openDeleteDialog() }}>
+            <IconButton onClick={() => { setDeleteDialogOpen(false); }}>
               <DeleteIcon />
             </IconButton>
-            <Typography>{props.data['description'] || ''}</Typography>
+            <Typography>{data['description'] || ''}</Typography>
           </div>
         }>
       </CardHeader>
       <CardContent>
         <Grid container direction="column" spacing={8}>
           {
-            props.data ?
-              Object.entries(props.data)
-              .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
-              .map(([key, value]) => 
-                value['jcr:primaryType'] == 'lfs:Question' 
-                ? <Grid item key={key}><Question data={value} closeDialog={props.closeDialog} /></Grid>
-                : <Grid item key={key}><Section data={value} closeDialog={props.closeDialog}></Section></Grid>
-              )
-              :
-              <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+            data ?
+                DisplayFormEntries(data, {onClose: onClose})
+              : <Grid container justify="center"><Grid item><CircularProgress /></Grid></Grid>
           }
         </Grid>
       </CardContent>
-      <EditDialog edit={edit} data={props.data} type={type} open={open} onClose={() => { props.closeDialog(); setOpen(false); }} />
-      <DeleteDialog open={openDelete} data={props.data} onClose={() => { props.closeDialog(); setOpenDelete(false); }} type="Section" />
+      <EditDialog edit={isEditing} data={data} type={newFieldType} open={editDialogOpen} onClose={() => { onClose(); setEditDialogOpen(false); }} />
+      <DeleteDialog open={deleteDialogOpen} data={data} onClose={() => { onClose(); setDeleteDialogOpen(false); }} type="Section" />
     </Card>
   );
 };
