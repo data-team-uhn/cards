@@ -31,9 +31,10 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 // Component that renders a modal dialog, to browse related terms of an input term.
 //
 // Required arguments:
-//  term: Term to search
+//  id: Term ID to search
+//  path: Term @path to get the term info
 //  vocabulary: Name of the vocabulary to use to look up terms
-//  changeId: callback to change the term being looked up
+//  changeTerm: callback to change the term id and path being looked up
 //  registerInfo: callback to add a possible hook point for the info box
 //  getInfo: callback to change the currently displayed info box term
 //  onClose: callback when this dialog is closed
@@ -42,14 +43,14 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 // Optional arguments:
 //  fullscreen: whether or not the dialog is fullscreen (default: false)
 function VocabularyBrowser(props) {
-  const { classes, fullscreen, term, changeId, registerInfo, getInfo, onClose, onError, vocabulary, ...rest } = props;
+  const { classes, fullscreen, id, path, changeTerm, registerInfo, getInfo, onClose, onError, vocabulary, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
   const [ currentNode, setCurrentNode ] = useState();
 
   // Rebuild the browser tree centered around the given term.
-  let rebuildBrowser = (id) => {
+  let rebuildBrowser = () => {
     // Do not re-grab suggestions for the same term, or if our lookup has failed (to prevent infinite loops)
     if (id === lastKnownTerm) {
       return;
@@ -64,8 +65,7 @@ function VocabularyBrowser(props) {
     }
 
     // Create the XHR request
-    var escapedID = id.replace(":", "");  // JCR nodes do not have colons in their names
-    var url = new URL(`./${vocabulary}/${escapedID}.info.json`, REST_URL);
+    var url = new URL(path + ".info.json", window.location.origin);
     MakeRequest(url, rebuildTree);
     setLastKnownTerm(id);
   }
@@ -77,24 +77,25 @@ function VocabularyBrowser(props) {
       var parentBranches = null;
       if ("parents" in data) {
         parentBranches = data["parents"].map((row, index) => {
-          return row["identifier"] ? constructBranch(row["identifier"], row["label"], false, false, false, row["lfs:hasChildren"]) : false;
+          return row["identifier"] ? constructBranch(row["identifier"], row["@path"], row["label"], false, false, false, row["lfs:hasChildren"]) : false;
         }).filter(i => i);
       }
 
       setParentNode(parentBranches);
-      setCurrentNode(constructBranch(data["identifier"], data["label"], true, true, true, data["lfs:hasChildren"]));
+      setCurrentNode(constructBranch(data["identifier"], data["@path"], data["label"], true, true, true, data["lfs:hasChildren"]));
     } else {
       onError("Error: initial term lookup failed with code " + status);
     }
   }
 
   // Construct a branch element for rendering
-  let constructBranch = (id, name, ischildnode, defaultexpanded, bolded, hasChildren) => {
+  let constructBranch = (id, path, name, ischildnode, defaultexpanded, bolded, hasChildren) => {
     return(
       <BrowseListChild
         id={id}
+        path={path}
         name={name}
-        changeId={changeId}
+        changeTerm={changeTerm}
         registerInfo={registerInfo}
         getInfo={getInfo}
         expands={ischildnode}
@@ -109,7 +110,7 @@ function VocabularyBrowser(props) {
     );
   }
 
-  rebuildBrowser(term);
+  rebuildBrowser();
 
   return (
     <Dialog
@@ -143,9 +144,10 @@ function VocabularyBrowser(props) {
 VocabularyBrowser.propTypes = {
   classes: PropTypes.object.isRequired,
   fullscreen: PropTypes.bool,
-  term: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
   vocabulary: PropTypes.string.isRequired,
-  changeId: PropTypes.func.isRequired,
+  changeTerm: PropTypes.func.isRequired,
   registerInfo: PropTypes.func.isRequired,
   getInfo: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
