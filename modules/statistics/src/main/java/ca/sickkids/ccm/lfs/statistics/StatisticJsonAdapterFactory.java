@@ -184,6 +184,7 @@ public class StatisticJsonAdapterFactory
                 } else {
                     objectBuilder.add(name, adapt(node));
                 }
+                break;
             default:
                 objectBuilder.add(name, value.getString());
                 break;
