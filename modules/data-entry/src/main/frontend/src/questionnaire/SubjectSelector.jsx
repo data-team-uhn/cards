@@ -121,7 +121,7 @@ function UnstyledNewSubjectDialog (props) {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={onClose}
+            onClick={() => {setNewSubjectType(""); onClose()}}
             variant="contained"
             color="default"
             disabled={disabled}
@@ -129,7 +129,7 @@ function UnstyledNewSubjectDialog (props) {
             Cancel
           </Button>
           <Button
-            onClick={onSubmit}
+            onClick={() => {setNewSubjectType(""); onSubmit()}}
             variant="contained"
             color="primary"
             disabled={disabled || continueDisabled}
