@@ -89,6 +89,16 @@
   + * (lfs:AnswerOption) = lfs:AnswerOption
 
 //-----------------------------------------------------------------------------
+[lfs:VocabularyFilterGroup] > sling:Folder, mix:referenceable
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/VocabularyFilterGroup" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each question is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/VocabularyFilterGroup" mandatory autocreated protected
+
+  - value (string)
+
+//-----------------------------------------------------------------------------
 // This is the definition of a question.
 [lfs:Question] > sling:Folder, mix:referenceable
   // Attributes
@@ -216,6 +226,7 @@
   // The list of predefined options displayed to the user.
   // This applies mostly to text answers, but can also be used for the other answer types as well, for example as a list of dates to choose from, or a list of numbers, or a list of vocabulary terms.
   + * (lfs:AnswerOption) = lfs:AnswerOption
+  + * (lfs:VocabularyFilterGroup) = lfs:VocabularyFilterGroup
 
 //-----------------------------------------------------------------------------
 // A section is a collection of questions.

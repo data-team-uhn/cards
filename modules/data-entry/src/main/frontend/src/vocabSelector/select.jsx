@@ -262,6 +262,7 @@ function VocabularySelector(props) {
     <React.Fragment>
       <Thesaurus
         onClick = {handleThesaurus}
+        questionDefinition = {questionDefinition}
         vocabularyFilter = {vocabularyFilter}
         vocabulary = {source}
         ref = {(ref) => {thesaurusRef = ref;}}

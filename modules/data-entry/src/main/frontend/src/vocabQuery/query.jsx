@@ -336,6 +336,29 @@ class VocabularyQuery extends React.Component {
     })
   }
 
+  makeMultiRequest = (queue, input, prevData) => {
+    //Get an vocabulary to search through
+    var selectedVocab = queue.pop();
+    if (selectedVocab === undefined) {
+      this.showSuggestions(null, {rows: prevData});
+      return;
+    }
+    var url = new URL(`./${selectedVocab}.search.json`, REST_URL);
+    url.searchParams.set("suggest", input);
+
+    //Are there any filters that should be associated with this request?
+    if (this.props?.questionDefinition?.vocabularyFilters?.[selectedVocab]) {
+      var filter = this.props.questionDefinition.vocabularyFilters[selectedVocab].map((category) => {
+        return (`term_category:${category}`);
+      }).join(" OR ");
+      url.searchParams.set("customFilter", `(${filter})`);
+    }
+
+    MakeRequest(url, (status, data) => {
+      this.makeMultiRequest(queue, input, prevData.concat(data['rows']));
+    });
+  }
+
   // Grab suggestions for the given input
   queryInput = (input) => {
     // Empty input? Do not query
@@ -349,17 +372,9 @@ class VocabularyQuery extends React.Component {
     }
 
     // Grab suggestions
-    var url = new URL(`./${this.props.vocabulary}.search.json`, REST_URL);
-    url.searchParams.set("suggest", input);
-
-    // Determine if we should add a custom filter
-    if (this.props.vocabularyFilter) {
-      var filter = this.props.vocabularyFilter.map((category) => {
-        return (`term_category:${category}`);
-      }).join(" OR ");
-      url.searchParams.set("customFilter", `(${filter})`);
-    }
-    MakeRequest(url, this.showSuggestions);
+    //...Make a queue of vocabularies to search through
+    var vocabQueue = this.props.vocabulary.slice();
+    this.makeMultiRequest(vocabQueue, input, []);
 
     // Hide the infobox and stop the timer
     this.setState({
@@ -456,7 +471,7 @@ class VocabularyQuery extends React.Component {
   getInfo = (path) => {
     // If we don't yet know anything about our vocabulary, fill it in
     if (!this.state.infoVocabObtained) {
-      var url = new URL(`./${this.props.vocabulary}.json`, REST_URL);
+      var url = new URL(`${path.split("/").slice(0, -1).join("/")}.json`, REST_URL);
       MakeRequest(url, this.parseVocabInfo);
     }
 

@@ -477,8 +477,12 @@
     "maxAnswers": 0,
     "displayMode": "input",
     "dataType": "vocabulary",
-    "sourceVocabulary": "HP",
-    "vocabularyFilter": ["HP:0000118"],
+    "sourceVocabulary": ["HP", "ICD-O-3-M"],
+    "vocabularyFilters": {
+        "jcr:primaryType": "lfs:VocabularyFilterGroup",
+        "HP": ["HP:0000118"],
+        "ICD-O-3-M": ["Thing"]
+    },
     "enableNotes" : true
   },
   "inherited_from": {
