@@ -28,12 +28,18 @@ function Questionnaires(props) {
   let [ openDialog, setOpenDialog ] = useState(false);
   let [ dataToDelete, setDataToDelete ] = useState(false);
   let [ error, setError ] = useState();
+  let [ deletionCount, setDeletionCount ] = useState(0); // Used to force reupdates to the livetable after deletion
   const { classes } = props;
   const entry = /Questionnaires\/(.+)/.exec(location.pathname);
 
   let deleteQuestionnaire = (questionnaire) => {
     setDataToDelete(questionnaire);
     setOpenDialog(true);
+  }
+
+  // Increment the numebr of times we have deleted something, forcing the LiveTable to update
+  let updateDeletionCount = () => {
+    setDeletionCount((old) => (old+1));
   }
 
   if (entry) {
@@ -82,7 +88,7 @@ function Questionnaires(props) {
         }}
         />
         <CardContent>
-          <LiveTable columns={columns} delete={deleteQuestionnaire} />
+          <LiveTable columns={columns} delete={deleteQuestionnaire} updateData={deletionCount}/>
           { error &&
             <Typography color="error" variant="h3">
               {error}
@@ -90,7 +96,13 @@ function Questionnaires(props) {
           }
         </CardContent>
       </Card>
-      <DeleteQuestionnaireDialog open={openDialog} onClose={() => {setOpenDialog(false);}} data={dataToDelete} onError={setError} />
+      <DeleteQuestionnaireDialog
+        open={openDialog}
+        onClose={() => {setOpenDialog(false);}}
+        onDelete={updateDeletionCount}
+        data={dataToDelete}
+        onError={setError}
+        />
     </React.Fragment>
   );
 }
