@@ -22,16 +22,17 @@ import Questionnaire from "../questionnaire/Questionnaire.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
 import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialog.jsx";
 import DeleteQuestionnaireDialog from "../questionnaireEditor/DeleteQuestionnaireDialog.jsx";
-import { Button, Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
+import { Button, Card, CardHeader, CardContent, Typography, withStyles } from "@material-ui/core";
 
 function Questionnaires(props) {
-  let [ openDialog, setOpenDialog] = useState(false);
-  let [ deleteData, setDeleteData ] = useState(false);
-  const { match, classes } = props;
+  let [ openDialog, setOpenDialog ] = useState(false);
+  let [ dataToDelete, setDataToDelete ] = useState(false);
+  let [ error, setError ] = useState();
+  const { classes } = props;
   const entry = /Questionnaires\/(.+)/.exec(location.pathname);
 
-  let deleteQuestionnaire = (entry) => {
-    setDeleteData(entry);
+  let deleteQuestionnaire = (questionnaire) => {
+    setDataToDelete(questionnaire);
     setOpenDialog(true);
   }
 
@@ -82,9 +83,14 @@ function Questionnaires(props) {
         />
         <CardContent>
           <LiveTable columns={columns} delete={deleteQuestionnaire} />
+          { error &&
+            <Typography color="error" variant="h3">
+              {error}
+            </Typography>
+          }
         </CardContent>
       </Card>
-      <DeleteQuestionnaireDialog open={openDialog} onClose={() => {setOpenDialog(false);}} data={deleteData}></DeleteQuestionnaireDialog>
+      <DeleteQuestionnaireDialog open={openDialog} onClose={() => {setOpenDialog(false);}} data={dataToDelete} onError={setError} />
     </React.Fragment>
   );
 }
