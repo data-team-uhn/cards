@@ -483,11 +483,10 @@
     "maxAnswers": 0,
     "displayMode": "input",
     "dataType": "vocabulary",
-    "sourceVocabulary": ["HP", "ICD-O-3-M"],
+    "sourceVocabulary": ["HP"],
     "vocabularyFilters": {
         "jcr:primaryType": "lfs:VocabularyFilterGroup",
-        "HP": ["HP:0000118"],
-        "ICD-O-3-M": ["Thing"]
+        "HP": ["HP:0000118"]
     },
     "enableNotes" : true
   },
