@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A servlet for querying Statistics that returns a JSON object containing values for the x and y axes
- * TODO: change to take in id as parameter ? not sure
+ * TODO: change to take in request body
  *
  * @version $Id$
  */
@@ -109,31 +109,27 @@ public class StatisticQueryServlet extends SlingSafeMethodsServlet
             if (splitVariable != null) {
                 this.splitExists.set(Boolean.TRUE);
             }
-            // TODO: if splitVariable exists, grab the question that has data for the split variable
-            // counts need to be aggregated by the split variable WITHIN each 'question' aggregation
-
-            // Aggregate our counts
-            Map<String, Integer> counts = aggregateCounts(answers);
 
             String xLabel = question.getProperty("text").getString();
             String yLabel = correctSubjectType.getProperty("label").getString();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
             String date = simpleDateFormat.format(new Date());
 
-            // Return to user
+            // Add inputs and time generated to the output JSON
             JsonObjectBuilder builder = Json.createObjectBuilder();
+            builder.add("timeGenerated", date);
             builder.add("name", statisticName);
             builder.add("x-label", xLabel);
             builder.add("y-label", yLabel);
-            builder.add("timeGenerated", date);
-            // Convert our HashMap into a JsonObject
-            JsonObjectBuilder dataBuilder = Json.createObjectBuilder();
-            Iterator<String> keysMap = counts.keySet().iterator();
-            while (keysMap.hasNext()) {
-                String key = keysMap.next();
-                dataBuilder.add(key, counts.get(key));
+            if (this.splitExists.get()) {
+                Node split = request.getResourceResolver().adaptTo(Session.class).getNodeByIdentifier(splitVariable);
+                String splitLabel = split.getProperty("text").getString();
+                builder.add("split-label", splitLabel);
+                addData(answers, builder, split);
             }
-            builder.add("data", dataBuilder.build());
+            else {
+                addData(answers, builder);
+            }
 
             // Write the output
             final Writer out = response.getWriter();
@@ -210,6 +206,43 @@ public class StatisticQueryServlet extends SlingSafeMethodsServlet
             }
         }
         return counts;
+    }
+
+    // if split variable does NOT exist
+    private void addData(Iterator<Resource> answers, JsonObjectBuilder builder) throws RepositoryException
+    {
+        // Aggregate our counts
+        Map<String, Integer> counts = aggregateCounts(answers);
+
+        // Convert our HashMap into a JsonObject
+        JsonObjectBuilder dataBuilder = Json.createObjectBuilder();
+        Iterator<String> keysMap = counts.keySet().iterator();
+        while (keysMap.hasNext()) {
+            String key = keysMap.next();
+            dataBuilder.add(key, counts.get(key));
+        }
+        builder.add("data", dataBuilder.build());
+    }
+
+    // if split variable DOES exist
+    private void addData(Iterator<Resource> answers, JsonObjectBuilder builder, Node split) throws RepositoryException
+    {
+        // Aggregate our counts
+        Map<String, Integer> counts = aggregateCounts(answers);
+
+        // TODO: also aggregate counts by split
+            // Find the form that contains answer
+            // Find the question that corresponds to split var --> grab value
+            // Aggregate counts by that value WITHIN each x var
+
+        // Convert our HashMap into a JsonObject
+        JsonObjectBuilder dataBuilder = Json.createObjectBuilder();
+        Iterator<String> keysMap = counts.keySet().iterator();
+        while (keysMap.hasNext()) {
+            String key = keysMap.next();
+            dataBuilder.add(key, counts.get(key));
+        }
+        builder.add("data", dataBuilder.build());
     }
 
     /**

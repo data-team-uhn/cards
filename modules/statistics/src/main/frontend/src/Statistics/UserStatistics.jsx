@@ -101,6 +101,9 @@ function UserStatistics(props) {
     url.searchParams.set("name", stat.name);
     url.searchParams.set("xVar", stat.xVar['jcr:uuid']);
     url.searchParams.set("yVar", stat.yVar['jcr:uuid']);
+    if (stat.splitVar) {
+      url.searchParams.set("splitVar", stat.splitVar['jcr:uuid']);
+    }
 
     fetch(url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
