@@ -18,6 +18,8 @@
  */
 package ca.sickkids.ccm.lfs.permissions.internal;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,10 +31,15 @@ import javax.jcr.ValueFactory;
 import javax.jcr.security.AccessControlException;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
+import javax.json.Json;
+import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
 import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.JackrabbitAccessControlEntry;
+import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
+import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
@@ -46,10 +53,12 @@ import ca.sickkids.ccm.lfs.permissions.spi.PermissionsManager;
 
 /**
  * Servlet which handles changing permissions. It processes POST requests on the {@code /Forms} page and subpages,
- * expecting three parameters: {@code :rule} is either "deny" or "allow". {@code :privileges} is a comma-seperated
- * list of privileges to alter, {@code :principal} is the group or user name, {@code :restriction} is a single
- * {@code restriction=value} pair. An optional {@code :remove} can be provided if you wish to delete an entry
- * matching the above instead.
+ * expecting up to five parameters:
+ * - {@code :action} is on of "get", "add" or "remove".
+ * - {@code :rule} is either "deny" or "allow". Used for actions add or remove.
+ * - {@code :privileges} is a comma-seperated list of privileges to alter. Used for actions add or remove.
+ * - {@code :principal} is the group or user name. Used for actions add or remove.
+ * - {@code :restriction} is a single {@code restriction=value} pair. Used for actions add or remove.
  *
  * @version $Id$
  */
@@ -70,17 +79,40 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
 
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
-            throws ServletException
+            throws ServletException, IOException
     {
         // Get request parameters
+        String action = request.getParameter(":action");
+        String uri = request.getRequestURI();
+        String target = uri.substring(0, uri.indexOf("."));
+        JackrabbitSession session = (JackrabbitSession) request.getResourceResolver().adaptTo(Session.class);
+
+        switch (action) {
+            case "add":
+            case "remove":
+                this.editRule(session, target, request, action);
+                break;
+            case "get":
+                getPolicies(session, target, response);
+                break;
+            default:
+                throw new IllegalArgumentException("\":action\" must be on of 'get', 'allow' or 'deny'");
+        }
+    }
+
+    /**
+     * Add or remove an access control entry to the target with the details specified in the request.
+     * @param session the Jackrabbit session to modify permissions for
+     * @param target the path of the node to set the access control entries for
+     * @param request the http request to retrieve parameters from
+     * @param action the action to perform: either "add" or "remove"
+     */
+    private void editRule(JackrabbitSession session, String target, SlingHttpServletRequest request, String action)
+    {
         String rule = request.getParameter(":rule");
         String privilegesText = request.getParameter(":privileges");
         String principalName = request.getParameter(":principal");
-        String uri = request.getRequestURI();
-        String target = uri.substring(0, uri.indexOf("."));
         String restrictionText = request.getParameter(":restriction");
-        String remove = request.getParameter(":remove");
-        JackrabbitSession session = (JackrabbitSession) request.getResourceResolver().adaptTo(Session.class);
 
         // Alter this node's permissions
         try {
@@ -88,7 +120,7 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
             Privilege[] privileges = parsePrivileges(privilegesText, session.getAccessControlManager());
             Map<String, Value> restrictions = parseRestriction(restrictionText, session.getValueFactory());
             Principal principal = session.getPrincipalManager().getPrincipal(principalName);
-            if (remove == null) {
+            if ("add".equals(action)) {
                 this.permissionsChangeServiceHandler.addAccessControlEntry(
                         target, isAllow, principal, privileges, restrictions, session);
             } else {
@@ -99,6 +131,66 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
         } catch (RepositoryException e) {
             LOGGER.error("Failed to change permissions: {}", e.getMessage(), e);
         }
+    }
+
+    /**
+     * Send all access control entries for the target to the client.
+     * @param session the Jackrabbit session to retrieve permissions from
+     * @param target the path of the node to retrieve the access control entries from
+     * @param response the http response to output to
+     * @throws IOException if outputting to the response fails
+     */
+    private void getPolicies(JackrabbitSession session, String target, SlingHttpServletResponse response)
+        throws IOException
+    {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        final Writer out = response.getWriter();
+        try (JsonGenerator jsonGen = Json.createGenerator(out)) {
+            AccessControlManager acm = session.getAccessControlManager();
+            JackrabbitAccessControlList acl = AccessControlUtils.getAccessControlList(acm, target);
+
+            jsonGen.writeStartObject();
+            if (acl != null) {
+                writePolicies(jsonGen, acl);
+            }
+            jsonGen.writeEnd().flush();
+        } catch (RepositoryException e) {
+            LOGGER.error("Failed to retrieve permissions: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Convert an access control list into a json output.
+     * @param jsonGen The stream used to build the json
+     * @param acl the access control list to convert
+     * @throws RepositoryException if an error occurs traversing the access list
+     */
+    private void writePolicies(JsonGenerator jsonGen, JackrabbitAccessControlList acl) throws RepositoryException {
+        jsonGen.writeStartArray("policies");
+        // Find the necessary AccessControlEntry to remove
+        JackrabbitAccessControlEntry[] entries = (JackrabbitAccessControlEntry[]) acl.getAccessControlEntries();
+        for (JackrabbitAccessControlEntry entry : entries) {
+            jsonGen.writeStartObject()
+                .write("allow", (entry.isAllow() ? "allow" : "deny"))
+                .write("principal", entry.getPrincipal().getName())
+                .writeStartArray("privileges");
+
+            Privilege[] privileges = entry.getPrivileges();
+            for (Privilege privilege : privileges) {
+                jsonGen.write(privilege.getName());
+            }
+
+            jsonGen.writeEnd().writeStartArray("restrictions");
+            String[] restrictions = entry.getRestrictionNames();
+            for (String restriction : restrictions) {
+                jsonGen.write(restriction);
+            }
+
+            jsonGen.writeEnd().writeEnd();
+        }
+        jsonGen.writeEnd();
     }
 
     /**
@@ -154,14 +246,13 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
     private static Map<String, Value> parseRestriction(String toParse, ValueFactory valueFactory)
         throws RepositoryException
     {
-        if (toParse == null) {
-            throw new IllegalArgumentException("Required parameter \":restriction\" missing");
-        }
         final Map<String, Value> restriction = new HashMap<>();
-        int splitPos = toParse.indexOf("=");
-        String restrictionName = toParse.substring(0, splitPos);
-        String restrictionValue = toParse.substring(splitPos + 1);
-        restriction.put(restrictionName, valueFactory.createValue(restrictionValue));
+        if (toParse != null && toParse.indexOf("=") >= 0) {
+            int splitPos = toParse.indexOf("=");
+            String restrictionName = toParse.substring(0, splitPos);
+            String restrictionValue = toParse.substring(splitPos + 1);
+            restriction.put(restrictionName, valueFactory.createValue(restrictionValue));
+        }
         return restriction;
     }
 }
