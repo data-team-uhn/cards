@@ -74,7 +74,7 @@ class VocabularyQuery extends React.Component {
       infoVocabAcronym: props.vocabulary,
       infoVocabURL: "",
       infoVocabDescription: "",
-      infoVocabObtained: false,
+      infoVocabObtained: "",
       buttonRefs: {},
       vocabulary: props.vocabulary,
       noResults: false,
@@ -470,7 +470,7 @@ class VocabularyQuery extends React.Component {
   // Grab information about the given ID and populate the info box
   getInfo = (path) => {
     // If we don't yet know anything about our vocabulary, fill it in
-    if (!this.state.infoVocabObtained) {
+    if (this.state.infoVocabObtained != path) {
       var url = new URL(`${path.split("/").slice(0, -1).join("/")}.json`, REST_URL);
       MakeRequest(url, this.parseVocabInfo);
     }
@@ -485,7 +485,7 @@ class VocabularyQuery extends React.Component {
         infoVocabAcronym: data["identifier"] || "",
         infoVocabURL: data["website"] || "",
         infoVocabDescription: data["description"],
-        infoVocabObtained: true
+        infoVocabObtained: data["@path"]
       });
     } else {
       this.logError("Error: vocabulary details lookup failed with code " + status);
