@@ -17,12 +17,17 @@
 //  under the License.
 //
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CircularProgress, Grid, withStyles, Typography } from "@material-ui/core";
+import {
+  Card,
+  CardContent,
+  Grid, 
+  withStyles, 
+  Typography 
+} from "@material-ui/core";
 import statisticsStyle from "./statisticsStyle.jsx";
 
 function UserStatistics(props) {
   const { classes } = props;
-  let [statistics, setStatistics] = useState([]);
   let [ currentStatistic, setCurrentStatistic ] = useState([]);
   let [initialized, setInitialized] = useState(false);
   // Error message set when fetching the data from the server fails
@@ -39,7 +44,6 @@ function UserStatistics(props) {
         if (response.totalrows == 0) {
           setError("No statistics have been added yet.");
         }
-        // setStatistics(response["rows"]);
         fetchAll(response["rows"]);
       })
       .catch(handleError);
@@ -66,14 +70,33 @@ function UserStatistics(props) {
     );
   }
 
-  // generate json
-    // export statistic as json (similar to deep.json) - json adapter
-    // uuid -> paths
-
-  // json as request body to statquery
-
   let fetchStat = (stat) => {
-    const urlBase = "/Statistics.statquery";
+    // TODO: change servlet to take statistic JSON as request body to servlet
+
+    // fetch(`/Statistics/${stat['@name']}.simple.json`)
+    //   .then((response) => response.ok ? response.json() : Promise.reject(response))
+    //   .then((simpleJson) => {
+    //     let requestData = {
+    //       'name': simpleJson.name,
+    //       'x-label': simpleJson.xVar['jcr:uuid'],
+    //       'y-label': simpleJson.yVar['jcr:uuid']
+    //       // TODO: add splitVar if it exists
+    //     }
+    //     const urlBase = "/Statistics.query";
+    //     let url = new URL(urlBase, window.location.origin);
+
+    //     fetch( url, { body: requestData })
+    //       .then((response) => response.ok ? response.json() : Promise.reject(response))
+    //       .then((statJson) => {
+    //         setCurrentStatistic(currentStatistic => [...currentStatistic, JSON.stringify(statJson)]);
+    //       })
+    //       .catch(handleError);
+
+    //   })
+    //   .catch(handleError);
+
+    // currently, variables are being sent in parameter
+    const urlBase = "/Statistics.query";
     let url = new URL(urlBase, window.location.origin);
     url.searchParams.set("name", stat.name);
     url.searchParams.set("xVar", stat.xVar['jcr:uuid']);
@@ -82,7 +105,6 @@ function UserStatistics(props) {
     fetch(url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((statJson) => {
-        console.log(JSON.stringify(statJson));
         setCurrentStatistic(currentStatistic => [...currentStatistic, JSON.stringify(statJson)]);
       })
       .catch(handleError);
@@ -91,9 +113,6 @@ function UserStatistics(props) {
   let fetchAll = (data) => {
     data.map((stat) => fetchStat(stat))
   }
-
-  // TO FIX: error occurs if not all fields used in statistics are filled out in each form (due to 'no response data available')
-  // handle this
 
   return (
     <React.Fragment>

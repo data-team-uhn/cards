@@ -23,7 +23,6 @@ import {
   Card, 
   CardContent,
   CardHeader,
-  CircularProgress, 
   Dialog, 
   DialogActions, 
   DialogContent, 
@@ -60,7 +59,10 @@ function AdminStatistics(props) {
         if (response.totalrows == 0) {
           setMessage("No statistics have been added yet.");
         }
-        setStatistics(response["rows"]);
+        else {
+          setMessage(null);
+          setStatistics(response["rows"]);
+        }
       })
       .catch(handleError);
   };
@@ -100,7 +102,7 @@ function AdminStatistics(props) {
 
   return (
     <Grid container spacing={3}>
-      {statistics ? (statistics.map((stat) => {
+      {!message && statistics ? (statistics.map((stat) => {
         return(
           <Grid item lg={12} xl={6} key={stat["@path"]}>
             <Card>
@@ -174,7 +176,7 @@ function StatisticDialog(props) {
   const [ splitVarLabel, setSplitVarLabel ] = useState('');
 
   let reset = () => {
-    // reset fields
+    // reset all fields
     setXVar(null);
     setYVar(null);
     setSplitVar(null);
@@ -199,6 +201,7 @@ function StatisticDialog(props) {
           .catch(handleFetchError);
       };
       let handleResponse = (json) => {
+        // if data alread exists, fill out fields
         setExistingData(true);
         setName(json.name);
         onYChange(json.yVar.label);
@@ -275,6 +278,7 @@ function StatisticDialog(props) {
   // update each
   let onXChange = (e, onLoad) => {
     if (onLoad) {
+      // this is called if previous data is being loaded
       setXVarLabel(e['@name']);
       setXVar(e['jcr:uuid']);
     } else {
@@ -289,6 +293,7 @@ function StatisticDialog(props) {
 
   let onSplitChange = (e, onLoad) => {
     if (onLoad) {
+      // this is called if previous data is being loaded
       setSplitVarLabel(e['@name']);
       setSplitVar(e['jcr:uuid']);
     } else {

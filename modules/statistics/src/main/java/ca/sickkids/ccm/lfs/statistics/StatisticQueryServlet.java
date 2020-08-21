@@ -18,6 +18,7 @@ package ca.sickkids.ccm.lfs.statistics;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
@@ -33,6 +35,7 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.servlet.Servlet;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
@@ -52,19 +55,42 @@ import org.slf4j.LoggerFactory;
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "lfs/Statistic", "lfs/StatisticsHomepage" },
-    selectors = { "statquery" })
+    selectors = { "query" })
 public class StatisticQueryServlet extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = 2558430802619674046L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatisticQueryServlet.class);
 
+    private ThreadLocal<Boolean> splitExists = new ThreadLocal<Boolean>()
+    {
+        @Override
+        protected Boolean initialValue()
+        {
+            return Boolean.FALSE;
+        }
+    };
+
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
+        // Currently, this servlet takes in request parameters that contain strings and uuids
         String statisticName = request.getParameter("name");
         String xVariable = request.getParameter("xVar");
         String yVariable = request.getParameter("yVar");
+        String splitVariable = request.getParameter("splitVar");
+
+        // TODO: get request body --> extract name, xVar, yVar from body
+
+        // String jsonString = IOUtils.toString(request.getInputStream());
+        // JSONObject json = new JSONObject(jsonString); 
+        // TODO: is there another way to convert string to JSON object?
+
+        // String statisticName = json.getString("name");
+        // String xVariable = json.getString("x-label");
+        // String yVariable = json.getString("y-label");
+
+        // TODO: xVariable, yVariable and splitVariable should contain the pathname, go from pathname to node
 
         try {
             // Steps to returning the calculated statistic:
@@ -79,19 +105,27 @@ public class StatisticQueryServlet extends SlingSafeMethodsServlet
                 .getNodeByIdentifier(yVariable);
             answers = filterAnswersToSubjectType(answers, correctSubjectType);
 
+            // Check if split variable exists
+            if (splitVariable != null) {
+                this.splitExists.set(Boolean.TRUE);
+            }
+            // TODO: if splitVariable exists, grab the question that has data for the split variable
+            // counts need to be aggregated by the split variable WITHIN each 'question' aggregation
+
             // Aggregate our counts
             Map<String, Integer> counts = aggregateCounts(answers);
 
             String xLabel = question.getProperty("text").getString();
             String yLabel = correctSubjectType.getProperty("label").getString();
-            Date date = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+            String date = simpleDateFormat.format(new Date());
 
             // Return to user
             JsonObjectBuilder builder = Json.createObjectBuilder();
             builder.add("name", statisticName);
-            builder.add("X-label", xLabel);
-            builder.add("Y-label", yLabel);
-            builder.add("timeGenerated", date.toString());
+            builder.add("x-label", xLabel);
+            builder.add("y-label", yLabel);
+            builder.add("timeGenerated", date);
             // Convert our HashMap into a JsonObject
             JsonObjectBuilder dataBuilder = Json.createObjectBuilder();
             Iterator<String> keysMap = counts.keySet().iterator();
@@ -100,8 +134,6 @@ public class StatisticQueryServlet extends SlingSafeMethodsServlet
                 dataBuilder.add(key, counts.get(key));
             }
             builder.add("data", dataBuilder.build());
-
-            // TODO: if aggregate exists --> split data, make new builder
 
             // Write the output
             final Writer out = response.getWriter();
@@ -162,14 +194,19 @@ public class StatisticQueryServlet extends SlingSafeMethodsServlet
         Map<String, Integer> counts = new HashMap<>();
         while (answers.hasNext()) {
             Node answer = answers.next().adaptTo(Node.class);
-            String value = answer.getProperty("value").getString();
-
-            // If this already exists in our counts dict, we add 1 to its value
-            // Otherwise, set it to 1 count
-            if (counts.containsKey(value)) {
-                counts.put(value, counts.get(value) + 1);
-            } else {
-                counts.put(value, 1);
+            
+            try {
+                String value = answer.getProperty("value").getString();
+                // If this already exists in our counts dict, we add 1 to its value
+                // Otherwise, set it to 1 count
+                if (counts.containsKey(value)) {
+                    counts.put(value, counts.get(value) + 1);
+                } else {
+                    counts.put(value, 1);
+                }
+            } catch (PathNotFoundException e) {
+                LOGGER.error("Value does not exist for question: {}", e.getMessage(), e);
+                continue;
             }
         }
         return counts;
