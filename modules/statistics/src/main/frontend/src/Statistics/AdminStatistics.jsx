@@ -52,12 +52,13 @@ function AdminStatistics(props) {
   const [ newStat, setNewStat ] = useState(true);
   const [ currentId, setCurrentId ] = useState();
 
+  // fetch all statistics
   let fetchStatistics = () => {
       fetch("/query?query=select * from [lfs:Statistic]")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
         if (response.totalrows == 0) {
-          setMessage("No statistics have been added yet.");
+          setMessage("No statistics have been added yet."); // displayed to user
         }
         else {
           setMessage(null);
@@ -158,6 +159,14 @@ function AdminStatistics(props) {
   );
 }
 
+/**
+ * Statistic Dialog
+ * @param {func} onClose callback for when dialog is closed
+ * @param {func} onSuccess callback for when statistic is created or edited successfully
+ * @param {bool} open true if dialog is open
+ * @param {bool} isNewsStatistic true if statistic is being created, false if being edited
+ * @param {string} currentId uuid of statistic to be edited (pre-existing)
+ */
 function StatisticDialog(props) {
   const { onClose, onSuccess, open, classes, isNewStatistic, currentId } = props;
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);

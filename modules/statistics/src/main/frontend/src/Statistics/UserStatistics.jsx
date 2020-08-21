@@ -71,44 +71,43 @@ function UserStatistics(props) {
   }
 
   let fetchStat = (stat) => {
-    // TODO: change servlet to take statistic JSON as request body to servlet
-
-    // fetch(`/Statistics/${stat['@name']}.simple.json`)
-    //   .then((response) => response.ok ? response.json() : Promise.reject(response))
-    //   .then((simpleJson) => {
-    //     let requestData = {
-    //       'name': simpleJson.name,
-    //       'x-label': simpleJson.xVar['jcr:uuid'],
-    //       'y-label': simpleJson.yVar['jcr:uuid']
-    //       // TODO: add splitVar if it exists
-    //     }
-    //     const urlBase = "/Statistics.query";
-    //     let url = new URL(urlBase, window.location.origin);
-
-    //     fetch( url, { body: requestData })
-    //       .then((response) => response.ok ? response.json() : Promise.reject(response))
-    //       .then((statJson) => {
-    //         setCurrentStatistic(currentStatistic => [...currentStatistic, JSON.stringify(statJson)]);
-    //       })
-    //       .catch(handleError);
-
-    //   })
-    //   .catch(handleError);
-
-    // currently, variables are being sent in parameter
-    const urlBase = "/Statistics.query";
-    let url = new URL(urlBase, window.location.origin);
-    url.searchParams.set("name", stat.name);
-    url.searchParams.set("xVar", stat.xVar['jcr:uuid']);
-    url.searchParams.set("yVar", stat.yVar['jcr:uuid']);
-    if (stat.splitVar) {
-      url.searchParams.set("splitVar", stat.splitVar['jcr:uuid']);
-    }
-
-    fetch(url)
+    // for each existing statistic, get full.json
+    // TODO: pathnames will be sent in request body, that's why full.json is used
+    fetch(`/Statistics/${stat['@name']}.full.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((statJson) => {
-        setCurrentStatistic(currentStatistic => [...currentStatistic, JSON.stringify(statJson)]);
+      .then((fullJson) => {
+        const urlBase = "/Statistics.query";
+        let url = new URL(urlBase, window.location.origin);
+
+        // currently, variables are being sent in parameter
+        url.searchParams.set("name", fullJson.name);
+        url.searchParams.set("xVar", fullJson.xVar['jcr:uuid']);
+        url.searchParams.set("yVar", fullJson.yVar['jcr:uuid']);
+        if (fullJson.splitVar) {
+          url.searchParams.set("splitVar", fullJson.splitVar['jcr:uuid']);
+        }
+
+        fetch(url)
+          .then((response) => response.ok ? response.json() : Promise.reject(response))
+          .then((statJson) => {
+            setCurrentStatistic(currentStatistic => [...currentStatistic, JSON.stringify(statJson)]);
+          })
+          .catch(handleError);
+
+        // TODO: change servlet to take statistic JSON as request body to servlet
+        // let requestData = {
+        //   'name': fullJson.name,
+        //   'x-label': fullJson.xVar['jcr:uuid'],
+        //   'y-label': fullJson.yVar['jcr:uuid']
+        //   // TODO: add splitVar if it exists
+        // }
+        // fetch( url, { body: requestData })
+        //   .then((response) => response.ok ? response.json() : Promise.reject(response))
+        //   .then((statJson) => {
+        //     setCurrentStatistic(currentStatistic => [...currentStatistic, JSON.stringify(statJson)]);
+        //   })
+        //   .catch(handleError);
+
       })
       .catch(handleError);
   }
