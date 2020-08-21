@@ -54,8 +54,8 @@ let Fields = (props) => {
   };
 
   let displayStaticField = (key, value) => {
-    let formatString = (key) => {
-      let formattedString = key.charAt(0).toUpperCase() + key.slice(1);
+    let formatString = (str) => {
+      let formattedString = str.charAt(0).toUpperCase() + str.slice(1);
         return formattedString.split(/(?=[A-Z])/).join(' ');
     }
     return (
