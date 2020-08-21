@@ -23,7 +23,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 let DeleteQuestionnaireDialog = (props) => {
-  let { data, id, onClose, onError, open } = props;
+  let { data, id, onClose, onDelete, onError, open } = props;
   let [ forms, setForms ] = useState(0);
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ saveInProgress, setSaveInProgress ] = useState();
@@ -62,6 +62,8 @@ let DeleteQuestionnaireDialog = (props) => {
       method: "DELETE",
     }).then((response) => response.ok ? true : Promise.reject(response))
       .then(() => setLastSaveStatus(true))
+      .then(() => onDelete ? onDelete() : null)
+      .then(onClose)
       .catch((error) => {
         // If the user is not logged in, offer to log in
         const sessionInfo = window.Sling.getSessionInfo();
@@ -75,7 +77,6 @@ let DeleteQuestionnaireDialog = (props) => {
         }
       })
     .finally(() => setSaveInProgress(false));
-    onClose();
   }
 
   let loginToSave = () => {
