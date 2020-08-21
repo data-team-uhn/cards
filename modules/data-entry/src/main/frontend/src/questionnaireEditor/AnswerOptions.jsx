@@ -39,7 +39,7 @@ let AnswerOptions = (props) => {
 
   let deleteOption = (value) => {
     setOptions(oldOptions => {
-      var newOptions = oldOptions.slice();
+      let newOptions = oldOptions.slice();
       newOptions.splice(newOptions.indexOf(value), 1);
       return newOptions;
     })
@@ -55,39 +55,39 @@ let AnswerOptions = (props) => {
 
   let deleteInsertedOption = (index, event) => {
     setNewValue(oldValue => {
-      var value = oldValue.slice();
+      let value = oldValue.slice();
       value.splice(index, 1);
       return value;
     })
     setNewUuid(oldUuid => {
-      var newUuid = oldUuid.slice();
-      newUuid.splice(index, 1);
-      return newUuid;
+      let uuid = oldUuid.slice();
+      uuid.splice(index, 1);
+      return uuid;
     });
   }
 
   let handleInputOption = () => {
-
     if (!newValue.includes(tempValue)) {
       setNewUuid(oldUuid => {
-        var newUuid = oldUuid.slice();
-        newUuid.push(uuid());
-        return newUuid;
+        let tempUUID = oldUuid.slice();
+        tempUUID.push(uuid());
+        return tempUUID;
       });
 
       setNewValue(oldValue => {
-        var newValue = oldValue.slice();
-        newValue.push(tempValue);
-        return newValue;
+        let value = oldValue.slice();
+        value.push(tempValue);
+        return value;
       });
     }
 
     setTempValue('');
   }
+
   return (
     <Grid container alignItems='flex-end' spacing={2}>
       <Grid item xs={6}>
-        <Typography> Answer Options </Typography>
+        <Typography>Answer Options</Typography>
       </Grid>
       { options.map(value =>
         <Grid item xs={6} key={value['jcr:uuid']}>
