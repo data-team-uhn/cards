@@ -51,7 +51,7 @@
     "sourceVocabulary": ["HANCESTRO"],
     "vocabularyFilters": {
       "jcr:primaryType": "lfs:VocabularyFilterGroup",
-      "HANCESTRO": ["child of Ethnic group or Racial Group"]
+      "HANCESTRO": ["HANCESTRO_0004"]
     },
     "African race": {
       "jcr:primaryType": "lfs:AnswerOption",
