@@ -90,12 +90,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         throws CommitFailedException
     {
         propertyChanged(null, after);
-        // Summarize all parents
-        try {
-            summarizeBuilders(this.currentNodeBuilderPath);
-        } catch (final RepositoryException e) {
-            return;
-        }
     }
 
     // Called when the value of an existing property gets changed
@@ -132,12 +126,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                  */
             }
             this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
-            // Summarize all parents
-            try {
-                summarizeBuilders(this.currentNodeBuilderPath);
-            } catch (final RepositoryException e) {
-                LOGGER.warn("Could not run summarize(): {}", e.getMessage(), e);
-            }
         }
     }
 
@@ -156,13 +144,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                     statusFlags.add(STATUS_FLAG_INCOMPLETE);
                 }
                 this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
-
-                // Summarize all parents
-                try {
-                    summarizeBuilders(this.currentNodeBuilderPath);
-                } catch (final RepositoryException e) {
-                    LOGGER.warn("Could not run summarizeBuilders(): {}", e.getMessage(), e);
-                }
             }
         }
     }
@@ -198,6 +179,22 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
         return new AnswerCompletionStatusEditor(tmpList, this.currentResourceResolver);
+    }
+
+    @Override
+    public void leave(NodeState before, NodeState after)
+        throws CommitFailedException
+    {
+        final String nodeType = this.currentNodeBuilder.getProperty("jcr:primaryType").getValue(Type.STRING);
+        if ("lfs:Form".equals(nodeType) || "lfs:AnswerSection".equals(nodeType)) {
+            try {
+                summarize();
+            } catch (RepositoryException e) {
+                // This is not a fatal error, the form status is not required for a functional application
+                LOGGER.warn("Unexpected exception while checking the completion status of form {}",
+                    this.currentNodeBuilder.getString("jcr:uuid"));
+            }
+        }
     }
 
     /**
@@ -259,20 +256,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return false;
     }
 
-    private void summarizeBuilders(final List<NodeBuilder> nodeBuilders)
-        throws RepositoryException
-    {
-        /*
-         * i == 0 --> jcr:root
-         * i == 1 --> jcr:root/Forms
-         * i == 2 --> jcr:root/Forms/<some form object>
-         */
-        for (int i = nodeBuilders.size() - 2; i >= 2; i--) {
-            summarizeBuilder(nodeBuilders.get(i), nodeBuilders.get(i - 1));
-        }
-    }
-
-    private void summarizeBuilder(final NodeBuilder selectedNodeBuilder, final NodeBuilder prevNb)
+    private void summarize()
         throws RepositoryException
     {
         // Iterate through all children of this node
@@ -282,11 +266,11 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         boolean isIncomplete = false;
         while (childrenNamesIter.hasNext()) {
             final String selectedChildName = childrenNamesIter.next();
-            final NodeBuilder selectedChild = selectedNodeBuilder.getChildNode(selectedChildName);
+            final NodeBuilder selectedChild = this.currentNodeBuilder.getChildNode(selectedChildName);
             if ("lfs:AnswerSection".equals(selectedChild.getProperty("jcr:primaryType").getValue(Type.STRING))) {
                 final Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
                 if (!ConditionalSectionUtils.isConditionSatisfied(
-                    resourceSession, selectedChild, selectedNodeBuilder)) {
+                    resourceSession, selectedChild, this.currentNodeBuilder)) {
                     continue;
                 }
             }
@@ -314,6 +298,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             statusFlags.add(STATUS_FLAG_INCOMPLETE);
         }
         // Write these statusFlags to the JCR repo
-        selectedNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
+        this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
     }
 }
