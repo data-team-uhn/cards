@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
  */
 public class AnswerCompletionStatusEditor extends DefaultEditor
 {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(AnswerCompletionStatusEditor.class);
 
     private static final String PROP_VALUE = "value";
@@ -158,14 +157,12 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     {
         final Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
         if (questionNode != null) {
-            if (this.currentNodeBuilder.getChildNode(name).hasProperty(PROP_QUESTION)) {
-                final List<String> statusFlags = new ArrayList<>();
-                // Only add the INCOMPLETE flag if the given question requires more than zero answers
-                if (checkInvalidAnswer(questionNode, 0)) {
-                    statusFlags.add(STATUS_FLAG_INCOMPLETE);
-                }
-                this.currentNodeBuilder.getChildNode(name).setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
+            final List<String> statusFlags = new ArrayList<>();
+            // Only add the INCOMPLETE flag if the given question requires more than zero answers
+            if (checkInvalidAnswer(questionNode, 0)) {
+                statusFlags.add(STATUS_FLAG_INCOMPLETE);
             }
+            this.currentNodeBuilder.getChildNode(name).setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
         }
         final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
