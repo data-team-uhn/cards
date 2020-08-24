@@ -471,7 +471,7 @@ class VocabularyQuery extends React.Component {
   getInfo = (path) => {
     // If we don't yet know anything about our vocabulary, fill it in
     if (this.state.infoVocabObtained != path) {
-      var url = new URL(`${path.split("/").slice(0, -1).join("/")}.json`, REST_URL);
+      var url = new URL(`${path.split("/").slice(0, -1).join("/")}.json`, window.location.origin);
       MakeRequest(url, this.parseVocabInfo);
     }
 
