@@ -257,7 +257,7 @@ let Section = (props) => {
   
   return (
     <Card>
-      <CardHeader title={props.data['title'] || ''}
+      <CardHeader title={props.data['label'] || ''}
         action={
           <div>
             <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleOpenMenu}>
