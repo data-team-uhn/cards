@@ -19,8 +19,11 @@ package ca.sickkids.ccm.lfs.formcompletionstatus;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import javax.jcr.Node;
@@ -191,25 +194,28 @@ public final class ConditionalSectionUtils
     private static boolean evalSectionEq(final Object propA, final Object propB)
         throws RepositoryException, ValueFormatException
     {
+        if (propA == null || propB == null) {
+            return false;
+        }
         boolean testResult = false;
         switch (getPropertyObjectType(propA)) {
             case PropertyType.STRING:
                 testResult = propA.equals(propB);
                 break;
             case PropertyType.LONG:
-                testResult = (propA == propB);
+                testResult = toLong(propA) == toLong(propB);
                 break;
             case PropertyType.DOUBLE:
-                testResult = (propA.equals(propB));
+                testResult = toDouble(propA) == toDouble(propB);
                 break;
             case PropertyType.DECIMAL:
-                testResult = (((BigDecimal) propA).compareTo((BigDecimal) propB) == 0);
+                testResult = toDecimal(propA).compareTo(toDecimal(propB)) == 0;
                 break;
             case PropertyType.BOOLEAN:
-                testResult = (propA == propB);
+                testResult = toBoolean(propA) == toBoolean(propB);
                 break;
             case PropertyType.DATE:
-                testResult = propA.equals(propB);
+                testResult = toDate(propA).compareTo(toDate(propB)) == 0;
                 break;
             default:
                 break;
@@ -220,19 +226,22 @@ public final class ConditionalSectionUtils
     private static boolean evalSectionLt(final Object propA, final Object propB)
         throws RepositoryException, ValueFormatException
     {
+        if (propA == null || propB == null) {
+            return false;
+        }
         boolean testResult = false;
         switch (getPropertyObjectType(propA)) {
             case PropertyType.LONG:
-                testResult = ((long) propA < (long) propB);
+                testResult = toLong(propA) < toLong(propB);
                 break;
             case PropertyType.DOUBLE:
-                testResult = ((double) propA < (double) propB);
+                testResult = toDouble(propA) < toDouble(propB);
                 break;
             case PropertyType.DECIMAL:
-                testResult = (((BigDecimal) propA).compareTo((BigDecimal) propB) == -1);
+                testResult = toDecimal(propA).compareTo(toDecimal(propB)) < 0;
                 break;
             case PropertyType.DATE:
-                testResult = ((Calendar) propA).before((Calendar) propB);
+                testResult = toDate(propA).before(toDate(propB));
                 break;
             default:
                 break;
@@ -243,19 +252,22 @@ public final class ConditionalSectionUtils
     private static boolean evalSectionGt(final Object propA, final Object propB)
         throws RepositoryException, ValueFormatException
     {
+        if (propA == null || propB == null) {
+            return false;
+        }
         boolean testResult = false;
         switch (getPropertyObjectType(propA)) {
             case PropertyType.LONG:
-                testResult = ((long) propA > (long) propB);
+                testResult = toLong(propA) > toLong(propB);
                 break;
             case PropertyType.DOUBLE:
-                testResult = ((double) propA > (double) propB);
+                testResult = toDouble(propA) > toDouble(propB);
                 break;
             case PropertyType.DECIMAL:
-                testResult = (((BigDecimal) propA).compareTo((BigDecimal) propB) == 1);
+                testResult = toDecimal(propA).compareTo(toDecimal(propB)) > 0;
                 break;
             case PropertyType.DATE:
-                testResult = ((Calendar) propA).after((Calendar) propB);
+                testResult = toDate(propA).after(toDate(propB));
                 break;
             default:
                 break;
@@ -512,5 +524,69 @@ public final class ConditionalSectionUtils
             }
         }
         return false;
+    }
+
+    private static long toLong(Object o)
+    {
+        long result = 0;
+        if (o instanceof Number) {
+            result = ((Number) o).longValue();
+        } else if (o instanceof String) {
+            result = Long.valueOf((String) o);
+        }
+        return result;
+    }
+
+    private static double toDouble(Object o)
+    {
+        double result = Double.NaN;
+        if (o instanceof Number) {
+            result = ((Number) o).doubleValue();
+        } else if (o instanceof String) {
+            result = Double.valueOf((String) o);
+        }
+        return result;
+    }
+
+    private static BigDecimal toDecimal(Object o)
+    {
+        BigDecimal result = null;
+        if (o instanceof Long) {
+            result = BigDecimal.valueOf((Long) o);
+        } else if (o instanceof Integer) {
+            result = BigDecimal.valueOf((Integer) o);
+        } else if (o instanceof Double) {
+            result = BigDecimal.valueOf((Double) o);
+        } else if (o instanceof Float) {
+            result = BigDecimal.valueOf((Float) o);
+        } else if (o instanceof String) {
+            result = new BigDecimal((String) o);
+        }
+        return result;
+    }
+
+    private static boolean toBoolean(Object o)
+    {
+        boolean result = false;
+        if (o instanceof Boolean) {
+            result = (Boolean) o;
+        } else if (o instanceof String) {
+            result = Boolean.getBoolean((String) o);
+        }
+        return result;
+    }
+
+    private static Calendar toDate(Object o)
+    {
+        Calendar result = null;
+        if (o instanceof Calendar) {
+            result = (Calendar) o;
+        } else if (o instanceof Date) {
+            result = Calendar.getInstance();
+            result.setTime((Date) o);
+        } else if (o instanceof String) {
+            result = GregorianCalendar.from(ZonedDateTime.parse((String) o, DateTimeFormatter.ISO_DATE_TIME));
+        }
+        return result;
     }
 }
