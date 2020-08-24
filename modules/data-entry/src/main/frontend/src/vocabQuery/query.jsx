@@ -396,10 +396,10 @@ class VocabularyQuery extends React.Component {
             suggestions.push(
               <MenuItem
                 className={this.props.classes.dropdownItem}
-                key={element["identifier"]}
+                key={element["@path"]}
                 onClick={(e) => {
                   if (e.target.localName === "li") {
-                    this.props.onClick(element["identifier"], name);
+                    this.props.onClick(element["@path"], name);
                     this.anchorEl.value = name;
                     this.closeDialog();
                   }}

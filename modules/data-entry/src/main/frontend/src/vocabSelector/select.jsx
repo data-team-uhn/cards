@@ -187,7 +187,7 @@ function VocabularySelector(props) {
 
       // Determine the name from our vocab
       var escapedId = id.replace(":", "");  // Vocabulary terms have no colons in their JCR node names
-      var url = new URL(`./${source}/${escapedId}.json`, REST_URL);
+      var url = new URL(`${id}.json`, window.location.origin);
       MakeRequest(url, (status, data) => addDefaultSuggestion(status, data, id));
     };
 
@@ -200,7 +200,7 @@ function VocabularySelector(props) {
         }
         // Determine the name from our vocab
         var escapedId = id.replace(":", "");  // Vocabulary terms have no colons in their JCR node names
-        var url = new URL(`./${source}/${escapedId}.json`, REST_URL);
+        var url = new URL(`${id}.json`, window.location.origin);
         MakeRequest(url, (status, data) => addDefaultSuggestion(status, data, id, false));
       });
     }
