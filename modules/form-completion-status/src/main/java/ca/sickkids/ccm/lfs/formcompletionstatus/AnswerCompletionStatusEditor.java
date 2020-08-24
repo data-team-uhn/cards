@@ -257,12 +257,11 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         throws RepositoryException
     {
         // Iterate through all children of this node
-        final Iterable<String> childrenNames = selectedNodeBuilder.getChildNodeNames();
-        final Iterator<String> childrenNamesIter = childrenNames.iterator();
+        final Iterator<String> childrenNames = this.currentNodeBuilder.getChildNodeNames().iterator();
         boolean isInvalid = false;
         boolean isIncomplete = false;
-        while (childrenNamesIter.hasNext()) {
-            final String selectedChildName = childrenNamesIter.next();
+        while (childrenNames.hasNext()) {
+            final String selectedChildName = childrenNames.next();
             final NodeBuilder selectedChild = this.currentNodeBuilder.getChildNode(selectedChildName);
             if ("lfs:AnswerSection".equals(selectedChild.getProperty("jcr:primaryType").getValue(Type.STRING))) {
                 final Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);

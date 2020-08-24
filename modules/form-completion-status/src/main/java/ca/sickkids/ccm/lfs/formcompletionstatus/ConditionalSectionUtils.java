@@ -37,14 +37,16 @@ import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public final class ConditionalSectionUtils
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConditionalSectionUtils.class);
 
     private static final String PROP_QUESTION = "question";
+
     private static final String PROP_IS_REFERENCE = "isReference";
+
     private static final String PROP_VALUE = "value";
+
     private static final String PROP_REQUIRE_ALL = "requireAll";
 
     /**
@@ -268,10 +270,6 @@ public final class ConditionalSectionUtils
         throws RepositoryException, ValueFormatException
     {
         if ("=".equals(operator) || "<>".equals(operator)) {
-            /*
-             * Type.STRING uses .equals()
-             * Everything else uses ==
-             */
             boolean testResult = evalSectionEq(propA, propB);
             if ("<>".equals(operator)) {
                 testResult = !testResult;
@@ -304,8 +302,7 @@ public final class ConditionalSectionUtils
     private static Object getObjectFromPropertyState(PropertyState ps, int index)
     {
         Object ret = null;
-        switch (getPropertyStateType(ps))
-        {
+        switch (getPropertyStateType(ps)) {
             case PropertyType.STRING:
                 ret = ps.getValue(Type.STRING, index);
                 break;
@@ -394,7 +391,6 @@ public final class ConditionalSectionUtils
             Property nodeProp = operand.getProperty(PROP_VALUE);
             Value nodeVal;
             if (nodeProp.isMultiple()) {
-                Value[] nodeVals = nodeProp.getValues();
                 nodeVal = nodeProp.getValues()[index];
             } else {
                 nodeVal = nodeProp.getValue();
@@ -435,8 +431,7 @@ public final class ConditionalSectionUtils
         final boolean requireAllA = operandA.getProperty(PROP_REQUIRE_ALL).getBoolean();
 
         /*
-         * Check for "is empty" / "is not empty" as requireAll is not
-         * relevant for these operators
+         * Check for "is empty" / "is not empty" as requireAll is not relevant for these operators
          */
         if ("is empty".equals(comparator) || "is not empty".equals(comparator)) {
             boolean testResult = (lengthB == -1 || lengthA == -1);
@@ -446,7 +441,7 @@ public final class ConditionalSectionUtils
             return testResult;
         }
 
-        //If at least one operand requires all to match
+        // If at least one operand requires all to match
         final boolean requireAllMulti = requireAllB | requireAllA;
 
         boolean res = requireAllMulti;
@@ -475,6 +470,7 @@ public final class ConditionalSectionUtils
             // Is this an OR or an AND
             final boolean requireAll = conditionNode.getProperty(PROP_REQUIRE_ALL).getBoolean();
             // Evaluate recursively
+            @SuppressWarnings("unchecked")
             final Iterator<Node> conditionChildren = conditionNode.getNodes();
             boolean downstreamResult = false;
             if (requireAll) {
@@ -494,15 +490,6 @@ public final class ConditionalSectionUtils
             final String comparator = conditionNode.getProperty("comparator").getString();
             final Node operandB = conditionNode.getNode("operandB");
             final Node operandA = conditionNode.getNode("operandA");
-
-            //Get valueA[0..N] and valueB[0..N]
-            //If requireAll check that all combinations evaluate to true
-            //Otherwise check that at least one combination evaluates to true
-            final boolean requireAllB = operandB.getProperty(PROP_REQUIRE_ALL).getBoolean();
-            final boolean requireAllA = operandA.getProperty(PROP_REQUIRE_ALL).getBoolean();
-
-            //If at least one operand requires all to match
-            final boolean requireAllMulti = requireAllB | requireAllA;
 
             return evalOperands(operandA, operandB, comparator, sectionNode, prevNb);
         }
