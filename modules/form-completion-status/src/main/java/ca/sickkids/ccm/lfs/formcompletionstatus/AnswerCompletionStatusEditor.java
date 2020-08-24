@@ -259,7 +259,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         // Iterate through all children of this node
         final Iterator<String> childrenNames = this.currentNodeBuilder.getChildNodeNames().iterator();
         boolean isInvalid = false;
-        boolean isIncomplete = false;
+        // If there are no children yet, the form is brand new, thus incomplete
+        boolean isIncomplete = !childrenNames.hasNext();
         while (childrenNames.hasNext()) {
             final String selectedChildName = childrenNames.next();
             final NodeBuilder selectedChild = this.currentNodeBuilder.getChildNode(selectedChildName);
