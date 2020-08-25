@@ -167,7 +167,8 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
      * @param acl the access control list to convert
      * @throws RepositoryException if an error occurs traversing the access list
      */
-    private void writePolicies(JsonGenerator jsonGen, JackrabbitAccessControlList acl) throws RepositoryException {
+    private void writePolicies(JsonGenerator jsonGen, JackrabbitAccessControlList acl) throws RepositoryException
+    {
         jsonGen.writeStartArray("policies");
         // Find the necessary AccessControlEntry to remove
         JackrabbitAccessControlEntry[] entries = (JackrabbitAccessControlEntry[]) acl.getAccessControlEntries();
