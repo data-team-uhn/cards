@@ -33,6 +33,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 import QueryStyle from "./queryStyle.jsx";
 
 const NO_RESULTS_TEXT = "No results";
+const MAX_RESULTS = 10;
 
 // Component that renders a search bar for vocabulary terms.
 //
@@ -340,7 +341,7 @@ class VocabularyQuery extends React.Component {
     //Get an vocabulary to search through
     var selectedVocab = queue.pop();
     if (selectedVocab === undefined) {
-      this.showSuggestions(null, {rows: prevData});
+      this.showSuggestions(null, {rows: prevData.slice(0, MAX_RESULTS)});
       return;
     }
     var url = new URL(`./${selectedVocab}.search.json`, REST_URL);
