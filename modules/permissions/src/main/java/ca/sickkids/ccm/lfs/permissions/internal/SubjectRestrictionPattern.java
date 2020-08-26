@@ -71,14 +71,7 @@ public class SubjectRestrictionPattern implements RestrictionPattern
 
         // Check if the form's subject is the same as the one specified in the restriction
         String subject = formTree.getProperty("subject").getValue(Type.REFERENCE);
-        boolean result = StringUtils.equals(subject, this.targetSubject);
-
-        if (!result) {
-            // Check if the form's subject references the specified subject
-            result = matchesReference(subject);
-        }
-
-        return result;
+        return matchesReference(subject);
     }
 
     @Override
@@ -102,6 +95,10 @@ public class SubjectRestrictionPattern implements RestrictionPattern
      */
     private boolean matchesReference(String uuid)
     {
+        if (StringUtils.equals(uuid, this.targetSubject)) {
+            return true;
+        }
+
         if (this.session == null) {
             LOGGER.warn("Could not match subject UUID {}: session not found.", uuid);
             return false;
