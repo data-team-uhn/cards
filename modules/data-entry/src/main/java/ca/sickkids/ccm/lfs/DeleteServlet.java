@@ -313,7 +313,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
             // Will not be able to delete node due to references. Inform user.
             String referencedNodes = listReferrersFromTraversal(node);
             sendJsonError(response, SlingHttpServletResponse.SC_CONFLICT, String.format("This item is referenced %s.",
-                StringUtils.isEmpty(referencedNodes) ? " by unkown item(s)" : " in " + referencedNodes));
+                StringUtils.isEmpty(referencedNodes) ? " by unknown item(s)" : " in " + referencedNodes));
         }
     }
 
