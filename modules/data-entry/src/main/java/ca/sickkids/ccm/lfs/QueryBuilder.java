@@ -20,8 +20,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -87,9 +89,10 @@ public class QueryBuilder implements Use
             final String fullTextQuery = this.request.getParameter("fulltext");
             final String quickQuery = this.request.getParameter("quick");
             final String doNotEscape = this.request.getParameter("doNotEscapeQuery");
-            final long limit = getLongValueOrDefault(this.request.getParameter("limit"), 10);
+            long limit = getLongValueOrDefault(this.request.getParameter("limit"), 10);
             final long offset = getLongValueOrDefault(this.request.getParameter("offset"), 0);
             this.shouldEscape = StringUtils.isBlank(doNotEscape) || !("true".equals(doNotEscape));
+            boolean showTotalRows = true;
 
             // Try to use a JCR-SQL2 query first
             Iterator<JsonObject> results;
@@ -100,15 +103,21 @@ public class QueryBuilder implements Use
             } else if (StringUtils.isNotBlank(fullTextQuery)) {
                 results = QueryBuilder.adaptNodes(fullTextSearch(this.urlDecode(fullTextQuery)));
             } else if (StringUtils.isNotBlank(quickQuery)) {
-                results = quickSearch(this.urlDecode(quickQuery));
+                // get the admin quick search defined params if any
+                Resource settings = getSearchSettings("quick");
+                limit = settings.getValueMap().get("limit", limit);
+                String[] resourceTypes = settings.getValueMap().get("allowedResourceTypes", String[].class);
+                showTotalRows = settings.getValueMap().get("showTotalRows", showTotalRows);
+
+                results = quickSearch(this.urlDecode(quickQuery), limit, resourceTypes, showTotalRows);
             } else {
                 results = Collections.emptyIterator();
             }
 
             // output the results into our content
             JsonObjectBuilder builder = Json.createObjectBuilder();
-            long[] metadata = this.addObjects(builder, results, offset, limit);
-            this.addSummary(builder, this.request, metadata);
+            long[] metadata = this.addObjects(builder, results, offset, limit, showTotalRows);
+            this.addSummary(builder, this.request, metadata, showTotalRows);
             this.content = builder.build().toString();
         } catch (Exception e) {
             this.content = "Unknown error: " + e.fillInStackTrace();
@@ -297,21 +306,72 @@ public class QueryBuilder implements Use
         builder.add(QueryBuilder.LFS_QUERY_MATCH_KEY, metadata);
         return builder.build();
     }
+
+    /**
+     * Finds the search settings for the given QuickSearchResultsWidget node label.
+     *
+     * @param label the label of QuickSearchResultsWidget - "query", "lucene", "fulltext" or "quick"
+     * @return a JsonObject of filterable fields
+     */
+    private Resource getSearchSettings(final String label) throws RepositoryException
+    {
+        final String query =
+            String.format("select n from [lfs:QuickSearchResultsWidget] as n where n.label = '%s'", label);
+        Iterator<Resource> results = queryJCR(query);
+        if (results.hasNext()) {
+            return results.next();
+        }
+        return null;
+    }
+
     /**
      * Finds [lfs:Form]s, [lfs:Subject]s, and [lfs:Questionnaire]s using the given full text search.
      * This performs the search in such a way that values in child nodes (e.g. lfs:Answers of an lfs:Form)
      * are aggregated to their parent.
      *
      * @param query text to search
+     * @param limit the requested, default or set by admin limit
+     * @param resourceTypes resource types allowed for a search
+     * @param showTotalRows whether to show the total number of results
      *
      * @return the content matching the query
      */
-    private Iterator<JsonObject> quickSearch(String query) throws RepositoryException
+    private Iterator<JsonObject> quickSearch(String query, long limit, String[] resourceTypes,
+            boolean showTotalRows) throws RepositoryException
     {
-        ArrayList<JsonObject> outputList = new ArrayList<JsonObject>();
+        List<String> allowedResourceTypes = Arrays.asList(resourceTypes);
+        ArrayList<JsonObject> resultsList = new ArrayList<JsonObject>();
 
+        for (String type : allowedResourceTypes) {
+            // no need to go through all results list if we do not add total results number
+            if (resultsList.size() == limit && !showTotalRows) {
+                break;
+            }
+            quickSearch(resultsList, query, limit, type, showTotalRows);
+        }
+        return resultsList.listIterator();
+    }
+
+    /**
+     * Finds resources of a specific type using the given full text search.
+     * This performs the search in such a way that values in child nodes (e.g. lfs:Answers of an lfs:Form)
+     * are aggregated to their parent.
+     *
+     * @param resultsList aggregator of search results
+     * @param query text to search
+     * @param limit the requested, default or set by admin limit
+     * @param resourceType resource type for a search
+     * @param showTotalRows whether to show the total number of results
+     *
+     * @return the content matching the query
+     */
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity"})
+    private void quickSearch(ArrayList<JsonObject> outputList, String query, long limit,
+            String resourceType, boolean showTotalRows) throws RepositoryException
+    {
+        String type = resourceType.replace("lfs:", "");
         final StringBuilder xpathQuery = new StringBuilder();
-        xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value),'%");
+        xpathQuery.append("/jcr:root/" + type + "s//*[jcr:like(fn:lower-case(@value),'%");
         xpathQuery.append(this.fullTextEscape(query.toLowerCase()));
         xpathQuery.append("%') or jcr:like(fn:lower-case(@note),'%");
         xpathQuery.append(this.fullTextEscape(query.toLowerCase()));
@@ -322,8 +382,14 @@ public class QueryBuilder implements Use
         * For each Resource in foundResources, move up the tree until
         * we find an ancestor node of type `lfs:Form`
         */
+        String rtype = resourceType.replace(":", "/");
         while (foundResources.hasNext()) {
+            // no need to go through all results list if we do not add total results number
+            if (outputList.size() == limit && !showTotalRows) {
+                break;
+            }
             Resource thisResource = foundResources.next();
+
             Resource thisParent = thisResource;
             String[] resourceValues = thisResource.getValueMap().get("value", String[].class);
             String resourceValue = getMatchingFromArray(resourceValues, query);
@@ -339,7 +405,7 @@ public class QueryBuilder implements Use
             }
 
             // Find the Form parent of this question
-            while (thisParent != null && !"lfs/Form".equals(thisParent.getResourceType())) {
+            while (thisParent != null && !rtype.equals(thisParent.getResourceType())) {
                 thisParent = thisParent.getParent();
             }
 
@@ -349,7 +415,6 @@ public class QueryBuilder implements Use
                 ));
             }
         }
-        return outputList.listIterator();
     }
 
 
@@ -400,9 +465,11 @@ public class QueryBuilder implements Use
      * @param returnedNodes the number of matching nodes included in the response, may be {@code 0} if no nodes were
      *            returned
      * @param totalMatchingNodes the total number of accessible nodes matching the request, may be {@code 0} if no nodes
-     *            match the filters, or the current user cannot access the nodes
+     *            match the filters, or the current user cannot access the nodes, or absent if showTotalRows == false
+     * @param showTotalRows whether to show the total number of results
      */
-    private void addSummary(final JsonObjectBuilder jsonGen, final SlingHttpServletRequest request, final long[] limits)
+    private void addSummary(final JsonObjectBuilder jsonGen, final SlingHttpServletRequest request, final long[] limits,
+            final boolean showTotalRows)
     {
         String req = request.getParameter("req");
         if (StringUtils.isBlank(req)) {
@@ -412,7 +479,9 @@ public class QueryBuilder implements Use
         jsonGen.add("offset", limits[0]);
         jsonGen.add("limit", limits[1]);
         jsonGen.add("returnedrows", limits[2]);
-        jsonGen.add("totalrows", limits[3]);
+        if (showTotalRows) {
+            jsonGen.add("totalrows", limits[3]);
+        }
     }
 
     /**
@@ -422,10 +491,12 @@ public class QueryBuilder implements Use
      * @param objects an iterator over the nodes to serialize, which will be consumed
      * @param offset the requested offset, may be the default value of {0}
      * @param limit the requested limit, may be the default value of {10}
+     * @param showTotalRows whether to show the total number of results
+     *
      * @return an array of size 4, giving the [0]: offset, [1]: limit, [2]: results, [3]: total matches
      */
     private long[] addObjects(final JsonObjectBuilder jsonGen, final Iterator<JsonObject> objects,
-        final long offset, final long limit)
+        final long offset, final long limit, final boolean showTotalRows)
     {
         final long[] counts = new long[4];
         counts[0] = offset;
@@ -448,6 +519,8 @@ public class QueryBuilder implements Use
                 builder.add(n);
                 --limitCounter;
                 ++counts[2];
+            } else if (!showTotalRows) {
+                break;
             }
             // Count the total number of results
             ++counts[3];

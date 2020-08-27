@@ -1,0 +1,10 @@
+{
+  "jcr:primaryType": "lfs:QuickSearchResultsWidgetHomepage",
+  "Quick": {
+    "jcr:primaryType": "lfs:QuickSearchResultsWidget",
+    "label": "quick",
+    "allowedResourceTypes": ["lfs:Form", "lfs:Subject", "lfs:Questionnaire"],
+    "limit": "5",
+    "showTotalRows": "true"
+  }
+}
