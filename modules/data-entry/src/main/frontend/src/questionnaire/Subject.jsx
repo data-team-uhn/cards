@@ -29,6 +29,7 @@ import {
 } from "@material-ui/core";
 
 import LiveTable from "../dataHomepage/LiveTable.jsx";
+import PermissionsButton from "./PermissionsButton";
 
 // Recursive function to get a flat list of parents
 export function getHierarchy (node, RenderComponent, propsCreator) {
@@ -142,6 +143,7 @@ function Subject (props) {
               <Typography variant="h2">{data?.type?.label || "Subject"} {data.identifier}</Typography>
             : <Typography variant="h2">Subject {id}</Typography>
           }
+          <PermissionsButton entryPath={data ? data["@path"] : "/Forms/"+id} />
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
             <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>

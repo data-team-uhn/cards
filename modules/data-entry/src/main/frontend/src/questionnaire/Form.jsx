@@ -41,7 +41,6 @@ import { getHierarchy } from "./Subject";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 import DialogueLoginContainer from "../login/loginDialogue.js";
-import PermissionsButton from "./PermissionsButton";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -223,7 +222,6 @@ function Form (props) {
                 {data?.subject?.identifier}
             </Link>
             {": " + (data?.questionnaire?.title || id || "")}
-            <PermissionsButton entryPath={data ? data["@path"] : "/Forms/"+id} />
           </Typography>
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?

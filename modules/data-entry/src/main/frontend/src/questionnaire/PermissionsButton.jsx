@@ -28,14 +28,18 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  ListItemAvatar,
+  ListItemText,
   TextField,
   Typography,
   withStyles
 } from "@material-ui/core";
+import DescriptionIcon from "@material-ui/icons/Description";
 import LockIcon from "@material-ui/icons/Lock";
 import MaterialTable from "material-table";
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+import SearchBar from "../SearchBar.jsx";
 
 function PermissionsButton(props) {
   const states ={
@@ -59,11 +63,12 @@ function PermissionsButton(props) {
     UNKNOWN: []
   }
 
-  const { classes, entryPath, entryName, warning, onComplete, entryType, size, shouldGoBack } = props;
+  const { classes, entryPath, entryName, warning, onComplete, entryType, size, shouldGoBack, ...rest } = props;
   const [ openState, setOpenState ] = useState(states.CLOSED);
   const [ policies, setPolicies ] = useState([]);
-  const [ users, setUsers ] = useState();
-  const [ selectedUsers, setSelectedUsers ] = useState();
+  const [ error, setError ] = useState();
+  const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(true); // Default true since having nothing entered or a default value is valid
+  const [ selectedUser, setSelectedUser ] = useState();
   const [ privilege, setPrivilege] = useState(privilegeNames.VIEW);
 
   let setState = (newState) => {
@@ -77,9 +82,7 @@ function PermissionsButton(props) {
   let openNew = () => {
     setState(states.NEW);
     setPrivilege(privilegeNames.VIEW);
-    setUsers([]);
-    setSelectedUsers([]);
-    getUsers().then((loadedUsers) => getGroups(loadedUsers));
+    setSelectedUser("");
   }
 
   let handlePrivilegeChange = (event) => {
@@ -89,11 +92,6 @@ function PermissionsButton(props) {
   let handleIconClicked = () => {
     getPermissions().then(openPolicies);
   }
-
-  let handleUserRowClick = (rows) => {
-    let chosens = rows.map((row) => row.name);
-    setSelectedUsers(chosens);
-}
 
   let handlePolicyDelete = (rowData) => {
     let request_data = new FormData();
@@ -174,49 +172,12 @@ function PermissionsButton(props) {
         .catch(() => {setPolicies([])});
   }
 
-  let getUsers = () => {
-    return fetch("/home/users.json",
-      {
-        method: 'GET',
-        credentials: 'include'
-    })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      data.rows?.forEach((r) => r.initials = (r.firstname?.charAt(0) + r.lastname?.charAt(0)) || r.name?.charAt(0) || '?')
-      return data.rows;
-    })
-    .catch((error) => {
-      console.log(error);
-    })
-  }
-
-  let getGroups = (loadedUsers) => {
-    let savedUsers = loadedUsers;
-    fetch("/home/groups.json",
-      {
-        method: 'GET',
-        credentials: 'include'
-    })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      setUsers(savedUsers.concat(data.rows));
-    })
-    .catch((error) => {
-      console.log(error);
-    })
-  }
-
   let setPermissions = () => {
     let request_data = new FormData();
     let url = new URL(entryPath + ".permissions", window.location.origin);
     url.searchParams.set(":rule", "allow");
     url.searchParams.set(":privileges", privilegeNameToJcr(privilege));
-    url.searchParams.set(":principal", selectedUsers[0]);
-    // url.searchParams.set(":restriction", "lfs:Form=f6d0a74c-39b0-45c0-adbb-69e30edfed3a");
+    url.searchParams.set(":principal", selectedUser);
     url.searchParams.set(":action", "add");
     fetch( url, {
       method: 'POST',
@@ -228,6 +189,56 @@ function PermissionsButton(props) {
 
     setState(close());
   }
+
+
+
+
+  let closePopper = () => {
+    if (!hasSelectedValidSubject) {
+      setError("Invalid subject selected");
+    }
+  }
+  // Pass information about a selected subject upwards
+  let selectSubject = (event, row) => {
+    row["rep:authorizableId"];
+    // setHasSelectedValidSubject(true);
+    setError(false);
+  }
+  let constructQuery = (query, requestID) => {
+    let url = new URL("/home.json", window.location.origin);
+    url.searchParams.set("limit", 10);
+    url.searchParams.set("offset", 0);
+    url.searchParams.set("req", requestID);
+    if (query) {
+      url.searchParams.set("nameFilter", query + "%");
+    }
+    return(url);
+  }
+
+  // Generate a human-readable info about the subject matching the query
+  function QuickSearchResultHeader(props) {
+    const {resultData} = props;
+    return resultData && (
+      <div>
+        {resultData["jcr:authorizableId"] || ''}
+      </div>
+    ) || null
+  }
+  // Display a quick search result
+  // If it's a resource, show avatar, category, and title
+  // Otherwise, if it's a generic entry, simply display the name
+  let QuickSearchResult = (props) => (
+    <React.Fragment>
+      <ListItemAvatar><Avatar className={classes.searchResultAvatar}><DescriptionIcon /></Avatar></ListItemAvatar>
+      <ListItemText
+        primary={(<QuickSearchResultHeader resultData={props.resultData} />)}
+        className={classes.dropdownItem}
+      />
+    </React.Fragment>
+  )
+
+
+
 
   return (
     <React.Fragment>
@@ -284,30 +295,25 @@ function PermissionsButton(props) {
           <Typography variant="body1">Restrictions</Typography>
           <TextField type="text" value={"Todo"} />
           {/* // TODO: convert to AutoComplete/searchbar */}
-          <Grid container>
-            <div>
-              <MaterialTable
-                title="User"
-                style={{ boxShadow : 'none' }}
-                options={{
-                  // headerStyle: { backgroundColor: headerBackground },
-                  emptyRowsWhenPaging: false,
-                  selection: true,
-                  showSelectAllCheckbox : false,
-                  showTextRowsSelected: false,
-                  selectionProps: rowData => ({
-                      color: 'primary'
-                    })
-                }}
-                columns={[
-                  { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.initials}</Avatar>},
-                  { title: 'User Name', field: 'name' },
-                ]}
-                data={users}
-                onSelectionChange={handleUserRowClick}
-              />
-            </div>
-          </Grid>
+          <Typography variant="body1">Principal</Typography>
+          <SearchBar
+            // defaultValue={}
+            // onChange={invalidateInput}
+            onPopperClose={closePopper}
+            onSelect={selectSubject}
+            queryConstructor={constructQuery}
+            resultConstructor={QuickSearchResult}
+            error={!!error /* Turn into a boolean to prevent PropTypes warnings */}
+            className={(hasSelectedValidSubject ? "" : classes.invalidSubjectText)}
+            startAdornment={
+              error && <InputAdornment position="end">
+                <Tooltip title={error}>
+                  <ErrorIcon />
+                </Tooltip>
+              </InputAdornment> || undefined
+              }
+            {...rest}
+            />
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
           <Button variant="contained" color="secondary" size="small" onClick={setPermissions}>Save</Button>

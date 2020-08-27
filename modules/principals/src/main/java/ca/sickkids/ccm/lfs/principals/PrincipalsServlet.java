@@ -78,15 +78,18 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
 
         private final String filter;
 
+        private final String nameFilter;
+
         private final long offset;
 
         private FilteredPrincipalsQuery(JackrabbitSession session, AuthorizableType type, long limit, String filter,
-            long offset)
+            String nameFilter, long offset)
         {
             this.session = session;
             this.type = type;
             this.limit = limit;
             this.filter = filter;
+            this.nameFilter = nameFilter;
             this.offset = offset;
         }
 
@@ -106,6 +109,9 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
             if (StringUtils.isNotBlank(this.filter)) {
                 // Full text search in the principal's node
                 condition = builder.and(condition, builder.contains(".", this.filter));
+            }
+            if (StringUtils.isNotBlank(this.nameFilter)) {
+                condition = builder.and(condition, builder.nameMatches(this.nameFilter));
             }
             builder.setCondition(condition);
             // What type of principal to include
@@ -129,6 +135,7 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String filter = request.getParameter("filter");
+        String nameFilter = request.getParameter("nameFilter");
         final long limit = getLongValueOrDefault(request.getParameter("limit"), 0);
         final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
         Session session = request.getResourceResolver().adaptTo(Session.class);
@@ -150,10 +157,11 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
                         type = AuthorizableType.AUTHORIZABLE;
                 }
                 jsonGen.writeStartObject();
+
                 // The magic number 8 is the prefix length for the protocol, https://
                 long[] principalCounts =
                     writePrincipals(jsonGen,
-                        queryPrincipals((JackrabbitSession) session, type, filter, 0, Long.MAX_VALUE),
+                        queryPrincipals((JackrabbitSession) session, type, filter, nameFilter, 0, Long.MAX_VALUE),
                         request.getRequestURL().substring(0, request.getRequestURL().indexOf("/", 8))
                             + request.getContextPath(), offset, limit);
                 writeSummary(jsonGen, request, filter, offset, limit,
@@ -177,9 +185,9 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
      * @throws RepositoryException if the query fails
      */
     private Iterator<Authorizable> queryPrincipals(final JackrabbitSession session, final AuthorizableType type,
-        final String filter, final long offset, final long limit) throws RepositoryException
+        final String filter, final String nameFilter, final long offset, final long limit) throws RepositoryException
     {
-        final Query q = new FilteredPrincipalsQuery(session, type, limit, filter, offset);
+        final Query q = new FilteredPrincipalsQuery(session, type, limit, filter, nameFilter, offset);
         final UserManager userManager = session.getUserManager();
         return userManager.findAuthorizables(q);
     }
