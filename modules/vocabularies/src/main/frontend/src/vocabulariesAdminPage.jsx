@@ -26,6 +26,8 @@ import React from "react";
 
 import VocabularyDirectory from "./vocabularyDirectory";
 
+import OwlInstaller from "./owlInstaller";
+
 import fetchBioPortalApiKey from "./bioportalApiKey";
 
 const Phase = require("./phaseCodes.json");
@@ -172,6 +174,14 @@ export default function VocabulariesAdminPage() {
         addSetter={addSetter}
         setPhase={setPhase}
       />
+
+      <Grid item>
+        <Typography variant="h2">
+          Install from OWL file
+        </Typography>
+      </Grid>
+
+      <OwlInstaller updateLocalList={updateLocalList}/>
 
       <Grid item>
         <Typography variant="h2">

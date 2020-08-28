@@ -49,6 +49,8 @@ import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.sickkids.ccm.lfs.vocabularies.spi.SourceParser;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescription;
@@ -67,6 +69,8 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class OwlParser implements SourceParser
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OwlParser.class);
+
     @Reference
     private VocabularyParserUtils utils;
 
@@ -135,6 +139,7 @@ public class OwlParser implements SourceParser
     private void processTerm(final OntClass term, final Consumer<VocabularyTermSource> consumer)
         throws VocabularyIndexException
     {
+        //LOGGER.warn("Processing term: {}", term.getURI());
         // Identifier code is the local name of the term
         String identifier = term.getLocalName();
 
@@ -155,7 +160,11 @@ public class OwlParser implements SourceParser
         // Backing up if rdf jena utils failed to get Identifier from term uri
         if (identifier.length() == 0 && gatheredProperties.get("id").size() > 0) {
             identifier = gatheredProperties.get("id").iterator().next();
+        } else if (identifier.length() == 0 && term.getURI().split("/").length > 0) {
+            int uriDepth = term.getURI().split("/").length;
+            identifier = term.getURI().split("/")[uriDepth - 1];
         }
+        LOGGER.warn("Using identifier: {}", identifier);
 
         String[] parents = getAncestors(term, false);
         String[] ancestors = getAncestors(term, true);
