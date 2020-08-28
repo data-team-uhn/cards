@@ -60,7 +60,8 @@ public class SubjectRestrictionPattern implements RestrictionPattern
         // This restriction only applies to Forms and their descendant items.
         // If this is not a Form node, look for one among its ancestors.
         Tree formTree = tree;
-        while (!formTree.getProperty("jcr:primaryType").getValue(Type.STRING).equals("lfs:Form")
+        while ((formTree.getProperty("jcr:primaryType") == null
+            || !formTree.getProperty("jcr:primaryType").getValue(Type.STRING).equals("lfs:Form"))
             && !formTree.isRoot()) {
             formTree = formTree.getParent();
         }
