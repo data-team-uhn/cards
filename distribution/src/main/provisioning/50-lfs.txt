@@ -50,3 +50,13 @@
 
 [artifacts runModes=permissions_ownership]
     ca.sickkids.ccm.lfs/lfs-permissions-ownership/${lfs.version}
+
+[:repoinit]
+    # lfs-form-permissions
+    create service user lfs-form-permissions
+
+[configurations]
+  org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-forms-permissions
+    user.mapping=[
+      "ca.sickkids.ccm.lfs.permissions:forms\=lfs-form-permissions",
+    ]

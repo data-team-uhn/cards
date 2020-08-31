@@ -42,6 +42,8 @@ import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
@@ -64,7 +66,7 @@ import ca.sickkids.ccm.lfs.permissions.spi.PermissionsManager;
  */
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
-    resourceTypes = { "lfs/FormsHomepage", "lfs/Form", "lfs/Answer" },
+    resourceTypes = { "lfs/Subject", "lfs/FormsHomepage", "lfs/Form", "lfs/Answer" },
     selectors = { "permissions" },
     methods = { "POST" }
     )
@@ -77,6 +79,9 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
     @Reference
     private PermissionsManager permissionsChangeServiceHandler;
 
+    @Reference
+    private ResourceResolverFactory resolverFactory;
+
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
             throws ServletException, IOException
@@ -87,16 +92,47 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
         String target = uri.substring(0, uri.indexOf("."));
         JackrabbitSession session = (JackrabbitSession) request.getResourceResolver().adaptTo(Session.class);
 
-        switch (action) {
-            case "add":
-            case "remove":
-                this.editRule(session, target, request, action);
-                break;
-            case "get":
-                getPolicies(session, target, response);
-                break;
-            default:
-                throw new IllegalArgumentException("\":action\" must be on of 'get', 'allow' or 'deny'");
+        String restrictionText = request.getParameter(":restrictions");
+        try {
+            Map<String, Value> restrictions = parseRestriction(restrictionText, session.getValueFactory());
+            Value subject = restrictions.get("lfs:subject");
+            Boolean useServiceUser = (subject != null && "/Forms".equals(target));
+
+            if (useServiceUser && hasSubjectPermissions(session, subject.getString())) {
+                Map<String, Object> param = new HashMap<String, Object>();
+                param.put(ResourceResolverFactory.SUBSERVICE, "forms");
+                session = (JackrabbitSession) this.resolverFactory.getServiceResourceResolver(param)
+                    .adaptTo(Session.class);
+            }
+
+            switch (action) {
+                case "add":
+                case "remove":
+                    this.editRule(session, target, request, action, restrictions);
+                    break;
+                case "get":
+                    getPolicies(session, target, response);
+                    break;
+                default:
+                    throw new IllegalArgumentException("\":action\" must be on of 'get', 'allow' or 'deny'");
+            }
+        } catch (LoginException | RepositoryException e) {
+            LOGGER.error("Failed to change permissions: {}", e.getMessage(), e);
+        }
+    }
+
+    private Boolean hasSubjectPermissions(JackrabbitSession session, String subject)
+    {
+        try {
+            Privilege[] privileges = session.getAccessControlManager().getPrivileges("/Subjects/" + subject);
+            for (Privilege privilege : privileges) {
+                if ("jcr:modifyAccessControl".equals(privilege.getName())) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (RepositoryException e) {
+            return false;
         }
     }
 
@@ -107,18 +143,17 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
      * @param request the http request to retrieve parameters from
      * @param action the action to perform: either "add" or "remove"
      */
-    private void editRule(JackrabbitSession session, String target, SlingHttpServletRequest request, String action)
+    private void editRule(JackrabbitSession session, String target, SlingHttpServletRequest request, String action,
+        Map<String, Value> restrictions)
     {
         String rule = request.getParameter(":rule");
         String privilegesText = request.getParameter(":privileges");
         String principalName = request.getParameter(":principal");
-        String restrictionText = request.getParameter(":restriction");
 
         // Alter this node's permissions
         try {
             boolean isAllow = parseRule(rule);
             Privilege[] privileges = parsePrivileges(privilegesText, session.getAccessControlManager());
-            Map<String, Value> restrictions = parseRestriction(restrictionText, session.getValueFactory());
             Principal principal = session.getPrincipalManager().getPrincipal(principalName);
             if ("add".equals(action)) {
                 this.permissionsChangeServiceHandler.addAccessControlEntry(

@@ -52,10 +52,15 @@
 \
             set ACL on /Forms,/Subjects \
                 allow jcr:all for everyone \
+                allow rep:privilegeManagement for lfs-form-permissions \
             end \
 \
             set ACL on /Questionnaires,/SubjectTypes \
                 allow jcr:read for everyone \
+            end \
+\
+            set ACL on /home/users \
+                allow jcr:read for lfs-form-permissions \
             end \
           "]
 
@@ -71,10 +76,15 @@
 \
             set ACL on /Forms,/Subjects \
                 allow jcr:all for TrustedUsers \
+                allow rep:privilegeManagement for lfs-form-permissions \
             end \
 \
             set ACL on /Questionnaires,/SubjectTypes \
                 allow jcr:read for TrustedUsers \
+            end \
+\
+            set ACL on /home/users \
+                allow jcr:read for lfs-form-permissions \
             end \
           "]
 
@@ -88,9 +98,14 @@
 \
             set ACL on /Forms,/Subjects \
                 allow jcr:all for everyone restriction(lfs:owner) \
+                allow rep:privilegeManagement for lfs-form-permissions \
             end \
 \
             set ACL on /Questionnaires,/SubjectTypes \
                 allow jcr:read for everyone \
+            end \
+\
+            set ACL on /home/users \
+                allow jcr:read for lfs-form-permissions \
             end \
           "]

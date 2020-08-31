@@ -49,6 +49,7 @@ function PermissionsButton(props) {
   }
 
   const privilegeNames = {
+    NONE:"None",
     VIEW:"View",
     EDIT:"Edit",
     MANAGE: "Manage",
@@ -56,6 +57,7 @@ function PermissionsButton(props) {
     UNKNOWN: ""
   }
   const privilegeJcr = {
+    NONE: [],
     VIEW: ["jcr:read"],
     EDIT: ["jcr:read","jcr:write"].sort(),
     MANAGE: ["jcr:read","jcr:write","jcr:readAccessControl","jcr:modifyAccessControl"].sort(),
@@ -70,6 +72,7 @@ function PermissionsButton(props) {
   const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(true); // Default true since having nothing entered or a default value is valid
   const [ selectedUser, setSelectedUser ] = useState();
   const [ privilege, setPrivilege] = useState(privilegeNames.VIEW);
+  const [ formPrivilege, setFormPrivilege] = useState(privilegeNames.VIEW);
 
   let setState = (newState) => {
     if (openState !== newState) {
@@ -82,11 +85,16 @@ function PermissionsButton(props) {
   let openNew = () => {
     setState(states.NEW);
     setPrivilege(privilegeNames.VIEW);
+    setFormPrivilege(privilegeNames.VIEW);
     setSelectedUser("");
   }
 
   let handlePrivilegeChange = (event) => {
     setPrivilege(event.target.value);
+  }
+
+  let handleFormPrivilegeChange = (event) => {
+    setFormPrivilege(event.target.value);
   }
 
   let handleIconClicked = () => {
@@ -98,6 +106,7 @@ function PermissionsButton(props) {
     let url = new URL(entryPath + ".permissions", window.location.origin);
     url.searchParams.set(":rule", "allow");
     url.searchParams.set(":privileges", privilegeNameToJcr(rowData.privileges));
+    // url.searchParams.set(":formPrivileges", privilegeNameToJcr(rowData.formPrivilege));
     url.searchParams.set(":principal", rowData.principal);
     url.searchParams.set(":restriction", rowData.restrictions);
     url.searchParams.set(":action", "remove");
@@ -113,6 +122,8 @@ function PermissionsButton(props) {
 
   let privilegeNameToJcr = (name) => {
     switch (name) {
+      case privilegeNames.NONE:
+        return privilegeJcr.NONE;
       case privilegeNames.VIEW:
         return privilegeJcr.VIEW;
       case privilegeNames.EDIT:
@@ -129,6 +140,7 @@ function PermissionsButton(props) {
   let privilegeJcrToName = (jcr) => {
     jcr.sort();
 
+    if (arrayEquals(jcr, privilegeJcr.NONE)) return privilegeNames.NONE;
     if (arrayEquals(jcr, privilegeJcr.VIEW)) return privilegeNames.VIEW;
     if (arrayEquals(jcr, privilegeJcr.EDIT)) return privilegeNames.EDIT;
     if (arrayEquals(jcr, privilegeJcr.MANAGE)) return privilegeNames.MANAGE;
@@ -173,21 +185,46 @@ function PermissionsButton(props) {
   }
 
   let setPermissions = () => {
+    setSubjectPermissions().then(setFormPermissions());
+
+    setState(close());
+  }
+
+  let setSubjectPermissions = () => {
+    if (privilege !== "") {
+      return postPermissions(entryPath, "allow", privilegeNameToJcr(privilege), selectedUser, null, "add")
+    } else {
+      return Promise.resolve();
+    }
+  }
+
+  let setFormPermissions = () => {
+    if (privilege !== "") {
+      var pathEntries = entryPath.split("/");
+      var subjectId = pathEntries.[pathEntries.length-1];
+      return postPermissions("/Forms", "allow", privilegeNameToJcr(formPrivilege), selectedUser, "lfs:subject=" + subjectId, "add");
+    } else {
+      return Promise.resolve();
+    }
+  }
+
+  let postPermissions = (path, rule, privileges, principal, restrictions, action) => {
     let request_data = new FormData();
-    let url = new URL(entryPath + ".permissions", window.location.origin);
-    url.searchParams.set(":rule", "allow");
-    url.searchParams.set(":privileges", privilegeNameToJcr(privilege));
-    url.searchParams.set(":principal", selectedUser);
-    url.searchParams.set(":action", "add");
-    fetch( url, {
+    let url = new URL(path + ".permissions", window.location.origin);
+    url.searchParams.set(":rule", rule);
+    url.searchParams.set(":privileges", privileges);
+    url.searchParams.set(":principal", principal);
+    url.searchParams.set(":action", action);
+    if (restrictions) {
+      url.searchParams.set(":restrictions", restrictions);
+    }
+    return fetch( url, {
       method: 'POST',
       body: request_data,
       headers: {
         Accept: "application/json"
       }
     });
-
-    setState(close());
   }
 
 
@@ -200,7 +237,7 @@ function PermissionsButton(props) {
   }
   // Pass information about a selected subject upwards
   let selectSubject = (event, row) => {
-    row["rep:authorizableId"];
+    setSelectedUser(row["principalName"]);
     // setHasSelectedValidSubject(true);
     setError(false);
   }
@@ -220,7 +257,7 @@ function PermissionsButton(props) {
     const {resultData} = props;
     return resultData && (
       <div>
-        {resultData["jcr:authorizableId"] || ''}
+        {resultData["principalName"] || ''}
       </div>
     ) || null
   }
@@ -286,15 +323,6 @@ function PermissionsButton(props) {
         <Typography variant="h6">New Permission</Typography>
         </DialogTitle>
         <DialogContent>
-          <Typography variant="body1">Permission</Typography>
-          <TextField select defaultValue={privilegeNames.VIEW} onChange={handlePrivilegeChange}>
-            <option value={privilegeNames.VIEW}>{privilegeNames.VIEW}</option>
-            <option value={privilegeNames.EDIT}>{privilegeNames.EDIT}</option>
-            <option value={privilegeNames.MANAGE}>{privilegeNames.MANAGE}</option>
-          </TextField>
-          <Typography variant="body1">Restrictions</Typography>
-          <TextField type="text" value={"Todo"} />
-          {/* // TODO: convert to AutoComplete/searchbar */}
           <Typography variant="body1">Principal</Typography>
           <SearchBar
             // defaultValue={}
@@ -314,6 +342,20 @@ function PermissionsButton(props) {
               }
             {...rest}
             />
+          <Typography variant="body1">Permission</Typography>
+          <TextField select defaultValue={privilegeNames.VIEW} onChange={handlePrivilegeChange}>
+            <option value={privilegeNames.NONE}>{privilegeNames.NONE}</option>
+            <option value={privilegeNames.VIEW}>{privilegeNames.VIEW}</option>
+            <option value={privilegeNames.EDIT}>{privilegeNames.EDIT}</option>
+            <option value={privilegeNames.MANAGE}>{privilegeNames.MANAGE}</option>
+          </TextField>
+          <Typography variant="body1">Form Permission</Typography>
+          <TextField select defaultValue={privilegeNames.VIEW} onChange={handleFormPrivilegeChange}>
+            <option value={privilegeNames.NONE}>{privilegeNames.NONE}</option>
+            <option value={privilegeNames.VIEW}>{privilegeNames.VIEW}</option>
+            <option value={privilegeNames.EDIT}>{privilegeNames.EDIT}</option>
+            <option value={privilegeNames.MANAGE}>{privilegeNames.MANAGE}</option>
+          </TextField>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
           <Button variant="contained" color="secondary" size="small" onClick={setPermissions}>Save</Button>
