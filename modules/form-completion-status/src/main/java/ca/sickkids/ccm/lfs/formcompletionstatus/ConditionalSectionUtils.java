@@ -24,7 +24,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -51,6 +53,68 @@ public final class ConditionalSectionUtils
     private static final String PROP_VALUE = "value";
 
     private static final String PROP_REQUIRE_ALL = "requireAll";
+
+    @SuppressWarnings("serial")
+    private static final Map<Integer, java.util.function.BiFunction<Object, Object, Boolean>> EQ_OPERATORS =
+        new HashMap<Integer, java.util.function.BiFunction<Object, Object, Boolean>>()
+        {
+            {
+                put(PropertyType.STRING, Object::equals);
+                put(PropertyType.LONG, (a, b) -> toLong(a) == toLong(b));
+                put(PropertyType.DOUBLE, (a, b) -> toDouble(a) == toDouble(b));
+                put(PropertyType.DECIMAL, (a, b) -> {
+                    BigDecimal decimalA = toDecimal(a);
+                    BigDecimal decimalB = toDecimal(b);
+                    return decimalA != null && decimalB != null && decimalA.compareTo(decimalB) == 0;
+                });
+                put(PropertyType.BOOLEAN, (a, b) -> toBoolean(a) == toBoolean(b));
+                put(PropertyType.DATE, (a, b) -> {
+                    Calendar dateA = toDate(a);
+                    Calendar dateB = toDate(b);
+                    return dateA != null && dateB != null && dateA.compareTo(dateB) == 0;
+                });
+            }
+        };
+
+    @SuppressWarnings("serial")
+    private static final Map<Integer, java.util.function.BiFunction<Object, Object, Boolean>> LT_OPERATORS =
+        new HashMap<Integer, java.util.function.BiFunction<Object, Object, Boolean>>()
+        {
+            {
+                put(PropertyType.LONG, (a, b) -> toLong(a) < toLong(b));
+                put(PropertyType.DOUBLE, (a, b) -> toDouble(a) < toDouble(b));
+                put(PropertyType.DECIMAL, (a, b) -> {
+                    BigDecimal decimalA = toDecimal(a);
+                    BigDecimal decimalB = toDecimal(b);
+                    return decimalA != null && decimalB != null && decimalA.compareTo(decimalB) < 0;
+                });
+                put(PropertyType.DATE, (a, b) -> {
+                    Calendar dateA = toDate(a);
+                    Calendar dateB = toDate(b);
+                    return dateA != null && dateB != null && dateA.before(dateB);
+                });
+            }
+        };
+
+    @SuppressWarnings("serial")
+    private static final Map<Integer, java.util.function.BiFunction<Object, Object, Boolean>> GT_OPERATORS =
+        new HashMap<Integer, java.util.function.BiFunction<Object, Object, Boolean>>()
+        {
+            {
+                put(PropertyType.LONG, (a, b) -> toLong(a) > toLong(b));
+                put(PropertyType.DOUBLE, (a, b) -> toDouble(a) > toDouble(b));
+                put(PropertyType.DECIMAL, (a, b) -> {
+                    BigDecimal decimalA = toDecimal(a);
+                    BigDecimal decimalB = toDecimal(b);
+                    return decimalA != null && decimalB != null && decimalA.compareTo(decimalB) > 0;
+                });
+                put(PropertyType.DATE, (a, b) -> {
+                    Calendar dateA = toDate(a);
+                    Calendar dateB = toDate(b);
+                    return dateA != null && dateB != null && dateA.after(dateB);
+                });
+            }
+        };
 
     /**
      * Hide the utility class constructor.
@@ -191,88 +255,18 @@ public final class ConditionalSectionUtils
         return ret;
     }
 
-    private static boolean evalSectionEq(final Object propA, final Object propB)
+    private static boolean evalSection(final Object propA, final Object propB,
+        final Map<Integer, java.util.function.BiFunction<Object, Object, Boolean>> operators)
         throws RepositoryException, ValueFormatException
     {
         if (propA == null || propB == null) {
             return false;
         }
-        boolean testResult = false;
-        switch (getPropertyObjectType(propA)) {
-            case PropertyType.STRING:
-                testResult = propA.equals(propB);
-                break;
-            case PropertyType.LONG:
-                testResult = toLong(propA) == toLong(propB);
-                break;
-            case PropertyType.DOUBLE:
-                testResult = toDouble(propA) == toDouble(propB);
-                break;
-            case PropertyType.DECIMAL:
-                testResult = toDecimal(propA).compareTo(toDecimal(propB)) == 0;
-                break;
-            case PropertyType.BOOLEAN:
-                testResult = toBoolean(propA) == toBoolean(propB);
-                break;
-            case PropertyType.DATE:
-                testResult = toDate(propA).compareTo(toDate(propB)) == 0;
-                break;
-            default:
-                break;
-        }
-        return testResult;
-    }
-
-    private static boolean evalSectionLt(final Object propA, final Object propB)
-        throws RepositoryException, ValueFormatException
-    {
-        if (propA == null || propB == null) {
+        Integer type = getPropertyObjectType(propA);
+        if (!operators.containsKey(type)) {
             return false;
         }
-        boolean testResult = false;
-        switch (getPropertyObjectType(propA)) {
-            case PropertyType.LONG:
-                testResult = toLong(propA) < toLong(propB);
-                break;
-            case PropertyType.DOUBLE:
-                testResult = toDouble(propA) < toDouble(propB);
-                break;
-            case PropertyType.DECIMAL:
-                testResult = toDecimal(propA).compareTo(toDecimal(propB)) < 0;
-                break;
-            case PropertyType.DATE:
-                testResult = toDate(propA).before(toDate(propB));
-                break;
-            default:
-                break;
-        }
-        return testResult;
-    }
-
-    private static boolean evalSectionGt(final Object propA, final Object propB)
-        throws RepositoryException, ValueFormatException
-    {
-        if (propA == null || propB == null) {
-            return false;
-        }
-        boolean testResult = false;
-        switch (getPropertyObjectType(propA)) {
-            case PropertyType.LONG:
-                testResult = toLong(propA) > toLong(propB);
-                break;
-            case PropertyType.DOUBLE:
-                testResult = toDouble(propA) > toDouble(propB);
-                break;
-            case PropertyType.DECIMAL:
-                testResult = toDecimal(propA).compareTo(toDecimal(propB)) > 0;
-                break;
-            case PropertyType.DATE:
-                testResult = toDate(propA).after(toDate(propB));
-                break;
-            default:
-                break;
-        }
-        return testResult;
+        return operators.get(type).apply(propA, propB);
     }
 
     /**
@@ -282,15 +276,15 @@ public final class ConditionalSectionUtils
         throws RepositoryException, ValueFormatException
     {
         if ("=".equals(operator) || "<>".equals(operator)) {
-            boolean testResult = evalSectionEq(propA, propB);
+            boolean testResult = evalSection(propA, propB, EQ_OPERATORS);
             if ("<>".equals(operator)) {
                 testResult = !testResult;
             }
             return testResult;
         } else if ("<".equals(operator)) {
-            return evalSectionLt(propA, propB);
+            return evalSection(propA, propB, LT_OPERATORS);
         } else if (">".equals(operator)) {
-            return evalSectionGt(propA, propB);
+            return evalSection(propA, propB, GT_OPERATORS);
         }
         // If we can't evaluate it, assume it to be false
         return false;
