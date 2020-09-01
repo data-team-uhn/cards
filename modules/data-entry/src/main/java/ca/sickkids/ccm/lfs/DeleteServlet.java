@@ -22,6 +22,7 @@ package ca.sickkids.ccm.lfs;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
@@ -58,10 +59,9 @@ import org.slf4j.LoggerFactory;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
-    resourceTypes = { "lfs/QuestionnairesHomepage", "lfs/FormsHomepage", "lfs/SubjectsHomepage",
-        "lfs/SubjectTypesHomepage" },
-    extensions = { "delete" },
-    methods = { "POST" })
+    resourceTypes = { "lfs/Questionnaire", "lfs/Form", "lfs/Subject",
+        "lfs/SubjectType" },
+    methods = { "DELETE" })
 public class DeleteServlet extends SlingAllMethodsServlet
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeleteServlet.class);
@@ -72,7 +72,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
     private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
 
     /** A list of all nodes traversed by {@code traverseNode}. */
-    private final ThreadLocal<ArrayList<Node>> nodesTraversed = new ThreadLocal<>();
+    private final ThreadLocal<List<Node>> nodesTraversed = new ThreadLocal<>();
 
     /**
      * Accept and operates on a Node.
@@ -109,8 +109,77 @@ public class DeleteServlet extends SlingAllMethodsServlet
         this.nodesTraversed.get().add(node);
     };
 
+    @Override
+    public void doDelete(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+        throws ServletException, IOException
+    {
+        try {
+            final ResourceResolver resourceResolver = request.getResourceResolver();
+            this.resolver.set(resourceResolver);
+            this.nodesTraversed.set(new ArrayList<Node>());
+
+            final String path = request.getResource().getPath();
+            final Boolean recursive = Boolean.parseBoolean(request.getParameter("recursive"));
+
+            LOGGER.error(path);
+            Node node = request.getResource().adaptTo(Node.class);
+            if (recursive) {
+                handleRecursiveDelete(node);
+            } else {
+                handleDelete(response, node);
+            }
+        } catch (AccessDeniedException e) {
+            sendJsonError(response, SlingHttpServletResponse.SC_UNAUTHORIZED);
+        } catch (RepositoryException e) {
+            LOGGER.error("Unknown RepositoryException trying to delete node: {}", e.getMessage(), e);
+            sendJsonError(response, SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        } finally {
+            this.resolver.remove();
+        }
+    }
+
     /**
-     * Recursively call a function on all nodes which reference a node and itself.
+     * Attempt to delete a node. If other nodes refer to this, user will be informed that deletion could not occur.
+     *
+     * @param response the HTTP response to be used to convey failure to the user
+     * @param node the node to attempt deletion
+     * @throws IOException if sending an error to the response fails
+     * @throws AccessDeniedException if the requesting user does not have permission to delete the node
+     * @throws RepositoryException if deletion fails due to a repository error
+     */
+    private void handleDelete(final SlingHttpServletResponse response, Node node)
+        throws IOException, AccessDeniedException, RepositoryException
+    {
+        // Check if node is referenced by other nodes
+        iterateReferrers(node, this.traverseNode);
+
+        if (this.nodesTraversed.get().size() == 1) {
+            node.remove();
+            this.resolver.get().adaptTo(Session.class).save();
+        } else {
+            // Will not be able to delete node due to references. Inform user.
+            String referencedNodes = listReferrersFromTraversal(node);
+            sendJsonError(response, SlingHttpServletResponse.SC_CONFLICT, String.format("This item is referenced %s.",
+                StringUtils.isEmpty(referencedNodes) ? "by unknown item(s)" : "in " + referencedNodes));
+        }
+    }
+
+    /**
+     * Delete a node and all nodes which reference it.
+     *
+     * @param node the node to attempt deletion
+     * @throws AccessDeniedException if the requesting user does not have permission to delete any node
+     * @throws RepositoryException if deletion fails due to a repository error
+     */
+    private void handleRecursiveDelete(Node node)
+        throws AccessDeniedException, RepositoryException
+    {
+        iterateReferrers(node, this.deleteNode);
+        this.resolver.get().adaptTo(Session.class).save();
+    }
+
+    /**
+     * Recursively call a function on all nodes which reference a node, and on the node itself.
      *
      * @param node the node to have its referrers and self operated on
      * @param consumer the function to be called on each node
@@ -129,59 +198,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Add a string listing the number of items found to an array.
-     *
-     * @param results the array to be added to
-     * @param type the type of item found
-     * @param nodeCount the number of items of this type found
-     */
-    private void addNodesToResult(ArrayList<String> results, String type, int nodeCount)
-    {
-        if (nodeCount > 0) {
-            results.add(String.format("%d %s%s", nodeCount, type, (nodeCount == 1 ? "" : "s")));
-        }
-    }
-
-    /**
-     * Add a string listing the number and names of items found to an array.
-     *
-     * @param results the array to be added to
-     * @param type the type of item found
-     * @param names the names of each item of this type found
-     */
-    private void addNodesToResult(ArrayList<String> results, String type, ArrayList<String> names)
-    {
-        if (names.size() > 0) {
-            results.add(String.format("%d %s%s (%s)",
-                names.size(),
-                type,
-                (names.size() == 1 ? "" : "s"), String.join(", ", names)));
-        }
-    }
-
-    /**
-     * Convert an arraylist of strings to a readable comma and "and" seperated string.
-     *
-     * @param results the strings to combine
-     * @return a string in the format "string1, ..., stringN-1 and stringN" or an empty string
-     */
-    private String stringArrayToList(ArrayList<String> results)
-    {
-        String result;
-        if (results.size() > 1) {
-            result = String.format("%s and %s",
-                String.join(", ", results.subList(0, results.size() - 1)),
-                results.get(results.size() - 1));
-        } else if (results.size() == 1) {
-            result = results.get(0);
-        } else {
-            result = "";
-        }
-
-        return result;
-    }
-
-    /**
      * Get a string explaining which nodes refer to the node traversed by {@code traverseNode}.
      *
      * @param parentNode the node originally traversed
@@ -192,9 +208,9 @@ public class DeleteServlet extends SlingAllMethodsServlet
         try {
             int formCount = 0;
             int otherCount = 0;
-            ArrayList<String> subjects = new ArrayList<String>();
-            ArrayList<String> subjectTypes = new ArrayList<String>();
-            ArrayList<String> questionnaires = new ArrayList<String>();
+            List<String> subjects = new ArrayList<String>();
+            List<String> subjectTypes = new ArrayList<String>();
+            List<String> questionnaires = new ArrayList<String>();
 
             for (Node n : this.nodesTraversed.get()) {
                 if (n.isSame(parentNode)) {
@@ -218,7 +234,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
                 }
             }
 
-            ArrayList<String> results = new ArrayList<String>();
+            List<String> results = new ArrayList<String>();
             addNodesToResult(results, "form", formCount);
             addNodesToResult(results, "subject", subjects);
             addNodesToResult(results, "subject type", subjectTypes);
@@ -229,6 +245,88 @@ public class DeleteServlet extends SlingAllMethodsServlet
         } catch (RepositoryException e) {
             return null;
         }
+    }
+
+    /**
+     * Add a string listing the number of items found to an array.
+     *
+     * @param results the array to be added to
+     * @param type the type of item found
+     * @param nodeCount the number of items of this type found
+     */
+    private void addNodesToResult(List<String> results, String type, int nodeCount)
+    {
+        if (nodeCount > 0) {
+            results.add(String.format("%d %s", nodeCount, toPlural(type, nodeCount)));
+        }
+    }
+
+    /**
+     * Add a string listing the number and names of items found to an array.
+     *
+     * @param results the array to be added to
+     * @param type the type of item found
+     * @param names the names of each item of this type found
+     */
+    private void addNodesToResult(List<String> results, String type, List<String> names)
+    {
+        if (names.size() > 0) {
+            results.add(String.format("%d %s (%s)",
+                names.size(),
+                toPlural(type, names.size()),
+                stringArrayToList(names)));
+        }
+    }
+
+    /**
+     * Convert a non-plural word to the correct numerical format.
+     * @param word the word to convert
+     * @param count the quantity to convert to the format of
+     * @return the correct plural or non=plural form
+     */
+    private String toPlural(String word, int count)
+    {
+        String result;
+        switch (count) {
+            case 1:
+                result = word;
+                break;
+            case 0:
+            default:
+                // TODO: Handle irregular plurals
+                result = String.format("%ss", word);
+                break;
+        }
+        return result;
+    }
+
+    /**
+     * Convert a list of strings to a readable comma and "and" seperated string.
+     *
+     * @param results the strings to combine
+     * @return a string in the format "string1, ..., stringN-1 and stringN" or an empty string
+     */
+    private String stringArrayToList(List<String> results)
+    {
+        String result;
+        if (results.size() > 1) {
+            String start;
+            String end;
+            if (results.size() > 13) {
+                start = String.join(", ", results.subList(0, 10));
+                end = String.format("%d others", results.size() - 10);
+            } else {
+                start = String.join(", ", results.subList(0, results.size() - 1));
+                end = results.get(results.size() - 1);
+            }
+            result = String.format("%s and %s", start, end);
+        } else if (results.size() == 1) {
+            result = results.get(0);
+        } else {
+            result = "";
+        }
+
+        return result;
     }
 
     /**
@@ -287,78 +385,5 @@ public class DeleteServlet extends SlingAllMethodsServlet
         }
         jsonGen.writeEnd().close();
         response.setStatus(sc);
-    }
-
-    /**
-     * Attempt to delete a node. If other nodes refer to this, user will be informed that deletion could not occur.
-     *
-     * @param response the HTTP response to be used to convey failure to the user
-     * @param node the node to attempt deletion
-     * @throws IOException if sending an error to the response fails
-     * @throws AccessDeniedException if the requesting user does not have permission to delete the node
-     * @throws RepositoryException if deletion fails due to a repository error
-     */
-    private void handleDelete(final SlingHttpServletResponse response, Node node)
-        throws IOException, AccessDeniedException, RepositoryException
-    {
-        // Check if node is referenced by other nodes
-        ArrayList<Node> nodeList = new ArrayList<>();
-        this.nodesTraversed.set(nodeList);
-        iterateReferrers(node, this.traverseNode);
-
-        if (this.nodesTraversed.get().size() == 1) {
-            node.remove();
-            this.resolver.get().adaptTo(Session.class).save();
-        } else {
-            // Will not be able to delete node due to references. Inform user.
-            String referencedNodes = listReferrersFromTraversal(node);
-            sendJsonError(response, SlingHttpServletResponse.SC_CONFLICT, String.format("This item is referenced %s.",
-                StringUtils.isEmpty(referencedNodes) ? " by unknown item(s)" : " in " + referencedNodes));
-        }
-    }
-
-    /**
-     * Delete a node and all nodes which reference it.
-     *
-     * @param node the node to attempt deletion
-     * @throws AccessDeniedException if the requesting user does not have permission to delete any node
-     * @throws RepositoryException if deletion fails due to a repository error
-     */
-    private void handleRecursiveDelete(Node node)
-        throws AccessDeniedException, RepositoryException
-    {
-        iterateReferrers(node, this.deleteNode);
-        this.resolver.get().adaptTo(Session.class).save();
-    }
-
-    @Override
-    public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
-        throws ServletException, IOException
-    {
-        try {
-            final ResourceResolver resourceResolver = request.getResourceResolver();
-            this.resolver.set(resourceResolver);
-
-            final String path = request.getParameter("path");
-            if (StringUtils.isBlank(path)) {
-                throw new IllegalArgumentException("Required parameter \"path\" missing");
-            }
-            final Boolean recursive = Boolean.parseBoolean(request.getParameter("recursive"));
-
-            LOGGER.error(path);
-            Node node = this.resolver.get().getResource(path).adaptTo(Node.class);
-            if (recursive) {
-                handleRecursiveDelete(node);
-            } else {
-                handleDelete(response, node);
-            }
-        } catch (AccessDeniedException e) {
-            sendJsonError(response, SlingHttpServletResponse.SC_UNAUTHORIZED);
-        } catch (RepositoryException e) {
-            LOGGER.error("Unknown RepositoryException trying to delete node: {}", e.getMessage(), e);
-            sendJsonError(response, SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
-        } finally {
-            this.resolver.remove();
-        }
     }
 }
