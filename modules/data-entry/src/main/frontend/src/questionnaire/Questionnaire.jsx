@@ -203,8 +203,8 @@ let Questionnaire = (props) => {
                 <dd>
                   { data?.requiredSubjectTypes?.map( subjectType =>
                     (subjectType ?
-                      <Typography key={subjectType}>{subjectType.label}</Typography>
-                      : <Typography key={subjectType}>'Any'</Typography>
+                      <Typography key={subjectType.label}>{subjectType.label}</Typography>
+                      : <Typography>'Any'</Typography>
                     )
                   )}
                 </dd>
