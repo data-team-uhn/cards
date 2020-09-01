@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Grid,
@@ -26,31 +26,25 @@ import {
   withStyles
 } from "@material-ui/core";
 
+import EditorInput from "./EditorInput";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
 import QuestionComponentManager from "./QuestionComponentManager";
 
 // Number Input field used by Edit dialog component
 
 let NumberInput = (props) => {
-  let { objectKey, data, definition } = props;
-  let formatString = (key) => {
-    let formattedString = key.charAt(0).toUpperCase() + key.slice(1);
-      return formattedString.split(/(?=[A-Z])/).join(' ');
-  }
+  let { objectKey, data } = props;
   return (
-    <Grid container alignItems='flex-end' spacing={2} key={objectKey || ''}>
-      <Grid item xs={6}><Typography>{ formatString(objectKey) || ''}</Typography></Grid>
-      <Grid item xs={6}>
-        <TextField
-          name={objectKey || ''}
-          id={objectKey || ''}
-          defaultValue={data[objectKey] || ''}
-          type='number' 
-          placeholder={objectKey.includes('maxPerSubject') ? 'Unlimited' : ''}
-          min={objectKey.includes('maxPerSubject') ? 0 : ''}
-        />
-      </Grid>
-    </Grid>
+    <EditorInput name={objectKey}>
+      <TextField
+        name={objectKey || ''}
+        id={objectKey || ''}
+        defaultValue={data[objectKey] || ''}
+        type='number'
+        placeholder={objectKey.includes('maxPerSubject') ? 'Unlimited' : ''}
+        min={objectKey.includes('maxPerSubject') ? 0 : ''}
+      />
+    </EditorInput>
   )
 }
 

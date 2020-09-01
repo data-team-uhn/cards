@@ -26,6 +26,7 @@ import {
   withStyles
 } from "@material-ui/core";
 
+import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 
@@ -34,24 +35,17 @@ import QuestionComponentManager from "../questionnaireEditor/QuestionComponentMa
 let BooleanInput = (props) => {
   let { objectKey, data } = props;
   let [ checked, setChecked ] = useState(data?.[objectKey] == true);
-  let formatString = (key) => {
-    let formattedString = key.charAt(0).toUpperCase() + key.slice(1);
-      return formattedString.split(/(?=[A-Z])/).join(' ');
-  }
 
   return (
-    <Grid container alignItems='flex-end' spacing={2} key={objectKey}>
-      <Grid item xs={6}><Typography>{ formatString(objectKey) }</Typography></Grid>
-      <Grid item xs={6}>
-        <Checkbox
-          id={objectKey}
-          onChange={(event) => {setChecked(event.target.checked);}}
-          checked={checked}
-          />
-        <input type="hidden" name={objectKey} value={String(checked)} />
-        <input type="hidden" name={objectKey + "@TypeHint"} value="Boolean" />
-      </Grid>
-    </Grid>
+    <EditorInput name={objectKey}>
+      <Checkbox
+        id={objectKey}
+        onChange={(event) => {setChecked(event.target.checked);}}
+        checked={checked}
+        />
+      <input type="hidden" name={objectKey} value={String(checked)} />
+      <input type="hidden" name={objectKey + "@TypeHint"} value="Boolean" />
+    </EditorInput>
   )
 }
 

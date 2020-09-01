@@ -21,7 +21,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Chip, Input, MenuItem, Select, Typography, withStyles } from "@material-ui/core";
 
-import QuestionnaireStyle from './QuestionnaireStyle';
+import EditorInput from "./EditorInput";
+import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
+import QuestionComponentManager from "./QuestionComponentManager";
 
 let ListInput = (props) => {
   let { objectKey, data } = props;
@@ -56,7 +58,7 @@ let ListInput = (props) => {
   };
 
   return (
-    <React.Fragment>
+    <EditorInput name={objectKey}>
       <input type="hidden" name={objectKey + "@TypeHint"} value={"Reference"} />
       { 
         // Maps each selected object to a reference type for submitting
@@ -82,7 +84,7 @@ let ListInput = (props) => {
         </MenuItem>
       ))}
     </Select>
-  </React.Fragment>
+  </EditorInput>
   )
 }
 
@@ -91,5 +93,12 @@ ListInput.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-export default withStyles(QuestionnaireStyle)(ListInput);
-  
+var StyledListInput = withStyles(QuestionnaireStyle)(ListInput);
+export default StyledListInput;
+
+QuestionComponentManager.registerQuestionComponent((definition) => {
+  if (["list"].includes(definition)) {
+    return [StyledListInput, 50];
+  }
+});
+

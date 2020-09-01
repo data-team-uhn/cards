@@ -26,12 +26,14 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  IconButton,
   TextField,
   Typography,
   withStyles
 } from "@material-ui/core";
 
-import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
+import EditIcon from '@material-ui/icons/Edit';
+import AddIcon from '@material-ui/icons/Add';
 import AnswerOptions from './AnswerOptions';
 import Fields from './Fields'
 
@@ -107,15 +109,20 @@ let EditDialog = (props) => {
             setLastSaveStatus(false);
           }
         })
-        .finally(() => {setSaveInProgress(false); setTitle(''); onClose()});}
+        .finally(() => {
+          setSaveInProgress(false);
+          setTitle('');
+          props.onClose();
+        });
+    }
   }
 
   // Open the login page in a new popup window, centered wrt the parent window
   let loginToSave = () => {
     const width = 600;
     const height = 800;
-    const top = window.top.outerHeight / 2 + window.top.screenY - (height / 2);
-    const left = window.top.outerWidth / 2 + window.top.screenX - (width / 2);
+    const top = window.top.outerHeight / 2 + window.top.screenY - ( height / 2);
+    const left = window.top.outerWidth / 2 + window.top.screenX - ( width / 2);
     // After a successful log in, the login dialog code will "open" the specified resource, which results in executing the specified javascript code
     window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${width}, height=${height}, top=${top}, left=${left}`);
     // Display 'save' on button
@@ -154,7 +161,7 @@ let EditDialog = (props) => {
         <DialogTitle>
           { dialogTitle() }
         </DialogTitle>
-        <form action={data && data['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
+        <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
           <DialogContent>
             { !edit && titleField() }
             <Fields data={edit && data || {}} JSON={json[0]} edit={true} />
@@ -182,15 +189,18 @@ let EditDialog = (props) => {
           </DialogActions>
         </form>
       </Dialog>
+      <IconButton onClick={() => { props.onOpen(); }}>
+      { props.edit ? <EditIcon /> : <AddIcon />}
+      </IconButton>
     </React.Fragment>
   );
 };
 
 EditDialog.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   edit: PropTypes.bool.isRequired,
   open: PropTypes.bool.isRequired
 };
 
-export default withStyles(QuestionnaireStyle)(EditDialog);
+export default EditDialog;
