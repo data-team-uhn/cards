@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -36,9 +36,19 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
-  let { id } = props;
+  let { id, classes } = props;
   let [ data, setData ] = useState();
   let [ error, setError ] = useState();
+
+  const questionRef = useRef();
+  const anchor = location.hash.substr(1);
+  // create a ref to store the question container DOM element
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      questionRef?.current?.scrollIntoView();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [questionRef]);
 
   let fetchData = () => {
     fetch(`/Questionnaires/${id}.deep.json`)
@@ -61,6 +71,27 @@ let Questionnaire = (props) => {
     fetchData();
   }
 
+  let displayQuestion = (data) => {
+    return Object.entries(data)
+      .map(([key, value]) => {
+        if (value['jcr:primaryType'] == 'lfs:Question') {
+          // if autofocus is needed and specified in the url
+          const questionPath = value["@path"];
+          const doHighlight = (anchor == questionPath);
+
+          return (
+            <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={(doHighlight ? classes.highlightedSection : undefined)}>
+              <Question data={value}/>
+            </Grid>
+          );
+        }
+        // f-n calls itself recursively to display all question in nested sections
+        if (value['jcr:primaryType'] == 'lfs:Section') {
+          return displayQuestion(value);
+        }
+      });
+  }
+
   return (
     <div>
       {
@@ -69,21 +100,18 @@ let Questionnaire = (props) => {
           </Typography>
       }
       <Grid container direction="column" spacing={8}>
-      <Grid item>
-        <Typography variant="h2">{data ? data['title'] : id} </Typography>
+        <Grid item>
+          <Typography variant="h2">{data ? data['title'] : id} </Typography>
+          {
+            data && data['jcr:createdBy'] && data['jcr:created'] ?
+              <Typography variant="overline">Created by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
+              : ""
+          }
+        </Grid>
         {
-          data && data['jcr:createdBy'] && data['jcr:created'] ?
-            <Typography variant="overline">Created by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
-            : ""
-        }
-      </Grid>
-        {
-          data ?
-            Object.entries(data)
-              .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question')
-              .map(([key, value]) => <Grid item key={key}><Question data={value}/></Grid>)
+          data ? displayQuestion(data)
           :
-            <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+          <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
         }
       </Grid>
     </div>
