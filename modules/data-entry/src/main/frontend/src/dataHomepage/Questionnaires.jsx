@@ -68,6 +68,12 @@ function Questionnaires(props) {
       "key":"actions",
       "label":"Actions",
       "admin": true,
+      // Align the actions to the end
+      "props": {
+        "style": {
+          "text-align": "end"
+        }
+      }
     }
   ]
   return (
