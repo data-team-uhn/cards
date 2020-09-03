@@ -182,44 +182,6 @@ public class QueryBuilder implements Use
     }
 
     /**
-     * Gets the question for a given answer JCR Resource.
-     *
-     * @param res the JCR Resource corresponding to an answer
-     * @return the question string corresponding to the passed answer
-     */
-    private String getQuestion(Resource res) throws ItemNotFoundException
-    {
-        try {
-            Node questionNode = res.adaptTo(Node.class).getProperty("question").getNode();
-            if (questionNode != null) {
-                return questionNode.getProperty("text").getString();
-            }
-        } catch (RepositoryException ex) {
-            return null;
-        }
-        return null;
-    }
-
-    /**
-     * Gets the answer's question path for a given answer JCR Resource.
-     *
-     * @param res the JCR Resource corresponding to an answer
-     * @return the question path string corresponding to the passed answer
-     */
-    private String getQuestionPath(Resource res) throws ItemNotFoundException
-    {
-        try {
-            Node questionNode = res.adaptTo(Node.class).getProperty("question").getNode();
-            if (questionNode != null) {
-                return questionNode.getPath();
-            }
-        } catch (RepositoryException ex) {
-            return null;
-        }
-        return null;
-    }
-
-    /**
      * Searches through a list of Strings and returns the first String in that list
      * for which in itself contains a given substring.
      *
@@ -347,31 +309,41 @@ public class QueryBuilder implements Use
             if (resultsList.size() == limit && !showTotalRows) {
                 break;
             }
-            quickSearch(resultsList, query, limit, type, showTotalRows);
+            String rtype = type.replace("lfs:", "");
+            switch (rtype) {
+                case "Form":
+                    quickFormSearch(resultsList, query, limit, showTotalRows);
+                    break;
+                case "Subject":
+                    quickSubjectSearch(resultsList, query, limit, showTotalRows);
+                    break;
+                case "Questionnaire":
+                    quickQuestionnaireSearch(resultsList, query, limit, showTotalRows);
+                    break;
+                default:
+            }
         }
         return resultsList.listIterator();
     }
 
     /**
-     * Finds resources of a specific type using the given full text search.
+     * Finds [lfs:Form]s with question answers or notes matching given full text search.
      * This performs the search in such a way that values in child nodes (e.g. lfs:Answers of an lfs:Form)
      * are aggregated to their parent.
      *
-     * @param resultsList aggregator of search results
+     * @param outputList aggregator of search results
      * @param query text to search
      * @param limit the requested, default or set by admin limit
-     * @param resourceType resource type for a search
      * @param showTotalRows whether to show the total number of results
      *
      * @return the content matching the query
      */
-    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity"})
-    private void quickSearch(ArrayList<JsonObject> outputList, String query, long limit,
-            String resourceType, boolean showTotalRows) throws RepositoryException
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
+    private void quickFormSearch(ArrayList<JsonObject> outputList, String query, long limit,
+            boolean showTotalRows) throws RepositoryException, ItemNotFoundException
     {
-        String type = resourceType.replace("lfs:", "");
         final StringBuilder xpathQuery = new StringBuilder();
-        xpathQuery.append("/jcr:root/" + type + "s//*[jcr:like(fn:lower-case(@value),'%");
+        xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value),'%");
         xpathQuery.append(this.fullTextEscape(query.toLowerCase()));
         xpathQuery.append("%') or jcr:like(fn:lower-case(@note),'%");
         xpathQuery.append(this.fullTextEscape(query.toLowerCase()));
@@ -382,7 +354,6 @@ public class QueryBuilder implements Use
         * For each Resource in foundResources, move up the tree until
         * we find an ancestor node of type `lfs:Form`
         */
-        String rtype = resourceType.replace(":", "/");
         while (foundResources.hasNext()) {
             // no need to go through all results list if we do not add total results number
             if (outputList.size() == limit && !showTotalRows) {
@@ -393,23 +364,31 @@ public class QueryBuilder implements Use
             Resource thisParent = thisResource;
             String[] resourceValues = thisResource.getValueMap().get("value", String[].class);
             String resourceValue = getMatchingFromArray(resourceValues, query);
-            String noteValue = thisResource.getValueMap().get("note", String.class);
-            String question = getQuestion(thisResource);
-            String path = getQuestionPath(thisResource);
+
+            String question = null;
+            String path = null;
             boolean matchedNotes = false;
+            Node questionNode = thisResource.adaptTo(Node.class).getProperty("question").getNode();
+            if (questionNode != null) {
+                question = questionNode.getProperty("text").getString();
+                path = questionNode.getPath();
+            }
 
             // As a fallback for when the query isn't in the value field, attempt to use the note field
-            if (resourceValue == null && StringUtils.containsIgnoreCase(noteValue, query)) {
-                resourceValue = noteValue;
-                matchedNotes = true;
+            if (resourceValue == null) {
+                String noteValue = thisResource.getValueMap().get("note", String.class);
+                if (StringUtils.containsIgnoreCase(noteValue, query)) {
+                    resourceValue = noteValue;
+                    matchedNotes = true;
+                }
             }
 
-            // Find the Form parent of this question
-            while (thisParent != null && !rtype.equals(thisParent.getResourceType())) {
-                thisParent = thisParent.getParent();
-            }
+            if (resourceValue != null && question != null) {
+                // Find the Form parent of this question
+                while (thisParent != null && !"lfs/Form".equals(thisParent.getResourceType())) {
+                    thisParent = thisParent.getParent();
+                }
 
-            if (thisParent != null && resourceValue != null && question != null) {
                 outputList.add(this.addMatchMetadata(
                     resourceValue, query, question, thisParent.adaptTo(JsonObject.class), matchedNotes, path
                 ));
@@ -417,6 +396,117 @@ public class QueryBuilder implements Use
         }
     }
 
+    /**
+     * Finds [lfs:Subject]s with identifiers matching given full text search.
+     * This performs the search in such a way that values in child nodes
+     * are aggregated to their parent.
+     *
+     * @param outputList aggregator of search results
+     * @param query text to search
+     * @param limit the requested, default or set by admin limit
+     * @param showTotalRows whether to show the total number of results
+     *
+     * @return the content matching the query
+     */
+    private void quickSubjectSearch(ArrayList<JsonObject> outputList, String query, long limit,
+            boolean showTotalRows) throws RepositoryException
+    {
+        final StringBuilder xpathQuery = new StringBuilder();
+        xpathQuery.append("/jcr:root/Subjects//*[jcr:like(fn:lower-case(@identifier),'%");
+        xpathQuery.append(this.fullTextEscape(query.toLowerCase()));
+        xpathQuery.append("%')]");
+
+        Iterator<Resource> foundResources = queryXPATH(xpathQuery.toString());
+        while (foundResources.hasNext()) {
+            // no need to go through all results list if we do not add total results number
+            if (outputList.size() == limit && !showTotalRows) {
+                break;
+            }
+            Resource thisResource = foundResources.next();
+
+            String resourceValue = thisResource.getValueMap().get("identifier", String.class);
+            String path = thisResource.getPath();
+
+            if (resourceValue != null) {
+                outputList.add(this.addMatchMetadata(
+                    resourceValue, query, "identifier", thisResource.adaptTo(JsonObject.class), false, path
+                ));
+            }
+        }
+    }
+
+    /**
+     * Finds [lfs:Questionnaire]s matching given full text search.
+     * This performs the search in such a way that values in child nodes are aggregated to their parent.
+     *
+     * @param outputList aggregator of search results
+     * @param query text to search
+     * @param limit the requested, default or set by admin limit
+     * @param showTotalRows whether to show the total number of results
+     *
+     * @return the content matching the query
+     */
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
+    private void quickQuestionnaireSearch(ArrayList<JsonObject> outputList, String query, long limit,
+            boolean showTotalRows) throws RepositoryException, ItemNotFoundException
+    {
+        final StringBuilder xpathQuery = new StringBuilder();
+        xpathQuery.append("/jcr:root/Questionnaires//*[jcr:like(fn:lower-case(@value),'%");
+        xpathQuery.append(this.fullTextEscape(query.toLowerCase()));
+        xpathQuery.append("%') or jcr:like(fn:lower-case(@text),'%");
+        xpathQuery.append(this.fullTextEscape(query.toLowerCase()));
+        xpathQuery.append("%') or jcr:like(fn:lower-case(@title),'%");
+        xpathQuery.append(this.fullTextEscape(query.toLowerCase()));
+        xpathQuery.append("%')]");
+
+        Iterator<Resource> foundResources = queryXPATH(xpathQuery.toString());
+        /*
+        * For each Resource in foundResources, move up the tree until
+        * we find an ancestor node of type `lfs:Questionnaire`
+        */
+        while (foundResources.hasNext()) {
+            // no need to go through all results list if we do not add total results number
+            if (outputList.size() == limit && !showTotalRows) {
+                break;
+            }
+            Resource thisResource = foundResources.next();
+
+            // Find the Questionnaire parent of this question
+            Resource thisParent = thisResource;
+            while (thisParent != null && !"lfs/Questionnaire".equals(thisParent.getResourceType())) {
+                thisParent = thisParent.getParent();
+            }
+
+            String[] resourceValues = thisResource.getValueMap().get("value", String[].class);
+            String resourceValue = getMatchingFromArray(resourceValues, query);
+
+            String question = null;
+            String path = null;
+            // Find the matched question node
+            if (resourceValue != null) {
+                Node questionNode = thisParent.getParent().adaptTo(Node.class);
+                if (questionNode != null) {
+                    question = questionNode.getProperty("text").getString();
+                    path = questionNode.getPath();
+                }
+            } else {
+                path = thisParent.getPath();
+
+                resourceValue = thisResource.getValueMap().get("text", String.class);
+                if (resourceValue == null) {
+                    resourceValue = thisResource.getValueMap().get("title", String.class);
+                }
+
+                question = resourceValue;
+            }
+
+            if (resourceValue != null && question != null) {
+                outputList.add(this.addMatchMetadata(
+                    resourceValue, query, question, thisParent.adaptTo(JsonObject.class), false, path
+                ));
+            }
+        }
+    }
 
     /**
      * Finds content matching the given JCR_SQL2 query.
