@@ -200,6 +200,7 @@ function MultipleChoice(props) {
           updateGhost(GHOST_SENTINEL, event.target.value);
           onUpdate && onUpdate(event.target.value);
         }}
+        disabled={disabled}
         onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
         onBlur={acceptEnteredOption}
         inputProps={Object.assign({
