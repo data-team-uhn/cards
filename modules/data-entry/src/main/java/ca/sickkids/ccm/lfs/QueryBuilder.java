@@ -366,7 +366,7 @@ public class QueryBuilder implements Use
             String resourceValue = getMatchingFromArray(resourceValues, query);
 
             String question = null;
-            String path = null;
+            String path = "";
             boolean matchedNotes = false;
             Node questionNode = thisResource.adaptTo(Node.class).getProperty("question").getNode();
             if (questionNode != null) {
@@ -425,18 +425,17 @@ public class QueryBuilder implements Use
             Resource thisResource = foundResources.next();
 
             String resourceValue = thisResource.getValueMap().get("identifier", String.class);
-            String path = thisResource.getPath();
 
             if (resourceValue != null) {
                 outputList.add(this.addMatchMetadata(
-                    resourceValue, query, "identifier", thisResource.adaptTo(JsonObject.class), false, path
+                    resourceValue, query, "identifier", thisResource.adaptTo(JsonObject.class), false, ""
                 ));
             }
         }
     }
 
     /**
-     * Finds [lfs:Questionnaire]s matching given full text search.
+     * Finds [lfs:Questionnaire]s title, question text and values matching given full text search.
      * This performs the search in such a way that values in child nodes are aggregated to their parent.
      *
      * @param outputList aggregator of search results
@@ -446,7 +445,8 @@ public class QueryBuilder implements Use
      *
      * @return the content matching the query
      */
-    @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity",
+        "checkstyle:ExecutableStatementCount"})
     private void quickQuestionnaireSearch(ArrayList<JsonObject> outputList, String query, long limit,
             boolean showTotalRows) throws RepositoryException, ItemNotFoundException
     {
@@ -481,19 +481,27 @@ public class QueryBuilder implements Use
             String resourceValue = getMatchingFromArray(resourceValues, query);
 
             String question = null;
-            String path = null;
+            String path = "";
             // Find the matched question node
             if (resourceValue != null) {
-                Node questionNode = thisParent.getParent().adaptTo(Node.class);
+                // found resource is of type [lfs:Answer]
+                // Find the Question parent of this question
+                Resource questionParent = thisResource;
+                while (thisParent != null && !"lfs/Question".equals(questionParent.getResourceType())) {
+                    questionParent = questionParent.getParent();
+                }
+                Node questionNode = questionParent.getParent().adaptTo(Node.class);
                 if (questionNode != null) {
                     question = questionNode.getProperty("text").getString();
                     path = questionNode.getPath();
                 }
             } else {
-                path = thisParent.getPath();
-
+                // found resource is of type [lfs:Question]
                 resourceValue = thisResource.getValueMap().get("text", String.class);
-                if (resourceValue == null) {
+                if (resourceValue != null) {
+                    path = thisResource.adaptTo(Node.class).getPath();
+                } else {
+                    // found resource is of type [lfs:Questionnaire]
                     resourceValue = thisResource.getValueMap().get("title", String.class);
                 }
 

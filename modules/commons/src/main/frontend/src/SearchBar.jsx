@@ -281,11 +281,13 @@ let defaultResultConstructor = (props) => (
 );
 
 let defaultRedirect = (event, row, props) => {
+
   // Redirect using React-router
   const anchor = row[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY];
+  const path = (row["jcr:primaryType"] == "lfs:Questionnaire") ? "/content.html/admin" : "/content.html";
   if (row["@path"]) {
     props.history.push({
-      pathname: "/content.html" + row["@path"],
+      pathname: path + row["@path"],
       hash: anchor
     });
   }
