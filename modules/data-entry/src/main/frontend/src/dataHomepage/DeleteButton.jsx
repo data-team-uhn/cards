@@ -71,7 +71,7 @@ function DeleteButton(props) {
         openError();
       } else {
         // Todo: improve dialog layout
-        setDialogMessage(`${defaultErrorMessage} ${json["status.message"]}`);
+        setDialogMessage(`${json["status.message"].replace("This item", entryName)}`);
         setDialogAction(`Would you like to delete ${entryName} and all items that reference it?`);
         setDeleteRecursive(true);
         openDialog();
