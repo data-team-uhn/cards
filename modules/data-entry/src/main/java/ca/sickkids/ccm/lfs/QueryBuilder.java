@@ -487,10 +487,10 @@ public class QueryBuilder implements Use
                 // found resource is of type [lfs:Answer]
                 // Find the Question parent of this question
                 Resource questionParent = thisResource;
-                while (thisParent != null && !"lfs/Question".equals(questionParent.getResourceType())) {
+                while (questionParent != null && !"lfs/Question".equals(questionParent.getResourceType())) {
                     questionParent = questionParent.getParent();
                 }
-                Node questionNode = questionParent.getParent().adaptTo(Node.class);
+                Node questionNode = questionParent.adaptTo(Node.class);
                 if (questionNode != null) {
                     question = questionNode.getProperty("text").getString();
                     path = questionNode.getPath();
