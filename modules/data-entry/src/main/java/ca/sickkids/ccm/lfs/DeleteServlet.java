@@ -45,12 +45,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A servlet that tries to delete a given node and returns an explination if deletion is not possible.
+ * A servlet that tries to delete a given node and returns an explanation if deletion is not possible.
  * <p>
  * This servlet supports the following parameters:
  * </p>
  * <ul>
- * <li><tt>path</tt>: a path to the item which should be deleted</li>
  * <li><tt>recursive</tt>: whether nodes which reference the item should be deleted; defaults to false</li>
  * </ul>
  *
@@ -72,10 +71,12 @@ public class DeleteServlet extends SlingAllMethodsServlet
     private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
 
     /** A list of all nodes traversed by {@code traverseNode}. */
-    private final ThreadLocal<List<Node>> nodesTraversed = new ThreadLocal<>();
+    // private final ThreadLocal<List<Node>> nodesTraversed = new ThreadLocal<>();
+    private final ThreadLocal<List<Node>> nodesTraversed = ThreadLocal.withInitial(() -> new ArrayList<>());
 
     /**
-     * Accept and operates on a Node.
+     * A function that operates on a {@link Node}. As opposed to a simple {@code Consumer}, it can forward a
+     * {@code RepositoryException} encountered while processing a {@code Node}.
      */
     @FunctionalInterface
     private interface NodeConsumer
@@ -135,11 +136,12 @@ public class DeleteServlet extends SlingAllMethodsServlet
             sendJsonError(response, SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
         } finally {
             this.resolver.remove();
+            this.nodesTraversed.remove();
         }
     }
 
     /**
-     * Attempt to delete a node. If other nodes refer to this, user will be informed that deletion could not occur.
+     * Attempt to delete a node. If other nodes refer to it, user will be informed that deletion could not occur.
      *
      * @param response the HTTP response to be used to convey failure to the user
      * @param node the node to attempt deletion
@@ -147,7 +149,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
      * @throws AccessDeniedException if the requesting user does not have permission to delete the node
      * @throws RepositoryException if deletion fails due to a repository error
      */
-    private void handleDelete(final SlingHttpServletResponse response, Node node)
+    private void handleDelete(final SlingHttpServletResponse response, final Node node)
         throws IOException, AccessDeniedException, RepositoryException
     {
         // Check if node is referenced by other nodes
@@ -198,7 +200,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Get a string explaining which nodes refer to the node traversed by {@code traverseNode}.
+     * Get a string explaining which nodes refer to the node traversed by {@code parentNode}.
      *
      * @param parentNode the node originally traversed
      * @return a string in the format "2 forms, 1 subject(subjectName)" for all traversed nodes
@@ -279,29 +281,25 @@ public class DeleteServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Convert a non-plural word to the correct numerical format.
-     * @param word the word to convert
-     * @param count the quantity to convert to the format of
-     * @return the correct plural or non=plural form
+     * Transform a word from singular to plural form.
+     * @param word the word in singular form
+     * @param count word count
+     * @return the correct form of the word for the given count
      */
     private String toPlural(String word, int count)
     {
         String result;
-        switch (count) {
-            case 1:
-                result = word;
-                break;
-            case 0:
-            default:
-                // TODO: Handle irregular plurals
-                result = String.format("%ss", word);
-                break;
+        if (count == 1) {
+            result = word;
+        } else {
+            // TODO: Handle irregular plurals
+            result = String.format("%ss", word);
         }
         return result;
     }
 
     /**
-     * Convert a list of strings to a readable comma and "and" seperated string.
+     * Convert a list of strings to a readable comma and "and" separated string.
      *
      * @param results the strings to combine
      * @return a string in the format "string1, ..., stringN-1 and stringN" or an empty string
@@ -342,7 +340,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Send a json response with the provided HTTP response code.
+     * Send a json response with the provided HTTP response code and error message.
      *
      * @param response the response object to write to
      * @param sc the HTTP response code to send
@@ -355,7 +353,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Send a json response with the provided HTTP response code.
+     * Send a json response with the provided HTTP response code and error message.
      *
      * @param response the response object to write to
      * @param sc the HTTP response code to send
