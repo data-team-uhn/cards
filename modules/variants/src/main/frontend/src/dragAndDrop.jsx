@@ -17,104 +17,98 @@
 //  under the License.
 //
 
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 import { IconButton, Typography } from "@material-ui/core";
 import AttachFile from '@material-ui/icons/AttachFile';
 
-class DragAndDrop extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-	  drag: false
-	};
+export default function DragAndDrop(props) {
+  const { multifile, handleDrop, classes, error } = props;
+  const [drag, setDrag] = useState(false);
+  const [dragCounter, setDragCounter] = useState(0);
 
-	this.dropRef = React.createRef();
-	this.inputRef = React.createRef();
-  }
+  const dropRef = useRef();
+  const inputRef = useRef();
 
-  handleDrag = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+  let handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
   }
-  handleDragIn = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    this.dragCounter++
+  let handleDragIn = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let count = dragCounter + 1;
+    setDragCounter(count);
     if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
-      this.setState({drag: true})
+      setDrag(true);
     }
   }
-  handleDragOut = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    this.dragCounter--
-    if (this.dragCounter === 0) {
-      this.setState({drag: false})
+  let handleDragOut = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let count = dragCounter - 1;
+    setDragCounter(count);
+    if (dragCounter === 0) {
+      setDrag(false);
     }
   }
-  handleDrop = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    this.setState({drag: false})
+  let handleOnDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDrag(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      this.props.handleDrop(e.dataTransfer.files)
-      e.dataTransfer.clearData()
-      this.dragCounter = 0    
+      handleDrop(e.dataTransfer.files);
+      e.dataTransfer.clearData();
+      setDragCounter(0);
     }
   };
-  handleClick = (e) => {
-    this.inputRef.current.click();
+  let handleClick = (e) => {
+    inputRef.current.click();
   };
-  onChangeFile = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+  let onChangeFile = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     let chosenFiles = event.target.files;
-    if (chosenFiles.length == 0) { return; }
-    this.props.handleDrop(chosenFiles)
+    handleDrop(chosenFiles);
   };
 
-  componentDidMount() {
-    let div = this.dropRef.current
-    div.addEventListener('dragenter', this.handleDragIn)
-    div.addEventListener('dragleave', this.handleDragOut)
-    div.addEventListener('dragover', this.handleDrag)
-    div.addEventListener('drop', this.handleDrop)
-  };
+  useEffect(() => {
+    let div = dropRef.current;
+    div.addEventListener('dragenter', handleDragIn);
+    div.addEventListener('dragleave', handleDragOut);
+    div.addEventListener('dragover', handleDrag);
+    div.addEventListener('drop', handleOnDrop);
 
-  componentWillUnmount() {
-    let div = this.dropRef.current
-    div.removeEventListener('dragenter', this.handleDragIn)
-    div.removeEventListener('dragleave', this.handleDragOut)
-    div.removeEventListener('dragover', this.handleDrag)
-    div.removeEventListener('drop', this.handleDrop)
-  };
+    return () => {
+      let div = dropRef.current;
+      div.removeEventListener('dragenter', handleDragIn);
+      div.removeEventListener('dragleave', handleDragOut);
+      div.removeEventListener('dragover', handleDrag);
+      div.removeEventListener('drop', handleOnDrop);
+    };
+  });
 
-  render() {
-    return (
-      <div style={{display: 'inline-block', position: 'relative'}}
-           onClick={this.handleClick.bind(this)}
-           ref={this.dropRef}
-      >
-          <input id="file-input"
-		    type="file"
-		    accept=".csv"
-		    name="*"
-            multiple
-		    ref={this.inputRef}
-		    style={{display: 'none'}}
-		    onChange={this.onChangeFile.bind(this)}
-		  />
-          <div className={this.state.dragging ? this.props.classes.active : this.props.classes.dropzone} >
-	          <IconButton color="primary" component="span">
-		        <AttachFile />
-		      </IconButton>
-		      { this.props.error && <Typography color='error'>{this.props.error}</Typography> }
-		      { !this.props.error && <Typography>Drag & drop or browse files for upload</Typography> }
-            </div>
+  return (
+    <div style={{display: 'inline-block', position: 'relative'}}
+       onClick={handleClick.bind(this)}
+       ref={dropRef}
+    >
+      <input id="file-input"
+        type="file"
+        accept=".csv"
+        name="*"
+        multiple={ multifile }
+        ref={inputRef}
+        style={{display: 'none'}}
+        onChange={onChangeFile.bind(this)}
+      />
+      <div className={drag ? classes.active : classes.dropzone} >
+          <IconButton color="primary" component="span">
+            <AttachFile />
+          </IconButton>
+          { error && <Typography color='error'>{error}</Typography> }
+          { !error && <Typography>Drag & drop or browse files for upload</Typography> }
       </div>
-    )
-  }
+    </div>
+  )
 }
-
-export default DragAndDrop;

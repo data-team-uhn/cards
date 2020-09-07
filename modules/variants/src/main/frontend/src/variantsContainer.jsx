@@ -86,34 +86,34 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "20px",
-    width: "20em",
+    height: theme.spacing(2),
+    width: theme.spacing(40),
     border: "4px dashed",
     borderColor: theme.palette.primary.main,
-    padding: "2rem",
+    padding: theme.spacing(4),
     paddingLeft: "0",
     textAlign: "center",
-    borderRadius: "0.5rem",
-    boxShadow: "5px 5px 10px #C0C0C0",
+    borderRadius: theme.spacing(1),
+    boxShadow: "5px 5px 10px " + theme.palette.background.paper,
     cursor: "pointer"
   },
   dropzone: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "20px",
-    width: "22em",
+    height: theme.spacing(3),
+    width: theme.spacing(44),
     border: "2px dashed",
     borderColor: theme.palette.primary.main,
     padding: "2rem",
     paddingLeft: "0",
     textAlign: "center",
-    borderRadius: "0.5rem",
+    borderRadius: theme.spacing(1),
     cursor: "pointer"
   }
 }));
 
-export default function variantsContainer() {
+export default function VariantsContainer() {
   const classes = useStyles();
 
   // Error message set when file upload to the server fails
@@ -141,6 +141,8 @@ export default function variantsContainer() {
     url.searchParams.set("query", sqlquery);
     return url;
   };
+
+  /* FETCHING SUBJECTS INFO SECTION */
 
   // Fetch the SomaticVariants questionnaire and Subjects uuids
   let fetchBasicData = () => {
@@ -170,8 +172,10 @@ export default function variantsContainer() {
     setError(response.status + " " + response.statusText);
   };
 
+  // Fetch information about patient, tumor and region subjects from file name
+  // on file drop to the drag&drop zone
   let onDrop = (accepted) => {
-
+    cleanForm();
     let chosenFiles = accepted;
     if (chosenFiles.length == 0) {
       setError("Please submit valid file type");
@@ -184,12 +188,12 @@ export default function variantsContainer() {
     (function loop(i) {
         if (i < chosenFiles.length) new Promise((resolve, reject) => {
           let file = chosenFiles[i];
-          if (!(/^(.+)_(.+).csv$/.test(file.name))) {
+
+          let parsed = file.name.split('.csv')[0].split('_');
+          if (parsed.length < 2 || parsed[0] == "" || parsed[1] == "") {
             setError("File name " + file.name + " does not follow the name convention <Subject>_<tumour nb>***.csv");
             return;
           }
-
-          let parsed = file.name.split('.csv')[0].split('_');
           file.subject     = {}
           file.subject.id  = parsed[0];
           file.tumor       = {}
@@ -200,7 +204,7 @@ export default function variantsContainer() {
           setSingleFileSubjectData(file, files)
             .then( (processedFile) => {
 
-              if (processedFile.region.existed && processedFile.region.id) {
+              if (processedFile.tumor.existed && processedFile.tumor.id) {
 
                 // query data about all of the already uploaded files
                 let url = new URL("/query", window.location.origin);
@@ -281,8 +285,8 @@ export default function variantsContainer() {
                 fetch( checkTumorExistsURL )
                     .then((response) => response.ok ? response.json() : reject(response))
                     .then((json) => {
-                      // If a tumor subject is found
-                      if (json.rows && json.rows.length > 0) {
+                      // If a tumor subject is found and region subject is defined
+                      if (file.region.id != "" && json.rows && json.rows.length > 0) {
                         let subject = json.rows[0];
                         // get the path
                         file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"]);
@@ -309,7 +313,9 @@ export default function variantsContainer() {
                         // if a tumor subject is not found
                         // record in variables that a tumor and a region didn’t exist and generate a new random uuid as their path
                         file.tumor  = generateSubject(file.tumor);
-                        file.region = generateSubject(file.region);
+                        if (file.region.id != "") {
+                            file.region = generateSubject(file.region);
+                        }
                         resolve(file);
                       }
                     })
@@ -320,7 +326,9 @@ export default function variantsContainer() {
                 // fetch existing or record in variables that it didn’t exist, and generate a new random uuid as its path
                 file.subject = generateSubject(file.subject);
                 file.tumor   = generateSubject(file.tumor);
-                file.region  = generateSubject(file.region);
+                if (file.region.id != "") {
+                    file.region = generateSubject(file.region);
+                }
                 resolve(file);
               }
             })
@@ -335,8 +343,8 @@ export default function variantsContainer() {
             fetch( checkTumorExistsURL )
                 .then((response) => response.ok ? response.json() : reject(response))
                 .then((json) => {
-                  // If a tumor subject is found
-                  if (json.rows && json.rows.length > 0) {
+                  // If a tumor subject is found and region subject is defined
+                  if (file.region.id != "" && json.rows && json.rows.length > 0) {
                     let subject = json.rows[0];
                     // get the path
                     file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"]);
@@ -364,14 +372,16 @@ export default function variantsContainer() {
                     // if a tumor subject is not found
                     // record in variables that a tumor and a region didn’t exist, and generate a new random uuid as their path
                     file.tumor  = generateSubject(file.tumor);
-                    file.region = generateSubject(file.region);
+                    if (file.region.id != "") {
+                      file.region = generateSubject(file.region);
+                    }
                     resolve(file);
                   }
                 })
                 .catch((err) => {console.log(err); reject(err);})
 
           } else {
-            if (!file.region.path) {
+            if (!file.region.path && file.region.id != "") {
               checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.region.id}' AND s.'parents'='${file.tumor.uuid}'`);
 
               // Fire a fetch request for a region subject with the tumor subject as its parent
@@ -391,6 +401,8 @@ export default function variantsContainer() {
                   resolve(file);
                 })
                 .catch((err) => {console.log(err); reject(err);})
+            } else {
+              resolve(file);
             }
           }
         }
@@ -466,7 +478,7 @@ export default function variantsContainer() {
 
   let cleanForm = () => {
     setUploadInProgress(false);
-    setSelectedFiles(undefined);
+    setSelectedFiles([]);
     setError("");
     setUploadProgress({});
   };
@@ -477,6 +489,7 @@ export default function variantsContainer() {
     selectedFiles.forEach(file => {
       promises.push(uploadSingleFile(file));
     });
+
     return Promise.all(promises);
   };
 
@@ -493,9 +506,11 @@ export default function variantsContainer() {
 
     uploadAllFiles(selectedFiles)
       .then(() => {
+
         setUploadInProgress(false);
       })
       .catch( (error) => {
+
         handleError(error);
         setUploadInProgress(false);
     });
@@ -503,11 +518,13 @@ export default function variantsContainer() {
 
   let uploadSingleFile = (file) => {
     return new Promise((resolve, reject) => {
+
       var reader = new FileReader();
       reader.readAsText(file);
 
       //When the file finish load
       reader.onload = function(event) {
+
         // get the file data
         var csv = event.target.result;
         let json = assembleJson(file, csv);
@@ -521,6 +538,7 @@ export default function variantsContainer() {
         xhr.open('POST', '/')
 
         xhr.onload = function() {
+
           if (xhr.status != 201) {
             uploadProgress[file.name] = { state: "error", percentage: 0 };
             console.log("Error", xhr.statusText)
@@ -544,6 +562,7 @@ export default function variantsContainer() {
         }
 
         xhr.upload.onprogress = function (event) {
+
           if (event.lengthComputable) {
             let done = event.position || event.loaded;
             let total = event.totalSize || event.total;
@@ -576,7 +595,7 @@ export default function variantsContainer() {
       if (!file.tumor.existed) {
         json[file.tumor.path.replace("/Subjects", "Subjects")] = generateSubjectJson("Tumor", file.tumor.id, file.subject.path);
       }
-      if (!file.region.existed) {
+      if (!file.region.existed && file.region.id != "") {
         json[file.region.path.replace("/Subjects", "Subjects")] = generateSubjectJson("TumorRegion", file.region.id, file.tumor.path);
       }
 
@@ -624,6 +643,7 @@ export default function variantsContainer() {
       ) }
 
       <DragAndDrop
+        multifile={false}
         handleDrop={onDrop}
         classes={classes}
         error={error}
@@ -631,7 +651,7 @@ export default function variantsContainer() {
 
       <input type="hidden" name="*@TypeHint" value="nt:file" />
       <label htmlFor="contained-button-file">
-        <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error} className={classes.uploadButton}>
+        <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error && selectedFiles.length == 0} className={classes.uploadButton}>
           <span><BackupIcon className={classes.buttonIcon}/>
             {uploadInProgress ? 'Uploading' :
                 // TODO - judge upload status button message over all upload statuses of all files ??
@@ -668,8 +688,8 @@ export default function variantsContainer() {
                 <Typography className={classes.fileDetail}>
                   Subject id: <Link href={file.subject.path.replace("/Subjects", "Subjects")} target="_blank"> {file.subject.id} </Link>
                   Tumor nb: <Link href={file.tumor.path.replace("/Subjects", "Subjects")} target="_blank"> {file.tumor.id} </Link>
-                  Region nb: <Link href={file.region.path.replace("/Subjects", "Subjects")} target="_blank"> {file.region.id} </Link>
-                  {file.formPath && <span>Form: <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank"> {file.formPath.replace("/Forms/", "")} </Link></span>}
+                  { file.region.path && <span>Region nb: <Link href={file.region.path.replace("/Subjects", "Subjects")} target="_blank"> {file.region.id} </Link> </span> }
+                  { file.formPath && <span>Form: <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank"> {file.formPath.replace("/Forms/", "")} </Link></span> }
                 </Typography>
               : <span>
                 <TextField
@@ -709,7 +729,7 @@ export default function variantsContainer() {
                                Uploaded at {moment(samefile["jcr:created"]).format("dddd, MMMM Do YYYY")} by {samefile["jcr:createdBy"]}
                                <IconButton size="small" color="primary">
                                  <a href={samefile["@path"]} download><GetApp /></a>
-                                </IconButton>
+                               </IconButton>
                              </li>
                            )})}
                          </ul>

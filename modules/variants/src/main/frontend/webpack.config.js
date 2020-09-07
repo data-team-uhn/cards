@@ -7,7 +7,7 @@ module.exports = {
   mode: 'development',
   entry: {
     [module_name + 'variantsIcon']: '@material-ui/icons/Subtitles.js',
-    [module_name + 'variantscontainer']: './src/variantsContainer.jsx'
+    [module_name + 'variantscontainer']: './src/VariantsContainer.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),
