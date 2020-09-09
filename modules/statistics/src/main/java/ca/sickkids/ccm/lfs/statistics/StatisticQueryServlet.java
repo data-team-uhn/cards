@@ -32,7 +32,9 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.json.Json;
+import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.stream.JsonParser;
 import javax.servlet.Servlet;
 
 import org.apache.commons.io.IOUtils;
@@ -40,7 +42,7 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
@@ -55,8 +57,9 @@ import org.slf4j.LoggerFactory;
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "lfs/Statistic", "lfs/StatisticsHomepage" },
-    selectors = { "query" })
-public class StatisticQueryServlet extends SlingSafeMethodsServlet
+    selectors = { "query" },
+    methods = { "POST" })
+public class StatisticQueryServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = 2558430802619674046L;
 
@@ -72,23 +75,26 @@ public class StatisticQueryServlet extends SlingSafeMethodsServlet
     };
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
+    protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
+        throws IOException
     {
         // Currently, this servlet takes in request parameters that contain strings and uuids
-        String statisticName = request.getParameter("name");
-        String xVariable = request.getParameter("xVar");
-        String yVariable = request.getParameter("yVar");
-        String splitVariable = request.getParameter("splitVar");
+        // String statisticName = request.getParameter("name");
+        // String xVariable = request.getParameter("xVar");
+        // String yVariable = request.getParameter("yVar");
+        // String splitVariable = request.getParameter("splitVar");
 
         // TODO: get request body --> extract name, xVar, yVar from body
 
-        // String jsonString = IOUtils.toString(request.getInputStream());
-        // JSONObject json = new JSONObject(jsonString); 
         // TODO: is there another way to convert string to JSON object?
 
-        // String statisticName = json.getString("name");
-        // String xVariable = json.getString("x-label");
-        // String yVariable = json.getString("y-label");
+        JsonParser parser = Json.createParser(request.getInputStream());
+        JsonObject json = parser.getObject(); //TODO: use event and switch statements!
+
+        String statisticName = json.getString("name");
+        String xVariable = json.getString("x-label");
+        String yVariable = json.getString("y-label");
+        String splitVariable = json.getString("splitVar");
 
         // TODO: xVariable, yVariable and splitVariable should contain the pathname, go from pathname to node
 
