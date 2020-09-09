@@ -116,7 +116,7 @@
     },
     "QuickSearchResults": {
         "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+        "lfs:extensionPointId": "lfs/coreUI/hidden/entry",
         "lfs:extensionName": "Quick Search Results",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.QuickSearchResults.js",
         "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
