@@ -55,7 +55,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
   // create a ref to store the question container DOM element
   useEffect(() => {
     const timer = setTimeout(() => {
-	  questionRef?.current?.scrollIntoView();
+	  questionRef?.current?.scrollIntoView({block: "center"});
 	}, 500);
 	return () => clearTimeout(timer);
   }, [questionRef]);

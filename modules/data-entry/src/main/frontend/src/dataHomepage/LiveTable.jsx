@@ -143,9 +143,9 @@ function LiveTable(props) {
     setTableData();
   };
 
-  let makeRow = (entry) => {
+  let makeRow = (entry, i) => {
     return (
-      <TableRow key={entry["@path"]}>
+      <TableRow key={entry["@path"] + i}>
         { columns ?
           (
             columns.map((column, index) => makeCell(entry, column, index))
@@ -352,7 +352,7 @@ function LiveTable(props) {
             )
             :
             tableData ?
-              ( tableData.map(makeRow) )
+              ( tableData.map((item, index) => makeRow(item, index)) )
               :
               ( <TableRow><TableCell colSpan={columns ? columns.length : 1}>Please wait...</TableCell></TableRow> )
             /* TODO: Better progress bar, add some Suspense */

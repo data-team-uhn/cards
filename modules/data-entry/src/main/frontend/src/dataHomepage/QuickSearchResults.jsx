@@ -24,6 +24,7 @@ import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItem
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
 const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
+const LFS_QUERY_MATCH_PATH_KEY = "@path";
 // Properties of the quick search result metadata
 const LFS_QUERY_QUESTION_KEY = "question";
 const LFS_QUERY_MATCH_BEFORE_KEY = "before";
@@ -54,11 +55,23 @@ function QuickSearchResults(props) {
     ) || null
   }
 
+  let defaultRedirect = (row, props) => {
+    // Redirect using React-router
+    const anchorPath = row[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY];
+    const path = (row["jcr:primaryType"] == "lfs:Questionnaire") ? "/content.html/admin" : "/content.html";
+    if (row["@path"]) {
+      props.history.push({
+        pathname: path + row["@path"],
+        hash: anchorPath
+      });
+    }
+  }
+
   const columns = [
     {
       "key": "",
       "label": "Identifier",
-      "format": (resultData) => (resultData.subject?.identifier || resultData["@name"] || ''),
+      "format": (resultData) => (<Link href="#" onClick={() => {defaultRedirect(resultData, props)}}>{resultData.subject?.identifier || resultData["@name"] || anchor}</Link>),
     },
     {
       "key": "jcr:createdBy",
@@ -98,6 +111,7 @@ function QuickSearchResults(props) {
           <LiveTable
             columns={columns} 
             customUrl={'/query?quick='+ encodeURIComponent(anchor)}
+            defaultLimit={10}
           />
         </CardContent>
       </Card>
