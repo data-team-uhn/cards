@@ -35,6 +35,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.stream.JsonParser;
+import javax.json.stream.JsonParser.Event;
 import javax.servlet.Servlet;
 
 import org.apache.commons.io.IOUtils;
@@ -78,25 +79,34 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
         throws IOException
     {
-        // Currently, this servlet takes in request parameters that contain strings and uuids
-        // String statisticName = request.getParameter("name");
-        // String xVariable = request.getParameter("xVar");
-        // String yVariable = request.getParameter("yVar");
-        // String splitVariable = request.getParameter("splitVar");
-
-        // TODO: get request body --> extract name, xVar, yVar from body
-
-        // TODO: is there another way to convert string to JSON object?
-
+        // set input variables
         JsonParser parser = Json.createParser(request.getInputStream());
-        JsonObject json = parser.getObject(); //TODO: use event and switch statements!
-
-        String statisticName = json.getString("name");
-        String xVariable = json.getString("x-label");
-        String yVariable = json.getString("y-label");
-        String splitVariable = json.getString("splitVar");
+        String statisticName = null;
+        String xVariable = null;
+        String yVariable = null;
+        String splitVariable = null;
+        while (parser.hasNext()) {
+            Event event = parser.next();
+            if (event == JsonParser.Event.KEY_NAME ) {
+                String key = parser.getString();
+                event = parser.next();
+                if (key.equals("name")) {
+                    statisticName = parser.getString();
+                }
+                if (key.equals("x-label")) {
+                    xVariable = parser.getString();
+                }
+                if (key.equals("y-label")) {
+                    yVariable = parser.getString();
+                }
+                if (key.equals("splitVar")) {
+                    splitVariable = parser.getString();
+                }
+            }
+        }
 
         // TODO: xVariable, yVariable and splitVariable should contain the pathname, go from pathname to node
+        // currently, UUIDs are being sent
 
         try {
             // Steps to returning the calculated statistic:
