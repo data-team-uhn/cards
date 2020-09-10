@@ -41,7 +41,6 @@ def prepare_conditional(question, row):
     else:
         # No title is needed because only a single lfs:Conditional will be created
         insert_conditional(parent_logic, question, '')
-    return
 
 
 # Updates the question with lfs:Conditionals from the output of prepare_conditional
@@ -71,12 +70,11 @@ def insert_conditional(parent_logic, question, title):
             question['conditionalGroup'].update(create_conditional(operand_a, item, 'condition' + str(index)))
     else:
         question.update(create_conditional(operand_a, operand_b, 'condition' + title))
-    return
 
 
 # Returns a dict object that is formatted as an lfs:Conditional
 def create_conditional(operand_a, operand_b, title):
-    isReference = False
+    is_reference = False
     # NOTE: IN THE CASE OF A REFRENCE TO A QUESTION WHOSE POSSIBLE VALUES ARE YES/NO/OTHER
     # YOU WILL HAVE TO MANUALLY CHANGE THE CONDITIONALS SINCE THEY WILL BE REPLACED WITH T/F
     if operand_b.lower() == 'yes':
@@ -85,7 +83,7 @@ def create_conditional(operand_a, operand_b, title):
         operand_b_updated = "false"
     else:
         operand_b_updated = operand_b
-        isReference = True
+        is_reference = True
     return {title: {
         'jcr:primaryType': 'lfs:Conditional',
         'operandA': {
@@ -97,7 +95,7 @@ def create_conditional(operand_a, operand_b, title):
         'operandB': {
             'jcr:primaryType': 'lfs:ConditionalValue',
             'value': [operand_b_updated],
-            'isReference': isReference
+            'isReference': is_reference
         }
     }}
 
@@ -106,7 +104,6 @@ def create_conditional(operand_a, operand_b, title):
 def insert_min_answers(question, row):
     if row['MissingData'].lower() == 'illegal':
         question.update({'minAnswers': 1})
-    return
 
 
 def options_list(categorical_list):
@@ -146,7 +143,6 @@ def insert_options(question, row):
                                       'value': value
             }}
             question.update(answer_option)
-    return
 
 
 # Creates minValue and maxValue properties on a question from 'RangeMinValid' and 'RangeMaxValid'
@@ -155,30 +151,29 @@ def insert_range(question, row):
       'minValue': float(row['RangeMinValid']),
       'maxValue': float(row['RangeMaxValid'])
       })
-    return
 
 
 # Converts the data type in 'UserFormatType' to one supported in LFS
-def switch_data_type(argument):
-    switcher = {
-        'Text (categorical list)': 'text',
-        'cat list': 'text',
-        'Text': 'text',
-        'Date': 'date',
-        'Integer': 'long'
-    }
-    return switcher.get(argument, 'text')
+DATA_TO_LFS_TYPE = {
+    'text (categorical list)': 'text',
+    'cat list': 'text',
+    'text': 'text',
+    'date': 'date',
+    'integer': 'long',
+    'age (months:days)': 'text' # TODO: Switch this to an interval question when it is supported
+}
+def convert_to_LFS_data_type(argument):
+    return DATA_TO_LFS_TYPE.get(argument.strip().lower(), 'text')
 
 
 def insert_description(question, row):
     question.update({
       'description': row['Description'].strip()
       })
-    return
 
 
 # Creates a JSON file that contains the tsv file as an lfs:Questionnaire
-def tsv_to_JSON(title):
+def tsv_to_json(title):
     questionnaire = {}
     questionnaire['jcr:primaryType'] = 'lfs:Questionnaire'
     questionnaire['title'] = title + ' Data'
@@ -188,11 +183,10 @@ def tsv_to_JSON(title):
         for row in reader:
             question = row['nameShort'].strip()
             if question:
-                questionnaire[question] = {}
                 questionnaire[question] = {
                     'jcr:primaryType': 'lfs:Question',
                     'text': row['nameFull'].strip() or question,
-                    'dataType': switch_data_type(row['UserFormatType'])
+                    'dataType': convert_to_LFS_data_type(row['UserFormatType'])
                 }
                 if row['RangeMinValid'] != '' and row['RangeMinValid'] != None:
                     insert_range(questionnaire[question], row)
@@ -200,14 +194,13 @@ def tsv_to_JSON(title):
                     insert_min_answers(questionnaire[question], row)
                 if row['Categorical list']:
                     if len(options_list(row['Categorical list'])) == 1:
-                        questionnaire[question].update({'dataType': switch_data_type(row['Categorical list'])})
+                        questionnaire[question].update({'dataType': convert_to_LFS_data_type(row['Categorical list'])})
                     else:
                         insert_options(questionnaire[question], row)
                 if row['Description'] != '':
                     insert_description(questionnaire[question], row)
                 if row['UserFormatType'] == 'Text (categorical list)' or row['UserFormatType'] == 'cat list':
                     questionnaire[question].update({'displayMode': 'list'})
-                    print(row)
                 if row['ParentLogic'] != '':
                     previous_data = questionnaire[question]
                     questionnaire.update({question + 'Section': {
@@ -222,4 +215,4 @@ def tsv_to_JSON(title):
 
 titles = ['Q1Variables', '0-5NDVariables', '6-21NDVariables']
 for title in titles:
-    tsv_to_JSON(title)
+    tsv_to_json(title)
