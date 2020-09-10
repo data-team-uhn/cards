@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
   Grid,
@@ -32,11 +32,21 @@ import uuid from 'uuid/v4';
 import CloseIcon from '@material-ui/icons/Close';
 
 let AnswerOptions = (props) => {
-  let [ options, setOptions ] = useState(Object.values(props.data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
+  const { data, path } = props;
+  let [ options, setOptions ] = useState(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
   let [ newUUID, setNewUUID ] = useState([]);
   let [ newValue, setNewValue ] = useState([]);
   let [ deletedOptions, setDeletedOptions ] = useState([]);
-  let [ tempValue, setTempValue ] = useState('');
+  let [ tempValue, setTempValue ] = useState(''); // Holds new, non-comitted answer options
+
+  // Clear local state when data changes
+  useEffect(() => {
+    setOptions(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
+    setNewUUID([]);
+    setNewValue([]);
+    setDeletedOptions([]);
+    setTempValue('');
+  }, [data])
 
   let deleteOption = (value) => {
     setOptions(oldOptions => {
@@ -91,13 +101,16 @@ let AnswerOptions = (props) => {
     setTempValue('');
   }
 
+  console.log(path);
+
   return (
-    <Grid container alignItems='flex-end' spacing={2}>
+    <Grid container alignItems='flex-start' spacing={2}>
       <Grid item xs={6}>
         <Typography>Answer Options</Typography>
       </Grid>
-      { options.map(value =>
-        <Grid item xs={6} key={value['jcr:uuid']}>
+      <Grid item xs={6}>
+      { options.map((value, index) =>
+        <React.Fragment key={value['@path']}>
           <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
           <TextField
             name={`${value['@path']}/value`}
@@ -106,40 +119,39 @@ let AnswerOptions = (props) => {
           <IconButton onClick={() => { deleteOption(value) }}>
             <CloseIcon/>
           </IconButton>
-        </Grid>
+        </React.Fragment>
       )}
       { newUUID.map((value, index) =>
-        <Grid item xs={6} key={index}>
-          <input type='hidden' name={`${props.data['@path']}/${newValue[index]}/jcr:primaryType`} value={'lfs:AnswerOption'} />
+        <React.Fragment key={value}>
+          <input type='hidden' name={`${path}/${newValue[index]}/jcr:primaryType`} value={'lfs:AnswerOption'} />
           <TextField
-            name={`${props.data['@path']}/${newValue[index]}/value`}
+            name={`${path}/${newValue[index]}/value`}
             value={newValue[index]}
             onChange={(event) => { updateInsertedOption(index, event); }}>
           </TextField>
           <IconButton onClick={(event) => { deleteInsertedOption(index, event) }}>
             <CloseIcon />
           </IconButton>
-        </Grid> 
+        </React.Fragment>
       )}
       { deletedOptions.map((value, index) =>
-        <input type='hidden' name={`${value['@path']}@Delete`} value="0" />
+        <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
       )}
-      <Grid item xs={6}>
-        <TextField
-          value={tempValue}
-          helperText='Press ENTER to add a new line'
-          onChange={(event) => { setTempValue(event.target.value); }}
-          inputProps={Object.assign({
-            onKeyDown: (event) => {
-              if (event.key == 'Enter') {
-                // We need to stop the event so that it doesn't trigger a form submission
-                event.preventDefault();
-                event.stopPropagation();
-                handleInputOption();
-              }
+      <TextField
+        value={tempValue}
+        helperText='Press ENTER to add a new line'
+        onChange={(event) => { setTempValue(event.target.value); }}
+        inputProps={Object.assign({
+          onKeyDown: (event) => {
+            if (event.key == 'Enter') {
+              // We need to stop the event so that it doesn't trigger a form submission
+              event.preventDefault();
+              event.stopPropagation();
+              handleInputOption();
             }
-          })}>
-        </TextField>
+          }
+        })}>
+      </TextField>
       </Grid>
     </Grid>
   )
