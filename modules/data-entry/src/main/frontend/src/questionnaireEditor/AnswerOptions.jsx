@@ -33,8 +33,9 @@ import CloseIcon from '@material-ui/icons/Close';
 
 let AnswerOptions = (props) => {
   let [ options, setOptions ] = useState(Object.values(props.data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
-  let [ newUuid, setNewUuid ] = useState([]);
+  let [ newUUID, setNewUUID ] = useState([]);
   let [ newValue, setNewValue ] = useState([]);
+  let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState('');
 
   let deleteOption = (value) => {
@@ -42,6 +43,12 @@ let AnswerOptions = (props) => {
       let newOptions = oldOptions.slice();
       newOptions.splice(newOptions.indexOf(value), 1);
       return newOptions;
+    })
+
+    setDeletedOptions(old => {
+      let newDeletedOptions = old.slice();
+      newDeletedOptions.push(value);
+      return newDeletedOptions;
     })
   }
 
@@ -59,7 +66,7 @@ let AnswerOptions = (props) => {
       value.splice(index, 1);
       return value;
     })
-    setNewUuid(oldUuid => {
+    setNewUUID(oldUuid => {
       let uuid = oldUuid.slice();
       uuid.splice(index, 1);
       return uuid;
@@ -68,7 +75,7 @@ let AnswerOptions = (props) => {
 
   let handleInputOption = () => {
     if (!newValue.includes(tempValue)) {
-      setNewUuid(oldUuid => {
+      setNewUUID(oldUuid => {
         let tempUUID = oldUuid.slice();
         tempUUID.push(uuid());
         return tempUUID;
@@ -101,7 +108,7 @@ let AnswerOptions = (props) => {
           </IconButton>
         </Grid>
       )}
-      { newUuid.map((value, index) =>
+      { newUUID.map((value, index) =>
         <Grid item xs={6} key={index}>
           <input type='hidden' name={`${props.data['@path']}/${newValue[index]}/jcr:primaryType`} value={'lfs:AnswerOption'} />
           <TextField
@@ -113,6 +120,9 @@ let AnswerOptions = (props) => {
             <CloseIcon />
           </IconButton>
         </Grid> 
+      )}
+      { deletedOptions.map((value, index) =>
+        <input type='hidden' name={`${value['@path']}@Delete`} value="0" />
       )}
       <Grid item xs={6}>
         <TextField
