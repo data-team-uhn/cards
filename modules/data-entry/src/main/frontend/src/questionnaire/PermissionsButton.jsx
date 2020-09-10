@@ -28,13 +28,16 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  InputAdornment,
   ListItemAvatar,
   ListItemText,
   TextField,
+  Tooltip,
   Typography,
   withStyles
 } from "@material-ui/core";
 import DescriptionIcon from "@material-ui/icons/Description";
+import ErrorIcon from "@material-ui/icons/Error";
 import LockIcon from "@material-ui/icons/Lock";
 import MaterialTable from "material-table";
 
@@ -69,10 +72,9 @@ function PermissionsButton(props) {
   const [ openState, setOpenState ] = useState(states.CLOSED);
   const [ policies, setPolicies ] = useState([]);
   const [ error, setError ] = useState();
-  const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(true); // Default true since having nothing entered or a default value is valid
+  const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(false);
   const [ selectedUser, setSelectedUser ] = useState();
   const [ privilege, setPrivilege] = useState(privilegeNames.VIEW);
-  const [ formPrivilege, setFormPrivilege] = useState(privilegeNames.VIEW);
 
   let setState = (newState) => {
     if (openState !== newState) {
@@ -85,39 +87,16 @@ function PermissionsButton(props) {
   let openNew = () => {
     setState(states.NEW);
     setPrivilege(privilegeNames.VIEW);
-    setFormPrivilege(privilegeNames.VIEW);
-    setSelectedUser("");
+    setHasSelectedValidSubject(false);
+    setError("");
   }
 
   let handlePrivilegeChange = (event) => {
     setPrivilege(event.target.value);
   }
 
-  let handleFormPrivilegeChange = (event) => {
-    setFormPrivilege(event.target.value);
-  }
-
   let handleIconClicked = () => {
     getPermissions().then(openPolicies);
-  }
-
-  let handlePolicyDelete = (rowData) => {
-    let request_data = new FormData();
-    let url = new URL(entryPath + ".permissions", window.location.origin);
-    url.searchParams.set(":rule", "allow");
-    url.searchParams.set(":privileges", privilegeNameToJcr(rowData.privileges));
-    // url.searchParams.set(":formPrivileges", privilegeNameToJcr(rowData.formPrivilege));
-    url.searchParams.set(":principal", rowData.principal);
-    url.searchParams.set(":restriction", rowData.restrictions);
-    url.searchParams.set(":action", "remove");
-    fetch( url, {
-      method: 'POST',
-      body: request_data,
-      headers: {
-        Accept: "application/json"
-    }}).then((response) => {
-      if (!response.ok) Promise.reject(response);
-    }).then(getPermissions);
   }
 
   let privilegeNameToJcr = (name) => {
@@ -161,12 +140,9 @@ function PermissionsButton(props) {
   }
 
   let getPermissions = () => {
-    let request_data = new FormData();
     let url = new URL(entryPath + ".permissions", window.location.origin);
-    url.searchParams.set(":action", "get");
     return fetch( url, {
-      method: 'post',
-      body: request_data,
+      method: 'get',
       headers: {
         Accept: "application/json"
       }}).then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -185,27 +161,31 @@ function PermissionsButton(props) {
   }
 
   let setPermissions = () => {
-    setSubjectPermissions().then(setFormPermissions());
-
+    if (privilege !== "") {
+      // Set /Subject/id permissions
+      postPermissions(entryPath, "allow", privilegeNameToJcr(privilege), selectedUser, null, "add");
+      var pathEntries = entryPath.split("/");
+      var subjectId = pathEntries[pathEntries.length-1];
+      // Set /Forms permissions
+      postPermissions("/Forms", "allow", privilegeNameToJcr(privilege), selectedUser, "lfs:subject=" + subjectId,
+        "add");
+    }
     setState(close());
   }
 
-  let setSubjectPermissions = () => {
-    if (privilege !== "") {
-      return postPermissions(entryPath, "allow", privilegeNameToJcr(privilege), selectedUser, null, "add")
-    } else {
-      return Promise.resolve();
-    }
-  }
+  let deletePermissions = (rowData) => {
+    var pathEntries = entryPath.split("/");
+    var subjectId = pathEntries[pathEntries.length-1];
+    var restrictionsWithSubject = rowData.restrictions.length > 0 ? rowData.restrictions.toString() + "," : "";
+    restrictionsWithSubject += "lfs:subject=" + subjectId;
 
-  let setFormPermissions = () => {
-    if (privilege !== "") {
-      var pathEntries = entryPath.split("/");
-      var subjectId = pathEntries.[pathEntries.length-1];
-      return postPermissions("/Forms", "allow", privilegeNameToJcr(formPrivilege), selectedUser, "lfs:subject=" + subjectId, "add");
-    } else {
-      return Promise.resolve();
-    }
+    postPermissions("/Forms", "allow", privilegeNameToJcr(rowData.privileges), rowData.principal,
+      restrictionsWithSubject, "remove")
+      .then((response) => {if (!response.ok) Promise.reject(response)})
+      .then(() => {return postPermissions(entryPath, "allow", privilegeNameToJcr(rowData.privileges), rowData.principal,
+        rowData.restrictions, "remove")})
+      .then((response) => {if (!response.ok) Promise.reject(response)})
+      .then(getPermissions);
   }
 
   let postPermissions = (path, rule, privileges, principal, restrictions, action) => {
@@ -227,20 +207,22 @@ function PermissionsButton(props) {
     });
   }
 
-
-
+  let invalidateInput = (event) => {
+    setHasSelectedValidSubject(false);
+  }
 
   let closePopper = () => {
     if (!hasSelectedValidSubject) {
       setError("Invalid subject selected");
     }
   }
-  // Pass information about a selected subject upwards
+
   let selectSubject = (event, row) => {
     setSelectedUser(row["principalName"]);
-    // setHasSelectedValidSubject(true);
+    setHasSelectedValidSubject(true);
     setError(false);
   }
+
   let constructQuery = (query, requestID) => {
     let url = new URL("/home.json", window.location.origin);
     url.searchParams.set("limit", 10);
@@ -274,9 +256,6 @@ function PermissionsButton(props) {
     </React.Fragment>
   )
 
-
-
-
   return (
     <React.Fragment>
       <Dialog
@@ -306,7 +285,7 @@ function PermissionsButton(props) {
                   {
                     icon: 'delete',
                     tooltip: 'Delete Policy',
-                    onClick: (event, rowData) => handlePolicyDelete(rowData)
+                    onClick: (event, rowData) => deletePermissions(rowData)
                   },
                 ]}
               />
@@ -325,8 +304,7 @@ function PermissionsButton(props) {
         <DialogContent>
           <Typography variant="body1">Principal</Typography>
           <SearchBar
-            // defaultValue={}
-            // onChange={invalidateInput}
+            onChange={invalidateInput}
             onPopperClose={closePopper}
             onSelect={selectSubject}
             queryConstructor={constructQuery}
@@ -349,17 +327,12 @@ function PermissionsButton(props) {
             <option value={privilegeNames.EDIT}>{privilegeNames.EDIT}</option>
             <option value={privilegeNames.MANAGE}>{privilegeNames.MANAGE}</option>
           </TextField>
-          <Typography variant="body1">Form Permission</Typography>
-          <TextField select defaultValue={privilegeNames.VIEW} onChange={handleFormPrivilegeChange}>
-            <option value={privilegeNames.NONE}>{privilegeNames.NONE}</option>
-            <option value={privilegeNames.VIEW}>{privilegeNames.VIEW}</option>
-            <option value={privilegeNames.EDIT}>{privilegeNames.EDIT}</option>
-            <option value={privilegeNames.MANAGE}>{privilegeNames.MANAGE}</option>
-          </TextField>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button variant="contained" color="secondary" size="small" onClick={setPermissions}>Save</Button>
-          <Button variant="contained" size="small" onClick={close}>Close</Button>
+          <Button variant="contained" color="secondary" size="small" onClick={setPermissions} disabled={!hasSelectedValidSubject}>Save</Button>
+          <Button variant="contained" size="small" onClick={close}>
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
       <IconButton onClick={handleIconClicked}>

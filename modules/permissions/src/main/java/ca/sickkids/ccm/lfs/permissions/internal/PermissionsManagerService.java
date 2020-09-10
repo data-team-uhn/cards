@@ -20,6 +20,7 @@ package ca.sickkids.ccm.lfs.permissions.internal;
 
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,11 +29,17 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
+import javax.json.stream.JsonGenerator;
 
 import org.apache.jackrabbit.api.security.JackrabbitAccessControlEntry;
 import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.PersistenceException;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import ca.sickkids.ccm.lfs.permissions.spi.PermissionsManager;
 
@@ -45,46 +52,104 @@ import ca.sickkids.ccm.lfs.permissions.spi.PermissionsManager;
 @Component(service = { PermissionsManager.class })
 public class PermissionsManagerService implements PermissionsManager
 {
+    private final ThreadLocal<ResourceResolver> serviceResolver = ThreadLocal.withInitial(() -> null);
+
+    @Reference
+    private ResourceResolverFactory resolverFactory;
+
     @Override
     public void addAccessControlEntry(String target, boolean isAllow, Principal principal, Privilege[] privileges,
-            Map<String, Value> restrictions, Session session) throws RepositoryException
+            Map<String, Value> restrictions, Session session, boolean withServiceUser) throws RepositoryException
     {
-        AccessControlManager acm = session.getAccessControlManager();
-        JackrabbitAccessControlList acl = AccessControlUtils.getAccessControlList(acm, target);
+        Session usedSession = withServiceUser ? getServiceUserSession(session) : session;
+        try {
+            AccessControlManager acm = usedSession.getAccessControlManager();
+            JackrabbitAccessControlList acl = AccessControlUtils.getAccessControlList(acm, target);
 
-        // Provided we could obtain the AccessControlList, add a new entry
-        if (acl != null) {
-            acl.addEntry(principal, privileges, isAllow, restrictions);
-            acm.setPolicy(target, acl);
+            // Provided we could obtain the AccessControlList, add a new entry
+            if (acl != null) {
+                acl.addEntry(principal, privileges, isAllow, restrictions);
+                acm.setPolicy(target, acl);
+            }
+        } finally {
+            closeServiceResolver();
         }
     }
 
     @Override
     public void removeAccessControlEntry(String target, boolean isAllow, Principal principal, Privilege[] privileges,
-            Map<String, Value> restrictions, Session session) throws RepositoryException
+            Map<String, Value> restrictions, Session session, boolean withServiceUser) throws RepositoryException
     {
-        // Find the necessary ACL to remove
-        AccessControlManager acm = session.getAccessControlManager();
-        JackrabbitAccessControlList acl = AccessControlUtils.getAccessControlList(acm, target);
-        if (acl != null) {
-            // Find the necessary AccessControlEntry to remove
-            JackrabbitAccessControlEntry[] entries = (JackrabbitAccessControlEntry[]) acl.getAccessControlEntries();
-            JackrabbitAccessControlEntry toRemove = null;
-            for (JackrabbitAccessControlEntry entry : entries) {
-                if (entryHasDetails(entry, isAllow, principal, privileges, restrictions)) {
-                    // We've found the correct entry, make a note of it
-                    toRemove = entry;
-                    break;
+        Session usedSession = withServiceUser ? getServiceUserSession(session) : session;
+        try {
+            // Find the necessary ACL to remove
+            AccessControlManager acm = usedSession.getAccessControlManager();
+            JackrabbitAccessControlList acl = AccessControlUtils.getAccessControlList(acm, target);
+            if (acl != null) {
+                // Find the necessary AccessControlEntry to remove
+                JackrabbitAccessControlEntry[] entries = (JackrabbitAccessControlEntry[]) acl.getAccessControlEntries();
+                JackrabbitAccessControlEntry toRemove = null;
+                for (JackrabbitAccessControlEntry entry : entries) {
+                    if (entryHasDetails(entry, isAllow, principal, privileges, restrictions)) {
+                        // We've found the correct entry, make a note of it
+                        toRemove = entry;
+                        break;
+                    }
+                }
+
+                // Remove it if it was found
+                if (toRemove != null) {
+                    acl.removeAccessControlEntry(toRemove);
+                    acm.setPolicy(target, acl);
+                } else {
+                    closeServiceResolver();
+                    throw new RepositoryException("Target ACL does not exist");
                 }
             }
+        } finally {
+            closeServiceResolver();
+        }
+    }
 
-            // Remove it if it was found
-            if (toRemove != null) {
-                acl.removeAccessControlEntry(toRemove);
-                acm.setPolicy(target, acl);
-            } else {
-                throw new RepositoryException("Target ACL does not exist");
+    @Override
+    public void outputAccessControlEntries(String target, JsonGenerator jsonGen, Session session,
+        boolean withServiceUser) throws RepositoryException
+    {
+        Session usedSession = withServiceUser ? getServiceUserSession(session) : session;
+        try {
+            AccessControlManager acm = usedSession.getAccessControlManager();
+            JackrabbitAccessControlList acl = AccessControlUtils.getAccessControlList(acm, target);
+
+            jsonGen.writeStartObject();
+            if (acl != null) {
+                jsonGen.writeStartArray("policies");
+                // Find the necessary AccessControlEntry to remove
+                JackrabbitAccessControlEntry[] entries = (JackrabbitAccessControlEntry[]) acl.getAccessControlEntries();
+                for (JackrabbitAccessControlEntry entry : entries) {
+                    jsonGen.writeStartObject()
+                        .write("allow", (entry.isAllow() ? "allow" : "deny"))
+                        .write("principal", entry.getPrincipal().getName())
+                        .writeStartArray("privileges");
+
+                    Privilege[] privileges = entry.getPrivileges();
+                    for (Privilege privilege : privileges) {
+                        jsonGen.write(privilege.getName());
+                    }
+
+                    jsonGen.writeEnd().writeStartArray("restrictions");
+                    String[] restrictions = entry.getRestrictionNames();
+                    for (String restriction : restrictions) {
+                        jsonGen.write(restriction);
+                    }
+
+                    jsonGen.writeEnd().writeEnd();
+                }
+                jsonGen.writeEnd();
             }
+            jsonGen.writeEnd().flush();
+            closeServiceResolver();
+        } finally {
+            closeServiceResolver();
         }
     }
 
@@ -158,5 +223,33 @@ public class PermissionsManagerService implements PermissionsManager
             }
         }
         return true;
+    }
+
+    private Session getServiceUserSession(Session session)
+        throws RepositoryException
+    {
+        try {
+            Map<String, Object> param = new HashMap<String, Object>();
+            param.put(ResourceResolverFactory.SUBSERVICE, "forms");
+            this.serviceResolver.set(this.resolverFactory.getServiceResourceResolver(param));
+            return this.serviceResolver.get().adaptTo(Session.class);
+        } catch (LoginException e) {
+            throw new javax.jcr.LoginException(e.getMessage());
+        }
+    }
+
+    private void closeServiceResolver() throws RepositoryException
+    {
+        ResourceResolver resolver = this.serviceResolver.get();
+        if (resolver != null) {
+            try {
+                resolver.commit();
+            } catch (PersistenceException e) {
+                throw new RepositoryException(e.getMessage());
+            } finally {
+                resolver.close();
+                this.serviceResolver.set(null);
+            }
+        }
     }
 }
