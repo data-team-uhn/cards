@@ -113,7 +113,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function VariantsContainer() {
+export default function VariantFilesContainer() {
   const classes = useStyles();
 
   // Error message set when file upload to the server fails
