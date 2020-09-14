@@ -25,7 +25,7 @@
 // A User Interface Extension Point (UIXP) defines a place in the UI that accepts extensions
 //
 //-----------------------------------------------------------------------------
-[lfs:ExtensionPoint] > nt:file, sling:Resource, mix:referenceable
+[lfs:ExtensionPoint] > nt:base, sling:Resource, mix:referenceable
 
   // Attributes
 
@@ -55,7 +55,7 @@
 // A User Interface Extension (UIX) defines content that can be automatically placed in a UIXP
 //
 //-----------------------------------------------------------------------------
-[lfs:Extension] > nt:file, sling:Resource, mix:referenceable
+[lfs:Extension] > nt:base, sling:Resource, mix:referenceable
 
   // Attributes
 

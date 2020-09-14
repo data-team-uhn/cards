@@ -1,9 +1,5 @@
 {
     "jcr:primaryType": "lfs:ExtensionPoint",
     "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-    "lfs:extensionPointName": "Entries for the dashboard sidebar",
-    "jcr:content": {
-        "jcr:primaryType": "nt:resource",
-        "jcr:data": ""
-    }
+    "lfs:extensionPointName": "Entries for the dashboard sidebar"
 }
