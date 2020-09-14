@@ -115,7 +115,8 @@ let AnswerOptions = (props) => {
           <TextField
             name={`${value['@path']}/value`}
             defaultValue={value.value}
-          />
+            multiline
+            />
           <IconButton onClick={() => { deleteOption(value) }}>
             <CloseIcon/>
           </IconButton>
@@ -127,8 +128,9 @@ let AnswerOptions = (props) => {
           <TextField
             name={`${path}/${newValue[index]}/value`}
             value={newValue[index]}
-            onChange={(event) => { updateInsertedOption(index, event); }}>
-          </TextField>
+            onChange={(event) => { updateInsertedOption(index, event); }}
+            multiline
+            />
           <IconButton onClick={(event) => { deleteInsertedOption(index, event) }}>
             <CloseIcon />
           </IconButton>
@@ -150,8 +152,9 @@ let AnswerOptions = (props) => {
               handleInputOption();
             }
           }
-        })}>
-      </TextField>
+        })}
+        multiline
+        />
       </Grid>
     </Grid>
   )
