@@ -7,11 +7,6 @@
         "lfs:icon": "asset:lfs-variants.variantsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-variants.variantfilescontainer.js",
         "lfs:targetURL": "Variants",
-        "lfs:defaultOrder": 20,
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "test",
-            "jcr:mimeType": "text/html"
-        }
+        "lfs:defaultOrder": 20
     }
 }
