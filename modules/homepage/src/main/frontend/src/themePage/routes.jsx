@@ -17,30 +17,15 @@
 //  under the License.
 //
 
+import { loadAsset } from '../assetManager';
+
 var sidebarRoutes = [
 ];
 
-const ASSET_PREFIX="asset:";
-
-// Begin a fetch for the asset URL to use
-var fetchAssetURL = function(url) {
-  if (!url.startsWith(ASSET_PREFIX)) {
-    return new Promise(function(resolve, reject) {resolve(url)});
-  }
-
-  var asset_id = url.slice(ASSET_PREFIX.length);
-  return fetch("/libs/lfs/resources/assets.json")
-    .then(response => response.ok ? response.json() : Promise.reject(response))
-    .then(json => "/libs/lfs/resources/" + json[asset_id]);
-}
-
 var loadRemoteIcon = function(uixDatum) {
-  return fetchAssetURL(uixDatum.iconUrl)
-    .then(url => fetch(url))
-    .then(response => response.ok ? response.text() : Promise.reject(response))
-    .then(remoteComponentSrc => {
-      var returnVal = window.eval(remoteComponentSrc);
-      uixDatum.icon = returnVal.default;
+  return loadAsset(uixDatum.iconUrl)
+    .then(asset => {
+      uixDatum.icon = asset;
       return(uixDatum);
     });
 }
@@ -56,33 +41,16 @@ var loadRemoteIcons = function(uixData) {
 
 // Load a react component from a URL
 var loadRemoteComponent = function(component) {
-  return fetchAssetURL(component['lfs:extensionRenderURL'])
-    .then(url => {
-      // If the URL is empty, return an empty page
-      if (url === "") {
-        return ({
-          reactComponent: null,
-          path: "/" + component["lfs:targetURL"],
-          name: component["lfs:extensionName"],
-          iconUrl: component["lfs:icon"],
-          order: component["lfs:defaultOrder"],
-          hint: component["lfs:hint"]
-        });
-      }
-
-      return fetch(url)
-        .then(response => response.ok ? response.text() : Promise.reject(response))
-        .then(remoteComponentSrc => {
-          var returnVal = window.eval(remoteComponentSrc);
-          return({
-            reactComponent: returnVal.default,
-            path: "/" + component["lfs:targetURL"],
-            name: component["lfs:extensionName"],
-            iconUrl: component["lfs:icon"],
-            order: component["lfs:defaultOrder"],
-            hint: component["lfs:hint"]
-          })
-        })
+  return loadAsset(component['lfs:extensionRenderURL'])
+    .then(asset => {
+      return ({
+        reactComponent: asset,
+        path: "/" + component["lfs:targetURL"],
+        name: component["lfs:extensionName"],
+        iconUrl: component["lfs:icon"],
+        order: component["lfs:defaultOrder"],
+        hint: component["lfs:hint"]
+      });
     });
 };
 
