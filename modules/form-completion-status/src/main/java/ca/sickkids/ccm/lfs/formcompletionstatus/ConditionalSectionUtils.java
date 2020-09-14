@@ -545,7 +545,9 @@ public final class ConditionalSectionUtils
     private static BigDecimal toDecimal(Object o)
     {
         BigDecimal result = null;
-        if (o instanceof Long) {
+        if (o instanceof BigDecimal) {
+            result = (BigDecimal) o;
+        } else if (o instanceof Long) {
             result = BigDecimal.valueOf((Long) o);
         } else if (o instanceof Integer) {
             result = BigDecimal.valueOf((Integer) o);
