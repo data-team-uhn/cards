@@ -100,10 +100,38 @@ function SubjectContainer(props) {
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
+  // hold related subjects
   let [relatedSubjects, setRelatedSubjects] = useState();
   // 'level' of subject component
   const currentLevel = level || 0;
 
+  // Fetch the subject's data as JSON from the server.
+  // The data will contain the subject metadata,
+  // such as authorship and versioning information.
+  // Once the data arrives from the server, it will be stored in the `data` state variable.
+  let fetchData = () => {
+    fetch(`/Subjects/${id}.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(handleResponse)
+      .catch(handleError);
+  };
+
+  // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
+  let handleResponse = (json) => {
+    if (currentLevel == 0) {
+      // sends the data to the parent component
+      getSubject(json);
+    }
+    setData(json);
+  };
+
+  // Callback method for the `fetchData` method, invoked when the request failed.
+  let handleError = (response) => {
+    setError(response);
+    setData([]);  // Prevent an infinite loop if data was not set
+  };
+
+  // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     fetchData();
     return (
@@ -114,7 +142,7 @@ function SubjectContainer(props) {
   // get related SubjectTypes
   let check_url = createQueryURL(` WHERE n.'parents'='${data['jcr:uuid']}'`, "lfs:Subject");
   // let check_url = createQueryURL(` WHERE CONTAINS (n.'parents', '${data['jcr:uuid']}')`, "lfs:Subject");
-  let fetchRelated = () => { 
+  let fetchRelated = () => {
     fetch(check_url)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((json) => {setRelatedSubjects(json.rows);})
@@ -135,11 +163,11 @@ function SubjectContainer(props) {
         </Grid>
       </Grid>
     );
-  } 
+  }
 
   return (
     <Grid container spacing={3}>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed}/> 
+      <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed}/>
       {relatedSubjects ?
         (<Grid item xs={12}>
           {relatedSubjects.map( (subject, i) => { // render component again for each related subjet
@@ -166,7 +194,7 @@ function SubjectMember (props) {
 
   const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
         + encodeURIComponent(data['jcr:uuid']);
-  
+
   // Fetch the forms associated with the subject as JSON from the server
   // It will be stored in the `tableData` state variable
   let fetchTableData = () => {
@@ -238,7 +266,7 @@ function SubjectMember (props) {
                       title={
                         <Button size={buttonSize} className={classes.subjectFormHeaderButton}>
                           {entry.questionnaire["@name"]}
-                        </Button> 
+                        </Button>
                       }
                     className={classes.subjectFormHeader}
                     />
@@ -324,10 +352,10 @@ function FormData(props) {
     const existingQuestionAnswer = data && Object.entries(data)
       .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
         && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
-  
+
     // question title, to be used when 'previewing' the form
     const questionTitle = entryDefinition["text"];
-  
+
     if (existingQuestionAnswer && existingQuestionAnswer[1]["value"] && (displayed < maxDisplayed)) { // and if count of displayed <= max
       let content = `${questionTitle}: ${existingQuestionAnswer[1]["value"]}`;
       // increase count of displayed
