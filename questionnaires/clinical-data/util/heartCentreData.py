@@ -155,11 +155,9 @@ def insert_range(question, row):
 
 # Converts the data type in 'UserFormatType' to one supported in LFS
 DATA_TO_LFS_TYPE = {
-    'text (categorical list)': 'text',
-    'cat list': 'text',
-    'text': 'text',
     'date': 'date',
     'integer': 'long',
+    'yes,no': "boolean",
     'age (months:days)': 'text' # TODO: Switch this to an interval question when it is supported
 }
 def convert_to_LFS_data_type(argument):
