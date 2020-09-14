@@ -1,0 +1,11 @@
+{
+  "jcr:primaryType": "lfs:Questionnaire",
+  "title": "Somatic Variants Data",
+  "file": {
+    "jcr:primaryType": "lfs:Question",
+    "text": "Somatic Variants File",
+    "dataType": "somaticVariantsFile",
+    "minAnswers": 1,
+    "maxAnswers": 1
+  }
+}

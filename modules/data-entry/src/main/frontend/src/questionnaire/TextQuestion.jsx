@@ -77,7 +77,7 @@ function TextQuestion(props) {
       <MultipleChoice
         input={displayMode === "input" || displayMode === "list+input"}
         textbox={displayMode === "textbox"}
-        onChange={checkRegex}
+        onUpdate={checkRegex}
         {...rest}
         />
     </Question>);

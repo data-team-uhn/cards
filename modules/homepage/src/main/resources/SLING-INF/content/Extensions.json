@@ -7,12 +7,7 @@
         "lfs:icon": "asset:lfs-homepage.adminIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-homepage.adminDashboard.js",
         "lfs:targetURL": "admin",
-        "lfs:defaultOrder": 90,
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "test",
-            "jcr:mimeType": "text/html"
-        }
+        "lfs:defaultOrder": 90
     },
     "Treatments": {
         "jcr:primaryType": "lfs:Extension",
@@ -21,12 +16,7 @@
         "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
         "lfs:extensionRenderURL": "",
         "lfs:targetURL": "treatments",
-        "lfs:defaultOrder": 10,
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "test",
-            "jcr:mimeType": "text/html"
-        }
+        "lfs:defaultOrder": 10
     },
     "Model Organisms": {
         "jcr:primaryType": "lfs:Extension",
@@ -35,25 +25,6 @@
         "lfs:icon": "asset:lfs-homepage.modelOrganismsIcon.js",
         "lfs:extensionRenderURL": "",
         "lfs:targetURL": "modelorganisms",
-        "lfs:defaultOrder": 15,
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "test",
-            "jcr:mimeType": "text/html"
-        }
-    },
-    "Variants": {
-        "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-        "lfs:extensionName": "Variants",
-        "lfs:icon": "asset:lfs-homepage.variantsIcon.js",
-        "lfs:extensionRenderURL": "",
-        "lfs:targetURL": "variants",
-        "lfs:defaultOrder": 20,
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "test",
-            "jcr:mimeType": "text/html"
-        }
+        "lfs:defaultOrder": 15
     }
 }

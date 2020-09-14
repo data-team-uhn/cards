@@ -51,6 +51,9 @@ def merge_packache_json_files(modules_dir, project_to_name_map, package_json_fil
                 continue
 
             # Merge contents
+            for i in package["babel"]["plugins"]:
+                if i not in package_merged["babel"]["plugins"]:
+                    package_merged["babel"]["plugins"].append(i)
             package_merged["devDependencies"].update(package["devDependencies"])
             package_merged["dependencies"].update(package["dependencies"])
 

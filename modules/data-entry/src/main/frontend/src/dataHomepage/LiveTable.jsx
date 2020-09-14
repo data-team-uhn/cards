@@ -194,7 +194,7 @@ function LiveTable(props) {
     }
 
     // Render the cell
-    return <TableCell key={index}>{content}</TableCell>
+    return <TableCell key={index} {...column.props}>{content}</TableCell>
   };
 
   let getNestedValue = (entry, path) => {
@@ -323,7 +323,7 @@ function LiveTable(props) {
           <TableRow>
           { columns ?
             (
-              columns.map((column, index) => <TableCell key={index} className={classes.tableHeader}>{column.label}</TableCell>)
+              columns.map((column, index) => <TableCell key={index} className={classes.tableHeader} {...column.props}>{column.label}</TableCell>)
             )
           :
             (

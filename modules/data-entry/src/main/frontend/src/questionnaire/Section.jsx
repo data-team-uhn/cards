@@ -35,6 +35,8 @@ import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireS
 import ConditionalGroup from "./ConditionalGroup";
 import ConditionalSingle from "./ConditionalSingle";
 
+const ID_STATE_KEY = ":AccessCount";
+
 // The heading levels that @material-ui supports
 const MAX_HEADING_LEVEL = 6;
 const MIN_HEADING_LEVEL = 4;
@@ -61,7 +63,7 @@ function createTitle(label, idx) {
  * @param {Object} sectionDefinition the section definition JSON
  */
 function Section(props) {
-  const { classes, depth, existingAnswer, path, sectionDefinition } = props;
+  const { classes, depth, existingAnswer, path, sectionDefinition, onChange } = props;
 
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
   const titleEl = sectionDefinition["label"] &&
@@ -92,6 +94,7 @@ function Section(props) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
+  const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const displayed = ConditionalComponentManager.evaluateCondition(
@@ -101,6 +104,20 @@ function Section(props) {
   let closeDialog = () => {
     setSelectedUUID(undefined);
     setDialogOpen(false);
+  }
+
+  const sectionAnswers = Object.entries(sectionDefinition).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']));
+
+  function calculateDeletion() {
+    let delList = [];
+    let keySet = Object.keys(removableAnswers);
+    for (let i = 0; i < keySet.length; i++) {
+      let key = keySet[i];
+      for (let j = 0; j < removableAnswers[key].length-1; j++) {
+        delList.push(removableAnswers[key][j]);
+      }
+    }
+    return delList;
   }
 
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
@@ -187,15 +204,28 @@ function Section(props) {
                 item
                 >
                 <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-                  {/* delete any existing answer section before inputting new answers in section */}
-                  {instanceLabels.map((uuid) =>
-                    <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
-                  )}
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
-                    Object.entries(sectionDefinition)
-                      .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-                      .map(([key, definition]) => <FormEntry key={key} entryDefinition={definition} path={sectionPath} depth={depth+1} existingAnswers={existingSectionAnswer} keyProp={key} classes={classes}></FormEntry>)
+                    sectionAnswers.map(([key, definition]) =>
+                      <FormEntry
+                        key={key}
+                        entryDefinition={definition}
+                        path={sectionPath}
+                        depth={depth+1}
+                        existingAnswers={existingSectionAnswer}
+                        keyProp={key}
+                        classes={classes}
+                        onChange={onChange}
+                        sectionAnswersState={removableAnswers}
+                        onAddedAnswerPath={(newAnswers) => {
+                          newAnswers[ID_STATE_KEY] = newAnswers[ID_STATE_KEY] + 1;
+                          setRemovableAnswers(newAnswers);
+                        }}>
+                      </FormEntry>)
                   }
+                  {
+                    calculateDeletion().map((delPath) =>
+                      <input type="hidden" name={`${delPath}@Delete`} value="0" key={delPath}></input>
+                  )}
                 </Grid>
               </Collapse>
             </Grid>
@@ -249,7 +279,7 @@ function Section(props) {
       </DialogActions>
     </Dialog>
     </React.Fragment>
-    , [displayed, instanceLabels, labelsToHide, dialogOpen]);
+    , [displayed, instanceLabels, labelsToHide, dialogOpen, removableAnswers[ID_STATE_KEY]]);
 }
 
 Section.propTypes = {

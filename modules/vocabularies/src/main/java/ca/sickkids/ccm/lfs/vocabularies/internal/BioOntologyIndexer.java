@@ -217,7 +217,8 @@ public class BioOntologyIndexer implements VocabularyIndexer
                 String[] valuesArray = entry.getValue().toArray(ArrayUtils.EMPTY_STRING_ARRAY);
                 // Sometimes the source may contain more than one label or description, but we can't allow that.
                 // Always use one value for these special fields.
-                if (valuesArray.length == 1 || "label".equals(entry.getKey()) || "description".equals(entry.getKey())) {
+                if (("label".equals(entry.getKey()) || "description".equals(entry.getKey()))
+                        && valuesArray.length == 1) {
                     vocabularyTermNode.setProperty(entry.getKey(), valuesArray[0]);
                 } else {
                     vocabularyTermNode.setProperty(entry.getKey(), valuesArray);

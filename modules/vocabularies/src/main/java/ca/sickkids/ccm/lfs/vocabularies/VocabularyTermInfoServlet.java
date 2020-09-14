@@ -66,7 +66,7 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
     private static final String CHILDREN_PROPERTY = "lfs:children";
 
     /* Copying over every child tends to bloat the response, so we only copy a subset of the data */
-    private static final String[] KEYS_TO_COPY = { "identifier", "label" };
+    private static final String[] KEYS_TO_COPY = { "identifier", "label", "@path" };
 
     @Reference
     private LogService logger;

@@ -8,12 +8,7 @@
         "lfs:icon": "asset:lfs-dataentry.questionnairesIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.Questionnaires.js",
         "lfs:defaultOrder": 91,
-        "lfs:hint": "Design and update questionnaires used for data collection",
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "",
-            "jcr:mimeType": "text/html"
-        }
+        "lfs:hint": "Design and update questionnaires used for data collection"
     },
     "Subjects": {
         "jcr:primaryType": "lfs:Extension",
@@ -22,12 +17,7 @@
         "lfs:extensionName": "Subjects",
         "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.Subjects.js",
-        "lfs:defaultOrder": 1,
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "",
-            "jcr:mimeType": "text/html"
-        }
+        "lfs:defaultOrder": 1
     },
     "SubjectTypes": {
         "jcr:primaryType": "lfs:Extension",
@@ -37,12 +27,7 @@
         "lfs:icon": "asset:lfs-dataentry.subjectTypeIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectTypes.js",
         "lfs:defaultOrder": 93,
-        "lfs:hint": "Define subject types and relations between them",
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "",
-            "jcr:mimeType": "text/html"
-        }
+        "lfs:hint": "Define subject types and relations between them"
     },
     "Forms": {
         "jcr:primaryType": "lfs:Extension",
@@ -51,12 +36,7 @@
         "lfs:extensionName": "Forms",
         "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.Forms.js",
-        "lfs:defaultOrder": 3,
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "",
-            "jcr:mimeType": "text/html"
-        }
+        "lfs:defaultOrder": 3
     },
     "UserDashboard": {
         "jcr:primaryType": "lfs:Extension",
@@ -65,12 +45,7 @@
         "lfs:extensionName": "User dashboard",
         "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.userDashboard.js",
-        "lfs:defaultOrder": 0,
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "",
-            "jcr:mimeType": "text/html"
-        }
+        "lfs:defaultOrder": 0
     },
     "Tumors": {
         "jcr:primaryType": "lfs:Extension",
@@ -79,12 +54,7 @@
         "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js",
         "lfs:targetURL": "Tumor", // note: URL should be the same as the SubjectType
-        "lfs:defaultOrder": 6,
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "test",
-            "jcr:mimeType": "text/html"
-        }
+        "lfs:defaultOrder": 6
     },
     "Patients": {
         "jcr:primaryType": "lfs:Extension",
@@ -93,11 +63,6 @@
         "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js",
         "lfs:targetURL": "Patient", // note: URL should be the same as the SubjectType
-        "lfs:defaultOrder": 5,
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "test",
-            "jcr:mimeType": "text/html"
-        }
+        "lfs:defaultOrder": 5
     }
 }

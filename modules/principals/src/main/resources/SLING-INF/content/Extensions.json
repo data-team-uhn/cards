@@ -8,12 +8,7 @@
         "lfs:targetURL": "userlist",
         "lfs:icon": "asset:lfs-principals.userIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-principals.userscontainer.js",
-        "lfs:hint": "Manage user accounts",
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "test",
-            "jcr:mimeType": "text/html"
-        }
+        "lfs:hint": "Manage user accounts"
     },
     "Grouplist": {
         "jcr:primaryType": "lfs:Extension",
@@ -23,11 +18,6 @@
         "lfs:targetURL": "grouplist",
         "lfs:icon": "asset:lfs-principals.groupIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-principals.groupscontainer.js",
-        "lfs:hint": "Organize users in groups",
-        "jcr:content": {
-            "jcr:primaryType": "nt:resource",
-            "jcr:data": "test",
-            "jcr:mimeType": "text/html"
-        }
+        "lfs:hint": "Organize users in groups"
     }
 }

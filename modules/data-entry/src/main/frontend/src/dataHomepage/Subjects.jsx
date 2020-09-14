@@ -19,7 +19,7 @@
 import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Subject from "../questionnaire/Subject.jsx";
-import { SelectorDialog } from "../questionnaire/SubjectSelector.jsx";
+import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -93,11 +93,11 @@ function Subjects(props) {
           <LiveTable columns={columns} updateData={requestFetchData}/>
         </CardContent>
       </Card>
-      <SelectorDialog
-        open={false}
-        popperOpen={newSubjectPopperOpen}
-        onPopperClose={() => {setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
-      />
+      <NewSubjectDialog
+        onClose={() => { setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
+        onSubmit={() => { setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
+        open={newSubjectPopperOpen}
+        />
     </div>
   );
 }

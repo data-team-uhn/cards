@@ -31,8 +31,20 @@ const IS_DEFAULT_POS = 2;
 // Sentinel value used for the user-controlled input
 const GHOST_SENTINEL = "custom-input";
 
+ /**
+  * Component that displays a Multiple Choice question.
+  *
+  * @param {Object} existingAnswer form data that may include answers already submitted for this component
+  * @param {bool} input if true, display a free-text single-line input after the predefined options; at most one of "input" or "textbox" may be true
+  * @param {bool} textbox if true, display a free-text multi-line input after the predefined options; at most one of "input" or "textbox" may be true
+  * @param {func} onUpdate Callback for when an input value is changed or an option is added, receives as argument the new value of the changed option
+  * @param {func} onChange Callback for when an option is removed, receives as argument the value of the removed option
+  * @param {Object} additionalInputProps additional props to be set on the input element
+  * @param {Object} muiInputProps additional props to be forwarded to the MUI input element
+  * @param {bool} error indicates if the current selection is in a state of error
+  */
 function MultipleChoice(props) {
-  let { classes, existingAnswer, ghostAnchor, input, textbox, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
@@ -52,20 +64,28 @@ function MultipleChoice(props) {
     // Values that are not predefined come from a custom input, and custom inputs use either the same name as their answer (multiple inputs)
     // or the the special ghost sentinel value
     .map(answer => (defaults.find(e => e[1] === String(answer)) || [String(answer), (isBare || isRadio) ? GHOST_SENTINEL : String(answer)]));
-  const all_options =
+  let all_options =
     // If the question is a radio, just display the defaults as duplicates
     isRadio ? defaults.slice() :
     // Otherwise, display as options the union of all defaults + existing answers, without duplicates
     defaults.slice().concat(initialSelection.filter( (selectedAnswer) => defaults.indexOf(selectedAnswer) < 0));
+
+  // If the field allows for multiple inputs (eg. maxAnswers !== 1),
+  // No user input (aka. an empty input) takes the place of an empty string
+  if (maxAnswers !== 1) {
+    initialSelection = initialSelection || ["", ""];
+    all_options.concat(["", ""]);
+  }
   const [selection, setSelection] = useState(initialSelection);
+  const [options, setOptions] = useState(all_options);
   const [ghostName, setGhostName] = useState((isBare || (isRadio && defaults.indexOf(initialSelection[0]) < 0)) && existingAnswer && existingAnswer[1].value || '');
   const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);
-  const [options, setOptions] = useState(all_options);
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio;
   let inputEl = null;
 
   let selectOption = (id, name, checked = false) => {
+    // When selecting a new option, remove the ["",""] answer, as it no longer has a purpose
     if (isRadio) {
       let defaultOption = defaults.filter((option) => {return option[VALUE_POS] === name || option[LABEL_POS] === name})[0];
       if (defaultOption) {
@@ -96,6 +116,11 @@ function MultipleChoice(props) {
 
     let newSelection = selection.slice();
 
+    // If we're inserting a new entry, we should never add the empty tracker
+    newSelection = newSelection.filter((option) => {
+      return (option[VALUE_POS] !== "" && option[LABEL_POS] !== "")
+    });
+
     // Check if any of the predefined options matches the user input. If yes, select it instead of adding a new entry
     let defaultOption = defaults.filter((option) => {
       return (option[VALUE_POS] === id || option[LABEL_POS] === name)
@@ -110,11 +135,18 @@ function MultipleChoice(props) {
   }
 
   let unselect = (id, name) => {
-    return setSelection(selection.filter(
-      (element) => {
-        return !(element[VALUE_POS] === id && element[LABEL_POS] === name)
+    return setSelection( (old) => {
+      let newSelection = old.slice().filter(
+        (element) => {
+          return !(element[VALUE_POS] === id && element[LABEL_POS] === name)
+        });
+      // Insert the empty string if nothing currently exists
+      if (newSelection.length == 0) {
+        return [["", ""]];
       }
-    ));
+      return newSelection;
+    }
+    );
   }
 
   let updateGhost = (id, name) => {
@@ -135,6 +167,7 @@ function MultipleChoice(props) {
 
   // Remove a non-default option
   let removeOption = (id, name) => {
+    onChange && onChange(id); // will trigger callback in Form.jsx
     setOptions(options.filter(
       (option) => {
         return !(option[VALUE_POS] === id && option[LABEL_POS] === name)
@@ -165,8 +198,9 @@ function MultipleChoice(props) {
         onChange={(event) => {
           setGhostName(event.target.value);
           updateGhost(GHOST_SENTINEL, event.target.value);
-          onChange && onChange(event.target.value);
+          onUpdate && onUpdate(event.target.value);
         }}
+        disabled={disabled}
         onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
         onBlur={acceptEnteredOption}
         inputProps={Object.assign({
@@ -189,7 +223,7 @@ function MultipleChoice(props) {
 
   let selectNonGhostOption = (...args) => {
     // Clear the ghost input
-    onChange && onChange(ghostSelected && !isRadio ? ghostName : undefined);
+    onUpdate && onUpdate(ghostSelected && !isRadio ? ghostName : undefined);
     selectOption(...args);
   }
 
@@ -200,7 +234,9 @@ function MultipleChoice(props) {
     </Typography>
     );
 
-  const answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
+  // Remove the ["", ""] unless there are only zero or one answer items
+  var answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
+  answers = ((answers.length < 2) ? answers : answers.filter(item => item[LABEL_POS] !== ''));
 
   if (isSelect) {
     return (
@@ -252,7 +288,7 @@ function MultipleChoice(props) {
               <Radio
                 onChange={() => {
                   selectOption(ghostValue, ghostName);
-                  onChange && onChange(ghostSelected ? undefined : ghostName);
+                  onUpdate && onUpdate(ghostSelected ? undefined : ghostName);
                 }}
                 onClick={() => {inputEl && inputEl.select();}}
                 disabled={!ghostSelected && disabled}
@@ -354,7 +390,7 @@ function ResponseChild(props) {
                   label: classes.inputLabel
                 }}
               />
-            ) : (
+            ) : ((name !== "") && (
             <React.Fragment>
               <IconButton
                 onClick={() => {onDelete(id, name)}}
@@ -370,7 +406,7 @@ function ResponseChild(props) {
                 </Typography>
               </div>
             </React.Fragment>
-          )
+          ))
           }
       </ListItem>
     </React.Fragment>
@@ -384,7 +420,6 @@ MultipleChoice.propTypes = {
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
   input: PropTypes.bool,
-  ghostAnchor: PropTypes.object,
   additionalInputProps: PropTypes.object,
   muiInputProps: PropTypes.object,
   error: PropTypes.bool

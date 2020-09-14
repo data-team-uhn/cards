@@ -30,9 +30,10 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 // Component that renders an element of the VocabularyBrowser, with expandable children.
 //
 // Required arguments:
-//  id: Term to search
+//  id: Term id to search
+//  path: Term @path to get the term info
 //  name: Text to display
-//  changeId: callback to change the term being looked up
+//  changeTerm: callback to change the term id and path being looked up
 //  registerInfo: callback to add a possible hook point for the info box
 //  getInfo: callback to change the currently displayed info box term
 //  expands: boolean determining whether or not to allow this child to display its children
@@ -44,7 +45,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 // Optional arguments:
 //  fullscreen: whether or not the dialog is fullscreen (default: false)
 function ListChild(props) {
-  const { classes, defaultOpen, id, name, changeId, registerInfo, getInfo, expands, headNode, bolded, onError, vocabulary, knownHasChildren } = props;
+  const { classes, defaultOpen, id, path, name, changeTerm, registerInfo, getInfo, expands, headNode, bolded, onError, vocabulary, knownHasChildren } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined");
@@ -58,8 +59,7 @@ function ListChild(props) {
     setLastKnownID(id);
     setCurrentlyLoading(true);
     // Determine if this node has children
-    var escapedID = id.replace(":", "");  // JCR nodes do not have colons in their names
-    var url = new URL(`./${vocabulary}/${escapedID}.info.json`, REST_URL);
+    var url = new URL(path + ".info.json", window.location.origin);
     MakeRequest(url, updateChildrenData);
   }
 
@@ -81,8 +81,9 @@ function ListChild(props) {
     var children = data.map((row, index) =>
       (<BrowseListChild
         id={row["identifier"]}
+        path={row["@path"]}
         name={row["label"]}
-        changeId={changeId}
+        changeTerm={changeTerm}
         registerInfo={registerInfo}
         getInfo={getInfo}
         expands={true}
@@ -159,7 +160,7 @@ function ListChild(props) {
 
       {/* Listitem button */}
       <Button
-        onClick={() => changeId(id)}
+        onClick={() => changeTerm(id, path)}
         className={classes.browseitem}
         >
         <Typography className={classes.infoDataSource}>{id}&nbsp;</Typography>
@@ -169,7 +170,7 @@ function ListChild(props) {
       {/* Button to open info page */}
       <Button
         buttonRef={(node) => {registerInfo(id, node)}}
-        onClick={() => {getInfo(id)}}
+        onClick={() => {getInfo(path)}}
         className={classes.buttonLink + " " + classes.infoButton}
       >
         <Info color="primary" fontSize="small" className={classes.infoButton}/>

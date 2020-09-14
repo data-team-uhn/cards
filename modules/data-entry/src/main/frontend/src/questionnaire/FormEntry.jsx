@@ -33,6 +33,7 @@ import ChromosomeQuestion from "./ChromosomeQuestion";
 import PedigreeQuestion from "./PedigreeQuestion";
 import TextQuestion from "./TextQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
+import SomaticVariantsQuestion from "./SomaticVariantsQuestion";
 
 const QUESTION_TYPES = ["lfs:Question"];
 const SECTION_TYPES = ["lfs:Section"];
@@ -48,7 +49,7 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
  * @param {Object} classes style classes
  * @returns a React component that renders the question
  */
-let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) => {
+let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange) => {
   const questionRef = useRef();
   const anchor = location.hash.substr(1);
   // create a ref to store the question container DOM element
@@ -80,6 +81,9 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) =
         existingAnswer={existingQuestionAnswer}
         path={path}
         questionName={key}
+        onChange={onChange}
+        onAddedAnswerPath={onAddedAnswerPath}
+        sectionAnswersState={sectionAnswersState}
         />
     </Grid>
   );
@@ -96,7 +100,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes) =
  * @param {string} key the node name of the section definition JCR node
  * @returns a React component that renders the section
  */
-let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
+let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange) => {
   // Find the existing AnswerSection for this section, if available
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
@@ -109,6 +113,7 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
       sectionDefinition={sectionDefinition}
       existingAnswer={existingQuestionAnswer}
       path={path}
+      onChange={onChange}
       />
   );
 }
@@ -125,12 +130,12 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key) => {
  * @returns a React component that renders the section
  */
  export default function FormEntry(props) {
-  let { classes, entryDefinition, path, depth, existingAnswers, keyProp } = props;
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange } = props;
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes);
+    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp);
+    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange);
   }
 }
