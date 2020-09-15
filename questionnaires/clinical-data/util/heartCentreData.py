@@ -83,7 +83,6 @@ def create_conditional(operand_a, operand_b, title):
         operand_b_updated = "false"
     else:
         operand_b_updated = operand_b
-        is_reference = True
     return {title: {
         'jcr:primaryType': 'lfs:Conditional',
         'operandA': {
@@ -206,6 +205,9 @@ def tsv_to_json(title):
                     }})
                     questionnaire[question + 'Section'][question] = previous_data
                     prepare_conditional(questionnaire[question + 'Section'], row)
+                    # The presence of a conditional will also prevent the question from being inserted into the main thing
+                    del questionnaire[question]
+
 
     with open(title + '.json', 'w') as jsonFile:
         json.dump(questionnaire, jsonFile, indent='\t')

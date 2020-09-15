@@ -212,24 +212,6 @@
 		"description": "Which tests were provided/administered in a language other than English?",
 		"displayMode": "list"
 	},
-	"howtesttranslated": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "how were tests translated",
-		"dataType": "text",
-		"minAnswers": 1,
-		"testwastranslatedbyexaminerinterpreter": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "test was translated by examiner or interpreter",
-			"value": "test was translated by examiner or interpreter"
-		},
-		"testwasavailableinalternatelanguage": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "test was available in alternate language",
-			"value": "test was available in alternate language"
-		},
-		"description": "For tests provided/administered in another langauge, how was this done?",
-		"displayMode": "list"
-	},
 	"howtesttranslatedSection": {
 		"jcr:primaryType": "lfs:Section",
 		"howtesttranslated": {
@@ -267,7 +249,7 @@
 					"value": [
 						"ABAS"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition1": {
@@ -285,7 +267,7 @@
 					"value": [
 						"BASC"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition2": {
@@ -303,7 +285,7 @@
 					"value": [
 						"BRIEF-P"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition3": {
@@ -321,7 +303,7 @@
 					"value": [
 						"BRIEF-2"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition4": {
@@ -339,7 +321,7 @@
 					"value": [
 						"SRS-2"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition5": {
@@ -357,7 +339,7 @@
 					"value": [
 						"MCHAT"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition6": {
@@ -375,7 +357,7 @@
 					"value": [
 						"ITSEA"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition7": {
@@ -393,7 +375,7 @@
 					"value": [
 						"CELF"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition8": {
@@ -411,7 +393,7 @@
 					"value": [
 						"BSID"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition9": {
@@ -429,7 +411,7 @@
 					"value": [
 						"WPPSI"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition10": {
@@ -447,7 +429,7 @@
 					"value": [
 						"WAIS"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition11": {
@@ -465,7 +447,7 @@
 					"value": [
 						"WISC"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition12": {
@@ -483,7 +465,7 @@
 					"value": [
 						"WAIS"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition13": {
@@ -501,7 +483,7 @@
 					"value": [
 						"WIAT"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition14": {
@@ -519,7 +501,7 @@
 					"value": [
 						"BSRA"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition15": {
@@ -537,7 +519,7 @@
 					"value": [
 						"WJ"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition16": {
@@ -555,7 +537,7 @@
 					"value": [
 						"CVLT"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition17": {
@@ -573,7 +555,7 @@
 					"value": [
 						"GPEG"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition18": {
@@ -591,7 +573,7 @@
 					"value": [
 						"WRAVMA"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition19": {
@@ -609,7 +591,7 @@
 					"value": [
 						"VMI"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition20": {
@@ -627,7 +609,7 @@
 					"value": [
 						"WRAML"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition21": {
@@ -645,23 +627,10 @@
 					"value": [
 						"DKEFS"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			}
 		}
-	},
-	"testlanguage": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "language of test translation",
-		"dataType": "text",
-		"minAnswers": 1,
-		"Spanish": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "Spanish",
-			"value": "Spanish"
-		},
-		"displayMode": "list",
-		"description": "Which language was testing translatd?"
 	},
 	"testlanguageSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -695,7 +664,7 @@
 					"value": [
 						"ABAS"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition1": {
@@ -713,7 +682,7 @@
 					"value": [
 						"BASC"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition2": {
@@ -731,7 +700,7 @@
 					"value": [
 						"BRIEF-P"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition3": {
@@ -749,7 +718,7 @@
 					"value": [
 						"BRIEF-2"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition4": {
@@ -767,7 +736,7 @@
 					"value": [
 						"SRS-2"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition5": {
@@ -785,7 +754,7 @@
 					"value": [
 						"MCHAT"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition6": {
@@ -803,7 +772,7 @@
 					"value": [
 						"ITSEA"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition7": {
@@ -821,7 +790,7 @@
 					"value": [
 						"CELF"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition8": {
@@ -839,7 +808,7 @@
 					"value": [
 						"BSID"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition9": {
@@ -857,7 +826,7 @@
 					"value": [
 						"WPPSI"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition10": {
@@ -875,7 +844,7 @@
 					"value": [
 						"WAIS"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition11": {
@@ -893,7 +862,7 @@
 					"value": [
 						"WISC"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition12": {
@@ -911,7 +880,7 @@
 					"value": [
 						"WAIS"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition13": {
@@ -929,7 +898,7 @@
 					"value": [
 						"WIAT"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition14": {
@@ -947,7 +916,7 @@
 					"value": [
 						"BSRA"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition15": {
@@ -965,7 +934,7 @@
 					"value": [
 						"WJ"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition16": {
@@ -983,7 +952,7 @@
 					"value": [
 						"CVLT"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition17": {
@@ -1001,7 +970,7 @@
 					"value": [
 						"GPEG"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition18": {
@@ -1019,7 +988,7 @@
 					"value": [
 						"WRAVMA"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition19": {
@@ -1037,7 +1006,7 @@
 					"value": [
 						"VMI"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition20": {
@@ -1055,7 +1024,7 @@
 					"value": [
 						"WRAML"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			},
 			"condition21": {
@@ -1073,7 +1042,7 @@
 					"value": [
 						"DKEFS"
 					],
-					"isReference": true
+					"isReference": false
 				}
 			}
 		}
@@ -1126,12 +1095,6 @@
 		"text": "adaptive Behavior Assessment Assessment system Ages 5-2I",
 		"dataType": "text"
 	},
-	"abasdate": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Date of ABAS completion",
-		"dataType": "date",
-		"description": "What date was the ABAS-3 assessment completed"
-	},
 	"abasdateSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abasdate": {
@@ -1158,33 +1121,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abaspnoreason": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "ABAS-3 incomplete reason",
-		"dataType": "text",
-		"measurenotavailable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "measure not available",
-			"value": "measure not available"
-		},
-		"insufficienttimetoadminister": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "insufficient time to administer",
-			"value": "insufficient time to administer"
-		},
-		"childunabletocompleterefusedtask": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "child unable to complete or refused task",
-			"value": "child unable to complete or refused task"
-		},
-		"literacy-language-communicationissues": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "literacy-language-communication issues",
-			"value": "literacy-language-communication issues"
-		},
-		"displayMode": "list",
-		"description": "If ABAS-3 not completed reason"
 	},
 	"abaspnoreasonSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -1234,14 +1170,6 @@
 			}
 		}
 	},
-	"abasgencompsum": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Sum of scaled scores of ABAS-3 general adaptive composite",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 190.0,
-		"description": "Sum of scaled scores of ABAS-3 general adaptive composite"
-	},
 	"abasgencompsumSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abasgencompsum": {
@@ -1270,14 +1198,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abasgencompss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Standard score of ABAS-3 general adaptive composite",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 154.0,
-		"description": "Standard score of ABAS-3 general adaptive composite"
 	},
 	"abasgencompssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -1308,14 +1228,6 @@
 			}
 		}
 	},
-	"abasconccompsum": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Sum of scaled scores of ABAS-3 conceptual",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 57.0,
-		"description": "Sum of scaled scores of ABAS-3 conceptual"
-	},
 	"abasconccompsumSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abasconccompsum": {
@@ -1344,14 +1256,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abascanccompss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Standard score of ABAS-3 conceptual",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 154.0,
-		"description": "Standard score of ABAS-3 conceptual"
 	},
 	"abascanccompssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -1382,14 +1286,6 @@
 			}
 		}
 	},
-	"abassoccompsum": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Sum of scaled scores of ABAS-3 social",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 38.0,
-		"description": "Sum of scaled scores of ABAS-3 social"
-	},
 	"abassoccompsumSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abassoccompsum": {
@@ -1418,14 +1314,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abassoccompss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Standard score of ABAS-3 social",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 154.0,
-		"description": "Standard score of ABAS-3 social"
 	},
 	"abassoccompssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -1456,14 +1344,6 @@
 			}
 		}
 	},
-	"abaspraccompsum": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Sum of scaled scores of ABAS-3 practical",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 76.0,
-		"description": "Sum of scaled scores of ABAS-3 practical"
-	},
 	"abaspraccompsumSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abaspraccompsum": {
@@ -1492,14 +1372,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abaspraccompss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Standard score of ABAS-3 practical",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 154.0,
-		"description": "Standard score of ABAS-3 practical"
 	},
 	"abaspraccompssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -1530,14 +1402,6 @@
 			}
 		}
 	},
-	"abascommraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of ABAS-3 communication",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 75.0,
-		"description": "Raw score of ABAS-3 communication"
-	},
 	"abascommrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abascommraw": {
@@ -1566,14 +1430,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abascommss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Scaled score of ABAS-3 communication",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled score of ABAS-3 communication"
 	},
 	"abascommssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -1604,14 +1460,6 @@
 			}
 		}
 	},
-	"abasuseraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of ABAS-3 community use",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 66.0,
-		"description": "Raw score of ABAS-3 community use"
-	},
 	"abasuserawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abasuseraw": {
@@ -1640,14 +1488,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abasusess": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Scaled score of ABAS-3 community use",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled score of ABAS-3 community use"
 	},
 	"abasusessSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -1678,14 +1518,6 @@
 			}
 		}
 	},
-	"abasfuncraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of ABAS-3 functional pre-academics",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 69.0,
-		"description": "Raw score of ABAS-3 functional pre-academics"
-	},
 	"abasfuncrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abasfuncraw": {
@@ -1714,14 +1546,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abasfuncss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Scaled score of ABAS-3 functional pre-academics",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled score of ABAS-3 functional pre-academics"
 	},
 	"abasfuncssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -1752,14 +1576,6 @@
 			}
 		}
 	},
-	"abashomeraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of ABAS-3 home living",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 75.0,
-		"description": "Raw score of ABAS-3 home living"
-	},
 	"abashomerawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abashomeraw": {
@@ -1788,14 +1604,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abashomess": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Scaled score of ABAS-3 home living",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled score of ABAS-3 home living"
 	},
 	"abashomessSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -1826,14 +1634,6 @@
 			}
 		}
 	},
-	"abashealthraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of ABAS-3 health and safety",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 72.0,
-		"description": "Raw score of ABAS-3 health and safety"
-	},
 	"abashealthrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abashealthraw": {
@@ -1862,14 +1662,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abashealthss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Scaled score of ABAS-3 health and safety",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled score of ABAS-3 health and safety"
 	},
 	"abashealthssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -1900,14 +1692,6 @@
 			}
 		}
 	},
-	"abasleisraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of ABAS-3 leisure",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 66.0,
-		"description": "Raw score of ABAS-3 leisure"
-	},
 	"abasleisrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abasleisraw": {
@@ -1936,14 +1720,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abasleisss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Scaled score of ABAS-3 leisure",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled score of ABAS-3 leisure"
 	},
 	"abasleisssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -1974,14 +1750,6 @@
 			}
 		}
 	},
-	"abascareraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of ABAS-3 self-care",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 72.0,
-		"description": "Raw score of ABAS-3 self-care"
-	},
 	"abascarerawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abascareraw": {
@@ -2010,14 +1778,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abascaress": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Scaled score of ABAS-3 self-care",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled score of ABAS-3 self-care"
 	},
 	"abascaressSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -2048,14 +1808,6 @@
 			}
 		}
 	},
-	"abasdirraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of ABAS-3 self-direction",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 75.0,
-		"description": "Raw score of ABAS-3 self-direction"
-	},
 	"abasdirrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abasdirraw": {
@@ -2084,14 +1836,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abasdirss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Scaled score of ABAS-3 self-direction",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled score of ABAS-3 self-direction"
 	},
 	"abasdirssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -2122,14 +1866,6 @@
 			}
 		}
 	},
-	"abassocraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of ABAS-3 social",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 72.0,
-		"description": "Raw score of ABAS-3 social"
-	},
 	"abassocrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abassocraw": {
@@ -2158,14 +1894,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abassocss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Scaled score of ABAS-3 social",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled score of ABAS-3 social"
 	},
 	"abassocssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -2196,14 +1924,6 @@
 			}
 		}
 	},
-	"abasmotorraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of ABAS-3 motor",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 81.0,
-		"description": "Raw score of ABAS-3 motor"
-	},
 	"abasmotorrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"abasmotorraw": {
@@ -2232,14 +1952,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"abasmotorss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Scaled score of ABAS-3 motor",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled score of ABAS-3 motor"
 	},
 	"abasmotorssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -2277,12 +1989,6 @@
 		"description": "Whether Behavior Assessment System for children, Third Edition completed",
 		"displayMode": "list"
 	},
-	"bascdate": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Date of BASC-3 assessment",
-		"dataType": "date",
-		"description": "What date was the BASC-3 completed"
-	},
 	"bascdateSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascdate": {
@@ -2309,33 +2015,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascnoreason": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "BASC-3 incomplete reason",
-		"dataType": "text",
-		"measurenotavailable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "measure not available",
-			"value": "measure not available"
-		},
-		"insufficienttimetoadminister": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "insufficient time to administer",
-			"value": "insufficient time to administer"
-		},
-		"childunabletocompleterefusedtask": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "child unable to complete or refused task",
-			"value": "child unable to complete or refused task"
-		},
-		"literacy-language-communicationissues": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "literacy-language-communication issues",
-			"value": "literacy-language-communication issues"
-		},
-		"displayMode": "list",
-		"description": "If BASC3 not completed reason"
 	},
 	"bascnoreasonSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -2385,28 +2064,6 @@
 			}
 		}
 	},
-	"bascFindex": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "BASC-3 F-index",
-		"dataType": "text",
-		"acceptable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "acceptable",
-			"value": "acceptable"
-		},
-		"caution": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "caution",
-			"value": "caution"
-		},
-		"extrextremecaution": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "extrextreme caution",
-			"value": "extrextreme caution"
-		},
-		"description": "Category for intepreting BASC-3F-index",
-		"displayMode": "list"
-	},
 	"bascFindexSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascFindex": {
@@ -2449,28 +2106,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascresponsepattern": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "BASC-3 Response Pattern",
-		"dataType": "text",
-		"acceptable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "acceptable",
-			"value": "acceptable"
-		},
-		"caution": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "caution",
-			"value": "caution"
-		},
-		"extrextremecaution": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "extrextreme caution",
-			"value": "extrextreme caution"
-		},
-		"description": "Category for interpreting BASC-3 response pattern scale",
-		"displayMode": "list"
 	},
 	"bascresponsepatternSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -2515,28 +2150,6 @@
 			}
 		}
 	},
-	"bascconsistency": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "BASC-3 Consistency Scale",
-		"dataType": "text",
-		"acceptable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "acceptable",
-			"value": "acceptable"
-		},
-		"caution": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "caution",
-			"value": "caution"
-		},
-		"extrextremecaution": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "extrextreme caution",
-			"value": "extrextreme caution"
-		},
-		"description": "Category for interpreting BASC-3 consistency scale",
-		"displayMode": "list"
-	},
 	"bascconsistencySection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascconsistency": {
@@ -2580,12 +2193,6 @@
 			}
 		}
 	},
-	"bascextcompraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 externalizing problems",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 externalizing problems"
-	},
 	"bascextcomprawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascextcompraw": {
@@ -2612,14 +2219,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascextcompss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 externalizing problems",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 externalizing problems"
 	},
 	"bascextcompssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -2650,12 +2249,6 @@
 			}
 		}
 	},
-	"bascintcompraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 internalizing problems",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 internalizing problems"
-	},
 	"bascintcomprawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascintcompraw": {
@@ -2682,14 +2275,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascintcompss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 internalizing problems",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 internalizing problems"
 	},
 	"bascintcompssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -2720,12 +2305,6 @@
 			}
 		}
 	},
-	"bascbehcompraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3behavioral symptoms index",
-		"dataType": "long",
-		"description": "Raw score of BASC-3behavioral symptoms index"
-	},
 	"bascbehcomprawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascbehcompraw": {
@@ -2752,14 +2331,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascbehcompss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 behavioral symptoms index",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 behavioral symptoms index"
 	},
 	"bascbehcompssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -2790,12 +2361,6 @@
 			}
 		}
 	},
-	"bascadaptcompraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 adaptive skills",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 adaptive skills"
-	},
 	"bascadaptcomprawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascadaptcompraw": {
@@ -2822,14 +2387,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascadaptcompss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 adaptive skills",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 adaptive skills"
 	},
 	"bascadaptcompssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -2860,12 +2417,6 @@
 			}
 		}
 	},
-	"baschyperraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 hyperactivity",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 hyperactivity"
-	},
 	"baschyperrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"baschyperraw": {
@@ -2892,14 +2443,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"baschyperss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 hyperactivity",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 hyperactivity"
 	},
 	"baschyperssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -2930,12 +2473,6 @@
 			}
 		}
 	},
-	"bascaggraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 aggression",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 aggression"
-	},
 	"bascaggrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascaggraw": {
@@ -2962,14 +2499,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascaggss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 aggression",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 aggression"
 	},
 	"bascaggssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -3000,12 +2529,6 @@
 			}
 		}
 	},
-	"bascanxraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 anxiety",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 anxiety"
-	},
 	"bascanxrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascanxraw": {
@@ -3032,14 +2555,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascanxss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 anxiety",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 anxiety"
 	},
 	"bascanxssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -3070,12 +2585,6 @@
 			}
 		}
 	},
-	"bascdepraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 depression",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 depression"
-	},
 	"bascdeprawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascdepraw": {
@@ -3102,14 +2611,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascdepss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 depression",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 depression"
 	},
 	"bascdepssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -3140,12 +2641,6 @@
 			}
 		}
 	},
-	"bascsomraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 somatization",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 somatization"
-	},
 	"bascsomrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascsomraw": {
@@ -3172,14 +2667,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascsomss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 somatization",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 somatization"
 	},
 	"bascsomssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -3210,12 +2697,6 @@
 			}
 		}
 	},
-	"bascatypraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 atypicality",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 atypicality"
-	},
 	"bascatyprawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascatypraw": {
@@ -3242,14 +2723,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascatypss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 atypicality",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 atypicality"
 	},
 	"bascatypssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -3280,12 +2753,6 @@
 			}
 		}
 	},
-	"bascwithraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 withdrawal",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 withdrawal"
-	},
 	"bascwithrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascwithraw": {
@@ -3312,14 +2779,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascwithss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 withdrawal",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 withdrawal"
 	},
 	"bascwithssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -3350,12 +2809,6 @@
 			}
 		}
 	},
-	"bascattraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 attention problems",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 attention problems"
-	},
 	"bascattrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascattraw": {
@@ -3382,14 +2835,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascattss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 attention problems",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 attention problems"
 	},
 	"bascattssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -3420,12 +2865,6 @@
 			}
 		}
 	},
-	"bascadaptraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 adaptability",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 adaptability"
-	},
 	"bascadaptrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascadaptraw": {
@@ -3452,14 +2891,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascadaptss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 adaptability",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 adaptability"
 	},
 	"bascadaptssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -3490,12 +2921,6 @@
 			}
 		}
 	},
-	"bascsocraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 social skills",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 social skills"
-	},
 	"bascsocrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascsocraw": {
@@ -3522,14 +2947,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascsocss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 social skills",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 social skills"
 	},
 	"bascsocssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -3560,12 +2977,6 @@
 			}
 		}
 	},
-	"bascactraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 activities of daily living",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 activities of daily living"
-	},
 	"bascactrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"bascactraw": {
@@ -3592,14 +3003,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"bascactss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 activities of daily living",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 activities of daily living"
 	},
 	"bascactssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -3630,12 +3033,6 @@
 			}
 		}
 	},
-	"basccommraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw score of BASC-3 functional communication",
-		"dataType": "long",
-		"description": "Raw score of BASC-3 functional communication"
-	},
 	"basccommrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"basccommraw": {
@@ -3662,14 +3059,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"basccommss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T score of BASC-3 functional communication",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 120.0,
-		"description": "T score of BASC-3 functional communication"
 	},
 	"basccommssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -3710,33 +3099,6 @@
 		"text": "Date of BRIEF-2 assessment",
 		"dataType": "date",
 		"description": "What date was the assessment completed"
-	},
-	"brief2noreason": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "BRIEF2 incomplete reason",
-		"dataType": "text",
-		"measurenotavailable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "measure not available",
-			"value": "measure not available"
-		},
-		"insufficienttimetoadminister": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "insufficient time to administer",
-			"value": "insufficient time to administer"
-		},
-		"childunabletocompleterefusedtask": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "child unable to complete or refused task",
-			"value": "child unable to complete or refused task"
-		},
-		"literacy-language-communicationissues": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "literacy-language-communication issues",
-			"value": "literacy-language-communication issues"
-		},
-		"displayMode": "list",
-		"description": "If BRIEF2 not completed reason"
 	},
 	"brief2noreasonSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -3786,28 +3148,6 @@
 			}
 		}
 	},
-	"brief2negativity": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "BRIEF-2 negativity",
-		"dataType": "text",
-		"acceptable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "acceptable",
-			"value": "acceptable"
-		},
-		"elevated": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "elevated",
-			"value": "elevated"
-		},
-		"highlyelevated": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "highly elevated",
-			"value": "highly elevated"
-		},
-		"description": "Category for interpreting BRIEF-2 negativity scale",
-		"displayMode": "list"
-	},
 	"brief2negativitySection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2negativity": {
@@ -3850,28 +3190,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"brief2inconsistency": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "BRIEF-2 inconsistently",
-		"dataType": "text",
-		"accaptable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "accaptable",
-			"value": "accaptable"
-		},
-		"questionable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "questionable",
-			"value": "questionable"
-		},
-		"inconsistent": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "inconsistent",
-			"value": "inconsistent"
-		},
-		"description": "Category for interpreting BRIEF-2 inconsistency scale",
-		"displayMode": "list"
 	},
 	"brief2inconsistencySection": {
 		"jcr:primaryType": "lfs:Section",
@@ -3916,23 +3234,6 @@
 			}
 		}
 	},
-	"brief2infrequency": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "BRIEF-2 infrequency",
-		"dataType": "text",
-		"acceptable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "acceptable",
-			"value": "acceptable"
-		},
-		"questionable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "questionable",
-			"value": "questionable"
-		},
-		"description": "Category for interpreting BRIEF-2 infrequency scale",
-		"displayMode": "list"
-	},
 	"brief2infrequencySection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2infrequency": {
@@ -3971,14 +3272,6 @@
 			}
 		}
 	},
-	"brief2inhibitraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "BRIEF-2 Inhibit Raw Score",
-		"dataType": "long",
-		"minValue": 4.0,
-		"maxValue": 24.0,
-		"description": "Raw score for BRIEF-2 inhibit scale"
-	},
 	"brief2inhibitrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2inhibitraw": {
@@ -4007,14 +3300,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"brief2inhibitTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "BRIEF-2 Inhibit T Score",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 90.0,
-		"description": "T Score for BRIEF-2 Inhibit scale"
 	},
 	"brief2inhibitTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4045,14 +3330,6 @@
 			}
 		}
 	},
-	"brief2selfraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "BRIEF-2 Self-Monitor raw score",
-		"dataType": "long",
-		"minValue": 4.0,
-		"maxValue": 24.0,
-		"description": "Raw Score for BRIEF-3 Self-Monitor Scale"
-	},
 	"brief2selfrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2selfraw": {
@@ -4081,14 +3358,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"brief2selfTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T-Score Self-Monitor",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 90.0,
-		"description": "T score of BRIEF-2 self-monitor"
 	},
 	"brief2selfTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4119,14 +3388,6 @@
 			}
 		}
 	},
-	"brief2BRIraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score BRI",
-		"dataType": "long",
-		"minValue": 12.0,
-		"maxValue": 96.0,
-		"description": "Raw score of BRIEF-2 BRI"
-	},
 	"brief2BRIrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2BRIraw": {
@@ -4155,14 +3416,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"brief2BRIss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T Score BRI",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 90.0,
-		"description": "T score of BRIEF-2 BRI"
 	},
 	"brief2BRIssSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4193,14 +3446,6 @@
 			}
 		}
 	},
-	"brief2shiftraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score  Shift",
-		"dataType": "long",
-		"minValue": 4.0,
-		"maxValue": 24.0,
-		"description": "Raw score of BRIEF-2 shift"
-	},
 	"brief2shiftrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2shiftraw": {
@@ -4229,14 +3474,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"briefshiftTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T Score  Shift",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 90.0,
-		"description": "T score of BRIEF-2 shift"
 	},
 	"briefshiftTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4267,14 +3504,6 @@
 			}
 		}
 	},
-	"brief2emoraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score Emotional Control",
-		"dataType": "long",
-		"minValue": 4.0,
-		"maxValue": 24.0,
-		"description": "Raw score of BRIEF-2 emotional control"
-	},
 	"brief2emorawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2emoraw": {
@@ -4303,14 +3532,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"brief2emoTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T Score Emotional Control",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 90.0,
-		"description": "T score of BRIEF-2 emotional control"
 	},
 	"brief2emoTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4341,14 +3562,6 @@
 			}
 		}
 	},
-	"brief2ERIraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score  ERI",
-		"dataType": "long",
-		"minValue": 12.0,
-		"maxValue": 96.0,
-		"description": "Raw score of BRIEF-2 ERI"
-	},
 	"brief2ERIrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2ERIraw": {
@@ -4377,14 +3590,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"brief2ERITS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T Score ERI",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 90.0,
-		"description": "T score of ER BRIEF-2"
 	},
 	"brief2ERITSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4415,14 +3620,6 @@
 			}
 		}
 	},
-	"brief2initiateraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score Initiate",
-		"dataType": "long",
-		"minValue": 4.0,
-		"maxValue": 24.0,
-		"description": "Raw score of BRIEF-2 initiate"
-	},
 	"brief2initiaterawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2initiateraw": {
@@ -4451,14 +3648,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"brief2initiateTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T Score Initiate",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 90.0,
-		"description": "T score of BRIEF-2 initiate"
 	},
 	"brief2initiateTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4489,14 +3678,6 @@
 			}
 		}
 	},
-	"brief2memraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score  Working Memory",
-		"dataType": "long",
-		"minValue": 4.0,
-		"maxValue": 24.0,
-		"description": "Raw score of BRIEF-2 working memory"
-	},
 	"brief2memrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2memraw": {
@@ -4525,14 +3706,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"brief2memTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T Score  Working Memory",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 90.0,
-		"description": "T score of BRIEF-2 working memory"
 	},
 	"brief2memTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4563,14 +3736,6 @@
 			}
 		}
 	},
-	"brief2planraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score  Plan/Organize",
-		"dataType": "long",
-		"minValue": 4.0,
-		"maxValue": 24.0,
-		"description": "Raw score of BRIEF-2 plan/organize"
-	},
 	"brief2planrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2planraw": {
@@ -4599,14 +3764,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"brief2planTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T Score Plan/Organize",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 90.0,
-		"description": "T score of BRIEF-2 plan/organize"
 	},
 	"brief2planTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4637,14 +3794,6 @@
 			}
 		}
 	},
-	"brief2taskraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score Task Monitor",
-		"dataType": "long",
-		"minValue": 4.0,
-		"maxValue": 24.0,
-		"description": "Raw score of BRIEF-2 task monitoring"
-	},
 	"brief2taskrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2taskraw": {
@@ -4673,14 +3822,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"brief2taskTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T Score Task Monitor",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 90.0,
-		"description": "T score of BRIEF-2 task monitoring"
 	},
 	"brief2taskTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4711,14 +3852,6 @@
 			}
 		}
 	},
-	"brief2organizeraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score Organization of Materials",
-		"dataType": "long",
-		"minValue": 4.0,
-		"maxValue": 24.0,
-		"description": "Raw score of BRIEF-2 organization of materials"
-	},
 	"brief2organizerawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2organizeraw": {
@@ -4747,14 +3880,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"brief2organizeTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T Score Organization of Materials",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 90.0,
-		"description": "T score of BRIEF-2 organization of materials"
 	},
 	"brief2organizeTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4785,14 +3910,6 @@
 			}
 		}
 	},
-	"brief2CRIraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score  CRI",
-		"dataType": "long",
-		"minValue": 20.0,
-		"maxValue": 81.0,
-		"description": "Raw score of BRIEF-2 CRI"
-	},
 	"brief2CRIrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2CRIraw": {
@@ -4821,14 +3938,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"brief2CRITS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T Score CRI",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 90.0,
-		"description": "T score of BRIEF-2 CRI"
 	},
 	"brief2CRITSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4859,14 +3968,6 @@
 			}
 		}
 	},
-	"brief2GECraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score  GEC",
-		"dataType": "long",
-		"minValue": 60.0,
-		"maxValue": 180.0,
-		"description": "Raw score of BRIEF-2 GEC"
-	},
 	"brief2GECrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"brief2GECraw": {
@@ -4895,14 +3996,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"brief2GECTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T Score GEC",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 90.0,
-		"description": "T score of BRIEF-2 GEC"
 	},
 	"brief2GECTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4937,33 +4030,6 @@
 		"jcr:primaryType": "lfs:Question",
 		"text": "SRS-2",
 		"dataType": "text"
-	},
-	"srsnoreason": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "SRS-2 incomplete reason",
-		"dataType": "text",
-		"measurenotavailable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "measure not available",
-			"value": "measure not available"
-		},
-		"insufficienttimetoadminister": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "insufficient time to administer",
-			"value": "insufficient time to administer"
-		},
-		"childunabletocompleterefusedtask": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "child unable to complete or refused task",
-			"value": "child unable to complete or refused task"
-		},
-		"literacy-language-communicationissues": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "literacy-language-communication issues",
-			"value": "literacy-language-communication issues"
-		},
-		"displayMode": "list",
-		"description": "If SRS-2 not completed reason"
 	},
 	"srsnoreasonSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -5013,12 +4079,6 @@
 			}
 		}
 	},
-	"SRSotherreason": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "OtherreasonfornoSRS",
-		"dataType": "text",
-		"description": "Other reason for non completion"
-	},
 	"SRSotherreasonSection": {
 		"jcr:primaryType": "lfs:Section",
 		"SRSotherreason": {
@@ -5046,12 +4106,6 @@
 			}
 		}
 	},
-	"srsdate": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Date of SRS assessment",
-		"dataType": "date",
-		"description": "Date of SRS assessment"
-	},
 	"srsdateSection": {
 		"jcr:primaryType": "lfs:Section",
 		"srsdate": {
@@ -5078,14 +4132,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"srssocawareraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score: Social Awareness",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 24.0,
-		"description": "Raw Score of SRS Social Awareness"
 	},
 	"srssocawarerawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -5116,14 +4162,6 @@
 			}
 		}
 	},
-	"srssocawaretTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T-Score: Social Awareness",
-		"dataType": "long",
-		"minValue": 29.0,
-		"maxValue": 100.0,
-		"description": "T-Score of SRS Social Awareness"
-	},
 	"srssocawaretTSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"srssocawaretTS": {
@@ -5152,14 +4190,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"srssoccograw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score: Social Cognition",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 36.0,
-		"description": "Raw Score of SRS Social Cognition"
 	},
 	"srssoccograwSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -5190,14 +4220,6 @@
 			}
 		}
 	},
-	"srssoccogTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T-Score: Social Cognition",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 102.0,
-		"description": "T-Score of SRS Social Cognition"
-	},
 	"srssoccogTSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"srssoccogTS": {
@@ -5226,14 +4248,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"srssoccommraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score: Social Communication",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 66.0,
-		"description": "Raw Score of SRS Social Communication"
 	},
 	"srssoccommrawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -5264,14 +4278,6 @@
 			}
 		}
 	},
-	"srssoccommTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T-Score: Social Communication",
-		"dataType": "long",
-		"minValue": 35.0,
-		"maxValue": 120.0,
-		"description": "T-Score of SRS Social Communication"
-	},
 	"srssoccommTSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"srssoccommTS": {
@@ -5300,14 +4306,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"srssocmotivraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score: SRS Social Motivation",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 33.0,
-		"description": "Raw Score of SRS Social Motivation"
 	},
 	"srssocmotivrawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -5338,14 +4336,6 @@
 			}
 		}
 	},
-	"srssocmotivTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T Score: SRS Social Motivation",
-		"dataType": "long",
-		"minValue": 37.0,
-		"maxValue": 101.0,
-		"description": "T Score of SRS Social Motivation"
-	},
 	"srssocmotivTSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"srssocmotivTS": {
@@ -5374,14 +4364,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"srsrepbehraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score: SRS Restricted Interests and Repetitive Behavior",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 36.0,
-		"description": "Raw Score of SRS Restricted Interests and Repetitive Behavior"
 	},
 	"srsrepbehrawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -5412,14 +4394,6 @@
 			}
 		}
 	},
-	"srsrepbehavTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T-Score: Restricted Interests and Repetitive Behavior",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 112.0,
-		"description": "T-Score of SRS Restricted Interests and Repetitive Behavior"
-	},
 	"srsrepbehavTSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"srsrepbehavTS": {
@@ -5448,14 +4422,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"srssciraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score: SCI",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 159.0,
-		"description": "Raw Score of SRS SCI"
 	},
 	"srsscirawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -5486,14 +4452,6 @@
 			}
 		}
 	},
-	"srssciTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T-Score: SRS SCI",
-		"dataType": "long",
-		"minValue": 33.0,
-		"maxValue": 106.0,
-		"description": "T-Score of SRS SCI"
-	},
 	"srssciTSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"srssciTS": {
@@ -5522,14 +4480,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"srsrrbraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score: SRS RRB",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 36.0,
-		"description": "Raw Score of SRS RRB"
 	},
 	"srsrrbrawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -5560,14 +4510,6 @@
 			}
 		}
 	},
-	"srsrrbTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T-Score: RRB",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 112.0,
-		"description": "T-Score of SRS RRB"
-	},
 	"srsrrbTSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"srsrrbTS": {
@@ -5597,14 +4539,6 @@
 			}
 		}
 	},
-	"srstotalraw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score: SRS-2 Total",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 195.0,
-		"description": "Raw Score of SRS-2 Total"
-	},
 	"srstotalrawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"srstotalraw": {
@@ -5633,14 +4567,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"srstotalTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "T-Score: SRS-2 Total",
-		"dataType": "long",
-		"minValue": 34.0,
-		"maxValue": 109.0,
-		"description": "T-Score of SRS-2 Total"
 	},
 	"srstotalTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -5702,33 +4628,6 @@
 		},
 		"description": "Which IQ Measure was completed",
 		"displayMode": "list"
-	},
-	"IQnoreason": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "IQ incomplete reason",
-		"dataType": "text",
-		"measurenotavailable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "measure not available",
-			"value": "measure not available"
-		},
-		"insufficienttimetoadminister": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "insufficient time to administer",
-			"value": "insufficient time to administer"
-		},
-		"childunabletocompleterefusedtask": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "child unable to complete or refused task",
-			"value": "child unable to complete or refused task"
-		},
-		"literacy-language-communicationissues": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "literacy-language-communication issues",
-			"value": "literacy-language-communication issues"
-		},
-		"displayMode": "list",
-		"description": "If IQ not completed reason"
 	},
 	"IQnoreasonSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -5842,14 +4741,6 @@
 		"dataType": "date",
 		"description": "What date was the assessment completed"
 	},
-	"WASI2FSIQRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Full Scale IQ Raw",
-		"dataType": "long",
-		"minValue": 80.0,
-		"maxValue": 320.0,
-		"description": "WASI-2 Full Scale IQ Raw"
-	},
 	"WASI2FSIQRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WASI2FSIQRaw": {
@@ -5878,14 +4769,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WASI2FSIQSS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Full Scale IQ Standard Score",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 160.0,
-		"description": "WASI-2 Full Scale IQ Standard Score"
 	},
 	"WASI2FSIQSSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -5916,14 +4799,6 @@
 			}
 		}
 	},
-	"WASI2VCIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Verbal Comprehension Index Raw",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 160.0,
-		"description": "WASI-2 Verbal Comprehension Index Raw"
-	},
 	"WASI2VCIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WASI2VCIRaw": {
@@ -5952,14 +4827,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WASI2VCISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Verbal Comprehension Index Standard Score",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 160.0,
-		"description": "WASI-2 Verbal Comprehension Index Standard Score"
 	},
 	"WASI2VCISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -5990,14 +4857,6 @@
 			}
 		}
 	},
-	"WASI2PRIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Perceptual Reasoning Index Raw",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 160.0,
-		"description": "WASI-2 Perceptual Reasoning Index Raw"
-	},
 	"WASI2PRIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WASI2PRIRaw": {
@@ -6026,14 +4885,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WASI2PRISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Perceptual Reasoning Index Standard Score",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 160.0,
-		"description": "WASI-2 Perceptual Reasoning Index Standard Score"
 	},
 	"WASI2PRISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6064,14 +4915,6 @@
 			}
 		}
 	},
-	"WASI2BlockRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Block Design Subtest Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 71.0,
-		"description": "WASI-2 Block Design Subtest Raw Score"
-	},
 	"WASI2BlockRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WASI2BlockRaw": {
@@ -6100,14 +4943,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAS2IBlockTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Block Design Subtest T Score",
-		"dataType": "long",
-		"minValue": 20.0,
-		"maxValue": 80.0,
-		"description": "WASI-2 Block Design Subtest T Score"
 	},
 	"WAS2IBlockTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6138,14 +4973,6 @@
 			}
 		}
 	},
-	"WASI2vocabRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Vocabulary Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 59.0,
-		"description": "WASI-2 Vocabulary Raw Score"
-	},
 	"WASI2vocabRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WASI2vocabRaw": {
@@ -6174,14 +5001,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WASI2vocabTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Vocabulary T Score",
-		"dataType": "long",
-		"minValue": 20.0,
-		"maxValue": 80.0,
-		"description": "WASI-2 Vocabulary T Score"
 	},
 	"WASI2vocabTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6212,14 +5031,6 @@
 			}
 		}
 	},
-	"WASI2MatrixRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Matrix Reasoning Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 30.0,
-		"description": "WASI-2 Matrix Reasoning Raw Score"
-	},
 	"WASI2MatrixRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WASI2MatrixRaw": {
@@ -6248,14 +5059,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WASI2MatrixTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Matrix Reasoning T Score",
-		"dataType": "long",
-		"minValue": 20.0,
-		"maxValue": 80.0,
-		"description": "WASI-2 Matrix Reasoning T Score"
 	},
 	"WASI2MatrixTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6286,14 +5089,6 @@
 			}
 		}
 	},
-	"WASI2SimRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Similarities Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 45.0,
-		"description": "WASI-2 Similarities Raw Score"
-	},
 	"WASI2SimRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WASI2SimRaw": {
@@ -6322,14 +5117,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WASI2SimTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WASI-2 Similiarities T Score",
-		"dataType": "long",
-		"minValue": 20.0,
-		"maxValue": 80.0,
-		"description": "WASI-2 Similiarities T Score"
 	},
 	"WASI2SimTSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6365,14 +5152,6 @@
 		"text": "WAIS-4",
 		"dataType": "text"
 	},
-	"WAIS4FSIQRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Full Scale IQ Raw Score",
-		"dataType": "long",
-		"minValue": 10.0,
-		"maxValue": 190.0,
-		"description": "WAIS-4 Full Scale IQ Raw Score"
-	},
 	"WAIS4FSIQRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4FSIQRaw": {
@@ -6401,14 +5180,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4FSIQSS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Full Scale IQ Standard Score",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 160.0,
-		"description": "WAIS-4 Full Scale IQ Standard Score"
 	},
 	"WAIS4FSIQSSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6439,14 +5210,6 @@
 			}
 		}
 	},
-	"WAIS4VCIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Verbal Comprehnesion Index Raw Score",
-		"dataType": "long",
-		"minValue": 3.0,
-		"maxValue": 57.0,
-		"description": "WAIS-4 Verbal Comprehnesion Index Raw Score"
-	},
 	"WAIS4VCIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4VCIRaw": {
@@ -6475,14 +5238,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4VCISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Verbal Comprehnesion Index Standard Score",
-		"dataType": "long",
-		"minValue": 50.0,
-		"maxValue": 150.0,
-		"description": "WAIS-4 Verbal Comprehnesion Index Standard Score"
 	},
 	"WAIS4VCISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6513,14 +5268,6 @@
 			}
 		}
 	},
-	"WAIS4PRIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Perceptual Reasoning Index Raw Score",
-		"dataType": "long",
-		"minValue": 3.0,
-		"maxValue": 57.0,
-		"description": "WAIS-4 Perceptual Reasoning Index Raw Score"
-	},
 	"WAIS4PRIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4PRIRaw": {
@@ -6549,14 +5296,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4PRISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Perceptual Reasoning Index Standard Score",
-		"dataType": "long",
-		"minValue": 50.0,
-		"maxValue": 150.0,
-		"description": "WAIS-4 Perceptual Reasoning Index Standard Score"
 	},
 	"WAIS4PRISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6587,14 +5326,6 @@
 			}
 		}
 	},
-	"WAIS4WMIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Working Memory Index Raw Score",
-		"dataType": "long",
-		"minValue": 3.0,
-		"maxValue": 57.0,
-		"description": "WAIS-4 Working Memory Index Raw Score"
-	},
 	"WAIS4WMIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4WMIRaw": {
@@ -6623,14 +5354,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4WMISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Working Memory Index Standard Score",
-		"dataType": "long",
-		"minValue": 50.0,
-		"maxValue": 150.0,
-		"description": "WAIS-4 Working Memory Index Standard Score"
 	},
 	"WAIS4WMISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6661,14 +5384,6 @@
 			}
 		}
 	},
-	"WAIS4PSIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Processing Speed Index Raw Score",
-		"dataType": "long",
-		"minValue": 3.0,
-		"maxValue": 57.0,
-		"description": "WAIS-4 Processing Speed Index Raw Score"
-	},
 	"WAIS4PSIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4PSIRaw": {
@@ -6697,14 +5412,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4PSISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Processing Speed Index Standard Score",
-		"dataType": "long",
-		"minValue": 50.0,
-		"maxValue": 150.0,
-		"description": "WAIS-4 Processing Speed Index Standard Score"
 	},
 	"WAIS4PSISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6735,14 +5442,6 @@
 			}
 		}
 	},
-	"WAIS4BlockRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Block Design Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 66.0,
-		"description": "WAIS-4 Block Design Raw Score"
-	},
 	"WAIS4BlockRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4BlockRaw": {
@@ -6771,14 +5470,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4BlockSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Block Design Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WAIS-4 Block Design Scaled Score"
 	},
 	"WAIS4BlockSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6809,14 +5500,6 @@
 			}
 		}
 	},
-	"WAIS4SimRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Similarities Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 36.0,
-		"description": "WAIS-4 Similarities Raw Score"
-	},
 	"WAIS4SimRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4SimRaw": {
@@ -6845,14 +5528,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4SimSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Similiarities Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WAIS-4 Similiarities Scaled Score"
 	},
 	"WAIS4SimSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6883,14 +5558,6 @@
 			}
 		}
 	},
-	"WAIS4DigitRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Digit Span Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 48.0,
-		"description": "WAIS-4 Digit Span Raw Score"
-	},
 	"WAIS4DigitRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4DigitRaw": {
@@ -6919,14 +5586,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4DigitSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Digit Span Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WAIS-4 Digit Span Scaled Score"
 	},
 	"WAIS4DigitSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6957,14 +5616,6 @@
 			}
 		}
 	},
-	"WAIS4MatrixRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Matrix Reasoning Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 26.0,
-		"description": "WAIS-4 Matrix Reasoning Raw Score"
-	},
 	"WAIS4MatrixRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4MatrixRaw": {
@@ -6993,14 +5644,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4MatrixSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Matrix Reasoning Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WAIS-4 Matrix Reasoning Scaled Score"
 	},
 	"WAIS4MatrixSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7031,14 +5674,6 @@
 			}
 		}
 	},
-	"WAIS4VocabRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Vocabulary Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 57.0,
-		"description": "WAIS-4 Vocabulary Raw Score"
-	},
 	"WAIS4VocabRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4VocabRaw": {
@@ -7067,14 +5702,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4VocabSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Vocabulary Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WAIS-4 Vocabulary Scaled Score"
 	},
 	"WAIS4VocabSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7105,14 +5732,6 @@
 			}
 		}
 	},
-	"WAIS4ArithRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Arithmetic Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 22.0,
-		"description": "WAIS-4 Arithmetic Raw Score"
-	},
 	"WAIS4ArithRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4ArithRaw": {
@@ -7141,14 +5760,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4ArithSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Arithmetic Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WAIS-4 Arithmetic Scaled Score"
 	},
 	"WAIS4ArithSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7179,14 +5790,6 @@
 			}
 		}
 	},
-	"WAIS4SSRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Symbol Search Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 60.0,
-		"description": "WAIS-4 Symbol Search Raw Score"
-	},
 	"WAIS4SSRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4SSRaw": {
@@ -7215,14 +5818,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4SSSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Symbol Search Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WAIS-4 Symbol Search Scaled Score"
 	},
 	"WAIS4SSSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7253,14 +5848,6 @@
 			}
 		}
 	},
-	"WAIS4VPRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Visual Puzzles Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 26.0,
-		"description": "WAIS-4 Visual Puzzles Raw Score"
-	},
 	"WAIS4VPRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4VPRaw": {
@@ -7289,14 +5876,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4VPSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Visual Puzzles Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WAIS-4 Visual Puzzles Scaled Score"
 	},
 	"WAIS4VPSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7327,14 +5906,6 @@
 			}
 		}
 	},
-	"WAIS4InfoRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Information Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 26.0,
-		"description": "WAIS-4 Information Raw Score"
-	},
 	"WAIS4InfoRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4InfoRaw": {
@@ -7363,14 +5934,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4InfoSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Information Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WAIS-4 Information Scaled Score"
 	},
 	"WAIS4InfoSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7401,14 +5964,6 @@
 			}
 		}
 	},
-	"WAIS4CodingRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Coding Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 135.0,
-		"description": "WAIS-4 Coding Raw Score"
-	},
 	"WAIS4CodingRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WAIS4CodingRaw": {
@@ -7437,14 +5992,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WAIS4CodingSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WAIS-4 Coding Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WAIS-4 Coding Scaled Score"
 	},
 	"WAIS4CodingSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7480,14 +6027,6 @@
 		"text": "WISC-V",
 		"dataType": "text"
 	},
-	"WISC5FSIQRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Full Scale IQ Raw Score",
-		"dataType": "long",
-		"minValue": 7.0,
-		"maxValue": 133.0,
-		"description": "WISC-5 Full Scale IQ Raw Score"
-	},
 	"WISC5FSIQRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5FSIQRaw": {
@@ -7516,14 +6055,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5FSIQSS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Full Scale IQ Standard Score",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 160.0,
-		"description": "WISC-5 Full Scale IQ Standard Score"
 	},
 	"WISC5FSIQSSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7554,14 +6085,6 @@
 			}
 		}
 	},
-	"WISC5VCIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Verbal Comprehnesion Index Raw Score",
-		"dataType": "long",
-		"minValue": 2.0,
-		"maxValue": 38.0,
-		"description": "WISC-5 Verbal Comprehnesion Index Raw Score"
-	},
 	"WISC5VCIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5VCIRaw": {
@@ -7590,14 +6113,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5VCISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Verbal Comprehnesion Index Standard Score",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 155.0,
-		"description": "WISC-5 Verbal Comprehnesion Index Standard Score"
 	},
 	"WISC5VCISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7628,14 +6143,6 @@
 			}
 		}
 	},
-	"WISC5VSIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Visual-Spatial Index Raw Score",
-		"dataType": "long",
-		"minValue": 2.0,
-		"maxValue": 38.0,
-		"description": "WISC-5 Visual-Spatial Index Raw Score"
-	},
 	"WISC5VSIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5VSIRaw": {
@@ -7664,14 +6171,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5VSISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Visual-Spatial Index Standard Score",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 155.0,
-		"description": "WISC-5 Visual-Spatial Index Standard Score"
 	},
 	"WISC5VSISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7702,14 +6201,6 @@
 			}
 		}
 	},
-	"WISC5FRIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Fluid Reasoning Index Raw Score",
-		"dataType": "long",
-		"minValue": 2.0,
-		"maxValue": 38.0,
-		"description": "WISC-5 Fluid Reasoning Index Raw Score"
-	},
 	"WISC5FRIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5FRIRaw": {
@@ -7738,14 +6229,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5FRISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Fluid Reasoning Index Standard Score",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 155.0,
-		"description": "WISC-5 Fluid Reasoning Index Standard Score"
 	},
 	"WISC5FRISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7776,14 +6259,6 @@
 			}
 		}
 	},
-	"WISC5WMIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Working Memory Index Raw Score",
-		"dataType": "long",
-		"minValue": 2.0,
-		"maxValue": 38.0,
-		"description": "WISC-5 Working Memory Index Raw Score"
-	},
 	"WISC5WMIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5WMIRaw": {
@@ -7812,14 +6287,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5WMISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Working Memory Index Standard Score",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 155.0,
-		"description": "WISC-5 Working Memory Index Standard Score"
 	},
 	"WISC5WMISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7850,14 +6317,6 @@
 			}
 		}
 	},
-	"WISC5PSIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Processing Speed Index Raw Score",
-		"dataType": "long",
-		"minValue": 2.0,
-		"maxValue": 38.0,
-		"description": "WISC-5 Processing Speed Index Raw Score"
-	},
 	"WISC5PSIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5PSIRaw": {
@@ -7886,14 +6345,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5PSISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Processing Speed Index Standard Score",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 155.0,
-		"description": "WISC-5 Processing Speed Index Standard Score"
 	},
 	"WISC5PSISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7924,14 +6375,6 @@
 			}
 		}
 	},
-	"WISC5BlockRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Block Design Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 58.0,
-		"description": "WISC-5 Block Design Raw Score"
-	},
 	"WISC5BlockRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5BlockRaw": {
@@ -7960,14 +6403,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5BlockSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Block Design Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WISC-5 Block Design Scaled Score"
 	},
 	"WISC5BlockSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -7998,14 +6433,6 @@
 			}
 		}
 	},
-	"WISC5SimRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Similarities Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 46.0,
-		"description": "WISC-5 Similarities Raw Score"
-	},
 	"WISC5SimRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5SimRaw": {
@@ -8034,14 +6461,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5SimSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Similiarities Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WISC-5 Similiarities Scaled Score"
 	},
 	"WISC5SimSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -8072,14 +6491,6 @@
 			}
 		}
 	},
-	"WISC5MatrixRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Matrix Reasoning Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 32.0,
-		"description": "WISC-5 Matrix Reasoning Raw Score"
-	},
 	"WISC5MatrixRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5MatrixRaw": {
@@ -8108,14 +6519,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5MatrixSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Matrix Reasoning Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WISC-5 Matrix Reasoning Scaled Score"
 	},
 	"WISC5MatrixSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -8146,14 +6549,6 @@
 			}
 		}
 	},
-	"WISC5DigitRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Digit Span Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 54.0,
-		"description": "WISC-5 Digit Span Raw Score"
-	},
 	"WISC5DigitRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5DigitRaw": {
@@ -8182,14 +6577,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5DigitSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Digit Span Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WISC-5 Digit Span Scaled Score"
 	},
 	"WISC5DigitSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -8220,14 +6607,6 @@
 			}
 		}
 	},
-	"WISC5CodingRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Coding Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 117.0,
-		"description": "WISC-5 Coding Raw Score"
-	},
 	"WISC5CodingRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5CodingRaw": {
@@ -8256,14 +6635,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5CodingSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Coding Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WISC-5 Coding Scaled Score"
 	},
 	"WISC5CodingSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -8294,14 +6665,6 @@
 			}
 		}
 	},
-	"WISC5VocabRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Vocabulary Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 54.0,
-		"description": "WISC-5 Vocabulary Raw Score"
-	},
 	"WISC5VocabRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5VocabRaw": {
@@ -8330,14 +6693,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5VocabSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Vocabulary Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WISC-5 Vocabulary Scaled Score"
 	},
 	"WISC5VocabSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -8368,14 +6723,6 @@
 			}
 		}
 	},
-	"WISC5FWRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Figure Weights Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 34.0,
-		"description": "WISC-5 Figure Weights Raw Score"
-	},
 	"WISC5FWRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5FWRaw": {
@@ -8404,14 +6751,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5FWSc": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Figure Weights Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WISC-5 Figure Weights Scaled Score"
 	},
 	"WISC5FWScSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -8442,14 +6781,6 @@
 			}
 		}
 	},
-	"WISC5VPRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Visual Puzzles Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 29.0,
-		"description": "WISC-5 Visual Puzzles Raw Score"
-	},
 	"WISC5VPRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5VPRaw": {
@@ -8478,14 +6809,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5VPSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Visual Puzzles Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WISC-5 Visual Puzzles Scaled Score"
 	},
 	"WISC5VPSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -8516,14 +6839,6 @@
 			}
 		}
 	},
-	"WISC5PSRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Picture Span Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 49.0,
-		"description": "WISC-5 Picture Span Raw Score"
-	},
 	"WISC5PSRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5PSRaw": {
@@ -8552,14 +6867,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5PSSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Picture Span Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WISC-5 Picture Span Scaled Score"
 	},
 	"WISC5PSSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -8590,14 +6897,6 @@
 			}
 		}
 	},
-	"WISC5SSRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Symbol Search Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 60.0,
-		"description": "WISC-5 Symbol Search Raw Score"
-	},
 	"WISC5SSRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WISC5SSRaw": {
@@ -8626,14 +6925,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WISC5SSSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WISC-5 Symbol Search Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WISC-5 Symbol Search Scaled Score"
 	},
 	"WISC5SSSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -8669,14 +6960,6 @@
 		"text": "WPPSI-4",
 		"dataType": "text"
 	},
-	"WPPSI4VCIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Verbal Comprehension Index Raw",
-		"dataType": "long",
-		"minValue": 2.0,
-		"maxValue": 38.0,
-		"description": "Raw Score WPPSI-4 VCI"
-	},
 	"WPPSI4VCIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4VCIRaw": {
@@ -8705,14 +6988,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4VCISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Verbal Comprehension Index Standard",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 155.0,
-		"description": "Standard Score WPPSI-4 VCI"
 	},
 	"WPPSI4VCISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -8743,14 +7018,6 @@
 			}
 		}
 	},
-	"WPPSI4VSIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Visual Spatial Index Raw",
-		"dataType": "long",
-		"minValue": 2.0,
-		"maxValue": 38.0,
-		"description": "Raw Score WPPSI-4 VSI"
-	},
 	"WPPSI4VSIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4VSIRaw": {
@@ -8779,14 +7046,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4VSISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Visual Spatial Index Standard",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 155.0,
-		"description": "Standard Score WPPSI-4 VCI"
 	},
 	"WPPSI4VSISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -8817,14 +7076,6 @@
 			}
 		}
 	},
-	"WPPSI4FRIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Fluid Reasoning Index Raw",
-		"dataType": "long",
-		"minValue": 2.0,
-		"maxValue": 38.0,
-		"description": "Raw Score WPPSI-4 VSI"
-	},
 	"WPPSI4FRIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4FRIRaw": {
@@ -8853,14 +7104,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4FRISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Fluid Reasoning Index Standard",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 155.0,
-		"description": "Standard Score WPPSI-4 FRI"
 	},
 	"WPPSI4FRISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -8891,14 +7134,6 @@
 			}
 		}
 	},
-	"WPPSI4WMIRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Working Memory Index Raw",
-		"dataType": "long",
-		"minValue": 2.0,
-		"maxValue": 38.0,
-		"description": "Raw Score WPPSI-4 WMI"
-	},
 	"WPPSI4WMIRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4WMIRaw": {
@@ -8927,14 +7162,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4WMISS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Working Memory Index Standard",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 155.0,
-		"description": "Standard Score WPPSI-4 WMI"
 	},
 	"WPPSI4WMISSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -8965,14 +7192,6 @@
 			}
 		}
 	},
-	"WPPSI4FSIQRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Full Scale IQ Raw",
-		"dataType": "long",
-		"minValue": 6.0,
-		"maxValue": 114.0,
-		"description": "Raw Score WPPSI-4 FSIQ"
-	},
 	"WPPSI4FSIQRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4FSIQRaw": {
@@ -9001,14 +7220,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4FSIQSS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Full Scale IQ Standard",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 160.0,
-		"description": "Standard Score WPPSI-4 FSIQ"
 	},
 	"WPPSI4FSIQSSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -9039,14 +7250,6 @@
 			}
 		}
 	},
-	"WPPSI4BlockRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Block Design Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 34.0,
-		"description": "Raw Score WPPSI-4 Block Design"
-	},
 	"WPPSI4BlockRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4BlockRaw": {
@@ -9075,14 +7278,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4BlockSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Block Design Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled Score WPPSI-4 Block Design"
 	},
 	"WPPSI4BlockSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -9113,14 +7308,6 @@
 			}
 		}
 	},
-	"WPPSI4InfoRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Information Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 29.0,
-		"description": "Raw Score WPPSI-4 Information"
-	},
 	"WPPSI4InfoRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4InfoRaw": {
@@ -9149,14 +7336,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4InfoSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Information Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled Score WPPSI-4 Information"
 	},
 	"WPPSI4InfoSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -9187,14 +7366,6 @@
 			}
 		}
 	},
-	"WPPSI4MatrixRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Matrix Reasoning Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 26.0,
-		"description": "Raw Score WPPSI-4 Matrix Reasoning"
-	},
 	"WPPSI4MatrixRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4MatrixRaw": {
@@ -9223,14 +7394,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4MatrixSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Matrix Reasoning Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled Score WPPSI-4 Matrix Reasoning"
 	},
 	"WPPSI4MatrixSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -9261,14 +7424,6 @@
 			}
 		}
 	},
-	"WPPSI4BugRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Bug Search Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 66.0,
-		"description": "Raw Score WPPSI-4 Bug Search"
-	},
 	"WPPSI4BugRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4BugRaw": {
@@ -9297,14 +7452,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4BugSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Bug Search Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled Score WPPSI-4 Bug Search"
 	},
 	"WPPSI4BugSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -9335,14 +7482,6 @@
 			}
 		}
 	},
-	"WPPSI4PMemRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Picture Memory Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 35.0,
-		"description": "Raw Score WPPSI-4 Picture Memory"
-	},
 	"WPPSI4PMemRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4PMemRaw": {
@@ -9371,14 +7510,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4PMemSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Picture Memory Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled Score WPPSI-4 Picture Memory"
 	},
 	"WPPSI4PMemSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -9409,14 +7540,6 @@
 			}
 		}
 	},
-	"WPPSI4SimRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Similiarities Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 40.0,
-		"description": "Raw Score WPPSI-4 Similarities"
-	},
 	"WPPSI4SimRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4SimRaw": {
@@ -9445,14 +7568,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4SimSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Similarities Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled Score WPPSI-4 Similarities"
 	},
 	"WPPSI4SimSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -9483,14 +7598,6 @@
 			}
 		}
 	},
-	"WPPSI4PConRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Picture Concepts Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 27.0,
-		"description": "Raw Score WPSSI-4 Picture Concepts"
-	},
 	"WPPSI4PConRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4PConRaw": {
@@ -9519,14 +7626,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4PConSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Picture Concepts Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled Score WPPSI-4 Picture Concepts"
 	},
 	"WPPSI4PConSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -9557,14 +7656,6 @@
 			}
 		}
 	},
-	"WPPSI4CancelRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Cancellation Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 48.0,
-		"description": "Raw Score WPPSI-4 Cancellation"
-	},
 	"WPPSI4CancelRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4CancelRaw": {
@@ -9593,14 +7684,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4CancelSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Cancellation Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled Score WPPSI-4 Cancellation"
 	},
 	"WPPSI4CancelSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -9631,14 +7714,6 @@
 			}
 		}
 	},
-	"WPPSI4ZooRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Zoo Locations Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 20.0,
-		"description": "Raw Score WPPSI-4 Zoo Locations"
-	},
 	"WPPSI4ZooRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4ZooRaw": {
@@ -9667,14 +7742,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4ZooSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Zoo Locations Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled Score WPPSI-4 Zoo Locations"
 	},
 	"WPPSI4ZooSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -9705,14 +7772,6 @@
 			}
 		}
 	},
-	"WPPSI4OARaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Object Assembly Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 20.0,
-		"description": "Raw Score WPPSI-4 Object Assembly"
-	},
 	"WPPSI4OARawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WPPSI4OARaw": {
@@ -9741,14 +7800,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WPPSI4OASC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WPPSI-4 Object Assembly Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled Score WPPSI-4 Object Asssembly"
 	},
 	"WPPSI4OASCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -9789,14 +7840,6 @@
 		"text": "VMI-6",
 		"dataType": "long"
 	},
-	"VMI6Raw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score VMI-6",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 30.0,
-		"description": "Raw Score VMI-6"
-	},
 	"VMI6RawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"VMI6Raw": {
@@ -9825,14 +7868,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"VMI6SS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Standard Score VMI-6",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 155.0,
-		"description": "Standard Score VMI_6"
 	},
 	"VMI6SSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -9867,33 +7902,6 @@
 		"jcr:primaryType": "lfs:Question",
 		"text": "Pegboard",
 		"dataType": "long"
-	},
-	"Motornoreason": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "motor incomplete reason",
-		"dataType": "text",
-		"measurenotavailable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "measure not available",
-			"value": "measure not available"
-		},
-		"insufficienttimetoadminister": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "insufficient time to administer",
-			"value": "insufficient time to administer"
-		},
-		"childunabletocompleterefusedtask": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "child unable to complete or refused task",
-			"value": "child unable to complete or refused task"
-		},
-		"literacy-language-communicationissues": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "literacy-language-communication issues",
-			"value": "literacy-language-communication issues"
-		},
-		"displayMode": "list",
-		"description": "If Motor not completed reason"
 	},
 	"MotornoreasonSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -9965,12 +7973,6 @@
 			}
 		}
 	},
-	"Motordate": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Date of motor assessment",
-		"dataType": "date",
-		"description": "What date was the assessment completed"
-	},
 	"MotordateSection": {
 		"jcr:primaryType": "lfs:Section",
 		"Motordate": {
@@ -10020,32 +8022,6 @@
 			}
 		}
 	},
-	"WRAVMAhanddom": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WRAVMA hand dominance",
-		"dataType": "text",
-		"right": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "right",
-			"value": "right"
-		},
-		"left": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "left",
-			"value": "left"
-		},
-		"mixed": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "mixed",
-			"value": "mixed"
-		},
-		"notyetestablished": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "not yet established",
-			"value": "not yet established"
-		},
-		"description": "WRAVMA hand dominance"
-	},
 	"WRAVMAhanddomSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WRAVMAhanddom": {
@@ -10093,14 +8069,6 @@
 			}
 		}
 	},
-	"WRAVMAPegDomRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score WRAVMA Peg dominant",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 40.0,
-		"description": "Raw Score WRAVMA Peg dominant"
-	},
 	"WRAVMAPegDomRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WRAVMAPegDomRaw": {
@@ -10129,14 +8097,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WRAVMAPegDomSS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Standard Score WRAVMA Peg nondominant",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 155.0,
-		"description": "Standard Score WRAVMA Peg nondominant"
 	},
 	"WRAVMAPegDomSSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -10167,14 +8127,6 @@
 			}
 		}
 	},
-	"WRAVMAPegNonDomRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score WRAVMA Peg nondominant",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 40.0,
-		"description": "Raw Score WRAVMA Peg nondominant"
-	},
 	"WRAVMAPegNonDomRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WRAVMAPegNonDomRaw": {
@@ -10203,14 +8155,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WRAVMAPegNonDomSS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Standard Score WRAVMA Peg nondominant",
-		"dataType": "long",
-		"minValue": 45.0,
-		"maxValue": 155.0,
-		"description": "Standard Score WRAVMA Peg nondominant"
 	},
 	"WRAVMAPegNonDomSSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -10245,32 +8189,6 @@
 		"jcr:primaryType": "lfs:Question",
 		"text": "Grooved Pegboard",
 		"dataType": "text"
-	},
-	"GPeghanddom": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Grooved Pegboard hand dominance",
-		"dataType": "text",
-		"right": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "right",
-			"value": "right"
-		},
-		"left": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "left",
-			"value": "left"
-		},
-		"mixed": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "mixed",
-			"value": "mixed"
-		},
-		"notyetestablished": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "not yet established",
-			"value": "not yet established"
-		},
-		"description": "Grooved Pegboard hand dominance"
 	},
 	"GPeghanddomSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -10319,13 +8237,6 @@
 			}
 		}
 	},
-	"GPegDominantRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Grooved Pegboard Dominant Hand Raw Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 300.0
-	},
 	"GPegDominantRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"GPegDominantRaw": {
@@ -10353,13 +8264,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"GPegNonDomRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Grooved Pegboard Non Dominant Hand Raw Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 300.0
 	},
 	"GPegNonDomRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -10393,33 +8297,6 @@
 		"jcr:primaryType": "lfs:Question",
 		"text": "Academic",
 		"dataType": "text"
-	},
-	"ACADEMICnoreason": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Academic incomplete reason",
-		"dataType": "text",
-		"measurenotavailable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "measure not available",
-			"value": "measure not available"
-		},
-		"insufficienttimetoadminister": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "insufficient time to administer",
-			"value": "insufficient time to administer"
-		},
-		"childunabletocompleterefusedtask": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "child unable to complete or refused task",
-			"value": "child unable to complete or refused task"
-		},
-		"literacy-language-communicationissues": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "literacy-language-communication issues",
-			"value": "literacy-language-communication issues"
-		},
-		"displayMode": "list",
-		"description": "If Academic not completed reason"
 	},
 	"ACADEMICnoreasonSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -10509,12 +8386,6 @@
 			}
 		}
 	},
-	"Academicdate": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Date of academic assessment",
-		"dataType": "date",
-		"description": "What date was the assessment completed"
-	},
 	"AcademicdateSection": {
 		"jcr:primaryType": "lfs:Section",
 		"Academicdate": {
@@ -10587,14 +8458,6 @@
 		"text": "BSRA-3",
 		"dataType": "long"
 	},
-	"BrackenRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Raw Score Bracken School Readiness Composite",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 85.0,
-		"description": "Raw Score Bracken School Readiness Composite"
-	},
 	"BrackenRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"BrackenRaw": {
@@ -10623,14 +8486,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"BrackenSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Scaled Score Bracken School Readiness Composite",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "Scaled Score Bracken School Readiness Composite"
 	},
 	"BrackenSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -10666,14 +8521,6 @@
 		"text": "WJ",
 		"dataType": "text"
 	},
-	"WJ4LWIDRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WJ-4 Letter Word Identifciation Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 78.0,
-		"description": "WJ-4 Letter Word Identifciation Raw Score"
-	},
 	"WJ4LWIDRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WJ4LWIDRaw": {
@@ -10702,14 +8549,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WJ4LWIDSS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WJ-4 Letter Word Identifciation Standard Score",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 160.0,
-		"description": "WJ-4 Letter Word Identifciation Standard Score"
 	},
 	"WJ4LWIDSSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -10740,14 +8579,6 @@
 			}
 		}
 	},
-	"WJ4CalcRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WJ-4 Calculation Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 57.0,
-		"description": "WJ-4 Calculation Raw Score"
-	},
 	"WJ4CalcRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WJ4CalcRaw": {
@@ -10776,14 +8607,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WJ4CalcSS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WJ-4 Calculation Standard Score",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 160.0,
-		"description": "WJ-4 Calculation Standard Score"
 	},
 	"WJ4CalcSSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -10819,14 +8642,6 @@
 		"text": "WIAT",
 		"dataType": "text"
 	},
-	"WIAT3WRRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WIAT3 Letter Word Reading Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 75.0,
-		"description": "WIAT3 Letter Word Reading Raw Score"
-	},
 	"WIAT3WRRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WIAT3WRRaw": {
@@ -10855,14 +8670,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WIAT3WRSS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WIAT3 Word Reading Standard Score",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 160.0,
-		"description": "WIAT3 Word Reading Standard Score"
 	},
 	"WIAT3WRSSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -10893,14 +8700,6 @@
 			}
 		}
 	},
-	"WIAT3NumerRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WIAT3 Numerical Operations Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 61.0,
-		"description": "WIAT3 Numerical Operations Raw Score"
-	},
 	"WIAT3NumerRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WIAT3NumerRaw": {
@@ -10929,14 +8728,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WIAT3NumerSS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WIAT3 Numerical Operations Standard Score",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 160.0,
-		"description": "WIAT3 Numerical Operations Standard Score"
 	},
 	"WIAT3NumerSSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -10976,33 +8767,6 @@
 		"jcr:primaryType": "lfs:Question",
 		"text": "WRAML",
 		"dataType": "text"
-	},
-	"WRAMLnoreason": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WRAML incomplete reason",
-		"dataType": "text",
-		"measurenotavailable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "measure not available",
-			"value": "measure not available"
-		},
-		"insufficienttimetoadminister": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "insufficient time to administer",
-			"value": "insufficient time to administer"
-		},
-		"childunabletocompleterefusedtask": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "child unable to complete or refused task",
-			"value": "child unable to complete or refused task"
-		},
-		"literacy-language-communicationissues": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "literacy-language-communication issues",
-			"value": "literacy-language-communication issues"
-		},
-		"displayMode": "list",
-		"description": "If WRAML not completed reason"
 	},
 	"WRAMLnoreasonSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -11052,12 +8816,6 @@
 			}
 		}
 	},
-	"WRAMLdate": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Date of WRAML assessment",
-		"dataType": "date",
-		"description": "What date was the assessment completed"
-	},
 	"WRAMLdateSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WRAMLdate": {
@@ -11084,14 +8842,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WRAMLStoryImmRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WRAML Story Memory Immediate Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 78.0,
-		"description": "WRAML Story Memory Immediate Raw"
 	},
 	"WRAMLStoryImmRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -11122,14 +8872,6 @@
 			}
 		}
 	},
-	"WRAMLStoryImmSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WRAML Story Memory Immediate Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WRAML Story Memory Immediate Scaled Score"
-	},
 	"WRAMLStoryImmSCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WRAMLStoryImmSC": {
@@ -11158,14 +8900,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WRAMLStoryDelayRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WRAML Story Memory Delay Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 78.0,
-		"description": "WRAML Story Memory Delay Raw"
 	},
 	"WRAMLStoryDelayRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -11196,14 +8930,6 @@
 			}
 		}
 	},
-	"WRAMLStoryDelaySC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WRAML Story Memory Delay Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WRAML Story Memory Delay Scaled Score"
-	},
 	"WRAMLStoryDelaySCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WRAMLStoryDelaySC": {
@@ -11232,14 +8958,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WRAMLStoryRecogRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WRAML Story Memory Recognition Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 40.0,
-		"description": "WRAML Story Memory Recognition Raw"
 	},
 	"WRAMLStoryRecogRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -11270,14 +8988,6 @@
 			}
 		}
 	},
-	"WRAMLStoryRecogSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WRAML Story Memory Recognition Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WRAML Story Memory Recognition Scaled Score"
-	},
 	"WRAMLStoryRecogSCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WRAMLStoryRecogSC": {
@@ -11306,14 +9016,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WRAMLDesImmRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WRAML Design Memory Immediate Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 60.0,
-		"description": "WRAML Design Memory Immediate Raw"
 	},
 	"WRAMLDesImmRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -11344,14 +9046,6 @@
 			}
 		}
 	},
-	"WRAMLDesImmSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WRAML Design Memory Immediate Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WRAML Design Memory Immediate Scaled Score"
-	},
 	"WRAMLDesImmSCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WRAMLDesImmSC": {
@@ -11381,14 +9075,6 @@
 			}
 		}
 	},
-	"WRAMLDesRecogRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WRAML Design Memory Recognition Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 46.0,
-		"description": "WRAML Design Memory Recognition Raw"
-	},
 	"WRAMLDesRecogRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"WRAMLDesRecogRaw": {
@@ -11417,14 +9103,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"WRAMLDesRecogSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "WRAML Design Memory Recognition Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "WRAML Design Memory Recognition Scaled Score"
 	},
 	"WRAMLDesRecogSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -11459,33 +9137,6 @@
 		"jcr:primaryType": "lfs:Question",
 		"text": "CVLT",
 		"dataType": "text"
-	},
-	"CVLTnoreason": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT incomplete reason",
-		"dataType": "text",
-		"measurenotavailable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "measure not available",
-			"value": "measure not available"
-		},
-		"insufficienttimetoadminister": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "insufficient time to administer",
-			"value": "insufficient time to administer"
-		},
-		"childunabletocompleterefusedtask": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "child unable to complete or refused task",
-			"value": "child unable to complete or refused task"
-		},
-		"literacy-language-communicationissues": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "literacy-language-communication issues",
-			"value": "literacy-language-communication issues"
-		},
-		"displayMode": "list",
-		"description": "If CVLT not completed reason"
 	},
 	"CVLTnoreasonSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -11535,12 +9186,6 @@
 			}
 		}
 	},
-	"CVLTdate": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Date of CVLT assessment",
-		"dataType": "date",
-		"description": "What date was the assessment completed"
-	},
 	"CVLTdateSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLTdate": {
@@ -11566,26 +9211,6 @@
 				],
 				"isReference": false
 			}
-		}
-	},
-	"WhichCVLT": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Which version of CVLT administered",
-		"dataType": "text",
-		"CVLT-Cages6-16": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "CVLT-C ages 6-16",
-			"value": "CVLT-C ages 6-16"
-		},
-		"CVLT-IIages16+": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "CVLT-II ages 16+",
-			"value": "CVLT-II ages 16+"
-		},
-		"CVLT-3QIVersionages16+": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "CVLT-3 QI Version ages 16+",
-			"value": "CVLT-3 QI Version ages 16+"
 		}
 	},
 	"WhichCVLTSection": {
@@ -11628,14 +9253,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLTTotalRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Total Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 80.0,
-		"description": "CVLT Total Raw"
 	},
 	"CVLTTotalRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -11684,14 +9301,6 @@
 			}
 		}
 	},
-	"CVLTTotalTS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Total T Score",
-		"dataType": "long",
-		"minValue": 20.0,
-		"maxValue": 80.0,
-		"description": "CVLT Total T Score"
-	},
 	"CVLTTotalTSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLTTotalTS": {
@@ -11738,14 +9347,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT1Raw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Trial 1 Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT Trial 1 Raw"
 	},
 	"CVLT1RawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -11794,14 +9395,6 @@
 			}
 		}
 	},
-	"CVLT1ZS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Trial 1 Z Score",
-		"dataType": "long",
-		"minValue": -5.0,
-		"maxValue": 5.0,
-		"description": "CVLT Trial 1 Z Score"
-	},
 	"CVLT1ZSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT1ZS": {
@@ -11848,14 +9441,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT5Raw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Trial 5 Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT Trial 5 Raw"
 	},
 	"CVLT5RawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -11904,14 +9489,6 @@
 			}
 		}
 	},
-	"CVLT5ZS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Trial 5 Z Score",
-		"dataType": "long",
-		"minValue": -5.0,
-		"maxValue": 5.0,
-		"description": "CVLT Trial 5 Z Score"
-	},
 	"CVLT5ZSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT5ZS": {
@@ -11958,14 +9535,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLTBRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT List B Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT List B Raw"
 	},
 	"CVLTBRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -12014,14 +9583,6 @@
 			}
 		}
 	},
-	"CVLTBZS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT List B Z Score",
-		"dataType": "long",
-		"minValue": -5.0,
-		"maxValue": 5.0,
-		"description": "CVLT List B Z Score"
-	},
 	"CVLTBZSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLTBZS": {
@@ -12068,14 +9629,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLTSDFRRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Short Delay FR Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT Short Delay FR Raw"
 	},
 	"CVLTSDFRRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -12124,14 +9677,6 @@
 			}
 		}
 	},
-	"CVLTSDFRZS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Short Delay FR Z Score",
-		"dataType": "long",
-		"minValue": -5.0,
-		"maxValue": 5.0,
-		"description": "CVLT Short Delay FR Z Score"
-	},
 	"CVLTSDFRZSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLTSDFRZS": {
@@ -12178,14 +9723,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLTLDFRRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Long Delay FR Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT Long Delay FR Raw"
 	},
 	"CVLTLDFRRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -12234,14 +9771,6 @@
 			}
 		}
 	},
-	"CVLTLDFRZS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Long Delay FR Z Score",
-		"dataType": "long",
-		"minValue": -5.0,
-		"maxValue": 5.0,
-		"description": "CVLT Long Delay FR Z Score"
-	},
 	"CVLTLDFRZSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLTLDFRZS": {
@@ -12288,14 +9817,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLTSDCRRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Short Delay CR Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT Short Delay CR Raw"
 	},
 	"CVLTSDCRRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -12344,14 +9865,6 @@
 			}
 		}
 	},
-	"CVLTSDCRZS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Long Delay Z Score",
-		"dataType": "long",
-		"minValue": -5.0,
-		"maxValue": 5.0,
-		"description": "CVLT Long Delay Z Score"
-	},
 	"CVLTSDCRZSSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLTSDCRZS": {
@@ -12398,14 +9911,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLTLDCRRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Long Delay CR Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT Long Delay CR Raw"
 	},
 	"CVLTLDCRRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -12454,14 +9959,6 @@
 			}
 		}
 	},
-	"CVLTSemRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Semantic Cluster Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 5.0,
-		"description": "CVLT Semantic Cluster Raw"
-	},
 	"CVLTSemRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLTSemRaw": {
@@ -12508,14 +10005,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLTSemZS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Semantic Cluster Z Score",
-		"dataType": "long",
-		"minValue": -5.0,
-		"maxValue": 5.0,
-		"description": "CVLT Semantic Cluster Z Score"
 	},
 	"CVLTSemZSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -12564,14 +10053,6 @@
 			}
 		}
 	},
-	"CVLTSerRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Serial Cluster Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 12.0,
-		"description": "CVLT Serial Cluster Raw"
-	},
 	"CVLTSerRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLTSerRaw": {
@@ -12618,14 +10099,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLTSerZS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Serial Cluster Z Score",
-		"dataType": "long",
-		"minValue": -5.0,
-		"maxValue": 5.0,
-		"description": "CVLT Serial Cluster Z Score"
 	},
 	"CVLTSerZSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -12674,14 +10147,6 @@
 			}
 		}
 	},
-	"CVLTSlopeRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Slope Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 5.0,
-		"description": "CVLT Slope Raw"
-	},
 	"CVLTSlopeRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLTSlopeRaw": {
@@ -12728,14 +10193,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLTSlopeZS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Slope Z Score",
-		"dataType": "long",
-		"minValue": -5.0,
-		"maxValue": 5.0,
-		"description": "CVLT Slope Z Score"
 	},
 	"CVLTSlopeZSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -12784,14 +10241,6 @@
 			}
 		}
 	},
-	"CVLTConsisRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Consistency Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 100.0,
-		"description": "CVLT Consistency Raw"
-	},
 	"CVLTConsisRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLTConsisRaw": {
@@ -12838,14 +10287,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLTConsisZS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Consistency Z Score",
-		"dataType": "long",
-		"minValue": -5.0,
-		"maxValue": 5.0,
-		"description": "CVLT Consistency Z Score"
 	},
 	"CVLTConsisZSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -12894,14 +10335,6 @@
 			}
 		}
 	},
-	"CVLTPersevRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Perseverations Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 35.0,
-		"description": "CVLT Perseverations Raw"
-	},
 	"CVLTPersevRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLTPersevRaw": {
@@ -12948,14 +10381,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLTPersevZS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Perseverations Z Score",
-		"dataType": "long",
-		"minValue": -5.0,
-		"maxValue": 5.0,
-		"description": "CVLT Perseverations Z Score"
 	},
 	"CVLTPersevZSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -13004,14 +10429,6 @@
 			}
 		}
 	},
-	"CVLTIntrusRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT FR and CR Total Intrusions Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 35.0,
-		"description": "CVLT FR and CR Total Intrusions Raw"
-	},
 	"CVLTIntrusRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLTIntrusRaw": {
@@ -13058,14 +10475,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLTIntrusZS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT FR and CR Total Intrusions Z Score",
-		"dataType": "long",
-		"minValue": -5.0,
-		"maxValue": 5.0,
-		"description": "CVLT FR and CR Total Intrusions Z Score"
 	},
 	"CVLTIntrusZSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -13114,14 +10523,6 @@
 			}
 		}
 	},
-	"CVLTDiscrimRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Discriminability Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 100.0,
-		"description": "CVLT Discriminability Raw"
-	},
 	"CVLTDiscrimRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLTDiscrimRaw": {
@@ -13168,14 +10569,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLTDiscrimZS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Discriminability Z Score",
-		"dataType": "long",
-		"minValue": -5.0,
-		"maxValue": 5.0,
-		"description": "CVLT Discriminability Z Score"
 	},
 	"CVLTDiscrimZSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -13224,14 +10617,6 @@
 			}
 		}
 	},
-	"CVLT3TotalRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Total Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 80.0,
-		"description": "CVLT3 Total Raw"
-	},
 	"CVLT3TotalRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3TotalRaw": {
@@ -13260,14 +10645,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3TotalSS": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Total Standard Score",
-		"dataType": "long",
-		"minValue": 40.0,
-		"maxValue": 160.0,
-		"description": "CVLT3 Total Standard Score"
 	},
 	"CVLT3TotalSSSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -13298,14 +10675,6 @@
 			}
 		}
 	},
-	"CVLT3T1Raw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Trial 1 Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT3 Trial 1 Raw"
-	},
 	"CVLT3T1RawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3T1Raw": {
@@ -13334,14 +10703,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3T1SC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Trial 1 Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "CVLT3 Trial 1 Scaled Score"
 	},
 	"CVLT3T1SCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -13372,14 +10733,6 @@
 			}
 		}
 	},
-	"CVLT3T5Raw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Trial 5 Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT3 Trial 5 Raw"
-	},
 	"CVLT3T5RawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3T5Raw": {
@@ -13408,14 +10761,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3T5SC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Trial 5 Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "CVLT3 Trial 5 Scaled Score"
 	},
 	"CVLT3T5SCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -13446,14 +10791,6 @@
 			}
 		}
 	},
-	"CVLT3BRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 List B Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT3 List B Raw"
-	},
 	"CVLT3BRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3BRaw": {
@@ -13482,14 +10819,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3BSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 List B Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "CVLT3 List B Scaled Score"
 	},
 	"CVLT3BSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -13520,14 +10849,6 @@
 			}
 		}
 	},
-	"CVLT3SDFRRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Short Delay FR Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT3 Short Delay FR Raw"
-	},
 	"CVLT3SDFRRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3SDFRRaw": {
@@ -13556,14 +10877,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3SDFRSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Short Delay FR Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "CVLT3 Short Delay FR Scaled Score"
 	},
 	"CVLT3SDFRSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -13594,14 +10907,6 @@
 			}
 		}
 	},
-	"CVLT3LDFRRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Long Delay FR Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT3 Long Delay FR Raw"
-	},
 	"CVLT3LDFRRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3LDFRRaw": {
@@ -13630,14 +10935,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3LDFRSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Long Delay FR Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "CVLT3 Long Delay FR Scaled Score"
 	},
 	"CVLT3LDFRSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -13668,14 +10965,6 @@
 			}
 		}
 	},
-	"CVLT3SDCRRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Short Delay CR Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT3 Short Delay CR Raw"
-	},
 	"CVLT3SDCRRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3SDCRRaw": {
@@ -13704,14 +10993,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3SDCRSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Long Delay Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "CVLT3 Long Delay Scaled Score"
 	},
 	"CVLT3SDCRSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -13742,14 +11023,6 @@
 			}
 		}
 	},
-	"CVLT3LDCRRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Long Delay CR Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 16.0,
-		"description": "CVLT3 Long Delay CR Raw"
-	},
 	"CVLT3LDCRRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3LDCRRaw": {
@@ -13778,14 +11051,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3SemRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Semantic Cluster Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 5.0,
-		"description": "CVLT3 Semantic Cluster Raw"
 	},
 	"CVLT3SemRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -13816,14 +11081,6 @@
 			}
 		}
 	},
-	"CVLT3SemSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Semantic Cluster Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "CVLT3 Semantic Cluster Scaled Score"
-	},
 	"CVLT3SemSCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3SemSC": {
@@ -13852,14 +11109,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3SerRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Serial Cluster Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 5.0,
-		"description": "CVLT3 Serial Cluster Raw"
 	},
 	"CVLT3SerRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -13890,14 +11139,6 @@
 			}
 		}
 	},
-	"CVLT3SerSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Serial Cluster Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "CVLT3 Serial Cluster Scaled Score"
-	},
 	"CVLT3SerSCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3SerSC": {
@@ -13926,14 +11167,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3SlopeRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Learning Slope Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 5.0,
-		"description": "CVLT3 Learning Slope Raw"
 	},
 	"CVLT3SlopeRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -13964,14 +11197,6 @@
 			}
 		}
 	},
-	"CVLT3SlopeSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Learning Slope Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "CVLT3 Learning Slope Scaled Score"
-	},
 	"CVLT3SlopeSCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3SlopeSC": {
@@ -14000,14 +11225,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3ConsisRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Across Trial Consistency Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 100.0,
-		"description": "CVLT3 Across Trial Consistency Raw"
 	},
 	"CVLT3ConsisRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -14038,14 +11255,6 @@
 			}
 		}
 	},
-	"CVLT3ConsisSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Across Trial Consistency Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "CVLT3 Across Trial Consistency Scaled Score"
-	},
 	"CVLT3ConsisSCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3ConsisSC": {
@@ -14074,14 +11283,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3ReptRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Repetitions Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 35.0,
-		"description": "CVLT3 Repetitions Raw (=perseveration)"
 	},
 	"CVLT3ReptRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -14112,14 +11313,6 @@
 			}
 		}
 	},
-	"CVLT3RepSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT Repetitions Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "CVLT3 Repetiions  Scaled Score (=perseveration)"
-	},
 	"CVLT3RepSCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3RepSC": {
@@ -14148,14 +11341,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3IntrusRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Free Recall and Cued Recall Total Intrusions Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 35.0,
-		"description": "CVLT3 Free Recall and Cued Recall Total Intrusions Raw"
 	},
 	"CVLT3IntrusRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -14186,14 +11371,6 @@
 			}
 		}
 	},
-	"CVLT3IntrusSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Free Recall and Cued Recall Total Intrusions Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "CVLT3 Free Recall and Cued Recall Total Intrusions Scaled Score"
-	},
 	"CVLT3IntrusSCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3IntrusSC": {
@@ -14223,14 +11400,6 @@
 			}
 		}
 	},
-	"CVLT3RecogDiscrimRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Recognition Discriminability Raw",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 100.0,
-		"description": "CVLT3 Recognition Discriminability Raw"
-	},
 	"CVLT3RecogDiscrimRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"CVLT3RecogDiscrimRaw": {
@@ -14259,14 +11428,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"CVLT3RecogDiscrimSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "CVLT3 Recognition Discriminability Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "CVLT3 Recognition Discriminability Scaled Score"
 	},
 	"CVLT3RecogDiscrimSCSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -14306,33 +11467,6 @@
 		"jcr:primaryType": "lfs:Question",
 		"text": "DKEFS",
 		"dataType": "text"
-	},
-	"DKEFSnoreason": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS incomplete reason",
-		"dataType": "text",
-		"measurenotavailable": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "measure not available",
-			"value": "measure not available"
-		},
-		"insufficienttimetoadminister": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "insufficient time to administer",
-			"value": "insufficient time to administer"
-		},
-		"childunabletocompleterefusedtask": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "child unable to complete or refused task",
-			"value": "child unable to complete or refused task"
-		},
-		"literacy-language-communicationissues": {
-			"jcr:primaryType": "lfs:AnswerOption",
-			"label": "literacy-language-communication issues",
-			"value": "literacy-language-communication issues"
-		},
-		"displayMode": "list",
-		"description": "If DKEFS not completed reason"
 	},
 	"DKEFSnoreasonSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -14382,12 +11516,6 @@
 			}
 		}
 	},
-	"DKEFSdate": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "Date of DKEFS assessment",
-		"dataType": "date",
-		"description": "What date was the assessment completed"
-	},
 	"DKEFSdateSection": {
 		"jcr:primaryType": "lfs:Section",
 		"DKEFSdate": {
@@ -14414,14 +11542,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"DKEFSTrails1Raw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 1 Raw Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 100.0,
-		"description": "DKEFS Trails 1 Raw Score"
 	},
 	"DKEFSTrails1RawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -14452,14 +11572,6 @@
 			}
 		}
 	},
-	"DKEFSTrails1SC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 1 Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "DKEFS Trails 1 Scaled Score"
-	},
 	"DKEFSTrails1SCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"DKEFSTrails1SC": {
@@ -14488,14 +11600,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"DKEFSTrails1Omiss": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 1 Omissions Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 6.0,
-		"description": "DKEFS Trails 1 Omissions Raw Score"
 	},
 	"DKEFSTrails1OmissSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -14526,14 +11630,6 @@
 			}
 		}
 	},
-	"DKEFSTrails1Comm": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 1 Commissions Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 5.0,
-		"description": "DKEFS Trails 1 Commissions Raw Score"
-	},
 	"DKEFSTrails1CommSection": {
 		"jcr:primaryType": "lfs:Section",
 		"DKEFSTrails1Comm": {
@@ -14562,14 +11658,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"DKEFSTrails2Raw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 2 Raw Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 200.0,
-		"description": "DKEFS Trails 2 Raw Score"
 	},
 	"DKEFSTrails2RawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -14600,14 +11688,6 @@
 			}
 		}
 	},
-	"DKEFSTrails2SC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 2 Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "DKEFS Trails 2 Scaled Score"
-	},
 	"DKEFSTrails2SCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"DKEFSTrails2SC": {
@@ -14636,14 +11716,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"DKEFSTrails3Raw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 3 Raw Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 200.0,
-		"description": "DKEFS Trails 3 Raw Score"
 	},
 	"DKEFSTrails3RawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -14674,14 +11746,6 @@
 			}
 		}
 	},
-	"DKEFSTrails3SC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 3 Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "DKEFS Trails 3 Scaled Score"
-	},
 	"DKEFSTrails3SCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"DKEFSTrails3SC": {
@@ -14710,14 +11774,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"DKEFSTrails4Raw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 4 Raw Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 300.0,
-		"description": "DKEFS Trails 4 Raw Score"
 	},
 	"DKEFSTrails4RawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -14748,14 +11804,6 @@
 			}
 		}
 	},
-	"DKEFSTrails4SC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 4 Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "DKEFS Trails 4 Scaled Score"
-	},
 	"DKEFSTrails4SCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"DKEFSTrails4SC": {
@@ -14784,14 +11832,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"DKEFSTrails4AllErrorsRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 4 All Errors Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 12.0,
-		"description": "DKEFS Trails 4 All Errors Raw Score"
 	},
 	"DKEFSTrails4AllErrorsRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -14822,14 +11862,6 @@
 			}
 		}
 	},
-	"DKEFSTrails4AllErrorsSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 4 All Errors Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "DKEFS Trails 4 All Errors Scaled Score"
-	},
 	"DKEFSTrails4AllErrorsSCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"DKEFSTrails4AllErrorsSC": {
@@ -14858,14 +11890,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"DKEFSTrails5Raw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 5 Raw Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 200.0,
-		"description": "DKEFS Trails 5 Raw Score"
 	},
 	"DKEFSTrails5RawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -14896,14 +11920,6 @@
 			}
 		}
 	},
-	"DKEFSTrails5SC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Trails 5 Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "DKEFS Trails 5 Scaled Score"
-	},
 	"DKEFSTrails5SCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"DKEFSTrails5SC": {
@@ -14932,14 +11948,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"DKEFSLettFluencyRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Letter Fluency Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 70.0,
-		"description": "DKEFS Letter Fluency Raw Score"
 	},
 	"DKEFSLettFluencyRawSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -14970,14 +11978,6 @@
 			}
 		}
 	},
-	"DKEFSLettFluencySC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Letter Fluency Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "DKEFS Letter Fluency Scaled Score"
-	},
 	"DKEFSLettFluencySCSection": {
 		"jcr:primaryType": "lfs:Section",
 		"DKEFSLettFluencySC": {
@@ -15007,14 +12007,6 @@
 			}
 		}
 	},
-	"DKEFSCatFluRaw": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Category Fluency Raw Score",
-		"dataType": "long",
-		"minValue": 0.0,
-		"maxValue": 70.0,
-		"description": "DKEFS Category Fluency Raw Score"
-	},
 	"DKEFSCatFluRawSection": {
 		"jcr:primaryType": "lfs:Section",
 		"DKEFSCatFluRaw": {
@@ -15043,14 +12035,6 @@
 				"isReference": false
 			}
 		}
-	},
-	"DKEFSCatFluSC": {
-		"jcr:primaryType": "lfs:Question",
-		"text": "DKEFS Category Fluency Scaled Score",
-		"dataType": "long",
-		"minValue": 1.0,
-		"maxValue": 19.0,
-		"description": "DKEFS Category Fluency Scaled Score"
 	},
 	"DKEFSCatFluSCSection": {
 		"jcr:primaryType": "lfs:Section",
