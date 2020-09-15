@@ -19,11 +19,13 @@ package ca.sickkids.ccm.lfs.statistics;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Node;
@@ -51,7 +53,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A servlet for querying Statistics that returns a JSON object containing values for the x and y axes
- * TODO: change to take in request body
  *
  * @version $Id$
  */
@@ -60,6 +61,7 @@ import org.slf4j.LoggerFactory;
     resourceTypes = { "lfs/Statistic", "lfs/StatisticsHomepage" },
     selectors = { "query" },
     methods = { "POST" })
+
 public class StatisticQueryServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = 2558430802619674046L;
@@ -105,26 +107,33 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             }
         }
 
-        // TODO: xVariable, yVariable and splitVariable should contain the pathname, go from pathname to node
-        // currently, UUIDs are being sent
-
         try {
-            // Steps to returning the calculated statistic:
-            // Grab the question that has data for the given x-axis (xVar)
-            Node question = request.getResourceResolver().adaptTo(Session.class).getNodeByIdentifier(xVariable);
-
-            // Grab all answers that have this question filled out
-            Iterator<Resource> answers = getAnswersToQuestion(question, request.getResourceResolver());
-
-            // Filter those answers based on whether or not their form's subject is of the correct SubjectType (yVar)
-            Node correctSubjectType = request.getResourceResolver().adaptTo(Session.class)
-                .getNodeByIdentifier(yVariable);
-            answers = filterAnswersToSubjectType(answers, correctSubjectType);
-
             // Check if split variable exists
             if (splitVariable != null) {
                 this.splitExists.set(Boolean.TRUE);
             }
+            // Steps to returning the calculated statistic:
+            // Grab the question that has data for the given x-axis (xVar)
+            Node question = request.getResourceResolver().adaptTo(Session.class).getNode(xVariable);
+
+            Iterator<Resource> answers = null;
+            List<DataPoint> data = new ArrayList<DataPoint>();
+
+            // Grab all answers that have this question filled out, and the split var (if it exists)
+            if (this.splitExists.get()) {
+                Node split = request.getResourceResolver().adaptTo(Session.class).getNode(splitVariable);
+                answers = getAnswersToQuestion(question, split, request.getResourceResolver());
+                data = getAnswersWithType(data, "x", question, request.getResourceResolver());
+                data = getAnswersWithType(data, "split", split, request.getResourceResolver());
+            }
+            else {
+                answers = getAnswersToQuestion(question, request.getResourceResolver());
+            }
+
+            // Filter those answers based on whether or not their form's subject is of the correct SubjectType (yVar)
+            Node correctSubjectType = request.getResourceResolver().adaptTo(Session.class)
+                .getNode(yVariable);
+            answers = filterAnswersToSubjectType(answers, correctSubjectType);
 
             String xLabel = question.getProperty("text").getString();
             String yLabel = correctSubjectType.getProperty("label").getString();
@@ -138,7 +147,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             builder.add("x-label", xLabel);
             builder.add("y-label", yLabel);
             if (this.splitExists.get()) {
-                Node split = request.getResourceResolver().adaptTo(Session.class).getNodeByIdentifier(splitVariable);
+                Node split = request.getResourceResolver().adaptTo(Session.class).getNode(splitVariable);
                 String splitLabel = split.getProperty("text").getString();
                 builder.add("split-label", splitLabel);
                 addData(answers, builder, split);
@@ -156,8 +165,37 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
     }
 
+    private String varType;
+    private Resource value;
+    private String form;
+
+    public class DataPoint(String varType, Resource value, String form) {
+        varType = varType;
+        value = value;
+        form = form;
+    }
+
+    // TODO: properly create a 3-dimensional list!
+
+    private List<DataPoint> getAnswersWithType(List<DataPoint> data, String type, Node question, ResourceResolver resolver) 
+        throws RepositoryException
+    {
+        final StringBuilder query =
+            // We select all answers that answer our question
+            new StringBuilder("select n from [lfs:Answer] as n where n.'question'='"
+                + question.getIdentifier() + "'");
+        Iterator<Resource> answers = resolver.findResources(query.toString(), Query.JCR_SQL2);
+
+        while (answers.hasNext()) {
+            Resource answer = answers.next();
+            data.add(new DataPoint(type, answer, ""));
+        }
+
+        return data;
+    }
+
     /**
-     * Get all answers that have a given question filled out.
+     * Get all answers that have a given question filled out, if split variable does NOT exist.
      *
      * @param question The question node that the answers is to
      * @param resolver A reference to a ResourceResolver
@@ -169,6 +207,23 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             // We select all answers that answer our question
             new StringBuilder("select n from [lfs:Answer] as n where n.'question'='"
                 + question.getIdentifier() + "'");
+        return resolver.findResources(query.toString(), Query.JCR_SQL2);
+    }
+
+    /**
+     * Get all answers that have a given question filled out, if split variable exists.
+     *
+     * @param question The question node that the answers is to
+     * @param resolver A reference to a ResourceResolver
+     * @return An iterator of Resources that are Nodes of answers to the given question
+     */
+    private Iterator<Resource> getAnswersToQuestion(Node question, Node split, ResourceResolver resolver) throws RepositoryException
+    {
+        final StringBuilder query =
+            // We select all answers that answer our question
+            new StringBuilder("select n from [lfs:Answer] as n where n.'question'='"
+                + question.getIdentifier() + "' OR n.'question'='" 
+                + split.getIdentifier() + "'");
         return resolver.findResources(query.toString(), Query.JCR_SQL2);
     }
 
