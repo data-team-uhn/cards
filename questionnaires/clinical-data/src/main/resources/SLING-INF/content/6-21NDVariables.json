@@ -6,6 +6,8 @@
 		"text": "total tests included in battery",
 		"dataType": "text",
 		"minAnswers": 1,
+		"description": "Which tests were included in the protocol?",
+		"displayMode": "list",
 		"ABAS": {
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "ABAS",
@@ -100,15 +102,15 @@
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "DKEFS",
 			"value": "DKEFS"
-		},
-		"description": "Which tests were included in the protocol?",
-		"displayMode": "list"
+		}
 	},
 	"testtranslation": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "any testing translated",
 		"dataType": "text",
 		"minAnswers": 1,
+		"description": "Which tests were provided/administered in a language other than English?",
+		"displayMode": "list",
 		"None": {
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "None",
@@ -208,9 +210,7 @@
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "DKEFS",
 			"value": "DKEFS"
-		},
-		"description": "Which tests were provided/administered in a language other than English?",
-		"displayMode": "list"
+		}
 	},
 	"howtesttranslatedSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -219,6 +219,8 @@
 			"text": "how were tests translated",
 			"dataType": "text",
 			"minAnswers": 1,
+			"description": "For tests provided/administered in another langauge, how was this done?",
+			"displayMode": "list",
 			"testwastranslatedbyexaminerinterpreter": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "test was translated by examiner or interpreter",
@@ -228,9 +230,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "test was available in alternate language",
 				"value": "test was available in alternate language"
-			},
-			"description": "For tests provided/administered in another langauge, how was this done?",
-			"displayMode": "list"
+			}
 		},
 		"conditionalGroup": {
 			"jcr:primaryType": "lfs:ConditionalGroup",
@@ -639,13 +639,13 @@
 			"text": "language of test translation",
 			"dataType": "text",
 			"minAnswers": 1,
+			"description": "Which language was testing translatd?",
+			"displayMode": "list+input",
 			"Spanish": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "Spanish",
 				"value": "Spanish"
-			},
-			"displayMode": "list",
-			"description": "Which language was testing translatd?"
+			}
 		},
 		"conditionalGroup": {
 			"jcr:primaryType": "lfs:ConditionalGroup",
@@ -1052,6 +1052,8 @@
 		"text": "digital tests included in the battery",
 		"dataType": "text",
 		"minAnswers": 1,
+		"description": "Which digital tests were included in the protocol?",
+		"displayMode": "list",
 		"None": {
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "None",
@@ -1081,9 +1083,7 @@
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "DKEFS",
 			"value": "DKEFS"
-		},
-		"description": "Which digital tests were included in the protocol?",
-		"displayMode": "list"
+		}
 	},
 	"Rating Scales": {
 		"jcr:primaryType": "lfs:Question",
@@ -1128,6 +1128,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "ABAS-3 incomplete reason",
 			"dataType": "text",
+			"description": "If ABAS-3 not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -1147,9 +1149,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If ABAS-3 not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -2022,6 +2022,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "BASC-3 incomplete reason",
 			"dataType": "text",
+			"description": "If BASC3 not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -2041,9 +2043,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If BASC3 not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -2070,6 +2070,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "BASC-3 F-index",
 			"dataType": "text",
+			"description": "Category for intepreting BASC-3F-index",
+			"displayMode": "list",
 			"acceptable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "acceptable",
@@ -2084,9 +2086,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "extrextreme caution",
 				"value": "extrextreme caution"
-			},
-			"description": "Category for intepreting BASC-3F-index",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -2113,6 +2113,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "BASC-3 Response Pattern",
 			"dataType": "text",
+			"description": "Category for interpreting BASC-3 response pattern scale",
+			"displayMode": "list",
 			"acceptable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "acceptable",
@@ -2127,9 +2129,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "extrextreme caution",
 				"value": "extrextreme caution"
-			},
-			"description": "Category for interpreting BASC-3 response pattern scale",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -2156,6 +2156,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "BASC-3 Consistency Scale",
 			"dataType": "text",
+			"description": "Category for interpreting BASC-3 consistency scale",
+			"displayMode": "list",
 			"acceptable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "acceptable",
@@ -2170,9 +2172,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "extrextreme caution",
 				"value": "extrextreme caution"
-			},
-			"description": "Category for interpreting BASC-3 consistency scale",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -3106,6 +3106,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "BRIEF2 incomplete reason",
 			"dataType": "text",
+			"description": "If BRIEF2 not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -3125,9 +3127,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If BRIEF2 not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -3154,6 +3154,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "BRIEF-2 negativity",
 			"dataType": "text",
+			"description": "Category for interpreting BRIEF-2 negativity scale",
+			"displayMode": "list",
 			"acceptable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "acceptable",
@@ -3168,9 +3170,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "highly elevated",
 				"value": "highly elevated"
-			},
-			"description": "Category for interpreting BRIEF-2 negativity scale",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -3197,6 +3197,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "BRIEF-2 inconsistently",
 			"dataType": "text",
+			"description": "Category for interpreting BRIEF-2 inconsistency scale",
+			"displayMode": "list",
 			"accaptable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "accaptable",
@@ -3211,9 +3213,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "inconsistent",
 				"value": "inconsistent"
-			},
-			"description": "Category for interpreting BRIEF-2 inconsistency scale",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -3240,6 +3240,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "BRIEF-2 infrequency",
 			"dataType": "text",
+			"description": "Category for interpreting BRIEF-2 infrequency scale",
+			"displayMode": "list",
 			"acceptable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "acceptable",
@@ -3249,9 +3251,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "questionable",
 				"value": "questionable"
-			},
-			"description": "Category for interpreting BRIEF-2 infrequency scale",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -4037,6 +4037,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "SRS-2 incomplete reason",
 			"dataType": "text",
+			"description": "If SRS-2 not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -4056,9 +4058,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If SRS-2 not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -4606,6 +4606,8 @@
 		"jcr:primaryType": "lfs:Question",
 		"text": "Which IQ Measure Completed",
 		"dataType": "text",
+		"description": "Which IQ Measure was completed",
+		"displayMode": "list",
 		"WASI": {
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "WASI",
@@ -4625,9 +4627,7 @@
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "or WAIS",
 			"value": "or WAIS"
-		},
-		"description": "Which IQ Measure was completed",
-		"displayMode": "list"
+		}
 	},
 	"IQnoreasonSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4635,6 +4635,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "IQ incomplete reason",
 			"dataType": "text",
+			"description": "If IQ not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -4654,9 +4656,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If IQ not completed reason"
+			}
 		},
 		"conditionalGroup": {
 			"jcr:primaryType": "lfs:ConditionalGroup",
@@ -7909,6 +7909,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "motor incomplete reason",
 			"dataType": "text",
+			"description": "If Motor not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -7928,9 +7930,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If Motor not completed reason"
+			}
 		},
 		"conditionalGroup": {
 			"jcr:primaryType": "lfs:ConditionalGroup",
@@ -8028,6 +8028,7 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "WRAVMA hand dominance",
 			"dataType": "text",
+			"description": "WRAVMA hand dominance",
 			"right": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "right",
@@ -8047,8 +8048,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "not yet established",
 				"value": "not yet established"
-			},
-			"description": "WRAVMA hand dominance"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -8196,6 +8196,7 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "Grooved Pegboard hand dominance",
 			"dataType": "text",
+			"description": "Grooved Pegboard hand dominance",
 			"right": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "right",
@@ -8215,8 +8216,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "not yet established",
 				"value": "not yet established"
-			},
-			"description": "Grooved Pegboard hand dominance"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -8304,6 +8304,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "Academic incomplete reason",
 			"dataType": "text",
+			"description": "If Academic not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -8323,9 +8325,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If Academic not completed reason"
+			}
 		},
 		"conditionalGroup": {
 			"jcr:primaryType": "lfs:ConditionalGroup",
@@ -8774,6 +8774,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "WRAML incomplete reason",
 			"dataType": "text",
+			"description": "If WRAML not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -8793,9 +8795,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If WRAML not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -9144,6 +9144,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "CVLT incomplete reason",
 			"dataType": "text",
+			"description": "If CVLT not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -9163,9 +9165,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If CVLT not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -11474,6 +11474,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "DKEFS incomplete reason",
 			"dataType": "text",
+			"description": "If DKEFS not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -11493,9 +11495,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If DKEFS not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",

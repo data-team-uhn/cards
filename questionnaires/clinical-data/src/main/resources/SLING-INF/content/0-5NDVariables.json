@@ -6,6 +6,8 @@
 		"text": "any testing translated",
 		"dataType": "text",
 		"minAnswers": 1,
+		"description": "Which tests were provided/administered in a language other than English?",
+		"displayMode": "list",
 		"None": {
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "None",
@@ -65,9 +67,7 @@
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "WRAVMA",
 			"value": "WRAVMA"
-		},
-		"description": "Which tests were provided/administered in a language other than English?",
-		"displayMode": "list"
+		}
 	},
 	"howtesttranslatedSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -76,6 +76,8 @@
 			"text": "how were tests translated",
 			"dataType": "text",
 			"minAnswers": 1,
+			"description": "For tests provided/administered in another langauge, how was this done?",
+			"displayMode": "list",
 			"testwastranslatedbyexaminerinterpreter": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "test was translated by examiner or interpreter",
@@ -85,9 +87,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "test was available in alternate language",
 				"value": "test was available in alternate language"
-			},
-			"description": "For tests provided/administered in another langauge, how was this done?",
-			"displayMode": "list"
+			}
 		},
 		"conditionalGroup": {
 			"jcr:primaryType": "lfs:ConditionalGroup",
@@ -298,13 +298,13 @@
 			"text": "language of test translation",
 			"dataType": "text",
 			"minAnswers": 1,
+			"description": "Which language was testing translatd?",
+			"displayMode": "list+input",
 			"Spanish": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "Spanish",
 				"value": "Spanish"
-			},
-			"displayMode": "list",
-			"description": "Which language was testing translatd?"
+			}
 		},
 		"conditionalGroup": {
 			"jcr:primaryType": "lfs:ConditionalGroup",
@@ -523,6 +523,8 @@
 			"text": "ABAS-3 incomplete reason",
 			"dataType": "text",
 			"minAnswers": 1,
+			"description": "If ABAS-3 not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -542,9 +544,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If ABAS-3 not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -1447,6 +1447,8 @@
 			"text": "BASC incomplete reason",
 			"dataType": "text",
 			"minAnswers": 1,
+			"description": "If BASC not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -1466,9 +1468,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If BASC not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -2478,6 +2478,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "F-index: BASC-3",
 			"dataType": "text",
+			"description": "Category for intepreting BASC-3 F-index",
+			"displayMode": "list",
 			"acceptable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "acceptable",
@@ -2492,9 +2494,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "extreme caution",
 				"value": "extreme caution"
-			},
-			"description": "Category for intepreting BASC-3 F-index",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -2521,6 +2521,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "Response Pattern: BASC-3",
 			"dataType": "text",
+			"description": "Category for interpreting BASC-3 response pattern scale",
+			"displayMode": "list",
 			"acceptable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "acceptable",
@@ -2535,9 +2537,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "extreme caution",
 				"value": "extreme caution"
-			},
-			"description": "Category for interpreting BASC-3 response pattern scale",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -2564,6 +2564,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "Consistency Scale: BASC-3",
 			"dataType": "text",
+			"description": "Category for interpreting BASC-3 consistency scale",
+			"displayMode": "list",
 			"acceptable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "acceptable",
@@ -2578,9 +2580,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "extreme caution",
 				"value": "extreme caution"
-			},
-			"description": "Category for interpreting BASC-3 consistency scale",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -2616,6 +2616,8 @@
 			"text": "BRIEF-P incomplete reason",
 			"dataType": "text",
 			"minAnswers": 1,
+			"description": "If BRIEF-P not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -2635,9 +2637,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If BRIEF-P not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -3241,6 +3241,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "Inconsistency Scale: BRIEFP",
 			"dataType": "text",
+			"description": "Inconsistency Scale of BRIEF-P",
+			"displayMode": "list",
 			"Acceptable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "Acceptable",
@@ -3255,9 +3257,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "Inconsistent",
 				"value": "Inconsistent"
-			},
-			"description": "Inconsistency Scale of BRIEF-P",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -3284,6 +3284,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "Negativity scale: BRIEP",
 			"dataType": "text",
+			"description": "Negativity scale of BRIEF-P",
+			"displayMode": "list",
 			"Acceptable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "Acceptable",
@@ -3298,9 +3300,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "Highly Elevated",
 				"value": "Highly Elevated"
-			},
-			"description": "Negativity scale of BRIEF-P",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -3336,6 +3336,8 @@
 			"text": "MCHATR incomplete reason",
 			"dataType": "text",
 			"minAnswers": 1,
+			"description": "If MCHAT not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -3355,9 +3357,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If MCHAT not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -3475,6 +3475,8 @@
 			"text": "ITSEA incomplete reason",
 			"dataType": "text",
 			"minAnswers": 1,
+			"description": "If ITSEA not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -3494,9 +3496,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If ITSEA not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -4851,6 +4851,8 @@
 		"jcr:primaryType": "lfs:Question",
 		"text": "SRS-2 incomplete reason",
 		"dataType": "text",
+		"description": "If SRS-2 not completed reason",
+		"displayMode": "list+input",
 		"measurenotavailable": {
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "measure not available",
@@ -4870,9 +4872,7 @@
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "literacy-language-communication issues",
 			"value": "literacy-language-communication issues"
-		},
-		"displayMode": "list",
-		"description": "If SRS-2 not completed reason"
+		}
 	},
 	"SRSotherreasonSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -4935,6 +4935,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "SRS version",
 			"dataType": "text",
+			"description": "Version of SRS",
+			"displayMode": "list",
 			"Ages2-5-4-5": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "Ages: 2.5 -4.5",
@@ -4944,9 +4946,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "Ages 4 to 18",
 				"value": "Ages 4 to 18"
-			},
-			"description": "Version of SRS",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -5446,6 +5446,8 @@
 			"text": "BSID -III incomplete reason",
 			"dataType": "text",
 			"minAnswers": 1,
+			"description": "If BSID-III not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -5465,9 +5467,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If BSID-III not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -5990,6 +5990,7 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "WPPSIincomplete reason",
 			"dataType": "text",
+			"description": "If wppsi not completed reason",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -6010,8 +6011,7 @@
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
 			},
-			"displayMode": "list+input",
-			"description": "If wppsi not completed reason"
+			"displayMode": "list+input"
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -6092,6 +6092,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "WPPSI version",
 			"dataType": "text",
+			"description": "Version of WPPSI",
+			"displayMode": "list",
 			"Ages26-311": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "Ages:2:6 -3:11",
@@ -6101,9 +6103,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "Ages 4:0 -7:7",
 				"value": "Ages 4:0 -7:7"
-			},
-			"description": "Version of WPPSI",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -7672,6 +7672,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "CELFP incomplete reason",
 			"dataType": "text",
+			"description": "If CELF-P not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -7691,9 +7693,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If CELF-P not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -7919,6 +7919,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "Meets Criterion:CELF-P",
 			"dataType": "text",
+			"description": "Meets Criterion:CELF-P",
+			"displayMode": "list",
 			"Meetscriterion": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "Meets criterion",
@@ -7928,9 +7930,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "Deos not Meet Criterion",
 				"value": "Deos not Meet Criterion"
-			},
-			"description": "Meets Criterion:CELF-P",
-			"displayMode": "list"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -7965,6 +7965,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "BSRAincomplete reason",
 			"dataType": "text",
+			"description": "If BSRA not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -7984,9 +7986,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If BSRA not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -8133,6 +8133,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "WRAMA incomplete reason",
 			"dataType": "text",
+			"description": "If WRAMA not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -8152,9 +8154,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If WRAMA not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -8235,6 +8235,7 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "WRAVMA hand dominance",
 			"dataType": "text",
+			"description": "WRAVMA hand dominance",
 			"right": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "right",
@@ -8254,8 +8255,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "not yet established",
 				"value": "not yet established"
-			},
-			"description": "WRAVMA hand dominance"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -8406,6 +8406,8 @@
 			"jcr:primaryType": "lfs:Question",
 			"text": "VMI incomplete reason",
 			"dataType": "text",
+			"description": "If VMI-6 not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -8425,9 +8427,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If VMI-6 not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -8521,6 +8521,8 @@
 			"text": "DASS-21 incomplete reason",
 			"dataType": "text",
 			"minAnswers": 1,
+			"description": "If DASS-21 not completed reason",
+			"displayMode": "list+input",
 			"measurenotavailable": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "measure not available",
@@ -8540,9 +8542,7 @@
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "literacy-language-communication issues",
 				"value": "literacy-language-communication issues"
-			},
-			"displayMode": "list",
-			"description": "If DASS-21 not completed reason"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",
@@ -8625,20 +8625,12 @@
 			"text": "DASS-21 completed by",
 			"dataType": "text",
 			"minAnswers": 1,
-			"biologicalmother": {
-				"jcr:primaryType": "lfs:AnswerOption",
-				"label": "biological mother",
-				"value": "biological mother"
-			},
+			"description": "Person completing DASS",
+			"displayMode": "list+input",
 			"biologicalfather": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "biological father",
 				"value": "biological father"
-			},
-			"grandmother": {
-				"jcr:primaryType": "lfs:AnswerOption",
-				"label": "grandmother",
-				"value": "grandmother"
 			},
 			"grandfather": {
 				"jcr:primaryType": "lfs:AnswerOption",
@@ -8650,18 +8642,11 @@
 				"label": "guardian",
 				"value": "guardian"
 			},
-			"adoptivemother": {
-				"jcr:primaryType": "lfs:AnswerOption",
-				"label": "adoptive mother",
-				"value": "adoptive mother"
-			},
 			"adoptivefather": {
 				"jcr:primaryType": "lfs:AnswerOption",
 				"label": "adoptive father",
 				"value": "adoptive father"
-			},
-			"displayMode": "list",
-			"description": "Person completing DASS"
+			}
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",

@@ -57,6 +57,8 @@
 		"text": "Type of  Cardiologist",
 		"dataType": "text",
 		"minAnswers": 1,
+		"description": "type of cardiologist that saw the patient in outpatient clinic on date of cardiac outpt visit",
+		"displayMode": "list+input",
 		"general-outreach": {
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "general-outreach",
@@ -91,15 +93,15 @@
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "preventative",
 			"value": "preventative"
-		},
-		"displayMode": "list",
-		"description": "type of cardiologist that saw the patient in outpatient clinic on date of cardiac outpt visit"
+		}
 	},
 	"insurance": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "Insurance",
 		"dataType": "text",
 		"minAnswers": 1,
+		"description": "insurance status of patient at time of cardiology outpatient visit",
+		"displayMode": "list+input",
 		"self-pay": {
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "self-pay",
@@ -114,9 +116,7 @@
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "Medicaid",
 			"value": "Medicaid"
-		},
-		"displayMode": "list",
-		"description": "insurance status of patient at time of cardiology outpatient visit"
+		}
 	},
 	"Hrdoc": {
 		"jcr:primaryType": "lfs:Question",
@@ -131,6 +131,8 @@
 		"text": "Referal for ND assessment",
 		"dataType": "text",
 		"minAnswers": 1,
+		"description": "Has a referral or order been\u00a0placed for formal ND evaluation or services\u00a0in last 5 years (includes at least one of the following clinics or specialties: multidisciplinary ND clinic, developmental-behavioral pediatrics, neuropsychology, or psychology; PT/OT/speech therapy alone is NOT sufficient for \u201cyes\u201d)",
+		"displayMode": "list",
 		"yes": {
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "yes",
@@ -145,21 +147,20 @@
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "unknown",
 			"value": "unknown"
-		},
-		"description": "Has a referral or order been\u00a0placed for formal ND evaluation or services\u00a0in last 5 years (includes at least one of the following clinics or specialties: multidisciplinary ND clinic, developmental-behavioral pediatrics, neuropsychology, or psychology; PT/OT/speech therapy alone is NOT sufficient for \u201cyes\u201d)",
-		"displayMode": "list"
+		}
 	},
 	"referalFrom": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "referal placed by which provider",
 		"dataType": "text",
 		"minAnswers": 1,
+		"description": "Where was the ND referral from?",
+		"displayMode": "list+input",
 		"cardiologyoutpatientclinic": {
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "cardiology outpatient clinic",
 			"value": "cardiology outpatient clinic"
 		},
-		"displayMode": "list",
 		"unknown": {
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "unknown",
@@ -169,14 +170,15 @@
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "no referral placed",
 			"value": "no referral placed"
-		},
-		"description": "Where was the ND referral from?"
+		}
 	},
 	"seenND": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "seen in ND clinic",
 		"dataType": "text",
 		"minAnswers": 1,
+		"description": "Has\u00a0the patient been\u00a0seen in a formal ND clinic or by a related ND specialist in the last 5 years (includes at least one of the following clinics or specialties: multidisciplinary neurodevelopmental clinic, developmental-behavioral pediatrics, neuropsychology, or psychology; PT/OT/speech therapy alone is not sufficient for \u201cyes\u201d)?",
+		"displayMode": "list",
 		"yes": {
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "yes",
@@ -191,8 +193,6 @@
 			"jcr:primaryType": "lfs:AnswerOption",
 			"label": "unknown",
 			"value": "unknown"
-		},
-		"description": "Has\u00a0the patient been\u00a0seen in a formal ND clinic or by a related ND specialist in the last 5 years (includes at least one of the following clinics or specialties: multidisciplinary neurodevelopmental clinic, developmental-behavioral pediatrics, neuropsychology, or psychology; PT/OT/speech therapy alone is not sufficient for \u201cyes\u201d)?",
-		"displayMode": "list"
+		}
 	}
 }

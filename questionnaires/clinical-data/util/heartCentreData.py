@@ -134,8 +134,9 @@ def insert_options(question, row):
             option = option.replace('.', '-')
         if (option.lower() == 'yes' or option.lower() == 'no') and len(option_list) == 2:
                 question.update({'dataType': 'boolean'})
-        elif option.lower() == 'other':
+        elif 'other' in option.lower():
             question.update({'displayMode': 'list+input'})
+            print(question)
         else:
             answer_option = {option: {'jcr:primaryType': 'lfs:AnswerOption',
                                       'label': value,
@@ -189,15 +190,15 @@ def tsv_to_json(title):
                     insert_range(questionnaire[question], row)
                 if row['MissingData']:
                     insert_min_answers(questionnaire[question], row)
+                if row['Description'] != '':
+                    insert_description(questionnaire[question], row)
+                if row['UserFormatType'] == 'Text (categorical list)' or row['UserFormatType'] == 'cat list':
+                    questionnaire[question].update({'displayMode': 'list'})
                 if row['Categorical list']:
                     if len(options_list(row['Categorical list'])) == 1:
                         questionnaire[question].update({'dataType': convert_to_LFS_data_type(row['Categorical list'])})
                     else:
                         insert_options(questionnaire[question], row)
-                if row['Description'] != '':
-                    insert_description(questionnaire[question], row)
-                if row['UserFormatType'] == 'Text (categorical list)' or row['UserFormatType'] == 'cat list':
-                    questionnaire[question].update({'displayMode': 'list'})
                 if row['ParentLogic'] != '':
                     previous_data = questionnaire[question]
                     questionnaire.update({question + 'Section': {
