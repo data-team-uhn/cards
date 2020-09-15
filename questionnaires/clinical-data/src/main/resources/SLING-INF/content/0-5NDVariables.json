@@ -6223,7 +6223,7 @@
 		"text": "srsdt",
 		"dataType": "date",
 		"minAnswers": 1,
-		"description": "\u00c2\u00a0Date of SRS-2 assessment"
+		"description": "Date of SRS-2 assessment"
 	},
 	"srsdtSection": {
 		"jcr:primaryType": "lfs:Section",
@@ -6232,7 +6232,7 @@
 			"text": "srsdt",
 			"dataType": "date",
 			"minAnswers": 1,
-			"description": "\u00c2\u00a0Date of SRS-2 assessment"
+			"description": "Date of SRS-2 assessment"
 		},
 		"condition": {
 			"jcr:primaryType": "lfs:Conditional",

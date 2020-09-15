@@ -211,6 +211,6 @@ def tsv_to_json(title):
         json.dump(questionnaire, jsonFile, indent='\t')
 
 
-titles = ['Q1Variables', '0-5NDVariables', '6-21NDVariables']
+titles = ['QIVariables', '0-5NDVariables', '6-21NDVariables']
 for title in titles:
     tsv_to_json(title)

@@ -5845,7 +5845,7 @@
 	"WASI2FSIQRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Full Scale IQ Raw",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 80.0,
 		"maxValue": 320.0,
 		"description": "WASI-2 Full Scale IQ Raw"
@@ -5855,7 +5855,7 @@
 		"WASI2FSIQRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Full Scale IQ Raw",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 80.0,
 			"maxValue": 320.0,
 			"description": "WASI-2 Full Scale IQ Raw"
@@ -5882,7 +5882,7 @@
 	"WASI2FSIQSS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Full Scale IQ Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 40.0,
 		"maxValue": 160.0,
 		"description": "WASI-2 Full Scale IQ Standard Score"
@@ -5892,7 +5892,7 @@
 		"WASI2FSIQSS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Full Scale IQ Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 40.0,
 			"maxValue": 160.0,
 			"description": "WASI-2 Full Scale IQ Standard Score"
@@ -5919,7 +5919,7 @@
 	"WASI2VCIRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Verbal Comprehension Index Raw",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 40.0,
 		"maxValue": 160.0,
 		"description": "WASI-2 Verbal Comprehension Index Raw"
@@ -5929,7 +5929,7 @@
 		"WASI2VCIRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Verbal Comprehension Index Raw",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 40.0,
 			"maxValue": 160.0,
 			"description": "WASI-2 Verbal Comprehension Index Raw"
@@ -5956,7 +5956,7 @@
 	"WASI2VCISS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Verbal Comprehension Index Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 45.0,
 		"maxValue": 160.0,
 		"description": "WASI-2 Verbal Comprehension Index Standard Score"
@@ -5966,7 +5966,7 @@
 		"WASI2VCISS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Verbal Comprehension Index Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 45.0,
 			"maxValue": 160.0,
 			"description": "WASI-2 Verbal Comprehension Index Standard Score"
@@ -5993,7 +5993,7 @@
 	"WASI2PRIRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Perceptual Reasoning Index Raw",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 40.0,
 		"maxValue": 160.0,
 		"description": "WASI-2 Perceptual Reasoning Index Raw"
@@ -6003,7 +6003,7 @@
 		"WASI2PRIRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Perceptual Reasoning Index Raw",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 40.0,
 			"maxValue": 160.0,
 			"description": "WASI-2 Perceptual Reasoning Index Raw"
@@ -6030,7 +6030,7 @@
 	"WASI2PRISS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Perceptual Reasoning Index Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 45.0,
 		"maxValue": 160.0,
 		"description": "WASI-2 Perceptual Reasoning Index Standard Score"
@@ -6040,7 +6040,7 @@
 		"WASI2PRISS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Perceptual Reasoning Index Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 45.0,
 			"maxValue": 160.0,
 			"description": "WASI-2 Perceptual Reasoning Index Standard Score"
@@ -6067,7 +6067,7 @@
 	"WASI2BlockRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Block Design Subtest Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 71.0,
 		"description": "WASI-2 Block Design Subtest Raw Score"
@@ -6077,7 +6077,7 @@
 		"WASI2BlockRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Block Design Subtest Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 71.0,
 			"description": "WASI-2 Block Design Subtest Raw Score"
@@ -6104,7 +6104,7 @@
 	"WAS2IBlockTS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Block Design Subtest T Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 20.0,
 		"maxValue": 80.0,
 		"description": "WASI-2 Block Design Subtest T Score"
@@ -6114,7 +6114,7 @@
 		"WAS2IBlockTS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Block Design Subtest T Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 20.0,
 			"maxValue": 80.0,
 			"description": "WASI-2 Block Design Subtest T Score"
@@ -6141,7 +6141,7 @@
 	"WASI2vocabRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Vocabulary Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 59.0,
 		"description": "WASI-2 Vocabulary Raw Score"
@@ -6151,7 +6151,7 @@
 		"WASI2vocabRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Vocabulary Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 59.0,
 			"description": "WASI-2 Vocabulary Raw Score"
@@ -6178,7 +6178,7 @@
 	"WASI2vocabTS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Vocabulary T Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 20.0,
 		"maxValue": 80.0,
 		"description": "WASI-2 Vocabulary T Score"
@@ -6188,7 +6188,7 @@
 		"WASI2vocabTS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Vocabulary T Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 20.0,
 			"maxValue": 80.0,
 			"description": "WASI-2 Vocabulary T Score"
@@ -6215,7 +6215,7 @@
 	"WASI2MatrixRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Matrix Reasoning Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 30.0,
 		"description": "WASI-2 Matrix Reasoning Raw Score"
@@ -6225,7 +6225,7 @@
 		"WASI2MatrixRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Matrix Reasoning Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 30.0,
 			"description": "WASI-2 Matrix Reasoning Raw Score"
@@ -6252,7 +6252,7 @@
 	"WASI2MatrixTS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Matrix Reasoning T Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 20.0,
 		"maxValue": 80.0,
 		"description": "WASI-2 Matrix Reasoning T Score"
@@ -6262,7 +6262,7 @@
 		"WASI2MatrixTS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Matrix Reasoning T Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 20.0,
 			"maxValue": 80.0,
 			"description": "WASI-2 Matrix Reasoning T Score"
@@ -6289,7 +6289,7 @@
 	"WASI2SimRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Similarities Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 45.0,
 		"description": "WASI-2 Similarities Raw Score"
@@ -6299,7 +6299,7 @@
 		"WASI2SimRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Similarities Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 45.0,
 			"description": "WASI-2 Similarities Raw Score"
@@ -6326,7 +6326,7 @@
 	"WASI2SimTS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WASI-2 Similiarities T Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 20.0,
 		"maxValue": 80.0,
 		"description": "WASI-2 Similiarities T Score"
@@ -6336,7 +6336,7 @@
 		"WASI2SimTS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WASI-2 Similiarities T Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 20.0,
 			"maxValue": 80.0,
 			"description": "WASI-2 Similiarities T Score"
@@ -6368,7 +6368,7 @@
 	"WAIS4FSIQRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Full Scale IQ Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 10.0,
 		"maxValue": 190.0,
 		"description": "WAIS-4 Full Scale IQ Raw Score"
@@ -6378,7 +6378,7 @@
 		"WAIS4FSIQRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Full Scale IQ Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 10.0,
 			"maxValue": 190.0,
 			"description": "WAIS-4 Full Scale IQ Raw Score"
@@ -6405,7 +6405,7 @@
 	"WAIS4FSIQSS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Full Scale IQ Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 40.0,
 		"maxValue": 160.0,
 		"description": "WAIS-4 Full Scale IQ Standard Score"
@@ -6415,7 +6415,7 @@
 		"WAIS4FSIQSS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Full Scale IQ Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 40.0,
 			"maxValue": 160.0,
 			"description": "WAIS-4 Full Scale IQ Standard Score"
@@ -6442,7 +6442,7 @@
 	"WAIS4VCIRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Verbal Comprehnesion Index Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 3.0,
 		"maxValue": 57.0,
 		"description": "WAIS-4 Verbal Comprehnesion Index Raw Score"
@@ -6452,7 +6452,7 @@
 		"WAIS4VCIRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Verbal Comprehnesion Index Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 3.0,
 			"maxValue": 57.0,
 			"description": "WAIS-4 Verbal Comprehnesion Index Raw Score"
@@ -6479,7 +6479,7 @@
 	"WAIS4VCISS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Verbal Comprehnesion Index Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 50.0,
 		"maxValue": 150.0,
 		"description": "WAIS-4 Verbal Comprehnesion Index Standard Score"
@@ -6489,7 +6489,7 @@
 		"WAIS4VCISS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Verbal Comprehnesion Index Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 50.0,
 			"maxValue": 150.0,
 			"description": "WAIS-4 Verbal Comprehnesion Index Standard Score"
@@ -6516,7 +6516,7 @@
 	"WAIS4PRIRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Perceptual Reasoning Index Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 3.0,
 		"maxValue": 57.0,
 		"description": "WAIS-4 Perceptual Reasoning Index Raw Score"
@@ -6526,7 +6526,7 @@
 		"WAIS4PRIRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Perceptual Reasoning Index Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 3.0,
 			"maxValue": 57.0,
 			"description": "WAIS-4 Perceptual Reasoning Index Raw Score"
@@ -6553,7 +6553,7 @@
 	"WAIS4PRISS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Perceptual Reasoning Index Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 50.0,
 		"maxValue": 150.0,
 		"description": "WAIS-4 Perceptual Reasoning Index Standard Score"
@@ -6563,7 +6563,7 @@
 		"WAIS4PRISS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Perceptual Reasoning Index Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 50.0,
 			"maxValue": 150.0,
 			"description": "WAIS-4 Perceptual Reasoning Index Standard Score"
@@ -6590,7 +6590,7 @@
 	"WAIS4WMIRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Working Memory Index Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 3.0,
 		"maxValue": 57.0,
 		"description": "WAIS-4 Working Memory Index Raw Score"
@@ -6600,7 +6600,7 @@
 		"WAIS4WMIRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Working Memory Index Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 3.0,
 			"maxValue": 57.0,
 			"description": "WAIS-4 Working Memory Index Raw Score"
@@ -6627,7 +6627,7 @@
 	"WAIS4WMISS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Working Memory Index Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 50.0,
 		"maxValue": 150.0,
 		"description": "WAIS-4 Working Memory Index Standard Score"
@@ -6637,7 +6637,7 @@
 		"WAIS4WMISS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Working Memory Index Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 50.0,
 			"maxValue": 150.0,
 			"description": "WAIS-4 Working Memory Index Standard Score"
@@ -6664,7 +6664,7 @@
 	"WAIS4PSIRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Processing Speed Index Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 3.0,
 		"maxValue": 57.0,
 		"description": "WAIS-4 Processing Speed Index Raw Score"
@@ -6674,7 +6674,7 @@
 		"WAIS4PSIRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Processing Speed Index Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 3.0,
 			"maxValue": 57.0,
 			"description": "WAIS-4 Processing Speed Index Raw Score"
@@ -6701,7 +6701,7 @@
 	"WAIS4PSISS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Processing Speed Index Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 50.0,
 		"maxValue": 150.0,
 		"description": "WAIS-4 Processing Speed Index Standard Score"
@@ -6711,7 +6711,7 @@
 		"WAIS4PSISS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Processing Speed Index Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 50.0,
 			"maxValue": 150.0,
 			"description": "WAIS-4 Processing Speed Index Standard Score"
@@ -6738,7 +6738,7 @@
 	"WAIS4BlockRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Block Design Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 66.0,
 		"description": "WAIS-4 Block Design Raw Score"
@@ -6748,7 +6748,7 @@
 		"WAIS4BlockRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Block Design Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 66.0,
 			"description": "WAIS-4 Block Design Raw Score"
@@ -6775,7 +6775,7 @@
 	"WAIS4BlockSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Block Design Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WAIS-4 Block Design Scaled Score"
@@ -6785,7 +6785,7 @@
 		"WAIS4BlockSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Block Design Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WAIS-4 Block Design Scaled Score"
@@ -6812,7 +6812,7 @@
 	"WAIS4SimRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Similarities Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 36.0,
 		"description": "WAIS-4 Similarities Raw Score"
@@ -6822,7 +6822,7 @@
 		"WAIS4SimRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Similarities Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 36.0,
 			"description": "WAIS-4 Similarities Raw Score"
@@ -6849,7 +6849,7 @@
 	"WAIS4SimSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Similiarities Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WAIS-4 Similiarities Scaled Score"
@@ -6859,7 +6859,7 @@
 		"WAIS4SimSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Similiarities Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WAIS-4 Similiarities Scaled Score"
@@ -6886,7 +6886,7 @@
 	"WAIS4DigitRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Digit Span Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 48.0,
 		"description": "WAIS-4 Digit Span Raw Score"
@@ -6896,7 +6896,7 @@
 		"WAIS4DigitRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Digit Span Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 48.0,
 			"description": "WAIS-4 Digit Span Raw Score"
@@ -6923,7 +6923,7 @@
 	"WAIS4DigitSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Digit Span Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WAIS-4 Digit Span Scaled Score"
@@ -6933,7 +6933,7 @@
 		"WAIS4DigitSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Digit Span Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WAIS-4 Digit Span Scaled Score"
@@ -6960,7 +6960,7 @@
 	"WAIS4MatrixRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Matrix Reasoning Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 26.0,
 		"description": "WAIS-4 Matrix Reasoning Raw Score"
@@ -6970,7 +6970,7 @@
 		"WAIS4MatrixRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Matrix Reasoning Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 26.0,
 			"description": "WAIS-4 Matrix Reasoning Raw Score"
@@ -6997,7 +6997,7 @@
 	"WAIS4MatrixSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Matrix Reasoning Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WAIS-4 Matrix Reasoning Scaled Score"
@@ -7007,7 +7007,7 @@
 		"WAIS4MatrixSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Matrix Reasoning Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WAIS-4 Matrix Reasoning Scaled Score"
@@ -7034,7 +7034,7 @@
 	"WAIS4VocabRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Vocabulary Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 57.0,
 		"description": "WAIS-4 Vocabulary Raw Score"
@@ -7044,7 +7044,7 @@
 		"WAIS4VocabRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Vocabulary Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 57.0,
 			"description": "WAIS-4 Vocabulary Raw Score"
@@ -7071,7 +7071,7 @@
 	"WAIS4VocabSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WAIS-4 Vocabulary Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WAIS-4 Vocabulary Scaled Score"
@@ -7081,7 +7081,7 @@
 		"WAIS4VocabSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WAIS-4 Vocabulary Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WAIS-4 Vocabulary Scaled Score"
@@ -7483,7 +7483,7 @@
 	"WISC5FSIQRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Full Scale IQ Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 7.0,
 		"maxValue": 133.0,
 		"description": "WISC-5 Full Scale IQ Raw Score"
@@ -7493,7 +7493,7 @@
 		"WISC5FSIQRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Full Scale IQ Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 7.0,
 			"maxValue": 133.0,
 			"description": "WISC-5 Full Scale IQ Raw Score"
@@ -7520,7 +7520,7 @@
 	"WISC5FSIQSS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Full Scale IQ Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 40.0,
 		"maxValue": 160.0,
 		"description": "WISC-5 Full Scale IQ Standard Score"
@@ -7530,7 +7530,7 @@
 		"WISC5FSIQSS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Full Scale IQ Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 40.0,
 			"maxValue": 160.0,
 			"description": "WISC-5 Full Scale IQ Standard Score"
@@ -7557,7 +7557,7 @@
 	"WISC5VCIRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Verbal Comprehnesion Index Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 2.0,
 		"maxValue": 38.0,
 		"description": "WISC-5 Verbal Comprehnesion Index Raw Score"
@@ -7567,7 +7567,7 @@
 		"WISC5VCIRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Verbal Comprehnesion Index Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 2.0,
 			"maxValue": 38.0,
 			"description": "WISC-5 Verbal Comprehnesion Index Raw Score"
@@ -7594,7 +7594,7 @@
 	"WISC5VCISS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Verbal Comprehnesion Index Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 45.0,
 		"maxValue": 155.0,
 		"description": "WISC-5 Verbal Comprehnesion Index Standard Score"
@@ -7604,7 +7604,7 @@
 		"WISC5VCISS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Verbal Comprehnesion Index Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 45.0,
 			"maxValue": 155.0,
 			"description": "WISC-5 Verbal Comprehnesion Index Standard Score"
@@ -7631,7 +7631,7 @@
 	"WISC5VSIRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Visual-Spatial Index Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 2.0,
 		"maxValue": 38.0,
 		"description": "WISC-5 Visual-Spatial Index Raw Score"
@@ -7641,7 +7641,7 @@
 		"WISC5VSIRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Visual-Spatial Index Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 2.0,
 			"maxValue": 38.0,
 			"description": "WISC-5 Visual-Spatial Index Raw Score"
@@ -7668,7 +7668,7 @@
 	"WISC5VSISS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Visual-Spatial Index Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 45.0,
 		"maxValue": 155.0,
 		"description": "WISC-5 Visual-Spatial Index Standard Score"
@@ -7678,7 +7678,7 @@
 		"WISC5VSISS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Visual-Spatial Index Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 45.0,
 			"maxValue": 155.0,
 			"description": "WISC-5 Visual-Spatial Index Standard Score"
@@ -7705,7 +7705,7 @@
 	"WISC5FRIRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Fluid Reasoning Index Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 2.0,
 		"maxValue": 38.0,
 		"description": "WISC-5 Fluid Reasoning Index Raw Score"
@@ -7715,7 +7715,7 @@
 		"WISC5FRIRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Fluid Reasoning Index Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 2.0,
 			"maxValue": 38.0,
 			"description": "WISC-5 Fluid Reasoning Index Raw Score"
@@ -7742,7 +7742,7 @@
 	"WISC5FRISS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Fluid Reasoning Index Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 45.0,
 		"maxValue": 155.0,
 		"description": "WISC-5 Fluid Reasoning Index Standard Score"
@@ -7752,7 +7752,7 @@
 		"WISC5FRISS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Fluid Reasoning Index Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 45.0,
 			"maxValue": 155.0,
 			"description": "WISC-5 Fluid Reasoning Index Standard Score"
@@ -7779,7 +7779,7 @@
 	"WISC5WMIRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Working Memory Index Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 2.0,
 		"maxValue": 38.0,
 		"description": "WISC-5 Working Memory Index Raw Score"
@@ -7789,7 +7789,7 @@
 		"WISC5WMIRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Working Memory Index Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 2.0,
 			"maxValue": 38.0,
 			"description": "WISC-5 Working Memory Index Raw Score"
@@ -7816,7 +7816,7 @@
 	"WISC5WMISS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Working Memory Index Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 45.0,
 		"maxValue": 155.0,
 		"description": "WISC-5 Working Memory Index Standard Score"
@@ -7826,7 +7826,7 @@
 		"WISC5WMISS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Working Memory Index Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 45.0,
 			"maxValue": 155.0,
 			"description": "WISC-5 Working Memory Index Standard Score"
@@ -7853,7 +7853,7 @@
 	"WISC5PSIRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Processing Speed Index Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 2.0,
 		"maxValue": 38.0,
 		"description": "WISC-5 Processing Speed Index Raw Score"
@@ -7863,7 +7863,7 @@
 		"WISC5PSIRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Processing Speed Index Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 2.0,
 			"maxValue": 38.0,
 			"description": "WISC-5 Processing Speed Index Raw Score"
@@ -7890,7 +7890,7 @@
 	"WISC5PSISS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Processing Speed Index Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 45.0,
 		"maxValue": 155.0,
 		"description": "WISC-5 Processing Speed Index Standard Score"
@@ -7900,7 +7900,7 @@
 		"WISC5PSISS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Processing Speed Index Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 45.0,
 			"maxValue": 155.0,
 			"description": "WISC-5 Processing Speed Index Standard Score"
@@ -7927,7 +7927,7 @@
 	"WISC5BlockRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Block Design Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 58.0,
 		"description": "WISC-5 Block Design Raw Score"
@@ -7937,7 +7937,7 @@
 		"WISC5BlockRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Block Design Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 58.0,
 			"description": "WISC-5 Block Design Raw Score"
@@ -7964,7 +7964,7 @@
 	"WISC5BlockSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Block Design Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WISC-5 Block Design Scaled Score"
@@ -7974,7 +7974,7 @@
 		"WISC5BlockSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Block Design Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WISC-5 Block Design Scaled Score"
@@ -8001,7 +8001,7 @@
 	"WISC5SimRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Similarities Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 46.0,
 		"description": "WISC-5 Similarities Raw Score"
@@ -8011,7 +8011,7 @@
 		"WISC5SimRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Similarities Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 46.0,
 			"description": "WISC-5 Similarities Raw Score"
@@ -8038,7 +8038,7 @@
 	"WISC5SimSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Similiarities Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WISC-5 Similiarities Scaled Score"
@@ -8048,7 +8048,7 @@
 		"WISC5SimSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Similiarities Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WISC-5 Similiarities Scaled Score"
@@ -8075,7 +8075,7 @@
 	"WISC5MatrixRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Matrix Reasoning Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 32.0,
 		"description": "WISC-5 Matrix Reasoning Raw Score"
@@ -8085,7 +8085,7 @@
 		"WISC5MatrixRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Matrix Reasoning Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 32.0,
 			"description": "WISC-5 Matrix Reasoning Raw Score"
@@ -8112,7 +8112,7 @@
 	"WISC5MatrixSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Matrix Reasoning Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WISC-5 Matrix Reasoning Scaled Score"
@@ -8122,7 +8122,7 @@
 		"WISC5MatrixSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Matrix Reasoning Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WISC-5 Matrix Reasoning Scaled Score"
@@ -8149,7 +8149,7 @@
 	"WISC5DigitRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Digit Span Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 54.0,
 		"description": "WISC-5 Digit Span Raw Score"
@@ -8159,7 +8159,7 @@
 		"WISC5DigitRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Digit Span Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 54.0,
 			"description": "WISC-5 Digit Span Raw Score"
@@ -8186,7 +8186,7 @@
 	"WISC5DigitSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Digit Span Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WISC-5 Digit Span Scaled Score"
@@ -8196,7 +8196,7 @@
 		"WISC5DigitSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Digit Span Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WISC-5 Digit Span Scaled Score"
@@ -8223,7 +8223,7 @@
 	"WISC5CodingRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Coding Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 117.0,
 		"description": "WISC-5 Coding Raw Score"
@@ -8233,7 +8233,7 @@
 		"WISC5CodingRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Coding Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 117.0,
 			"description": "WISC-5 Coding Raw Score"
@@ -8260,7 +8260,7 @@
 	"WISC5CodingSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Coding Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WISC-5 Coding Scaled Score"
@@ -8270,7 +8270,7 @@
 		"WISC5CodingSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Coding Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WISC-5 Coding Scaled Score"
@@ -8297,7 +8297,7 @@
 	"WISC5VocabRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Vocabulary Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 54.0,
 		"description": "WISC-5 Vocabulary Raw Score"
@@ -8307,7 +8307,7 @@
 		"WISC5VocabRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Vocabulary Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 54.0,
 			"description": "WISC-5 Vocabulary Raw Score"
@@ -8334,7 +8334,7 @@
 	"WISC5VocabSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Vocabulary Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WISC-5 Vocabulary Scaled Score"
@@ -8344,7 +8344,7 @@
 		"WISC5VocabSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Vocabulary Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WISC-5 Vocabulary Scaled Score"
@@ -8371,7 +8371,7 @@
 	"WISC5FWRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Figure Weights Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 34.0,
 		"description": "WISC-5 Figure Weights Raw Score"
@@ -8381,7 +8381,7 @@
 		"WISC5FWRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Figure Weights Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 34.0,
 			"description": "WISC-5 Figure Weights Raw Score"
@@ -8408,7 +8408,7 @@
 	"WISC5FWSc": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Figure Weights Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WISC-5 Figure Weights Scaled Score"
@@ -8418,7 +8418,7 @@
 		"WISC5FWSc": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Figure Weights Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WISC-5 Figure Weights Scaled Score"
@@ -8445,7 +8445,7 @@
 	"WISC5VPRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Visual Puzzles Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 29.0,
 		"description": "WISC-5 Visual Puzzles Raw Score"
@@ -8455,7 +8455,7 @@
 		"WISC5VPRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Visual Puzzles Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 29.0,
 			"description": "WISC-5 Visual Puzzles Raw Score"
@@ -8482,7 +8482,7 @@
 	"WISC5VPSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Visual Puzzles Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WISC-5 Visual Puzzles Scaled Score"
@@ -8492,7 +8492,7 @@
 		"WISC5VPSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Visual Puzzles Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WISC-5 Visual Puzzles Scaled Score"
@@ -8519,7 +8519,7 @@
 	"WISC5PSRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Picture Span Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 49.0,
 		"description": "WISC-5 Picture Span Raw Score"
@@ -8529,7 +8529,7 @@
 		"WISC5PSRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Picture Span Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 49.0,
 			"description": "WISC-5 Picture Span Raw Score"
@@ -8556,7 +8556,7 @@
 	"WISC5PSSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Picture Span Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WISC-5 Picture Span Scaled Score"
@@ -8566,7 +8566,7 @@
 		"WISC5PSSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Picture Span Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WISC-5 Picture Span Scaled Score"
@@ -8593,7 +8593,7 @@
 	"WISC5SSRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Symbol Search Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 60.0,
 		"description": "WISC-5 Symbol Search Raw Score"
@@ -8603,7 +8603,7 @@
 		"WISC5SSRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Symbol Search Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 60.0,
 			"description": "WISC-5 Symbol Search Raw Score"
@@ -8630,7 +8630,7 @@
 	"WISC5SSSC": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WISC-5 Symbol Search Scaled Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 19.0,
 		"description": "WISC-5 Symbol Search Scaled Score"
@@ -8640,7 +8640,7 @@
 		"WISC5SSSC": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WISC-5 Symbol Search Scaled Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 19.0,
 			"description": "WISC-5 Symbol Search Scaled Score"
@@ -10322,7 +10322,7 @@
 	"GPegDominantRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "Grooved Pegboard Dominant Hand Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 300.0
 	},
@@ -10331,7 +10331,7 @@
 		"GPegDominantRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "Grooved Pegboard Dominant Hand Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 300.0
 		},
@@ -10357,7 +10357,7 @@
 	"GPegNonDomRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "Grooved Pegboard Non Dominant Hand Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 1.0,
 		"maxValue": 300.0
 	},
@@ -10366,7 +10366,7 @@
 		"GPegNonDomRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "Grooved Pegboard Non Dominant Hand Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 1.0,
 			"maxValue": 300.0
 		},
@@ -10669,7 +10669,7 @@
 	"WJ4LWIDRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WJ-4 Letter Word Identifciation Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 78.0,
 		"description": "WJ-4 Letter Word Identifciation Raw Score"
@@ -10679,7 +10679,7 @@
 		"WJ4LWIDRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WJ-4 Letter Word Identifciation Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 78.0,
 			"description": "WJ-4 Letter Word Identifciation Raw Score"
@@ -10706,7 +10706,7 @@
 	"WJ4LWIDSS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WJ-4 Letter Word Identifciation Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 40.0,
 		"maxValue": 160.0,
 		"description": "WJ-4 Letter Word Identifciation Standard Score"
@@ -10716,7 +10716,7 @@
 		"WJ4LWIDSS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WJ-4 Letter Word Identifciation Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 40.0,
 			"maxValue": 160.0,
 			"description": "WJ-4 Letter Word Identifciation Standard Score"
@@ -10743,7 +10743,7 @@
 	"WJ4CalcRaw": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WJ-4 Calculation Raw Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 0.0,
 		"maxValue": 57.0,
 		"description": "WJ-4 Calculation Raw Score"
@@ -10753,7 +10753,7 @@
 		"WJ4CalcRaw": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WJ-4 Calculation Raw Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 0.0,
 			"maxValue": 57.0,
 			"description": "WJ-4 Calculation Raw Score"
@@ -10780,7 +10780,7 @@
 	"WJ4CalcSS": {
 		"jcr:primaryType": "lfs:Question",
 		"text": "WJ-4 Calculation Standard Score",
-		"dataType": "text",
+		"dataType": "long",
 		"minValue": 40.0,
 		"maxValue": 160.0,
 		"description": "WJ-4 Calculation Standard Score"
@@ -10790,7 +10790,7 @@
 		"WJ4CalcSS": {
 			"jcr:primaryType": "lfs:Question",
 			"text": "WJ-4 Calculation Standard Score",
-			"dataType": "text",
+			"dataType": "long",
 			"minValue": 40.0,
 			"maxValue": 160.0,
 			"description": "WJ-4 Calculation Standard Score"
