@@ -16,6 +16,9 @@
  */
 package ca.sickkids.ccm.lfs.formcompletionstatus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
@@ -40,21 +43,22 @@ import org.osgi.service.component.annotations.ServiceScope;
     scope = ServiceScope.SINGLETON, immediate = true)
 public class AnswerCompletionStatusEditorProvider implements EditorProvider
 {
-
-    @Reference(fieldOption = FieldOption.REPLACE,
-        cardinality = ReferenceCardinality.OPTIONAL,
+    @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
     private ResourceResolverFactory rrf;
 
     @Override
-    public Editor getRootEditor(NodeState before, NodeState after, NodeBuilder builder, CommitInfo info)
+    public Editor getRootEditor(final NodeState before, final NodeState after, final NodeBuilder builder,
+        final CommitInfo info)
         throws CommitFailedException
     {
         if (this.rrf != null) {
-            ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
+            final ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
             if (myResolver != null) {
                 // Each AnswerCompletionStatusEditor maintains a state, so a new instance must be returned each time
-                return new AnswerCompletionStatusEditor(builder, myResolver);
+                final List<NodeBuilder> tmpList = new ArrayList<>();
+                tmpList.add(builder);
+                return new AnswerCompletionStatusEditor(tmpList, myResolver);
             }
         }
         return null;

@@ -18,6 +18,7 @@ package ca.sickkids.ccm.lfs.formcompletionstatus;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -31,16 +32,28 @@ import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * An {@link Editor} that verifies the correctness and completeness of
- * submitted questionnaire answers and sets the INVALID and INCOMPLETE
- * status flags accordingly.
+ * An {@link Editor} that verifies the correctness and completeness of submitted questionnaire answers and sets the
+ * INVALID and INCOMPLETE status flags accordingly.
  *
  * @version $Id$
  */
 public class AnswerCompletionStatusEditor extends DefaultEditor
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnswerCompletionStatusEditor.class);
+
+    private static final String PROP_VALUE = "value";
+
+    private static final String PROP_QUESTION = "question";
+
+    private static final String STATUS_FLAGS = "statusFlags";
+
+    private static final String STATUS_FLAG_INCOMPLETE = "INCOMPLETE";
+
+    private static final String STATUS_FLAG_INVALID = "INVALID";
 
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
     // actual parent node of those properties, so we must manually keep track of the current node.
@@ -50,37 +63,47 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     // is later used for obtaining the constraints on the answers submitted to a question.
     private final ResourceResolver currentResourceResolver;
 
+    // This holds a list of NodeBuilders with the first item corresponding to the root of the JCR tree
+    // and the last item corresponding to the current node. By keeping this list, one is capable of
+    // moving up the tree and setting status flags of ancestor nodes based on the status flags of a
+    // descendant node.
+    private final List<NodeBuilder> currentNodeBuilderPath;
+
     /**
      * Simple constructor.
      *
-     * @param nodeBuilder the builder for the current node
+     * @param nodeBuilder a list of NodeBuilder objects starting from the root of the JCR tree and moving down towards
+     *            the current node.
      * @param resourceResolver a ResourceResolver object used to obtain answer constraints
      */
-    public AnswerCompletionStatusEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver)
+    public AnswerCompletionStatusEditor(final List<NodeBuilder> nodeBuilder, final ResourceResolver resourceResolver)
     {
-        this.currentNodeBuilder = nodeBuilder;
+        this.currentNodeBuilderPath = nodeBuilder;
+        this.currentNodeBuilder = nodeBuilder.get(nodeBuilder.size() - 1);
         this.currentResourceResolver = resourceResolver;
     }
 
     // Called when a new property is added
     @Override
-    public void propertyAdded(PropertyState after) throws CommitFailedException
+    public void propertyAdded(final PropertyState after)
+        throws CommitFailedException
     {
         propertyChanged(null, after);
     }
 
     // Called when the value of an existing property gets changed
     @Override
-    public void propertyChanged(PropertyState before, PropertyState after) throws CommitFailedException
+    public void propertyChanged(final PropertyState before, final PropertyState after)
+        throws CommitFailedException
     {
-        Node questionNode = getQuestionNode(this.currentNodeBuilder);
-        if (questionNode != null && "value".equals(after.getName())) {
-            Iterable<String> nodeAnswers = after.getValue(Type.STRINGS);
-            int numAnswers = iterableLength(nodeAnswers);
-            ArrayList<String> statusFlags = new ArrayList<String>();
+        final Node questionNode = getQuestionNode(this.currentNodeBuilder);
+        if (questionNode != null && PROP_VALUE.equals(after.getName())) {
+            final Iterable<String> nodeAnswers = after.getValue(Type.STRINGS);
+            final int numAnswers = iterableLength(nodeAnswers);
+            final List<String> statusFlags = new ArrayList<>();
             if (checkInvalidAnswer(questionNode, numAnswers)) {
-                statusFlags.add("INVALID");
-                statusFlags.add("INCOMPLETE");
+                statusFlags.add(STATUS_FLAG_INVALID);
+                statusFlags.add(STATUS_FLAG_INCOMPLETE);
             } else {
                 /*
                  * We are here because:
@@ -101,24 +124,25 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                  * Remove INVALID and INCOMPLETE flags if all validation rules pass
                  */
             }
-            this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
+            this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
         }
     }
 
     // Called when a property is deleted
     @Override
-    public void propertyDeleted(PropertyState before) throws CommitFailedException
+    public void propertyDeleted(final PropertyState before)
+        throws CommitFailedException
     {
-        Node questionNode = getQuestionNode(this.currentNodeBuilder);
+        final Node questionNode = getQuestionNode(this.currentNodeBuilder);
         if (questionNode != null) {
-            if ("value".equals(before.getName())) {
-                ArrayList<String> statusFlags = new ArrayList<String>();
-                //Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
+            if (PROP_VALUE.equals(before.getName())) {
+                final List<String> statusFlags = new ArrayList<>();
+                // Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
                 if (checkInvalidAnswer(questionNode, 0)) {
-                    statusFlags.add("INVALID");
-                    statusFlags.add("INCOMPLETE");
+                    statusFlags.add(STATUS_FLAG_INVALID);
+                    statusFlags.add(STATUS_FLAG_INCOMPLETE);
                 }
-                this.currentNodeBuilder.setProperty("statusFlags", statusFlags, Type.STRINGS);
+                this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
             }
         }
     }
@@ -128,46 +152,64 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     // DefaultEditor is to stop at the root, so we must override the following two methods in order for the editor to be
     // invoked on non-root nodes.
     @Override
-    public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
+    public Editor childNodeAdded(final String name, final NodeState after)
+        throws CommitFailedException
     {
-        Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
+        final Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
         if (questionNode != null) {
-            if (this.currentNodeBuilder.getChildNode(name).hasProperty("question")) {
-                ArrayList<String> statusFlags = new ArrayList<String>();
-                //Only add the INCOMPLETE flag if the given question requires more than zero answers
-                if (checkInvalidAnswer(questionNode, 0)) {
-                    statusFlags.add("INCOMPLETE");
-                }
-                this.currentNodeBuilder.getChildNode(name).setProperty("statusFlags", statusFlags, Type.STRINGS);
+            final List<String> statusFlags = new ArrayList<>();
+            // Only add the INCOMPLETE flag if the given question requires more than zero answers
+            if (checkInvalidAnswer(questionNode, 0)) {
+                statusFlags.add(STATUS_FLAG_INCOMPLETE);
             }
+            this.currentNodeBuilder.getChildNode(name).setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
         }
-        return new AnswerCompletionStatusEditor(this.currentNodeBuilder.getChildNode(name),
-            this.currentResourceResolver);
+        final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
+        tmpList.add(this.currentNodeBuilder.getChildNode(name));
+        return new AnswerCompletionStatusEditor(tmpList, this.currentResourceResolver);
     }
 
     @Override
-    public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
+    public Editor childNodeChanged(final String name, final NodeState before, final NodeState after)
+        throws CommitFailedException
     {
-        return new AnswerCompletionStatusEditor(this.currentNodeBuilder.getChildNode(name),
-            this.currentResourceResolver);
+        final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
+        tmpList.add(this.currentNodeBuilder.getChildNode(name));
+        return new AnswerCompletionStatusEditor(tmpList, this.currentResourceResolver);
+    }
+
+    @Override
+    public void leave(NodeState before, NodeState after)
+        throws CommitFailedException
+    {
+        final String nodeType = this.currentNodeBuilder.getProperty("jcr:primaryType").getValue(Type.STRING);
+        if ("lfs:Form".equals(nodeType) || "lfs:AnswerSection".equals(nodeType)) {
+            try {
+                summarize();
+            } catch (RepositoryException e) {
+                // This is not a fatal error, the form status is not required for a functional application
+                LOGGER.warn("Unexpected exception while checking the completion status of form {}",
+                    this.currentNodeBuilder.getString("jcr:uuid"));
+            }
+        }
     }
 
     /**
-     * Gets the question node associated with the answer for which this
-     * AnswerCompletionStatusEditor is an editor thereof.
+     * Gets the question node associated with the answer for which this AnswerCompletionStatusEditor is an editor
+     * thereof.
      *
      * @return the question Node object associated with this answer
      */
-    private Node getQuestionNode(NodeBuilder nb)
+    private Node getQuestionNode(final NodeBuilder nb)
     {
         try {
-            if (nb.hasProperty("question")) {
-                Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
-                String questionNodeReference = nb.getProperty("question").getValue(Type.REFERENCE);
-                Node questionNode = resourceSession.getNodeByIdentifier(questionNodeReference);
+            if (nb.hasProperty(PROP_QUESTION)) {
+                final Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
+                final String questionNodeReference = nb.getProperty(PROP_QUESTION).getValue(Type.REFERENCE);
+                final Node questionNode = resourceSession.getNodeByIdentifier(questionNodeReference);
                 return questionNode;
             }
-        } catch (RepositoryException ex) {
+        } catch (final RepositoryException ex) {
             return null;
         }
         return null;
@@ -179,12 +221,11 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      * @param iterable the Iterable object to be counted
      * @return the number of objects in the Iterable
      */
-    private int iterableLength(Iterable iterable)
+    private int iterableLength(final Iterable<?> iterable)
     {
         int len = 0;
-        Iterator iterator = iterable.iterator();
-        while (iterator.hasNext())
-        {
+        final Iterator<?> iterator = iterable.iterator();
+        while (iterator.hasNext()) {
             iterator.next();
             len++;
         }
@@ -197,18 +238,63 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      * @param questionNode the Node to provide the minAnswers and maxAnswers properties
      * @return true if the number of answers is valid, false if it is not
      */
-    private boolean checkInvalidAnswer(Node questionNode, int numAnswers)
+    private boolean checkInvalidAnswer(final Node questionNode, final int numAnswers)
     {
         try {
-            long minAnswers = questionNode.getProperty("minAnswers").getLong();
-            long maxAnswers = questionNode.getProperty("maxAnswers").getLong();
+            final long minAnswers = questionNode.getProperty("minAnswers").getLong();
+            final long maxAnswers = questionNode.getProperty("maxAnswers").getLong();
             if ((numAnswers < minAnswers && minAnswers != 0) || (numAnswers > maxAnswers && maxAnswers != 0)) {
                 return true;
             }
-        } catch (RepositoryException ex) {
-            //If something goes wrong then we definitely cannot have a valid answer
+        } catch (final RepositoryException ex) {
+            // If something goes wrong then we definitely cannot have a valid answer
             return true;
         }
         return false;
+    }
+
+    private void summarize()
+        throws RepositoryException
+    {
+        // Iterate through all children of this node
+        final Iterator<String> childrenNames = this.currentNodeBuilder.getChildNodeNames().iterator();
+        boolean isInvalid = false;
+        // If there are no children yet, the form is brand new, thus incomplete
+        boolean isIncomplete = !childrenNames.hasNext();
+        while (childrenNames.hasNext()) {
+            final String selectedChildName = childrenNames.next();
+            final NodeBuilder selectedChild = this.currentNodeBuilder.getChildNode(selectedChildName);
+            if ("lfs:AnswerSection".equals(selectedChild.getProperty("jcr:primaryType").getValue(Type.STRING))) {
+                final Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
+                if (!ConditionalSectionUtils.isConditionSatisfied(
+                    resourceSession, selectedChild, this.currentNodeBuilder)) {
+                    continue;
+                }
+            }
+            // Is selectedChild - invalid? , incomplete?
+            if (selectedChild.hasProperty(STATUS_FLAGS)) {
+                final Iterable<String> selectedProps = selectedChild.getProperty(STATUS_FLAGS).getValue(Type.STRINGS);
+                final Iterator<String> selectedPropsIter = selectedProps.iterator();
+                while (selectedPropsIter.hasNext()) {
+                    final String thisStr = selectedPropsIter.next();
+                    if (STATUS_FLAG_INVALID.equals(thisStr)) {
+                        isInvalid = true;
+                    }
+                    if (STATUS_FLAG_INCOMPLETE.equals(thisStr)) {
+                        isIncomplete = true;
+                    }
+                }
+            }
+        }
+        // Set the flags in selectedNodeBuilder accordingly
+        final List<String> statusFlags = new ArrayList<>();
+        if (isInvalid) {
+            statusFlags.add(STATUS_FLAG_INVALID);
+        }
+        if (isIncomplete) {
+            statusFlags.add(STATUS_FLAG_INCOMPLETE);
+        }
+        // Write these statusFlags to the JCR repo
+        this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
     }
 }
