@@ -9,47 +9,70 @@
 =========================================================
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-import React from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 // @material-ui/core components
 import { withStyles } from "@material-ui/core";
+import { loadExtensions } from "../../uiextension/extensionManager";
 import { Drawer, Hidden, IconButton, List, ListItem, ListItemText } from "@material-ui/core";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 import sidebarStyle from "./sidebarStyle.jsx";
 
 const Sidebar = ({ ...props }) => {
-  // verifies if routeName is the one active (in browser input)
-  function activeRoute(routeName) {
+  // Verifies if routeName is the one active
+  let isRouteActive = function(routeName) {
     return props.location.pathname.indexOf(routeName) > -1 ? true : false;
   }
-  const { classes, color, loading, logoImage, image, logoText, routes } = props;
 
-  // Generate NavLinks and ListItems from the given route prop
+  // Determine if the given defaultOrder makes the associated link an admin link (i.e. defaultOrder is in the 90s)
+  // FIXME: Admin links should ideally be in a separate extension target
+  let _isAdministrativeButton = function(order) {
+    return Math.floor(order % 100 / 90);
+  }
+  const { classes, color, logoImage, image, logoText } = props;
+  let [entries, setEntries] = useState();
+  let [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadExtensions("SidebarEntry")
+      .then(buildSidebar)
+      .catch(err => console.log("Something went wrong: ", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  var buildSidebar = (extensions) => {
+    let result = extensions.slice()
+      .sort((a, b) => a["lfs:defaultOrder"] - b["lfs:defaultOrder"]);
+    setEntries(result);
+  };
+
+  // Generate NavLinks and ListItems from the given entry
   // activeStyle is true for anything that should look "active" (e.g. the admin link, the current page)
-  function generateListItem(prop, key, activeStyle) {
+  function generateListItem(entry, key, activeStyle) {
     const listBackground = classNames({
       [" " + classes[color]]: activeStyle
     });
     const listItemFont = classNames({
       [" " + classes.whiteFont]: activeStyle
     });
+    const EntryIcon = entry["lfs:icon"];
 
     return (
       <NavLink
-        to={prop.path}
+        to={entry["lfs:targetURL"]}
         className={classes.item}
         activeClassName="active"
         key={key}
       >
         <ListItem button className={classes.itemLink + listBackground}>
-          <prop.icon
+          <EntryIcon
               className={classNames(classes.itemIcon, listItemFont)}
             />
           <ListItemText
-            primary={prop.name}
+            primary={entry["lfs:extensionName"]}
             className={classNames(classes.itemText, listItemFont)}
             disableTypography={true}
           />
@@ -69,12 +92,10 @@ const Sidebar = ({ ...props }) => {
           <ListItemText primary="&nbsp;" className={classNames(classes.itemText, classes.skeletonText)}/>
         </ListItem>
         ))
-      : routes.filter((prop) => {
-        // Only use non-admin links
-        return !prop.isAdmin;
-      }).map((prop, key) => {
-        return(generateListItem(prop, key, activeRoute(prop.path)));
-      })}
+      : entries.filter(entry => !_isAdministrativeButton(entry["lfs:defaultOrder"]))
+          .map((entry, key) => {
+            return(generateListItem(entry, key, isRouteActive(entry["lfs:targetURL"])));
+          })}
     </List>
   );
 
@@ -89,14 +110,12 @@ const Sidebar = ({ ...props }) => {
           <ListItemText primary="&nbsp;" className={classNames(classes.itemText, classes.skeletonText)}/>
         </ListItem>
         ))
-      : routes.filter((prop, key) => {
-        // Only use admin links
-        return prop.isAdmin;
-      }).map((prop, key) => {
-        // To make it stand out, the admin link is also active
-        const isActive = prop.path === "/admin" || activeRoute(prop.path);
-        return(generateListItem(prop, key, isActive));
-      })}
+      : entries.filter(entry => _isAdministrativeButton(entry["lfs:defaultOrder"]))
+          .map((entry, key) => {
+            // To make it stand out, the admin link is also active
+            const isActive = entry["lfs:targetURL"] === "/content.html/admin" || isRouteActive(entry["lfs:targetURL"]);
+            return(generateListItem(entry, key, isActive));
+          })}
     </List>
   );
 

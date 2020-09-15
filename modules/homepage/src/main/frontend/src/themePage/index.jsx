@@ -125,7 +125,6 @@ class Main extends React.Component {
       <div className={classes.wrapper}>
         <Suspense fallback={<div>Loading...</div>}>
           <Sidebar
-            routes={this.state.routes}
             logoText={"LFS Data Core"}
             logoImage={"/libs/lfs/resources/lfs-logo-tmp-cyan.png"}
             image={this.state.image}
