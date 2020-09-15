@@ -133,10 +133,9 @@ const questionnaireStyle = theme => ({
         paddingBottom: "12px !important",
     },
     subjectNewButton: {
-        // check placement
         margin: theme.spacing(1),
-        top: theme.spacing(6.5),
-        right: theme.spacing(6.5),
+        top: theme.spacing(7.7),
+        right: theme.spacing(4.8),
         bottom: 'auto',
         left: 'auto',
         position: 'fixed',
@@ -184,7 +183,7 @@ const questionnaireStyle = theme => ({
         }
     },
     // When the user is deleting a section, highlight it via a border on the left
-   
+
     highlightedSection: {
         borderLeftWidth: theme.spacing(GRID_SPACE_UNIT),
         borderLeftColor: theme.palette.primary.light,

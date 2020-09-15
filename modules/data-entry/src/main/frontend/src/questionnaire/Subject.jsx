@@ -40,7 +40,7 @@ const SECTION_TYPES = ["lfs:Section"];
 const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
 
 /***
- * Create a URL that checks for the existance of a subject
+ * Create a URL that checks for the existence of a subject
  */
 let createQueryURL = (query, type) => {
   let url = new URL("/query", window.location.origin);
@@ -141,7 +141,6 @@ function SubjectContainer(props) {
 
   // get related SubjectTypes
   let check_url = createQueryURL(` WHERE n.'parents'='${data['jcr:uuid']}'`, "lfs:Subject");
-  // let check_url = createQueryURL(` WHERE CONTAINS (n.'parents', '${data['jcr:uuid']}')`, "lfs:Subject");
   let fetchRelated = () => {
     fetch(check_url)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -170,7 +169,8 @@ function SubjectContainer(props) {
       <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed}/>
       {relatedSubjects ?
         (<Grid item xs={12}>
-          {relatedSubjects.map( (subject, i) => { // render component again for each related subjet
+          {relatedSubjects.map( (subject, i) => {
+            // Render component again for each related subject
             return(
               <SubjectContainer key={i} classes={classes} id={subject["@name"]} level={currentLevel+1} maxDisplayed={maxDisplayed}/>
             )
@@ -356,9 +356,9 @@ function FormData(props) {
     // question title, to be used when 'previewing' the form
     const questionTitle = entryDefinition["text"];
 
-    if (existingQuestionAnswer && existingQuestionAnswer[1]["value"] && (displayed < maxDisplayed)) { // and if count of displayed <= max
+    if (existingQuestionAnswer && existingQuestionAnswer[1]["value"] && (displayed < maxDisplayed)) {
+      // If count of displayed <= max, increase count of displayed
       let content = `${questionTitle}: ${existingQuestionAnswer[1]["value"]}`;
-      // increase count of displayed
       displayed++;
       return (
         <Typography variant="body2" component="p" key={key}>{content}</Typography>

@@ -70,13 +70,10 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
   // This variable must start with an upper case letter so that React treats it as a component
   const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
 
-  // question title, to be used when 'previewing' the form
-  // const questionTitle = questionDefinition["text"];
-
   // component will either render the default question display, or a list of questions/answers from the form (used for subjects)
   return (
     <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={(doHighlight ? classes.highlightedSection : undefined)}>
-        <QuestionDisplay
+      <QuestionDisplay
         questionDefinition={questionDefinition}
         existingAnswer={existingQuestionAnswer}
         path={path}

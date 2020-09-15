@@ -321,7 +321,6 @@ export function NewSubjectDialog (props) {
 
     // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
     let parent = newSubjectParent[index]?.["jcr:uuid"] || subject;
-    //todo: ...
     if (parentSet) {
       parent = handleNewParent(newSubjectType[newSubjectIndex])?.["jcr:uuid"];
     }
@@ -344,7 +343,7 @@ export function NewSubjectDialog (props) {
     setNewSubjectPopperOpen(true);
     setSelectParentPopperOpen(false);
   }
-  
+
   // Called when creating a new subject
   let createNewSubject = () => {
     if (newSubjectName[newSubjectIndex] == "") {
@@ -407,18 +406,6 @@ export function NewSubjectDialog (props) {
       return newParents;
     });
   }
-
-  // changeNewSubjectParent()
-
-  // setSelectedNewSubjectParents((old) => {
-  //   let newParents = old.slice();
-  //   if (old.length < selectedSubjectParentNumber) {
-  //     newParents.append(selectedSubjectParentNumber);
-  //   } else {
-  //     newParents[selectedSubjectParentNumber] = toAdd;      
-  //   }
-  //   return newParents;
-  // });
 
   // Handle the case where the user wants to create a new subject to act as the parent
   let addNewParentSubject = () => {
@@ -774,7 +761,6 @@ function SubjectSelectorList(props) {
             let url = createQueryURL( condition, "lfs:Subject");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
-
             return fetch(url)
               .then(response => response.json())
               .then(result => {
@@ -798,7 +784,7 @@ function SubjectSelectorList(props) {
                   if (e['type']?.['@path'] == currentSubject['type']['@path']) return true;
                   return getRelatedChild(e).includes(currentSubject['@path'])
                 }
-        
+
                 // recursive function to check if the SubjectType of the selected questionnaire is a child of the 'currentSubject' SubjectType
                 // e.g. will return true if the selected questionnaire supports Tumors and the currentSubject SubjectType is Patient
                 // if yes, will filter results to find related subjects (with filterRelated)
@@ -817,13 +803,12 @@ function SubjectSelectorList(props) {
                 }
 
                 return {
-                  data: ((currentSubject && (result['rows'].map((row) => isSubjectRelated(row).includes(currentSubject.type.label)))[0])
-                  ? (result['rows'].filter((e) => filterRelated(e)).map((row) => ({
+                  data: (
+                    (currentSubject && (result['rows'].map((row) => isSubjectRelated(row).includes(currentSubject.type.label)))[0])
+                    ? result['rows'].filter((e) => filterRelated(e)) : result["rows"]
+                  ).map((row) => ({
                     hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({})) : "No parents",
-                    ...row})))
-                  : (result["rows"].map((row) => ({
-                    hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({})) : "No parents", ...row})))
-                  ),
+                    ...row})),
                   page: Math.trunc(result["offset"]/result["limit"]),
                   totalCount: result["totalrows"],
                 }}
