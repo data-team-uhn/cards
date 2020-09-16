@@ -76,6 +76,7 @@ class VocabularyQuery extends React.Component {
       infoVocabURL: "",
       infoVocabDescription: "",
       infoVocabObtained: "",
+      infoVocabTobeObtained: "",
       buttonRefs: {},
       vocabulary: props.vocabulary,
       noResults: false,
@@ -471,8 +472,12 @@ class VocabularyQuery extends React.Component {
   // Grab information about the given ID and populate the info box
   getInfo = (path) => {
     // If we don't yet know anything about our vocabulary, fill it in
-    if (this.state.infoVocabObtained != path) {
-      var url = new URL(`${path.split("/").slice(0, -1).join("/")}.json`, window.location.origin);
+    var vocabPath = `${path.split("/").slice(0, -1).join("/")}.json`;
+    if (this.state.infoVocabObtained != vocabPath) {
+      var url = new URL(vocabPath, window.location.origin);
+      this.setState({
+        infoVocabTobeObtained: vocabPath
+      });
       MakeRequest(url, this.parseVocabInfo);
     }
 
@@ -482,11 +487,12 @@ class VocabularyQuery extends React.Component {
 
   parseVocabInfo = (status, data) => {
     if (status === null) {
+      var vocabPath = this.state.infoVocabTobeObtained;
       this.setState({
-        infoVocabAcronym: data["identifier"] || "",
+        infoVocabAcronym: data["identifier"] || vocabPath.split("/")[2]?.split('.')[0] || "",
         infoVocabURL: data["website"] || "",
         infoVocabDescription: data["description"],
-        infoVocabObtained: data["@path"]
+        infoVocabObtained: vocabPath
       });
     } else {
       this.logError("Error: vocabulary details lookup failed with code " + status);
