@@ -1,6 +1,7 @@
 {
   "jcr:primaryType": "lfs:Questionnaire",
   "title": "Somatic Variants Data",
+  "jcr:reference:requiredSubjectTypes": ["/SubjectTypes/Tumor", "/SubjectTypes/TumorRegion"],
   "file": {
     "jcr:primaryType": "lfs:Question",
     "text": "Somatic Variants File",
