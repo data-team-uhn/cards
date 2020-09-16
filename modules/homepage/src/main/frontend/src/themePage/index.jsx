@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 import Sidebar from "./Sidebar/sidebar"
-import sidebarRoutes, { loadRemoteComponents, loadRemoteIcons, loadContentNodes } from './routes';
+import { getRoutes } from '../routes';
 import { withStyles } from '@material-ui/core';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
@@ -38,8 +38,10 @@ class Main extends React.Component {
       fixedClasses: "dropdown show",
       mobileOpen: false,
       loading: true,
-      routes: sidebarRoutes,
+      routes: [],
     };
+
+    getRoutes().then(routes => this.setState({routes: routes}));
   }
 
   handleDrawerToggle = () => {
@@ -59,47 +61,17 @@ class Main extends React.Component {
     window.removeEventListener("resize", this.autoCloseMobileMenus);
   }
 
-  // Determine if the given defaultOrder makes the associated link an admin link (i.e. defaultOrder is in the 90s)
-  // FIXME: Admin links should ideally be in a separate extension target
-  _isAdministrativeButton(order) {
-    return Math.floor(order % 100 / 90);
-  }
-
-  _buildSidebar = (uixData) => {
-    var routes = sidebarRoutes.slice();
-    uixData.sort((firstEl, secondEl) => {return firstEl.order - secondEl.order;});
-    for (var id in uixData) {
-      var uixDatum = uixData[id];
-      routes.push({
-        path: uixDatum.path,
-        name: uixDatum.name,
-        icon: uixDatum.icon,
-        component: uixDatum.reactComponent,
-        isAdmin: this._isAdministrativeButton(uixDatum.order),
-        rtlName: "rtl:test"
-      });
-    }
-    this.setState({routes: routes, loading: false});
-  };
-
   componentDidMount() {
     window.addEventListener("resize", this.autoCloseMobileMenus);
-    loadContentNodes("SidebarEntry")
-    .then(loadRemoteComponents)
-    .then(loadRemoteIcons)
-    .then(this._buildSidebar)
-    .catch(function(err) {
-      console.log("Something went wrong: " + err);
-    });
   };
 
   switchRoutes = (routes) => {
     return (<Switch>
-      {routes.map((prop, key) => {
+      {routes.map((route, key) => {
         return (
           <Route
-            path={prop.path}
-            component={prop.component}
+            path={route["lfs:targetURL"]}
+            component={route["lfs:extensionRender"]}
             key={key}
           />
         );
@@ -130,7 +102,6 @@ class Main extends React.Component {
             <Navbar
               routes={ this.state.routes }
               handleDrawerToggle={this.handleDrawerToggle}
-              loading={this.state.loading}
               {...rest}
             />
           </div>
