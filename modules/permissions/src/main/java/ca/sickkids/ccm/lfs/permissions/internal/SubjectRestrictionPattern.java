@@ -18,6 +18,7 @@
  */
 package ca.sickkids.ccm.lfs.permissions.internal;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -115,10 +116,11 @@ public class SubjectRestrictionPattern implements RestrictionPattern
                 }
                 subject = this.session.getNodeByIdentifier(nextUuid);
             }
+        } catch (ItemNotFoundException e) {
+            LOGGER.debug("Subject UUID {} is inaccessible", nextUuid, e);
         } catch (RepositoryException e) {
             LOGGER.error("Failed to find subject UUID {}", nextUuid, e);
         }
-
         return false;
     }
 }
