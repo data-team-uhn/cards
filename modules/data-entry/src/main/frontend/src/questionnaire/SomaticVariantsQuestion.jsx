@@ -20,6 +20,7 @@
 import React, { useState } from "react";
 import { IconButton, Typography, withStyles } from "@material-ui/core";
 import GetApp from '@material-ui/icons/GetApp';
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
@@ -40,7 +41,11 @@ function SomaticVariantsQuestion(props) {
         <Typography variant="body1" className={classes.fileInfo}>
           File <IconButton size="small" color="primary"><a href={file["@path"]} download><GetApp /></a></IconButton><a href={file["@path"]} download>{file["@name"]}</a> uploaded by {file["jcr:createdBy"]} on {moment(file["jcr:created"]).format("dddd, MMMM Do YYYY")}
         </Typography>
-        : "" }
+        :
+        <Typography variant="caption" color="textSecondary">
+          You can upload variants through the <Link to="/content.html/Variants">Variant File Uploader</Link>.
+        </Typography>
+        }
     </Question>);
 }
 
