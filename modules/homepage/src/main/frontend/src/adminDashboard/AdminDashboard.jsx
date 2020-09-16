@@ -37,7 +37,7 @@ import {
 } from "@material-ui/core";
 
 // function to get the routes for the admin dashboard, also used in the navbar
-export function getAdminRoutes(pathPrefix) {
+export function getAdminRoutes() {
   return new Promise(function(resolve, reject) {
     let adminRoutes = [];
 
@@ -51,8 +51,7 @@ export function getAdminRoutes(pathPrefix) {
           name: uixDatum.name,
           icon: uixDatum.icon,
           component: uixDatum.reactComponent,
-          hint: uixDatum.hint,
-          layout: pathPrefix
+          hint: uixDatum.hint
         });
       }
       if (routes) {resolve(routes)}
@@ -74,10 +73,8 @@ function AdminDashboard(props) {
   let [ adminRoutes, setAdminRoutes ] = useState([]);
   let [ loading, setLoading ] = useState(true);
 
-  let pathPrefix = "/content.html/admin"; //admin is the url for this component
-
   useEffect(() => {
-    getAdminRoutes(pathPrefix)
+    getAdminRoutes()
     .then(function(response) {
       setAdminRoutes(response);
       setLoading(false);
@@ -96,11 +93,11 @@ function AdminDashboard(props) {
   // render either the list of items in the admin dashboard or an item
   return (
     <div>
-      <Route exact path={pathPrefix} component={() => <AdminDashboardDefault adminRoutes={adminRoutes} classes={classes}/>}/>
+      <Route exact path="/content.html/admin" component={() => <AdminDashboardDefault adminRoutes={adminRoutes} classes={classes}/>}/>
       {adminRoutes.map((prop, key) => {
         return (
           <Route
-            path={prop.layout + prop.path}
+            path={prop.path}
             component={prop.component}
             key={key}
           />
@@ -128,7 +125,7 @@ function AdminDashboardDefault(props) {
             adminRoutes.map((route) => {
               return (
                 <NavLink
-                  to={route.layout + route.path}
+                  to={route.path}
                   key={route.path}
                   className={classes.listItem}
                 >

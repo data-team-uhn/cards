@@ -78,8 +78,7 @@ class Main extends React.Component {
         icon: uixDatum.icon,
         component: uixDatum.reactComponent,
         isAdmin: this._isAdministrativeButton(uixDatum.order),
-        rtlName: "rtl:test",
-        layout: "/content.html"
+        rtlName: "rtl:test"
       });
     }
     // get the routes for the admin dashboard, the admin routes and sidebar routes are stored in the `allRoutes` state
@@ -110,7 +109,7 @@ class Main extends React.Component {
       {routes.map((prop, key) => {
         return (
           <Route
-            path={prop.layout + prop.path}
+            path={prop.path}
             component={prop.component}
             key={key}
           />
