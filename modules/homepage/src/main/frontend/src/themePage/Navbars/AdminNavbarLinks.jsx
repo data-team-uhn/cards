@@ -11,7 +11,6 @@
 */
 import PropTypes from "prop-types";
 import React from "react";
-import { withRouter } from "react-router-dom";
 // @material-ui/core components
 import { Button, Hidden, IconButton, withStyles } from "@material-ui/core";
 // @material-ui/icons
