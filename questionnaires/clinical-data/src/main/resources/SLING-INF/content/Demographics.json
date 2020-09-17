@@ -48,7 +48,7 @@
     "maxAnswers": 0,
     "displayMode": "list+input",
     "dataType": "vocabulary",
-    "sourceVocabulary": ["HANCESTRO"],
+    "sourceVocabularies": ["HANCESTRO"],
     "vocabularyFilters": {
       "jcr:primaryType": "lfs:VocabularyFilterGroup",
       "HANCESTRO": ["HANCESTRO_0004"]
@@ -350,7 +350,7 @@
     "maxAnswers": 0,
     "displayMode": "list+input",
     "dataType": "vocabulary",
-    "sourceVocabulary": ["SNOMEDCT"],
+    "sourceVocabularies": ["SNOMEDCT"],
     "vocabularyFilters": {
       "jcr:primaryType": "lfs:VocabularyFilterGroup",
       "SNOMEDCT": ["children of Relative"]
@@ -483,7 +483,7 @@
     "maxAnswers": 0,
     "displayMode": "input",
     "dataType": "vocabulary",
-    "sourceVocabulary": ["HP"],
+    "sourceVocabularies": ["HP"],
     "vocabularyFilters": {
         "jcr:primaryType": "lfs:VocabularyFilterGroup",
         "HP": ["HP:0000118"]

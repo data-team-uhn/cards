@@ -41,7 +41,7 @@ const MAX_RESULTS = 10;
 //  clearOnClick: Whether selecting an option will clear the search bar
 //  onClick: Callback when the user clicks on this element
 //  onInputFocus: Callback when the input is focused on
-//  vocabulary: String of vocabulary to use (e.g. "hpo")
+//  vocabularies: Array of Strings of vocabularies to use (e.g. ["hpo"])
 //
 // Optional arguments:
 //  disabled: Boolean representing whether or not this element is disabled
@@ -72,19 +72,19 @@ class VocabularyQuery extends React.Component {
       infoAnchor: null,
       infoAboveBackground: false,
       // Information about the vocabulary
-      infoVocabAcronym: props.vocabulary,
+      infoVocabAcronym: "",
       infoVocabURL: "",
       infoVocabDescription: "",
       infoVocabObtained: "",
       infoVocabTobeObtained: "",
       buttonRefs: {},
-      vocabulary: props.vocabulary,
+      vocabularies: props.vocabularies,
       noResults: false,
     };
   }
 
   render() {
-    const { classes, defaultValue, disabled, inputRef, noMargin, onInputFocus, placeholder, searchDefault, vocabulary } = this.props;
+    const { classes, defaultValue, disabled, inputRef, noMargin, onInputFocus, placeholder, searchDefault, vocabularies } = this.props;
 
     const inputEl = (<Input
       disabled={disabled}
@@ -301,7 +301,6 @@ class VocabularyQuery extends React.Component {
           onError={this.logError}
           registerInfo={this.registerInfoButton}
           getInfo={this.getInfo}
-          vocabulary={vocabulary}
           />
         { /* Error snackbar */}
         <Snackbar
@@ -375,7 +374,7 @@ class VocabularyQuery extends React.Component {
 
     // Grab suggestions
     //...Make a queue of vocabularies to search through
-    var vocabQueue = this.props.vocabulary.slice();
+    var vocabQueue = this.props.vocabularies.slice();
     this.makeMultiRequest(vocabQueue, input, []);
 
     // Hide the infobox and stop the timer
@@ -610,7 +609,7 @@ VocabularyQuery.propTypes = {
 };
 
 VocabularyQuery.defaultProps = {
-  vocabulary: 'hpo',
+  vocabularies: ['hpo'],
   searchDefault: 'Search',
   clearOnClick: true
 };

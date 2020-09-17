@@ -33,7 +33,6 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 // Required arguments:
 //  id: Term ID to search
 //  path: Term @path to get the term info
-//  vocabulary: Name of the vocabulary to use to look up terms
 //  changeTerm: callback to change the term id and path being looked up
 //  registerInfo: callback to add a possible hook point for the info box
 //  getInfo: callback to change the currently displayed info box term
@@ -43,7 +42,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 // Optional arguments:
 //  fullscreen: whether or not the dialog is fullscreen (default: false)
 function VocabularyBrowser(props) {
-  const { classes, fullscreen, id, path, changeTerm, registerInfo, getInfo, onClose, onError, vocabulary, ...rest } = props;
+  const { classes, fullscreen, id, path, changeTerm, registerInfo, getInfo, onClose, onError, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
@@ -104,7 +103,6 @@ function VocabularyBrowser(props) {
         headNode={!ischildnode}
         bolded={bolded}
         onError={onError}
-        vocabulary={vocabulary}
         knownHasChildren={hasChildren}
       />
     );
@@ -146,7 +144,6 @@ VocabularyBrowser.propTypes = {
   fullscreen: PropTypes.bool,
   id: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
-  vocabulary: PropTypes.string.isRequired,
   changeTerm: PropTypes.func.isRequired,
   registerInfo: PropTypes.func.isRequired,
   getInfo: PropTypes.func.isRequired,

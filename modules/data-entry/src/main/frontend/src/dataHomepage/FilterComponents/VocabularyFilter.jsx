@@ -23,7 +23,7 @@ import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
-import VocabularySelector from "../../vocabQuery/query.jsx";
+import VocabularyQuery from "../../vocabQuery/query.jsx";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
@@ -34,24 +34,24 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
  *
  * @param {string} defaultValue The default value to place in the vocabulary filter
  * @param {func} onChangeInput Callback for when the value select has changed
- * @param {object} questionDefinition Object containing the definition of the question. Should include "sourceVocabulary" and "vocabularyFilter" children.
- * Other props are forwarded to the VocabularySelector component
+ * @param {object} questionDefinition Object containing the definition of the question. Should include "sourceVocabularies" and "vocabularyFilter" children.
+ * Other props are forwarded to the VocabularyQuery component
  *
  */
 const VocabularyFilter = forwardRef((props, ref) => {
   const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
-  let vocabulary = questionDefinition["sourceVocabulary"];
+  let vocabularies = questionDefinition["sourceVocabularies"];
   // Currently there's an issue where some of our fields are strings while the vocab selector only allows arrays
   // We'll capture and refuse to pass it here
   let vocabularyFilter = (typeof questionDefinition?.["vocabularyFilter"]) == "string" ? null : questionDefinition?.["vocabularyFilter"];
 
   return (
-    <VocabularySelector
+    <VocabularyQuery
       onClick={(id, name) => {onChangeInput(id, name)}}
       clearOnClick={false}
       vocabularyFilter={vocabularyFilter}
       defaultValue={defaultValue}
-      vocabulary={vocabulary}
+      vocabularies={vocabularies}
       placeholder="empty"
       inputRef={ref}
       noMargin
@@ -64,7 +64,7 @@ VocabularyFilter.propTypes = {
   defaultValue: PropTypes.string,
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.shape({
-    sourceVocabulary: PropTypes.string,
+    sourceVocabularies: PropTypes.array,
     vocabularyFilter: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
   })
 }
