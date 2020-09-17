@@ -34,23 +34,19 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
  *
  * @param {string} defaultValue The default value to place in the vocabulary filter
  * @param {func} onChangeInput Callback for when the value select has changed
- * @param {object} questionDefinition Object containing the definition of the question. Should include "sourceVocabularies" and "vocabularyFilter" children.
+ * @param {object} questionDefinition Object containing the definition of the question. Should include "sourceVocabularies" and "vocabularyFilters" children.
  * Other props are forwarded to the VocabularyQuery component
  *
  */
 const VocabularyFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
+  const { onChangeInput, questionDefinition, ...rest } = props;
   let vocabularies = questionDefinition["sourceVocabularies"];
-  // Currently there's an issue where some of our fields are strings while the vocab selector only allows arrays
-  // We'll capture and refuse to pass it here
-  let vocabularyFilter = (typeof questionDefinition?.["vocabularyFilter"]) == "string" ? null : questionDefinition?.["vocabularyFilter"];
 
   return (
     <VocabularyQuery
       onClick={(id, name) => {onChangeInput(id, name)}}
       clearOnClick={false}
-      vocabularyFilter={vocabularyFilter}
-      defaultValue={defaultValue}
+      questionDefinition={questionDefinition}
       vocabularies={vocabularies}
       placeholder="empty"
       inputRef={ref}
@@ -65,7 +61,6 @@ VocabularyFilter.propTypes = {
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.shape({
     sourceVocabularies: PropTypes.array,
-    vocabularyFilter: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
   })
 }
 
