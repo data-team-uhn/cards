@@ -129,9 +129,6 @@ const questionnaireStyle = theme => ({
     subjectFormHeaderButton: {
         padding: "0 !important"
     },
-    subjectHeader: {
-        paddingBottom: "12px !important",
-    },
     subjectNewButton: {
         margin: theme.spacing(1),
         top: theme.spacing(7.7),
