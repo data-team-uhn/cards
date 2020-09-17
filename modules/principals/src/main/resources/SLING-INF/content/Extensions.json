@@ -1,11 +1,13 @@
 {
+  "jcr:primaryType": "sling:Folder",
+  "AdminDashboard": {
     "jcr:primaryType": "sling:Folder",
     "Userlist": {
         "jcr:primaryType": "lfs:Extension",
         "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
         "lfs:extensionName": "Users List",
         "lfs:defaultOrder": 94,
-        "lfs:targetURL": "userlist",
+        "lfs:targetURL": "/content.html/admin/userlist",
         "lfs:icon": "asset:lfs-principals.userIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-principals.userscontainer.js",
         "lfs:hint": "Manage user accounts"
@@ -15,9 +17,10 @@
         "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
         "lfs:extensionName": "Groups List",
         "lfs:defaultOrder": 95,
-        "lfs:targetURL": "grouplist",
+        "lfs:targetURL": "/content.html/admin/grouplist",
         "lfs:icon": "asset:lfs-principals.groupIcon.js",
         "lfs:extensionRenderURL": "asset:lfs-principals.groupscontainer.js",
         "lfs:hint": "Organize users in groups"
     }
+  }
 }

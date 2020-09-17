@@ -27,7 +27,7 @@ function Header({ ...props }) {
   // (Usually displayed at the top left)
   function makeBrand() {
     var matching_routes = props.routes.filter((prop) => {
-      return (prop.layout + prop.path === props.location.pathname);
+      return (prop.path === props.location.pathname);
     });
     return matching_routes.length > 0 ? matching_routes[0].name : " ";
   }

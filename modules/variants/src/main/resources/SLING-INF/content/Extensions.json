@@ -1,12 +1,24 @@
 {
     "jcr:primaryType": "sling:Folder",
-    "Variants": {
-        "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-        "lfs:extensionName": "Variants",
-        "lfs:icon": "asset:lfs-variants.variantsIcon.js",
-        "lfs:extensionRenderURL": "asset:lfs-variants.variantFilesContainer.js",
-        "lfs:targetURL": "Variants",
-        "lfs:defaultOrder": 20
+    "Views": {
+        "jcr:primaryType": "sling:Folder",
+        "Variants": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/view",
+            "lfs:extensionName": "Variants",
+            "lfs:targetURL": "Variants",
+            "lfs:extensionRenderURL": "asset:lfs-variants.variantFilesContainer.js"
+        }
+    },
+    "Sidebar": {
+        "jcr:primaryType": "sling:Folder",
+        "Variants": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+            "lfs:extensionName": "Variants",
+            "lfs:targetURL": "Variants",
+            "lfs:icon": "asset:lfs-variants.variantsIcon.js",
+            "lfs:defaultOrder": 20
+        }
     }
 }

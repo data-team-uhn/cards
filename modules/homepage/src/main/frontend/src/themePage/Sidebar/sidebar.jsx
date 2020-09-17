@@ -39,7 +39,7 @@ const Sidebar = ({ ...props }) => {
 
     return (
       <NavLink
-        to={prop.layout + prop.path}
+        to={prop.path}
         className={classes.item}
         activeClassName="active"
         key={key}
@@ -73,7 +73,7 @@ const Sidebar = ({ ...props }) => {
         // Only use non-admin links
         return !prop.isAdmin;
       }).map((prop, key) => {
-        return(generateListItem(prop, key, activeRoute(prop.layout + prop.path)));
+        return(generateListItem(prop, key, activeRoute(prop.path)));
       })}
     </List>
   );
@@ -94,7 +94,7 @@ const Sidebar = ({ ...props }) => {
         return prop.isAdmin;
       }).map((prop, key) => {
         // To make it stand out, the admin link is also active
-        const isActive = prop.path === "/admin" || activeRoute(prop.layout + prop.path);
+        const isActive = prop.path === "/admin" || activeRoute(prop.path);
         return(generateListItem(prop, key, isActive));
       })}
     </List>

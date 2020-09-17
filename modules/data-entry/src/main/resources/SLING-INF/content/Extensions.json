@@ -1,68 +1,117 @@
 {
     "jcr:primaryType": "sling:Folder",
-    "Questionnaires": {
-        "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
-        "lfs:targetURL": "Questionnaires",
-        "lfs:extensionName": "Questionnaires",
-        "lfs:icon": "asset:lfs-dataentry.questionnairesIcon.js",
-        "lfs:extensionRenderURL": "asset:lfs-dataentry.Questionnaires.js",
-        "lfs:defaultOrder": 91,
-        "lfs:hint": "Design and update questionnaires used for data collection"
+    "Views": {
+        "jcr:primaryType": "sling:Folder",
+        "UserDashboard": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/view",
+            "lfs:extensionName": "User dashboard",
+            "lfs:targetURL": "/content.html/Questionnaires/User",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.userDashboard.js"
+        },
+        "Questionnaires": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/view",
+            "lfs:extensionName": "Questionnaires",
+            "lfs:targetURL": "/content.html/admin/Questionnaires",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.Questionnaires.js"
+        },
+        "Forms": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/view",
+            "lfs:extensionName": "Forms",
+            "lfs:targetURL": "/content.html/Forms",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.Forms.js"
+        },
+        "SubjectTypes": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/view",
+            "lfs:extensionName": "Subject Types",
+            "lfs:targetURL": "/content.html/admin/SubjectTypes",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectTypes.js"
+        },
+        "Subjects": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/view",
+            "lfs:extensionName": "Subjects",
+            "lfs:targetURL": "/content.html/Subjects",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.Subjects.js"
+        },
+        "Patients": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/view",
+            "lfs:extensionName": "Patients",
+            "lfs:targetURL": "/content.html/Patient",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js"
+        },
+        "Tumors": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/view",
+            "lfs:extensionName": "Tumors",
+            "lfs:targetURL": "/content.html/Tumor",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js"
+        }
     },
-    "Subjects": {
-        "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-        "lfs:targetURL": "Subjects",
-        "lfs:extensionName": "Subjects",
-        "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
-        "lfs:extensionRenderURL": "asset:lfs-dataentry.Subjects.js",
-        "lfs:defaultOrder": 1
+    "AdminDashboard": {
+        "jcr:primaryType": "sling:Folder",
+        "Questionnaires": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
+            "lfs:extensionName": "Questionnaires",
+            "lfs:targetURL": "/content.html/admin/Questionnaires",
+            "lfs:icon": "asset:lfs-dataentry.questionnairesIcon.js",
+            "lfs:hint": "Design and update questionnaires used for data collection"
+        },
+        "SubjectTypes": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
+            "lfs:extensionName": "Subject Types",
+            "lfs:targetURL": "/content.html/admin/SubjectTypes",
+            "lfs:icon": "asset:lfs-dataentry.subjectTypeIcon.js",
+            "lfs:hint": "Define subject types and relations between them"
+        }
     },
-    "SubjectTypes": {
-        "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
-        "lfs:targetURL": "SubjectTypes",
-        "lfs:extensionName": "Subject Types",
-        "lfs:icon": "asset:lfs-dataentry.subjectTypeIcon.js",
-        "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectTypes.js",
-        "lfs:defaultOrder": 93,
-        "lfs:hint": "Define subject types and relations between them"
-    },
-    "Forms": {
-        "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-        "lfs:targetURL": "Forms",
-        "lfs:extensionName": "Forms",
-        "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
-        "lfs:extensionRenderURL": "asset:lfs-dataentry.Forms.js",
-        "lfs:defaultOrder": 3
-    },
-    "UserDashboard": {
-        "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-        "lfs:targetURL": "Questionnaires/User",
-        "lfs:extensionName": "User dashboard",
-        "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
-        "lfs:extensionRenderURL": "asset:lfs-dataentry.userDashboard.js",
-        "lfs:defaultOrder": 0
-    },
-    "Tumors": {
-        "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-        "lfs:extensionName": "Tumors", 
-        "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
-        "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js",
-        "lfs:targetURL": "Tumor", // note: URL should be the same as the SubjectType
-        "lfs:defaultOrder": 6
-    },
-    "Patients": {
-        "jcr:primaryType": "lfs:Extension",
-        "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-        "lfs:extensionName": "Patients",
-        "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
-        "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js",
-        "lfs:targetURL": "Patient", // note: URL should be the same as the SubjectType
-        "lfs:defaultOrder": 5
+    "Sidebar": {
+        "jcr:primaryType": "sling:Folder",
+        "UserDashboard": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+            "lfs:extensionName": "User dashboard",
+            "lfs:targetURL": "/content.html/Questionnaires/User",
+            "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
+            "lfs:defaultOrder": 0
+        },
+        "Subjects": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+            "lfs:extensionName": "Subjects",
+            "lfs:targetURL": "/content.html/Subjects",
+            "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
+            "lfs:defaultOrder": 1
+        },
+        "Forms": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+            "lfs:extensionName": "Forms",
+            "lfs:targetURL": "/content.html/Forms",
+            "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
+            "lfs:defaultOrder": 3
+        },
+        "Patients": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+            "lfs:extensionName": "Patients",
+            "lfs:targetURL": "/content.html/Patient",
+            "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
+            "lfs:defaultOrder": 5
+        },
+        "Tumors": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+            "lfs:extensionName": "Tumors",
+            "lfs:targetURL": "/content.html/Tumor",
+            "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
+            "lfs:defaultOrder": 6
+        }
     }
 }
