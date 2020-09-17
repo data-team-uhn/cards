@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { loadExtensions } from './extensionManager';
+import { loadExtensions } from './uiextension/extensionManager';
 
 let routes = null;
 let routesRequest = null;
