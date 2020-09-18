@@ -36,9 +36,9 @@ function QuickSearchResults(props) {
 
   const { classes } = props;
   // fix issue with classes
-  
+
   const anchor = location.hash.substr(1);
-  
+
   // Display how the query matched the result
   function QuickSearchMatch(resultData) {
     const matchData = resultData[LFS_QUERY_MATCH_KEY];
@@ -58,20 +58,18 @@ function QuickSearchResults(props) {
   let defaultRedirect = (row, props) => {
     // Redirect using React-router
     const anchorPath = row[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY];
-    const path = (row["jcr:primaryType"] == "lfs:Questionnaire") ? "/content.html/admin" : "/content.html";
+    let path = (row["jcr:primaryType"] == "lfs:Questionnaire") ? "/content.html/admin" : "/content.html";
     if (row["@path"]) {
-      props.history.push({
-        pathname: path + row["@path"],
-        hash: anchorPath
-      });
+        path = `${path}${row["@path"]}#${anchorPath}`;
     }
+    return path;
   }
 
   const columns = [
     {
       "key": "",
       "label": "Identifier",
-      "format": (resultData) => (<Link href="#" onClick={() => {defaultRedirect(resultData, props)}}>{resultData.subject?.identifier || resultData["@name"] || anchor}</Link>),
+      "format": (resultData) => (<Link href={defaultRedirect(resultData, props)}>{resultData.subject?.identifier || resultData["@name"] || anchor}</Link>),
     },
     {
       "key": "jcr:createdBy",
@@ -109,7 +107,7 @@ function QuickSearchResults(props) {
         />
         <CardContent>
           <LiveTable
-            columns={columns} 
+            columns={columns}
             customUrl={'/query?quick='+ encodeURIComponent(anchor)}
             defaultLimit={10}
           />
