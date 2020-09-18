@@ -276,7 +276,7 @@ let Section = (props) => {
             <IconButton onClick={() => { openDialog(false, 'Section'); }}>
               <EditIcon />
             </IconButton>
-            <IconButton onClick={() => { setDeleteDialogOpen(false); }}>
+            <IconButton onClick={() => { setDeleteDialogOpen(true); }}>
               <DeleteIcon />
             </IconButton>
             <Typography>{data['description'] || ''}</Typography>
