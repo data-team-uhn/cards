@@ -39,7 +39,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
  *
  */
 const VocabularyFilter = forwardRef((props, ref) => {
-  const { onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
   let vocabularies = questionDefinition["sourceVocabularies"];
 
   return (
@@ -50,6 +50,7 @@ const VocabularyFilter = forwardRef((props, ref) => {
       vocabularies={vocabularies}
       placeholder="empty"
       inputRef={ref}
+      defaultValue={defaultLabel}
       noMargin
       {...rest}
       />
