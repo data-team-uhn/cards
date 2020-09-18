@@ -63,8 +63,8 @@ let DeleteDialog = (props) => {
         if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
           // On first attempt to save while logged out, set status to false to make button text inform user
           setLastSaveStatus(false);
-        } else if (errorObj.status == 409) {
-          setError("Error 409: Database conflict (are there forms with this questionnaire filled out?)");
+        } else {
+          setError(String(errorObj.statusText));
         }
       });
   }
