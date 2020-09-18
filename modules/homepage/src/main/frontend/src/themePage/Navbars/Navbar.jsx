@@ -26,10 +26,8 @@ function Header({ ...props }) {
   // Create the "brand", i.e. the route taken to get to the current page
   // (Usually displayed at the top left)
   function makeBrand() {
-    var matching_routes = props.routes.filter((prop) => {
-      return (prop.path === props.location.pathname);
-    });
-    return matching_routes.length > 0 ? matching_routes[0].name : " ";
+    var matching_routes = props.routes.filter((route) => props.location.pathname === route["lfs:targetURL"]);
+    return matching_routes?.[0]?.["lfs:extensionName"] || " ";
   }
 
   const { classes, color, loading } = props;
