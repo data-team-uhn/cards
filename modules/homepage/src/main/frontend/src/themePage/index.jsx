@@ -37,7 +37,6 @@ class Main extends React.Component {
       hasImage: true,
       fixedClasses: "dropdown show",
       mobileOpen: false,
-      loading: true,
       routes: [],
     };
 
@@ -92,7 +91,6 @@ class Main extends React.Component {
             handleDrawerToggle={this.handleDrawerToggle}
             open={this.state.mobileOpen}
             color={ "blue" }
-            loading={this.state.loading}
             {...rest}
           />
           <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">

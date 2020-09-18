@@ -30,7 +30,7 @@ function Header({ ...props }) {
     return matching_routes?.[0]?.["lfs:extensionName"] || " ";
   }
 
-  const { classes, color, loading } = props;
+  const { classes, color } = props;
   const appBarClasses = classNames({
     [" " + classes[color]]: color
   });
@@ -41,9 +41,7 @@ function Header({ ...props }) {
         {/* Here we create navbar brand, based on route name */}
         <div className={classes.flex}>
           <Button href="#" className={classes.title}>
-            {loading ?
-              <span className={classes.skeletonHeader}>&nbsp;</span>
-            : makeBrand()}
+            {makeBrand()}
           </Button>
         </div>
         {/* While the screen is wide enough, display the navbar at the topright */}
