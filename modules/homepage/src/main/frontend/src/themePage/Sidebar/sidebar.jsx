@@ -16,7 +16,7 @@ import { NavLink } from "react-router-dom";
 // @material-ui/core components
 import { withStyles } from "@material-ui/core";
 import { loadExtensions } from "../../uiextension/extensionManager";
-import { Drawer, Hidden, IconButton, List, ListItem, ListItemText } from "@material-ui/core";
+import { Drawer, Hidden, List, ListItem, ListItemText } from "@material-ui/core";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 import sidebarStyle from "./sidebarStyle.jsx";
