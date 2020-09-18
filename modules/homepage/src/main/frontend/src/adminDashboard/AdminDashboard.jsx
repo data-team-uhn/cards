@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
-import { loadRemoteComponents, loadRemoteIcons, loadContentNodes } from "../themePage/routes";
+import { loadExtensions } from "../uiextension/extensionManager";
 import { NavLink, Route } from "react-router-dom";
 import adminStyle from "./AdminDashboardStyle.jsx";
 
@@ -37,35 +37,11 @@ import {
 } from "@material-ui/core";
 
 // function to get the routes for the admin dashboard, also used in the navbar
-export function getAdminRoutes() {
-  return new Promise(function(resolve, reject) {
-    let adminRoutes = [];
-
-    let handleRoutes = (uixData) => {
-      var routes = adminRoutes.slice();
-      uixData.sort((firstEl, secondEl) => {return firstEl.order - secondEl.order;});
-      for (var id in uixData) {
-        var uixDatum = uixData[id];
-        routes.push({
-          path: uixDatum.path,
-          name: uixDatum.name,
-          icon: uixDatum.icon,
-          component: uixDatum.reactComponent,
-          hint: uixDatum.hint
-        });
-      }
-      if (routes) {resolve(routes)}
-      else reject(Error("Something went wrong"))
-    }
-
-    loadContentNodes("AdminDashboard")
-    .then(loadRemoteComponents)
-    .then(loadRemoteIcons)
-    .then(handleRoutes)
-    .catch(function(err) {
-      console.log("Something went wrong: " + err);
-    });
-  })
+async function getAdminRoutes() {
+  return loadExtensions("AdminDashboard")
+    .then(extensions => extensions.slice()
+      .sort((a, b) => a["lfs:defaultOrder"] - b["lfs:defaultOrder"])
+    )
 }
 
 function AdminDashboard(props) {
@@ -75,13 +51,9 @@ function AdminDashboard(props) {
 
   useEffect(() => {
     getAdminRoutes()
-    .then(function(response) {
-      setAdminRoutes(response);
-      setLoading(false);
-    })
-    .catch(function(err) {
-      console.log("Something went wrong: " + err);
-    });
+      .then(routes => setAdminRoutes(routes))
+      .catch(err => console.log("Something went wrong loading the admin dashboard", err))
+      .finally(() => setLoading(false));
   }, [])
 
   if (loading) {
@@ -94,11 +66,11 @@ function AdminDashboard(props) {
   return (
     <div>
       <Route exact path="/content.html/admin" component={() => <AdminDashboardDefault adminRoutes={adminRoutes} classes={classes}/>}/>
-      {adminRoutes.map((prop, key) => {
+      {adminRoutes.map((route, key) => {
         return (
           <Route
-            path={prop.path}
-            component={prop.component}
+            path={route["lfs:targetURL"]}
+            component={route["lfs:extensionRender"]}
             key={key}
           />
         );
@@ -123,20 +95,21 @@ function AdminDashboardDefault(props) {
         <List>
           {
             adminRoutes.map((route) => {
+              const EntryIcon = route["lfs:icon"];
               return (
                 <NavLink
-                  to={route.path}
-                  key={route.path}
+                  to={route["lfs:targetURL"]}
+                  key={route["lfs:targetURL"]}
                   className={classes.listItem}
                 >
                   <ListItem button className={classes.listButton}>
                     <ListItemIcon>
-                      <route.icon fontSize="large"/>
+                      <EntryIcon fontSize="large"/>
                     </ListItemIcon>
                     <ListItemText
                       className={classes.listText}
-                      primary={<Typography variant="body1">{route.name}</Typography>}
-                      secondary={<Typography variant="body2">{route.hint}</Typography>}
+                      primary={<Typography variant="body1">{route["lfs:extensionName"]}</Typography>}
+                      secondary={<Typography variant="body2">{route["lfs:hint"]}</Typography>}
                       disableTypography={true}
                     />
                   </ListItem>
