@@ -1,9 +1,0 @@
-{
-  "jcr:primaryType": "lfs:ExtensionPoint",
-  "lfs:extensionPointId": "lfs/coreUI/hidden/entry",
-  "lfs:extensionPointName": "Entries added to the React router but not visible from the sidebar",
-  "jcr:content": {
-      "jcr:primaryType": "nt:resource",
-      "jcr:data": ""
-  }
-}
