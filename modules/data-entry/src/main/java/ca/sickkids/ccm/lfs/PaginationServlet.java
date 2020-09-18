@@ -121,6 +121,10 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 )
             );
         }
+        // Only display `INCOMPLETE` forms if we are explicitly checking the status of forms
+        if (!("statusFlags".equals(fieldname))) {
+            query.append(" and not n.'statusFlags'='INCOMPLETE'");
+        }
 
         // Condition on child nodes. See parseFilter for details.
         final String[] filtervalues = request.getParameterValues("filtervalues");
