@@ -25,7 +25,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   Typography,
   withStyles
 } from "@material-ui/core";
@@ -39,8 +38,9 @@ let DeleteDialog = (props) => {
   // - false -> the save attempt failed
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
+  let [ error, setError ] = useState("");
   
-  let deleteData = () => {
+  let deleteData = (event) => {
     event.preventDefault();
 
     // If the previous save attempt failed, instead of trying to save again, open a login popup
@@ -53,16 +53,17 @@ let DeleteDialog = (props) => {
       method: "DELETE",
     }).then((response) => response.ok ? true : Promise.reject(response))
       .then(() => setLastSaveStatus(true))
-      // FIXME Use setError?
-      .catch(() => {
+      .then(() => props.onClose())
+      .catch((errorObj) => {
         // If the user is not logged in, offer to log in
         const sessionInfo = window.Sling.getSessionInfo();
         if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
           // On first attempt to save while logged out, set status to false to make button text inform user
           setLastSaveStatus(false);
+        } else if (errorObj.status == 409) {
+          setError("Error 409: Database conflict (are there forms with this questionnaire filled out?)");
         }
-      })
-    .finally(() => props.onClose());
+      });
   }
 
   let loginToSave = () => {
@@ -83,6 +84,11 @@ let DeleteDialog = (props) => {
           <DialogTitle>
             <Typography>{props.type.includes("Question") ? "Confirm Question Deletion" : "Confirm Section Deletion"}</Typography>
           </DialogTitle>
+          {error &&
+            <DialogContent>
+              <Typography color="error">{error}</Typography>
+            </DialogContent>
+          }
           <DialogActions>
             <Button
               type="submit"
