@@ -20,8 +20,9 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
-import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar, Link }  from "@material-ui/core";
+import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@material-ui/core";
 import { MenuList, Paper, Popper, withStyles } from "@material-ui/core";
+import { Link } from "react-router-dom";
 import DescriptionIcon from "@material-ui/icons/Description";
 import Search from "@material-ui/icons/Search";
 import HeaderStyle from "./headerStyle.jsx";
@@ -245,7 +246,7 @@ function SearchBar(props) {
                       className={classes.dropdownItem}
                       key="more"
                     >
-                    <Link href={window.location.origin + "/content.html/QuickSearchResults#" + search} variant="body2" className={classes.root}>
+                    <Link to={"/content.html/QuickSearchResults#" + search} variant="body2" className={classes.root}>
                       {moreResults} more results
                     </Link>
                   </MenuItem> }

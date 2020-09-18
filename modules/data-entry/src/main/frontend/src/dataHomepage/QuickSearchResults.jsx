@@ -20,7 +20,8 @@ import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import HeaderStyle from "../headerStyle.jsx";
 
-import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, Grid, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
 const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
@@ -69,7 +70,7 @@ function QuickSearchResults(props) {
     {
       "key": "",
       "label": "Identifier",
-      "format": (resultData) => (<Link href={defaultRedirect(resultData, props)}>{resultData.subject?.identifier || resultData["@name"] || anchor}</Link>),
+      "format": (resultData) => (<Link to={defaultRedirect(resultData, props)}>{resultData.subject?.identifier || resultData["@name"] || anchor}</Link>),
     },
     {
       "key": "jcr:createdBy",
