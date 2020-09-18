@@ -28,7 +28,7 @@ import PermissionsButton from "./PermissionsButton.jsx";
 
 // Component that renders the user's dashboard, with one LiveTable per questionnaire
 // visible by the user. Each LiveTable contains all forms that use the given
-// questionnaire. 
+// questionnaire.
 function UserDashboard(props) {
   const { classes } = props;
   // Store information about each questionnaire and whether or not we have
@@ -131,6 +131,8 @@ function UserDashboard(props) {
                 defaultLimit={10}
                 joinChildren="lfs:Answer"
                 filters
+                entryType={"Form"}
+                actions={actions}
               />
             </CardContent>
           </Card>
