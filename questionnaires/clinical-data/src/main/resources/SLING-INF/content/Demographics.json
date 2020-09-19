@@ -466,7 +466,7 @@
     "text": "Age at 1st malignant Dx",
     "minAnswers": 1,
     "maxAnswers": 1,
-    "dataType": "long",
+    "dataType": "decimal",
     "minValue" : 0,
     "unitOfMeasurement": "years"
   },
