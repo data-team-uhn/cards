@@ -53,7 +53,7 @@ function SearchBar(props) {
   const { classes, className, defaultValue, invertColors, onChange, onPopperClose, onSelect, onSelectFinish, queryConstructor, resultConstructor, staticContext, ...rest } = props;
   const [ search, setSearch ] = useState(defaultValue);
   const [ results, setResults ] = useState([]);
-  const [ moreResults, setMoreResults ] = useState([]);
+  const [ moreResults, setMoreResults ] = useState(0);
   const [ popperOpen, setPopperOpen ] = useState(false);
   const [ timer, setTimer ] = useState();
   const [ error, setError ] = useState();
