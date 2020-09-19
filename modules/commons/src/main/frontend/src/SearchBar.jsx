@@ -76,6 +76,7 @@ function SearchBar(props) {
       '@path': '',
       'disabled': true
     }]);
+    setMoreResults(0);
     setError(false);
 
     // If there is a query, execute it
