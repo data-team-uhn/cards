@@ -234,7 +234,6 @@ function SearchBar(props) {
                       onClick={(e) => {
                         // Redirect using React-router
                         onSelect(event, result, props);
-                        setSearch(result["identifier"]);
                         onSelectFinish && onSelectFinish();
                         setPopperOpen(false);
                         }}
