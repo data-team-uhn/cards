@@ -247,7 +247,7 @@ function SearchBar(props) {
                       onClick={() => setPopperOpen(false)}
                       key="more"
                     >
-                    <Link to={"/content.html/QuickSearchResults#" + search} variant="body2" className={classes.root}>
+                    <Link to={"/content.html/QuickSearchResults#" + search} className={classes.root}>
                       {moreResults} more results
                     </Link>
                   </MenuItem> }
