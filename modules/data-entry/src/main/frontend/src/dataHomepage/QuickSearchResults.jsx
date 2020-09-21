@@ -70,7 +70,19 @@ function QuickSearchResults(props) {
     {
       "key": "",
       "label": "Identifier",
-      "format": (resultData) => (<Link to={defaultRedirect(resultData, props)}>{resultData.subject?.identifier || resultData["@name"] || anchor}</Link>),
+      "format": (resultData) => (<Link to={defaultRedirect(resultData, props)}>{resultData["@name"] || anchor}</Link>),
+    },
+    {
+      "key": "",
+      "label": "Questionnaire",
+      "format": (resultData) => ((resultData.questionnaire?.title?.concat(' ') || '') + (resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')),
+    },
+    {
+      "key": "",
+      "label": "Subject",
+      "format": (resultData) => ((resultData["jcr:primaryType"] == "lfs:Form" && resultData.subject)
+        ? <Link to={"/content.html/Subjects/"+resultData.subject["@name"]}>{resultData.subject?.identifier}</Link>
+        : null),
     },
     {
       "key": "jcr:createdBy",
@@ -81,11 +93,6 @@ function QuickSearchResults(props) {
       "key": "jcr:created",
       "label": "Created on",
       "format": "date:YYYY-MM-DD HH:mm",
-    },
-    {
-      "key": "",
-      "label": "Resource Type",
-      "format": (resultData) => ((resultData.questionnaire?.title?.concat(' ') || '') + (resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')),
     },
     {
       "key": "",
