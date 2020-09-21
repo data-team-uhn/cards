@@ -77,7 +77,10 @@ let DeleteQuestionnaireDialog = (props) => {
           onError("Fetch error: " + error.status);
         }
       })
-    .finally(() => setSaveInProgress(false));
+    .finally(() => {
+      setSaveInProgress(false);
+      onClose();
+    });
   }
 
   let loginToSave = () => {
