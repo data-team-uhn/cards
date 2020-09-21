@@ -103,12 +103,6 @@ public class DataImportServlet extends SlingAllMethodsServlet
         new SimpleDateFormat("yyyy-MM-dd"),
         new SimpleDateFormat("M/d/y"));
 
-    private static final List<String> SUBJECT_COLUMN_LABELS = Arrays.asList(
-        "Patient ID",
-        "Subject ID",
-        "Patient",
-        "Subject");
-
     /** Cached Question nodes. */
     private final ThreadLocal<Map<String, Node>> questionCache = new ThreadLocal<Map<String, Node>>()
     {
@@ -637,17 +631,13 @@ public class DataImportServlet extends SlingAllMethodsServlet
     // If there are more entries in the subject types list, recurse with the new parent and new subject type.
     // When the whole list of subject types is processed, return current subject as the subject to use for the row.
     {
-        System.out.println("getOrCreateSubject");
         Node current = null;
         for (String type: request.getParameterValues(":subjectType")) {
-            System.out.println("type: " + type);
             current = getOrCreateSubject(row, type, current, request);
             if (current == null) {
                 return null;
             }
         }
-        System.out.println("getOrCreateSubject returns: " + current);
-        System.out.println("");
         return current;
     }
 
@@ -655,19 +645,15 @@ public class DataImportServlet extends SlingAllMethodsServlet
     private Node getOrCreateSubject(CSVRecord row, String type, Node parent, SlingHttpServletRequest request)
     {
         String subjectId = findSubjectId(row, type);
-        System.out.println("id  " + subjectId);
         if (StringUtils.isBlank(subjectId)) {
             return null;
         }
         String subjectTypeString = type;
         String subjectKey = subjectId.concat(subjectTypeString);
-        System.out.println(subjectKey);
 
         String query =
             String.format("select n from [lfs:Subject] as n where n.identifier = '%s'", subjectId.replace("'", "''"));
         if (parent != null) {
-            String parentString = parent.toString();
-            //subjectKey.concat(parentString);
             try {
                 query += " and n.parent = '" + parent.getProperty("jcr:uuid") + "'";
             } catch (PathNotFoundException ex) {
@@ -679,11 +665,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
         final Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
         Map<String, Node> cache = this.subjectTypeCache.get();
         if (results.hasNext()) {
-            System.out.println("Results.hasNext()");
             cache.put(subjectKey, results.next().adaptTo(Node.class));
             return results.next().adaptTo(Node.class);
         } else if (cache.containsKey(subjectKey)) {
-            System.out.println("cache.containsKey(subjectKey)");
             return cache.get(subjectKey);
         }
         final Map<String, Object> subjectProperties = new LinkedHashMap<>();
@@ -713,13 +697,11 @@ public class DataImportServlet extends SlingAllMethodsServlet
         Node typeNode = getSubjectType(type);
         String label;
         try {
-            label = typeNode.getProperty("label").toString();
-        } catch (PathNotFoundException ex) {
-            return null;
-        } catch (RepositoryException e) {
+            label = typeNode.getProperty("label").getString();
+        } catch (RepositoryException ex) {
             return null;
         }
-        System.out.println(label);
+
         String result = null;
         String[] suffices = {"", " ID"};
         for (String suffix: suffices) {
@@ -742,7 +724,6 @@ public class DataImportServlet extends SlingAllMethodsServlet
     // If no value is set for this parameter, then /SubjectTypes/Patient should be assumed to be the default value
     {
         String finalType = type.split("/SubjectTypes/")[1];
-        System.out.println(finalType);
         String query =
             String.format("select n from [lfs:SubjectType] as n where n.label = '%s'",
                finalType.replaceAll("'", "''"));
