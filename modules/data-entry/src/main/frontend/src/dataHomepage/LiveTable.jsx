@@ -74,11 +74,22 @@ function LiveTable(props) {
   // When new data is added, trigger a new fetch
   useEffect(() => {
     if (updateData){
-      setFetchStatus(Object.assign({}, fetchStatus, {
-        "currentRequestNumber": -1,
-      }));
+      triggerFetch();
     }
   }, [updateData]);
+
+  // When the data path is changed, trigger a new fetch
+  useEffect(() => {
+    if (customUrl){
+      triggerFetch();
+    }
+  }, [customUrl]);
+
+  let triggerFetch = () => {
+    setFetchStatus(Object.assign({}, fetchStatus, {
+      "currentRequestNumber": -1,
+    }));
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's behavior
