@@ -62,26 +62,6 @@ function AdminDashboard(props) {
     );
   }
 
-  // render either the list of items in the admin dashboard or an item
-  return (
-    <div>
-      <Route exact path="/content.html/admin" component={() => <AdminDashboardDefault adminRoutes={adminRoutes} classes={classes}/>}/>
-      {adminRoutes.map((route, key) => {
-        return (
-          <Route
-            path={route["lfs:targetURL"]}
-            component={route["lfs:extensionRender"]}
-            key={key}
-          />
-        );
-      })}
-    </div>
-  );
-}
-
-function AdminDashboardDefault(props) {
-  const { adminRoutes, classes } = props;
-
   return (
     <Card>
       <CardHeader
