@@ -7,7 +7,8 @@
             "lfs:extensionPointId": "lfs/coreUI/view",
             "lfs:extensionName": "Administration",
             "lfs:extensionRenderURL": "asset:lfs-homepage.adminDashboard.js",
-            "lfs:targetURL": "/content.html/admin"
+            "lfs:targetURL": "/content.html/admin",
+            "lfs:exactURLMatch": true
         }
     },
     "Sidebar": {
