@@ -207,6 +207,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 // if it is the correct type, add to new map
                 String uuid = answerParent.getProperty("jcr:uuid").getString();
 
+                // TODO: make the <formID, <xvar string, splitvar string>> here ?
+
                 //this should create a nested hashmap <formID, <node, string>, <node, string>>
                 newInnerData.put(answer.getKey(), answer.getValue());
                 newData.put(uuid, newInnerData);
@@ -226,11 +228,12 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
         Iterator<Map.Entry<Resource, Resource>> forms = eachForm.entrySet().iterator();
 
-        // filter out answers without correct subject type
         while (forms.hasNext()) {
             Map.Entry<Resource,Resource> form = forms.next();
-            Node xAnswer = form.getKey().adaptTo(Node.class);
-            Node splitAnswer = form.getValue().adaptTo(Node.class);
+            Resource testing = form.getKey();
+            Node xAnswer = testing.adaptTo(Node.class);
+            Resource testing2 = form.getValue();
+            Node splitAnswer = testing2.adaptTo(Node.class); // TODO: this line is causing a null pointer exception?
 
             try {
                 String xValue = xAnswer.getProperty("value").getString();
@@ -275,10 +278,10 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             Resource splitVar = null;
             while (child.hasNext()) {
                 Map.Entry<Resource,String> entry = child.next();
-                if ("x".equals(entry.getKey())) {
+                if ("x".equals(entry.getValue())) {
                     xVar = entry.getKey();
                 }
-                if ("split".equals(entry.getKey())) {
+                if ("split".equals(entry.getValue())) {
                     splitVar = entry.getKey();
                 }
                 // create new map with a xVar and splitVar for each form. TODO: this can maybe be done elsewhere
@@ -286,40 +289,30 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             }
         }
 
+        // pass <formID, <xVar, splitVar>> instead ??
         Map<String, Map<String, Integer>> counts = aggregateSplitCounts(eachForm);
 
-        // TODO: Convert our HashMap into a JsonObject
-        // JsonObjectBuilder innerBuilder = Json.createObjectBuilder();
         // JsonObjectBuilder outerBuilder = Json.createObjectBuilder();
 
-        // Iterator<Map.Entry<String, Map<String, Integer>>> count = counts.entrySet().iterator();
+        // for(Map.Entry<String, Map<String,Integer>> t:counts.entrySet()) {
+        //     String key = t.getKey();
 
-        // while (count.hasNext()) {
-        //     Map.Entry<String, Map<String, Integer>> answer = count.next();
-        //     // iterate through inner map
-        //     Iterator<Map.Entry<String, Integer>> child = (answer.getValue()).entrySet().iterator();
-        //     while (child.hasNext()) {
-        //         Map.Entry<Resource,Integer> entry = child.next();
-        //         innerBuilder.add(entry.getKey(), entry.getValue());
+        //     JsonObjectBuilder keyBuilder = Json.createObjectBuilder();
+
+        //     for (Map.Entry<String,Integer> e : t.getValue().entrySet()) {
+        //         System.out.println("OuterKey: " + key + " InnerKey: " + e.getKey()+ " VALUE:" +e.getValue());
+        //         // inner object
+        //         keyBuilder.add(e.getKey(), e.getValue());
         //     }
-
-        //     outerBuilder.add(answer.getKey(), innerBuilder.build());
+        //     // outer object
+        //     outerBuilder.add(key, keyBuilder.build());
         // }
+
+
+        // // <family, <M, 3>, <F, 4>>, <name, <M, 2>, <F, 3>> 
 
         // builder.add("data", outerBuilder.build());
 
-        // JsonObjectBuilder dataBuilder = Json.createObjectBuilder();
-        // Iterator<Map.Entry<String, Integer>> keysMap = counts.keySet().iterator();
-        // while (keysMap.hasNext()) {
-        //     Map.Entry<String, Integer> key = keysMap.next();
-        //     Iterator<String> innerMap = key.keySet().iterator();
-        //     while (innerMap.hasNext()) {
-        //         String innerKey = innerMap.next();
-        //         innerBuilder.add(innerKey, counts.get(innerKey));
-        //     }
-        //     outerBuilder.add(answer.getKey(), innerBuilder.build());
-        // }
-        // builder.add("data", outerBuilder.build());
         builder.add("data", "test");
     }
 
