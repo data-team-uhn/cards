@@ -76,6 +76,12 @@
   // The URL to the script that can render this extension
   - lfs:extensionRenderURL (STRING)
 
+  // The (optional) URL that this extension is targeting, for links and views
+  - lfs:targetURL (STRING)
+
+  // Whether the target URL should be matched exactly for Views
+  - lfs:exactURLMatch (BOOLEAN)
+
   // The name of the extension
   - lfs:extensionName (STRING) mandatory
 
