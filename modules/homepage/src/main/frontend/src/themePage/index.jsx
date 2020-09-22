@@ -70,7 +70,7 @@ class Main extends React.Component {
         return (
           <Route
             path={route["lfs:targetURL"]}
-            exact={route["lfs:exactURLMatch"] || false}
+            exact={Boolean(route["lfs:exactURLMatch"])}
             component={route["lfs:extensionRender"]}
             key={key}
           />
