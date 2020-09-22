@@ -56,7 +56,7 @@ function QuickSearchResults(props) {
     ) || null
   }
 
-  let defaultRedirect = (row, props) => {
+  let defaultRedirect = (row) => {
     // Redirect using React-router
     const anchorPath = row[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY];
     let path = (row["jcr:primaryType"] == "lfs:Questionnaire") ? "/content.html/admin" : "/content.html";
@@ -66,23 +66,27 @@ function QuickSearchResults(props) {
     return path;
   }
 
+  let identifierText = (row) => {
+    let result;
+    switch (row["jcr:primaryType"]) {
+      case "lfs:Form":
+        let questionnaire = (row.questionnaire?.title?.concat(' ') || '')
+          + (row["jcr:primaryType"]?.replace(/lfs:/,"") || '');
+        result = (row.subject?.identifier)
+          ? `${row.subject.identifier}: ${questionnaire}`
+          : `Unknown Subject: ${questionnaire}`;
+        break;
+      default:
+        result = row.subject?.identifier || row["@name"] || anchor;
+    }
+    return result;
+  }
+
   const columns = [
     {
       "key": "",
       "label": "Identifier",
-      "format": (resultData) => (<Link to={defaultRedirect(resultData, props)}>{resultData["@name"] || anchor}</Link>),
-    },
-    {
-      "key": "",
-      "label": "Questionnaire",
-      "format": (resultData) => ((resultData.questionnaire?.title?.concat(' ') || '') + (resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')),
-    },
-    {
-      "key": "",
-      "label": "Subject",
-      "format": (resultData) => ((resultData["jcr:primaryType"] == "lfs:Form" && resultData.subject)
-        ? <Link to={"/content.html/Subjects/"+resultData.subject["@name"]}>{resultData.subject?.identifier}</Link>
-        : null),
+      "format": (resultData) => (<Link to={defaultRedirect(resultData)}>{identifierText(resultData)}</Link>),
     },
     {
       "key": "jcr:createdBy",
