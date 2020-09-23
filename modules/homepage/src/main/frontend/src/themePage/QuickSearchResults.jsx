@@ -111,7 +111,7 @@ function QuickSearchResults(props) {
       <Card>
         <CardHeader
           title={
-            <Button>
+            <Button className={classes.quickSearchResultsTitle}>
               Quick Search Results for <span className={classes.highlightedText}>{anchor}</span>
             </Button>
           }
