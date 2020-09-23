@@ -16,11 +16,11 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
-import LiveTable from "./LiveTable.jsx";
+import React from "react";
+import LiveTable from "../dataHomepage/LiveTable.jsx";
 import HeaderStyle from "../headerStyle.jsx";
 
-import { Button, Card, CardContent, CardHeader, Grid, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
@@ -36,7 +36,6 @@ const LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
 function QuickSearchResults(props) {
 
   const { classes } = props;
-  // fix issue with classes
 
   const anchor = location.hash.substr(1);
 

@@ -363,7 +363,7 @@ function LiveTable(props) {
             )
             :
             tableData ?
-              ( tableData.map((item, index) => makeRow(item, index)) )
+              ( tableData.map(makeRow) )
               :
               ( <TableRow><TableCell colSpan={columns ? columns.length : 1}>Please wait...</TableCell></TableRow> )
             /* TODO: Better progress bar, add some Suspense */

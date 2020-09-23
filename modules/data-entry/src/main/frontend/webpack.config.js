@@ -26,7 +26,6 @@ module.exports = {
     [module_name + 'dateQuestion']: './src/questionnaire/DateQuestion.jsx',
     [module_name + 'userDashboard']: './src/dataHomepage/UserDashboard.jsx',
     [module_name + 'SubjectType']: './src/dataHomepage/SubjectType.jsx',
-    [module_name + 'QuickSearchResults']: './src/dataHomepage/QuickSearchResults.jsx',
   },
   plugins: [
     new CleanWebpackPlugin(),

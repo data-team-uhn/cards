@@ -50,13 +50,6 @@
             "lfs:extensionName": "Tumors",
             "lfs:targetURL": "/content.html/Tumor",
             "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js"
-        },
-        "QuickSearchResults": {
-            "jcr:primaryType": "lfs:Extension",
-            "lfs:extensionPointId": "lfs/coreUI/view",
-            "lfs:extensionName": "Quick Search Results",
-            "lfs:targetURL": "/content.html/QuickSearchResults",
-            "lfs:extensionRenderURL": "asset:lfs-dataentry.QuickSearchResults.js"
         }
     },
     "AdminDashboard": {
