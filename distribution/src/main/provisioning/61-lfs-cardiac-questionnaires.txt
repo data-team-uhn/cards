@@ -18,12 +18,10 @@
 #
 
 # This is the LFS project
-[feature name=lfs-questionnaires]
+[feature name=lfs-cardiac-questionnaires]
 
 [variables]
     lfs.version=0.1-SNAPSHOT
 
-[artifacts runModes=forms]
-    ca.sickkids.ccm.lfs/lfs-questionnaire-tissue-metrix/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-questionnaire-clinical-data/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-questionnaire-somatic-variants/${lfs.version}
+[artifacts runModes=cardiac]
+    ca.sickkids.ccm.lfs/lfs-cardiac-questionnaire-clinical-data/${lfs.version}

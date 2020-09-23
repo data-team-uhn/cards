@@ -906,5 +906,6 @@
     <module>modules</module>
     <module>distribution</module>
     <module>questionnaires</module>
+    <module>cardiac-questionnaires</module>
   </modules>
 </project>

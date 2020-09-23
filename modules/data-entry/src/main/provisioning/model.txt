@@ -20,7 +20,7 @@
 # The LFS homepage
 [feature name=lfs-dataentry]
 
-[artifacts runModes=forms startLevel=10]
+[artifacts startLevel=10]
     org.apache.sling/org.apache.sling.scripting.sightly/1.1.2-1.4.0
     org.apache.sling/org.apache.sling.scripting.sightly.runtime/1.1.0-1.4.0
     org.apache.sling/org.apache.sling.api/2.18.4
@@ -31,7 +31,7 @@
     org.apache.commons/commons-csv/1.6
     ca.sickkids.ccm.lfs/lfs-dataentry
 
-[configurations runModes=forms]
+[configurations]
     org.apache.sling.jcr.repoinit.RepositoryInitializer-forms
         scripts=["\
             create path (lfs:dataQuery) /query \
@@ -42,7 +42,7 @@
             end \
           "]
 
-[configurations runModes=forms,permissions_open]
+[configurations runModes=permissions_open]
     org.apache.sling.jcr.repoinit.RepositoryInitializer-forms_open
         scripts=["\
             create path (lfs:QuestionnairesHomepage) /Questionnaires \
@@ -59,7 +59,7 @@
             end \
           "]
 
-[configurations runModes=forms,permissions_trusted]
+[configurations runModes=permissions_trusted]
     org.apache.sling.jcr.repoinit.RepositoryInitializer-forms_trusted
         scripts=["\
             create path (lfs:QuestionnairesHomepage) /Questionnaires \
@@ -78,7 +78,7 @@
             end \
           "]
 
-[configurations runModes=forms,permissions_ownership]
+[configurations runModes=permissions_ownership]
     org.apache.sling.jcr.repoinit.RepositoryInitializer-forms_open
         scripts=["\
             create path (lfs:QuestionnairesHomepage) /Questionnaires \
