@@ -129,6 +129,12 @@
     org.apache.sling.commons.log.file="logs/request.log"
     org.apache.sling.commons.log.level="info"
 
+  org.apache.sling.commons.log.LogManager.factory.config-query.log
+    org.apache.sling.commons.log.pattern="%msg%n"
+    org.apache.sling.commons.log.names=["org.apache.jackrabbit.oak.query"]
+    org.apache.sling.commons.log.file="logs/query.log"
+    org.apache.sling.commons.log.level="debug"
+
   # TODO: remove bundles as their dependency on admin login is fixed, see SLING-5355 for linked issues
   # For these bundles, admin login is considered "ok":
   # org.apache.sling.jcr.contentloader
