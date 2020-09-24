@@ -154,7 +154,7 @@ let EditDialog = (props) => {
           <DialogContent>
             { !props.edit && titleField() }
             <Fields data={props.edit && props.data || {}} JSON={json[0]} edit={true} />
-            { props.data && props.type.includes('Question') && <AnswerOptions data={props.data} path={props.data["@path"] + (props.edit ? "" : `/${title}`)} /> }
+            { props.data && props.type.includes('Question') && <AnswerOptions data={props.data} /> }
           </DialogContent>
           <DialogActions>
             <Button
