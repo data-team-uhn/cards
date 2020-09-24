@@ -100,7 +100,9 @@ let EditDialog = (props) => {
             setLastSaveStatus(false);
           }
         })
-        .finally(() => {setSaveInProgress(false); props.onClose()});}
+        .finally(() => {setSaveInProgress(false); props.onClose();});
+      }
+     
   }
 
   // Open the login page in a new popup window, centered wrt the parent window
@@ -147,11 +149,11 @@ let EditDialog = (props) => {
         <DialogTitle>
           { dialogTitle() }
         </DialogTitle>
-        <form action={props.data && props.data['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={props.id}>
+        <form action={props.data['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={props.id}>
           <DialogContent>
             { !props.edit && titleField() }
-            <Fields data={props.edit && props.data || {}} JSON={json[0]} edit={true} />
-            { props.data && props.type.includes('Question') && <AnswerOptions data={props.data} /> }
+            <Fields data={props.edit && props.data || {}} JSON={json[0]} />
+            {  props.type.includes('Question') && <AnswerOptions data={props.data} /> }
           </DialogContent>
           <DialogActions>
             <Button
@@ -180,7 +182,7 @@ let EditDialog = (props) => {
 };
 
 EditDialog.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   edit: PropTypes.bool.isRequired,
   open: PropTypes.bool.isRequired

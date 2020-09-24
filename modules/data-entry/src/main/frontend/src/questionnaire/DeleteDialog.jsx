@@ -30,9 +30,13 @@ import {
   withStyles
 } from "@material-ui/core";
 
+import DeleteIcon from "@material-ui/icons/Delete";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 let DeleteDialog = (props) => {
+  let [openDeleteDialog, setOpenDeleteDialog ] = useState(false);
+  let [ forms, setForms] = useState(0);
+  let [ saveInProgress, setSaveInProgress ] = useState();
   // Indicates whether the form has been saved or not. This has three possible values:
   // - undefined -> no save performed yet, or the form has been modified since the last save
   // - true -> data has been successfully saved
@@ -49,6 +53,8 @@ let DeleteDialog = (props) => {
       return;
     }
 
+    setSaveInProgress(true);
+
     fetch(props.data["@path"], {
       method: "DELETE",
     }).then((response) => response.ok ? true : Promise.reject(response))
@@ -62,7 +68,8 @@ let DeleteDialog = (props) => {
           setLastSaveStatus(false);
         }
       })
-    .finally(() => props.onClose());
+    .finally(() => setSaveInProgress(false));
+    setOpenDeleteDialog(false);
   }
 
   let loginToSave = () => {
@@ -78,11 +85,14 @@ let DeleteDialog = (props) => {
 
   return (
     <React.Fragment>
-      <Dialog id="deleteDialog" open={props.open} onClose={props.onClose}>
-        <form action={props.data && props.data["@path"]} onSubmit={deleteData} method="DELETE" key={props.id}>
+      <Dialog id="deleteDialog" open={openDeleteDialog} onClose={() => { setOpenDeleteDialog(false); }}>
+        <form action={props.data["@path"]} onSubmit={deleteData} method="DELETE" key={props.id}>
           <DialogTitle>
             <Typography>{props.type.includes("Question") ? "Confirm question deletion" : "Confirm Section Deletion"}</Typography>
           </DialogTitle>
+          <DialogContent>
+            <Typography></Typography>
+          </DialogContent>
           <DialogActions>
             <Button
               type="submit"
@@ -94,13 +104,16 @@ let DeleteDialog = (props) => {
             <Button
               variant="contained"
               color="default"
-              onClick={props.onClose}
+              onClick={() => { setOpenDeleteDialog(false); }}
               >
               {'Cancel'}
             </Button>
           </DialogActions>
         </form>
       </Dialog>
+      <IconButton onClick={ () => {  setOpenDeleteDialog(true); }}>
+        <DeleteIcon />
+      </IconButton>
     </React.Fragment>
   );
 };

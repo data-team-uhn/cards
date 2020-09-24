@@ -29,7 +29,7 @@ import TextInput from "./TextInput";
 import ObjectInput from "./ObjectInput";
 
 let Fields = (props) => {
-  let { data, JSON, edit } = props;
+  let { data, JSON } = props;
  /**
  * Method responsible for displaying a question from the questionnaire
  *
@@ -38,7 +38,7 @@ let Fields = (props) => {
  * @returns a React component that renders the question
  */
 
-let displayEditField = (key, value) => {
+let displayField = (key, value) => {
   // This variable must start with an upper case letter so that React treats it as a component
   const FieldDisplay = QuestionComponentManager.getQuestionComponent(key);
   return (
@@ -51,35 +51,13 @@ let displayEditField = (key, value) => {
   );
 };
 
-let displayStaticField = (key, value) => {
-  let formatString = (key) => {
-    let formattedString = key.charAt(0).toUpperCase() + key.slice(1);
-      return formattedString.split(/(?=[A-Z])/).join(' ');
-  }
-  return (
-    <Grid item key={key}>
-      <dt>
-        <Typography>{formatString(key)}:</Typography>
-      </dt>
-      <dd>
-        <Typography>{data[key]}</Typography>
-      </dd>
-    </Grid>
-  );
-};
-
-  return edit ? 
-    Object.entries(JSON).map(([key, value]) => (displayEditField(key, value)))
-    :
-    Object.entries(JSON).map(([key, value]) => (displayStaticField(key, value)));
-  
+  return Object.entries(JSON).map(([key, value]) => (
+    displayField(key, value)));
 }
 
 Fields.propTypes = {
   data: PropTypes.object.isRequired,
-  JSON: PropTypes.object.isRequired,
-  edit: PropTypes.bool.isRequired
+  JSON: PropTypes.object.isRequired
 };
   
 export default withStyles(QuestionnaireStyle)(Fields);
-
