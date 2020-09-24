@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, withStyles } from "@material-ui/core";
@@ -27,24 +27,23 @@ let DeleteQuestionnaireDialog = (props) => {
   let [ forms, setForms ] = useState(0);
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ saveInProgress, setSaveInProgress ] = useState();
-
-  // Count the number of returned forms
-  let parseResult = (formData) => {
-    let filteredForms = Object.values(formData['rows']).length;
-    setForms(filteredForms);
-  }
-
-  useEffect( () => {
-    // Find all forms with that questionnaire uuid
-    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Form] as n WHERE n.'questionnaire'='${data['jcr:uuid']}'`))
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => { parseResult(json); });
-    }, [data?.['jcr:uuid']]);
   
   let deleteQuestionnaireWarningMessage = () => {
     let formsExist = forms && forms > 0;
+    if (!formsExist) {
+      // Find all forms with that questionnaire uuid
+      fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Form] as n WHERE n.'questionnaire'='${data['jcr:uuid']}'`))
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((json) => { parseResult(json); });
+    }
+    // Count the number of returned forms
+    let parseResult = (forms) => {
+      let filteredForms = Object.values(forms['rows']).length;
+      setForms(filteredForms);
+      formsExist = forms && forms > 0;
+    }
     return formsExist
-      ? `There are ${forms} form${forms == 1 ? "" : "s"} filled out for this questionnaire. Are you sure you wish to proceed?`
+      ? `There are ${forms} forms filled out for this questionnaire. Are you sure you wish to proceed?`
       : "Are you sure you wish to proceed?"
   }
 
