@@ -20,7 +20,7 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, withStyles } from "@material-ui/core";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 let DeleteQuestionnaireDialog = (props) => {
     let [ forms, setForms ] = useState(0);

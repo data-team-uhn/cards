@@ -27,7 +27,7 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
+import QuestionnaireStyle from './QuestionnaireStyle';
 import uuid from 'uuid/v4';
 import CloseIcon from '@material-ui/icons/Close';
 

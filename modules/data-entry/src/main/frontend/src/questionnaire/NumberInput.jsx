@@ -17,45 +17,54 @@
 //  under the License.
 //
 
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Checkbox,
   Grid,
+  TextField,
   Typography,
   withStyles
 } from "@material-ui/core";
 
-import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
-import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
+import QuestionnaireStyle from './QuestionnaireStyle';
+import QuestionComponentManager from "./QuestionComponentManager";
 
-// Boolean Input field used by Edit dialog component
+// Number Input field used by Edit dialog component
 
-let BooleanInput = (props) => {
-  let { objectKey, data } = props;
+let NumberInput = (props) => {
+  let { objectKey, data, definition } = props;
   let formatString = (key) => {
     let formattedString = key.charAt(0).toUpperCase() + key.slice(1);
       return formattedString.split(/(?=[A-Z])/).join(' ');
   }
   return (
     <Grid container alignItems='flex-end' spacing={2} key={objectKey || ''}>
-      <Grid item xs={6}><Typography>{ formatString(objectKey) || '' }</Typography></Grid>
-      <Grid item xs={6}><Checkbox name={objectKey || ''} id={objectKey || ''} defaultValue={data[objectKey] || ''} /></Grid>
+      <Grid item xs={6}><Typography>{ formatString(objectKey) || ''}</Typography></Grid>
+      <Grid item xs={6}>
+        <TextField
+          name={objectKey || ''}
+          id={objectKey || ''}
+          defaultValue={data[objectKey] || ''}
+          type='number' 
+          placeholder={objectKey.includes('maxPerSubject') ? 'Unlimited' : ''}
+          min={objectKey.includes('maxPerSubject') ? 0 : ''}
+        />
+      </Grid>
     </Grid>
   )
 }
 
-BooleanInput.propTypes = {
+NumberInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired
 };
 
-const StyledBooleanInput = withStyles(QuestionnaireStyle)(BooleanInput);
-export default StyledBooleanInput;
+const StyledNumberInput = withStyles(QuestionnaireStyle)(NumberInput);
+export default NumberInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
-  if (definition === 'boolean') {
-    return [StyledBooleanInput, 50];
+  if (["long", "double", "decimal"].includes(definition)) {
+    return [StyledNumberInput, 50];
   }
 });
 

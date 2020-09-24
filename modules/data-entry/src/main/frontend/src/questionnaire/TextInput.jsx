@@ -17,54 +17,40 @@
 //  under the License.
 //
 
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Grid,
-  TextField,
-  Typography,
-  withStyles
-} from "@material-ui/core";
+import { Grid, TextField, Typography, withStyles } from "@material-ui/core";
 
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
+import QuestionnaireStyle from './QuestionnaireStyle';
 import QuestionComponentManager from "./QuestionComponentManager";
 
-// Number Input field used by Edit dialog component
+// Text Input field used by Edit dialog component
+let TextInput = (props) => {
+  let { objectKey, data } = props;
 
-let NumberInput = (props) => {
-  let { objectKey, data, definition } = props;
   let formatString = (key) => {
     let formattedString = key.charAt(0).toUpperCase() + key.slice(1);
       return formattedString.split(/(?=[A-Z])/).join(' ');
   }
+
   return (
-    <Grid container alignItems='flex-end' spacing={2} key={objectKey || ''}>
-      <Grid item xs={6}><Typography>{ formatString(objectKey) || ''}</Typography></Grid>
+    <Grid container alignItems='flex-end' spacing={2} key={objectKey}>
+      <Grid item xs={6}><Typography>{ formatString(objectKey)}</Typography></Grid>
       <Grid item xs={6}>
-        <TextField
-          name={objectKey || ''}
-          id={objectKey || ''}
-          defaultValue={data[objectKey] || ''}
-          type='number' 
-          placeholder={objectKey.includes('maxPerSubject') ? 'Unlimited' : ''}
-          min={objectKey.includes('maxPerSubject') ? 0 : ''}
-        />
+        <TextField name={objectKey} id={objectKey} defaultValue={data[objectKey] || ''} required={objectKey.includes('text')}/>
       </Grid>
     </Grid>
   )
 }
 
-NumberInput.propTypes = {
+TextInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired
 };
 
-const StyledNumberInput = withStyles(QuestionnaireStyle)(NumberInput);
-export default NumberInput;
+const StyledTextInput = withStyles(QuestionnaireStyle)(TextInput);
+export default StyledTextInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
-  if (["long", "double", "decimal"].includes(definition)) {
-    return [StyledNumberInput, 50];
-  }
+  return [StyledTextInput, 0];
 });
-

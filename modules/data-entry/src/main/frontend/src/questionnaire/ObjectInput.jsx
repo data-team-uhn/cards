@@ -28,8 +28,8 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
-import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
+import QuestionnaireStyle from "./QuestionnaireStyle";
+import QuestionComponentManager from "./QuestionComponentManager";
 
 // Object Input field used by Edit dialog component
 
@@ -63,7 +63,7 @@ let ObjectInput = (props) => {
         </Select>
       </Grid>
     </Grid>
-    { typeof(value) === 'object' && selectedValue != '' && <Fields data={data} JSON={value[selectedValue]} edit={true}/> }
+    { typeof(value) === 'object' && selectedValue != '' && <Fields data={data} JSON={value[selectedValue]} /> }
   </React.Fragment>
   )
 }

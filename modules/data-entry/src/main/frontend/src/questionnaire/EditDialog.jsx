@@ -31,7 +31,7 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
+import QuestionnaireStyle from './QuestionnaireStyle';
 import AnswerOptions from './AnswerOptions';
 import Fields from './Fields'
 
