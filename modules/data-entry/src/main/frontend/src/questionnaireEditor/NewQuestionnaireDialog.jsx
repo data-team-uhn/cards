@@ -98,13 +98,6 @@ function NewQuestionnaireDialog(props) {
         {error && <Typography color='error'>{error}</Typography>}
           <TextField
             autoFocus
-            inputProps={{
-              onKeyDown: (event) => {
-                if (event.key == 'Enter' && title) {
-                  createForm();
-                }
-              }
-            }}
             placeholder="Enter a title"
             onChange={(event) => { 
               handleChangeTitle(event.target.value);
@@ -118,7 +111,7 @@ function NewQuestionnaireDialog(props) {
           <Button
             variant="contained"
             color="primary"
-            onClick={createForm}
+            onClick={() => {  createForm();  }}
             disabled={!title}
             >
             {'Create'}
