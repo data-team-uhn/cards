@@ -26,11 +26,11 @@ import {
 
 import QuestionnaireStyle from './QuestionnaireStyle';
 
-// String Input field used by Edit dialog component
 let StringInput = (props) => {
   let {  objectKey, data } = props;
+  let [ value, setValue ] = useState(data[objectKey] || '');
   return (
-    <TextField name={objectKey} id={objectKey} defaultValue={data[objectKey] || ''}/>
+    <TextField name={objectKey} id={objectKey} defaultValue={data[objectKey]}/>
   )
 }
 
