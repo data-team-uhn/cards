@@ -18,7 +18,7 @@
 //
 
 import React, { useState, useRef } from "react";
-import Fields from "./Fields"
+import { fields } from "./EditDialog"
 import PropTypes from "prop-types";
 import {
   Grid,
@@ -39,29 +39,23 @@ let ObjectInput = (props) => {
     return formattedString.split(/(?=[A-Z])/).join(" ");
   }
   return (
-    <React.Fragment>
-      <Grid container alignItems='flex-end' spacing={2}>
+    <div>
+      <Grid container alignItems="flex-end" spacing={2}>
       <Grid item xs={6}>
         <Typography>{ formatString(objectKey) }</Typography>
       </Grid>
       <Grid item xs={6}>
-        <Select 
-          id={objectKey}
-          name={objectKey}
-          defaultValue={data[objectKey] || ''}
-          onChange={(event) => { 
-            setSelectedValue(event.target.value);
-          }}>
-          { typeof(value) === 'object' && Object.keys(value).map((name, val) => 
-            <MenuItem key={val} name={name} id={name} value={name}>
+          <Select id={objectKey} name={objectKey} defaultValue={data[objectKey] || ''} onChange={(event) => { setSelectedValue(event.target.value); }}>
+          { typeof(value) === "object" && Object.keys(value).map((name, val) => 
+            <MenuItem name={name} id={name} value={name}>
               <Typography>{name}</Typography>
             </MenuItem>
           )}
-        </Select>
+          </Select>
+        </Grid>
       </Grid>
-    </Grid>
-    { typeof(value) === 'object' && selectedValue != '' && <Fields data={data} JSON={value[selectedValue]} /> }
-  </React.Fragment>
+      { typeof(value) === "object" && selectedValue != '' && fields(data, value[selectedValue]) }
+    </div>
   )
 }
 

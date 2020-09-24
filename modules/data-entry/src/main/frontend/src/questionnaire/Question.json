@@ -19,27 +19,31 @@
       "text" : {
         "validationRegexp": "string",
         "minAnswers": "long",
-        "maxAnswers": "long"
+        "maxAnswers": "long",
+        "answerOptions": "array"
       },
       "long": {
         "minvalue": "double",
         "maxvalue": "double",
         "minAnswers": "long",
         "maxAnswers": "long",
-        "unitOfMeasurement" : "string"
+        "unitOfMeasurement" : "string",
+        "answerOptions": "array"
       },
       "decimal": {
         "minvalue": "double",
         "maxvalue": "double",
         "minAnswers": "long",
         "maxAnswers": "long",
-        "unitOfMeasurement" : "string"
+        "unitOfMeasurement" : "string",
+        "answerOptions": "array"
       },
       "vocabulary": { 
         "sourceVocabulary": "string",
         "vocabularyFilter": "string",
         "minAnswers": "long",
-        "maxAnswers": "long"
+        "maxAnswers": "long",
+        "answerOptions": "array"
         },
         "computed": {
           "minAnswers": "long",
