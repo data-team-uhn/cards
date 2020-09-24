@@ -188,22 +188,22 @@ function LiveTable(props) {
     }
     
     // Handle links
-    if (column.key.startsWith('actions')) {
+    if (column.edit || column.delete) {
       content = ( 
         <div>
-          <Link to={"/content.html" + entry["@path"]}>
+          { column.edit && <Link to={column.edit}>
             <IconButton>
               <EditIcon />
             </IconButton>
-          </Link> 
-          <IconButton onClick={() => { props.delete(entry); }}>
-            <DeleteIcon />
-        </IconButton>
+          </Link> } 
+          { column.delete && <Link to={column.delete}>
+            <IconButton>
+              <DeleteIcon />
+          </IconButton>
+        </Link> } 
       </div>
       )
-    }
-    
-    if (column.link) {
+    } else if (column.link) {
       // allow livetable to link to components in the admin dashboard
       // if livetable item must link to a component within the admin dashboard, set "admin": true
       let pathPrefix = (column.admin ? "/content.html/admin" : "/content.html");
