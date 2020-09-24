@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -60,7 +59,7 @@ import org.slf4j.LoggerFactory;
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "lfs/Questionnaire", "lfs/Form", "lfs/Subject",
-        "lfs/SubjectType", "lfs/Question", "lfs/Section" },
+        "lfs/SubjectType", "lfs/Question" },
     methods = { "DELETE" })
 public class DeleteServlet extends SlingAllMethodsServlet
 {
@@ -126,7 +125,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
             LOGGER.error(path);
             Node node = request.getResource().adaptTo(Node.class);
             if (recursive) {
-                handleRecursiveDeleteChildren(node);
+                handleRecursiveDelete(node);
             } else {
                 handleDelete(response, node);
             }
@@ -165,23 +164,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
             sendJsonError(response, SlingHttpServletResponse.SC_CONFLICT, String.format("This item is referenced %s.",
                 StringUtils.isEmpty(referencedNodes) ? "by unknown item(s)" : "in " + referencedNodes));
         }
-    }
-
-    /**
-     * Delete the children of a node and all nodes which reference its children, as well as the node itself.
-     *
-     * @param node the node to attempt deletion
-     * @throws AccessDeniedException if the requesting user does not have permission to delete any node
-     * @throws RepositoryException if deletion fails due to a repository error
-     */
-    private void handleRecursiveDeleteChildren(Node node)
-        throws AccessDeniedException, RepositoryException
-    {
-        final NodeIterator childNodes = node.getNodes();
-        while (childNodes.hasNext()) {
-            handleRecursiveDeleteChildren(childNodes.nextNode());
-        }
-        handleRecursiveDelete(node);
     }
 
     /**
