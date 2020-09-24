@@ -59,9 +59,26 @@ function SearchBar(props) {
   const [ error, setError ] = useState();
   const [ requestID, setRequestID ] = useState(0);
 
+  const [ limit, setLimit ] = useState(5);
+  const [ allowedResourceTypes, setAllowedResourceTypes ] = useState([]);
+  const [ showTotalRows, setShowTotalRows ] = useState(true);
+  const [ fetched, setFetched ] = useState(false);
+
   let input = React.useRef();
   let suggestionMenu = React.useRef();
   let searchBar = React.useRef();
+
+  // Fetch saved admin config settings
+  let getQuickSearchSettings = () => {
+    fetch('/apps/lfs/config/QuickSearch/Quick.json')
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        setFetched(true);
+        setLimit(json["limit"]);
+        setAllowedResourceTypes(json["allowedResourceTypes"]);
+        setShowTotalRows(json["showTotalRows"]  == 'true');
+      });
+  }
 
   // Callback to update the value of the search bar. Sends off a delayed fulltext request
   let changeSearch = (query) => {
@@ -91,7 +108,7 @@ function SearchBar(props) {
 
   // Runs a fulltext request
   let runQuery = (query) => {
-    let new_url = queryConstructor(query, requestID);
+    let new_url = queryConstructor(query, requestID, showTotalRows, allowedResourceTypes);
     // In the closure generated, postprocessResults will look for req_id, instead of requestID+1
     setRequestID(requestID+1);
     fetch(new_url)
@@ -142,6 +159,10 @@ function SearchBar(props) {
           className={classes.dropdownItem}
         />
     )
+  }
+
+  if (!fetched) {
+    getQuickSearchSettings();
   }
 
   return(
@@ -241,8 +262,10 @@ function SearchBar(props) {
                       <QuickSearchResult resultData={result} />
                     </MenuItem>
                   ))}
-                  { moreResults > 0 &&
-                  <Link to={"/content.html/QuickSearchResults#" + search} className={classes.root}>
+                  { showTotalRows && moreResults > 0 &&
+                  <Link to={"/content.html/QuickSearchResults?query=" + encodeURIComponent(search)
+                              + "&allowedResourceTypes=" + encodeURIComponent(JSON.stringify(allowedResourceTypes))}
+                          className={classes.root}>
                     <MenuItem
                       className={classes.dropdownItem}
                       onClick={() => setPopperOpen(false)}
@@ -261,12 +284,14 @@ function SearchBar(props) {
   );
 }
 
-let defaultQueryConstructor = (query, requestID) => {
+let defaultQueryConstructor = (query, requestID, showTotalRows, allowedResourceTypes) => {
   let new_url = new URL(DEFAULT_QUERY_URL, window.location.origin);
   new_url.searchParams.set("quick", encodeURIComponent(query));
   new_url.searchParams.set("doNotEscapeQuery", "true");
   new_url.searchParams.set("limit", DEFAULT_MAX_RESULTS);
   new_url.searchParams.set("req", requestID);
+  new_url.searchParams.set("showTotalRows", showTotalRows);
+  new_url.searchParams.set("allowedResourceTypes", encodeURIComponent(JSON.stringify(allowedResourceTypes)));
   return new_url;
 }
 

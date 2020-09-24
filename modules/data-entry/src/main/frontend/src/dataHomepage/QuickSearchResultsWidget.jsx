@@ -43,16 +43,16 @@ function QuickSearchResultsWidget(props) {
 
   const resourceTypes = ["lfs:Form", "lfs:Subject", "lfs:Questionnaire"];
 
-  // Fetch saved admin settings
+  // Fetch saved admin config settings
   let getQuickSearchSettings = () => {
-    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:QuickSearchResultsWidget] as n WHERE n.'label'='quick'`))
+    fetch('/apps/lfs/config/QuickSearch/Quick.deep.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setFetched(true);
-        setPath(json["rows"][0]["@path"]);
-        setLimit(json["rows"][0]["limit"]);
-        setAllowedResourceTypes(json["rows"][0]["allowedResourceTypes"]);
-        setShowTotalRows(json["rows"][0]["showTotalRows"]  == 'true');
+        setPath(json["@path"]);
+        setLimit(json["limit"]);
+        setAllowedResourceTypes(json["allowedResourceTypes"]);
+        setShowTotalRows(json["showTotalRows"]  == 'true');
       });
   }
 
@@ -69,7 +69,6 @@ function QuickSearchResultsWidget(props) {
     for (var i in allowedResourceTypes) {
       formData.append('allowedResourceTypes', allowedResourceTypes[i]);
     }
-    formData.append('showTotalRows', showTotalRows);
 
     // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
     fetch(path,

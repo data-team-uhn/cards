@@ -72,27 +72,41 @@ public class QueryBuilder implements Use
 
     private ResourceResolver resourceResolver;
 
-    private SlingHttpServletRequest request;
-
     /* Whether or not the input should be escaped, if it is used in a contains() call. */
     private boolean shouldEscape;
+
+    /* The requested, default or set by admin limit. */
+    private long limit;
+
+    /* Whether to show the total number of results. */
+    private boolean showTotalRows;
+
+    /* Resource types allowed for a search. */
+    private String[] resourceTypes;
 
     @Override
     public void init(Bindings bindings)
     {
-        this.request = (SlingHttpServletRequest) bindings.get("request");
+        SlingHttpServletRequest request = (SlingHttpServletRequest) bindings.get("request");
         this.resourceResolver = (ResourceResolver) bindings.get("resolver");
 
         try {
-            final String jcrQuery = this.request.getParameter("query");
-            final String luceneQuery = this.request.getParameter("lucene");
-            final String fullTextQuery = this.request.getParameter("fulltext");
-            final String quickQuery = this.request.getParameter("quick");
-            final String doNotEscape = this.request.getParameter("doNotEscapeQuery");
-            long limit = getLongValueOrDefault(this.request.getParameter("limit"), 10);
-            final long offset = getLongValueOrDefault(this.request.getParameter("offset"), 0);
+            final String jcrQuery = request.getParameter("query");
+            final String luceneQuery = request.getParameter("lucene");
+            final String fullTextQuery = request.getParameter("fulltext");
+            final String quickQuery = request.getParameter("quick");
+            final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
+            String requestID = request.getParameter("req");
+            if (StringUtils.isBlank(requestID)) {
+                requestID = "";
+            }
+            final String doNotEscape = request.getParameter("doNotEscapeQuery");
+            final String showTotalRowsParam = request.getParameter("showTotalRows");
+
+            this.limit = getLongValueOrDefault(request.getParameter("limit"), 10);
+            this.resourceTypes = request.getParameterValues("allowedResourceTypes");
             this.shouldEscape = StringUtils.isBlank(doNotEscape) || !("true".equals(doNotEscape));
-            boolean showTotalRows = true;
+            this.showTotalRows = StringUtils.isBlank(showTotalRowsParam) || !("true".equals(showTotalRowsParam));
 
             // Try to use a JCR-SQL2 query first
             Iterator<JsonObject> results;
@@ -103,21 +117,14 @@ public class QueryBuilder implements Use
             } else if (StringUtils.isNotBlank(fullTextQuery)) {
                 results = QueryBuilder.adaptNodes(fullTextSearch(this.urlDecode(fullTextQuery)));
             } else if (StringUtils.isNotBlank(quickQuery)) {
-                // get the admin quick search defined params if any
-                Resource settings = getSearchSettings("quick");
-                limit = settings.getValueMap().get("limit", limit);
-                String[] resourceTypes = settings.getValueMap().get("allowedResourceTypes", String[].class);
-                showTotalRows = settings.getValueMap().get("showTotalRows", showTotalRows);
-
-                results = quickSearch(this.urlDecode(quickQuery), limit, resourceTypes, showTotalRows);
+                results = quickSearch(this.urlDecode(quickQuery));
             } else {
                 results = Collections.emptyIterator();
             }
 
             // output the results into our content
             JsonObjectBuilder builder = Json.createObjectBuilder();
-            long[] metadata = this.addObjects(builder, results, offset, limit, showTotalRows);
-            this.addSummary(builder, this.request, metadata, showTotalRows);
+            this.addObjects(builder, results, requestID, offset);
             this.content = builder.build().toString();
         } catch (Exception e) {
             this.content = "Unknown error: " + e.fillInStackTrace();
@@ -292,33 +299,29 @@ public class QueryBuilder implements Use
      * are aggregated to their parent.
      *
      * @param query text to search
-     * @param limit the requested, default or set by admin limit
-     * @param resourceTypes resource types allowed for a search
-     * @param showTotalRows whether to show the total number of results
      *
      * @return the content matching the query
      */
-    private Iterator<JsonObject> quickSearch(String query, long limit, String[] resourceTypes,
-            boolean showTotalRows) throws RepositoryException
+    private Iterator<JsonObject> quickSearch(String query) throws RepositoryException
     {
-        List<String> allowedResourceTypes = Arrays.asList(resourceTypes);
+        List<String> allowedResourceTypes = Arrays.asList(this.resourceTypes);
         ArrayList<JsonObject> resultsList = new ArrayList<JsonObject>();
 
         for (String type : allowedResourceTypes) {
             // no need to go through all results list if we do not add total results number
-            if (resultsList.size() == limit && !showTotalRows) {
+            if (resultsList.size() == this.limit && !this.showTotalRows) {
                 break;
             }
             String rtype = type.replace("lfs:", "");
             switch (rtype) {
                 case "Form":
-                    quickFormSearch(resultsList, query, limit, showTotalRows);
+                    quickFormSearch(resultsList, query);
                     break;
                 case "Subject":
-                    quickSubjectSearch(resultsList, query, limit, showTotalRows);
+                    quickSubjectSearch(resultsList, query);
                     break;
                 case "Questionnaire":
-                    quickQuestionnaireSearch(resultsList, query, limit, showTotalRows);
+                    quickQuestionnaireSearch(resultsList, query);
                     break;
                 default:
             }
@@ -333,14 +336,12 @@ public class QueryBuilder implements Use
      *
      * @param outputList aggregator of search results
      * @param query text to search
-     * @param limit the requested, default or set by admin limit
-     * @param showTotalRows whether to show the total number of results
      *
      * @return the content matching the query
      */
     @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
-    private void quickFormSearch(ArrayList<JsonObject> outputList, String query, long limit,
-            boolean showTotalRows) throws RepositoryException, ItemNotFoundException
+    private void quickFormSearch(ArrayList<JsonObject> outputList, String query) throws RepositoryException,
+        ItemNotFoundException
     {
         final StringBuilder xpathQuery = new StringBuilder();
         xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value),'%");
@@ -356,7 +357,7 @@ public class QueryBuilder implements Use
         */
         while (foundResources.hasNext()) {
             // no need to go through all results list if we do not add total results number
-            if (outputList.size() == limit && !showTotalRows) {
+            if (outputList.size() == this.limit && !this.showTotalRows) {
                 break;
             }
             Resource thisResource = foundResources.next();
@@ -403,13 +404,10 @@ public class QueryBuilder implements Use
      *
      * @param outputList aggregator of search results
      * @param query text to search
-     * @param limit the requested, default or set by admin limit
-     * @param showTotalRows whether to show the total number of results
      *
      * @return the content matching the query
      */
-    private void quickSubjectSearch(ArrayList<JsonObject> outputList, String query, long limit,
-            boolean showTotalRows) throws RepositoryException
+    private void quickSubjectSearch(ArrayList<JsonObject> outputList, String query) throws RepositoryException
     {
         final StringBuilder xpathQuery = new StringBuilder();
         xpathQuery.append("/jcr:root/Subjects//*[jcr:like(fn:lower-case(@identifier),'%");
@@ -419,7 +417,7 @@ public class QueryBuilder implements Use
         Iterator<Resource> foundResources = queryXPATH(xpathQuery.toString());
         while (foundResources.hasNext()) {
             // no need to go through all results list if we do not add total results number
-            if (outputList.size() == limit && !showTotalRows) {
+            if (outputList.size() == this.limit && !this.showTotalRows) {
                 break;
             }
             Resource thisResource = foundResources.next();
@@ -440,15 +438,13 @@ public class QueryBuilder implements Use
      *
      * @param outputList aggregator of search results
      * @param query text to search
-     * @param limit the requested, default or set by admin limit
-     * @param showTotalRows whether to show the total number of results
      *
      * @return the content matching the query
      */
     @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity",
         "checkstyle:ExecutableStatementCount"})
-    private void quickQuestionnaireSearch(ArrayList<JsonObject> outputList, String query, long limit,
-            boolean showTotalRows) throws RepositoryException, ItemNotFoundException
+    private void quickQuestionnaireSearch(ArrayList<JsonObject> outputList, String query) throws RepositoryException,
+        ItemNotFoundException
     {
         final StringBuilder xpathQuery = new StringBuilder();
         xpathQuery.append("/jcr:root/Questionnaires//*[jcr:like(fn:lower-case(@value),'%");
@@ -466,7 +462,7 @@ public class QueryBuilder implements Use
         */
         while (foundResources.hasNext()) {
             // no need to go through all results list if we do not add total results number
-            if (outputList.size() == limit && !showTotalRows) {
+            if (outputList.size() == this.limit && !this.showTotalRows) {
                 break;
             }
             Resource thisResource = foundResources.next();
@@ -553,57 +549,23 @@ public class QueryBuilder implements Use
     }
 
     /**
-     * Write metadata about the request and response. This includes the number of returned and total matching nodes, and
-     * copying some request parameters.
-     *
-     * @param jsonGen the JSON generator where the results should be serialized
-     * @param request the current request
-     * @param offset the requested offset, may be the default value of {0}
-     * @param limit the requested limit, may be the default value of {10}
-     * @param returnedNodes the number of matching nodes included in the response, may be {@code 0} if no nodes were
-     *            returned
-     * @param totalMatchingNodes the total number of accessible nodes matching the request, may be {@code 0} if no nodes
-     *            match the filters, or the current user cannot access the nodes, or absent if showTotalRows == false
-     * @param showTotalRows whether to show the total number of results
-     */
-    private void addSummary(final JsonObjectBuilder jsonGen, final SlingHttpServletRequest request, final long[] limits,
-            final boolean showTotalRows)
-    {
-        String req = request.getParameter("req");
-        if (StringUtils.isBlank(req)) {
-            req = "";
-        }
-        jsonGen.add("req", req);
-        jsonGen.add("offset", limits[0]);
-        jsonGen.add("limit", limits[1]);
-        jsonGen.add("returnedrows", limits[2]);
-        if (showTotalRows) {
-            jsonGen.add("totalrows", limits[3]);
-        }
-    }
-
-    /**
-     * Write the contents of the input nodes, subject to the an offset and a limit.
+     * Write the contents of the input nodes, subject to the an offset and a limit. Write metadata about the request
+     * and response. This includes the number of returned and total matching nodes, and copying some request parameters.
      *
      * @param jsonGen the JSON object generator where the results should be serialized
      * @param objects an iterator over the nodes to serialize, which will be consumed
+     * @param req the current request number
      * @param offset the requested offset, may be the default value of {0}
-     * @param limit the requested limit, may be the default value of {10}
-     * @param showTotalRows whether to show the total number of results
      *
-     * @return an array of size 4, giving the [0]: offset, [1]: limit, [2]: results, [3]: total matches
      */
-    private long[] addObjects(final JsonObjectBuilder jsonGen, final Iterator<JsonObject> objects,
-        final long offset, final long limit, final boolean showTotalRows)
+    private void addObjects(final JsonObjectBuilder jsonGen, final Iterator<JsonObject> objects, String req,
+        final long offset)
     {
-        final long[] counts = new long[4];
-        counts[0] = offset;
-        counts[1] = limit;
-        counts[2] = 0;
-        counts[3] = 0;
+        long returnedrows = 0;
+        long totalrows = 0;
 
         long offsetCounter = offset < 0 ? 0 : offset;
-        long limitCounter = limit < 0 ? 0 : limit;
+        long limitCounter = this.limit < 0 ? 0 : this.limit;
 
         final JsonArrayBuilder builder = Json.createArrayBuilder();
 
@@ -616,17 +578,20 @@ public class QueryBuilder implements Use
             } else if (limitCounter > 0) {
                 builder.add(n);
                 --limitCounter;
-                ++counts[2];
-            } else if (!showTotalRows) {
+                ++returnedrows;
+            } else if (!this.showTotalRows) {
                 break;
             }
             // Count the total number of results
-            ++counts[3];
+            ++totalrows;
         }
 
         jsonGen.add("rows", builder.build());
-
-        return counts;
+        jsonGen.add("req", req);
+        jsonGen.add("offset", offset);
+        jsonGen.add("limit", this.limit);
+        jsonGen.add("returnedrows", returnedrows);
+        jsonGen.add("totalrows", totalrows);
     }
 
     /**
