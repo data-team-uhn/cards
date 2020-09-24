@@ -19,7 +19,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, withStyles } from "@material-ui/core";
+import { Grid, Typography, withStyles } from "@material-ui/core";
 import QuestionComponentManager from "./QuestionComponentManager";
 import QuestionnaireStyle from './QuestionnaireStyle';
 
@@ -82,3 +82,4 @@ Fields.propTypes = {
 };
   
 export default withStyles(QuestionnaireStyle)(Fields);
+
