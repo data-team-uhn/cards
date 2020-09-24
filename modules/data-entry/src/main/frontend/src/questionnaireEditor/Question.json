@@ -22,15 +22,15 @@
         "maxAnswers": "long"
       },
       "long": {
-        "minValue": "double",
-        "maxValue": "double",
+        "minvalue": "double",
+        "maxvalue": "double",
         "minAnswers": "long",
         "maxAnswers": "long",
         "unitOfMeasurement" : "string"
       },
       "decimal": {
-        "minValue": "double",
-        "maxValue": "double",
+        "minvalue": "double",
+        "maxvalue": "double",
         "minAnswers": "long",
         "maxAnswers": "long",
         "unitOfMeasurement" : "string"
