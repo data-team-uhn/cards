@@ -58,6 +58,11 @@ function Questionnaires(props) {
       "format": "date:YYYY-MM-DD HH:mm",
     },
     {
+      "key":"forms",
+      "label":"Forms",
+      "link":"dashboard+field:forms"
+    },
+    {
       "key":"actions",
       "label":"Actions"
     }
