@@ -67,13 +67,10 @@ let EditDialog = (props) => {
     if (props.edit) {
       // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
       let request_data = new FormData(event.currentTarget);
-      fetch(
-        `${props.data['@path']}`,
-        {
-          method: 'POST',
-          body: request_data
-        })
-        .then((response) => response.ok ? true : Promise.reject(response))
+      fetch(`${props.data['@path']}`, {
+        method: 'POST',
+        body: request_data
+      }).then((response) => response.ok ? true : Promise.reject(response))
         .then(() => setLastSaveStatus(true))
         // FIXME Use setError?
         .catch(() => {
