@@ -1,6 +1,6 @@
 [
   {
-    "label": "string",
+    "title": "string",
     "description": "string",
     "recurrent": "boolean",
     "initialNumberOfInstances" : "long"
