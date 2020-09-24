@@ -59,8 +59,7 @@ function Questionnaires(props) {
     },
     {
       "key":"actions",
-      "label":"Actions",
-      "admin": true,
+      "label":"Actions"
     }
   ]
   return (
@@ -79,12 +78,12 @@ function Questionnaires(props) {
         classes={{
           action: classes.newFormButtonHeader
         }}
-        />
-        <CardContent>
-          <LiveTable columns={columns} delete={deleteQuestionnaire} />
-        </CardContent>
-      </Card>
-      <DeleteQuestionnaireDialog open={openDialog} onClose={() => {setOpenDialog(false);}} data={deleteData}></DeleteQuestionnaireDialog>
+      />
+      <CardContent>
+        <LiveTable columns={columns} delete={deleteQuestionnaire} />
+      </CardContent>
+    </Card>
+    <DeleteQuestionnaireDialog open={openDialog} onClose={() => {setOpenDialog(false);}} data={deleteData}></DeleteQuestionnaireDialog>
     </React.Fragment>
   );
 }

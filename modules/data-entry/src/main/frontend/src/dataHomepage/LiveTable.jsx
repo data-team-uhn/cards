@@ -186,16 +186,12 @@ function LiveTable(props) {
       let format = column.format.substring(5) || 'YYYY-MM-dd';
       content = _formatDate(content, format);
     }
-
-    // allow livetable to link to components in the admin dashboard
-    // if livetable item must link to a component within the admin dashboard, set "admin": true
-    let pathPrefix = (column.admin ? "/content.html/admin" : "/content.html");
     
     // Handle links
     if (column.key.startsWith('actions')) {
       content = ( 
         <div>
-          <Link to={pathPrefix + entry["@path"]}>
+          <Link to={"/content.html" + entry["@path"]}>
             <IconButton>
               <EditIcon />
             </IconButton>
@@ -208,6 +204,9 @@ function LiveTable(props) {
     }
     
     if (column.link) {
+      // allow livetable to link to components in the admin dashboard
+      // if livetable item must link to a component within the admin dashboard, set "admin": true
+      let pathPrefix = (column.admin ? "/content.html/admin" : "/content.html");
       if (column.link === 'path') {
         content = (<a href={entry["@path"]}>{content}</a>);
       } else if (column.link === 'dashboard+path') {
