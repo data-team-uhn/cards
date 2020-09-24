@@ -1,9 +1,0 @@
-[
-  {
-    "title": "string",
-    "description": "string",
-    "recurrent": "boolean",
-    "initialNumberOfInstances" : "long",
-    "condition": "string"
-  }
-]
