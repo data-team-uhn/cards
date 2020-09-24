@@ -104,6 +104,7 @@ let AnswerOptions = (props) => {
       { newUuid.map((value, index) =>
         <Grid item xs={6} key={index}>
           <input type='hidden' name={`${props.data['@path']}/${newValue[index]}/jcr:primaryType`} value={'lfs:AnswerOption'} />
+          {/* <input type='hidden' name={`${props.data['@path']}/${newValue[index]}/jcr:uuid`} value={value} /> */}
           <TextField
             name={`${props.data['@path']}/${newValue[index]}/value`}
             value={newValue[index]}
