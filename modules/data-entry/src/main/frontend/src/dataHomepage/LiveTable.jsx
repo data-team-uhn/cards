@@ -74,11 +74,22 @@ function LiveTable(props) {
   // When new data is added, trigger a new fetch
   useEffect(() => {
     if (updateData){
-      setFetchStatus(Object.assign({}, fetchStatus, {
-        "currentRequestNumber": -1,
-      }));
+      triggerFetch();
     }
   }, [updateData]);
+
+  // When the data path is changed, trigger a new fetch
+  useEffect(() => {
+    if (customUrl){
+      triggerFetch();
+    }
+  }, [customUrl]);
+
+  let triggerFetch = () => {
+    setFetchStatus(Object.assign({}, fetchStatus, {
+      "currentRequestNumber": -1,
+    }));
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's behavior
@@ -143,9 +154,9 @@ function LiveTable(props) {
     setTableData();
   };
 
-  let makeRow = (entry) => {
+  let makeRow = (entry, i) => {
     return (
-      <TableRow key={entry["@path"]}>
+      <TableRow key={entry["@path"] + i}>
         { columns ?
           (
             columns.map((column, index) => makeCell(entry, column, index))
@@ -198,6 +209,7 @@ function LiveTable(props) {
   };
 
   let getNestedValue = (entry, path) => {
+    if (!path) return entry;
     // Display the JCR node id
     if (path == 'jcr:uuid') {
       let el = /Forms\/(.+)/.exec(entry["@path"]);

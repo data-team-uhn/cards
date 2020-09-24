@@ -20,8 +20,9 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
-import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar}  from "@material-ui/core";
+import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@material-ui/core";
 import { MenuList, Paper, Popper, withStyles } from "@material-ui/core";
+import { Link } from "react-router-dom";
 import DescriptionIcon from "@material-ui/icons/Description";
 import Search from "@material-ui/icons/Search";
 import HeaderStyle from "./headerStyle.jsx";
@@ -29,15 +30,10 @@ import HeaderStyle from "./headerStyle.jsx";
 export const DEFAULT_QUERY_URL = "/query";
 export const DEFAULT_MAX_RESULTS = 5;
 
-// Location of the quick search result metadata in a node, outlining what needs to be highlighted
+// Location of the quick search result metadata in a node, outlining what needs to be highlighted after redirect and where
 const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
-// Properties of the quick search result metadata
-const LFS_QUERY_QUESTION_KEY = "question";
-const LFS_QUERY_MATCH_BEFORE_KEY = "before";
-const LFS_QUERY_MATCH_TEXT_KEY = "text";
-const LFS_QUERY_MATCH_AFTER_KEY = "after";
-const LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
 const LFS_QUERY_MATCH_PATH_KEY = "@path";
+const LFS_QUERY_TEXT_KEY = "text";
 
 /**
  * A component that renders a search bar, similar to autocomplete. It will fire off a query to /query, and parse the results as a selectable list.
@@ -57,6 +53,7 @@ function SearchBar(props) {
   const { classes, className, defaultValue, invertColors, onChange, onPopperClose, onSelect, onSelectFinish, queryConstructor, resultConstructor, staticContext, ...rest } = props;
   const [ search, setSearch ] = useState(defaultValue);
   const [ results, setResults ] = useState([]);
+  const [ moreResults, setMoreResults ] = useState(0);
   const [ popperOpen, setPopperOpen ] = useState(false);
   const [ timer, setTimer ] = useState();
   const [ error, setError ] = useState();
@@ -79,6 +76,7 @@ function SearchBar(props) {
       '@path': '',
       'disabled': true
     }]);
+    setMoreResults(0);
     setError(false);
 
     // If there is a query, execute it
@@ -112,6 +110,10 @@ function SearchBar(props) {
     // Show the results, if any
     if (json["rows"].length > 0) {
       setResults(json["rows"]);
+      if (json.totalrows > json.returnedrows) {
+        let more = json.totalrows - json.returnedrows;
+        setMoreResults(more);
+      }
     } else {
       setResults([{
         name: 'No results',
@@ -232,7 +234,6 @@ function SearchBar(props) {
                       onClick={(e) => {
                         // Redirect using React-router
                         onSelect(event, result, props);
-                        setSearch(result["identifier"]);
                         onSelectFinish && onSelectFinish();
                         setPopperOpen(false);
                         }}
@@ -240,6 +241,16 @@ function SearchBar(props) {
                       <QuickSearchResult resultData={result} />
                     </MenuItem>
                   ))}
+                  { moreResults > 0 &&
+                  <Link to={"/content.html/QuickSearchResults#" + search} className={classes.root}>
+                    <MenuItem
+                      className={classes.dropdownItem}
+                      onClick={() => setPopperOpen(false)}
+                      key="more"
+                    >
+                      {moreResults} more results
+                    </MenuItem>
+                  </Link> }
                 </MenuList>
               </ClickAwayListener>
             </Paper>

@@ -10,7 +10,8 @@ module.exports = {
     [module_name + 'modelOrganismsIcon']: '@material-ui/icons/Pets.js',
     [module_name + 'variantsIcon']: '@material-ui/icons/Subtitles.js',
     [module_name + 'adminIcon']: '@material-ui/icons/Settings.js',
-    [module_name + 'adminDashboard']: './src/adminDashboard/AdminDashboard.jsx'
+    [module_name + 'adminDashboard']: './src/adminDashboard/AdminDashboard.jsx',
+    [module_name + 'QuickSearchResults']: './src/themePage/QuickSearchResults.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),

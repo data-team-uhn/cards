@@ -127,6 +127,9 @@ const headerStyle = theme => ({
     backgroundColor: theme.palette.warning.light,
     padding: "1px 2px",
     borderRadius: "4px"
+  },
+  quickSearchResultsTitle: {
+    display: "inline-block"
   }
 });
 
