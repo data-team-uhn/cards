@@ -88,6 +88,8 @@ public class VocabularyParserUtils
     public void writeStatusJson(final SlingHttpServletRequest request, final SlingHttpServletResponse response,
         final boolean isSuccessful, final String error) throws IOException
     {
+        response.setStatus(isSuccessful
+            ? SlingHttpServletResponse.SC_OK : SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         Writer out = response.getWriter();
         JsonGenerator generator = Json.createGenerator(out);
         generator.writeStartObject();
