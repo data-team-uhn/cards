@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -35,21 +35,20 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 let DeleteQuestionDialog = (props) => {
-  let [openDeleteDialog, setOpenDeleteDialog ] = useState(false);
+  let [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   let [ forms, setForms] = useState(0);
-  let [ saveInProgress, setSaveInProgress ] = useState();
-  // Indicates whether the form has been saved or not. This has three possible values:
-  // - undefined -> no save performed yet, or the form has been modified since the last save
-  // - true -> data has been successfully saved
-  // - false -> the save attempt failed
-  // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
-  let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
-  
+
   let deleteQuestionWarningMessage = () => {
     const formsExist = forms && forms > 0;
     if (!formsExist) {
+      let uuid;
+      // Get uuid of questionnaire
+      fetch(`/Questionnaires/${props.id}.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((response) => { uuid = (response['jcr:uuid']) });
+
       // Find all forms with that questionnaire uuid
-      fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Form] as n WHERE n.'questionnaire'='${props.uuid}'`))
+      fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Form] as n WHERE n.'questionnaire'='${uuid}'`))
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => { parseResult(json); });
     }
@@ -63,51 +62,12 @@ let DeleteQuestionDialog = (props) => {
       : "Are you sure you wish to proceed ?"
   }
 
-  let deleteQuestion = () => {
-    event.preventDefault();
-
-    // If the previous save attempt failed, instead of trying to save again, open a login popup
-    if (lastSaveStatus === false) {
-      loginToSave();
-      return;
-    }
-
-    setSaveInProgress(true);
-
-    fetch(props.data["@path"], {
-      method: "DELETE",
-    }).then((response) => response.ok ? true : Promise.reject(response))
-      .then(() => setLastSaveStatus(true))
-      // FIXME Use setError?
-      .catch(() => {
-        // If the user is not logged in, offer to log in
-        const sessionInfo = window.Sling.getSessionInfo();
-        if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-          // On first attempt to save while logged out, set status to false to make button text inform user
-          setLastSaveStatus(false);
-        }
-      })
-    .finally(() => setSaveInProgress(false));
-    setOpenDeleteDialog(false);
-  }
-
-  let loginToSave = () => {
-    const width = 600;
-    const height = 800;
-    const top = window.top.outerHeight / 2 + window.top.screenY - ( height / 2);
-    const left = window.top.outerWidth / 2 + window.top.screenX - ( width / 2);
-    // After a successful log in, the login dialog code will "open" the specified resource, which results in executing the specified javascript code
-    window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${width}, height=${height}, top=${top}, left=${left}`);
-    // Display 'save'ss on button
-    setLastSaveStatus(undefined);
-  }
-
   return (
     <React.Fragment>
       <Dialog id="deleteDialog" open={openDeleteDialog} onClose={() => { setOpenDeleteDialog(false); }}>
-        <form action={props.data["@path"]} onSubmit={deleteQuestion} method="DELETE" key={props.id}>
+        <form action={props.data["@path"]} method="DELETE" key={props.id}>
           <DialogTitle>
-            Confirm question deletion
+            <Typography>Confirm question deletion</Typography>
           </DialogTitle>
           <DialogContent>
             <Typography>{ deleteQuestionWarningMessage() }</Typography>
@@ -117,6 +77,7 @@ let DeleteQuestionDialog = (props) => {
               type="submit"
               variant="contained"
               color="secondary"
+              onClick={() => { setOpenDeleteDialog(false); }}
               >
               {'Yes, delete'}
             </Button>
@@ -139,7 +100,7 @@ let DeleteQuestionDialog = (props) => {
 
 DeleteQuestionDialog.propTypes = {
   data: PropTypes.object.isRequired,
-  uuid: PropTypes.string.isRequired
+  id: PropTypes.string.isRequired
 };
 
 export default withStyles(QuestionnaireStyle)(DeleteQuestionDialog);
