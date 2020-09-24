@@ -38,7 +38,7 @@ import { UNARY_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
 const FILTER_URL = "/Questionnaires.filters";
 
 function Filters(props) {
-  const { classes, onChangeFilters, questionnaire } = props;
+  const { classes, disabled, onChangeFilters, questionnaire } = props;
   // Filters, as displayed in the dialog, and filters as actually saved
   const [editingFilters, setEditingFilters] = useState([]);
   const [activeFilters, setActiveFilters] = useState([]);
@@ -290,18 +290,20 @@ function Filters(props) {
           );
         })
       }
-      <Button
-        size="small"
-        variant="contained"
-        color="default"
-        className={classes.addFilterButton}
-        onClick={() => {
-          openDialogAndAdd();
-          setFocusRow(activeFilters.length);
-        }}
-        >
-        <Add fontSize="small" />
-      </Button>
+      { !disabled && (
+        <Button
+          size="small"
+          variant="contained"
+          color="default"
+          className={classes.addFilterButton}
+          onClick={() => {
+            openDialogAndAdd();
+            setFocusRow(activeFilters.length);
+          }}
+          >
+          <Add fontSize="small" />
+        </Button>
+      )}
       {/* Dialog for setting up filters */}
       <Dialog
         open={dialogOpen}

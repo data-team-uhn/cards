@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
-import { Card, CardHeader, CardContent, CardActions, Chip, IconButton, Typography, Button, withStyles } from "@material-ui/core";
+import { Card, CardHeader, CardContent, CardActions, Chip, IconButton, Typography, Button, LinearProgress, withStyles } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import moment from "moment";
 
@@ -124,6 +124,8 @@ function LiveTable(props) {
       "currentFetch": currentFetch,
       "fetchError": false,
     }));
+    // Clear tableData (set it to undefined) so that Please wait... is displayed
+    setTableData();
     currentFetch.then((response) => response.ok ? response.json() : Promise.reject(response)).then(handleResponse).catch(handleError);
     // TODO: update the displayed URL with pagination details, so that we can share/reload at the same page
   };
@@ -337,7 +339,7 @@ function LiveTable(props) {
   return (
     // We wrap everything in a Paper for a nice separation, as a Table has no background or border of its own.
     <Paper elevation={0}>
-      {filters && <Filters onChangeFilters={handleChangeFilters} {...rest} />}
+      {filters && <Filters onChangeFilters={handleChangeFilters} disabled={!Boolean(tableData)} {...rest} />}
       <div>
         {paginationControls}
       </div>
@@ -385,11 +387,11 @@ function LiveTable(props) {
               ( tableData.map(makeRow) )
               :
               ( <TableRow><TableCell colSpan={columns ? columns.length : 1}>Please wait...</TableCell></TableRow> )
-            /* TODO: Better progress bar, add some Suspense */
           }
         </TableBody>
       </Table>
       {paginationControls}
+      {!tableData && (<LinearProgress className={classes.progressIndicator}/>)}
     </Paper>
   );
 }
