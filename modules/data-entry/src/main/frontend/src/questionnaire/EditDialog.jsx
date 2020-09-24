@@ -17,10 +17,11 @@
 //  under the License.
 //
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
@@ -33,16 +34,15 @@ import {
 } from "@material-ui/core";
 
 import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
 import QuestionnaireStyle from './QuestionnaireStyle';
+import uuid from 'uuid/v4';
+import ObjectInput from './ObjectInput';
 import AnswerOptions from './AnswerOptions';
 import Fields from './Fields'
 
-// Dialog for editing or creating questions and sections
-
 let EditDialog = (props) => {
-  let [ questionJSON, setQuestionJSON ] = useState(require('./Question.json'));
-  let [ sectionJSON, setSectionJSON ] = useState(require('./Section.json'));
+  let [ questionJSON, setQuestionJSON ] = useState( require('./Question.json'));
+  let [ sectionJSON, setSectionJSON ] = useState( require('./Section.json'));
   let [ title, setTitle ] = useState('');
   let [ json, setJson ] = useState(props.type.includes('Question') ? questionJSON : sectionJSON);
   let [ openEditDialog, setOpenEditDialog ] = useState(false);
@@ -56,6 +56,7 @@ let EditDialog = (props) => {
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [error, setError ] = useState('');
 
+
   let saveData = (event) => {
     // This stops the normal browser form submission
     event.preventDefault();
@@ -67,7 +68,7 @@ let EditDialog = (props) => {
     }
 
     setSaveInProgress(true);
-    // If the question/section already exists, update it
+
     if (props.edit) {
       // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
       let request_data = new FormData(event.currentTarget);
@@ -88,8 +89,7 @@ let EditDialog = (props) => {
         .finally(() => setSaveInProgress(false));
       setOpenEditDialog(false);
     } else {
-      // If the question/section doesn't exist, create it
-      const URL = `${props.data['@path']}/${title}`
+      const URL = props.presetPath + uuid();
       const primaryType = props.type.includes('Question') ? 'lfs:Question' : 'lfs:Section'
       var request_data = new FormData(event.currentTarget);
       request_data.append('jcr:primaryType', primaryType);
@@ -139,26 +139,17 @@ let EditDialog = (props) => {
     return (props.edit ? 'Edit ' : 'New ').concat(props.type);
   }
 
-  let titleField = () => {
-    return (
-      <Grid container alignItems='flex-end' spacing={2}>
-        <Grid item xs={6}><Typography>{props.type === 'Question' ? 'Title' : 'Name' }</Typography></Grid>
-        <Grid item xs={6}><TextField name='title' value={title} onChange={()=> { setTitle(event.target.value); }} /></Grid>
-      </Grid>
-    )
-  }
-
   return (
     <React.Fragment>
       <Dialog id='editDialog' open={openEditDialog} onClose={() => { setOpenEditDialog(false); }}>
         <DialogTitle>
           { dialogTitle() }
         </DialogTitle>
-        <form action={props.data['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={props.id}>
+        <form action={props.edit && props.data['@path'] || '' } method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={props.id}>
           <DialogContent>
-            { !props.edit && titleField() }
-            <Fields data={props.edit && props.data || {}} JSON={json[0]} />
-            {  props.type.includes('Question') && <AnswerOptions data={props.data} /> }
+            { !props.edit && <TextField name='title' value={title} onChange={()=> { setTitle(event.target.value); }} />}
+            <Fields data={props.data} JSON={json[0]} />
+            <AnswerOptions data={props.data} /> 
           </DialogContent>
           <DialogActions>
             <Button
@@ -176,14 +167,14 @@ let EditDialog = (props) => {
               variant='contained'
               color='default'
               onClick={() => { setOpenEditDialog(false); }}
-            >
+              >
               {'Cancel'}
             </Button>
           </DialogActions>
         </form>
       </Dialog>
       <IconButton onClick={() => { setOpenEditDialog(true); }}>
-      { props.edit ? <EditIcon /> : <AddIcon />}
+        <EditIcon />
       </IconButton>
     </React.Fragment>
   );

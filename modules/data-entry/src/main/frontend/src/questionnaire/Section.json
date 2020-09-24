@@ -3,6 +3,7 @@
     "title": "string",
     "description": "string",
     "recurrent": "boolean",
-    "initialNumberOfInstances" : "long"
+    "initialNumberOfInstances" : "long",
+    "condition": "string"
   }
 ]

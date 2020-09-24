@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
   Checkbox,

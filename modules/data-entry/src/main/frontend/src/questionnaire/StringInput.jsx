@@ -17,9 +17,12 @@
 //  under the License.
 //
 
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { TextField, withStyles } from "@material-ui/core";
+import {
+  TextField,
+  withStyles
+} from "@material-ui/core";
 
 import QuestionnaireStyle from './QuestionnaireStyle';
 
