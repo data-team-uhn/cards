@@ -72,8 +72,10 @@ let DeleteQuestionnaireDialog = (props) => {
         if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
           // On first attempt to save while logged out, set status to false to make button text inform user
           setLastSaveStatus(false);
+        } else if (error.status == 409) {
+          onError("Cannot delete an questionnaire with active entries");
         } else {
-          onError("Error while deleting questionnaire: " + error.status);
+          onError("Fetch error: " + error.status);
         }
       })
     .finally(() => {

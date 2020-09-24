@@ -59,7 +59,8 @@ import org.slf4j.LoggerFactory;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
-    resourceTypes = { "lfs/Resource" },
+    resourceTypes = { "lfs/Questionnaire", "lfs/Form", "lfs/Subject",
+        "lfs/SubjectType", "lfs/Question", "lfs/Section" },
     methods = { "DELETE" })
 public class DeleteServlet extends SlingAllMethodsServlet
 {
