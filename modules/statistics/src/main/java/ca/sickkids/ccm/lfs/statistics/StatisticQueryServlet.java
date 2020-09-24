@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -137,6 +138,23 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
             dataById = filterAnswersWithType(data, correctSubjectType);
 
+            // JsonObjectBuilder testBuilder = Json.createObjectBuilder();
+            // testBuilder.add("testSize", dataById.size());
+
+            // for (Map.Entry<String, Map<Resource, String>> entries : dataById.entrySet()) {
+            // testBuilder.add(entries.getKey(), entries.getKey()); // THIS WORKS - but only shows 1?
+
+            //     for (Map.Entry<Resource, String> entry : entries.getValue().entrySet()) {
+            //         Node testNode = entry.getKey().adaptTo(Node.class);
+            //         String testString = testNode.getProperty("value").getString();
+
+            //         String testValue = entry.getValue();
+
+            //         testBuilder.add(testValue, testValue);
+            //         testBuilder.add(testString, testString);
+            //     }
+            // }
+
             String xLabel = question.getProperty("text").getString();
             String yLabel = correctSubjectType.getProperty("label").getString();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
@@ -152,6 +170,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 Node split = request.getResourceResolver().adaptTo(Session.class).getNode(splitVariable);
                 String splitLabel = split.getProperty("text").getString();
                 builder.add("split-label", splitLabel);
+                // builder.add("testData", testBuilder.build());
                 // addData(answers, builder, split);
                 addDataSplit(dataById, builder);
             }
@@ -210,8 +229,15 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 // TODO: make the <formID, <xvar string, splitvar string>> here ?
 
                 //this should create a nested hashmap <formID, <node, string>, <node, string>>
-                newInnerData.put(answer.getKey(), answer.getValue());
-                newData.put(uuid, newInnerData);
+
+                if (newData.containsKey(uuid)) {
+                    // if it does include uuid already
+                    newData.get(uuid).put(answer.getKey(), answer.getValue());
+                } else {
+                    // if does not already include uuid
+                    newInnerData.put(answer.getKey(), answer.getValue());
+                    newData.put(uuid, newInnerData);
+                }
             }
         }
 
@@ -241,14 +267,12 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
                 // if x value and split value already exist
                 if (counts.containsKey(xValue) && counts.get(xValue).containsKey(splitValue)) {
-                    innerCount.put(splitValue, counts.get(xValue).get(splitValue) + 1);
-                    counts.put(xValue, innerCount);
+                    counts.get(xValue).put(splitValue, counts.get(xValue).get(splitValue) + 1);
                 }
-                // if x value already exists, but not split value
-                // if (counts.containsKey(xValue) && !counts.get(xValue).containsKey(splitValue)) {
-                //     innerCount.put(splitValue, 1);
-                //     counts.put(xValue, innerCount);
-                // }
+                // if x value already exists, but not split value - create and set to 1
+                if (counts.containsKey(xValue) && !counts.get(xValue).containsKey(splitValue)) {
+                    counts.get(xValue).put(splitValue, 1);
+                }
                 // else, create both and set to 1 count
                 else {
                     innerCount.put(splitValue, 1);
@@ -266,54 +290,90 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      private void addDataSplit(Map<String, Map<Resource, String>> data, JsonObjectBuilder builder) throws RepositoryException
     {
         Map<Resource, Resource> eachForm = new HashMap<>();
-        
-        // within each form id
-        Iterator<Map.Entry<String, Map<Resource, String>>> entries = data.entrySet().iterator();
 
-        while (entries.hasNext()) {
-            Map.Entry<String, Map<Resource, String>> answer = entries.next();
-            // iterate through inner map
-            Iterator<Map.Entry<Resource, String>> child = (answer.getValue()).entrySet().iterator();
+        // JsonObjectBuilder testBuilder = Json.createObjectBuilder();
+        
+        // // within each form id
+        // Iterator<Map.Entry<String, Map<Resource, String>>> entries = data.entrySet().iterator();
+
+        // while (entries.hasNext()) {
+        //     Map.Entry<String, Map<Resource, String>> answer = entries.next();
+        //     // iterate through inner map
+        //     testBuilder.add(answer.getKey(), answer.getKey()); // THIS WORKS - but only shows 1?
+            
+
+        //     Iterator<Map.Entry<Resource, String>> child = (answer.getValue()).entrySet().iterator();
+            // Resource xVar = null;
+            // Resource splitVar = null;
+        //     while (child.hasNext()) {
+        //         Map.Entry<Resource,String> entry = child.next();
+
+        //         // not iterating?
+
+                // Node testNode = entry.getKey().adaptTo(Node.class);
+                // String testString = testNode.getProperty("value").getString();
+
+                // String testValue = entry.getValue();
+
+        //         testBuilder.add(testValue, testValue);
+
+        //         if ("x".equals(entry.getValue())) {
+        //             xVar = entry.getKey();
+        //             testBuilder.add(testString, testString); // this should add the value of x var
+        //         }
+        //         if ("split".equals(entry.getValue())) {
+        //             splitVar = entry.getKey();
+        //             testBuilder.add(testString, testString); // this should add the value of split var
+        //         }
+        //         // create new map with a xVar and splitVar for each form. TODO: this can maybe be done elsewhere
+                // eachForm.put(xVar, splitVar);
+        //     }
+        // }        
+
+        for (Map.Entry<String, Map<Resource, String>> entries : data.entrySet()) {
+            // testBuilder.add(entries.getKey(), entries.getKey()); // THIS WORKS - but only shows 1?
             Resource xVar = null;
             Resource splitVar = null;
-            while (child.hasNext()) {
-                Map.Entry<Resource,String> entry = child.next();
+
+            for (Map.Entry<Resource, String> entry : entries.getValue().entrySet()) {
+                // Node testNode = entry.getKey().adaptTo(Node.class);
+                // String testString = testNode.getProperty("value").getString();
+
                 if ("x".equals(entry.getValue())) {
                     xVar = entry.getKey();
+                    // testBuilder.add(testString, testString); // this should add the value of x var
                 }
                 if ("split".equals(entry.getValue())) {
                     splitVar = entry.getKey();
+                    // testBuilder.add(testString, testString); // this should add the value of split var
                 }
-                // create new map with a xVar and splitVar for each form. TODO: this can maybe be done elsewhere
-                eachForm.put(xVar, splitVar);
             }
+            // create new map with a xVar and splitVar for each form. TODO: this can maybe be done elsewhere
+            eachForm.put(xVar, splitVar);
         }
 
-        // pass <formID, <xVar, splitVar>> instead ??
+        // TODO pass <formID, <xVar, splitVar>> instead ?? - yes it should, since xvar might be repeated
         Map<String, Map<String, Integer>> counts = aggregateSplitCounts(eachForm);
 
-        // JsonObjectBuilder outerBuilder = Json.createObjectBuilder();
+        JsonObjectBuilder outerBuilder = Json.createObjectBuilder();
 
-        // for(Map.Entry<String, Map<String,Integer>> t:counts.entrySet()) {
-        //     String key = t.getKey();
+        for(Map.Entry<String, Map<String,Integer>> t:counts.entrySet()) {
+            String key = t.getKey();
 
-        //     JsonObjectBuilder keyBuilder = Json.createObjectBuilder();
+            JsonObjectBuilder keyBuilder = Json.createObjectBuilder();
 
-        //     for (Map.Entry<String,Integer> e : t.getValue().entrySet()) {
-        //         System.out.println("OuterKey: " + key + " InnerKey: " + e.getKey()+ " VALUE:" +e.getValue());
-        //         // inner object
-        //         keyBuilder.add(e.getKey(), e.getValue());
-        //     }
-        //     // outer object
-        //     outerBuilder.add(key, keyBuilder.build());
-        // }
+            for (Map.Entry<String,Integer> e : t.getValue().entrySet()) {
+                System.out.println("OuterKey: " + key + " InnerKey: " + e.getKey()+ " VALUE:" +e.getValue());
+                // inner object
+                keyBuilder.add(e.getKey(), e.getValue());
+            }
+            // outer object
+            outerBuilder.add(key, keyBuilder.build());
+        }
 
+        builder.add("data", outerBuilder.build());
 
-        // // <family, <M, 3>, <F, 4>>, <name, <M, 2>, <F, 3>> 
-
-        // builder.add("data", outerBuilder.build());
-
-        builder.add("data", "test");
+        // builder.add("data", testBuilder.build());
     }
 
     
