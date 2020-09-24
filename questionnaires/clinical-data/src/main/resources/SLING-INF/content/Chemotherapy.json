@@ -56,7 +56,7 @@
       "minAnswers": 1,
       "maxAnswers": 1,
       "dataType": "vocabulary",
-      "sourceVocabulary": "CHEBI"
+      "sourceVocabularies": ["CHEBI"]
     },
     "start_date": {
       "jcr:primaryType": "lfs:Question",

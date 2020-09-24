@@ -34,7 +34,7 @@ import VocabularySelector from "../vocabSelector/select.jsx";
 //
 // Required arguments:
 //  text: String containing the question to ask
-//  sourceVocabulary: String denoting the vocabulary source
+//  sourceVocabularies: Array denoting the vocabularies sources
 //
 // Optional arguments:
 //  maxAnswers: Integer indicating the maximum number of terms allowed
@@ -45,24 +45,24 @@ import VocabularySelector from "../vocabSelector/select.jsx";
 //
 // <VocabularyQuestion
 //   text="Does the patient have any co-morbidities (non cancerous), including abnormal incidental imaging/labs?"
-//   sourceVocabulary="hpo"
+//   sourceVocabularies={["hpo"]}
 //   />
 // <VocabularyQuestion
 //   text="Does the patient have any skin conditions?"
-//   sourceVocabulary="hpo"
+//   sourceVocabularies={["hpo"]}
 //   vocabularyFilter={["HP:0000951"]}
 //   />
 // <!-- Alternate method of specifying arguments -->
 // <VocabularyQuestion
 //   questionDefintion={{
 //     text: "Does the patient have any skin conditions?",
-//     sourceVocabulary: "hpo",
+//     sourceVocabularies={["hpo"]},
 //     vocabularyFilter: ["HP:0000951"]
 //   }}
 //   />
 function VocabularyQuestion(props) {
   let { classes, ...rest } = props;
-  let { enableNotes, maxAnswers, sourceVocabulary, vocabularyFilter } = { ...props.questionDefinition, ...props };
+  let { enableNotes, maxAnswers, sourceVocabularies, vocabularyFilter } = { ...props.questionDefinition, ...props };
   let defaultSuggestions = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
@@ -80,7 +80,7 @@ function VocabularyQuestion(props) {
         vocabularyFilter = {vocabularyFilter}
         max = {maxAnswers}
         defaultSuggestions = {defaultSuggestions}
-        source = {sourceVocabulary}
+        source = {sourceVocabularies}
         {...rest}
       />
     </Question>);
@@ -90,7 +90,7 @@ VocabularyQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string.isRequired,
-    sourceVocabulary: PropTypes.string.isRequired
+    sourceVocabularies: PropTypes.array.isRequired
   }).isRequired,
   text: PropTypes.string
 };

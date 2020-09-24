@@ -48,8 +48,11 @@
     "maxAnswers": 0,
     "displayMode": "list+input",
     "dataType": "vocabulary",
-    "sourceVocabulary": "HANCESTRO",
-    "vocabularyFilter": "child of Ethnic group or Racial Group",
+    "sourceVocabularies": ["HANCESTRO"],
+    "vocabularyFilters": {
+      "jcr:primaryType": "lfs:VocabularyFilterGroup",
+      "HANCESTRO": ["HANCESTRO_0004"]
+    },
     "African race": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "African race"
@@ -347,8 +350,11 @@
     "maxAnswers": 0,
     "displayMode": "list+input",
     "dataType": "vocabulary",
-    "sourceVocabulary": "SNOMEDCT",
-    "vocabularyFilter": "children of Relative",
+    "sourceVocabularies": ["SNOMEDCT"],
+    "vocabularyFilters": {
+      "jcr:primaryType": "lfs:VocabularyFilterGroup",
+      "SNOMEDCT": ["children of Relative"]
+    },
     "Proband": {
       "jcr:primaryType": "lfs:AnswerOption",
       "value": "Proband",
@@ -477,8 +483,11 @@
     "maxAnswers": 0,
     "displayMode": "input",
     "dataType": "vocabulary",
-    "sourceVocabulary": "HP",
-    "vocabularyFilter": ["HP:0000118"],
+    "sourceVocabularies": ["HP"],
+    "vocabularyFilters": {
+        "jcr:primaryType": "lfs:VocabularyFilterGroup",
+        "HP": ["HP:0000118"]
+    },
     "enableNotes" : true
   },
   "inherited_from": {

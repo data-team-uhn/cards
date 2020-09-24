@@ -31,7 +31,7 @@ export const VALUE_POS = 1;
 // for form submission
 function Answer (props) {
   let { answers, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, sectionAnswersState } = props;
-  let { enableNotes, sourceVocabulary } = { ...props, ...questionDefinition };
+  let { enableNotes } = { ...props, ...questionDefinition };
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
 

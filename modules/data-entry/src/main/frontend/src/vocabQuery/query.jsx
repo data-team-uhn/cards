@@ -33,6 +33,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 import QueryStyle from "./queryStyle.jsx";
 
 const NO_RESULTS_TEXT = "No results";
+const MAX_RESULTS = 10;
 
 // Component that renders a search bar for vocabulary terms.
 //
@@ -40,7 +41,7 @@ const NO_RESULTS_TEXT = "No results";
 //  clearOnClick: Whether selecting an option will clear the search bar
 //  onClick: Callback when the user clicks on this element
 //  onInputFocus: Callback when the input is focused on
-//  vocabulary: String of vocabulary to use (e.g. "hpo")
+//  vocabularies: Array of Strings of vocabularies to use (e.g. ["hpo"])
 //
 // Optional arguments:
 //  disabled: Boolean representing whether or not this element is disabled
@@ -71,18 +72,19 @@ class VocabularyQuery extends React.Component {
       infoAnchor: null,
       infoAboveBackground: false,
       // Information about the vocabulary
-      infoVocabAcronym: props.vocabulary,
+      infoVocabAcronym: "",
       infoVocabURL: "",
       infoVocabDescription: "",
-      infoVocabObtained: false,
+      infoVocabObtained: "",
+      infoVocabTobeObtained: "",
       buttonRefs: {},
-      vocabulary: props.vocabulary,
+      vocabularies: props.vocabularies,
       noResults: false,
     };
   }
 
   render() {
-    const { classes, defaultValue, disabled, inputRef, noMargin, onInputFocus, placeholder, searchDefault, vocabulary } = this.props;
+    const { classes, defaultValue, disabled, inputRef, noMargin, onInputFocus, placeholder, searchDefault, vocabularies } = this.props;
 
     const inputEl = (<Input
       disabled={disabled}
@@ -299,7 +301,6 @@ class VocabularyQuery extends React.Component {
           onError={this.logError}
           registerInfo={this.registerInfoButton}
           getInfo={this.getInfo}
-          vocabulary={vocabulary}
           />
         { /* Error snackbar */}
         <Snackbar
@@ -336,6 +337,29 @@ class VocabularyQuery extends React.Component {
     })
   }
 
+  makeMultiRequest = (queue, input, prevData) => {
+    //Get an vocabulary to search through
+    var selectedVocab = queue.pop();
+    if (selectedVocab === undefined) {
+      this.showSuggestions(null, {rows: prevData.slice(0, MAX_RESULTS)});
+      return;
+    }
+    var url = new URL(`./${selectedVocab}.search.json`, REST_URL);
+    url.searchParams.set("suggest", input);
+
+    //Are there any filters that should be associated with this request?
+    if (this.props?.questionDefinition?.vocabularyFilters?.[selectedVocab]) {
+      var filter = this.props.questionDefinition.vocabularyFilters[selectedVocab].map((category) => {
+        return (`term_category:${category}`);
+      }).join(" OR ");
+      url.searchParams.set("customFilter", `(${filter})`);
+    }
+
+    MakeRequest(url, (status, data) => {
+      this.makeMultiRequest(queue, input, prevData.concat(data['rows']));
+    });
+  }
+
   // Grab suggestions for the given input
   queryInput = (input) => {
     // Empty input? Do not query
@@ -349,17 +373,9 @@ class VocabularyQuery extends React.Component {
     }
 
     // Grab suggestions
-    var url = new URL(`./${this.props.vocabulary}.search.json`, REST_URL);
-    url.searchParams.set("suggest", input);
-
-    // Determine if we should add a custom filter
-    if (this.props.vocabularyFilter) {
-      var filter = this.props.vocabularyFilter.map((category) => {
-        return (`term_category:${category}`);
-      }).join(" OR ");
-      url.searchParams.set("customFilter", `(${filter})`);
-    }
-    MakeRequest(url, this.showSuggestions);
+    //...Make a queue of vocabularies to search through
+    var vocabQueue = this.props.vocabularies.slice();
+    this.makeMultiRequest(vocabQueue, input, []);
 
     // Hide the infobox and stop the timer
     this.setState({
@@ -381,10 +397,10 @@ class VocabularyQuery extends React.Component {
             suggestions.push(
               <MenuItem
                 className={this.props.classes.dropdownItem}
-                key={element["identifier"]}
+                key={element["@path"]}
                 onClick={(e) => {
                   if (e.target.localName === "li") {
-                    this.props.onClick(element["identifier"], name);
+                    this.props.onClick(element["@path"], name);
                     this.anchorEl.value = name;
                     this.closeDialog();
                   }}
@@ -455,8 +471,12 @@ class VocabularyQuery extends React.Component {
   // Grab information about the given ID and populate the info box
   getInfo = (path) => {
     // If we don't yet know anything about our vocabulary, fill it in
-    if (!this.state.infoVocabObtained) {
-      var url = new URL(`./${this.props.vocabulary}.json`, REST_URL);
+    var vocabPath = `${path.split("/").slice(0, -1).join("/")}.json`;
+    if (this.state.infoVocabObtained != vocabPath) {
+      var url = new URL(vocabPath, window.location.origin);
+      this.setState({
+        infoVocabTobeObtained: vocabPath
+      });
       MakeRequest(url, this.parseVocabInfo);
     }
 
@@ -466,11 +486,12 @@ class VocabularyQuery extends React.Component {
 
   parseVocabInfo = (status, data) => {
     if (status === null) {
+      var vocabPath = this.state.infoVocabTobeObtained;
       this.setState({
-        infoVocabAcronym: data["identifier"] || "",
+        infoVocabAcronym: data["identifier"] || vocabPath.split("/")[2]?.split('.')[0] || "",
         infoVocabURL: data["website"] || "",
         infoVocabDescription: data["description"],
-        infoVocabObtained: true
+        infoVocabObtained: vocabPath
       });
     } else {
       this.logError("Error: vocabulary details lookup failed with code " + status);
@@ -588,7 +609,7 @@ VocabularyQuery.propTypes = {
 };
 
 VocabularyQuery.defaultProps = {
-  vocabulary: 'hpo',
+  vocabularies: ['hpo'],
   searchDefault: 'Search',
   clearOnClick: true
 };

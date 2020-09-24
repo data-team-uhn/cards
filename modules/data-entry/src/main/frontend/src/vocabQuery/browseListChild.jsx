@@ -40,12 +40,11 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  headNode: boolean determining whether or not this node is the topmost node in the browser
 //  bolded: boolean determining whether or not to bold this entry
 //  onError: callback when an error occurs
-//  vocabulary: Name of the vocabulary to use to look up terms
 //
 // Optional arguments:
 //  fullscreen: whether or not the dialog is fullscreen (default: false)
 function ListChild(props) {
-  const { classes, defaultOpen, id, path, name, changeTerm, registerInfo, getInfo, expands, headNode, bolded, onError, vocabulary, knownHasChildren } = props;
+  const { classes, defaultOpen, id, path, name, changeTerm, registerInfo, getInfo, expands, headNode, bolded, onError, knownHasChildren } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined");
@@ -91,7 +90,6 @@ function ListChild(props) {
         key={index}
         headNode={false}
         onError={onError}
-        vocabulary={vocabulary}
         knownHasChildren={row["lfs:hasChildren"]}
       />)
       );

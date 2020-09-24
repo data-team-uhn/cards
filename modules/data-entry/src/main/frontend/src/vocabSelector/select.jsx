@@ -23,7 +23,7 @@ import { FormControlLabel, List, RadioGroup, Typography, withStyles, Radio } fro
 
 import { MakeRequest, REST_URL } from "../vocabQuery/util.jsx";
 import Answer from "../questionnaire/Answer.jsx";
-import Thesaurus from "../vocabQuery/query.jsx";
+import VocabularyQuery from "../vocabQuery/query.jsx";
 import SelectorStyle from "./selectorStyle.jsx";
 import VocabularyEntry from "./selectEntry.jsx";
 import SelectionResults from "./selectionResults.jsx";
@@ -187,7 +187,7 @@ function VocabularySelector(props) {
 
       // Determine the name from our vocab
       var escapedId = id.replace(":", "");  // Vocabulary terms have no colons in their JCR node names
-      var url = new URL(`./${source}/${escapedId}.json`, REST_URL);
+      var url = new URL(`${id}.json`, window.location.origin);
       MakeRequest(url, (status, data) => addDefaultSuggestion(status, data, id));
     };
 
@@ -200,7 +200,7 @@ function VocabularySelector(props) {
         }
         // Determine the name from our vocab
         var escapedId = id.replace(":", "");  // Vocabulary terms have no colons in their JCR node names
-        var url = new URL(`./${source}/${escapedId}.json`, REST_URL);
+        var url = new URL(`${id}.json`, window.location.origin);
         MakeRequest(url, (status, data) => addDefaultSuggestion(status, data, id, false));
       });
     }
@@ -260,10 +260,11 @@ function VocabularySelector(props) {
 
   return (
     <React.Fragment>
-      <Thesaurus
+      <VocabularyQuery
         onClick = {handleThesaurus}
+        questionDefinition = {questionDefinition}
         vocabularyFilter = {vocabularyFilter}
-        vocabulary = {source}
+        vocabularies = {source}
         ref = {(ref) => {thesaurusRef = ref;}}
         disabled = {disabled}
         overrideText = {disabled ? reminderText : undefined }
@@ -276,7 +277,7 @@ function VocabularySelector(props) {
           // If we don't have an external container, add results here
           typeof selectionContainer === "undefined" && generateList(disabled, isRadio)
         }
-      </Thesaurus>
+      </VocabularyQuery>
       {
         // If we have an external container, open a portal there
         typeof selectionContainer !== "undefined" &&
@@ -308,7 +309,7 @@ function VocabularySelector(props) {
 VocabularySelector.propTypes = {
     classes: PropTypes.object.isRequired,
     title: PropTypes.string,
-    source: PropTypes.string.isRequired,
+    source: PropTypes.array.isRequired,
     max: PropTypes.number.isRequired,
     requiredAncestors: PropTypes.array,
     defaultSuggestions: PropTypes.object,

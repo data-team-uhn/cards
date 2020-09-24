@@ -382,7 +382,7 @@
     "minAnswers": 0,
     "maxAnswers": 0,
     "dataType": "vocabulary",
-    "sourceVocabulary": "HP"
+    "sourceVocabularies": ["HP"]
   },
   "surgery_extent": {
     "jcr:primaryType": "lfs:Question",

@@ -89,6 +89,16 @@
   + * (lfs:AnswerOption) = lfs:AnswerOption
 
 //-----------------------------------------------------------------------------
+[lfs:VocabularyFilterGroup] > sling:Folder, mix:referenceable
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/VocabularyFilterGroup" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each question is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/VocabularyFilterGroup" mandatory autocreated protected
+
+  - value (string)
+
+//-----------------------------------------------------------------------------
 // This is the definition of a question.
 [lfs:Question] > sling:Folder, mix:referenceable
   // Attributes
@@ -171,10 +181,10 @@
   // This is a SimpleDateFormat compatible string.
   - dateFormat (string)
 
-  // For vocabulary answers, the source vocabulary (or category of vocabularies) in which to search.
+  // For vocabulary answers, the source vocabularies array (or categories of vocabularies) in which to search.
   // A simple label like "MONDO", or a value prefixed by "vocabulary:" such as "vocabulary:MONDO" identifies a specific vocabulary.
   // A value prefixed by "category:" such as "category:diseases" identifies a vocabulary category.
-  - sourceVocabulary (string)
+  - sourceVocabularies (string) multiple
 
   // For vocabulary answers, an extra filter to apply to the query, which can be used, for example,
   // to restrict results to a specific sub-branch, or a specific type of terms.
@@ -216,6 +226,7 @@
   // The list of predefined options displayed to the user.
   // This applies mostly to text answers, but can also be used for the other answer types as well, for example as a list of dates to choose from, or a list of numbers, or a list of vocabulary terms.
   + * (lfs:AnswerOption) = lfs:AnswerOption
+  + * (lfs:VocabularyFilterGroup) = lfs:VocabularyFilterGroup
 
 //-----------------------------------------------------------------------------
 // A section is a collection of questions.
