@@ -407,6 +407,8 @@
   // Set a default title.
   - title (String) = "Questionnaires" mandatory autocreated
 
+  - childNodeType (String) = "lfs:Questionnaire" mandatory autocreated
+
 //-----------------------------------------------------------------------------
 //
 // Forms: instances of filled in questionnaires.
@@ -654,6 +656,8 @@
   // Set a default title.
   - title (String) = "Data" mandatory autocreated
 
+  - childNodeType (String) = "lfs:Form" mandatory autocreated
+
   // Children
 
   // The list of forms.
@@ -714,6 +718,8 @@
 
   // Set a default title.
   - title (String) = "Subjects" mandatory autocreated
+
+  - childNodeType (String) = "lfs:Subject" mandatory autocreated
 
 //-----------------------------------------------------------------------------
 // A type of subject
