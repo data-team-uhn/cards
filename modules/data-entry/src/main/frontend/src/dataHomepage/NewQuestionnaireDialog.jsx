@@ -22,7 +22,7 @@ import { withRouter } from "react-router-dom";
 import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Tooltip, TextField, Typography, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import uuid from "uuid/v4";
-import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function NewQuestionnaireDialog(props) {
   const { children, classes, presetPath } = props;
