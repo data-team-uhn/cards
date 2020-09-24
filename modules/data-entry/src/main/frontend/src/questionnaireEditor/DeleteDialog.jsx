@@ -37,7 +37,6 @@ let DeleteDialog = (props) => {
   // - true -> data has been successfully saved
   // - false -> the save attempt failed
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
-  const { data, onClose, open } = props;
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ error, setError ] = useState("");
   
@@ -50,13 +49,11 @@ let DeleteDialog = (props) => {
       return;
     }
 
-    // Delete this node and every node that refers to this question
-    let url = new URL(data["@path"], window.location.origin);
-    url.searchParams.set("recursive", true);
-    fetch(url, { method: "DELETE" })
-      .then((response) => response.ok ? true : Promise.reject(response))
+    fetch(props.data["@path"], {
+      method: "DELETE",
+    }).then((response) => response.ok ? true : Promise.reject(response))
       .then(() => setLastSaveStatus(true))
-      .then(() => onClose())
+      .then(() => props.onClose())
       .catch((errorObj) => {
         // If the user is not logged in, offer to log in
         const sessionInfo = window.Sling.getSessionInfo();
@@ -82,8 +79,8 @@ let DeleteDialog = (props) => {
 
   return (
     <React.Fragment>
-      <Dialog id="deleteDialog" open={open} onClose={onClose}>
-        <form action={data && data["@path"]} onSubmit={deleteData} method="DELETE" key={props.id}>
+      <Dialog id="deleteDialog" open={props.open} onClose={props.onClose}>
+        <form action={props.data && props.data["@path"]} onSubmit={deleteData} method="DELETE" key={props.id}>
           <DialogTitle>
             <Typography>{props.type.includes("Question") ? "Confirm Question Deletion" : "Confirm Section Deletion"}</Typography>
           </DialogTitle>
@@ -103,7 +100,7 @@ let DeleteDialog = (props) => {
             <Button
               variant="contained"
               color="default"
-              onClick={onClose}
+              onClick={props.onClose}
               >
               {'Cancel'}
             </Button>
