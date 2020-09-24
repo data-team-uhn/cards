@@ -41,3 +41,4 @@ BooleanInput.propTypes = {
 };
 
 export default withStyles(QuestionnaireStyle)(BooleanInput);
+  
