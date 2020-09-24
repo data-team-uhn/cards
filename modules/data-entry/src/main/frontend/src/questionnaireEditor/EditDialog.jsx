@@ -103,7 +103,7 @@ let EditDialog = (props) => {
             setLastSaveStatus(false);
           }
         })
-        .finally(() => {setSaveInProgress(false); setTitle(''); props.onClose()});}
+        .finally(() => {setSaveInProgress(false); props.onClose()});}
   }
 
   // Open the login page in a new popup window, centered wrt the parent window
