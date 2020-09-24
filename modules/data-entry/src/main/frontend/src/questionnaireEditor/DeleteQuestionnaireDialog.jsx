@@ -59,10 +59,9 @@ let DeleteQuestionnaireDialog = (props) => {
 
     setSaveInProgress(true);
 
-    let url = new URL(data["@path"], window.location.origin);
-    url.searchParams.set("recursive", true);
-    fetch(url, { method: "DELETE" })
-      .then((response) => response.ok ? true : Promise.reject(response))
+    fetch(data["@path"], {
+      method: "DELETE",
+    }).then((response) => response.ok ? true : Promise.reject(response))
       .then(() => setLastSaveStatus(true))
       .then(() => onDelete ? onDelete() : null)
       .then(onClose)
