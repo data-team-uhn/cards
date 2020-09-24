@@ -309,8 +309,9 @@ public class QueryBuilder implements Use
      */
     private Iterator<JsonObject> quickSearch(String query) throws RepositoryException
     {
-        List<String> allowedResourceTypes = Arrays.asList(this.resourceTypes);
-        ArrayList<JsonObject> resultsList = new ArrayList<JsonObject>();
+        List<String> allowedResourceTypes = (this.resourceTypes == null || this.resourceTypes.length == 0)
+            ? Collections.singletonList("lfs:Form") : Arrays.asList(this.resourceTypes);
+        ArrayList<JsonObject> resultsList = new ArrayList<>();
 
         for (String type : allowedResourceTypes) {
             // no need to go through all results list if we do not add total results number
