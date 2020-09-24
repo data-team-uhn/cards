@@ -26,7 +26,6 @@ import {
   CardHeader,
   CircularProgress,
   Grid,
-  IconButton,
   Typography,
   withStyles
 } from "@material-ui/core";
@@ -34,8 +33,6 @@ import {
 import moment from "moment";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import EditQuestionnaireDialog from "./EditQuestionnaireDialog"
-import OpenWithIcon from "@material-ui/icons/OpenWith";
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
@@ -84,7 +81,7 @@ let Questionnaire = (props) => {
           data ?
             Object.entries(data)
               .filter(([key, value]) => value['jcr:primaryType'] == 'lfs:Question')
-              .map(([key, value]) => <Grid item key={key}><Question data={value} id={id}/></Grid>)
+              .map(([key, value]) => <Grid item key={key}><Question data={value}/></Grid>)
           :
             <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
         }
@@ -102,18 +99,9 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
-  let { data, id } = props;
   return (
     <Card>
-      <CardHeader title={props.data.text} action={
-        <div>
-          <IconButton>
-            <OpenWithIcon />
-          </IconButton>
-          <EditQuestionnaireDialog key={location.pathname} edit={true} data={props.data} id={id}></EditQuestionnaireDialog>
-          </div>
-      }
-      />
+      <CardHeader title={props.data.text} />
       <CardContent>
         <dl>
           <dt>Label:</dt>
@@ -139,8 +127,7 @@ let Question = (props) => {
 };
 
 Question.propTypes = {
-    data: PropTypes.object.isRequired,
-    id: PropTypes.string.isRequired
+    data: PropTypes.object.isRequired
 };
 
 // A predefined answer option for a question.
