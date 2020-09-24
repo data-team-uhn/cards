@@ -35,7 +35,7 @@ import QuestionComponentManager from "./QuestionComponentManager";
 
 let ObjectInput = (props) => {
   let { objectKey, value, data } = props;
-  let [ selectedValue, setSelectedValue ] = useState(data[objectKey] || '');
+  let [ selectedValue, setSelectedValue] = useState(data[objectKey] || '');
   
   let formatString = (originalKey) => {
     let formattedString = originalKey.charAt(0).toUpperCase() + originalKey.slice(1);
