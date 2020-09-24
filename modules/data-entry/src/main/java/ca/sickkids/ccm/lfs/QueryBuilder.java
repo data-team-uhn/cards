@@ -39,6 +39,8 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.scripting.sightly.pojo.Use;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A HTL Use-API that can run a JCR query and output the results as JSON. The query to execute is taken from the request
@@ -67,6 +69,8 @@ public class QueryBuilder implements Use
     private static final String LFS_QUERY_MATCH_AFTER_KEY = "after";
     private static final String LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
     private static final String LFS_QUERY_MATCH_PATH_KEY = "@path";
+
+    private Logger logger = LoggerFactory.getLogger(QueryBuilder.class);
 
     private String content;
 
@@ -127,6 +131,7 @@ public class QueryBuilder implements Use
             this.addObjects(builder, results, requestID, offset);
             this.content = builder.build().toString();
         } catch (Exception e) {
+            this.logger.error("Failed to query resources: {}", e.getMessage(), e);
             this.content = "Unknown error: " + e.fillInStackTrace();
         }
     }
