@@ -19,36 +19,21 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, TextField, Typography, withStyles } from "@material-ui/core";
+import { TextField, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from './QuestionnaireStyle';
-import QuestionComponentManager from "./QuestionComponentManager";
 
-// Text Input field used by Edit dialog component
-let TextInput = (props) => {
-  let { objectKey, data } = props;
-
-  let formatString = (key) => {
-    let formattedString = key.charAt(0).toUpperCase() + key.slice(1);
-      return formattedString.split(/(?=[A-Z])/).join(' ');
-  }
-
+// String Input field used by Edit dialog component
+let StringInput = (props) => {
+  let {  objectKey, data } = props;
   return (
-    <Grid container alignItems='flex-end' spacing={2} key={objectKey}>
-      <Grid item xs={6}><Typography>{ formatString(objectKey)}</Typography></Grid>
-      <Grid item xs={6}><TextField name={objectKey} id={objectKey} defaultValue={data[objectKey] || ''}/></Grid>
-    </Grid>
+    <TextField name={objectKey} id={objectKey} defaultValue={data[objectKey] || ''}/>
   )
 }
 
-TextInput.propTypes = {
+StringInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired
 };
 
-const StyledTextInput = withStyles(QuestionnaireStyle)(TextInput);
-export default StyledTextInput;
-
-QuestionComponentManager.registerQuestionComponent((definition) => {
-  return [StyledTextInput, 0];
-});
+export default withStyles(QuestionnaireStyle)(StringInput);

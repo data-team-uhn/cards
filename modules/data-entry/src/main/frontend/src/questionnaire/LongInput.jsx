@@ -17,27 +17,34 @@
 //  under the License.
 //
 
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Checkbox,
+  TextField,
   withStyles
 } from "@material-ui/core";
 
 import QuestionnaireStyle from './QuestionnaireStyle';
 
-// Boolean Input field used by Edit dialog component
+// Long Input field used by Edit dialog component
 
-let BooleanInput = (props) => {
+let StringInput = (props) => {
   let {  objectKey, data } = props;
   return (
-    <Checkbox name={objectKey} id={objectKey} defaultValue={data[objectKey] || ''} />
+    <TextField
+      name={objectKey}
+      id={objectKey}
+      defaultValue={data[objectKey] || ''}
+      type='number' 
+      placeholder={objectKey.includes('maxPerSubject') ? 'Unlimited' : ''}
+      min={objectKey.includes('maxPerSubject') ? 0 : ''}
+    />
   )
 }
 
-BooleanInput.propTypes = {
+StringInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired
 };
 
-export default withStyles(QuestionnaireStyle)(BooleanInput);
+export default withStyles(QuestionnaireStyle)(StringInput);

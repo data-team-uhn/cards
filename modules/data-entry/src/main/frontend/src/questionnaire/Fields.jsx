@@ -20,39 +20,68 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Typography, withStyles } from "@material-ui/core";
-import QuestionComponentManager from "./QuestionComponentManager";
-import QuestionnaireStyle from './QuestionnaireStyle';
 
-import BooleanInput from "./BooleanInput";
-import NumberInput from "./NumberInput";
-import TextInput from "./TextInput";
-import ObjectInput from "./ObjectInput";
+import QuestionnaireStyle from './QuestionnaireStyle';
+import BooleanInput from './BooleanInput';
+import LongInput from './LongInput';
+import ObjectInput from './ObjectInput';
+import StringInput from './StringInput';
 
 let Fields = (props) => {
   let { data, JSON } = props;
- /**
- * Method responsible for displaying a question from the questionnaire
- *
- * @param {String} key the lablel of the question
- * @param {Object} value the data type of the question
- * @returns a React component that renders the question
- */
 
-let displayField = (key, value) => {
-  // This variable must start with an upper case letter so that React treats it as a component
-  const FieldDisplay = QuestionComponentManager.getQuestionComponent(key);
-  return (
-    <Grid item key={key}>
-      <FieldDisplay
-        objectKey={key}
-        data={data}
-        />
-    </Grid>
-  );
-};
+  let formatString = (key) => {
+    let formattedString = key.charAt(0).toUpperCase() + key.slice(1);
+      return formattedString.split(/(?=[A-Z])/).join(' ');
+    }
 
+    let inputTypes = (key, value) => {
+    return [
+      {
+        dataType: 'boolean',
+        score: ( value === 'boolean' ? 60 : 10),
+        component: (
+          <Grid container alignItems='flex-end' spacing={2} key={key}>
+            <Grid item xs={6}><Typography>{ formatString(key) }</Typography></Grid>
+            <Grid item xs={6}><BooleanInput objectKey={key} data={data}/></Grid>
+          </Grid>
+        )
+      },
+      {
+        dataType: 'string',
+        score: ( value === 'string' ? 60 : 40),
+        component: (
+          <Grid container alignItems='flex-end' spacing={2} key={key}>
+            <Grid item xs={6}><Typography>{ formatString(key) }</Typography></Grid>
+            <Grid item xs={6}><StringInput objectKey={key} data={data}/></Grid>
+          </Grid>
+        )
+      },
+      {
+        dataType: 'long',
+        score: ( value === 'long' ? 60 : 10),
+        component: (
+          <Grid container alignItems='flex-end' spacing={2} key={key}>
+            <Grid item xs={6}><Typography>{ formatString(key) }</Typography></Grid>
+            <Grid item xs={6}><LongInput objectKey={key} data={data}/></Grid>
+          </Grid>
+        )
+      },
+      {
+        dataType: 'object',
+        score: ( typeof(value) === 'object' ? 60 : 0),
+        component: (<ObjectInput objectKey={key} value={value} data={data}></ObjectInput>)
+      }
+    ]
+  }
+    
+  let fieldInput = (key, value) => {
+    return inputTypes(key, value).reduce((a,b) => a.score > b.score ? a : b).component;
+  }
+  
   return Object.entries(JSON).map(([key, value]) => (
-    displayField(key, value)));
+    fieldInput(key, value)
+  ));
 }
 
 Fields.propTypes = {

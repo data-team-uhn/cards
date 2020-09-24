@@ -29,12 +29,11 @@ import {
 } from "@material-ui/core";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import QuestionComponentManager from "./QuestionComponentManager";
 
-// Object Input field used by Edit dialog component
+ // Object Input field used by Edit dialog component
 
 let ObjectInput = (props) => {
-  let { objectKey, value, data, definition } = props;
+  let { objectKey, value, data } = props;
   let [ selectedValue, setSelectedValue] = useState(data[objectKey] || '');
   
   let formatString = (originalKey) => {
@@ -71,14 +70,7 @@ let ObjectInput = (props) => {
 ObjectInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
   value: PropTypes.object.isRequired,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
 };
-
-const StyledObjectInput = withStyles(QuestionnaireStyle)(ObjectInput);
-export default StyledObjectInput;
-
-QuestionComponentManager.registerQuestionComponent((definition) => {
-  if (typeof(definition) === 'object') {
-    return [StyledObjectInput, 50];
-  }
-});
+  
+export default withStyles(QuestionnaireStyle)(ObjectInput);
