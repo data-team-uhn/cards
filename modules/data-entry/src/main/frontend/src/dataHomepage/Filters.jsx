@@ -273,6 +273,7 @@ function Filters(props) {
               key={label}
               size="small"
               label={label}
+              disabled={disabled}
               onDelete={()=>{
                 const newFilters = activeFilters.slice();
                 newFilters.splice(index, 1);
@@ -290,20 +291,19 @@ function Filters(props) {
           );
         })
       }
-      { !disabled && (
-        <Button
-          size="small"
-          variant="contained"
-          color="default"
-          className={classes.addFilterButton}
-          onClick={() => {
-            openDialogAndAdd();
-            setFocusRow(activeFilters.length);
-          }}
-          >
-          <Add fontSize="small" />
-        </Button>
-      )}
+      <Button
+        size="small"
+        variant="contained"
+        color="default"
+        className={classes.addFilterButton}
+        disabled={disabled}
+        onClick={() => {
+          openDialogAndAdd();
+          setFocusRow(activeFilters.length);
+        }}
+        >
+        <Add fontSize="small" />
+      </Button>
       {/* Dialog for setting up filters */}
       <Dialog
         open={dialogOpen}
