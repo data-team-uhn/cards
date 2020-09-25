@@ -494,6 +494,11 @@ public class QueryBuilder implements Use
                 while (questionParent != null && !"lfs/Question".equals(questionParent.getResourceType())) {
                     questionParent = questionParent.getParent();
                 }
+                if (questionParent == null) {
+                    // This is not in a question, ignore it.
+                    // Conditions may also match the query, and we don't want to match those.
+                    continue;
+                }
                 Node questionNode = questionParent.adaptTo(Node.class);
                 if (questionNode != null) {
                     question = questionNode.getProperty("text").getString();
