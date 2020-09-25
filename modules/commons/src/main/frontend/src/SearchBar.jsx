@@ -264,7 +264,7 @@ function SearchBar(props) {
                   ))}
                   { showTotalRows && moreResults > 0 &&
                   <Link to={"/content.html/QuickSearchResults?query=" + encodeURIComponent(search)
-                              + "&allowedResourceTypes=" + encodeURIComponent(JSON.stringify(allowedResourceTypes))}
+                              + allowedResourceTypes.map(i => `&allowedResourceTypes=${encodeURIComponent(i)}`).join('')}
                           className={classes.root}>
                     <MenuItem
                       className={classes.dropdownItem}
@@ -291,7 +291,7 @@ let defaultQueryConstructor = (query, requestID, showTotalRows, allowedResourceT
   new_url.searchParams.set("limit", limit || DEFAULT_MAX_RESULTS);
   new_url.searchParams.set("req", requestID);
   new_url.searchParams.set("showTotalRows", showTotalRows);
-  new_url.searchParams.set("allowedResourceTypes", encodeURIComponent(JSON.stringify(allowedResourceTypes)));
+  allowedResourceTypes.forEach(i => new_url.searchParams.append("allowedResourceTypes", i));
   return new_url;
 }
 

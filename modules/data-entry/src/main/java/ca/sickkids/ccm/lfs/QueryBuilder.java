@@ -86,7 +86,7 @@ public class QueryBuilder implements Use
     private boolean showTotalRows;
 
     /* Resource types allowed for a search. */
-    private String resourceTypes;
+    private String[] resourceTypes;
 
     @Override
     public void init(Bindings bindings)
@@ -108,7 +108,7 @@ public class QueryBuilder implements Use
             final String showTotalRowsParam = request.getParameter("showTotalRows");
 
             this.limit = getLongValueOrDefault(request.getParameter("limit"), 10);
-            this.resourceTypes = request.getParameter("allowedResourceTypes");
+            this.resourceTypes = request.getParameterValues("allowedResourceTypes");
             this.shouldEscape = StringUtils.isBlank(doNotEscape) || !("true".equals(doNotEscape));
             this.showTotalRows = StringUtils.isBlank(showTotalRowsParam) || "true".equals(showTotalRowsParam);
 
@@ -310,9 +310,8 @@ public class QueryBuilder implements Use
     private Iterator<JsonObject> quickSearch(String query) throws RepositoryException, UnsupportedEncodingException
     {
         List<String> allowedResourceTypes = Collections.singletonList("lfs:Form");
-        if (this.resourceTypes != null && this.resourceTypes.length() > 8) {
-            String param = this.urlDecode(this.resourceTypes).replace("[", "").replace("]", "");
-            allowedResourceTypes = Arrays.asList(param.split(","));
+        if (this.resourceTypes != null && this.resourceTypes.length > 0) {
+            allowedResourceTypes = Arrays.asList(this.resourceTypes);
         }
         ArrayList<JsonObject> resultsList = new ArrayList<>();
 
@@ -321,7 +320,7 @@ public class QueryBuilder implements Use
             if (resultsList.size() == this.limit && !this.showTotalRows) {
                 break;
             }
-            String rtype = type.replace("lfs:", "").replace("\"", "");
+            String rtype = type.replace("lfs:", "");
             switch (rtype) {
                 case "Form":
                     quickFormSearch(resultsList, query);
