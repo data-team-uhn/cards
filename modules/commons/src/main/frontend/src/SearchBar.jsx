@@ -74,7 +74,7 @@ function SearchBar(props) {
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setFetched(true);
-        setLimit(json["limit"]);
+        setLimit(json["limit"] || DEFAULT_MAX_RESULTS);
         setAllowedResourceTypes(json["allowedResourceTypes"]);
         setShowTotalRows(json["showTotalRows"]  == 'true');
       });
@@ -108,7 +108,7 @@ function SearchBar(props) {
 
   // Runs a fulltext request
   let runQuery = (query) => {
-    let new_url = queryConstructor(query, requestID, showTotalRows, allowedResourceTypes);
+    let new_url = queryConstructor(query, requestID, showTotalRows, allowedResourceTypes, limit);
     // In the closure generated, postprocessResults will look for req_id, instead of requestID+1
     setRequestID(requestID+1);
     fetch(new_url)
@@ -284,11 +284,11 @@ function SearchBar(props) {
   );
 }
 
-let defaultQueryConstructor = (query, requestID, showTotalRows, allowedResourceTypes) => {
+let defaultQueryConstructor = (query, requestID, showTotalRows, allowedResourceTypes, limit) => {
   let new_url = new URL(DEFAULT_QUERY_URL, window.location.origin);
   new_url.searchParams.set("quick", encodeURIComponent(query));
   new_url.searchParams.set("doNotEscapeQuery", "true");
-  new_url.searchParams.set("limit", DEFAULT_MAX_RESULTS);
+  new_url.searchParams.set("limit", limit || DEFAULT_MAX_RESULTS);
   new_url.searchParams.set("req", requestID);
   new_url.searchParams.set("showTotalRows", showTotalRows);
   new_url.searchParams.set("allowedResourceTypes", encodeURIComponent(JSON.stringify(allowedResourceTypes)));

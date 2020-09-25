@@ -37,16 +37,6 @@ const LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
 function HeaderSearchBar(props) {
   const { classes, doNotEscapeQuery, ...rest } = props;
 
-  // Runs a fulltext request
-  let createQuery = (query, requestID) => {
-    let new_url = new URL(DEFAULT_QUERY_URL, window.location.origin);
-    new_url.searchParams.set("quick", encodeURIComponent(query));
-    doNotEscapeQuery && new_url.searchParams.set("doNotEscapeQuery", "true");
-    new_url.searchParams.set("limit", DEFAULT_MAX_RESULTS);
-    new_url.searchParams.set("req", requestID);
-    return(new_url);
-  }
-
   // Generate a human-readable info about the resource (form) matching the query:
   // * questionnaire title (if available) and result type, followed by
   // * the form's subject name (if available) or the resource's uuid
@@ -95,7 +85,6 @@ function HeaderSearchBar(props) {
 
   return(
     <SearchBar
-      queryConstructor={createQuery}
       resultConstructor={quickSearchResult}
       {...rest}
       />

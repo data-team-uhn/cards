@@ -66,6 +66,7 @@ function QuickSearchResultsWidget(props) {
     // We need to do this because sling does not accept JSON, need url encoded data
     let formData = new URLSearchParams();
     formData.append('limit', limit);
+    formData.append('showTotalRows', showTotalRows);
     for (var i in allowedResourceTypes) {
       formData.append('allowedResourceTypes', allowedResourceTypes[i]);
     }
