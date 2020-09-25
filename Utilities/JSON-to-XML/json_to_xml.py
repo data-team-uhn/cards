@@ -74,7 +74,7 @@ def save_as_xml(d, node_name="XmlQuestionnaire", indentation_level=0):
                     if (type(val) == list):
                         save_list(val, indentation_level+2)
                     else:
-                        print("\t"*(indentation_level+2) + "<value>" + "</value>")
+                        print("\t"*(indentation_level+2) + "<value>" + convert_xml_safe(val) + "</value>")
                     print("\t"*(indentation_level+2) + "<type>Reference</type>")
                 else:
                     print("\t"*(indentation_level+2) + "<name>" + key + "</name>")
