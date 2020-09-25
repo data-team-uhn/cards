@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import uuid from "uuid/v4";
 
@@ -36,7 +36,7 @@ const PROGRESS_SELECT_SUBJECT = 1;
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
 function NewFormDialog(props) {
-  const { children, classes, presetPath } = props;
+  const { children, classes, presetPath, currentSubject } = props;
   const [ open, setOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ initialized, setInitialized ] = useState(false);
@@ -123,7 +123,11 @@ function NewFormDialog(props) {
       if (!selectedQuestionnaire) {
         setError("Please select a questionnaire.");
         return;
-      } else {
+      } 
+      if (selectedSubject) {
+        createForm();
+      }
+      else {
         setProgress(PROGRESS_SELECT_SUBJECT);
       }
     } else {
@@ -160,6 +164,19 @@ function NewFormDialog(props) {
   }
 
   const isFetching = numFetchRequests > 0;
+
+  useEffect(() => {
+    if (currentSubject && selectedQuestionnaire) {
+      // if the current subject is the only required type for the questionnaire
+      if ( selectedQuestionnaire["requiredSubjectTypes"].length == 1 &&
+        (currentSubject.type["@path"] == selectedQuestionnaire["requiredSubjectTypes"][0]["@path"])) {
+        setSelectedSubject(currentSubject); // now that selectedsubject is set, will create form with current subject as subject
+      }
+      else {
+        setSelectedSubject(null); // remove selectedsubject so next dialog can open (should not create form right away)
+      }
+    }
+  }, [selectedQuestionnaire, open])
 
   return (
     <React.Fragment>
@@ -199,6 +216,7 @@ function NewFormDialog(props) {
               onError={setError}
               onSelect={selectSubject}
               selectedSubject={selectedSubject}
+              currentSubject={currentSubject}
               />}
           </React.Fragment>}
         </DialogContent>
@@ -242,6 +260,7 @@ function NewFormDialog(props) {
         disabled={isFetching}
         onClose={() => { setNewSubjectPopperOpen(false); setError();}}
         onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
+        currentSubject={currentSubject}
         onSubmit={createForm}
         open={newSubjectPopperOpen}
         />

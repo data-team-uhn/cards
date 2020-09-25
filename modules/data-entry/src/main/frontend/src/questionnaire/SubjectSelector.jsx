@@ -279,7 +279,7 @@ export const parseToArray = (object) => {
  * @param {bool} open If true, this dialog is open
  */
 export function NewSubjectDialog (props) {
-  const { allowedTypes, disabled, onClose, onSubmit, open } = props;
+  const { allowedTypes, disabled, onClose, onSubmit, open, currentSubject } = props;
   const [ error, setError ] = useState("");
   const [ newSubjectName, setNewSubjectName ] = useState([""]);
   const [ newSubjectType, setNewSubjectType ] = useState([""]);
@@ -296,6 +296,19 @@ export function NewSubjectDialog (props) {
   let curSubjectRequiresParents = newSubjectType[newSubjectIndex]?.["parent"];
   let disabledControls = disabled || isPosting;
 
+  let parentSet = (currentSubject && (curSubjectRequiresParents?.["@path"] == currentSubject.type["@path"]));
+
+  let handleNewParent = (e) => {
+    //handle SubjectType
+    if (currentSubject && (parentSet)) {
+      return currentSubject;
+    }
+    //handle Subject
+    if (currentSubject && (e["parents"]?.["type"]["@path"] == currentSubject.type["@path"])) {
+      handleNewParent(currentSubject);
+    }
+  }
+
   // Called only by createNewSubject, a callback to create the next child on our list
   let createNewSubjectRecursive = (subject, index) => {
     if (index <= -1) {
@@ -308,6 +321,9 @@ export function NewSubjectDialog (props) {
 
     // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
     let parent = newSubjectParent[index]?.["jcr:uuid"] || subject;
+    if (parentSet) {
+      parent = handleNewParent(newSubjectType[newSubjectIndex])?.["jcr:uuid"];
+    }
     parent = (parent ? [parent] : []);
     createSubjects(
       [newSubjectName[index]],
@@ -327,7 +343,7 @@ export function NewSubjectDialog (props) {
     setNewSubjectPopperOpen(true);
     setSelectParentPopperOpen(false);
   }
-  
+
   // Called when creating a new subject
   let createNewSubject = () => {
     if (newSubjectName[newSubjectIndex] == "") {
@@ -338,11 +354,18 @@ export function NewSubjectDialog (props) {
       // They haven't selected a parent for the current type yet
       setError("Please select a valid parent.");
     } else if (newSubjectPopperOpen && curSubjectRequiresParents) {
-      // Display the parent type to select
-      setError();
-      setNewSubjectPopperOpen(false);
-      setSelectParentPopperOpen(true);
-      tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
+      if (parentSet) {
+        // Initiate the call if currentSubject is the parent
+        setIsPosting(true);
+        createNewSubjectRecursive(null, newSubjectIndex);
+      }
+      else {
+        // Display the parent type to select
+        setError();
+        setNewSubjectPopperOpen(false);
+        tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
+        setSelectParentPopperOpen(true);
+      }
     } else {
       // Initiate the call
       setIsPosting(true);
@@ -713,7 +736,7 @@ SubjectListItem.defaultProps = {
  */
 function SubjectSelectorList(props) {
   const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject,
-      theme, ...rest } = props;
+    currentSubject, theme, ...rest } = props;
   const COLUMNS = [
     { title: 'Identifier', field: 'identifier' },
     { title: 'Hierarchy', field: 'hierarchy' },
@@ -741,8 +764,49 @@ function SubjectSelectorList(props) {
             return fetch(url)
               .then(response => response.json())
               .then(result => {
+                // recursive function to filter and find related subjects to the currentSubject
+                // should also include subject at the same SubjectType level as currentSubject, if they exist
+
+                let getRelatedChild = (e, array) => {
+                  var array = array || [];
+                  let output = e['parents']?.['@path'];
+                  if (e["parents"]) {
+                    array.push(output);
+                    getRelatedChild(e["parents"], array);
+                    return array;
+                  } else {
+                    return output;
+                  }
+                }
+
+                let filterRelated = (e) => {
+                  // if the selected questionnaire supports the type of current subject
+                  if (e['type']?.['@path'] == currentSubject['type']['@path']) return true;
+                  return getRelatedChild(e).includes(currentSubject['@path'])
+                }
+
+                // recursive function to check if the SubjectType of the selected questionnaire is a child of the 'currentSubject' SubjectType
+                // e.g. will return true if the selected questionnaire supports Tumors and the currentSubject SubjectType is Patient
+                // if yes, will filter results to find related subjects (with filterRelated)
+                let toReturn = [];
+
+                let isSubjectRelated = (e) => {
+                  let output = e.type.label;
+                  if (e["parents"]) {
+                    let ancestors = isSubjectRelated(e["parents"]);
+                    toReturn.push(ancestors);
+                    toReturn.push(output);
+                    return toReturn;
+                  } else {
+                    return output;
+                  }
+                }
+
                 return {
-                  data: result["rows"].map((row) => ({
+                  data: (
+                    (currentSubject && (result['rows'].map((row) => isSubjectRelated(row).includes(currentSubject.type.label)))[0])
+                    ? result['rows'].filter((e) => filterRelated(e)) : result["rows"]
+                  ).map((row) => ({
                     hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({})) : "No parents",
                     ...row})),
                   page: Math.trunc(result["offset"]/result["limit"]),

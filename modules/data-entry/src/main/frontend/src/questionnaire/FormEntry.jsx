@@ -69,6 +69,8 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
   // This variable must start with an upper case letter so that React treats it as a component
   const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
+
+  // component will either render the default question display, or a list of questions/answers from the form (used for subjects)
   return (
     <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={(doHighlight ? classes.highlightedSection : undefined)}>
       <QuestionDisplay

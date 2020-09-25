@@ -120,6 +120,23 @@ const questionnaireStyle = theme => ({
         paddingBottom: "0 !important",
         marginBottom: theme.spacing(-1)
     },
+    subjectCard: {
+        minHeight: "200px",
+    },
+    subjectFormHeader: {
+        paddingBottom: "0 !important",
+    },
+    subjectFormHeaderButton: {
+        padding: "0 !important"
+    },
+    subjectNewButton: {
+        margin: theme.spacing(1),
+        top: theme.spacing(7.7),
+        right: theme.spacing(4.8),
+        bottom: 'auto',
+        left: 'auto',
+        position: 'fixed',
+    },
     collapsedSection: {
         padding: "0 !important"
     },
@@ -163,7 +180,7 @@ const questionnaireStyle = theme => ({
         }
     },
     // When the user is deleting a section, highlight it via a border on the left
-   
+
     highlightedSection: {
         borderLeftWidth: theme.spacing(GRID_SPACE_UNIT),
         borderLeftColor: theme.palette.primary.light,
