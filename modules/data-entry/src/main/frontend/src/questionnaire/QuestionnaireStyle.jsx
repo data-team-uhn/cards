@@ -139,6 +139,9 @@ const questionnaireStyle = theme => ({
         left: 'auto',
         position: 'fixed',
     },
+    subjectDeleteButton: {
+        marginRight: theme.spacing(10)
+    },
     collapsedSection: {
         padding: "0 !important"
     },

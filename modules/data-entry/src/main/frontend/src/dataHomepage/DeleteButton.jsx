@@ -100,6 +100,7 @@ function DeleteButton(props) {
       if (response.ok)  {
         if (onComplete) {onComplete();}
         if (shouldGoBack) {goBack();}
+        closeDialog();
       } else {
         response.json().then((json) => handleError(response.status, json));
       }
