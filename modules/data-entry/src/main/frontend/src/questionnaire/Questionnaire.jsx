@@ -88,9 +88,9 @@ let Questionnaire = (props) => {
   // create a ref to store the question container DOM element
   useEffect(() => {
     const timer = setTimeout(() => {
-	  questionRef?.current?.scrollIntoView();
-	}, 500);
-	return () => clearTimeout(timer);
+      questionRef?.current?.scrollIntoView();
+    }, 500);
+    return () => clearTimeout(timer);
   }, [questionRef]);
 
   let fetchData = () => {
@@ -114,11 +114,11 @@ let Questionnaire = (props) => {
       .map(([key, value]) => {
         if (value['jcr:primaryType'] == 'lfs:Question') {
           // if autofocus is needed and specified in the url
-		  const questionPath = value["@path"];
-		  const doHighlight = (anchor == questionPath);
+          const questionPath = value["@path"];
+          const doHighlight = (anchor == questionPath);
 
-		  return (
-		    <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={(doHighlight ? classes.highlightedSection : undefined)}>
+          return (
+            <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={(doHighlight ? classes.highlightedSection : undefined)}>
               <Question data={value}/>
             </Grid>
           );
