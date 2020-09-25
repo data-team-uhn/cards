@@ -174,10 +174,10 @@ function Filters(props) {
     });
   }
 
-  let handleChangeOutput = (index, newValue, newLabel) => {
+  let handleChangeOutput = (index, newValue, newLabel, dataType) => {
     setEditingFilters( oldfilters => {
       let newFilters = oldfilters.slice();
-      let newFilter =  {...newFilters[index], value: newValue };
+      let newFilter =  {...newFilters[index], value: newValue, type: dataType};
       if (newLabel != null) {
         newFilter.label = newLabel;
       }
@@ -241,6 +241,7 @@ function Filters(props) {
 
   // Return the pre-computed input element, and focus it if we were asked to
   let getCachedInput = (filterDatum, index, focusRef) => {
+    let dataType = questionDefinitions[filterDatum.name]?.dataType || "text";
 
     let CachedComponent = filterDatum.comparator === notesComparator ?
       textFilterComponent[filterDatum.name]
@@ -252,7 +253,7 @@ function Filters(props) {
         questionDefinition={questionDefinitions[filterDatum.name]}
         defaultValue={editingFilters[index].value}
         defaultLabel={editingFilters[index].label}
-        onChangeInput={(newValue, label) => {handleChangeOutput(index, newValue, label);}}
+        onChangeInput={(newValue, label) => {handleChangeOutput(index, newValue, label, dataType);}}
         />);
   }
 

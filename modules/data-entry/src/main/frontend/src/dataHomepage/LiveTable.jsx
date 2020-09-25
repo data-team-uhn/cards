@@ -116,6 +116,7 @@ function LiveTable(props) {
       filters["fields"].forEach((field) => {url.searchParams.append("filternames", field)});
       filters["comparators"].forEach((comparator) => {url.searchParams.append("filtercomparators", comparator)});
       filters["values"].forEach((value) => {url.searchParams.append("filtervalues", value)});
+      filters["types"].forEach((type) => {url.searchParams.append("filtertypes", type)});
       filters["empties"].forEach((value) => {url.searchParams.append("filterempty", value)});
       filters["notempties"].forEach((value) => {url.searchParams.append("filternotempty", value)});
     }
@@ -274,6 +275,7 @@ function LiveTable(props) {
     let fields = [];
     let comparators = [];
     let values = [];
+    let types = [];
     let empties = [];
     let notempties = [];
 
@@ -288,6 +290,7 @@ function LiveTable(props) {
         fields.push(filter.uuid);
         comparators.push(filter.comparator);
         values.push(filter.value);
+        types.push(filter.type || "text");
       }
     });
 
@@ -296,6 +299,7 @@ function LiveTable(props) {
         fields: fields,
         comparators: comparators,
         values: values,
+        types: types,
         empties: empties,
         notempties: notempties
       };
