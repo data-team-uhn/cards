@@ -50,13 +50,6 @@
             "lfs:extensionName": "Tumors",
             "lfs:targetURL": "/content.html/Tumor",
             "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js"
-        },
-        "QuickSearchConfiguration": {
-            "jcr:primaryType": "lfs:Extension",
-            "lfs:extensionPointId": "lfs/coreUI/view",
-            "lfs:extensionName": "Quick Search Configuration",
-            "lfs:targetURL": "/content.html/admin/QuickSearchConfiguration",
-            "lfs:extensionRenderURL": "asset:lfs-dataentry.QuickSearchResultsWidget.js"
         }
     },
     "AdminDashboard": {
@@ -76,15 +69,6 @@
             "lfs:targetURL": "/content.html/admin/SubjectTypes",
             "lfs:icon": "asset:lfs-dataentry.subjectTypeIcon.js",
             "lfs:hint": "Define subject types and relations between them"
-        },
-        "QuickSearchConfiguration": {
-            "jcr:primaryType": "lfs:Extension",
-            "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
-            "lfs:extensionName": "Quick Search Widget",
-            "lfs:targetURL": "/content.html/admin/QuickSearchConfiguration",
-            "lfs:icon": "asset:lfs-dataentry.QuickSearchResultsIcon.js",
-            "lfs:hint": "Configure the quick search widget",
-            "lfs:defaultOrder": 201
         }
     },
     "Sidebar": {
