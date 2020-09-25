@@ -175,7 +175,7 @@ function QuickSearchResultsWidget(props) {
             }
             <ListItem key="button">
             { !onSuccess ?
-              <Button type="submit" variant="contained" color="primary" size="small">Submit</Button>
+              <Button type="submit" variant="contained" color="primary" size="small">Save</Button>
               :
               <Button type="submit" variant="contained" color="primary" size="small">Saved</Button>
             }
