@@ -150,7 +150,13 @@ let Questionnaire = (props) => {
       { data &&
         <Grid item>
           <Card>
-            <CardHeader title={'Questionnaire Properties'} action={<EditDialog edit={true} data={data} type='Info' />}/>
+            <CardHeader
+              title={'Questionnaire Properties'}
+              action={
+                <IconButton onClick={() => {openDialog(true, 'Questionnaire');}}>
+                  <EditIcon />
+                </IconButton>
+              }/>
             <CardContent>
               <dl>
                 <dt>
