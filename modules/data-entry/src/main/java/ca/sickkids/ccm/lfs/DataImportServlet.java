@@ -156,9 +156,6 @@ public class DataImportServlet extends SlingAllMethodsServlet
             this.resolver.set(resourceResolver);
             this.formsHomepage.set(resourceResolver.getResource("/Forms"));
             this.subjectsHomepage.set(resourceResolver.getResource("/Subjects"));
-            // this.subjectType.set(resourceResolver.getResource(
-            //     StringUtils.defaultIfBlank(request.getParameter(":subjectType"), "/SubjectTypes/Patient"))
-            //     .adaptTo(Node.class));
             parseData(request, StringUtils.equals("true", request.getParameter(":patch")));
         } catch (RepositoryException e) {
             LOGGER.error("Failed to import data: {}", e.getMessage(), e);
@@ -632,7 +629,12 @@ public class DataImportServlet extends SlingAllMethodsServlet
     // When the whole list of subject types is processed, return current subject as the subject to use for the row.
     {
         Node current = null;
-        for (String type: request.getParameterValues(":subjectType")) {
+        String[] subjectTypes = request.getParameterValues(":subjectType");
+        // If no value is set for this parameter, then /SubjectTypes/Patient should be assumed to be the default value.
+        if (subjectTypes == null || subjectTypes.length == 0) {
+            subjectTypes = new String[]{"/SubjectTypes/Patient"};
+        }
+        for (String type: subjectTypes) {
             current = getOrCreateSubject(row, type, current);
             if (current == null) {
                 return null;
@@ -680,8 +682,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
         final Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
 
         if (results.hasNext()) {
-            cache.put(subjectKey, results.next().adaptTo(Node.class));
-            return results.next().adaptTo(Node.class);
+            Node subject = results.next().adaptTo(Node.class);
+            cache.put(subjectKey, subject);
+            return subject;
         }
         final Map<String, Object> subjectProperties = new LinkedHashMap<>();
         subjectProperties.put("jcr:primaryType", "lfs:Subject");
