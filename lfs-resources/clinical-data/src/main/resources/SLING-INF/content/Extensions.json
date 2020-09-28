@@ -1,0 +1,24 @@
+{
+    "jcr:primaryType": "sling:Folder",
+    "Views": {
+        "jcr:primaryType": "sling:Folder",
+        "Tumors": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/view",
+            "lfs:extensionName": "Tumors",
+            "lfs:targetURL": "/content.html/Tumor",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js"
+        }
+    },
+    "Sidebar": {
+        "jcr:primaryType": "sling:Folder",
+        "Tumors": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+            "lfs:extensionName": "Tumors",
+            "lfs:targetURL": "/content.html/Tumor",
+            "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
+            "lfs:defaultOrder": 6
+        }
+    }
+}

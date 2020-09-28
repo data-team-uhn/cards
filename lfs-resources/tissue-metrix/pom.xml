@@ -22,16 +22,27 @@
 
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-parent</artifactId>
+    <artifactId>lfs-resources</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-cardiac-questionnaires</artifactId>
-  <packaging>pom</packaging>
-  <name>LFS Cardiac Questionnaires</name>
-  <description>A collection of cardiac questionnaires.</description>
+  <artifactId>lfs-resources-tissue-metrix</artifactId>
+  <packaging>bundle</packaging>
+  <name>LFS Resources - Tissue Metrix Data</name>
 
-  <modules>
-    <module>clinical-data</module>
-  </modules>
+  <build>
+    <plugins>
+      <!-- This is an OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Sling-Initial-Content>SLING-INF/content/;path:=/Questionnaires/</Sling-Initial-Content>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

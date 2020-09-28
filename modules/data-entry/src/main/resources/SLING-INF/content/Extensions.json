@@ -43,13 +43,6 @@
             "lfs:extensionName": "Patients",
             "lfs:targetURL": "/content.html/Patient",
             "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js"
-        },
-        "Tumors": {
-            "jcr:primaryType": "lfs:Extension",
-            "lfs:extensionPointId": "lfs/coreUI/view",
-            "lfs:extensionName": "Tumors",
-            "lfs:targetURL": "/content.html/Tumor",
-            "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js"
         }
     },
     "AdminDashboard": {
@@ -104,14 +97,6 @@
             "lfs:targetURL": "/content.html/Patient",
             "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
             "lfs:defaultOrder": 5
-        },
-        "Tumors": {
-            "jcr:primaryType": "lfs:Extension",
-            "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-            "lfs:extensionName": "Tumors",
-            "lfs:targetURL": "/content.html/Tumor",
-            "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
-            "lfs:defaultOrder": 6
         }
     }
 }

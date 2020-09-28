@@ -18,12 +18,13 @@
 #
 
 # This is the LFS project
-[feature name=lfs-questionnaires]
+[feature name=lfs-resources]
 
 [variables]
     lfs.version=0.1-SNAPSHOT
 
 [artifacts runModes=forms]
-    ca.sickkids.ccm.lfs/lfs-questionnaire-tissue-metrix/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-questionnaire-clinical-data/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-questionnaire-somatic-variants/${lfs.version}
+    ca.sickkids.ccm.lfs/lfs-resources-clinical-data/${lfs.version}
+    ca.sickkids.ccm.lfs/lfs-resources-tissue-metrix/${lfs.version}
+    ca.sickkids.ccm.lfs/lfs-resources-somatic-variants/${lfs.version}
+    ca.sickkids.ccm.lfs/lfs-variants/${lfs.version}/slingfeature/slingfeature

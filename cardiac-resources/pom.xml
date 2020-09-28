@@ -26,14 +26,12 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-questionnaires</artifactId>
+  <artifactId>cardiac-resources</artifactId>
   <packaging>pom</packaging>
-  <name>LFS Questionnaires</name>
-  <description>A collection of questionnaires.</description>
+  <name>Cardiac Resources</name>
+  <description>A collection of cardiac questionnaires.</description>
 
   <modules>
     <module>clinical-data</module>
-    <module>tissue-metrix</module>
-    <module>somatic-variants</module>
   </modules>
 </project>

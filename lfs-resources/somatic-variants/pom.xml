@@ -22,13 +22,13 @@
 
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-questionnaires</artifactId>
+    <artifactId>lfs-resources</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-questionnaire-somatic-variants</artifactId>
+  <artifactId>lfs-resources-somatic-variants</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Questionnaires - Somatic Variants Data</name>
+  <name>LFS Resources - Somatic Variants Data</name>
 
   <build>
     <plugins>
@@ -39,7 +39,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Sling-Initial-Content>SLING-INF/content/;path:=/Questionnaires/</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
