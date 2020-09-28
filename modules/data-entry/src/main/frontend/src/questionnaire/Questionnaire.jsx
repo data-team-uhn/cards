@@ -147,6 +147,29 @@ let Questionnaire = (props) => {
           </Menu>
         </Grid>
       }
+      { data &&
+        <Grid item>
+          <Card>
+            <CardHeader
+              title={'Questionnaire Properties'}
+              action={
+                <IconButton onClick={() => {openDialog(true, 'Questionnaire');}}>
+                  <EditIcon />
+                </IconButton>
+              }/>
+            <CardContent>
+              <dl>
+                <dt>
+                  <Typography>Max per Subject:</Typography>
+                </dt>
+                <dd>
+                  <Typography>{data.maxPerSubject || 'Unlimited'}</Typography>
+                </dd>
+              </dl>
+            </CardContent>
+          </Card>
+        </Grid>
+      }
       {
         data ?
             DisplayFormEntries(data, {onClose: closeDialog})

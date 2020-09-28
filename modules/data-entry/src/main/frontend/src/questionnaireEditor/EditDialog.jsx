@@ -38,8 +38,10 @@ import Fields from './Fields'
 // Dialog for editing or creating questions and sections
 
 let EditDialog = (props) => {
+  const { data, edit, id, type, onClose, open  } = props;
   let questionJSON = require('./Question.json');
   let sectionJSON = require('./Section.json');
+  let propertiesJSON = require('./Properties.json');
   let [ title, setTitle ] = useState('');
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
@@ -50,7 +52,9 @@ let EditDialog = (props) => {
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ error, setError ] = useState('');
-  let json = props.type.includes('Question') ? questionJSON : sectionJSON;
+  let json = type === 'Question' ? questionJSON
+              : type === 'Section' ? sectionJSON
+              : propertiesJSON;
 
   let saveData = (event) => {
     // This stops the normal browser form submission
@@ -64,11 +68,11 @@ let EditDialog = (props) => {
 
     setSaveInProgress(true);
     // If the question/section already exists, update it
-    if (props.edit) {
+    if (edit) {
       // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
       let request_data = new FormData(event.currentTarget);
       fetch(
-        `${props.data['@path']}`,
+        `${data['@path']}`,
         {
           method: 'POST',
           body: request_data
@@ -84,11 +88,11 @@ let EditDialog = (props) => {
             setLastSaveStatus(false);
           }
         })
-        .finally(() => {setSaveInProgress(false); props.onClose();});
+        .finally(() => {setSaveInProgress(false); onClose();});
     } else {
       // If the question/section doesn't exist, create it
-      const URL = `${props.data['@path']}/${title}`
-      const primaryType = props.type.includes('Question') ? 'lfs:Question' : 'lfs:Section'
+      const URL = `${data['@path']}/${title}`
+      const primaryType = type.includes('Question') ? 'lfs:Question' : 'lfs:Section'
       var request_data = new FormData(event.currentTarget);
       request_data.append('jcr:primaryType', primaryType);
       fetch(URL, { method: 'POST', body: request_data })
@@ -103,7 +107,7 @@ let EditDialog = (props) => {
             setLastSaveStatus(false);
           }
         })
-        .finally(() => {setSaveInProgress(false); setTitle(''); props.onClose()});}
+        .finally(() => {setSaveInProgress(false); setTitle(''); onClose()});}
   }
 
   // Open the login page in a new popup window, centered wrt the parent window
@@ -132,13 +136,13 @@ let EditDialog = (props) => {
   }
 
   let dialogTitle = () => {
-    return (props.edit ? 'Edit ' : 'New ').concat(props.type);
+    return (edit ? 'Edit ' : 'New ').concat(type);
   }
 
   let titleField = () => {
     return (
       <Grid container alignItems='flex-end' spacing={2}>
-        <Grid item xs={6}><Typography>{props.type === 'Question' ? 'Title' : 'Name' }</Typography></Grid>
+        <Grid item xs={6}><Typography>{type === 'Question' ? 'Title' : 'Name' }</Typography></Grid>
         <Grid item xs={6}><TextField name='title' value={title} onChange={(event)=> { setTitle(event.target.value); }} multiline /></Grid>
       </Grid>
     )
@@ -146,15 +150,15 @@ let EditDialog = (props) => {
 
   return (
     <React.Fragment>
-      <Dialog id='editDialog' open={props.open} onClose={props.onClose}>
+      <Dialog id='editDialog' open={open} onClose={onClose}>
         <DialogTitle>
           { dialogTitle() }
         </DialogTitle>
-        <form action={props.data && props.data['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={props.id}>
+        <form action={data && data['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
           <DialogContent>
-            { !props.edit && titleField() }
-            <Fields data={props.edit && props.data || {}} JSON={json[0]} edit={true} />
-            { props.data && props.type.includes('Question') && <AnswerOptions data={props.data} path={props.data["@path"] + (props.edit ? "" : `/${title}`)} /> }
+            { !edit && titleField() }
+            <Fields data={edit && data || {}} JSON={json[0]} edit={true} />
+            { data && type === 'Question' && <AnswerOptions data={data} path={data["@path"] + (edit ? "" : `/${title}`)} /> }
           </DialogContent>
           <DialogActions>
             <Button
@@ -171,7 +175,7 @@ let EditDialog = (props) => {
             <Button
               variant='contained'
               color='default'
-              onClick={props.onClose}
+              onClick={onClose}
             >
               {'Cancel'}
             </Button>
