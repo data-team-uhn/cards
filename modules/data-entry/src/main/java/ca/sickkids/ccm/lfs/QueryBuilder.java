@@ -214,7 +214,7 @@ public class QueryBuilder implements Use
 
         for (String type : allowedResourceTypes) {
             this.searchEngines.stream()
-                .filter(engine -> engine.getSupportedTypes().contains(type))
+                .filter(engine -> engine.isTypeSupported(type))
                 .forEach(engine -> engine.quickSearch(searchParameters, this.resourceResolver, resultsList));
         }
         return resultsList.listIterator();

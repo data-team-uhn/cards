@@ -39,6 +39,17 @@ public interface QuickSearchEngine
     List<String> getSupportedTypes();
 
     /**
+     * Check if the specified resource type is supported by this engine.
+     *
+     * @param type the JCR node type to check, in the format {@code "lfs:Resource"}
+     * @return {@code true} if the node type is supported, {@code false} otherwise
+     */
+    default boolean isTypeSupported(final String type)
+    {
+        return getSupportedTypes().contains(type);
+    }
+
+    /**
      * Finds resources matching the given query text. Implementations will match the query as appropriate for the actual
      * resource, either directly in properties of the resource, or as matches in properties of its descendant nodes.
      *
