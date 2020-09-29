@@ -11,7 +11,9 @@ module.exports = {
     [module_name + 'variantsIcon']: '@material-ui/icons/Subtitles.js',
     [module_name + 'adminIcon']: '@material-ui/icons/Settings.js',
     [module_name + 'adminDashboard']: './src/adminDashboard/AdminDashboard.jsx',
-    [module_name + 'QuickSearchResults']: './src/themePage/QuickSearchResults.jsx'
+    [module_name + 'QuickSearchResults']: './src/themePage/QuickSearchResults.jsx',
+    [module_name + 'QuickSearchConfigurationIcon']: '@material-ui/icons/Pageview.js',
+    [module_name + 'QuickSearchConfiguration']: './src/themePage/QuickSearchConfiguration',
   },
   plugins: [
     new CleanWebpackPlugin(),

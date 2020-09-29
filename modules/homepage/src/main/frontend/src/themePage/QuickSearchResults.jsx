@@ -37,7 +37,10 @@ function QuickSearchResults(props) {
 
   const { classes } = props;
 
-  const anchor = location.hash.substr(1);
+  const url = new URL(window.location);
+
+  const anchor = url.searchParams.get('query');
+  const allowedResourceTypes = url.searchParams.getAll('allowedResourceTypes');
 
   // Display how the query matched the result
   function QuickSearchMatch(resultData) {
@@ -119,7 +122,7 @@ function QuickSearchResults(props) {
         <CardContent>
           <LiveTable
             columns={columns}
-            customUrl={'/query?quick='+ encodeURIComponent(anchor)}
+            customUrl={'/query?quick='+ encodeURIComponent(anchor) + allowedResourceTypes.map(i => `&allowedResourceTypes=${encodeURIComponent(i)}`).join('')}
             defaultLimit={10}
           />
         </CardContent>

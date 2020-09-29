@@ -764,3 +764,30 @@
 
   // Set a default title.
   - title (String) = "Subject Types" mandatory autocreated
+
+//-----------------------------------------------------------------------------
+// The configuration for the quick search widget.
+[lfs:QuickSearchConfiguration] > sling:Folder
+  // Attributes:
+
+  // We can use this in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/QuickSearchConfiguration" mandatory autocreated protected
+
+  // Hardcode the resource supertype: this is a resource.
+  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+
+  // What types of resources will be queried.
+  // Default: all.
+  - allowedResourceTypes (STRING) multiple
+
+  // How many results should be displayed.
+  - limit (long) = '5'
+
+  // Whether to show the total number of results.
+  // Can be set to 'false' in case of performance issues.
+  - showTotalRows (BOOLEAN) = 'true'
