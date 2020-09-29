@@ -20,7 +20,9 @@ package ca.sickkids.ccm.lfs;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -138,10 +140,11 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
         // Condition on child nodes. See parseFilter for details.
         final String[] filtervalues = request.getParameterValues("filtervalues");
+        final String[] filtertypes = request.getParameterValues("filtertypes");
         final String[] filtercomparators = request.getParameterValues("filtercomparators");
         final String[] filterempty = request.getParameterValues("filterempty");
         final String[] filternotempty = request.getParameterValues("filternotempty");
-        query.append(parseFilter(filternames, filtervalues, filtercomparators));
+        query.append(parseFilter(filternames, filtervalues, filtertypes, filtercomparators));
         query.append(parseExistence(filterempty, filternotempty));
 
         query.append(" order by n.'jcr:created'");
@@ -239,9 +242,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @param comparator user input comparators
      * @throws IllegalArgumentException when the number of input fields are not equal
      */
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
-    private String parseFilter(final String[] fields, final String[] values, final String[] comparator)
-        throws IllegalArgumentException
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity"})
+    private String parseFilter(final String[] fields, final String[] values,
+        final String[] types, final String[] comparator) throws IllegalArgumentException
     {
         // If we don't have either names or values, we should fail to filter
         if (fields == null || values == null) {
@@ -309,7 +312,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 } else {
                     filterdata.append(
                         String.format(
-                            ") and child%d.'value'%s'%s'",
+                            ") and child%d.'value'%s" + (("date".equals(types[i]))
+                                ? ("cast('%sT00:00:00.000"
+                                + new SimpleDateFormat("XXX").format(new Date()) + "' as date)") : "'%s'"),
                             i,
                             this.sanitizeComparator(comparators[i]),
                             this.sanitizeField(values[i])
