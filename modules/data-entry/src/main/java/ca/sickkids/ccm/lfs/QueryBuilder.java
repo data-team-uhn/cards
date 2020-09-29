@@ -271,7 +271,7 @@ public class QueryBuilder implements Use
             // Skip results up to the offset provided
             if (offsetCounter > 0) {
                 --offsetCounter;
-            // Count up to our limit
+                // Count up to our limit
             } else if (limitCounter > 0) {
                 builder.add(n);
                 --limitCounter;

@@ -27,8 +27,6 @@ import javax.json.JsonObject;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import ca.sickkids.ccm.lfs.spi.QuickSearchEngine;
 import ca.sickkids.ccm.lfs.spi.SearchParameters;
@@ -36,6 +34,9 @@ import ca.sickkids.ccm.lfs.spi.SearchUtils;
 
 /**
  * Finds {@code [lfs:Questionnaire]}s with question or answer options matching the given full text search.
+ * <p>
+ * FIXME This should be split into Questionnaire and Question engines.
+ * </p>
  *
  * @version $Id$
  */
@@ -43,8 +44,6 @@ import ca.sickkids.ccm.lfs.spi.SearchUtils;
 public class QuestionnaireQuickSearchEngine implements QuickSearchEngine
 {
     private static final List<String> SUPPORTED_TYPES = Collections.singletonList("lfs:Questionnaire");
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public List<String> getSupportedTypes()

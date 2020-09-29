@@ -32,9 +32,9 @@ import org.apache.sling.api.resource.ResourceResolver;
 public interface QuickSearchEngine
 {
     /**
-     * List the resource types supported by this query engine.
+     * List the node types supported by this query engine.
      *
-     * @return a list of Sling resource types, usually a singleton, in the format {@code "lfs:Resource"}
+     * @return a list of JCR node types, usually a singleton, in the format {@code "lfs:Resource"}
      */
     List<String> getSupportedTypes();
 
