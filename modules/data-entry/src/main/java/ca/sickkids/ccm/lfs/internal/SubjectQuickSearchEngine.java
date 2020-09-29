@@ -29,6 +29,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 
 import ca.sickkids.ccm.lfs.spi.QuickSearchEngine;
+import ca.sickkids.ccm.lfs.spi.SearchParameters;
 import ca.sickkids.ccm.lfs.spi.SearchUtils;
 
 
@@ -49,19 +50,23 @@ public class SubjectQuickSearchEngine implements QuickSearchEngine
     }
 
     @Override
-    public void quickSearch(final String query, final long maxResults, final boolean showTotalRows,
-        final ResourceResolver resourceResolver, final List<JsonObject> output)
+    public void quickSearch(final SearchParameters query, final ResourceResolver resourceResolver,
+        final List<JsonObject> output)
     {
+        if (output.size() == query.getMaxResults() && !query.showTotalResults()) {
+            return;
+        }
+
         final StringBuilder xpathQuery = new StringBuilder();
         xpathQuery.append("/jcr:root/Subjects//*[jcr:like(fn:lower-case(@identifier),'%");
-        xpathQuery.append(SearchUtils.escapeLikeText(query.toLowerCase()));
+        xpathQuery.append(SearchUtils.escapeLikeText(query.getQuery().toLowerCase()));
         xpathQuery.append("%')]");
 
         Iterator<Resource> foundResources = resourceResolver.findResources(xpathQuery.toString(), "xpath");
 
         while (foundResources.hasNext()) {
-            // no need to go through all results list if we do not add total results number
-            if (output.size() == maxResults && !showTotalRows) {
+            // No need to go through results list if we do not want total number of matches
+            if (output.size() == query.getMaxResults() && !query.showTotalResults()) {
                 break;
             }
             Resource thisResource = foundResources.next();
@@ -70,7 +75,7 @@ public class SubjectQuickSearchEngine implements QuickSearchEngine
 
             if (resourceValue != null) {
                 output.add(SearchUtils.addMatchMetadata(
-                    resourceValue, query, "identifier", thisResource.adaptTo(JsonObject.class), false, ""));
+                    resourceValue, query.getQuery(), "identifier", thisResource.adaptTo(JsonObject.class), false, ""));
             }
         }
     }

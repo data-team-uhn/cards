@@ -18,33 +18,20 @@
  */
 package ca.sickkids.ccm.lfs.spi;
 
-import java.util.List;
-
-import javax.json.JsonObject;
-
-import org.apache.sling.api.resource.ResourceResolver;
-
 /**
  * Service interface used by {@link ca.sickkids.ccm.lfs.QueryBuilder} to search for a specific type of resource.
  *
  * @version $Id$
  */
-public interface QuickSearchEngine
+public interface SearchParameters
 {
-    /**
-     * List the resource types supported by this query engine.
-     *
-     * @return a list of Sling resource types, usually a singleton, in the format {@code "lfs:Resource"}
-     */
-    List<String> getSupportedTypes();
+    String getType();
 
-    /**
-     * Finds resources matching the given query text. Implementations will match the query as appropriate for the actual
-     * resource, either directly in properties of the resource, or as matches in properties of its descendant nodes.
-     *
-     * @param query the query configuration to use for searching
-     * @param resourceResolver the resource resolver for this session
-     * @param output aggregator of search results
-     */
-    void quickSearch(SearchParameters query, ResourceResolver resourceResolver, List<JsonObject> output);
+    String getQuery();
+
+    long getMaxResults();
+
+    boolean isEscaped();
+
+    boolean showTotalResults();
 }

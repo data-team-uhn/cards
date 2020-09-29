@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.sickkids.ccm.lfs.spi.QuickSearchEngine;
+import ca.sickkids.ccm.lfs.spi.SearchParameters;
 import ca.sickkids.ccm.lfs.spi.SearchUtils;
 
 
@@ -57,25 +58,25 @@ public class FormsQuickSearchEngine implements QuickSearchEngine
     }
 
     @Override
-    public void quickSearch(final String query, final long maxResults, final boolean showTotalRows,
-        final ResourceResolver resourceResolver, final List<JsonObject> output)
+    public void quickSearch(final SearchParameters query, final ResourceResolver resourceResolver,
+        final List<JsonObject> output)
     {
-        if (output.size() >= maxResults && !showTotalRows) {
+        if (output.size() >= query.getMaxResults() && !query.showTotalResults()) {
             return;
         }
 
-        final String xpathQuery = getXPathQuery(query);
+        final String xpathQuery = getXPathQuery(query.getQuery());
         Iterator<Resource> foundResources = resourceResolver.findResources(xpathQuery.toString(), "xpath");
 
         while (foundResources.hasNext()) {
             try {
                 // No need to go through results list if we do not want total number of matches
-                if (output.size() == maxResults && !showTotalRows) {
+                if (output.size() == query.getMaxResults() && !query.showTotalResults()) {
                     break;
                 }
                 Resource thisResource = foundResources.next();
 
-                Pair<String, Boolean> match = getMatch(query, thisResource);
+                Pair<String, Boolean> match = getMatch(query.getQuery(), thisResource);
 
                 String questionText = null;
                 String questionPath = "";
@@ -87,8 +88,8 @@ public class FormsQuickSearchEngine implements QuickSearchEngine
                     final Resource parent = getForm(thisResource);
 
                     output.add(SearchUtils.addMatchMetadata(
-                        match.getLeft(), query, questionText, parent.adaptTo(JsonObject.class), match.getRight(),
-                        questionPath));
+                        match.getLeft(), query.getQuery(), questionText, parent.adaptTo(JsonObject.class),
+                        match.getRight(), questionPath));
                 }
             } catch (RepositoryException e) {
                 this.logger.warn("Failed to process search results: {}", e.getMessage(), e);

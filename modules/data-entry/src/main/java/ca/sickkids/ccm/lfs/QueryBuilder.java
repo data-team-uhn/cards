@@ -42,6 +42,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.sickkids.ccm.lfs.spi.QuickSearchEngine;
+import ca.sickkids.ccm.lfs.spi.SearchParameters;
+import ca.sickkids.ccm.lfs.spi.SearchParametersFactory;
 
 /**
  * A HTL Use-API that can run a JCR query and output the results as JSON. The query to execute is taken from the request
@@ -203,10 +205,17 @@ public class QueryBuilder implements Use
         }
         List<JsonObject> resultsList = new ArrayList<>();
 
+        final SearchParameters searchParameters = SearchParametersFactory.newSearchParameters()
+            .withType("quick")
+            .withQuery(query)
+            .withShowTotalResults(this.showTotalRows)
+            .withMaxResults(this.limit)
+            .build();
+
         for (String type : allowedResourceTypes) {
-            this.searchEngines.stream().filter(engine -> engine.getSupportedTypes().contains(type))
-                .forEach(engine -> engine.quickSearch(query, this.limit, this.showTotalRows, this.resourceResolver,
-                    resultsList));
+            this.searchEngines.stream()
+                .filter(engine -> engine.getSupportedTypes().contains(type))
+                .forEach(engine -> engine.quickSearch(searchParameters, this.resourceResolver, resultsList));
         }
         return resultsList.listIterator();
     }

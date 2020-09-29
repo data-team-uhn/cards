@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.sickkids.ccm.lfs.spi.QuickSearchEngine;
+import ca.sickkids.ccm.lfs.spi.SearchParameters;
 import ca.sickkids.ccm.lfs.spi.SearchUtils;
 
 /**
@@ -52,19 +53,19 @@ public class QuestionnaireQuickSearchEngine implements QuickSearchEngine
     }
 
     @Override
-    public void quickSearch(final String query, final long maxResults, final boolean showTotalRows,
-        final ResourceResolver resourceResolver, final List<JsonObject> output)
+    public void quickSearch(final SearchParameters query, final ResourceResolver resourceResolver,
+        final List<JsonObject> output)
     {
-        if (output.size() >= maxResults && !showTotalRows) {
+        if (output.size() >= query.getMaxResults() && !query.showTotalResults()) {
             return;
         }
 
-        final String xpathQuery = getXPathQuery(query);
+        final String xpathQuery = getXPathQuery(query.getQuery());
         Iterator<Resource> foundResources = resourceResolver.findResources(xpathQuery.toString(), "xpath");
 
         while (foundResources.hasNext()) {
             // No need to go through all results list if we do not add total results number
-            if (output.size() >= maxResults && !showTotalRows) {
+            if (output.size() >= query.getMaxResults() && !query.showTotalResults()) {
                 break;
             }
             Resource thisResource = foundResources.next();
@@ -79,7 +80,7 @@ public class QuestionnaireQuickSearchEngine implements QuickSearchEngine
             if (thisResource.isResourceType("lfs/AnswerOption")) {
                 // Found resource is of type [lfs:AnswerOption]
                 String[] resourceValues = thisResource.getValueMap().get("value", String[].class);
-                matchedValue = SearchUtils.getMatchFromArray(resourceValues, query);
+                matchedValue = SearchUtils.getMatchFromArray(resourceValues, query.getQuery());
                 // Find the Question parent of this question
                 Resource questionParent = getQuestion(thisResource);
                 question = "Possible answer for question " + questionParent.getValueMap().get("text", String.class);
@@ -92,13 +93,13 @@ public class QuestionnaireQuickSearchEngine implements QuickSearchEngine
             } else if (thisResource.isResourceType("lfs/Questionnaire")) {
                 // Found resource is of type [lfs:Questionnaire]
                 matchedValue = thisResource.getValueMap().get("title", String.class);
-                question = "Questionnaire";
+                question = "Questionnaire name";
                 path = thisResource.getPath();
             }
 
             if (matchedValue != null) {
                 output.add(SearchUtils.addMatchMetadata(
-                    matchedValue, query, question, questionnaire.adaptTo(JsonObject.class), false, path));
+                    matchedValue, query.getQuery(), question, questionnaire.adaptTo(JsonObject.class), false, path));
             }
         }
     }
