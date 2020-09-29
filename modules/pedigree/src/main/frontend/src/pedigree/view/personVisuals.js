@@ -25,7 +25,7 @@ import PersonHoverbox from './personHoverbox';
 import ReadOnlyHoverbox from './readonlyHoverbox';
 import PedigreeEditorParameters from '../pedigreeEditorParameters';
 import { getElementHalfHeight, sector } from './graphicHelpers';
-import getAge from './ageCalc';
+import AgeCalc from './ageCalc';
 
 /**
  * Class for organizing graphics for Person nodes.
@@ -369,37 +369,98 @@ var PersonVisuals = Class.create(AbstractPersonVisuals, {
      */
   updateAgeLabel: function() {
     var text,
-      person = this.getNode();
+        person = this.getNode();
     if (person.isFetus()) {
-      var date = person.getGestationAge();
-      text = (date) ? date + ' weeks' : null;
-    } else if(person.getLifeStatus() == 'alive') {
-      if (person.getBirthDate()) {
-        var age = getAge(person.getBirthDate(), null);
-        if (age.indexOf('day') != -1) {
-          text = age;                                                                // 5 days
-        } else if (age.indexOf(' y') == -1) {
-          text = 'b. ' + person.getBirthDate().getFullYear() + ' (' + age + ')';     // b. 2014 (3 wk)
+        var date = person.getGestationAge();
+        text = (date) ? date + " weeks" : null;
+    }
+    else {
+        var birthDate = person.getBirthDate();
+        var deathDate = person.getDeathDate();
+
+        var dateFormat = "YMD";
+        if (dateFormat == "DMY" || dateFormat == "MY" || dateFormat == "Y") {
+            if(person.getLifeStatus() == 'alive') {
+                if (birthDate && birthDate.isComplete()) {
+                    text = "b. " + person.getBirthDate().getBestPrecisionStringDDMMYYY(dateFormat);
+                    if (person.getBirthDate().getYear() !== null) {
+                        var ageString = AgeCalc.getAgeString(person.getBirthDate(), null, dateFormat);
+                        if (ageString != "") {
+                            text += " (" + ageString + ")";
+                        }
+                    }
+                }
+            }
+            else {
+                if(deathDate && birthDate && deathDate.isComplete() && birthDate.isComplete()) {
+                    text = person.getBirthDate().getBestPrecisionStringDDMMYYY(dateFormat) + " – " + person.getDeathDate().getBestPrecisionStringDDMMYYY(dateFormat);
+                    if (person.getBirthDate().getYear() !== null && person.getDeathDate().getYear() !== null) {
+                        var ageString = AgeCalc.getAgeString(person.getBirthDate(), person.getDeathDate(), dateFormat);
+                        text += "\nd. " + ageString;
+                    }
+                }
+                else if (deathDate && deathDate.isComplete()) {
+                    text = "d. " + person.getDeathDate().getBestPrecisionStringDDMMYYY(dateFormat);
+                }
+                else if(birthDate && birthDate.isComplete()) {
+                    text = person.getBirthDate().getBestPrecisionStringDDMMYYY(dateFormat) + " – ?";
+                }
+            }
         } else {
-          text = 'b. ' + person.getBirthDate().getFullYear();                        // b. 1972
+            if(person.getLifeStatus() == 'alive') {
+                if (birthDate && birthDate.isComplete()) {
+                    if (birthDate.onlyDecadeAvailable()) {
+                        text = "b. " + birthDate.getDecade();
+                    } else {
+                        if (birthDate.getMonth() == null) {
+                            text = "b. " + birthDate.getYear();                          // b. 1972
+                        } else {
+                            if (birthDate.getDay() == null || dateFormat == "MMY") {
+                                text = "b. " + birthDate.getMonthName() + " " +
+                                birthDate.getYear();                                     // b. Jan 1972
+                            } else {
+                                text = "b. " + birthDate.getMonthName() + " " +
+                                birthDate.getDay() + ", " +
+                                birthDate.getYear();                                     // b. Jan 13, 1972
+                                var ageString = AgeCalc.getAgeString(birthDate, null, dateFormat);
+                                if (ageString.indexOf("day") != -1 || ageString.indexOf("wk") != -1) {
+                                    text += " (" + ageString + ")";                            // b. Jan 13, 1972 (5 days)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                if(deathDate && deathDate.isComplete() && birthDate && birthDate.isComplete()) {
+                    var ageString = AgeCalc.getAgeString(birthDate, deathDate, dateFormat);
+                    if (deathDate.getYear() != null && deathDate.getYear() != birthDate.getYear() && deathDate.getMonth() != null &&
+                        (ageString.indexOf("day") != -1 || ageString.indexOf("wk") != -1 || ageString.indexOf("mo") != -1) ) {
+                        text = "d. " + deathDate.getYear(true) + " (" + ageString + ")";
+                    } else {
+                        text = birthDate.getBestPrecisionStringYear() + " – " + deathDate.getBestPrecisionStringYear();
+                        if (ageString !== "") {
+                            text += "\nd. " + ageString;
+                        }
+                    }
+                }
+                else if (deathDate && deathDate.isComplete()) {
+                    text = "d. " + deathDate.getBestPrecisionStringYear();
+                }
+                else if (birthDate && birthDate.isComplete()) {
+                    text = birthDate.getBestPrecisionStringYear() + " – ?";
+                }
+            }
         }
-      }
-    } else {
-      if(person.getDeathDate() && person.getBirthDate()) {
-        var age = getAge(person.getBirthDate(), person.getDeathDate());
-        if (age.indexOf('day') != -1 || age.indexOf('wk') != -1 || age.indexOf('mo') != -1) {
-          text = 'd. ' + person.getDeathDate().getFullYear() + ' (' + age + ')';
-        } else {
-          text = person.getBirthDate().getFullYear() + ' – ' + person.getDeathDate().getFullYear();
-        }
-      } else if (person.getDeathDate()) {
-        text = 'd. ' + person.getDeathDate().getFullYear();
-      } else if(person.getBirthDate()) {
-        text = person.getBirthDate().getFullYear() + ' – ?';
-      }
     }
     this.getAgeLabel() && this.getAgeLabel().remove();
     this._ageLabel = text ? editor.getPaper().text(this.getX(), this.getY(), text).attr(PedigreeEditorParameters.attributes.label) : null;
+    if (this._ageLabel) {
+        this._ageLabel.node.setAttribute("class", "field-no-user-select");
+        if (text && text.indexOf("\n") > 0) {
+            this._ageLabel.alignTop = true;
+        }
+    }
     this.drawLabels();
   },
 

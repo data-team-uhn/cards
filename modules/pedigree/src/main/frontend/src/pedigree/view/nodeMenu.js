@@ -22,7 +22,8 @@ import Disorder from '../disorder';
 import HPOTerm from '../hpoTerm';
 import Helpers from '../model/helpers';
 import GraphicHelpers from './graphicHelpers';
-import AgeCalc from './ageCalc';
+import PedigreeFuzzyDatePicker from './datepicker';
+import PedigreeDate from '../PedigreeDate';
 
 /**
  * NodeMenu is a UI Element containing options for AbstractNode elements
@@ -122,21 +123,19 @@ var NodeMenu = Class.create({
     this._onClickOutside = this._onClickOutside.bind(this);
 
     // Attach pickers
-    // FIXME
-    /*var crtYear = new Date().getFullYear();
-    window.dateTimePicker = new XWiki.widgets.DateTimePicker({
-      year_range: [crtYear - 99, crtYear + 1],
-      after_navigate: function (date) {
-        this._selector.updateSelectedDate({ day: date.getDate(), month: date.getMonth(), year: date.getYear() + 1900 }, false);
-      }
-    });*/
+    this.form.querySelectorAll('.fuzzy-date').forEach(function(item) {
+        if (!item.__datePicker) {
+            var inputMode = "YMD"; //editor.getPreferencesManager().getConfigurationOption("dateEditFormat");
+            item.__datePicker = new PedigreeFuzzyDatePicker(item, inputMode);
+        }
+    });
 
     // disorders
     this.form.querySelectorAll('input.suggest-omim').forEach(function (item) {
       if (!item._p_hasClassName('initialized')) {
         // Create the Suggest.
         item._suggest = new PSuggestWidget(item, {
-          script: "",
+          script: "FIXME",
           varname: 'q',
           noresults: 'No matching terms',
           json: true,
@@ -173,7 +172,7 @@ var NodeMenu = Class.create({
     // genes
     this.form.querySelectorAll('input.suggest-genes').forEach(function(item) {
       if (!item._p_hasClassName('initialized')) {
-        var geneServiceURL = "";
+        var geneServiceURL = "FIXME";
         item._suggest = new PSuggestWidget(item, {
           script: geneServiceURL,
           varname: 'input',
@@ -412,14 +411,17 @@ var NodeMenu = Class.create({
       return result;
     },
     'date-picker' : function (data) {
-      var result = this._generateEmptyField(data);
-      var datePicker = PElement('input', {type: 'text', 'class': 'xwiki-date', name: data.name, 'title': data.format, alt : '' });
-      result._p_insert(datePicker);
-      datePicker._getValue = function() {
-        return [this.alt && Date.parseISO_8601(this.alt)];
-      }.bind(datePicker);
-      this._attachFieldEventListeners(datePicker, ['xwiki:date:changed']);
-      return result;
+        var result = this._generateEmptyField(data);
+        var datePicker = PElement('input', {type: 'text', 'class': 'fuzzy-date', name: data.name, 'title': data.format || '', alt : '' });
+        datePicker._getValue = function() { /*console.log("DATE UPDATE: " + this.value);*/ return [new PedigreeDate(JSON.parse(this.value))]; }.bind(datePicker);
+        this._attachFieldEventListeners(datePicker, ['xwiki:date:changed']);
+
+        var inputErrorDescription = PElement('span', {'class': 'date-field-input-error'});
+        inputErrorDescription._p_hide();
+
+        result.inputsContainer._p_insert(datePicker);
+        result._p_insert(inputErrorDescription);
+        return result;
     },
     'disease-picker' : function (data) {
       var result = this._generateEmptyField(data);
@@ -672,11 +674,63 @@ var NodeMenu = Class.create({
       }
     },
     'date-picker' : function (container, value) {
-      var target = container._p_down('input[type=text].xwiki-date');
-      if (target) {
-        target.value = value && value.toFormattedString({'format_mask' : target.title}) || '';
-        target.alt = value && value.toISO8601() || '';
-      }
+        if (!value) {
+            value = {};
+        }
+
+        var range = value.hasOwnProperty("range") && value.range.hasOwnProperty("years") ? value.range.years : 1;
+        var year  = value.hasOwnProperty("year") && value.year ? value.year.toString() : "";
+        if (range > 1 && year != "") {
+            year = year + "s";
+        }
+        var month = "";
+        var day   = "";
+
+        var dateEditFormat = "YMD";
+        var dmyInputMode = (dateEditFormat == "DMY" || dateEditFormat == "MY");
+        if ((dmyInputMode || value.year) && value.month) {
+            month = value.hasOwnProperty("month") ? value.month.toString() : "";
+        }
+        if ((dmyInputMode || (value.year && value.month)) && value.day) {
+            day = value.hasOwnProperty("day") ? value.day.toString() : "";
+        }
+
+        var updated = true;
+        var yearSelect = container._p_down('select.year');
+        if (yearSelect) {
+            var option = yearSelect._p_down('option[value="' + year + '"]');
+            if (!option) {
+                option = PElement("option", {"value": year})._p_update(year.toString());
+                yearSelect._p_insert(option);
+            }
+            if (option && !option.selected) {
+                option.selected = true;
+                updated = true;
+            }
+        }
+        var monthSelect = container._p_down('select.month');
+        if (monthSelect) {
+            var option = monthSelect._p_down('option[value="' + month + '"]');
+            if (option && !option.selected) {
+                option.selected = true;
+                updated = true;
+            }
+        }
+        var daySelect = container._p_down('select.day');
+        if (daySelect) {
+            var option = daySelect._p_down('option[value="' + day + '"]');
+            if (option && !option.selected) {
+                option.selected = true;
+                updated = true;
+            }
+        }
+        // TODO: replace the code above with an even request to change year-month-date
+        if (updated) {
+            var updateElement = container._p_down('.fuzzy-date-picker');
+            if (updateElement) {
+                updateElement._p_fire('datepicker:date:changed');
+            }
+        }
     },
     'disease-picker' : function (container, values) {
       var _this = this;
