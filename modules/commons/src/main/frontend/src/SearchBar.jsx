@@ -70,7 +70,7 @@ function SearchBar(props) {
 
   // Fetch saved admin config settings
   let getQuickSearchSettings = () => {
-    fetch('/apps/lfs/config/QuickSearch/Quick.json')
+    fetch('/apps/lfs/config/QuickSearch.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setFetched(true);

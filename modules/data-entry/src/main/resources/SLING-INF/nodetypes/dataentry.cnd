@@ -766,27 +766,8 @@
   - title (String) = "Subject Types" mandatory autocreated
 
 //-----------------------------------------------------------------------------
-// The homepage for any QuickSearchResultsWidget setting.
-[lfs:QuickSearchResultsWidgetHomepage] > sling:Folder
-  // Attributes:
-
-  // We can use this homepage in a query.
-  query
-
-  // Properties:
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/QuickSearchResultsWidgetHomepage" mandatory autocreated protected
-
-  // Hardcode the resource supertype: the QuickSearchResultsWidgetHomepage is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
-
-  // Set a default title.
-  - title (String) = "QuickSearch Results Widgets Settings" mandatory autocreated
-
-//-----------------------------------------------------------------------------
 // The configuration for the quick search widget.
-[lfs:QuickSearchResultsWidget] > sling:Folder
+[lfs:QuickSearchConfiguration] > sling:Folder
   // Attributes:
 
   // We can use this in a query.
@@ -795,22 +776,18 @@
   // Properties:
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/QuickSearchResultsWidget" mandatory autocreated protected
+  - sling:resourceType (STRING) = "lfs/QuickSearchConfiguration" mandatory autocreated protected
 
-  // Hardcode the resource supertype: the QuestionnairesHomepage is a resource.
+  // Hardcode the resource supertype: this is a resource.
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
-
-  // The name of this search type to be configured.
-  // "query", "lucene", "fulltext" or "quick".
-  - label (String) mandatory
 
   // What types of resources will be queried.
   // Default: all.
   - allowedResourceTypes (STRING) multiple
 
   // How many results should be displayed.
-  - limit (long)
+  - limit (long) = '5'
 
   // Whether to show the total number of results.
   // Can be set to 'false' in case of performance issues.
-  - showTotalRows (BOOLEAN)
+  - showTotalRows (BOOLEAN) = 'true'

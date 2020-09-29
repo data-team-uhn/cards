@@ -31,7 +31,7 @@ import {
     ListItem,
 } from '@material-ui/core';
 
-function QuickSearchResultsWidget(props) {
+function QuickSearchConfiguration(props) {
   const { match, location, classes } = props;
 
   const [ path, setPath ] = useState();
@@ -45,7 +45,7 @@ function QuickSearchResultsWidget(props) {
 
   // Fetch saved admin config settings
   let getQuickSearchSettings = () => {
-    fetch('/apps/lfs/config/QuickSearch/Quick.deep.json')
+    fetch('/apps/lfs/config/QuickSearch.deep.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setFetched(true);
@@ -117,7 +117,7 @@ function QuickSearchResultsWidget(props) {
     <Card>
       <CardHeader
         title={
-          <Typography variant="h6" gutterBottom>Quick search widget settings</Typography>
+          <Typography variant="h6" gutterBottom>Quick search settings</Typography>
         }
       />
       <CardContent>
@@ -187,4 +187,4 @@ function QuickSearchResultsWidget(props) {
   );
 }
 
-export default QuickSearchResultsWidget;
+export default QuickSearchConfiguration;
