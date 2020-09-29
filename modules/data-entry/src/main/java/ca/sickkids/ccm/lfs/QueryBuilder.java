@@ -554,7 +554,7 @@ public class QueryBuilder implements Use
      */
     private static Iterator<JsonObject> adaptNodes(Iterator<Resource> resources)
     {
-        ArrayList<JsonObject> list = new ArrayList<JsonObject>();
+        ArrayList<JsonObject> list = new ArrayList<>();
         while (resources.hasNext()) {
             list.add(resources.next().adaptTo(JsonObject.class));
         }
