@@ -119,41 +119,23 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             Map<Resource, String> data = new HashMap<>();
             Map<String, Map<Resource, String>> dataById = null;
 
-            // Grab all answers that have this question filled out, and the split var (if it exists)
-            if (this.splitExists.get()) {
-                Node split = request.getResourceResolver().adaptTo(Session.class).getNode(splitVariable);
-                answers = getAnswersToQuestion(question, split, request.getResourceResolver());
-                data = getAnswersWithType(data, "x", question, request.getResourceResolver());
-                data = getAnswersWithType(data, "split", split, request.getResourceResolver());
-            }
-            else {
-                answers = getAnswersToQuestion(question, request.getResourceResolver());
-                data = getAnswersWithType(data, "x", question, request.getResourceResolver());
-            }
-
             // Filter those answers based on whether or not their form's subject is of the correct SubjectType (yVar)
             Node correctSubjectType = request.getResourceResolver().adaptTo(Session.class)
                 .getNode(yVariable);
-            answers = filterAnswersToSubjectType(answers, correctSubjectType);
 
-            dataById = filterAnswersWithType(data, correctSubjectType);
-
-            // JsonObjectBuilder testBuilder = Json.createObjectBuilder();
-            // testBuilder.add("testSize", dataById.size());
-
-            // for (Map.Entry<String, Map<Resource, String>> entries : dataById.entrySet()) {
-            // testBuilder.add(entries.getKey(), entries.getKey()); // THIS WORKS - but only shows 1?
-
-            //     for (Map.Entry<Resource, String> entry : entries.getValue().entrySet()) {
-            //         Node testNode = entry.getKey().adaptTo(Node.class);
-            //         String testString = testNode.getProperty("value").getString();
-
-            //         String testValue = entry.getValue();
-
-            //         testBuilder.add(testValue, testValue);
-            //         testBuilder.add(testString, testString);
-            //     }
-            // }
+            // Grab all answers that have this question filled out, and the split var (if it exists)
+            if (this.splitExists.get()) {
+                Node split = request.getResourceResolver().adaptTo(Session.class).getNode(splitVariable);
+                data = getAnswersWithType(data, "x", question, request.getResourceResolver());
+                data = getAnswersWithType(data, "split", split, request.getResourceResolver());
+                // filter if splitVar exists
+                dataById = filterAnswersWithType(data, correctSubjectType);
+            }
+            else {
+                answers = getAnswersToQuestion(question, request.getResourceResolver()); // TODO remove
+                // filter if split does not exist
+                answers = filterAnswersToSubjectType(answers, correctSubjectType);
+            }
 
             String xLabel = question.getProperty("text").getString();
             String yLabel = correctSubjectType.getProperty("label").getString();
@@ -170,12 +152,10 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 Node split = request.getResourceResolver().adaptTo(Session.class).getNode(splitVariable);
                 String splitLabel = split.getProperty("text").getString();
                 builder.add("split-label", splitLabel);
-                // builder.add("testData", testBuilder.build());
-                // addData(answers, builder, split);
                 addDataSplit(dataById, builder);
             }
             else {
-                addData(answers, builder);
+                addData(answers, builder); // TODO use addDataSplit ? use dataById somehow
             }
 
             // Write the output
@@ -226,10 +206,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 // if it is the correct type, add to new map
                 String uuid = answerParent.getProperty("jcr:uuid").getString();
 
-                // TODO: make the <formID, <xvar string, splitvar string>> here ?
-
                 //this should create a nested hashmap <formID, <node, string>, <node, string>>
-
                 if (newData.containsKey(uuid)) {
                     // if it does include uuid already
                     newData.get(uuid).put(answer.getKey(), answer.getValue());
@@ -245,93 +222,54 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     // WITH split
-    private Map<String, Map<String, Integer>> aggregateSplitCounts(Map<Resource, Resource> eachForm)
-        throws RepositoryException
+    private Map<String, Map<String, Integer>> aggregateSplitCounts(Resource xVar, Resource splitVar,
+        Map<String, Map<String, Integer>> counts) throws RepositoryException
     {
-        Map<String, Map<String, Integer>> counts = new HashMap<>();
+        // Map<String, Map<String, Integer>> counts = new HashMap<>();
 
         Map<String, Integer> innerCount = new HashMap<>();
 
-        Iterator<Map.Entry<Resource, Resource>> forms = eachForm.entrySet().iterator();
+        // Iterator<Map.Entry<Resource, Resource>> forms = eachForm.entrySet().iterator();
 
-        while (forms.hasNext()) {
-            Map.Entry<Resource,Resource> form = forms.next();
-            Resource testing = form.getKey();
-            Node xAnswer = testing.adaptTo(Node.class);
-            Resource testing2 = form.getValue();
-            Node splitAnswer = testing2.adaptTo(Node.class); // TODO: this line is causing a null pointer exception?
+        // while (forms.hasNext()) {
+        //     Map.Entry<Resource,Resource> form = forms.next();
+        Node xAnswer = xVar.adaptTo(Node.class);
+        Node splitAnswer = splitVar.adaptTo(Node.class);
 
-            try {
-                String xValue = xAnswer.getProperty("value").getString();
-                String splitValue = splitAnswer.getProperty("value").getString();
+        try {
+            String xValue = xAnswer.getProperty("value").getString();
+            String splitValue = splitAnswer.getProperty("value").getString();
 
-                // if x value and split value already exist
-                if (counts.containsKey(xValue) && counts.get(xValue).containsKey(splitValue)) {
-                    counts.get(xValue).put(splitValue, counts.get(xValue).get(splitValue) + 1);
-                }
-                // if x value already exists, but not split value - create and set to 1
-                if (counts.containsKey(xValue) && !counts.get(xValue).containsKey(splitValue)) {
-                    counts.get(xValue).put(splitValue, 1);
-                }
-                // else, create both and set to 1 count
-                else {
-                    innerCount.put(splitValue, 1);
-                    counts.put(xValue, innerCount);
-                }
-            } catch (PathNotFoundException e) {
-                LOGGER.error("Value does not exist for question: {}", e.getMessage(), e);
-                continue;
+            // if x value and split value already exist
+            if (counts.containsKey(xValue) && counts.get(xValue).containsKey(splitValue)) {
+                counts.get(xValue).put(splitValue, counts.get(xValue).get(splitValue) + 1);
             }
+            // if x value already exists, but not split value - create and set to 1
+            if (counts.containsKey(xValue) && !counts.get(xValue).containsKey(splitValue)) {
+                counts.get(xValue).put(splitValue, 1);
+            }
+            // else, create both and set to 1 count
+            else {
+                innerCount.put(splitValue, 1);
+                counts.put(xValue, innerCount);
+            }
+        } catch (PathNotFoundException e) {
+            LOGGER.error("Value does not exist for question: {}", e.getMessage(), e);
         }
+
+        // }
 
         return counts;
     }
 
      private void addDataSplit(Map<String, Map<Resource, String>> data, JsonObjectBuilder builder) throws RepositoryException
     {
+        // Map<String, Map<Node, Node>> everyForm = new HashMap<>(); // create <formID, <xVar, splitVar>>
+
         Map<Resource, Resource> eachForm = new HashMap<>();
-
-        // JsonObjectBuilder testBuilder = Json.createObjectBuilder();
-        
-        // // within each form id
-        // Iterator<Map.Entry<String, Map<Resource, String>>> entries = data.entrySet().iterator();
-
-        // while (entries.hasNext()) {
-        //     Map.Entry<String, Map<Resource, String>> answer = entries.next();
-        //     // iterate through inner map
-        //     testBuilder.add(answer.getKey(), answer.getKey()); // THIS WORKS - but only shows 1?
-            
-
-        //     Iterator<Map.Entry<Resource, String>> child = (answer.getValue()).entrySet().iterator();
-            // Resource xVar = null;
-            // Resource splitVar = null;
-        //     while (child.hasNext()) {
-        //         Map.Entry<Resource,String> entry = child.next();
-
-        //         // not iterating?
-
-                // Node testNode = entry.getKey().adaptTo(Node.class);
-                // String testString = testNode.getProperty("value").getString();
-
-                // String testValue = entry.getValue();
-
-        //         testBuilder.add(testValue, testValue);
-
-        //         if ("x".equals(entry.getValue())) {
-        //             xVar = entry.getKey();
-        //             testBuilder.add(testString, testString); // this should add the value of x var
-        //         }
-        //         if ("split".equals(entry.getValue())) {
-        //             splitVar = entry.getKey();
-        //             testBuilder.add(testString, testString); // this should add the value of split var
-        //         }
-        //         // create new map with a xVar and splitVar for each form. TODO: this can maybe be done elsewhere
-                // eachForm.put(xVar, splitVar);
-        //     }
-        // }        
+        Map<String, Map<String, Integer>> counts = new HashMap<>();
 
         for (Map.Entry<String, Map<Resource, String>> entries : data.entrySet()) {
-            // testBuilder.add(entries.getKey(), entries.getKey()); // THIS WORKS - but only shows 1?
             Resource xVar = null;
             Resource splitVar = null;
 
@@ -341,19 +279,13 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
                 if ("x".equals(entry.getValue())) {
                     xVar = entry.getKey();
-                    // testBuilder.add(testString, testString); // this should add the value of x var
                 }
                 if ("split".equals(entry.getValue())) {
                     splitVar = entry.getKey();
-                    // testBuilder.add(testString, testString); // this should add the value of split var
                 }
             }
-            // create new map with a xVar and splitVar for each form. TODO: this can maybe be done elsewhere
-            eachForm.put(xVar, splitVar);
+            counts = aggregateSplitCounts(xVar, splitVar, counts);
         }
-
-        // TODO pass <formID, <xVar, splitVar>> instead ?? - yes it should, since xvar might be repeated
-        Map<String, Map<String, Integer>> counts = aggregateSplitCounts(eachForm);
 
         JsonObjectBuilder outerBuilder = Json.createObjectBuilder();
 
@@ -372,11 +304,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
 
         builder.add("data", outerBuilder.build());
-
-        // builder.add("data", testBuilder.build());
     }
-
-    
 
     /**
      * Get all answers that have a given question filled out, if split variable does NOT exist.
@@ -426,7 +354,9 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         String correctType = subjectType.getIdentifier();
         while (answers.hasNext()) {
             Resource answer = answers.next();
-            final Node answerSubjectType = getParentSubject(answer.adaptTo(Node.class));
+            Node answerParent = getParentNode(answer.adaptTo(Node.class));
+            final Node answerSubjectType = answerParent.getProperty("subject").getNode().getProperty("type").getNode();
+
             if (answerSubjectType.getIdentifier().equals(correctType)) {
                 newAnswers.push(answer);
             }
@@ -479,53 +409,12 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         builder.add("data", dataBuilder.build());
     }
 
-    // if split variable DOES exist
-    private void addData(Iterator<Resource> answers, JsonObjectBuilder builder, Node split) throws RepositoryException
-    {
-        // Aggregate our counts
-        Map<String, Integer> counts = aggregateCounts(answers);
-
-        // TODO: also aggregate counts by split
-            // Find the form that contains answer
-            // Find the question that corresponds to split var --> grab value
-            // Aggregate counts by that value WITHIN each x var
-
-        // Convert our HashMap into a JsonObject
-        JsonObjectBuilder dataBuilder = Json.createObjectBuilder();
-        Iterator<String> keysMap = counts.keySet().iterator();
-        while (keysMap.hasNext()) {
-            String key = keysMap.next();
-            dataBuilder.add(key, counts.get(key));
-        }
-        builder.add("data", dataBuilder.build());
-    }
-
     /**
-     * Get the parent subject type of a given lfs:Answer node.
+     * Get the parent node type of a given lfs:Answer node.
      *
      * @param node A node corresponding to an lfs:Answer
      * @return A node corresponding to the parent subject type
      */
-    public Node getParentSubject(Node node) throws RepositoryException
-    {
-        // Recursively go through our parents until we find a lfs:Form node
-        // If we somehow reach the top level, return an error
-        Node answerParent = node.getParent();
-        while (!"lfs:Form".equals(answerParent.getPrimaryNodeType().getName()) && answerParent.getDepth() != 0) {
-            answerParent = answerParent.getParent();
-        }
-
-        // If we never find a form by going upwards, this lfs:Answer is malformed
-        if (answerParent.getDepth() == 0) {
-            String error = String.format("Tried to obtain the parent lfs:Form for node {} but failed to find one",
-                node.getPath());
-            throw new RepositoryException(error);
-        }
-
-        Node answerSubject = answerParent.getProperty("subject").getNode();
-        return answerSubject.getProperty("type").getNode();
-    }
-
     public Node getParentNode(Node node) throws RepositoryException
     {
         // Recursively go through our parents until we find a lfs:Form node
