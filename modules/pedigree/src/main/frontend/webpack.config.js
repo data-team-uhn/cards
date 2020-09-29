@@ -1,6 +1,5 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module_name = require("./package.json").name + ".";
 
