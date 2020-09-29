@@ -262,7 +262,7 @@ function SearchBar(props) {
                       <QuickSearchResult resultData={result} />
                     </MenuItem>
                   ))}
-                  { showTotalRows && moreResults > 0 &&
+                  { !results[0]?.disabled &&
                   <Link to={"/content.html/QuickSearchResults?query=" + encodeURIComponent(search)
                               + allowedResourceTypes.map(i => `&allowedResourceTypes=${encodeURIComponent(i)}`).join('')}
                           className={classes.root}>
@@ -271,7 +271,7 @@ function SearchBar(props) {
                       onClick={() => setPopperOpen(false)}
                       key="more"
                     >
-                      {moreResults} more results
+                      { showTotalRows && moreResults > 0 && `${moreResults} more results` || "See all results" }
                     </MenuItem>
                   </Link> }
                 </MenuList>
