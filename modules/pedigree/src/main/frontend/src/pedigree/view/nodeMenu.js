@@ -24,6 +24,7 @@ import Helpers from '../model/helpers';
 import GraphicHelpers from './graphicHelpers';
 import PedigreeFuzzyDatePicker from './datepicker';
 import PedigreeDate from '../PedigreeDate';
+import REST_URL from '../../vocabQuery/util.jsx';
 
 /**
  * NodeMenu is a UI Element containing options for AbstractNode elements
@@ -133,17 +134,21 @@ var NodeMenu = Class.create({
     // disorders
     this.form.querySelectorAll('input.suggest-omim').forEach(function (item) {
       if (!item._p_hasClassName('initialized')) {
+        var disordersServiceURL = REST_URL + "HP.search.json?";
         // Create the Suggest.
         item._suggest = new PSuggestWidget(item, {
-          script: "FIXME",
-          varname: 'q',
+          script: disordersServiceURL,
+          varname: 'suggest',
           noresults: 'No matching terms',
           json: true,
-          resultsParameter : 'rows',
           resultId : 'id',
           resultValue : 'name',
+          resultAltName: 'synonym',
+          resultCategory : 'term_category',
+          resultParent : 'is_a',
           resultInfo : {},
           enableHierarchy: false,
+          tooltip : false,
           fadeOnClear : false,
           timeout : 30000,
           parentContainer : $('body')
@@ -172,18 +177,21 @@ var NodeMenu = Class.create({
     // genes
     this.form.querySelectorAll('input.suggest-genes').forEach(function(item) {
       if (!item._p_hasClassName('initialized')) {
-        var geneServiceURL = "FIXME";
+        var geneServiceURL = REST_URL + "GO.search.json?";
         item._suggest = new PSuggestWidget(item, {
           script: geneServiceURL,
-          varname: 'input',
+          varname: 'suggest',
           noresults: 'No matching terms',
           resultsParameter : 'rows',
           json: true,
-          resultId : 'ensembl_gene_id',
-          resultValue : 'symbol',
+          resultId : 'id',
+          resultValue : 'name',
+          resultAltName: 'synonym',
+          resultCategory : 'term_category',
+          resultParent : 'is_a',
           resultInfo : {},
           enableHierarchy: false,
-          tooltip :false,
+          tooltip : false,
           fadeOnClear : false,
           timeout : 30000,
           parentContainer : $('body')
@@ -212,9 +220,10 @@ var NodeMenu = Class.create({
     // HPO terms
     this.form.querySelectorAll('input.suggest-hpo').forEach(function(item) {
       if (!item._p_hasClassName('initialized')) {
+        var hpoServiceURL = REST_URL + "HP.search.json?";
         item._suggest = new PSuggestWidget(item, {
-          script: "",
-          varname: 'q',
+          script: hpoServiceURL,
+          varname: 'suggest',
           noresults: 'No matching terms',
           json: true,
           resultsParameter : 'rows',
