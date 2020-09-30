@@ -35,6 +35,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.json.Json;
+import javax.json.JsonObject;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 
@@ -483,7 +484,23 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 --offsetCounter;
             } else if (limitCounter > 0) {
                 //jsonGen.write(n.adaptTo(JsonObject.class));
-                jsonGen.write(n.getPath());
+                JsonObject thisRow = Json.createObjectBuilder()
+                    .add("@path", n.getPath())
+                    .add("@name", n.getName())
+                    .add("jcr:primaryType", "lfs:Form")
+                    .add("jcr:createdBy", "admin")
+                    .add("jcr:created", "2020-09-30T13:56:48.090-04:00")
+                    .add("subject", Json.createObjectBuilder()
+                        .add("jcr:primaryType", "lfs:Subject")
+                        .add("jcr:createdBy", "admin")
+                        .add("identifier", "SUBJECT GOES HERE").build()
+                        )
+                    .add("questionnaire", Json.createObjectBuilder()
+                        .add("jcr:primaryType", "lfs:Questionnaire")
+                        .add("jcr:createdBy", "admin")
+                        .add("title", "QUESTIONNAIRE GOES HERE")
+                        ).build();
+                jsonGen.write(thisRow);
                 --limitCounter;
                 ++counts[2];
             }
