@@ -41,6 +41,10 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
+import javax.jcr.Workspace;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
@@ -77,6 +81,7 @@ import org.slf4j.LoggerFactory;
 )
 @SlingServletResourceTypes(resourceTypes = { "lfs/FormsHomepage" }, methods = { "POST" })
 @SlingServletName(servletName = "Data Import Servlet")
+@SuppressWarnings({"ClassFanOutComplexity"})
 public class DataImportServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -5821127949309764050L;
@@ -643,9 +648,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
         return current;
     }
 
-    @SuppressWarnings({"CyclomaticComplexity", "NPathComplexity"})
     private Node getOrCreateSubject(CSVRecord row, String type, Node parent)
     {
+        // Find the subject corresponding to this
         Node typeNode = getSubjectType(type);
         String subjectId = findSubjectId(row, typeNode);
         if (StringUtils.isBlank(subjectId)) {
@@ -661,6 +666,26 @@ public class DataImportServlet extends SlingAllMethodsServlet
             }
         }
 
+        Node subject = findSubject(subjectKey, subjectId, typeNode, parent);
+        if (subject != null) {
+            return subject;
+        }
+
+        // Create a new subject
+        return createSubject(subjectKey, subjectId, typeNode, parent);
+    }
+
+    /***
+     * Find a subject with the given parameters.
+     * @param subjectKey A key for this subject to search the cache for
+     * @param subjectId The identifier of the subject
+     * @param typeNode The Node of the lfs:SubjectType for the subject
+     * @param parent The parent lfs:Subject for this subject
+     * @return A subject Node if it exists, or null.
+     */
+    private Node findSubject(String subjectKey, String subjectId, Node typeNode, Node parent)
+    {
+        // Load a cached version if we already have one
         Map<String, Node> cache = this.subjectTypeCache.get();
         if (cache.containsKey(subjectKey)) {
             return cache.get(subjectKey);
@@ -679,13 +704,37 @@ public class DataImportServlet extends SlingAllMethodsServlet
             // No change to query
         }
 
-        final Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
+        Session session = this.resolver.get().adaptTo(Session.class);
+        Workspace workspace = session.getWorkspace();
+        try {
+            QueryManager queryManager = workspace.getQueryManager();
+            Query queryObj = queryManager.createQuery(query, "JCR-SQL2");
+            queryObj.setLimit(1);
+            QueryResult queryResult = queryObj.execute();
+            NodeIterator nodeResult = queryResult.getNodes();
 
-        if (results.hasNext()) {
-            Node subject = results.next().adaptTo(Node.class);
-            cache.put(subjectKey, subject);
-            return subject;
+            // If a result was found,  cache it and return
+            if (nodeResult.hasNext()) {
+                Node subject = nodeResult.nextNode();
+                cache.put(subjectKey, subject);
+                return subject;
+            }
+        } catch (RepositoryException ex) {
+            // Could not find subject, return null
         }
+        return null;
+    }
+
+    /***
+     * Create a new subject.
+     * @param subjectId The identifier for the subject
+     * @param typeNode The node of the lfs:SubjectType for this subject
+     * @param parent The parent of this subject
+     * @param subjectKey A string to identify this subject by in the cache
+     * @return A new subject Node if one could be made, or null.
+     */
+    private Node createSubject(String subjectKey, String subjectId, Node typeNode, Node parent)
+    {
         final Map<String, Object> subjectProperties = new LinkedHashMap<>();
         subjectProperties.put("jcr:primaryType", "lfs:Subject");
         subjectProperties.put("identifier", subjectId);
@@ -696,7 +745,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         try {
             Node subject = this.resolver.get().create(this.subjectsHomepage.get(), UUID.randomUUID().toString(),
                 subjectProperties).adaptTo(Node.class);
-            cache.put(subjectKey, subject);
+            this.subjectTypeCache.get().put(subjectKey, subject);
             return subject;
         } catch (PersistenceException e) {
             return null;
