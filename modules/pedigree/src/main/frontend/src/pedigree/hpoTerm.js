@@ -58,7 +58,7 @@ var HPOTerm = Class.create( {
 
   load: function(callWhenReady) {
     var baseServiceURL = HPOTerm.getServiceURL();
-    var queryURL       = baseServiceURL + '&q=id%3A' + HPOTerm.desanitizeID(this._hpoID).replace(':','%5C%3A');
+    var queryURL       = baseServiceURL + HPOTerm.desanitizeID(this._hpoID).replace(/[:]/g, '') + '.json';
     //console.log("QueryURL: " + queryURL);
     new Ajax.Request(queryURL, {
       method: 'GET',
@@ -72,8 +72,8 @@ var HPOTerm = Class.create( {
     try {
       var parsed = JSON.parse(response.responseText);
       //console.log(JSON.stringify(parsed));
-      console.log('LOADED HPO TERM: id = ' + HPOTerm.desanitizeID(this._hpoID) + ', name = ' + parsed.rows[0].name);
-      this._name = parsed.rows[0].name;
+      console.log('LOADED HPO TERM: id = ' + HPOTerm.desanitizeID(this._hpoID) + ', name = ' + parsed.name[0]);
+      this._name = parsed.name[0];
     } catch (err) {
       console.log('[LOAD HPO TERM] Error: ' +  err);
     }
@@ -104,9 +104,7 @@ HPOTerm.isValidID = function(id) {
 };
 
 HPOTerm.getServiceURL = function () {
-  // FIXME
-  //return new XWiki.Document('SolrService', 'PhenoTips').getURL('get') + '?';
-  return "";
+  return window.location.origin + "/Vocabularies/HP/";
 };
 
 export default HPOTerm;

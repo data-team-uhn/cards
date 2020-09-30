@@ -30,7 +30,7 @@ var Disorder = Class.create( {
 
   initialize: function(disorderID, name, callWhenReady) {
     // user-defined disorders
-    if (name == null && !isInt(disorderID)) {
+    if (name == null && !Disorder.isValidID(disorderID)) {
       name = Disorder.desanitizeID(disorderID);
     }
 
@@ -58,7 +58,7 @@ var Disorder = Class.create( {
 
   load: function(callWhenReady) {
     var baseOMIMServiceURL = Disorder.getOMIMServiceURL();
-    var queryURL           = baseOMIMServiceURL + '&q=id:' + this._disorderID;
+    var queryURL           = baseOMIMServiceURL + this._disorderID + '.json';
     //console.log("queryURL: " + queryURL);
     new Ajax.Request(queryURL, {
       method: 'GET',
@@ -72,8 +72,8 @@ var Disorder = Class.create( {
     try {
       var parsed = JSON.parse(response.responseText);
       //console.log(JSON.stringify(parsed));
-      console.log('LOADED DISORDER: disorder id = ' + this._disorderID + ', name = ' + parsed.rows[0].name);
-      this._name = parsed.rows[0].name;
+      console.log('LOADED DISORDER: disorder id = ' + this._disorderID + ', name = ' + parsed.label);
+      this._name = parsed.label;
     } catch (err) {
       console.log('[LOAD DISORDER] Error: ' +  err);
     }
@@ -85,7 +85,7 @@ var Disorder = Class.create( {
  * For that purpose these symbols in IDs are converted in memory (but not in the stored pedigree) to some underscores.
  */
 Disorder.sanitizeID = function(disorderID) {
-  if (isInt(disorderID)) {
+  if (Disorder.isValidID(disorderID)) {
     return disorderID;
   }
   var temp = disorderID.replace(/[\(\[]/g, '_L_');
@@ -99,10 +99,13 @@ Disorder.desanitizeID = function(disorderID) {
   return temp.replace(/_J_/g, ')');
 };
 
+Disorder.isValidID = function(id) {
+  var pattern = /^Orphanet_(\d)+$/i;
+  return pattern.test(id);
+};
+
 Disorder.getOMIMServiceURL = function() {
-  // FIXME
-  //new XWiki.Document('OmimService', 'PhenoTips').getURL('get', 'outputSyntax=plain');
-  return "";
+  return window.location.origin + "/Vocabularies/ORDO/";
 };
 
 export default Disorder;

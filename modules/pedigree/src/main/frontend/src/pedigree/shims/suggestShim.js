@@ -437,11 +437,14 @@ function _p_escapeHTML(str) {
       }
 
       _getResultFieldValue = function(data, fieldName) {
-        return data && (data[fieldName + "_translated"] || data[fieldName]) || '';
+        var result = data && (data[fieldName + "_translated"] || data[fieldName]) || '';
+        if (isArray(result))
+          return result[0];
+        return result;
       };
 
       _getResultFieldValueAsArray = function(data, fieldName) {
-        return new Array(data && (data[fieldName + "_translated"] || data[fieldName]) || '').flatten();
+        return data && (data[fieldName + "_translated"] || data[fieldName]) || [];
       };
     } else {
       var result = response.responseXML;
@@ -652,11 +655,14 @@ function _p_escapeHTML(str) {
       var results = jsondata[source.resultsParameter || this.options.resultsParameter];
 
       var _getResultFieldValue = function(data, fieldName) {
-        return data && (data[fieldName + "_translated"] || data[fieldName]) || '';
+        var result = data && (data[fieldName + "_translated"] || data[fieldName]) || '';
+        if (isArray(result))
+          return result[0];
+        return result;
       }
 
       var _getResultFieldValueAsArray = function(data, fieldName) {
-        return new Array(data && (data[fieldName + "_translated"] || data[fieldName]) || '').flatten();
+        return data && (data[fieldName + "_translated"] || data[fieldName]) || [];
       };
     } else {
       var xmldata = req.responseXML;
@@ -742,7 +748,7 @@ function _p_escapeHTML(str) {
       }
       var processingFunction = sOptions.processor;
       if (sOptions.extern) {
-        var trigger =  new Element("a").update(section);
+        var trigger = PElement("a").update(section);
         trigger._processingFunction = processingFunction;
         info._p_insert(PElement("dt", {'class' : sectionState + " " + sectionClass})
           ._p_insert(trigger));
@@ -793,9 +799,9 @@ function _p_escapeHTML(str) {
    */
   generateResultCategory : function (result, getResultValueAsArray) {
     if (this.options.resultCategory) {
-      var category = new Element("span", {'class' : 'hidden term-category'});
+      var category = PElement("span", {'class' : 'hidden term-category'});
       getResultValueAsArray(result, this.options.resultCategory).forEach(function(c) {
-        category._p_insert(new Element('input', {'type' : 'hidden', 'value' : c}));
+        category._p_insert(PElement('input', {'type' : 'hidden', 'value' : c}));
       });
     }
     if (!this.options.resultCategory || !category.hasChildNodes()) {
@@ -828,7 +834,7 @@ function _p_escapeHTML(str) {
     //declare the matrix
     var d = new Array();
 
-    for (i = 0; i < n; i++) {
+    for (var i = 0; i < n; i++) {
       d[i] = new Array();
 
       // get the substitution score
@@ -846,7 +852,7 @@ function _p_escapeHTML(str) {
       }
     }
 
-    for (j = 0; j < m; j++) {
+    for (var j = 0; j < m; j++) {
       // get the substitution score
       score = (a.charAt(0) == b.charAt(j))? 1: -1;
 
@@ -863,8 +869,8 @@ function _p_escapeHTML(str) {
     }
 
     // cycle through rest of table filling values from the lowest cost value of the three part cost function
-    for (i = 1; i < n; i++) {
-      for (j = 1; j < m; j++) {
+    for (var i = 1; i < n; i++) {
+      for (var j = 1; j < m; j++) {
         // get the substitution score
         score = (a.charAt(i) == b.charAt(j))? 1: -1;
 
@@ -976,8 +982,8 @@ function _p_escapeHTML(str) {
         else {
           // The sub-container for this source has not been created yet
           // Really create the subcontainer for this source and inject it in the global container
-          var sourceContainer = new Element('div', {'class' : 'results results' + source.id}),
-              sourceHeader = new Element('div', {'class':'sourceName'});
+          var sourceContainer = PElement('div', {'class' : 'results results' + source.id}),
+              sourceHeader = PElement('div', {'class':'sourceName'});
 
           if (this.options.unifiedLoader) {
             sourceContainer._p_addClassName('hidden loading');
@@ -1002,7 +1008,7 @@ function _p_escapeHTML(str) {
           sourceHeader._p_insert(source.name)
           sourceContainer._p_insert( sourceHeader );
           var classes = "sourceContent " + (this.options.unifiedLoader ? "" : "loading");
-          sourceContainer._p_insert( new Element('div', {'class':classes}));
+          sourceContainer._p_insert( PElement('div', {'class':classes}));
 
           if (typeof source.before !== 'undefined') {
             this.resultContainer._p_insert(source.before);
@@ -1599,7 +1605,7 @@ var PSuggestPicker = Class.create({
     displayedValue._p_insert(PElement("span", {"class": "value"})._p_update(_p_escapeHTML(value)));
     listItem._p_insert(displayedValue);
     if(this.suggest.options.tooltip) {
-      var infoTool = this.suggest.options.markFreeText && custom ? PElement('span', {'class' : 'fa fa-fw fa-exclamation-triangle', 'title' : this.suggest.options.freeTextTooltipHint || ''}) : new Element('span', {'class' : 'fa fa-info-circle xHelpButton ' + this.suggest.options.tooltip, title : key, 'data-source' : this.input && this.input.id || ''});
+      var infoTool = this.suggest.options.markFreeText && custom ? PElement('span', {'class' : 'fa fa-fw fa-exclamation-triangle', 'title' : this.suggest.options.freeTextTooltipHint || ''}) : PElement('span', {'class' : 'fa fa-info-circle xHelpButton ' + this.suggest.options.tooltip, title : key, 'data-source' : this.input && this.input.id || ''});
       listItem._p_insert(infoTool);
     }
     if (category && category != '') {

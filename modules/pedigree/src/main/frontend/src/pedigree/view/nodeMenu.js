@@ -24,7 +24,8 @@ import Helpers from '../model/helpers';
 import GraphicHelpers from './graphicHelpers';
 import PedigreeFuzzyDatePicker from './datepicker';
 import PedigreeDate from '../PedigreeDate';
-import REST_URL from '../../vocabQuery/util.jsx';
+
+const REST_URL = window.location.origin + "/Vocabularies/";
 
 /**
  * NodeMenu is a UI Element containing options for AbstractNode elements
@@ -134,16 +135,17 @@ var NodeMenu = Class.create({
     // disorders
     this.form.querySelectorAll('input.suggest-omim').forEach(function (item) {
       if (!item._p_hasClassName('initialized')) {
-        var disordersServiceURL = REST_URL + "HP.search.json?";
+        var disordersServiceURL = REST_URL + "ORDO.search.json?";
         // Create the Suggest.
         item._suggest = new PSuggestWidget(item, {
           script: disordersServiceURL,
           varname: 'suggest',
           noresults: 'No matching terms',
+          resultsParameter : 'rows',
           json: true,
-          resultId : 'id',
-          resultValue : 'name',
-          resultAltName: 'synonym',
+          resultId : 'identifier',
+          resultValue : 'label',
+          resultAltName: 'alternative_term',
           resultCategory : 'term_category',
           resultParent : 'is_a',
           resultInfo : {},
@@ -184,7 +186,7 @@ var NodeMenu = Class.create({
           noresults: 'No matching terms',
           resultsParameter : 'rows',
           json: true,
-          resultId : 'id',
+          resultId : 'identifier',
           resultValue : 'name',
           resultAltName: 'synonym',
           resultCategory : 'term_category',
@@ -227,7 +229,7 @@ var NodeMenu = Class.create({
           noresults: 'No matching terms',
           json: true,
           resultsParameter : 'rows',
-          resultId : 'id',
+          resultId : 'identifier',
           resultValue : 'name',
           resultAltName: 'synonym',
           resultCategory : 'term_category',

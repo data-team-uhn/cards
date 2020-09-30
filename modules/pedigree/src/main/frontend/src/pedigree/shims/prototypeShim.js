@@ -714,7 +714,8 @@ window.Element.prototype._p_hasClassName = function(className) {
 
 window.Element.prototype._p_addClassName = function(className) {
   // .add() does not work when className is a list of class names separated by a space
-  var classes = className.split(" ");
+  if (!className || className.length == 0) return this;
+  var classes = className.trim().split(" ");
   classes.forEach(function(cName) {
     this.classList.add(cName);
   }.bind(this));
@@ -1015,12 +1016,7 @@ Ajax.Request = Class.create(Ajax.Base, {
   },
 
   isSameOrigin: function() {
-    var m = this.url.match(/^\s*https?:\/\/[^\/]*/);
-    return !m || (m[0] == '#{protocol}//#{domain}#{port}'.interpolate({
-      protocol: location.protocol,
-      domain: document.domain,
-      port: location.port ? ':' + location.port : ''
-    }));
+    return true;
   },
 
   getHeader: function(name) {
@@ -1103,8 +1099,7 @@ Ajax.Response = Class.create({
     }
 
     try {
-      return json.evalJSON(this.request.options.sanitizeJSON ||
-        !this.request.isSameOrigin());
+      return eval('(' + json + ')');
     } catch (e) {
       this.request.dispatchException(e);
     }
@@ -1114,16 +1109,15 @@ Ajax.Response = Class.create({
     var options = this.request.options;
     if (!options.evalJSON || (options.evalJSON != 'force' &&
       !(this.getHeader('Content-type') || '').includes('application/json')) ||
-        this.responseText.blank())
+        /^\s*$/.test(this.responseText))
           return null;
     try {
-      return this.responseText.evalJSON(options.sanitizeJSON ||
-        !this.request.isSameOrigin());
+      return eval('(' + this.responseText + ')');
     } catch (e) {
       this.request.dispatchException(e);
     }
   }
-});
+}); 
 
 //================================================================
 
