@@ -28,6 +28,7 @@ import {
   withStyles
 } from "@material-ui/core";
 
+import EditorInput from "./EditorInput";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 
@@ -37,34 +38,23 @@ let ObjectInput = (props) => {
   let { objectKey, value, data } = props;
   let [ selectedValue, setSelectedValue ] = useState(data[objectKey] || '');
   
-  let formatString = (originalKey) => {
-    let formattedString = originalKey.charAt(0).toUpperCase() + originalKey.slice(1);
-    return formattedString.split(/(?=[A-Z])/).join(" ");
-  }
   return (
-    <React.Fragment>
-      <Grid container alignItems='flex-end' spacing={2}>
-      <Grid item xs={6}>
-        <Typography>{ formatString(objectKey) }</Typography>
-      </Grid>
-      <Grid item xs={6}>
-        <Select 
-          id={objectKey}
-          name={objectKey}
-          defaultValue={data[objectKey] || ''}
-          onChange={(event) => { 
-            setSelectedValue(event.target.value);
-          }}>
-          { typeof(value) === 'object' && Object.keys(value).map((name, val) => 
-            <MenuItem key={val} name={name} id={name} value={name}>
-              <Typography>{name}</Typography>
-            </MenuItem>
-          )}
-        </Select>
-      </Grid>
-    </Grid>
-    { typeof(value) === 'object' && selectedValue != '' && <Fields data={data} JSON={value[selectedValue]} edit={true}/> }
-  </React.Fragment>
+    <EditorInput name={objectKey}>
+      <Select
+        id={objectKey}
+        name={objectKey}
+        defaultValue={data[objectKey] || ''}
+        onChange={(event) => {
+          setSelectedValue(event.target.value);
+        }}>
+        { typeof(value) === 'object' && Object.keys(value).map((name, val) =>
+          <MenuItem key={val} name={name} id={name} value={name}>
+            <Typography>{name}</Typography>
+          </MenuItem>
+        )}
+      </Select>
+      { typeof(value) === 'object' && selectedValue != '' && <Fields data={data} JSON={value[selectedValue]} edit={true}/> }
+    </EditorInput>
   )
 }
 

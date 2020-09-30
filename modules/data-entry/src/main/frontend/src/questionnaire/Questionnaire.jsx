@@ -37,9 +37,9 @@ import {
 import moment from "moment";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import EditDialog from "../questionnaireEditor/EditDialog"
-import DeleteDialog from "../questionnaireEditor/DeleteDialog"
-import Fields from '../questionnaireEditor/Fields'
+import EditDialog from "../questionnaireEditor/EditDialog";
+import DeleteDialog from "../questionnaireEditor/DeleteDialog";
+import Fields from "../questionnaireEditor/Fields";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -61,6 +61,7 @@ let Questionnaire = (props) => {
   let [ error, setError ] = useState();
   let [ isEditing, setIsEditing ] = useState(false);
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
+  let [ infoDialogOpen, setInfoDialogOpen ] = useState(false);
   let [ curEntryType, setCurEntryType ] = useState('Question');
   let [ anchorEl, setAnchorEl ] = useState(null);
 
@@ -196,6 +197,17 @@ let Questionnaire = (props) => {
                 <dd>
                   <Typography>{data.maxPerSubject || 'Unlimited'}</Typography>
                 </dd>
+                <dt>
+                  <Typography>Subject Types:</Typography>
+                </dt>
+                <dd>
+                  { data?.requiredSubjectTypes?.map( subjectType =>
+                    (subjectType ?
+                      <Typography key={subjectType.label}>{subjectType.label}</Typography>
+                      : <Typography>'Any'</Typography>
+                    )
+                  )}
+                </dd>
               </dl>
             </CardContent>
           </Card>
@@ -207,7 +219,20 @@ let Questionnaire = (props) => {
           : <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
       }
       </Grid>
-      <EditDialog edit={isEditing} data={data} type={curEntryType} open={editDialogOpen} onClose={() => { closeDialog(); setEditDialogOpen(false); handleCloseMenu(); }} />
+      {
+        data &&
+          <EditDialog
+            edit={isEditing}
+            data={data}
+            type={curEntryType}
+            open={editDialogOpen}
+            onClose={() => {
+              closeDialog();
+              setEditDialogOpen(false);
+              handleCloseMenu();
+            }}
+            />
+      }
     </div>
   );
 };
@@ -246,9 +271,14 @@ let Question = (props) => {
         title={data.text}
         action={
           <div>
-            <IconButton onClick={() => {showEditDialog(true)}}>
-              <EditIcon />
-            </IconButton>
+            <EditDialog
+              edit={true}
+              data={data}
+              type='Question'
+              open={editOpen}
+              onOpen={() => {showEditDialog(true)}}
+              onClose={() => {showEditDialog(false)}}
+              />
             <IconButton onClick={() => {showDeleteDialog(true)}}>
               <DeleteIcon />
             </IconButton>
@@ -265,13 +295,6 @@ let Question = (props) => {
             .map(value => <AnswerOption key={value['jcr:uuid']} data={value} />)
         }
       </CardContent>
-      <EditDialog
-        edit={true}
-        data={data}
-        type='Question'
-        open={editOpen}
-        onClose={() => {showEditDialog(false)}}
-        />
       <DeleteDialog
         open={deleteOpen}
         data={data}
@@ -327,10 +350,15 @@ let Section = (props) => {
               <MenuItem onClick={()=> { openDialog(true, 'Question'); handleCloseMenu(); }}>Question</MenuItem>
               <MenuItem onClick={()=> { openDialog(true, 'Section'); handleCloseMenu(); }}>Section</MenuItem>
             </Menu>
-            <IconButton onClick={() => { openDialog(false, 'Section'); }}>
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={() => { setDeleteDialogOpen(true); }}>
+            <EditDialog
+              edit={isEditing}
+              data={data}
+              type={newFieldType}
+              open={editDialogOpen}
+              onOpen={() => {openDialog(false, 'Section')}}
+              onClose={() => { onClose(); setEditDialogOpen(false); }}
+              />
+            <IconButton onClick={() => { setDeleteDialogOpen(false); }}>
               <DeleteIcon />
             </IconButton>
             <Typography>{data['description'] || ''}</Typography>
@@ -346,7 +374,6 @@ let Section = (props) => {
           }
         </Grid>
       </CardContent>
-      <EditDialog edit={isEditing} data={data} type={newFieldType} open={editDialogOpen} onClose={() => { onClose(); setEditDialogOpen(false); }} />
       <DeleteDialog open={deleteDialogOpen} data={data} onClose={() => { onClose(); setDeleteDialogOpen(false); }} type="Section" />
     </Card>
   );
