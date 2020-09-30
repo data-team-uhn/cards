@@ -62,7 +62,11 @@ let ListInput = (props) => {
       <input type="hidden" name={objectKey + "@TypeHint"} value={"Reference"} />
       { 
         // Maps each selected object to a reference type for submitting
-        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject['jcr:uuid']} key={typeObject['jcr:uuid']}/>)
+        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject['jcr:uuid']} key={typeObject['jcr:uuid']} />)
+      }
+      {
+        // Delete the current values within this list if nothing is selected
+        value.length == 0 && <input type="hidden" name={objectKey + "@Delete"} value="" />
       }
       <Select
         id={objectKey}
