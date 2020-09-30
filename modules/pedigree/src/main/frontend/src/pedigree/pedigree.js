@@ -132,6 +132,7 @@ var PedigreeEditor = Class.create({
     });
     var exportButton = $('action-export');
     exportButton && exportButton._p_on('click', function(event) {
+      savePedigree();
       editor.getExportSelector().show();
     });
 
@@ -202,6 +203,7 @@ var PedigreeEditor = Class.create({
       window.onbeforeunload = window.editor._initialBeforeUnloadFunction;
       window._unloaded = true;
       editor._onCloseCallback && editor._onCloseCallback();
+      $$('button[type="submit"]')[0] && $$('button[type="submit"]')[0].click();
       delete window.editor;
     }
   },

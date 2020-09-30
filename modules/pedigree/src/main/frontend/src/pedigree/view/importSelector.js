@@ -52,7 +52,7 @@ var ImportSelector = Class.create( {
           // some older browsers do not allow setting value of a file input element and may generate a security error
         }
       });
-      var uploadLink = PElement('div', {'class': 'import-upload'})._p_update('(<a>Select a local file to be imported</a>)');
+      var uploadLink = PElement('div', {'class': 'import-upload'})._p_update('<input type="button" name="selectfile" value="Select a local file to be imported" class="button">');
       uploadLink._p_observe('click', function(event) {
         var fileElem = document.getElementById('pedigreeInputFile');
         fileElem.click();
