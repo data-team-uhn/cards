@@ -23,21 +23,25 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Workspace;
 import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 import javax.json.Json;
-import javax.json.JsonObject;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
@@ -75,7 +79,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
     private static final String SUBJECT_IDENTIFIER = "lfs:Subject";
 
-    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS", "checkstyle:NPathComplexity"})
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
             throws IOException, IllegalArgumentException
@@ -149,16 +153,40 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
         query.append(" order by n.'jcr:created'");
         String finalquery = query.toString();
-        LOGGER.debug("Computed final query: {}", finalquery);
+        LOGGER.warn("Computed final query: {}", finalquery);
 
-        final Iterator<Resource> results =
-            request.getResourceResolver().findResources(finalquery, Query.JCR_SQL2);
+        //final Iterator<Resource> results =
+        //    request.getResourceResolver().findResources(finalquery, Query.JCR_SQL2);
+        //Iterator<Resource> results = null;
+        NodeIterator results = null;
+        try {
+            ResourceResolver resolver = request.getResourceResolver();
+            Session session = resolver.adaptTo(Session.class);
+            Workspace workspace = session.getWorkspace();
+            QueryManager queryManager = workspace.getQueryManager();
+            Query myQuery = queryManager.createQuery(finalquery, "JCR-SQL2");
+            myQuery.setLimit(500);
+            LOGGER.warn("myQuery.execute() --> BEGIN");
+            QueryResult myQr = myQuery.execute();
+            LOGGER.warn("myQuery.execute() --> END");
+            results = myQr.getNodes();
+            //LOGGER.warn("myQuery.execute().getNodes() ...");
+            //while (results.hasNext()) {
+            //    LOGGER.warn("    myQuery ... --> {}", results.next());
+            //}
+        } catch (Exception e) {
+            return;
+        }
         // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
         final Writer out = response.getWriter();
         try (JsonGenerator jsonGen = Json.createGenerator(out)) {
             jsonGen.writeStartObject();
-            long[] limits = writeNodes(jsonGen, results, offset, limit);
-            writeSummary(jsonGen, request, limits);
+            try {
+                long[] limits = writeNodes(jsonGen, results, offset, limit);
+                writeSummary(jsonGen, request, limits);
+            } catch (RepositoryException e) {
+                //
+            }
             jsonGen.writeEnd().flush();
         }
     }
@@ -435,8 +463,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         jsonGen.write("totalrows", limits[3]);
     }
 
-    private long[] writeNodes(final JsonGenerator jsonGen, final Iterator<Resource> nodes,
-        final long offset, final long limit)
+    private long[] writeNodes(final JsonGenerator jsonGen, final NodeIterator nodes,
+        final long offset, final long limit) throws RepositoryException
     {
         final long[] counts = new long[4];
         counts[0] = offset;
@@ -450,11 +478,12 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         jsonGen.writeStartArray("rows");
 
         while (nodes.hasNext()) {
-            Resource n = nodes.next();
+            Node n = nodes.nextNode();
             if (offsetCounter > 0) {
                 --offsetCounter;
             } else if (limitCounter > 0) {
-                jsonGen.write(n.adaptTo(JsonObject.class));
+                //jsonGen.write(n.adaptTo(JsonObject.class));
+                jsonGen.write(n.getPath());
                 --limitCounter;
                 ++counts[2];
             }
