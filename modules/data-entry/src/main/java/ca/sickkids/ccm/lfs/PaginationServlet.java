@@ -156,9 +156,6 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         String finalquery = query.toString();
         LOGGER.warn("Computed final query: {}", finalquery);
 
-        //final Iterator<Resource> results =
-        //    request.getResourceResolver().findResources(finalquery, Query.JCR_SQL2);
-        //Iterator<Resource> results = null;
         NodeIterator results = null;
         try {
             ResourceResolver resolver = request.getResourceResolver();
@@ -166,15 +163,12 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             Workspace workspace = session.getWorkspace();
             QueryManager queryManager = workspace.getQueryManager();
             Query myQuery = queryManager.createQuery(finalquery, "JCR-SQL2");
-            myQuery.setLimit(500);
+            myQuery.setLimit(limit);
+            myQuery.setOffset(offset);
             LOGGER.warn("myQuery.execute() --> BEGIN");
             QueryResult myQr = myQuery.execute();
             LOGGER.warn("myQuery.execute() --> END");
             results = myQr.getNodes();
-            //LOGGER.warn("myQuery.execute().getNodes() ...");
-            //while (results.hasNext()) {
-            //    LOGGER.warn("    myQuery ... --> {}", results.next());
-            //}
         } catch (Exception e) {
             return;
         }
@@ -480,30 +474,26 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
         while (nodes.hasNext()) {
             Node n = nodes.nextNode();
-            if (offsetCounter > 0) {
-                --offsetCounter;
-            } else if (limitCounter > 0) {
-                //jsonGen.write(n.adaptTo(JsonObject.class));
-                JsonObject thisRow = Json.createObjectBuilder()
-                    .add("@path", n.getPath())
-                    .add("@name", n.getName())
-                    .add("jcr:primaryType", "lfs:Form")
+            //jsonGen.write(n.adaptTo(JsonObject.class));
+            JsonObject thisRow = Json.createObjectBuilder()
+                .add("@path", n.getPath())
+                .add("@name", n.getName())
+                .add("jcr:primaryType", "lfs:Form")
+                .add("jcr:createdBy", "admin")
+                .add("jcr:created", "2020-09-30T13:56:48.090-04:00")
+                .add("subject", Json.createObjectBuilder()
+                    .add("jcr:primaryType", "lfs:Subject")
                     .add("jcr:createdBy", "admin")
-                    .add("jcr:created", "2020-09-30T13:56:48.090-04:00")
-                    .add("subject", Json.createObjectBuilder()
-                        .add("jcr:primaryType", "lfs:Subject")
-                        .add("jcr:createdBy", "admin")
-                        .add("identifier", "SUBJECT GOES HERE").build()
-                        )
-                    .add("questionnaire", Json.createObjectBuilder()
-                        .add("jcr:primaryType", "lfs:Questionnaire")
-                        .add("jcr:createdBy", "admin")
-                        .add("title", "QUESTIONNAIRE GOES HERE")
-                        ).build();
-                jsonGen.write(thisRow);
-                --limitCounter;
-                ++counts[2];
-            }
+                    .add("identifier", "SUBJECT GOES HERE").build()
+                    )
+                .add("questionnaire", Json.createObjectBuilder()
+                    .add("jcr:primaryType", "lfs:Questionnaire")
+                    .add("jcr:createdBy", "admin")
+                    .add("title", "QUESTIONNAIRE GOES HERE")
+                    ).build();
+            jsonGen.write(thisRow);
+            --limitCounter;
+            ++counts[2];
             ++counts[3];
         }
 
