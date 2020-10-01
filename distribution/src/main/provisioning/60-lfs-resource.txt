@@ -27,4 +27,4 @@
     ca.sickkids.ccm.lfs/lfs-resources-clinical-data/${lfs.version}
     ca.sickkids.ccm.lfs/lfs-resources-tissue-metrix/${lfs.version}
     ca.sickkids.ccm.lfs/lfs-resources-somatic-variants/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-variants/${lfs.version}/slingfeature/slingfeature
+    ca.sickkids.ccm.lfs/lfs-variants/${lfs.version}
