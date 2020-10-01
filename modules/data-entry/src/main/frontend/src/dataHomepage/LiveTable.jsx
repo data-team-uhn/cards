@@ -157,7 +157,7 @@ function LiveTable(props) {
       "currentFetch": false,
       "fetchError": err,
     }));
-    setTableData();
+    setTableData([]);
   };
 
   let makeRow = (entry, i) => {
