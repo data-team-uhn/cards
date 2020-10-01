@@ -420,7 +420,7 @@ var NodetypeSelectionBubble = Class.create({
     minusBtn._p_observe('click', function() {
       me._decrementNumNodes(); svgContainer._p_update(generateIcon());
     });
-    plusBtn.observe ('click', function() {
+    plusBtn._p_observe ('click', function() {
       me._incrementNumNodes(); svgContainer._p_update(generateIcon());
     });
     createBtn._p_observe('click', function() {

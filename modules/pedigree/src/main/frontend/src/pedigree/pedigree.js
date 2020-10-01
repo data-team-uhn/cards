@@ -203,7 +203,7 @@ var PedigreeEditor = Class.create({
       window.onbeforeunload = window.editor._initialBeforeUnloadFunction;
       window._unloaded = true;
       editor._onCloseCallback && editor._onCloseCallback();
-      $$('button[type="submit"]')[0] && $$('button[type="submit"]')[0].click();
+      $('main-container')._p_down('button[type="submit"]') && $('main-container')._p_down('button[type="submit"]').click();
       delete window.editor;
     }
   },
@@ -494,13 +494,13 @@ var PedigreeEditor = Class.create({
         'tab': 'Clinical',
         'function' : 'setDisorders'
       },
-      {
-        'name' : 'candidate_genes',
-        'label' : 'Genes',
-        'type' : 'gene-picker',
-        'tab': 'Clinical',
-        'function' : 'setGenes'
-      },
+     // {
+     //   'name' : 'candidate_genes',
+     //   'label' : 'Genes',
+     //   'type' : 'gene-picker',
+     //   'tab': 'Clinical',
+     //   'function' : 'setGenes'
+     // },
       {
         'name' : 'hpo_positive',
         'label' : 'Phenotypic features',

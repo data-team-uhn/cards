@@ -16,13 +16,13 @@
  * along with this program.  If not, see http://www.gnu.org/licenses/
  */
 
-import { Class, $ } from '../shims/prototypeShim';
+import { Class, $, PFireEvent } from '../shims/prototypeShim';
 import HPOTerm from '../hpoTerm';
 import Legend from './legend';
 
 /**
  * Class responsible for keeping track of HPO terms and their properties, and for
- * caching disorders data as loaded from the OMIM database.
+ * caching disorders data as loaded from the disorder database.
  * This information is graphically displayed in a 'Legend' box
  *
  * @class HPOLegend
@@ -59,17 +59,6 @@ var HPOLegend = Class.create( Legend, {
   },
 
   /**
-     * Retrieve the color associated with the given object
-     *
-     * @method getObjectColor
-     * @param {String|Number} id ID of the object
-     * @return {String} CSS color value for that disorder
-     */
-  getObjectColor: function(id) {
-    return '#CCCCCC';
-  },
-
-  /**
      * Registers an occurrence of a phenotype.
      *
      * @method addCase
@@ -83,6 +72,53 @@ var HPOLegend = Class.create( Legend, {
     }
 
     $super(id, name, nodeID);
+  },
+
+  /**
+     * Generate the element that will display information about the given phenotype in the legend
+     *
+     * @method _generateElement
+     * @param {Number} hpoID The id for the phenotype
+     * @param {String} name Human-readable name
+     * @return {HTMLLIElement} List element to be insert in the legend
+   */
+  _generateElement: function($super, hpoID, name) {
+    if (!this._objectColors.hasOwnProperty(hpoID)) {
+        var color = this._generateColor(hpoID);
+        this._objectColors[hpoID] = color;
+        PFireEvent('hpo:color', {'id' : hpoID, color: color});
+    }
+    return $super(hpoID, name);
+  },
+
+  /**
+     * Generates a CSS color.
+     * Has preference for some predefined colors that can be distinguished in gray-scale
+     * and are distint from disorder colors.
+     *
+     * @method generateColor
+     * @return {String} CSS color
+     */
+  _generateColor: function(geneID) {
+    if(this._objectColors.hasOwnProperty(geneID)) {
+      return this._objectColors[geneID];
+    }
+
+    var usedColors = Object.values(this._objectColors),
+      // green palette
+      prefColors = ['#81a270', '#c4e8c4', '#56a270', '#b3b16f', '#4a775a', '#65caa3'];
+    usedColors.forEach( function(color) {
+      removeFirstOccurrenceByValue(prefColors, color);
+    });
+    if(prefColors.length > 0) {
+      return prefColors[0];
+    } else {
+      var randomColor = Raphael.getColor();
+      while(randomColor == '#ffffff' || usedColors.indexOf(randomColor) != -1) {
+        randomColor = '#'+((1<<24)*Math.random()|0).toString(16);
+      }
+      return randomColor;
+    }
   },
 
   /**

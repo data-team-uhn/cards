@@ -24,7 +24,7 @@ import Legend from './legend';
 
 /**
  * Class responsible for keeping track of disorders and their properties, and for
- * caching disorders data as loaded from the OMIM database.
+ * caching disorders data as loaded from the disorder database.
  * This information is graphically displayed in a 'Legend' box.
  *
  * @class DisorderLegend
@@ -73,7 +73,7 @@ var DisorgerLegend = Class.create( Legend, {
      * designates a color for it.
      *
      * @method addCase
-     * @param {Number|String} disorderID ID for this disorder taken from the OMIM database
+     * @param {Number|String} disorderID ID for this disorder taken from the disorder database
      * @param {String} disorderName The name of the disorder
      * @param {Number} nodeID ID of the Person who has this disorder
      */
@@ -101,7 +101,7 @@ var DisorgerLegend = Class.create( Legend, {
      * Generate the element that will display information about the given disorder in the legend
      *
      * @method _generateElement
-     * @param {Number} disorderID The id for the disorder, taken from the OMIM database
+     * @param {Number} disorderID The id for the disorder, taken from the disorder database
      * @param {String} name The human-readable disorder name
      * @return {HTMLLIElement} List element to be insert in the legend
      */

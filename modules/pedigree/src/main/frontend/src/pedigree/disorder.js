@@ -20,9 +20,9 @@ import { Class, Ajax } from './shims/prototypeShim';
 import { isInt } from './model/helpers';
 /*
  * Disorder is a class for storing genetic disorder info and loading it from the
- * the OMIM database. These disorders can be attributed to an individual in the Pedigree.
+ * the disorder database. These disorders can be attributed to an individual in the Pedigree.
  *
- * @param disorderID the id number for the disorder, taken from the OMIM database
+ * @param disorderID the id number for the disorder, taken from the disorder database
  * @param name a string representing the name of the disorder e.g. "Down Syndrome"
  */
 
@@ -57,8 +57,8 @@ var Disorder = Class.create( {
   },
 
   load: function(callWhenReady) {
-    var baseOMIMServiceURL = Disorder.getOMIMServiceURL();
-    var queryURL           = baseOMIMServiceURL + this._disorderID + '.json';
+    var baseDisorderServiceURL = Disorder.getDisorderServiceURL();
+    var queryURL           = baseDisorderServiceURL + this._disorderID + '.json';
     //console.log("queryURL: " + queryURL);
     new Ajax.Request(queryURL, {
       method: 'GET',
@@ -104,7 +104,7 @@ Disorder.isValidID = function(id) {
   return pattern.test(id);
 };
 
-Disorder.getOMIMServiceURL = function() {
+Disorder.getDisorderServiceURL = function() {
   return window.location.origin + "/Vocabularies/ORDO/";
 };
 
