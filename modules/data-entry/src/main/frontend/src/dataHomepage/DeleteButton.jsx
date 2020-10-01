@@ -37,6 +37,7 @@ function DeleteButton(props) {
   const [ dialogMessage, setDialogMessage ] = useState(null);
   const [ dialogAction, setDialogAction ] = useState("");
   const [ deleteRecursive, setDeleteRecursive ] = useState(false);
+  const [ entryNotFound, setEntryNotFound ] = useState(false);
 
   const defaultDialogAction = `Are you sure you want to delete ${entryName}?`;
   const defaultErrorMessage = entryName + " could not be removed.";
@@ -57,20 +58,41 @@ function DeleteButton(props) {
   }
 
   let closeError = () => {
-    if (errorOpen) {setErrorOpen(false);}
+    if (errorOpen) {
+      setErrorOpen(false);
+    }
+    if (entryNotFound) {
+      // Can't delete. Assume already deleted and exit if required
+      if (onComplete) {onComplete();}
+      if (shouldGoBack) {goBack();}
+    }
   }
 
-  let handleError = (status, json) => {
+  let handleError = (status, response) => {
     if (status === 401) {
       setErrorMessage(`${defaultErrorMessage} You are not permitted to perform that action.`);
       openError();
-    } else if (status === 409) {
+    } else if (status === 404) {
+      setErrorMessage(`${entryName} could not be found. This ${entryType ? entryType : "item"} may have already been deleted.`);
+      setEntryNotFound(true);
+      openError();
+    } else {
+      try {
+        response.json().then((json) => handleJsonError(response.status, json));
+      } catch (error) {
+        setErrorMessage(defaultErrorMessage);
+        openError();
+      }
+    }
+  }
+
+  let handleJsonError = (status, json) => {
+    if (status === 409) {
       if (deleteRecursive) {
-        //Already recursive delete, error out
+        // Already recursive delete, error out
         setErrorMessage(`${defaultErrorMessage} ${json["status.message"]}`);
         openError();
       } else {
-        // Todo: improve dialog layout
         setDialogMessage(`${json["status.message"].replace("This item", entryName)}`);
         setDialogAction(`Would you like to delete ${entryName} and all items that reference it?`);
         setDeleteRecursive(true);
@@ -98,11 +120,11 @@ function DeleteButton(props) {
       }
     }).then((response) => {
       if (response.ok)  {
+        closeDialog();
         if (onComplete) {onComplete();}
         if (shouldGoBack) {goBack();}
-        closeDialog();
       } else {
-        response.json().then((json) => handleError(response.status, json));
+        handleError(response.status, response);
       }
     });
   }

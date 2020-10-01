@@ -122,7 +122,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
             final String path = request.getResource().getPath();
             final Boolean recursive = Boolean.parseBoolean(request.getParameter("recursive"));
 
-            LOGGER.error(path);
             Node node = request.getResource().adaptTo(Node.class);
             if (recursive) {
                 handleRecursiveDeleteChildren(node);
