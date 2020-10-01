@@ -41,10 +41,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import javax.jcr.Workspace;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
@@ -81,7 +79,6 @@ import org.slf4j.LoggerFactory;
 )
 @SlingServletResourceTypes(resourceTypes = { "lfs/FormsHomepage" }, methods = { "POST" })
 @SlingServletName(servletName = "Data Import Servlet")
-@SuppressWarnings({"ClassFanOutComplexity"})
 public class DataImportServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -5821127949309764050L;
@@ -152,6 +149,12 @@ public class DataImportServlet extends SlingAllMethodsServlet
     /** The {@code /Forms} resource. */
     private final ThreadLocal<Resource> formsHomepage = new ThreadLocal<>();
 
+    /** The list of subjectTypes. */
+    private final ThreadLocal<String[]> subjectTypes = new ThreadLocal<>();
+
+    /** A query manager to handle queries. */
+    private final ThreadLocal<QueryManager> queryManager = new ThreadLocal<>();
+
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
         throws ServletException, IOException
@@ -161,6 +164,15 @@ public class DataImportServlet extends SlingAllMethodsServlet
             this.resolver.set(resourceResolver);
             this.formsHomepage.set(resourceResolver.getResource("/Forms"));
             this.subjectsHomepage.set(resourceResolver.getResource("/Subjects"));
+            this.queryManager.set(resourceResolver.adaptTo(Session.class).getWorkspace().getQueryManager());
+
+            String[] subjectTypesParam = request.getParameterValues(":subjectType");
+            // If :subjectType isn't set, then /SubjectTypes/Patient should be assumed to be the default value.
+            if (subjectTypesParam == null || subjectTypesParam.length == 0) {
+                subjectTypesParam = new String[]{"/SubjectTypes/Patient"};
+            }
+            this.subjectTypes.set(subjectTypesParam);
+
             parseData(request, StringUtils.equals("true", request.getParameter(":patch")));
         } catch (RepositoryException e) {
             LOGGER.error("Failed to import data: {}", e.getMessage(), e);
@@ -634,12 +646,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
     // When the whole list of subject types is processed, return current subject as the subject to use for the row.
     {
         Node current = null;
-        String[] subjectTypes = request.getParameterValues(":subjectType");
-        // If no value is set for this parameter, then /SubjectTypes/Patient should be assumed to be the default value.
-        if (subjectTypes == null || subjectTypes.length == 0) {
-            subjectTypes = new String[]{"/SubjectTypes/Patient"};
-        }
-        for (String type: subjectTypes) {
+        for (String type: this.subjectTypes.get()) {
             current = getOrCreateSubject(row, type, current);
             if (current == null) {
                 return null;
@@ -704,14 +711,10 @@ public class DataImportServlet extends SlingAllMethodsServlet
             // No change to query
         }
 
-        Session session = this.resolver.get().adaptTo(Session.class);
-        Workspace workspace = session.getWorkspace();
         try {
-            QueryManager queryManager = workspace.getQueryManager();
-            Query queryObj = queryManager.createQuery(query, "JCR-SQL2");
+            Query queryObj = this.queryManager.get().createQuery(query, "JCR-SQL2");
             queryObj.setLimit(1);
-            QueryResult queryResult = queryObj.execute();
-            NodeIterator nodeResult = queryResult.getNodes();
+            NodeIterator nodeResult = queryObj.execute().getNodes();
 
             // If a result was found,  cache it and return
             if (nodeResult.hasNext()) {
