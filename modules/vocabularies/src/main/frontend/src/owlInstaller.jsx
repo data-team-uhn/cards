@@ -49,7 +49,14 @@ const useStyles = makeStyles(theme => ({
       background: theme.palette.success.dark
     }
   },
-  uninstall: {
+  installed: {
+    background: theme.palette.success.dark,
+    color: theme.palette.success.contrastText,
+    "&:hover": {
+      background: theme.palette.success.dark
+    }
+  },
+  failed: {
     background: theme.palette.error.main,
     color: theme.palette.error.contrastText,
     "&:hover": {
@@ -80,6 +87,7 @@ export default function OwlInstaller(props) {
   const classes = useStyles();
 
   let [ phase, setPhase ] = useState("Install");
+  let [ owlSelected, setOwlSelected ] = useState("Select OWL");
   let [ owlIdentifier, setOwlIdentifier ] = useState("");
   let [ owlName, setOwlName ] = useState("");
   let [ owlVersion, setOwlVersion ] = useState("");
@@ -90,7 +98,8 @@ export default function OwlInstaller(props) {
       method: form.method,
       body: new FormData(form)
     })
-    .then((res) => {setPhase("Installed"); props.updateLocalList("add", {version: owlVersion, released: new Date().toISOString(), ontology: {acronym: owlIdentifier, name: owlName}})});
+    .then((res) => { if (!res.ok) { throw new Error("Server Ontology Error") } else { setPhase("Installed"); props.updateLocalList("add", {version: owlVersion, released: new Date().toISOString(), ontology: {acronym: owlIdentifier, name: owlName}}) } })
+    .catch((err) => { setPhase("Failed") });
     setPhase("Installing");
     event.preventDefault();
   }
@@ -99,9 +108,9 @@ export default function OwlInstaller(props) {
     <React.Fragment>
       <form action="/Vocabularies?source=fileupload&overwrite=true" method="POST" enctype="multipart/form-data" onSubmit={handleSubmit}>
         <label htmlFor="owl-file">
-          <input style={{ display: 'none' }} id="owl-file" name="filename" type="file"/>
-          <Tooltip title="Select a vocabulary to install">
-            {((phase == "Installing") ? (<Button disabled variant="contained" color="primary" component="span">Select OWL</Button>) : (<Button variant="contained" onClick={() => {setPhase("Install")}} color="primary" component="span">Select OWL</Button>))}
+          <input style={{ display: 'none' }} id="owl-file" name="filename" onChange={() => {setOwlSelected("OWL Selected")}} type={(phase == "Install") ? "file" : "button"}/>
+          <Tooltip title={(phase == "Install") ? "Select a vocabulary to install" : ""}>
+            <Button disabled={(phase == "Installing")} variant="contained" onClick={() => {setPhase("Install")}} color="primary" component="span">{owlSelected}</Button>
           </Tooltip>
         </label>
 
@@ -115,10 +124,13 @@ export default function OwlInstaller(props) {
         {((phase == "Installing") ? (<TextField disabled variant="outlined" onChange={(evt) => {setOwlVersion(evt.target.value)}} label="Version"/>) : (<TextField variant="outlined" onChange={(evt) => {setOwlVersion(evt.target.value); setPhase("Install")}} label="Version"/>))}
 
         <label htmlFor="owl-install">
-          <input style={{ display: 'none' }} id="owl-install" name="owl-install" type="submit"/>
-          <Tooltip title="Install this vocabulary">
+          <input style={{ display: 'none' }} id="owl-install" name="owl-install" type={(phase == "Install") ? "submit" : "button"}/>
+          <Tooltip title={(phase == "Install") ? "Install this vocabulary" : ""}>
             <span className={classes.wrapper}>
-                {((phase == "Installing") ? (<Button disabled variant="contained" color="primary" component="span" className={classes.owlInstaller}>{phase}</Button>) : (<Button variant="contained" color="primary" component="span" className={classes.owlInstaller + " " + ((phase == "Install") ? classes.install : classes.uninstall)}>{phase}</Button>))}
+                {(phase == "Install") && (<Button variant="contained" color="primary" component="span" className={classes.owlInstaller + " " + classes.install}>{phase}</Button>)}
+                {(phase == "Installed") && (<Button variant="contained" color="primary" component="span" className={classes.owlInstaller + " " + classes.installed}>{phase}</Button>)}
+                {(phase == "Failed") && (<Button variant="contained" color="primary" component="span" className={classes.owlInstaller + " " + classes.failed}>{phase}</Button>)}
+                {(phase == "Installing") && (<Button disabled variant="contained" color="primary" component="span" className={classes.owlInstaller}>{phase}</Button>)}
                 {(phase == "Installing") && (<CircularProgress size={24} className={classes.buttonProgress + " " + classes.installingColor} />)}
             </span>
           </Tooltip>
