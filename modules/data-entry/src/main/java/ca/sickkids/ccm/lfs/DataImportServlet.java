@@ -658,7 +658,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
     private Node getOrCreateSubject(CSVRecord row, String type, Node parent)
     {
         // Find the subject corresponding to this
-        Node typeNode = getSubjectType(type);
+        Node typeNode = this.resolver.get().getResource(type);
         String subjectId = findSubjectId(row, typeNode);
         if (StringUtils.isBlank(subjectId)) {
             return null;
@@ -784,18 +784,5 @@ public class DataImportServlet extends SlingAllMethodsServlet
             }
         }
         return result;
-    }
-
-    private Node getSubjectType(String type)
-    {
-        String finalType = type.split("/SubjectTypes/")[1];
-        String query =
-            String.format("select n from [lfs:SubjectType] as n where n.label = '%s'",
-               finalType.replaceAll("'", "''"));
-        Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
-        if (results.hasNext()) {
-            return results.next().adaptTo(Node.class);
-        }
-        return null;
     }
 }
