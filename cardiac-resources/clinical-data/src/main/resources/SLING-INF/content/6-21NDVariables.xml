@@ -2742,7 +2742,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -2867,7 +2867,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>false</value>
+						<value>0</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -2941,7 +2941,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3015,7 +3015,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3089,7 +3089,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3163,7 +3163,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3237,7 +3237,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3311,7 +3311,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3385,7 +3385,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3459,7 +3459,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3533,7 +3533,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3607,7 +3607,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3681,7 +3681,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3755,7 +3755,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3829,7 +3829,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3903,7 +3903,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3977,7 +3977,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4051,7 +4051,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4125,7 +4125,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4199,7 +4199,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4273,7 +4273,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4347,7 +4347,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4421,7 +4421,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4495,7 +4495,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4569,7 +4569,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4643,7 +4643,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4717,7 +4717,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4791,7 +4791,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4865,7 +4865,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4939,7 +4939,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -5027,7 +5027,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -5152,7 +5152,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>false</value>
+						<value>0</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -5263,7 +5263,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -5374,7 +5374,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -5485,7 +5485,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -5549,7 +5549,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -5623,7 +5623,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -5687,7 +5687,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -5761,7 +5761,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -5825,7 +5825,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -5899,7 +5899,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -5963,7 +5963,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6037,7 +6037,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6101,7 +6101,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6175,7 +6175,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6239,7 +6239,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6313,7 +6313,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6377,7 +6377,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6451,7 +6451,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6515,7 +6515,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6589,7 +6589,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6653,7 +6653,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6727,7 +6727,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6791,7 +6791,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6865,7 +6865,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -6929,7 +6929,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -7003,7 +7003,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -7067,7 +7067,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -7141,7 +7141,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -7205,7 +7205,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -7279,7 +7279,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -7343,7 +7343,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -7417,7 +7417,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -7481,7 +7481,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -7555,7 +7555,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -7619,7 +7619,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -7693,7 +7693,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -7851,7 +7851,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>false</value>
+						<value>0</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -7962,7 +7962,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -8073,7 +8073,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -8170,7 +8170,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -8244,7 +8244,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -8318,7 +8318,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -8392,7 +8392,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -8466,7 +8466,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -8540,7 +8540,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -8614,7 +8614,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -8688,7 +8688,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -8762,7 +8762,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -8836,7 +8836,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -8910,7 +8910,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -8984,7 +8984,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -9058,7 +9058,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -9132,7 +9132,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -9206,7 +9206,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -9280,7 +9280,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -9354,7 +9354,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -9428,7 +9428,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -9502,7 +9502,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -9576,7 +9576,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -9650,7 +9650,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -9724,7 +9724,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -9798,7 +9798,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -9872,7 +9872,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -9946,7 +9946,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10020,7 +10020,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10094,7 +10094,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10233,7 +10233,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>false</value>
+						<value>0</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10297,7 +10297,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10361,7 +10361,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10435,7 +10435,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10509,7 +10509,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10583,7 +10583,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10657,7 +10657,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10731,7 +10731,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10805,7 +10805,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10879,7 +10879,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10953,7 +10953,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -11027,7 +11027,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -11101,7 +11101,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -11175,7 +11175,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -11249,7 +11249,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -11323,7 +11323,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -11397,7 +11397,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -11471,7 +11471,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -11545,7 +11545,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -11772,7 +11772,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>false</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11813,7 +11813,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>false</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11854,7 +11854,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>false</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11895,7 +11895,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>false</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11989,7 +11989,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12063,7 +12063,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12137,7 +12137,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12211,7 +12211,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12285,7 +12285,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12359,7 +12359,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12433,7 +12433,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12507,7 +12507,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12581,7 +12581,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12655,7 +12655,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12729,7 +12729,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12803,7 +12803,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12877,7 +12877,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12951,7 +12951,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13039,7 +13039,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13113,7 +13113,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13187,7 +13187,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13261,7 +13261,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13335,7 +13335,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13409,7 +13409,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13483,7 +13483,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13557,7 +13557,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13631,7 +13631,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13705,7 +13705,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13779,7 +13779,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13853,7 +13853,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13927,7 +13927,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14001,7 +14001,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14075,7 +14075,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14149,7 +14149,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14223,7 +14223,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14297,7 +14297,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14371,7 +14371,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14445,7 +14445,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14519,7 +14519,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14593,7 +14593,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14667,7 +14667,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14741,7 +14741,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14815,7 +14815,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14889,7 +14889,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14963,7 +14963,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15037,7 +15037,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15111,7 +15111,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15185,7 +15185,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15273,7 +15273,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15347,7 +15347,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15421,7 +15421,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15495,7 +15495,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15569,7 +15569,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15643,7 +15643,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15717,7 +15717,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15791,7 +15791,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15865,7 +15865,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15939,7 +15939,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16013,7 +16013,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16087,7 +16087,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16161,7 +16161,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16235,7 +16235,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16309,7 +16309,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16383,7 +16383,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16457,7 +16457,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16531,7 +16531,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16605,7 +16605,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16679,7 +16679,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16753,7 +16753,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16827,7 +16827,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16901,7 +16901,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16975,7 +16975,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17049,7 +17049,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17123,7 +17123,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17197,7 +17197,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17271,7 +17271,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17345,7 +17345,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17419,7 +17419,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17493,7 +17493,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17567,7 +17567,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17655,7 +17655,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17729,7 +17729,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17803,7 +17803,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17877,7 +17877,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17951,7 +17951,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18025,7 +18025,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18099,7 +18099,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18173,7 +18173,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18247,7 +18247,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18321,7 +18321,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18395,7 +18395,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18469,7 +18469,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18543,7 +18543,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18617,7 +18617,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18691,7 +18691,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18765,7 +18765,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18839,7 +18839,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18913,7 +18913,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18987,7 +18987,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19061,7 +19061,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19135,7 +19135,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19209,7 +19209,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19283,7 +19283,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19357,7 +19357,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19431,7 +19431,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19505,7 +19505,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19579,7 +19579,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19653,7 +19653,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19727,7 +19727,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19801,7 +19801,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19903,7 +19903,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19977,7 +19977,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20124,7 +20124,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>false</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -20165,7 +20165,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>false</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -20238,7 +20238,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>true</value>
+							<value>1</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -20279,7 +20279,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>true</value>
+							<value>1</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -20400,7 +20400,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20474,7 +20474,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20548,7 +20548,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20622,7 +20622,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20696,7 +20696,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20830,7 +20830,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20899,7 +20899,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20968,7 +20968,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21115,7 +21115,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>false</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -21156,7 +21156,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>false</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -21197,7 +21197,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>false</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -21270,7 +21270,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>true</value>
+							<value>1</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -21311,7 +21311,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>true</value>
+							<value>1</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -21352,7 +21352,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>true</value>
+							<value>1</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -21441,7 +21441,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21515,7 +21515,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21603,7 +21603,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21677,7 +21677,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21751,7 +21751,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21825,7 +21825,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21913,7 +21913,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21987,7 +21987,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22061,7 +22061,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22135,7 +22135,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22288,7 +22288,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>false</value>
+						<value>0</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22352,7 +22352,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22426,7 +22426,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22500,7 +22500,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22574,7 +22574,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22648,7 +22648,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22722,7 +22722,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22796,7 +22796,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22870,7 +22870,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22944,7 +22944,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23018,7 +23018,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23092,7 +23092,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23231,7 +23231,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>false</value>
+						<value>0</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23295,7 +23295,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23396,7 +23396,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23470,7 +23470,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23511,7 +23511,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23585,7 +23585,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23626,7 +23626,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23700,7 +23700,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23741,7 +23741,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23815,7 +23815,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23856,7 +23856,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23930,7 +23930,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23971,7 +23971,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24045,7 +24045,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24086,7 +24086,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24160,7 +24160,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24201,7 +24201,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24275,7 +24275,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24316,7 +24316,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24390,7 +24390,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24431,7 +24431,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24505,7 +24505,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24546,7 +24546,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24620,7 +24620,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24661,7 +24661,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24735,7 +24735,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24776,7 +24776,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24850,7 +24850,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24891,7 +24891,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24965,7 +24965,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25006,7 +25006,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25080,7 +25080,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25121,7 +25121,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25195,7 +25195,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25236,7 +25236,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25310,7 +25310,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25351,7 +25351,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25425,7 +25425,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25466,7 +25466,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25540,7 +25540,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25581,7 +25581,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25655,7 +25655,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25696,7 +25696,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25770,7 +25770,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25811,7 +25811,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25885,7 +25885,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25926,7 +25926,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26000,7 +26000,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26041,7 +26041,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26115,7 +26115,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26156,7 +26156,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26230,7 +26230,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26271,7 +26271,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26345,7 +26345,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26386,7 +26386,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26460,7 +26460,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26501,7 +26501,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26575,7 +26575,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26616,7 +26616,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26690,7 +26690,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26731,7 +26731,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26805,7 +26805,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26879,7 +26879,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26953,7 +26953,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27027,7 +27027,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27101,7 +27101,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27175,7 +27175,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27249,7 +27249,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27323,7 +27323,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27397,7 +27397,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27471,7 +27471,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27545,7 +27545,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27619,7 +27619,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27693,7 +27693,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27767,7 +27767,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27841,7 +27841,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27915,7 +27915,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27989,7 +27989,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28063,7 +28063,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28137,7 +28137,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28211,7 +28211,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28285,7 +28285,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28359,7 +28359,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28433,7 +28433,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28507,7 +28507,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28581,7 +28581,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28655,7 +28655,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28729,7 +28729,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28803,7 +28803,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28877,7 +28877,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29030,7 +29030,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>false</value>
+						<value>0</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29094,7 +29094,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29168,7 +29168,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29242,7 +29242,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29316,7 +29316,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29390,7 +29390,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29464,7 +29464,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29538,7 +29538,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29612,7 +29612,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29686,7 +29686,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29760,7 +29760,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29834,7 +29834,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29908,7 +29908,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29982,7 +29982,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -30056,7 +30056,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -30130,7 +30130,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -30204,7 +30204,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -30278,7 +30278,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -30352,7 +30352,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -30426,7 +30426,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>true</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>

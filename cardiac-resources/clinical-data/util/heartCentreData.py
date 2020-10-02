@@ -78,9 +78,9 @@ def create_conditional(operand_a, operand_b, title):
     # NOTE: IN THE CASE OF A REFRENCE TO A QUESTION WHOSE POSSIBLE VALUES ARE YES/NO/OTHER
     # YOU WILL HAVE TO MANUALLY CHANGE THE CONDITIONALS SINCE THEY WILL BE REPLACED WITH T/F
     if operand_b.lower() == 'yes':
-        operand_b_updated = "true"
+        operand_b_updated = "1"
     elif operand_b.lower() == 'no':
-        operand_b_updated = "false"
+        operand_b_updated = "0"
     else:
         operand_b_updated = operand_b
     return {title: {
