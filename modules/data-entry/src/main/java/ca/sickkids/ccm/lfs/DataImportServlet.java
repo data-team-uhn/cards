@@ -114,7 +114,8 @@ public class DataImportServlet extends SlingAllMethodsServlet
         }
     };
 
-    private final ThreadLocal<Map<String, Node>> subjectTypeCache = new ThreadLocal<Map<String, Node>>()
+    /** Cached Subject nodes (for multiple forms for the same subject, for instance). */
+    private final ThreadLocal<Map<String, Node>> subjectCache = new ThreadLocal<Map<String, Node>>()
     {
         @Override
         protected Map<String, Node> initialValue()
@@ -693,7 +694,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
     private Node findSubject(String subjectKey, String subjectId, Node typeNode, Node parent)
     {
         // Load a cached version if we already have one
-        Map<String, Node> cache = this.subjectTypeCache.get();
+        Map<String, Node> cache = this.subjectCache.get();
         if (cache.containsKey(subjectKey)) {
             return cache.get(subjectKey);
         }
@@ -748,7 +749,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         try {
             Node subject = this.resolver.get().create(this.subjectsHomepage.get(), UUID.randomUUID().toString(),
                 subjectProperties).adaptTo(Node.class);
-            this.subjectTypeCache.get().put(subjectKey, subject);
+            this.subjectCache.get().put(subjectKey, subject);
             return subject;
         } catch (PersistenceException e) {
             return null;
