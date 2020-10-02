@@ -1,5 +1,24 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
 <node>
-	<name>./cardiac-resources/clinical-data/src/main/resources/SLING-INF/content/QIVariables</name>
+	<name>QIVariables</name>
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
@@ -380,7 +399,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Did an ambulatory cardiology clinic provider (MD/DO and/or APP) document the patient as  high-risk or at-risk for ND challenges within the last 18 months in the medical record</value>
+			<value>Did an ambulatory cardiology clinic provider (MD/DO and/or APP) document the patient as  high-risk or at-risk for ND challenges within the last 18 months in the medical record</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -409,7 +428,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Has a referral or order been placed for formal ND evaluation or services in last 5 years (includes at least one of the following clinics or specialties: multidisciplinary ND clinic, developmental-behavioral pediatrics, neuropsychology, or psychology; PT/OT/speech therapy alone is NOT sufficient for "yes")</value>
+			<value>Has a referral or order been placed for formal ND evaluation or services in last 5 years (includes at least one of the following clinics or specialties: multidisciplinary ND clinic, developmental-behavioral pediatrics, neuropsychology, or psychology; PT/OT/speech therapy alone is NOT sufficient for “yes”)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -551,7 +570,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Has the patient been seen in a formal ND clinic or by a related ND specialist in the last 5 years (includes at least one of the following clinics or specialties: multidisciplinary neurodevelopmental clinic, developmental-behavioral pediatrics, neuropsychology, or psychology; PT/OT/speech therapy alone is not sufficient for "yes")?</value>
+			<value>Has the patient been seen in a formal ND clinic or by a related ND specialist in the last 5 years (includes at least one of the following clinics or specialties: multidisciplinary neurodevelopmental clinic, developmental-behavioral pediatrics, neuropsychology, or psychology; PT/OT/speech therapy alone is not sufficient for “yes”)?</value>
 			<type>String</type>
 		</property>
 		<property>

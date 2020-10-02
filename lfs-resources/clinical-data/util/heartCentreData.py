@@ -160,14 +160,11 @@ DATA_TO_LFS_TYPE = {
     'yes,no': "boolean",
     'age (months:days)': 'text' # TODO: Switch this to an interval question when it is supported
 }
-def convert_to_LFS_data_type(argument):
-    return DATA_TO_LFS_TYPE.get(argument.strip().lower(), 'text')
-
-
-def insert_description(question, row):
-    question.update({
-      'description': row['Description'].strip()
-      })
+def convert_to_LFS_data_type(userFormat, categorical_list):
+    result = DATA_TO_LFS_TYPE.get(userFormat.strip().lower(), 'text')
+    if categorical_list:
+        result = DATA_TO_LFS_TYPE.get(categorical_list.strip().lower(), result)
+    return result
 
 
 # Creates a JSON file that contains the tsv file as an lfs:Questionnaire
@@ -184,20 +181,17 @@ def tsv_to_json(title):
                 questionnaire[question] = {
                     'jcr:primaryType': 'lfs:Question',
                     'text': row['nameFull'].strip() or question,
-                    'dataType': convert_to_LFS_data_type(row['UserFormatType'])
+                    'dataType': convert_to_LFS_data_type(row['UserFormatType'], row['Categorical list'])
                 }
                 if row['RangeMinValid'] != '' and row['RangeMinValid'] != None:
                     insert_range(questionnaire[question], row)
                 if row['MissingData']:
                     insert_min_answers(questionnaire[question], row)
-                if row['Description'] != '':
-                    insert_description(questionnaire[question], row)
+                if row['Description']:
+                    questionnaire[question].update({ 'description': row['Description'].strip() })
                 if row['UserFormatType'] == 'Text (categorical list)' or row['UserFormatType'] == 'cat list':
                     questionnaire[question].update({'displayMode': 'list'})
-                if row['Categorical list']:
-                    if len(options_list(row['Categorical list'])) == 1:
-                        questionnaire[question].update({'dataType': convert_to_LFS_data_type(row['Categorical list'])})
-                    else:
+                if row['Categorical list'] and not DATA_TO_LFS_TYPE.get(row['Categorical list'].strip().lower()):
                         insert_options(questionnaire[question], row)
                 if row['ParentLogic'] != '':
                     previous_data = questionnaire[question]
