@@ -121,6 +121,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         }
 
         // Exact condition on parent node; \ and ' must be escaped. The value must be wrapped in 's
+        final String datetimeoffset = request.getParameter("datetimeoffset");
         final String fieldname = request.getParameter("fieldname");
         final String fieldvalue = request.getParameter("fieldvalue");
         String fieldcomparator = request.getParameter("fieldcomparator");
@@ -152,6 +153,12 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         query.append(parseFilter(filternames, filtervalues, filtertypes, filtercomparators));
         query.append(parseExistence(filterempty, filternotempty));
 
+        //Conditionally, place a
+        // and n.'jcr:created'>cast('2020-10-01T00:00:00.000-04:00' as date)
+        //clause here
+        if (StringUtils.isNotBlank(datetimeoffset)) {
+            query.append(String.format(" and n.'jcr:created'>cast('%s' as date)", this.sanitizeField(datetimeoffset)));
+        }
         query.append(" order by n.'jcr:created'");
         String finalquery = query.toString();
         LOGGER.warn("Computed final query: {}", finalquery);
@@ -480,7 +487,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 .add("@name", n.getName())
                 .add("jcr:primaryType", "lfs:Form")
                 .add("jcr:createdBy", "admin")
-                .add("jcr:created", "2020-09-30T13:56:48.090-04:00")
+                .add("jcr:created", n.getProperty("jcr:created").getString())
                 .add("subject", Json.createObjectBuilder()
                     .add("jcr:primaryType", "lfs:Subject")
                     .add("jcr:createdBy", "admin")

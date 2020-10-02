@@ -18,7 +18,7 @@
 //
 
 import React, { useState, useEffect } from "react";
-import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
+import { MenuItem, Paper, Select, Table, TableHead, TableBody, TableRow, TableCell, TablePagination, TextField } from "@material-ui/core";
 import { Card, CardHeader, CardContent, CardActions, Chip, IconButton, Typography, Button, LinearProgress, withStyles } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import moment from "moment";
@@ -46,6 +46,9 @@ function LiveTable(props) {
 
   const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, ...rest } = props;
   const [tableData, setTableData] = useState();
+  const [queryOffset, setQueryOffset] = useState(0);
+  const [dateOffset, setDateOffset] = useState("1970-01-01");
+  const [timeOffset, setTimeOffset] = useState("00:00");
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
     {
@@ -106,6 +109,7 @@ function LiveTable(props) {
     url.searchParams.set("offset", newPage.offset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
+    url.searchParams.set("datetimeoffset", dateOffset + "T" + timeOffset + ":00.000-04:00");
 
     // filters should be nullable, but if left undefined we use the cached filters
     let filters = (newPage.filters === null ? null : (newPage.filters || cachedFilters));
@@ -328,6 +332,10 @@ function LiveTable(props) {
   // The pagination is outside the table itself to support internal scrolling of the table.
   // The element used by TablePagination by default is TableCell, but since it is not in a TableRow, we have to override this to be a <div>.
   */
+  const offsetElements = [];
+  for (let i = 0; i < 10000; i+= 50) {
+      offsetElements.push(<MenuItem value={i}>{"Query Offset: " + i}</MenuItem>);
+  }
   const paginationControls = tableData && (
     <TablePagination
       component="div"
@@ -345,7 +353,17 @@ function LiveTable(props) {
     <Paper elevation={0}>
       {filters && <Filters onChangeFilters={handleChangeFilters} disabled={!Boolean(tableData)} {...rest} />}
       <div>
-        {paginationControls}
+        <React.Fragment>
+          {paginationControls}
+          <Select value={queryOffset} onChange={(event) => {fetchData({"offset": event.target.value}); setQueryOffset(event.target.value)}}>
+            {offsetElements}
+          </Select>
+          <TextField type="date" value={dateOffset} onChange={(event) => {setDateOffset(event.target.value)}}/>
+          <TextField type="time" value={timeOffset} onChange={(event) => {setTimeOffset(event.target.value)}}/>
+        </React.Fragment>
+      </div>
+      <div>
+        <Button variant="contained" color="primary" onClick={(evt) => {fetchData({})}}>Reload Query</Button>
       </div>
       {/*
       // stickyHeader doesn't really work right now, since the Paper just extends all the way down to fit the table.
