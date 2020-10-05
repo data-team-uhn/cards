@@ -126,7 +126,7 @@ public class FileUploadIndexer implements VocabularyIndexer
                 description = null;
             } else {
                 description = new VocabularyDescriptionBuilder()
-                    .withSource("")
+                    .withSource("fileupload")
                     .withSourceFormat("OWL")
                     .withIdentifier(identifier)
                     .withName(vocabName)

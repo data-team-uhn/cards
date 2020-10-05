@@ -123,6 +123,7 @@ export default function VocabularyTable(props) {
                       key={vocab.ontology.acronym}
                       acronym={vocab.ontology.acronym}
                       name={vocab.ontology.name}
+                      source={vocab.source}
                       description={vocab.description}
                       released={vocab.released}
                       version={vocab.version}
@@ -130,7 +131,7 @@ export default function VocabularyTable(props) {
                       // If filterTable is True, then check if the acronym is of a vocabulary to be displayed
                       // If filterTable is False, then don't hide anything
                       hidden={filterTable && !acronymList.includes(vocab.ontology.acronym)}
-                      initPhase={(
+                      initPhase={(vocab.source == "fileupload") ? Phase["Latest"] : (
                         props.acronymPhaseObject.hasOwnProperty(vocab.ontology.acronym) ?
                           props.acronymPhaseObject[vocab.ontology.acronym]
                           :

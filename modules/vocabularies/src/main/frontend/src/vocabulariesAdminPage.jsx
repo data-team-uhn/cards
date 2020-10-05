@@ -169,7 +169,7 @@ export default function VocabulariesAdminPage() {
         vocabList={localVocabList}
         setVocabList={processLocalVocabList}
         acronymPhaseObject={acronymPhaseObject}
-        displayTables={displayTables}
+        displayTables={true}
         updateLocalList={updateLocalList}
         addSetter={addSetter}
         setPhase={setPhase}

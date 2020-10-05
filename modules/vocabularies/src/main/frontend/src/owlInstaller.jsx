@@ -98,7 +98,7 @@ export default function OwlInstaller(props) {
       method: form.method,
       body: new FormData(form)
     })
-    .then((res) => { if (!res.ok) { throw new Error("Server Ontology Error") } else { setPhase("Installed"); props.updateLocalList("add", {version: owlVersion, released: new Date().toISOString(), ontology: {acronym: owlIdentifier, name: owlName}}) } })
+    .then((res) => { if (!res.ok) { throw new Error("Server Ontology Error") } else { setPhase("Installed"); props.updateLocalList("add", {source: "fileupload", version: owlVersion, released: new Date().toISOString(), ontology: {acronym: owlIdentifier, name: owlName}}) } })
     .catch((err) => { setPhase("Failed") });
     setPhase("Installing");
     event.preventDefault();
