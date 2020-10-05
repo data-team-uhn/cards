@@ -664,7 +664,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
     private Node getOrCreateSubject(CSVRecord row, String type, Node parent)
     {
         // Find the subject corresponding to this
-        Node typeNode = this.resolver.get().getResource(type);
+        Node typeNode = this.resolver.get().getResource(type).adaptTo(Node.class);
         String subjectId = findSubjectId(row, typeNode);
         if (StringUtils.isBlank(subjectId)) {
             return null;
