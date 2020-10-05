@@ -64,6 +64,8 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.sickkids.ccm.lfs.spi.SearchUtils;
+
 /**
  * A servlet for importing LFS data from CSV files.
  *
@@ -294,7 +296,8 @@ public class DataImportServlet extends SlingAllMethodsServlet
             if (!cache.containsKey(columnName)) {
                 String query =
                     String.format("select n from [lfs:Question] as n where n.text = '%s' and isdescendantnode(n,'%s')",
-                        columnName.replace("'", "''"), this.questionnaire.get().getPath().replaceAll("'", "''"));
+                        SearchUtils.escapeQueryArgument(columnName),
+                        SearchUtils.escapeQueryArgument(this.questionnaire.get().getPath()));
                 Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
                 if (!results.hasNext()) {
                     cache.put(columnName, null);
@@ -696,7 +699,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         }
 
         String query = String.format("select n from [lfs:Subject] as n where n.identifier = '%s'",
-            subjectId.replace("'", "''"));
+            SearchUtils.escapeQueryArgument(subjectId));
         try {
             if (typeNode != null) {
                 query += " and n.type = '" + typeNode.getProperty("jcr:uuid").getValue() + "'";

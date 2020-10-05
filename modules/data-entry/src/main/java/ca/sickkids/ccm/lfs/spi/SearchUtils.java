@@ -60,9 +60,20 @@ public final class SearchUtils
      * @param input text to escape
      * @return an escaped version of the input
      */
-    public static String escapeLikeText(String input)
+    public static String escapeLikeText(final String input)
     {
         return input.replaceAll("([\\\\%_'])", "\\\\$1");
+    }
+
+    /**
+     * Escapes the input string to be usable in a string argument.
+     *
+     * @param input text to escape
+     * @return an escaped version of the input
+     */
+    public static String escapeQueryArgument(final String input)
+    {
+        return input.replace("'", "''");
     }
 
     /**
