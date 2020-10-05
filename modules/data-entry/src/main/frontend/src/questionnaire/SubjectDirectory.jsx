@@ -32,6 +32,7 @@ import LiveTable from "../dataHomepage/LiveTable.jsx";
 
 import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 
 function SubjectDirectory(props) {
 
@@ -55,6 +56,9 @@ function SubjectDirectory(props) {
       "format": "date:YYYY-MM-DD HH:mm",
     },
   ]
+  const actions = [
+    DeleteButton
+  ]
 
   return (
     <div>
@@ -71,6 +75,8 @@ function SubjectDirectory(props) {
             columns={columns}
             customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(id)}
             defaultLimit={10}
+            actions={actions}
+            entryType={"Subject"}
             />
         </CardContent>
       </Card>

@@ -23,6 +23,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
 import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialog.jsx";
 import DeleteQuestionnaireDialog from "../questionnaireEditor/DeleteQuestionnaireDialog.jsx";
 import { Button, Card, CardHeader, CardContent, Typography, withStyles } from "@material-ui/core";
+import DeleteButton from "./DeleteButton.jsx";
 
 function Questionnaires(props) {
   let [ openDialog, setOpenDialog ] = useState(false);
@@ -45,7 +46,7 @@ function Questionnaires(props) {
   if (entry) {
     return <Questionnaire id={entry[1]} key={location.pathname}/>;
   }
-  
+
   let columns = [
     {
       "key": "title",
@@ -76,6 +77,10 @@ function Questionnaires(props) {
       }
     }
   ]
+  const actions = [
+    DeleteButton
+  ]
+
   return (
     <React.Fragment>
       <Card>
@@ -94,7 +99,13 @@ function Questionnaires(props) {
         }}
         />
         <CardContent>
-          <LiveTable columns={columns} delete={deleteQuestionnaire} updateData={deletionCount}/>
+          <LiveTable
+            columns={columns}
+            delete={deleteQuestionnaire}
+            updateData={deletionCount}
+            actions={actions}
+            entryType={"Questionnaire"}
+            />
           { error &&
             <Typography color="error" variant="h3">
               {error}

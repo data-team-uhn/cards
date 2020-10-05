@@ -34,6 +34,7 @@ import {
   withStyles,
   Button,
 } from "@material-ui/core";
+import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 
 const QUESTION_TYPES = ["lfs:Question"];
 const SECTION_TYPES = ["lfs:Section"];
@@ -245,9 +246,15 @@ function SubjectMember (props) {
           parentDetails && <Typography variant="overline">{parentDetails}</Typography>
         }
         {
-          data && data.identifier ?
-            <Typography variant={headerStyle}>{data?.type?.label || "Subject"} {data.identifier}</Typography>
-          : <Typography variant={headerStyle}>Subject {id}</Typography>
+          <Typography variant={headerStyle} className={level === 0 ? classes.subjectDeleteButton : null}>{data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
+              <DeleteButton
+                entryPath={data ? data["@path"] : "/Subjects/" + id}
+                entryName={(data?.type?.label || "Subject") + " " + (data && data.identifier ? data.identifier : id)}
+                entryType={data?.type?.label || "Subject"}
+                warning={data ? data["@referenced"] : false}
+                shouldGoBack={level === 0}
+              />
+            </Typography>
         }
         {
           data && data['jcr:createdBy'] && data['jcr:created'] ?
@@ -264,11 +271,19 @@ function SubjectMember (props) {
                   <Card className={classes.subjectCard}>
                     <CardHeader
                       title={
-                        <Button size={buttonSize} className={classes.subjectFormHeaderButton}>
-                          {entry.questionnaire["@name"]}
-                        </Button>
+                          <Button size={buttonSize} className={classes.subjectFormHeaderButton}>
+                            {entry.questionnaire["@name"]}
+                          </Button>
                       }
                     className={classes.subjectFormHeader}
+                    action={
+                      <DeleteButton
+                        entryPath={entry["@path"]}
+                        entryName={`${data && data.identifier ? data.identifier : id}: ${entry.questionnaire["@name"]}`}
+                        entryType="Form"
+                        warning={entry ? entry["@referenced"] : false}
+                      />
+                    }
                     />
                     <CardContent>
                       <FormData formID={entry["@name"]} maxDisplayed={maxDisplayed}/>

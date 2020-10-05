@@ -28,6 +28,7 @@ import {
 } from "@material-ui/core";
 
 import LiveTable from "../dataHomepage/LiveTable.jsx";
+import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 
 /**
  * Component that displays a SubjectType.
@@ -62,6 +63,9 @@ function SubjectType (props) {
       "label": "Created on",
       "format": "date:YYYY-MM-DD HH:mm",
     },
+  ]
+  const actions = [
+    DeleteButton
   ]
 
   // Fetch the subject type as JSON from the server.
@@ -114,9 +118,15 @@ function SubjectType (props) {
       <Grid container direction="column" spacing={4} alignItems="stretch" justify="space-between" wrap="nowrap">
         <Grid item>
           {
-            data && data.identifier ?
-              <Typography variant="h2">Subject Type: {data.identifier}</Typography>
-            : <Typography variant="h2">Subject Type: {id}</Typography>
+              <Typography variant="h2">Subject Type: {data && data.identifier ? data.identifier : id}
+                <DeleteButton
+                  entryPath={data ? data["@path"] : "/SubjectTypes/" + id}
+                  entryName={"Subject Type: " + (data && data.identifier ? data.identifier : id)}
+                  entryType={"Subject Type"}
+                  warning={data ? data["@referenced"] : false}
+                  shouldGoBack={true}
+                />
+              </Typography>
           }
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
@@ -130,6 +140,8 @@ function SubjectType (props) {
             columns={columns}
             customUrl={customUrl}
             defaultLimit={10}
+            actions={actions}
+            entryType={(data && (data.identifier || id))}
             />
         </Grid>
       </Grid>

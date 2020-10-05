@@ -23,10 +23,12 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, Typography, withStyles } from "@material-ui/core";
 import NewFormDialog from "./NewFormDialog.jsx";
+import DeleteButton from "./DeleteButton.jsx";
+import PermissionsButton from "./PermissionsButton.jsx";
 
 // Component that renders the user's dashboard, with one LiveTable per questionnaire
 // visible by the user. Each LiveTable contains all forms that use the given
-// questionnaire. 
+// questionnaire.
 function UserDashboard(props) {
   const { classes } = props;
   // Store information about each questionnaire and whether or not we have
@@ -65,6 +67,10 @@ function UserDashboard(props) {
       "label": "Created on",
       "format": "date:YYYY-MM-DD HH:mm",
     },
+  ]
+  const actions = [
+    DeleteButton,
+    PermissionsButton
   ]
 
   // Obtain information about the questionnaires available to the user
@@ -125,6 +131,8 @@ function UserDashboard(props) {
                 defaultLimit={10}
                 joinChildren="lfs:Answer"
                 filters
+                entryType={"Form"}
+                actions={actions}
               />
             </CardContent>
           </Card>
@@ -159,7 +167,9 @@ function UserDashboard(props) {
                     defaultLimit={10}
                     joinChildren="lfs:Answer"
                     questionnaire={questionnaire["@path"]}
+                    entryType={questionnaire["title"]}
                     filters
+                    actions={actions}
                     />
                 </CardContent>
               </Card>

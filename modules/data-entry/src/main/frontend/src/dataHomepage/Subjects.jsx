@@ -25,6 +25,7 @@ import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItem
 import AddIcon from "@material-ui/icons/Add";
 import { getHierarchy } from "../questionnaire/Subject.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import DeleteButton from "./DeleteButton.jsx";
 
 function Subjects(props) {
 
@@ -58,6 +59,9 @@ function Subjects(props) {
       "format": (parent) => (parent ? getHierarchy(parent, React.Fragment, () => ({})) : "No parents"),
     },
   ]
+  const actions = [
+    DeleteButton
+  ]
 
   const entry = /Subjects\/(.+)/.exec(location.pathname);
   if (entry) {
@@ -90,7 +94,12 @@ function Subjects(props) {
           }
         />
         <CardContent>
-          <LiveTable columns={columns} updateData={requestFetchData}/>
+          <LiveTable
+            columns={columns}
+            updateData={requestFetchData}
+            actions={actions}
+            entryType={"Subject"}
+          />
         </CardContent>
       </Card>
       <NewSubjectDialog

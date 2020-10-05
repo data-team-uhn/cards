@@ -137,6 +137,9 @@ const questionnaireStyle = theme => ({
         left: 'auto',
         position: 'fixed',
     },
+    subjectDeleteButton: {
+        marginRight: theme.spacing(10)
+    },
     collapsedSection: {
         padding: "0 !important"
     },
@@ -205,7 +208,7 @@ const questionnaireStyle = theme => ({
         marginLeft: theme.spacing(6)
     },
     formHeader: {
-        position: "fixed",
+        position: "sticky",
         width: "100%",
         top: theme.spacing(4),
         backgroundColor: "white",
@@ -214,6 +217,9 @@ const questionnaireStyle = theme => ({
     },
     formProvider: {
         paddingTop: theme.spacing(20)
+    },
+    iconButton: {
+        float: "right"
     },
     addNewSubjectButton: {
         width: "250px"
@@ -261,6 +267,9 @@ const questionnaireStyle = theme => ({
     fileInfo: {
       padding: theme.spacing(1),
       fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    },
+    warningIcon: {
+      color: theme.palette.warning.main
     },
 });
 

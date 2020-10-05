@@ -44,7 +44,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, ...rest } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, entryType, actions, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -77,18 +77,18 @@ function LiveTable(props) {
   // When new data is added, trigger a new fetch
   useEffect(() => {
     if (updateData){
-      triggerFetch();
+      refresh();
     }
   }, [updateData]);
 
   // When the data path is changed, trigger a new fetch
   useEffect(() => {
     if (customUrl){
-      triggerFetch();
+      refresh();
     }
   }, [customUrl]);
 
-  let triggerFetch = () => {
+  let refresh = () => {
     setFetchStatus(Object.assign({}, fetchStatus, {
       "currentRequestNumber": -1,
     }));
@@ -172,6 +172,7 @@ function LiveTable(props) {
             <TableCell><a href={entry["@path"]}>{entry.title}</a></TableCell>
           )
         }
+        { actions ? makeActions(entry, actions, columns ? columns.count : 0) : null}
       </TableRow>
     );
   };
@@ -193,23 +194,23 @@ function LiveTable(props) {
     // allow livetable to link to components in the admin dashboard
     // if livetable item must link to a component within the admin dashboard, set "admin": true
     let pathPrefix = (column.admin ? "/content.html/admin" : "/content.html");
-    
+
     // Handle links
     if (column.key.startsWith('actions')) {
-      content = ( 
+      content = (
         <div>
           <Link to={pathPrefix + entry["@path"]}>
             <IconButton>
               <EditIcon />
             </IconButton>
-          </Link> 
+          </Link>
           <IconButton onClick={() => { props.delete(entry); }}>
             <DeleteIcon />
         </IconButton>
       </div>
       )
     }
-    
+
     if (column.link) {
       if (column.link === 'path') {
         content = (<a href={entry["@path"]}>{content}</a>);
@@ -229,6 +230,25 @@ function LiveTable(props) {
     // Render the cell
     return <TableCell key={index} {...column.props}>{content}</TableCell>
   };
+
+  let makeActions = (entry, actions, index) => {
+    let name;
+    if (entry["jcr:primaryType"] === "lfs:Form") {
+      name = `${getNestedValue(entry, "subject/identifier") || "Subject"}: ${getNestedValue(entry, "questionnaire/title") || entry["@name"]}`
+    } else {
+      name = columns ? getNestedValue(entry, columns[0].key) : entry["@name"];
+    }
+    let content = actions.map((Action, index) => {
+      return <Action
+        key={index}
+        entryPath={entry["@path"]}
+        entryName={name}
+        onComplete={refresh}
+        entryType={entryType}
+        warning={entry["@referenced"]} />
+    });
+    return <TableCell key={index}>{content}</TableCell>;
+  }
 
   let getNestedValue = (entry, path) => {
     if (!path) return entry;
@@ -367,6 +387,7 @@ function LiveTable(props) {
               <TableCell>Name</TableCell>
             )
           }
+          {actions ? <TableCell key={columns ? columns.count : 1} className={[classes.tableHeader, classes.tableActionsHeader].join(' ')}>Actions</TableCell> : null}
           </TableRow>
         </TableHead>
         <TableBody>

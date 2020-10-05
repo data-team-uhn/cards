@@ -21,6 +21,9 @@ const liveTableStyle = theme => ({
     tableHeader: {
         fontWeight: "300"
     },
+    tableActionsHeader: {
+        "text-align": "right"
+    },
     filterLabel: {
         margin: theme.spacing(0, 1, 0, 0)
     },

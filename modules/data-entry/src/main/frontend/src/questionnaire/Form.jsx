@@ -26,11 +26,11 @@ import {
   Grid,
   Link,
   Typography,
-  withStyles,
   Dialog,
   DialogTitle,
   DialogContent,
-  IconButton
+  IconButton,
+  withStyles
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -41,6 +41,7 @@ import { getHierarchy } from "./Subject";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 import DialogueLoginContainer from "../login/loginDialogue.js";
+import DeleteButton from "../dataHomepage/DeleteButton";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -215,13 +216,20 @@ function Form (props) {
   return (
     <form action={data["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
-        <Grid item className={classes.formHeader}>
+        <Grid item className={classes.formHeader} xs={12}>
           <Typography variant="overline">{parentDetails}</Typography>
           <Typography variant="h2">
             <Link href="#" onClick={() => {setSelectorDialogOpen(true)}}>
                 {data?.subject?.identifier}
             </Link>
             {": " + (data?.questionnaire?.title || id || "")}
+            <DeleteButton
+              entryPath={data ? data["@path"] : "/Forms/"+id}
+              entryName={(data?.subject?.identifier || "Subject") + ": " + (data?.questionnaire?.title || id || "")}
+              entryType={data?.questionnaire?.title || "Form"}
+              warning={data ? data["@referenced"] : false}
+              shouldGoBack={true}
+            />
           </Typography>
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?

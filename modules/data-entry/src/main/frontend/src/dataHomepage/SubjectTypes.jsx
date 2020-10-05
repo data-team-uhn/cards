@@ -22,6 +22,7 @@ import SubjectType from "../questionnaire/SubjectType.jsx";
 
 import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import DeleteButton from "./DeleteButton.jsx";
 
 function SubjectTypes(props) {
   const { classes } = props;
@@ -45,6 +46,9 @@ function SubjectTypes(props) {
       "format": "date:YYYY-MM-DD HH:mm",
     },
   ]
+  const actions = [
+    DeleteButton
+  ]
 
   const entry = /SubjectTypes\/(.+)/.exec(location.pathname);
   if (entry) {
@@ -61,7 +65,10 @@ function SubjectTypes(props) {
         }
       />
       <CardContent>
-        <LiveTable columns={columns} />
+        <LiveTable
+          columns={columns}
+          actions={actions}
+          entryType={"Subject Type"} />
       </CardContent>
     </Card>
   );

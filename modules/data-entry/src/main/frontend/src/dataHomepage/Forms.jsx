@@ -23,6 +23,7 @@ import Form from "../questionnaire/Form.jsx";
 import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles } from "@material-ui/core";
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
+import DeleteButton from "./DeleteButton.jsx";
 
 function Forms(props) {
   const { match, location, classes } = props;
@@ -90,6 +91,10 @@ function Forms(props) {
       "format": "date:YYYY-MM-DD HH:mm",
     },
   ]
+  const actions = [
+    DeleteButton
+  ]
+
   return (
     <Card>
       <CardHeader
@@ -114,6 +119,8 @@ function Forms(props) {
           customUrl={customUrl}
           filters
           joinChildren="lfs:Answer"
+          actions={actions}
+          entryType="Form"
           />
       </CardContent>
     </Card>
