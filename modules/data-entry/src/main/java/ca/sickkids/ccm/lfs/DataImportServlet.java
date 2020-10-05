@@ -230,8 +230,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @param patch if {@code true}, try to find and update an existing form; if {@code false}, a new form is created
      * @throws PersistenceException if saving the processed data fails due to repository errors or incorrect data
      */
-    private void parseRow(CSVRecord row, boolean patch)
-        throws PersistenceException
+    private void parseRow(CSVRecord row, boolean patch) throws PersistenceException
     {
         final Resource form = getOrCreateForm(row, patch);
         row.toMap().forEach((fieldName, fieldValue) -> {
@@ -288,7 +287,6 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @return the corresponding question node, or {@code null} if no question can be automatically identified from the
      *         given column name
      */
-    @SuppressWarnings({"MultipleStringLiterals"})
     private Node getQuestion(String columnName)
     {
         Map<String, Node> cache = this.questionCache.get();
@@ -578,8 +576,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @return the Resource to use for storing the row
      * @throws PersistenceException if creating a new Resource fails
      */
-    private Resource getOrCreateForm(final CSVRecord row, boolean patch)
-        throws PersistenceException
+    private Resource getOrCreateForm(final CSVRecord row, boolean patch) throws PersistenceException
     {
         final Node subject = getOrCreateSubject(row);
         Resource result = null;
