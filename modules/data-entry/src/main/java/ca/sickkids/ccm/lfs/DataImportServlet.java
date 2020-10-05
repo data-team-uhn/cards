@@ -214,7 +214,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         try (CSVParser data = CSVParser.parse(dataFile.getInputStream(), StandardCharsets.UTF_8, format)) {
             data.forEach(row -> {
                 try {
-                    this.parseRow(row, patch, request);
+                    this.parseRow(row, patch);
                 } catch (PersistenceException e) {
                     LOGGER.warn("Failed to import row: {}", e.getMessage());
                 }
@@ -230,10 +230,10 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @param patch if {@code true}, try to find and update an existing form; if {@code false}, a new form is created
      * @throws PersistenceException if saving the processed data fails due to repository errors or incorrect data
      */
-    private void parseRow(CSVRecord row, boolean patch, final SlingHttpServletRequest request)
+    private void parseRow(CSVRecord row, boolean patch)
         throws PersistenceException
     {
-        final Resource form = getOrCreateForm(row, patch, request);
+        final Resource form = getOrCreateForm(row, patch);
         row.toMap().forEach((fieldName, fieldValue) -> {
             try {
                 parseAnswer(fieldName, fieldValue, form);
@@ -578,10 +578,10 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @return the Resource to use for storing the row
      * @throws PersistenceException if creating a new Resource fails
      */
-    private Resource getOrCreateForm(final CSVRecord row, boolean patch, final SlingHttpServletRequest request)
+    private Resource getOrCreateForm(final CSVRecord row, boolean patch)
         throws PersistenceException
     {
-        final Node subject = getOrCreateSubject(row, request);
+        final Node subject = getOrCreateSubject(row);
         Resource result = null;
         if (patch && subject != null) {
             result = findForm(subject);
@@ -623,18 +623,12 @@ public class DataImportServlet extends SlingAllMethodsServlet
     /**
      * Returns the Node where a specific Subject is stored. If the Subject wasn't already stored in the repository, a
      * new node is created for it and returned.
-     * <p>
-     * At the moment, this assumes that either a column labeled {@code Patient ID} is present in the CSV, or the subject
-     * identifier is the first column in the CSV.
-     * </p>
      *
      * @param row the input CSV row to process, where the affected Subject identifier is to be found
-     * @param type Subject type
-     * @param parent Subject parent node
      * @return the Resource where the Subject is stored; may be an existing or a newly created resource; may be
      *         {@code null} if a Subject identifier is not present in the row
      */
-    private Node getOrCreateSubject(final CSVRecord row, final SlingHttpServletRequest request)
+    private Node getOrCreateSubject(final CSVRecord row)
     // For each subject type, identify the target subject
     // Given a parent subject (initially null) & a subject type path:
     // 1. get the Node for the subject type (cached for future rows)
