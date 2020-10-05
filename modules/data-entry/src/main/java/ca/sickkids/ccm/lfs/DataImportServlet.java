@@ -646,12 +646,17 @@ public class DataImportServlet extends SlingAllMethodsServlet
     // If there are more entries in the subject types list, recurse with the new parent and new subject type.
     // When the whole list of subject types is processed, return current subject as the subject to use for the row.
     {
+        Node previous = null;
         Node current = null;
         for (String type: this.subjectTypes.get()) {
             current = getOrCreateSubject(row, type, current);
+            // If this subject identifier is empty, then the last used subject type
+            // e.g. If a patient and tumor is specified but no tumor region, then we instead want to create/use
+            // the tumor ID
             if (current == null) {
-                return null;
+                return previous;
             }
+            previous = current;
         }
         return current;
     }
