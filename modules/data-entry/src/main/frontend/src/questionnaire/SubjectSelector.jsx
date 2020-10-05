@@ -509,11 +509,13 @@ export function NewSubjectDialog (props) {
  * @param {string} title Title of the dialog, if any
  */
 function UnstyledSelectorDialog (props) {
-  const { allowedTypes, classes, disabled, open, onChange, onClose, onError, title, ...rest } = props;
+  const { allowedTypes, classes, disabled, open, onChange, onClose, onError, title, selectedQuestionnaire, ...rest } = props;
   const [ subjects, setSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ isPosting, setIsPosting ] = useState(false);
+  const [ error, setError ] = useState("");
+  const [ disableProgress, setDisableProgress ] = useState(false);
 
   // Handle the user clicking on a subject, potentially submitting it
   let selectSubject = (subject) => {
@@ -546,6 +548,10 @@ function UnstyledSelectorDialog (props) {
 
   // Handle the SubjectSelector clicking on a subject, selecting it
   let handleSubmitNew = (subject) => {
+    if (disableProgress) {
+      // don't allow user to progress if the maxPerSubject has been reached
+      return;
+    }
     setSelectedSubject(subject);
     grabNewSubject(subject);
     setNewSubjectPopperOpen(false);
@@ -570,14 +576,17 @@ function UnstyledSelectorDialog (props) {
       {title && <DialogTitle>{title}</DialogTitle>}
       <DialogContent className={classes.NewFormDialog}>
         {isPosting && <CircularProgress />}
+        {error && (!newSubjectPopperOpen) && <Typography color='error'>{error}</Typography>}
         <StyledSubjectSelectorList
           allowedTypes={allowedTypes}
           disabled={disabled_controls}
-          onError={onError}
+          onError={setError}
           onSelect={(data) => {selectSubject(data);}}
           setSubjects={setSubjects}
           selectedSubject={selectedSubject}
           subjects={subjects}
+          selectedQuestionnaire={selectedQuestionnaire}
+          disableProgress={setDisableProgress}
           {...rest}
           />
       </DialogContent>
@@ -733,14 +742,45 @@ SubjectListItem.defaultProps = {
  * @param {onError} func Callback for an issue in the reading or editing of subjects. The only parameter is a response object.
  * @param {onSelect} func Callback for when the user selects a subject.
  * @param {selectedSubject} object The currently selected subject.
+ * @param {selectedQuestionnaire} object The currently selected questionnaire
+ * @param {disableProgress} bool If true, will not allow user to progress in the dialog (e.g. with creating the form)
+ * @param {currentSubject} object The preselected subject (e.g. on the Subject page, the subject who's page it is is the 'currentSubject')
  */
 function SubjectSelectorList(props) {
-  const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject,
+  const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject, selectedQuestionnaire, disableProgress,
     currentSubject, theme, ...rest } = props;
   const COLUMNS = [
     { title: 'Identifier', field: 'identifier' },
     { title: 'Hierarchy', field: 'hierarchy' },
   ];
+  const [ relatedSubjects, setRelatedSubjects ] = useState();
+
+  // fetch the Subjects of each form of this questionnaire type
+  let filterArray = () => {
+    fetch(`/query?query=SELECT distinct s.* FROM [lfs:Subject] AS s inner join [lfs:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'`)
+    .then(response => response.json())
+    .then(result => {
+      setRelatedSubjects(result.rows);
+      }
+    )
+  }
+
+  if (!relatedSubjects) {
+    filterArray();
+  }
+
+  // if the number of related forms of a certain questionnaire/subject is at the maxPerSubject, an error is set
+  let handleSelection = (rowData) => {
+    let atMax = (relatedSubjects && selectedQuestionnaire && (relatedSubjects.filter((i) => (i.identifier == rowData.identifier)).length >= selectedQuestionnaire?.["maxPerSubject"]))
+    if (atMax) {
+      onError(`${rowData?.["type"]["@name"]} ${rowData?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
+      disableProgress(true);
+    }
+    else {
+      onError("");
+      disableProgress(false);
+    }
+  }
 
   return(
     <React.Fragment>
@@ -758,6 +798,8 @@ function SubjectSelectorList(props) {
             if (query.search) {
               condition += ` CONTAINS(n.identifier, '*${query.search}*')`;
             }
+
+            // fetch all subjects
             let url = createQueryURL( condition, "lfs:Subject");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
@@ -801,7 +843,6 @@ function SubjectSelectorList(props) {
                     return output;
                   }
                 }
-
                 return {
                   data: (
                     (currentSubject && (result['rows'].map((row) => isSubjectRelated(row).includes(currentSubject.type.label)))[0])
@@ -884,7 +925,12 @@ function SubjectSelectorList(props) {
           addRowPosition: 'first',
           rowStyle: rowData => ({
             /* It doesn't seem possible to alter the className from here */
-            backgroundColor: (selectedSubject?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
+            backgroundColor: (selectedSubject?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
+            // grey out subjects that have already reached maxPerSubject
+            color: ((relatedSubjects && selectedQuestionnaire && (relatedSubjects.filter((i) => (i.identifier == rowData.identifier)).length >= selectedQuestionnaire?.["maxPerSubject"]))
+            ? theme.palette.grey["500"]
+            : theme.palette.grey["900"]
+            )
           })
         }}
         localization={{
@@ -896,7 +942,7 @@ function SubjectSelectorList(props) {
             }
           }
         }}
-        onRowClick={(event, rowData) => {onSelect(rowData)}}
+        onRowClick={(event, rowData) => {onSelect(rowData); handleSelection(rowData)}}
       />
     </React.Fragment>
   )

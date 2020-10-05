@@ -383,6 +383,10 @@
   // If the list is empty, then any subject type is accepted.
   - requiredSubjectTypes (REFERENCE) multiple
 
+  // An optional maximum number of a certain form that can be created for a subject
+  // If present, the maximum number cannot be exceeded
+  - maxPerSubject (long)
+
   // Children
 
   // The sections and standalone questions that make up this questionnaire.

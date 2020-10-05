@@ -247,6 +247,7 @@ function Form (props) {
             onClose={() => {setSelectorDialogOpen(false)}}
             onError={setSelectorDialogError}
             title="Set subject"
+            selectedQuestionnaire={data?.questionnaire}
             />
           {changedSubject &&
             <React.Fragment>
