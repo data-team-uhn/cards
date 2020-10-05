@@ -2663,11 +2663,11 @@
 		</node>
 	</node>
 	<node>
-		<name>Rating Scales</name>
+		<name>rating scales</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Rating Scales</value>
+			<value>rating scales</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -5165,10 +5165,10 @@
 		</node>
 	</node>
 	<node>
-		<name>bascFindexSection</name>
+		<name>bascfindexSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>bascFindex</name>
+			<name>bascfindex</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -7706,7 +7706,7 @@
 		</node>
 	</node>
 	<node>
-		<name>BRIEF-2</name>
+		<name>brief-2</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -8257,10 +8257,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2inhibitTSSection</name>
+		<name>brief2inhibittsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2inhibitTS</name>
+			<name>brief2inhibitts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -8405,10 +8405,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2selfTSSection</name>
+		<name>brief2selftsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2selfTS</name>
+			<name>brief2selfts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -8479,10 +8479,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2BRIrawSection</name>
+		<name>brief2brirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2BRIraw</name>
+			<name>brief2briraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -8553,10 +8553,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2BRIssSection</name>
+		<name>brief2brissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2BRIss</name>
+			<name>brief2briss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -8701,10 +8701,10 @@
 		</node>
 	</node>
 	<node>
-		<name>briefshiftTSSection</name>
+		<name>briefshifttsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>briefshiftTS</name>
+			<name>briefshiftts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -8849,10 +8849,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2emoTSSection</name>
+		<name>brief2emotsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2emoTS</name>
+			<name>brief2emots</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -8923,10 +8923,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2ERIrawSection</name>
+		<name>brief2erirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2ERIraw</name>
+			<name>brief2eriraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -8997,10 +8997,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2ERITSSection</name>
+		<name>brief2eritsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2ERITS</name>
+			<name>brief2erits</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -9145,10 +9145,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2initiateTSSection</name>
+		<name>brief2initiatetsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2initiateTS</name>
+			<name>brief2initiatets</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -9293,10 +9293,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2memTSSection</name>
+		<name>brief2memtsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2memTS</name>
+			<name>brief2memts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -9441,10 +9441,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2planTSSection</name>
+		<name>brief2plantsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2planTS</name>
+			<name>brief2plants</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -9589,10 +9589,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2taskTSSection</name>
+		<name>brief2tasktsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2taskTS</name>
+			<name>brief2taskts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -9737,10 +9737,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2organizeTSSection</name>
+		<name>brief2organizetsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2organizeTS</name>
+			<name>brief2organizets</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -9811,10 +9811,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2CRIrawSection</name>
+		<name>brief2crirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2CRIraw</name>
+			<name>brief2criraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -9885,10 +9885,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2CRITSSection</name>
+		<name>brief2critsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2CRITS</name>
+			<name>brief2crits</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -9959,10 +9959,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2GECrawSection</name>
+		<name>brief2gecrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2GECraw</name>
+			<name>brief2gecraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -10033,10 +10033,10 @@
 		</node>
 	</node>
 	<node>
-		<name>brief2GECTSSection</name>
+		<name>brief2gectsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>brief2GECTS</name>
+			<name>brief2gects</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -10107,7 +10107,7 @@
 		</node>
 	</node>
 	<node>
-		<name>SRS-2</name>
+		<name>srs-2</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -10217,7 +10217,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>SRS</value>
+						<value>srs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10246,10 +10246,10 @@
 		</node>
 	</node>
 	<node>
-		<name>SRSotherreasonSection</name>
+		<name>srsotherreasonSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>SRSotherreason</name>
+			<name>srsotherreason</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -10281,7 +10281,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>Other</value>
+						<value>other</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -10448,10 +10448,10 @@
 		</node>
 	</node>
 	<node>
-		<name>srssocawaretTSSection</name>
+		<name>srssocawarettsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>srssocawaretTS</name>
+			<name>srssocawaretts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -10596,10 +10596,10 @@
 		</node>
 	</node>
 	<node>
-		<name>srssoccogTSSection</name>
+		<name>srssoccogtsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>srssoccogTS</name>
+			<name>srssoccogts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -10744,10 +10744,10 @@
 		</node>
 	</node>
 	<node>
-		<name>srssoccommTSSection</name>
+		<name>srssoccommtsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>srssoccommTS</name>
+			<name>srssoccommts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -10892,10 +10892,10 @@
 		</node>
 	</node>
 	<node>
-		<name>srssocmotivTSSection</name>
+		<name>srssocmotivtsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>srssocmotivTS</name>
+			<name>srssocmotivts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -11040,10 +11040,10 @@
 		</node>
 	</node>
 	<node>
-		<name>srsrepbehavTSSection</name>
+		<name>srsrepbehavtsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>srsrepbehavTS</name>
+			<name>srsrepbehavts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -11188,10 +11188,10 @@
 		</node>
 	</node>
 	<node>
-		<name>srssciTSSection</name>
+		<name>srsscitsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>srssciTS</name>
+			<name>srsscits</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -11336,10 +11336,10 @@
 		</node>
 	</node>
 	<node>
-		<name>srsrrbTSSection</name>
+		<name>srsrrbtsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>srsrrbTS</name>
+			<name>srsrrbts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -11484,10 +11484,10 @@
 		</node>
 	</node>
 	<node>
-		<name>srstotalTSSection</name>
+		<name>srstotaltsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>srstotalTS</name>
+			<name>srstotalts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -11558,7 +11558,7 @@
 		</node>
 	</node>
 	<node>
-		<name>IQ Measure</name>
+		<name>iq measure</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -11572,7 +11572,7 @@
 		</property>
 	</node>
 	<node>
-		<name>WhichIQ</name>
+		<name>whichiq</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -11652,10 +11652,10 @@
 		</node>
 	</node>
 	<node>
-		<name>IQnoreasonSection</name>
+		<name>iqnoreasonSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>IQnoreason</name>
+			<name>iqnoreason</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -11756,7 +11756,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>WASI</value>
+							<value>wasi</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11797,7 +11797,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>WPPSI</value>
+							<value>wppsi</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11838,7 +11838,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>WISC</value>
+							<value>wisc</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11879,7 +11879,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>WAIS</value>
+							<value>wais</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11909,7 +11909,7 @@
 		</node>
 	</node>
 	<node>
-		<name>IQdate</name>
+		<name>iqdate</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -11928,10 +11928,10 @@
 		</property>
 	</node>
 	<node>
-		<name>WASI2FSIQRawSection</name>
+		<name>wasi2fsiqrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WASI2FSIQRaw</name>
+			<name>wasi2fsiqraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -11973,7 +11973,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12002,10 +12002,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WASI2FSIQSSSection</name>
+		<name>wasi2fsiqssSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WASI2FSIQSS</name>
+			<name>wasi2fsiqss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12047,7 +12047,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12076,10 +12076,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WASI2VCIRawSection</name>
+		<name>wasi2vcirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WASI2VCIRaw</name>
+			<name>wasi2vciraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12121,7 +12121,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12150,10 +12150,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WASI2VCISSSection</name>
+		<name>wasi2vcissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WASI2VCISS</name>
+			<name>wasi2vciss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12195,7 +12195,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12224,10 +12224,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WASI2PRIRawSection</name>
+		<name>wasi2prirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WASI2PRIRaw</name>
+			<name>wasi2priraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12269,7 +12269,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12298,10 +12298,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WASI2PRISSSection</name>
+		<name>wasi2prissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WASI2PRISS</name>
+			<name>wasi2priss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12343,7 +12343,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12372,10 +12372,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WASI2BlockRawSection</name>
+		<name>wasi2blockrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WASI2BlockRaw</name>
+			<name>wasi2blockraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12417,7 +12417,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12446,10 +12446,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAS2IBlockTSSection</name>
+		<name>was2iblocktsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAS2IBlockTS</name>
+			<name>was2iblockts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12491,7 +12491,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12520,10 +12520,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WASI2vocabRawSection</name>
+		<name>wasi2vocabrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WASI2vocabRaw</name>
+			<name>wasi2vocabraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12565,7 +12565,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12594,10 +12594,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WASI2vocabTSSection</name>
+		<name>wasi2vocabtsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WASI2vocabTS</name>
+			<name>wasi2vocabts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12639,7 +12639,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12668,10 +12668,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WASI2MatrixRawSection</name>
+		<name>wasi2matrixrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WASI2MatrixRaw</name>
+			<name>wasi2matrixraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12713,7 +12713,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12742,10 +12742,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WASI2MatrixTSSection</name>
+		<name>wasi2matrixtsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WASI2MatrixTS</name>
+			<name>wasi2matrixts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12787,7 +12787,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12816,10 +12816,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WASI2SimRawSection</name>
+		<name>wasi2simrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WASI2SimRaw</name>
+			<name>wasi2simraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12861,7 +12861,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12890,10 +12890,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WASI2SimTSSection</name>
+		<name>wasi2simtsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WASI2SimTS</name>
+			<name>wasi2simts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12935,7 +12935,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WASI-2</value>
+						<value>wasi-2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -12964,11 +12964,11 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS-4</name>
+		<name>wais-4</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>WAIS-4</value>
+			<value>wais-4</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -12978,10 +12978,10 @@
 		</property>
 	</node>
 	<node>
-		<name>WAIS4FSIQRawSection</name>
+		<name>wais4fsiqrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4FSIQRaw</name>
+			<name>wais4fsiqraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13023,7 +13023,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13052,10 +13052,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4FSIQSSSection</name>
+		<name>wais4fsiqssSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4FSIQSS</name>
+			<name>wais4fsiqss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13097,7 +13097,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13126,10 +13126,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4VCIRawSection</name>
+		<name>wais4vcirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4VCIRaw</name>
+			<name>wais4vciraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13171,7 +13171,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13200,10 +13200,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4VCISSSection</name>
+		<name>wais4vcissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4VCISS</name>
+			<name>wais4vciss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13245,7 +13245,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13274,10 +13274,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4PRIRawSection</name>
+		<name>wais4prirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4PRIRaw</name>
+			<name>wais4priraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13319,7 +13319,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13348,10 +13348,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4PRISSSection</name>
+		<name>wais4prissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4PRISS</name>
+			<name>wais4priss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13393,7 +13393,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13422,10 +13422,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4WMIRawSection</name>
+		<name>wais4wmirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4WMIRaw</name>
+			<name>wais4wmiraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13467,7 +13467,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13496,10 +13496,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4WMISSSection</name>
+		<name>wais4wmissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4WMISS</name>
+			<name>wais4wmiss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13541,7 +13541,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13570,10 +13570,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4PSIRawSection</name>
+		<name>wais4psirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4PSIRaw</name>
+			<name>wais4psiraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13615,7 +13615,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13644,10 +13644,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4PSISSSection</name>
+		<name>wais4psissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4PSISS</name>
+			<name>wais4psiss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13689,7 +13689,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13718,10 +13718,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4BlockRawSection</name>
+		<name>wais4blockrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4BlockRaw</name>
+			<name>wais4blockraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13763,7 +13763,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13792,10 +13792,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4BlockSCSection</name>
+		<name>wais4blockscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4BlockSC</name>
+			<name>wais4blocksc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13837,7 +13837,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13866,10 +13866,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4SimRawSection</name>
+		<name>wais4simrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4SimRaw</name>
+			<name>wais4simraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13911,7 +13911,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -13940,10 +13940,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4SimSCSection</name>
+		<name>wais4simscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4SimSC</name>
+			<name>wais4simsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -13985,7 +13985,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14014,10 +14014,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4DigitRawSection</name>
+		<name>wais4digitrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4DigitRaw</name>
+			<name>wais4digitraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -14059,7 +14059,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14088,10 +14088,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4DigitSCSection</name>
+		<name>wais4digitscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4DigitSC</name>
+			<name>wais4digitsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -14133,7 +14133,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14162,10 +14162,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4MatrixRawSection</name>
+		<name>wais4matrixrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4MatrixRaw</name>
+			<name>wais4matrixraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -14207,7 +14207,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14236,10 +14236,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4MatrixSCSection</name>
+		<name>wais4matrixscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4MatrixSC</name>
+			<name>wais4matrixsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -14281,7 +14281,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14310,10 +14310,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4VocabRawSection</name>
+		<name>wais4vocabrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4VocabRaw</name>
+			<name>wais4vocabraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -14355,7 +14355,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14384,10 +14384,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4VocabSCSection</name>
+		<name>wais4vocabscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4VocabSC</name>
+			<name>wais4vocabsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -14429,7 +14429,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14458,10 +14458,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4ArithRawSection</name>
+		<name>wais4arithrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4ArithRaw</name>
+			<name>wais4arithraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -14503,7 +14503,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14532,10 +14532,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4ArithSCSection</name>
+		<name>wais4arithscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4ArithSC</name>
+			<name>wais4arithsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -14577,7 +14577,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14606,10 +14606,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4SSRawSection</name>
+		<name>wais4ssrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4SSRaw</name>
+			<name>wais4ssraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -14651,7 +14651,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14680,10 +14680,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4SSSCSection</name>
+		<name>wais4ssscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4SSSC</name>
+			<name>wais4sssc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -14725,7 +14725,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14754,10 +14754,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4VPRawSection</name>
+		<name>wais4vprawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4VPRaw</name>
+			<name>wais4vpraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -14799,7 +14799,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14828,10 +14828,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4VPSCSection</name>
+		<name>wais4vpscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4VPSC</name>
+			<name>wais4vpsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -14873,7 +14873,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14902,10 +14902,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4InfoRawSection</name>
+		<name>wais4inforawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4InfoRaw</name>
+			<name>wais4inforaw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -14947,7 +14947,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -14976,10 +14976,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4InfoSCSection</name>
+		<name>wais4infoscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4InfoSC</name>
+			<name>wais4infosc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15021,7 +15021,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15050,10 +15050,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4CodingRawSection</name>
+		<name>wais4codingrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4CodingRaw</name>
+			<name>wais4codingraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15095,7 +15095,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15124,10 +15124,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WAIS4CodingSCSection</name>
+		<name>wais4codingscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WAIS4CodingSC</name>
+			<name>wais4codingsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15169,7 +15169,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WAIS-4</value>
+						<value>wais-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15198,11 +15198,11 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC-V</name>
+		<name>wisc-v</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>WISC-V</value>
+			<value>wisc-v</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -15212,10 +15212,10 @@
 		</property>
 	</node>
 	<node>
-		<name>WISC5FSIQRawSection</name>
+		<name>wisc5fsiqrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5FSIQRaw</name>
+			<name>wisc5fsiqraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15257,7 +15257,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15286,10 +15286,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5FSIQSSSection</name>
+		<name>wisc5fsiqssSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5FSIQSS</name>
+			<name>wisc5fsiqss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15331,7 +15331,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15360,10 +15360,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5VCIRawSection</name>
+		<name>wisc5vcirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5VCIRaw</name>
+			<name>wisc5vciraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15405,7 +15405,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15434,10 +15434,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5VCISSSection</name>
+		<name>wisc5vcissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5VCISS</name>
+			<name>wisc5vciss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15479,7 +15479,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15508,10 +15508,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5VSIRawSection</name>
+		<name>wisc5vsirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5VSIRaw</name>
+			<name>wisc5vsiraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15553,7 +15553,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15582,10 +15582,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5VSISSSection</name>
+		<name>wisc5vsissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5VSISS</name>
+			<name>wisc5vsiss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15627,7 +15627,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15656,10 +15656,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5FRIRawSection</name>
+		<name>wisc5frirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5FRIRaw</name>
+			<name>wisc5friraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15701,7 +15701,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15730,10 +15730,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5FRISSSection</name>
+		<name>wisc5frissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5FRISS</name>
+			<name>wisc5friss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15775,7 +15775,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15804,10 +15804,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5WMIRawSection</name>
+		<name>wisc5wmirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5WMIRaw</name>
+			<name>wisc5wmiraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15849,7 +15849,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15878,10 +15878,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5WMISSSection</name>
+		<name>wisc5wmissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5WMISS</name>
+			<name>wisc5wmiss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15923,7 +15923,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -15952,10 +15952,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5PSIRawSection</name>
+		<name>wisc5psirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5PSIRaw</name>
+			<name>wisc5psiraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -15997,7 +15997,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16026,10 +16026,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5PSISSSection</name>
+		<name>wisc5psissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5PSISS</name>
+			<name>wisc5psiss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16071,7 +16071,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16100,10 +16100,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5BlockRawSection</name>
+		<name>wisc5blockrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5BlockRaw</name>
+			<name>wisc5blockraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16145,7 +16145,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16174,10 +16174,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5BlockSCSection</name>
+		<name>wisc5blockscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5BlockSC</name>
+			<name>wisc5blocksc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16219,7 +16219,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16248,10 +16248,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5SimRawSection</name>
+		<name>wisc5simrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5SimRaw</name>
+			<name>wisc5simraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16293,7 +16293,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16322,10 +16322,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5SimSCSection</name>
+		<name>wisc5simscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5SimSC</name>
+			<name>wisc5simsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16367,7 +16367,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16396,10 +16396,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5MatrixRawSection</name>
+		<name>wisc5matrixrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5MatrixRaw</name>
+			<name>wisc5matrixraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16441,7 +16441,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16470,10 +16470,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5MatrixSCSection</name>
+		<name>wisc5matrixscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5MatrixSC</name>
+			<name>wisc5matrixsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16515,7 +16515,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16544,10 +16544,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5DigitRawSection</name>
+		<name>wisc5digitrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5DigitRaw</name>
+			<name>wisc5digitraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16589,7 +16589,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16618,10 +16618,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5DigitSCSection</name>
+		<name>wisc5digitscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5DigitSC</name>
+			<name>wisc5digitsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16663,7 +16663,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16692,10 +16692,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5CodingRawSection</name>
+		<name>wisc5codingrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5CodingRaw</name>
+			<name>wisc5codingraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16737,7 +16737,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16766,10 +16766,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5CodingSCSection</name>
+		<name>wisc5codingscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5CodingSC</name>
+			<name>wisc5codingsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16811,7 +16811,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16840,10 +16840,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5VocabRawSection</name>
+		<name>wisc5vocabrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5VocabRaw</name>
+			<name>wisc5vocabraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16885,7 +16885,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16914,10 +16914,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5VocabSCSection</name>
+		<name>wisc5vocabscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5VocabSC</name>
+			<name>wisc5vocabsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16959,7 +16959,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -16988,10 +16988,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5FWRawSection</name>
+		<name>wisc5fwrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5FWRaw</name>
+			<name>wisc5fwraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17033,7 +17033,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17062,10 +17062,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5FWScSection</name>
+		<name>wisc5fwscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5FWSc</name>
+			<name>wisc5fwsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17107,7 +17107,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17136,10 +17136,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5VPRawSection</name>
+		<name>wisc5vprawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5VPRaw</name>
+			<name>wisc5vpraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17181,7 +17181,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17210,10 +17210,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5VPSCSection</name>
+		<name>wisc5vpscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5VPSC</name>
+			<name>wisc5vpsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17255,7 +17255,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17284,10 +17284,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5PSRawSection</name>
+		<name>wisc5psrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5PSRaw</name>
+			<name>wisc5psraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17329,7 +17329,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17358,10 +17358,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5PSSCSection</name>
+		<name>wisc5psscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5PSSC</name>
+			<name>wisc5pssc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17403,7 +17403,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17432,10 +17432,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5SSRawSection</name>
+		<name>wisc5ssrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5SSRaw</name>
+			<name>wisc5ssraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17477,7 +17477,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17506,10 +17506,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WISC5SSSCSection</name>
+		<name>wisc5ssscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WISC5SSSC</name>
+			<name>wisc5sssc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17551,7 +17551,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WISC-5</value>
+						<value>wisc-5</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17594,10 +17594,10 @@
 		</property>
 	</node>
 	<node>
-		<name>WPPSI4VCIRawSection</name>
+		<name>wppsi4vcirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4VCIRaw</name>
+			<name>wppsi4vciraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17639,7 +17639,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17668,10 +17668,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4VCISSSection</name>
+		<name>wppsi4vcissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4VCISS</name>
+			<name>wppsi4vciss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17713,7 +17713,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17742,10 +17742,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4VSIRawSection</name>
+		<name>wppsi4vsirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4VSIRaw</name>
+			<name>wppsi4vsiraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17787,7 +17787,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17816,10 +17816,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4VSISSSection</name>
+		<name>wppsi4vsissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4VSISS</name>
+			<name>wppsi4vsiss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17861,7 +17861,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17890,10 +17890,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4FRIRawSection</name>
+		<name>wppsi4frirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4FRIRaw</name>
+			<name>wppsi4friraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17935,7 +17935,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -17964,10 +17964,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4FRISSSection</name>
+		<name>wppsi4frissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4FRISS</name>
+			<name>wppsi4friss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18009,7 +18009,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18038,10 +18038,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4WMIRawSection</name>
+		<name>wppsi4wmirawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4WMIRaw</name>
+			<name>wppsi4wmiraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18083,7 +18083,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18112,10 +18112,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4WMISSSection</name>
+		<name>wppsi4wmissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4WMISS</name>
+			<name>wppsi4wmiss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18157,7 +18157,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18186,10 +18186,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4FSIQRawSection</name>
+		<name>wppsi4fsiqrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4FSIQRaw</name>
+			<name>wppsi4fsiqraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18231,7 +18231,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18260,10 +18260,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4FSIQSSSection</name>
+		<name>wppsi4fsiqssSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4FSIQSS</name>
+			<name>wppsi4fsiqss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18305,7 +18305,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18334,10 +18334,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4BlockRawSection</name>
+		<name>wppsi4blockrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4BlockRaw</name>
+			<name>wppsi4blockraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18379,7 +18379,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18408,10 +18408,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4BlockSCSection</name>
+		<name>wppsi4blockscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4BlockSC</name>
+			<name>wppsi4blocksc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18453,7 +18453,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18482,10 +18482,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4InfoRawSection</name>
+		<name>wppsi4inforawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4InfoRaw</name>
+			<name>wppsi4inforaw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18527,7 +18527,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18556,10 +18556,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4InfoSCSection</name>
+		<name>wppsi4infoscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4InfoSC</name>
+			<name>wppsi4infosc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18601,7 +18601,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18630,10 +18630,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4MatrixRawSection</name>
+		<name>wppsi4matrixrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4MatrixRaw</name>
+			<name>wppsi4matrixraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18675,7 +18675,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18704,10 +18704,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4MatrixSCSection</name>
+		<name>wppsi4matrixscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4MatrixSC</name>
+			<name>wppsi4matrixsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18749,7 +18749,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18778,10 +18778,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4BugRawSection</name>
+		<name>wppsi4bugrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4BugRaw</name>
+			<name>wppsi4bugraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18823,7 +18823,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18852,10 +18852,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4BugSCSection</name>
+		<name>wppsi4bugscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4BugSC</name>
+			<name>wppsi4bugsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18897,7 +18897,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18926,10 +18926,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4PMemRawSection</name>
+		<name>wppsi4pmemrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4PMemRaw</name>
+			<name>wppsi4pmemraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18971,7 +18971,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19000,10 +19000,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4PMemSCSection</name>
+		<name>wppsi4pmemscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4PMemSC</name>
+			<name>wppsi4pmemsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -19045,7 +19045,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19074,10 +19074,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4SimRawSection</name>
+		<name>wppsi4simrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4SimRaw</name>
+			<name>wppsi4simraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -19119,7 +19119,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19148,10 +19148,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4SimSCSection</name>
+		<name>wppsi4simscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4SimSC</name>
+			<name>wppsi4simsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -19193,7 +19193,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19222,10 +19222,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4PConRawSection</name>
+		<name>wppsi4pconrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4PConRaw</name>
+			<name>wppsi4pconraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -19267,7 +19267,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19296,10 +19296,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4PConSCSection</name>
+		<name>wppsi4pconscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4PConSC</name>
+			<name>wppsi4pconsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -19341,7 +19341,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19370,10 +19370,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4CancelRawSection</name>
+		<name>wppsi4cancelrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4CancelRaw</name>
+			<name>wppsi4cancelraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -19415,7 +19415,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19444,10 +19444,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4CancelSCSection</name>
+		<name>wppsi4cancelscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4CancelSC</name>
+			<name>wppsi4cancelsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -19489,7 +19489,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19518,10 +19518,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4ZooRawSection</name>
+		<name>wppsi4zoorawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4ZooRaw</name>
+			<name>wppsi4zooraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -19563,7 +19563,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19592,10 +19592,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4ZooSCSection</name>
+		<name>wppsi4zooscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4ZooSC</name>
+			<name>wppsi4zoosc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -19637,7 +19637,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19666,10 +19666,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4OARawSection</name>
+		<name>wppsi4oarawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4OARaw</name>
+			<name>wppsi4oaraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -19711,7 +19711,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19740,10 +19740,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WPPSI4OASCSection</name>
+		<name>wppsi4oascSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WPPSI4OASC</name>
+			<name>wppsi4oasc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -19785,7 +19785,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WPPSI4</value>
+						<value>wppsi4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19814,11 +19814,11 @@
 		</node>
 	</node>
 	<node>
-		<name>Visual and Motor</name>
+		<name>visual and motor</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Visual and Motor</value>
+			<value>visual and motor</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -19828,7 +19828,7 @@
 		</property>
 	</node>
 	<node>
-		<name>VMI-6</name>
+		<name>vmi-6</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -19842,10 +19842,10 @@
 		</property>
 	</node>
 	<node>
-		<name>VMI6RawSection</name>
+		<name>vmi6rawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>VMI6Raw</name>
+			<name>vmi6raw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -19887,7 +19887,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>VMI6</value>
+						<value>vmi6</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19916,10 +19916,10 @@
 		</node>
 	</node>
 	<node>
-		<name>VMI6SSSection</name>
+		<name>vmi6ssSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>VMI6SS</name>
+			<name>vmi6ss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -19961,7 +19961,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>VMI6</value>
+						<value>vmi6</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -19990,7 +19990,7 @@
 		</node>
 	</node>
 	<node>
-		<name>Pegboard</name>
+		<name>pegboard</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -20004,10 +20004,10 @@
 		</property>
 	</node>
 	<node>
-		<name>MotornoreasonSection</name>
+		<name>motornoreasonSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>Motornoreason</name>
+			<name>motornoreason</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -20108,7 +20108,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>WRAVMA</value>
+							<value>wravma</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -20149,7 +20149,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>GPEG</value>
+							<value>gpeg</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -20179,10 +20179,10 @@
 		</node>
 	</node>
 	<node>
-		<name>MotordateSection</name>
+		<name>motordateSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>Motordate</name>
+			<name>motordate</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -20222,7 +20222,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>WRAVMA</value>
+							<value>wravma</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -20263,7 +20263,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>GPEG</value>
+							<value>gpeg</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -20293,10 +20293,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAVMAhanddomSection</name>
+		<name>wravmahanddomSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAVMAhanddom</name>
+			<name>wravmahanddom</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -20384,7 +20384,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAVMA</value>
+						<value>wravma</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20413,10 +20413,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAVMAPegDomRawSection</name>
+		<name>wravmapegdomrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAVMAPegDomRaw</name>
+			<name>wravmapegdomraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -20458,7 +20458,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAVMA</value>
+						<value>wravma</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20487,10 +20487,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAVMAPegDomSSSection</name>
+		<name>wravmapegdomssSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAVMAPegDomSS</name>
+			<name>wravmapegdomss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -20532,7 +20532,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAVMA</value>
+						<value>wravma</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20561,10 +20561,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAVMAPegNonDomRawSection</name>
+		<name>wravmapegnondomrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAVMAPegNonDomRaw</name>
+			<name>wravmapegnondomraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -20606,7 +20606,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAVMA</value>
+						<value>wravma</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20635,10 +20635,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAVMAPegNonDomSSSection</name>
+		<name>wravmapegnondomssSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAVMAPegNonDomSS</name>
+			<name>wravmapegnondomss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -20680,7 +20680,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAVMA</value>
+						<value>wravma</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20709,7 +20709,7 @@
 		</node>
 	</node>
 	<node>
-		<name>Grooved Pegboard</name>
+		<name>grooved pegboard</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -20723,10 +20723,10 @@
 		</property>
 	</node>
 	<node>
-		<name>GPeghanddomSection</name>
+		<name>gpeghanddomSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>GPeghanddom</name>
+			<name>gpeghanddom</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -20814,7 +20814,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>GPEG</value>
+						<value>gpeg</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20843,10 +20843,10 @@
 		</node>
 	</node>
 	<node>
-		<name>GPegDominantRawSection</name>
+		<name>gpegdominantrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>GPegDominantRaw</name>
+			<name>gpegdominantraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -20883,7 +20883,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>Gpeg</value>
+						<value>gpeg</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20912,10 +20912,10 @@
 		</node>
 	</node>
 	<node>
-		<name>GPegNonDomRawSection</name>
+		<name>gpegnondomrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>GPegNonDomRaw</name>
+			<name>gpegnondomraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -20952,7 +20952,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>Gpeg</value>
+						<value>gpeg</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -20981,11 +20981,11 @@
 		</node>
 	</node>
 	<node>
-		<name>Academic</name>
+		<name>academic</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Academic</value>
+			<value>academic</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -20995,10 +20995,10 @@
 		</property>
 	</node>
 	<node>
-		<name>ACADEMICnoreasonSection</name>
+		<name>academicnoreasonSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>ACADEMICnoreason</name>
+			<name>academicnoreason</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -21099,7 +21099,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>BSRA</value>
+							<value>bsra</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -21140,7 +21140,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>WJ</value>
+							<value>wj</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -21181,7 +21181,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>WIAT</value>
+							<value>wiat</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -21211,10 +21211,10 @@
 		</node>
 	</node>
 	<node>
-		<name>AcademicdateSection</name>
+		<name>academicdateSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>Academicdate</name>
+			<name>academicdate</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -21254,7 +21254,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>BSRA</value>
+							<value>bsra</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -21295,7 +21295,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>WJ</value>
+							<value>wj</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -21336,7 +21336,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>WIAT</value>
+							<value>wiat</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -21366,7 +21366,7 @@
 		</node>
 	</node>
 	<node>
-		<name>BSRA-3</name>
+		<name>bsra-3</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -21380,10 +21380,10 @@
 		</property>
 	</node>
 	<node>
-		<name>BrackenRawSection</name>
+		<name>brackenrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>BrackenRaw</name>
+			<name>brackenraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -21425,7 +21425,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>BSRA3</value>
+						<value>bsra3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21454,10 +21454,10 @@
 		</node>
 	</node>
 	<node>
-		<name>BrackenSCSection</name>
+		<name>brackenscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>BrackenSC</name>
+			<name>brackensc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -21499,7 +21499,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>BSRA3</value>
+						<value>bsra3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21528,11 +21528,11 @@
 		</node>
 	</node>
 	<node>
-		<name>WJ</name>
+		<name>wj</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>WJ</value>
+			<value>wj</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -21542,10 +21542,10 @@
 		</property>
 	</node>
 	<node>
-		<name>WJ4LWIDRawSection</name>
+		<name>wj4lwidrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WJ4LWIDRaw</name>
+			<name>wj4lwidraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -21587,7 +21587,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WJ-4</value>
+						<value>wj-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21616,10 +21616,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WJ4LWIDSSSection</name>
+		<name>wj4lwidssSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WJ4LWIDSS</name>
+			<name>wj4lwidss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -21661,7 +21661,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WJ-4</value>
+						<value>wj-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21690,10 +21690,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WJ4CalcRawSection</name>
+		<name>wj4calcrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WJ4CalcRaw</name>
+			<name>wj4calcraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -21735,7 +21735,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WJ-4</value>
+						<value>wj-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21764,10 +21764,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WJ4CalcSSSection</name>
+		<name>wj4calcssSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WJ4CalcSS</name>
+			<name>wj4calcss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -21809,7 +21809,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WJ-4</value>
+						<value>wj-4</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21838,11 +21838,11 @@
 		</node>
 	</node>
 	<node>
-		<name>WIAT</name>
+		<name>wiat</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>WIAT</value>
+			<value>wiat</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -21852,10 +21852,10 @@
 		</property>
 	</node>
 	<node>
-		<name>WIAT3WRRawSection</name>
+		<name>wiat3wrrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WIAT3WRRaw</name>
+			<name>wiat3wrraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -21897,7 +21897,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WIAT3</value>
+						<value>wiat3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -21926,10 +21926,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WIAT3WRSSSection</name>
+		<name>wiat3wrssSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WIAT3WRSS</name>
+			<name>wiat3wrss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -21971,7 +21971,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WIAT3</value>
+						<value>wiat3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22000,10 +22000,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WIAT3NumerRawSection</name>
+		<name>wiat3numerrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WIAT3NumerRaw</name>
+			<name>wiat3numerraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -22045,7 +22045,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WIAT3</value>
+						<value>wiat3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22074,10 +22074,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WIAT3NumerSSSection</name>
+		<name>wiat3numerssSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WIAT3NumerSS</name>
+			<name>wiat3numerss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -22119,7 +22119,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WIAT3</value>
+						<value>wiat3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22148,11 +22148,11 @@
 		</node>
 	</node>
 	<node>
-		<name>Memory</name>
+		<name>memory</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Memory</value>
+			<value>memory</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -22162,11 +22162,11 @@
 		</property>
 	</node>
 	<node>
-		<name>WRAML</name>
+		<name>wraml</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>WRAML</value>
+			<value>wraml</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -22176,10 +22176,10 @@
 		</property>
 	</node>
 	<node>
-		<name>WRAMLnoreasonSection</name>
+		<name>wramlnoreasonSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAMLnoreason</name>
+			<name>wramlnoreason</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -22272,7 +22272,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAML</value>
+						<value>wraml</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22301,10 +22301,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAMLdateSection</name>
+		<name>wramldateSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAMLdate</name>
+			<name>wramldate</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -22336,7 +22336,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAML</value>
+						<value>wraml</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22365,10 +22365,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAMLStoryImmRawSection</name>
+		<name>wramlstoryimmrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAMLStoryImmRaw</name>
+			<name>wramlstoryimmraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -22410,7 +22410,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAML</value>
+						<value>wraml</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22439,10 +22439,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAMLStoryImmSCSection</name>
+		<name>wramlstoryimmscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAMLStoryImmSC</name>
+			<name>wramlstoryimmsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -22484,7 +22484,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAML</value>
+						<value>wraml</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22513,10 +22513,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAMLStoryDelayRawSection</name>
+		<name>wramlstorydelayrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAMLStoryDelayRaw</name>
+			<name>wramlstorydelayraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -22558,7 +22558,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAML</value>
+						<value>wraml</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22587,10 +22587,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAMLStoryDelaySCSection</name>
+		<name>wramlstorydelayscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAMLStoryDelaySC</name>
+			<name>wramlstorydelaysc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -22632,7 +22632,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAML</value>
+						<value>wraml</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22661,10 +22661,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAMLStoryRecogRawSection</name>
+		<name>wramlstoryrecograwSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAMLStoryRecogRaw</name>
+			<name>wramlstoryrecograw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -22706,7 +22706,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAML</value>
+						<value>wraml</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22735,10 +22735,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAMLStoryRecogSCSection</name>
+		<name>wramlstoryrecogscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAMLStoryRecogSC</name>
+			<name>wramlstoryrecogsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -22780,7 +22780,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAML</value>
+						<value>wraml</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22809,10 +22809,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAMLDesImmRawSection</name>
+		<name>wramldesimmrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAMLDesImmRaw</name>
+			<name>wramldesimmraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -22854,7 +22854,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAML</value>
+						<value>wraml</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22883,10 +22883,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAMLDesImmSCSection</name>
+		<name>wramldesimmscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAMLDesImmSC</name>
+			<name>wramldesimmsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -22928,7 +22928,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAML</value>
+						<value>wraml</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -22957,10 +22957,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAMLDesRecogRawSection</name>
+		<name>wramldesrecograwSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAMLDesRecogRaw</name>
+			<name>wramldesrecograw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -23002,7 +23002,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAML</value>
+						<value>wraml</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23031,10 +23031,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WRAMLDesRecogSCSection</name>
+		<name>wramldesrecogscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WRAMLDesRecogSC</name>
+			<name>wramldesrecogsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -23076,7 +23076,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>WRAML</value>
+						<value>wraml</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23105,11 +23105,11 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT</name>
+		<name>cvlt</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>CVLT</value>
+			<value>cvlt</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -23119,10 +23119,10 @@
 		</property>
 	</node>
 	<node>
-		<name>CVLTnoreasonSection</name>
+		<name>cvltnoreasonSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTnoreason</name>
+			<name>cvltnoreason</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -23215,7 +23215,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT</value>
+						<value>cvlt</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23244,10 +23244,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTdateSection</name>
+		<name>cvltdateSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTdate</name>
+			<name>cvltdate</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -23279,7 +23279,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT</value>
+						<value>cvlt</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23308,10 +23308,10 @@
 		</node>
 	</node>
 	<node>
-		<name>WhichCVLTSection</name>
+		<name>whichcvltSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>WhichCVLT</name>
+			<name>whichcvlt</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -23380,7 +23380,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT</value>
+						<value>cvlt</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23409,10 +23409,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTTotalRawSection</name>
+		<name>cvlttotalrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTTotalRaw</name>
+			<name>cvlttotalraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -23454,7 +23454,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23495,7 +23495,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23524,10 +23524,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTTotalTSSection</name>
+		<name>cvlttotaltsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTTotalTS</name>
+			<name>cvlttotalts</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -23569,7 +23569,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23610,7 +23610,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23639,10 +23639,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT1RawSection</name>
+		<name>cvlt1rawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT1Raw</name>
+			<name>cvlt1raw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -23684,7 +23684,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23725,7 +23725,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23754,10 +23754,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT1ZSSection</name>
+		<name>cvlt1zsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT1ZS</name>
+			<name>cvlt1zs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -23799,7 +23799,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23840,7 +23840,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23869,10 +23869,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT5RawSection</name>
+		<name>cvlt5rawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT5Raw</name>
+			<name>cvlt5raw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -23914,7 +23914,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23955,7 +23955,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -23984,10 +23984,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT5ZSSection</name>
+		<name>cvlt5zsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT5ZS</name>
+			<name>cvlt5zs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -24029,7 +24029,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24070,7 +24070,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24099,10 +24099,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTBRawSection</name>
+		<name>cvltbrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTBRaw</name>
+			<name>cvltbraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -24144,7 +24144,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24185,7 +24185,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24214,10 +24214,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTBZSSection</name>
+		<name>cvltbzsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTBZS</name>
+			<name>cvltbzs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -24259,7 +24259,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24300,7 +24300,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24329,10 +24329,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTSDFRRawSection</name>
+		<name>cvltsdfrrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTSDFRRaw</name>
+			<name>cvltsdfrraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -24374,7 +24374,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24415,7 +24415,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24444,10 +24444,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTSDFRZSSection</name>
+		<name>cvltsdfrzsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTSDFRZS</name>
+			<name>cvltsdfrzs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -24489,7 +24489,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24530,7 +24530,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24559,10 +24559,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTLDFRRawSection</name>
+		<name>cvltldfrrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTLDFRRaw</name>
+			<name>cvltldfrraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -24604,7 +24604,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24645,7 +24645,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24674,10 +24674,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTLDFRZSSection</name>
+		<name>cvltldfrzsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTLDFRZS</name>
+			<name>cvltldfrzs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -24719,7 +24719,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24760,7 +24760,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24789,10 +24789,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTSDCRRawSection</name>
+		<name>cvltsdcrrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTSDCRRaw</name>
+			<name>cvltsdcrraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -24834,7 +24834,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24875,7 +24875,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24904,10 +24904,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTSDCRZSSection</name>
+		<name>cvltsdcrzsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTSDCRZS</name>
+			<name>cvltsdcrzs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -24949,7 +24949,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -24990,7 +24990,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25019,10 +25019,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTLDCRRawSection</name>
+		<name>cvltldcrrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTLDCRRaw</name>
+			<name>cvltldcrraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -25064,7 +25064,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25105,7 +25105,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25134,10 +25134,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTSemRawSection</name>
+		<name>cvltsemrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTSemRaw</name>
+			<name>cvltsemraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -25179,7 +25179,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25220,7 +25220,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25249,10 +25249,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTSemZSSection</name>
+		<name>cvltsemzsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTSemZS</name>
+			<name>cvltsemzs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -25294,7 +25294,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25335,7 +25335,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25364,10 +25364,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTSerRawSection</name>
+		<name>cvltserrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTSerRaw</name>
+			<name>cvltserraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -25409,7 +25409,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25450,7 +25450,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25479,10 +25479,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTSerZSSection</name>
+		<name>cvltserzsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTSerZS</name>
+			<name>cvltserzs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -25524,7 +25524,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25565,7 +25565,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25594,10 +25594,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTSlopeRawSection</name>
+		<name>cvltsloperawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTSlopeRaw</name>
+			<name>cvltsloperaw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -25639,7 +25639,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25680,7 +25680,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25709,10 +25709,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTSlopeZSSection</name>
+		<name>cvltslopezsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTSlopeZS</name>
+			<name>cvltslopezs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -25754,7 +25754,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25795,7 +25795,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25824,10 +25824,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTConsisRawSection</name>
+		<name>cvltconsisrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTConsisRaw</name>
+			<name>cvltconsisraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -25869,7 +25869,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25910,7 +25910,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -25939,10 +25939,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTConsisZSSection</name>
+		<name>cvltconsiszsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTConsisZS</name>
+			<name>cvltconsiszs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -25984,7 +25984,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26025,7 +26025,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26054,10 +26054,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTPersevRawSection</name>
+		<name>cvltpersevrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTPersevRaw</name>
+			<name>cvltpersevraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -26099,7 +26099,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26140,7 +26140,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26169,10 +26169,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTPersevZSSection</name>
+		<name>cvltpersevzsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTPersevZS</name>
+			<name>cvltpersevzs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -26214,7 +26214,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26255,7 +26255,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26284,10 +26284,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTIntrusRawSection</name>
+		<name>cvltintrusrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTIntrusRaw</name>
+			<name>cvltintrusraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -26329,7 +26329,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26370,7 +26370,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26399,10 +26399,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTIntrusZSSection</name>
+		<name>cvltintruszsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTIntrusZS</name>
+			<name>cvltintruszs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -26444,7 +26444,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26485,7 +26485,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26514,10 +26514,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTDiscrimRawSection</name>
+		<name>cvltdiscrimrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTDiscrimRaw</name>
+			<name>cvltdiscrimraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -26559,7 +26559,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26600,7 +26600,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26629,10 +26629,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLTDiscrimZSSection</name>
+		<name>cvltdiscrimzsSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLTDiscrimZS</name>
+			<name>cvltdiscrimzs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -26674,7 +26674,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-C</value>
+						<value>cvlt-c</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26715,7 +26715,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-II</value>
+						<value>cvlt-ii</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26744,10 +26744,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3TotalRawSection</name>
+		<name>cvlt3totalrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3TotalRaw</name>
+			<name>cvlt3totalraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -26789,7 +26789,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26818,10 +26818,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3TotalSSSection</name>
+		<name>cvlt3totalssSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3TotalSS</name>
+			<name>cvlt3totalss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -26863,7 +26863,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26892,10 +26892,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3T1RawSection</name>
+		<name>cvlt3t1rawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3T1Raw</name>
+			<name>cvlt3t1raw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -26937,7 +26937,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -26966,10 +26966,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3T1SCSection</name>
+		<name>cvlt3t1scSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3T1SC</name>
+			<name>cvlt3t1sc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27011,7 +27011,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27040,10 +27040,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3T5RawSection</name>
+		<name>cvlt3t5rawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3T5Raw</name>
+			<name>cvlt3t5raw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27085,7 +27085,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27114,10 +27114,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3T5SCSection</name>
+		<name>cvlt3t5scSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3T5SC</name>
+			<name>cvlt3t5sc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27159,7 +27159,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27188,10 +27188,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3BRawSection</name>
+		<name>cvlt3brawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3BRaw</name>
+			<name>cvlt3braw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27233,7 +27233,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27262,10 +27262,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3BSCSection</name>
+		<name>cvlt3bscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3BSC</name>
+			<name>cvlt3bsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27307,7 +27307,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27336,10 +27336,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3SDFRRawSection</name>
+		<name>cvlt3sdfrrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3SDFRRaw</name>
+			<name>cvlt3sdfrraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27381,7 +27381,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27410,10 +27410,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3SDFRSCSection</name>
+		<name>cvlt3sdfrscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3SDFRSC</name>
+			<name>cvlt3sdfrsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27455,7 +27455,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27484,10 +27484,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3LDFRRawSection</name>
+		<name>cvlt3ldfrrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3LDFRRaw</name>
+			<name>cvlt3ldfrraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27529,7 +27529,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27558,10 +27558,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3LDFRSCSection</name>
+		<name>cvlt3ldfrscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3LDFRSC</name>
+			<name>cvlt3ldfrsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27603,7 +27603,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27632,10 +27632,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3SDCRRawSection</name>
+		<name>cvlt3sdcrrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3SDCRRaw</name>
+			<name>cvlt3sdcrraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27677,7 +27677,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27706,10 +27706,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3SDCRSCSection</name>
+		<name>cvlt3sdcrscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3SDCRSC</name>
+			<name>cvlt3sdcrsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27751,7 +27751,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27780,10 +27780,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3LDCRRawSection</name>
+		<name>cvlt3ldcrrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3LDCRRaw</name>
+			<name>cvlt3ldcrraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27825,7 +27825,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27854,10 +27854,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3SemRawSection</name>
+		<name>cvlt3semrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3SemRaw</name>
+			<name>cvlt3semraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27899,7 +27899,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -27928,10 +27928,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3SemSCSection</name>
+		<name>cvlt3semscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3SemSC</name>
+			<name>cvlt3semsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -27973,7 +27973,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28002,10 +28002,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3SerRawSection</name>
+		<name>cvlt3serrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3SerRaw</name>
+			<name>cvlt3serraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -28047,7 +28047,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28076,10 +28076,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3SerSCSection</name>
+		<name>cvlt3serscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3SerSC</name>
+			<name>cvlt3sersc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -28121,7 +28121,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28150,10 +28150,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3SlopeRawSection</name>
+		<name>cvlt3sloperawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3SlopeRaw</name>
+			<name>cvlt3sloperaw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -28195,7 +28195,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28224,10 +28224,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3SlopeSCSection</name>
+		<name>cvlt3slopescSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3SlopeSC</name>
+			<name>cvlt3slopesc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -28269,7 +28269,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28298,10 +28298,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3ConsisRawSection</name>
+		<name>cvlt3consisrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3ConsisRaw</name>
+			<name>cvlt3consisraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -28343,7 +28343,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28372,10 +28372,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3ConsisSCSection</name>
+		<name>cvlt3consisscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3ConsisSC</name>
+			<name>cvlt3consissc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -28417,7 +28417,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28446,10 +28446,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3ReptRawSection</name>
+		<name>cvlt3reptrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3ReptRaw</name>
+			<name>cvlt3reptraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -28491,7 +28491,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28520,10 +28520,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3RepSCSection</name>
+		<name>cvlt3repscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3RepSC</name>
+			<name>cvlt3repsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -28565,7 +28565,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28594,10 +28594,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3IntrusRawSection</name>
+		<name>cvlt3intrusrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3IntrusRaw</name>
+			<name>cvlt3intrusraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -28639,7 +28639,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28668,10 +28668,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3IntrusSCSection</name>
+		<name>cvlt3intrusscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3IntrusSC</name>
+			<name>cvlt3intrussc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -28713,7 +28713,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28742,10 +28742,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3RecogDiscrimRawSection</name>
+		<name>cvlt3recogdiscrimrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3RecogDiscrimRaw</name>
+			<name>cvlt3recogdiscrimraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -28787,7 +28787,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28816,10 +28816,10 @@
 		</node>
 	</node>
 	<node>
-		<name>CVLT3RecogDiscrimSCSection</name>
+		<name>cvlt3recogdiscrimscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>CVLT3RecogDiscrimSC</name>
+			<name>cvlt3recogdiscrimsc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -28861,7 +28861,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>CVLT-3</value>
+						<value>cvlt-3</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -28890,11 +28890,11 @@
 		</node>
 	</node>
 	<node>
-		<name>Executive functioning</name>
+		<name>executive functioning</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Executive functioning</value>
+			<value>executive functioning</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -28904,11 +28904,11 @@
 		</property>
 	</node>
 	<node>
-		<name>DKEFS</name>
+		<name>dkefs</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>DKEFS</value>
+			<value>dkefs</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -28918,10 +28918,10 @@
 		</property>
 	</node>
 	<node>
-		<name>DKEFSnoreasonSection</name>
+		<name>dkefsnoreasonSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSnoreason</name>
+			<name>dkefsnoreason</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29014,7 +29014,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29043,10 +29043,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSdateSection</name>
+		<name>dkefsdateSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSdate</name>
+			<name>dkefsdate</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29078,7 +29078,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29107,10 +29107,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails1RawSection</name>
+		<name>dkefstrails1rawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails1Raw</name>
+			<name>dkefstrails1raw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29152,7 +29152,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29181,10 +29181,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails1SCSection</name>
+		<name>dkefstrails1scSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails1SC</name>
+			<name>dkefstrails1sc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29226,7 +29226,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29255,10 +29255,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails1OmissSection</name>
+		<name>dkefstrails1omissSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails1Omiss</name>
+			<name>dkefstrails1omiss</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29300,7 +29300,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29329,10 +29329,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails1CommSection</name>
+		<name>dkefstrails1commSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails1Comm</name>
+			<name>dkefstrails1comm</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29374,7 +29374,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29403,10 +29403,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails2RawSection</name>
+		<name>dkefstrails2rawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails2Raw</name>
+			<name>dkefstrails2raw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29448,7 +29448,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29477,10 +29477,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails2SCSection</name>
+		<name>dkefstrails2scSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails2SC</name>
+			<name>dkefstrails2sc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29522,7 +29522,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29551,10 +29551,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails3RawSection</name>
+		<name>dkefstrails3rawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails3Raw</name>
+			<name>dkefstrails3raw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29596,7 +29596,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29625,10 +29625,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails3SCSection</name>
+		<name>dkefstrails3scSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails3SC</name>
+			<name>dkefstrails3sc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29670,7 +29670,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29699,10 +29699,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails4RawSection</name>
+		<name>dkefstrails4rawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails4Raw</name>
+			<name>dkefstrails4raw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29744,7 +29744,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29773,10 +29773,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails4SCSection</name>
+		<name>dkefstrails4scSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails4SC</name>
+			<name>dkefstrails4sc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29818,7 +29818,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29847,10 +29847,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails4AllErrorsRawSection</name>
+		<name>dkefstrails4allerrorsrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails4AllErrorsRaw</name>
+			<name>dkefstrails4allerrorsraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29892,7 +29892,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29921,10 +29921,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails4AllErrorsSCSection</name>
+		<name>dkefstrails4allerrorsscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails4AllErrorsSC</name>
+			<name>dkefstrails4allerrorssc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -29966,7 +29966,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -29995,10 +29995,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails5RawSection</name>
+		<name>dkefstrails5rawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails5Raw</name>
+			<name>dkefstrails5raw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -30040,7 +30040,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -30069,10 +30069,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSTrails5SCSection</name>
+		<name>dkefstrails5scSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSTrails5SC</name>
+			<name>dkefstrails5sc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -30114,7 +30114,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -30143,10 +30143,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSLettFluencyRawSection</name>
+		<name>dkefslettfluencyrawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSLettFluencyRaw</name>
+			<name>dkefslettfluencyraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -30188,7 +30188,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -30217,10 +30217,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSLettFluencySCSection</name>
+		<name>dkefslettfluencyscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSLettFluencySC</name>
+			<name>dkefslettfluencysc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -30262,7 +30262,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -30291,10 +30291,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSCatFluRawSection</name>
+		<name>dkefscatflurawSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSCatFluRaw</name>
+			<name>dkefscatfluraw</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -30336,7 +30336,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -30365,10 +30365,10 @@
 		</node>
 	</node>
 	<node>
-		<name>DKEFSCatFluSCSection</name>
+		<name>dkefscatfluscSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>DKEFSCatFluSC</name>
+			<name>dkefscatflusc</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -30410,7 +30410,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>DKEFS</value>
+						<value>dkefs</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -30439,11 +30439,11 @@
 		</node>
 	</node>
 	<node>
-		<name>QOL (TBD) - will be 10 or so variable</name>
+		<name>qol (tbd) - will be 10 or so variable</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>QOL (TBD) - will be 10 or so variable</value>
+			<value>qol (tbd) - will be 10 or so variable</value>
 			<type>String</type>
 		</property>
 		<property>

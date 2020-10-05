@@ -87,7 +87,7 @@ def create_conditional(operand_a, operand_b, title):
         'jcr:primaryType': 'lfs:Conditional',
         'operandA': {
             'jcr:primaryType': 'lfs:ConditionalValue',
-            'value': [operand_a],
+            'value': [operand_a.lower()],
             'isReference': True
         },
         'comparator': '=',
@@ -176,7 +176,7 @@ def tsv_to_json(title):
     with open(title + '.tsv') as tsvfile:
         reader = csv.DictReader(tsvfile, dialect='excel-tab')
         for row in reader:
-            question = row['nameShort'].strip()
+            question = row['nameShort'].strip().lower()
             if question:
                 questionnaire[question] = {
                     'jcr:primaryType': 'lfs:Question',
