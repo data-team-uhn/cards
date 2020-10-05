@@ -41,6 +41,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
@@ -102,12 +104,6 @@ public class DataImportServlet extends SlingAllMethodsServlet
         new SimpleDateFormat("yyyy-MM-dd"),
         new SimpleDateFormat("M/d/y"));
 
-    private static final List<String> SUBJECT_COLUMN_LABELS = Arrays.asList(
-        "Patient ID",
-        "Subject ID",
-        "Patient",
-        "Subject");
-
     /** Cached Question nodes. */
     private final ThreadLocal<Map<String, Node>> questionCache = new ThreadLocal<Map<String, Node>>()
     {
@@ -117,6 +113,17 @@ public class DataImportServlet extends SlingAllMethodsServlet
             return new HashMap<>();
         }
     };
+
+    /** Cached Subject nodes (for multiple forms for the same subject, for instance). */
+    private final ThreadLocal<Map<String, Node>> subjectCache = new ThreadLocal<Map<String, Node>>()
+    {
+        @Override
+        protected Map<String, Node> initialValue()
+        {
+            return new HashMap<>();
+        }
+    };
+
 
     /** Cached Question nodes. */
     private final ThreadLocal<Set<String>> warnedCache = new ThreadLocal<Set<String>>()
@@ -143,6 +150,12 @@ public class DataImportServlet extends SlingAllMethodsServlet
     /** The {@code /Forms} resource. */
     private final ThreadLocal<Resource> formsHomepage = new ThreadLocal<>();
 
+    /** The list of subjectTypes. */
+    private final ThreadLocal<String[]> subjectTypes = new ThreadLocal<>();
+
+    /** A query manager to handle queries. */
+    private final ThreadLocal<QueryManager> queryManager = new ThreadLocal<>();
+
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
         throws ServletException, IOException
@@ -152,9 +165,15 @@ public class DataImportServlet extends SlingAllMethodsServlet
             this.resolver.set(resourceResolver);
             this.formsHomepage.set(resourceResolver.getResource("/Forms"));
             this.subjectsHomepage.set(resourceResolver.getResource("/Subjects"));
-            this.subjectType.set(resourceResolver.getResource(
-                StringUtils.defaultIfBlank(request.getParameter(":subjectType"), "/SubjectTypes/Patient"))
-                .adaptTo(Node.class));
+            this.queryManager.set(resourceResolver.adaptTo(Session.class).getWorkspace().getQueryManager());
+
+            String[] subjectTypesParam = request.getParameterValues(":subjectType");
+            // If :subjectType isn't set, then /SubjectTypes/Patient should be assumed to be the default value.
+            if (subjectTypesParam == null || subjectTypesParam.length == 0) {
+                subjectTypesParam = new String[]{"/SubjectTypes/Patient"};
+            }
+            this.subjectTypes.set(subjectTypesParam);
+
             parseData(request, StringUtils.equals("true", request.getParameter(":patch")));
         } catch (RepositoryException e) {
             LOGGER.error("Failed to import data: {}", e.getMessage(), e);
@@ -559,7 +578,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
      */
     private Resource getOrCreateForm(final CSVRecord row, boolean patch) throws PersistenceException
     {
-        final Node subject = getOrCreateSubject(row).adaptTo(Node.class);
+        final Node subject = getOrCreateSubject(row);
         Resource result = null;
         if (patch && subject != null) {
             result = findForm(subject);
@@ -601,37 +620,134 @@ public class DataImportServlet extends SlingAllMethodsServlet
     /**
      * Returns the Node where a specific Subject is stored. If the Subject wasn't already stored in the repository, a
      * new node is created for it and returned.
-     * <p>
-     * At the moment, this assumes that either a column labeled {@code Patient ID} is present in the CSV, or the subject
-     * identifier is the first column in the CSV.
-     * </p>
      *
      * @param row the input CSV row to process, where the affected Subject identifier is to be found
      * @return the Resource where the Subject is stored; may be an existing or a newly created resource; may be
      *         {@code null} if a Subject identifier is not present in the row
      */
-    private Resource getOrCreateSubject(final CSVRecord row)
+    private Node getOrCreateSubject(final CSVRecord row)
+    // For each subject type, identify the target subject
+    // Given a parent subject (initially null) & a subject type path:
+    // 1. get the Node for the subject type (cached for future rows)
+    // 2. read label, look for a column with that label or label + “ ID” in the row, get value
+    // 3. search for a Subject with the right type, parent, and identifier
+    // If found, use it as the current subject. If not, create it,
+    // specifying the type, parent, and identifier, and use it as the current subject.
+    // Update the parent variable to be the current subject.
+    // If there are more entries in the subject types list, recurse with the new parent and new subject type.
+    // When the whole list of subject types is processed, return current subject as the subject to use for the row.
     {
-        final String subjectId = findSubjectId(row);
+        Node previous = null;
+        Node current = null;
+        for (String type: this.subjectTypes.get()) {
+            current = getOrCreateSubject(row, type, current);
+            // If this subject identifier is empty, then the last used subject type
+            // e.g. If a patient and tumor is specified but no tumor region, then we instead want to create/use
+            // the tumor ID
+            if (current == null) {
+                return previous;
+            }
+            previous = current;
+        }
+        return current;
+    }
+
+    private Node getOrCreateSubject(CSVRecord row, String type, Node parent)
+    {
+        // Find the subject corresponding to this
+        Node typeNode = this.resolver.get().getResource(type).adaptTo(Node.class);
+        String subjectId = findSubjectId(row, typeNode);
         if (StringUtils.isBlank(subjectId)) {
             return null;
         }
-        final String query =
-            String.format("select n from [lfs:Subject] as n where n.identifier = '%s'", subjectId.replace("'", "''"));
-        final Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
-        if (results.hasNext()) {
-            return results.next();
+        String subjectTypeString = type;
+        String subjectKey = subjectId.concat(subjectTypeString);
+        if (parent != null) {
+            try {
+                subjectKey = parent.getProperty("identifier").getString().concat(subjectKey);
+            } catch (RepositoryException ex) {
+                // No change
+            }
         }
+
+        Node subject = findSubject(subjectKey, subjectId, typeNode, parent);
+        if (subject != null) {
+            return subject;
+        }
+
+        // Create a new subject
+        return createSubject(subjectKey, subjectId, typeNode, parent);
+    }
+
+    /***
+     * Find a subject with the given parameters.
+     * @param subjectKey A key for this subject to search the cache for
+     * @param subjectId The identifier of the subject
+     * @param typeNode The Node of the lfs:SubjectType for the subject
+     * @param parent The parent lfs:Subject for this subject
+     * @return A subject Node if it exists, or null.
+     */
+    private Node findSubject(String subjectKey, String subjectId, Node typeNode, Node parent)
+    {
+        // Load a cached version if we already have one
+        Map<String, Node> cache = this.subjectCache.get();
+        if (cache.containsKey(subjectKey)) {
+            return cache.get(subjectKey);
+        }
+
+        String query = String.format("select n from [lfs:Subject] as n where n.identifier = '%s'",
+            subjectId.replace("'", "''"));
+        try {
+            if (typeNode != null) {
+                query += " and n.type = '" + typeNode.getProperty("jcr:uuid").getValue() + "'";
+            }
+            if (parent != null) {
+                query += " and n.parents = '" + parent.getProperty("jcr:uuid").getValue() + "'";
+            }
+        } catch (RepositoryException ex) {
+            // No change to query
+        }
+
+        try {
+            Query queryObj = this.queryManager.get().createQuery(query, "JCR-SQL2");
+            queryObj.setLimit(1);
+            NodeIterator nodeResult = queryObj.execute().getNodes();
+
+            // If a result was found,  cache it and return
+            if (nodeResult.hasNext()) {
+                Node subject = nodeResult.nextNode();
+                cache.put(subjectKey, subject);
+                return subject;
+            }
+        } catch (RepositoryException ex) {
+            // Could not find subject, return null
+        }
+        return null;
+    }
+
+    /***
+     * Create a new subject.
+     * @param subjectId The identifier for the subject
+     * @param typeNode The node of the lfs:SubjectType for this subject
+     * @param parent The parent of this subject
+     * @param subjectKey A string to identify this subject by in the cache
+     * @return A new subject Node if one could be made, or null.
+     */
+    private Node createSubject(String subjectKey, String subjectId, Node typeNode, Node parent)
+    {
         final Map<String, Object> subjectProperties = new LinkedHashMap<>();
         subjectProperties.put("jcr:primaryType", "lfs:Subject");
-        subjectProperties.put("type", this.subjectType.get());
         subjectProperties.put("identifier", subjectId);
+        subjectProperties.put("type", typeNode);
+        if (parent != null) {
+            subjectProperties.put("parents", parent);
+        }
         try {
-            return this.resolver.get()
-                .create(this.subjectsHomepage.get(), UUID.randomUUID().toString(), subjectProperties);
+            Node subject = this.resolver.get().create(this.subjectsHomepage.get(), UUID.randomUUID().toString(),
+                subjectProperties).adaptTo(Node.class);
+            this.subjectCache.get().put(subjectKey, subject);
+            return subject;
         } catch (PersistenceException e) {
-            LOGGER.warn("Unexpected exception while creating a new node for Subject [{}]: {}", subjectId,
-                e.getMessage());
             return null;
         }
     }
@@ -640,17 +756,30 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * Looks for a Subject Identifier in the given data row.
      *
      * @param row the input CSV row to process, where the affected Subject identifier is to be found
+     * @param typeNode Subject type node
      * @return a subject identifier, or {@code null} if one cannot be found
      */
-    private String findSubjectId(final CSVRecord row)
+    private String findSubjectId(CSVRecord row, Node typeNode)
     {
-        final String result = SUBJECT_COLUMN_LABELS.stream().map(label -> {
+        String label;
+        try {
+            label = typeNode.getProperty("label").getString();
+        } catch (RepositoryException ex) {
+            return null;
+        }
+
+        String result = null;
+        String[] suffices = {"", " ID"};
+        for (String suffix: suffices) {
             try {
-                return row.get(label);
+                result = row.get(label + suffix);
+                if (StringUtils.isNotBlank(result)) {
+                    break;
+                }
             } catch (IllegalArgumentException ex) {
-                return null;
+                // Column is not mapped, continue;
             }
-        }).filter(Objects::nonNull).findFirst().orElse(row.get(0));
+        }
         return result;
     }
 }
