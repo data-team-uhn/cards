@@ -17,8 +17,6 @@
 //  under the License.
 //
 
-import { warningColor } from "../../../../../../commons/src/main/frontend/src/themeStyle";
-
 // Props used in grid containers for displaying Form entries
 export const FORM_ENTRY_CONTAINER_PROPS = {
     direction: "column",
@@ -216,6 +214,9 @@ const questionnaireStyle = theme => ({
         backgroundColor: "white",
         opacity: 1,
         zIndex: "1010"
+    },
+    formProvider: {
+        paddingTop: theme.spacing(20)
     },
     iconButton: {
         float: "right"

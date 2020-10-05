@@ -107,14 +107,12 @@ function DeleteButton(props) {
   }
 
   let handleDelete = () => {
-    let request_data = new FormData();
     let url = new URL(entryPath, window.location.origin);
     if (deleteRecursive) {
       url.searchParams.set("recursive", true);
     }
     fetch( url, {
       method: 'DELETE',
-      body: request_data,
       headers: {
         Accept: "application/json"
       }
