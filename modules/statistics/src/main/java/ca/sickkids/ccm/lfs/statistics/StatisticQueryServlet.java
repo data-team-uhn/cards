@@ -155,7 +155,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 addDataSplit(dataById, builder);
             }
             else {
-                addData(answers, builder); // TODO use addDataSplit ? use dataById somehow
+                addData(answers, builder);
             }
 
             // Write the output
@@ -167,6 +167,14 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
     }
 
+    /**
+     * Split: Get all answers that have a given question filled out
+     * @param data the map that the return values will be added to
+     * @param type given type (x or split)
+     * @param question The question node that the answers is to
+     * @param resolver
+     * @return map containing all question nodes and their given type
+     */
     private Map<Resource, String> getAnswersWithType(Map<Resource, String> data, String type, Node question, 
         ResourceResolver resolver) throws RepositoryException
     {
@@ -183,7 +191,13 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
         return data;
     }
-
+    /**
+     * Split: Filter the given iterator of resources to only include resources whose parent is a Form, whose
+     * Subject's type is equal to the given subjectType.
+     * @param data
+     * @param subjectType
+     * @return
+     */
     private Map<String, Map<Resource, String>> filterAnswersWithType(Map<Resource,String> data, Node subjectType)
         throws RepositoryException
     {
@@ -221,18 +235,18 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         return newData;
     }
 
-    // WITH split
+    /**
+     * Split: Aggregate the counts
+     * @param xVar
+     * @param splitVar
+     * @param counts
+     * @return map of {x var, {split var, count}}
+     */
     private Map<String, Map<String, Integer>> aggregateSplitCounts(Resource xVar, Resource splitVar,
         Map<String, Map<String, Integer>> counts) throws RepositoryException
     {
-        // Map<String, Map<String, Integer>> counts = new HashMap<>();
-
         Map<String, Integer> innerCount = new HashMap<>();
 
-        // Iterator<Map.Entry<Resource, Resource>> forms = eachForm.entrySet().iterator();
-
-        // while (forms.hasNext()) {
-        //     Map.Entry<Resource,Resource> form = forms.next();
         Node xAnswer = xVar.adaptTo(Node.class);
         Node splitAnswer = splitVar.adaptTo(Node.class);
 
@@ -257,16 +271,16 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             LOGGER.error("Value does not exist for question: {}", e.getMessage(), e);
         }
 
-        // }
-
         return counts;
     }
 
-     private void addDataSplit(Map<String, Map<Resource, String>> data, JsonObjectBuilder builder) throws RepositoryException
+    /**
+     * Split: add aggregated data to object builder, to be displayed
+     * @param data
+     * @param builder
+     */
+    private void addDataSplit(Map<String, Map<Resource, String>> data, JsonObjectBuilder builder) throws RepositoryException
     {
-        // Map<String, Map<Node, Node>> everyForm = new HashMap<>(); // create <formID, <xVar, splitVar>>
-
-        Map<Resource, Resource> eachForm = new HashMap<>();
         Map<String, Map<String, Integer>> counts = new HashMap<>();
 
         for (Map.Entry<String, Map<Resource, String>> entries : data.entrySet()) {
@@ -274,9 +288,6 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             Resource splitVar = null;
 
             for (Map.Entry<Resource, String> entry : entries.getValue().entrySet()) {
-                // Node testNode = entry.getKey().adaptTo(Node.class);
-                // String testString = testNode.getProperty("value").getString();
-
                 if ("x".equals(entry.getValue())) {
                     xVar = entry.getKey();
                 }
@@ -286,7 +297,6 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             }
             counts = aggregateSplitCounts(xVar, splitVar, counts);
         }
-
         JsonObjectBuilder outerBuilder = Json.createObjectBuilder();
 
         for(Map.Entry<String, Map<String,Integer>> t:counts.entrySet()) {
@@ -295,19 +305,17 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             JsonObjectBuilder keyBuilder = Json.createObjectBuilder();
 
             for (Map.Entry<String,Integer> e : t.getValue().entrySet()) {
-                System.out.println("OuterKey: " + key + " InnerKey: " + e.getKey()+ " VALUE:" +e.getValue());
                 // inner object
                 keyBuilder.add(e.getKey(), e.getValue());
             }
             // outer object
             outerBuilder.add(key, keyBuilder.build());
         }
-
         builder.add("data", outerBuilder.build());
     }
 
     /**
-     * Get all answers that have a given question filled out, if split variable does NOT exist.
+     * No Split: Get all answers that have a given question filled out
      *
      * @param question The question node that the answers is to
      * @param resolver A reference to a ResourceResolver
@@ -323,24 +331,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Get all answers that have a given question filled out, if split variable exists.
-     *
-     * @param question The question node that the answers is to
-     * @param resolver A reference to a ResourceResolver
-     * @return An iterator of Resources that are Nodes of answers to the given question
-     */
-    private Iterator<Resource> getAnswersToQuestion(Node question, Node split, ResourceResolver resolver) throws RepositoryException
-    {
-        final StringBuilder query =
-            // We select all answers that answer our question
-            new StringBuilder("select n from [lfs:Answer] as n where n.'question'='"
-                + question.getIdentifier() + "' OR n.'question'='" 
-                + split.getIdentifier() + "'");
-        return resolver.findResources(query.toString(), Query.JCR_SQL2);
-    }
-
-    /**
-     * Filter the given iterator of resources to only include resources whose parent is a Form, whose
+     * No Split: Filter the given iterator of resources to only include resources whose parent is a Form, whose
      * Subject's type is equal to the given subjectType.
      *
      * @param answers The iterator of answers to filter
@@ -365,7 +356,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Aggregate the given Iterator of answers to a map of counts for each unique value.
+     * No Split: Aggregate the given Iterator of answers to a map of counts for each unique value
      *
      * @param answers An iterator of lfs:Answer objects
      * @return A map of values -> counts
@@ -393,7 +384,11 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         return counts;
     }
 
-    // if split variable does NOT exist
+    /**
+     * No Split: Add the counts to the data object
+     * @param answers
+     * @param builder
+     */
     private void addData(Iterator<Resource> answers, JsonObjectBuilder builder) throws RepositoryException
     {
         // Aggregate our counts
