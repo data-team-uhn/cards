@@ -114,14 +114,11 @@ export default function OwlInstaller(props) {
           </Tooltip>
         </label>
 
-        <input style={{ display: 'none' }} name="identifier" type="text" value={owlIdentifier}/>
-        {((phase == "Installing") ? (<TextField disabled variant="outlined" onChange={(evt) => {setOwlIdentifier(evt.target.value)}} label="Identifier"/>) : (<TextField variant="outlined" onChange={(evt) => {setOwlIdentifier(evt.target.value); setPhase("Install")}} label="Identifier"/>))}
+        {((phase == "Installing") ? (<TextField disabled variant="outlined" onChange={(evt) => {setOwlIdentifier(evt.target.value)}} value={owlIdentifier} name="identifier" label="Identifier"/>) : (<TextField variant="outlined" onChange={(evt) => {setOwlIdentifier(evt.target.value); setPhase("Install")}} value={owlIdentifier} name="identifier" label="Identifier"/>))}
 
-        <input style={{ display: 'none' }} name="vocabName" type="text" value={owlName}/>
-        {((phase == "Installing") ? (<TextField disabled variant="outlined" onChange={(evt) => {setOwlName(evt.target.value)}} label="Name"/>) : (<TextField variant="outlined" onChange={(evt) => {setOwlName(evt.target.value); setPhase("Install")}} label="Name"/>))}
+        {((phase == "Installing") ? (<TextField disabled variant="outlined" onChange={(evt) => {setOwlName(evt.target.value)}} value={owlName} name="vocabName" label="Name"/>) : (<TextField variant="outlined" onChange={(evt) => {setOwlName(evt.target.value); setPhase("Install")}} value={owlName} name="vocabName" label="Name"/>))}
 
-        <input style={{ display: 'none' }} name="version" type="text" value={owlVersion}/>
-        {((phase == "Installing") ? (<TextField disabled variant="outlined" onChange={(evt) => {setOwlVersion(evt.target.value)}} label="Version"/>) : (<TextField variant="outlined" onChange={(evt) => {setOwlVersion(evt.target.value); setPhase("Install")}} label="Version"/>))}
+        {((phase == "Installing") ? (<TextField disabled variant="outlined" onChange={(evt) => {setOwlVersion(evt.target.value)}} value={owlVersion} name="version" label="Version"/>) : (<TextField variant="outlined" onChange={(evt) => {setOwlVersion(evt.target.value); setPhase("Install")}} value={owlVersion} name="version" label="Version"/>))}
 
         <label htmlFor="owl-install">
           <input style={{ display: 'none' }} id="owl-install" name="owl-install" type={(phase == "Install") ? "submit" : "button"}/>
