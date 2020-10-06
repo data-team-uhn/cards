@@ -1,15 +1,9 @@
 {
     "jcr:primaryType": "lfs:Extension",
     "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
-    "lfs:targetURL": "Statistics",
-    "lfs:extensionName": "Statistics",
+    "lfs:extensionName": "Admin Statistics",
+    "lfs:targetURL": "/content.html/admin/Statistics",
     "lfs:icon": "asset:lfs-statistics.subjectTypeIcon.js",
-    "lfs:extensionRenderURL": "asset:lfs-statistics.AdminStatistics.js",
-    "lfs:defaultOrder": 96,
     "lfs:hint": "Configure statistics to be displayed.",
-    "jcr:content": {
-        "jcr:primaryType": "nt:resource",
-        "jcr:data": "",
-        "jcr:mimeType": "text/html"
-    }
+    "lfs:defaultOrder": 20
 }

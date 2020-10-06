@@ -29,6 +29,24 @@ import {
 // } from "recharts";
 import statisticsStyle from "./statisticsStyle.jsx";
 
+// const data = [
+//   {
+//     "name": "Page A",
+//     "uv": 4000,
+//     "pv": 2400
+//   },
+//   {
+//     "name": "Page B",
+//     "uv": 3000,
+//     "pv": 1398
+//   },
+//   {
+//     "name": "Page C",
+//     "uv": 2000,
+//     "pv": 9800
+//   }
+// ]
+
 function UserStatistics(props) {
   const { classes } = props;
   let [ currentStatistic, setCurrentStatistic ] = useState([]);
@@ -118,15 +136,15 @@ function UserStatistics(props) {
               <Card>
                 <CardContent>
                     <Grid container alignItems='flex-end' spacing={2}>
-                    {/* <BarChart width={730} height={250} data={stat}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="M" fill="#8884d8" />
-                      <Bar dataKey="F" fill="#82ca9d" />
-                    </BarChart> */}
+                      {/* <BarChart width={730} height={250} data={data}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="uv" fill="#8884d8" />
+                        <Bar dataKey="pv" fill="#82ca9d" />
+                      </BarChart> */}
                     </Grid>
                 </CardContent>
               </Card>

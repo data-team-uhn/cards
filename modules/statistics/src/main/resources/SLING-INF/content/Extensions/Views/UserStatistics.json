@@ -1,8 +1,7 @@
 {
     "jcr:primaryType": "lfs:Extension",
-    "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+    "lfs:extensionPointId": "lfs/coreUI/view",
     "lfs:extensionName": "User Statistics",
     "lfs:targetURL": "/content.html/Statistics/User",
-    "lfs:icon": "asset:lfs-statistics.subjectsIcon.js",
-    "lfs:defaultOrder": 7
+    "lfs:extensionRenderURL": "asset:lfs-statistics.UserStatistics.js"
 }
