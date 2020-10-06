@@ -127,7 +127,7 @@ public class FileUploadIndexer implements VocabularyIndexer
             } else {
                 description = new VocabularyDescriptionBuilder()
                     .withSource("fileupload")
-                    .withSourceFormat("OWL")
+                    .withSourceFormat(OntologyFormatDetection.getSourceFormat(uploadedOntology.getFileName()))
                     .withIdentifier(identifier)
                     .withName(vocabName)
                     .withVersion(version)
