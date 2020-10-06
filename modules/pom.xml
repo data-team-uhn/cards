@@ -38,6 +38,7 @@
     <module>ui-extension</module>
     <module>login</module>
     <module>homepage</module>
+    <module>pedigree</module>
     <module>data-entry</module>
     <module>ldap-support</module>
     <module>utils</module>
