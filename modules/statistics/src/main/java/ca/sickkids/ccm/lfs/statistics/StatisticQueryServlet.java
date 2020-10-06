@@ -33,6 +33,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.stream.JsonParser;
@@ -297,21 +298,21 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             }
             counts = aggregateSplitCounts(xVar, splitVar, counts);
         }
-        JsonObjectBuilder outerBuilder = Json.createObjectBuilder();
 
+        JsonArrayBuilder arrBuilder = Json.createArrayBuilder();
         for(Map.Entry<String, Map<String,Integer>> t:counts.entrySet()) {
-            String key = t.getKey();
-
+            // inner object
             JsonObjectBuilder keyBuilder = Json.createObjectBuilder();
-
+            String key = t.getKey();
+            keyBuilder.add("name", key);
             for (Map.Entry<String,Integer> e : t.getValue().entrySet()) {
-                // inner object
                 keyBuilder.add(e.getKey(), e.getValue());
             }
-            // outer object
-            outerBuilder.add(key, keyBuilder.build());
+            // add object to array
+            arrBuilder.add(keyBuilder.build());
         }
-        builder.add("data", outerBuilder.build());
+
+        builder.add("data", arrBuilder.build());
     }
 
     /**
@@ -401,7 +402,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             String key = keysMap.next();
             dataBuilder.add(key, counts.get(key));
         }
-        builder.add("data", dataBuilder.build());
+        builder.add("data", dataBuilder.build()); // TODO: change this to an array! 
     }
 
     /**

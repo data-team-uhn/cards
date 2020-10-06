@@ -24,6 +24,9 @@ import {
   withStyles, 
   Typography 
 } from "@material-ui/core";
+// import {
+//   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+// } from "recharts";
 import statisticsStyle from "./statisticsStyle.jsx";
 
 function UserStatistics(props) {
@@ -102,6 +105,10 @@ function UserStatistics(props) {
     data.map((stat) => fetchStat(stat))
   }
 
+  // TODO: 'Bar' needs to be made dynamic
+  // as object gets added, get various values of bar and add ?
+  // or query to see what possible answers of the split var are ? * best
+
   return (
     <React.Fragment>
       <Grid container spacing={3}>
@@ -111,7 +118,15 @@ function UserStatistics(props) {
               <Card>
                 <CardContent>
                     <Grid container alignItems='flex-end' spacing={2}>
-                      <Grid item xs={12}><Typography variant="body2">{stat}</Typography></Grid>
+                    {/* <BarChart width={730} height={250} data={stat}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="M" fill="#8884d8" />
+                      <Bar dataKey="F" fill="#82ca9d" />
+                    </BarChart> */}
                     </Grid>
                 </CardContent>
               </Card>
