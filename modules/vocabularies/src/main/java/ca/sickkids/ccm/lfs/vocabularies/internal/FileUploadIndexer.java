@@ -21,18 +21,12 @@ package ca.sickkids.ccm.lfs.vocabularies.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.request.RequestParameter;
@@ -211,47 +205,7 @@ public class FileUploadIndexer implements VocabularyIndexer
      */
     private void createVocabularyTermNode(VocabularyTermSource term)
     {
-        try {
-            Node vocabularyTermNode;
-            try {
-                //Hack to deal with testing with limited RAM
-                /*
-                if (!(term.getLabel().startsWith("As"))) {
-                    return;
-                }
-                */
-                vocabularyTermNode = this.vocabularyNode.get()
-                                         .addNode("./" + term.getId()
-                                         .replaceAll("[^A-Za-z0-9_\\.]", ""), "lfs:VocabularyTerm");
-            } catch (ItemExistsException e) {
-                // Sometimes terms appear twice; we'll just update the existing node
-                vocabularyTermNode = this.vocabularyNode.get().getNode(term.getId());
-            }
-            vocabularyTermNode.setProperty("identifier", term.getId());
-
-            vocabularyTermNode.setProperty("label", term.getLabel());
-            vocabularyTermNode.setProperty("parents", term.getParents());
-            vocabularyTermNode.setProperty("ancestors", term.getAncestors());
-
-            Iterator<Map.Entry<String, Collection<String>>> it = term.getAllProperties().asMap().entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<String, Collection<String>> entry = it.next();
-                String[] valuesArray = entry.getValue().toArray(ArrayUtils.EMPTY_STRING_ARRAY);
-                // Sometimes the source may contain more than one label or description, but we can't allow that.
-                // Always use one value for these special fields.
-                if (("label".equals(entry.getKey()) || "description".equals(entry.getKey()))
-                        && valuesArray.length == 1) {
-                    vocabularyTermNode.setProperty(entry.getKey(), valuesArray[0]);
-                } else {
-                    vocabularyTermNode.setProperty(entry.getKey(), valuesArray);
-                }
-            }
-        } catch (RepositoryException e) {
-            // If the identifier exists, print the identifier in the error message to identify node
-            LOGGER.warn("Failed to create VocabularyTerm node {}: {}", StringUtils.defaultString(term.getId()),
-                e.getMessage());
-
-        }
+        OntologyIndexerUtils.createVocabularyTermNode(term, this.vocabularyNode);
     }
 
     /**
