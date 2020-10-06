@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -127,7 +126,7 @@ public class BioOntologyIndexer implements VocabularyIndexer
             temporaryFile = this.repository.downloadVocabularySource(description);
 
             // Create a new Vocabulary node representing this vocabulary
-            this.vocabularyNode.set(createVocabularyNode(homepage, description));
+            this.vocabularyNode.set(OntologyIndexerUtils.createVocabularyNode(homepage, description));
 
             // Parse the source file and create VocabularyTerm node children
             parser.parse(temporaryFile, description, this::createVocabularyTermNode);
@@ -137,7 +136,7 @@ public class BioOntologyIndexer implements VocabularyIndexer
              * the repository will remain in its original state. Lucene indexing is automatically performed by the
              * Jackrabbit Oak repository when this is performed.
              */
-            saveSession(homepage);
+            OntologyIndexerUtils.saveSession(homepage);
 
             // Success response json
             this.utils.writeStatusJson(request, response, true, null);
@@ -152,56 +151,8 @@ public class BioOntologyIndexer implements VocabularyIndexer
         }
     }
 
-    /**
-     * Creates a <code>Vocabulary</code> node that represents the current vocabulary instance with the identifier as the
-     * name of the node.
-     *
-     * @param homepage <code>VocabulariesHomepage</code> node instance that will be parent of the new vocabulary node
-     * @param description the vocabulary description, holding all the relevant information about the vocabulary
-     * @return the <code>Vocabulary</code> node that was created
-     * @throws VocabularyIndexException when node cannot be created
-     */
-    private Node createVocabularyNode(final Node homepage, final VocabularyDescription description)
-        throws VocabularyIndexException
-    {
-        try {
-            Node result = homepage.addNode("./" + description.getIdentifier(), "lfs:Vocabulary");
-            result.setProperty("identifier", description.getIdentifier());
-            result.setProperty("name", description.getName());
-            result.setProperty("description", description.getDescription());
-            result.setProperty("source", description.getSource());
-            result.setProperty("version", description.getVersion());
-            result.setProperty("website", description.getWebsite());
-            result.setProperty("citation", description.getCitation());
-            return result;
-        } catch (RepositoryException e) {
-            String message = "Failed to create Vocabulary node: " + e.getMessage();
-            LOGGER.error(message, e);
-            throw new VocabularyIndexException(message, e);
-        }
-    }
-
     private void createVocabularyTermNode(VocabularyTermSource term)
     {
         OntologyIndexerUtils.createVocabularyTermNode(term, this.vocabularyNode);
-    }
-
-    /**
-     * Saves the JCR session of the homepage node that was obtained from the resource of the request. If this is
-     * successful, then the changes made already will be applied to the JCR repository. If not, then all of the changes
-     * will be discarded, reverting to the original state.
-     *
-     * @param vocabulariesHomepage the <code>VocabulariesHomepage</code> node obtained from the request
-     * @throws VocabularyIndexException if session is not successfully saved
-     */
-    private void saveSession(Node vocabulariesHomepage)
-        throws VocabularyIndexException
-    {
-        try {
-            vocabulariesHomepage.getSession().save();
-        } catch (RepositoryException e) {
-            String message = "Failed to save session: " + e.getMessage();
-            throw new VocabularyIndexException(message, e);
-        }
     }
 }

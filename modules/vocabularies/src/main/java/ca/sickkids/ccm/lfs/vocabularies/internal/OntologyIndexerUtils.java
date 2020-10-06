@@ -32,6 +32,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescription;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
 
 public final class OntologyIndexerUtils
@@ -86,6 +88,54 @@ public final class OntologyIndexerUtils
             LOGGER.warn("Failed to create VocabularyTerm node {}: {}", StringUtils.defaultString(term.getId()),
                 e.getMessage());
 
+        }
+    }
+
+    /**
+     * Creates a <code>Vocabulary</code> node that represents the current vocabulary instance with the identifier as the
+     * name of the node.
+     *
+     * @param homepage <code>VocabulariesHomepage</code> node instance that will be parent of the new vocabulary node
+     * @param description the vocabulary description, holding all the relevant information about the vocabulary
+     * @return the <code>Vocabulary</code> node that was created
+     * @throws VocabularyIndexException when node cannot be created
+     */
+    public static Node createVocabularyNode(final Node homepage, final VocabularyDescription description)
+        throws VocabularyIndexException
+    {
+        try {
+            Node result = homepage.addNode("./" + description.getIdentifier(), "lfs:Vocabulary");
+            result.setProperty("identifier", description.getIdentifier());
+            result.setProperty("name", description.getName());
+            result.setProperty("description", description.getDescription());
+            result.setProperty("source", description.getSource());
+            result.setProperty("version", description.getVersion());
+            result.setProperty("website", description.getWebsite());
+            result.setProperty("citation", description.getCitation());
+            return result;
+        } catch (RepositoryException e) {
+            String message = "Failed to create Vocabulary node: " + e.getMessage();
+            LOGGER.error(message, e);
+            throw new VocabularyIndexException(message, e);
+        }
+    }
+
+    /**
+     * Saves the JCR session of the homepage node that was obtained from the resource of the request. If this is
+     * successful, then the changes made already will be applied to the JCR repository. If not, then all of the changes
+     * will be discarded, reverting to the original state.
+     *
+     * @param vocabulariesHomepage the <code>VocabulariesHomepage</code> node obtained from the request
+     * @throws VocabularyIndexException if session is not successfully saved
+     */
+    public static void saveSession(Node vocabulariesHomepage)
+        throws VocabularyIndexException
+    {
+        try {
+            vocabulariesHomepage.getSession().save();
+        } catch (RepositoryException e) {
+            String message = "Failed to save session: " + e.getMessage();
+            throw new VocabularyIndexException(message, e);
         }
     }
 }
