@@ -78,7 +78,7 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>gender</value>
+			<value>Gender</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -92,7 +92,7 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>ethnicity</value>
+			<value>Ethnicity</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -106,7 +106,7 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>race</value>
+			<value>Race</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -116,11 +116,11 @@
 		</property>
 	</node>
 	<node>
-		<name>fundamental cardiac diagnosis</name>
+		<name>fundcard</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>fundcard</value>
+			<value>Fundamental Cardiac Diagnosis</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -130,11 +130,11 @@
 		</property>
 	</node>
 	<node>
-		<name>premature birth</name>
+		<name>preterm</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>preterm</value>
+			<value>Premature Birth</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -148,7 +148,7 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>genetic diagnosis</value>
+			<value>Genetic Diagnosis</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -384,7 +384,7 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>high risk documentation</value>
+			<value>High risk documentation</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -484,7 +484,7 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>referal placed by which provider</value>
+			<value>Referal placed by which provider</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -555,7 +555,7 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>seen in ND clinic</value>
+			<value>Seen in ND clinic</value>
 			<type>String</type>
 		</property>
 		<property>

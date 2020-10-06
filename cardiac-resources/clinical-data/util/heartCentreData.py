@@ -19,6 +19,7 @@
 
 import json
 import csv
+import regex
 
 
 # Creates conditional statements from ParentLogic to be used by insert_conditional
@@ -46,8 +47,9 @@ def prepare_conditional(question, row):
 # Updates the question with lfs:Conditionals from the output of prepare_conditional
 def insert_conditional(parent_logic, question, title):
     # Split the conditional into two operands and an operator
-    parent_logic = parent_logic.partition('=')
+    parent_logic = partition_parent_logic(parent_logic)
     operand_a = parent_logic[0].strip()
+    operator = parent_logic[1]
     operand_b = parent_logic[2].strip()
     # If the first operand is a comma-separated list, create a separate conditional for each
     # Enclose the conditionals in a lfs:ConditionalGroup
@@ -60,20 +62,34 @@ def insert_conditional(parent_logic, question, title):
             question['conditionalGroup'].update({'requireAll': True})
         operand_a_list = list(operand_a.replace(' ', '').split(','))
         for index, item in enumerate(operand_a_list):
-            question['conditionalGroup'].update(create_conditional(item, operand_b, 'condition' + str(index)))
+            question['conditionalGroup'].update(create_conditional(item, operator, operand_b, 'condition' + str(index)))
     # If the second operand is a comma-separated list, create a separate conditional for each
     # Enclose the conditionals in a lfs:ConditionalGroup
     elif ',' in operand_b:
         question.update({'conditionalGroup': {'jcr:primaryType': 'lfs:ConditionalGroup'}})
+        # The keyword 'all' in the ParentLogic should correspond to 'requireAll' == true
+        # If it is present, remove it from the operand and add 'requireAll' to the conditional group
+        if 'all' in operand_b:
+            operand_b = operand_b[:-3]
+            question['conditionalGroup'].update({'requireAll': True})
         operand_b_list = list(operand_b.replace(' ', '').split(','))
         for index, item in enumerate(operand_b_list):
-            question['conditionalGroup'].update(create_conditional(operand_a, item, 'condition' + str(index)))
+            question['conditionalGroup'].update(create_conditional(operand_a, operator, item, 'condition' + str(index)))
     else:
-        question.update(create_conditional(operand_a, operand_b, 'condition' + title))
+        question.update(create_conditional(operand_a, operator, operand_b, 'condition' + title))
 
+def partition_parent_logic(parent_logic):
+    match = regex.search('=|<>|<|>', parent_logic)
+    if not match:
+        return parent_logic, '', ''
+
+    seperator = match.group(0)
+    parts = regex.split(seperator, parent_logic, 1)
+
+    return parts[0], seperator, parts[1]
 
 # Returns a dict object that is formatted as an lfs:Conditional
-def create_conditional(operand_a, operand_b, title):
+def create_conditional(operand_a, operator, operand_b, title):
     is_reference = False
     # NOTE: IN THE CASE OF A REFRENCE TO A QUESTION WHOSE POSSIBLE VALUES ARE YES/NO/OTHER
     # YOU WILL HAVE TO MANUALLY CHANGE THE CONDITIONALS SINCE THEY WILL BE REPLACED WITH T/F
@@ -90,7 +106,7 @@ def create_conditional(operand_a, operand_b, title):
             'value': [operand_a.lower()],
             'isReference': True
         },
-        'comparator': '=',
+        'comparator': operator,
         'operandB': {
             'jcr:primaryType': 'lfs:ConditionalValue',
             'value': [operand_b_updated],
@@ -177,7 +193,7 @@ def tsv_to_json(title):
         reader = csv.DictReader(tsvfile, dialect='excel-tab')
         for row in reader:
             question = row['nameShort'].strip().lower()
-            if question:
+            if question and (row['UserFormatType'] or row['Categorical list']):
                 questionnaire[question] = {
                     'jcr:primaryType': 'lfs:Question',
                     'text': row['nameFull'].strip() or question,
