@@ -90,7 +90,8 @@ public class EbiRepositoryHandler implements RepositoryHandler
                     .withDescription(configJson.getString("description", null))
                     .withWebsite(configJson.getString("homepage", null))
                     .withSource(configJson.getString("fileLocation", null))
-                    .withSourceFormat(getSourceFormat(configJson.getString("fileLocation", null)));
+                    .withSourceFormat(OntologyFormatDetection.getSourceFormat(
+                        configJson.getString("fileLocation", null)));
                 return desc.build();
             } else {
                 // If the HTTP request is not successful, throw an exception
@@ -145,15 +146,5 @@ public class EbiRepositoryHandler implements RepositoryHandler
             LOGGER.warn(message, e);
             throw new IOException(message, e);
         }
-    }
-
-    private String getSourceFormat(String sourceURL)
-    {
-        if (sourceURL != null && sourceURL.endsWith(".obo")) {
-            return "OBO";
-        }
-        // TODO Can files ending in .rdf be parsed just like .owl files?
-        // They use rdfs:Class instead of owl:Class, but otherwise the structure is similar
-        return "OWL";
     }
 }
