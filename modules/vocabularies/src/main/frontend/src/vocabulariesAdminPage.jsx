@@ -183,7 +183,7 @@ export default function VocabulariesAdminPage() {
 
       <Grid item>
         <Typography variant="h2">
-          Install from OWL file
+          Install from local file
         </Typography>
       </Grid>
 
