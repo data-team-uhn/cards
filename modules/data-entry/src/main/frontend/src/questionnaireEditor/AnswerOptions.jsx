@@ -28,7 +28,7 @@ import {
 } from "@material-ui/core";
 
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
-import uuid from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import CloseIcon from '@material-ui/icons/Close';
 
 let AnswerOptions = (props) => {
@@ -87,7 +87,7 @@ let AnswerOptions = (props) => {
     if (!newValue.includes(tempValue)) {
       setNewUUID(oldUuid => {
         let tempUUID = oldUuid.slice();
-        tempUUID.push(uuid());
+        tempUUID.push(uuidv4());
         return tempUUID;
       });
 

@@ -21,7 +21,7 @@ import { withRouter } from "react-router-dom";
 
 import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Tooltip, TextField, Typography, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import uuid from "uuid/v4";
+import { v4 as uuidv4 } from 'uuid';
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function NewQuestionnaireDialog(props) {
@@ -52,7 +52,7 @@ function NewQuestionnaireDialog(props) {
     setError("");
 
     // Make a POST request to create a new form, with a randomly generated UUID
-    const URL = "/Questionnaires/" + uuid();
+    const URL = "/Questionnaires/" + uuidv4();
     var request_data = new FormData();
     request_data.append('jcr:primaryType', 'lfs:Questionnaire');
     request_data.append('title', title);
