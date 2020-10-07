@@ -106,7 +106,7 @@ export default function OwlInstaller(props) {
 
   return(
     <React.Fragment>
-      <form action="/Vocabularies?source=fileupload&overwrite=true" method="POST" enctype="multipart/form-data" onSubmit={handleSubmit}>
+      <form action="/Vocabularies?source=fileupload&overwrite=true" method="POST" encType="multipart/form-data" onSubmit={handleSubmit}>
         <label htmlFor="owl-file">
           <input style={{ display: 'none' }} id="owl-file" name="filename" onChange={() => {setOwlSelected("OWL Selected")}} type={(phase == "Install") ? "file" : "button"}/>
           <Tooltip title={(phase == "Install") ? "Select a vocabulary to install" : ""}>
