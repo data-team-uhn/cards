@@ -78,14 +78,15 @@ def insert_conditional(parent_logic, question, title):
     else:
         question.update(create_conditional(operand_a, operator, operand_b, 'condition' + title))
 
+# Split the parent_logic entry into 3 parts: The first operand, the operator and the second operand.
 def partition_parent_logic(parent_logic):
     match = regex.search('=|<>|<|>', parent_logic)
     if not match:
+        # No operator detected, return everything as a single operand
         return parent_logic, '', ''
 
     seperator = match.group(0)
     parts = regex.split(seperator, parent_logic, 1)
-
     return parts[0], seperator, parts[1]
 
 # Returns a dict object that is formatted as an lfs:Conditional
@@ -99,7 +100,7 @@ def create_conditional(operand_a, operator, operand_b, title):
         operand_b_updated = "0"
     else:
         operand_b_updated = operand_b
-    return {title: {
+    result = {
         'jcr:primaryType': 'lfs:Conditional',
         'operandA': {
             'jcr:primaryType': 'lfs:ConditionalValue',
@@ -112,7 +113,10 @@ def create_conditional(operand_a, operator, operand_b, title):
             'value': [operand_b_updated],
             'isReference': is_reference
         }
-    }}
+    }
+    # If the operator is <>, make sure that all entries for operand_a meet that requirement
+    if (operator == "<>"):result['operandA']['requireAll'] = True
+    return {title: result}
 
 
 # Adds a minAnswers property if 'MissingData' contains the keyword 'illegal'

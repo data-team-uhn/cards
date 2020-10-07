@@ -2504,6 +2504,11 @@
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
+				<property>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>operandB</name>
@@ -4762,6 +4767,11 @@
 				</property>
 				<property>
 					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
+					<name>requireAll</name>
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
@@ -7495,6 +7505,11 @@
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
+				<property>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>operandB</name>
@@ -9863,6 +9878,11 @@
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
+				<property>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>operandB</name>
@@ -11308,6 +11328,11 @@
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
+					<property>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
 				</node>
 				<node>
 					<name>operandB</name>
@@ -11346,6 +11371,11 @@
 					</property>
 					<property>
 						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+					<property>
+						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -11390,6 +11420,11 @@
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
+					<property>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
 				</node>
 				<node>
 					<name>operandB</name>
@@ -11428,6 +11463,11 @@
 					</property>
 					<property>
 						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+					<property>
+						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -19748,6 +19788,11 @@
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
+					<property>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
 				</node>
 				<node>
 					<name>operandB</name>
@@ -19786,6 +19831,11 @@
 					</property>
 					<property>
 						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+					<property>
+						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -20711,6 +20761,11 @@
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
+					<property>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
 				</node>
 				<node>
 					<name>operandB</name>
@@ -20752,6 +20807,11 @@
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
+					<property>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
 				</node>
 				<node>
 					<name>operandB</name>
@@ -20790,6 +20850,11 @@
 					</property>
 					<property>
 						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+					<property>
+						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -21814,6 +21879,11 @@
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
+				<property>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>operandB</name>
@@ -22751,6 +22821,11 @@
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
+					<property>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
 				</node>
 				<node>
 					<name>operandB</name>
@@ -22789,6 +22864,11 @@
 					</property>
 					<property>
 						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+					<property>
+						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -28767,6 +28847,11 @@
 				</property>
 				<property>
 					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
+					<name>requireAll</name>
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
