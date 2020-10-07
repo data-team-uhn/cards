@@ -1486,7 +1486,7 @@
 			<property>
 				<name>HP</name>
 				<values>
-					<value>HP:0000118</value>
+					<value>HP_0000118</value>
 				</values>
 				<type>String</type>
 			</property>
