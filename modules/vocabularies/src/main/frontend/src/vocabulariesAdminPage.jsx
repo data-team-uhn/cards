@@ -151,7 +151,13 @@ export default function VocabulariesAdminPage() {
   }
 
   if (bioPortalApiKey === null) {
-    fetchBioPortalApiKey(setBioPortalApiKey, () => { console.error("Can't fetch bioPortal API key"); });
+    /* If the BioPortal API key cannot be loaded, assume the remote (empty)
+     * data has been loaded.
+     */
+    fetchBioPortalApiKey(setBioPortalApiKey, () => {
+        setRemoteLoaded(true);
+        console.error("Can't fetch bioPortal API key");
+    });
   }
 
   return (
@@ -169,7 +175,7 @@ export default function VocabulariesAdminPage() {
         vocabList={localVocabList}
         setVocabList={processLocalVocabList}
         acronymPhaseObject={acronymPhaseObject}
-        displayTables={true}
+        displayTables={displayTables}
         updateLocalList={updateLocalList}
         addSetter={addSetter}
         setPhase={setPhase}
