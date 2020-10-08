@@ -788,16 +788,14 @@ function SubjectSelectorList(props) {
         title=""
         columns={COLUMNS}
         data={query => {
-            let condition = "";
-            if (allowedTypes?.length || query.search) {
-              condition = " WHERE ";
-            }
+            let conditions = [];
             if (allowedTypes?.length) {
-              condition += "(" + allowedTypes.map((type) => `n.'type' = '${type["jcr:uuid"]}'`).join(" OR ") + ")";
+              conditions.push("(" + allowedTypes.map((type) => `n.'type' = '${type["jcr:uuid"]}'`).join(" OR ") + ")");
             }
             if (query.search) {
-              condition += ` CONTAINS(n.identifier, '*${query.search}*')`;
+              conditions.push(`CONTAINS(n.identifier, '*${query.search}*')`);
             }
+            let condition = (conditions.length === 0) ? "" : ` WHERE ${conditions.join(" AND ")}`
 
             // fetch all subjects
             let url = createQueryURL( condition, "lfs:Subject");
