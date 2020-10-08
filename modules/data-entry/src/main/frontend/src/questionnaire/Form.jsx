@@ -237,7 +237,6 @@ function Form (props) {
             : ""
           }
         </Grid>
-        <div className={classes.formProvider}></div>
         <FormProvider>
           <SelectorDialog
             allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}

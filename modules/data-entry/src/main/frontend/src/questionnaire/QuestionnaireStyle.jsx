@@ -220,9 +220,6 @@ const questionnaireStyle = theme => ({
         opacity: 1,
         zIndex: "1010"
     },
-    formProvider: {
-        paddingTop: theme.spacing(20)
-    },
     iconButton: {
         float: "right"
     },
