@@ -87,7 +87,7 @@ export default function OwlInstaller(props) {
   const classes = useStyles();
 
   let [ phase, setPhase ] = useState("Install");
-  let [ owlSelected, setOwlSelected ] = useState("Select OWL");
+  let [ owlSelected, setOwlSelected ] = useState("Select File");
   let [ owlIdentifier, setOwlIdentifier ] = useState("");
   let [ owlName, setOwlName ] = useState("");
   let [ owlVersion, setOwlVersion ] = useState("");
@@ -108,7 +108,7 @@ export default function OwlInstaller(props) {
     <React.Fragment>
       <form action="/Vocabularies?source=fileupload&overwrite=true" method="POST" encType="multipart/form-data" onSubmit={handleSubmit}>
         <label htmlFor="owl-file">
-          <input style={{ display: 'none' }} id="owl-file" name="filename" onChange={() => {setOwlSelected("OWL Selected")}} type={(phase == "Install") ? "file" : "button"}/>
+          <input style={{ display: 'none' }} id="owl-file" name="filename" onChange={() => {setOwlSelected("File Selected")}} type={(phase == "Install") ? "file" : "button"}/>
           <Tooltip title={(phase == "Install") ? "Select a vocabulary to install" : ""}>
             <Button disabled={(phase == "Installing")} variant="contained" onClick={() => {setPhase("Install")}} color="primary" component="span">{owlSelected}</Button>
           </Tooltip>
