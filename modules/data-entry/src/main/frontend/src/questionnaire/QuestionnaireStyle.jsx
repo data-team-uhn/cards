@@ -276,6 +276,16 @@ const questionnaireStyle = theme => ({
     warningIcon: {
       color: theme.palette.warning.main
     },
+    subjectChip: {
+      color:'white',
+      marginLeft: theme.spacing(2)
+    },
+    warningChip: {
+      backgroundColor: theme.palette.warning.main
+    },
+    errorChip: {
+      backgroundColor: theme.palette.error.main
+    },
     questionnaireDisabledListItem: {
         color: theme.palette.grey["500"]
     },

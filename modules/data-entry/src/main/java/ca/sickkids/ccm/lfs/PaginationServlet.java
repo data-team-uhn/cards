@@ -54,6 +54,8 @@ import org.slf4j.LoggerFactory;
  * <li><tt>limit</tt>: a number representing how many resources to include at most in the result; 10 by default</li>
  * <li><tt>filter</tt>: a (lucene-like) search term, such as {@code germline}, {@code cancer OR tumor},
  * {@code (*blastoma OR *noma OR tumor*) recurrent}; no filter set by default</li>
+ * <li><tt>includeallstatus</tt>: if true, incomplete forms will be included. Otherwise, they will be excluded unless
+ * searched for directly using `fieldname="statusFlags"`
  * </ul>
  *
  * @version $Id$
@@ -118,6 +120,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // Exact condition on parent node; \ and ' must be escaped. The value must be wrapped in 's
         final String fieldname = request.getParameter("fieldname");
         final String fieldvalue = request.getParameter("fieldvalue");
+        final boolean includeAllStatus = Boolean.parseBoolean(request.getParameter("includeallstatus"));
         String fieldcomparator = request.getParameter("fieldcomparator");
         if (StringUtils.isNotBlank(fieldname)) {
             if (StringUtils.isBlank(fieldcomparator)) {
@@ -133,8 +136,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 )
             );
         }
-        // Only display `INCOMPLETE` forms if we are explicitly checking the status of forms
-        if (!("statusFlags".equals(fieldname))) {
+        // Only display `INCOMPLETE` forms if we are explicitly checking the status of forms,
+        // or if the unser requested forms with all statuses
+        if (!("statusFlags".equals(fieldname) || includeAllStatus)) {
             query.append(" and not n.'statusFlags'='INCOMPLETE'");
         }
 
