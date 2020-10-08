@@ -22,27 +22,18 @@
 
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-questionnaires</artifactId>
+    <artifactId>lfs-parent</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-questionnaire-somatic-variants</artifactId>
-  <packaging>bundle</packaging>
-  <name>LFS - Questionnaires - Somatic Variants Data</name>
+  <artifactId>lfs-resources</artifactId>
+  <packaging>pom</packaging>
+  <name>LFS Resources</name>
+  <description>A collection of questionnaires, subject types and other LFS data types.</description>
 
-  <build>
-    <plugins>
-      <!-- This is an OSGi bundle -->
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Sling-Initial-Content>SLING-INF/content/;path:=/Questionnaires/</Sling-Initial-Content>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <modules>
+    <module>clinical-data</module>
+    <module>tissue-metrix</module>
+    <module>somatic-variants</module>
+  </modules>
 </project>

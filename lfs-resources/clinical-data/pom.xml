@@ -22,18 +22,27 @@
 
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-parent</artifactId>
+    <artifactId>lfs-resources</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-questionnaires</artifactId>
-  <packaging>pom</packaging>
-  <name>LFS Questionnaires</name>
-  <description>A collection of questionnaires.</description>
+  <artifactId>lfs-resources-clinical-data</artifactId>
+  <packaging>bundle</packaging>
+  <name>LFS Resources - Clinical Data</name>
 
-  <modules>
-    <module>clinical-data</module>
-    <module>tissue-metrix</module>
-    <module>somatic-variants</module>
-  </modules>
+  <build>
+    <plugins>
+      <!-- This is an OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Sling-Initial-Content>SLING-INF/content/</Sling-Initial-Content>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

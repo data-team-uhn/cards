@@ -1,0 +1,13 @@
+{
+  "jcr:primaryType": "lfs:SubjectTypesHomepage",
+  "Tumor": {
+    "jcr:primaryType": "lfs:SubjectType",
+    "label": "Tumor",
+    "jcr:reference:parent": "../Patient"
+  },
+  "TumorRegion": {
+    "jcr:primaryType": "lfs:SubjectType",
+    "label": "Tumor region",
+    "jcr:reference:parent": "../Tumor"
+  }
+}

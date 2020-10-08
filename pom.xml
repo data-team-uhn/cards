@@ -905,6 +905,7 @@
   <modules>
     <module>modules</module>
     <module>distribution</module>
-    <module>questionnaires</module>
+    <module>lfs-resources</module>
+    <module>cardiac-resources</module>
   </modules>
 </project>
