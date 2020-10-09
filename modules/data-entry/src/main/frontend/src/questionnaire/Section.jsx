@@ -63,7 +63,7 @@ function createTitle(label, idx) {
  * @param {Object} sectionDefinition the section definition JSON
  */
 function Section(props) {
-  const { classes, depth, existingAnswer, path, sectionDefinition, onChange } = props;
+  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, displayedPage, pageList } = props;
 
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
   const titleEl = sectionDefinition["label"] &&
@@ -95,6 +95,7 @@ function Section(props) {
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
   const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
+  const [ pageNumber, setPageNumber ] = useState(0);
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const displayed = ConditionalComponentManager.evaluateCondition(
@@ -120,6 +121,24 @@ function Section(props) {
     return delList;
   }
 
+  const isPage = !!sectionDefinition["paginate"];
+  if (isPage && pageList && pageList.indexOf(sectionDefinition["label"]) === -1) {
+    pageList.push(sectionDefinition["label"]);
+    setPageNumber(pageList.length - 1);
+  }
+  const pageVisible = !isPage || displayedPage === pageNumber;
+
+  const collapseClasses = [];
+  if (!displayed) {
+    collapseClasses.push(classes.collapsedSection);
+  }
+  if (hasHeader) {
+    collapseClasses.push(classes.collapseWrapper);
+  }
+  if (isPage && !pageVisible) {
+    collapseClasses.push(classes.hiddenSection);
+  }
+
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
   return useCallback(
@@ -133,10 +152,7 @@ function Section(props) {
       item
       mountOnEnter
       unmountOnExit
-      className={
-        (displayed ? "" : classes.collapsedSection)
-        + " " + (hasHeader ? classes.collapseWrapper : "")
-      }
+      className={collapseClasses.join(" ")}
       >
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;
@@ -175,20 +191,22 @@ function Section(props) {
                           <Delete fontSize="small" />
                         </IconButton>
                       </Tooltip>}
-                    <Tooltip title="Expand section" aria-label="Expand section" >
-                      <IconButton
-                        color="default"
-                        className={classes.entryActionIcon}
-                        onClick={() => {
-                          setLabelsToHide((toHide) => ({...toHide, [uuid]: !hiddenSection}));
-                        }}
-                        >
-                        {hiddenSection ?
-                          <UnfoldMore fontSize="small" />
-                          : <UnfoldLess fontSize="small" />
-                        }
-                      </IconButton>
-                    </Tooltip>
+                    {!isPage &&
+                      <Tooltip title="Expand section" aria-label="Expand section" >
+                        <IconButton
+                          color="default"
+                          className={classes.entryActionIcon}
+                          onClick={() => {
+                            setLabelsToHide((toHide) => ({...toHide, [uuid]: !hiddenSection}));
+                          }}
+                          >
+                          {hiddenSection ?
+                            <UnfoldMore fontSize="small" />
+                            : <UnfoldLess fontSize="small" />
+                          }
+                        </IconButton>
+                      </Tooltip>
+                    }
 
                     {/* Title & description */}
                     {titleEl && titleEl(idx, uuid)}
@@ -279,7 +297,7 @@ function Section(props) {
       </DialogActions>
     </Dialog>
     </React.Fragment>
-    , [displayed, instanceLabels, labelsToHide, dialogOpen, removableAnswers[ID_STATE_KEY]]);
+    , [displayed, instanceLabels, labelsToHide, dialogOpen, removableAnswers[ID_STATE_KEY], pageVisible]);
 }
 
 Section.propTypes = {

@@ -43,6 +43,7 @@ import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 import DialogueLoginContainer from "../login/loginDialogue.js";
 import DeleteButton from "../dataHomepage/DeleteButton";
+import FormPagination from "./FormPagination";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -77,6 +78,8 @@ function Form (props) {
   let [ errorCode, setErrorCode ] = useState();
   let [ errorMessage, setErrorMessage ] = useState("");
   let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
+  let [ activePage, setActivePage ] = useState(0);
+  let [ pages, setPages ] = useState([]);
 
   let formNode = React.useRef();
 
@@ -181,6 +184,12 @@ function Form (props) {
     }
   }
 
+  let handlePageChange = (page) => {
+    if (page >= 0 && page < pages.length && lastSaveStatus !== false) {
+      setActivePage(page);
+    }
+  }
+
   let handleSubmit = (event) => {
     // Do not save when login in progress
     // Prevents issue where submitting login dialog would try to save twice,
@@ -261,23 +270,31 @@ function Form (props) {
           {
             Object.entries(data.questionnaire)
               .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-              .map(([key, entryDefinition]) => <FormEntry key={key} entryDefinition={entryDefinition} path={"."} depth={0} existingAnswers={data} keyProp={key} classes={classes} onChange={()=>setLastSaveStatus(undefined)}></FormEntry>)
+              .map(([key, entryDefinition]) =>
+                <FormEntry
+                  key={key}
+                  entryDefinition={entryDefinition}
+                  path={"."}
+                  depth={0}
+                  existingAnswers={data}
+                  keyProp={key}
+                  classes={classes}
+                  onChange={()=>setLastSaveStatus(undefined)}
+                  displayedPage={activePage}
+                  pageList={pages}
+                />)
           }
         </FormProvider>
+        <Grid item className={classes.formFooter} xs={12}>
+          <FormPagination
+            pages={pages}
+            activePage={activePage}
+            saveInProgress={saveInProgress}
+            lastSaveStatus={lastSaveStatus}
+            handlePageChange={handlePageChange}
+            />
+        </Grid>
       </Grid>
-
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        disabled={saveInProgress}
-        className={classes.saveButton}
-      >
-        {saveInProgress ? 'Saving' :
-        lastSaveStatus === true ? 'Saved' :
-        lastSaveStatus === false ? 'Save failed, log in and try again?' :
-        'Save'}
-      </Button>
       <DialogueLoginContainer isOpen={loginDialogShow} handleLogin={handleLogin}/>
       <Dialog open={errorDialogDisplayed} onClose={closeErrorDialog}>
         <DialogTitle disableTypography>

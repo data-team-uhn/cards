@@ -150,6 +150,9 @@ const questionnaireStyle = theme => ({
     collapsedSection: {
         padding: "0 !important"
     },
+    hiddenSection: {
+        display: "none"
+    },
     addSectionButton: {
         marginTop: theme.spacing(GRID_SPACE_UNIT * 2)
     },
@@ -222,6 +225,20 @@ const questionnaireStyle = theme => ({
         opacity: 1,
         zIndex: "1010",
         margin: theme.spacing(2),
+    },
+    formFooter: {
+        position: "sticky",
+        top: 'auto',
+        bottom: theme.spacing(0),
+        backgroundColor: "white",
+    },
+    formStepper: {
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
+    },
+    paginationButton: {
+        float: "right",
+        margin: theme.spacing(1)
     },
     titleButton: {
         float: "right"

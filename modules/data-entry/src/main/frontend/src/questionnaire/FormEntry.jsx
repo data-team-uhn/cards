@@ -98,7 +98,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
  * @param {string} key the node name of the section definition JCR node
  * @returns a React component that renders the section
  */
-let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange) => {
+let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, displayedPage, pageList) => {
   // Find the existing AnswerSection for this section, if available
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
@@ -112,6 +112,8 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
       existingAnswer={existingQuestionAnswer}
       path={path}
       onChange={onChange}
+      displayedPage={displayedPage}
+      pageList={pageList}
       />
   );
 }
@@ -128,12 +130,12 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
  * @returns a React component that renders the section
  */
  export default function FormEntry(props) {
-  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange } = props;
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, displayedPage, pageList} = props;
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange);
+    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, displayedPage, pageList);
   }
 }
