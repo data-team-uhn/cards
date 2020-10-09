@@ -120,6 +120,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // Exact condition on parent node; \ and ' must be escaped. The value must be wrapped in 's
         final String fieldname = request.getParameter("fieldname");
         final String fieldvalue = request.getParameter("fieldvalue");
+        // TODO, if more request options are required: convert includeAllStatus into a request mode
+        // backed by an an enum, map or other such collection.
         final boolean includeAllStatus = Boolean.parseBoolean(request.getParameter("includeallstatus"));
         String fieldcomparator = request.getParameter("fieldcomparator");
         if (StringUtils.isNotBlank(fieldname)) {
@@ -137,7 +139,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             );
         }
         // Only display `INCOMPLETE` forms if we are explicitly checking the status of forms,
-        // or if the unser requested forms with all statuses
+        // or if the user requested forms with all statuses
         if (!("statusFlags".equals(fieldname) || includeAllStatus)) {
             query.append(" and not n.'statusFlags'='INCOMPLETE'");
         }

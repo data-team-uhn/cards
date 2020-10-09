@@ -280,11 +280,14 @@ const questionnaireStyle = theme => ({
       color:'white',
       marginLeft: theme.spacing(2)
     },
-    warningChip: {
+    INCOMPLETEChip: {
       backgroundColor: theme.palette.warning.main
     },
-    errorChip: {
+    INVALIDChip: {
       backgroundColor: theme.palette.error.main
+    },
+    DefaultChip: {
+      backgroundColor: theme.palette.warning.main
     },
     questionnaireDisabledListItem: {
         color: theme.palette.grey["500"]
