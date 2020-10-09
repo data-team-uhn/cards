@@ -114,7 +114,9 @@ function NCRNote (props) {
     // Access the NCR URL
     let url = new URL(NCRURL);
     url.searchParams.set("text", cachedText);
-    url.searchParams.set("model", vocabulary);
+    for (let vocabIndex = 0; vocabIndex < vocabulary.length; vocabIndex++) {
+      url.searchParams.append("model", vocabulary[vocabIndex]);
+    }
 
     fetch(url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
