@@ -282,7 +282,7 @@ function SubjectMember (props) {
                           {entry["statusFlags"].map((status) => {
                             return <Chip
                               label={wordToTitleCase(status)}
-                              className={`${classes.subjectChip} ${classes[status + "Chip"] ? classes[status + "Chip"] : classes.DefaultChip}`}
+                              className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
                               size="small"
                             />
                           })}
