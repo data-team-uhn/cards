@@ -26,6 +26,7 @@ import NewFormDialog from "../dataHomepage/NewFormDialog";
 
 import {
   CircularProgress,
+  Chip,
   Grid,
   Typography,
   Card,
@@ -193,8 +194,7 @@ function SubjectMember (props) {
   // table data: related forms to the subject
   let [tableData, setTableData] = useState();
 
-  const customUrl='/Forms.paginate?fieldname=subject&fieldvalue='
-        + encodeURIComponent(data['jcr:uuid']);
+  const customUrl=`/Forms.paginate?fieldname=subject&fieldvalue=${encodeURIComponent(data['jcr:uuid'])}&includeallstatus=true`;
 
   // Fetch the forms associated with the subject as JSON from the server
   // It will be stored in the `tableData` state variable
@@ -213,6 +213,10 @@ function SubjectMember (props) {
     setError(response);
     setTableData([]);
   };
+
+  let wordToTitleCase = (word) => {
+    return word[0].toUpperCase() + word.slice(1).toLowerCase();
+  }
 
   // If the data has not yet been fetched, fetch
   if (!tableData) {
@@ -271,19 +275,28 @@ function SubjectMember (props) {
                   <Card className={classes.subjectCard}>
                     <CardHeader
                       title={
+                        <React.Fragment>
                           <Button size={buttonSize} className={classes.subjectFormHeaderButton}>
                             {entry.questionnaire["@name"]}
                           </Button>
+                          {entry["statusFlags"].map((status) => {
+                            return <Chip
+                              label={wordToTitleCase(status)}
+                              className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
+                              size="small"
+                            />
+                          })}
+                        </React.Fragment>
                       }
-                    className={classes.subjectFormHeader}
-                    action={
-                      <DeleteButton
-                        entryPath={entry["@path"]}
-                        entryName={`${data && data.identifier ? data.identifier : id}: ${entry.questionnaire["@name"]}`}
-                        entryType="Form"
-                        warning={entry ? entry["@referenced"] : false}
-                      />
-                    }
+                      className={classes.subjectFormHeader}
+                      action={
+                        <DeleteButton
+                          entryPath={entry["@path"]}
+                          entryName={`${data && data.identifier ? data.identifier : id}: ${entry.questionnaire["@name"]}`}
+                          entryType="Form"
+                          warning={entry ? entry["@referenced"] : false}
+                        />
+                      }
                     />
                     <CardContent>
                       <FormData formID={entry["@name"]} maxDisplayed={maxDisplayed}/>
