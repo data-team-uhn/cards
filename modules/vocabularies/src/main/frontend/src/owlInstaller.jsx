@@ -138,13 +138,13 @@ export default function OwlInstaller(props) {
           </Grid>
 
           <Grid item>
-            {((phase == "Installing") ? (<TextField disabled variant="outlined" onChange={(evt) => {setOwlIdentifier(evt.target.value)}} value={owlIdentifier} name="identifier" label="Identifier"/>) : (<TextField variant="outlined" onChange={(evt) => {setOwlIdentifier(evt.target.value); setPhase("Install")}} value={owlIdentifier} name="identifier" label="Identifier"/>))}
+            {((phase == "Installing") ? (<TextField disabled variant="outlined" onChange={(evt) => {setOwlIdentifier(evt.target.value)}} value={owlIdentifier} name="identifier" label="Identifier"/>) : (<TextField variant="outlined" error={(owlIdentifier=="")} onChange={(evt) => {setOwlIdentifier(evt.target.value); setPhase("Install")}} value={owlIdentifier} name="identifier" label="Identifier"/>))}
           </Grid>
           <Grid item>
-            {((phase == "Installing") ? (<TextField disabled variant="outlined" onChange={(evt) => {setOwlName(evt.target.value)}} value={owlName} name="vocabName" label="Name"/>) : (<TextField variant="outlined" onChange={(evt) => {setOwlName(evt.target.value); setPhase("Install")}} value={owlName} name="vocabName" label="Name"/>))}
+            {((phase == "Installing") ? (<TextField disabled variant="outlined" onChange={(evt) => {setOwlName(evt.target.value)}} value={owlName} name="vocabName" label="Name"/>) : (<TextField variant="outlined" error={(owlName=="")} onChange={(evt) => {setOwlName(evt.target.value); setPhase("Install")}} value={owlName} name="vocabName" label="Name"/>))}
           </Grid>
           <Grid item>
-            {((phase == "Installing") ? (<TextField disabled variant="outlined" onChange={(evt) => {setOwlVersion(evt.target.value)}} value={owlVersion} name="version" label="Version"/>) : (<TextField variant="outlined" onChange={(evt) => {setOwlVersion(evt.target.value); setPhase("Install")}} value={owlVersion} name="version" label="Version"/>))}
+            {((phase == "Installing") ? (<TextField disabled variant="outlined" onChange={(evt) => {setOwlVersion(evt.target.value)}} value={owlVersion} name="version" label="Version"/>) : (<TextField variant="outlined" error={(owlVersion=="")} onChange={(evt) => {setOwlVersion(evt.target.value); setPhase("Install")}} value={owlVersion} name="version" label="Version"/>))}
           </Grid>
 
           <Grid item>
