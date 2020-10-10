@@ -18,7 +18,7 @@
 //
 
 import React, { useRef, useEffect, useState } from "react";
-import uuid from "uuid/v4";
+import { v4 as uuidv4 } from 'uuid';
 
 import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Input, ListItem, ListItemAvatar, Typography, withStyles } from "@material-ui/core";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
@@ -643,7 +643,7 @@ export function createSubjects(newSubjects, subjectType, subjectParents, subject
       continue;
     }
 
-    let url = "/Subjects/" + uuid();
+    let url = "/Subjects/" + uuidv4();
 
     // If this is the subject the user has selected, make a note of the output URL
     if (subjectName == subjectToTrack) {
@@ -866,7 +866,7 @@ function SubjectSelectorList(props) {
             let check_already_exists_url = new URL("/Subjects/" + newData["identifier"], window.location.origin);
 
             // Add the new data
-            let url = new URL("/Subjects/" + uuid(), window.location.origin);
+            let url = new URL("/Subjects/" + uuidv4(), window.location.origin);
 
             // Make a POST request to create a new subject
             let request_data = new FormData();

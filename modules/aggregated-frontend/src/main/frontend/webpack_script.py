@@ -31,6 +31,7 @@ def merge_packache_json_files(modules_dir, project_to_name_map, package_json_fil
     package_merged = {}
 
     for name in os.listdir(modules_dir):
+
         # Exclude our own directory
         if os.path.samefile(os.path.join(modules_dir, name), base_dir):
             continue

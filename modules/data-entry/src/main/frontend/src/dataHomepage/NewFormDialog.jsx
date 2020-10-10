@@ -18,7 +18,7 @@
 //
 import React, { useRef, useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
-import uuid from "uuid/v4";
+import { v4 as uuidv4 } from 'uuid';
 
 import { CircularProgress, Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Input, List} from "@material-ui/core";
 import { ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core";
@@ -61,7 +61,7 @@ function NewFormDialog(props) {
     }
 
     // Make a POST request to create a new form, with a randomly generated UUID
-    const URL = "/Forms/" + uuid();
+    const URL = "/Forms/" + uuidv4();
     var request_data = new FormData();
     request_data.append('jcr:primaryType', 'lfs:Form');
     request_data.append('questionnaire', selectedQuestionnaire["@path"]);

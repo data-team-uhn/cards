@@ -33,7 +33,7 @@ import {
 import AttachFile from '@material-ui/icons/AttachFile';
 import BackupIcon from '@material-ui/icons/Backup';
 import GetApp from '@material-ui/icons/GetApp';
-import uuidv4 from "uuid/v4";
+import { v4 as uuidv4 } from 'uuid';
 import moment from "moment";
 import DragAndDrop from "./dragAndDrop.jsx";
 
