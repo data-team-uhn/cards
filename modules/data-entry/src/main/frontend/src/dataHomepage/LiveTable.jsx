@@ -60,6 +60,7 @@ function LiveTable(props) {
       "fetchError": false,
     }
   );
+  const useQueryManager = Boolean(filters);
   // The base URL to fetch from.
   // This can either be a custom URL provided in props,
   // or an URL obtained from the current location by extracting the last path segment and appending .paginate
@@ -103,6 +104,9 @@ function LiveTable(props) {
     url.searchParams.set("offset", newPage.offset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
+    if (useQueryManager) {
+        url.searchParams.set("usequerymanager", useQueryManager);
+    }
 
     // filters should be nullable, but if left undefined we use the cached filters
     let filters = (newPage.filters === null ? null : (newPage.filters || cachedFilters));
