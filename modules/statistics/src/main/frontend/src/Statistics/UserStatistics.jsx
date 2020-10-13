@@ -29,24 +29,6 @@ import {
 // } from "recharts";
 import statisticsStyle from "./statisticsStyle.jsx";
 
-// const data = [
-//   {
-//     "name": "Page A",
-//     "uv": 4000,
-//     "pv": 2400
-//   },
-//   {
-//     "name": "Page B",
-//     "uv": 3000,
-//     "pv": 1398
-//   },
-//   {
-//     "name": "Page C",
-//     "uv": 2000,
-//     "pv": 9800
-//   }
-// ]
-
 function UserStatistics(props) {
   const { classes } = props;
   let [ currentStatistic, setCurrentStatistic ] = useState([]);
@@ -123,10 +105,6 @@ function UserStatistics(props) {
     data.map((stat) => fetchStat(stat))
   }
 
-  // TODO: 'Bar' needs to be made dynamic
-  // as object gets added, get various values of bar and add ?
-  // or query to see what possible answers of the split var are ? * best
-
   return (
     <React.Fragment>
       <Grid container spacing={3}>
@@ -136,15 +114,7 @@ function UserStatistics(props) {
               <Card>
                 <CardContent>
                     <Grid container alignItems='flex-end' spacing={2}>
-                      {/* <BarChart width={730} height={250} data={data}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="uv" fill="#8884d8" />
-                        <Bar dataKey="pv" fill="#82ca9d" />
-                      </BarChart> */}
+                      <Grid item xs={12}><Typography variant="body2">{stat}</Typography></Grid>
                     </Grid>
                 </CardContent>
               </Card>
