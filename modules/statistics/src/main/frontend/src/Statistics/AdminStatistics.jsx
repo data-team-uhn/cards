@@ -28,7 +28,8 @@ import {
   DialogContent, 
   DialogTitle,
   Fab,
-  Grid, 
+  Grid,
+  IconButton,
   withStyles, 
   MenuItem, 
   Select, 
@@ -37,9 +38,10 @@ import {
   Typography 
 } from "@material-ui/core";
 import CreateIcon from "@material-ui/icons/Create";
-import DeleteIcon from "@material-ui/icons/Delete";
 import Filters from "../dataHomepage/Filters.jsx";
 import statisticsStyle from "./statisticsStyle.jsx";
+import DeleteButton from "../dataHomepage/DeleteButton.jsx";
+
 
 function AdminStatistics(props) {
   const { classes } = props;
@@ -96,7 +98,7 @@ function AdminStatistics(props) {
     setDialogOpen(false);
   }
 
-  // If a statistic was successfully added, perform fetch for new statistic
+  // If a statistic was successfully added or deleted, perform fetch for new statistic
   let dialogSuccess = () => {
     fetchStatistics();
   }
@@ -111,22 +113,17 @@ function AdminStatistics(props) {
                 action={
                   <div>
                     <Tooltip aria-label="Edit" title="Edit Statistic">
-                      <Fab
-                        color="primary"
-                        aria-label="Edit"
-                        onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(stat["@name"]);}}
-                      >
+                      <IconButton component="span" onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(stat["@name"]);}}>
                         <CreateIcon />
-                      </Fab>
+                      </IconButton>
                     </Tooltip>
-                    <Tooltip aria-label="Delete" title="Delete Statistic">
-                      <Fab
-                        color="primary"
-                        aria-label="Delete"
-                      >
-                        <DeleteIcon />
-                      </Fab>
-                    </Tooltip>
+                    <DeleteButton
+                      entryPath={stat["@path"]}
+                      entryName={"Statistic: " + stat["name"]}
+                      entryType={"Statistic"}
+                      warning={stat ? stat["@referenced"] : false}
+                      onComplete={dialogSuccess}
+                    />
                   </div>
                 }
               />
