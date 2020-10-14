@@ -457,7 +457,7 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Detected by surveillance imaging?</value>
+			<value>Detected by surveillance imaging</value>
 			<type>String</type>
 		</property>
 		<property>
