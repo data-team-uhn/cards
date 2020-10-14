@@ -515,7 +515,7 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>CT</value>
+			<value>Chemotherapy</value>
 			<type>String</type>
 		</property>
 		<property>
