@@ -38,15 +38,6 @@
 		<type>Long</type>
 	</property>
 	<node>
-		<name>patient_id</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Patient ID</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
 		<name>family</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
