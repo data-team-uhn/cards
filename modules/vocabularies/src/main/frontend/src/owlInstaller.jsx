@@ -92,6 +92,12 @@ export default function OwlInstaller(props) {
   let [ owlName, setOwlName ] = useState("");
   let [ owlVersion, setOwlVersion ] = useState("");
 
+  let disableInstall = (phase != "Install")
+      || (owlSelected == "Select File")
+      || (owlIdentifier == "")
+      || (owlName == "")
+      || (owlVersion == "");
+
   let handleSubmit = (event) => {
     const form = event.target;
     fetch(form.action, {
@@ -235,7 +241,7 @@ export default function OwlInstaller(props) {
 
           <Grid item>
             <label htmlFor="owl-install">
-              <input style={{ display: 'none' }} id="owl-install" name="owl-install" type={(phase == "Install") ? "submit" : "button"}/>
+              <input style={{ display: 'none' }} id="owl-install" name="owl-install" type={disableInstall ? "button" : "submit"}/>
                 <Tooltip title={(phase == "Install") ? "Install this vocabulary" : ""}>
                   <span className={classes.wrapper}>
                       {(phase == "Install") &&
@@ -243,6 +249,7 @@ export default function OwlInstaller(props) {
                           variant="contained"
                           color="primary"
                           component="span"
+                          disabled={disableInstall}
                           className={classes.owlInstaller + " " + classes.install}
                         >
                           {phase}
