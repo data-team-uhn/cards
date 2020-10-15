@@ -26,3 +26,14 @@
     set ACL for everyone
         allow   jcr:read    on /content
     end
+
+
+[configurations runModes=demo]
+    org.apache.sling.jcr.repoinit.RepositoryInitializer-demo
+        scripts=["\
+            create path (nt:unstructured) /display_demo_warning
+\
+            set ACL for everyone \
+                allow   jcr:read    on /display_demo_warning \
+            end \
+          "]
