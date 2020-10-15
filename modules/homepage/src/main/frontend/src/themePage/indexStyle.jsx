@@ -38,6 +38,9 @@ const appStyle = theme => ({
   container,
   map: {
     marginTop: "70px"
+  },
+  warningBanner: {
+    background: "#FFA500"
   }
 });
 

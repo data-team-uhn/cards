@@ -21,7 +21,8 @@ import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 import Sidebar from "./Sidebar/sidebar"
 import { getRoutes } from '../routes';
-import { withStyles } from '@material-ui/core';
+import { AppBar, withStyles, IconButton, Toolbar, Typography } from '@material-ui/core';
+import WarningIcon from '@material-ui/icons/Warning';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
@@ -96,6 +97,19 @@ class Main extends React.Component {
           />
           <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
             <div className={classes.content}>
+              <AppBar className={classes.warningBanner} position="sticky">
+                <Toolbar>
+                  <IconButton edge="start" color="inherit">
+                    <WarningIcon fontsize="large"/>
+                  </IconButton>
+                  <Typography variant="h6">
+                    This installation is for demo purposes only.
+                    Data entered here can be accessed by anyone and is
+                    periodically deleted. Do not enter any real
+                    data / patient identifiable information.
+                  </Typography>
+                </Toolbar>
+              </AppBar>
               <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
             </div>
             <Navbar
