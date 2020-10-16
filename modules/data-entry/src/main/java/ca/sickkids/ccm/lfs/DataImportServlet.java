@@ -89,6 +89,10 @@ public class DataImportServlet extends SlingAllMethodsServlet
 
     private static final String LABEL_PROPERTY = "label";
 
+    private static final String NOTE_PROPERTY = "note";
+
+    private static final String NOTE_SUFFIX = "_notes";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DataImportServlet.class);
 
     /** Supported date formats. */
@@ -157,6 +161,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
 
     /** A query manager to handle queries. */
     private final ThreadLocal<QueryManager> queryManager = new ThreadLocal<>();
+
+    /** A local mapping for question node identifiers to answer nodes. */
+    private final ThreadLocal<Map<String, Resource>> cachedAnswers = new ThreadLocal<>();
 
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
@@ -234,14 +241,49 @@ public class DataImportServlet extends SlingAllMethodsServlet
      */
     private void parseRow(CSVRecord row, boolean patch) throws PersistenceException
     {
+        this.cachedAnswers.set(new HashMap<>());
         final Resource form = getOrCreateForm(row, patch);
         row.toMap().forEach((fieldName, fieldValue) -> {
             try {
-                parseAnswer(fieldName, fieldValue, form);
+                if (fieldName.endsWith(NOTE_SUFFIX)) {
+                    parseNote(fieldName, fieldValue, form);
+                } else {
+                    parseAnswer(fieldName, fieldValue, form);
+                }
             } catch (PersistenceException | RepositoryException e) {
                 LOGGER.warn("Failed to parse row [{}]: {}", row.getRecordNumber(), e.getMessage());
             }
         });
+    }
+
+    /**
+     * Parse and store a note to an Answer. This will reuse the answer if it already exists.
+     *
+     * @param fieldName the column name for this field
+     * @param fieldValue the raw value for this field
+     * @param form the Form that this Answer belongs to
+     * @throws PersistenceException if saving the processed data fails due to repository errors or incorrect data
+     * @throws RepositoryException if saving the processed data fails due to repository errors or incorrect data
+     */
+    private void parseNote(String fieldName, String fieldValue, Resource form)
+        throws PersistenceException, RepositoryException
+    {
+        if (StringUtils.isBlank(fieldValue)) {
+            return;
+        }
+
+        // Truncate the suffix from the fieldName before finding the related question
+        String fieldNamePrefix = fieldName.substring(0, fieldName.length() - NOTE_SUFFIX.length());
+        Node question = getQuestion(fieldNamePrefix);
+        if (question == null) {
+            if (this.warnedCache.get().add(fieldNamePrefix)) {
+                LOGGER.info("Unknown field: {}", fieldNamePrefix);
+            }
+            return;
+        }
+
+        Resource answer = getOrCreateAnswer(form, question);
+        answer.adaptTo(Node.class).setProperty(NOTE_PROPERTY, fieldValue);
     }
 
     /**
@@ -295,7 +337,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
         try {
             if (!cache.containsKey(columnName)) {
                 String query =
-                    String.format("select n from [lfs:Question] as n where n.text = '%s' and isdescendantnode(n,'%s')",
+                    String.format("select n from [lfs:Question] as n where (n.text = '%s' or NAME(n) = '%s')"
+                        + " and isdescendantnode(n,'%s')",
+                        SearchUtils.escapeQueryArgument(columnName),
                         SearchUtils.escapeQueryArgument(columnName),
                         SearchUtils.escapeQueryArgument(this.questionnaire.get().getPath()));
                 Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
@@ -326,6 +370,10 @@ public class DataImportServlet extends SlingAllMethodsServlet
     private Resource getOrCreateAnswer(final Resource form, final Node question)
         throws RepositoryException, PersistenceException
     {
+        if (this.cachedAnswers.get().containsKey(question.getIdentifier())) {
+            return this.cachedAnswers.get().get(question.getIdentifier());
+        }
+
         final String query =
             String.format("select n from [lfs:Answer] as n where n.question = '%s' and isdescendantnode(n,'%s')",
                 question.getIdentifier(), form.getPath());
@@ -338,7 +386,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
         answerProperties.put("jcr:primaryType", getAnswerNodeType(question));
         answerProperties.put("question", question);
         Resource answerParent = findOrCreateParent(form, question);
-        return this.resolver.get().create(answerParent, UUID.randomUUID().toString(), answerProperties);
+        Resource newNode = this.resolver.get().create(answerParent, UUID.randomUUID().toString(), answerProperties);
+        this.cachedAnswers.get().put(question.getIdentifier(), newNode);
+        return newNode;
     }
 
     /**
