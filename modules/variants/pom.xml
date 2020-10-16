@@ -25,11 +25,22 @@
   </parent>
 
   <artifactId>lfs-variants</artifactId>
-  <packaging>pom</packaging>
+  <packaging>bundle</packaging>
   <name>LFS - Variants management</name>
 
   <build>
     <plugins>
+      <!-- This is an OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Sling-Initial-Content>SLING-INF/content/</Sling-Initial-Content>
+          </instructions>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
