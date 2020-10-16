@@ -1212,7 +1212,7 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Undergoing surveillance?</value>
+			<value>Undergoing surveillance</value>
 			<type>String</type>
 		</property>
 		<property>
