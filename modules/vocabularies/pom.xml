@@ -31,7 +31,7 @@
   <name>LFS - Vocabularies</name>
 
   <properties>
-    <coverage.instructionRatio>0.27</coverage.instructionRatio>
+    <coverage.instructionRatio>0.24</coverage.instructionRatio>
   </properties>
 
   <build>

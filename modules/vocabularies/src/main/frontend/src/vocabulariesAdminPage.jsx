@@ -26,6 +26,8 @@ import React from "react";
 
 import VocabularyDirectory from "./vocabularyDirectory";
 
+import OwlInstaller from "./owlInstaller";
+
 import fetchBioPortalApiKey from "./bioportalApiKey";
 
 const Phase = require("./phaseCodes.json");
@@ -149,7 +151,13 @@ export default function VocabulariesAdminPage() {
   }
 
   if (bioPortalApiKey === null) {
-    fetchBioPortalApiKey(setBioPortalApiKey, () => { console.error("Can't fetch bioPortal API key"); });
+    /* If the BioPortal API key cannot be loaded, assume the remote (empty)
+     * data has been loaded.
+     */
+    fetchBioPortalApiKey(setBioPortalApiKey, () => {
+        setRemoteLoaded(true);
+        console.error("Can't fetch bioPortal API key");
+    });
   }
 
   return (
@@ -172,6 +180,14 @@ export default function VocabulariesAdminPage() {
         addSetter={addSetter}
         setPhase={setPhase}
       />
+
+      <Grid item>
+        <Typography variant="h2">
+          Install from local file
+        </Typography>
+      </Grid>
+
+      <OwlInstaller updateLocalList={updateLocalList}/>
 
       <Grid item>
         <Typography variant="h2">

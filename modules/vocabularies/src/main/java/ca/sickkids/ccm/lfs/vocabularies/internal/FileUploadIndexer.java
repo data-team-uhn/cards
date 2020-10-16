@@ -28,14 +28,15 @@ import javax.jcr.Node;
 import org.apache.commons.io.FileUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.request.RequestParameter;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.sickkids.ccm.lfs.vocabularies.spi.RepositoryHandler;
 import ca.sickkids.ccm.lfs.vocabularies.spi.SourceParser;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescription;
+import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescriptionBuilder;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexException;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyIndexer;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyParserUtils;
@@ -59,16 +60,13 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
  */
 @Component(
     service = VocabularyIndexer.class,
-    name = "VocabularyIndexer.bioontology")
-public class BioOntologyIndexer implements VocabularyIndexer
+    name = "VocabularyIndexer.fileupload")
+public class FileUploadIndexer implements VocabularyIndexer
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BioOntologyIndexer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileUploadIndexer.class);
 
     @Reference
     private VocabularyParserUtils utils;
-
-    @Reference(name = "RepositoryHandler.bioontology")
-    private RepositoryHandler repository;
 
     /**
      * Automatically injected list of all available parsers. A {@code volatile} list dynamically changes when
@@ -83,7 +81,7 @@ public class BioOntologyIndexer implements VocabularyIndexer
     @Override
     public boolean canIndex(String source)
     {
-        return "bioontology".equals(source);
+        return "fileupload".equals(source);
     }
 
     @Override
@@ -94,7 +92,9 @@ public class BioOntologyIndexer implements VocabularyIndexer
         // Obtain relevant request parameters.
         String identifier = request.getParameter("identifier");
         String version = request.getParameter("version");
+        String vocabName = request.getParameter("vocabName");
         String overwrite = request.getParameter("overwrite");
+        RequestParameter uploadedOntology = request.getRequestParameter("filename");
 
         // Obtain the resource of the request and adapt it to a JCR node. This must be the /Vocabularies homepage node.
         Node homepage = request.getResource().adaptTo(Node.class);
@@ -114,7 +114,18 @@ public class BioOntologyIndexer implements VocabularyIndexer
             this.utils.clearVocabularyNode(homepage, identifier, overwrite);
 
             // Load the description
-            VocabularyDescription description = this.repository.getVocabularyDescription(identifier, version);
+            VocabularyDescription description;
+            if (uploadedOntology == null) {
+                description = null;
+            } else {
+                description = new VocabularyDescriptionBuilder()
+                    .withSource("fileupload")
+                    .withSourceFormat(OntologyFormatDetection.getSourceFormat(uploadedOntology.getFileName()))
+                    .withIdentifier(identifier)
+                    .withName(vocabName)
+                    .withVersion(version)
+                    .build();
+            }
 
             // Check that we have a known parser for this vocabulary
             SourceParser parser =
@@ -123,7 +134,12 @@ public class BioOntologyIndexer implements VocabularyIndexer
                         + "] in format [" + description.getSourceFormat() + "]"));
 
             // Download the source
-            temporaryFile = this.repository.downloadVocabularySource(description);
+            if (uploadedOntology == null) {
+                temporaryFile = null;
+            } else {
+                temporaryFile = File.createTempFile("LocalUpload-" + identifier, "");
+                FileUtils.copyInputStreamToFile(uploadedOntology.getInputStream(), temporaryFile);
+            }
 
             // Create a new Vocabulary node representing this vocabulary
             this.vocabularyNode.set(OntologyIndexerUtils.createVocabularyNode(homepage, description));
@@ -151,6 +167,12 @@ public class BioOntologyIndexer implements VocabularyIndexer
         }
     }
 
+    /**
+     * Creates a <code>VocabularyTerm</code> node representing an individual term of the vocabulary.
+     *
+     * @param term the term data
+     * @throws VocabularyIndexException when a node cannot be created
+     */
     private void createVocabularyTermNode(VocabularyTermSource term)
     {
         OntologyIndexerUtils.createVocabularyTermNode(term, this.vocabularyNode);

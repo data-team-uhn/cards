@@ -67,6 +67,7 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class OwlParser implements SourceParser
 {
+
     @Reference
     private VocabularyParserUtils utils;
 
@@ -155,6 +156,9 @@ public class OwlParser implements SourceParser
         // Backing up if rdf jena utils failed to get Identifier from term uri
         if (identifier.length() == 0 && gatheredProperties.get("id").size() > 0) {
             identifier = gatheredProperties.get("id").iterator().next();
+        } else if (identifier.length() == 0 && term.getURI().split("/").length > 0) {
+            int uriDepth = term.getURI().split("/").length;
+            identifier = term.getURI().split("/")[uriDepth - 1];
         }
 
         String[] parents = getAncestors(term, false);

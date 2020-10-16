@@ -200,6 +200,7 @@ export default function VocabularyEntry(props) {
                 phase={phase}
               />
 
+              {(!(props?.source == "fileupload")) &&
               <VocabularyDetails
                 acronym={props.acronym}
                 install={install}
@@ -208,6 +209,7 @@ export default function VocabularyEntry(props) {
                 name={props.name}
                 description={props.description}
               />
+              }
             </React.Fragment>
             }
           </StyledTableCell>

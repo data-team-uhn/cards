@@ -65,7 +65,8 @@ function reformat(data) {
     },
     version: filtered[key]["version"],
     released: filtered[key]["jcr:created"],
-    description: filtered[key]["description"]
+    description: filtered[key]["description"],
+    source: filtered[key]["source"]
   }));
   return vocabularies;
 }
