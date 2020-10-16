@@ -39,9 +39,13 @@ class Main extends React.Component {
       fixedClasses: "dropdown show",
       mobileOpen: false,
       routes: [],
+      display_demo_response: 0,
     };
 
     getRoutes().then(routes => this.setState({routes: routes}));
+    fetch("/display_demo_warning").then((res) => {
+        this.setState({display_demo_response: res.status});
+    });
   }
 
   handleDrawerToggle = () => {
@@ -84,6 +88,7 @@ class Main extends React.Component {
     const { classes, ...rest } = this.props;
 
     return (
+      (this.state.display_demo_response != 0) &&
       <div className={classes.wrapper}>
         <Suspense fallback={<div>Loading...</div>}>
           <Sidebar
@@ -97,19 +102,22 @@ class Main extends React.Component {
           />
           <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
             <div className={classes.content}>
-              <AppBar className={classes.warningBanner} position="sticky">
-                <Toolbar>
-                  <IconButton edge="start" color="inherit">
-                    <WarningIcon fontsize="large"/>
-                  </IconButton>
-                  <Typography variant="h6">
-                    This installation is for demo purposes only.
-                    Data entered here can be accessed by anyone and is
-                    periodically deleted. Do not enter any real
-                    data / patient identifiable information.
-                  </Typography>
-                </Toolbar>
-              </AppBar>
+              {
+                (this.state.display_demo_response == 403) &&
+                <AppBar className={classes.warningBanner} position="sticky">
+                  <Toolbar>
+                    <IconButton edge="start" color="inherit">
+                      <WarningIcon fontsize="large"/>
+                    </IconButton>
+                    <Typography variant="h6">
+                      This installation is for demo purposes only.
+                      Data entered here can be accessed by anyone and is
+                      periodically deleted. Do not enter any real
+                      data / patient identifiable information.
+                    </Typography>
+                  </Toolbar>
+                </AppBar>
+              }
               <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
             </div>
             <Navbar
