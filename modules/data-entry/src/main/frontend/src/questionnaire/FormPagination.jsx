@@ -21,9 +21,7 @@ import React, { useState } from "react";
 
 import {
   Button,
-  Step,
-  StepLabel,
-  Stepper,
+  MobileStepper,
   withStyles,
 } from "@material-ui/core";
 
@@ -57,49 +55,52 @@ function FormPagination (props) {
     setPendingSubmission(false);
   }
 
+  let saveButton =
+    <Button
+      type="submit"
+      variant="contained"
+      color="primary"
+      disabled={saveInProgress}
+      className={classes.paginationButton}
+      onClick={handleNext}
+    >
+      {((pages.length === 0 || activePage === pages.length - 1) && saveInProgress) ? 'Saving' :
+      lastSaveStatus === false ? 'Save failed, log in and try again?' :
+      activePage < pages.length -1 ? "Next" :
+      lastSaveStatus && savedLastPage ? 'Saved' :
+      'Save'}
+    </Button>
+
   return (
-    pages ?
+    pages && pages.length > 0 ?
       <React.Fragment>
-        <Stepper activeStep={activePage} className={classes.formStepper} alternativeLabel>
-          {pages.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={saveInProgress}
-          className={classes.paginationButton}
-          onClick={handleNext}
-        >
-          {/* {activePage === pages.length -1 ? "Save" : "Next"} */}
-          {saveInProgress ? 'Saving' :
-          lastSaveStatus === false ? 'Save failed, log in and try again?' :
-          activePage < pages.length -1 ? "Next" :
-          lastSaveStatus && savedLastPage ? 'Saved' :
-          'Save'}
-        </Button>
+        <MobileStepper
+          activeStep={activePage}
+          className={classes.formStepper}
+          variant="progress"
+          steps={pages.length}
+          nextButton={saveButton}
+          backButton={
+            pages.length > 1
+              ? <Button
+                  type="submit"
+                  disabled={(activePage === 0 && !pendingSubmission) /* Don't disable until form submission started */
+                    || saveInProgress
+                    || lastSaveStatus === false}
+                  onClick={handleBack}
+                  className={classes.paginationButton}
+                  color="primary"
+                >
+                  Back
+                </Button>
+              : null
+          }
+        />
         {
-          pages.length > 1
-            ? <Button
-                type="submit"
-                disabled={(activePage === 0 && !pendingSubmission) /* Don't disable until form submission started */
-                  || saveInProgress
-                  || lastSaveStatus === false}
-                onClick={handleBack}
-                className={classes.paginationButton}
-                color="primary"
-              >
-                Back
-              </Button>
-            : null
         }
       </React.Fragment>
     :
-      null
+      saveButton
   );
 };
 

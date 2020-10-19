@@ -228,13 +228,10 @@ const questionnaireStyle = theme => ({
     },
     formFooter: {
         position: "sticky",
-        top: 'auto',
-        bottom: theme.spacing(0),
-        backgroundColor: "white",
+        bottom: 0,
     },
     formStepper: {
-        paddingLeft: theme.spacing(1),
-        paddingRight: theme.spacing(1),
+        position: "sticky",
     },
     paginationButton: {
         float: "right",
