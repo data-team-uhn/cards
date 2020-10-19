@@ -540,11 +540,11 @@
 		</property>
 	</node>
 	<node>
-		<name>BMT</name>
+		<name>Bone_Marrow_Transplant</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>BMT</value>
+			<value>Bone Marrow Transplant</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -567,6 +567,131 @@
 			<value>true</value>
 			<type>String</type>
 		</property>
+	</node>
+	<node>
+		<name>Bone_Marrow_Transplant_Type_Section</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>Bone_Marrow_Transplant</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>1</value>
+					</values>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>Bone_Marrow_Transplant_Type</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Bone Marrow Transplant Type</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>Autologus</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Autologus (AUTO)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Autologus</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Allogenic</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Allogenic (ALLO)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Allogenic</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Other</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Other</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Other</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Unknown</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Unknown</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Unknown</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
 	</node>
 	<node>
 		<name>Immunotherapy</name>
