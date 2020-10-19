@@ -37,6 +37,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+            <Sling-Nodetypes>SLING-INF/nodetypes/variants.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>SLING-INF/content/</Sling-Initial-Content>
           </instructions>
         </configuration>
