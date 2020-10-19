@@ -627,11 +627,11 @@
 		</property>
 	</node>
 	<node>
-		<name>RT</name>
+		<name>Radiotherapy</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>RT</value>
+			<value>Radiotherapy</value>
 			<type>String</type>
 		</property>
 		<property>
