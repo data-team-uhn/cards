@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -46,6 +45,7 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.wrappers.IteratorWrapper;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
@@ -164,49 +164,40 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         query.append(" order by n.'jcr:created'");
         String finalquery = query.toString();
         LOGGER.debug("Computed final query: {}", finalquery);
-
+        Iterator<Resource> results;
         //Using a QueryManager doesn't always work, but it is faster
-        if (usequerymanager) {
-            NodeIterator results = null;
-            Session session = null;
-            try {
-                //Get a QueryManager object
-                ResourceResolver resolver = request.getResourceResolver();
-                session = resolver.adaptTo(Session.class);
-                Workspace workspace = session.getWorkspace();
-                QueryManager queryManager = workspace.getQueryManager();
+        Session session = null;
+        try {
+            //Get a QueryManager object
+            ResourceResolver resolver = request.getResourceResolver();
+            session = resolver.adaptTo(Session.class);
+            Workspace workspace = session.getWorkspace();
+            QueryManager queryManager = workspace.getQueryManager();
 
-                //Create the Query object
-                Query filterQuery = queryManager.createQuery(finalquery, "JCR-SQL2");
+            //Create the Query object
+            Query filterQuery = queryManager.createQuery(finalquery, "JCR-SQL2");
 
-                //Set the limit and offset here to improve query performance
-                filterQuery.setLimit(limit);
-                filterQuery.setOffset(offset);
+            //Set the limit and offset here to improve query performance
+            filterQuery.setLimit(limit);
+            filterQuery.setOffset(offset);
 
-                //Execute the query
-                QueryResult filterResult = filterQuery.execute();
-                results = filterResult.getNodes();
-            } catch (Exception e) {
-                return;
-            }
-            // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
-            final Writer out = response.getWriter();
-            try (JsonGenerator jsonGen = Json.createGenerator(out)) {
-                jsonGen.writeStartObject();
-                try {
-                    long[] limits = writeNodes(jsonGen, results, session, offset, limit);
-                    writeSummary(jsonGen, request, limits);
-                } catch (RepositoryException e) {
-                    //
+            //Execute the query
+            QueryResult filterResult = filterQuery.execute();
+            results = new IteratorWrapper<Resource>(filterResult.getNodes())
+            {
+                @Override
+                public Resource next()
+                {
+                    try {
+                        return request.getResourceResolver().getResource(((Node) super.next()).getPath());
+                    } catch (RepositoryException e) {
+                        return null;
+                    }
                 }
-                jsonGen.writeEnd().flush();
-            }
+            };
+        } catch (Exception e) {
             return;
         }
-
-        //If we can't use a QueryManager, fall back to the old method
-        final Iterator<Resource> results =
-            request.getResourceResolver().findResources(finalquery, Query.JCR_SQL2);
 
         // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
         final Writer out = response.getWriter();
@@ -513,61 +504,6 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 --limitCounter;
                 ++counts[2];
             }
-            ++counts[3];
-        }
-
-        jsonGen.writeEnd();
-
-        return counts;
-    }
-
-    private long[] writeNodes(final JsonGenerator jsonGen, final NodeIterator nodes,
-        final Session session, final long offset, final long limit) throws RepositoryException
-    {
-        final long[] counts = new long[4];
-        counts[0] = offset;
-        counts[1] = limit;
-        counts[2] = 0;
-        counts[3] = 0;
-
-        long offsetCounter = offset < 0 ? 0 : offset;
-        long limitCounter = limit < 0 ? 0 : limit;
-
-        jsonGen.writeStartArray("rows");
-
-        while (nodes.hasNext()) {
-            //Get the Form node
-            Node n = nodes.nextNode();
-
-            //Get the Subject node
-            String subjectRef = n.getProperty("subject").getString();
-            Node subjectNode = session.getNodeByIdentifier(subjectRef);
-
-            //Get the Questionnaire node
-            String questionnaireRef = n.getProperty("questionnaire").getString();
-            Node questionnaireNode = session.getNodeByIdentifier(questionnaireRef);
-
-            JsonObject thisRow = Json.createObjectBuilder()
-                .add("@path", n.getPath())
-                .add("@name", n.getName())
-                .add("jcr:primaryType", "lfs:Form")
-                .add("jcr:createdBy", "admin")
-                .add("jcr:created", n.getProperty("jcr:created").getString())
-                .add("subject", Json.createObjectBuilder()
-                    .add("jcr:primaryType", "lfs:Subject")
-                    .add("jcr:createdBy", "admin")
-                    .add("identifier", subjectNode.getProperty("identifier").getString())
-                    .add("@path", subjectNode.getPath())
-                    .add("@name", subjectNode.getName()).build()
-                    )
-                .add("questionnaire", Json.createObjectBuilder()
-                    .add("jcr:primaryType", "lfs:Questionnaire")
-                    .add("jcr:createdBy", "admin")
-                    .add("title", questionnaireNode.getProperty("title").getString())
-                    ).build();
-            jsonGen.write(thisRow);
-            --limitCounter;
-            ++counts[2];
             ++counts[3];
         }
 
