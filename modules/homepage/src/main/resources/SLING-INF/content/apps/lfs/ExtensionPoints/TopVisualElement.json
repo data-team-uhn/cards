@@ -1,0 +1,5 @@
+{
+    "jcr:primaryType": "lfs:ExtensionPoint",
+    "lfs:extensionPointId": "lfs/coreUI/topVisualElement",
+    "lfs:extensionPointName": "Content to be displayed on the top of every page"
+}

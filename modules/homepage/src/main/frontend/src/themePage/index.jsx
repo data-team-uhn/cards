@@ -25,6 +25,7 @@ import { withStyles } from '@material-ui/core';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
+import TopVisualElement from "./TopVisualElement/TopVisualElement";
 import IndexStyle from "./indexStyle.jsx";
 
 class Main extends React.Component {
@@ -96,6 +97,7 @@ class Main extends React.Component {
           />
           <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
             <div className={classes.content}>
+              <TopVisualElement/>
               <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
             </div>
             <Navbar
