@@ -60,6 +60,12 @@ public class VocabularyBioPortalApiKeyServlet extends SlingSafeMethodsServlet
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
+        // get node /libs/lfs/conf/BioportalApiKey
+        String oakQuery = String.format(
+            "SELECT * FROM [lfs:BioportalApiKey]",
+            resource.getString("identifier"));
+        Resource keys = resolver.findResources(oakQuery, "JCR-SQL2");
+
         response.setContentType("application/json");
         final Writer out = response.getWriter();
         try (JsonGenerator jsonGen = Json.createGenerator(out)) {
