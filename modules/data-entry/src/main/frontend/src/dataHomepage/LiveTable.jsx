@@ -245,7 +245,8 @@ function LiveTable(props) {
         entryName={name}
         onComplete={refresh}
         entryType={entryType}
-        warning={entry["@referenced"]} />
+        warning={entry["@referenced"]}
+        buttonClass={classes.actionButton} />
     });
     return <TableCell key={index}>{content}</TableCell>;
   }

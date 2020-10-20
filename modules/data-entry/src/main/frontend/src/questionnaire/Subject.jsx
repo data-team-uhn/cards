@@ -170,7 +170,7 @@ function SubjectContainer(props) {
     <Grid container spacing={3}>
       <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed}/>
       {relatedSubjects ?
-        (<Grid item xs={12}>
+        (<Grid item xs={12} className={classes.subjectContainer}>
           {relatedSubjects.map( (subject, i) => {
             // Render component again for each related subject
             return(
@@ -257,6 +257,8 @@ function SubjectMember (props) {
                 entryType={data?.type?.label || "Subject"}
                 warning={data ? data["@referenced"] : false}
                 shouldGoBack={level === 0}
+                buttonClass={level === 0 ? classes.deleteButtonLarge : null}
+                size={level === 0 ? "large" : null}
               />
             </Typography>
         }

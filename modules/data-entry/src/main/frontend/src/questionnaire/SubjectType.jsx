@@ -125,6 +125,7 @@ function SubjectType (props) {
                   entryType={"Subject Type"}
                   warning={data ? data["@referenced"] : false}
                   shouldGoBack={true}
+                  buttonClass={classes.deleteButtonRight}
                 />
               </Typography>
           }

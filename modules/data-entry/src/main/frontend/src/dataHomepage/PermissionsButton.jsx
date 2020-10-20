@@ -33,7 +33,7 @@ function PermissionsButton(props) {
   return (
     <React.Fragment>
       <Tooltip title={"Set Permissions"}>
-        <IconButton component="span" className={classes.iconButton}>
+        <IconButton component="span" className={classes.deleteButtonRight}>
           <Lock fontSize={size ? size : "default"}/>
         </IconButton>
       </Tooltip>

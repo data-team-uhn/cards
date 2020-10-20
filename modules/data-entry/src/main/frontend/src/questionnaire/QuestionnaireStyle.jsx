@@ -134,6 +134,10 @@ const questionnaireStyle = theme => ({
     subjectFormHeaderButton: {
         padding: "0 !important"
     },
+    subjectContainer: {
+        marginLeft: theme.spacing(4),
+        marginTop: theme.spacing(4)
+    },
     subjectNewButton: {
         margin: theme.spacing(1),
         top: theme.spacing(7.7),
@@ -220,8 +224,12 @@ const questionnaireStyle = theme => ({
         opacity: 1,
         zIndex: "1010"
     },
-    iconButton: {
+    deleteButtonRight: {
         float: "right"
+    },
+    deleteButtonLarge: {
+        float: "right",
+        margin: theme.spacing(2)
     },
     addNewSubjectButton: {
         width: "250px"
