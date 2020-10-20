@@ -30,8 +30,14 @@ import {
 import WarningIcon from '@material-ui/icons/Warning';
 
 export default function WarningBanner() {
+  const StyledAppBar = withStyles({
+    root: {
+      background: "#FFA500"
+    }
+  })(AppBar);
+
   return (
-    <AppBar position="sticky">
+    <StyledAppBar position="sticky">
       <Toolbar>
         <IconButton edge="start" color="inherit">
           <WarningIcon fontsize="large"/>
@@ -43,6 +49,6 @@ export default function WarningBanner() {
           data / patient identifiable information.
         </Typography>
       </Toolbar>
-    </AppBar>
+    </StyledAppBar>
   );
 }
