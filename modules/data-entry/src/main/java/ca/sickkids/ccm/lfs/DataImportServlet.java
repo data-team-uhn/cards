@@ -245,6 +245,10 @@ public class DataImportServlet extends SlingAllMethodsServlet
         final Resource form = getOrCreateForm(row, patch);
         row.toMap().forEach((fieldName, fieldValue) -> {
             try {
+                if (StringUtils.isBlank(fieldValue)) {
+                    return;
+                }
+
                 if (fieldName.endsWith(NOTE_SUFFIX)) {
                     parseNote(fieldName, fieldValue, form);
                 } else {
@@ -268,17 +272,10 @@ public class DataImportServlet extends SlingAllMethodsServlet
     private void parseNote(String fieldName, String fieldValue, Resource form)
         throws PersistenceException, RepositoryException
     {
-        if (StringUtils.isBlank(fieldValue)) {
-            return;
-        }
-
         // Truncate the suffix from the fieldName before finding the related question
         String fieldNamePrefix = fieldName.substring(0, fieldName.length() - NOTE_SUFFIX.length());
         Node question = getQuestion(fieldNamePrefix);
         if (question == null) {
-            if (this.warnedCache.get().add(fieldNamePrefix)) {
-                LOGGER.info("Unknown field: {}", fieldNamePrefix);
-            }
             return;
         }
 
@@ -298,15 +295,8 @@ public class DataImportServlet extends SlingAllMethodsServlet
     private void parseAnswer(String fieldName, String fieldValue, Resource form)
         throws PersistenceException, RepositoryException
     {
-        if (StringUtils.isBlank(fieldValue)) {
-            return;
-        }
-
         Node question = getQuestion(fieldName);
         if (question == null) {
-            if (this.warnedCache.get().add(fieldName)) {
-                LOGGER.info("Unknown field: {}", fieldName);
-            }
             return;
         }
 
@@ -352,7 +342,14 @@ public class DataImportServlet extends SlingAllMethodsServlet
         } catch (RepositoryException e) {
             LOGGER.warn("Unexpected exception while searching for the question [{}]: {}", columnName, e.getMessage());
         }
-        return cache.get(columnName);
+
+        Node question = cache.get(columnName);
+        if (question == null) {
+            if (this.warnedCache.get().add(columnName)) {
+                LOGGER.info("Unknown field: {}", columnName);
+            }
+        }
+        return question;
     }
 
     /**
