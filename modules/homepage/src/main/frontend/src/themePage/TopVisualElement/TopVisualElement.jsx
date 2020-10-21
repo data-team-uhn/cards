@@ -25,7 +25,7 @@ export default function TopVisualElement(props) {
 
   const [ displayedElement, setDisplayedElement ] = useState(
   <Button variant="contained" color="primary">
-    Top Visual Element
+    Loading Top Visual Element...
   </Button>
   );
 
