@@ -32,7 +32,6 @@ export default function TopVisualElement(props) {
   useEffect(() => {
     loadExtensions("TopVisualElement")
       .then((resp) => {
-        console.log(resp);
         if (resp.length > 0) {
           setDisplayedElement(resp[0]["lfs:extensionRender"]());
         }
