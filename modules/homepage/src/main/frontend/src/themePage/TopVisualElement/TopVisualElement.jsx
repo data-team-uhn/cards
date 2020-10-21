@@ -34,6 +34,8 @@ export default function TopVisualElement(props) {
       .then((resp) => {
         if (resp.length > 0) {
           setDisplayedElement(resp[0]["lfs:extensionRender"]());
+        } else {
+          setDisplayedElement(null);
         }
       });
   }, []);
