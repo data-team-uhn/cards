@@ -70,7 +70,7 @@ function VocabularyQuestion(props) {
     // Only extract the labels and internal values from the node
     .map(value => [value.label || value.value, value.value, true])
     // Reparse defaults into a format VocabularySelector understands
-    .reduce((object, value) => ({...object, [value[0]]: value[1]}), {});
+    .reduce((object, value) => ({...object, [value[1]]: value[0]}), {});
 
   return (
     <Question
