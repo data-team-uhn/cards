@@ -1,7 +1,7 @@
 {
-    "name": "lfs-banner",
+    "name": "lfs-warning-banner",
     "version": "0.1.0",
-    "description": "Banner resources for the LFS Project",
+    "description": "Warning banner resources for the LFS Project",
     "author": "SickKids",
     "license": "Apache-2.0",
     "repository": {

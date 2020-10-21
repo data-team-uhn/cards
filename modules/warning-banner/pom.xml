@@ -24,7 +24,7 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-modules-lfs-banner</artifactId>
+  <artifactId>lfs-modules-lfs-warning-banner</artifactId>
   <packaging>bundle</packaging>
   <name>LFS - Warning Banner</name>
 

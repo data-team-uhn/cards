@@ -18,10 +18,10 @@
 #
 
 # This is the LFS project
-[feature name=lfs-cardiac-resources]
+[feature name=lfs-warning-banner]
 
 [variables]
     lfs.version=0.1-SNAPSHOT
 
 [artifacts runModes=demo]
-    ca.sickkids.ccm.lfs/lfs-modules-lfs-banner/${lfs.version}
+    ca.sickkids.ccm.lfs/lfs-modules-lfs-warning-banner/${lfs.version}

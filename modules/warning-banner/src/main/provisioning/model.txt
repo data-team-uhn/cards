@@ -18,4 +18,4 @@
 #
 
 # The LFS Variants management
-[feature name=lfs-banner]
+[feature name=lfs-warning-banner]
