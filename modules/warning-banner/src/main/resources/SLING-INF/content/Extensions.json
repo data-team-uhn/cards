@@ -1,0 +1,12 @@
+{
+    "jcr:primaryType": "sling:Folder",
+    "TopVisualElement": {
+        "jcr:primaryType": "sling:Folder",
+        "Content": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/topVisualElement",
+            "lfs:extensionName": "Top Visual Element Content",
+            "lfs:extensionRenderURL": "asset:lfs-banner.warningBanner.js"
+        }
+    }
+}

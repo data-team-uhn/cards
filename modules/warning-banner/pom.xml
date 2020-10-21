@@ -24,16 +24,22 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-banner</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>lfs-modules-lfs-banner</artifactId>
+  <packaging>bundle</packaging>
   <name>LFS - Warning Banner</name>
 
   <build>
     <plugins>
+      <!-- This is an OSGi bundle -->
       <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <version>0.13</version>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Sling-Initial-Content>SLING-INF/content/</Sling-Initial-Content>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
