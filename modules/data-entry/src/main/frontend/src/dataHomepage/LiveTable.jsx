@@ -27,9 +27,6 @@ import Filters from "./Filters.jsx";
 
 import LiveTableStyle from "./tableStyle.jsx";
 
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
-
 // Convert a date into the given format string
 // If the date is invalid (usually because it is missing), return ""
 let _formatDate = (date, formatString) => {
@@ -194,22 +191,6 @@ function LiveTable(props) {
     // allow livetable to link to components in the admin dashboard
     // if livetable item must link to a component within the admin dashboard, set "admin": true
     let pathPrefix = (column.admin ? "/content.html/admin" : "/content.html");
-
-    // Handle links
-    if (column.key.startsWith('actions')) {
-      content = (
-        <div>
-          <Link to={pathPrefix + entry["@path"]}>
-            <IconButton>
-              <EditIcon />
-            </IconButton>
-          </Link>
-          <IconButton onClick={() => { props.delete(entry); }}>
-            <DeleteIcon />
-        </IconButton>
-      </div>
-      )
-    }
 
     if (column.link) {
       if (column.link === 'path') {

@@ -38,6 +38,7 @@ function DeleteButton(props) {
   const [ dialogAction, setDialogAction ] = useState("");
   const [ deleteRecursive, setDeleteRecursive ] = useState(false);
   const [ entryNotFound, setEntryNotFound ] = useState(false);
+  const [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
 
   const defaultDialogAction = `Are you sure you want to delete ${entryName}?`;
   const defaultErrorMessage = entryName + " could not be removed.";
@@ -69,7 +70,13 @@ function DeleteButton(props) {
   }
 
   let handleError = (status, response) => {
-    if (status === 401) {
+    // If the user is not logged in, offer to log in
+    const sessionInfo = window.Sling.getSessionInfo();
+    if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
+      // On first attempt to save while logged out, set status to false to make button text inform user
+      setLastSaveStatus(false);
+      setDialogAction(defaultErrorMessage);
+    } else if (status === 401) {
       setErrorMessage(`${defaultErrorMessage} You are not permitted to perform that action.`);
       openError();
     } else if (status === 404) {
@@ -98,12 +105,30 @@ function DeleteButton(props) {
         setDeleteRecursive(true);
         openDialog();
       }
-    } else if (json.error) {
-      setErrorMessage(`${defaultErrorMessage} An unexpected error occured. ${json.error.class}: ${json.error.message}`);
     } else {
-      setErrorMessage(defaultErrorMessage);
+      setErrorMessage(`${defaultErrorMessage} The server returned response code ${status}`);
       openError();
     }
+  }
+
+  let handleDeleteButtonClicked = () => {
+    if (lastSaveStatus === false) {
+      handleLogin();
+    } else {
+      handleDelete();
+    }
+  }
+
+  let handleLogin = () => {
+    const width = 600;
+    const height = 800;
+    const top = window.top.outerHeight / 2 + window.top.screenY - (height / 2);
+    const left = window.top.outerWidth / 2 + window.top.screenX - (width / 2);
+    // After a successful log in, the login dialog code will "open" the specified resource, which results in executing the specified javascript code
+    window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${width}, height=${height}, top=${top}, left=${left}`);
+    // Reset the dialog message and log in button
+    setLastSaveStatus(undefined);
+    setDialogAction(defaultDialogAction);
   }
 
   let handleDelete = () => {
@@ -118,6 +143,7 @@ function DeleteButton(props) {
       }
     }).then((response) => {
       if (response.ok)  {
+        setLastSaveStatus(true);
         closeDialog();
         if (onComplete) {onComplete();}
         if (shouldGoBack) {goBack();}
@@ -164,7 +190,9 @@ function DeleteButton(props) {
             <Typography variant="body1">{dialogAction}</Typography>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-            <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete()}>Delete{deleteRecursive ? " All" : null}</Button>
+            <Button variant="contained" color="secondary" size="small" onClick={() => handleDeleteButtonClicked()}>
+              { lastSaveStatus === false ? "Log in and Try Again?" : (deleteRecursive ? "Delete All" : "Delete")}
+            </Button>
             <Button variant="contained" size="small" onClick={closeDialog}>Close</Button>
         </DialogActions>
       </Dialog>
