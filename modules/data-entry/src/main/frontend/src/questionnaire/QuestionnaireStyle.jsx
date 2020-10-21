@@ -224,7 +224,7 @@ const questionnaireStyle = theme => ({
         opacity: 1,
         zIndex: "1010"
     },
-    deleteButtonRight: {
+    titleButton: {
         float: "right"
     },
     deleteButtonLarge: {

@@ -229,7 +229,7 @@ function Form (props) {
               entryType={data?.questionnaire?.title || "Form"}
               warning={data ? data["@referenced"] : false}
               shouldGoBack={true}
-              buttonClass={classes.deleteButtonRight}
+              buttonClass={classes.titleButton}
             />
           </Typography>
           {
