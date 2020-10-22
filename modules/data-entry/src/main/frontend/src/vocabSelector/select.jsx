@@ -21,8 +21,8 @@ import PropTypes from "prop-types";
 // @material-ui/core
 import { FormControlLabel, List, RadioGroup, Typography, withStyles, Radio } from "@material-ui/core";
 
-import { MakeRequest, REST_URL } from "../vocabQuery/util.jsx";
-import Answer from "../questionnaire/Answer.jsx";
+import { MakeRequest } from "../vocabQuery/util.jsx";
+import Answer, { VALUE_POS } from "../questionnaire/Answer.jsx";
 import VocabularyQuery from "../vocabQuery/query.jsx";
 import SelectorStyle from "./selectorStyle.jsx";
 import VocabularyEntry from "./selectEntry.jsx";
@@ -176,9 +176,9 @@ function VocabularySelector(props) {
 
   let populateDefaults = () => {
     var newChildren = [];
-    const hasExistingAnswers = existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value;
+    const hasExistingAnswers = existingAnswer && existingAnswer.length > 1 && existingAnswer[VALUE_POS].value;
     // The existing value, if present, can either be a single value or an array of values; force it into an array
-    const existingAnswers = hasExistingAnswers && Array.of(existingAnswer[1].value).flat();
+    const existingAnswers = hasExistingAnswers && Array.of(existingAnswer[VALUE_POS].value).flat();
 
     for (var id in defaultSuggestions) {
       // If we are given a name, use it
@@ -195,7 +195,7 @@ function VocabularySelector(props) {
 
     // If any answers are existing (i.e. we are loading an old form), also populate these
     if (hasExistingAnswers) {
-      Array.of(existingAnswer[1].value).flat().forEach( (id) => {
+      Array.of(existingAnswer[VALUE_POS].value).flat().forEach( (id) => {
         // Do not add a pre-existing answer if it is a default
         if (id in defaultSuggestions) {
           return;
@@ -211,8 +211,8 @@ function VocabularySelector(props) {
   }
 
   let addDefaultSuggestion = (status, data, id, isSuggestion) => {
-    const hasExistingAnswers = existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value;
-    const existingAnswers = existingAnswer && existingAnswer[1].value;
+    const hasExistingAnswers = existingAnswer && existingAnswer.length > 1 && existingAnswer[VALUE_POS].value;
+    const existingAnswers = existingAnswer && existingAnswer[VALUE_POS].value;
     var name;
     if (status === null) {
       // Use the name from the response (if available) or the ID if not
