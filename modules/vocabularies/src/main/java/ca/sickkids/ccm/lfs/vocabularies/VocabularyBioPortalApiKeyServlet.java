@@ -21,6 +21,10 @@ package ca.sickkids.ccm.lfs.vocabularies;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.ValueFormatException;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
@@ -28,6 +32,8 @@ import javax.servlet.Servlet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
@@ -57,21 +63,43 @@ public class VocabularyBioPortalApiKeyServlet extends SlingSafeMethodsServlet
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VocabularyIndexerServlet.class);
 
+    private ThreadLocal<Boolean> keyNodeExists = new ThreadLocal<Boolean>()
+    {
+        @Override
+        protected Boolean initialValue()
+        {
+            return Boolean.FALSE;
+        }
+    };
+
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
         // get node /libs/lfs/conf/BioportalApiKey
-        String oakQuery = String.format(
-            "SELECT * FROM [lfs:BioportalApiKey]",
-            resource.getString("identifier"));
-        Resource keys = resolver.findResources(oakQuery, "JCR-SQL2");
+        String resourcePath = "/libs/lfs/conf/BioportalApiKey";
+        // req is the SlingHttpServletRequest
+        ResourceResolver resourceResolver = request.getResourceResolver();
+        Resource res = resourceResolver.getResource(resourcePath);
+
+        if (res != null) {
+            this.keyNodeExists.set(Boolean.TRUE);
+        }
 
         response.setContentType("application/json");
         final Writer out = response.getWriter();
         try (JsonGenerator jsonGen = Json.createGenerator(out)) {
             jsonGen.writeStartObject();
-            jsonGen.write(RESPONSE_JSON_KEY, this.getAPIKeyFromEnvironment());
+            if (this.keyNodeExists.get()) {
+                // if node exists
+                jsonGen.write(RESPONSE_JSON_KEY, this.getAPIKeyFromNode(res));
+            }
+            else {
+                // if node does not exist, get api key from env variable
+                jsonGen.write(RESPONSE_JSON_KEY, this.getAPIKeyFromEnvironment());
+            }
             jsonGen.writeEnd().flush();
+        } catch (RepositoryException e) {
+
         }
     }
 
@@ -86,6 +114,22 @@ public class VocabularyBioPortalApiKeyServlet extends SlingSafeMethodsServlet
         String apiKey = System.getenv(APIKEY_ENVIRONMENT_VARIABLE);
         apiKey = StringUtils.isBlank(apiKey) ? "" : apiKey;
         LOGGER.info("BioPortal API key as set in the OS environment: [{}]", apiKey);
+        return apiKey;
+    }
+
+    private String getAPIKeyFromNode(Resource res) throws RepositoryException
+    {
+        String apiKey = "test"; // TODO: can this be initialized w/o value?
+
+        try {
+            Node keyNode = res.adaptTo(Node.class);
+            apiKey = keyNode.getProperty("key").getString();
+            LOGGER.info("BioPortal API key as set in the BioportalApiKey node: [{}]", apiKey);
+        } catch (PathNotFoundException e) {
+            LOGGER.error("Value does not exist for question: {}", e.getMessage(), e);
+        } catch (ValueFormatException e) {
+            LOGGER.error("Value does not exist for question: {}", e.getMessage(), e);
+        }
         return apiKey;
     }
 }
