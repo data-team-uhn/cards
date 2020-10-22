@@ -177,7 +177,9 @@ function VocabularySelector(props) {
   let populateDefaults = () => {
     var newChildren = [];
     const hasExistingAnswers = existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value;
-    const existingAnswers = hasExistingAnswers && existingAnswer[1].value;
+    // The existing value, if present, can either be a single value or an array of values; force it into an array
+    const existingAnswers = hasExistingAnswers && Array.of(existingAnswer[1].value).flat();
+
     for (var id in defaultSuggestions) {
       // If we are given a name, use it
       if (typeof defaultSuggestions[id] !== "undefined") {
