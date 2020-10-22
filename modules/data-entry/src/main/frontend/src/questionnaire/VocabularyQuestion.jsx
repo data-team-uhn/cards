@@ -22,6 +22,7 @@ import { withStyles } from "@material-ui/core";
 
 import PropTypes from "prop-types";
 
+import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
@@ -70,7 +71,7 @@ function VocabularyQuestion(props) {
     // Only extract the labels and internal values from the node
     .map(value => [value.label || value.value, value.value, true])
     // Reparse defaults into a format VocabularySelector understands
-    .reduce((object, value) => ({...object, [value[1]]: value[0]}), {});
+    .reduce((object, value) => ({...object, [value[VALUE_POS]]: value[LABEL_POS]}), {});
 
   return (
     <Question
