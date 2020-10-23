@@ -32,7 +32,7 @@ const Sidebar = ({ ...props }) => {
   let _isAdministrativeButton = function(order) {
     return Math.floor(order % 100 / 90);
   }
-  const { classes, color, logoImage, image, logoText } = props;
+  const { classes, color, contentOffset, logoImage, image, logoText } = props;
   let [entries, setEntries] = useState();
   let [loading, setLoading] = useState(true);
 
@@ -148,6 +148,7 @@ const Sidebar = ({ ...props }) => {
           ModalProps={{
             keepMounted: true // Better open performance on mobile.
           }}
+          PaperProps={ { style: { top: contentOffset + 'px', height: 'calc(100% - ' + contentOffset + 'px)' } } }
         >
           {brand}
           <div className={classes.sidebarWrapper}>
@@ -170,6 +171,7 @@ const Sidebar = ({ ...props }) => {
           variant="permanent"
           open
           classes={{paper: classes.drawerPaper}}
+          PaperProps={ { style: { top: contentOffset + 'px', height: 'calc(100vh - ' + contentOffset + 'px)' } } }
         >
           {brand}
           <div className={classes.sidebarWrapper}>

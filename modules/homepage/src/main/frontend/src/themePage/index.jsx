@@ -39,6 +39,7 @@ class Main extends React.Component {
       fixedClasses: "dropdown show",
       mobileOpen: false,
       routes: [],
+      contentOffset: 0,
     };
 
     getRoutes().then(routes => this.setState({routes: routes}));
@@ -84,30 +85,40 @@ class Main extends React.Component {
     const { classes, ...rest } = this.props;
 
     return (
-      <div className={classes.wrapper}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Sidebar
-            logoText={"LFS Data Core"}
-            logoImage={"/libs/lfs/resources/lfs-logo-tmp-cyan.png"}
-            image={this.state.image}
-            handleDrawerToggle={this.handleDrawerToggle}
-            open={this.state.mobileOpen}
-            color={ "blue" }
-            {...rest}
-          />
-          <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
-            <div className={classes.content}>
-              <TopVisualElement/>
-              <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
-            </div>
-            <Navbar
-              routes={ this.state.routes }
+      <React.Fragment>
+        <TopVisualElement onRender={(node) => {
+            window.onresize = () => {
+              let n = node.getBoundingClientRect().height;
+              this.setState({contentOffset: n});
+            }
+            this.setState({contentOffset: node.getBoundingClientRect().height});
+          }
+        }/>
+        <div className={classes.wrapper} style={ { position: 'relative', top: this.state.contentOffset + 'px' } }>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Sidebar
+              contentOffset={this.state.contentOffset}
+              logoText={"LFS Data Core"}
+              logoImage={"/libs/lfs/resources/lfs-logo-tmp-cyan.png"}
+              image={this.state.image}
               handleDrawerToggle={this.handleDrawerToggle}
+              open={this.state.mobileOpen}
+              color={ "blue" }
               {...rest}
             />
-          </div>
-        </Suspense>
-      </div>
+            <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
+              <div className={classes.content}>
+                <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
+              </div>
+              <Navbar
+                routes={ this.state.routes }
+                handleDrawerToggle={this.handleDrawerToggle}
+                {...rest}
+              />
+            </div>
+          </Suspense>
+        </div>
+      </React.Fragment>
     );
   }
 }

@@ -29,7 +29,6 @@ import {
     drawerPaper: {
       border: "none",
       position: "fixed",
-      top: "0",
       bottom: "0",
       left: "0",
       zIndex: "1030",
@@ -38,8 +37,7 @@ import {
       // At medium size and up, use the full sidebar
       [theme.breakpoints.up("md")]: {
         width: drawerWidth,
-        position: "fixed",
-        height: "100%"
+        position: "fixed"
       },
       // At small size and lower, switch to being on the opposite side of the screen
       [theme.breakpoints.down("sm")]: {
@@ -47,8 +45,6 @@ import {
         ...boxShadow,
         position: "fixed",
         display: "block",
-        top: "0",
-        height: "100vh",
         right: "0",
         left: "auto",
         zIndex: "1032",

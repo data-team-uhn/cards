@@ -24,7 +24,7 @@ import { Button } from "@material-ui/core";
 export default function TopVisualElement(props) {
 
   const [ displayedElement, setDisplayedElement ] = useState(
-  <Button variant="contained" color="primary">
+  <Button variant="contained" color="primary" style={{ position: 'fixed', zIndex: 1040 }}>
     Loading Top Visual Element...
   </Button>
   );
@@ -33,7 +33,7 @@ export default function TopVisualElement(props) {
     loadExtensions("TopVisualElement")
       .then((resp) => {
         if (resp.length > 0) {
-          setDisplayedElement(resp[0]["lfs:extensionRender"]());
+          setDisplayedElement(resp[0]["lfs:extensionRender"](props));
         } else {
           setDisplayedElement(null);
         }
