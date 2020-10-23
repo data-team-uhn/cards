@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React from "react";
 
 import {
   AppBar,
@@ -29,7 +29,7 @@ import {
 
 import WarningIcon from '@material-ui/icons/Warning';
 
-export default function WarningBanner() {
+export default function WarningBanner(props) {
   const StyledAppBar = withStyles({
     root: {
       background: "#FFA500"
@@ -37,7 +37,7 @@ export default function WarningBanner() {
   })(AppBar);
 
   return (
-    <StyledAppBar position="sticky">
+    <StyledAppBar position="fixed" ref={props.onRender}>
       <Toolbar>
         <IconButton edge="start" color="inherit">
           <WarningIcon fontsize="large"/>
