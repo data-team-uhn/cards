@@ -101,8 +101,6 @@ let AnswerOptions = (props) => {
     setTempValue('');
   }
 
-  console.log(path);
-
   return (
     <Grid container alignItems='flex-start' spacing={2}>
       <Grid item xs={6}>

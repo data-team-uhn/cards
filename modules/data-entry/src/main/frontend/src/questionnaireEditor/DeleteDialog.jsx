@@ -37,7 +37,7 @@ let DeleteDialog = (props) => {
   // - true -> data has been successfully saved
   // - false -> the save attempt failed
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
-  const { data, onClose, open } = props;
+  const { data, onClose, onCancel, isOpen, id } = props;
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ error, setError ] = useState("");
   
@@ -82,8 +82,8 @@ let DeleteDialog = (props) => {
 
   return (
     <React.Fragment>
-      <Dialog id="deleteDialog" open={open} onClose={onClose}>
-        <form action={data && data["@path"]} onSubmit={deleteData} method="DELETE" key={props.id}>
+      <Dialog id="deleteDialog" open={isOpen} onClose={onClose}>
+        <form action={data && data["@path"]} onSubmit={deleteData} method="DELETE" key={id}>
           <DialogTitle>
             <Typography>{props.type.includes("Question") ? "Confirm Question Deletion" : "Confirm Section Deletion"}</Typography>
           </DialogTitle>
@@ -103,7 +103,7 @@ let DeleteDialog = (props) => {
             <Button
               variant="contained"
               color="default"
-              onClick={onClose}
+              onClick={onCancel}
               >
               {'Cancel'}
             </Button>
