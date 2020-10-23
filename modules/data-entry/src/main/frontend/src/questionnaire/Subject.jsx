@@ -246,21 +246,22 @@ function SubjectMember (props) {
   return (
     <Grid item xs={12}>
       <Grid item>
+        <DeleteButton
+          entryPath={data ? data["@path"] : "/Subjects/" + id}
+          entryName={(data?.type?.label || "Subject") + " " + (data && data.identifier ? data.identifier : id)}
+          entryType={data?.type?.label || "Subject"}
+          warning={data ? data["@referenced"] : false}
+          shouldGoBack={level === 0}
+          buttonClass={level === 0 ? classes.subjectHeaderDeleteButton : null}
+          size={level === 0 ? "large" : null}
+        />
         {
           parentDetails && <Typography variant="overline">{parentDetails}</Typography>
         }
         {
-          <Typography variant={headerStyle} className={level === 0 ? classes.subjectDeleteButton : null}>{data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
-              <DeleteButton
-                entryPath={data ? data["@path"] : "/Subjects/" + id}
-                entryName={(data?.type?.label || "Subject") + " " + (data && data.identifier ? data.identifier : id)}
-                entryType={data?.type?.label || "Subject"}
-                warning={data ? data["@referenced"] : false}
-                shouldGoBack={level === 0}
-                buttonClass={level === 0 ? classes.deleteButtonLarge : null}
-                size={level === 0 ? "large" : null}
-              />
-            </Typography>
+          <Typography variant={headerStyle}>
+            {data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
+          </Typography>
         }
         {
           data && data['jcr:createdBy'] && data['jcr:created'] ?
