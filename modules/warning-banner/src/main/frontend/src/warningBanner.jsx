@@ -29,18 +29,20 @@ import {
 
 import WarningIcon from '@material-ui/icons/Warning';
 
+const appbarStyle = theme => ({
+  root: {
+    backgroundColor: theme.palette.warning.main
+  }
+});
+
 export default function WarningBanner(props) {
-  const StyledAppBar = withStyles({
-    root: {
-      background: "#FFA500"
-    }
-  })(AppBar);
+  const StyledAppBar = withStyles(appbarStyle)(AppBar);
 
   return (
     <StyledAppBar position="fixed" ref={props.onRender}>
       <Toolbar>
         <IconButton edge="start" color="inherit">
-          <WarningIcon fontsize="large"/>
+          <WarningIcon fontSize="large"/>
         </IconButton>
         <Typography variant="h6">
           This installation is for demo purposes only.
