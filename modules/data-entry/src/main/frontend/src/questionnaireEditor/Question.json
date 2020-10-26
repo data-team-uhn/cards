@@ -2,7 +2,6 @@
   {
     "text": "string",
     "description": "string",
-    "hint": "string",
     "dataType": {
       "boolean": {
         "maxAnswers": "1",

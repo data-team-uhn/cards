@@ -103,10 +103,10 @@ let AnswerOptions = (props) => {
 
   return (
     <Grid container alignItems='flex-start' spacing={2}>
-      <Grid item xs={6}>
+      <Grid item xs={4}>
         <Typography>Answer Options</Typography>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={8}>
       { options.map((value, index) =>
         <React.Fragment key={value['@path']}>
           <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />

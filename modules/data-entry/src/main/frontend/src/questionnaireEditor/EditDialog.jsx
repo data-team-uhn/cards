@@ -91,7 +91,7 @@ let EditDialog = (props) => {
     } else {
       // If the question/section doesn't exist, create it
       const URL = `${data['@path']}/${title}`
-      const primaryType = type.includes('Question') ? 'lfs:Question' : 'lfs:Section'
+      const primaryType = type.includes('Question') ? 'lfs:Question' : 'lfs:Section';
       var request_data = new FormData(event.currentTarget);
       request_data.append('jcr:primaryType', primaryType);
       fetch(URL, { method: 'POST', body: request_data })
@@ -162,6 +162,19 @@ let EditDialog = (props) => {
           <DialogContent>
             { !isEdit && titleField() }
             <Fields data={isEdit && data || {}} JSON={json[0]} edit={true} />
+            { data && type === 'Section' &&
+              <React.Fragment key={`${data.condition['@path']}`}>
+                <Typography>Condition:</Typography>
+                <input type='hidden' name={`${data['@path']}/jcr:primaryType`} value="lfs:Conditional" />
+                <TextField
+                  label="Condition JSON"
+                  name={`${data['@path']}`}
+                  defaultValue={isEdit && data.condition ? JSON.stringify(data.condition) : '' }
+                  style={{width: "500px"}}
+                  multiline
+                />
+              </React.Fragment>
+            }
             { data && type === 'Question' && <AnswerOptions data={data} path={data["@path"] + (isEdit ? "" : `/${title}`)} /> }
           </DialogContent>
           <DialogActions>

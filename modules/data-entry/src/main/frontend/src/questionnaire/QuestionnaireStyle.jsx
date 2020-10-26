@@ -292,6 +292,11 @@ const questionnaireStyle = theme => ({
     questionnaireListItem: {
         color: theme.palette.grey["900"]
     },
+    cardSpacing: {
+        paddingTop: theme.spacing(1) + "px !important",
+        paddingBottom: theme.spacing(1) + "px !important",
+        marginBottom: theme.spacing(1) + "px !important"
+    },
 });
 
 export default questionnaireStyle;

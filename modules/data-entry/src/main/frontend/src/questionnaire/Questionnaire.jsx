@@ -46,11 +46,15 @@ import EditIcon from '@material-ui/icons/Edit';
 // Given the JSON object for a section or question, display it and its children
 let DisplayFormEntries = (json, additionalProps) => {
   return Object.entries(json)
-    .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
+    .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section'
+                            || value['jcr:primaryType'] == 'lfs:Question'
+                            || value['jcr:primaryType'] == 'lfs:Conditional'))
     .map(([key, value]) =>
       value['jcr:primaryType'] == 'lfs:Question'
-      ? <Grid item key={key}><Question data={value} {...additionalProps}/></Grid>
-      : <Grid item key={key}><Section data={value} {...additionalProps}/></Grid>
+      ? <Grid item key={key} className={additionalProps.classes.cardSpacing}><Question data={value} {...additionalProps}/></Grid> :
+      value['jcr:primaryType'] == 'lfs:Section'
+      ? <Grid item key={key} className={additionalProps.classes.cardSpacing}><Section data={value} {...additionalProps}/></Grid>
+      : <Grid item key={key} className={additionalProps.classes.cardSpacing}><Condition data={value} {...additionalProps}/></Grid>
     );
 }
 
@@ -148,7 +152,7 @@ let Questionnaire = (props) => {
         }
       </Grid>
       { data &&
-        <Grid item>
+        <Grid item className={classes.cardSpacing}>
           <Button aria-controls="simple-menu-main" aria-haspopup="true" onClick={handleOpenMenu}>
             Add...
           </Button>
@@ -165,7 +169,7 @@ let Questionnaire = (props) => {
         </Grid>
       }
       { data &&
-        <Grid item>
+        <Grid item className={classes.cardSpacing}>
           <Card>
             <CardHeader
               title={'Questionnaire Properties'}
@@ -175,30 +179,31 @@ let Questionnaire = (props) => {
                 </IconButton>
               }/>
             <CardContent>
-              <dl>
-                <dt>
-                  <Typography>Max per Subject:</Typography>
-                </dt>
-                <dd>
-                  <Typography>{data.maxPerSubject || 'Unlimited'}</Typography>
-                </dd>
-                <dt>
-                  <Typography>Subject Types:</Typography>
-                </dt>
-                <dd>
+              <Grid container alignItems='flex-start' spacing={2}>
+                <Grid item key="max" xs={4}>
+                   <Typography>Max per Subject:</Typography>
+                </Grid>
+                <Grid item key="maxvalue" xs={8}>
+                    <Typography>{data.maxPerSubject || 'Unlimited'}</Typography>
+                </Grid>
+                <Grid item key="types" xs={4}>
+                   <Typography>Subject Types:</Typography>
+                </Grid>
+                <Grid item key="condition" xs={8}>
                   { data?.requiredSubjectTypes?.map( subjectType =>
                     (subjectType ?
                       <Typography key={subjectType.label}>{subjectType.label}</Typography>
                       : <Typography>'Any'</Typography>
                     )
                   )}
-                </dd>
-              </dl>
+                </Grid>
+              </Grid>
+
             </CardContent>
           </Card>
         </Grid>
       }
-      { data ?  DisplayFormEntries(data, {onClose: reloadData})
+      { data ?  DisplayFormEntries(data, {onClose: reloadData, classes: classes})
              : <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
       }
       </Grid>
@@ -228,6 +233,22 @@ let Question = (props) => {
   let { onClose, data } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
+  let answers = Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption');
+
+  let displayAnswers = () => {
+    return (
+        <Grid container key={data['jcr:uuid']} alignItems='flex-start' spacing={2}>
+          <Grid item key="label" xs={4}>
+            <Typography>AnswerOptions :</Typography>
+          </Grid>
+          <Grid item key="values" xs={8}>
+            <dl>
+              { answers.map((item) => <AnswerOption key={item['jcr:uuid']} data={item} />) }
+            </dl>
+          </Grid>
+        </Grid>
+    );
+  };
 
   return (
     <Card>
@@ -245,14 +266,8 @@ let Question = (props) => {
         }
       />
       <CardContent>
-        <dl>
-          <Fields data={data} JSON={require('../questionnaireEditor/Question.json')[0]} edit={false} />
-        </dl>
-        {
-          Object.values(data)
-            .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
-            .map(value => <AnswerOption key={value['jcr:uuid']} data={value} />)
-        }
+        <Fields data={data} JSON={require('../questionnaireEditor/Question.json')[0]} edit={false} />
+        { answers.length > 0 && displayAnswers() }
       </CardContent>
       { editDialogOpen && <EditDialog
                               isEdit={true}
@@ -280,8 +295,29 @@ Question.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-let Section = (props) => {
+// Details about a particular section or question condition in a questionnaire.
+let Condition = (props) => {
   let { onClose, data } = props;
+
+  return (
+    <Grid container alignItems='flex-start' spacing={2}>
+      <Grid item key="condition" xs={4}>
+        <Typography>Condition:</Typography>
+      </Grid>
+      <Grid item key="operandA" xs={8}>
+        <Typography>{data.operandA?.value.join(', ')} {data.comparator} {data.operandB?.value.join(', ')}</Typography>
+      </Grid>
+    </Grid>
+  );
+};
+
+Condition.propTypes = {
+  closeData: PropTypes.func,
+  data: PropTypes.object.isRequired
+};
+
+let Section = (props) => {
+  let { onClose, data, classes } = props;
   let [ anchorEl, setAnchorEl ] = useState(null);
   let [ isEditing, setIsEditing ] = useState(false);
   let [ entityType, setEntityType ] = useState('Question');
@@ -334,7 +370,7 @@ let Section = (props) => {
         <Grid container direction="column" spacing={8}>
           {
             data ?
-                DisplayFormEntries(data, {onClose: onClose})
+                DisplayFormEntries(data, {onClose: onClose, classes: classes})
               : <Grid container justify="center"><Grid item><CircularProgress /></Grid></Grid>
           }
         </Grid>
@@ -366,7 +402,7 @@ Section.propTypes = {
 
 // A predefined answer option for a question.
 let AnswerOption = (props) => {
-  return <dd><Typography>{props.data.label}</Typography><Typography>{props.data.value}</Typography></dd>;
+  return <span><dt><Typography>{props.data.value}</Typography></dt><dd><Typography>{props.data.label}</Typography></dd></span>;
 };
 
 AnswerOption.propTypes = {
