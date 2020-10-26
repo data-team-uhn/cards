@@ -246,26 +246,30 @@ function SubjectMember (props) {
   return (
     <Grid item xs={12}>
       <Grid item>
+        <span className={classes.subjectHeader}>
+          {
+            parentDetails && <Typography variant="overline">{parentDetails}</Typography>
+          }
+          <Typography variant={headerStyle}>
+            {data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
+          </Typography>
+        </span>
         <DeleteButton
           entryPath={data ? data["@path"] : "/Subjects/" + id}
           entryName={(data?.type?.label || "Subject") + " " + (data && data.identifier ? data.identifier : id)}
           entryType={data?.type?.label || "Subject"}
           warning={data ? data["@referenced"] : false}
           shouldGoBack={level === 0}
-          buttonClass={level === 0 ? classes.subjectHeaderDeleteButton : null}
+          buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}
           size={level === 0 ? "large" : null}
         />
         {
-          parentDetails && <Typography variant="overline">{parentDetails}</Typography>
-        }
-        {
-          <Typography variant={headerStyle}>
-            {data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
-          </Typography>
-        }
-        {
           data && data['jcr:createdBy'] && data['jcr:created'] ?
-          <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
+            <Typography
+              variant="overline"
+              className={classes.subjectSubHeader}>
+                Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}
+            </Typography>
           : ""
         }
       </Grid>
