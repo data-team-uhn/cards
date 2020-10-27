@@ -64,7 +64,10 @@ const liveTableStyle = theme => ({
     },
     deleteButton: {
         width: "100%"
-    }
+    },
+    actionButton: {
+        float: "right"
+    },
 });
 
 export default liveTableStyle;

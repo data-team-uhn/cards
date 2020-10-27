@@ -170,7 +170,7 @@ function SubjectContainer(props) {
     <Grid container spacing={3}>
       <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed}/>
       {relatedSubjects ?
-        (<Grid item xs={12}>
+        (<Grid item xs={12} className={classes.subjectContainer}>
           {relatedSubjects.map( (subject, i) => {
             // Render component again for each related subject
             return(
@@ -246,23 +246,30 @@ function SubjectMember (props) {
   return (
     <Grid item xs={12}>
       <Grid item>
-        {
-          parentDetails && <Typography variant="overline">{parentDetails}</Typography>
-        }
-        {
-          <Typography variant={headerStyle} className={level === 0 ? classes.subjectDeleteButton : null}>{data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
-              <DeleteButton
-                entryPath={data ? data["@path"] : "/Subjects/" + id}
-                entryName={(data?.type?.label || "Subject") + " " + (data && data.identifier ? data.identifier : id)}
-                entryType={data?.type?.label || "Subject"}
-                warning={data ? data["@referenced"] : false}
-                shouldGoBack={level === 0}
-              />
-            </Typography>
-        }
+        <span className={classes.subjectHeader}>
+          {
+            parentDetails && <Typography variant="overline">{parentDetails}</Typography>
+          }
+          <Typography variant={headerStyle}>
+            {data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
+          </Typography>
+        </span>
+        <DeleteButton
+          entryPath={data ? data["@path"] : "/Subjects/" + id}
+          entryName={(data?.type?.label || "Subject") + " " + (data && data.identifier ? data.identifier : id)}
+          entryType={data?.type?.label || "Subject"}
+          warning={data ? data["@referenced"] : false}
+          shouldGoBack={level === 0}
+          buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}
+          size={level === 0 ? "large" : null}
+        />
         {
           data && data['jcr:createdBy'] && data['jcr:created'] ?
-          <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
+            <Typography
+              variant="overline"
+              className={classes.subjectSubHeader}>
+                Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}
+            </Typography>
           : ""
         }
       </Grid>

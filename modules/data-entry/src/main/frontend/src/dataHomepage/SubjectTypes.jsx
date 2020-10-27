@@ -52,7 +52,7 @@ function SubjectTypes(props) {
 
   const entry = /SubjectTypes\/(.+)/.exec(location.pathname);
   if (entry) {
-    return <SubjectType id={entry[1]}/>;
+    return <SubjectType id={entry[1]} classes={classes}/>;
   }
 
   return (

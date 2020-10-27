@@ -134,6 +134,10 @@ const questionnaireStyle = theme => ({
     subjectFormHeaderButton: {
         padding: "0 !important"
     },
+    subjectContainer: {
+        marginLeft: theme.spacing(4),
+        marginTop: theme.spacing(4)
+    },
     subjectNewButton: {
         margin: theme.spacing(1),
         top: theme.spacing(7.7),
@@ -141,9 +145,6 @@ const questionnaireStyle = theme => ({
         bottom: 'auto',
         left: 'auto',
         position: 'fixed',
-    },
-    subjectDeleteButton: {
-        marginRight: theme.spacing(10)
     },
     collapsedSection: {
         padding: "0 !important"
@@ -220,8 +221,24 @@ const questionnaireStyle = theme => ({
         opacity: 1,
         zIndex: "1010"
     },
-    iconButton: {
+    titleButton: {
         float: "right"
+    },
+    subjectHeader: {
+        display: "inline-block"
+    },
+    subjectSubHeader: {
+        display: "block"
+    },
+    subjectHeaderButton: {
+        float: "right",
+        marginTop: theme.spacing(2),
+        marginRight: theme.spacing(12)
+    },
+    childSubjectHeaderButton: {
+        display: "inline-block",
+        bottom: theme.spacing(1),
+        left: theme.spacing(1)
     },
     addNewSubjectButton: {
         width: "250px"

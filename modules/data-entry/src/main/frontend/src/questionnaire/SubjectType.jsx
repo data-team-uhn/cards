@@ -39,7 +39,7 @@ import DeleteButton from "../dataHomepage/DeleteButton.jsx";
  * @param {string} id the identifier of a SubjectType; this is the JCR node name
  */
 function SubjectType (props) {
-  let { id } = props;
+  let { classes, id } = props;
   // This holds the full SubjectType JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -125,6 +125,7 @@ function SubjectType (props) {
                   entryType={"Subject Type"}
                   warning={data ? data["@referenced"] : false}
                   shouldGoBack={true}
+                  buttonClass={classes.titleButton}
                 />
               </Typography>
           }
