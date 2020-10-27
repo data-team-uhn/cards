@@ -73,7 +73,12 @@ class Main extends React.Component {
           <Route
             path={route["lfs:targetURL"]}
             exact={Boolean(route["lfs:exactURLMatch"])}
-            component={route["lfs:extensionRender"]}
+            render={(props) => {
+                let ThisComponent = route["lfs:extensionRender"];
+                let newProps = {...props, contentOffset: this.state.contentOffset };
+                return (<ThisComponent {...newProps} />);
+              }
+            }
             key={key}
           />
         );

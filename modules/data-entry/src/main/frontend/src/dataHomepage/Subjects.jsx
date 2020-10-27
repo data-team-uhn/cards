@@ -65,7 +65,7 @@ function Subjects(props) {
 
   const entry = /Subjects\/(.+)/.exec(location.pathname);
   if (entry) {
-    return <Subject id={entry[1]}/>;
+    return <Subject id={entry[1]} contentOffset={props.contentOffset} />;
   }
 
   // import the function
