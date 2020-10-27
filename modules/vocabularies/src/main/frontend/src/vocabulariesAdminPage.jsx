@@ -18,7 +18,9 @@
 //
 
 import {
+  Button,
   Grid,
+  TextField,
   Typography
 } from "@material-ui/core";
 
@@ -56,6 +58,7 @@ function generateRemoteLink(apiKey) {
 export default function VocabulariesAdminPage() {
   const [remoteVocabList, setRemoteVocabList] = React.useState([]);
   const [localVocabList, setLocalVocabList] = React.useState([]);
+  const [customApiKey, setCustomApiKey] = React.useState(null);
   /*
     The following object will map Acronym -> Release Date for a vocabulary. 
     This allows for efficiently figuring out whether an installed vocabulary is up to date 
@@ -196,6 +199,33 @@ export default function VocabulariesAdminPage() {
           Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
         </Typography>
       </Grid>
+
+      {bioPortalApiKey === null
+        ? (
+          <Grid item>
+            <Typography>Your system does not have a Bioportal API Key configured</Typography>
+            <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
+            <Button>Get API Key</Button>
+            <TextField
+                 variant="outlined"
+                 onChange={(evt) => {setCustomApiKey(evt.target.value)}}
+                 value={customApiKey}
+                 name="customApiKey"
+                 label="Enter your Bioportal API key:"
+            />
+            <Button>Submit</Button> 
+            {/* TODO: on submit, set node in backend to custon key. needs to trigger the servlet again to update key
+            in the frontend */}
+          </Grid>
+        )
+        : (
+          <Grid>
+            <Typography>API Key: {bioPortalApiKey}</Typography>
+            <Button>Change</Button> 
+            {/* TODO: what happens on change? */}
+          </Grid>
+        )
+      }
        
       <VocabularyDirectory 
         type="remote"
