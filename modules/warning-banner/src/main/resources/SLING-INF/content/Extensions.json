@@ -2,10 +2,10 @@
     "jcr:primaryType": "sling:Folder",
     "PageStart": {
         "jcr:primaryType": "sling:Folder",
-        "Content": {
+        "WarningBanner": {
             "jcr:primaryType": "lfs:Extension",
             "lfs:extensionPointId": "lfs/coreUI/pageStart",
-            "lfs:extensionName": "Page Start Element",
+            "lfs:extensionName": "Page Start Warning Banner",
             "lfs:extensionRenderURL": "asset:lfs-warning-banner.warningBanner.js"
         }
     }
