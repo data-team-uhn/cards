@@ -41,7 +41,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, entryType, actions, ...rest } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, entryType, actions, admin, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -190,7 +190,7 @@ function LiveTable(props) {
 
     // allow livetable to link to components in the admin dashboard
     // if livetable item must link to a component within the admin dashboard, set "admin": true
-    let pathPrefix = (column.admin ? "/content.html/admin" : "/content.html");
+    let pathPrefix = (admin ? "/content.html/admin" : "/content.html");
 
     if (column.link) {
       if (column.link === 'path') {
@@ -227,7 +227,8 @@ function LiveTable(props) {
         onComplete={refresh}
         entryType={entryType}
         warning={entry["@referenced"]}
-        buttonClass={classes.actionButton} />
+        buttonClass={classes.actionButton}
+        admin={admin} />
     });
     return <TableCell key={index}>{content}</TableCell>;
   }

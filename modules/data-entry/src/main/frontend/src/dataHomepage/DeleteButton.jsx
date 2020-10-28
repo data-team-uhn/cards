@@ -38,7 +38,7 @@ function DeleteButton(props) {
   const [ dialogAction, setDialogAction ] = useState("");
   const [ deleteRecursive, setDeleteRecursive ] = useState(false);
   const [ entryNotFound, setEntryNotFound ] = useState(false);
-  const [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
+  const [ deletionStatus, setDeletionStatus ] = useState(undefined);
 
   const defaultDialogAction = `Are you sure you want to delete ${entryName}?`;
   const defaultErrorMessage = entryName + " could not be removed.";
@@ -74,7 +74,7 @@ function DeleteButton(props) {
     const sessionInfo = window.Sling.getSessionInfo();
     if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
       // On first attempt to save while logged out, set status to false to make button text inform user
-      setLastSaveStatus(false);
+      setDeletionStatus(false);
       setDialogAction(defaultErrorMessage);
     } else if (status === 401) {
       setErrorMessage(`${defaultErrorMessage} You are not permitted to perform that action.`);
@@ -112,7 +112,7 @@ function DeleteButton(props) {
   }
 
   let handleDeleteButtonClicked = () => {
-    if (lastSaveStatus === false) {
+    if (deletionStatus === false) {
       handleLogin();
     } else {
       handleDelete();
@@ -127,7 +127,7 @@ function DeleteButton(props) {
     // After a successful log in, the login dialog code will "open" the specified resource, which results in executing the specified javascript code
     window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${width}, height=${height}, top=${top}, left=${left}`);
     // Reset the dialog message and log in button
-    setLastSaveStatus(undefined);
+    setDeletionStatus(undefined);
     setDialogAction(defaultDialogAction);
   }
 
@@ -143,7 +143,7 @@ function DeleteButton(props) {
       }
     }).then((response) => {
       if (response.ok)  {
-        setLastSaveStatus(true);
+        setDeletionStatus(true);
         closeDialog();
         if (onComplete) {onComplete();}
         if (shouldGoBack) {goBack();}
@@ -191,7 +191,7 @@ function DeleteButton(props) {
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
             <Button variant="contained" color="secondary" size="small" onClick={() => handleDeleteButtonClicked()}>
-              { lastSaveStatus === false ? "Log in and Try Again?" : (deleteRecursive ? "Delete All" : "Delete")}
+              { deletionStatus === false ? "Log in and Try Again?" : (deleteRecursive ? "Delete All" : "Delete")}
             </Button>
             <Button variant="contained" size="small" onClick={closeDialog}>Close</Button>
         </DialogActions>

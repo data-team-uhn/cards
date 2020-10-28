@@ -16,15 +16,14 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React from "react";
 import LiveTable from "./LiveTable.jsx";
 import Questionnaire from "../questionnaire/Questionnaire.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
 import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialog.jsx";
-import { Button, Card, CardHeader, CardContent, IconButton, Tooltip, Typography, withStyles } from "@material-ui/core";
-import { Link } from 'react-router-dom';
-import EditIcon from "@material-ui/icons/Edit";
+import { Button, Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
 import DeleteButton from "./DeleteButton.jsx";
+import EditButton from "./EditButton.jsx";
 
 function Questionnaires(props) {
   const { classes } = props;
@@ -40,7 +39,6 @@ function Questionnaires(props) {
       "label": "Title",
       "format": "string",
       "link": "dashboard+path",
-      "admin": true,
     },
     {
       "key": "jcr:createdBy",
@@ -55,18 +53,7 @@ function Questionnaires(props) {
   ]
   const actions = [
     DeleteButton,
-    function EditButton(props) {
-      const { entryPath, entryType, buttonClass } = props;
-      return(
-        <Link to={"/content.html/admin" + entryPath}>
-          <Tooltip title={entryType ? "Edit " + entryType : "Edit"}>
-            <IconButton className={buttonClass}>
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
-        </Link>
-      )
-    }
+    EditButton
   ]
 
   return (
@@ -91,6 +78,7 @@ function Questionnaires(props) {
             columns={columns}
             actions={actions}
             entryType={"Questionnaire"}
+            admin={true}
             />
         </CardContent>
       </Card>
