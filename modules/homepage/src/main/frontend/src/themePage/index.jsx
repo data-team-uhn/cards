@@ -91,14 +91,14 @@ class Main extends React.Component {
 
     return (
       <React.Fragment>
-        <TopVisualElement onRender={(node) => {
-            window.onresize = () => {
-              let n = node.getBoundingClientRect().height;
-              this.setState({contentOffset: n});
+        <TopVisualElement
+          setTotalHeight={(th) => {
+              if (this.state.contentOffset != th) {
+                this.setState({contentOffset: th});
+              }
             }
-            this.setState({contentOffset: node.getBoundingClientRect().height});
           }
-        }/>
+        />
         <div className={classes.wrapper} style={ { position: 'relative', top: this.state.contentOffset + 'px' } }>
           <Suspense fallback={<div>Loading...</div>}>
             <Sidebar

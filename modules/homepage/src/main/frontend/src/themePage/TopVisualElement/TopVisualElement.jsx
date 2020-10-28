@@ -23,22 +23,96 @@ import { Button } from "@material-ui/core";
 
 export default function TopVisualElement(props) {
 
-  const [ displayedElement, setDisplayedElement ] = useState(
-  <Button variant="contained" color="primary" style={{ position: 'fixed', zIndex: 1040 }}>
-    Loading Top Visual Element...
-  </Button>
-  );
+  const [ componentHeights, setComponentHeights ] = useState([]);
+  const [ componentPositions, setComponentPositions ] = useState([]);
+  const [ triggerRedraw, setTriggerRedraw ] = useState(false);
+  const [ extensionData, setExtensionData ] = useState(null);
+  const [ isInitialized, setIsInitialized ] = useState(false);
 
-  useEffect(() => {
+  const arrayEquals = (a, b) => {
+    if (a.length != b.length) {
+      return false;
+    }
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  //Redraw the top elements if the browser window is resized
+  window.onresize = () => {
+    setTriggerRedraw(!triggerRedraw);
+  };
+
+  if (!isInitialized) {
     loadExtensions("TopVisualElement")
       .then((resp) => {
         if (resp.length > 0) {
-          setDisplayedElement(resp[0]["lfs:extensionRender"](props));
-        } else {
-          setDisplayedElement(null);
+          setExtensionData(resp);
+          let zeros = [];
+          for (let i = 0; i < resp.length; i++) {
+            zeros.push(0);
+          }
+          setComponentHeights(zeros);
+          setComponentPositions(zeros);
         }
+        setIsInitialized(true);
       });
-  }, []);
+  }
 
-  return(displayedElement);
+  if (!isInitialized) {
+    return (
+      <Button variant="contained" color="primary" style={{ position: 'fixed', zIndex: 1040 }}>
+        Loading Top Visual Element...
+      </Button>
+    );
+  }
+
+  if (extensionData == null) {
+    return null;
+  }
+
+  let visualComponents = [];
+  for (let i = 0; i < extensionData.length; i++) {
+    visualComponents.push(extensionData[i]["lfs:extensionRender"]);
+  }
+
+  let newComponentPositions = [];
+  let totalHeight = 0;
+  for (let i = 0; i < componentHeights.length; i++) {
+    newComponentPositions.push(totalHeight);
+    totalHeight += componentHeights[i];
+  }
+  if (!arrayEquals(componentPositions, newComponentPositions)) {
+    setComponentPositions(newComponentPositions);
+  }
+  props.setTotalHeight(totalHeight);
+
+  return (
+    <React.Fragment>
+    {
+      visualComponents.map((ThisComp, index) => {
+        return (
+          <ThisComp
+            {...props}
+            style={{ top: (componentPositions[index]) + 'px' }}
+            onRender={(node) => {
+                if (node != null) {
+                  let n = node.getBoundingClientRect().height;
+                  if (componentHeights[index] != n) {
+                    let newComponentHeights = componentHeights.slice();
+                    newComponentHeights[index] = n;
+                    setComponentHeights(newComponentHeights);
+                  }
+                }
+              }
+            }
+          />
+        );
+      })
+    }
+    </React.Fragment>
+  );
 }
