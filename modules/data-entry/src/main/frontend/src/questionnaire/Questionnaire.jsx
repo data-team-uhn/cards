@@ -60,9 +60,8 @@ let Questionnaire = (props) => {
   let [ data, setData ] = useState();
   let [ error, setError ] = useState();
   let [ isEditing, setIsEditing ] = useState(false);
+  let [ entityType, setEntityType ] = useState('Question');
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
-  let [ infoDialogOpen, setInfoDialogOpen ] = useState(false);
-  let [ curEntryType, setCurEntryType ] = useState('Question');
   let [ anchorEl, setAnchorEl ] = useState(null);
 
   let handleError = (response) => {
@@ -78,9 +77,9 @@ let Questionnaire = (props) => {
     setAnchorEl(null);
   };
 
-  let openDialog = (edit, type) => {
-    setIsEditing(edit);
-    setCurEntryType(type);
+  let openEditDialog = (isEdit, type) => {
+    setIsEditing(isEdit);
+    setEntityType(type);
     setEditDialogOpen(true);
   }
 
@@ -101,7 +100,7 @@ let Questionnaire = (props) => {
       .catch(handleError);
   };
 
-  let closeDialog = () => {
+  let reloadData = () => {
     setData(null);
     fetchData();
   }
@@ -150,32 +149,18 @@ let Questionnaire = (props) => {
       </Grid>
       { data &&
         <Grid item>
-          <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleOpenMenu}>
+          <Button aria-controls="simple-menu-main" aria-haspopup="true" onClick={handleOpenMenu}>
             Add...
           </Button>
           <Menu
-            id="simple-menu"
+            id="simple-menu-main"
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleCloseMenu}
             disableAutoFocusItem
           >
-            <MenuItem
-              onClick={()=> {
-                openDialog(false, 'Question');
-                handleCloseMenu();
-              }}
-              >
-              Question
-            </MenuItem>
-            <MenuItem
-              onClick={()=> {
-                openDialog(false, 'Section');
-                handleCloseMenu();
-              }}
-              >
-              Section
-            </MenuItem>
+            <MenuItem onClick={()=> { openEditDialog(false, 'Question'); handleCloseMenu();}} > Question </MenuItem>
+            <MenuItem onClick={()=> { openEditDialog(false, 'Section'); handleCloseMenu();}} > Section </MenuItem>
           </Menu>
         </Grid>
       }
@@ -185,7 +170,7 @@ let Questionnaire = (props) => {
             <CardHeader
               title={'Questionnaire Properties'}
               action={
-                <IconButton onClick={() => {openDialog(true, 'Questionnaire');}}>
+                <IconButton onClick={() => { openEditDialog(true, 'Questionnaire'); }}>
                   <EditIcon />
                 </IconButton>
               }/>
@@ -213,25 +198,18 @@ let Questionnaire = (props) => {
           </Card>
         </Grid>
       }
-      {
-        data ?
-            DisplayFormEntries(data, {onClose: closeDialog})
-          : <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      { data ?  DisplayFormEntries(data, {onClose: reloadData})
+             : <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
       }
       </Grid>
-      {
-        data &&
-          <EditDialog
-            edit={isEditing}
-            data={data}
-            type={curEntryType}
-            open={editDialogOpen}
-            onClose={() => {
-              closeDialog();
-              setEditDialogOpen(false);
-              handleCloseMenu();
-            }}
-            />
+      { editDialogOpen && data && <EditDialog
+                            isEdit={isEditing}
+                            data={data}
+                            type={entityType}
+                            isOpen={editDialogOpen}
+                            onClose={() => { reloadData(); setEditDialogOpen(false); }}
+                            onCancel={() => { setEditDialogOpen(false); }}
+                          />
       }
     </div>
   );
@@ -248,22 +226,8 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
   let { onClose, data } = props;
-  let [ editOpen, setEditOpen ] = useState(false);
-  let [ deleteOpen, setDeleteOpen ] = useState(false);
-
-  let showEditDialog = (isOpen) => {
-    setEditOpen(isOpen);
-    if (!isOpen && onClose) {
-      onClose();
-    }
-  }
-
-  let showDeleteDialog = (isOpen) => {
-    setDeleteOpen(isOpen);
-    if (!isOpen && onClose) {
-      onClose();
-    }
-  }
+  let [ editDialogOpen, setEditDialogOpen ] = useState(false);
+  let [ deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
 
   return (
     <Card>
@@ -271,20 +235,15 @@ let Question = (props) => {
         title={data.text}
         action={
           <div>
-            <EditDialog
-              edit={true}
-              data={data}
-              type='Question'
-              open={editOpen}
-              onOpen={() => {showEditDialog(true)}}
-              onClose={() => {showEditDialog(false)}}
-              />
-            <IconButton onClick={() => {showDeleteDialog(true)}}>
+            <IconButton onClick={() => { setEditDialogOpen(true); }}>
+              <EditIcon />
+            </IconButton>
+            <IconButton onClick={() => { setDeleteDialogOpen(true); }}>
               <DeleteIcon />
             </IconButton>
           </div>
         }
-        />
+      />
       <CardContent>
         <dl>
           <Fields data={data} JSON={require('../questionnaireEditor/Question.json')[0]} edit={false} />
@@ -295,12 +254,23 @@ let Question = (props) => {
             .map(value => <AnswerOption key={value['jcr:uuid']} data={value} />)
         }
       </CardContent>
-      <DeleteDialog
-        open={deleteOpen}
-        data={data}
-        onClose={() => {showDeleteDialog(false)}}
-        type="Question"
-        />
+      { editDialogOpen && <EditDialog
+                              isEdit={true}
+                              data={data}
+                              type="Question"
+                              isOpen={editDialogOpen}
+                              onClose={() => { onClose(); setEditDialogOpen(false); }}
+                              onCancel={() => { setEditDialogOpen(false); }}
+                            />
+      }
+      { deleteDialogOpen && <DeleteDialog
+                              isOpen={deleteDialogOpen}
+                              data={data}
+                              type="Question"
+                              onClose={() => { onClose(); setDeleteDialogOpen(false); }}
+                              onCancel={() => { setDeleteDialogOpen(false); }}
+                            />
+      }
     </Card>
   );
 };
@@ -314,51 +284,46 @@ let Section = (props) => {
   let { onClose, data } = props;
   let [ anchorEl, setAnchorEl ] = useState(null);
   let [ isEditing, setIsEditing ] = useState(false);
-  let [ newFieldType, setNewFieldType ] = useState('Question');
+  let [ entityType, setEntityType ] = useState('Question');
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
 
-  const handleOpenMenu = (event) => {
+  let handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   }
 
-  const handleCloseMenu = () => {
+  let handleCloseMenu = () => {
     setAnchorEl(null);
   };
 
-  const openDialog = (isNew, type) => {
-    setIsEditing(!isNew);
-    setNewFieldType(type);
+  let openEditDialog = (isEdit, type) => {
+    setIsEditing(isEdit);
+    setEntityType(type);
     setEditDialogOpen(true);
   }
   
   return (
     <Card>
-      <CardHeader title={props.data['label'] || ''}
+      <CardHeader title={props.data['label'] ? 'Section ' + props.data['label'] : 'Section'}
         action={
           <div>
-            <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleOpenMenu}>
+            <Button aria-controls={"simple-menu" + props.data['@name']} aria-haspopup="true" onClick={handleOpenMenu}>
               Add...
             </Button>
             <Menu
-              id="simple-menu"
+              id={"simple-menu" + props.data['@name']}
               anchorEl={anchorEl}
               keepMounted
               open={Boolean(anchorEl)}
               onClose={handleCloseMenu}
             >
-              <MenuItem onClick={()=> { openDialog(true, 'Question'); handleCloseMenu(); }}>Question</MenuItem>
-              <MenuItem onClick={()=> { openDialog(true, 'Section'); handleCloseMenu(); }}>Section</MenuItem>
+              <MenuItem onClick={() => { openEditDialog(false, 'Question'); handleCloseMenu(); }}>Question</MenuItem>
+              <MenuItem onClick={() => { openEditDialog(false, 'Section'); handleCloseMenu(); }}>Section</MenuItem>
             </Menu>
-            <EditDialog
-              edit={isEditing}
-              data={data}
-              type={newFieldType}
-              open={editDialogOpen}
-              onOpen={() => {openDialog(false, 'Section')}}
-              onClose={() => { onClose(); setEditDialogOpen(false); }}
-              />
-            <IconButton onClick={() => { setDeleteDialogOpen(false); }}>
+            <IconButton onClick={() => { openEditDialog(true, 'Section'); }}>
+              <EditIcon />
+            </IconButton>
+            <IconButton onClick={() => { setDeleteDialogOpen(true); }}>
               <DeleteIcon />
             </IconButton>
             <Typography>{data['description'] || ''}</Typography>
@@ -374,7 +339,23 @@ let Section = (props) => {
           }
         </Grid>
       </CardContent>
-      <DeleteDialog open={deleteDialogOpen} data={data} onClose={() => { onClose(); setDeleteDialogOpen(false); }} type="Section" />
+      { editDialogOpen && <EditDialog
+                            isEdit={isEditing}
+                            data={data}
+                            type={entityType}
+                            isOpen={editDialogOpen}
+                            onClose={() => { onClose(); setEditDialogOpen(false); }}
+                            onCancel={() => { setEditDialogOpen(false); }}
+                          />
+      }
+      { deleteDialogOpen && <DeleteDialog
+                              isOpen={deleteDialogOpen}
+                              data={data}
+                              type="Section"
+                              onClose={() => { onClose(); setDeleteDialogOpen(false); }}
+                              onCancel={() => { setDeleteDialogOpen(false); }}
+                            />
+      }
     </Card>
   );
 };

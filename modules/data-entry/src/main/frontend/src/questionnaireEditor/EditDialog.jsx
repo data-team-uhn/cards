@@ -26,21 +26,18 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  IconButton,
   TextField,
   Typography,
   withStyles
 } from "@material-ui/core";
 
-import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
 import AnswerOptions from './AnswerOptions';
 import Fields from './Fields'
 
-// Dialog for editing or creating questions and sections
+// Dialog for editing or creating questions or sections
 
 let EditDialog = (props) => {
-  const { data, edit, id, type, onClose, open  } = props;
+  const { data, type, isEdit, isOpen, onClose, onCancel, id } = props;
   let questionJSON = require('./Question.json');
   let sectionJSON = require('./Section.json');
   let propertiesJSON = require('./Properties.json');
@@ -70,7 +67,7 @@ let EditDialog = (props) => {
 
     setSaveInProgress(true);
     // If the question/section already exists, update it
-    if (edit) {
+    if (isEdit) {
       // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
       let request_data = new FormData(event.currentTarget);
       fetch(
@@ -143,7 +140,7 @@ let EditDialog = (props) => {
   }
 
   let dialogTitle = () => {
-    return (edit ? 'Edit ' : 'New ').concat(type);
+    return (isEdit ? 'Edit ' : 'New ').concat(type);
   }
 
   let titleField = () => {
@@ -157,15 +154,15 @@ let EditDialog = (props) => {
 
   return (
     <React.Fragment>
-      <Dialog id='editDialog' open={open} onClose={onClose} fullWidth maxWidth='sm'>
+      <Dialog id='editDialog' open={isOpen} onClose={onClose} fullWidth maxWidth='sm'>
         <DialogTitle>
           { dialogTitle() }
         </DialogTitle>
         <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
           <DialogContent>
-            { !edit && titleField() }
-            <Fields data={edit && data || {}} JSON={json[0]} edit={true} />
-            { data && type === 'Question' && <AnswerOptions data={data} path={data["@path"] + (edit ? "" : `/${title}`)} /> }
+            { !isEdit && titleField() }
+            <Fields data={isEdit && data || {}} JSON={json[0]} edit={true} />
+            { data && type === 'Question' && <AnswerOptions data={data} path={data["@path"] + (isEdit ? "" : `/${title}`)} /> }
           </DialogContent>
           <DialogActions>
             <Button
@@ -182,16 +179,13 @@ let EditDialog = (props) => {
             <Button
               variant='contained'
               color='default'
-              onClick={onClose}
+              onClick={onCancel}
             >
               {'Cancel'}
             </Button>
           </DialogActions>
         </form>
       </Dialog>
-      <IconButton onClick={() => { props.onOpen(); }}>
-      { props.edit ? <EditIcon /> : <AddIcon />}
-      </IconButton>
     </React.Fragment>
   );
 };
@@ -199,8 +193,8 @@ let EditDialog = (props) => {
 EditDialog.propTypes = {
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
-  edit: PropTypes.bool.isRequired,
-  open: PropTypes.bool.isRequired
+  isEdit: PropTypes.bool.isRequired,
+  isOpen: PropTypes.bool.isRequired
 };
 
 export default EditDialog;

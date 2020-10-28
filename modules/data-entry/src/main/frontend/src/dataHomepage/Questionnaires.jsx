@@ -72,7 +72,7 @@ function Questionnaires(props) {
       // Align the actions to the end
       "props": {
         "style": {
-          "text-align": "end"
+          "textAlign": "end"
         }
       }
     }
