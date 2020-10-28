@@ -39,7 +39,7 @@ export default function WarningBanner(props) {
   const StyledAppBar = withStyles(appbarStyle)(AppBar);
 
   return (
-    <StyledAppBar position="fixed" ref={props.onRender}>
+    <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
         <IconButton edge="start" color="inherit">
           <WarningIcon fontSize="large"/>
