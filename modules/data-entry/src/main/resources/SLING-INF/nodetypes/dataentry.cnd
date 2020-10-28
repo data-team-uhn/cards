@@ -259,9 +259,6 @@
   // Can this section be repeated?
   - recurrent (boolean) = false autocreated
 
-  // Should this section be displayed as a page
-  - paginate (boolean) = false autocreated
-
   // Children
 
   // The questions and sub-sections that make up this section.
@@ -389,6 +386,9 @@
   // An optional maximum number of a certain form that can be created for a subject
   // If present, the maximum number cannot be exceeded
   - maxPerSubject (long)
+
+  // Should this section be displayed as a page
+  - paginate (boolean) = false autocreated
 
   // Children
 

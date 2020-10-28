@@ -85,6 +85,9 @@ const questionnaireStyle = theme => ({
     questionHeader: {
         paddingBottom: theme.spacing(0),
     },
+    hiddenQuestion: {
+        display: "none"
+    },
     warningTypography: {
         padding: theme.spacing(1, 1),
     },
@@ -228,14 +231,15 @@ const questionnaireStyle = theme => ({
     },
     formFooter: {
         position: "sticky",
-        bottom: 0,
+        bottom: theme.spacing(-2),
+        zIndex: 1000,
     },
     formStepper: {
-        position: "sticky",
+        position: "relative",
     },
     paginationButton: {
         float: "right",
-        margin: theme.spacing(1)
+        margin: theme.spacing(1),
     },
     titleButton: {
         float: "right"

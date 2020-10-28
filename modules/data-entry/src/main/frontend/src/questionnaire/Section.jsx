@@ -63,7 +63,7 @@ function createTitle(label, idx) {
  * @param {Object} sectionDefinition the section definition JSON
  */
 function Section(props) {
-  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, displayedPage, pageList } = props;
+  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive } = props;
 
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
   const titleEl = sectionDefinition["label"] &&
@@ -95,12 +95,13 @@ function Section(props) {
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
   const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
-  const [ pageNumber, setPageNumber ] = useState(0);
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const displayed = ConditionalComponentManager.evaluateCondition(
     sectionDefinition,
     formContext);
+
+  if (visibleCallback) visibleCallback(displayed);
 
   let closeDialog = () => {
     setSelectedUUID(undefined);
@@ -121,13 +122,6 @@ function Section(props) {
     return delList;
   }
 
-  const isPage = !!sectionDefinition["paginate"];
-  if (isPage && pageList && pageList.indexOf(sectionDefinition["label"]) === -1) {
-    pageList.push(sectionDefinition["label"]);
-    setPageNumber(pageList.length - 1);
-  }
-  const pageVisible = !isPage || displayedPage === pageNumber;
-
   const collapseClasses = [];
   if (!displayed) {
     collapseClasses.push(classes.collapsedSection);
@@ -135,7 +129,8 @@ function Section(props) {
   if (hasHeader) {
     collapseClasses.push(classes.collapseWrapper);
   }
-  if (isPage && !pageVisible) {
+  // Don't hide for undefined or null values
+  if (pageActive === false) {
     collapseClasses.push(classes.hiddenSection);
   }
 
@@ -191,7 +186,7 @@ function Section(props) {
                           <Delete fontSize="small" />
                         </IconButton>
                       </Tooltip>}
-                    {!isPage &&
+                    {pageActive !== true  &&
                       <Tooltip title="Expand section" aria-label="Expand section" >
                         <IconButton
                           color="default"
@@ -297,7 +292,7 @@ function Section(props) {
       </DialogActions>
     </Dialog>
     </React.Fragment>
-    , [displayed, instanceLabels, labelsToHide, dialogOpen, removableAnswers[ID_STATE_KEY], pageVisible]);
+    , [displayed, instanceLabels, labelsToHide, dialogOpen, removableAnswers[ID_STATE_KEY], pageActive]);
 }
 
 Section.propTypes = {

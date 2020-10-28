@@ -36,8 +36,8 @@ import TextQuestion from "./TextQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 import SomaticVariantsQuestion from "./SomaticVariantsQuestion";
 
-const QUESTION_TYPES = ["lfs:Question"];
-const SECTION_TYPES = ["lfs:Section"];
+export const QUESTION_TYPES = ["lfs:Question"];
+export const SECTION_TYPES = ["lfs:Section"];
 export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
 
 /**
@@ -50,7 +50,7 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
  * @param {Object} classes style classes
  * @returns a React component that renders the question
  */
-let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange) => {
+let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive) => {
   const questionRef = useRef();
   const anchor = location.hash.substr(1);
   // create a ref to store the question container DOM element
@@ -71,9 +71,17 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
   // This variable must start with an upper case letter so that React treats it as a component
   const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
 
+  let gridClasses = [];
+  if (doHighlight) {
+    gridClasses.push(classes.highlightedSection);
+  }
+  if (pageActive === false) {
+    gridClasses.push(classes.hiddenQuestion);
+  }
+
   // component will either render the default question display, or a list of questions/answers from the form (used for subjects)
   return (
-    <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={(doHighlight ? classes.highlightedSection : undefined)}>
+    <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={gridClasses.join(" ")}>
       <QuestionDisplay
         questionDefinition={questionDefinition}
         existingAnswer={existingQuestionAnswer}
@@ -98,7 +106,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
  * @param {string} key the node name of the section definition JCR node
  * @returns a React component that renders the section
  */
-let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, displayedPage, pageList) => {
+let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, visibleCallback, pageActive) => {
   // Find the existing AnswerSection for this section, if available
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
@@ -112,8 +120,8 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
       existingAnswer={existingQuestionAnswer}
       path={path}
       onChange={onChange}
-      displayedPage={displayedPage}
-      pageList={pageList}
+      visibleCallback={visibleCallback}
+      pageActive={pageActive}
       />
   );
 }
@@ -130,12 +138,13 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
  * @returns a React component that renders the section
  */
  export default function FormEntry(props) {
-  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, displayedPage, pageList} = props;
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, visibleCallback, pageActive} = props;
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange);
+    if (visibleCallback) visibleCallback(true);
+    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, displayedPage, pageList);
+    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive) ;
   }
 }

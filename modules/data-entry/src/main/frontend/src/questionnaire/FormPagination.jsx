@@ -31,24 +31,26 @@ import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireS
  * Component that displays an page of a Form.
  */
 function FormPagination (props) {
-  let { classes, pages, activePage, saveInProgress, lastSaveStatus, handlePageChange } = props;
+  let { classes, lastPage, activePage, saveInProgress, lastSaveStatus, handlePageChange } = props;
 
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
 
   let handleNext = () => {
-    if (pages.length === 0 || activePage === pages.length - 1) {
+    setPendingSubmission(true);
+    if (activePage === lastPage()) {
       setSavedLastPage(true);
     } else {
       setSavedLastPage(false);
+      handlePageChange("next");
     }
-    setPendingSubmission(true);
-    handlePageChange(activePage + 1);
   }
 
   let handleBack = () => {
     setPendingSubmission(true);
-    handlePageChange(activePage - 1);
+    if (activePage > 0) {
+      handlePageChange("back");
+    }
   }
 
   if (saveInProgress && pendingSubmission) {
@@ -64,24 +66,24 @@ function FormPagination (props) {
       className={classes.paginationButton}
       onClick={handleNext}
     >
-      {((pages.length === 0 || activePage === pages.length - 1) && saveInProgress) ? 'Saving' :
+      {((lastPage() === 0 || activePage === lastPage()) && saveInProgress) ? 'Saving' :
       lastSaveStatus === false ? 'Save failed, log in and try again?' :
-      activePage < pages.length -1 ? "Next" :
+      activePage < lastPage() ? "Next" :
       lastSaveStatus && savedLastPage ? 'Saved' :
       'Save'}
     </Button>
 
   return (
-    pages && pages.length > 0 ?
+    lastPage() > 0 ?
       <React.Fragment>
         <MobileStepper
-          activeStep={activePage}
+          activeStep={activePage + 1}
           className={classes.formStepper}
           variant="progress"
-          steps={pages.length}
+          steps={lastPage() + 3}
           nextButton={saveButton}
           backButton={
-            pages.length > 1
+            lastPage() > 0
               ? <Button
                   type="submit"
                   disabled={(activePage === 0 && !pendingSubmission) /* Don't disable until form submission started */
