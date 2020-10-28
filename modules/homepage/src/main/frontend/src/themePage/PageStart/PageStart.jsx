@@ -21,7 +21,7 @@ import React, { useEffect, useState } from "react";
 import { loadExtensions } from "../../uiextension/extensionManager";
 import { Button } from "@material-ui/core";
 
-export default function TopVisualElement(props) {
+export default function PageStart(props) {
 
   const [ componentHeights, setComponentHeights ] = useState([]);
   const [ componentPositions, setComponentPositions ] = useState([]);
@@ -47,7 +47,7 @@ export default function TopVisualElement(props) {
   };
 
   if (!isInitialized) {
-    loadExtensions("TopVisualElement")
+    loadExtensions("PageStart")
       .then((resp) => {
         if (resp.length > 0) {
           setExtensionData(resp);
@@ -65,7 +65,7 @@ export default function TopVisualElement(props) {
   if (!isInitialized) {
     return (
       <Button variant="contained" color="primary" style={{ position: 'fixed', zIndex: 1040 }}>
-        Loading Top Visual Element...
+        Loading PageStart Content...
       </Button>
     );
   }

@@ -25,7 +25,7 @@ import { withStyles } from '@material-ui/core';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
-import TopVisualElement from "./TopVisualElement/TopVisualElement";
+import PageStart from "./PageStart/PageStart";
 import IndexStyle from "./indexStyle.jsx";
 
 class Main extends React.Component {
@@ -91,7 +91,7 @@ class Main extends React.Component {
 
     return (
       <React.Fragment>
-        <TopVisualElement
+        <PageStart
           setTotalHeight={(th) => {
               if (this.state.contentOffset != th) {
                 this.setState({contentOffset: th});
