@@ -30,15 +30,10 @@ export default function PageStart(props) {
   const [ isInitialized, setIsInitialized ] = useState(false);
 
   const arrayEquals = (a, b) => {
-    if (a.length != b.length) {
-      return false;
-    }
-    for (let i = 0; i < a.length; i++) {
-      if (a[i] != b[i]) {
-        return false;
-      }
-    }
-    return true;
+    return
+      Array.isArray(a) && Array.isArray(b) &&
+      a.length === b.length &&
+      a.every((val, i) => val === b[i]);
   };
 
   //Redraw the top elements if the browser window is resized
