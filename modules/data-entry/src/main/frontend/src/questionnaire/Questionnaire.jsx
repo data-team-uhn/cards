@@ -21,15 +21,21 @@ import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import {
+  Avatar,
   Button,
   Card,
   CardContent,
   CardHeader,
   CircularProgress,
   Grid,
+  Icon,
   IconButton,
   Menu,
   MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
   Typography,
   withStyles
 } from "@material-ui/core";
@@ -149,35 +155,21 @@ let Questionnaire = (props) => {
       }
       { data &&
         <Grid item className={classes.cardSpacing}>
-          <Card>
-            <CardHeader
-              title={'Questionnaire Properties'}
+          <Card variant="outlined">
+            <QuestionnaireCardHeader
+              label="Questionnaire properties"
               action={
                 <IconButton onClick={() => { openEditDialog(true, 'Questionnaire'); }}>
                   <EditIcon />
                 </IconButton>
               }/>
             <CardContent>
-              <Grid container alignItems='flex-start' spacing={2}>
-                <Grid item key="max" xs={4}>
-                   <Typography>Max per Subject:</Typography>
-                </Grid>
-                <Grid item key="maxvalue" xs={8}>
-                    <Typography>{data.maxPerSubject || 'Unlimited'}</Typography>
-                </Grid>
-                <Grid item key="types" xs={4}>
-                   <Typography>Subject Types:</Typography>
-                </Grid>
-                <Grid item key="condition" xs={8}>
-                  { data?.requiredSubjectTypes?.map( subjectType =>
-                    (subjectType ?
-                      <Typography key={subjectType.label}>{subjectType.label}</Typography>
-                      : <Typography>'Any'</Typography>
-                    )
-                  )}
-                </Grid>
-              </Grid>
-
+              <FieldsGrid
+                fields= {Array(
+                          {name: "maxPerType", label: "Maximim forms of this type per subject", value : data.maxPerSubject || 'Unlimited'},
+                          {name: "subjectTypes", label: "Subject types", value: data.requiredSubjectTypes?.map(t => t.label).join(', ') || 'Any'},
+                        )}
+              />
             </CardContent>
           </Card>
         </Grid>
@@ -218,21 +210,21 @@ let Question = (props) => {
     return (
         <Grid container key={data['jcr:uuid']} alignItems='flex-start' spacing={2}>
           <Grid item key="label" xs={4}>
-            <Typography>AnswerOptions :</Typography>
+            <Typography>Answer options:</Typography>
           </Grid>
           <Grid item key="values" xs={8}>
-            <dl>
-              { answers.map((item) => <AnswerOption key={item['jcr:uuid']} data={item} />) }
-            </dl>
+            { answers.map(item => <Typography key={item['jcr:uuid']}>{(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}</Typography>) }
           </Grid>
         </Grid>
     );
   };
 
   return (
-    <Card>
-      <CardHeader
-        title={data.text}
+    <Card variant="outlined">
+      <QuestionnaireCardHeader
+        avatarColor="purple"
+        type="Question"
+        label={data.text}
         action={
           <div>
             <IconButton onClick={() => { setEditDialogOpen(true); }}>
@@ -244,7 +236,7 @@ let Question = (props) => {
           </div>
         }
       />
-      <CardContent>
+      <CardContent style={{paddingLeft: "72px"}}>
         <Fields data={data} JSON={require('../questionnaireEditor/Question.json')[0]} edit={false} />
         { answers.length > 0 && displayAnswers() }
       </CardContent>
@@ -279,14 +271,13 @@ let Condition = (props) => {
   let { onClose, data } = props;
 
   return (
-    <Grid container alignItems='flex-start' spacing={2}>
-      <Grid item key="condition" xs={4}>
-        <Typography>Condition:</Typography>
-      </Grid>
-      <Grid item key="operandA" xs={8}>
-        <Typography>{data.operandA?.value.join(', ')} {data.comparator} {data.operandB?.value.join(', ')}</Typography>
-      </Grid>
-    </Grid>
+        <FieldsGrid
+          fields={Array({
+            name: "condition",
+            label: "Condition",
+            value : data.operandA?.value.join(', ') + " " + data.comparator + " " + data.operandB?.value.join(', ')
+          })}
+        />
   );
 };
 
@@ -318,8 +309,12 @@ let Section = (props) => {
   }
   
   return (
-    <Card>
-      <CardHeader title={props.data['label'] ? 'Section ' + props.data['label'] : 'Section'}
+    <Card variant="outlined">
+      <QuestionnaireCardHeader
+        avatar="view_stream"
+        avatarColor="orange"
+        type="Section"
+        label={props.data.label}
         action={
           <div>
             <Button aria-controls={"simple-menu" + props.data['@name']} aria-haspopup="true" onClick={handleOpenMenu}>
@@ -341,11 +336,11 @@ let Section = (props) => {
             <IconButton onClick={() => { setDeleteDialogOpen(true); }}>
               <DeleteIcon />
             </IconButton>
-            <Typography>{data['description'] || ''}</Typography>
           </div>
-        }>
-      </CardHeader>
-      <CardContent>
+        }
+      />
+      <CardContent style={{paddingLeft: "72px"}}>
+        {data['description'] && <FieldsGrid fields={Array({name: "description", label: "Descriptiontion", value : data['description']})} />}
         <Grid container direction="column" spacing={8}>
           {
             data ?
@@ -379,11 +374,44 @@ Section.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-// A predefined answer option for a question.
-let AnswerOption = (props) => {
-  return <span><dt><Typography>{props.data.value}</Typography></dt><dd><Typography>{props.data.label}</Typography></dd></span>;
+let QuestionnaireCardHeader = (props) => {
+  return (
+    <>
+      <CardHeader
+        disableTypography
+        avatar={
+          props.avatar || props.type ?
+          <Avatar aria-label="recipe" style={{backgroundColor: props.avatarColor || "black"}}>{
+            props.avatar ?
+            <Icon>{props.avatar}</Icon> :
+            props.type.charAt(0)
+          }</Avatar>
+          : null
+        }
+        title={
+          <div>
+            <Typography variant="overline">{props.type}</Typography>
+            <Typography variant="h6">{props.label}</Typography>
+          </div>
+        }
+        action={props.action}
+      >
+      </CardHeader>
+    </>
+  );
 };
 
-AnswerOption.propTypes = {
-  data: PropTypes.object.isRequired
-};
+let FieldsGrid = (props) => {
+  return (
+    <Table  aria-label="simple table">
+      <TableBody>
+        {props.fields?.map((row) => (
+          <TableRow key={row.name}>
+            <TableCell style={{border: "0 none", fontWeight: "bold", verticalAlign: "top", width: "1%", whiteSpace: "nowrap", paddingLeft: 0, paddingTop: 0}} component="th" scope="row">{row.label}:</TableCell>
+            <TableCell align="left" style={{border: "0 none", paddingLeft: 0, paddingTop: 0}}>{row.value}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
