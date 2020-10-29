@@ -60,7 +60,7 @@ let DisplayFormEntries = (json, additionalProps) => {
       ? <Grid item key={key} className={additionalProps.classes.cardSpacing}><Question data={value} {...additionalProps}/></Grid> :
       value['jcr:primaryType'] == 'lfs:Section'
       ? <Grid item key={key} className={additionalProps.classes.cardSpacing}><Section data={value} {...additionalProps}/></Grid>
-      : <Grid item key={key} className={additionalProps.classes.cardSpacing}><Condition data={value} {...additionalProps}/></Grid>
+      : null
     );
 }
 
@@ -266,26 +266,6 @@ Question.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-// Details about a particular section or question condition in a questionnaire.
-let Condition = (props) => {
-  let { onClose, data } = props;
-
-  return (
-        <FieldsGrid
-          fields={Array({
-            name: "condition",
-            label: "Condition",
-            value : data.operandA?.value.join(', ') + " " + data.comparator + " " + data.operandB?.value.join(', ')
-          })}
-        />
-  );
-};
-
-Condition.propTypes = {
-  closeData: PropTypes.func,
-  data: PropTypes.object.isRequired
-};
-
 let Section = (props) => {
   let { onClose, data, classes } = props;
   let [ anchorEl, setAnchorEl ] = useState(null);
@@ -306,6 +286,22 @@ let Section = (props) => {
     setIsEditing(isEdit);
     setEntityType(type);
     setEditDialogOpen(true);
+  }
+  let extractProperties = (data) => {
+    let p = Array();
+    let spec = require('../questionnaireEditor/Section.json');
+    Object.keys(spec[0]).filter(key => {return (key != 'label') && !!data[key]}).map(key => {
+      p.push({name: key, label: key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase(), value: data[key] + ""});
+    });
+    // Find conditionals
+    Object.entries(data).filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Conditional')).map(([key, value]) => {
+      p.push({
+        name: "condition",
+        label: "Condition",
+        value : value?.operandA?.value.join(', ') + " " + value?.comparator + " " + value?.operandB?.value.join(', ')
+      });
+    })
+    return p;
   }
   
   return (
@@ -340,7 +336,7 @@ let Section = (props) => {
         }
       />
       <CardContent style={{paddingLeft: "72px"}}>
-        {data['description'] && <FieldsGrid fields={Array({name: "description", label: "Descriptiontion", value : data['description']})} />}
+        <FieldsGrid fields={extractProperties(data)} />}
         <Grid container direction="column" spacing={8}>
           {
             data ?
