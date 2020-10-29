@@ -91,7 +91,6 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         response.setCharacterEncoding("UTF-8");
         final long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
         final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
-        final boolean usequerymanager = getBooleanValueOrFalse(request.getParameter("usequerymanager"));
         // If we want this query to be fast, we need to use the exact nodetype requested.
         final Node node = request.getResource().adaptTo(Node.class);
         String nodeType = "";
@@ -506,17 +505,6 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             value = Long.parseLong(stringValue);
         } catch (NumberFormatException exception) {
             value = defaultValue;
-        }
-        return value;
-    }
-
-    private boolean getBooleanValueOrFalse(final String stringValue)
-    {
-        boolean value = false;
-        if (stringValue == null) {
-            value = false;
-        } else if ("true".equals(stringValue)) {
-            value = true;
         }
         return value;
     }
