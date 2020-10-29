@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { 
   Button, 
   Card, 
@@ -220,7 +220,7 @@ function StatisticDialog(props) {
         fetchExistingData();
       }
     } else {
-      setCurrentUrl("/Statistics/" + uuid());
+      setCurrentUrl("/Statistics/" + uuidv4());
     }
   }, [open])
 
