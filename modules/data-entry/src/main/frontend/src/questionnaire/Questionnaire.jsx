@@ -113,27 +113,6 @@ let Questionnaire = (props) => {
     fetchData();
   }
 
-  let displayQuestion = (data) => {
-    return Object.entries(data)
-      .map(([key, value]) => {
-        if (value['jcr:primaryType'] == 'lfs:Question') {
-          // if autofocus is needed and specified in the url
-          const questionPath = value["@path"];
-          const doHighlight = (anchor == questionPath);
-
-          return (
-            <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={(doHighlight ? classes.highlightedSection : undefined)}>
-              <Question data={value}/>
-            </Grid>
-          );
-        }
-        // f-n calls itself recursively to display all question in nested sections
-        if (value['jcr:primaryType'] == 'lfs:Section') {
-          return displayQuestion(value);
-        }
-      });
-  }
-
   return (
     <div>
       { error &&
