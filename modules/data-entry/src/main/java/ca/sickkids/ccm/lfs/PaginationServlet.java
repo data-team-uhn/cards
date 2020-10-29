@@ -82,7 +82,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
     private static final String SUBJECT_IDENTIFIER = "lfs:Subject";
 
-    @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS", "checkstyle:NPathComplexity"})
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS"})
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
             throws IOException, IllegalArgumentException
