@@ -295,6 +295,7 @@ const questionnaireStyle = theme => ({
     cardSpacing: {
         paddingTop: theme.spacing(1) + "px !important",
         paddingBottom: theme.spacing(1) + "px !important",
+        padding: theme.spacing(4),
         marginBottom: theme.spacing(1) + "px !important"
     },
     questionSpacing: {

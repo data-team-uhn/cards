@@ -48,19 +48,78 @@ import DeleteDialog from "../questionnaireEditor/DeleteDialog";
 import Fields from "../questionnaireEditor/Fields";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from '@material-ui/icons/Edit';
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
+
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
+let getItemStyle = (isDragging, draggableStyle) => ({
+  // change background colour if dragging
+  border: isDragging ? "2px dashed" : "none",
+  borderColor: isDragging ? "lightblue" : "",
+  ...draggableStyle
+});
+
+let getListStyle = isDraggingOver => ({
+  border: isDraggingOver ? "2px dashed" : "none",
+  borderColor: isDraggingOver ? "lightblue" : "",
+});
 
 // Given the JSON object for a section or question, display it and its children
 let DisplayFormEntries = (json, additionalProps) => {
-  return Object.entries(json)
-    .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section'
-                            || value['jcr:primaryType'] == 'lfs:Question'))
-    .map(([key, value]) =>
-      value['jcr:primaryType'] == 'lfs:Question'
-      ? <Grid item key={key} className={additionalProps.classes.cardSpacing}><Question data={value} {...additionalProps}/></Grid> :
-      value['jcr:primaryType'] == 'lfs:Section'
-      ? <Grid item key={key} className={additionalProps.classes.cardSpacing}><Section data={value} {...additionalProps}/></Grid>
-      : null
-    );
+  return (
+      <DragDropContext onDragEnd={additionalProps.onDragEnd}>
+        <Droppable droppableId="droppable">
+          {(provided, snapshot) => (
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              style={getListStyle(snapshot.isDraggingOver)}
+            >
+              { Object.entries(json)
+                    .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section'
+                                            || value['jcr:primaryType'] == 'lfs:Question'))
+                    .map( ([key, value], index) => (
+                      <Draggable key={key} draggableId={key} index={index}>
+                        { (provided, snapshot) => (
+                          <Grid item key={key} className={additionalProps.classes.cardSpacing}
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                style={getItemStyle(
+                                  snapshot.isDragging,
+                                  provided.draggableProps.style
+                                )}
+                          >
+                            { value['jcr:primaryType'] == 'lfs:Question'
+                              ? <Question data={value}
+                                          dndHandle={
+                                            <IconButton {...provided.dragHandleProps}>
+                                              <DragIndicatorIcon />
+                                            </IconButton>
+                                          }
+                                          {...additionalProps}
+                                />
+                              : value['jcr:primaryType'] == 'lfs:Section'
+                                ? <Section data={value}
+                                           dndHandle={
+                                             <IconButton {...provided.dragHandleProps}>
+                                               <DragIndicatorIcon />
+                                             </IconButton>
+                                           }
+                                           {...additionalProps}
+                                  />
+                                : null
+                            }
+                        </Grid>
+                      ) }
+                    </Draggable>
+                  ))
+              }
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+  );
 }
 
 // GUI for displaying details about a questionnaire.
@@ -112,6 +171,16 @@ let Questionnaire = (props) => {
   let reloadData = () => {
     setData(null);
     fetchData();
+  }
+
+  let onDragEnd = (result) => {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    //let reoredData = reorder(data, result.source.index, result.destination.index);
+    //setData(reoredData);
   }
 
   if (!data) {
@@ -175,7 +244,7 @@ let Questionnaire = (props) => {
           </Card>
         </Grid>
       }
-      { data ?  DisplayFormEntries(data, {onClose: reloadData, classes: classes})
+      { data ? DisplayFormEntries(data, {onClose: reloadData, classes: classes, onDragEnd: onDragEnd })
              : <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
       }
       </Grid>
@@ -202,7 +271,7 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
-  let { onClose, data, classes } = props;
+  let { onClose, data, dndHandle, classes } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
   let answers = Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption');
@@ -234,6 +303,7 @@ let Question = (props) => {
             <IconButton onClick={() => { setDeleteDialogOpen(true); }}>
               <DeleteIcon />
             </IconButton>
+            {dndHandle}
           </div>
         }
       />
@@ -268,7 +338,7 @@ Question.propTypes = {
 };
 
 let Section = (props) => {
-  let { onClose, data, classes } = props;
+  let { onClose, data, dndHandle, classes } = props;
   let [ anchorEl, setAnchorEl ] = useState(null);
   let [ isEditing, setIsEditing ] = useState(false);
   let [ entityType, setEntityType ] = useState('Question');
@@ -333,6 +403,7 @@ let Section = (props) => {
             <IconButton onClick={() => { setDeleteDialogOpen(true); }}>
               <DeleteIcon />
             </IconButton>
+            {dndHandle}
           </div>
         }
       />
