@@ -28,7 +28,6 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
 import javax.jcr.query.Query;
@@ -45,7 +44,6 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
-import org.apache.sling.api.wrappers.IteratorWrapper;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
@@ -183,18 +181,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
             //Execute the query
             QueryResult filterResult = filterQuery.execute();
-            results = new IteratorWrapper<Resource>(filterResult.getNodes())
-            {
-                @Override
-                public Resource next()
-                {
-                    try {
-                        return request.getResourceResolver().getResource(((Node) super.next()).getPath());
-                    } catch (RepositoryException e) {
-                        return null;
-                    }
-                }
-            };
+            results = new ResourceIterator(request.getResourceResolver(), filterResult.getNodes());
         } catch (Exception e) {
             return;
         }
