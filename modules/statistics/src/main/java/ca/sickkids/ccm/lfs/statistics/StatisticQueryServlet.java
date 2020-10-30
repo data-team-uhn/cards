@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -33,13 +32,11 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.json.Json;
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
 import javax.servlet.Servlet;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
@@ -51,7 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A servlet for querying Statistics that returns a JSON object containing values for the x and y axes
+ * A servlet for querying Statistics that returns a JSON object containing values for the x and y axes.
  *
  * @version $Id$
  */
@@ -76,6 +73,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
     };
 
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:CyclomaticComplexity", "checkstyle:JavaNCSS"})
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
         throws IOException
@@ -88,19 +86,19 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         String splitVariable = null;
         while (parser.hasNext()) {
             Event event = parser.next();
-            if (event == JsonParser.Event.KEY_NAME ) {
+            if (event == JsonParser.Event.KEY_NAME) {
                 String key = parser.getString();
                 event = parser.next();
-                if (key.equals("name")) {
+                if ("name".equals(key)) {
                     statisticName = parser.getString();
                 }
-                if (key.equals("x-label")) {
+                if ("x-label".equals(key)) {
                     xVariable = parser.getString();
                 }
-                if (key.equals("y-label")) {
+                if ("y-label".equals(key)) {
                     yVariable = parser.getString();
                 }
-                if (key.equals("splitVar")) {
+                if ("splitVar".equals(key)) {
                     splitVariable = parser.getString();
                 }
             }
@@ -130,10 +128,13 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 data = getAnswersWithType(data, "split", split, request.getResourceResolver());
                 // filter if splitVar exists
                 dataById = filterAnswersWithType(data, correctSubjectType);
-            }
-            else {
-                answers = getAnswersToQuestion(question, request.getResourceResolver()); // TODO remove
+            } else {
                 // filter if split does not exist
+                final StringBuilder query =
+                    // We select all answers that answer our question
+                    new StringBuilder("select n from [lfs:Answer] as n where n.'question'='"
+                        + question.getIdentifier() + "'");
+                answers = request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
                 answers = filterAnswersToSubjectType(answers, correctSubjectType);
             }
 
@@ -153,8 +154,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 String splitLabel = split.getProperty("text").getString();
                 builder.add("split-label", splitLabel);
                 addDataSplit(dataById, builder);
-            }
-            else {
+            } else {
                 addData(answers, builder);
             }
 
@@ -168,14 +168,14 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Split: Get all answers that have a given question filled out
+     * Split: Get all answers that have a given question filled out.
      * @param data the map that the return values will be added to
      * @param type given type (x or split)
      * @param question The question node that the answers is to
-     * @param resolver
+     * @param resolver Reference to the resource resolver
      * @return map containing all question nodes and their given type
      */
-    private Map<Resource, String> getAnswersWithType(Map<Resource, String> data, String type, Node question, 
+    private Map<Resource, String> getAnswersWithType(Map<Resource, String> data, String type, Node question,
         ResourceResolver resolver) throws RepositoryException
     {
         final StringBuilder query =
@@ -194,11 +194,11 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     /**
      * Split: Filter the given iterator of resources to only include resources whose parent is a Form, whose
      * Subject's type is equal to the given subjectType.
-     * @param data
-     * @param subjectType
-     * @return
+     * @param data Iterator of resources
+     * @param subjectType Subject type of the subject for the answer's form
+     * @return The filtered iterator
      */
-    private Map<String, Map<Resource, String>> filterAnswersWithType(Map<Resource,String> data, Node subjectType)
+    private Map<String, Map<Resource, String>> filterAnswersWithType(Map<Resource, String> data, Node subjectType)
         throws RepositoryException
     {
         Iterator<Map.Entry<Resource, String>> entries = data.entrySet().iterator();
@@ -209,7 +209,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
         // filter out answers without correct subject type
         while (entries.hasNext()) {
-            Map.Entry<Resource,String> answer = entries.next();
+            Map.Entry<Resource, String> answer = entries.next();
             Map<Resource, String> newInnerData = new HashMap<>();
             // get parent node
             Node answerParent = getParentNode(answer.getKey().adaptTo(Node.class));
@@ -236,10 +236,10 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Split: Aggregate the counts
-     * @param xVar
-     * @param splitVar
-     * @param counts
+     * Split: Aggregate the counts.
+     * @param xVar X variable to use
+     * @param splitVar Variable to split on
+     * @param counts Map of counts
      * @return map of {x var, {split var, count}}
      */
     private Map<String, Map<String, Integer>> aggregateSplitCounts(Resource xVar, Resource splitVar,
@@ -261,9 +261,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             // if x value already exists, but not split value - create and set to 1
             if (counts.containsKey(xValue) && !counts.get(xValue).containsKey(splitValue)) {
                 counts.get(xValue).put(splitValue, 1);
-            }
-            // else, create both and set to 1 count
-            else {
+            } else {
+                // else, create both and set to 1 count
                 innerCount.put(splitValue, 1);
                 counts.put(xValue, innerCount);
             }
@@ -275,11 +274,12 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Split: add aggregated data to object builder, to be displayed
-     * @param data
-     * @param builder
+     * Split: add aggregated data to object builder, to be displayed.
+     * @param data Aggregated data
+     * @param builder The object builder for output
      */
-    private void addDataSplit(Map<String, Map<Resource, String>> data, JsonObjectBuilder builder) throws RepositoryException
+    private void addDataSplit(Map<String, Map<Resource, String>> data, JsonObjectBuilder builder)
+        throws RepositoryException
     {
         Map<String, Map<String, Integer>> counts = new HashMap<>();
 
@@ -299,12 +299,12 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
         JsonObjectBuilder outerBuilder = Json.createObjectBuilder();
 
-        for(Map.Entry<String, Map<String,Integer>> t:counts.entrySet()) {
+        for (Map.Entry<String, Map<String, Integer>> t:counts.entrySet()) {
             String key = t.getKey();
 
             JsonObjectBuilder keyBuilder = Json.createObjectBuilder();
 
-            for (Map.Entry<String,Integer> e : t.getValue().entrySet()) {
+            for (Map.Entry<String, Integer> e : t.getValue().entrySet()) {
                 // inner object
                 keyBuilder.add(e.getKey(), e.getValue());
             }
@@ -315,7 +315,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * No Split: Get all answers that have a given question filled out
+     * No Split: Get all answers that have a given question filled out.
      *
      * @param question The question node that the answers is to
      * @param resolver A reference to a ResourceResolver
@@ -356,7 +356,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * No Split: Aggregate the given Iterator of answers to a map of counts for each unique value
+     * No Split: Aggregate the given Iterator of answers to a map of counts for each unique value.
      *
      * @param answers An iterator of cards:Answer objects
      * @return A map of values -> counts
@@ -366,7 +366,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         Map<String, Integer> counts = new HashMap<>();
         while (answers.hasNext()) {
             Node answer = answers.next().adaptTo(Node.class);
-            
+
             try {
                 String value = answer.getProperty("value").getString();
                 // If this already exists in our counts dict, we add 1 to its value
@@ -385,9 +385,9 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * No Split: Add the counts to the data object
-     * @param answers
-     * @param builder
+     * No Split: Add the counts to the data object.
+     * @param answers Counts object to add
+     * @param builder Data object to add to
      */
     private void addData(Iterator<Resource> answers, JsonObjectBuilder builder) throws RepositoryException
     {
