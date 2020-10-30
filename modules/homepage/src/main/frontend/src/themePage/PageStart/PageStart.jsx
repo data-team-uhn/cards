@@ -28,6 +28,10 @@ export default function PageStart(props) {
   const [ triggerRedraw, setTriggerRedraw ] = useState(false);
   const [ extensionData, setExtensionData ] = useState(null);
   const [ isInitialized, setIsInitialized ] = useState(false);
+  const [ pageStartHeight, setPageStartHeight ] = useState(0);
+  useEffect(() => {
+    props.setTotalHeight(pageStartHeight);
+  });
 
   const arrayEquals = (a, b) => {
     return (
@@ -84,7 +88,10 @@ export default function PageStart(props) {
   if (!arrayEquals(componentPositions, newComponentPositions)) {
     setComponentPositions(newComponentPositions);
   }
-  props.setTotalHeight(totalHeight);
+
+  if (pageStartHeight != totalHeight) {
+    setPageStartHeight(totalHeight);
+  }
 
   return (
     <React.Fragment>
