@@ -114,7 +114,7 @@ function UserStatistics(props) {
           let rechartsData = [];
           let parsedStat = JSON.parse(stat);
           for (const [key, value] of Object.entries(parsedStat["data"])) {
-            rechartsData.push({"x": parseFloat(key), [parsedStat["y-label"]]: parseFloat(value)});
+            rechartsData.push({"x": key, [parsedStat["y-label"]]: value});
           }
           return(
             <Grid item lg={12} xl={6} key={stat["name"]}>
