@@ -50,11 +50,7 @@ class Time {
 
   numberToDoubleDigit(num) {
     num = num.toFixed(0);
-    if (num.length === 1) {
-      return `0${num}`
-    } else {
-      return num
-    }
+    return `${num}`.padStart(2, "0");
   }
 
   toString() {
