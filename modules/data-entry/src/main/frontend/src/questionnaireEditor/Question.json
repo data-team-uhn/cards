@@ -35,16 +35,21 @@
         "maxAnswers": "long",
         "unitOfMeasurement" : "string"
       },
-      "vocabulary": { 
+      "vocabulary": {
         "sourceVocabulary": "string",
         "vocabularyFilter": "string",
         "minAnswers": "long",
         "maxAnswers": "long"
-        },
-        "computed": {
-          "minAnswers": "long",
-          "maxAnswers": "long"
-        }
+      },
+      "computed": {
+        "minAnswers": "long",
+        "maxAnswers": "long"
+      },
+      "time": {
+        "lowerLimit": "string",
+        "upperLimit": "string",
+        "errorText": "string"
       }
     }
-  ]
+  }
+]
