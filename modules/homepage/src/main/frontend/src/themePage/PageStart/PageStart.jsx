@@ -100,6 +100,7 @@ export default function PageStart(props) {
         return (
           <ThisComp
             {...props}
+            key={index}
             style={{ top: (componentPositions[index]) + 'px' }}
             onRender={(node) => {
                 if (node != null) {
