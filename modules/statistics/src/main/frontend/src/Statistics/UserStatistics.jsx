@@ -24,9 +24,9 @@ import {
   withStyles, 
   Typography 
 } from "@material-ui/core";
-// import {
-//   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-// } from "recharts";
+import {
+   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Label, Legend,
+} from "recharts";
 import statisticsStyle from "./statisticsStyle.jsx";
 
 function UserStatistics(props) {
@@ -109,12 +109,30 @@ function UserStatistics(props) {
     <React.Fragment>
       <Grid container spacing={3}>
         {currentStatistic && currentStatistic.map((stat) => {
+          console.log(stat);
+          // Transform the data into something recharts can understand
+          let rechartsData = [];
+          let parsedStat = JSON.parse(stat);
+          for (const [key, value] of Object.entries(parsedStat["data"])) {
+            rechartsData.push({"x": parseFloat(key), [parsedStat["y-label"]]: parseFloat(value)});
+          }
           return(
-            <Grid item lg={12} xl={6} key={stat["@path"]}>
+            <Grid item lg={12} xl={6} key={stat["name"]}>
               <Card>
                 <CardContent>
                     <Grid container alignItems='flex-end' spacing={2}>
-                      <Grid item xs={12}><Typography variant="body2">{stat}</Typography></Grid>
+                      <Grid item xs={12}>
+                        <BarChart width={730} height={250} data={rechartsData}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="x">
+                            <Label value={parsedStat["x-label"]} offset={0} position="insideBottom" />
+                          </XAxis>
+                          <YAxis allowDecimals={false}/>
+                          <Tooltip />
+                          <Legend />
+                          <Bar dataKey={parsedStat["y-label"]} fill="#8884d8" />
+                        </BarChart>
+                      </Grid>
                     </Grid>
                 </CardContent>
               </Card>
