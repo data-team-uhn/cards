@@ -56,7 +56,7 @@ ENTRY_CONTENT
       chunks: 'all',
       cacheGroups: {
         defaultVendors: {
-          minChunks: 2,
+          minChunks: 1,
           minSize: 20000000,
           filename: '[name].[contenthash].bundle.js',
           test: /[\\/]node_modules[\\/]/,
