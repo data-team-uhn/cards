@@ -297,6 +297,28 @@ const questionnaireStyle = theme => ({
         paddingBottom: theme.spacing(1) + "px !important",
         marginBottom: theme.spacing(1) + "px !important"
     },
+    questionSpacing: {
+        paddingLeft: theme.spacing(9),
+    },
+    tableSpacing: {
+        marginBottom: theme.spacing(5),
+    },
+    tableCell: {
+        border: "0 none",
+        paddingLeft: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+    },
+    tableThCell: {
+        border: "0 none",
+        fontWeight: "bold",
+        verticalAlign: "top",
+        width: "1%",
+        whiteSpace: "nowrap",
+        paddingLeft: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+    },
 });
 
 export default questionnaireStyle;

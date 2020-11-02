@@ -163,12 +163,11 @@ let EditDialog = (props) => {
             { !isEdit && titleField() }
             <Fields data={isEdit && data || {}} JSON={json[0]} edit={true} />
             { data && type === 'Section' &&
-              <React.Fragment key={`${data.condition['@path']}`}>
+              <React.Fragment key="condition">
                 <Typography>Condition:</Typography>
-                <input type='hidden' name={`${data['@path']}/jcr:primaryType`} value="lfs:Conditional" />
                 <TextField
                   label="Condition JSON"
-                  name={`${data['@path']}`}
+                  name="condition"
                   defaultValue={isEdit && data.condition ? JSON.stringify(data.condition) : '' }
                   style={{width: "500px"}}
                   multiline

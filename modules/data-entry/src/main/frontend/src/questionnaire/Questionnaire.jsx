@@ -53,8 +53,7 @@ import EditIcon from '@material-ui/icons/Edit';
 let DisplayFormEntries = (json, additionalProps) => {
   return Object.entries(json)
     .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section'
-                            || value['jcr:primaryType'] == 'lfs:Question'
-                            || value['jcr:primaryType'] == 'lfs:Conditional'))
+                            || value['jcr:primaryType'] == 'lfs:Question'))
     .map(([key, value]) =>
       value['jcr:primaryType'] == 'lfs:Question'
       ? <Grid item key={key} className={additionalProps.classes.cardSpacing}><Question data={value} {...additionalProps}/></Grid> :
@@ -165,6 +164,8 @@ let Questionnaire = (props) => {
               }/>
             <CardContent>
               <FieldsGrid
+                className={classes.tableSpacing}
+                classes={classes}
                 fields= {Array(
                           {name: "maxPerType", label: "Maximim forms of this type per subject", value : data.maxPerSubject || 'Unlimited'},
                           {name: "subjectTypes", label: "Subject types", value: data.requiredSubjectTypes?.map(t => t.label).join(', ') || 'Any'},
@@ -201,7 +202,7 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
-  let { onClose, data } = props;
+  let { onClose, data, classes } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
   let answers = Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption');
@@ -236,7 +237,7 @@ let Question = (props) => {
           </div>
         }
       />
-      <CardContent style={{paddingLeft: "72px"}}>
+      <CardContent className={classes.questionSpacing}>
         <Fields data={data} JSON={require('../questionnaireEditor/Question.json')[0]} edit={false} />
         { answers.length > 0 && displayAnswers() }
       </CardContent>
@@ -335,8 +336,8 @@ let Section = (props) => {
           </div>
         }
       />
-      <CardContent style={{paddingLeft: "72px"}}>
-        <FieldsGrid fields={extractProperties(data)} />}
+      <CardContent className={classes.questionSpacing}>
+        <FieldsGrid fields={extractProperties(data)} classes={classes}/>
         <Grid container direction="column" spacing={8}>
           {
             data ?
@@ -399,12 +400,12 @@ let QuestionnaireCardHeader = (props) => {
 
 let FieldsGrid = (props) => {
   return (
-    <Table  aria-label="simple table">
+    <Table aria-label="simple table">
       <TableBody>
         {props.fields?.map((row) => (
           <TableRow key={row.name}>
-            <TableCell style={{border: "0 none", fontWeight: "bold", verticalAlign: "top", width: "1%", whiteSpace: "nowrap", paddingLeft: 0, paddingTop: 0}} component="th" scope="row">{row.label}:</TableCell>
-            <TableCell align="left" style={{border: "0 none", paddingLeft: 0, paddingTop: 0}}>{row.value}</TableCell>
+            <TableCell className={props.classes.tableThCell} component="th" scope="row">{row.label}:</TableCell>
+            <TableCell align="left" className={props.classes.tableCell}>{row.value}</TableCell>
           </TableRow>
         ))}
       </TableBody>
