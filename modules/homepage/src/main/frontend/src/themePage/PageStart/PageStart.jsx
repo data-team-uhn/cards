@@ -55,8 +55,8 @@ export default function PageStart(props) {
           for (let i = 0; i < resp.length; i++) {
             zeros.push(0);
           }
-          setComponentHeights(zeros);
-          setComponentPositions(zeros);
+          setComponentHeights(zeros.slice());
+          setComponentPositions(zeros.slice());
         }
         setIsInitialized(true);
       });
