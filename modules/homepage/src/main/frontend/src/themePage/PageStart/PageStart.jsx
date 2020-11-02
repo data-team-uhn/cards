@@ -19,7 +19,6 @@
 
 import React, { useEffect, useState } from "react";
 import { loadExtensions } from "../../uiextension/extensionManager";
-import { Button } from "@material-ui/core";
 
 export default function PageStart(props) {
 
@@ -74,11 +73,7 @@ export default function PageStart(props) {
   }
 
   if (!isInitialized) {
-    return (
-      <Button variant="contained" color="primary" style={{ position: 'fixed', zIndex: 1040 }}>
-        Loading PageStart Content...
-      </Button>
-    );
+    return null;
   }
 
   if (extensionData == null) {
