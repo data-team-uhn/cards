@@ -43,7 +43,7 @@ export default function PageStart(props) {
 
   //Redraw the top elements if the browser window is resized
   window.onresize = () => {
-    setTriggerRedraw(!triggerRedraw);
+    setTriggerRedraw(true);
   };
 
   if (!isInitialized) {
