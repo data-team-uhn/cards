@@ -330,14 +330,14 @@ public class DataImportServlet extends SlingAllMethodsServlet
                     String.format("select n from [lfs:Question] as n where isdescendantnode(n,'%s') and ",
                         SearchUtils.escapeQueryArgument(this.questionnaire.get().getPath()));
 
-                // checking if NAME(n) = <an identifier with a / inside it> will cause the entire query to fail
+                // checking if NAME(n) = <an invalid identifier> will cause the entire query to fail
                 // instead, we'll form the query differently depending on whether or not it is a valid JCR name
-                if (columnName.contains("/")) {
-                    query += String.format("n.text = '%s'",
-                        SearchUtils.escapeQueryArgument(columnName));
-                } else {
+                if (SearchUtils.isValidNodeName(columnName)) {
                     query += String.format("(n.text = '%s' or NAME(n) = '%s')",
                         SearchUtils.escapeQueryArgument(columnName),
+                        SearchUtils.escapeQueryArgument(columnName));
+                } else {
+                    query += String.format("n.text = '%s'",
                         SearchUtils.escapeQueryArgument(columnName));
                 }
 
