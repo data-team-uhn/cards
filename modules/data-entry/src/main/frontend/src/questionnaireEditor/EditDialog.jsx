@@ -37,7 +37,7 @@ import Fields from './Fields'
 // Dialog for editing or creating questions or sections
 
 let EditDialog = (props) => {
-  const { data, type, isEdit, isOpen, onClose, onCancel, id } = props;
+  const { data, type, targetExists, isOpen, onClose, onCancel, id } = props;
   let questionJSON = require('./Question.json');
   let sectionJSON = require('./Section.json');
   let propertiesJSON = require('./Properties.json');
@@ -68,7 +68,7 @@ let EditDialog = (props) => {
 
     setSaveInProgress(true);
     // If the question/section already exists, update it
-    if (isEdit) {
+    if (targetExists) {
       // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
       let request_data = new FormData(event.currentTarget);
       fetch(
@@ -98,9 +98,6 @@ let EditDialog = (props) => {
       const URL = `${data['@path']}/${title}`
       const primaryType = type.includes('Question') ? 'lfs:Question' : 'lfs:Section';
       var request_data = new FormData(event.currentTarget);
-      if (request_data.condition) {
-        request_data.condition = JSON.parse(request_data.condition);
-      }
       request_data.append('jcr:primaryType', primaryType);
       fetch(URL, { method: 'POST', body: request_data })
         .then((response) => response.ok ? true : Promise.reject(response))
@@ -149,7 +146,7 @@ let EditDialog = (props) => {
   }
 
   let dialogTitle = () => {
-    return (isEdit ? 'Edit ' : 'New ').concat(type);
+    return (targetExists ? 'Edit ' : 'New ').concat(type);
   }
 
   let titleField = () => {
@@ -169,21 +166,9 @@ let EditDialog = (props) => {
         </DialogTitle>
         <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
           <DialogContent>
-            { !isEdit && titleField() }
-            <Fields data={isEdit && data || {}} JSON={json[0]} edit={true} />
-            { data && type === 'Section' &&
-              <React.Fragment key="condition">
-                <Typography>Condition:</Typography>
-                <TextField
-                  label="Condition JSON"
-                  name="condition"
-                  defaultValue={isEdit && data.condition ? JSON.stringify(data.condition) : '' }
-                  style={{width: "500px"}}
-                  multiline
-                />
-              </React.Fragment>
-            }
-            { data && type === 'Question' && <AnswerOptions data={data} path={data["@path"] + (isEdit ? "" : `/${title}`)} /> }
+            { !targetExists && titleField() }
+            <Fields data={targetExists && data || {}} JSON={json[0]} edit={true} />
+            { data && type === 'Question' && <AnswerOptions data={data} path={data["@path"] + (targetExists ? "" : `/${title}`)} /> }
           </DialogContent>
           <DialogActions>
             <Button
@@ -214,8 +199,10 @@ let EditDialog = (props) => {
 EditDialog.propTypes = {
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
-  isEdit: PropTypes.bool.isRequired,
-  isOpen: PropTypes.bool.isRequired
+  targetExists: PropTypes.bool.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func,
+  onCancel: PropTypes.func
 };
 
 export default EditDialog;
