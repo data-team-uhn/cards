@@ -34,6 +34,30 @@
 		<type>Reference</type>
 	</property>
 	<node>
+		<name>diagnosis</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Diagnosis (Morphology) as on pathology report</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>textbox</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
 		<name>chemotherapy</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
@@ -247,6 +271,11 @@
 				<value>yyyy-MM-dd</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 		<node>
 			<name>end_date</name>
@@ -270,6 +299,11 @@
 				<name>dateFormat</name>
 				<value>yyyy-MM-dd</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
