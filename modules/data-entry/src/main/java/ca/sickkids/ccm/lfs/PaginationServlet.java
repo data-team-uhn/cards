@@ -175,7 +175,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             Query filterQuery = queryManager.createQuery(finalquery, "JCR-SQL2");
 
             //Set the limit and offset here to improve query performance
-            filterQuery.setLimit(limit);
+            filterQuery.setLimit(limit + 1);
             filterQuery.setOffset(offset);
 
             //Execute the query
@@ -464,7 +464,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         jsonGen.write("offset", limits[0]);
         jsonGen.write("limit", limits[1]);
         jsonGen.write("returnedrows", limits[2]);
-        jsonGen.write("totalrows", limits[3]);
+        jsonGen.write("totalrows", (limits[3] > limits[1]) ? -1 : (limits[0] + limits[2]));
     }
 
     private long[] writeResources(final JsonGenerator jsonGen, final Iterator<Resource> nodes,
@@ -476,16 +476,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         counts[2] = 0;
         counts[3] = 0;
 
-        long offsetCounter = offset < 0 ? 0 : offset;
         long limitCounter = limit < 0 ? 0 : limit;
 
         jsonGen.writeStartArray("rows");
 
         while (nodes.hasNext()) {
             Resource n = nodes.next();
-            if (offsetCounter > 0) {
-                --offsetCounter;
-            } else if (limitCounter > 0) {
+            if (limitCounter > 0) {
                 jsonGen.write(n.adaptTo(JsonObject.class));
                 --limitCounter;
                 ++counts[2];
