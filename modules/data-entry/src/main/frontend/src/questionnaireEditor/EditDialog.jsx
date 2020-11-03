@@ -49,6 +49,7 @@ let EditDialog = (props) => {
   // - true -> data has been successfully saved
   // - false -> the save attempt failed
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
+  let [ open, setOpen ] = useState(isOpen);
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ error, setError ] = useState('');
   let json = type === 'Question' ? questionJSON
@@ -87,12 +88,19 @@ let EditDialog = (props) => {
             setLastSaveStatus(false);
           }
         })
-        .finally(() => {setSaveInProgress(false); onClose();});
+        .finally(() => {
+          setSaveInProgress(false);
+          setOpen(false);
+          onClose && onClose();
+        });
     } else {
       // If the question/section doesn't exist, create it
       const URL = `${data['@path']}/${title}`
       const primaryType = type.includes('Question') ? 'lfs:Question' : 'lfs:Section';
       var request_data = new FormData(event.currentTarget);
+      if (request_data.condition) {
+        request_data.condition = JSON.parse(request_data.condition);
+      }
       request_data.append('jcr:primaryType', primaryType);
       fetch(URL, { method: 'POST', body: request_data })
         .then((response) => response.ok ? true : Promise.reject(response))
@@ -109,7 +117,8 @@ let EditDialog = (props) => {
         .finally(() => {
           setSaveInProgress(false);
           setTitle('');
-          props.onClose();
+          setOpen(false);
+          onClose && onClose();
         });
     }
   }
@@ -154,7 +163,7 @@ let EditDialog = (props) => {
 
   return (
     <React.Fragment>
-      <Dialog id='editDialog' open={isOpen} onClose={onClose} fullWidth maxWidth='sm'>
+      <Dialog id='editDialog' open={open} onClose={() => { setOpen(false); onClose && onClose();} } fullWidth maxWidth='sm'>
         <DialogTitle>
           { dialogTitle() }
         </DialogTitle>
@@ -191,7 +200,7 @@ let EditDialog = (props) => {
             <Button
               variant='contained'
               color='default'
-              onClick={onCancel}
+              onClick={() => { setOpen(false); onCancel && onCancel();}}
             >
               {'Cancel'}
             </Button>

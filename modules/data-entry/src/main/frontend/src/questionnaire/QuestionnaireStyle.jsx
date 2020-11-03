@@ -258,33 +258,33 @@ const questionnaireStyle = theme => ({
         disable: "flex"
     },
     closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500]
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+        color: theme.palette.grey[500]
     },
     dialogTitle: {
-      marginRight: theme.spacing(5)
+        marginRight: theme.spacing(5)
     },
     fileInfo: {
-      padding: theme.spacing(1),
-      fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+        padding: theme.spacing(1),
+        fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     },
     warningIcon: {
-      color: theme.palette.warning.main
+        color: theme.palette.warning.main
     },
     subjectChip: {
-      color:'white',
-      marginLeft: theme.spacing(2)
+        color:'white',
+        marginLeft: theme.spacing(2)
     },
     INCOMPLETEChip: {
-      backgroundColor: theme.palette.warning.main
+        backgroundColor: theme.palette.warning.main
     },
     INVALIDChip: {
-      backgroundColor: theme.palette.error.main
+        backgroundColor: theme.palette.error.main
     },
     DefaultChip: {
-      backgroundColor: theme.palette.warning.main
+        backgroundColor: theme.palette.warning.main
     },
     questionnaireDisabledListItem: {
         color: theme.palette.grey["500"]
@@ -297,27 +297,29 @@ const questionnaireStyle = theme => ({
         paddingBottom: theme.spacing(1) + "px !important",
         marginBottom: theme.spacing(1) + "px !important"
     },
-    questionSpacing: {
+    questionnaireItemContent: {
         paddingLeft: theme.spacing(9),
+        "& table": {
+            marginBottom: theme.spacing(5),
+        }
     },
     tableSpacing: {
-        marginBottom: theme.spacing(5),
-    },
-    tableCell: {
-        border: "0 none",
-        paddingLeft: 0,
-        paddingTop: 0,
-        paddingBottom: 0,
-    },
-    tableThCell: {
-        border: "0 none",
-        fontWeight: "bold",
-        verticalAlign: "top",
-        width: "1%",
-        whiteSpace: "nowrap",
-        paddingLeft: 0,
-        paddingTop: 0,
-        paddingBottom: 0,
+        "& th": {
+            border: "0 none",
+            fontWeight: "bold",
+            verticalAlign: "top",
+            width: "1%",
+            whiteSpace: "nowrap",
+            paddingLeft: 0,
+            paddingTop: 0,
+            paddingBottom: 0,
+        },
+        "& td": {
+            border: "0 none",
+            paddingLeft: 0,
+            paddingTop: 0,
+            paddingBottom: 0,
+        }
     },
 });
 

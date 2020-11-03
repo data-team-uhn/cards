@@ -75,7 +75,7 @@ let Questionnaire = (props) => {
 
   let handleError = (response) => {
     setError(response);
-    setData([]);
+    setData({});
   }
 
   let handleOpenMenu = (event) => {
@@ -110,7 +110,7 @@ let Questionnaire = (props) => {
   };
 
   let reloadData = () => {
-    setData(null);
+    setData({});
     fetchData();
   }
 
@@ -164,7 +164,6 @@ let Questionnaire = (props) => {
               }/>
             <CardContent>
               <FieldsGrid
-                className={classes.tableSpacing}
                 classes={classes}
                 fields= {Array(
                           {name: "maxPerType", label: "Maximum forms of this type per subject", value : data.maxPerSubject || 'Unlimited'},
@@ -179,7 +178,7 @@ let Questionnaire = (props) => {
              : <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
       }
       </Grid>
-      { editDialogOpen && data && <EditDialog
+      { editDialogOpen && <EditDialog
                             isEdit={isEditing}
                             data={data}
                             type={entityType}
@@ -237,7 +236,7 @@ let Question = (props) => {
           </div>
         }
       />
-      <CardContent className={classes.questionSpacing}>
+      <CardContent className={classes.questionnaireItemContent}>
         <Fields data={data} JSON={require('../questionnaireEditor/Question.json')[0]} edit={false} />
         { answers.length > 0 && displayAnswers() }
       </CardContent>
@@ -246,7 +245,7 @@ let Question = (props) => {
                               data={data}
                               type="Question"
                               isOpen={editDialogOpen}
-                              onClose={() => { onClose(); setEditDialogOpen(false); }}
+                              onClose={() => { onClose();}}
                               onCancel={() => { setEditDialogOpen(false); }}
                             />
       }
@@ -254,7 +253,7 @@ let Question = (props) => {
                               isOpen={deleteDialogOpen}
                               data={data}
                               type="Question"
-                              onClose={() => { onClose(); setDeleteDialogOpen(false); }}
+                              onClose={() => { onClose(); }}
                               onCancel={() => { setDeleteDialogOpen(false); }}
                             />
       }
@@ -336,7 +335,7 @@ let Section = (props) => {
           </div>
         }
       />
-      <CardContent className={classes.questionSpacing}>
+      <CardContent className={classes.questionnaireItemContent}>
         <FieldsGrid fields={extractProperties(data)} classes={classes}/>
         <Grid container direction="column" spacing={8}>
           {
@@ -351,7 +350,7 @@ let Section = (props) => {
                             data={data}
                             type={entityType}
                             isOpen={editDialogOpen}
-                            onClose={() => { onClose(); setEditDialogOpen(false); }}
+                            onClose={() => { onClose(); }}
                             onCancel={() => { setEditDialogOpen(false); }}
                           />
       }
@@ -359,7 +358,7 @@ let Section = (props) => {
                               isOpen={deleteDialogOpen}
                               data={data}
                               type="Section"
-                              onClose={() => { onClose(); setDeleteDialogOpen(false); }}
+                              onClose={() => { onClose(); }}
                               onCancel={() => { setDeleteDialogOpen(false); }}
                             />
       }
@@ -400,12 +399,12 @@ let QuestionnaireCardHeader = (props) => {
 
 let FieldsGrid = (props) => {
   return (
-    <Table aria-label="simple table">
+    <Table aria-label="simple table" className={props.classes.tableSpacing}>
       <TableBody>
         {props.fields?.map((row) => (
           <TableRow key={row.name}>
-            <TableCell className={props.classes.tableThCell} component="th" scope="row">{row.label}:</TableCell>
-            <TableCell align="left" className={props.classes.tableCell}>{row.value}</TableCell>
+            <TableCell component="th" scope="row">{row.label}:</TableCell>
+            <TableCell align="left">{row.value}</TableCell>
           </TableRow>
         ))}
       </TableBody>
