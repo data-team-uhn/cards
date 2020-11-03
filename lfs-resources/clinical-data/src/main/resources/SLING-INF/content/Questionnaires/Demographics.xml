@@ -408,6 +408,11 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
 		<node>
 			<name>P</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
@@ -785,6 +790,11 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
 		<node>
 			<name>Incidental</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
@@ -887,6 +897,11 @@
 			<name>dateFormat</name>
 			<value>yyyy-MM-dd</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 	</node>
 	<node>
