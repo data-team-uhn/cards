@@ -59,6 +59,7 @@ export default function VocabulariesAdminPage() {
   const [remoteVocabList, setRemoteVocabList] = React.useState([]);
   const [localVocabList, setLocalVocabList] = React.useState([]);
   const [customApiKey, setCustomApiKey] = React.useState(null);
+  const [displayChangeKey, setDisplayChangeKey] = React.useState(false);
   /*
     The following object will map Acronym -> Release Date for a vocabulary. 
     This allows for efficiently figuring out whether an installed vocabulary is up to date 
@@ -200,12 +201,18 @@ export default function VocabulariesAdminPage() {
         </Typography>
       </Grid>
 
+      {/* TODO: also fetch key from node - if it exists, override bioPortalApiKey --> place in new var */}
       {bioPortalApiKey === null
         ? (
+          <Grid>
           <Grid item>
             <Typography>Your system does not have a Bioportal API Key configured</Typography>
             <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
-            <Button>Get API Key</Button>
+          </Grid>
+          <Grid item>
+            <Button color="primary" href="https://bioportal.bioontology.org/help#Getting_an_API_key">Get API Key</Button>
+          </Grid>
+          <Grid item>
             <TextField
                  variant="outlined"
                  onChange={(evt) => {setCustomApiKey(evt.target.value)}}
@@ -213,16 +220,37 @@ export default function VocabulariesAdminPage() {
                  name="customApiKey"
                  label="Enter your Bioportal API key:"
             />
-            <Button>Submit</Button> 
+            <Button color="primary">Submit</Button> 
             {/* TODO: on submit, set node in backend to custon key. needs to trigger the servlet again to update key
             in the frontend */}
+          </Grid>
           </Grid>
         )
         : (
           <Grid>
-            <Typography>API Key: {bioPortalApiKey}</Typography>
-            <Button>Change</Button> 
-            {/* TODO: what happens on change? */}
+          {displayChangeKey
+            ? (
+              <Grid item>
+                <TextField
+                  variant="outlined"
+                  onChange={(evt) => {setCustomApiKey(evt.target.value)}}
+                  value={customApiKey}
+                  name="customApiKey"
+                  label="Enter the new Bioportal API key:"
+                />
+                {/* TODO: update button should have same functionality as above submit button */}
+                <Button onClick={() => {setDisplayChangeKey(false)}} color="primary">Update</Button>
+                <Button onClick={() => {setDisplayChangeKey(false)}} color="primary">Cancel</Button>
+              </Grid>
+            )
+            : (
+              <Grid item>
+              {/* TODO: different label if from bioportal or from node */}
+                <Typography>API Key: {bioPortalApiKey}</Typography>
+                <Button onClick={() => {setDisplayChangeKey(true)}} color="primary">Change</Button> 
+              </Grid>
+            )
+            }
           </Grid>
         )
       }
