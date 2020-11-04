@@ -104,6 +104,7 @@ const questionnaireStyle = theme => ({
         right: theme.spacing(6.5)
     },
     newFormButtonWrapper: {
+        height: "0px",
         margin: theme.spacing(1),
         position: "relative"
     },
@@ -139,12 +140,12 @@ const questionnaireStyle = theme => ({
         marginTop: theme.spacing(4)
     },
     subjectNewButton: {
-        margin: theme.spacing(1),
-        top: theme.spacing(7.7),
-        right: theme.spacing(4.8),
-        bottom: 'auto',
-        left: 'auto',
-        position: 'fixed',
+        width: "100%",
+        height: "0px",
+        textAlign: "right",
+        marginRight: "90%",
+        top: "0px",
+        position: 'sticky',
     },
     collapsedSection: {
         padding: "0 !important"

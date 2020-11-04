@@ -25,6 +25,7 @@ import { withStyles } from '@material-ui/core';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
+import PageStart from "./PageStart/PageStart";
 import IndexStyle from "./indexStyle.jsx";
 
 class Main extends React.Component {
@@ -38,6 +39,7 @@ class Main extends React.Component {
       fixedClasses: "dropdown show",
       mobileOpen: false,
       routes: [],
+      contentOffset: 0,
     };
 
     getRoutes().then(routes => this.setState({routes: routes}));
@@ -71,7 +73,12 @@ class Main extends React.Component {
           <Route
             path={route["lfs:targetURL"]}
             exact={Boolean(route["lfs:exactURLMatch"])}
-            component={route["lfs:extensionRender"]}
+            render={(props) => {
+                let ThisComponent = route["lfs:extensionRender"];
+                let newProps = {...props, contentOffset: this.state.contentOffset };
+                return (<ThisComponent {...newProps} />);
+              }
+            }
             key={key}
           />
         );
@@ -83,29 +90,40 @@ class Main extends React.Component {
     const { classes, ...rest } = this.props;
 
     return (
-      <div className={classes.wrapper}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Sidebar
-            logoText={"LFS Data Core"}
-            logoImage={"/libs/lfs/resources/lfs-logo-tmp-cyan.png"}
-            image={this.state.image}
-            handleDrawerToggle={this.handleDrawerToggle}
-            open={this.state.mobileOpen}
-            color={ "blue" }
-            {...rest}
-          />
-          <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
-            <div className={classes.content}>
-              <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
-            </div>
-            <Navbar
-              routes={ this.state.routes }
+      <React.Fragment>
+        <PageStart
+          setTotalHeight={(th) => {
+              if (this.state.contentOffset != th) {
+                this.setState({contentOffset: th});
+              }
+            }
+          }
+        />
+        <div className={classes.wrapper} style={ { position: 'relative', top: this.state.contentOffset + 'px' } }>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Sidebar
+              contentOffset={this.state.contentOffset}
+              logoText={"LFS Data Core"}
+              logoImage={"/libs/lfs/resources/lfs-logo-tmp-cyan.png"}
+              image={this.state.image}
               handleDrawerToggle={this.handleDrawerToggle}
+              open={this.state.mobileOpen}
+              color={ "blue" }
               {...rest}
             />
-          </div>
-        </Suspense>
-      </div>
+            <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
+              <div className={classes.content}>
+                <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
+              </div>
+              <Navbar
+                routes={ this.state.routes }
+                handleDrawerToggle={this.handleDrawerToggle}
+                {...rest}
+              />
+            </div>
+          </Suspense>
+        </div>
+      </React.Fragment>
     );
   }
 }
