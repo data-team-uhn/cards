@@ -42,8 +42,8 @@
         "maxAnswers": "long"
       },
       "computed": {
-        "minAnswers": "long",
-        "maxAnswers": "long"
+        "expression": "string",
+        "description": "string"
       },
       "time": {
         "lowerLimit": "string",

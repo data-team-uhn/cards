@@ -33,6 +33,7 @@ import ChromosomeQuestion from "./ChromosomeQuestion";
 import PedigreeQuestion from "./PedigreeQuestion";
 import TimeQuestion from "./TimeQuestion";
 import TextQuestion from "./TextQuestion";
+import ComputedQuestion from "./ComputedQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 import SomaticVariantsQuestion from "./SomaticVariantsQuestion";
 

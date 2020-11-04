@@ -588,6 +588,17 @@
   - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
+// Computed answers, stored as strings
+[lfs:ComputedAnswer] > lfs:Answer
+  - value (string)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/ComputedAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
 
 // Section object, which can contain multiple other answers. The "question" element here
 // should be the section we're answering
