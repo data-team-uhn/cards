@@ -231,11 +231,6 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
 				<name>dataType</name>
 				<value>vocabulary</value>
 				<type>String</type>
