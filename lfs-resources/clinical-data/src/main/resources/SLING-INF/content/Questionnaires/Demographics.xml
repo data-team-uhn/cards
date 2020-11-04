@@ -540,6 +540,11 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
 		<node>
 			<name>fs</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
