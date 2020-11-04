@@ -32,12 +32,12 @@ let EditorInput = (props) => {
   }
   return (
     <Grid container alignItems='flex-end' spacing={2}>
-      <Grid item xs={6}>
+      <Grid item xs={4}>
         <Typography>
           {formatString(name) || ''}
         </Typography>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={8}>
         {children}
       </Grid>
     </Grid>
