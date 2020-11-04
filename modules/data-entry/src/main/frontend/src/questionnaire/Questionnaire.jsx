@@ -21,14 +21,10 @@ import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import {
-  Avatar,
-  Button,
   Card,
   CardContent,
-  CardHeader,
   CircularProgress,
   Grid,
-  Icon,
   IconButton,
   Table,
   TableBody,
@@ -45,8 +41,9 @@ import EditDialog from "../questionnaireEditor/EditDialog";
 import DeleteDialog from "../questionnaireEditor/DeleteDialog";
 import Fields from "../questionnaireEditor/Fields";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
+import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
+import QuestionnaireCardHeader from "../questionnaireEditor/QuestionnaireCardHeader";
 
-import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from '@material-ui/icons/Edit';
 
 // Given the JSON object for a section or question, display it and its children
@@ -148,7 +145,7 @@ let Questionnaire = (props) => {
           </Card>
         </Grid>
       }
-      { data ?  DisplayFormEntries(data, {onClose: reloadData, classes: classes})
+      { data ? DisplayFormEntries(data, {onClose: reloadData, classes: classes})
              : <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
       }
       </Grid>
@@ -176,8 +173,6 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
   let { onClose, data, classes } = props;
-  let [ editDialogOpen, setEditDialogOpen ] = useState(false);
-  let [ deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
   let answers = Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption');
 
   let displayAnswers = () => {
@@ -194,44 +189,17 @@ let Question = (props) => {
   };
 
   return (
-    <Card variant="outlined">
-      <QuestionnaireCardHeader
+    <QuestionnaireItemCard
+        avatar="view_stream"
         avatarColor="purple"
         type="Question"
-        label={data.text}
-        action={
-          <div>
-            <IconButton onClick={() => { setEditDialogOpen(true); }}>
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={() => { setDeleteDialogOpen(true); }}>
-              <DeleteIcon />
-            </IconButton>
-          </div>
-        }
-      />
-      <CardContent className={classes.questionnaireItemContent}>
-        <Fields data={data} JSON={require('../questionnaireEditor/Question.json')[0]} edit={false} />
-        { answers.length > 0 && displayAnswers() }
-      </CardContent>
-      { editDialogOpen && <EditDialog
-                              targetExists={true}
-                              data={data}
-                              type="Question"
-                              isOpen={editDialogOpen}
-                              onClose={() => { onClose();}}
-                              onCancel={() => { setEditDialogOpen(false); }}
-                            />
-      }
-      { deleteDialogOpen && <DeleteDialog
-                              isOpen={deleteDialogOpen}
-                              data={data}
-                              type="Question"
-                              onClose={() => { onClose(); }}
-                              onCancel={() => { setDeleteDialogOpen(false); }}
-                            />
-      }
-    </Card>
+        data={data}
+        classes={classes}
+        onClose={onClose}
+    >
+      <Fields data={data} JSON={require('../questionnaireEditor/Question.json')[0]} edit={false} />
+      { answers.length > 0 && displayAnswers() }
+    </QuestionnaireItemCard>
   );
 };
 
@@ -242,8 +210,6 @@ Question.propTypes = {
 
 let Section = (props) => {
   let { onClose, data, classes } = props;
-  let [ editDialogOpen, setEditDialogOpen ] = useState(false);
-  let [ deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
 
   let extractProperties = (data) => {
     let p = Array();
@@ -263,87 +229,32 @@ let Section = (props) => {
   }
   
   return (
-    <Card variant="outlined">
-      <QuestionnaireCardHeader
+    <QuestionnaireItemCard
         avatar="view_stream"
         avatarColor="orange"
         type="Section"
-        label={props.data.label}
+        data={data}
+        classes={classes}
         action={
-          <div>
             <CreationMenu
               data={data}
               onClose={() => { onClose(); }}
             />
-            <IconButton onClick={() => { setEditDialogOpen(true); }}>
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={() => { setDeleteDialogOpen(true); }}>
-              <DeleteIcon />
-            </IconButton>
-          </div>
         }
-      />
-      <CardContent className={classes.questionnaireItemContent}>
-        <FieldsGrid fields={extractProperties(data)} classes={classes}/>
-        <Grid container direction="column" spacing={8}>
-          {
-            data ?
-                DisplayFormEntries(data, {onClose: onClose, classes: classes})
-              : <Grid container justify="center"><Grid item><CircularProgress /></Grid></Grid>
+        onClose={onClose}
+    >
+      <FieldsGrid fields={extractProperties(data)} classes={classes}/>
+      <Grid container direction="column" spacing={8}>
+          { data ? DisplayFormEntries(data, {onClose: onClose, classes: classes})
+                 : <Grid container justify="center"><Grid item><CircularProgress /></Grid></Grid>
           }
-        </Grid>
-      </CardContent>
-      { editDialogOpen && <EditDialog
-                            targetExists={true}
-                            data={data}
-                            type="Section"
-                            isOpen={editDialogOpen}
-                            onClose={() => { onClose(); }}
-                            onCancel={() => { setEditDialogOpen(false); }}
-                          />
-      }
-      { deleteDialogOpen && <DeleteDialog
-                              isOpen={deleteDialogOpen}
-                              data={data}
-                              type="Section"
-                              onClose={() => { onClose(); }}
-                              onCancel={() => { setDeleteDialogOpen(false); }}
-                            />
-      }
-    </Card>
+      </Grid>
+    </QuestionnaireItemCard>
   );
 };
 
 Section.propTypes = {
   data: PropTypes.object.isRequired
-};
-
-let QuestionnaireCardHeader = (props) => {
-  return (
-    <>
-      <CardHeader
-        disableTypography
-        avatar={
-          props.avatar || props.type ?
-          <Avatar aria-label="recipe" style={{backgroundColor: props.avatarColor || "black"}}>{
-            props.avatar ?
-            <Icon>{props.avatar}</Icon> :
-            props.type.charAt(0)
-          }</Avatar>
-          : null
-        }
-        title={
-          <div>
-            <Typography variant="overline">{props.type}</Typography>
-            <Typography variant="h6">{props.label}</Typography>
-          </div>
-        }
-        action={props.action}
-      >
-      </CardHeader>
-    </>
-  );
 };
 
 let FieldsGrid = (props) => {
