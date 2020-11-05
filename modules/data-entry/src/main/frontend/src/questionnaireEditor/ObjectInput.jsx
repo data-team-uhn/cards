@@ -39,6 +39,7 @@ let ObjectInput = (props) => {
   let [ selectedValue, setSelectedValue ] = useState(data[objectKey] || '');
   
   return (
+    <>
     <EditorInput name={objectKey}>
       <Select
         id={objectKey}
@@ -53,8 +54,9 @@ let ObjectInput = (props) => {
           </MenuItem>
         )}
       </Select>
-      { typeof(value) === 'object' && selectedValue != '' && <Fields data={data} JSON={value[selectedValue]} edit={true}/> }
     </EditorInput>
+    { typeof(value) === 'object' && selectedValue != '' && <Fields data={data} JSON={value[selectedValue]} edit={true}/> }
+    </>
   )
 }
 
