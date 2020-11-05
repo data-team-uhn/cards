@@ -17,7 +17,7 @@
 #  under the License.
 #
 
-# This is the LFS project
+# A simple "this is a demo instance" warning banner, displayed when running with "-Dsling.run.modes=demo"
 [feature name=lfs-warning-banner]
 
 [variables]
