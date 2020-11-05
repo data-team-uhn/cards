@@ -17,5 +17,5 @@
 #  under the License.
 #
 
-# The LFS Variants management
+# The Warning Banner notifying the user to not upload PHI
 [feature name=lfs-warning-banner]
