@@ -23,6 +23,8 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.spi.commons.conversion.IllegalNameException;
+import org.apache.jackrabbit.spi.commons.conversion.NameParser;
 
 /**
  * Service interface used by {@link ca.sickkids.ccm.lfs.QueryBuilder} to search for a specific type of resource.
@@ -162,5 +164,20 @@ public final class SearchUtils
         builder.add(LFS_QUERY_MATCH_AFTER_KEY, matchAfter);
 
         return builder.build();
+    }
+
+    /**
+     * Check whether the given name is a valid node name.
+     * @param name Node name to check
+     * @return True if the given name is a valid node name
+     */
+    public static boolean isValidNodeName(String name)
+    {
+        try {
+            NameParser.checkFormat(name);
+            return true;
+        } catch (IllegalNameException e) {
+            return false;
+        }
     }
 }

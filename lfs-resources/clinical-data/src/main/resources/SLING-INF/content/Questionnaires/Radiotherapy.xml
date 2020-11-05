@@ -29,6 +29,7 @@
 		<name>requiredSubjectTypes</name>
 		<values>
 			<value>/SubjectTypes/Patient</value>
+			<value>/SubjectTypes/Tumor</value>
 		</values>
 		<type>Reference</type>
 	</property>
@@ -57,6 +58,11 @@
 		</property>
 		<property>
 			<name>enableUnknown</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
 			<value>True</value>
 			<type>Boolean</type>
 		</property>
@@ -133,6 +139,11 @@
 				<value>kg</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 		<node>
 			<name>height_at_start</name>
@@ -167,6 +178,11 @@
 				<value>cm</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 		<node>
 			<name>start_date</name>
@@ -191,6 +207,11 @@
 				<value>yyyy-MM-dd</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 		<node>
 			<name>end_date</name>
@@ -214,6 +235,11 @@
 				<name>dateFormat</name>
 				<value>yyyy-MM-dd</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
@@ -357,6 +383,11 @@
 				<name>minValue</name>
 				<value>0</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>

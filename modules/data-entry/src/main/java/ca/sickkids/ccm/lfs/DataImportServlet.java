@@ -327,11 +327,20 @@ public class DataImportServlet extends SlingAllMethodsServlet
         try {
             if (!cache.containsKey(columnName)) {
                 String query =
-                    String.format("select n from [lfs:Question] as n where (n.text = '%s' or NAME(n) = '%s')"
-                        + " and isdescendantnode(n,'%s')",
-                        SearchUtils.escapeQueryArgument(columnName),
-                        SearchUtils.escapeQueryArgument(columnName),
+                    String.format("select n from [lfs:Question] as n where isdescendantnode(n,'%s') and ",
                         SearchUtils.escapeQueryArgument(this.questionnaire.get().getPath()));
+
+                // checking if NAME(n) = <an invalid identifier> will cause the entire query to fail
+                // instead, we'll form the query differently depending on whether or not it is a valid JCR name
+                if (SearchUtils.isValidNodeName(columnName)) {
+                    query += String.format("(n.text = '%s' or NAME(n) = '%s')",
+                        SearchUtils.escapeQueryArgument(columnName),
+                        SearchUtils.escapeQueryArgument(columnName));
+                } else {
+                    query += String.format("n.text = '%s'",
+                        SearchUtils.escapeQueryArgument(columnName));
+                }
+
                 Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
                 if (!results.hasNext()) {
                     cache.put(columnName, null);

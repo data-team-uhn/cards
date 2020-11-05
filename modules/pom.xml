@@ -33,7 +33,6 @@
   <modules>
     <module>startup-customization</module>
     <module>form-completion-status</module>
-    <module>custom-jcr-oak-server</module>
     <module>commons</module>
     <module>ui-extension</module>
     <module>login</module>
