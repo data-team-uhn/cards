@@ -37,6 +37,9 @@ let ComputedQuestion = (props) => {
   const [value, changeValue] = useState(initialValue);
   const [answer, changeAnswer] = useState(initialValue === "" ? [] : [["value", initialValue]]);
 
+  const startTag = "@{";
+  const endTag = "}";
+
   let setError = (input) => {
     if (error !== input) changeError(input);
   }
@@ -62,19 +65,42 @@ let ComputedQuestion = (props) => {
     return value;
   }
 
+  let parseExpressionInputs = (expr, form) => {
+    let inputNames = [];
+    let inputValues = [];
+    let start = expr.indexOf(startTag);
+    let end = expr.indexOf(endTag, start);
+    while(start > -1 && end > -1) {
+      // Push the text between the start and end tags into the list of inputs
+      let inputName = expr.substring(start + 2, end);
+      if (!inputNames.includes(inputName)) {
+        inputNames.push(inputName);
+        inputValues.push(getQuestionValue(inputName, form));
+      }
+      // Remove the start and end tags from the expression
+      expr = [expr.substring(0, start), expr.substring(start+2, end), expr.substring(end+1)].join('');
+      start = expr.indexOf(startTag, end - 3);
+      end = expr.indexOf(endTag, start);
+    }
+    return [inputNames, inputValues, expr];
+  }
+
   let evaluateExpression = () => {
     let form = useFormReaderContext();
     let result;
     let expressionError;
     try {
       expressionError = null;
-      result = new Function(["form", "getQuestionValue", "setError"], expression)
-        (form, getQuestionValue, (errorMessage) => {expressionError = errorMessage});
+      let parseResults = parseExpressionInputs(expression, form);
+      let expressionArguments = ["form", "setError"].concat(parseResults[0]);
+      result = new Function(expressionArguments, parseResults[2])
+        (form, (errorMessage) => {expressionError = errorMessage}, ...parseResults[1]);
       if (missingValue || typeof(result) === undefined || isNaN(result)) {
         result = "";
       }
     }
     catch(err) {
+      console.error(`Error encountered evaluating expression:\n${expression}\n`, err);
       result = "";
     }
     if (expressionError) {
