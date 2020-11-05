@@ -152,8 +152,8 @@ let EditDialog = (props) => {
   let titleField = () => {
     return (
       <Grid container alignItems='flex-end' spacing={2}>
-        <Grid item xs={6}><Typography>{type === 'Question' ? 'Title' : 'Name' }</Typography></Grid>
-        <Grid item xs={6}><TextField name='title' value={title} onChange={(event)=> { setTitle(event.target.value); }} multiline /></Grid>
+        <Grid item xs={4}><Typography>{type === 'Question' ? 'Title' : 'Name' }</Typography></Grid>
+        <Grid item xs={8}><TextField name='title' value={title} onChange={(event)=> { setTitle(event.target.value); }} multiline /></Grid>
       </Grid>
     )
   }
