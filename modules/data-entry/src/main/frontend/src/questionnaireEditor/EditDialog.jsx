@@ -56,6 +56,8 @@ let EditDialog = (props) => {
               : type === 'Section' ? sectionJSON
               : propertiesJSON;
 
+  let saveButtonRef = React.useRef();
+
   let saveData = (event) => {
     // This stops the normal browser form submission
     event.preventDefault();
@@ -168,10 +170,11 @@ let EditDialog = (props) => {
           <DialogContent>
             { !targetExists && titleField() }
             <Fields data={targetExists && data || {}} JSON={json[0]} edit={true} />
-            { data && type === 'Question' && <AnswerOptions data={data} path={data["@path"] + (targetExists ? "" : `/${title}`)} /> }
+            { data && type === 'Question' && <AnswerOptions data={data} path={data["@path"] + (targetExists ? "" : `/${title}`)} saveButtonRef={saveButtonRef}/> }
           </DialogContent>
           <DialogActions>
             <Button
+              ref={saveButtonRef}
               type='submit'
               variant='contained'
               color='primary'

@@ -32,7 +32,7 @@ import { v4 as uuidv4 } from 'uuid';
 import CloseIcon from '@material-ui/icons/Close';
 
 let AnswerOptions = (props) => {
-  const { data, path } = props;
+  const { data, path, saveButtonRef } = props;
   let [ options, setOptions ] = useState(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
   let [ newUUID, setNewUUID ] = useState([]);
   let [ newValue, setNewValue ] = useState([]);
@@ -83,8 +83,8 @@ let AnswerOptions = (props) => {
     });
   }
 
-  let handleInputOption = () => {
-    if (!newValue.includes(tempValue)) {
+  let handleInputOption = (event) => {
+    if (tempValue && !newValue.includes(tempValue)) {
       setNewUUID(oldUuid => {
         let tempUUID = oldUuid.slice();
         tempUUID.push(uuidv4());
@@ -98,7 +98,16 @@ let AnswerOptions = (props) => {
       });
     }
 
-    setTempValue('');
+    tempValue && setTempValue('');
+
+    // Have to manually invoke submit with timeout to let re-rendering of adding new answer option complete
+    // Cause: Calling onBlur and mutating state can cause onClick for form submit to not fire
+    // Issue details: https://github.com/facebook/react/issues/4210
+    if (event?.relatedTarget.type == "submit") {
+      const timer = setTimeout(() => {
+        saveButtonRef?.current?.click();
+      }, 500);
+    }
   }
 
   return (
@@ -141,6 +150,7 @@ let AnswerOptions = (props) => {
         value={tempValue}
         helperText='Press ENTER to add a new line'
         onChange={(event) => { setTempValue(event.target.value); }}
+        onBlur={(event) => { handleInputOption(event); }}
         inputProps={Object.assign({
           onKeyDown: (event) => {
             if (event.key == 'Enter') {
