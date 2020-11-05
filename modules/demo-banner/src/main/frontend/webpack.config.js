@@ -6,7 +6,7 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'warningBanner']: './src/warningBanner.jsx'
+    [module_name + 'demoBanner']: './src/demoBanner.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),

@@ -46,7 +46,7 @@
     <module>permissions-ownership</module>
     <module>vocabularies</module>
     <module>variants</module>
-    <module>warning-banner</module>
+    <module>demo-banner</module>
     <module>aggregated-frontend</module>
   </modules>
 </project>

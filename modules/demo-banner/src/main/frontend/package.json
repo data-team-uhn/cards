@@ -1,13 +1,13 @@
 {
-    "name": "lfs-warning-banner",
+    "name": "lfs-demo-banner",
     "version": "0.1.0",
-    "description": "Warning banner resources for the LFS Project",
+    "description": "Demo warning banner resources for the LFS Project",
     "author": "SickKids",
     "license": "Apache-2.0",
     "repository": {
       "type": "git",
       "url": "https://github.com/ccmbioinfo/lfs.git",
-      "directory": "modules/warning-banner/src/main/frontend"
+      "directory": "modules/demo-banner/src/main/frontend"
     },
     "babel": {
       "presets": [

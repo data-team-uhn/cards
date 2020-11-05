@@ -5,8 +5,8 @@
         "WarningBanner": {
             "jcr:primaryType": "lfs:Extension",
             "lfs:extensionPointId": "lfs/coreUI/pageStart",
-            "lfs:extensionName": "Page Start Warning Banner",
-            "lfs:extensionRenderURL": "asset:lfs-warning-banner.warningBanner.js"
+            "lfs:extensionName": "Demo Warning Banner",
+            "lfs:extensionRenderURL": "asset:lfs-demo-banner.demoBanner.js"
         }
     }
 }

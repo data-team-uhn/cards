@@ -35,7 +35,7 @@ const appbarStyle = theme => ({
   }
 });
 
-export default function WarningBanner(props) {
+export default function DemoBanner(props) {
   const StyledAppBar = withStyles(appbarStyle)(AppBar);
 
   return (
