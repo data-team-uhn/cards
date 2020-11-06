@@ -129,7 +129,7 @@ let Questionnaire = (props) => {
             disableDelete
             data={data}
             classes={classes}
-            onClose={() => {reloadData()}}
+            onActionDone={() => {reloadData()}}
           >
               <FieldsGrid
                 classes={classes}
@@ -141,7 +141,7 @@ let Questionnaire = (props) => {
           </QuestionnaireItemCard>
         </Grid>
       }
-      { data ? DisplayFormEntries(data, {onClose: reloadData, classes: classes})
+      { data ? DisplayFormEntries(data, {onActionDone: reloadData, classes: classes})
              : <Grid item><Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
       }
       </Grid>
@@ -159,7 +159,7 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
-  let { onClose, data, classes } = props;
+  let { onActionDone, data, classes } = props;
   let answers = Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption');
 
   let displayAnswers = () => {
@@ -182,7 +182,7 @@ let Question = (props) => {
         type="Question"
         data={data}
         classes={classes}
-        onClose={onClose}
+        onActionDone={onActionDone}
     >
       <Fields data={data} JSON={require('../questionnaireEditor/Question.json')[0]} edit={false} />
       { answers.length > 0 && displayAnswers() }
@@ -196,7 +196,7 @@ Question.propTypes = {
 };
 
 let Section = (props) => {
-  let { onClose, data, classes } = props;
+  let { onActionDone, data, classes } = props;
 
   let extractProperties = (data) => {
     let p = Array();
@@ -225,16 +225,16 @@ let Section = (props) => {
         action={
             <CreationMenu
               data={data}
-              onClose={() => { onClose(); }}
+              onClose={() => { onActionDone(); }}
             />
         }
-        onClose={onClose}
+        onActionDone={onActionDone}
     >
       <Grid container direction="column" spacing={8}>
         <Grid item>
           <FieldsGrid fields={extractProperties(data)} classes={classes}/>
         </Grid>
-           { data ? DisplayFormEntries(data, {onClose: onClose, classes: classes})
+           { data ? DisplayFormEntries(data, {onActionDone: onActionDone, classes: classes})
                  : <Grid item><Grid container justify="center"><Grid item><CircularProgress /></Grid></Grid></Grid>
           }
       </Grid>

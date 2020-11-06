@@ -51,7 +51,7 @@ let QuestionnaireItemCard = (props) => {
     disableDelete,
     plain,
     data,
-    onClose,
+    onActionDone,
     classes
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
@@ -88,7 +88,7 @@ let QuestionnaireItemCard = (props) => {
                               data={data}
                               type={type}
                               isOpen={editDialogOpen}
-                              onClose={() => { onClose();}}
+                              onClose={() => { onActionDone();}}
                               onCancel={() => { setEditDialogOpen(false); }}
                             />
       }
@@ -96,7 +96,7 @@ let QuestionnaireItemCard = (props) => {
                               isOpen={deleteDialogOpen}
                               data={data}
                               type={type}
-                              onClose={() => { onClose(); }}
+                              onClose={() => { onActionDone(); }}
                               onCancel={() => { setDeleteDialogOpen(false); }}
                             />
       }
@@ -107,7 +107,7 @@ let QuestionnaireItemCard = (props) => {
 QuestionnaireItemCard.propTypes = {
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onActionDone: PropTypes.func.isRequired,
 };
 
 export default QuestionnaireItemCard;
