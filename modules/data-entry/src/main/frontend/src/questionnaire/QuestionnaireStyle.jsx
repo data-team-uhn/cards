@@ -310,6 +310,9 @@ const questionnaireStyle = theme => ({
     questionnaireListItem: {
         color: theme.palette.grey["900"]
     },
+    hierarchyEditButton: {
+        marginLeft: theme.spacing(1)
+    },
 });
 
 export default questionnaireStyle;
