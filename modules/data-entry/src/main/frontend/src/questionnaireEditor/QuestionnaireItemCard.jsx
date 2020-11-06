@@ -77,7 +77,7 @@ let QuestionnaireItemCard = (props) => {
       { deleteDialogOpen && <DeleteDialog
                               isOpen={deleteDialogOpen}
                               data={data}
-                              type="Question"
+                              type={type}
                               onClose={() => { onClose(); }}
                               onCancel={() => { setDeleteDialogOpen(false); }}
                             />

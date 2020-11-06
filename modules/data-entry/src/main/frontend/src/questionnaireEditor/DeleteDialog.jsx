@@ -86,7 +86,7 @@ let DeleteDialog = (props) => {
       <Dialog id="deleteDialog" open={open} onClose={() => { setOpen(false); onClose && onClose(); }}>
         <form action={data && data["@path"]} onSubmit={deleteData} method="DELETE" key={id}>
           <DialogTitle>
-            <Typography>{props.type.includes("Question") ? "Confirm Question Deletion" : "Confirm Section Deletion"}</Typography>
+            <Typography>{`Confirm ${(props.type || '').toLowerCase()} deletion`}</Typography>
           </DialogTitle>
           {error &&
             <DialogContent>
@@ -99,7 +99,7 @@ let DeleteDialog = (props) => {
               variant="contained"
               color="secondary"
               >
-              {'Yes, delete'}
+              {'Delete'}
             </Button>
             <Button
               variant="contained"
