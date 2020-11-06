@@ -125,6 +125,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
             Node node = request.getResource().adaptTo(Node.class);
             if (recursive) {
                 handleRecursiveDeleteChildren(node);
+                this.resolver.get().adaptTo(Session.class).save();
             } else {
                 handleDelete(response, node);
             }
@@ -193,7 +194,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
         throws AccessDeniedException, RepositoryException
     {
         iterateReferrers(node, this.deleteNode);
-        this.resolver.get().adaptTo(Session.class).save();
     }
 
     /**
