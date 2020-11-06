@@ -212,18 +212,18 @@ function Form (props) {
     );
   }
 
-  let parentDetails = data?.subject?.parents && getHierarchy(data.subject, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"}));
+  let parentDetails = data?.subject && getHierarchy(data.subject, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"}));
 
   return (
     <form action={data["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         <Grid item className={classes.formHeader} xs={12}>
-          <Typography variant="overline">
+          { parentDetails && <Typography variant="overline">
             {parentDetails}
             <IconButton className={classes.hierarchyEditButton} size="small" onClick={() => {setSelectorDialogOpen(true)}}>
               <EditIcon fontSize="small" />
             </IconButton>
-          </Typography>
+          </Typography> }
           <Typography variant="h2">
             {(data?.questionnaire?.title || id || "")}
             <DeleteButton
