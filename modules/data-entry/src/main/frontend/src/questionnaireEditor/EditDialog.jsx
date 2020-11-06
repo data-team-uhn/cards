@@ -41,7 +41,7 @@ let EditDialog = (props) => {
   let questionJSON = require('./Question.json');
   let sectionJSON = require('./Section.json');
   let propertiesJSON = require('./Properties.json');
-  let [ title, setTitle ] = useState('');
+  let [ targetId, setTargetId ] = useState('');
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
   // Indicates whether the form has been saved or not. This has three possible values:
@@ -97,7 +97,7 @@ let EditDialog = (props) => {
         });
     } else {
       // If the question/section doesn't exist, create it
-      const URL = `${data['@path']}/${title}`
+      const URL = `${data['@path']}/${targetId}`
       const primaryType = type.includes('Question') ? 'lfs:Question' : 'lfs:Section';
       var request_data = new FormData(event.currentTarget);
       request_data.append('jcr:primaryType', primaryType);
@@ -115,7 +115,7 @@ let EditDialog = (props) => {
         })
         .finally(() => {
           setSaveInProgress(false);
-          setTitle('');
+          setTargetId('');
           setOpen(false);
           onClose && onClose();
         });
@@ -151,11 +151,15 @@ let EditDialog = (props) => {
     return (targetExists ? 'Edit ' : 'New ').concat(type);
   }
 
-  let titleField = () => {
+  let targetIdField = () => {
     return (
       <Grid container alignItems='flex-end' spacing={2} direction="row">
-        <Grid item xs={4}><Typography variant="subtitle2">{type === 'Question' ? 'Title:' : 'Name:' }</Typography></Grid>
-        <Grid item xs={8}><TextField name='title' value={title} onChange={(event)=> { setTitle(event.target.value); }} multiline fullWidth/></Grid>
+        <Grid item xs={4}><Typography variant="subtitle2">{type === 'Question' ? 'Variable name:' : 'Section identifier:' }</Typography></Grid>
+        <Grid item xs={8}>{
+          targetExists ?
+          <Typography>{data["@name"]}</Typography> :
+          <TextField name='title' value={targetId} onChange={(event)=> { setTargetId(event.target.value); }} multiline fullWidth/>
+        }</Grid>
       </Grid>
     )
   }
@@ -169,9 +173,9 @@ let EditDialog = (props) => {
         <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
           <DialogContent>
             <Grid container direction="column" spacing={2}>
-            { !targetExists && <Grid item>{titleField()}</Grid> }
+            <Grid item>{targetIdField()}</Grid>
             <Fields data={targetExists && data || {}} JSON={json[0]} edit={true} />
-            { data && type === 'Question' && <Grid item><AnswerOptions data={data} path={data["@path"] + (targetExists ? "" : `/${title}`)} saveButtonRef={saveButtonRef}/></Grid> }
+            { data && type === 'Question' && <Grid item><AnswerOptions data={data} path={data["@path"] + (targetExists ? "" : `/${targetId}`)} saveButtonRef={saveButtonRef}/></Grid> }
             </Grid>
           </DialogContent>
           <DialogActions>
