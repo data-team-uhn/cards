@@ -77,7 +77,6 @@ let Fields = (props) => {
     Object.entries(JSON).map(([key, value]) => displayEditField(key, value))
     :
     Object.entries(JSON).map(([key, value]) => (data[key] && displayStaticField(key, value)));
-  
 }
 
 Fields.propTypes = {

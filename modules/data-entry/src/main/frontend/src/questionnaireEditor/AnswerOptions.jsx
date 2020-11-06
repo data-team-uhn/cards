@@ -103,7 +103,7 @@ let AnswerOptions = (props) => {
     // Have to manually invoke submit with timeout to let re-rendering of adding new answer option complete
     // Cause: Calling onBlur and mutating state can cause onClick for form submit to not fire
     // Issue details: https://github.com/facebook/react/issues/4210
-    if (event?.relatedTarget.type == "submit") {
+    if (event?.relatedTarget?.type == "submit") {
       const timer = setTimeout(() => {
         saveButtonRef?.current?.click();
       }, 500);

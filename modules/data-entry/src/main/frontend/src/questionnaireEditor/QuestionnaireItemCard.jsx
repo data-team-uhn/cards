@@ -23,7 +23,6 @@ import {
   Avatar,
   Card,
   CardContent,
-  CardHeader,
   Grid,
   Icon,
   IconButton,

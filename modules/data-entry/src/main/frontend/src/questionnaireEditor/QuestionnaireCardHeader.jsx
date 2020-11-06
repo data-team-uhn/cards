@@ -28,7 +28,6 @@ import {
 
 let QuestionnaireCardHeader = (props) => {
   return (
-    <>
       <CardHeader
         disableTypography
         avatar={
@@ -47,7 +46,6 @@ let QuestionnaireCardHeader = (props) => {
         action={props.action}
       >
       </CardHeader>
-    </>
   );
 };
 
