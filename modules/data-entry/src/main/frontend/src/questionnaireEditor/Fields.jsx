@@ -55,17 +55,16 @@ let Fields = (props) => {
   };
 
   let formatString = (str) => {
-    let formattedString = str.charAt(0).toUpperCase() + str.slice(1);
-    return formattedString.split(/(?=[A-Z])/).join(' ');
+    return str.charAt(0).toUpperCase() + str.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
   }
 
   let displayStaticField = (key, value) => {
     return (
-      <Grid container key={key} alignItems='flex-start' spacing={2}>
-        <Grid item key={key} xs={4}>
-          <Typography>{formatString(key)}:</Typography>
+      <Grid container key={key} alignItems='flex-start'spacing={2} direction="row">
+        <Grid item xs={4}>
+          <Typography variant="subtitle2">{formatString(key)}:</Typography>
         </Grid>
-        <Grid item key={value} xs={8}>
+        <Grid item xs={8}>
           { Array.isArray(data[key]) ? data[key].map((item) => <Typography>{item}</Typography>)
                                      : <Typography>{data[key]}</Typography>
           }

@@ -179,7 +179,7 @@ let Question = (props) => {
     return (
         <Grid container key={data['jcr:uuid']} alignItems='flex-start' spacing={2}>
           <Grid item key="label" xs={4}>
-            <Typography>Answer options:</Typography>
+            <Typography variant="subtitle2">Answer options:</Typography>
           </Grid>
           <Grid item key="values" xs={8}>
             { answers.map(item => <Typography key={item['jcr:uuid']}>{(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}</Typography>) }

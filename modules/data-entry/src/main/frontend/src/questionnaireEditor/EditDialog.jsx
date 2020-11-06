@@ -153,8 +153,8 @@ let EditDialog = (props) => {
 
   let titleField = () => {
     return (
-      <Grid container alignItems='flex-end' spacing={2}>
-        <Grid item xs={4}><Typography>{type === 'Question' ? 'Title' : 'Name' }</Typography></Grid>
+      <Grid container alignItems='flex-end' spacing={2} direction="row">
+        <Grid item xs={4}><Typography variant="subtitle2">{type === 'Question' ? 'Title:' : 'Name:' }</Typography></Grid>
         <Grid item xs={8}><TextField name='title' value={title} onChange={(event)=> { setTitle(event.target.value); }} multiline /></Grid>
       </Grid>
     )
@@ -168,9 +168,11 @@ let EditDialog = (props) => {
         </DialogTitle>
         <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
           <DialogContent>
-            { !targetExists && titleField() }
+            <Grid container direction="column" spacing={2}>
+            { !targetExists && <Grid item>{titleField()}</Grid> }
             <Fields data={targetExists && data || {}} JSON={json[0]} edit={true} />
-            { data && type === 'Question' && <AnswerOptions data={data} path={data["@path"] + (targetExists ? "" : `/${title}`)} saveButtonRef={saveButtonRef}/> }
+            { data && type === 'Question' && <Grid item><AnswerOptions data={data} path={data["@path"] + (targetExists ? "" : `/${title}`)} saveButtonRef={saveButtonRef}/></Grid> }
+            </Grid>
           </DialogContent>
           <DialogActions>
             <Button

@@ -37,6 +37,7 @@ let NumberInput = (props) => {
   return (
     <EditorInput name={objectKey}>
       <TextField
+        fullWidth
         name={objectKey || ''}
         id={objectKey || ''}
         defaultValue={data[objectKey] || ''}

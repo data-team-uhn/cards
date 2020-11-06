@@ -27,14 +27,13 @@ import {
 let EditorInput = (props) => {
   let { children, name } = props;
   let formatString = (key) => {
-    let formattedString = key.charAt(0).toUpperCase() + key.slice(1);
-      return formattedString.split(/(?=[A-Z])/).join(' ');
+    return key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
   }
   return (
     <Grid container alignItems='flex-end' spacing={2}>
       <Grid item xs={4}>
-        <Typography>
-          {formatString(name) || ''}
+        <Typography variant="subtitle2">
+          {formatString(name?.concat(':')) || ''}
         </Typography>
       </Grid>
       <Grid item xs={8}>

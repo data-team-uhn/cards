@@ -111,9 +111,9 @@ let AnswerOptions = (props) => {
   }
 
   return (
-    <Grid container alignItems='flex-start' spacing={2}>
+    <Grid container alignItems='baseline' spacing={2}>
       <Grid item xs={4}>
-        <Typography>Answer Options</Typography>
+        <Typography variant="subtitle2">Answer options:</Typography>
       </Grid>
       <Grid item xs={8}>
       { options.map((value, index) =>
