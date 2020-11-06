@@ -316,13 +316,10 @@ const questionnaireStyle = theme => ({
         marginBottom: theme.spacing(1) + "px !important"
     },
     questionnaireItemContent: {
-        paddingLeft: theme.spacing(9),
-        "& table": {
-            marginBottom: theme.spacing(5),
-        }
-    },
-    tableSpacing: {
-        "& th": {
+        "&.avatarCardContent": {
+           paddingLeft: theme.spacing(9),
+        },
+        "& table th": {
             border: "0 none",
             fontWeight: "bold",
             verticalAlign: "top",
@@ -331,7 +328,7 @@ const questionnaireStyle = theme => ({
             paddingLeft: 0,
             paddingTop: 0,
         },
-        "& td": {
+        "& table td": {
             border: "0 none",
             paddingLeft: 0,
             paddingTop: 0,

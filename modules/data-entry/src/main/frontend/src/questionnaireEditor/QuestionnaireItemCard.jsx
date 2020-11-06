@@ -40,7 +40,20 @@ import QuestionnaireCardHeader from "./QuestionnaireCardHeader";
 // General class or Sections and Questions
 
 let QuestionnaireItemCard = (props) => {
-  let { children, avatar, avatarColor, type, action, data, onClose, classes } = props;
+  let {
+    children,
+    avatar,
+    avatarColor,
+    type,
+    title,
+    action,
+    disableEdit,
+    disableDelete,
+    plain,
+    data,
+    onClose,
+    classes
+  } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
   return (
@@ -49,20 +62,25 @@ let QuestionnaireItemCard = (props) => {
         avatar={avatar}
         avatarColor={avatarColor}
         type={type}
-        label={data.label || data.text}
+        label={title || data.label || data.text}
+        plain={plain}
         action={
           <div>
             {action}
+            {!disableEdit &&
             <IconButton onClick={() => { setEditDialogOpen(true); }}>
               <EditIcon />
             </IconButton>
+            }
+            {!disableDelete &&
             <IconButton onClick={() => { setDeleteDialogOpen(true); }}>
               <DeleteIcon />
             </IconButton>
+            }
           </div>
         }
       />
-      <CardContent className={classes.questionnaireItemContent}>
+      <CardContent className={classes.questionnaireItemContent + (!!!plain ? " avatarCardContent" : '')}>
         {children}
       </CardContent>
       { editDialogOpen && <EditDialog
@@ -89,7 +107,6 @@ let QuestionnaireItemCard = (props) => {
 QuestionnaireItemCard.propTypes = {
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
-  avatarColor: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 

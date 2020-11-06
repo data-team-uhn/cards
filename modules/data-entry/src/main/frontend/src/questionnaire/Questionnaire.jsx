@@ -21,8 +21,6 @@ import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import {
-  Card,
-  CardContent,
   CircularProgress,
   Grid,
   IconButton,
@@ -42,7 +40,6 @@ import DeleteDialog from "../questionnaireEditor/DeleteDialog";
 import Fields from "../questionnaireEditor/Fields";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
-import QuestionnaireCardHeader from "../questionnaireEditor/QuestionnaireCardHeader";
 
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -125,15 +122,15 @@ let Questionnaire = (props) => {
       }
       { data &&
         <Grid item className={classes.cardSpacing}>
-          <Card variant="outlined">
-            <QuestionnaireCardHeader
-              label="Questionnaire properties"
-              action={
-                <IconButton onClick={() => { setEditDialogOpen(true); }}>
-                  <EditIcon />
-                </IconButton>
-              }/>
-            <CardContent>
+          <QuestionnaireItemCard
+            plain
+            type="Questionnaire"
+            title="Questionnaire properties"
+            disableDelete
+            data={data}
+            classes={classes}
+            onClose={() => {reloadData()}}
+          >
               <FieldsGrid
                 classes={classes}
                 fields= {Array(
@@ -141,23 +138,13 @@ let Questionnaire = (props) => {
                           {name: "subjectTypes", label: "Subject types", value: data.requiredSubjectTypes?.label || data.requiredSubjectTypes?.map(t => t.label).join(', ') || 'Any'},
                         )}
               />
-            </CardContent>
-          </Card>
+          </QuestionnaireItemCard>
         </Grid>
       }
       { data ? DisplayFormEntries(data, {onClose: reloadData, classes: classes})
-             : <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+             : <Grid item><Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
       }
       </Grid>
-      { editDialogOpen && <EditDialog
-                            targetExists={true}
-                            data={data}
-                            type="Questionnaire"
-                            isOpen={editDialogOpen}
-                            onClose={() => { reloadData(); setEditDialogOpen(false); }}
-                            onCancel={() => { setEditDialogOpen(false); }}
-                          />
-      }
     </div>
   );
 };
@@ -243,10 +230,12 @@ let Section = (props) => {
         }
         onClose={onClose}
     >
-      <FieldsGrid fields={extractProperties(data)} classes={classes}/>
       <Grid container direction="column" spacing={8}>
-          { data ? DisplayFormEntries(data, {onClose: onClose, classes: classes})
-                 : <Grid container justify="center"><Grid item><CircularProgress /></Grid></Grid>
+        <Grid item>
+          <FieldsGrid fields={extractProperties(data)} classes={classes}/>
+        </Grid>
+           { data ? DisplayFormEntries(data, {onClose: onClose, classes: classes})
+                 : <Grid item><Grid container justify="center"><Grid item><CircularProgress /></Grid></Grid></Grid>
           }
       </Grid>
     </QuestionnaireItemCard>
@@ -259,7 +248,7 @@ Section.propTypes = {
 
 let FieldsGrid = (props) => {
   return (
-    <Table aria-label="simple table" className={props.classes.tableSpacing}>
+    <Table aria-label="simple table">
       <TableBody>
         {props.fields?.map((row) => (
           <TableRow key={row.name}>

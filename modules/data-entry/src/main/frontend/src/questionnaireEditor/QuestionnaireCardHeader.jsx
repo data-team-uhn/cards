@@ -31,7 +31,7 @@ let QuestionnaireCardHeader = (props) => {
       <CardHeader
         disableTypography
         avatar={
-          props.avatar || props.type ?
+          !!!props.plain && (props.avatar || props.type) ?
             <Avatar aria-label="recipe" style={{backgroundColor: props.avatarColor || "black"}}>
               { props.avatar ? <Icon>{props.avatar}</Icon> : props.type.charAt(0) }
             </Avatar>
@@ -39,7 +39,7 @@ let QuestionnaireCardHeader = (props) => {
         }
         title={
           <div>
-            <Typography variant="overline">{props.type}</Typography>
+            {!!!props.plain && <Typography variant="overline">{props.type}</Typography>}
             <Typography variant="h6">{props.label}</Typography>
           </div>
         }
