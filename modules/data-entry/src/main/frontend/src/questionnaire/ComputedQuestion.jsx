@@ -27,16 +27,35 @@ import Question from "./Question";
 import QuestionnaireStyle from './QuestionnaireStyle';
 import { useFormReaderContext } from "./FormContext";
 
+
+// Component that renders a computed value as a question field
+// Computed value is placed in a <input type="hidden"> tag for submission.
+//
+// Mandatory props:
+// text: the question to be displayed
+// expression: the javascript run to determine the value.
+//   Values between the tags `@{` and `}` will be interpreted as input variables.
+//   These tags will be removed and the value of the question named by the
+//     input variable will be provided as a function argument.
+//
+// Other options are passed to the <question> widget
+//
+// Sample usage, given question_a and question_b are number questions:
+//<ComputedQuestion
+//  text="Result of of a divided by b"
+//  expression="if (@{question_b} === 0) setError('Can not divide by 0'); return @{question_a}/@{question_b}"
+//  />
 let ComputedQuestion = (props) => {
   const { existingAnswer, classes, ...rest} = props;
   const { text, expression } = {...props.questionDefinition, ...props};
   const [error, changeError] = useState(false);
   const [errorMessage, changeErrorMessage] = useState(false);
 
-  let initialValue = existingAnswer && existingAnswer[1].value || "";
+  let initialValue = existingAnswer?.[1].value || "";
   const [value, changeValue] = useState(initialValue);
   const [answer, changeAnswer] = useState(initialValue === "" ? [] : [["value", initialValue]]);
 
+  const form = useFormReaderContext();
   const startTag = "@{";
   const endTag = "}";
 
@@ -86,11 +105,9 @@ let ComputedQuestion = (props) => {
   }
 
   let evaluateExpression = () => {
-    let form = useFormReaderContext();
     let result;
-    let expressionError;
+    let expressionError = null;
     try {
-      expressionError = null;
       let parseResults = parseExpressionInputs(expression, form);
       let expressionArguments = ["form", "setError"].concat(parseResults[0]);
       result = new Function(expressionArguments, parseResults[2])
@@ -105,7 +122,7 @@ let ComputedQuestion = (props) => {
     }
     if (expressionError) {
       setError(true);
-      setErrorMessage(expressionError);
+      setErrorMessage(`Error encountered evaluating expression:\n${expressionError}`);
       result = "";
     } else {
       setError(false);
