@@ -4,6 +4,7 @@
     "description": "string",
     "dataType": {
       "boolean": {
+        "minAnswers": "long",
         "maxAnswers": "1",
         "yesLabel": "string",
         "noLabel": "string",
