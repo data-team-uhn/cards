@@ -43,20 +43,6 @@ import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard"
 
 import EditIcon from '@material-ui/icons/Edit';
 
-// Given the JSON object for a section or question, display it and its children
-let DisplayFormEntries = (json, additionalProps) => {
-  return Object.entries(json)
-    .filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section'
-                            || value['jcr:primaryType'] == 'lfs:Question'))
-    .map(([key, value]) =>
-      value['jcr:primaryType'] == 'lfs:Question'
-      ? <Grid item key={key} className={additionalProps.classes.cardSpacing}><Question data={value} {...additionalProps}/></Grid> :
-      value['jcr:primaryType'] == 'lfs:Section'
-      ? <Grid item key={key} className={additionalProps.classes.cardSpacing}><Section data={value} {...additionalProps}/></Grid>
-      : null
-    );
-}
-
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
   let { id, classes } = props;
@@ -96,13 +82,18 @@ let Questionnaire = (props) => {
   }
 
   return (
-    <div>
+    <>
       { error &&
         <Typography variant="h2" color="error">
           Error obtaining questionnaire info: {error.status} {error.statusText}
         </Typography>
       }
-      <Grid container direction="column" spacing={8}>
+      <QuestionnaireItemSet
+        data={data}
+        classes={classes}
+        onActionDone={() => reloadData()}
+      >
+      <Grid container direction="column" spacing={4}>
       <Grid item>
         <Typography variant="h2">{data ? data['title'] : id} </Typography>
         {
@@ -113,15 +104,7 @@ let Questionnaire = (props) => {
         }
       </Grid>
       { data &&
-        <Grid item className={classes.cardSpacing}>
-          <CreationMenu
-            data={data}
-            onClose={() => { reloadData(); }}
-          />
-        </Grid>
-      }
-      { data &&
-        <Grid item className={classes.cardSpacing}>
+        <Grid item>
           <QuestionnaireItemCard
             plain
             type="Questionnaire"
@@ -141,20 +124,54 @@ let Questionnaire = (props) => {
           </QuestionnaireItemCard>
         </Grid>
       }
-      { data ? DisplayFormEntries(data, {onActionDone: reloadData, classes: classes})
-             : <Grid item><Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
+      { data &&
+        <Grid item>
+          <CreationMenu
+            data={data}
+            onClose={() => { reloadData(); }}
+          />
+        </Grid>
       }
       </Grid>
-    </div>
+      </QuestionnaireItemSet>
+    </>
   );
 };
-
 
 Questionnaire.propTypes = {
   id: PropTypes.string.isRequired
 };
 
 export default withStyles(QuestionnaireStyle)(Questionnaire);
+
+
+let QuestionnaireItemSet = (props) => {
+  let { children, onActionDone, data, classes } = props;
+
+  return (
+    <Grid container direction="column" spacing={4}>
+      <Grid item>{children}</Grid>
+      {
+        data ?
+        Object.entries(data).filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
+            .map(([key, value]) =>
+                value['jcr:primaryType'] == 'lfs:Question' ?
+                <Grid item key={key}><Question data={value} onActionDone={onActionDone} classes={classes}/></Grid> :
+                value['jcr:primaryType'] == 'lfs:Section' ?
+                <Grid item key={key}><Section data={value} onActionDone={onActionDone} classes={classes}/></Grid>
+                : null
+            )
+        : <Grid item><Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
+      }
+    </Grid>
+  );
+}
+
+QuestionnaireItemSet.propTypes = {
+  onActionDone: PropTypes.func,
+  data: PropTypes.object
+};
+
 
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
@@ -230,14 +247,13 @@ let Section = (props) => {
         }
         onActionDone={onActionDone}
     >
-      <Grid container direction="column" spacing={8}>
-        <Grid item>
-          <FieldsGrid fields={extractProperties(data)} classes={classes}/>
-        </Grid>
-           { data ? DisplayFormEntries(data, {onActionDone: onActionDone, classes: classes})
-                 : <Grid item><Grid container justify="center"><Grid item><CircularProgress /></Grid></Grid></Grid>
-          }
-      </Grid>
+      <QuestionnaireItemSet
+        data={data}
+        classes={classes}
+        onActionDone={onActionDone}
+      >
+         <FieldsGrid fields={extractProperties(data)} classes={classes}/>
+      </QuestionnaireItemSet>
     </QuestionnaireItemCard>
   );
 };
