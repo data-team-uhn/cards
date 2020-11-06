@@ -81,11 +81,11 @@ class Time {
 //  />
 function TimeQuestion(props) {
   let {existingAnswer, classes, ...rest} = props;
-  let {text, lowerLimit, upperLimit, errorText} = {...props.questionDefinition, ...props};
+  let {text, lowerLimit, upperLimit, errorText, minAnswers} = {...props.questionDefinition, ...props};
   let currentStartValue = (existingAnswer && existingAnswer[1].value && new Time(existingAnswer[1].value).isValid)
     ? existingAnswer[1].value : "";
   const [selectedTime, changeTime] = useState(currentStartValue);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(undefined);
   const lowerTime = new Time(lowerLimit);
   const upperTime = new Time(upperLimit);
 
@@ -95,16 +95,19 @@ function TimeQuestion(props) {
 
   let checkError = (timeString) => {
     let time = new Time(timeString);
-    if ((upperLimit && upperTime < time) || (lowerLimit && lowerTime >= time)) {
+    if ((minAnswers > 0 && !time.isValid) || (upperLimit && upperTime < time) || (lowerLimit && lowerTime > time)) {
       setError(true);
     } else {
       setError(false);
     }
   }
 
-  // Determine how to display the currently selected value
-  let outputAnswers = [["time", selectedTime]];
+  // Error check existing answers when first loading the page
+  if (typeof(error) === "undefined" && selectedTime !== "") {
+    checkError(selectedTime);
+  }
 
+  let outputAnswers = [["time", selectedTime]];
   return (
     <Question
       text={text}
@@ -145,6 +148,7 @@ function TimeQuestion(props) {
 TimeQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   text: PropTypes.string,
+  minAnswers: PropTypes.number,
   lowerLimit: PropTypes.string,
   upperLimit: PropTypes.string,
   errorText: PropTypes.string

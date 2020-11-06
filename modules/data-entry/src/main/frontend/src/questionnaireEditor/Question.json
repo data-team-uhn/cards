@@ -48,6 +48,7 @@
       "time": {
         "lowerLimit": "string",
         "upperLimit": "string",
+        "minAnswers": "long",
         "errorText": "string"
       }
     }
