@@ -88,7 +88,7 @@ function Subject(props) {
             New form for this Subject
           </NewFormDialog>
       </div>
-      <SubjectContainer id={id} classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject}/>
+      <SubjectContainer id={id} classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject} type=""/>
     </React.Fragment>
   );
 }
@@ -97,13 +97,15 @@ function Subject(props) {
  * Component that recursively gets and displays the selected subject and its related SubjectTypes
  */
 function SubjectContainer(props) {
-  let { id, classes, level, maxDisplayed, getSubject } = props;
+  let { id, classes, level, maxDisplayed, getSubject, type } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // hold related subjects
   let [relatedSubjects, setRelatedSubjects] = useState();
+  // Type of the original subject o display
+  let [ originType, setOriginType ] = useState(type);
   // 'level' of subject component
   const currentLevel = level || 0;
 
@@ -125,6 +127,7 @@ function SubjectContainer(props) {
       getSubject(json);
     }
     setData(json);
+    currentLevel == 0 && setOriginType(json.type["@name"])
   };
 
   // Callback method for the `fetchData` method, invoked when the request failed.
@@ -168,13 +171,13 @@ function SubjectContainer(props) {
 
   return (
     <Grid container spacing={3}>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed}/>
+      <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed} originType={originType}/>
       {relatedSubjects ?
         (<Grid item xs={12} className={classes.subjectContainer}>
           {relatedSubjects.map( (subject, i) => {
             // Render component again for each related subject
             return(
-              <SubjectContainer key={i} classes={classes} id={subject["@name"]} level={currentLevel+1} maxDisplayed={maxDisplayed}/>
+              <SubjectContainer key={i} classes={classes} id={subject["@name"]} level={currentLevel+1} maxDisplayed={maxDisplayed} type={originType}/>
             )
           })}
         </Grid>
@@ -188,7 +191,7 @@ function SubjectContainer(props) {
  * Component that displays all forms related to a Subject.
  */
 function SubjectMember (props) {
-  let { id, classes, level, data, maxDisplayed } = props;
+  let { id, classes, level, data, maxDisplayed, originType } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // table data: related forms to the subject
@@ -248,7 +251,7 @@ function SubjectMember (props) {
       <Grid item>
         <span className={classes.subjectHeader}>
           {
-            parentDetails && <Typography variant="overline">{parentDetails}</Typography>
+            (originType != "Patient") && parentDetails && <Typography variant="overline">{parentDetails}</Typography>
           }
           <Typography variant={headerStyle}>
             {data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
