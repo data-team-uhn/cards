@@ -330,13 +330,11 @@ const questionnaireStyle = theme => ({
             whiteSpace: "nowrap",
             paddingLeft: 0,
             paddingTop: 0,
-            paddingBottom: 0,
         },
         "& td": {
             border: "0 none",
             paddingLeft: 0,
             paddingTop: 0,
-            paddingBottom: 0,
         }
     },
 });

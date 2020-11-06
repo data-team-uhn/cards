@@ -49,7 +49,7 @@ let QuestionnaireItemCard = (props) => {
         avatar={avatar}
         avatarColor={avatarColor}
         type={type}
-        label={data.label}
+        label={data.label || data.text}
         action={
           <div>
             {action}
