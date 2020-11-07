@@ -288,6 +288,7 @@ function SubjectMember (props) {
                           </Button>
                           {entry["statusFlags"].map((status) => {
                             return <Chip
+                              key={status}
                               label={wordToTitleCase(status)}
                               className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
                               size="small"
