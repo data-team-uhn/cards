@@ -31,6 +31,7 @@ import DateQuestion from "./DateQuestion";
 import NumberQuestion from "./NumberQuestion";
 import ChromosomeQuestion from "./ChromosomeQuestion";
 import PedigreeQuestion from "./PedigreeQuestion";
+import TimeQuestion from "./TimeQuestion";
 import TextQuestion from "./TextQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 import SomaticVariantsQuestion from "./SomaticVariantsQuestion";
