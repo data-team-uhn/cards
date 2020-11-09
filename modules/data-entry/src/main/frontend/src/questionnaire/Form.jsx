@@ -33,6 +33,7 @@ import {
   withStyles
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import EditIcon from '@material-ui/icons/Edit';
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
@@ -211,18 +212,20 @@ function Form (props) {
     );
   }
 
-  let parentDetails = data?.subject?.parents && getHierarchy(data.subject.parents, React.Fragment, () => ({}));
+  let parentDetails = data?.subject && getHierarchy(data.subject, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"}));
 
   return (
     <form action={data["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         <Grid item className={classes.formHeader} xs={12}>
-          <Typography variant="overline">{parentDetails}</Typography>
+          { parentDetails && <Typography variant="overline">
+            {parentDetails}
+            <IconButton className={classes.hierarchyEditButton} size="small" onClick={() => {setSelectorDialogOpen(true)}}>
+              <EditIcon fontSize="small" />
+            </IconButton>
+          </Typography> }
           <Typography variant="h2">
-            <Link href="#" onClick={() => {setSelectorDialogOpen(true)}}>
-                {data?.subject?.identifier}
-            </Link>
-            {": " + (data?.questionnaire?.title || id || "")}
+            {(data?.questionnaire?.title || id || "")}
             <DeleteButton
               entryPath={data ? data["@path"] : "/Forms/"+id}
               entryName={(data?.subject?.identifier || "Subject") + ": " + (data?.questionnaire?.title || id || "")}
