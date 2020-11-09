@@ -41,6 +41,7 @@
     "classnames": "^2.2.6",
     "prop-types": "^15.7.2",
     "material-table": "1.69.0",
+    "material-ui-dropzone": "^3.5.0",
     "moment-jdateformatparser": "^1.2.1",
     "react-dom": "^16.13.0",
     "react-router-dom": "^5.2.0",

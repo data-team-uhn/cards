@@ -370,6 +370,20 @@ const questionnaireStyle = theme => ({
     hierarchyEditButton: {
         marginLeft: theme.spacing(1)
     },
+    dropzone: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: theme.spacing(3),
+      width: theme.spacing(44),
+      border: "2px dashed",
+      borderColor: theme.palette.primary.main,
+      padding: "2rem",
+      paddingLeft: "0",
+      textAlign: "center",
+      borderRadius: theme.spacing(1),
+      cursor: "pointer"
+    }
 });
 
 export default questionnaireStyle;
