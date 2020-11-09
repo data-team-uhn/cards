@@ -24,9 +24,9 @@
     org.apache.sling/org.apache.sling.starter.startup/1.0.7-SNAPSHOT
 
 [configurations]
-  # Allow self-registration
+  # By default, deny self-registration
   org.apache.sling.jackrabbit.usermanager.impl.post.CreateUserServlet
-    self.registration.enabled=B"true"
+    self.registration.enabled=B"false"
 
   # Authentication requirements
   org.apache.sling.engine.impl.auth.SlingAuthenticator
