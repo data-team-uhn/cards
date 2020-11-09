@@ -73,33 +73,44 @@ function FormPagination (props) {
       'Save'}
     </Button>
 
+  let stepper = (isBack) =>
+    <MobileStepper
+      variant="progress"
+      // Offset back bar 1 to create a "current page" region
+      activeStep={activePage + (isBack ? 1 : 0)}
+      // Change the color of the back bar
+      LinearProgressProps={isBack ? {classes: {barColorPrimary: classes.formStepperTopBar}}: null}
+      // Hide the backround of the front bar to segment of back bar
+      className={`${classes.formStepper} ${isBack ? classes.formStepperTop : classes.formStepperBottom}`}
+      classes={isBack ? null : {progress:classes.formStepperBottom}}
+      // base 0 to base 1, plus 1 for the "current page" region
+      steps={lastPage() + 2}
+      nextButton={saveButton}
+      backButton={
+        lastPage() > 0
+          ? <Button
+              type="submit"
+              // Don't disable until form submission started
+              disabled={(activePage === 0 && !pendingSubmission)
+                || saveInProgress
+                || lastSaveStatus === false}
+              onClick={handleBack}
+              className={classes.paginationButton}
+              color="primary"
+            >
+              Back
+            </Button>
+          : null
+      }
+    />
+
   return (
     lastPage() > 0 ?
       <React.Fragment>
-        <MobileStepper
-          activeStep={activePage + 1}
-          className={classes.formStepper}
-          variant="progress"
-          steps={lastPage() + 3}
-          nextButton={saveButton}
-          backButton={
-            lastPage() > 0
-              ? <Button
-                  type="submit"
-                  disabled={(activePage === 0 && !pendingSubmission) /* Don't disable until form submission started */
-                    || saveInProgress
-                    || lastSaveStatus === false}
-                  onClick={handleBack}
-                  className={classes.paginationButton}
-                  color="primary"
-                >
-                  Back
-                </Button>
-              : null
-          }
-        />
-        {
-        }
+        {/* Back bar to show a different colored current page section*/}
+        {stepper(true)}
+        {/* Front bar to color completed pages differently from current page */}
+        {stepper(false)}
       </React.Fragment>
     :
       saveButton

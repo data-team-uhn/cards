@@ -237,6 +237,15 @@ const questionnaireStyle = theme => ({
     formStepper: {
         position: "relative",
     },
+    formStepperTop: {
+        bottom: "-68px",
+    },
+    formStepperBottom: {
+        background: "transparent",
+    },
+    formStepperTopBar: {
+        backgroundColor: theme.palette.secondary.main,
+    },
     paginationButton: {
         float: "right",
         margin: theme.spacing(1),
