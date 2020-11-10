@@ -99,7 +99,7 @@ public class VocabularyBioPortalApiKeyServlet extends SlingSafeMethodsServlet
             }
             jsonGen.writeEnd().flush();
         } catch (RepositoryException e) {
-
+            LOGGER.error("Failed to write key: {}", e.getMessage(), e);
         }
     }
 
@@ -119,7 +119,7 @@ public class VocabularyBioPortalApiKeyServlet extends SlingSafeMethodsServlet
 
     private String getAPIKeyFromNode(Resource res) throws RepositoryException
     {
-        String apiKey = "test"; // TODO: can this be initialized w/o value?
+        String apiKey = "test"; //TODO: can this be initialized w/o value?
 
         try {
             Node keyNode = res.adaptTo(Node.class);

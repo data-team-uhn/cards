@@ -157,6 +157,7 @@ export default function VocabulariesAdminPage() {
   }
 
   if (bioPortalApiKey === null) {
+    // will either be the api key in JCR node or env. variable (by default)
     /* If the BioPortal API key cannot be loaded, assume the remote (empty)
      * data has been loaded.
      */
@@ -164,6 +165,13 @@ export default function VocabulariesAdminPage() {
         setRemoteLoaded(true);
         console.error("Can't fetch bioPortal API key");
     });
+  }
+
+  function addNewKey() {
+    // set key on front end
+    setBioPortalApiKey(customApiKey);
+
+    //TODO: set key in backend node
   }
 
   return (
@@ -201,7 +209,6 @@ export default function VocabulariesAdminPage() {
         </Typography>
       </Grid>
 
-      {/* TODO: also fetch key from node - if it exists, override bioPortalApiKey --> place in new var */}
       {bioPortalApiKey === null
         ? (
           <Grid>
@@ -219,10 +226,9 @@ export default function VocabulariesAdminPage() {
                  value={customApiKey}
                  name="customApiKey"
                  label="Enter your Bioportal API key:"
+                 fullWidth="true"
             />
-            <Button color="primary">Submit</Button> 
-            {/* TODO: on submit, set node in backend to custon key. needs to trigger the servlet again to update key
-            in the frontend */}
+            <Button color="primary" onClick={() => {addNewKey()}}>Submit</Button> 
           </Grid>
           </Grid>
         )
@@ -234,18 +240,20 @@ export default function VocabulariesAdminPage() {
                 <TextField
                   variant="outlined"
                   onChange={(evt) => {setCustomApiKey(evt.target.value)}}
+                  // below: value should have previous key already filled in
                   value={customApiKey}
                   name="customApiKey"
                   label="Enter the new Bioportal API key:"
+                  fullWidth="true"
                 />
                 {/* TODO: update button should have same functionality as above submit button */}
-                <Button onClick={() => {setDisplayChangeKey(false)}} color="primary">Update</Button>
+                <Button onClick={() => {setDisplayChangeKey(false); addNewKey();}} color="primary">Update</Button>
                 <Button onClick={() => {setDisplayChangeKey(false)}} color="primary">Cancel</Button>
               </Grid>
             )
             : (
               <Grid item>
-              {/* TODO: different label if from bioportal or from node */}
+              {/* TODO: from bioportal -> default API key, if not: api key */}
                 <Typography>API Key: {bioPortalApiKey}</Typography>
                 <Button onClick={() => {setDisplayChangeKey(true)}} color="primary">Change</Button> 
               </Grid>
