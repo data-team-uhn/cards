@@ -19,11 +19,16 @@
 import React from 'react';
 import {
     Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    IconButton,
     TextField,
     Tooltip,
     Typography,
     withStyles
 } from '@material-ui/core';
+import { Close } from "@material-ui/icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -145,6 +150,11 @@ class SignUpForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      errorOpen: false,
+      errorMsg: ""
+    };
+
     this.submitValues = this.submitValues.bind(this);
   }
 
@@ -199,6 +209,13 @@ class SignUpForm extends React.Component {
         // Therefore, you must handle the error code yourself.
         if (!response.ok) {
           this.props.handleLogin && this.props.handleLogin(false);
+          response.json().then((data) => {
+            let errMsg = data?.error?.message;
+            this.setState({
+              errorOpen: true,
+              errorMsg: (errMsg ? errMsg : "Unknown Error")
+            });
+          });
           throw Error(response.statusText);
         }
 
@@ -233,6 +250,17 @@ class SignUpForm extends React.Component {
     // Hooks only work inside functional components
     return (
       <React.Fragment>
+        <Dialog open={this.state.errorOpen} onClose={() => this.setState({errorOpen: false})}>
+          <DialogTitle disableTypography>
+            <Typography variant="h6" color="error" className={classes.dialogTitle}>Error</Typography>
+            <IconButton onClick={() => this.setState({errorOpen: false})} className={classes.closeButton}>
+              <Close />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <Typography variant="body1">{this.state.errorMsg}</Typography>
+          </DialogContent>
+        </Dialog>
         <div className={classes.main}>
           <Formik
             render={props => <FormFieldsComponent {...props} />}
