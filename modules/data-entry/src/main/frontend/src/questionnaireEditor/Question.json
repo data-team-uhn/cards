@@ -12,8 +12,7 @@
     },
     "dataType": {
       "boolean": {
-        "minAnswers": "long",
-        "maxAnswers": "1",
+        "minAnswers": {"0":{}, "1":{}},
         "yesLabel": "string",
         "noLabel": "string",
         "enableUnknown": "boolean",
