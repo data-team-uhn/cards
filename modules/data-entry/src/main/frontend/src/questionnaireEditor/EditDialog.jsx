@@ -158,7 +158,7 @@ let EditDialog = (props) => {
         <Grid item xs={8}>{
           targetExists ?
           <Typography>{data["@name"]}</Typography> :
-          <TextField name='title' value={targetId} onChange={(event)=> { setTargetId(event.target.value); }} multiline fullWidth/>
+          <TextField name='' value={targetId} onChange={(event)=> { setTargetId(event.target.value); }} multiline fullWidth/>
         }</Grid>
       </Grid>
     )

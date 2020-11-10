@@ -2,6 +2,14 @@
   {
     "text": "string",
     "description": "string",
+    "displayMode": {
+      "none": {},
+      "hidden": {},
+      "input": {},
+      "textbox": {},
+      "list": {},
+      "list+input" : {}
+    },
     "dataType": {
       "boolean": {
         "minAnswers": "long",
