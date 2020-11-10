@@ -387,6 +387,9 @@
   // If present, the maximum number cannot be exceeded
   - maxPerSubject (long)
 
+  // Should this section be displayed as a page
+  - paginate (boolean) = false autocreated
+
   // Children
 
   // The sections and standalone questions that make up this questionnaire.

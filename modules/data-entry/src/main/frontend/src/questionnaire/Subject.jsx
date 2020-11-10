@@ -369,17 +369,16 @@ function FormData(props) {
       return displayQuestion(entryDefinition, data, key);
     } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
       // If a section is found, filter questions inside the section
-      let currentSection = (
-        Object.entries(data.questionnaire).filter(([key, value]) => SECTION_TYPES.includes(value['jcr:primaryType']))[0][1]
-      );
-      let currentAnswers = (
-        (Object.entries(data).filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection")[0])
-        ? (Object.entries(data).filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection")[0][1]) : ""
-      )
+      let currentSection = Object.entries(data.questionnaire)
+        .filter(([key, value]) => SECTION_TYPES.includes(value['jcr:primaryType']) && value["@name"] == entryDefinition["@name"])[0]
+      currentSection = currentSection ? currentSection[1] : "";
+      let currentAnswers = Object.entries(data)
+        .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection" && value["section"]["@name"] == entryDefinition["@name"])[0];
+      currentAnswers = currentAnswers ? currentAnswers[1] : "";
       return (
         Object.entries(currentSection)
         .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']))
-        .map(([key, entryDefinition]) => displayQuestion(entryDefinition, currentAnswers, key))
+        .map(([key, entryDefinition]) => handleDisplay(entryDefinition, currentAnswers, key))
       )
     }
   }

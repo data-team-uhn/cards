@@ -85,6 +85,9 @@ const questionnaireStyle = theme => ({
     questionHeader: {
         paddingBottom: theme.spacing(0),
     },
+    hiddenQuestion: {
+        display: "none"
+    },
     warningTypography: {
         padding: theme.spacing(1, 1),
     },
@@ -149,6 +152,9 @@ const questionnaireStyle = theme => ({
     },
     collapsedSection: {
         padding: "0 !important"
+    },
+    hiddenSection: {
+        display: "none"
     },
     addSectionButton: {
         marginTop: theme.spacing(GRID_SPACE_UNIT * 2)
@@ -222,6 +228,32 @@ const questionnaireStyle = theme => ({
         opacity: 1,
         zIndex: "1010",
         margin: theme.spacing(2),
+    },
+    formFooter: {
+        position: "sticky",
+        bottom: theme.spacing(0),
+        zIndex: 1000,
+        maxHeight: "68px",
+    },
+    formStepper: {
+        position: "relative",
+    },
+    formStepperTop: {
+        bottom: "16px",
+    },
+    formStepperBottom: {
+        background: "transparent",
+        bottom: "84px",
+    },
+    formStepperBottomBackground: {
+        background: "transparent",
+    },
+    formStepperTopBar: {
+        backgroundColor: theme.palette.secondary.main,
+    },
+    paginationButton: {
+        float: "right",
+        margin: theme.spacing(1),
     },
     titleButton: {
         float: "right"
