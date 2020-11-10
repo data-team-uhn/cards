@@ -33,7 +33,6 @@ function SubjectTypes(props) {
       "label": "Label",
       "format": "string",
       "link": "dashboard+field:@path",
-      "admin": true,
     },
     {
       "key": "jcr:createdBy",
@@ -68,7 +67,8 @@ function SubjectTypes(props) {
         <LiveTable
           columns={columns}
           actions={actions}
-          entryType={"Subject Type"} />
+          entryType={"Subject Type"}
+          admin={true} />
       </CardContent>
     </Card>
   );

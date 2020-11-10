@@ -241,14 +241,14 @@ function SubjectMember (props) {
   if (level == 1) {buttonSize = "medium"; headerStyle="h4"};
   if (level > 1) {buttonSize = "small"; headerStyle="h5"};
 
-  let parentDetails = data && data['parents'] && getHierarchy(data['parents'], Link, (node) => ({to: "/content.html" + node["@path"]}));
+  let parentDetails = data && data['parents'] && getHierarchy(data['parents'], Link, (node) => ({to: "/content.html" + node["@path"], target :"_blank"}));
 
   return (
     <Grid item xs={12}>
       <Grid item>
         <span className={classes.subjectHeader}>
           {
-            parentDetails && <Typography variant="overline">{parentDetails}</Typography>
+            (level == 0) && parentDetails && <Typography variant="overline">{parentDetails}</Typography>
           }
           <Typography variant={headerStyle}>
             {data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
@@ -288,6 +288,7 @@ function SubjectMember (props) {
                           </Button>
                           {entry["statusFlags"].map((status) => {
                             return <Chip
+                              key={status}
                               label={wordToTitleCase(status)}
                               className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
                               size="small"

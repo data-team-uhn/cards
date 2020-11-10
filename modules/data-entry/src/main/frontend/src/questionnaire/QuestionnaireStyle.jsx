@@ -220,7 +220,8 @@ const questionnaireStyle = theme => ({
         top: theme.spacing(4),
         backgroundColor: "white",
         opacity: 1,
-        zIndex: "1010"
+        zIndex: "1010",
+        margin: theme.spacing(2),
     },
     titleButton: {
         float: "right"
@@ -328,6 +329,9 @@ const questionnaireStyle = theme => ({
             paddingLeft: 0,
             paddingTop: 0,
         }
+    },
+    hierarchyEditButton: {
+        marginLeft: theme.spacing(1)
     },
 });
 

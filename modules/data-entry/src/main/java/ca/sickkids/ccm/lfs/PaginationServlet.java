@@ -28,7 +28,11 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.Session;
+import javax.jcr.Workspace;
 import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.stream.JsonGenerator;
@@ -38,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
@@ -77,7 +82,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
     private static final String SUBJECT_IDENTIFIER = "lfs:Subject";
 
-    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS"})
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
             throws IOException, IllegalArgumentException
@@ -156,14 +161,35 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         query.append(" order by n.'jcr:created'");
         String finalquery = query.toString();
         LOGGER.debug("Computed final query: {}", finalquery);
+        Iterator<Resource> results;
+        //Using a QueryManager doesn't always work, but it is faster
+        Session session = null;
+        try {
+            //Get a QueryManager object
+            ResourceResolver resolver = request.getResourceResolver();
+            session = resolver.adaptTo(Session.class);
+            Workspace workspace = session.getWorkspace();
+            QueryManager queryManager = workspace.getQueryManager();
 
-        final Iterator<Resource> results =
-            request.getResourceResolver().findResources(finalquery, Query.JCR_SQL2);
+            //Create the Query object
+            Query filterQuery = queryManager.createQuery(finalquery, "JCR-SQL2");
+
+            //Set the limit and offset here to improve query performance
+            filterQuery.setLimit(limit + 1);
+            filterQuery.setOffset(offset);
+
+            //Execute the query
+            QueryResult filterResult = filterQuery.execute();
+            results = new ResourceIterator(request.getResourceResolver(), filterResult.getNodes());
+        } catch (Exception e) {
+            return;
+        }
+
         // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
         final Writer out = response.getWriter();
         try (JsonGenerator jsonGen = Json.createGenerator(out)) {
             jsonGen.writeStartObject();
-            long[] limits = writeNodes(jsonGen, results, offset, limit);
+            long[] limits = writeResources(jsonGen, results, offset, limit);
             writeSummary(jsonGen, request, limits);
             jsonGen.writeEnd().flush();
         }
@@ -438,10 +464,10 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         jsonGen.write("offset", limits[0]);
         jsonGen.write("limit", limits[1]);
         jsonGen.write("returnedrows", limits[2]);
-        jsonGen.write("totalrows", limits[3]);
+        jsonGen.write("totalrows", (limits[3] > limits[1]) ? -1 : (limits[0] + limits[2]));
     }
 
-    private long[] writeNodes(final JsonGenerator jsonGen, final Iterator<Resource> nodes,
+    private long[] writeResources(final JsonGenerator jsonGen, final Iterator<Resource> nodes,
         final long offset, final long limit)
     {
         final long[] counts = new long[4];
@@ -450,16 +476,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         counts[2] = 0;
         counts[3] = 0;
 
-        long offsetCounter = offset < 0 ? 0 : offset;
         long limitCounter = limit < 0 ? 0 : limit;
 
         jsonGen.writeStartArray("rows");
 
         while (nodes.hasNext()) {
             Resource n = nodes.next();
-            if (offsetCounter > 0) {
-                --offsetCounter;
-            } else if (limitCounter > 0) {
+            if (limitCounter > 0) {
                 jsonGen.write(n.adaptTo(JsonObject.class));
                 --limitCounter;
                 ++counts[2];

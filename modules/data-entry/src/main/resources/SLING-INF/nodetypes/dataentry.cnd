@@ -540,6 +540,17 @@
   - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
+// Time
+[lfs:TimeAnswer] > lfs:Answer
+  - value (string)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "lfs/lfs:TimeAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
 // Pedigree, stored mainly as a JSON representation, but also as a cached SVG image
 [lfs:PedigreeAnswer] > lfs:Answer
   // The pedigree data is stored here, as a JSON

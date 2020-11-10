@@ -56,7 +56,7 @@ function Subjects(props) {
     {
       "key": "parents",
       "label": "Hierarchy",
-      "format": (parent) => (parent ? getHierarchy(parent, React.Fragment, () => ({})) : "No parents"),
+      "format": (parent) => (parent ? getHierarchy(parent, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"})) : "No parents"),
     },
   ]
   const actions = [
