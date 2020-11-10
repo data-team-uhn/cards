@@ -215,6 +215,12 @@ class SignUpForm extends React.Component {
               errorOpen: true,
               errorMsg: (errMsg ? errMsg : "Unknown Error")
             });
+          })
+          .catch(error => {
+            this.setState({
+              errorOpen: true,
+              errorMsg: "Unknown Error (JSON Parsing Failed)"
+            });
           });
           throw Error(response.statusText);
         }
