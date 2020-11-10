@@ -585,8 +585,8 @@
             </execution>
           </executions>
           <configuration>
-            <nodeVersion>v12.2.0</nodeVersion>
-            <yarnVersion>v1.16.0</yarnVersion>
+            <nodeVersion>v14.15.0</nodeVersion>
+            <yarnVersion>v1.22.10</yarnVersion>
             <workingDirectory>src/main/frontend</workingDirectory>
           </configuration>
         </plugin>
