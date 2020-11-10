@@ -392,8 +392,13 @@ function FormData(props) {
     const questionTitle = entryDefinition["text"];
 
     if (existingQuestionAnswer && existingQuestionAnswer[1]["value"] && (displayed < maxDisplayed)) {
+      // Check for a label and use the label instead of the value, if present
+      let existingQuestionAnswerValue = existingQuestionAnswer[1]["value"];
+      let answerValue = entryDefinition[existingQuestionAnswerValue]["label"]
+        ? entryDefinition[existingQuestionAnswerValue]["label"]
+        : existingQuestionAnswerValue;
+      let content = `${questionTitle}: ${answerValue}`;
       // If count of displayed <= max, increase count of displayed
-      let content = `${questionTitle}: ${existingQuestionAnswer[1]["value"]}`;
       displayed++;
       return (
         <Typography variant="body2" component="p" key={key}>{content}</Typography>
