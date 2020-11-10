@@ -23,7 +23,6 @@ import PropTypes from "prop-types";
 import {
   CircularProgress,
   Grid,
-  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -35,20 +34,15 @@ import {
 import moment from "moment";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import EditDialog from "../questionnaireEditor/EditDialog";
-import DeleteDialog from "../questionnaireEditor/DeleteDialog";
 import Fields from "../questionnaireEditor/Fields";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
-
-import EditIcon from '@material-ui/icons/Edit';
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
   let { id, classes } = props;
   let [ data, setData ] = useState();
   let [ error, setError ] = useState();
-  let [ editDialogOpen, setEditDialogOpen ] = useState(false);
 
   let handleError = (response) => {
     setError(response);
@@ -56,7 +50,6 @@ let Questionnaire = (props) => {
   }
 
   const questionRef = useRef();
-  const anchor = location.hash.substr(1);
   // create a ref to store the question container DOM element
   useEffect(() => {
     const timer = setTimeout(() => {

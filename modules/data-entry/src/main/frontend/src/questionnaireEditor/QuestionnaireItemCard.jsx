@@ -20,14 +20,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Avatar,
   Card,
   CardContent,
-  Grid,
-  Icon,
-  IconButton,
-  Typography,
-  withStyles
+  IconButton
 } from "@material-ui/core";
 
 import DeleteIcon from "@material-ui/icons/Delete";
