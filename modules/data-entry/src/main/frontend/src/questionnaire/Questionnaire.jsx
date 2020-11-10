@@ -96,7 +96,7 @@ let Questionnaire = (props) => {
             </Typography>
         }
       </Grid>
-      { data &&
+      { data?.["jcr:primaryType"] == "lfs:Questionnaire" &&
         <Grid item>
           <QuestionnaireItemCard
             plain
