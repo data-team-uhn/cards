@@ -76,13 +76,14 @@ function FormPagination (props) {
   let stepper = (isBack) =>
     <MobileStepper
       variant="progress"
-      // Offset back bar 1 to create a "current page" region
-      activeStep={activePage + (isBack ? 1 : 0)}
+      // Offset back bar 1 to create a "current page" region.
+      // If the final page has been saved, progress the front bar to complete
+      activeStep={activePage + (isBack ? 1 : (lastSaveStatus && savedLastPage ? 1 : 0))}
       // Change the color of the back bar
       LinearProgressProps={isBack ? {classes: {barColorPrimary: classes.formStepperTopBar}}: null}
       // Hide the backround of the front bar to segment of back bar
       className={`${classes.formStepper} ${isBack ? classes.formStepperTop : classes.formStepperBottom}`}
-      classes={isBack ? null : {progress:classes.formStepperBottom}}
+      classes={isBack ? null : {progress:classes.formStepperBottomBackground}}
       // base 0 to base 1, plus 1 for the "current page" region
       steps={lastPage() + 2}
       nextButton={saveButton}

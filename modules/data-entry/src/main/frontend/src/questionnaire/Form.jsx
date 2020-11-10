@@ -352,7 +352,7 @@ function Form (props) {
               })
           }
         </FormProvider>
-        <Grid item className={classes.formFooter} xs={12}>
+        <Grid item xs={12} className={classes.formFooter}>
           <FormPagination
             lastPage={lastValidPage}
             activePage={activePage}

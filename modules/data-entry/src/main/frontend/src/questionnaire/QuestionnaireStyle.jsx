@@ -231,16 +231,21 @@ const questionnaireStyle = theme => ({
     },
     formFooter: {
         position: "sticky",
-        bottom: theme.spacing(-2),
+        bottom: theme.spacing(0),
         zIndex: 1000,
+        maxHeight: "68px",
     },
     formStepper: {
         position: "relative",
     },
     formStepperTop: {
-        bottom: "-68px",
+        bottom: "16px",
     },
     formStepperBottom: {
+        background: "transparent",
+        bottom: "84px",
+    },
+    formStepperBottomBackground: {
         background: "transparent",
     },
     formStepperTopBar: {
