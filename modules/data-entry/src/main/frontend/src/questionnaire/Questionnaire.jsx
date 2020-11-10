@@ -187,7 +187,7 @@ let Question = (props) => {
 
   return (
     <QuestionnaireItemCard
-        avatar="view_stream"
+        avatar=""
         avatarColor="purple"
         type="Question"
         data={data}
