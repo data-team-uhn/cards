@@ -20,6 +20,7 @@ import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Subject from "../questionnaire/Subject.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
+import { MatchIdentifier } from "../themePage/QuickSearchResults.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -38,10 +39,9 @@ function Subjects(props) {
 
   const columns = [
     {
-      "key": "identifier",
+      "key": "",
       "label": "Identifier",
-      "format": "string",
-      "link": "dashboard+field:@path",
+      "format": MatchIdentifier,
     },
     {
       "key": "jcr:createdBy",
@@ -52,12 +52,7 @@ function Subjects(props) {
       "key": "jcr:created",
       "label": "Created on",
       "format": "date:YYYY-MM-DD HH:mm",
-    },
-    {
-      "key": "parents",
-      "label": "Hierarchy",
-      "format": (parent) => (parent ? getHierarchy(parent, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"})) : "No parents"),
-    },
+    }
   ]
   const actions = [
     DeleteButton

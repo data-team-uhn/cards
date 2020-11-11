@@ -24,6 +24,7 @@ import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialo
 import { Button, Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
+import { MatchIdentifier } from "../themePage/QuickSearchResults.jsx";
 
 function Questionnaires(props) {
   const { classes } = props;
@@ -35,10 +36,9 @@ function Questionnaires(props) {
 
   let columns = [
     {
-      "key": "title",
+      "key": "",
       "label": "Title",
-      "format": "string",
-      "link": "dashboard+path",
+      "format": MatchIdentifier,
     },
     {
       "key": "jcr:createdBy",

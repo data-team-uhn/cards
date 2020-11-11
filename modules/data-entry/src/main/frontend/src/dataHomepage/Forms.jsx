@@ -24,6 +24,7 @@ import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles } from "@
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
+import { MatchIdentifier } from "../themePage/QuickSearchResults.jsx";
 
 function Forms(props) {
   const { match, location, classes } = props;
@@ -64,10 +65,9 @@ function Forms(props) {
   }
   const columns = [
     {
-      "key": "@name",
+      "key": "",
       "label": "Identifier",
-      "format": "string",
-      "link": "dashboard+path",
+      "format": MatchIdentifier,
     },
     {
       "key": "questionnaire/title",

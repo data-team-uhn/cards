@@ -24,6 +24,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { Button, Card, CardContent, CardHeader, Grid, Link, Typography, withStyles } from "@material-ui/core";
 import NewFormDialog from "./NewFormDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
+import { MatchIdentifier } from "../themePage/QuickSearchResults.jsx";
 
 // Component that renders the user's dashboard, with one LiveTable per questionnaire
 // visible by the user. Each LiveTable contains all forms that use the given
@@ -40,10 +41,9 @@ function UserDashboard(props) {
   // Column configuration for the LiveTables
   const columns = [
     {
-      "key": "@name",
+      "key": "",
       "label": "Identifier",
-      "format": "string",
-      "link": "dashboard+path",
+      "format": MatchIdentifier,
     },
     {
       "key": "questionnaire/title",
