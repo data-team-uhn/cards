@@ -193,7 +193,7 @@ function UnstyledSelectParentDialog (props) {
                     .then(result => {
                       return {
                         data: result["rows"].map((row) => ({
-                          hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, ()=>({})) : "No parents",
+                          hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, ()=>({}), true) : "No parents",
                           ...row
                         })),
                         page: Math.trunc(result["offset"]/result["limit"]),
@@ -846,7 +846,7 @@ function SubjectSelectorList(props) {
                     (currentSubject && (result['rows'].map((row) => isSubjectRelated(row).includes(currentSubject.type.label)))[0])
                     ? result['rows'].filter((e) => filterRelated(e)) : result["rows"]
                   ).map((row) => ({
-                    hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({})) : "No parents",
+                    hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({}), true) : "No parents",
                     ...row})),
                   page: Math.trunc(result["offset"]/result["limit"]),
                   totalCount: result["totalrows"],

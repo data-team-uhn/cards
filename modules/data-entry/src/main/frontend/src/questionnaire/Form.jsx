@@ -285,7 +285,7 @@ function Form (props) {
     );
   }
 
-  let parentDetails = data?.subject && getHierarchy(data.subject, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"}));
+  let parentDetails = data?.subject && getHierarchy(data.subject, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"}), true);
   pages.length = 0;
 
   return (

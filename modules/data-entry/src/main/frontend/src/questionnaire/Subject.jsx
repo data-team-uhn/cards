@@ -51,11 +51,11 @@ let createQueryURL = (query, type) => {
 }
 
 // Recursive function to get a flat list of parents
-export function getHierarchy (node, RenderComponent, propsCreator) {
+export function getHierarchy (node, RenderComponent, propsCreator, includeSubjectLabel) {
   let props = propsCreator(node);
-  let output = <React.Fragment>{node.type.label} <RenderComponent {...props}>{node.identifier}</RenderComponent></React.Fragment>;
+  let output = <React.Fragment>{includeSubjectLabel && node.type.label} <RenderComponent {...props}>{node.identifier}</RenderComponent></React.Fragment>;
   if (node["parents"]) {
-    let ancestors = getHierarchy(node["parents"], RenderComponent, propsCreator);
+    let ancestors = getHierarchy(node["parents"], RenderComponent, propsCreator, includeSubjectLabel);
     return <React.Fragment>{ancestors} / {output}</React.Fragment>
   } else {
     return output;
@@ -241,7 +241,7 @@ function SubjectMember (props) {
   if (level == 1) {buttonSize = "medium"; headerStyle="h4"};
   if (level > 1) {buttonSize = "small"; headerStyle="h5"};
 
-  let parentDetails = data && data['parents'] && getHierarchy(data['parents'], Link, (node) => ({to: "/content.html" + node["@path"], target :"_blank"}));
+  let parentDetails = data && data['parents'] && getHierarchy(data['parents'], Link, (node) => ({to: "/content.html" + node["@path"], target :"_blank"}), true);
 
   return (
     <Grid item xs={12}>

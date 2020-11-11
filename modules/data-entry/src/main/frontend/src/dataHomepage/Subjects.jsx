@@ -24,7 +24,6 @@ import { EntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import { getHierarchy } from "../questionnaire/Subject.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import DeleteButton from "./DeleteButton.jsx";
 
