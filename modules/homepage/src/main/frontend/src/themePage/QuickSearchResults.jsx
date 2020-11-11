@@ -19,7 +19,7 @@
 import React from "react";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import HeaderStyle from "../headerStyle.jsx";
-import { getHierarchy } from "../questionnaire/Subject.jsx";
+import { EntityIdentifier } from "./EntityIdentifier.jsx";
 
 import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -33,31 +33,6 @@ const LFS_QUERY_MATCH_BEFORE_KEY = "before";
 const LFS_QUERY_MATCH_TEXT_KEY = "text";
 const LFS_QUERY_MATCH_AFTER_KEY = "after";
 const LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
-
-// Display the identifier column of the result item wrt item primaryType
-export function MatchIdentifier(row) {
-    const anchorPath = row[LFS_QUERY_MATCH_KEY]?[LFS_QUERY_MATCH_PATH_KEY] : '';
-    switch (row["jcr:primaryType"]) {
-      // for forms (display full hierarchy for subjects with parents)
-      case "lfs:Form":
-        let questionnaire = (row.questionnaire?.title?.concat(' ') || '')
-          + (row["jcr:primaryType"]?.replace(/lfs:/,"") || '');
-        let subjectHierarchy = row.subject ? getHierarchy(row.subject, Link, (node) => ({to: "/content.html" + node["@path"], target :"_blank"})) : '';
-        let formpath = `/content.html/admin${row["@path"]}#${anchorPath}`;
-        return (<React.Fragment>{subjectHierarchy} : <Link to={formpath}>{questionnaire}</Link></React.Fragment>)
-      // for subjects (display full hierarchy for subjects with parents)
-      case "lfs:Subject":
-        return getHierarchy(row, Link, (node) => ({to: "/content.html" + node["@path"], target :"_blank"}));
-      case "lfs:Questionnaire":
-        let fullpath = `/content.html/admin${row["@path"]}#${anchorPath}`;
-        return (<Link to={fullpath}>{row.title}</Link>);
-      // default covers other cases
-      default:
-        let id = row.subject?.identifier || row["@name"] || anchor;
-        let path = `/content.html${row["@path"]}#${anchorPath}`;
-        return (<Link to={path}>{id}</Link>);
-    }
-}
 
 function QuickSearchResults(props) {
 
@@ -88,7 +63,7 @@ function QuickSearchResults(props) {
     {
       "key": "",
       "label": "Identifier",
-      "format": MatchIdentifier,
+      "format": EntityIdentifier,
     },
     {
       "key": "jcr:createdBy",

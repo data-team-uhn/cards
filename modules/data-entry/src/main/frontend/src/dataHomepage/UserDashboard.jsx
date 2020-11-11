@@ -24,7 +24,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { Button, Card, CardContent, CardHeader, Grid, Link, Typography, withStyles } from "@material-ui/core";
 import NewFormDialog from "./NewFormDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
-import { MatchIdentifier } from "../themePage/QuickSearchResults.jsx";
+import { EntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 // Component that renders the user's dashboard, with one LiveTable per questionnaire
 // visible by the user. Each LiveTable contains all forms that use the given
@@ -43,7 +43,7 @@ function UserDashboard(props) {
     {
       "key": "",
       "label": "Identifier",
-      "format": MatchIdentifier,
+      "format": EntityIdentifier,
     },
     {
       "key": "questionnaire/title",

@@ -24,7 +24,7 @@ import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles } from "@
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
-import { MatchIdentifier } from "../themePage/QuickSearchResults.jsx";
+import { EntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function Forms(props) {
   const { match, location, classes } = props;
@@ -67,7 +67,7 @@ function Forms(props) {
     {
       "key": "",
       "label": "Identifier",
-      "format": MatchIdentifier,
+      "format": EntityIdentifier,
     },
     {
       "key": "questionnaire/title",

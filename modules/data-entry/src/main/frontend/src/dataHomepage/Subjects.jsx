@@ -20,7 +20,7 @@ import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Subject from "../questionnaire/Subject.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
-import { MatchIdentifier } from "../themePage/QuickSearchResults.jsx";
+import { EntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -41,7 +41,7 @@ function Subjects(props) {
     {
       "key": "",
       "label": "Identifier",
-      "format": MatchIdentifier,
+      "format": EntityIdentifier,
     },
     {
       "key": "jcr:createdBy",
