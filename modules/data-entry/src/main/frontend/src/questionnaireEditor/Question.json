@@ -2,10 +2,17 @@
   {
     "text": "string",
     "description": "string",
-    "hint": "string",
+    "displayMode": {
+      "none": {},
+      "hidden": {},
+      "input": {},
+      "textbox": {},
+      "list": {},
+      "list+input" : {}
+    },
     "dataType": {
       "boolean": {
-        "maxAnswers": "1",
+        "minAnswers": {"0":{}, "1":{}},
         "yesLabel": "string",
         "noLabel": "string",
         "enableUnknown": "boolean",

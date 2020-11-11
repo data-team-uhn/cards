@@ -17,35 +17,36 @@
 //  under the License.
 //
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Grid,
+  Avatar,
+  Icon,
+  CardHeader,
   Typography
 } from "@material-ui/core";
 
-let EditorInput = (props) => {
-  let { children, name } = props;
-  let formatString = (key) => {
-    return key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
-  }
+let QuestionnaireCardHeader = (props) => {
   return (
-    <Grid container alignItems='flex-end' spacing={2}>
-      <Grid item xs={4}>
-        <Typography variant="subtitle2">
-          {formatString(name?.concat(':')) || ''}
-        </Typography>
-      </Grid>
-      <Grid item xs={8}>
-        {children}
-      </Grid>
-    </Grid>
-    );
-}
-
-EditorInput.propTypes = {
-  children: PropTypes.node.isRequired,
-  name: PropTypes.string.isRequired
+      <CardHeader
+        disableTypography
+        avatar={
+          !!!props.plain && (props.avatar || props.type) ?
+            <Avatar aria-label="recipe" style={{backgroundColor: props.avatarColor || "black"}}>
+              { props.avatar ? <Icon>{props.avatar}</Icon> : props.type.charAt(0) }
+            </Avatar>
+            : null
+        }
+        title={
+          <div>
+            {!!!props.plain && <Typography variant="overline">{props.type}</Typography>}
+            <Typography variant="h6">{props.label}</Typography>
+          </div>
+        }
+        action={props.action}
+      >
+      </CardHeader>
+  );
 };
 
-export default EditorInput
+export default QuestionnaireCardHeader;

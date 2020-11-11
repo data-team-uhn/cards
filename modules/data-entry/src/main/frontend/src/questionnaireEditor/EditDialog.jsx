@@ -37,11 +37,11 @@ import Fields from './Fields'
 // Dialog for editing or creating questions or sections
 
 let EditDialog = (props) => {
-  const { data, type, isEdit, isOpen, onClose, onCancel, id } = props;
+  const { data, type, targetExists, isOpen, onClose, onCancel, id } = props;
   let questionJSON = require('./Question.json');
   let sectionJSON = require('./Section.json');
   let propertiesJSON = require('./Properties.json');
-  let [ title, setTitle ] = useState('');
+  let [ targetId, setTargetId ] = useState('');
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
   // Indicates whether the form has been saved or not. This has three possible values:
@@ -49,11 +49,14 @@ let EditDialog = (props) => {
   // - true -> data has been successfully saved
   // - false -> the save attempt failed
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
+  let [ open, setOpen ] = useState(isOpen);
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ error, setError ] = useState('');
   let json = type === 'Question' ? questionJSON
               : type === 'Section' ? sectionJSON
               : propertiesJSON;
+
+  let saveButtonRef = React.useRef();
 
   let saveData = (event) => {
     // This stops the normal browser form submission
@@ -67,7 +70,7 @@ let EditDialog = (props) => {
 
     setSaveInProgress(true);
     // If the question/section already exists, update it
-    if (isEdit) {
+    if (targetExists) {
       // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
       let request_data = new FormData(event.currentTarget);
       fetch(
@@ -87,11 +90,15 @@ let EditDialog = (props) => {
             setLastSaveStatus(false);
           }
         })
-        .finally(() => {setSaveInProgress(false); onClose();});
+        .finally(() => {
+          setSaveInProgress(false);
+          setOpen(false);
+          onClose && onClose();
+        });
     } else {
       // If the question/section doesn't exist, create it
-      const URL = `${data['@path']}/${title}`
-      const primaryType = type.includes('Question') ? 'lfs:Question' : 'lfs:Section'
+      const URL = `${data['@path']}/${targetId}`
+      const primaryType = type.includes('Question') ? 'lfs:Question' : 'lfs:Section';
       var request_data = new FormData(event.currentTarget);
       request_data.append('jcr:primaryType', primaryType);
       fetch(URL, { method: 'POST', body: request_data })
@@ -108,8 +115,9 @@ let EditDialog = (props) => {
         })
         .finally(() => {
           setSaveInProgress(false);
-          setTitle('');
-          props.onClose();
+          setTargetId('');
+          setOpen(false);
+          onClose && onClose();
         });
     }
   }
@@ -140,32 +148,39 @@ let EditDialog = (props) => {
   }
 
   let dialogTitle = () => {
-    return (isEdit ? 'Edit ' : 'New ').concat(type);
+    return (targetExists ? 'Edit ' : 'New ').concat(type);
   }
 
-  let titleField = () => {
+  let targetIdField = () => {
     return (
-      <Grid container alignItems='flex-end' spacing={2}>
-        <Grid item xs={6}><Typography>{type === 'Question' ? 'Title' : 'Name' }</Typography></Grid>
-        <Grid item xs={6}><TextField name='title' value={title} onChange={(event)=> { setTitle(event.target.value); }} multiline /></Grid>
+      <Grid container alignItems='flex-end' spacing={2} direction="row">
+        <Grid item xs={4}><Typography variant="subtitle2">{type === 'Question' ? 'Variable name:' : 'Section identifier:' }</Typography></Grid>
+        <Grid item xs={8}>{
+          targetExists ?
+          <Typography>{data["@name"]}</Typography> :
+          <TextField name='' value={targetId} onChange={(event)=> { setTargetId(event.target.value); }} multiline fullWidth/>
+        }</Grid>
       </Grid>
     )
   }
 
   return (
     <React.Fragment>
-      <Dialog id='editDialog' open={isOpen} onClose={onClose} fullWidth maxWidth='sm'>
+      <Dialog id='editDialog' open={open} onClose={() => { setOpen(false); onClose && onClose();} } fullWidth maxWidth='sm'>
         <DialogTitle>
           { dialogTitle() }
         </DialogTitle>
         <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
           <DialogContent>
-            { !isEdit && titleField() }
-            <Fields data={isEdit && data || {}} JSON={json[0]} edit={true} />
-            { data && type === 'Question' && <AnswerOptions data={data} path={data["@path"] + (isEdit ? "" : `/${title}`)} /> }
+            <Grid container direction="column" spacing={2}>
+            <Grid item>{targetIdField()}</Grid>
+            <Fields data={targetExists && data || {}} JSON={json[0]} edit={true} />
+            { data && type === 'Question' && <Grid item><AnswerOptions data={data} path={data["@path"] + (targetExists ? "" : `/${targetId}`)} saveButtonRef={saveButtonRef}/></Grid> }
+            </Grid>
           </DialogContent>
           <DialogActions>
             <Button
+              ref={saveButtonRef}
               type='submit'
               variant='contained'
               color='primary'
@@ -179,7 +194,7 @@ let EditDialog = (props) => {
             <Button
               variant='contained'
               color='default'
-              onClick={onCancel}
+              onClick={() => { setOpen(false); onCancel && onCancel();}}
             >
               {'Cancel'}
             </Button>
@@ -193,8 +208,10 @@ let EditDialog = (props) => {
 EditDialog.propTypes = {
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
-  isEdit: PropTypes.bool.isRequired,
-  isOpen: PropTypes.bool.isRequired
+  targetExists: PropTypes.bool.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func,
+  onCancel: PropTypes.func
 };
 
 export default EditDialog;

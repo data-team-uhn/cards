@@ -38,6 +38,7 @@ let DeleteDialog = (props) => {
   // - false -> the save attempt failed
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   const { data, onClose, onCancel, isOpen, id } = props;
+  let [ open, setOpen ] = useState(isOpen);
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ error, setError ] = useState("");
   
@@ -56,7 +57,7 @@ let DeleteDialog = (props) => {
     fetch(url, { method: "DELETE" })
       .then((response) => response.ok ? true : Promise.reject(response))
       .then(() => setLastSaveStatus(true))
-      .then(() => onClose())
+      .then(() => { setOpen(false); onClose && onClose(); })
       .catch((errorObj) => {
         // If the user is not logged in, offer to log in
         const sessionInfo = window.Sling.getSessionInfo();
@@ -82,10 +83,10 @@ let DeleteDialog = (props) => {
 
   return (
     <React.Fragment>
-      <Dialog id="deleteDialog" open={isOpen} onClose={onClose}>
+      <Dialog id="deleteDialog" open={open} onClose={() => { setOpen(false); onClose && onClose(); }}>
         <form action={data && data["@path"]} onSubmit={deleteData} method="DELETE" key={id}>
           <DialogTitle>
-            <Typography>{props.type.includes("Question") ? "Confirm Question Deletion" : "Confirm Section Deletion"}</Typography>
+            <Typography>{`Confirm ${(props.type || '').toLowerCase()} deletion`}</Typography>
           </DialogTitle>
           {error &&
             <DialogContent>
@@ -98,12 +99,12 @@ let DeleteDialog = (props) => {
               variant="contained"
               color="secondary"
               >
-              {'Yes, delete'}
+              {'Delete'}
             </Button>
             <Button
               variant="contained"
               color="default"
-              onClick={onCancel}
+              onClick={() => { setOpen(false); onCancel && onCancel();}}
               >
               {'Cancel'}
             </Button>
@@ -116,7 +117,8 @@ let DeleteDialog = (props) => {
 
 DeleteDialog.propTypes = {
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired
+  type: PropTypes.string.isRequired,
+  isOpen: PropTypes.bool.isRequired
 };
 
 export default withStyles(QuestionnaireStyle)(DeleteDialog);

@@ -27,7 +27,7 @@ import QuestionComponentManager from "./QuestionComponentManager";
 
 let ListInput = (props) => {
   let { objectKey, data } = props;
-  let [ value, setValue ] = React.useState(data[objectKey] || []);
+  let [ value, setValue ] = React.useState(Array.isArray(data[objectKey]) ? data[objectKey] : data[objectKey] ? [data[objectKey]] : []);
   const [ options, setOptions ] = React.useState([]);
   const requiredSubjectTypes = React.useState(objectKey.includes('requiredSubjectTypes'));
   

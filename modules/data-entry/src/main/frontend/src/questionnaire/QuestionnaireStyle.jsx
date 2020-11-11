@@ -309,39 +309,58 @@ const questionnaireStyle = theme => ({
         disable: "flex"
     },
     closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500]
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+        color: theme.palette.grey[500]
     },
     dialogTitle: {
-      marginRight: theme.spacing(5)
+        marginRight: theme.spacing(5)
     },
     fileInfo: {
-      padding: theme.spacing(1),
-      fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+        padding: theme.spacing(1),
+        fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     },
     warningIcon: {
-      color: theme.palette.warning.main
+        color: theme.palette.warning.main
     },
     subjectChip: {
-      color:'white',
-      marginLeft: theme.spacing(2)
+        color:'white',
+        marginLeft: theme.spacing(2)
     },
     INCOMPLETEChip: {
-      backgroundColor: theme.palette.warning.main
+        backgroundColor: theme.palette.warning.main
     },
     INVALIDChip: {
-      backgroundColor: theme.palette.error.main
+        backgroundColor: theme.palette.error.main
     },
     DefaultChip: {
-      backgroundColor: theme.palette.warning.main
+        backgroundColor: theme.palette.warning.main
     },
     questionnaireDisabledListItem: {
         color: theme.palette.grey["500"]
     },
     questionnaireListItem: {
         color: theme.palette.grey["900"]
+    },
+    questionnaireItemContent: {
+        "&.avatarCardContent": {
+           paddingLeft: theme.spacing(9),
+        },
+        "& table th": {
+            border: "0 none",
+            fontWeight: "bold",
+            verticalAlign: "top",
+            width: "1%",
+            whiteSpace: "nowrap",
+            paddingLeft: 0,
+            paddingTop: 0,
+        },
+        "& table td": {
+            border: "0 none",
+            paddingLeft: 0,
+            paddingTop: 0,
+        }
     },
     hierarchyEditButton: {
         marginLeft: theme.spacing(1)

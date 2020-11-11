@@ -54,28 +54,29 @@ let Fields = (props) => {
     );
   };
 
+  let formatString = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
+  }
+
   let displayStaticField = (key, value) => {
-    let formatString = (str) => {
-      let formattedString = str.charAt(0).toUpperCase() + str.slice(1);
-        return formattedString.split(/(?=[A-Z])/).join(' ');
-    }
     return (
-      <Grid item key={key}>
-        <dt>
-          <Typography>{formatString(key)}:</Typography>
-        </dt>
-        <dd>
-          <Typography>{data[key]}</Typography>
-        </dd>
+      <Grid container key={key} alignItems='flex-start'spacing={2} direction="row">
+        <Grid item xs={4}>
+          <Typography variant="subtitle2">{formatString(key)}:</Typography>
+        </Grid>
+        <Grid item xs={8}>
+          { Array.isArray(data[key]) ? data[key].map((item) => <Typography>{item}</Typography>)
+                                     : <Typography>{data[key]}</Typography>
+          }
+        </Grid>
       </Grid>
     );
   };
 
   return edit ? 
-    Object.entries(JSON).map(([key, value]) => (displayEditField(key, value)))
+    Object.entries(JSON).map(([key, value]) => displayEditField(key, value))
     :
-    Object.entries(JSON).map(([key, value]) => (displayStaticField(key, value)));
-  
+    Object.entries(JSON).map(([key, value]) => (data[key] && displayStaticField(key, value)));
 }
 
 Fields.propTypes = {
