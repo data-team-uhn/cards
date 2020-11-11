@@ -7,22 +7,6 @@
     "includedPaths": ["/Forms"],
     "indexRules" : {
         "jcr:primaryType": "nt:unstructured",
-        "lfs:Answer": {
-            "jcr:primaryType": "nt:unstructured",
-            "properties": {
-                "jcr:primaryType": "nt:unstructured",
-                "question": {
-                    "name": "question",
-                    "propertyIndex": true,
-                    "jcr:primaryType": "nt:unstructured"
-                },
-                "value": {
-                    "name": "value",
-                    "propertyIndex": true,
-                    "jcr:primaryType": "nt:unstructured"
-                }
-            }
-        },
         "lfs:Form" : {
             "jcr:primaryType": "nt:unstructured",
             "properties": {
