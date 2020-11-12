@@ -41,16 +41,6 @@ function UserDashboard(props) {
   // Column configuration for the LiveTables
   const columns = [
     {
-      "key": "",
-      "label": "Identifier",
-      "format": EntityIdentifier,
-    },
-    {
-      "key": "questionnaire/title",
-      "label": "Questionnaire",
-      "format": "string",
-    },
-    {
       "key": "subject/identifier",
       "label": "Subject",
       "format": "string",
