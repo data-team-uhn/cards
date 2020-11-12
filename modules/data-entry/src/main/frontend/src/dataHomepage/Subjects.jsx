@@ -38,7 +38,7 @@ function Subjects(props) {
 
   const columns = [
     {
-      "key": "",
+      "key": "subject/identifier",
       "label": "Identifier",
       "format": EntityIdentifier,
     },

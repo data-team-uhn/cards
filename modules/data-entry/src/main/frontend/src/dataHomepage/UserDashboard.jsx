@@ -42,9 +42,13 @@ function UserDashboard(props) {
   const columns = [
     {
       "key": "subject/identifier",
+      "label": "Identifier",
+      "format": EntityIdentifier,
+    },
+    {
+      "key": "",
       "label": "Subject",
-      "format": "string",
-      "link": "dashboard+field:subject/@path",
+      "format": (row) => (<><Link to={`/content.html${row.subject["@path"]}`}>{row.subject.identifier.concat(' ')}</Link>{row.subject.type.label}</>),
     },
     {
       "key": "jcr:created",

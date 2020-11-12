@@ -36,7 +36,7 @@ function Questionnaires(props) {
 
   let columns = [
     {
-      "key": "",
+      "key": "title",
       "label": "Title",
       "format": EntityIdentifier,
     },

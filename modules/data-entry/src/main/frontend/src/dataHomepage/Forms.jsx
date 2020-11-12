@@ -65,6 +65,11 @@ function Forms(props) {
   }
   const columns = [
     {
+      "key": "subject/identifier",
+      "label": "Identifier",
+      "format": EntityIdentifier,
+    },
+    {
       "key": "",
       "label": "Subject",
       "format": (row) => (<><Link to={`/content.html${row.subject["@path"]}`}>{row.subject.identifier.concat(' ')}</Link>{row.subject.type.label}</>),

@@ -179,7 +179,7 @@ function LiveTable(props) {
 
     // Handle display formatting
     if (column.format && typeof column.format === "function") {
-      content = column.format(content);
+      content = column.format(entry);
     } else if (column.format && column.format.startsWith('date')) {
       // The format can be either just "date", in which case a default date format is used, or "date:FORMAT".
       // Cutting after the fifth char means that either we skip "date:" and read the format,
