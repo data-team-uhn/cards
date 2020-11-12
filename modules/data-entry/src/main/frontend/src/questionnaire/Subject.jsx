@@ -51,11 +51,11 @@ let createQueryURL = (query, type) => {
 }
 
 // Recursive function to get a flat list of parents
-export function getHierarchy (node, RenderComponent, propsCreator, includeSubjectLabel) {
+export function getHierarchy (node, RenderComponent, propsCreator, includeSubjectType) {
   let props = propsCreator(node);
-  let output = <React.Fragment>{includeSubjectLabel && node.type.label} <RenderComponent {...props}>{node.identifier}</RenderComponent></React.Fragment>;
+  let output = <React.Fragment>{includeSubjectType && node.type.label} <RenderComponent {...props}>{node.identifier}</RenderComponent></React.Fragment>;
   if (node["parents"]) {
-    let ancestors = getHierarchy(node["parents"], RenderComponent, propsCreator, includeSubjectLabel);
+    let ancestors = getHierarchy(node["parents"], RenderComponent, propsCreator, includeSubjectType);
     return <React.Fragment>{ancestors} / {output}</React.Fragment>
   } else {
     return output;
