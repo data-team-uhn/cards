@@ -52,6 +52,11 @@ function Subjects(props) {
       "label": "Created by",
       "format": "string",
     },
+    {
+      "key": "type/label",
+      "label": "Type",
+      "format": "string",
+    },
   ]
   const actions = [
     DeleteButton
