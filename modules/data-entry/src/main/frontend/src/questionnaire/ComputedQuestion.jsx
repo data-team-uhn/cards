@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 import PropTypes from 'prop-types';
-import { TextField, Typography, withStyles } from "@material-ui/core";
+import { InputAdornment, TextField, Typography, withStyles } from "@material-ui/core";
 
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -47,7 +47,7 @@ import { useFormReaderContext } from "./FormContext";
 //  />
 let ComputedQuestion = (props) => {
   const { existingAnswer, classes, ...rest} = props;
-  const { text, expression } = {...props.questionDefinition, ...props};
+  const { text, expression, unitOfMeasurement } = {...props.questionDefinition, ...props};
   const [error, changeError] = useState(false);
   const [errorMessage, changeErrorMessage] = useState(false);
 
@@ -131,6 +131,11 @@ let ComputedQuestion = (props) => {
     setValue(result);
   }
 
+  const muiInputProps = {}
+  if (unitOfMeasurement) {
+    muiInputProps.endAdornment = <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>;
+  }
+
   return (
     <Question
       text={text}
@@ -138,9 +143,10 @@ let ComputedQuestion = (props) => {
       >
       {error && <Typography color='error'>{errorMessage}</Typography>}
       <TextField
-        readOnly={true}
+        disabled={true}
         className={classes.textField + " " + classes.answerField}
         value={value}
+        InputProps={muiInputProps}
         onChange={evaluateExpression()}
       />
       <Answer
@@ -160,7 +166,8 @@ ComputedQuestion.propTypes = {
   questionDefinition: PropTypes.shape({
     text: PropTypes.string.isRequired,
     expression: PropTypes.string.isRequired,
-    description: PropTypes.string
+    description: PropTypes.string,
+    unitOfMeasurement: PropTypes.string
   }).isRequired
 };
 

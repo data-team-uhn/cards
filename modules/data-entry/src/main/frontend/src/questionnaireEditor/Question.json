@@ -49,7 +49,8 @@
         "maxAnswers": "long"
       },
       "computed": {
-        "expression": "string"
+        "expression": "string",
+        "unitOfMeasurement" : "string"
       },
       "time": {
         "lowerLimit": "string",
