@@ -241,7 +241,7 @@ function SubjectMember (props) {
   if (level == 1) {buttonSize = "medium"; headerStyle="h4"};
   if (level > 1) {buttonSize = "small"; headerStyle="h5"};
 
-  let parentDetails = data && data['parents'] && getHierarchy(data['parents'], Link, (node) => ({to: "/content.html" + node["@path"], target :"_blank"}), true);
+  let parentDetails = data && data['parents'] && getHierarchy(data['parents'], Link, (node) => ({to: "/content.html" + node["@path"]}), true);
 
   return (
     <Grid item xs={12}>
