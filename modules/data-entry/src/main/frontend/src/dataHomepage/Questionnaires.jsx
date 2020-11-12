@@ -41,15 +41,15 @@ function Questionnaires(props) {
       "format": EntityIdentifier,
     },
     {
+      "key": "jcr:created",
+      "label": "Created on",
+      "format": "date:YYYY-MM-DD HH:mm",
+    },
+    {
       "key": "jcr:createdBy",
       "label": "Created by",
       "format": "string",
     },
-    {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
-    }
   ]
   const actions = [
     DeleteButton,
