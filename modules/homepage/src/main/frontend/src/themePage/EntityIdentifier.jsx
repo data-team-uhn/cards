@@ -32,12 +32,12 @@ export function EntityIdentifier(row) {
       // for forms (display full hierarchy for subjects with parents)
       case "lfs:Form":
         let questionnaire = (row.questionnaire?.title?.concat(' ') || '');
-        let subjectHierarchy = row.subject ? getHierarchy(row.subject, Link, (node) => ({to: "/content.html" + node["@path"], target :"_blank"})) : '';
+        let subjectHierarchy = row.subject ? getHierarchy(row.subject, Link, (node) => ({to: "/content.html" + node["@path"]})) : '';
         let formpath = `/content.html${row["@path"]}#${anchorPath}`;
         return (<React.Fragment>{subjectHierarchy} : <Link to={formpath}>{questionnaire}</Link></React.Fragment>)
       // for subjects (display full hierarchy for subjects with parents)
       case "lfs:Subject":
-        return getHierarchy(row, Link, (node) => ({to: "/content.html" + node["@path"], target :"_blank"}));
+        return getHierarchy(row, Link, (node) => ({to: "/content.html" + node["@path"]}));
       case "lfs:Questionnaire":
         let fullpath = `/content.html/admin${row["@path"]}#${anchorPath}`;
         return (<Link to={fullpath}>{row.title}</Link>);
