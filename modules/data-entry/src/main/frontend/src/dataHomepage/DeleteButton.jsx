@@ -29,7 +29,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  * A component that renders an icon to open a dialog to delete an entry.
  */
 function DeleteButton(props) {
-  const { classes, entryPath, entryName, warning, onComplete, entryType, size, shouldGoBack, buttonClass } = props;
+  const { classes, entryPath, entryName, warning, onComplete, entryType, entryLabel, size, shouldGoBack, buttonClass } = props;
 
   const [ open, setOpen ] = useState(false);
   const [ errorOpen, setErrorOpen ] = useState(false);
@@ -183,7 +183,7 @@ function DeleteButton(props) {
       </Dialog>
       <Dialog open={open} onClose={closeDialog}>
         <DialogTitle disableTypography>
-        <Typography variant="h6">Delete {entryName}{deleteRecursive ? " and dependent items": null }</Typography>
+        <Typography variant="h6">Delete {entry Label ? entryLabel.concat(' ') : ''}{entryName}{deleteRecursive ? " and dependent items": null }</Typography>
         </DialogTitle>
         <DialogContent>
             <Typography variant="body1">{dialogMessage}</Typography>
