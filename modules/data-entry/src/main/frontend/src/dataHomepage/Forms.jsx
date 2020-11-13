@@ -19,12 +19,14 @@
 import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Form from "../questionnaire/Form.jsx";
+import { getHierarchy } from "../questionnaire/Subject.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles } from "@material-ui/core";
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
-import { EntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+
 
 function Forms(props) {
   const { match, location, classes } = props;
@@ -65,14 +67,15 @@ function Forms(props) {
   }
   const columns = [
     {
-      "key": "subject/identifier",
+      "key": "@name",
       "label": "Identifier",
-      "format": EntityIdentifier,
+      "format": getEntityIdentifier,
+      "link": "dashboard+path",
     },
     {
       "key": "",
       "label": "Subject",
-      "format": (row) => (<><Link to={`/content.html${row.subject["@path"]}`}>{row.subject.identifier.concat(' ')}</Link>{row.subject.type.label}</>),
+      "format": (row) => (row.subject ? getHierarchy(row.subject) : ''),
     },
     {
       "key": "questionnaire/title",

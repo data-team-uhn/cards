@@ -24,6 +24,7 @@ import { Link } from 'react-router-dom';
 import moment from "moment";
 
 import Filters from "./Filters.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 import LiveTableStyle from "./tableStyle.jsx";
 
@@ -213,17 +214,11 @@ function LiveTable(props) {
   };
 
   let makeActions = (entry, actions, index) => {
-    let name;
-    if (entry["jcr:primaryType"] === "lfs:Form") {
-      name = `${getNestedValue(entry, "subject/identifier") || "Subject"}: ${getNestedValue(entry, "questionnaire/title") || entry["@name"]}`
-    } else {
-      name = columns ? getNestedValue(entry, columns[0].key) : entry["@name"];
-    }
     let content = actions.map((Action, index) => {
       return <Action
         key={index}
         entryPath={entry["@path"]}
-        entryName={name}
+        entryName={getEntityIdentifier(entry)}
         onComplete={refresh}
         entryType={entryType}
         warning={entry["@referenced"]}

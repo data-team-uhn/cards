@@ -50,13 +50,30 @@ let createQueryURL = (query, type) => {
   return url;
 }
 
+let defaultCreator = (node) => {
+  return {to: "/content.html" + node["@path"]}
+}
+
 // Recursive function to get a flat list of parents
-export function getHierarchy (node, RenderComponent, propsCreator, includeSubjectType) {
-  let props = propsCreator(node);
-  let output = <React.Fragment>{includeSubjectType && node.type.label} <RenderComponent {...props}>{node.identifier}</RenderComponent></React.Fragment>;
+export function getHierarchy (node, RenderComponent, propsCreator) {
+  let HComponent = RenderComponent || Link;
+  let hpropsCreator = propsCreator || defaultCreator;
+  let props = hpropsCreator(node);
+  let output = <React.Fragment>{node.type.label} <HComponent {...props}>{node.identifier}</HComponent></React.Fragment>;
   if (node["parents"]) {
-    let ancestors = getHierarchy(node["parents"], RenderComponent, propsCreator, includeSubjectType);
+    let ancestors = getHierarchy(node["parents"], HComponent, propsCreator);
     return <React.Fragment>{ancestors} / {output}</React.Fragment>
+  } else {
+    return output;
+  }
+}
+
+// Recursive function to get a flat list of parents with no links and subject labels
+export function getTextHierarchy (node) {
+  let output = node.identifier;
+  if (node["parents"]) {
+    let ancestors = getTextHierarchy(node["parents"]);
+    return `${ancestors} / ${output}`;
   } else {
     return output;
   }
@@ -241,7 +258,7 @@ function SubjectMember (props) {
   if (level == 1) {buttonSize = "medium"; headerStyle="h4"};
   if (level > 1) {buttonSize = "small"; headerStyle="h5"};
 
-  let parentDetails = data && data['parents'] && getHierarchy(data['parents'], Link, (node) => ({to: "/content.html" + node["@path"]}), true);
+  let parentDetails = data && data['parents'] && getHierarchy(data['parents'], Link, (node) => ({to: "/content.html" + node["@path"]}));
 
   return (
     <Grid item xs={12}>

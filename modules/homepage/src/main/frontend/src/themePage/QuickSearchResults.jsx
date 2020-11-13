@@ -19,7 +19,7 @@
 import React from "react";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import HeaderStyle from "../headerStyle.jsx";
-import { EntityIdentifier } from "./EntityIdentifier.jsx";
+import { getEntityIdentifier } from "./EntityIdentifier.jsx";
 
 import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -59,11 +59,21 @@ function QuickSearchResults(props) {
     ) || null
   }
 
+  // Display the result identifier with link to result section
+  function QuickSearchIdentifier(resultData) {
+    let anchorPath = resultData[LFS_QUERY_MATCH_KEY]?[LFS_QUERY_MATCH_PATH_KEY] : '';
+    let fullPath = `/content.html${resultData["@path"]}#${anchorPath}`;
+    if (resultData["jcr:primaryType"] == "lfs:Questionnaire") {
+      fullPath = `/content.html/admin${resultData["@path"]}#${anchorPath}`;
+    }
+    return (<Link to={fullPath}>{getEntityIdentifier(resultData)}</Link>);
+  }
+
   const columns = [
     {
       "key": "",
       "label": "Identifier",
-      "format": EntityIdentifier,
+      "format": QuickSearchIdentifier,
     },
     {
       "key": "jcr:created",

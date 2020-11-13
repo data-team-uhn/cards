@@ -17,34 +17,36 @@
 //  under the License.
 //
 import React from "react";
-import { getHierarchy } from "../questionnaire/Subject.jsx";
+import { getTextHierarchy } from "../questionnaire/Subject.jsx";
 
 import { Link } from "react-router-dom";
 
-// Location of the quick search result metadata in a node, outlining what needs to be highlighted
-const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
-const LFS_QUERY_MATCH_PATH_KEY = "@path";
-
-// Display the identifier column of the result item wrt item primaryType
-export function EntityIdentifier(row) {
-    const anchorPath = row[LFS_QUERY_MATCH_KEY]?[LFS_QUERY_MATCH_PATH_KEY] : '';
+// Get the identifier of the item wrt item primaryType
+export function getEntityIdentifier(row) {
     switch (row["jcr:primaryType"]) {
-      // for forms (display full hierarchy for subjects with parents)
+      // form identifier should be displayed as "123 / 1 : quesionaire title" as one solid link to the form
       case "lfs:Form":
-        let questionnaire = (row.questionnaire?.title?.concat(' ') || '');
-        let subjectHierarchy = row.subject ? getHierarchy(row.subject, Link, (node) => ({to: "/content.html" + node["@path"]})) : '';
-        let formpath = `/content.html${row["@path"]}#${anchorPath}`;
-        return (<React.Fragment>{subjectHierarchy} : <Link to={formpath}>{questionnaire}</Link></React.Fragment>)
-      // for subjects (display full hierarchy for subjects with parents)
+        let questionnaire = row.questionnaire?.title || row["@name"];
+        let subjectHierarchy = row.subject ? getTextHierarchy(row.subject).concat(' : ') : '';
+        return `${subjectHierarchy}${questionnaire}`;
+        // subject id should include all parents if any (e.g. "1003 / 1 / a")
+        // with one link on the whole id, leading to the last subject (e.g. a)
       case "lfs:Subject":
-        return getHierarchy(row, Link, (node) => ({to: "/content.html" + node["@path"]}));
+        return getTextHierarchy(row);
       case "lfs:Questionnaire":
-        let fullpath = `/content.html/admin${row["@path"]}#${anchorPath}`;
-        return (<Link to={fullpath}>{row.title}</Link>);
+        return row.title;
       // default covers other cases
       default:
-        let id = row.subject?.identifier || row["@name"] || anchor;
-        let path = `/content.html${row["@path"]}#${anchorPath}`;
-        return (<Link to={path}>{id}</Link>);
+        return row.subject?.identifier || row["@name"] || anchor;
     }
+}
+
+// Display the identifier of the item as a link wrt item primaryType
+export function getEntityIdentifierLink(row) {
+    let id = getEntityIdentifier(row);
+    let path = `/content.html${row["@path"]}`;
+    if (row["jcr:primaryType"] == "lfs:Questionnaire") {
+      path = `/content.html/admin${row["@path"]}`;
+    }
+    return (<Link to={path}>{id}</Link>);
 }
