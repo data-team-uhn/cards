@@ -18,7 +18,8 @@
 //
 import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
-import { Subject, getHierarchy } from "../questionnaire/Subject.jsx";
+import Subject from "../questionnaire/Subject.jsx";
+import { getHierarchy } from "../questionnaire/Subject.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
