@@ -221,6 +221,7 @@ function LiveTable(props) {
         entryName={getEntityIdentifier(entry)}
         onComplete={refresh}
         entryType={entryType}
+        entryLabel={entry["jcr:primaryType"] == "lfs:Subject" ? entry.type?.label : ''}
         warning={entry["@referenced"]}
         buttonClass={classes.actionButton}
         admin={admin} />
