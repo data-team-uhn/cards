@@ -211,16 +211,19 @@ class SignUpForm extends React.Component {
           this.props.handleLogin && this.props.handleLogin(false);
           response.json().then((data) => {
             let errMsg = data?.error?.message;
+            errMsg = (errMsg ? errMsg : "Unknown Error");
             this.setState({
               errorOpen: true,
-              errorMsg: (errMsg ? errMsg : "Unknown Error")
+              errorMsg: errMsg
             });
+            this.form.setFieldError("username", errMsg);
           })
           .catch(error => {
             this.setState({
               errorOpen: true,
               errorMsg: "Unknown Error (JSON Parsing Failed)"
             });
+            this.form.setFieldError("username", "Unknown Error (JSON Parsing Failed)");
           });
           throw Error(response.statusText);
         }
@@ -230,7 +233,6 @@ class SignUpForm extends React.Component {
       })
       .catch(error => {
         console.log(error);
-        this.form.setFieldError("username", "Looks like this user is taken. Please try a different username.");
         this.props.handleLogin && this.props.handleLogin(false);
       });
   }
@@ -274,7 +276,7 @@ class SignUpForm extends React.Component {
             validationSchema={validationSchema}
             onSubmit={this.submitValues}
             onReset={this.props.handleExit}
-            ref={el => (this.form = el)}
+            innerRef={el => (this.form = el)}
           />
         </div>
       </React.Fragment>
