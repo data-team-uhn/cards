@@ -58,25 +58,36 @@ let Fields = (props) => {
     return str.charAt(0).toUpperCase() + str.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
   }
 
-  let displayStaticField = (key, value) => {
+  let displayStaticField = (key) => {
     return (
       <Grid container key={key} alignItems='flex-start'spacing={2} direction="row">
         <Grid item xs={4}>
           <Typography variant="subtitle2">{formatString(key)}:</Typography>
         </Grid>
         <Grid item xs={8}>
-          { Array.isArray(data[key]) ? data[key].map((item) => <Typography>{item}</Typography>)
-                                     : <Typography>{data[key]}</Typography>
+          { Array.isArray(data[key]) ? data[key].map((item) => <Typography>{`${item}`}</Typography>)
+                                     : <Typography>{`${data[key]}`}</Typography>
           }
         </Grid>
       </Grid>
     );
   };
 
+  let getAllKeys = (nestedObject) => {
+     let keys = Object.assign({}, nestedObject);
+     Object.entries(nestedObject).map(([k, v]) => {
+       if (typeof(v) == 'object' && !Array.isArray(v)) {
+           Object.assign(keys, getAllKeys(v));
+        }
+     });
+     Object.keys(keys).map(k => keys[k] = k);
+     return keys;
+  };
+
   return edit ? 
     Object.entries(JSON).map(([key, value]) => displayEditField(key, value))
     :
-    Object.entries(JSON).map(([key, value]) => (data[key] && displayStaticField(key, value)));
+    Object.keys(getAllKeys(JSON)).map(key => (data[key] ? displayStaticField(key) : ''));
 }
 
 Fields.propTypes = {
