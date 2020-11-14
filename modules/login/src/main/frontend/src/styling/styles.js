@@ -66,6 +66,15 @@ const styles = theme => ({
   dialogTitle: {
     padding: theme.spacing(2,0,2,3)
   },
+  errorDialogTitle: {
+    marginRight: theme.spacing(5)
+  },
+  errorCloseButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500]
+  },
   errorMessage: {
     background: theme.palette.error.dark,
     padding: theme.spacing(1, 2),

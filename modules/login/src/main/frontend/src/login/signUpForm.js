@@ -19,11 +19,16 @@
 import React from 'react';
 import {
     Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    IconButton,
     TextField,
     Tooltip,
     Typography,
     withStyles
 } from '@material-ui/core';
+import { Close } from "@material-ui/icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -145,6 +150,11 @@ class SignUpForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      errorOpen: false,
+      errorMsg: ""
+    };
+
     this.submitValues = this.submitValues.bind(this);
   }
 
@@ -199,6 +209,22 @@ class SignUpForm extends React.Component {
         // Therefore, you must handle the error code yourself.
         if (!response.ok) {
           this.props.handleLogin && this.props.handleLogin(false);
+          response.json().then((data) => {
+            let errMsg = data?.error?.message;
+            errMsg = (errMsg ? errMsg : "Unknown Error");
+            this.setState({
+              errorOpen: true,
+              errorMsg: errMsg
+            });
+            this.form.setFieldError("username", errMsg);
+          })
+          .catch(error => {
+            this.setState({
+              errorOpen: true,
+              errorMsg: "Unknown Error (JSON Parsing Failed)"
+            });
+            this.form.setFieldError("username", "Unknown Error (JSON Parsing Failed)");
+          });
           throw Error(response.statusText);
         }
 
@@ -207,7 +233,6 @@ class SignUpForm extends React.Component {
       })
       .catch(error => {
         console.log(error);
-        this.form.setFieldError("username", "Looks like this user is taken. Please try a different username.");
         this.props.handleLogin && this.props.handleLogin(false);
       });
   }
@@ -233,6 +258,17 @@ class SignUpForm extends React.Component {
     // Hooks only work inside functional components
     return (
       <React.Fragment>
+        <Dialog open={this.state.errorOpen} onClose={() => this.setState({errorOpen: false})}>
+          <DialogTitle disableTypography>
+            <Typography variant="h6" color="error" className={classes.errorDialogTitle}>Error</Typography>
+            <IconButton onClick={() => this.setState({errorOpen: false})} className={classes.errorCloseButton}>
+              <Close />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <Typography variant="body1">{this.state.errorMsg}</Typography>
+          </DialogContent>
+        </Dialog>
         <div className={classes.main}>
           <Formik
             render={props => <FormFieldsComponent {...props} />}
@@ -240,7 +276,7 @@ class SignUpForm extends React.Component {
             validationSchema={validationSchema}
             onSubmit={this.submitValues}
             onReset={this.props.handleExit}
-            ref={el => (this.form = el)}
+            innerRef={el => (this.form = el)}
           />
         </div>
       </React.Fragment>
