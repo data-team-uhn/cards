@@ -183,7 +183,7 @@ function DeleteButton(props) {
       </Dialog>
       <Dialog open={open} onClose={closeDialog}>
         <DialogTitle disableTypography>
-        <Typography variant="h6">Delete {entry.Label ? entryLabel.concat(' ') : ''}{entryName}{deleteRecursive ? " and dependent items": null }</Typography>
+        <Typography variant="h6">Delete {entryLabel ? entryLabel.concat(' ') : ''}{entryName}{deleteRecursive ? " and dependent items": null }</Typography>
         </DialogTitle>
         <DialogContent>
             <Typography variant="body1">{dialogMessage}</Typography>
