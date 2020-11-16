@@ -19,11 +19,14 @@
 import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Form from "../questionnaire/Form.jsx";
+import { getHierarchy } from "../questionnaire/Subject.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles } from "@material-ui/core";
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+
 
 function Forms(props) {
   const { match, location, classes } = props;
@@ -66,8 +69,13 @@ function Forms(props) {
     {
       "key": "@name",
       "label": "Identifier",
-      "format": "string",
+      "format": getEntityIdentifier,
       "link": "dashboard+path",
+    },
+    {
+      "key": "",
+      "label": "Subject",
+      "format": (row) => (row.subject ? getHierarchy(row.subject) : ''),
     },
     {
       "key": "questionnaire/title",
@@ -75,20 +83,14 @@ function Forms(props) {
       "format": "string",
     },
     {
-      "key": "subject/identifier",
-      "label": "Subject",
-      "format": "string",
-      "link": "dashboard+field:subject/@path",
+      "key": "jcr:created",
+      "label": "Created on",
+      "format": "date:YYYY-MM-DD HH:mm",
     },
     {
       "key": "jcr:createdBy",
       "label": "Created by",
       "format": "string",
-    },
-    {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
     },
   ]
   const actions = [

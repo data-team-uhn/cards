@@ -19,13 +19,43 @@
 import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Subject from "../questionnaire/Subject.jsx";
+import { getHierarchy } from "../questionnaire/Subject.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import { getHierarchy } from "../questionnaire/Subject.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import DeleteButton from "./DeleteButton.jsx";
+
+const tableColumns = [
+    {
+      "key": "identifier",
+      "label": "Identifier",
+      "format": getEntityIdentifier,
+      "link": "dashboard+path",
+    },
+    {
+      "key": "type/label",
+      "label": "Type",
+      "format": "string",
+    },
+    {
+      "key": "",
+      "label": "Parents",
+      "format": (row) => (row['parents'] ? getHierarchy(row['parents']) : ''),
+    },
+    {
+      "key": "jcr:created",
+      "label": "Created on",
+      "format": "date:YYYY-MM-DD HH:mm",
+    },
+    {
+      "key": "jcr:createdBy",
+      "label": "Created by",
+      "format": "string",
+    },
+  ];
 
 function Subjects(props) {
 
@@ -35,30 +65,23 @@ function Subjects(props) {
   let [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   // When a new subject is added, state will be updated and trigger a livetable refresh
   const [ requestFetchData, setRequestFetchData ] = useState(0);
+  // subject types configured on the system
+  let [ subjectTypes, setSubjectTypes ] = React.useState([]);
+  let [ columns, setColumns ] = React.useState(tableColumns);
 
-  const columns = [
-    {
-      "key": "identifier",
-      "label": "Identifier",
-      "format": "string",
-      "link": "dashboard+field:@path",
-    },
-    {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
-    },
-    {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
-    },
-    {
-      "key": "parents",
-      "label": "Hierarchy",
-      "format": (parent) => (parent ? getHierarchy(parent, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"})) : "No parents"),
-    },
-  ]
+  // get subject types configured on the system
+  if (subjectTypes.length === 0) {
+    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType'`))
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        let optionTypes = Array.from(json["rows"]);
+        setSubjectTypes(optionTypes);
+        if (optionTypes.length <= 1) {
+          setColumns(columns.splice(1, 2));
+        }
+      });
+  }
+
   const actions = [
     DeleteButton
   ]

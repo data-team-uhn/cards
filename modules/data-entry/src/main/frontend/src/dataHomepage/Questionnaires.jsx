@@ -24,6 +24,7 @@ import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialo
 import { Button, Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function Questionnaires(props) {
   const { classes } = props;
@@ -37,19 +38,19 @@ function Questionnaires(props) {
     {
       "key": "title",
       "label": "Title",
-      "format": "string",
+      "format": getEntityIdentifier,
       "link": "dashboard+path",
+    },
+    {
+      "key": "jcr:created",
+      "label": "Created on",
+      "format": "date:YYYY-MM-DD HH:mm",
     },
     {
       "key": "jcr:createdBy",
       "label": "Created by",
       "format": "string",
     },
-    {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
-    }
   ]
   const actions = [
     DeleteButton,

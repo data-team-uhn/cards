@@ -24,6 +24,7 @@ import { Link } from 'react-router-dom';
 import moment from "moment";
 
 import Filters from "./Filters.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 import LiveTableStyle from "./tableStyle.jsx";
 
@@ -179,7 +180,7 @@ function LiveTable(props) {
 
     // Handle display formatting
     if (column.format && typeof column.format === "function") {
-      content = column.format(content);
+      content = column.format(entry);
     } else if (column.format && column.format.startsWith('date')) {
       // The format can be either just "date", in which case a default date format is used, or "date:FORMAT".
       // Cutting after the fifth char means that either we skip "date:" and read the format,
@@ -213,19 +214,14 @@ function LiveTable(props) {
   };
 
   let makeActions = (entry, actions, index) => {
-    let name;
-    if (entry["jcr:primaryType"] === "lfs:Form") {
-      name = `${getNestedValue(entry, "subject/identifier") || "Subject"}: ${getNestedValue(entry, "questionnaire/title") || entry["@name"]}`
-    } else {
-      name = columns ? getNestedValue(entry, columns[0].key) : entry["@name"];
-    }
     let content = actions.map((Action, index) => {
       return <Action
         key={index}
         entryPath={entry["@path"]}
-        entryName={name}
+        entryName={getEntityIdentifier(entry)}
         onComplete={refresh}
         entryType={entryType}
+        entryLabel={entry["jcr:primaryType"] == "lfs:Subject" ? entry.type?.label : ''}
         warning={entry["@referenced"]}
         buttonClass={classes.actionButton}
         admin={admin} />

@@ -19,6 +19,7 @@
 import React from "react";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import HeaderStyle from "../headerStyle.jsx";
+import { getEntityIdentifier } from "./EntityIdentifier.jsx";
 
 import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -58,47 +59,31 @@ function QuickSearchResults(props) {
     ) || null
   }
 
-  let defaultRedirect = (row) => {
-    // Redirect using React-router
-    const anchorPath = row[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY];
-    let path = (row["jcr:primaryType"] == "lfs:Questionnaire") ? "/content.html/admin" : "/content.html";
-    if (row["@path"]) {
-        path = `${path}${row["@path"]}#${anchorPath}`;
+  // Display the result identifier with link to result section
+  function QuickSearchIdentifier(resultData) {
+    let anchorPath = resultData[LFS_QUERY_MATCH_KEY]?[LFS_QUERY_MATCH_PATH_KEY] : '';
+    let fullPath = `/content.html${resultData["@path"]}#${anchorPath}`;
+    if (resultData["jcr:primaryType"] == "lfs:Questionnaire") {
+      fullPath = `/content.html/admin${resultData["@path"]}#${anchorPath}`;
     }
-    return path;
-  }
-
-  let identifierText = (row) => {
-    let result;
-    switch (row["jcr:primaryType"]) {
-      case "lfs:Form":
-        let questionnaire = (row.questionnaire?.title?.concat(' ') || '')
-          + (row["jcr:primaryType"]?.replace(/lfs:/,"") || '');
-        result = (row.subject?.identifier)
-          ? `${row.subject.identifier}: ${questionnaire}`
-          : `Unknown Subject: ${questionnaire}`;
-        break;
-      default:
-        result = row.subject?.identifier || row["@name"] || anchor;
-    }
-    return result;
+    return (<Link to={fullPath}>{getEntityIdentifier(resultData)}</Link>);
   }
 
   const columns = [
     {
       "key": "",
       "label": "Identifier",
-      "format": (resultData) => (<Link to={defaultRedirect(resultData)}>{identifierText(resultData)}</Link>),
-    },
-    {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
+      "format": QuickSearchIdentifier,
     },
     {
       "key": "jcr:created",
       "label": "Created on",
       "format": "date:YYYY-MM-DD HH:mm",
+    },
+    {
+      "key": "jcr:createdBy",
+      "label": "Created by",
+      "format": "string",
     },
     {
       "key": "",

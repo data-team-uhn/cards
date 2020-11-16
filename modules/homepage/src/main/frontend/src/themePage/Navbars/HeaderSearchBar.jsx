@@ -24,6 +24,7 @@ import { Avatar, ListItemText, ListItemAvatar, Typography, withStyles }  from "@
 import DescriptionIcon from "@material-ui/icons/Description";
 import HeaderStyle from "../../headerStyle.jsx";
 import SearchBar, { DEFAULT_QUERY_URL, DEFAULT_MAX_RESULTS } from "../../SearchBar.jsx"; // In the commons module
+import { getEntityIdentifierLink } from "../EntityIdentifier.jsx";
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
 const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
@@ -45,9 +46,9 @@ function HeaderSearchBar(props) {
     return resultData && (
       <div>
         <Typography variant="body2" color="textSecondary">
-          {(resultData.questionnaire?.title?.concat(' ') || '') + (resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')}
+          {(resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')}
         </Typography>
-        {resultData.subject?.identifier || resultData["@name"] || ''}
+        {getEntityIdentifierLink(resultData)}
       </div>
     ) || null
   }
