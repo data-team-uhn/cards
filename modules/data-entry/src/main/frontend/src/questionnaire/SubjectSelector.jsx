@@ -166,8 +166,7 @@ function UnstyledSelectParentDialog (props) {
   const { classes, childType, continueDisabled, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
   const COLUMNS = [
-    { title: 'Subject', field: 'identifier' },
-    { title: 'Hierarchy', field: 'hierarchy' },
+    { title: 'Subject', field: 'hierarchy' },
   ];
 
   let initialized = parentType && childType;
@@ -192,7 +191,7 @@ function UnstyledSelectParentDialog (props) {
                     .then(result => {
                       return {
                         data: result["rows"].map((row) => ({
-                          hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, ()=>({})) : "No parents",
+                          hierarchy: getHierarchy(rowData, React.Fragment, ()=>({})),
                           ...row
                         })),
                         page: Math.trunc(result["offset"]/result["limit"]),
@@ -749,8 +748,7 @@ function SubjectSelectorList(props) {
   const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject, selectedQuestionnaire, disableProgress,
     currentSubject, theme, ...rest } = props;
   const COLUMNS = [
-    { title: 'Identifier', field: 'identifier' },
-    { title: 'Hierarchy', field: 'hierarchy' },
+    { title: 'Identifier', field: 'hierarchy' },
   ];
   const [ relatedSubjects, setRelatedSubjects ] = useState();
 
@@ -845,7 +843,7 @@ function SubjectSelectorList(props) {
                     (currentSubject && (result['rows'].map((row) => isSubjectRelated(row).includes(currentSubject.type.label)))[0])
                     ? result['rows'].filter((e) => filterRelated(e)) : result["rows"]
                   ).map((row) => ({
-                    hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({})) : "No parents",
+                    hierarchy: getHierarchy(row, React.Fragment, () => ({})),
                     ...row})),
                   page: Math.trunc(result["offset"]/result["limit"]),
                   totalCount: result["totalrows"],
