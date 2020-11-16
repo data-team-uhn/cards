@@ -40,7 +40,7 @@ function QuickSearchResults(props) {
 
   // Display the result identifier with link to result section
   function QuickSearchIdentifier(resultData) {
-    let anchorPath = resultData[LFS_QUERY_MATCH_KEY]?[LFS_QUERY_MATCH_PATH_KEY] : '';
+    let anchorPath = resultData[LFS_QUERY_MATCH_KEY] ? resultData[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY] : '';
     let fullPath = `/content.html${resultData["@path"]}#${anchorPath}`;
     if (resultData["jcr:primaryType"] == "lfs:Questionnaire") {
       fullPath = `/content.html/admin${resultData["@path"]}#${anchorPath}`;
@@ -51,7 +51,7 @@ function QuickSearchResults(props) {
                   {MatchAvatar(resultData, classes)}
                 </ListItemAvatar>
                 <ListItemText
-                  primary={(<Link to={fullPath}>{getEntityIdentifier(resultData)}</Link>)}
+                  primary={(<a href={fullPath}>{getEntityIdentifier(resultData)}</a>)}
                 />
               </ListItem>
             </>

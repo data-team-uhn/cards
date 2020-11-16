@@ -48,5 +48,5 @@ export function getEntityIdentifierLink(row) {
     if (row["jcr:primaryType"] == "lfs:Questionnaire") {
       path = `/content.html/admin${row["@path"]}`;
     }
-    return (<Link to={path}>{id}</Link>);
+    return (<a href={path}>{id}</a>);
 }
