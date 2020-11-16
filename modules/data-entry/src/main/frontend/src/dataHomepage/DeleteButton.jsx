@@ -100,7 +100,8 @@ function DeleteButton(props) {
         setErrorMessage(`${defaultErrorMessage} ${json["status.message"]}`);
         openError();
       } else {
-        setDialogMessage(`${json["status.message"].replace("This item", entryName)}`);
+        let label = entryLabel ? entryLabel.concat(' ') : '';
+        setDialogMessage(`${json["status.message"].replace("This item", label + entryName)}`);
         setDialogAction(`Would you like to delete ${entryName} and all items that reference it?`);
         setDeleteRecursive(true);
         openDialog();
