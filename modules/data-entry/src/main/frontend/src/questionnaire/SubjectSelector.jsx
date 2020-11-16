@@ -191,9 +191,8 @@ function UnstyledSelectParentDialog (props) {
                     .then(result => {
                       return {
                         data: result["rows"].map((row) => ({
-                          hierarchy: getHierarchy(rowData, React.Fragment, ()=>({})),
-                          ...row
-                        })),
+                          hierarchy: getHierarchy(row, React.Fragment, ()=>({})),
+                          ...row })),
                         page: Math.trunc(result["offset"]/result["limit"]),
                         totalCount: result["totalrows"],
                       }}
@@ -844,7 +843,7 @@ function SubjectSelectorList(props) {
                     ? result['rows'].filter((e) => filterRelated(e)) : result["rows"]
                   ).map((row) => ({
                     hierarchy: getHierarchy(row, React.Fragment, () => ({})),
-                    ...row})),
+                    ...row })),
                   page: Math.trunc(result["offset"]/result["limit"]),
                   totalCount: result["totalrows"],
                 }}
