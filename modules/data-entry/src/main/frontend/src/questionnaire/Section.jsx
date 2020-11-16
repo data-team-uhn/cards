@@ -46,8 +46,8 @@ const MIN_HEADING_LEVEL = 4;
  * @param {String} label Label of the section
  * @param {int} idx Zero-indexed section number
  */
-function createTitle(label, idx) {
-  return (label + " #" + (idx+1));
+function createTitle(label, idx, isRecurrent) {
+  return (`${label}${isRecurrent ? (" #" + (idx+1)) : ""}`);
 }
 
 /**
@@ -64,12 +64,13 @@ function createTitle(label, idx) {
  */
 function Section(props) {
   const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive } = props;
+  const isRecurrent = sectionDefinition['recurrent'];
 
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
   const titleEl = sectionDefinition["label"] &&
     ((idx, uuid) =>
       <Typography variant={headerVariant} className={uuid == selectedUUID ? classes.highlightedTitle: undefined}>
-        {createTitle(sectionDefinition["label"], idx)}
+        {createTitle(sectionDefinition["label"], idx, isRecurrent)}
       </Typography>
     );
   const descEl = sectionDefinition["description"] &&
@@ -79,7 +80,6 @@ function Section(props) {
       </Typography>
     );
   const hasHeader = titleEl || descEl;
-  const isRecurrent = sectionDefinition['recurrent'];
 
   const [ instanceLabels, setInstanceLabels ] = useState(
     // If we already exist from existingAnswer, our labels are the first element
