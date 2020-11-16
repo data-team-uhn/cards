@@ -20,54 +20,17 @@ import PropTypes from "prop-types";
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-import { Avatar, ListItemText, ListItemAvatar, Typography, withStyles }  from "@material-ui/core";
-import DescriptionIcon from "@material-ui/icons/Description";
+import { ListItemText, ListItemAvatar, Typography, withStyles }  from "@material-ui/core";
 import HeaderStyle from "../../headerStyle.jsx";
-import SearchBar, { DEFAULT_QUERY_URL, DEFAULT_MAX_RESULTS } from "../../SearchBar.jsx"; // In the commons module
+import SearchBar from "../../SearchBar.jsx"; // In the commons module
 import { getEntityIdentifierLink } from "../EntityIdentifier.jsx";
+import { QuickSearchMatch, MatchAvatar } from "./QuickSearchIdentifier.jsx";
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
 const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
-// Properties of the quick search result metadata
-const LFS_QUERY_QUESTION_KEY = "question";
-const LFS_QUERY_MATCH_BEFORE_KEY = "before";
-const LFS_QUERY_MATCH_TEXT_KEY = "text";
-const LFS_QUERY_MATCH_AFTER_KEY = "after";
-const LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
 
 function HeaderSearchBar(props) {
   const { classes, doNotEscapeQuery, ...rest } = props;
-
-  // Generate a human-readable info about the resource (form) matching the query:
-  // * questionnaire title (if available) and result type, followed by
-  // * the form's subject name (if available) or the resource's uuid
-  function QuickSearchResultHeader(props) {
-    const {resultData} = props;
-    return resultData && (
-      <div>
-        <Typography variant="body2" color="textSecondary">
-          {(resultData["jcr:primaryType"]?.replace(/lfs:/,"") || '')}
-        </Typography>
-        {getEntityIdentifierLink(resultData)}
-      </div>
-    ) || null
-  }
-
-  // Display how the query matched the result
-  function QuickSearchMatch(props) {
-    const {matchData} = props;
-    // Adjust the question text to reflect the notes, if the match was on the notes
-    let questionText = matchData[LFS_QUERY_QUESTION_KEY] + (matchData[LFS_QUERY_MATCH_NOTES_KEY] ? " / Notes" : "");
-    return matchData && (
-      <React.Fragment>
-        <span className={classes.queryMatchKey}>{questionText}</span>
-        <span className={classes.queryMatchSeparator}>: </span>
-        <span className={classes.queryMatchBefore}>{matchData[LFS_QUERY_MATCH_BEFORE_KEY]}</span>
-        <span className={classes.highlightedText}>{matchData[LFS_QUERY_MATCH_TEXT_KEY]}</span>
-        <span className={classes.queryMatchAfter}>{matchData[LFS_QUERY_MATCH_AFTER_KEY]}</span>
-      </React.Fragment>
-    ) || null
-  }
 
   // Display a quick search result
   // If it's a resource, show avatar, category, and title
@@ -75,13 +38,15 @@ function HeaderSearchBar(props) {
   function quickSearchResult(props) {
     let { resultData } = props;
     return <React.Fragment>
-      <ListItemAvatar><Avatar className={classes.searchResultAvatar}><DescriptionIcon /></Avatar></ListItemAvatar>
-      <ListItemText
-        primary={(<QuickSearchResultHeader resultData={resultData} />)}
-        secondary={(<QuickSearchMatch matchData={resultData[LFS_QUERY_MATCH_KEY]} />)}
-        className={classes.dropdownItem}
-      />
-    </React.Fragment>
+              <ListItemAvatar>
+                {MatchAvatar(resultData, classes)}
+              </ListItemAvatar>
+              <ListItemText
+                primary={getEntityIdentifierLink(resultData)}
+                secondary={QuickSearchMatch(resultData[LFS_QUERY_MATCH_KEY], classes)}
+                className={classes.dropdownItem}
+              />
+           </React.Fragment>
   }
 
   return(
