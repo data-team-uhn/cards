@@ -42,6 +42,11 @@ function Questionnaires(props) {
       "link": "dashboard+path",
     },
     {
+      "key": "description",
+      "label": "Description",
+      "format": "string",
+    },
+    {
       "key": "jcr:created",
       "label": "Created on",
       "format": "date:YYYY-MM-DD HH:mm",
