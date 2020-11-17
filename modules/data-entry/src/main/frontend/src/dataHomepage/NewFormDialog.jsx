@@ -23,6 +23,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CircularProgress, Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Input, List} from "@material-ui/core";
 import { ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import AssignmentIcon from "@material-ui/icons/Assignment";
 
 import SubjectSelectorList, { NewSubjectDialog, SubjectListItem, parseToArray } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -244,9 +245,10 @@ function NewFormDialog(props) {
                     onClick={() => {setSelectedQuestionnaire(questionnaire)}}
                     disabled={isFetching}
                     selected={questionnaire["jcr:uuid"] === selectedQuestionnaire?.["jcr:uuid"]}
+                    avatarIcon={AssignmentIcon}
                     >
                     <div className={`${atMax ? classes.questionnaireDisabledListItem : classes.questionnaireListItem}`}>
-                      <ListItemText primary={questionnaire["title"]} />
+                      <ListItemText primary={questionnaire["title"]} secondary={questionnaire["description"]}/>
                     </div>
                   </SubjectListItem>);
                 })}
