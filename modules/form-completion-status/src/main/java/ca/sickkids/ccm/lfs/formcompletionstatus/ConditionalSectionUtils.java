@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -144,12 +145,12 @@ public final class ConditionalSectionUtils
     }
 
     /**
-     * Returns the first NodeBuilder with a question value equal to questionUUID that is a child of the parent
+     * Returns the first NodeBuilder with a question value equal to questionUUID that is a descendant of the parent
      * node. If no such node can be found, null is returned.
      *
      * @param parent the NodeBuilder to search through its children
      * @param questionUUID the UUID String for which the child's question property must be equal to
-     * @return the first NodeBuilder with a question value equal to questionUUID that is a child of the parent
+     * @return the first NodeBuilder with a question value equal to questionUUID that is a descendant of the parent
      *         NodeBuilder, or null if such a node does not exist.
      */
     private static NodeBuilder getAnswerForQuestion(final NodeBuilder parent, final String questionUUID)
@@ -161,6 +162,13 @@ public final class ConditionalSectionUtils
             if (child.hasProperty(PROP_QUESTION)
                 && questionUUID.equals(child.getProperty(PROP_QUESTION).getValue(Type.STRING))) {
                 return child;
+            }
+            // If this is an answer section, look for the answer in it, and return if found
+            if ("lfs:AnswerSection".equals(child.getName("jcr:primaryType"))) {
+                NodeBuilder sectionResult = getAnswerForQuestion(child, questionUUID);
+                if (sectionResult != null) {
+                    return sectionResult;
+                }
             }
         }
         return null;
@@ -370,8 +378,11 @@ public final class ConditionalSectionUtils
         final Node sectionNode, final NodeBuilder form) throws RepositoryException
     {
         String key = sanitizeNodeName(operand.getProperty(PROP_VALUE).getValues()[0].getString());
-        final Node questionnaire = sectionNode.getParent();
-        final Node question = questionnaire.getNode(key);
+        final Node questionnaire = getQuestionnaireForSection(sectionNode);
+        final Node question = getQuestionWithName(questionnaire, key);
+        if (question == null) {
+            return null;
+        }
         final String questionUUID = question.getIdentifier();
         // Get the node from the Form containing the answer to keyNode
         final NodeBuilder answer = getAnswerForQuestion(form, questionUUID);
@@ -379,6 +390,57 @@ public final class ConditionalSectionUtils
             return null;
         }
         return answer.getProperty(PROP_VALUE);
+    }
+
+    /**
+     * Retrieves for the Questionnaire that a Section belongs to. This is usually the parent node, but in the case of a
+     * nested section, it may be higher up the ancestors chain.
+     *
+     * @param section the Section whose Questionnaire to retrieve
+     * @return a Questionnaire node, or {@code null} if navigating the tree fails
+     */
+    private static Node getQuestionnaireForSection(final Node section)
+    {
+        Node result = section;
+        try {
+            while (section != null && !"lfs:Questionnaire".equals(result.getPrimaryNodeType().getName())) {
+                result = result.getParent();
+            }
+        } catch (RepositoryException e) {
+            LOGGER.warn("Unexpected error looking up the questionnaire: {}", e.getMessage(), e);
+            return null;
+        }
+        return result;
+    }
+
+    /**
+     * Retrieves the Question node with the given name. This is needed to get from a simple question name, like
+     * {@code "gender"}, to the JCR UUID used in the actual reference from the answer to the question.
+     *
+     * @param parent the node to (recursively) look in, starting with the Questionnaire
+     * @param questionName the simple question name
+     * @return the Question node, or {@code null} if the question cannot be found
+     */
+    private static Node getQuestionWithName(final Node parent, final String questionName)
+    {
+        try {
+            final NodeIterator children = parent.getNodes();
+            while (children.hasNext()) {
+                final Node childNode = children.nextNode();
+                if (questionName.equals(childNode.getName())) {
+                    return childNode;
+                }
+                if ("lfs:Section".equals(childNode.getPrimaryNodeType().getName())) {
+                    Node sectionResult = getQuestionWithName(childNode, questionName);
+                    if (sectionResult != null) {
+                        return sectionResult;
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to look up question: {}", e.getMessage(), e);
+        }
+        return null;
     }
 
     private static Object getOperandValue(final Node operand, final Node sectionNode, final NodeBuilder form,
