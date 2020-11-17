@@ -74,7 +74,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
 
   let gridClasses = [];
   if (doHighlight) {
-    gridClasses.push(classes.highlightedSection);
+    gridClasses.push(classes.focusedQuestionnaireItem);
   }
   if (pageActive === false) {
     gridClasses.push(classes.hiddenQuestion);
