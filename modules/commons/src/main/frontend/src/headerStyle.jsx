@@ -130,7 +130,10 @@ const headerStyle = theme => ({
   },
   quickSearchResultsTitle: {
     display: "inline-block"
-  }
+  },
+  quickSearchResultsIdentifier: {
+    alignItems: "flex-start"
+  },
 });
 
 export default headerStyle;

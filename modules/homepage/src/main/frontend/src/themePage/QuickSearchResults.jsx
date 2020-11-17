@@ -19,50 +19,25 @@
 import React from "react";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import HeaderStyle from "../headerStyle.jsx";
-import { getEntityIdentifier } from "./EntityIdentifier.jsx";
-import { QuickSearchMatch, MatchAvatar } from "./Navbars/QuickSearchIdentifier.jsx";
+import { QuickSearchMatch, QuickSearchIdentifier } from "./Navbars/QuickSearchIdentifier.jsx";
 
-import { Button, Card, CardContent, CardHeader, ListItem, ListItemText, ListItemAvatar, withStyles } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
 const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
-const LFS_QUERY_MATCH_PATH_KEY = "@path";
 
 function QuickSearchResults(props) {
-
   const { classes } = props;
 
   const url = new URL(window.location);
-
   const anchor = url.searchParams.get('query');
   const allowedResourceTypes = url.searchParams.getAll('allowedResourceTypes');
-
-  // Display the result identifier with link to result section
-  function QuickSearchIdentifier(resultData) {
-    let anchorPath = resultData[LFS_QUERY_MATCH_KEY] ? resultData[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY] : '';
-    let fullPath = `/content.html${resultData["@path"]}#${anchorPath}`;
-    if (resultData["jcr:primaryType"] == "lfs:Questionnaire") {
-      fullPath = `/content.html/admin${resultData["@path"]}#${anchorPath}`;
-    }
-    return (<>
-              <ListItem>
-                <ListItemAvatar>
-                  {MatchAvatar(resultData, classes)}
-                </ListItemAvatar>
-                <ListItemText
-                  primary={(<a href={fullPath}>{getEntityIdentifier(resultData)}</a>)}
-                />
-              </ListItem>
-            </>
-           );
-  }
 
   const columns = [
     {
       "key": "",
       "label": "Identifier",
-      "format": QuickSearchIdentifier,
+      "format": (row) => (<QuickSearchIdentifier resultData={row} hideMatchInfo={true} classes={classes}></QuickSearchIdentifier>),
     },
     {
       "key": "",
@@ -72,7 +47,7 @@ function QuickSearchResults(props) {
     {
       "key": "",
       "label": "Match",
-      "format": (row) => (QuickSearchMatch(row[LFS_QUERY_MATCH_KEY], classes)),
+      "format": (row) => (<QuickSearchMatch matchData={row[LFS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>),
     },
   ]
 

@@ -20,46 +20,25 @@ import PropTypes from "prop-types";
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-import { ListItemText, ListItemAvatar, Typography, withStyles }  from "@material-ui/core";
+import { withStyles }  from "@material-ui/core";
 import HeaderStyle from "../../headerStyle.jsx";
 import SearchBar from "../../SearchBar.jsx"; // In the commons module
-import { getEntityIdentifierLink } from "../EntityIdentifier.jsx";
-import { QuickSearchMatch, MatchAvatar } from "./QuickSearchIdentifier.jsx";
-
-// Location of the quick search result metadata in a node, outlining what needs to be highlighted
-const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
+import { QuickSearchIdentifier } from "./QuickSearchIdentifier.jsx";
 
 function HeaderSearchBar(props) {
-  const { classes, doNotEscapeQuery, ...rest } = props;
-
-  // Display a quick search result
-  // If it's a resource, show avatar, category, and title
-  // Otherwise, if it's a generic entry, simply display the name
-  function quickSearchResult(props) {
-    let { resultData } = props;
-    return <React.Fragment>
-              <ListItemAvatar>
-                {MatchAvatar(resultData, classes)}
-              </ListItemAvatar>
-              <ListItemText
-                primary={getEntityIdentifierLink(resultData)}
-                secondary={QuickSearchMatch(resultData[LFS_QUERY_MATCH_KEY], classes)}
-                className={classes.dropdownItem}
-              />
-           </React.Fragment>
-  }
+  const { classes, ...rest } = props;
 
   return(
     <SearchBar
-      resultConstructor={quickSearchResult}
+      resultConstructor={QuickSearchIdentifier}
+      onSelect={() => {}}
       {...rest}
       />
   );
 }
 
 HeaderSearchBar.propTypes = {
-  invertColors: PropTypes.bool,
-  doNotEscapeQuery: PropTypes.bool
+  invertColors: PropTypes.bool
 }
 
 export default withStyles(HeaderStyle)(withRouter(HeaderSearchBar));

@@ -20,10 +20,16 @@ import PropTypes from "prop-types";
 import React from "react";
 
 import { blue, green, orange } from '@material-ui/core/colors';
-import { Avatar }  from "@material-ui/core";
+import { Avatar, ListItem, ListItemText, ListItemAvatar, }  from "@material-ui/core";
 import DescriptionIcon from "@material-ui/icons/Description";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import { Link } from "react-router-dom";
+import { getEntityIdentifier } from "../EntityIdentifier.jsx";
+
+// Location of the quick search result metadata in a node, outlining what needs to be highlighted
+const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
+const LFS_QUERY_MATCH_PATH_KEY = "@path";
 
 // Properties of the quick search result metadata
 const LFS_QUERY_QUESTION_KEY = "question";
@@ -33,7 +39,8 @@ const LFS_QUERY_MATCH_AFTER_KEY = "after";
 const LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
 
 // Display how the query matched the result
-export function QuickSearchMatch(matchData, classes) {
+export function QuickSearchMatch(props) {
+    const { matchData, classes } = props;
     // Adjust the question text to reflect the notes, if the match was on the notes
     let questionText = matchData[LFS_QUERY_QUESTION_KEY] + (matchData[LFS_QUERY_MATCH_NOTES_KEY] ? " / Notes" : "");
     return matchData && (
@@ -47,7 +54,8 @@ export function QuickSearchMatch(matchData, classes) {
     ) || null
 }
 
-export function MatchAvatar(matchData, classes) {
+function MatchAvatar(props) {
+    const { matchData, classes } = props;
     let icon = <DescriptionIcon />;
     let style = '';
     switch (matchData["jcr:primaryType"]) {
@@ -66,4 +74,24 @@ export function MatchAvatar(matchData, classes) {
         break;
     }
     return <Avatar className={classes.searchResultAvatar} style={style}>{icon}</Avatar>;
+}
+
+  // Display a quick search result identifier with link to result section
+export function QuickSearchIdentifier(props) {
+    let { resultData, hideMatchInfo, classes } = props;
+    let anchorPath = resultData[LFS_QUERY_MATCH_KEY] ? resultData[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY] : '';
+    let fullPath = `/content.html${resultData["@path"]}#${anchorPath}`;
+    if (resultData["jcr:primaryType"] == "lfs:Questionnaire") {
+      fullPath = `/content.html/admin${resultData["@path"]}#${anchorPath}`;
+    }
+    return (<ListItem className={classes.quickSearchResultsIdentifier}>
+              <ListItemAvatar>
+                <MatchAvatar matchData={resultData} classes={classes}></MatchAvatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={(<Link to={fullPath}>{getEntityIdentifier(resultData)}</Link>)}
+                secondary={!hideMatchInfo && (<QuickSearchMatch matchData={resultData[LFS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>)}
+                className={classes.dropdownItem}
+              />
+           </ListItem>)
 }
