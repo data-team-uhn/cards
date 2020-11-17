@@ -275,8 +275,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             final NodeBuilder selectedChild = this.currentNodeBuilder.getChildNode(selectedChildName);
             if (isSection(selectedChild)) {
                 final Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
-                if (!ConditionalSectionUtils.isConditionSatisfied(
-                    resourceSession, selectedChild, this.currentNodeBuilder)) {
+                if (!ConditionalSectionUtils.isConditionSatisfied(resourceSession, selectedChild, this.form)) {
                     continue;
                 }
             }
