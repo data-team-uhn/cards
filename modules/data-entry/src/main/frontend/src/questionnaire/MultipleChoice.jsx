@@ -24,12 +24,15 @@ import Close from "@material-ui/icons/Close";
 import PropTypes from 'prop-types';
 
 import Answer, {LABEL_POS, VALUE_POS} from "./Answer";
+import { useFormReaderContext, useFormWriterContext } from "./FormContext";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 // Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
 const IS_DEFAULT_POS = 2;
 // Sentinel value used for the user-controlled input
 const GHOST_SENTINEL = "custom-input";
+// A command that can be given to the form context to force an update to MultipleChoice questions
+export const UPDATE_SUFFIX = ":UPDATE";
 
  /**
   * Component that displays a Multiple Choice question.
@@ -44,7 +47,7 @@ const GHOST_SENTINEL = "custom-input";
   * @param {bool} error indicates if the current selection is in a state of error
   */
 function MultipleChoice(props) {
-  let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, error, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
@@ -83,6 +86,26 @@ function MultipleChoice(props) {
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio && !ghostSelected;
   let inputEl = null;
+
+  // Listen for changes to our choices
+  let reader = useFormReaderContext();
+  useEffect(() => {
+    if (!((questionName + UPDATE_SUFFIX) in reader)) {
+      return;
+    }
+    let toUpdate = reader[questionName + ":UPDATE"];
+    toUpdate.forEach()
+    selectOption()
+    console.log(reader[questionName + ":UPDATE"]);
+
+    // Remove written data so we don't somehow double-add details
+    let writer = useFormWriterContext();
+    writer((old) => {
+      delete old[questionName + ":UPDATE"];
+      return old;
+    })
+  }, [reader[questionName + ":UPDATE"]])
+  console.log(questionName);
 
   let selectOption = (id, name, checked = false) => {
     // When selecting a new option, remove the ["",""] answer, as it no longer has a purpose
@@ -255,6 +278,7 @@ function MultipleChoice(props) {
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
+          questionName={questionName}
           {...rest}
           />
       </React.Fragment>
@@ -266,6 +290,7 @@ function MultipleChoice(props) {
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
+          questionName={questionName}
           {...rest}
           />
       </React.Fragment>
@@ -311,6 +336,7 @@ function MultipleChoice(props) {
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
+          questionName={questionName}
           {...rest}
           />
       </React.Fragment>
@@ -326,6 +352,7 @@ function MultipleChoice(props) {
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
+          questionName={questionName}
           {...rest}
           />
       </React.Fragment>

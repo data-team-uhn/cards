@@ -49,40 +49,11 @@ function FileResourceQuestion(props) {
   let [ answerPath, setAnswerPath ] = useState("");
 
   let answers = Object.values(uploadedFiles).map((filepath) => [filepath, filepath]);
-  console.log(answers);
 
   // Add files to the pending state
   let addFiles = (files) => {
     upload(files);
-    //setUploadedFiles(fileNames);
   }
-
-  /*
-  // Uploaded files need to be children of our answer node
-  // If the answer node doesn't yet exist, we need to create it
-  let checkOrCreateAnswer = () => {
-    return fetch(answerPath)
-      .then(response => response.ok ? response.json() : Promise.reject({error: response.status}))
-      // If there is no errors, the answer node exists. If there is an error, we need to create it
-      // before attempting to upload anything else
-      .catch(error => {
-        // Create the answer node
-        let formData = new FormData();
-        formData.append('jcr:primaryType', 'lfs:FileResourceAnswer');
-        formData.append('question', props.questionDefinition["jcr:uuid"]);
-
-        console.log("Answer created");
-        return fetch(answerPath, {
-          method: 'POST',
-          body: formData
-        });
-      });
-  }
-
-  if (answerPath != "") {
-    console.log("Here");
-    checkOrCreateAnswer();
-  }*/
 
   // Event handler for selecting files
   let upload = (files) => {
@@ -107,18 +78,23 @@ function FileResourceQuestion(props) {
     for (let i = 0; i < selectedFiles.length; i++) {
       promises.push(uploadSingleFile(selectedFiles[i]));
     }
-    /*selectedFiles.forEach(file => {
-      console.log("V");
-      promises.push(uploadSingleFile(file));
-    });*/
 
     return Promise.all(promises);
   };
 
-  console.log(uploadedFiles);
   let uploadSingleFile = (file) => {
-    console.log(file);
-    console.log("E");
+    // Determine whether or not the filename matches the namePattern (if given)
+    if (namePattern) {
+      // Regex out variable names from the namePattern
+      var varNamesRegex = /@{(.+?)}/g;
+      var varNames = [...namePattern.matchAll(varNamesRegex)];
+      var clearedNamesRegex = namePattern.replaceAll(varNamesRegex, "(.+)");
+      var nameRegex = new RegExp(clearedNamesRegex, "g");
+      var results = file['name'].matchAll(nameRegex);
+
+      // At this point, results contains each match, which all correspond to their respective entry in varNames
+      // But how do I overwrite each of the entries and save them?
+    }
     // TODO: Prevent duplicate filenames
     let data = new FormData();
     data.append(file['name'], file);
@@ -228,7 +204,7 @@ function FileResourceQuestion(props) {
           </span>
         </Button>
       </label>
-      { /*uploadedFiles && uploadedFiles.length > 0 && <span>
+      { uploadedFiles && uploadedFiles.length > 0 && <span>
       <Typography variant="h6" className={classes.fileInfo}>Selected files info</Typography>
 
       { uploadedFiles.map( (file, i) => {
@@ -286,7 +262,7 @@ function FileResourceQuestion(props) {
               </Typography>
             </div>
         ) } ) }
-                  </span> */}
+                  </span>}
       <Answer
         answers={answers}
         questionDefinition={props.questionDefinition}
