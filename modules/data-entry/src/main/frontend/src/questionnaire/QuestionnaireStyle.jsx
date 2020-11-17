@@ -223,7 +223,8 @@ const questionnaireStyle = theme => ({
     formHeader: {
         position: "sticky",
         width: "100%",
-        top: theme.spacing(4),
+        top: 0,
+        paddingTop: theme.spacing(4) + 'px !important',
         backgroundColor: "white",
         opacity: 1,
         zIndex: "1010",
