@@ -530,7 +530,7 @@ public final class ConditionalSectionUtils
     private static boolean evaluateConditionNodeRecursive(final Node conditionNode, final Node sectionNode,
         final NodeBuilder form) throws RepositoryException
     {
-        if ("lfs:ConditionalGroup".equals(conditionNode.getProperty("jcr:primaryType").getString())) {
+        if ("lfs:ConditionalGroup".equals(conditionNode.getPrimaryNodeType().getName())) {
             // Is this an OR or an AND
             final boolean requireAll = conditionNode.getProperty(PROP_REQUIRE_ALL).getBoolean();
             // Evaluate recursively
@@ -550,7 +550,7 @@ public final class ConditionalSectionUtils
                 }
             }
             return downstreamResult;
-        } else if ("lfs:Conditional".equals(conditionNode.getProperty("jcr:primaryType").getString())) {
+        } else if ("lfs:Conditional".equals(conditionNode.getPrimaryNodeType().getName())) {
             final String comparator = conditionNode.getProperty("comparator").getString();
             final Node operandB = conditionNode.getNode("operandB");
             final Node operandA = conditionNode.getNode("operandA");

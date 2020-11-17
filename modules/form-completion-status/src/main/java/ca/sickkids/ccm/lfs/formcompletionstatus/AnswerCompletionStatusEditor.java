@@ -262,8 +262,13 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return false;
     }
 
-    private void summarize()
-        throws RepositoryException
+    /**
+     * Gather all status flags from all the (satisfied) descendants of the current node and store them as the status
+     * flags of the current node.
+     *
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private void summarize() throws RepositoryException
     {
         // Iterate through all children of this node
         final Iterator<String> childrenNames = this.currentNodeBuilder.getChildNodeNames().iterator();
