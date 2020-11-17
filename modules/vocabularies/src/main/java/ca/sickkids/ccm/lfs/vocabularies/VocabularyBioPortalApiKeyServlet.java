@@ -92,10 +92,12 @@ public class VocabularyBioPortalApiKeyServlet extends SlingSafeMethodsServlet
             if (this.keyNodeExists.get()) {
                 // if node exists
                 jsonGen.write(RESPONSE_JSON_KEY, this.getAPIKeyFromNode(res));
+                jsonGen.write("isNode", true);
             }
             else {
                 // if node does not exist, get api key from env variable
                 jsonGen.write(RESPONSE_JSON_KEY, this.getAPIKeyFromEnvironment());
+                jsonGen.write("isNode", false);
             }
             jsonGen.writeEnd().flush();
         } catch (RepositoryException e) {
@@ -119,7 +121,7 @@ public class VocabularyBioPortalApiKeyServlet extends SlingSafeMethodsServlet
 
     private String getAPIKeyFromNode(Resource res) throws RepositoryException
     {
-        String apiKey = "test"; //TODO: can this be initialized w/o value?
+        String apiKey = "init";
 
         try {
             Node keyNode = res.adaptTo(Node.class);
