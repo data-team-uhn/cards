@@ -513,11 +513,11 @@ public final class ConditionalSectionUtils
              * Recursively go through all children of the condition node and determine if this condition node evaluates
              * to True or False.
              */
-            if (evaluateConditionNodeRecursive(conditionNode, sectionNode, prevNb)) {
-                return true;
+            if (!evaluateConditionNodeRecursive(conditionNode, sectionNode, prevNb)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private static long toLong(Object o)
