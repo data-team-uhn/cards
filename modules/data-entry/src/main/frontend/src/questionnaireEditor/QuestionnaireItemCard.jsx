@@ -55,15 +55,15 @@ let QuestionnaireItemCard = (props) => {
   const itemRef = useRef();
   // if autofocus is needed and specified in the url
   const doHighlight = (location?.hash?.substr(1) == data["@path"]);
-  if (doHighlight) {
-    // create a ref to store the question container DOM element
-    useEffect(() => {
+  // create a ref to store the question container DOM element
+  useEffect(() => {
+    if (doHighlight) {
       const timer = setTimeout(() => {
           itemRef?.current?.scrollIntoView({block: "center"});
         }, 500);
         return () => clearTimeout(timer);
-    }, [itemRef]);
-  }
+    }
+  }, [itemRef]);
 
   return (
     <Card variant="outlined" ref={doHighlight ? itemRef : undefined} className={doHighlight ? classes.focusedQuestionnaireItem : ''}>
