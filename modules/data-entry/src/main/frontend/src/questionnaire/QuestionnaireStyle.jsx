@@ -362,6 +362,11 @@ const questionnaireStyle = theme => ({
             paddingTop: 0,
         }
     },
+    focusedQuestionnaireItem: {
+      borderColor: theme.palette.warning.light,
+      borderWidth: '2px',
+      borderStyle: 'solid',
+    },
     hierarchyEditButton: {
         marginLeft: theme.spacing(1)
     },

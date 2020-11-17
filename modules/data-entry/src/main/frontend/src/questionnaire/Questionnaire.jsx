@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -48,15 +48,6 @@ let Questionnaire = (props) => {
     setError(response);
     setData({});
   }
-
-  const questionRef = useRef();
-  // create a ref to store the question container DOM element
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      questionRef?.current?.scrollIntoView();
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [questionRef]);
 
   let fetchData = () => {
     fetch(`/Questionnaires/${id}.deep.json`)
