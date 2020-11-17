@@ -131,9 +131,6 @@ const headerStyle = theme => ({
   quickSearchResultsTitle: {
     display: "inline-block"
   },
-  quickSearchResultsIdentifier: {
-    alignItems: "flex-start"
-  },
   quicksearchIdentifierLink: {
     color: infoColor,
     textDecoration: "underline",

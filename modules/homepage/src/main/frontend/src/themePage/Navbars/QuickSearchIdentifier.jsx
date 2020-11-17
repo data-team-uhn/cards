@@ -77,7 +77,7 @@ function MatchAvatar(props) {
 }
 
 function ListItemLink(props) {
-  return <ListItem button component="a" {...props} />;
+  return <ListItem alignItems="flex-start" button component="a" {...props} />;
 }
 
   // Display a quick search result identifier with link to result section
@@ -88,7 +88,7 @@ export function QuickSearchIdentifier(props) {
     if (resultData["jcr:primaryType"] == "lfs:Questionnaire") {
       fullPath = `/content.html/admin${resultData["@path"]}#${anchorPath}`;
     }
-    return (<ListItemLink className={classes.quickSearchResultsIdentifier} href={fullPath}>
+    return (<ListItemLink href={fullPath}>
               <ListItemAvatar>
                 <MatchAvatar matchData={resultData} classes={classes}></MatchAvatar>
               </ListItemAvatar>
