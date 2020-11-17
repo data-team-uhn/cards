@@ -1,5 +1,6 @@
 [
   {
+    "description" : "string",
     "maxPerSubject": "long",
     "requiredSubjectTypes": "list"
   }
