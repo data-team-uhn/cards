@@ -370,6 +370,9 @@ const questionnaireStyle = theme => ({
     hierarchyEditButton: {
         marginLeft: theme.spacing(1)
     },
+    subjectQuestionnaireSubheader: {
+        marginTop: theme.spacing(5)
+    },
 });
 
 export default questionnaireStyle;

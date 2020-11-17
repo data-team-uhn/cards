@@ -238,6 +238,7 @@ function SubjectMember (props) {
   let [ error, setError ] = useState();
   // table data: related forms to the subject
   let [tableData, setTableData] = useState();
+  let [subjectGroups, setSubjectGroups] = useState();
 
   const customUrl=`/Forms.paginate?fieldname=subject&fieldvalue=${encodeURIComponent(data['jcr:uuid'])}&includeallstatus=true`;
 
@@ -252,11 +253,18 @@ function SubjectMember (props) {
 
   let handleTableResponse = (json) => {
     setTableData(json.rows);
+    let groups = {};
+    json.rows.map( (entry, i) => {
+        groups[entry.questionnaire["@name"]] = groups[entry.questionnaire["@name"]] || [];
+        groups[entry.questionnaire["@name"]].push(entry);
+    })
+    setSubjectGroups(groups);
   };
 
   let handleTableError = (response) => {
     setError(response);
     setTableData([]);
+    setSubjectGroups({});
   };
 
   let wordToTitleCase = (word) => {
@@ -306,7 +314,7 @@ function SubjectMember (props) {
           size={level === 0 ? "large" : null}
         />
         {
-          data && data['jcr:createdBy'] && data['jcr:created'] ?
+          data && data['jcr:createdBy'] && (level == 0) && data['jcr:created'] ?
             <Typography
               variant="overline"
               className={classes.subjectSubHeader}>
@@ -316,50 +324,56 @@ function SubjectMember (props) {
         }
       </Grid>
       <Grid item>
-      {tableData ?
-          (<Grid container spacing={3}>
-            {tableData.map( (entry, i) => {
-              return(
-                <Grid item lg={12} xl={6} key={`${entry.questionnaire["jcr:uuid"]}-${i}`}>
-                  <Card className={classes.subjectCard}>
-                    <CardHeader
-                      title={
-                        <React.Fragment>
-                          <Button size={buttonSize} className={classes.subjectFormHeaderButton}>
-                            {entry.questionnaire["@name"]}
-                          </Button>
-                          {entry["statusFlags"].map((status) => {
-                            return <Chip
-                              key={status}
-                              label={wordToTitleCase(status)}
-                              className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
-                              size="small"
-                            />
-                          })}
-                        </React.Fragment>
-                      }
-                      className={classes.subjectFormHeader}
-                      action={
-                        <DeleteButton
-                          entryPath={entry["@path"]}
-                          entryName={`${identifier}: ${entry.questionnaire["@name"]}`}
-                          entryType="Form"
-                          warning={entry ? entry["@referenced"] : false}
-                        />
-                      }
-                    />
-                    <CardContent>
-                      <FormData formID={entry["@name"]} maxDisplayed={maxDisplayed}/>
-                      <Link to={"/content.html" + entry["@path"]}>
-                        <Typography variant="body2" component="p">See More...</Typography>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              )
-            })}
-          </Grid>
-          ) : ""
+        { subjectGroups &&
+          Object.keys(subjectGroups).map( (questionnaireName, j) => {
+            return(<>
+	          <Typography variant="h4" className={classes.subjectQuestionnaireSubheader}>
+		        {questionnaireName}
+		      </Typography>
+		      <Grid container spacing={3}>
+		        { subjectGroups[questionnaireName].map( (entry, i) => {
+	              return(
+	                <Grid item lg={12} xl={6} key={`${entry.questionnaire["jcr:uuid"]}-${i}`}>
+	                  <Card className={classes.subjectCard}>
+	                    <CardHeader
+	                      title={
+	                        <React.Fragment>
+	                          <Button size={buttonSize} className={classes.subjectFormHeaderButton}>
+	                            {moment(entry["jcr:created"]).format("yyyy-MM-dd")}
+	                          </Button>
+	                          {entry["statusFlags"].map((status) => {
+	                            return <Chip
+	                              key={status}
+	                              label={wordToTitleCase(status)}
+	                              className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
+	                              size="small"
+	                            />
+	                          })}
+	                        </React.Fragment>
+	                      }
+	                      className={classes.subjectFormHeader}
+	                      action={
+	                        <DeleteButton
+	                          entryPath={entry["@path"]}
+	                          entryName={`${identifier}: ${entry.questionnaire["@name"]}`}
+	                          entryType="Form"
+	                          warning={entry ? entry["@referenced"] : false}
+	                        />
+	                      }
+	                    />
+	                    <CardContent>
+	                      <FormData formID={entry["@name"]} maxDisplayed={maxDisplayed}/>
+	                      <Link to={"/content.html" + entry["@path"]}>
+	                        <Typography variant="body2" component="p">See More...</Typography>
+	                      </Link>
+	                    </CardContent>
+	                  </Card>
+	                </Grid>
+	              )
+	            })}
+	          </Grid>
+	        </>)
+          })
         }
       </Grid>
     </Grid>
