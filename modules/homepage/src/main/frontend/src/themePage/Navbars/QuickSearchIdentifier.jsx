@@ -20,7 +20,7 @@ import PropTypes from "prop-types";
 import React from "react";
 
 import { blue, green, orange } from '@material-ui/core/colors';
-import { Avatar, ListItem, ListItemText, ListItemAvatar, }  from "@material-ui/core";
+import { Avatar, ListItem, ListItemText, ListItemAvatar }  from "@material-ui/core";
 import DescriptionIcon from "@material-ui/icons/Description";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import AssignmentIcon from '@material-ui/icons/Assignment';
@@ -76,6 +76,10 @@ function MatchAvatar(props) {
     return <Avatar className={classes.searchResultAvatar} style={style}>{icon}</Avatar>;
 }
 
+function ListItemLink(props) {
+  return <ListItem button component="a" {...props} />;
+}
+
   // Display a quick search result identifier with link to result section
 export function QuickSearchIdentifier(props) {
     let { resultData, hideMatchInfo, classes } = props;
@@ -84,14 +88,14 @@ export function QuickSearchIdentifier(props) {
     if (resultData["jcr:primaryType"] == "lfs:Questionnaire") {
       fullPath = `/content.html/admin${resultData["@path"]}#${anchorPath}`;
     }
-    return (<ListItem className={classes.quickSearchResultsIdentifier}>
+    return (<ListItemLink className={classes.quickSearchResultsIdentifier} href={fullPath}>
               <ListItemAvatar>
                 <MatchAvatar matchData={resultData} classes={classes}></MatchAvatar>
               </ListItemAvatar>
               <ListItemText
-                primary={(<Link to={fullPath}>{getEntityIdentifier(resultData)}</Link>)}
+                primary={(<span className={classes.quicksearchIdentifierLink}>{getEntityIdentifier(resultData)}</span>)}
                 secondary={!hideMatchInfo && (<QuickSearchMatch matchData={resultData[LFS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>)}
                 className={classes.dropdownItem}
               />
-           </ListItem>)
+           </ListItemLink>)
 }

@@ -134,6 +134,10 @@ const headerStyle = theme => ({
   quickSearchResultsIdentifier: {
     alignItems: "flex-start"
   },
+  quicksearchIdentifierLink: {
+    color: infoColor,
+    textDecoration: "underline",
+  },
 });
 
 export default headerStyle;
