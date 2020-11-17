@@ -26,7 +26,7 @@ import SearchBar from "../../SearchBar.jsx"; // In the commons module
 import { QuickSearchIdentifier } from "./QuickSearchIdentifier.jsx";
 
 function HeaderSearchBar(props) {
-  const { classes, ...rest } = props;
+  const { classes, doNotEscapeQuery, ...rest } = props;
 
   return(
     <SearchBar
@@ -38,7 +38,8 @@ function HeaderSearchBar(props) {
 }
 
 HeaderSearchBar.propTypes = {
-  invertColors: PropTypes.bool
+  invertColors: PropTypes.bool,
+  doNotEscapeQuery: PropTypes.bool
 }
 
 export default withStyles(HeaderStyle)(withRouter(HeaderSearchBar));

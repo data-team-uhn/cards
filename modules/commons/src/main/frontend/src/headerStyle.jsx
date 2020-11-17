@@ -131,10 +131,6 @@ const headerStyle = theme => ({
   quickSearchResultsTitle: {
     display: "inline-block"
   },
-  quicksearchIdentifierLink: {
-    color: infoColor,
-    textDecoration: "underline",
-  },
 });
 
 export default headerStyle;
