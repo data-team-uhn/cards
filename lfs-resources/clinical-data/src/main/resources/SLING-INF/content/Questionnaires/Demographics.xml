@@ -37,6 +37,19 @@
 		<value>1</value>
 		<type>Long</type>
 	</property>
+	<property>
+		<name>paginate</name>
+		<value>true</value>
+		<type>Boolean</type>
+	</property>
+	<node>
+		<name>demographics</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Demographics Information</value>
+			<type>String</type>
+		</property>
 	<node>
 		<name>family</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
@@ -299,6 +312,51 @@
 			<type>String</type>
 		</property>
 	</node>
+	</node>
+	<node>
+		<name>clinical_info</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Clinical Information</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>gender</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>F</value>
+					</values>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
 	<node>
 		<name>tp53_variant_cDNA</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
@@ -512,6 +570,15 @@
 			</property>
 		</node>
 	</node>
+	</node>
+	<node>
+		<name>testing</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Testing</value>
+			<type>String</type>
+		</property>
 	<node>
 		<name>mutation_function</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
@@ -1004,6 +1071,51 @@
 			</property>
 		</node>
 	</node>
+	</node>
+	<node>
+		<name>follow_up</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Follow-up and Surveillance</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>vital_status</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>alive and NED</value>
+					</values>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
 	<node>
 		<name>date_of_last_fup</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
@@ -1711,5 +1823,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
+	</node>
 	</node>
 </node>
