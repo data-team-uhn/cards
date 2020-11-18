@@ -25,6 +25,7 @@ import PropTypes from "prop-types";
 
 import Answer from "./Answer";
 import DragAndDrop from "../dragAndDrop";
+import { useFormUpdateWriterContext } from "./FormUpdateContext";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
@@ -49,6 +50,7 @@ function FileResourceQuestion(props) {
   let [ answerPath, setAnswerPath ] = useState("");
 
   let answers = Object.values(uploadedFiles).map((filepath) => [filepath, filepath]);
+  let writer = useFormUpdateWriterContext();
 
   // Add files to the pending state
   let addFiles = (files) => {
@@ -61,13 +63,13 @@ function FileResourceQuestion(props) {
     setUploadInProgress(true);
     setUploadProgress({});
     setError("");
+
     uploadAllFiles(files)
       .then(() => {
         setUploadInProgress(false);
       })
       .catch( (error) => {
         console.log(error);
-        //handleError(error);
         setUploadInProgress(false);
     });
   };
@@ -87,15 +89,26 @@ function FileResourceQuestion(props) {
     if (namePattern) {
       // Regex out variable names from the namePattern
       var varNamesRegex = /@{(.+?)}/g;
-      var varNames = [...namePattern.matchAll(varNamesRegex)];
+      var varNames = [...namePattern.matchAll(varNamesRegex)].map((match) => match[1]);
       var clearedNamesRegex = namePattern.replaceAll(varNamesRegex, "(.+)");
       var nameRegex = new RegExp(clearedNamesRegex, "g");
-      var results = file['name'].matchAll(nameRegex);
+      var results = [...file['name'].matchAll(nameRegex)].map((match) => match[1]);
 
       // At this point, results contains each match, which all correspond to their respective entry in varNames
-      // But how do I overwrite each of the entries and save them?
+      writer((oldCommands) => {
+        let newCommands = {...oldCommands};
+        for (let i = 0; i < varNames.length; i++) {
+          if (varNames[i] in newCommands) {
+            newCommands[varNames[i]].push(results[i]);
+          } else {
+            newCommands[varNames[i]] = [results[i]];
+          }
+        }
+        return newCommands;
+      });
     }
-    // TODO: Prevent duplicate filenames
+
+    // TODO: Handle duplicate filenames
     let data = new FormData();
     data.append(file['name'], file);
     data.append('jcr:primaryType', 'nt:folder');

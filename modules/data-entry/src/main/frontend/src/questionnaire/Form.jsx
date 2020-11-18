@@ -41,6 +41,7 @@ import moment from "moment";
 import { getHierarchy, getTextHierarchy } from "./Subject";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
+import { FormUpdateProvider } from "./FormUpdateContext";
 import DialogueLoginContainer from "../login/loginDialogue.js";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import FormPagination from "./FormPagination";
@@ -323,41 +324,43 @@ function Form (props) {
           }
         </Grid>
         <FormProvider>
-          <SelectorDialog
-            allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}
-            error={selectorDialogError}
-            open={selectorDialogOpen}
-            onChange={changeSubject}
-            onClose={() => {setSelectorDialogOpen(false)}}
-            onError={setSelectorDialogError}
-            title="Set subject"
-            selectedQuestionnaire={data?.questionnaire}
-            />
-          {changedSubject &&
-            <React.Fragment>
-              <input type="hidden" name={`${data["@path"]}/subject`} value={changedSubject["@path"]}></input>
-              <input type="hidden" name={`${data["@path"]}/subject@TypeHint`} value="Reference"></input>
-            </React.Fragment>
-          }
-          {
-            Object.entries(data.questionnaire)
-              .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-              .map(([key, entryDefinition]) => {
-                let pageResult = addPage(entryDefinition);
-                return <FormEntry
-                  key={key}
-                  entryDefinition={entryDefinition}
-                  path={"."}
-                  depth={0}
-                  existingAnswers={data}
-                  keyProp={key}
-                  classes={classes}
-                  onChange={()=>setLastSaveStatus(undefined)}
-                  visibleCallback={pageResult.callback}
-                  pageActive={pageResult.page.visible}
-                />
-              })
-          }
+          <FormUpdateProvider>
+            <SelectorDialog
+              allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}
+              error={selectorDialogError}
+              open={selectorDialogOpen}
+              onChange={changeSubject}
+              onClose={() => {setSelectorDialogOpen(false)}}
+              onError={setSelectorDialogError}
+              title="Set subject"
+              selectedQuestionnaire={data?.questionnaire}
+              />
+            {changedSubject &&
+              <React.Fragment>
+                <input type="hidden" name={`${data["@path"]}/subject`} value={changedSubject["@path"]}></input>
+                <input type="hidden" name={`${data["@path"]}/subject@TypeHint`} value="Reference"></input>
+              </React.Fragment>
+            }
+            {
+              Object.entries(data.questionnaire)
+                .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+                .map(([key, entryDefinition]) => {
+                  let pageResult = addPage(entryDefinition);
+                  return <FormEntry
+                    key={key}
+                    entryDefinition={entryDefinition}
+                    path={"."}
+                    depth={0}
+                    existingAnswers={data}
+                    keyProp={key}
+                    classes={classes}
+                    onChange={()=>setLastSaveStatus(undefined)}
+                    visibleCallback={pageResult.callback}
+                    pageActive={pageResult.page.visible}
+                  />
+                })
+            }
+          </FormUpdateProvider>
         </FormProvider>
         <Grid item xs={12} className={classes.formFooter}>
           <FormPagination
