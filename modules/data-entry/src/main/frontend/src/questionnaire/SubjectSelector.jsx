@@ -181,6 +181,7 @@ function UnstyledSelectParentDialog (props) {
         {
           initialized &&
             <MaterialTable
+              title=""
               columns={COLUMNS}
               data={query => {
                   let url = createQueryURL(` WHERE n.type='${parentType?.["jcr:uuid"]}'` + (query.search ? ` AND CONTAINS(n.identifier, '*${query.search}*')` : ""), "lfs:Subject");
