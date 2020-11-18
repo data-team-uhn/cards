@@ -166,8 +166,7 @@ function UnstyledSelectParentDialog (props) {
   const { classes, childType, continueDisabled, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
   const COLUMNS = [
-    { title: 'Subject', field: 'identifier' },
-    { title: 'Hierarchy', field: 'hierarchy' },
+    { title: 'Subject', field: 'hierarchy' },
   ];
 
   let initialized = parentType && childType;
@@ -182,7 +181,7 @@ function UnstyledSelectParentDialog (props) {
         {
           initialized &&
             <MaterialTable
-              title={"Select a " + parentType?.['label']}
+              title=""
               columns={COLUMNS}
               data={query => {
                   let url = createQueryURL(` WHERE n.type='${parentType?.["jcr:uuid"]}'` + (query.search ? ` AND CONTAINS(n.identifier, '*${query.search}*')` : ""), "lfs:Subject");
@@ -193,9 +192,8 @@ function UnstyledSelectParentDialog (props) {
                     .then(result => {
                       return {
                         data: result["rows"].map((row) => ({
-                          hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, ()=>({})) : "No parents",
-                          ...row
-                        })),
+                          hierarchy: getHierarchy(row, React.Fragment, ()=>({})),
+                          ...row })),
                         page: Math.trunc(result["offset"]/result["limit"]),
                         totalCount: result["totalrows"],
                       }}
@@ -207,7 +205,7 @@ function UnstyledSelectParentDialog (props) {
                 addRowPosition: 'first',
                 rowStyle: rowData => ({
                   /* It doesn't seem possible to alter the className from here */
-                  backgroundColor: (value?.["identifier"] === rowData["identifier"]) ? theme.palette.grey["200"] : theme.palette.background.default
+                  backgroundColor: (value?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
                 })
               }}
               onRowClick={(event, rowData) => {onChangeParent(rowData);}}
@@ -676,10 +674,12 @@ export function createSubjects(newSubjects, subjectType, subjectParents, subject
       .then( (json) => {
         if (json?.rows?.length > 0) {
           // Create an error message, adding the parents if they exist
-          let error_msg = `Subject ${subjectName} already exists`;
+          let error_msg = subjectType?.['@name'] || "Subject";
+          error_msg += ` ${subjectName} already exists`;
           let id = json["rows"][0]["parents"]?.["identifier"];
           if (id) {
-            error_msg += " for parent " + id;
+            let parentType = json["rows"][0]["parents"]?.["type"]?.["@name"] || "parent";
+            error_msg += ` for ${parentType} ${id}.`;
           }
 
           return Promise.reject(error_msg);
@@ -750,8 +750,7 @@ function SubjectSelectorList(props) {
   const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject, selectedQuestionnaire, disableProgress,
     currentSubject, theme, ...rest } = props;
   const COLUMNS = [
-    { title: 'Identifier', field: 'identifier' },
-    { title: 'Hierarchy', field: 'hierarchy' },
+    { title: 'Identifier', field: 'hierarchy' },
   ];
   const [ relatedSubjects, setRelatedSubjects ] = useState();
 
@@ -771,7 +770,7 @@ function SubjectSelectorList(props) {
 
   // if the number of related forms of a certain questionnaire/subject is at the maxPerSubject, an error is set
   let handleSelection = (rowData) => {
-    let atMax = (relatedSubjects && selectedQuestionnaire && (relatedSubjects.filter((i) => (i.identifier == rowData.identifier)).length >= selectedQuestionnaire?.["maxPerSubject"]))
+    let atMax = (relatedSubjects && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["jcr:uuid"] == rowData["jcr:uuid"])).length >= selectedQuestionnaire?.["maxPerSubject"]))
     if (atMax) {
       onError(`${rowData?.["type"]["@name"]} ${rowData?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
       disableProgress(true);
@@ -846,8 +845,8 @@ function SubjectSelectorList(props) {
                     (currentSubject && (result['rows'].map((row) => isSubjectRelated(row).includes(currentSubject.type.label)))[0])
                     ? result['rows'].filter((e) => filterRelated(e)) : result["rows"]
                   ).map((row) => ({
-                    hierarchy: row["parents"] ? getHierarchy(row["parents"], React.Fragment, () => ({})) : "No parents",
-                    ...row})),
+                    hierarchy: getHierarchy(row, React.Fragment, () => ({})),
+                    ...row })),
                   page: Math.trunc(result["offset"]/result["limit"]),
                   totalCount: result["totalrows"],
                 }}
@@ -925,7 +924,7 @@ function SubjectSelectorList(props) {
             /* It doesn't seem possible to alter the className from here */
             backgroundColor: (selectedSubject?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
             // grey out subjects that have already reached maxPerSubject
-            color: ((relatedSubjects && selectedQuestionnaire && (relatedSubjects.filter((i) => (i.identifier == rowData.identifier)).length >= selectedQuestionnaire?.["maxPerSubject"]))
+            color: ((relatedSubjects && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["jcr:uuid"] == rowData["jcr:uuid"])).length >= selectedQuestionnaire?.["maxPerSubject"]))
             ? theme.palette.grey["500"]
             : theme.palette.grey["900"]
             )
