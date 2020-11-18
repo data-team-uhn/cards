@@ -18,6 +18,7 @@
 //
 
 import React, { useState } from "react";
+import { withRouter, useHistory } from "react-router-dom";
 
 import {
   Button,
@@ -36,10 +37,21 @@ function FormPagination (props) {
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
 
+  const history = useHistory();
+
+  let goBack = () => {
+    if (history.length > 2) {
+      history.goBack();
+    } else {
+      history.replace("/");
+    }
+  }
+
   let handleNext = () => {
     setPendingSubmission(true);
     if (activePage === lastPage()) {
       setSavedLastPage(true);
+      goBack();
     } else {
       setSavedLastPage(false);
       handlePageChange("next");
@@ -70,7 +82,7 @@ function FormPagination (props) {
       lastSaveStatus === false ? 'Save failed, log in and try again?' :
       activePage < lastPage() ? "Next" :
       lastSaveStatus && savedLastPage ? 'Saved' :
-      'Save'}
+      'Finish'}
     </Button>
 
   let stepper = (isBack) =>
@@ -118,4 +130,4 @@ function FormPagination (props) {
   );
 };
 
-export default withStyles(QuestionnaireStyle)(FormPagination);
+export default withStyles(QuestionnaireStyle)(withRouter(FormPagination));
