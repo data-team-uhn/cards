@@ -767,7 +767,7 @@ function SubjectSelectorList(props) {
 
   // if the number of related forms of a certain questionnaire/subject is at the maxPerSubject, an error is set
   let handleSelection = (rowData) => {
-    let atMax = (relatedSubjects && selectedQuestionnaire && (relatedSubjects.filter((i) => (i.identifier == rowData.identifier)).length >= selectedQuestionnaire?.["maxPerSubject"]))
+    let atMax = (relatedSubjects && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["jcr:uuid"] == rowData["jcr:uuid"])).length >= selectedQuestionnaire?.["maxPerSubject"]))
     if (atMax) {
       onError(`${rowData?.["type"]["@name"]} ${rowData?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
       disableProgress(true);
@@ -921,7 +921,7 @@ function SubjectSelectorList(props) {
             /* It doesn't seem possible to alter the className from here */
             backgroundColor: (selectedSubject?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
             // grey out subjects that have already reached maxPerSubject
-            color: ((relatedSubjects && selectedQuestionnaire && (relatedSubjects.filter((i) => (i.identifier == rowData.identifier)).length >= selectedQuestionnaire?.["maxPerSubject"]))
+            color: ((relatedSubjects && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["jcr:uuid"] == rowData["jcr:uuid"])).length >= selectedQuestionnaire?.["maxPerSubject"]))
             ? theme.palette.grey["500"]
             : theme.palette.grey["900"]
             )
