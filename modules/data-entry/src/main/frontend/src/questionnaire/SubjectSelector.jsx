@@ -205,7 +205,7 @@ function UnstyledSelectParentDialog (props) {
                 addRowPosition: 'first',
                 rowStyle: rowData => ({
                   /* It doesn't seem possible to alter the className from here */
-                  backgroundColor: (value?.["identifier"] === rowData["identifier"]) ? theme.palette.grey["200"] : theme.palette.background.default
+                  backgroundColor: (value?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
                 })
               }}
               onRowClick={(event, rowData) => {onChangeParent(rowData);}}
