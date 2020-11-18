@@ -40,13 +40,3 @@ export function getEntityIdentifier(row) {
         return row.subject?.identifier || row["@name"] || anchor;
     }
 }
-
-// Display the identifier of the item as a link wrt item primaryType
-export function getEntityIdentifierLink(row) {
-    let id = getEntityIdentifier(row);
-    let path = `/content.html${row["@path"]}`;
-    if (row["jcr:primaryType"] == "lfs:Questionnaire") {
-      path = `/content.html/admin${row["@path"]}`;
-    }
-    return (<Link to={path}>{id}</Link>);
-}
