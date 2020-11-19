@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import {
+  Breadcrumbs,
   Button,
   CircularProgress,
   Grid,
@@ -83,7 +84,8 @@ function Form (props) {
   // - true -> data has been successfully saved
   // - false -> the save attempt failed
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
-  let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
+  let [ lastSaveStatus, setLastSaveStatus ] = useState(true);
+  let [ lastSaveTimestamp, setLastSaveTimestamp ] = useState(null);
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
   let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
@@ -94,19 +96,24 @@ function Form (props) {
   let [ activePage, setActivePage ] = useState(0);
   let [ pages, setPages ] = useState([]);
   let [ paginationEnabled, setPaginationEnabled ] = useState(false);
-  let [ savedData, setSavedData ] = useState(null);
 
   let formNode = React.useRef();
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      console.log("Checking if should autosave...");
-      if (lastSaveStatus === undefined) {
-      console.log("Autosaving...");
+    let backgroundSave = () => {
+      if (data && lastSaveStatus === undefined) {
         saveData();
       }
-    }, 10000);
-    return () => clearInterval(timer);
+    }
+    window.addEventListener("beforeunload", backgroundSave);
+    const timer = setInterval(backgroundSave, 10000);
+    // When component unmounts:
+    return (() => {
+      // One final save
+      backgroundSave();
+      window.removeEventListener("beforeunload", backgroundSave);
+      clearInterval(timer);
+    });
   });
 
   // Fetch the form's data as JSON from the server.
@@ -156,27 +163,28 @@ function Form (props) {
         Accept: "application/json"
       }
     }).then((response) => {
-      if (response.ok) {
-        setSavedData(data);
-        setLastSaveStatus(true);
-      } else if (response.status === 500) {
-        response.json().then((json) => {
-            setErrorCode(json["status.code"]);
-            setErrorMessage(json.error.message);
-            openErrorDialog();
-        })
-        setLastSaveStatus(undefined);
-      } else {
-        // If the user is not logged in, offer to log in
-        const sessionInfo = window.Sling.getSessionInfo();
-        if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-          // On first attempt to save while logged out, set status to false to make button text inform user
-          setLastSaveStatus(false);
-
+      if (formNode?.current) {// component is still mounted
+        if (response.ok) {
+          setLastSaveStatus(true);
+          setLastSaveTimestamp(new Date());
+        } else if (response.status === 500) {
+          response.json().then((json) => {
+              setErrorCode(json["status.code"]);
+              setErrorMessage(json.error.message);
+              openErrorDialog();
+          })
+          setLastSaveStatus(undefined);
+        } else {
+          // If the user is not logged in, offer to log in
+          const sessionInfo = window.Sling.getSessionInfo();
+          if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
+            // On first attempt to save while logged out, set status to false to make button text inform user
+            setLastSaveStatus(false);
+          }
         }
       }
       })
-      .finally(() => setSaveInProgress(false));
+      .finally(() => {formNode?.current && setSaveInProgress(false)});
   }
 
   // Open the login page in a new popup window, centered wrt the parent window
@@ -298,7 +306,7 @@ function Form (props) {
     );
   }
 
-  let parentDetails = data?.subject && getHierarchy(data.subject, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"}));
+  let parentDetails = data?.subject && getHierarchy(data.subject);
   pages.length = 0;
 
   return (
@@ -322,11 +330,18 @@ function Form (props) {
               buttonClass={classes.titleButton}
             />
           </Typography>
+          <Breadcrumbs separator="·">
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
             <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
             : ""
           }
+          {
+            lastSaveTimestamp ?
+            <Typography variant="overline">{saveInProgress ? "Saving ... " : "Saved " + moment(lastSaveTimestamp.toISOString()).calendar()}</Typography>
+            : ""
+          }
+          </Breadcrumbs>
         </Grid>
         <FormProvider>
           <SelectorDialog
