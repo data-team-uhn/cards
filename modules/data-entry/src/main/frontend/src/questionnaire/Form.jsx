@@ -95,9 +95,19 @@ function Form (props) {
   let [ activePage, setActivePage ] = useState(0);
   let [ pages, setPages ] = useState([]);
   let [ paginationEnabled, setPaginationEnabled ] = useState(false);
+  let [ savedData, setSavedData ] = useState(null);
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (lastSaveStatus === undefined) {
+        saveData();
+      }
+    }, 10000);
+    return () => clearInterval(timer);
+  });
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
@@ -147,6 +157,7 @@ function Form (props) {
       }
     }).then((response) => {
       if (response.ok) {
+        setSavedData(data);
         setLastSaveStatus(true);
       } else if (response.status === 500) {
         response.json().then((json) => {
