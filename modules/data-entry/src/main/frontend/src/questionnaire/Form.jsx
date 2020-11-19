@@ -100,8 +100,11 @@ function Form (props) {
   let formNode = React.useRef();
 
   useEffect(() => {
+    console.log("Component mount");
     let backgroundSave = () => {
+      console.log("Checking if should autosave...");
       if (data && lastSaveStatus === undefined) {
+        console.warn("Autosaving...");
         saveData();
       }
     }
@@ -110,6 +113,7 @@ function Form (props) {
     // When component unmounts:
     return (() => {
       // One final save
+      console.log("Component UNmount");
       backgroundSave();
       window.removeEventListener("beforeunload", backgroundSave);
       clearInterval(timer);
@@ -343,6 +347,7 @@ function Form (props) {
           }
           </Breadcrumbs>
         </Grid>
+        <Grid item><Typography>Test branch only: <a href="http://www.google.ca">follow this link to test that data gets saved when leaving the app</a></Typography></Grid>
         <FormProvider>
           <SelectorDialog
             allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}
