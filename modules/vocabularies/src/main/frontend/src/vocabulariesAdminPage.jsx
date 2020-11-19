@@ -19,6 +19,8 @@
 
 import {
   Button,
+  Dialog,
+  DialogContent,
   Grid,
   TextField,
   Typography
@@ -78,6 +80,7 @@ export default function VocabulariesAdminPage() {
   const [remoteLoaded, setRemoteLoaded] = React.useState(false);
   const [localLoaded, setLocalLoaded] = React.useState(false);
   const [displayTables, setDisplayTables] = React.useState(false);
+  const [showErrorModal, setShowErrorModal] = React.useState(false);
   /*
     Initially the key will be fetched from a script service.
   */
@@ -85,6 +88,39 @@ export default function VocabulariesAdminPage() {
   // check if api key is from node
   const [isFromNode, setIsFromNode] = React.useState(false);
 
+  // save possible api key here
+  const [submittedApiKey, setSubmittedApiKey] = React.useState(null);
+
+  // called when api key is changed, on success
+  function resetTest(e) {
+    setBioPortalApiKey(submittedApiKey);
+    addNode(submittedApiKey);
+    setDisplayChangeKey(false);
+    // reload list
+    setRemoteLoaded(false);
+    setLocalLoaded(false);
+    setDisplayTables(false);
+  }
+
+  function addNode(apiKey) {
+    // if (targetExists) {
+    // } else {
+      // If the question/section doesn't exist, create it
+
+    // TODO: how to check if node exists already?
+
+    const URL = `/libs/lfs/conf/BioportalApiKey`
+    var request_data = new FormData();
+    request_data.append('key', apiKey);
+    fetch(URL, { method: 'POST', body: request_data })
+      .then((response) => response.ok ? console.log("saved to node") : Promise.reject(response))
+      .catch(() => {
+        console.error("error creating node")
+        }
+      )
+
+    // }
+  }
 
   const localLink = '/query?query=' + encodeURIComponent(`select * from [lfs:Vocabulary]`);
 
@@ -159,11 +195,13 @@ export default function VocabulariesAdminPage() {
     setDisplayTables(true);
   }
 
+  function handleErrorModal(isError) {
+    // show modal
+    setShowErrorModal(isError);
+  }
+
   // useEffect - fetch new list when there is a new key.
   useEffect(() => {
-    //TODO: figure out how to reload list of ontologies - this did not work
-    // setRemoteLoaded(false);
-
     /* If the BioPortal API key cannot be loaded, assume the remote (empty)
       * data has been loaded.
       */
@@ -174,45 +212,20 @@ export default function VocabulariesAdminPage() {
   }, [bioPortalApiKey])
 
   function addNewKey() {
-    setBioPortalApiKey(customApiKey);
-
-    // if (targetExists) {
-    // } else {
-      // If the question/section doesn't exist, create it
-
-    console.log(isFromNode); // if true, node exists already ? doesn't work
-    // TODO: how to check if node exists already?
-
-    const URL = `/libs/lfs/conf/BioportalApiKey`
-    var request_data = new FormData();
-    request_data.append('key', customApiKey);
-    fetch(URL, { method: 'POST', body: request_data })
-      .then((response) => response.ok ? console.log("saved to node") : Promise.reject(response))
-      .catch(() => {
-        console.error("error creating node")
-        }
-      )
-
-    // }
-
+    // set here, will trigger fetch in vocabularyDirectory
+    // on fetch success, 'resetTest' is called
+    // on fetch fail, 'handleErrorModal is called
+    setSubmittedApiKey(customApiKey);
   }
-
-  // TODO: error handling - parent callback for error in vocabulary directory
 
   return (
     <Grid container direction="column" spacing={4} justify="space-between">
-
       <Grid item>
         <Typography variant="h2">
           Installed
         </Typography>
       </Grid>
 
-      {/* TODO: if error in vocabulary directory (fetching w/ key) --> parent handler 
-      (display error in modal)
-      Could not access Bioportal services. The API Key <the key> appears to be invalid.
-      RETRY key does not work? 
-      */}
       <VocabularyDirectory 
         type="local"
         link={localLink}
@@ -223,6 +236,9 @@ export default function VocabulariesAdminPage() {
         updateLocalList={updateLocalList}
         addSetter={addSetter}
         setPhase={setPhase}
+        apiKey={submittedApiKey}
+        resetTest={resetTest}
+        setErrorModal={handleErrorModal}
       />
 
       <Grid item>
@@ -277,13 +293,13 @@ export default function VocabulariesAdminPage() {
                   fullWidth={true}
                 />
                 {/* TODO: update button should have same functionality as above submit button */}
-                <Button onClick={() => {setDisplayChangeKey(false); addNewKey();}} color="primary">Update</Button>
+                <Button onClick={() => {addNewKey();}} color="primary">Update</Button>
                 <Button onClick={() => {setDisplayChangeKey(false)}} color="primary">Cancel</Button>
               </Grid>
             )
             : (
               <Grid item>
-                <Typography>{isFromNode ? "" : "Default"} API Key: {bioPortalApiKey}</Typography>
+                <Typography>API Key: {bioPortalApiKey}</Typography>
                 <Button onClick={() => {setDisplayChangeKey(true)}} color="primary">Change</Button> 
               </Grid>
             )
@@ -302,8 +318,16 @@ export default function VocabulariesAdminPage() {
         setPhase={setPhase}
         updateLocalList={updateLocalList}
         addSetter={addSetter}
+        apiKey={submittedApiKey}
+        resetTest={resetTest}
+        setErrorModal={handleErrorModal}
       />
 
+      <Dialog open={showErrorModal} onClose={() => { setShowErrorModal(false); }}>
+        <DialogContent>
+          Could not access Bioportal services. The API Key {customApiKey} appears to be invalid.
+        </DialogContent>
+      </Dialog>
     </Grid>
   );
 }

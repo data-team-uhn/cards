@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React from "react";
+import React, {useEffect} from "react";
 
 import { 
   Button, 
@@ -79,6 +79,8 @@ export default function VocabularyDirectory(props) {
     })
     .then(response => response.json())
     .then(function(data) {
+      props.resetTest("e");
+
       if (props.type === "remote") {
         props.setVocabList(data);
       } else if (props.type === "local") {
@@ -86,8 +88,11 @@ export default function VocabularyDirectory(props) {
       }
     })
     .catch(function(error) {
+      // ERROR MODAL
+      props.setErrorModal(true);
       setCurStatus(Status["Error"]);
       badResponse = true;
+      props.setErrorModal(true);
     })
     .finally(function() {
       if (!badResponse) {
@@ -99,6 +104,11 @@ export default function VocabularyDirectory(props) {
   if (curStatus == Status["Init"] && props.link !== "") {
     getVocabList(props.link);
   }
+
+  // load vocab list when API key changes
+  useEffect(() => {
+    setCurStatus(Status["Init"]);
+  }, [props.apiKey])
 
   const classes = useStyles();
 
