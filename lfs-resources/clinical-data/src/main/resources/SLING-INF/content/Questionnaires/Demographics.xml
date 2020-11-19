@@ -1731,8 +1731,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>filePattern</name>
-			<value>asdf_asdf.txt</value>
+			<name>namePattern</name>
+			<value>@{family_history}.txt</value>
 			<type>String</type>
 		</property>
 		<property>

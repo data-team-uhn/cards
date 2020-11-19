@@ -65,13 +65,14 @@ function FileResourceQuestion(props) {
     setError("");
 
     uploadAllFiles(files)
-      .then(() => {
+      .catch( (err) => {
+        console.log(err);
+        setError(err.ToString());
         setUploadInProgress(false);
-      })
-      .catch( (error) => {
-        console.log(error);
+    })
+      .finally(() => {
         setUploadInProgress(false);
-    });
+      });
   };
 
   // Find the icon and load them
