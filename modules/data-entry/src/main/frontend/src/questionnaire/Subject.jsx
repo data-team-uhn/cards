@@ -255,8 +255,8 @@ function SubjectMember (props) {
     setTableData(json.rows);
     let groups = {};
     json.rows.map( (entry, i) => {
-        groups[entry.questionnaire["@name"]] = groups[entry.questionnaire["@name"]] || [];
-        groups[entry.questionnaire["@name"]].push(entry);
+      let title = entry.questionnaire.title || entry.questionnaire["@name"];
+      groups[title]?.push(entry) || (groups[title] = [entry]);
     })
     setSubjectGroups(groups);
   };
@@ -326,7 +326,7 @@ function SubjectMember (props) {
       <Grid item>
         { subjectGroups &&
           Object.keys(subjectGroups).map( (questionnaireName, j) => {
-            return(<>
+            return(<React.Fragment key={questionnaireName}>
 	          <Typography variant="h4" className={classes.subjectQuestionnaireSubheader}>
 		        {questionnaireName}
 		      </Typography>
@@ -339,7 +339,7 @@ function SubjectMember (props) {
 	                      title={
 	                        <React.Fragment>
 	                          <Button size={buttonSize} className={classes.subjectFormHeaderButton}>
-	                            {moment(entry["jcr:created"]).format("yyyy-MM-dd")}
+	                            {moment(entry["jcr:created"]).format("yyyy-MM-DD")}
 	                          </Button>
 	                          {entry["statusFlags"].map((status) => {
 	                            return <Chip
@@ -372,7 +372,7 @@ function SubjectMember (props) {
 	              )
 	            })}
 	          </Grid>
-	        </>)
+	        </React.Fragment>)
           })
         }
       </Grid>
