@@ -105,11 +105,13 @@ function Form (props) {
         saveData();
       }
     }
+    window.addEventListener("beforeunload", backgroundSave);
     const timer = setInterval(backgroundSave, 10000);
     // When component unmounts:
     return (() => {
       // One final save
       backgroundSave();
+      window.removeEventListener("beforeunload", backgroundSave);
       clearInterval(timer);
     });
   });
