@@ -94,7 +94,6 @@ function Form (props) {
   let [ activePage, setActivePage ] = useState(0);
   let [ pages, setPages ] = useState([]);
   let [ paginationEnabled, setPaginationEnabled ] = useState(false);
-  let [ savedData, setSavedData ] = useState(null);
 
   let formNode = React.useRef();
 
@@ -155,7 +154,6 @@ function Form (props) {
       }
     }).then((response) => {
       if (response.ok) {
-        setSavedData(data);
         setLastSaveStatus(true);
       } else if (response.status === 500) {
         response.json().then((json) => {
@@ -170,7 +168,6 @@ function Form (props) {
         if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
           // On first attempt to save while logged out, set status to false to make button text inform user
           setLastSaveStatus(false);
-
         }
       }
       })
