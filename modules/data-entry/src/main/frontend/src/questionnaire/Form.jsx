@@ -100,7 +100,9 @@ function Form (props) {
 
   useEffect(() => {
     const timer = setInterval(() => {
+      console.log("Checking if should autosave...");
       if (lastSaveStatus === undefined) {
+      console.log("Autosaving...");
         saveData();
       }
     }, 10000);
