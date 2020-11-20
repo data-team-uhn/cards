@@ -125,6 +125,11 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>lfs-utils</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>lfs-permissions</artifactId>
       <version>${project.version}</version>
       <scope>runtime</scope>
