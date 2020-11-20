@@ -103,7 +103,7 @@ function Form (props) {
     console.log("Component mount");
     let backgroundSave = () => {
       console.log("Checking if should autosave...");
-      if (data && lastSaveStatus === undefined) {
+      if (!saveInProgress && lastSaveStatus === undefined) {
         console.warn("Autosaving...");
         saveData();
       }
