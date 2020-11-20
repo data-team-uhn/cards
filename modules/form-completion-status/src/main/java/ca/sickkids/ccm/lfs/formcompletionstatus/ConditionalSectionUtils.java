@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -126,15 +127,16 @@ public final class ConditionalSectionUtils
     /**
      * Gets the questionnaire section node referenced by the AnswerSection NodeBuilder nb.
      *
-     * @return the section Node object referenced by NodeBuilder nb
+     * @param resourceSession the current session
+     * @param answerSection the answer section whose section should be retrieved
+     * @return the section Node object referenced by answerSection
      */
-    private static Node getSectionNode(final Session resourceSession, final NodeBuilder nb)
+    private static Node getSectionNode(final Session resourceSession, final NodeBuilder answerSection)
     {
         try {
-            if (nb.hasProperty("section")) {
-                final String sectionNodeReference = nb.getProperty("section").getValue(Type.REFERENCE);
-                final Node sectionNode = resourceSession.getNodeByIdentifier(sectionNodeReference);
-                return sectionNode;
+            if (answerSection.hasProperty("section")) {
+                final String sectionNodeReference = answerSection.getProperty("section").getValue(Type.REFERENCE);
+                return resourceSession.getNodeByIdentifier(sectionNodeReference);
             }
         } catch (final RepositoryException ex) {
             return null;
@@ -143,24 +145,29 @@ public final class ConditionalSectionUtils
     }
 
     /**
-     * Returns the first NodeBuilder with a question value equal to the String uuid that is a child of the NodeBuilder
-     * nb. If no such child can be found, null is returned
+     * Returns the first NodeBuilder with a question value equal to questionUUID that is a descendant of the parent
+     * node. If no such node can be found, null is returned.
      *
-     * @param nb the NodeBuilder to search through its children
-     * @param uuid the UUID String for which the child's question property must be equal to
-     * @return the first NodeBuilder with a question value equal to the String uuid that is a child of the NodeBuilder
-     *         nb, or null if such node does not exist.
+     * @param parent the NodeBuilder to search through its children
+     * @param questionUUID the UUID String for which the child's question property must be equal to
+     * @return the first NodeBuilder with a question value equal to questionUUID that is a descendant of the parent
+     *         NodeBuilder, or null if such a node does not exist.
      */
-    private static NodeBuilder getChildNodeWithQuestion(final NodeBuilder nb, final String uuid)
+    private static NodeBuilder getAnswerForQuestion(final NodeBuilder parent, final String questionUUID)
     {
-        final Iterable<String> childrenNames = nb.getChildNodeNames();
-        final Iterator<String> childrenNamesIter = childrenNames.iterator();
-        while (childrenNamesIter.hasNext()) {
-            final String selectedChildName = childrenNamesIter.next();
-            final NodeBuilder selectedChild = nb.getChildNode(selectedChildName);
-            if (selectedChild.hasProperty(PROP_QUESTION)) {
-                if (uuid.equals(selectedChild.getProperty(PROP_QUESTION).getValue(Type.STRING))) {
-                    return selectedChild;
+        final Iterable<String> childrenNames = parent.getChildNodeNames();
+        for (final String childName : childrenNames) {
+            final NodeBuilder child = parent.getChildNode(childName);
+            // Check if this is the answer we're looking for
+            if (child.hasProperty(PROP_QUESTION)
+                && questionUUID.equals(child.getProperty(PROP_QUESTION).getValue(Type.STRING))) {
+                return child;
+            }
+            // If this is an answer section, look for the answer in it, and return if found
+            if ("lfs:AnswerSection".equals(child.getName("jcr:primaryType"))) {
+                NodeBuilder sectionResult = getAnswerForQuestion(child, questionUUID);
+                if (sectionResult != null) {
+                    return sectionResult;
                 }
             }
         }
@@ -368,28 +375,80 @@ public final class ConditionalSectionUtils
     }
 
     private static PropertyState getPropertyStateFromRef(final Node operand,
-        final Node sectionNode, final NodeBuilder prevNb) throws RepositoryException
+        final Node sectionNode, final NodeBuilder form) throws RepositoryException
     {
-        String key = operand.getProperty(PROP_VALUE).getValues()[0].getString();
-        // Sanitize
-        key = sanitizeNodeName(key);
-        final Node sectionNodeParent = sectionNode.getParent();
-        final Node keyNode = sectionNodeParent.getNode(key);
-        final String keyNodeUUID = keyNode.getIdentifier();
-        // Get the node from the Form containing the answer to keyNode
-        final NodeBuilder conditionalFormNode = getChildNodeWithQuestion(prevNb, keyNodeUUID);
-        if (conditionalFormNode == null) {
+        String key = sanitizeNodeName(operand.getProperty(PROP_VALUE).getValues()[0].getString());
+        final Node questionnaire = getQuestionnaireForSection(sectionNode);
+        final Node question = getQuestionWithName(questionnaire, key);
+        if (question == null) {
             return null;
         }
-        return conditionalFormNode.getProperty(PROP_VALUE);
+        final String questionUUID = question.getIdentifier();
+        // Get the node from the Form containing the answer to keyNode
+        final NodeBuilder answer = getAnswerForQuestion(form, questionUUID);
+        if (answer == null) {
+            return null;
+        }
+        return answer.getProperty(PROP_VALUE);
     }
 
-    private static Object getOperandValue(final Node operand, final Node sectionNode,
-        final NodeBuilder prevNb, int index) throws RepositoryException
+    /**
+     * Retrieves for the Questionnaire that a Section belongs to. This is usually the parent node, but in the case of a
+     * nested section, it may be higher up the ancestors chain.
+     *
+     * @param section the Section whose Questionnaire to retrieve
+     * @return a Questionnaire node, or {@code null} if navigating the tree fails
+     */
+    private static Node getQuestionnaireForSection(final Node section)
+    {
+        Node result = section;
+        try {
+            while (section != null && !"lfs:Questionnaire".equals(result.getPrimaryNodeType().getName())) {
+                result = result.getParent();
+            }
+        } catch (RepositoryException e) {
+            LOGGER.warn("Unexpected error looking up the questionnaire: {}", e.getMessage(), e);
+            return null;
+        }
+        return result;
+    }
+
+    /**
+     * Retrieves the Question node with the given name. This is needed to get from a simple question name, like
+     * {@code "gender"}, to the JCR UUID used in the actual reference from the answer to the question.
+     *
+     * @param parent the node to (recursively) look in, starting with the Questionnaire
+     * @param questionName the simple question name
+     * @return the Question node, or {@code null} if the question cannot be found
+     */
+    private static Node getQuestionWithName(final Node parent, final String questionName)
+    {
+        try {
+            final NodeIterator children = parent.getNodes();
+            while (children.hasNext()) {
+                final Node childNode = children.nextNode();
+                if (questionName.equals(childNode.getName())) {
+                    return childNode;
+                }
+                if ("lfs:Section".equals(childNode.getPrimaryNodeType().getName())) {
+                    Node sectionResult = getQuestionWithName(childNode, questionName);
+                    if (sectionResult != null) {
+                        return sectionResult;
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to look up question: {}", e.getMessage(), e);
+        }
+        return null;
+    }
+
+    private static Object getOperandValue(final Node operand, final Node sectionNode, final NodeBuilder form,
+        int index) throws RepositoryException
     {
         Object returnedValue = null;
         if (operand.getProperty(PROP_IS_REFERENCE).getValue().getBoolean()) {
-            PropertyState operandProp = getPropertyStateFromRef(operand, sectionNode, prevNb);
+            PropertyState operandProp = getPropertyStateFromRef(operand, sectionNode, form);
             if (operandProp != null) {
                 returnedValue = getObjectFromPropertyState(operandProp, index);
             }
@@ -406,12 +465,12 @@ public final class ConditionalSectionUtils
         return returnedValue;
     }
 
-    private static int getOperandLength(final Node operand, final Node sectionNode, final NodeBuilder prevNb)
+    private static int getOperandLength(final Node operand, final Node sectionNode, final NodeBuilder form)
         throws RepositoryException
     {
         int returnedValue = -1;
         if (operand.getProperty(PROP_IS_REFERENCE).getValue().getBoolean()) {
-            PropertyState operandProp = getPropertyStateFromRef(operand, sectionNode, prevNb);
+            PropertyState operandProp = getPropertyStateFromRef(operand, sectionNode, form);
             if (operandProp != null) {
                 returnedValue = operandProp.count();
             }
@@ -428,11 +487,11 @@ public final class ConditionalSectionUtils
     }
 
     private static boolean evalOperands(final Node operandA, final Node operandB,
-        final String comparator, final Node sectionNode, final NodeBuilder prevNb)
-        throws RepositoryException
+        final String comparator, final Node sectionNode, final NodeBuilder form)
+            throws RepositoryException
     {
-        final int lengthB = getOperandLength(operandB, sectionNode, prevNb);
-        final int lengthA = getOperandLength(operandA, sectionNode, prevNb);
+        final int lengthB = getOperandLength(operandB, sectionNode, form);
+        final int lengthA = getOperandLength(operandA, sectionNode, form);
         final boolean requireAllB = operandB.getProperty(PROP_REQUIRE_ALL).getBoolean();
         final boolean requireAllA = operandA.getProperty(PROP_REQUIRE_ALL).getBoolean();
 
@@ -453,8 +512,8 @@ public final class ConditionalSectionUtils
         boolean res = requireAllMulti;
         for (int bi = 0; bi < lengthB; bi++) {
             for (int ai = 0; ai < lengthA; ai++) {
-                final Object valueA = getOperandValue(operandA, sectionNode, prevNb, ai);
-                final Object valueB = getOperandValue(operandB, sectionNode, prevNb, bi);
+                final Object valueA = getOperandValue(operandA, sectionNode, form, ai);
+                final Object valueB = getOperandValue(operandB, sectionNode, form, bi);
                 if (evalSectionCondition(valueA, valueB, comparator) == !requireAllMulti) {
                     res = !requireAllMulti;
                 }
@@ -469,10 +528,9 @@ public final class ConditionalSectionUtils
      * defined by the descendants of the "condition" Node.
      */
     private static boolean evaluateConditionNodeRecursive(final Node conditionNode, final Node sectionNode,
-        final NodeBuilder prevNb)
-        throws RepositoryException
+        final NodeBuilder form) throws RepositoryException
     {
-        if ("lfs:ConditionalGroup".equals(conditionNode.getProperty("jcr:primaryType").getString())) {
+        if ("lfs:ConditionalGroup".equals(conditionNode.getPrimaryNodeType().getName())) {
             // Is this an OR or an AND
             final boolean requireAll = conditionNode.getProperty(PROP_REQUIRE_ALL).getBoolean();
             // Evaluate recursively
@@ -484,7 +542,7 @@ public final class ConditionalSectionUtils
             }
             while (conditionChildren.hasNext()) {
                 final boolean partialRes =
-                    evaluateConditionNodeRecursive(conditionChildren.next(), sectionNode, prevNb);
+                    evaluateConditionNodeRecursive(conditionChildren.next(), sectionNode, form);
                 if (requireAll) {
                     downstreamResult = downstreamResult && partialRes;
                 } else {
@@ -492,32 +550,32 @@ public final class ConditionalSectionUtils
                 }
             }
             return downstreamResult;
-        } else if ("lfs:Conditional".equals(conditionNode.getProperty("jcr:primaryType").getString())) {
+        } else if ("lfs:Conditional".equals(conditionNode.getPrimaryNodeType().getName())) {
             final String comparator = conditionNode.getProperty("comparator").getString();
             final Node operandB = conditionNode.getNode("operandB");
             final Node operandA = conditionNode.getNode("operandA");
 
-            return evalOperands(operandA, operandB, comparator, sectionNode, prevNb);
+            return evalOperands(operandA, operandB, comparator, sectionNode, form);
         }
         // If all goes wrong
         return false;
     }
 
     public static boolean isConditionSatisfied(final Session resourceSession,
-        final NodeBuilder nb, final NodeBuilder prevNb) throws RepositoryException
+        final NodeBuilder answerSection, final NodeBuilder form) throws RepositoryException
     {
-        final Node sectionNode = getSectionNode(resourceSession, nb);
+        final Node sectionNode = getSectionNode(resourceSession, answerSection);
         if (sectionNode.hasNode("condition")) {
             final Node conditionNode = sectionNode.getNode("condition");
             /*
              * Recursively go through all children of the condition node and determine if this condition node evaluates
              * to True or False.
              */
-            if (evaluateConditionNodeRecursive(conditionNode, sectionNode, prevNb)) {
-                return true;
+            if (!evaluateConditionNodeRecursive(conditionNode, sectionNode, form)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private static long toLong(Object o)
