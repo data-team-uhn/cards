@@ -103,7 +103,7 @@ function Form (props) {
 
   useEffect(() => {
     let backgroundSave = () => {
-      if (data && lastSaveStatus === undefined) {
+      if (!saveInProgress && lastSaveStatus === undefined) {
         saveData();
       }
     }
