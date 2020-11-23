@@ -81,6 +81,9 @@ let ComputedQuestion = (props) => {
     if (typeof(value) === undefined || value === "") {
       missingValue = true;
     }
+    if (!isNaN(Number(value))) {
+      value = Number(value);
+    }
     return value;
   }
 
@@ -112,7 +115,7 @@ let ComputedQuestion = (props) => {
       let expressionArguments = ["form", "setError"].concat(parseResults[0]);
       result = new Function(expressionArguments, parseResults[2])
         (form, (errorMessage) => {expressionError = errorMessage}, ...parseResults[1]);
-      if (missingValue || typeof(result) === undefined || isNaN(result)) {
+      if (missingValue || typeof(result) === undefined || (typeof(result) === "number" && isNaN(result))) {
         result = "";
       }
     }
