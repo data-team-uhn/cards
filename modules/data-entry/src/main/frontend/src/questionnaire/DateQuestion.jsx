@@ -32,14 +32,16 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
-// This has a unique HTML date handler, so we export it for easier access
-export const MONTH_FORMAT = "yyyy-MM";
+export const MONTH_FORMATS = [
+  "yyyy-MM",
+  "MM-yyyy"
+]
 
 export const DATE_FORMATS = [
   "yyyy",
-  MONTH_FORMAT,
-  "yyyy-MM-dd"
-]
+  "yyyy-MM-dd",
+  "MM-dd-yyyy"
+].concat(MONTH_FORMATS);
 
 export const DATETIME_FORMATS = [
   "yyyy-MM-dd HH:mm",
@@ -103,14 +105,20 @@ function DateQuestion(props) {
   let {existingAnswer, type, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
   let {text, dateFormat} = {dateFormat: "yyyy-MM-dd", ...props.questionDefinition, ...props};
   let currentStartValue = existingAnswer && existingAnswer[1].value && Array.of(existingAnswer[1].value).flat()[0].split("T")[0] || null;
+
+  const isMonth = MONTH_FORMATS.includes(dateFormat);
+  const isDate = DATE_FORMATS.includes(dateFormat);
+
   const [selectedDate, changeDate] = useState(amendMoment(moment(currentStartValue), dateFormat));
   // FIXME There's no way to store the end date currently. Maybe add existingAnswer[1].endValue?
-  const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), dateFormat));
+  const [selectedEndDate, changeEndDate] = useState(isMonth ? "" : amendMoment(moment(), dateFormat));
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Invalid date");
+  const [incompleteDate, setIncompleteDate] = useState(null);
+  const [incompleteEndDate, setIncompleteEndDate] = useState(null);
   const upperLimitMoment = amendMoment(moment(upperLimit), dateFormat);
   const lowerLimitMoment = amendMoment(moment(lowerLimit), dateFormat);
-  const isMonth = dateFormat === DATE_FORMATS[1];
-  const isDate = DATE_FORMATS.includes(dateFormat);
+  const monthYearTest = new RegExp(/\d{4}\/(0[1-9]|10|11|12)/);
 
   // If we're given a year, instead supply the NumberQuestion widget
   if (dateFormat === DATE_FORMATS[0]) {
@@ -132,6 +140,11 @@ function DateQuestion(props) {
   // The default value of displayFormat, if not given, is dateFormat's value
   if (typeof displayFormat === "undefined") {
     displayFormat = dateFormat;
+  }
+
+  if (isMonth) {
+    displayFormat = "yyyy/MM/dd";
+    dateFormat = "yyyy-MM-dd";
   }
 
   // Check that the given date is within the upper/lower limit (if given)
@@ -164,16 +177,44 @@ function DateQuestion(props) {
     date.format(moment.HTML5_FMT.DATETIME_LOCAL);
   }
 
+  let validateMonthString = (value) => {
+    if (!monthYearTest.test(value)) {
+      setError(true);
+      setErrorMessage("Please enter a month in the format yyyy/MM, such as 2000/01");
+      setIncompleteDate(value);
+      value = "";
+    } else {
+      setError(false);
+      setIncompleteDate(null);
+      if (value !== "") {
+        value = value.replace("/", "-") + "-01";
+      }
+    }
+    return value;
+  }
+
   // Determine the granularity of the input textfield
-  const textFieldType = isMonth ? "month" :
+  const textFieldType = isMonth ? "text" :
     isDate ? "date" :
     "datetime-local";
 
   // Determine how to display the currently selected value
   const outputDate = amendMoment(selectedDate, displayFormat);
-  const outputDateString = momentToString(outputDate);
+  let outputDateString = momentToString(outputDate);
   const outputEndDate = amendMoment(selectedEndDate, displayFormat);
-  const outputEndDateString = momentToString(outputEndDate);
+  let outputEndDateString = momentToString(outputEndDate);
+  if (isMonth) {
+    if (incompleteDate) {
+      outputDateString = incompleteDate;
+    } else {
+      outputDateString = outputDateString.replace("-", "/");
+    }
+    if (incompleteEndDate) {
+      outputEndDateString = incompleteEndDate;
+    }
+    } else {
+      outputEndDateString = outputEndDateString.replace("-", "/");
+  }
   let outputAnswers = [["date", selectedDate.isValid() ? selectedDate.formatWithJDF(dateFormat) : '']];
   if (type === INTERVAL_TYPE) {
     outputAnswers.push(["endDate", selectedEndDate.isValid() ? selectedEndDate.formatWithJDF(dateFormat) : ''])
@@ -184,7 +225,7 @@ function DateQuestion(props) {
       text={text}
       {...rest}
       >
-      {error && <Typography color='error'>{errorText}</Typography>}
+      {error && <Typography color='error'>{errorMessage}</Typography>}
       <TextField
         type={textFieldType}
         className={classes.textField + " " + classes.answerField}
@@ -200,7 +241,11 @@ function DateQuestion(props) {
         }}
         onChange={
           (event) => {
-            let parsedDate = boundDate(amendMoment(event.target.value, dateFormat));
+            let value = event.target.value;
+            if (isMonth) {
+              value = validateMonthString(value);
+            }
+            let parsedDate = boundDate(amendMoment(value, dateFormat));
             changeDate(parsedDate);
 
             // Also fix the end date if it is earlier than the given start date
@@ -228,7 +273,11 @@ function DateQuestion(props) {
           }}
           onChange={
             (event) => {
-              let parsedDate = amendMoment(event.target.value, dateFormat);
+              let value = event.target.value;
+              if (isMonth) {
+                value = validateMonthString(value);
+              }
+              let parsedDate = amendMoment(value, dateFormat);
               changeEndDate(boundEndDate(parsedDate, selectedDate));
             }
           }
@@ -258,7 +307,6 @@ DateQuestion.propTypes = {
 };
 
 DateQuestion.defaultProps = {
-  errorText: "Invalid input",
   type: TIMESTAMP_TYPE
 };
 
