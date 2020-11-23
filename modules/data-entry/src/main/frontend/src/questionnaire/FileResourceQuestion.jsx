@@ -18,8 +18,7 @@
 //
 
 import React, { useState } from "react";
-import { Button, Grid, LinearProgress, Typography, withStyles } from "@material-ui/core";
-import BackupIcon from "@material-ui/icons/Backup";
+import { Grid, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
 
 import PropTypes from "prop-types";
 
@@ -43,13 +42,38 @@ import AnswerComponentManager from "./AnswerComponentManager";
 function FileResourceQuestion(props) {
   const { classes, existingAnswer, ...rest } = props;
   const { maxAnswers, namePattern } = { ...props.questionDefinition, ...props }
-  let [ uploadedFiles, setUploadedFiles ] = useState({});
+  let initialValues =
+    // Check whether or not we have an initial value
+    (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
+    // The value can either be a single value or an array of values; force it into a dictionary
+    Array.of(existingAnswer[1].value).flat();
+  let initialDict = {};
+  initialValues.forEach((value) => {initialDict[value] = value;});
+  let [ uploadedFiles, setUploadedFiles ] = useState(initialDict);
   let [ error, setError ] = useState();
   let [ uploadInProgress, setUploadInProgress ] = useState(false);
-  let [ uploadProgress, setUploadProgress ] = useState({});
-  let [ answerPath, setAnswerPath ] = useState("");
 
-  let answers = Object.values(uploadedFiles).map((filepath) => [filepath, filepath]);
+  // Default value of knownAnswers is the name of every field we can find in namePattern
+  let initialParsedAnswers = {};
+  if (namePattern) {
+    var varNamesRegex = /@{(.+?)}/g;
+    var varNames = [...namePattern.matchAll(varNamesRegex)].map((match) => match[1]);
+
+    var clearedNamesRegex = namePattern.replaceAll(varNamesRegex, "(.+)");
+    var nameRegex = new RegExp(clearedNamesRegex, "g");
+
+    // Match each of the values into our default initialParsedAnswers
+    initialValues.forEach((filename) => {
+      let results = [...filename.matchAll(nameRegex)].map((match) => match[1]);
+
+      // Determine which fields we have parsed out
+      initialParsedAnswers[filename] = results;
+    })
+  }
+
+  let [ knownAnswers, setKnownAnswers ] = useState(initialParsedAnswers);
+
+  let answers = Object.keys(uploadedFiles).map((filepath) => [uploadedFiles[filepath], filepath]);
   let writer = useFormUpdateWriterContext();
 
   // Add files to the pending state
@@ -61,7 +85,6 @@ function FileResourceQuestion(props) {
   let upload = (files) => {
     // TODO - handle possible logged out situation here - open a login popup
     setUploadInProgress(true);
-    setUploadProgress({});
     setError("");
 
     uploadAllFiles(files)
@@ -89,10 +112,6 @@ function FileResourceQuestion(props) {
     // Determine whether or not the filename matches the namePattern (if given)
     if (namePattern) {
       // Regex out variable names from the namePattern
-      var varNamesRegex = /@{(.+?)}/g;
-      var varNames = [...namePattern.matchAll(varNamesRegex)].map((match) => match[1]);
-      var clearedNamesRegex = namePattern.replaceAll(varNamesRegex, "(.+)");
-      var nameRegex = new RegExp(clearedNamesRegex, "g");
       var results = [...file['name'].matchAll(nameRegex)].map((match) => match[1]);
 
       // At this point, results contains each match, which all correspond to their respective entry in varNames
@@ -107,6 +126,13 @@ function FileResourceQuestion(props) {
         }
         return newCommands;
       });
+
+      // Determine which fields we have parsed out
+      setKnownAnswers((old) => {
+        let newAnswers = {...old};
+        newAnswers[file['name']] = results;
+        return newAnswers;
+      })
     }
 
     // TODO: Handle duplicate filenames
@@ -128,66 +154,6 @@ function FileResourceQuestion(props) {
       // Is the user logged out? Or did something else happen?
       setError(String(errorObj));
     });
-
-    /*return new Promise((resolve, reject) => {
-
-      var reader = new FileReader();
-      reader.readAsText(file);
-
-      //When the file finishes loading
-      console.log("C");
-      reader.onload = function(event) {
-
-        // get the file data
-        var csv = event.target.result;
-
-        let data = new FormData();
-        data.append(':contentType', 'json');
-        data.append(':operation', 'import');
-        data.append(':content', JSON.stringify(json));
-
-        var xhr = new XMLHttpRequest();
-        // TODO: Figure out where to store this file
-        xhr.open('POST', '/');
-
-        xhr.onload = function() {
-          console.log("Upload complete");
-          if (xhr.status != 201) {
-            uploadProgress[file.name] = { state: "error", percentage: 0 };
-            console.log("Error", xhr.statusText)
-          } else {
-            // state: "done" change should turn all subject inputs into the link text
-            uploadProgress[file.name] = { state: "done", percentage: 100 };
-
-            file.formPath = "/" + Object.keys(json).find(str => str.startsWith("Forms/"));
-            uploadedFiles[uploadedFiles.findIndex(el => el.name === file.name)] = file;
-            setUploadedFiles(uploadedFiles);
-          }
-
-          setUploadProgress(uploadProgress);
-          resolve(xhr.response);
-        }
-
-        xhr.onerror = function() {
-          uploadProgress[file.name] = { state: "error", percentage: 0 };
-          setUploadProgress(uploadProgress);
-          resolve(xhr.response);
-        }
-
-        xhr.upload.onprogress = function (event) {
-
-          if (event.lengthComputable) {
-            let done = event.position || event.loaded;
-            let total = event.totalSize || event.total;
-            let percent = Math.round((done / total) * 100);
-            const copy = { ...uploadProgress };
-            copy[file.name] = { state: "pending", percentage: percent };
-            setUploadProgress(copy);
-          }
-        }
-        xhr.send(data);
-      }
-    });*/
   };
 
   return (
@@ -206,84 +172,41 @@ function FileResourceQuestion(props) {
         multifile={maxAnswers != 1}
         />
 
-      <input type="hidden" name="*@TypeHint" value="nt:file" />
-      <label htmlFor="contained-button-file">
-        <Button onClick={upload} variant="contained" color="primary" disabled={uploadInProgress || !!error && uploadedFiles.length == 0} className={classes.uploadButton}>
-          <span><BackupIcon className={classes.buttonIcon}/>
-            {uploadInProgress ? 'Uploading' :
-                // TODO - judge upload status button message over all upload statuses of all files ??
-                // uploadProgress[file.name].state =="done" ? 'Uploaded' :
-                // uploadProgress[file.name].state =="error" ? 'Upload failed, try again?' :
-                'Upload'}
-          </span>
-        </Button>
-      </label>
-      { uploadedFiles && uploadedFiles.length > 0 && <span>
-      <Typography variant="h6" className={classes.fileInfo}>Selected files info</Typography>
+      { error && <Typography variant="error">error</Typography>}
 
-      { uploadedFiles.map( (file, i) => {
-
-          const upprogress = uploadProgress ? uploadProgress[file.name] : null;
-
-          return (
-            <div key={file.name} className={classes.fileInfo}>
-              <div>
-                <span>File <span className={classes.fileName}>{file.name}:</span></span>
-                { upprogress && upprogress.state != "error" &&
-                  <span>
-                    <div className={classes.progressBar}>
-                      <div className={classes.progress} style={{ width: upprogress.percentage + "%" }} />
-                    </div>
-                    { upprogress.percentage + "%" }
-                  </span>
-                }
-                { upprogress && upprogress.state == "error" && <Typography color='error'>Error uploading file</Typography> }
-              </div>
-              { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ? 
-                <Typography className={classes.fileDetail}>
-                  { file.formPath && <span>Form: <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank"> {file.formPath.replace("/Forms/", "")} </Link></span> }
-                </Typography>
-              : <span>
-                <TextField
-                  label="File:"
-                  value={""}
-                  onChange={(event) => setSubject(event.target.value, file.name)}
-                  className={classes.fileDetail}
-                  required
-                />
-                </span>
-              }
-              <Typography variant="body1" component="div" className={classes.fileInfo}>
-                  {(!file.sameFiles || file.sameFiles.length == 0)
-                      ?
-                     <p>There are no versions of this file.</p>
-                      :
-                     <span>
-                         <p>Other versions of this file :</p>
-                         <ul>
-                           {file.sameFiles && file.sameFiles.map( (samefile, index) => {
-                            return (
-                             <li key={index}>
-                               Uploaded at {moment(samefile["jcr:created"]).format("dddd, MMMM Do YYYY")} by {samefile["jcr:createdBy"]}
-                               <IconButton size="small" color="primary">
-                                 <a href={samefile["@path"]} download><GetApp /></a>
-                               </IconButton>
-                             </li>
-                           )})}
-                         </ul>
-                     </span>
-                   }
-              </Typography>
+      { uploadedFiles && Object.values(uploadedFiles).length > 0 && <span>
+        <Typography variant="h6" className={classes.fileInfo}>Selected files info</Typography>
+        {Object.keys(uploadedFiles).map((filepath) =>
+          <React.Fragment key={filepath}>
+            <div>
+              <span>File </span>
+              <Link href={uploadedFiles[filepath]} target="_blank" rel="noopener">
+                {filepath}
+              </Link>:
             </div>
-        ) } ) }
-                  </span>}
+            <span>
+              {
+                varNames.map((name, idx) => (
+                  <TextField
+                    label={name}
+                    value={knownAnswers?.[filepath]?.[idx]}
+                    className={classes.fileDetail}
+                    key={name}
+                    readOnly
+                  />
+                ))
+              }
+            </span>
+            <br />
+          </React.Fragment>
+        )}
+      </span>}
       <Answer
         answers={answers}
         questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
         answerNodeType="lfs:FileResourceAnswer"
         valueType="path"
-        onDecidedOutputPath={setAnswerPath}
         {...rest}
         />
     </Question>);
