@@ -394,7 +394,7 @@ function FormData(props) {
     if (existingQuestionAnswer && existingQuestionAnswer[1]["value"] && (displayed < maxDisplayed)) {
       // Check for a label and use the label instead of the value, if present
       let existingQuestionAnswerValue = existingQuestionAnswer[1]["value"];
-      let answerValue = entryDefinition[existingQuestionAnswerValue]["label"]
+      let answerValue = entryDefinition[existingQuestionAnswerValue]?.["label"]
         ? entryDefinition[existingQuestionAnswerValue]["label"]
         : existingQuestionAnswerValue;
       let content = `${questionTitle}: ${answerValue}`;
