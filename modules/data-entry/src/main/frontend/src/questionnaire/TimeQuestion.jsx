@@ -26,15 +26,17 @@ import PropTypes from "prop-types";
 import Answer from "./Answer";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
+import TextQuestion from "./TextQuestion";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
 class Time {
-  constructor (timeString) {
+  constructor (timeString, isMinuteSeconds = true) {
     if (typeof(timeString) === "string" && timeString.length === 5 && timeString.charAt(2) === ':') {
       let values = timeString.split(":");
-      this.hours = parseInt(values[0]);
-      this.minutes = parseInt(values[1]);
+      this.isMinuteSeconds = isMinuteSeconds;
+      this.first = parseInt(values[0]);
+      this.second = parseInt(values[1]);
       this.isValid = this.checkValid();
     } else {
       this.isValid = false;
@@ -42,10 +44,9 @@ class Time {
   }
 
   checkValid() {
-    return typeof(this.hours) === "number"
-      && typeof(this.minutes) === "number"
-      && this.hours < 24 && this.hours >= 0
-      && this.minutes < 60 && this.minutes >= 0
+    let firstValid = typeof(this.first) === "number" && this.first >= 0 && this.first < (this.isMinuteSeconds ? 60 : 24)
+    let secondValid = typeof(this.second) === "number" && this.second < 60 && this.second >= 0;
+    return firstValid && secondValid;
   }
 
   numberToDoubleDigit(num) {
@@ -54,11 +55,11 @@ class Time {
   }
 
   toString() {
-    return this.isValid ? `${this.numberToDoubleDigit(this.hours)}:${this.numberToDoubleDigit(this.minutes)}` : ""
+    return this.isValid ? `${this.numberToDoubleDigit(this.first)}:${this.numberToDoubleDigit(this.second)}` : ""
   }
 
   valueOf() {
-    return this.isValid ? (this.hours*60 + this.minutes) : undefined;
+    return this.isValid ? (this.first*60 + this.second) : undefined;
   }
 }
 
@@ -68,35 +69,39 @@ class Time {
 //
 // Optional props:
 // text: the question to be displayed
-// lowerLimit: lower time limit (inclusive) given as a string in the format HH:mm
-// upperLimit: upper date limit (inclusive) given as a string in the format HH:mm
+// lowerLimit: lower time limit (inclusive) given as a string in the format HH:mm or mm:ss
+// upperLimit: upper date limit (inclusive) given as a string in the format HH:mm or mm:ss
 // errorText: text to be displayed if the input time is not within the specified range
 // Other options are passed to the <question> widget
 //
 // Sample usage:
 //<TimeQuestion
 //  text="Please enter a time after noon"
-//  lowerLimit={new Date("12:01")}
-//  upperLimit={new Date("23:59")}
+//  lowerLimit={"12:01"}
+//  upperLimit={"23:59"}
 //  />
 function TimeQuestion(props) {
   let {existingAnswer, classes, ...rest} = props;
-  let {text, lowerLimit, upperLimit, errorText, minAnswers} = {...props.questionDefinition, ...props};
+  let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {...props.questionDefinition, ...props};
   let currentStartValue = (existingAnswer && existingAnswer[1].value && new Time(existingAnswer[1].value).isValid)
     ? existingAnswer[1].value : "";
   const [selectedTime, changeTime] = useState(currentStartValue);
   const [error, setError] = useState(undefined);
+  const defaultErrorMessage = errorText || "Please enter a valid time";
+  const [errorMessage, setErrorMessage] = useState(defaultErrorMessage);
   const lowerTime = new Time(lowerLimit);
   const upperTime = new Time(upperLimit);
-
-  if (!errorText) {
-    errorText = "Please enter a valid time";
-  }
+  const isMinuteSeconds = typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "mm:ss";
+  const minuteSecondTest = new RegExp(/([0-5]\d):([0-5]\d)/);
 
   let checkError = (timeString) => {
-    let time = new Time(timeString);
-    if ((minAnswers > 0 && !time.isValid) || (upperLimit && upperTime < time) || (lowerLimit && lowerTime > time)) {
+    let time = new Time(timeString, isMinuteSeconds);
+    if (isMinuteSeconds && !minuteSecondTest.test(timeString)) {
       setError(true);
+      setErrorMessage("Please enter a time in the format mm:ss, such as 01:23");
+    } else if ((minAnswers > 0 && !time.isValid) || (upperLimit && upperTime < time) || (lowerLimit && lowerTime > time)) {
+      setError(true);
+      setErrorMessage(defaultErrorMessage)
     } else {
       setError(false);
     }
@@ -113,9 +118,10 @@ function TimeQuestion(props) {
       text={text}
       {...rest}
       >
-      {error && <Typography color='error'>{errorText}</Typography>}
+      {error && <Typography color='error'>{errorMessage}</Typography>}
       <TextField
-        type="time"
+        /* time input is hh:mm or hh:mm:ss only */
+        type={isMinuteSeconds ? "text" : "time"}
         className={classes.textField + " " + classes.answerField}
         InputLabelProps={{
           shrink: true,
@@ -151,7 +157,8 @@ TimeQuestion.propTypes = {
   minAnswers: PropTypes.number,
   lowerLimit: PropTypes.string,
   upperLimit: PropTypes.string,
-  errorText: PropTypes.string
+  errorText: PropTypes.string,
+  dateFormat: PropTypes.string
 };
 
 const StyledTimeQuestion = withStyles(QuestionnaireStyle)(TimeQuestion);

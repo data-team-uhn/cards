@@ -56,7 +56,8 @@
         "lowerLimit": "string",
         "upperLimit": "string",
         "minAnswers": "long",
-        "errorText": "string"
+        "errorText": "string",
+        "dateFormat": "string"
       }
     }
   }
