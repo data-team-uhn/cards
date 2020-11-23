@@ -17,6 +17,7 @@
   under the License.
 */-->
 <!--/*
-  Simple serialization of resources as JSON.
+  Custom serialization of resources as JSON.
+  See the description of ca.sickkids.ccm.lfs.serialize.ResourceToJsonAdapterFactory for ways to customize the resulting JSON.
 */-->
 <sly data-sly-use.json="javax.json.JsonObject">${json.toString @ context='unsafe'}</sly>
