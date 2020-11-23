@@ -230,7 +230,7 @@ function NewFormDialog(props) {
                 ]}
                 data={query => {
                   let url = new URL("/query", window.location.origin);
-                  url.searchParams.set("query", `select * from [lfs:Questionnaire] as n${query.search ? ` WHERE CONTAINS(n, '*${query.search}*')` : ""}`);
+                  url.searchParams.set("query", `select * from [lfs:Questionnaire] as n${query.search ? ` WHERE CONTAINS(n.*, '*${query.search}*')` : ""}`);
                   url.searchParams.set("limit", query.pageSize);
                   url.searchParams.set("offset", query.page*query.pageSize);
                   return fetch(url)
@@ -247,7 +247,6 @@ function NewFormDialog(props) {
                   search: true,
                   actionsColumnIndex: -1,
                   addRowPosition: 'first',
-                  pageSize: 10,
                   rowStyle: rowData => ({
                     // /* It doesn't seem possible to alter the className from here */
                     backgroundColor: (selectedQuestionnaire?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
