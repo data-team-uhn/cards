@@ -25,6 +25,7 @@ import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
+import MaterialTable from 'material-table';
 
 import {
   CircularProgress,
@@ -38,6 +39,7 @@ import {
   Button,
 } from "@material-ui/core";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
+import EditButton from "../dataHomepage/EditButton.jsx";
 
 const QUESTION_TYPES = ["lfs:Question"];
 const SECTION_TYPES = ["lfs:Section"];
@@ -327,52 +329,50 @@ function SubjectMember (props) {
         { subjectGroups &&
           Object.keys(subjectGroups).map( (questionnaireName, j) => {
             return(<React.Fragment key={questionnaireName}>
-	          <Typography variant="h4" className={classes.subjectQuestionnaireSubheader}>
-		        {questionnaireName}
-		      </Typography>
-		      <Grid container spacing={3}>
-		        { subjectGroups[questionnaireName].map( (entry, i) => {
-	              return(
-	                <Grid item lg={12} xl={6} key={`${entry.questionnaire["jcr:uuid"]}-${i}`}>
-	                  <Card className={classes.subjectCard}>
-	                    <CardHeader
-	                      title={
-	                        <React.Fragment>
-	                          <Button size={buttonSize} className={classes.subjectFormHeaderButton}>
-	                            {moment(entry["jcr:created"]).format("yyyy-MM-DD")}
-	                          </Button>
-	                          {entry["statusFlags"].map((status) => {
-	                            return <Chip
-	                              key={status}
-	                              label={wordToTitleCase(status)}
-	                              className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
-	                              size="small"
-	                            />
-	                          })}
-	                        </React.Fragment>
-	                      }
-	                      className={classes.subjectFormHeader}
-	                      action={
-	                        <DeleteButton
-	                          entryPath={entry["@path"]}
-	                          entryName={`${identifier}: ${entry.questionnaire["@name"]}`}
-	                          entryType="Form"
-	                          warning={entry ? entry["@referenced"] : false}
-	                        />
-	                      }
-	                    />
-	                    <CardContent>
-	                      <FormData formID={entry["@name"]} maxDisplayed={maxDisplayed}/>
-	                      <Link to={"/content.html" + entry["@path"]}>
-	                        <Typography variant="body2" component="p">See More...</Typography>
-	                      </Link>
-	                    </CardContent>
-	                  </Card>
-	                </Grid>
-	              )
-	            })}
-	          </Grid>
-	        </React.Fragment>)
+              <MaterialTable
+                title=""
+                style={{ boxShadow : 'none' }}
+                options={{
+                  actionsColumnIndex: -1,
+                  emptyRowsWhenPaging: false
+                }}
+                columns={[
+                  { title: 'Created', render: rowData => <Link to={"/content.html" + rowData["@path"]}>
+                                                           {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
+                                                         </Link> },
+                  { title: 'Status', render: rowData => <React.Fragment>
+                                                          {rowData["statusFlags"].map((status) => {
+                                                            return <Chip
+                                                              key={status}
+                                                              label={wordToTitleCase(status)}
+                                                              className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
+                                                              size="small"
+                                                            />
+                                                          })}
+                                                        </React.Fragment> },
+                  { title: 'Summary', render: rowData => <CardContent>
+                                                           <FormData formID={rowData["@name"]} maxDisplayed={maxDisplayed}/>
+                                                         </CardContent> },
+                  ]}
+                data={subjectGroups[questionnaireName]}
+                actions={[
+                    rowData => ({
+                    icon: () => <EditButton
+                                  entryPath={rowData["@path"]}
+                                  entryType="Form"
+                                 />
+                  }),
+                  rowData => ({
+                    icon: () => <DeleteButton
+                                  entryPath={rowData["@path"]}
+                                  entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
+                                  entryType="Form"
+                                  warning={rowData ? rowData["@referenced"] : false}
+                                />
+                  })
+                 ]}
+               />
+            </React.Fragment>)
           })
         }
       </Grid>
