@@ -67,7 +67,7 @@ function UserDashboard(props) {
     setInitialized(true);
 
     // Fetch the questionnaires
-    fetch(`/query?limit=${numberForms || 11}&query=select * from [lfs:Questionnaire]`)
+    fetch(`/query?${numberForms ? `limit=${numberForms}&`:""}query=select * from [lfs:Questionnaire]`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
         if (response.totalrows == 0) {
