@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>Visits 1, 5, 6, 8</value>
+		<value>Visits 1,5,6,8</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -61,6 +61,11 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -704,6 +709,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -1209,6 +1219,11 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
 			<node>
 				<name>Patient-reported not taking</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
@@ -1666,6 +1681,11 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<node>

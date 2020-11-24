@@ -18,7 +18,7 @@
 -->
 
 <node>
-	<name>Baseline Health Information - Cardiovascular</name>
+	<name>Baseline Health Information - Cardiovascular parameters</name>
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>Visits 1, 5, 6, 8</value>
+		<value>Visits 1,5,6, 8</value>
 		<type>String</type>
 	</property>
 	<property>

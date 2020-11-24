@@ -186,6 +186,7 @@ def insert_expression(question, expression):
 # Creates lfs:AnswerOptions from the CSV in 'Categorical List'
 def insert_options(question, row):
     option_list = options_list(row['Options (if applicable)'])
+    question.update({'displayMode': 'list'})
     for option in option_list:
         value = option
         if option.lower() == "other":

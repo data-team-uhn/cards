@@ -88,6 +88,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -328,6 +333,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -377,6 +387,11 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -432,6 +447,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -481,6 +501,11 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -536,6 +561,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -585,6 +615,11 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -640,6 +675,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -689,6 +729,11 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -744,6 +789,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -793,6 +843,11 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -848,6 +903,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -897,6 +957,11 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1082,6 +1147,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -1173,6 +1243,11 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1270,6 +1345,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -1361,6 +1441,11 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1458,6 +1543,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -1549,6 +1639,11 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
