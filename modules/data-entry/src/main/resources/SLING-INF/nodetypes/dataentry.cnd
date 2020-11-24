@@ -214,6 +214,9 @@
   // We allow users to place these answers in a Notes section
   - enableNotes (boolean)
 
+  // For computed answers, the expression used to calculate the value
+  - expression (string)
+
   // Since not all properties are mandatory, customizing a question requires defining only
   // the properties of interest.
   //
