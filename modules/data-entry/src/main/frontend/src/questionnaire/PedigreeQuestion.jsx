@@ -100,6 +100,7 @@ function PedigreeQuestion(props) {
 
   var closePedigree = function () {
     window.pedigreeEditor.unload();
+    typeof(props.onChange) == 'function' && props.onChange();
     delete window.pedigreeEditor;
   };
 
