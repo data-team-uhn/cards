@@ -98,5 +98,39 @@
             "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
             "lfs:defaultOrder": 5
         }
+    },
+    "DashboardViews": {
+        "jcr:primaryType": "sling:Folder",
+        "FormView": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/dashboardviews/entry",
+            "lfs:extensionName": "Form View",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.FormView.js",
+            "lfs:defaultOrder": 2
+        },
+        "SubjectView": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/dashboardviews/entry",
+            "lfs:extensionName": "Subject View",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectView.js",
+            "lfs:defaultOrder": 1
+        }
+    },
+    "DashboardCreation": {
+        "jcr:primaryType": "sling:Folder",
+        "NewFormDialog": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/dashboardcreation/entry",
+            "lfs:extensionName": "New Form",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.NewFormDialog.js",
+            "lfs:defaultOrder": 2
+        },
+        "NewSubjectDialog": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/dashboardcreation/entry",
+            "lfs:extensionName": "New Subject",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectSelector.js?component=NewSubjectDialog",
+            "lfs:defaultOrder": 1
+        }
     }
 }

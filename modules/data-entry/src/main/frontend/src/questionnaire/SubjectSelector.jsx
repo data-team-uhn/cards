@@ -320,7 +320,7 @@ export function NewSubjectDialog (props) {
       let subjectId = getSubjectIdFromPath(subject);
       if (openNewSubject && subjectId) {
         history.push({
-          pathname: window.location.pathname + "/" + subjectId
+          pathname: "/content.html/Subjects/" + subjectId
         });
         return;
       } else {
