@@ -59,6 +59,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     // actual parent node of those properties, so we must manually keep track of the current node.
     private final NodeBuilder currentNodeBuilder;
 
+    private final NodeBuilder form;
+
     // A ResourceResolver object is passed in during the initialization of this object. This ResourceResolver
     // is later used for obtaining the constraints on the answers submitted to a question.
     private final ResourceResolver currentResourceResolver;
@@ -75,12 +77,20 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      * @param nodeBuilder a list of NodeBuilder objects starting from the root of the JCR tree and moving down towards
      *            the current node.
      * @param resourceResolver a ResourceResolver object used to obtain answer constraints
+     * @param form the form node found up the tree, if any; may be {@code null} if no form node has been encountered so
+     *            far
      */
-    public AnswerCompletionStatusEditor(final List<NodeBuilder> nodeBuilder, final ResourceResolver resourceResolver)
+    public AnswerCompletionStatusEditor(final List<NodeBuilder> nodeBuilder, final NodeBuilder form,
+        final ResourceResolver resourceResolver)
     {
         this.currentNodeBuilderPath = nodeBuilder;
         this.currentNodeBuilder = nodeBuilder.get(nodeBuilder.size() - 1);
         this.currentResourceResolver = resourceResolver;
+        if (isForm(this.currentNodeBuilder)) {
+            this.form = this.currentNodeBuilder;
+        } else {
+            this.form = form;
+        }
     }
 
     // Called when a new property is added
@@ -166,7 +176,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         }
         final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new AnswerCompletionStatusEditor(tmpList, this.currentResourceResolver);
+        return new AnswerCompletionStatusEditor(tmpList, this.form, this.currentResourceResolver);
     }
 
     @Override
@@ -175,15 +185,14 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     {
         final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new AnswerCompletionStatusEditor(tmpList, this.currentResourceResolver);
+        return new AnswerCompletionStatusEditor(tmpList, this.form, this.currentResourceResolver);
     }
 
     @Override
     public void leave(NodeState before, NodeState after)
         throws CommitFailedException
     {
-        final String nodeType = this.currentNodeBuilder.getProperty("jcr:primaryType").getValue(Type.STRING);
-        if ("lfs:Form".equals(nodeType) || "lfs:AnswerSection".equals(nodeType)) {
+        if (isForm(this.currentNodeBuilder) || isSection(this.currentNodeBuilder)) {
             try {
                 summarize();
             } catch (RepositoryException e) {
@@ -253,8 +262,13 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         return false;
     }
 
-    private void summarize()
-        throws RepositoryException
+    /**
+     * Gather all status flags from all the (satisfied) descendants of the current node and store them as the status
+     * flags of the current node.
+     *
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private void summarize() throws RepositoryException
     {
         // Iterate through all children of this node
         final Iterator<String> childrenNames = this.currentNodeBuilder.getChildNodeNames().iterator();
@@ -264,10 +278,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         while (childrenNames.hasNext()) {
             final String selectedChildName = childrenNames.next();
             final NodeBuilder selectedChild = this.currentNodeBuilder.getChildNode(selectedChildName);
-            if ("lfs:AnswerSection".equals(selectedChild.getProperty("jcr:primaryType").getValue(Type.STRING))) {
+            if (isSection(selectedChild)) {
                 final Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
-                if (!ConditionalSectionUtils.isConditionSatisfied(
-                    resourceSession, selectedChild, this.currentNodeBuilder)) {
+                if (!ConditionalSectionUtils.isConditionSatisfied(resourceSession, selectedChild, this.form)) {
                     continue;
                 }
             }
@@ -296,5 +309,38 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         }
         // Write these statusFlags to the JCR repo
         this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
+    }
+
+    /**
+     * Checks if the given node is a Form node.
+     *
+     * @param node the JCR Node to check
+     * @return {@code true} if the node is a Form node, {@code false} otherwise
+     */
+    private boolean isForm(NodeBuilder node)
+    {
+        return "lfs:Form".equals(getNodeType(node));
+    }
+
+    /**
+     * Checks if the given node is an AnswerSection node.
+     *
+     * @param node the JCR Node to check
+     * @return {@code true} if the node is an AnswerSection node, {@code false} otherwise
+     */
+    private boolean isSection(NodeBuilder node)
+    {
+        return "lfs:AnswerSection".equals(getNodeType(node));
+    }
+
+    /**
+     * Retrieves the primary node type of a node, as a String.
+     *
+     * @param node the node whose type to retrieve
+     * @return a string
+     */
+    private String getNodeType(NodeBuilder node)
+    {
+        return node.getProperty("jcr:primaryType").getValue(Type.STRING);
     }
 }

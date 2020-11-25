@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Card,
@@ -51,8 +51,22 @@ let QuestionnaireItemCard = (props) => {
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
+
+  const itemRef = useRef();
+  // if autofocus is needed and specified in the url
+  const doHighlight = (location?.hash?.substr(1) == data["@path"]);
+  // create a ref to store the question container DOM element
+  useEffect(() => {
+    if (doHighlight) {
+      const timer = setTimeout(() => {
+          itemRef?.current?.scrollIntoView({block: "center"});
+        }, 500);
+        return () => clearTimeout(timer);
+    }
+  }, [itemRef]);
+
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" ref={doHighlight ? itemRef : undefined} className={doHighlight ? classes.focusedQuestionnaireItem : ''}>
       <QuestionnaireCardHeader
         avatar={avatar}
         avatarColor={avatarColor}

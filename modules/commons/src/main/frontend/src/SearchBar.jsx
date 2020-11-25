@@ -152,7 +152,7 @@ function SearchBar(props) {
     const {resultData} = props;
     let ResultConstructor = resultConstructor;
     return resultData["jcr:primaryType"] && (
-      <ResultConstructor resultData={resultData} />
+      <ResultConstructor resultData={resultData} classes={classes}/>
     ) || (
        <ListItemText
           primary={resultData.name || ''}

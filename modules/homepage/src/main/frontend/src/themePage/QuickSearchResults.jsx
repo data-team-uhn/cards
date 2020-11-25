@@ -19,76 +19,35 @@
 import React from "react";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import HeaderStyle from "../headerStyle.jsx";
-import { getEntityIdentifier } from "./EntityIdentifier.jsx";
+import { QuickSearchMatch, QuickSearchIdentifier } from "./Navbars/QuickSearchIdentifier.jsx";
 
 import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
-import { Link } from "react-router-dom";
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
 const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
-const LFS_QUERY_MATCH_PATH_KEY = "@path";
-// Properties of the quick search result metadata
-const LFS_QUERY_QUESTION_KEY = "question";
-const LFS_QUERY_MATCH_BEFORE_KEY = "before";
-const LFS_QUERY_MATCH_TEXT_KEY = "text";
-const LFS_QUERY_MATCH_AFTER_KEY = "after";
-const LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
 
 function QuickSearchResults(props) {
-
   const { classes } = props;
 
   const url = new URL(window.location);
-
   const anchor = url.searchParams.get('query');
   const allowedResourceTypes = url.searchParams.getAll('allowedResourceTypes');
-
-  // Display how the query matched the result
-  function QuickSearchMatch(resultData) {
-    const matchData = resultData[LFS_QUERY_MATCH_KEY];
-    // Adjust the question text to reflect the notes, if the match was on the notes
-    let questionText = matchData[LFS_QUERY_QUESTION_KEY] + (matchData[LFS_QUERY_MATCH_NOTES_KEY] ? " / Notes" : "");
-    return matchData && (
-      <React.Fragment>
-        <span className={classes.queryMatchKey}>{questionText}</span>
-        <span className={classes.queryMatchSeparator}>: </span>
-        <span className={classes.queryMatchBefore}>{matchData[LFS_QUERY_MATCH_BEFORE_KEY]}</span>
-        <span className={classes.highlightedText}>{matchData[LFS_QUERY_MATCH_TEXT_KEY]}</span>
-        <span className={classes.queryMatchAfter}>{matchData[LFS_QUERY_MATCH_AFTER_KEY]}</span>
-      </React.Fragment>
-    ) || null
-  }
-
-  // Display the result identifier with link to result section
-  function QuickSearchIdentifier(resultData) {
-    let anchorPath = resultData[LFS_QUERY_MATCH_KEY]?[LFS_QUERY_MATCH_PATH_KEY] : '';
-    let fullPath = `/content.html${resultData["@path"]}#${anchorPath}`;
-    if (resultData["jcr:primaryType"] == "lfs:Questionnaire") {
-      fullPath = `/content.html/admin${resultData["@path"]}#${anchorPath}`;
-    }
-    return (<Link to={fullPath}>{getEntityIdentifier(resultData)}</Link>);
-  }
 
   const columns = [
     {
       "key": "",
       "label": "Identifier",
-      "format": QuickSearchIdentifier,
+      "format": (row) => (<QuickSearchIdentifier resultData={row} hideMatchInfo={true} classes={classes}></QuickSearchIdentifier>),
     },
     {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
-    },
-    {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
+      "key": "",
+      "label": "Resource type",
+      "format": (row) => (row.type?.label || row["jcr:primaryType"]?.replace(/lfs:/,"") || ''),
     },
     {
       "key": "",
       "label": "Match",
-      "format": QuickSearchMatch,
+      "format": (row) => (<QuickSearchMatch matchData={row[LFS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>),
     },
   ]
 

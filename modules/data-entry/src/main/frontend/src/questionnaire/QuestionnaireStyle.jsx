@@ -92,8 +92,7 @@ const questionnaireStyle = theme => ({
         padding: theme.spacing(1, 1),
     },
     pedigreeThumbnail: {
-        width: "100%",
-        height: "100%"
+        display: "inline-block",
     },
     pedigreeSmallSVG: {
         cursor: "pointer",
@@ -362,6 +361,11 @@ const questionnaireStyle = theme => ({
             paddingLeft: 0,
             paddingTop: 0,
         }
+    },
+    focusedQuestionnaireItem: {
+      borderColor: theme.palette.warning.light,
+      borderWidth: '2px',
+      borderStyle: 'solid',
     },
     hierarchyEditButton: {
         marginLeft: theme.spacing(1)
