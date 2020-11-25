@@ -106,15 +106,12 @@ function Form (props) {
       }
     }
     window.addEventListener("beforeunload", backgroundSave);
-    const timer = setInterval(backgroundSave, 10000);
+    backgroundSave();
     // When component unmounts:
     return (() => {
-      // One final save
-      backgroundSave();
       window.removeEventListener("beforeunload", backgroundSave);
-      clearInterval(timer);
     });
-  });
+  }, [lastSaveStatus]);
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
