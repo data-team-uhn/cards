@@ -2,3 +2,4 @@ docker-compose.yml
 initializer/initialize_all.sh
 mongos/mongo-router.conf
 shard*
+NCR_MODEL
