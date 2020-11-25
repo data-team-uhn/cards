@@ -25,6 +25,7 @@ import { withStyles } from '@material-ui/core';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
+import Page from "./Page";
 import PageStart from "./PageStart/PageStart";
 import IndexStyle from "./indexStyle.jsx";
 
@@ -76,7 +77,12 @@ class Main extends React.Component {
             render={(props) => {
                 let ThisComponent = route["lfs:extensionRender"];
                 let newProps = {...props, contentOffset: this.state.contentOffset };
-                return (<ThisComponent {...newProps} />);
+                let title = "LFS - " + route["lfs:extensionName"];
+                return (
+                  <Page title={title}>
+                    <ThisComponent {...newProps} />
+                  </Page>
+                  );
               }
             }
             key={key}
