@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>Visits 1,5,6, 8</value>
+		<value>Visits 1, 5, 6, 8</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -50,6 +50,25 @@
 			<value>Cardiovascular parameters</value>
 			<type>String</type>
 		</property>
+		<node>
+			<name>cardiovascular-visit</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Visit Number</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
 		<node>
 			<name>resting_sbp</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>

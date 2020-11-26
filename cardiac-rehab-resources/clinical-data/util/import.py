@@ -195,8 +195,8 @@ def insert_options(question, row):
             options = option.split('=')
             answer_option = {option.replace("/", "-"): {
                 'jcr:primaryType': 'lfs:AnswerOption',
-                'label': options[1],
-                'value': options[0]
+                'label': options[1].strip(),
+                'value': options[0].strip()
             }}
             question.update(answer_option)
         else:
@@ -281,14 +281,18 @@ def csv_to_json(title):
                 num_submisssions = parse_count(row['Report Type'])
                 if num_submisssions != -1:
                     questionnaire['maxPerSubject'] = num_submisssions
-                    questionnaire['description'] = parse_description(row['Report Type'])
+                    description = parse_description(row['Report Type'])
+                    if (len(description) > 0):
+                        questionnaire['description'] = description
                 questionnaire['title'] = clean_title(row['Report Type'])
                 questionnaire['jcr:reference:requiredSubjectTypes'] = ["/SubjectTypes/Patient"]
             elif len(questionnaire) == 0:
                 num_submisssions = parse_count(title)
-                if num_submisssions != -1:
+                if num_submisssions != 1:
                     questionnaire['maxPerSubject'] = num_submisssions
-                    questionnaire['description'] = parse_description(title)
+                    description = parse_description(title)
+                    if (len(description) > 0):
+                        questionnaire['description'] = description
                 questionnaire['jcr:primaryType'] = 'lfs:Questionnaire'
                 questionnaire['title'] = clean_title(title)
                 questionnaire['maxPerSubject'] = parse_count(title)
@@ -303,13 +307,16 @@ def csv_to_json(title):
                     questionnaires.append(dict.copy(questionnaire))
                     questionnaire = dict.copy(main_questionnaire)
                     main_questionnaire = {}
-                if num_submisssions > 1 and num_submisssions != questionnaire['maxPerSubject']:
+                parent_submission_limit = questionnaire['maxPerSubject'] if 'maxPerSubject' in questionnaire else -1
+                if num_submisssions != 1 and num_submisssions != parent_submission_limit:
                     main_questionnaire = dict.copy(questionnaire)
                     questionnaire = {}
                     questionnaire['jcr:primaryType'] = 'lfs:Questionnaire'
                     if num_submisssions != -1:
                         questionnaire['maxPerSubject'] = num_submisssions
-                        questionnaire['description'] = parse_description(row['Sub-report'])
+                        description = parse_description(row['Sub-report'])
+                        if (len(description) > 0):
+                            questionnaire['description'] = description
                     questionnaire['title'] = main_questionnaire['title'] + ": " + clean_title(row['Sub-report'])
                     questionnaire['jcr:reference:requiredSubjectTypes'] = ["/SubjectTypes/Patient"]
                 section['jcr:primaryType'] = 'lfs:Section'

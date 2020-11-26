@@ -51,6 +51,25 @@
 			<type>String</type>
 		</property>
 		<node>
+			<name>survey-visit</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Visit Number</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
 			<name>pal_date</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
@@ -70,6 +89,11 @@
 			</property>
 			<property>
 				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
@@ -107,12 +131,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Avoid walking or exercise (e.g. always use elevators, drive whenever possible instead of walking)</value>
+					<value>Avoid walking or exercise (e.g. always use elevators, drive whenever possible instead of walking)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>0 </value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -121,12 +145,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Walking for pleasure, routinely use stairs, occasionally exercise sufficiently to use heavy breathing or perspiration</value>
+					<value>Walking for pleasure, routinely use stairs, occasionally exercise sufficiently to use heavy breathing or perspiration</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>1 </value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -135,12 +159,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> 10-60 min per week of recreational activity (e.g. golf, bowling, yard work)</value>
+					<value>10-60 min per week of recreational activity (e.g. golf, bowling, yard work)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>2 </value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -149,12 +173,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Over 1 hour per week of recreational activity (e.g. golf, bowling, yard work)</value>
+					<value>Over 1 hour per week of recreational activity (e.g. golf, bowling, yard work)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>3 </value>
+					<value>3</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -163,12 +187,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Run less than 1 mile per week, or spend less than 30 minutes in comparable physical activity per week</value>
+					<value>Run less than 1 mile per week, or spend less than 30 minutes in comparable physical activity per week</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>4 </value>
+					<value>4</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -177,12 +201,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Run 1 to 5 miles, walk 3 to 6 miles or spend 30 to 60 minutes in comparable physical activity per week</value>
+					<value>Run 1 to 5 miles, walk 3 to 6 miles or spend 30 to 60 minutes in comparable physical activity per week</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>5 </value>
+					<value>5</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -191,12 +215,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Run 5 to 10 miles, walk 7 to 13 miles, or spend 1 to 3 hours in comparable physical activity per week</value>
+					<value>Run 5 to 10 miles, walk 7 to 13 miles, or spend 1 to 3 hours in comparable physical activity per week</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>6 </value>
+					<value>6</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -205,12 +229,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> 11 to 15 miles, walk 14 to 20 miles or spend 3 to 5 hours in comparable physical activity per week</value>
+					<value>11 to 15 miles, walk 14 to 20 miles or spend 3 to 5 hours in comparable physical activity per week</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>7 </value>
+					<value>7</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -219,12 +243,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Run 16 to 20 miles, walk 21 to 26 miles or spend 6 to 8 hours in comparable physical activity per week</value>
+					<value>Run 16 to 20 miles, walk 21 to 26 miles or spend 6 to 8 hours in comparable physical activity per week</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>8 </value>
+					<value>8</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -233,12 +257,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Run 21 to 25 miles, walk 27 to 33 miles, or spend 9 to 11 hours in comparable physical activity per week</value>
+					<value>Run 21 to 25 miles, walk 27 to 33 miles, or spend 9 to 11 hours in comparable physical activity per week</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>9 </value>
+					<value>9</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -247,12 +271,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value><![CDATA[ Run >25 miles, walk >34 miles or spend > 12 hours in comparable physical activity per week]]></value>
+					<value><![CDATA[Run >25 miles, walk >34 miles or spend > 12 hours in comparable physical activity per week]]></value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>10 </value>
+					<value>10</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1162,16 +1186,16 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0 = None  -0</name>
+				<name>0 = None</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> None  -0</value>
+					<value>None</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>0 </value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1180,12 +1204,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Mild </value>
+					<value>Mild</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>1 </value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1194,12 +1218,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Moderate</value>
+					<value>Moderate</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>2 </value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1208,12 +1232,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Severe</value>
+					<value>Severe</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>3 </value>
+					<value>3</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1222,12 +1246,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Unable to do</value>
+					<value>Unable to do</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>4 </value>
+					<value>4</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1261,16 +1285,16 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0 = None  -0</name>
+				<name>0 = None</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> None  -0</value>
+					<value>None</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>0 </value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1279,12 +1303,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Mild </value>
+					<value>Mild</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>1 </value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1293,12 +1317,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Moderate</value>
+					<value>Moderate</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>2 </value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1307,12 +1331,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Severe</value>
+					<value>Severe</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>3 </value>
+					<value>3</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1321,12 +1345,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Unable to do</value>
+					<value>Unable to do</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>4 </value>
+					<value>4</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1360,16 +1384,16 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0 = None  -0</name>
+				<name>0 = None</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> None  -0</value>
+					<value>None</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>0 </value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1378,12 +1402,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Mild </value>
+					<value>Mild</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>1 </value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1392,12 +1416,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Moderate</value>
+					<value>Moderate</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>2 </value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1406,12 +1430,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Severe</value>
+					<value>Severe</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>3 </value>
+					<value>3</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1420,12 +1444,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Unable to do</value>
+					<value>Unable to do</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>4 </value>
+					<value>4</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1459,16 +1483,16 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0 = None  -0</name>
+				<name>0 = None</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> None  -0</value>
+					<value>None</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>0 </value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1477,12 +1501,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Mild </value>
+					<value>Mild</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>1 </value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1491,12 +1515,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Moderate</value>
+					<value>Moderate</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>2 </value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1505,12 +1529,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Severe</value>
+					<value>Severe</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>3 </value>
+					<value>3</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1519,12 +1543,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Unable to do</value>
+					<value>Unable to do</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>4 </value>
+					<value>4</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1558,16 +1582,16 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0 = None  -0</name>
+				<name>0 = None</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> None  -0</value>
+					<value>None</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>0 </value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1576,12 +1600,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Mild </value>
+					<value>Mild</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>1 </value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1590,12 +1614,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Moderate</value>
+					<value>Moderate</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>2 </value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1604,12 +1628,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Severe</value>
+					<value>Severe</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>3 </value>
+					<value>3</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1618,12 +1642,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Unable to do</value>
+					<value>Unable to do</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>4 </value>
+					<value>4</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1661,12 +1685,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> No</value>
+					<value>No</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>0 </value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1675,12 +1699,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Don’t Know</value>
+					<value>Don’t Know</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>0 </value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1689,12 +1713,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Yes</value>
+					<value>Yes</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>1 </value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 			</node>

@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>Visits 1,5,6,8</value>
+		<value>Visits 1, 5, 6, 8</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -50,6 +50,25 @@
 			<value>Medications</value>
 			<type>String</type>
 		</property>
+		<node>
+			<name>medication-visit</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Visit Number</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
 		<node>
 			<name>bl_med_types</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
@@ -134,12 +153,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Beta-blocker (e.g. metoprolol, atenolol, propranolol, etc) or non-dihydropyridine calcium channel blocker (e.g. diltiazem, verapamil, etc)</value>
+					<value>Beta-blocker (e.g. metoprolol, atenolol, propranolol, etc) or non-dihydropyridine calcium channel blocker (e.g. diltiazem, verapamil, etc)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Beta-blocker </value>
+					<value>Beta-blocker</value>
 					<type>String</type>
 				</property>
 			</node>

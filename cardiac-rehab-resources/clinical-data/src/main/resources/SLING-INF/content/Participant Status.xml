@@ -26,11 +26,6 @@
 		<type>Long</type>
 	</property>
 	<property>
-		<name>description</name>
-		<value></value>
-		<type>String</type>
-	</property>
-	<property>
 		<name>title</name>
 		<value>Participant Status</value>
 		<type>String</type>
@@ -83,12 +78,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Enrolled			</value>
+					<value>Enrolled</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>enrolled   </value>
+					<value>enrolled</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -97,12 +92,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Withdrawn by study staff	</value>
+					<value>Withdrawn by study staff</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>withdrawn_study   </value>
+					<value>withdrawn_study</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -111,12 +106,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Withdrawn by subject	</value>
+					<value>Withdrawn by subject</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>withdrawn_subject   </value>
+					<value>withdrawn_subject</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -125,12 +120,12 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Completed study</value>
+					<value>Completed study</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>exited </value>
+					<value>exited</value>
 					<type>String</type>
 				</property>
 			</node>
