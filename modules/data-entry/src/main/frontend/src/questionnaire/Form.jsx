@@ -18,12 +18,14 @@
 //
 
 import React, { useEffect, useState } from "react";
+import { withRouter, useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import {
   Breadcrumbs,
   Button,
   CircularProgress,
+  Fab,
   Grid,
   Link,
   Typography,
@@ -35,6 +37,8 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import EditIcon from '@material-ui/icons/Edit';
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import WarningIcon from '@material-ui/icons/Warning';
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";
@@ -122,6 +126,16 @@ function Form (props) {
     });
   }, []);
 
+  const history = useHistory();
+
+  let goBack = () => {
+    if (history.length > 2) {
+      history.goBack();
+    } else {
+      history.replace("/");
+    }
+  }
+
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
   // such as authorship and versioning information, the associated subject,
@@ -149,7 +163,7 @@ function Form (props) {
   };
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
-  let saveData = (event) => {
+  let saveData = (event, successCallback) => {
     // This stops the normal browser form submission
     event && event.preventDefault();
 
@@ -161,7 +175,7 @@ function Form (props) {
 
     setSaveInProgress(true);
     // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
-    let data = new FormData(event ? event.currentTarget : formNode.current);
+    let data = new FormData(formNode.current);
     fetch(`/Forms/${id}`, {
       method: "POST",
       body: data,
@@ -173,6 +187,7 @@ function Form (props) {
         if (response.ok) {
           setLastSaveStatus(true);
           setLastSaveTimestamp(new Date());
+          typeof(successCallback) == "function" && successCallback();
         } else if (response.status === 500) {
           response.json().then((json) => {
               setErrorCode(json["status.code"]);
@@ -234,7 +249,7 @@ function Form (props) {
     if (loginDialogShow === true) {
       return;
     }
-    saveData(event);
+    saveData(event, goBack);
   }
 
   // If the data has not yet been fetched, return an in-progress symbol
@@ -315,6 +330,29 @@ function Form (props) {
   let parentDetails = data?.subject && getHierarchy(data.subject);
   pages.length = 0;
 
+  let closeButtonProps = {
+    color: "primary",
+    disabled: saveInProgress,
+    onClick: handleSubmit,
+    "area-label": "close",
+    title: "Save and close"
+  }
+
+  let closeIcon =
+      saveInProgress ? <CloudUploadIcon /> :
+      lastSaveStatus === false ? <WarningIcon /> :
+      <CloseIcon />
+
+  let closeButton =
+    <div className={classes.mainActionWrapper}>
+    {!paginationEnabled ?
+      <Fab {...closeButtonProps}>{closeIcon}</Fab>
+    :
+      <IconButton {...closeButtonProps}>{closeIcon}</IconButton>
+    }
+    {saveInProgress && <CircularProgress size={paginationEnabled ? 48 : 56} />}
+    </div>
+
   return (
     <form action={data["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
@@ -387,7 +425,10 @@ function Form (props) {
               })
           }
         </FormProvider>
+        {lastValidPage() > 0 ?
         <Grid item xs={12} className={classes.formFooter}>
+         <Grid container direction="row" justify="flex-end" alignItems="flex-start" spacing={0}>
+          <Grid item xs={11}>
           <FormPagination
             lastPage={lastValidPage}
             activePage={activePage}
@@ -395,7 +436,13 @@ function Form (props) {
             lastSaveStatus={lastSaveStatus}
             handlePageChange={handlePageChange}
             />
+          </Grid>
+          <Grid item xs={1}>{closeButton}</Grid>
+         </Grid>
         </Grid>
+        :
+        <Grid item xs={1} className={classes.mainPageAction}>{closeButton}</Grid>
+        }
       </Grid>
       <DialogueLoginContainer isOpen={loginDialogShow} handleLogin={handleLogin}/>
       <Dialog open={errorDialogDisplayed} onClose={closeErrorDialog}>
@@ -413,4 +460,5 @@ function Form (props) {
   );
 };
 
-export default withStyles(QuestionnaireStyle)(Form);
+export default withStyles(QuestionnaireStyle)(withRouter(Form));
+
