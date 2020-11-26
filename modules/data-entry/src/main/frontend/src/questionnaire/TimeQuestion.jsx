@@ -59,7 +59,7 @@ class Time {
   }
 
   valueOf() {
-    return this.isValid ? (this.first*60 + this.second) : undefined;
+    return this.isValid ? (this.first*60 + this.second) * (this.isMinuteSeconds ? 1 : 60) : undefined;
   }
 }
 
@@ -89,9 +89,9 @@ function TimeQuestion(props) {
   const [error, setError] = useState(undefined);
   const defaultErrorMessage = errorText || "Please enter a valid time";
   const [errorMessage, setErrorMessage] = useState(defaultErrorMessage);
-  const lowerTime = new Time(lowerLimit);
-  const upperTime = new Time(upperLimit);
   const isMinuteSeconds = typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "mm:ss";
+  const lowerTime = new Time(lowerLimit, isMinuteSeconds);
+  const upperTime = new Time(upperLimit, isMinuteSeconds);
   const minuteSecondTest = new RegExp(/([0-5]\d):([0-5]\d)/);
 
   let checkError = (timeString) => {
