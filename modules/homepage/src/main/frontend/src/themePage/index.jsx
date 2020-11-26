@@ -28,6 +28,7 @@ import Navbar from "./Navbars/Navbar";
 import Page from "./Page";
 import PageStart from "./PageStart/PageStart";
 import IndexStyle from "./indexStyle.jsx";
+import MavenVars from "../../../resources/maven.json";
 
 class Main extends React.Component {
   constructor(props) {
@@ -77,7 +78,7 @@ class Main extends React.Component {
             render={(props) => {
                 let ThisComponent = route["lfs:extensionRender"];
                 let newProps = {...props, contentOffset: this.state.contentOffset };
-                let title = "LFS - " + route["lfs:extensionName"];
+                let title = MavenVars["name"] + " - " + route["lfs:extensionName"];
                 return (
                   <Page title={title}>
                     <ThisComponent {...newProps} />

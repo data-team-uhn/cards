@@ -1,1 +1,2 @@
-# maven will not compile properly without this directory
+# Ignore the output of webpack_script.py, which generates this file to pass arguments from maven to webpack
+maven.json

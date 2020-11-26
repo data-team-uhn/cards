@@ -1,4 +1,0 @@
-{
-  "Version": "${lfs.version}",
-  "Name": "${lfs.name}"
-}
