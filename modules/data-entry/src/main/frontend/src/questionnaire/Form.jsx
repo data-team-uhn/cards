@@ -101,19 +101,21 @@ function Form (props) {
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
 
-  useEffect(() => {
-    let backgroundSave = () => {
-      if (!saveInProgress && lastSaveStatus === undefined) {
-        saveData();
-      }
+  let backgroundSave = () => {
+    if (!saveInProgress && lastSaveStatus === undefined) {
+      saveData();
     }
+  }
+
+  useEffect(backgroundSave, [lastSaveStatus]);
+
+  useEffect(() => {
     window.addEventListener("beforeunload", backgroundSave);
-    backgroundSave();
     // When component unmounts:
     return (() => {
       window.removeEventListener("beforeunload", backgroundSave);
     });
-  }, [lastSaveStatus]);
+  }, []);
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
