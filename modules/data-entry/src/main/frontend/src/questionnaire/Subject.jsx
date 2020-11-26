@@ -386,6 +386,7 @@ function SubjectMember (props) {
                                   entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
                                   entryType="Form"
                                   warning={rowData ? rowData["@referenced"] : false}
+                                  onComplete={fetchTableData}
                                 />
                   })
                  ]}
