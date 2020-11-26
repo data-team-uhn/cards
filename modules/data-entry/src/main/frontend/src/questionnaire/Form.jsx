@@ -99,24 +99,28 @@ function Form (props) {
 
   let formNode = React.useRef();
 
+  let backgroundSave = () => {
+    console.log("Checking if should autosave...");
+    if (!saveInProgress && lastSaveStatus === undefined) {
+      console.warn("Autosaving...");
+      saveData();
+    }
+  }
+
+  useEffect(() => {
+    console.log("lastSaveStatus changed: ", lastSaveStatus);
+    backgroundSave();
+  }, [lastSaveStatus]);
+
   useEffect(() => {
     console.log("Component mount");
-    let backgroundSave = () => {
-      console.log("Checking if should autosave...");
-      if (!saveInProgress && lastSaveStatus === undefined) {
-        console.warn("Autosaving...");
-        saveData();
-      }
-    }
     window.addEventListener("beforeunload", backgroundSave);
-    backgroundSave();
     // When component unmounts:
     return (() => {
-      // One final save
       console.log("Component UNmount");
       window.removeEventListener("beforeunload", backgroundSave);
     });
-  }, [lastSaveStatus]);
+  }, []);
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
