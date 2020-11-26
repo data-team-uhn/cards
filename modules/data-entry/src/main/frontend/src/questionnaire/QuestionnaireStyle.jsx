@@ -225,18 +225,43 @@ const questionnaireStyle = theme => ({
         width: "100%",
         top: 0,
         paddingTop: theme.spacing(4) + 'px !important',
-        backgroundColor: "white",
+        backgroundColor: theme.palette.background.paper,
         opacity: 1,
         zIndex: "1010",
         margin: theme.spacing(2),
+    },
+    mainPageAction: {
+        position: "fixed",
+        right: theme.spacing(2),
+        bottom: theme.spacing(2),
+    },
+    mainActionWrapper: {
+        position: "relative",
+        display: "inline-block",
+        "& .MuiCircularProgress-root" : {
+          position: "absolute",
+          top: 0,
+          left: 0,
+        },
     },
     formFooter: {
         position: "sticky",
         bottom: theme.spacing(0),
         zIndex: 1000,
-        maxHeight: "68px",
+        backgroundColor: theme.palette.background.paper,
+        padding: 0,
+        marginBottom: theme.spacing(-2),
+        "& .MuiGrid-item" : {
+          maxHeight: "52px",
+          position: "relative",
+          textAlign: "right",
+        },
+        "& . MuiIconButton-root" : {
+          marginTop: theme.spacing(1),
+        }
     },
     formStepper: {
+        marginTop: theme.spacing(1),
         position: "relative",
     },
     formStepperTop: {
@@ -244,7 +269,7 @@ const questionnaireStyle = theme => ({
     },
     formStepperBottom: {
         background: "transparent",
-        bottom: "84px",
+        bottom: "92px",
     },
     formStepperBottomBackground: {
         background: "transparent",

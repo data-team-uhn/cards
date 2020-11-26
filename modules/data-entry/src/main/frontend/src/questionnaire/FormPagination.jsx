@@ -18,7 +18,6 @@
 //
 
 import React, { useState } from "react";
-import { withRouter, useHistory } from "react-router-dom";
 
 import {
   Button,
@@ -37,21 +36,10 @@ function FormPagination (props) {
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
 
-  const history = useHistory();
-
-  let goBack = () => {
-    if (history.length > 2) {
-      history.goBack();
-    } else {
-      history.replace("/");
-    }
-  }
-
   let handleNext = () => {
     setPendingSubmission(true);
     if (activePage === lastPage()) {
       setSavedLastPage(true);
-      goBack();
     } else {
       setSavedLastPage(false);
       handlePageChange("next");
@@ -69,20 +57,32 @@ function FormPagination (props) {
     setPendingSubmission(false);
   }
 
-  let saveButton =
+  let backButton =
+    <Button
+      type="submit"
+      // Don't disable until form submission started
+      disabled={(activePage === 0 && !pendingSubmission)
+        || saveInProgress
+        || lastSaveStatus === false}
+      onClick={handleBack}
+      className={classes.paginationButton}
+      color="primary"
+    >
+      Back
+    </Button>
+
+  let nextButton =
     <Button
       type="submit"
       variant="contained"
       color="primary"
-      disabled={saveInProgress}
+      disabled={saveInProgress || activePage == lastPage()}
       className={classes.paginationButton}
       onClick={handleNext}
     >
       {((lastPage() === 0 || activePage === lastPage()) && saveInProgress) ? 'Saving' :
       lastSaveStatus === false ? 'Save failed, log in and try again?' :
-      activePage < lastPage() ? "Next" :
-      lastSaveStatus && savedLastPage ? 'Saved' :
-      'Finish'}
+      'Next'}
     </Button>
 
   let stepper = (isBack) =>
@@ -98,23 +98,8 @@ function FormPagination (props) {
       classes={isBack ? null : {progress:classes.formStepperBottomBackground}}
       // base 0 to base 1, plus 1 for the "current page" region
       steps={lastPage() + 2}
-      nextButton={saveButton}
-      backButton={
-        lastPage() > 0
-          ? <Button
-              type="submit"
-              // Don't disable until form submission started
-              disabled={(activePage === 0 && !pendingSubmission)
-                || saveInProgress
-                || lastSaveStatus === false}
-              onClick={handleBack}
-              className={classes.paginationButton}
-              color="primary"
-            >
-              Back
-            </Button>
-          : null
-      }
+      nextButton={nextButton}
+      backButton={backButton}
     />
 
   return (
@@ -126,8 +111,8 @@ function FormPagination (props) {
         {stepper(false)}
       </React.Fragment>
     :
-      saveButton
+      null
   );
 };
 
-export default withStyles(QuestionnaireStyle)(withRouter(FormPagination));
+export default withStyles(QuestionnaireStyle)(FormPagination);
