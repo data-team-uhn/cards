@@ -93,6 +93,7 @@ export default function VocabulariesAdminPage() {
 
   // called when api key is changed, on success
   function resetTest(e) {
+    // FIX: API KEY SHOWING 'NULL' - might be from default states
     setBioPortalApiKey(submittedApiKey);
     addNode(submittedApiKey);
     setDisplayChangeKey(false);
@@ -205,7 +206,7 @@ export default function VocabulariesAdminPage() {
     /* If the BioPortal API key cannot be loaded, assume the remote (empty)
       * data has been loaded.
       */
-    fetchBioPortalApiKey(setBioPortalApiKey, setIsFromNode, () => {
+    fetchBioPortalApiKey(setSubmittedApiKey, setIsFromNode, () => {
         setRemoteLoaded(true);
         console.error("Can't fetch bioPortal API key");
     });
