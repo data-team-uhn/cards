@@ -330,37 +330,55 @@ function SubjectMember (props) {
           Object.keys(subjectGroups).map( (questionnaireName, j) => {
             return(<React.Fragment key={questionnaireName}>
               <MaterialTable
-                title=""
+                title={questionnaireName}
                 style={{ boxShadow : 'none' }}
                 options={{
                   actionsColumnIndex: -1,
-                  emptyRowsWhenPaging: false
+                  emptyRowsWhenPaging: false,
+                  search: false,
+                  rowStyle: {
+                    verticalAlign: 'top',
+                  }
                 }}
                 columns={[
-                  { title: 'Created', render: rowData => <Link to={"/content.html" + rowData["@path"]}>
-                                                           {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
-                                                         </Link> },
-                  { title: 'Status', render: rowData => <React.Fragment>
-                                                          {rowData["statusFlags"].map((status) => {
-                                                            return <Chip
-                                                              key={status}
-                                                              label={wordToTitleCase(status)}
-                                                              className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
-                                                              size="small"
-                                                            />
-                                                          })}
-                                                        </React.Fragment> },
-                  { title: 'Summary', render: rowData => <CardContent>
-                                                           <FormData formID={rowData["@name"]} maxDisplayed={maxDisplayed}/>
-                                                         </CardContent> },
-                  ]}
+                  { title: 'Created',
+                    cellStyle: {
+                      paddingTop: '24px'
+                    },
+                    render: rowData => <Link to={"/content.html" + rowData["@path"]}>
+                                         {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
+                                       </Link> },
+                  { title: 'Status',
+                    cellStyle: {
+                      paddingTop: '24px'
+                    },
+                    render: rowData => <React.Fragment>
+                                         {rowData["statusFlags"].map((status) => {
+                                           return <Chip
+                                             key={status}
+                                             label={wordToTitleCase(status)}
+                                             className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
+                                             size="small"
+                                           />
+                                         })}
+                                       </React.Fragment> },
+                  { title: 'Summary',
+                    cellStyle: {
+                      padding: '0',
+                      paddingTop: '8px'
+                    },
+                    render: rowData => <CardContent>
+                                         <FormData formID={rowData["@name"]} maxDisplayed={maxDisplayed}/>
+                                       </CardContent> },
+                                                         
+                ]}
                 data={subjectGroups[questionnaireName]}
                 actions={[
                     rowData => ({
                     icon: () => <EditButton
                                   entryPath={rowData["@path"]}
                                   entryType="Form"
-                                 />
+                                />
                   }),
                   rowData => ({
                     icon: () => <DeleteButton

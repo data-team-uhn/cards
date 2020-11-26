@@ -326,7 +326,7 @@ const questionnaireStyle = theme => ({
     },
     subjectChip: {
         color:'white',
-        marginLeft: theme.spacing(2)
+        marginRight: theme.spacing(2)
     },
     INCOMPLETEChip: {
         backgroundColor: theme.palette.warning.main
