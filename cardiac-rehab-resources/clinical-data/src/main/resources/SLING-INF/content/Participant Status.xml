@@ -172,7 +172,7 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value>leave blank if NA</value>
+					<value>Leave blank if NA</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -372,6 +372,11 @@
 			<property>
 				<name>text</name>
 				<value>Date of birth</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Month and year only: YYYY/MM</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -616,6 +621,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>unitOfMeasurement</name>
+				<value>kg</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -635,6 +645,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>unitOfMeasurement</name>
+				<value>cm</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -651,6 +666,11 @@
 			<property>
 				<name>dataType</name>
 				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>cm</value>
 				<type>String</type>
 			</property>
 			<property>
