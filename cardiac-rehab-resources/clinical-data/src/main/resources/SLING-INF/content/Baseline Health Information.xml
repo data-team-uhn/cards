@@ -59,6 +59,16 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>minValue</name>
+				<value>1</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxValue</name>
+				<value>8</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
