@@ -250,8 +250,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     private boolean checkInvalidAnswer(final Node questionNode, final int numAnswers)
     {
         try {
-            final long minAnswers = questionNode.getProperty("minAnswers").getLong();
-            final long maxAnswers = questionNode.getProperty("maxAnswers").getLong();
+            final long minAnswers =
+                questionNode.hasProperty("minAnswers") ? questionNode.getProperty("minAnswers").getLong() : 0;
+            final long maxAnswers =
+                questionNode.hasProperty("maxAnswers") ? questionNode.getProperty("maxAnswers").getLong() : 0;
             if ((numAnswers < minAnswers && minAnswers != 0) || (numAnswers > maxAnswers && maxAnswers != 0)) {
                 return true;
             }
