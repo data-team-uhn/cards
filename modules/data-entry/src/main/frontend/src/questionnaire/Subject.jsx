@@ -32,9 +32,6 @@ import {
   Chip,
   Grid,
   Typography,
-  Card,
-  CardHeader,
-  CardContent,
   withStyles,
   Button,
 } from "@material-ui/core";
@@ -326,11 +323,11 @@ function SubjectMember (props) {
         }
       </Grid>
       <Grid item>
-        { subjectGroups &&
-          Object.keys(subjectGroups).map( (questionnaireName, j) => {
-            return(<React.Fragment key={questionnaireName}>
+        <Grid>{ subjectGroups &&
+          Object.keys(subjectGroups).map( (questionnaireTitle, j) => {
+            return(<Grid item key={questionnaireTitle}>
               <MaterialTable
-                title={questionnaireName}
+                title={questionnaireTitle}
                 style={{ boxShadow : 'none' }}
                 options={{
                   actionsColumnIndex: -1,
@@ -342,16 +339,10 @@ function SubjectMember (props) {
                 }}
                 columns={[
                   { title: 'Created',
-                    cellStyle: {
-                      paddingTop: '24px'
-                    },
                     render: rowData => <Link to={"/content.html" + rowData["@path"]}>
                                          {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
                                        </Link> },
                   { title: 'Status',
-                    cellStyle: {
-                      paddingTop: '24px'
-                    },
                     render: rowData => <React.Fragment>
                                          {rowData["statusFlags"].map((status) => {
                                            return <Chip
@@ -363,16 +354,9 @@ function SubjectMember (props) {
                                          })}
                                        </React.Fragment> },
                   { title: 'Summary',
-                    cellStyle: {
-                      padding: '0',
-                      paddingTop: '8px'
-                    },
-                    render: rowData => <CardContent>
-                                         <FormData formID={rowData["@name"]} maxDisplayed={maxDisplayed}/>
-                                       </CardContent> },
-                                                         
+                    render: rowData => <FormData formID={rowData["@name"]} maxDisplayed={maxDisplayed}/> },                  
                 ]}
-                data={subjectGroups[questionnaireName]}
+                data={subjectGroups[questionnaireTitle]}
                 actions={[
                     rowData => ({
                     icon: () => <EditButton
@@ -391,9 +375,10 @@ function SubjectMember (props) {
                   })
                  ]}
                />
-            </React.Fragment>)
+            </Grid>)
           })
         }
+        </Grid>
       </Grid>
     </Grid>
   );
