@@ -323,7 +323,7 @@ function SubjectMember (props) {
         }
       </Grid>
       <Grid item>
-        <Grid>{ subjectGroups &&
+        <Grid container spacing={8}>{ subjectGroups &&
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => {
             return(<Grid item key={questionnaireTitle}>
               <MaterialTable
