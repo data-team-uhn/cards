@@ -356,9 +356,9 @@ def csv_to_json(title):
                 if 'Units' in row and row['Units'] != '':
                     parent[question]['unitOfMeasurement'] = row['Units']
                 if 'Min Value' in row and row['Min Value']:
-                    parent[question]['minValue'] = row['Min Value']
+                    parent[question]['minValue'] = float(row['Min Value'])
                 if 'Max Value' in row and row['Max Value']:
-                    parent[question]['maxValue'] = row['Max Value']
+                    parent[question]['maxValue'] = float(row['Max Value'])
                 if 'Response Required?' in row and row['Response Required?']:
                     value = row['Response Required?']
                     if value[0].lower() == "y":

@@ -64,14 +64,19 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>minValue</name>
-				<value>1</value>
+				<name>description</name>
+				<value>1-8</value>
 				<type>String</type>
 			</property>
 			<property>
+				<name>minValue</name>
+				<value>1.0</value>
+				<type>Double</type>
+			</property>
+			<property>
 				<name>maxValue</name>
-				<value>8</value>
-				<type>String</type>
+				<value>8.0</value>
+				<type>Double</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -286,8 +291,8 @@
 			</property>
 			<property>
 				<name>minValue</name>
-				<value>0</value>
-				<type>String</type>
+				<value>0.0</value>
+				<type>Double</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -303,7 +308,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Name</value>
+					<value>Beta-blocker name</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -387,8 +392,8 @@
 				</property>
 				<property>
 					<name>minValue</name>
-					<value>0</value>
-					<type>String</type>
+					<value>0.0</value>
+					<type>Double</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -822,7 +827,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Name</value>
+					<value>Medication 1 name</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1246,36 +1251,81 @@
 			</node>
 		</node>
 		<node>
-			<name>bl_med2_nt</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Click this box if the patient is not taking this prescribed medication:</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
+			<name>bl_med2_ntSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>Patient-reported not taking</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>bl_med2_nt</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<name>text</name>
+					<value>Click this box if the patient is not taking this prescribed medication:</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Patient-reported not taking</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Patient-reported not taking</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Patient-reported not taking</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value><![CDATA[>]]></value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>bl_med_number</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -1286,7 +1336,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Name</value>
+					<value>Medication 2 name</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1710,36 +1760,81 @@
 			</node>
 		</node>
 		<node>
-			<name>bl_med3_nt</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Click this box if the patient is not taking this prescribed medication:</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
+			<name>bl_med3_ntSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>Patient-reported not taking</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>bl_med3_nt</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<name>text</name>
+					<value>Click this box if the patient is not taking this prescribed medication:</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Patient-reported not taking</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Patient-reported not taking</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Patient-reported not taking</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value><![CDATA[>]]></value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>bl_med_number</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 	</node>

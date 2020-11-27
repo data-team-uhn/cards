@@ -627,8 +627,8 @@
 			</property>
 			<property>
 				<name>minValue</name>
-				<value>0</value>
-				<type>String</type>
+				<value>0.0</value>
+				<type>Double</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -656,8 +656,8 @@
 			</property>
 			<property>
 				<name>minValue</name>
-				<value>0</value>
-				<type>String</type>
+				<value>0.0</value>
+				<type>Double</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -685,8 +685,8 @@
 			</property>
 			<property>
 				<name>minValue</name>
-				<value>0</value>
-				<type>String</type>
+				<value>0.0</value>
+				<type>Double</type>
 			</property>
 			<property>
 				<name>minAnswers</name>

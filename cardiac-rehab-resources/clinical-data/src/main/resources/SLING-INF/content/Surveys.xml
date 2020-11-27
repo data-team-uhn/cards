@@ -64,14 +64,19 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>minValue</name>
-				<value>1</value>
+				<name>description</name>
+				<value>1-8</value>
 				<type>String</type>
 			</property>
 			<property>
+				<name>minValue</name>
+				<value>1.0</value>
+				<type>Double</type>
+			</property>
+			<property>
 				<name>maxValue</name>
-				<value>8</value>
-				<type>String</type>
+				<value>8.0</value>
+				<type>Double</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -1691,25 +1696,11 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0 = No</name>
+				<name>0 = No or Don’t Know</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>0 = Don’t Know</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Don’t Know</value>
+					<value>No or Don’t Know</value>
 					<type>String</type>
 				</property>
 				<property>
