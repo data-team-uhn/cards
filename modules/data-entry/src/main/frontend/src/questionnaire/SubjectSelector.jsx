@@ -753,6 +753,7 @@ function SubjectSelectorList(props) {
     { title: 'Identifier', field: 'hierarchy' },
   ];
   const [ relatedSubjects, setRelatedSubjects ] = useState();
+  const [ rowCount, setRowCount ] = useState(5);
 
   // fetch the Subjects of each form of this questionnaire type
   let filterArray = () => {
@@ -920,6 +921,7 @@ function SubjectSelectorList(props) {
           search: true,
           actionsColumnIndex: -1,
           addRowPosition: 'first',
+          pageSize: rowCount,
           rowStyle: rowData => ({
             /* It doesn't seem possible to alter the className from here */
             backgroundColor: (selectedSubject?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
@@ -940,6 +942,7 @@ function SubjectSelectorList(props) {
           }
         }}
         onRowClick={(event, rowData) => {onSelect(rowData); handleSelection(rowData)}}
+        onChangeRowsPerPage={pageSize => {setRowCount(pageSize);}}
       />
     </React.Fragment>
   )
