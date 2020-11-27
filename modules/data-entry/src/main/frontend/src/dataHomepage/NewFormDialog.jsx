@@ -48,6 +48,7 @@ function NewFormDialog(props) {
   const [ error, setError ] = useState("");
   const [ relatedForms, setRelatedForms ] = useState();
   const [ disableProgress, setDisableProgress ] = useState(false);
+  const [ rowCount, setRowCount ] = useState(5);
 
   let createForm = (subject) => {
     setError("");
@@ -154,6 +155,7 @@ function NewFormDialog(props) {
     } else {
       setProgress(PROGRESS_SELECT_QUESTIONNAIRE);
       setSelectedSubject(null);
+      if (disableProgress) setDisableProgress(false);
     }
   }
 
@@ -230,7 +232,7 @@ function NewFormDialog(props) {
                 ]}
                 data={query => {
                   let url = new URL("/query", window.location.origin);
-                  url.searchParams.set("query", `select * from [lfs:Questionnaire] as n${query.search ? ` WHERE CONTAINS(n.*, '*${query.search}*')` : ""}`);
+                  url.searchParams.set("query", `select * from [lfs:Questionnaire] as n${query.search ? ` WHERE CONTAINS(n.'title', '*${query.search}*')` : ""}`);
                   url.searchParams.set("limit", query.pageSize);
                   url.searchParams.set("offset", query.page*query.pageSize);
                   return fetch(url)
@@ -247,6 +249,7 @@ function NewFormDialog(props) {
                   search: true,
                   actionsColumnIndex: -1,
                   addRowPosition: 'first',
+                  pageSize: rowCount,
                   rowStyle: rowData => ({
                     // /* It doesn't seem possible to alter the className from here */
                     backgroundColor: (selectedQuestionnaire?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
@@ -259,8 +262,12 @@ function NewFormDialog(props) {
                 }}
                 onRowClick={(event, rowData) => {
                   if (!isFetching) {
-                    setSelectedQuestionnaire(rowData);}}
+                    setSelectedQuestionnaire(rowData);
                   }
+                }}
+                onChangeRowsPerPage={pageSize => {
+                  setRowCount(pageSize);
+                }}
               />
             }
           </React.Fragment>
