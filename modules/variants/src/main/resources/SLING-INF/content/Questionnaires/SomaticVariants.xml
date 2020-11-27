@@ -22,7 +22,7 @@
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Somatic Variants Data</value>
+		<value>Somatic Variants</value>
 		<type>String</type>
 	</property>
 	<property>

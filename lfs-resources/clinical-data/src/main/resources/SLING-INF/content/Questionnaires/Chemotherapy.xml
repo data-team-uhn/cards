@@ -22,7 +22,7 @@
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Chemotherapy Data</value>
+		<value>Chemotherapy</value>
 		<type>String</type>
 	</property>
 	<property>

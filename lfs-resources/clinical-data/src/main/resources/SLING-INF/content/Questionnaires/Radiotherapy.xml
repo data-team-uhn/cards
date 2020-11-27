@@ -22,7 +22,7 @@
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Radiotherapy Data</value>
+		<value>Radiotherapy</value>
 		<type>String</type>
 	</property>
 	<property>

@@ -22,7 +22,7 @@
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Demographics Data</value>
+		<value>Demographics</value>
 		<type>String</type>
 	</property>
 	<property>
