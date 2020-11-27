@@ -77,7 +77,9 @@ function Subjects(props) {
         let optionTypes = Array.from(json["rows"]);
         setSubjectTypes(optionTypes);
         if (optionTypes.length <= 1) {
-          setColumns(columns.splice(1, 2));
+          let result = columns.slice();
+          result.splice(1, 2);
+          setColumns(result);
         }
       });
   }
