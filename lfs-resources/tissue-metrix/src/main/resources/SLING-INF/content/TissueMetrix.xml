@@ -22,7 +22,7 @@
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Tissue Metrix Data</value>
+		<value>Tissue Metrix</value>
 		<type>String</type>
 	</property>
 	<property>
