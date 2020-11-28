@@ -35,6 +35,7 @@ function UserDashboard(props) {
   // initialized
   let [questionnaires, setQuestionnaires] = useState([]);
   let [initialized, setInitialized] = useState(false);
+  let [numberForms, setNumberForms] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
 
@@ -66,13 +67,18 @@ function UserDashboard(props) {
     setInitialized(true);
 
     // Fetch the questionnaires
-    fetch("/query?query=select * from [lfs:Questionnaire]")
+    fetch(`/query?${numberForms ? `limit=${numberForms}&`:""}query=select * from [lfs:Questionnaire]`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
         if (response.totalrows == 0) {
           setError("Access to data is pending the approval of your account");
         }
-        setQuestionnaires(response["rows"]);
+        if (response.returnedrows < response.totalrows) {
+          setNumberForms(response.totalrows);
+          setInitialized(false);
+        } else {
+          setQuestionnaires(response["rows"]);
+        }
       })
       .catch(handleError);
   }

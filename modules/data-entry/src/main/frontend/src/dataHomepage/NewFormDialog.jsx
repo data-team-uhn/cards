@@ -16,16 +16,16 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 
-import { CircularProgress, Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Input, List} from "@material-ui/core";
-import { ListItemText, Tooltip, Typography, withStyles } from "@material-ui/core";
+import { CircularProgress, Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab } from "@material-ui/core";
+import { Tooltip, Typography, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import AssignmentIcon from "@material-ui/icons/Assignment";
+import MaterialTable from "material-table";
 
-import SubjectSelectorList, { NewSubjectDialog, SubjectListItem, parseToArray } from "../questionnaire/SubjectSelector.jsx";
+import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
@@ -37,24 +37,21 @@ const PROGRESS_SELECT_SUBJECT = 1;
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
 function NewFormDialog(props) {
-  const { children, classes, presetPath, currentSubject } = props;
+  const { children, classes, presetPath, currentSubject, theme } = props;
   const [ open, setOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ initialized, setInitialized ] = useState(false);
-  const [ questionnaires, setQuestionnaires ] = useState([]);
-  const [ presetQuestionnaire, setPresetQuestionnaire ] = useState();
   const [ selectedQuestionnaire, setSelectedQuestionnaire ] = useState();
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ progress, setProgress ] = useState();
   const [ numFetchRequests, setNumFetchRequests ] = useState(0);
   const [ error, setError ] = useState("");
-  const [ numForms, setNumForms ] = useState(0);
   const [ relatedForms, setRelatedForms ] = useState();
   const [ disableProgress, setDisableProgress ] = useState(false);
+  const [ rowCount, setRowCount ] = useState(5);
 
   let createForm = (subject) => {
     setError("");
-    setNumForms(0);
 
     // Get the subject identifier, if necessary
     if (!subject) {
@@ -86,33 +83,28 @@ function NewFormDialog(props) {
   }
 
   let openDialog = () => {
-    // Determine what questionnaires and subjects are available
     if (!initialized) {
-      fetchAndPopulate("select * from [lfs:Questionnaire]", setQuestionnaires);
+      if (typeof presetPath === 'string') {
+        fetchQuestionnaire(presetPath.substring(presetPath.lastIndexOf("/") + 1));
+      }
       setInitialized(true);
     }
     setOpen(true);
     setError("");
-    setNumForms(0);
-    if (presetQuestionnaire) {
-      setSelectedQuestionnaire(presetQuestionnaire);
-    }
     setProgress(presetPath ? PROGRESS_SELECT_SUBJECT : PROGRESS_SELECT_QUESTIONNAIRE);
   }
 
-  let fetchAndPopulate = (query, setter) => {
-    // Send a fetch request to determine the subjects available
+  let fetchQuestionnaire = (questionnaireName) => {
+    // Send a fetch request to determine the subjects available for the specified questionnaire
+    let query = `select * from [lfs:Questionnaire] as n where name()='${questionnaireName}'`;
     fetch('/query?query=' + encodeURIComponent(query))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        // If the selectedQuestionnaire is currently presetPath, we need to turn it into
-        // the actual questionnaire object in this step
-        if (typeof presetPath === 'string') {
-          let foundQuestionnaire = json["rows"].filter((object) => object["@path"] === presetPath)[0]
+        // If a matching questionnaire was found, turn it into the actual questionnaire object
+        if (json["returnedrows"] === 1) {
+          let foundQuestionnaire = json["rows"][0]
           setSelectedQuestionnaire(foundQuestionnaire);
-          setPresetQuestionnaire(foundQuestionnaire);
         }
-        setter(json["rows"])
       })
       .catch(parseErrorResponse)
       .finally(() => {setNumFetchRequests((num) => (num-1))});
@@ -132,7 +124,7 @@ function NewFormDialog(props) {
       if (!selectedQuestionnaire) {
         setError("Please select a questionnaire.");
         return;
-      } 
+      }
       if (selectedSubject) {
         createForm();
       }
@@ -153,18 +145,17 @@ function NewFormDialog(props) {
   let selectSubject = (subject) => {
     setSelectedSubject(subject);
     setError(false);
-    setNumForms(0);
   }
 
   let goBack = () => {
     setError(false);
-    setNumForms(0);
     // Exit the dialog if we're at the first page or if there is a preset path
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE || presetPath) {
       setOpen(false);
     } else {
       setProgress(PROGRESS_SELECT_QUESTIONNAIRE);
       setSelectedSubject(null);
+      if (disableProgress) setDisableProgress(false);
     }
   }
 
@@ -204,7 +195,7 @@ function NewFormDialog(props) {
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE && (selectedSubject || currentSubject)) {filterQuestionnaire();}
     else setRelatedForms([]);
   }, [progress]);
-  
+
   const isFetching = numFetchRequests > 0;
 
   useEffect(() => {
@@ -232,27 +223,52 @@ function NewFormDialog(props) {
           {isFetching && <div className={classes.newFormTypePlaceholder}><CircularProgress size={24} className={classes.newFormTypeLoadingIndicator} /></div>}
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
           <React.Fragment>
-            <Typography variant="h4">Questionnaire</Typography>
-            {questionnaires && relatedForms &&
-              <List>
-                {questionnaires.map((questionnaire) => {
-                  // if selectedSubject has already been set, check if maxPerSubject has been reached for each questionnaire
-                  // atMax returns true if the number of `relatedForms` is greater than the maxPerSubject
-                  let atMax = (relatedForms.length && (relatedForms.filter((i) => (i["@name"] == questionnaire["@name"])).length >= questionnaire?.["maxPerSubject"]));
-                  return (
-                  <SubjectListItem
-                    key={questionnaire["jcr:uuid"]}
-                    onClick={() => {setSelectedQuestionnaire(questionnaire)}}
-                    disabled={isFetching}
-                    selected={questionnaire["jcr:uuid"] === selectedQuestionnaire?.["jcr:uuid"]}
-                    avatarIcon={AssignmentIcon}
-                    >
-                    <div className={`${atMax ? classes.questionnaireDisabledListItem : classes.questionnaireListItem}`}>
-                      <ListItemText primary={questionnaire["title"]} secondary={questionnaire["description"]}/>
-                    </div>
-                  </SubjectListItem>);
-                })}
-              </List>
+            {relatedForms &&
+              <MaterialTable
+                title=""
+                columns={[
+                  { title: 'Questionnaire', field: 'title' },
+                  { title: 'Description', field: 'description' },
+                ]}
+                data={query => {
+                  let url = new URL("/query", window.location.origin);
+                  url.searchParams.set("query", `select * from [lfs:Questionnaire] as n${query.search ? ` WHERE CONTAINS(n.'title', '*${query.search}*')` : ""}`);
+                  url.searchParams.set("limit", query.pageSize);
+                  url.searchParams.set("offset", query.page*query.pageSize);
+                  return fetch(url)
+                    .then(response => response.json())
+                    .then(result => {
+                      return {
+                        data: result["rows"],
+                        page: Math.trunc(result["offset"]/result["limit"]),
+                        totalCount: result["totalrows"],
+                      }}
+                    )
+                }}
+                options={{
+                  search: true,
+                  actionsColumnIndex: -1,
+                  addRowPosition: 'first',
+                  pageSize: rowCount,
+                  rowStyle: rowData => ({
+                    // /* It doesn't seem possible to alter the className from here */
+                    backgroundColor: (selectedQuestionnaire?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
+                    // // grey out subjects that have already reached maxPerSubject
+                    color: ((relatedForms && (selectedSubject || currentSubject) && (relatedForms.filter((i) => (i["@name"] == rowData["@name"])).length >= rowData?.["maxPerSubject"]))
+                    ? theme.palette.grey["500"]
+                    : theme.palette.grey["900"]
+                    )
+                  })
+                }}
+                onRowClick={(event, rowData) => {
+                  if (!isFetching) {
+                    setSelectedQuestionnaire(rowData);
+                  }
+                }}
+                onChangeRowsPerPage={pageSize => {
+                  setRowCount(pageSize);
+                }}
+              />
             }
           </React.Fragment>
           :
@@ -309,7 +325,7 @@ function NewFormDialog(props) {
       <NewSubjectDialog
         allowedTypes={parseToArray(selectedQuestionnaire?.["requiredSubjectTypes"])}
         disabled={isFetching}
-        onClose={() => { setNewSubjectPopperOpen(false); setError(); setNumForms(0);}}
+        onClose={() => { setNewSubjectPopperOpen(false); setError();}}
         onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
         currentSubject={currentSubject}
         onSubmit={createForm}
@@ -332,4 +348,4 @@ function NewFormDialog(props) {
   )
 }
 
-export default withStyles(QuestionnaireStyle)(withRouter(NewFormDialog));
+export default withStyles(QuestionnaireStyle, {withTheme: true})(withRouter(NewFormDialog));
