@@ -81,6 +81,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE", "notes contain");
 
     private static final String SUBJECT_IDENTIFIER = "lfs:Subject";
+    private static final String QUESTIONNAIRE_IDENTIFIER = "lfs:Questionnaire";
 
     @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS"})
     @Override
@@ -311,6 +312,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             if (SUBJECT_IDENTIFIER.equals(fields[i])) {
                 filterdata.append(
                     String.format(" and n.'subject'%s'%s'",
+                        this.sanitizeComparator(comparators[i]),
+                        this.sanitizeField(values[i])
+                    )
+                );
+            } else if (QUESTIONNAIRE_IDENTIFIER.equals(fields[i])) {
+                filterdata.append(
+                    String.format(" and n.'questionnaire'%s'%s'",
                         this.sanitizeComparator(comparators[i]),
                         this.sanitizeField(values[i])
                     )
