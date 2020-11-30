@@ -186,7 +186,7 @@ function FileResourceQuestion(props) {
             </div>
             <span>
               {
-                varNames.map((name, idx) => (
+                namePattern && varNames.map((name, idx) => (
                   <TextField
                     label={name}
                     value={knownAnswers?.[filepath]?.[idx]}
