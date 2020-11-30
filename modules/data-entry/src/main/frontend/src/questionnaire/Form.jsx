@@ -215,7 +215,6 @@ function Form (props) {
   let parentDetails = data?.subject && getHierarchy(data.subject, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"}));
   let title = data?.questionnaire?.title || id || "";
   let subjectName = data?.subject && getTextHierarchy(data?.subject);
-  console.log(data?.subject);
   useEffect(() => {
     pageNameWriter((subjectName ? subjectName + ": " : "") + title);
   }, [subjectName, title])

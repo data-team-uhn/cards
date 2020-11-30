@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -36,6 +36,7 @@ import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import Fields from "../questionnaireEditor/Fields";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
+import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 
 // GUI for displaying details about a questionnaire.
@@ -43,6 +44,8 @@ let Questionnaire = (props) => {
   let { id, classes } = props;
   let [ data, setData ] = useState();
   let [ error, setError ] = useState();
+
+  let pageNameWriter = usePageNameWriterContext();
 
   let handleError = (response) => {
     setError(response);
@@ -65,6 +68,11 @@ let Questionnaire = (props) => {
     fetchData();
   }
 
+  let questionnaireTitle = data ? data['title'] : id;
+  useEffect(() => {
+    pageNameWriter(questionnaireTitle);
+  }, [questionnaireTitle]);
+
   return (
     <>
       { error &&
@@ -79,7 +87,7 @@ let Questionnaire = (props) => {
       >
       <Grid container direction="column" spacing={4}>
       <Grid item>
-        <Typography variant="h2">{data ? data['title'] : id} </Typography>
+        <Typography variant="h2">{questionnaireTitle} </Typography>
         {
           data?.['jcr:createdBy'] && data?.['jcr:created'] &&
             <Typography variant="overline">
