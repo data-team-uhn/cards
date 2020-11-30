@@ -78,9 +78,9 @@ class Main extends React.Component {
             render={(props) => {
                 let ThisComponent = route["lfs:extensionRender"];
                 let newProps = {...props, contentOffset: this.state.contentOffset };
-                let title = MavenVars["name"] + " - " + route["lfs:extensionName"];
+                let title = MavenVars["name"] + " - ";
                 return (
-                  <Page title={title}>
+                  <Page title={title} pageDefaultName={route["lfs:extensionName"]}>
                     <ThisComponent {...newProps} />
                   </Page>
                   );

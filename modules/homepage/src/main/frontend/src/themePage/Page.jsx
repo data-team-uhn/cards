@@ -17,18 +17,42 @@
 //  under the License.
 //
 
-import { useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+
+const DEFAULT_STATE = "";
+
+const PageNameWriterContext = createContext(DEFAULT_STATE);
+
+/**
+ * Obtain a context that can be assigned to to set the page title to something custom
+ * @returns {Object} a React context of values from the parent form
+ * @throws an error if it is not within a FormProvider
+ */
+export function usePageNameWriterContext() {
+  const context = useContext(PageNameWriterContext);
+
+  if (context == undefined) {
+    throw new Error("usePageNameWriterContext must be used within a Page")
+  }
+
+  return context;
+}
 
 // A pseudo-component that applies the title of the given page
 function Page (props) {
-  const { children, title } = props;
+  const { children, title, pageDefaultName } = props;
+  const [ overrideName, setOverrideNameState ] = useState(DEFAULT_STATE);
 
   // When a page is loaded, change the title of the page
   useEffect(() => {
-    document.title = title;
-  })
+    document.title = title + (overrideName == "" ? pageDefaultName : overrideName);
+  }, [overrideName])
 
-  return children;
+  return (
+    <PageNameWriterContext.Provider value={setOverrideNameState}>
+      {children}
+    </PageNameWriterContext.Provider>
+    );
 }
 
 export default Page;
