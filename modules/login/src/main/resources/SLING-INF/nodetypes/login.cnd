@@ -37,4 +37,4 @@
   // Hardcode the resource supertype: the login page is a resource
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
   // Set a default title
-  - title (String) = "Log in" mandatory autocreated
+  - title (String) = "${lfs.name} - Sign in" mandatory autocreated
