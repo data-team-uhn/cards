@@ -211,6 +211,7 @@
   - chromosomeMT (boolean)
 
   // For file answers, a string specifying if the filename can be processed to extract the subject ID from it.
+  - namePattern (string)
 
   // Some questions may be answered with long stories, which may have useful information but should not be stored as-is without curation.
   // We allow users to place these answers in a Notes section
