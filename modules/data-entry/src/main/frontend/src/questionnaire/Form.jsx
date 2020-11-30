@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -38,12 +38,13 @@ import EditIcon from '@material-ui/icons/Edit';
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";
 import moment from "moment";
-import { getHierarchy } from "./Subject";
+import { getHierarchy, getTextHierarchy } from "./Subject";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 import DialogueLoginContainer from "../login/loginDialogue.js";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import FormPagination from "./FormPagination";
+import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 class Page {
   constructor(visible) {
@@ -96,6 +97,7 @@ function Form (props) {
   let [ paginationEnabled, setPaginationEnabled ] = useState(false);
 
   let formNode = React.useRef();
+  let pageNameWriter = usePageNameWriterContext();
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
@@ -210,6 +212,14 @@ function Form (props) {
     saveData(event);
   }
 
+  let parentDetails = data?.subject && getHierarchy(data.subject, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"}));
+  let title = data?.questionnaire?.title || id || "";
+  let subjectName = data?.subject && getTextHierarchy(data?.subject);
+  console.log(data?.subject);
+  useEffect(() => {
+    pageNameWriter((subjectName ? subjectName + ": " : "") + title);
+  }, [subjectName, title])
+
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     fetchData();
@@ -284,8 +294,6 @@ function Form (props) {
       </Grid>
     );
   }
-
-  let parentDetails = data?.subject && getHierarchy(data.subject, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"}));
   pages.length = 0;
 
   return (
@@ -299,10 +307,10 @@ function Form (props) {
             </IconButton>
           </Typography> }
           <Typography variant="h2">
-            {(data?.questionnaire?.title || id || "")}
+            {title}
             <DeleteButton
               entryPath={data ? data["@path"] : "/Forms/"+id}
-              entryName={(data?.subject?.identifier || "Subject") + ": " + (data?.questionnaire?.title || id || "")}
+              entryName={(data?.subject?.identifier || "Subject") + ": " + (title)}
               entryType={data?.questionnaire?.title || "Form"}
               warning={data ? data["@referenced"] : false}
               shouldGoBack={true}
