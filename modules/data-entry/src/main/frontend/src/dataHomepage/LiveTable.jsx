@@ -110,7 +110,7 @@ function LiveTable(props) {
 
     // Add the filters (if they exist)
     if (filters != null) {
-      if (!filters["fields"].includes("lfs:Questionnaire")) {
+      if (filters["fields"].length > 1 || !filters["fields"].includes("lfs:Questionnaire")) {
         url.searchParams.set("joinchildren", joinChildren);
       }
       filters["fields"].forEach((field) => {url.searchParams.append("filternames", field)});
