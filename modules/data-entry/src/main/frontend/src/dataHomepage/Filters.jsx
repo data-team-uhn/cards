@@ -99,10 +99,12 @@ function Filters(props) {
     let fields = ["Subject"];
     let uuids = {Subject: "lfs:Subject"};
     let titles = {Subject: "Subject"};
-    // keep a custom field for the questionnaire
-    fields.push("Questionnaire");
-    uuids["Questionnaire"] = "lfs:Questionnaire";
-    titles["Questionnaire"] = "Questionnaire";
+    if (!questionnaire) {
+      // keep a custom field for the questionnaire
+      fields.push("Questionnaire");
+      uuids["Questionnaire"] = "lfs:Questionnaire";
+      titles["Questionnaire"] = "Questionnaire";
+    }
     for (let [questionName, question] of Object.entries(filterJson)) {
       // For each question, save the name, data type, and answers (if necessary)
       fields.push(questionName);
@@ -112,9 +114,11 @@ function Filters(props) {
     filterJson["Subject"] = {
       dataType: "subject"
     };
-    filterJson["Questionnaire"] = {
-      dataType: "questionnaire"
-    };
+    if (!questionnaire) {
+      filterJson["Questionnaire"] = {
+        dataType: "questionnaire"
+      };
+    }
     setFilterableFields(fields);
     setQuestionDefinitions(filterJson);
     setFilterableTitles(titles);
