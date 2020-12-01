@@ -1086,7 +1086,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>VO2peak</value>
+				<value>VO2 Peak</value>
 				<type>String</type>
 			</property>
 			<property>

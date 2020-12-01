@@ -33,47 +33,13 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>Exercise details</name>
+		<name>Exercise Details</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Exercise details</value>
+			<value>Exercise Details</value>
 			<type>String</type>
 		</property>
-		<node>
-			<name>survey-visit</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Visit Number</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>1-8</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minValue</name>
-				<value>1.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>maxValue</name>
-				<value>8.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
 		<node>
 			<name>cr_date</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
