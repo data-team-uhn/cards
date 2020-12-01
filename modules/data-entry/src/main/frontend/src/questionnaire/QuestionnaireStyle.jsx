@@ -258,9 +258,6 @@ const questionnaireStyle = theme => ({
     titleButton: {
         float: "right"
     },
-    subjectHeader: {
-        display: "inline-block"
-    },
     subjectSubHeader: {
         display: "block"
     },
@@ -270,8 +267,6 @@ const questionnaireStyle = theme => ({
         marginRight: theme.spacing(12)
     },
     childSubjectHeaderButton: {
-        display: "inline-block",
-        bottom: theme.spacing(1),
         left: theme.spacing(1)
     },
     addNewSubjectButton: {

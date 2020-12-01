@@ -25,7 +25,7 @@ import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
-import MaterialTable from 'material-table';
+import MaterialTable, { MTablePagination } from 'material-table';
 
 import {
   CircularProgress,
@@ -127,9 +127,9 @@ function Subject(props) {
   return (
     <React.Fragment>
       <div className={classes.subjectNewButton} style={{ top: props.contentOffset + 'px' }} >
-          <NewFormDialog currentSubject={currentSubject}>
-            New form for this Subject
-          </NewFormDialog>
+        <NewFormDialog currentSubject={currentSubject}>
+          New form for this Subject
+        </NewFormDialog>
       </div>
       {parentDetails && <Typography variant="overline">{parentDetails}</Typography>}
       <SubjectContainer id={currentSubjectId} key={currentSubjectId}  classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject}/>
@@ -211,9 +211,9 @@ function SubjectContainer(props) {
   }
 
   return (
-    <Grid container spacing={3}>
+    data && <Grid container spacing={3}>
       <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed}/>
-      {relatedSubjects ?
+      {relatedSubjects && relatedSubjects.length > 0 ?
         (<Grid item xs={12} className={classes.subjectContainer}>
           {relatedSubjects.map( (subject, i) => {
             // Render component again for each related subject
@@ -239,7 +239,7 @@ function SubjectMember (props) {
   let [tableData, setTableData] = useState();
   let [subjectGroups, setSubjectGroups] = useState();
 
-  const customUrl=`/Forms.paginate?fieldname=subject&fieldvalue=${encodeURIComponent(data['jcr:uuid'])}&includeallstatus=true`;
+  const customUrl=`/Forms.paginate?fieldname=subject&fieldvalue=${encodeURIComponent(data['jcr:uuid'])}&includeallstatus=true&limit=1000`;
 
   // Fetch the forms associated with the subject as JSON from the server
   // It will be stored in the `tableData` state variable
@@ -295,23 +295,21 @@ function SubjectMember (props) {
 
   let identifier = data && data.identifier ? data.identifier : id;
 
-  return (
+  return ( data &&
     <Grid item xs={12}>
       <Grid item>
-        <span className={classes.subjectHeader}>
-          <Typography variant={headerStyle}>
-            {data?.type?.label || "Subject"} {identifier}
-          </Typography>
-        </span>
-        <DeleteButton
-          entryPath={data ? data["@path"] : "/Subjects/" + id}
-          entryName={(data?.type?.label || "Subject") + " " + (identifier)}
-          entryType={data?.type?.label || "Subject"}
-          warning={data ? data["@referenced"] : false}
-          shouldGoBack={level === 0}
-          buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}
-          size={level === 0 ? "large" : null}
-        />
+        <Typography variant={headerStyle}>
+          {data?.type?.label || "Subject"} {identifier}
+          <DeleteButton
+            entryPath={data ? data["@path"] : "/Subjects/" + id}
+            entryName={(data?.type?.label || "Subject") + " " + (identifier)}
+            entryType={data?.type?.label || "Subject"}
+            warning={data ? data["@referenced"] : false}
+            shouldGoBack={level === 0}
+            buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}
+            size={level === 0 ? "large" : null}
+          />
+        </Typography>
         {
           data && data['jcr:createdBy'] && (level == 0) && data['jcr:created'] ?
             <Typography
@@ -322,8 +320,8 @@ function SubjectMember (props) {
           : ""
         }
       </Grid>
-      <Grid item>
-        <Grid container spacing={8}>{ subjectGroups &&
+      { subjectGroups && Object.keys(subjectGroups).length > 0 && <Grid item>
+        <Grid container spacing={8}> {
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => {
             return(<Grid item key={questionnaireTitle}>
               <MaterialTable
@@ -333,16 +331,27 @@ function SubjectMember (props) {
                   actionsColumnIndex: -1,
                   emptyRowsWhenPaging: false,
                   search: false,
+                  pageSize: maxDisplayed,
+                  header: false,
                   rowStyle: {
                     verticalAlign: 'top',
                   }
                 }}
                 columns={[
                   { title: 'Created',
+                    cellStyle: {
+                      minWidth: '110px',
+                      padding: '0',
+                      paddingTop: '12px'
+                    },
                     render: rowData => <Link to={"/content.html" + rowData["@path"]}>
                                          {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
                                        </Link> },
                   { title: 'Status',
+                    cellStyle: {
+                      padding: '0',
+                      paddingTop: '12px'
+                    },
                     render: rowData => <React.Fragment>
                                          {rowData["statusFlags"].map((status) => {
                                            return <Chip
@@ -354,32 +363,36 @@ function SubjectMember (props) {
                                          })}
                                        </React.Fragment> },
                   { title: 'Summary',
-                    render: rowData => <FormData formID={rowData["@name"]} maxDisplayed={maxDisplayed}/> },                  
+                    cellStyle: {
+                      padding: '12px 0 5px 0',
+                      minWidth: '240px'
+                    },
+                    render: rowData => <FormData className={classes.formData} formID={rowData["@name"]} maxDisplayed={maxDisplayed}/> },
+                  { title: 'Actions',
+                    cellStyle: {
+                      padding: '0',
+                      width: '20px',
+                      textAlign: 'end'
+                    },
+                    render: rowData => <DeleteButton
+                                          entryPath={rowData["@path"]}
+                                          entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
+                                          entryType="Form"
+                                          warning={rowData ? rowData["@referenced"] : false}
+                                          onComplete={fetchTableData}
+                                        /> },
                 ]}
+                components={{
+                    Pagination: props => { const { classes, ...other } = props;
+                                           return (subjectGroups[questionnaireTitle].length > maxDisplayed && <MTablePagination {...other} />)}
+                }}
                 data={subjectGroups[questionnaireTitle]}
-                actions={[
-                    rowData => ({
-                    icon: () => <EditButton
-                                  entryPath={rowData["@path"]}
-                                  entryType="Form"
-                                />
-                  }),
-                  rowData => ({
-                    icon: () => <DeleteButton
-                                  entryPath={rowData["@path"]}
-                                  entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
-                                  entryType="Form"
-                                  warning={rowData ? rowData["@referenced"] : false}
-                                  onComplete={fetchTableData}
-                                />
-                  })
-                 ]}
                />
             </Grid>)
           })
         }
         </Grid>
-      </Grid>
+      </Grid> }
     </Grid>
   );
 };
@@ -486,7 +499,7 @@ Subject.propTypes = {
 }
 
 Subject.defaultProps = {
-  maxDisplayed: 4
+  maxDisplayed: 10
 }
 
 export default withStyles(QuestionnaireStyle)(Subject);
