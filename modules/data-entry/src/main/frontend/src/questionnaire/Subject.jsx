@@ -18,7 +18,7 @@
 //
 
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, withRouter, useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
@@ -93,10 +93,14 @@ function Subject(props) {
   let { id, classes, maxDisplayed } = props;
   const [currentSubject, setCurrentSubject] = useState();
 
+  const history = useHistory();
+
   // the subject data, fetched in the SubjectContainer component, will be stored in the `type` state
   function handleSubject(e) {
     setCurrentSubject(e);
   }
+
+  let parentDetails = currentSubject && currentSubject['parents'] && getHierarchy(currentSubject['parents'], Link, (node) => ({to: "/content.html" + node["@path"], onClick: () => {history.go(0)}}));
 
   return (
     <React.Fragment>
@@ -105,6 +109,7 @@ function Subject(props) {
             New form for this Subject
           </NewFormDialog>
       </div>
+      {parentDetails && <Typography variant="overline">{parentDetails}</Typography>}
       <SubjectContainer id={id} classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject}/>
     </React.Fragment>
   );
@@ -258,15 +263,10 @@ function SubjectMember (props) {
   if (level == 1) {buttonSize = "medium"; headerStyle="h4"};
   if (level > 1) {buttonSize = "small"; headerStyle="h5"};
 
-  let parentDetails = data && data['parents'] && getHierarchy(data['parents'], Link, (node) => ({to: "/content.html" + node["@path"]}));
-
   return (
     <Grid item xs={12}>
       <Grid item>
         <span className={classes.subjectHeader}>
-          {
-            (level == 0) && parentDetails && <Typography variant="overline">{parentDetails}</Typography>
-          }
           <Typography variant={headerStyle}>
             {data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
           </Typography>
@@ -446,4 +446,4 @@ Subject.defaultProps = {
   maxDisplayed: 4
 }
 
-export default withStyles(QuestionnaireStyle)(Subject);
+export default withStyles(QuestionnaireStyle)(withRouter(Subject));
