@@ -68,7 +68,7 @@ let ComputedQuestion = (props) => {
   let setValue = (input) => {
     if (value !== input) {
       changeValue(input);
-      changeAnswer(input ? [["value", input]] : []);
+      changeAnswer([["value", typeof(input) === "undefined" ? "" : input]]);
     }
   }
 
@@ -78,7 +78,7 @@ let ComputedQuestion = (props) => {
     if (form[name] && form[name][0]) {
       value = form[name][0][1];
     }
-    if (typeof(value) === undefined || value === "") {
+    if (typeof(value) === "undefined" || value === "") {
       missingValue = true;
     }
     if (!isNaN(Number(value))) {
@@ -115,7 +115,7 @@ let ComputedQuestion = (props) => {
       let expressionArguments = ["form", "setError"].concat(parseResults[0]);
       result = new Function(expressionArguments, parseResults[2])
         (form, (errorMessage) => {expressionError = errorMessage}, ...parseResults[1]);
-      if (missingValue || typeof(result) === undefined || (typeof(result) === "number" && isNaN(result))) {
+      if (missingValue || typeof(result) === "undefined" || (typeof(result) === "number" && isNaN(result))) {
         result = "";
       }
     }
@@ -131,7 +131,7 @@ let ComputedQuestion = (props) => {
       setError(false);
     }
 
-    setValue(result);
+    setValue(typeof(result) === "undefined" ? "" : result.toString());
   }
 
   const muiInputProps = {}
