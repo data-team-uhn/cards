@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Subject from "../questionnaire/Subject.jsx";
 import { getHierarchy } from "../questionnaire/Subject.jsx";
@@ -27,6 +27,7 @@ import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItem
 import AddIcon from "@material-ui/icons/Add";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import DeleteButton from "./DeleteButton.jsx";
+import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 const tableColumns = [
     {
@@ -87,6 +88,15 @@ function Subjects(props) {
   ]
 
   const entry = /Subjects\/(.+)/.exec(location.pathname);
+
+  // Clear the page name overwriting if moving from a specific Subject to the Subjects page
+  const pageNameWriter = usePageNameWriterContext();
+  useEffect(() => {
+    if (!entry) {
+      pageNameWriter("");
+    }
+  }, [entry]);
+
   if (entry) {
     return <Subject id={entry[1]} contentOffset={props.contentOffset} />;
   }

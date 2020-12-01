@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Form from "../questionnaire/Form.jsx";
 import { getHierarchy } from "../questionnaire/Subject.jsx";
@@ -26,21 +26,30 @@ import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-
+import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 function Forms(props) {
   const { match, location, classes } = props;
-
-  const entry = /Forms\/(.+)/.exec(location.pathname);
-  if (entry) {
-    return <Form id={entry[1]} key={location.pathname}/>;
-  }
 
   const [ title, setTitle ] = useState("Forms");
   const [ titleFetchSent, setFetchStatus ] = useState(false);
   const [ questionnairePath, setQuestionnairePath ] = useState(undefined);
   const [ questionnaireDetails, setQuestionnaireDetails ] = useState();
   const questionnaireID = /questionnaire=([^&]+)/.exec(location.search);
+  const pageNameWriter = usePageNameWriterContext();
+
+  const entry = /Forms\/(.+)/.exec(location.pathname);
+
+  // When moving from a specific form to the "Forms" page, ensure that the title properly changes
+  useEffect(() => {
+    if (!entry) {
+      pageNameWriter("");
+    }
+  }, [entry]);
+
+  if (entry) {
+    return <Form id={entry[1]} key={location.pathname}/>;
+  }
 
   // Convert from a questionnaire ID to the title of the form we're editing
   let getQuestionnaireTitle = (id) => {
