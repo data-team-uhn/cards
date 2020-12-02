@@ -217,11 +217,7 @@ FileResourceQuestion.propTypes = {
   questionDefinition: PropTypes.shape({
     text: PropTypes.string.isRequired,
   }).isRequired,
-  text: PropTypes.string,
-  enableUnknown: PropTypes.bool,
-  yesLabel: PropTypes.string,
-  noLabel: PropTypes.string,
-  unknownLabel: PropTypes.string
+  namePattern: PropTypes.string
 };
 
 const StyledFileResourceQuestion = withStyles(QuestionnaireStyle)(FileResourceQuestion)
