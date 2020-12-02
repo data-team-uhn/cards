@@ -99,10 +99,18 @@ function Subject(props) {
 
   const location = useLocation();
 
-  React.useEffect(() => {
+  useEffect(() => {
     let newId = /Subjects\/(.+)/.exec(location.pathname || '')?.[1];
     newId && setCurrentSubjectId(newId);
   }, [location]);
+
+  let pageTitle = currentSubject && getTextHierarchy(currentSubject, true);
+
+  // Change the title of the page whenever parentDetails changes
+  let pageNameWriter = usePageNameWriterContext();
+  useEffect(() => {
+    pageTitle && pageNameWriter(pageTitle);
+  }, [pageTitle]);
 
   // the subject data, fetched in the SubjectContainer component, will be stored in the `type` state
   function handleSubject(e) {
@@ -273,13 +281,6 @@ function SubjectMember (props) {
   if (level > 1) {buttonSize = "small"; headerStyle="h5"};
 
   let identifier = data && data.identifier ? data.identifier : id;
-  let pageTitle = data && getTextHierarchy(data, true);
-
-  // Change the title of the page whenever parentDetails changes
-  let pageNameWriter = usePageNameWriterContext();
-  useEffect(() => {
-    pageTitle && pageNameWriter(pageTitle);
-  }, [pageTitle]);
 
   return (
     <Grid item xs={12}>
