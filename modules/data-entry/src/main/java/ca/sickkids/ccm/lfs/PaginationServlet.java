@@ -248,7 +248,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         StringBuilder joindata = new StringBuilder();
         for (int i = 0; i < joins.length; i++) {
             // Skip this join if it is on lfs:Subject, which does not require a child inner join
-            if (SUBJECT_IDENTIFIER.equals(joins[i])) {
+            if (SUBJECT_IDENTIFIER.equals(joins[i]) || QUESTIONNAIRE_IDENTIFIER.equals(joins[i])) {
                 continue;
             }
 
