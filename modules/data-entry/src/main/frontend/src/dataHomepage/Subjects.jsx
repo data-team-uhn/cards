@@ -17,6 +17,7 @@
 //  under the License.
 //
 import React, { useEffect, useState } from "react";
+import { useHistory } from 'react-router-dom';
 import LiveTable from "./LiveTable.jsx";
 import Subject from "../questionnaire/Subject.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "../questionnaire/Subject.jsx";
@@ -103,7 +104,18 @@ function Subjects(props) {
     return <Subject id={entry} contentOffset={props.contentOffset} />;
   }
 
-  // import the function
+  const history = useHistory();
+  let onSumit = (subjectPath) => {
+    setNewSubjectPopperOpen(false);
+    setRequestFetchData(requestFetchData+1);
+    // redirect to the new just created subject page
+    let entry = /Subjects\/(.+)/.exec(subjectPath);
+    if (entry && entry[1]) {
+      history.push({
+        pathname: window.location.pathname + "/" + entry[1]
+      });
+    }
+  }
 
   return (
     <div>
@@ -139,7 +151,7 @@ function Subjects(props) {
       </Card>
       <NewSubjectDialog
         onClose={() => { setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
-        onSubmit={() => { setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
+        onSubmit={onSumit}
         open={newSubjectPopperOpen}
         />
     </div>
