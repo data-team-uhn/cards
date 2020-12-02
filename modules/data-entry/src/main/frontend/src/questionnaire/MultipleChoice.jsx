@@ -210,6 +210,10 @@ function MultipleChoice(props) {
         // TODO: We need to perform error validation on the updated field
         addOption(option, option);
         selectOption(option, option);
+      } else {
+        setGhostName(option);
+        updateGhost(GHOST_SENTINEL, option);
+        onUpdate && onUpdate(option);
       }
     });
 
