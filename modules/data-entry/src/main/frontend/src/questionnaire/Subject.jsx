@@ -92,6 +92,7 @@ export function getTextHierarchy (node) {
 function Subject(props) {
   let { id, classes, maxDisplayed } = props;
   const [currentSubject, setCurrentSubject] = useState();
+  const [currentSubjectId, setCurrentSubjectId] = useState(id);
 
   const history = useHistory();
 
@@ -100,7 +101,11 @@ function Subject(props) {
     setCurrentSubject(e);
   }
 
-  let parentDetails = currentSubject && currentSubject['parents'] && getHierarchy(currentSubject['parents'], Link, (node) => ({to: "/content.html" + node["@path"], onClick: () => {history.go(0)}}));
+  function update(id) {
+    setCurrentSubjectId(id);
+  }
+
+  let parentDetails = currentSubject && currentSubject['parents'] && getHierarchy(currentSubject['parents'], Link, (node) => ({to: "/content.html" + node["@path"], onClick: () => {update(node['@name'])}}));
 
   return (
     <React.Fragment>
@@ -110,7 +115,7 @@ function Subject(props) {
           </NewFormDialog>
       </div>
       {parentDetails && <Typography variant="overline">{parentDetails}</Typography>}
-      <SubjectContainer id={id} classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject}/>
+      <SubjectContainer id={currentSubjectId} key={currentSubjectId}  classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject}/>
     </React.Fragment>
   );
 }
