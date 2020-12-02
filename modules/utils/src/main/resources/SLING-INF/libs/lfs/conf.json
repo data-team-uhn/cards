@@ -3,5 +3,9 @@
   "Version": {
     "jcr:primaryType": "nt:unstructured",
     "Version": "${lfs.version}"
+  },
+  "Name": {
+    "jcr:primaryType": "nt:unstructured",
+    "Name": "${lfs.name}"
   }
 }
