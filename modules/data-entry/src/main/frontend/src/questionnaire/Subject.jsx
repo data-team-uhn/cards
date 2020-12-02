@@ -18,7 +18,7 @@
 //
 
 import React, { useState } from "react";
-import { Link, withRouter, useHistory } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
@@ -93,8 +93,6 @@ function Subject(props) {
   let { id, classes, maxDisplayed } = props;
   const [currentSubject, setCurrentSubject] = useState();
   const [currentSubjectId, setCurrentSubjectId] = useState(id);
-
-  const history = useHistory();
 
   // the subject data, fetched in the SubjectContainer component, will be stored in the `type` state
   function handleSubject(e) {
@@ -451,4 +449,4 @@ Subject.defaultProps = {
   maxDisplayed: 4
 }
 
-export default withStyles(QuestionnaireStyle)(withRouter(Subject));
+export default withStyles(QuestionnaireStyle)(Subject);
