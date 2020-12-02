@@ -45,6 +45,8 @@
               <arguments>
                 <argument>webpack_script.py</argument>
                 <argument>${project.basedir}</argument>
+                <argument>${lfs.version}</argument>
+                <argument>${lfs.name}</argument>
               </arguments>
             </configuration>
             <id>python-build</id>

@@ -17,12 +17,14 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from 'react-router-dom';
+
 import PropTypes from "prop-types";
 import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
+import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 import {
   CircularProgress,
@@ -69,13 +71,14 @@ export function getHierarchy (node, RenderComponent, propsCreator) {
 }
 
 // Recursive function to get a flat list of parents with no links and subject labels
-export function getTextHierarchy (node) {
+export function getTextHierarchy (node, withType = false) {
+  let type = withType ? (node?.["type"]?.["@name"] + " "): "";
   let output = node.identifier;
   if (node["parents"]) {
-    let ancestors = getTextHierarchy(node["parents"]);
-    return `${ancestors} / ${output}`;
+    let ancestors = getTextHierarchy(node["parents"], withType);
+    return `${ancestors} / ${type}${output}`;
   } else {
-    return output;
+    return type + output;
   }
 }
 
@@ -269,17 +272,26 @@ function SubjectMember (props) {
   if (level == 1) {buttonSize = "medium"; headerStyle="h4"};
   if (level > 1) {buttonSize = "small"; headerStyle="h5"};
 
+  let identifier = data && data.identifier ? data.identifier : id;
+  let pageTitle = data && getTextHierarchy(data, true);
+
+  // Change the title of the page whenever parentDetails changes
+  let pageNameWriter = usePageNameWriterContext();
+  useEffect(() => {
+    pageTitle && pageNameWriter(pageTitle);
+  }, [pageTitle]);
+
   return (
     <Grid item xs={12}>
       <Grid item>
         <span className={classes.subjectHeader}>
           <Typography variant={headerStyle}>
-            {data?.type?.label || "Subject"} {data && data.identifier ? data.identifier : id}
+            {data?.type?.label || "Subject"} {identifier}
           </Typography>
         </span>
         <DeleteButton
           entryPath={data ? data["@path"] : "/Subjects/" + id}
-          entryName={(data?.type?.label || "Subject") + " " + (data && data.identifier ? data.identifier : id)}
+          entryName={(data?.type?.label || "Subject") + " " + (identifier)}
           entryType={data?.type?.label || "Subject"}
           warning={data ? data["@referenced"] : false}
           shouldGoBack={level === 0}
@@ -323,7 +335,7 @@ function SubjectMember (props) {
                       action={
                         <DeleteButton
                           entryPath={entry["@path"]}
-                          entryName={`${data && data.identifier ? data.identifier : id}: ${entry.questionnaire["@name"]}`}
+                          entryName={`${identifier}: ${entry.questionnaire["@name"]}`}
                           entryType="Form"
                           warning={entry ? entry["@referenced"] : false}
                         />
