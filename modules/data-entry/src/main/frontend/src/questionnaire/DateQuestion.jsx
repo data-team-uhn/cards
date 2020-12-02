@@ -102,8 +102,8 @@ function amendMoment(date, format) {
 //  type="timestamp"
 //  />
 function DateQuestion(props) {
-  let {existingAnswer, type, displayFormat, lowerLimit, upperLimit, classes, ...rest} = props;
-  let {text, dateFormat} = {dateFormat: "yyyy-MM-dd", ...props.questionDefinition, ...props};
+  let {existingAnswer, displayFormat, classes, ...rest} = props;
+  let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy-MM-dd", minAnswers: 0, type: TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
   let currentStartValue = existingAnswer && existingAnswer[1].value && Array.of(existingAnswer[1].value).flat()[0].split("T")[0] || null;
 
   const isMonth = MONTH_FORMATS.includes(dateFormat);
@@ -111,14 +111,20 @@ function DateQuestion(props) {
 
   const [selectedDate, changeDate] = useState(amendMoment(moment(currentStartValue), dateFormat));
   // FIXME There's no way to store the end date currently. Maybe add existingAnswer[1].endValue?
-  const [selectedEndDate, changeEndDate] = useState(isMonth ? "" : amendMoment(moment(), dateFormat));
+  const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), dateFormat));
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid date");
-  const [incompleteDate, setIncompleteDate] = useState(null);
-  const [incompleteEndDate, setIncompleteEndDate] = useState(null);
+  const [monthDateString, setMonthDateString] = useState("");
+  const [endMonthDateString, setEndMonthDateString] = useState("");
   const upperLimitMoment = amendMoment(moment(upperLimit), dateFormat);
   const lowerLimitMoment = amendMoment(moment(lowerLimit), dateFormat);
-  const monthYearTest = new RegExp(/\d{4}\/(0[1-9]|10|11|12)/);
+  const monthRegExp = "1[0-2]|0?[1-9]";
+  const strictMonthRegExp = "1[0-2]|0[1-9]";
+  const yearRegExp = "\\d{4}";
+  let inputRegExp = new RegExp();
+  let strictInputRegExp = new RegExp();
+
+  // const monthYearTest = new RegExp(/\d{4}\/(0[1-9]|10|11|12)/);
 
   // If we're given a year, instead supply the NumberQuestion widget
   if (dateFormat === DATE_FORMATS[0]) {
@@ -137,14 +143,19 @@ function DateQuestion(props) {
     );
   }
 
-  // The default value of displayFormat, if not given, is dateFormat's value
-  if (typeof displayFormat === "undefined") {
-    displayFormat = dateFormat;
-  }
-
   if (isMonth) {
-    displayFormat = "yyyy/MM/dd";
-    dateFormat = "yyyy-MM-dd";
+    // Create a user friendly displayFormat and a sling-compatible dateFormat
+    if (typeof displayFormat === "undefined") {
+      displayFormat = dateFormat.replace('-', '/');
+    }
+    dateFormat = DATE_FORMATS[1];
+    // Create a RegExp to test for the display format
+    let regExpString = `^${displayFormat.toLowerCase().replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&')}$`;
+    inputRegExp = new RegExp(regExpString.replace("yyyy", `(${yearRegExp})`).replace("mm", `(${monthRegExp})`));
+    strictInputRegExp = new RegExp(regExpString.replace("yyyy", `(${yearRegExp})`).replace("mm", `(${strictMonthRegExp})`));
+  } else if (typeof displayFormat === "undefined") {
+    // The default value of displayFormat for a non-month date, if not given, is dateFormat's value
+    displayFormat = dateFormat;
   }
 
   // Check that the given date is within the upper/lower limit (if given)
@@ -178,17 +189,44 @@ function DateQuestion(props) {
   }
 
   let validateMonthString = (value) => {
-    if (!monthYearTest.test(value)) {
-      setError(true);
-      setErrorMessage("Please enter a month in the format yyyy/MM, such as 2000/01");
-      setIncompleteDate(value);
-      value = "";
-    } else {
+    let valid = inputRegExp.test(value)
+    if (valid || (minAnswers > 0 && value.length === 0)) {
       setError(false);
-      setIncompleteDate(null);
-      if (value !== "") {
-        value = value.replace("/", "-") + "-01";
-      }
+    } else {
+      let exampleDate = displayFormat.toLowerCase().replace("yyyy", "2000").replace("mm", "01");
+      setError(true);
+      setErrorMessage(`Please enter a month in the format ${displayFormat.toLowerCase()}, such as ${exampleDate}`);
+    }
+    return valid;
+  }
+
+  let displayMonthToMomentString = (value) => {
+    let monthIndex = displayFormat.toLowerCase().indexOf('m');
+    if (!strictInputRegExp.test(value)) {
+      // Input has a single digit month. Prepend month with 0 to ensure Moment can handle the date
+      value = [value.slice(0, monthIndex), "0", value.slice(monthIndex)].join('');
+    }
+
+    // Make sure month and year are ordered correctly for parsing via Moment
+    if (monthIndex === 0) {
+      // Moment requires year before month.
+      let yearIndex = displayFormat.toLowerCase().indexOf('y');
+      value = [value.slice(yearIndex, yearIndex + 4), '-', value.slice(0, 2)].join('');
+    }
+    return value.replace('/', '-') + '-01'
+  }
+
+  let momentStringToDisplayMonth = (value) => {
+    value = value.replace('-','/');
+
+    // Switch month and year if required as Moment returns a fixed order
+    let monthIndex = displayFormat.toLowerCase().indexOf('m');
+    if (monthIndex === 0) {
+      // Switch back from moment supported yyyy/mm to desired mm/yyyy.
+      value = [value.slice(5, 7), '/', value.slice(0, 4)].join('');
+    } else if (value.length > 7) {
+      // Cut off any text beyond "yyyy/mm"
+      value = value.substring(0, 7);
     }
     return value;
   }
@@ -198,22 +236,18 @@ function DateQuestion(props) {
     isDate ? "date" :
     "datetime-local";
 
+  if (isMonth && monthDateString == "" && existingAnswer) {
+    setMonthDateString(momentStringToDisplayMonth(currentStartValue));
+  }
+
   // Determine how to display the currently selected value
   const outputDate = amendMoment(selectedDate, displayFormat);
   let outputDateString = momentToString(outputDate);
   const outputEndDate = amendMoment(selectedEndDate, displayFormat);
   let outputEndDateString = momentToString(outputEndDate);
   if (isMonth) {
-    if (incompleteDate) {
-      outputDateString = incompleteDate;
-    } else {
-      outputDateString = outputDateString.replace("-", "/");
-    }
-    if (incompleteEndDate) {
-      outputEndDateString = incompleteEndDate;
-    }
-    } else {
-      outputEndDateString = outputEndDateString.replace("-", "/");
+    outputDateString = monthDateString;
+    outputEndDateString = endMonthDateString;
   }
   let outputAnswers = [["date", selectedDate.isValid() ? selectedDate.formatWithJDF(dateFormat) : '']];
   if (type === INTERVAL_TYPE) {
@@ -243,15 +277,33 @@ function DateQuestion(props) {
           (event) => {
             let value = event.target.value;
             if (isMonth) {
-              value = validateMonthString(value);
-            }
-            let parsedDate = boundDate(amendMoment(value, dateFormat));
-            changeDate(parsedDate);
+              setMonthDateString(value);
+            } else {
+              let parsedDate = boundDate(amendMoment(value, dateFormat));
+              changeDate(parsedDate);
 
-            // Also fix the end date if it is earlier than the given start date
-            type === INTERVAL_TYPE && changeEndDate(boundEndDate(selectedEndDate, parsedDate));
+              // Also fix the end date if it is earlier than the given start date
+              type === INTERVAL_TYPE && changeEndDate(boundEndDate(selectedEndDate, parsedDate));
+            }
           }
         }
+        onBlur={ () => {
+          if (isMonth) {
+            if (validateMonthString(monthDateString)) {
+              let parsedDate = boundDate(amendMoment(displayMonthToMomentString(monthDateString), dateFormat));
+              changeDate(parsedDate);
+              setMonthDateString(momentStringToDisplayMonth(momentToString(parsedDate)));
+
+              // Also fix the end date if it is earlier than the given start date
+              let parsedEndDate = boundEndDate(selectedEndDate, parsedDate);
+              if (type === INTERVAL_TYPE) {
+                changeEndDate(parsedEndDate);
+                setEndMonthDateString(momentStringToDisplayMonth(momentToString(parsedEndDate)));
+              }
+            }
+          }
+        }}
+        placeholder={displayFormat.toLowerCase()}
         value={outputDateString}
       />
       { /* If this is an interval, allow the user to select a second date */
@@ -275,12 +327,23 @@ function DateQuestion(props) {
             (event) => {
               let value = event.target.value;
               if (isMonth) {
-                value = validateMonthString(value);
+                setEndMonthDateString(value);
+              } else {
+                let parsedDate = amendMoment(value, dateFormat);
+                changeEndDate(boundEndDate(parsedDate, selectedDate));
               }
-              let parsedDate = amendMoment(value, dateFormat);
-              changeEndDate(boundEndDate(parsedDate, selectedDate));
             }
           }
+          onBlur={ () => {
+            if (isMonth) {
+              if (validateMonthString(monthDateString)) {
+                let parsedDate = boundEndDate(amendMoment(displayMonthToMomentString(monthDateString), dateFormat), selectedDate);
+                changeEndDate(parsedDate);
+                setEndMonthDateString(momentStringToDisplayMonth(momentToString(parsedDate)));
+              }
+            }
+          }}
+          placeholder={displayFormat.toLowerCase()}
           value={outputEndDateString}
         />
       </React.Fragment>
@@ -298,16 +361,14 @@ function DateQuestion(props) {
 
 DateQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
-  text: PropTypes.string,
-  dateFormat: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS),
   displayFormat: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS),
-  type: PropTypes.oneOf([TIMESTAMP_TYPE, INTERVAL_TYPE]).isRequired,
-  lowerLimit: PropTypes.object,
-  upperLimit: PropTypes.object
-};
-
-DateQuestion.defaultProps = {
-  type: TIMESTAMP_TYPE
+  questionDefinition: PropTypes.shape({
+    text: PropTypes.string,
+    dateFormat: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS),
+    type: PropTypes.oneOf([TIMESTAMP_TYPE, INTERVAL_TYPE]),
+    lowerLimit: PropTypes.object,
+    upperLimit: PropTypes.object,
+  })
 };
 
 const StyledDateQuestion = withStyles(QuestionnaireStyle)(DateQuestion);
