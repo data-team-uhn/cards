@@ -18,7 +18,7 @@
 //
 
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
@@ -94,16 +94,19 @@ function Subject(props) {
   const [currentSubject, setCurrentSubject] = useState();
   const [currentSubjectId, setCurrentSubjectId] = useState(id);
 
+  const location = useLocation();
+
+  React.useEffect(() => {
+    let newId = /Subjects\/(.+)/.exec(location.pathname || '')?.[1];
+    newId && setCurrentSubjectId(newId);
+  }, [location]);
+
   // the subject data, fetched in the SubjectContainer component, will be stored in the `type` state
   function handleSubject(e) {
     setCurrentSubject(e);
   }
 
-  function update(id) {
-    setCurrentSubjectId(id);
-  }
-
-  let parentDetails = currentSubject && currentSubject['parents'] && getHierarchy(currentSubject['parents'], Link, (node) => ({to: "/content.html" + node["@path"], onClick: () => {update(node['@name'])}}));
+  let parentDetails = currentSubject && currentSubject['parents'] && getHierarchy(currentSubject['parents']);
 
   return (
     <React.Fragment>
