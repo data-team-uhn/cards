@@ -317,7 +317,7 @@ export function NewSubjectDialog (props) {
       setIsPosting(false);
       // redirect to the new just created subject page
       let subjectId = getSubjectIdFromPath(subject);
-      if (subjectId) {
+      if (openNewSubject && subjectId) {
         history.push({
           pathname: window.location.pathname + "/" + subjectId
         });
