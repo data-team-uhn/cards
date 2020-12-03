@@ -18,7 +18,8 @@
 //
 
 import React, { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+
 import PropTypes from "prop-types";
 import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
@@ -53,6 +54,12 @@ let createQueryURL = (query, type) => {
 
 let defaultCreator = (node) => {
   return {to: "/content.html" + node["@path"]}
+}
+
+// Extract the subject id from the subject path
+// returns null if the parameter is not a valid subject path (expected format: Subjects/<id>)
+export function getSubjectIdFromPath (path) {
+  return /Subjects\/(.+)/.exec(path || '')?.[1];
 }
 
 // Recursive function to get a flat list of parents
@@ -94,11 +101,29 @@ export function getTextHierarchy (node, withType = false) {
 function Subject(props) {
   let { id, classes, maxDisplayed } = props;
   const [currentSubject, setCurrentSubject] = useState();
+  const [currentSubjectId, setCurrentSubjectId] = useState(id);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    let newId = getSubjectIdFromPath(location.pathname);
+    newId && setCurrentSubjectId(newId);
+  }, [location]);
+
+  let pageTitle = currentSubject && getTextHierarchy(currentSubject, true);
+
+  // Change the title of the page whenever parentDetails changes
+  let pageNameWriter = usePageNameWriterContext();
+  useEffect(() => {
+    pageTitle && pageNameWriter(pageTitle);
+  }, [pageTitle]);
 
   // the subject data, fetched in the SubjectContainer component, will be stored in the `type` state
   function handleSubject(e) {
     setCurrentSubject(e);
   }
+
+  let parentDetails = currentSubject && currentSubject['parents'] && getHierarchy(currentSubject['parents']);
 
   return (
     <React.Fragment>
@@ -107,7 +132,8 @@ function Subject(props) {
             New form for this Subject
           </NewFormDialog>
       </div>
-      <SubjectContainer id={id} classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject}/>
+      {parentDetails && <Typography variant="overline">{parentDetails}</Typography>}
+      <SubjectContainer id={currentSubjectId} key={currentSubjectId}  classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject}/>
     </React.Fragment>
   );
 }
@@ -260,23 +286,12 @@ function SubjectMember (props) {
   if (level == 1) {buttonSize = "medium"; headerStyle="h4"};
   if (level > 1) {buttonSize = "small"; headerStyle="h5"};
 
-  let parentDetails = data && data['parents'] && getHierarchy(data['parents'], Link, (node) => ({to: "/content.html" + node["@path"]}));
   let identifier = data && data.identifier ? data.identifier : id;
-  let pageTitle = data && getTextHierarchy(data, true);
-
-  // Change the title of the page whenever parentDetails changes
-  let pageNameWriter = usePageNameWriterContext();
-  useEffect(() => {
-    pageTitle && pageNameWriter(pageTitle);
-  }, [pageTitle]);
 
   return (
     <Grid item xs={12}>
       <Grid item>
         <span className={classes.subjectHeader}>
-          {
-            (level == 0) && parentDetails && <Typography variant="overline">{parentDetails}</Typography>
-          }
           <Typography variant={headerStyle}>
             {data?.type?.label || "Subject"} {identifier}
           </Typography>
