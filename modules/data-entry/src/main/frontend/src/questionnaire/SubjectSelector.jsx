@@ -443,6 +443,7 @@ export function NewSubjectDialog (props) {
   }
 
   let clearDialog = () => {
+    setError();
     setNewSubjectIndex(0);
     setNewSubjectName([""]);
     setNewSubjectType([""]);
@@ -450,7 +451,6 @@ export function NewSubjectDialog (props) {
     setNewSubjectAllowedTypes([]);
     setNewSubjectPopperOpen(true);
     setSelectParentPopperOpen(false);
-    setError();
   }
 
   let closeDialog = () => {

@@ -107,13 +107,14 @@ function Subjects(props) {
   const history = useHistory();
   let onSumit = (subjectPath) => {
     setNewSubjectPopperOpen(false);
-    setRequestFetchData(requestFetchData+1);
     // redirect to the new just created subject page
-    let entry = /Subjects\/(.+)/.exec(subjectPath);
-    if (entry && entry[1]) {
+    let subjectId = getSubjectIdFromPath(subjectPath);
+    if (subjectId) {
       history.push({
-        pathname: window.location.pathname + "/" + entry[1]
+        pathname: window.location.pathname + "/" + subjectId
       });
+    } else {
+      setRequestFetchData(requestFetchData+1);
     }
   }
 
