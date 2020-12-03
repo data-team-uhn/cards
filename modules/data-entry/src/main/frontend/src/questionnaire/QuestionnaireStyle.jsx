@@ -365,6 +365,11 @@ const questionnaireStyle = theme => ({
     hierarchyEditButton: {
         marginLeft: theme.spacing(1)
     },
+    patientChartTableTitle: {
+        left: 0,
+        position: "absolute",
+        top: theme.spacing(2),
+    },
 });
 
 export default questionnaireStyle;

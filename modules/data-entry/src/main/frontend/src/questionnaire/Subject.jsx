@@ -98,7 +98,7 @@ export function getTextHierarchy (node, withType = false) {
  */
 
 function Subject(props) {
-  let { id, classes, maxDisplayed } = props;
+  let { id, classes, maxDisplayed, pageSize } = props;
   const [currentSubject, setCurrentSubject] = useState();
   const [currentSubjectId, setCurrentSubjectId] = useState(id);
 
@@ -132,7 +132,7 @@ function Subject(props) {
         </NewFormDialog>
       </div>
       {parentDetails && <Typography variant="overline">{parentDetails}</Typography>}
-      <SubjectContainer id={currentSubjectId} key={currentSubjectId}  classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject}/>
+      <SubjectContainer id={currentSubjectId} key={currentSubjectId}  classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject} pageSize={pageSize}/>
     </React.Fragment>
   );
 }
@@ -141,7 +141,7 @@ function Subject(props) {
  * Component that recursively gets and displays the selected subject and its related SubjectTypes
  */
 function SubjectContainer(props) {
-  let { id, classes, level, maxDisplayed, getSubject } = props;
+  let { id, classes, level, maxDisplayed, pageSize, getSubject } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -212,13 +212,13 @@ function SubjectContainer(props) {
 
   return (
     data && <Grid container spacing={3}>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed}/>
+      <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed} pageSize={pageSize}/>
       {relatedSubjects && relatedSubjects.length > 0 ?
         (<Grid item xs={12} className={classes.subjectContainer}>
           {relatedSubjects.map( (subject, i) => {
             // Render component again for each related subject
             return(
-              <SubjectContainer key={i} classes={classes} id={subject["@name"]} level={currentLevel+1} maxDisplayed={maxDisplayed}/>
+              <SubjectContainer key={i} classes={classes} id={subject["@name"]} level={currentLevel+1} maxDisplayed={maxDisplayed} pageSize={pageSize}/>
             )
           })}
         </Grid>
@@ -232,7 +232,7 @@ function SubjectContainer(props) {
  * Component that displays all forms related to a Subject.
  */
 function SubjectMember (props) {
-  let { id, classes, level, data, maxDisplayed } = props;
+  let { id, classes, level, data, maxDisplayed, pageSize } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // table data: related forms to the subject
@@ -325,13 +325,13 @@ function SubjectMember (props) {
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => {
             return(<Grid item key={questionnaireTitle}>
               <MaterialTable
-                title={questionnaireTitle}
+                title={<Typography className={classes.patientChartTableTitle} variant="h6">{questionnaireTitle}</Typography>}
                 style={{ boxShadow : 'none' }}
                 options={{
                   actionsColumnIndex: -1,
                   emptyRowsWhenPaging: false,
                   search: false,
-                  pageSize: maxDisplayed,
+                  pageSize: pageSize,
                   header: false,
                   rowStyle: {
                     verticalAlign: 'top',
@@ -375,6 +375,7 @@ function SubjectMember (props) {
                       textAlign: 'end'
                     },
                     render: rowData => <DeleteButton
+                                          size="small"
                                           entryPath={rowData["@path"]}
                                           entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
                                           entryType="Form"
@@ -384,7 +385,7 @@ function SubjectMember (props) {
                 ]}
                 components={{
                     Pagination: props => { const { classes, ...other } = props;
-                                           return (subjectGroups[questionnaireTitle].length > maxDisplayed && <MTablePagination {...other} />)}
+                                           return (subjectGroups[questionnaireTitle].length > pageSize && <MTablePagination {...other} />)}
                 }}
                 data={subjectGroups[questionnaireTitle]}
                />
@@ -499,7 +500,8 @@ Subject.propTypes = {
 }
 
 Subject.defaultProps = {
-  maxDisplayed: 10
+  maxDisplayed: 10,
+  pageSize: 10,
 }
 
 export default withStyles(QuestionnaireStyle)(Subject);
