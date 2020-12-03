@@ -19,7 +19,7 @@
 import React, { useEffect, useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Subject from "../questionnaire/Subject.jsx";
-import { getHierarchy } from "../questionnaire/Subject.jsx";
+import { getHierarchy, getSubjectIdFromPath } from "../questionnaire/Subject.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
@@ -89,7 +89,7 @@ function Subjects(props) {
     DeleteButton
   ]
 
-  const entry = /Subjects\/(.+)/.exec(location.pathname);
+  const entry = getSubjectIdFromPath(location.pathname);
 
   // Clear the page name overwriting if moving from a specific Subject to the Subjects page
   const pageNameWriter = usePageNameWriterContext();
@@ -100,7 +100,7 @@ function Subjects(props) {
   }, [entry]);
 
   if (entry) {
-    return <Subject id={entry[1]} contentOffset={props.contentOffset} />;
+    return <Subject id={entry} contentOffset={props.contentOffset} />;
   }
 
   // import the function

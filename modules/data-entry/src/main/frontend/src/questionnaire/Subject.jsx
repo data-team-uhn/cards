@@ -56,6 +56,12 @@ let defaultCreator = (node) => {
   return {to: "/content.html" + node["@path"]}
 }
 
+// Extract the subject id from the subject path
+// returns null if the parameter is not a valid subject path (expected format: Subjects/<id>)
+export function getSubjectIdFromPath (path) {
+  return /Subjects\/(.+)/.exec(path || '')?.[1];
+}
+
 // Recursive function to get a flat list of parents
 export function getHierarchy (node, RenderComponent, propsCreator) {
   let HComponent = RenderComponent || Link;
@@ -100,7 +106,7 @@ function Subject(props) {
   const location = useLocation();
 
   useEffect(() => {
-    let newId = /Subjects\/(.+)/.exec(location.pathname || '')?.[1];
+    let newId = getSubjectIdFromPath(location.pathname);
     newId && setCurrentSubjectId(newId);
   }, [location]);
 
