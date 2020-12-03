@@ -500,7 +500,7 @@ Subject.propTypes = {
 }
 
 Subject.defaultProps = {
-  maxDisplayed: 10,
+  maxDisplayed: 4,
   pageSize: 10,
 }
 
