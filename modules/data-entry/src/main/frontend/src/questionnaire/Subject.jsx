@@ -350,7 +350,8 @@ function SubjectMember (props) {
                   { title: 'Status',
                     cellStyle: {
                       padding: '0',
-                      paddingTop: '12px'
+                      paddingTop: '12px',
+                      width: '100px',
                     },
                     render: rowData => <React.Fragment>
                                          {rowData["statusFlags"].map((status) => {
