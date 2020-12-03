@@ -111,7 +111,7 @@ class Main extends React.Component {
             <Sidebar
               contentOffset={this.state.contentOffset}
               logoText={"LFS Data Core"}
-              logoImage={"/libs/lfs/resources/lfs-logo-tmp-cyan.png"}
+              logoImage={"/libs/lfs/resources/logo.png"}
               image={this.state.image}
               handleDrawerToggle={this.handleDrawerToggle}
               open={this.state.mobileOpen}
