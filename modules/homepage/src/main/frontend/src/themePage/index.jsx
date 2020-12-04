@@ -35,7 +35,7 @@ class Main extends React.Component {
     super(props);
 
     this.state = {
-      image: "/libs/lfs/resources/cancer-cells.jpg",
+      image: "/libs/lfs/resources/background.jpg",
       color: "blue",
       hasImage: true,
       fixedClasses: "dropdown show",
