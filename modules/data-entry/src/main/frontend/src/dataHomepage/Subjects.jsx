@@ -136,8 +136,8 @@ function Subjects(props) {
         </CardContent>
       </Card>
       <NewSubjectDialog
-        onClose={() => { setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
-        onSubmit={() => { setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
+        onClose={() => { setNewSubjectPopperOpen(false);}}
+        onSubmit={() => { setNewSubjectPopperOpen(false);}}
         openNewSubject={true}
         open={newSubjectPopperOpen}
         />
@@ -146,4 +146,3 @@ function Subjects(props) {
 }
 
 export default withStyles(QuestionnaireStyle)(Subjects);
-
