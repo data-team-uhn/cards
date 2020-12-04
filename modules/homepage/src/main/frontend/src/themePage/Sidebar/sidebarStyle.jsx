@@ -78,7 +78,7 @@ import {
       padding: "5px 0",
       display: "block",
       fontSize: "18px",
-      textAlign: "left",
+      textAlign: "center",
       fontWeight: "400",
       lineHeight: "30px",
       textDecoration: "none",

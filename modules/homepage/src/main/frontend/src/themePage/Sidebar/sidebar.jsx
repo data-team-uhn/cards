@@ -32,7 +32,7 @@ const Sidebar = ({ ...props }) => {
   let _isAdministrativeButton = function(order) {
     return Math.floor(order % 100 / 90);
   }
-  const { classes, color, contentOffset, logoImage, image, logoText } = props;
+  const { classes, color, contentOffset, logoImage, image } = props;
   let [entries, setEntries] = useState();
   let [loading, setLoading] = useState(true);
 
@@ -129,7 +129,6 @@ const Sidebar = ({ ...props }) => {
         <div className={classes.logoImage}>
           <img src={logoImage} alt="logo" className={classes.img} />
         </div>
-        {logoText}
       </a>
     </div>
   );

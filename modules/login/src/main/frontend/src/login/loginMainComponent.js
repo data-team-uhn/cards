@@ -50,7 +50,7 @@ class MainLoginContainer extends React.Component {
       <div>
         <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`}>
           <Typography component="h1" variant="overline">
-            {this.state.title} Data Core
+            {this.state.title}
           </Typography>
           <Typography component="h2" variant="h5">
             {this.state.signInShown ? "Sign In" : "Sign Up" }
