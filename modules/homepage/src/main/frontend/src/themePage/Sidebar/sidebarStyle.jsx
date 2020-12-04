@@ -78,7 +78,6 @@ import {
       padding: "5px 0",
       display: "block",
       fontSize: "18px",
-      textAlign: "center",
       fontWeight: "400",
       lineHeight: "30px",
       textDecoration: "none",
@@ -88,17 +87,18 @@ import {
       }
     },
     logoImage: {
-      width: "30px",
+      width: "100%",
       display: "inline-block",
       maxHeight: "30px",
-      marginLeft: "10px",
-      marginRight: "15px"
     },
     img: {
-      width: "32px",
+      maxWidth: "90%",
+      maxHeight: "30px",
       top: "19px",
-      position: "absolute",
+      display: "block",
       verticalAlign: "middle",
+      marginLeft: "auto",
+      marginRight: "auto",
       border: "0"
     },
     background: {
