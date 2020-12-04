@@ -622,7 +622,7 @@
 			</property>
 			<property>
 				<name>unitOfMeasurement</name>
-				<value>kg</value>
+				<value>cm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -651,7 +651,7 @@
 			</property>
 			<property>
 				<name>unitOfMeasurement</name>
-				<value>cm</value>
+				<value>kg</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -666,11 +666,11 @@
 			</property>
 		</node>
 		<node>
-			<name>waist_circunference</name>
+			<name>waist_circumference</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Waist circunference</value>
+				<value>Waist circumference</value>
 				<type>String</type>
 			</property>
 			<property>
