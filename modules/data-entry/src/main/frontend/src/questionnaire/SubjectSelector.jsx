@@ -18,13 +18,14 @@
 //
 
 import React, { useRef, useEffect, useState } from "react";
+import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Input, ListItem, ListItemAvatar, Typography, withStyles } from "@material-ui/core";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import MaterialTable from "material-table";
 
-import { getHierarchy } from "./Subject.jsx";
+import { getHierarchy, getSubjectIdFromPath } from "./Subject.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 /***
@@ -274,10 +275,11 @@ export const parseToArray = (object) => {
  * @param {bool} disabled If true, all controls are disabled
  * @param {func} onClose Callback fired when the user tries to close this dialog
  * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
+ * @param {bool} openNewSubject whether to redirect to the newly created subject upon successful creation
  * @param {bool} open If true, this dialog is open
  */
 export function NewSubjectDialog (props) {
-  const { allowedTypes, disabled, onClose, onSubmit, open, currentSubject } = props;
+  const { allowedTypes, disabled, onClose, onSubmit, open, currentSubject, openNewSubject } = props;
   const [ error, setError ] = useState("");
   const [ newSubjectName, setNewSubjectName ] = useState([""]);
   const [ newSubjectType, setNewSubjectType ] = useState([""]);
@@ -290,6 +292,7 @@ export function NewSubjectDialog (props) {
   const [ selectParentPopperOpen, setSelectParentPopperOpen ] = useState(false);
 
   const tableRef = useRef();
+  const history = useHistory();
 
   let curSubjectRequiresParents = newSubjectType[newSubjectIndex]?.["parent"];
   let disabledControls = disabled || isPosting;
@@ -312,9 +315,18 @@ export function NewSubjectDialog (props) {
     if (index <= -1) {
       // End of recursion
       setIsPosting(false);
-      onSubmit(subject);
-      clearDialog();
-      return;
+      onClose();
+      // redirect to the new just created subject page
+      let subjectId = getSubjectIdFromPath(subject);
+      if (openNewSubject && subjectId) {
+        history.push({
+          pathname: window.location.pathname + "/" + subjectId
+        });
+        return;
+      } else {
+        onSubmit(subject);
+        return;
+      }
     }
 
     // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
@@ -443,6 +455,7 @@ export function NewSubjectDialog (props) {
   }
 
   let clearDialog = () => {
+    setError();
     setNewSubjectIndex(0);
     setNewSubjectName([""]);
     setNewSubjectType([""]);
@@ -450,7 +463,6 @@ export function NewSubjectDialog (props) {
     setNewSubjectAllowedTypes([]);
     setNewSubjectPopperOpen(true);
     setSelectParentPopperOpen(false);
-    setError();
   }
 
   let closeDialog = () => {

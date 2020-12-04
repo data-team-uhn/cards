@@ -103,8 +103,6 @@ function Subjects(props) {
     return <Subject id={entry} contentOffset={props.contentOffset} />;
   }
 
-  // import the function
-
   return (
     <div>
       <Card>
@@ -138,8 +136,9 @@ function Subjects(props) {
         </CardContent>
       </Card>
       <NewSubjectDialog
-        onClose={() => { setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
-        onSubmit={() => { setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
+        onClose={() => { setNewSubjectPopperOpen(false);}}
+        onSubmit={() => { setNewSubjectPopperOpen(false);}}
+        openNewSubject={true}
         open={newSubjectPopperOpen}
         />
     </div>
@@ -147,4 +146,3 @@ function Subjects(props) {
 }
 
 export default withStyles(QuestionnaireStyle)(Subjects);
-
