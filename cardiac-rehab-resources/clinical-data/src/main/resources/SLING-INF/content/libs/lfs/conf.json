@@ -1,11 +1,11 @@
 {
   "jcr:primaryType": "sling:Folder",
-  "Version": {
-    "jcr:primaryType": "nt:unstructured",
-    "Version": "${lfs.version}"
-  },
   "Title": {
     "jcr:primaryType": "nt:unstructured",
-    "Title": "${lfs.name}"
+    "Title": "CardiacDB"
+  },
+  "Test": {
+    "jcr:primaryType": "nt:unstructured",
+    "Title": "CardiacDB"
   }
 }

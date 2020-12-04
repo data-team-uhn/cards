@@ -28,7 +28,6 @@ import Navbar from "./Navbars/Navbar";
 import Page from "./Page";
 import PageStart from "./PageStart/PageStart";
 import IndexStyle from "./indexStyle.jsx";
-import MavenVars from "../../../resources/maven.json";
 
 class Main extends React.Component {
   constructor(props) {
@@ -42,6 +41,7 @@ class Main extends React.Component {
       mobileOpen: false,
       routes: [],
       contentOffset: 0,
+      title: document.querySelector('meta[name="title"]').content
     };
 
     getRoutes().then(routes => this.setState({routes: routes}));
@@ -78,7 +78,7 @@ class Main extends React.Component {
             render={(props) => {
                 let ThisComponent = route["lfs:extensionRender"];
                 let newProps = {...props, contentOffset: this.state.contentOffset };
-                let title = MavenVars["name"] + " - ";
+                let title = this.state.title + " - ";
                 return (
                   <Page title={title} pageDefaultName={route["lfs:extensionName"]}>
                     <ThisComponent {...newProps} />
