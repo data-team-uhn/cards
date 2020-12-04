@@ -19,7 +19,7 @@
 
 import React, { forwardRef, useState } from "react";
 import { Avatar, InputAdornment, ListItemAvatar, ListItemText, Tooltip, withStyles } from "@material-ui/core";
-import DescriptionIcon from "@material-ui/icons/Description";
+import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import ErrorIcon from "@material-ui/icons/Error";
 import PropTypes from "prop-types";
 
@@ -27,6 +27,7 @@ import SearchBar from "../../SearchBar.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
+import { green } from '@material-ui/core/colors';
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
 
@@ -87,7 +88,7 @@ const SubjectFilter = forwardRef((props, ref) => {
   // Otherwise, if it's a generic entry, simply display the name
   let QuickSearchResult = (props) => (
     <React.Fragment>
-      <ListItemAvatar><Avatar className={classes.searchResultAvatar}><DescriptionIcon /></Avatar></ListItemAvatar>
+      <ListItemAvatar><Avatar className={classes.searchResultAvatar} style={{ backgroundColor: green[500] }}><AssignmentIndIcon/></Avatar></ListItemAvatar>
       <ListItemText
         primary={(<QuickSearchResultHeader resultData={props.resultData} />)}
         className={classes.dropdownItem}
