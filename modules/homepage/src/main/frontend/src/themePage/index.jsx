@@ -110,7 +110,6 @@ class Main extends React.Component {
           <Suspense fallback={<div>Loading...</div>}>
             <Sidebar
               contentOffset={this.state.contentOffset}
-              logoText={this.state.title + " Data Core"}
               logoImage={"/libs/lfs/resources/logo.png"}
               image={this.state.image}
               handleDrawerToggle={this.handleDrawerToggle}
