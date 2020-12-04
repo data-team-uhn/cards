@@ -315,15 +315,16 @@ export function NewSubjectDialog (props) {
     if (index <= -1) {
       // End of recursion
       setIsPosting(false);
+      onClose();
       // redirect to the new just created subject page
       let subjectId = getSubjectIdFromPath(subject);
       if (openNewSubject && subjectId) {
         history.push({
           pathname: window.location.pathname + "/" + subjectId
         });
+        return;
       } else {
-        onSubmit();
-        clearDialog();
+        onSubmit(subject);
         return;
       }
     }
