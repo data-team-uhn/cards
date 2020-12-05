@@ -89,14 +89,15 @@ export function QuickSearchIdentifier(props) {
     if (resultData["jcr:primaryType"] == "lfs:Questionnaire") {
       fullPath = `/content.html/admin${resultData["@path"]}#${anchorPath}`;
     }
-    return (<ListItemLink href={disableLink ? '#' : fullPath}>
+    let showMatchInfo = !hideMatchInfo && resultData[LFS_QUERY_MATCH_KEY];
+    return (<ListItemLink href={disableLink ? '#' : fullPath} className={ !showMatchInfo && classes.dropdownItemMiddleAligned}>
               <ListItemAvatar>
                 <MatchAvatar matchData={resultData} classes={classes}></MatchAvatar>
               </ListItemAvatar>
               <ListItemText
                 primary={getEntityIdentifier(resultData)}
-                secondary={!hideMatchInfo && (<QuickSearchMatch matchData={resultData[LFS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>)}
-                className={classes.dropdownItem}
+                secondary={showMatchInfo && (<QuickSearchMatch matchData={resultData[LFS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>)}
+                className={!showMatchInfo ? classes.dropdownItemTextMiddleAligned : "" + " " + classes.dropdownItem}
               />
            </ListItemLink>)
 }
