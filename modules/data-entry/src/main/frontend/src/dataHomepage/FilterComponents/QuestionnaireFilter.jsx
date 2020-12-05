@@ -59,14 +59,14 @@ const QuestionnaireFilter = forwardRef((props, ref) => {
         if (response.totalrows == 0) {
           setError("Access to data is pending the approval of your account");
         }
+        setQuestionnaires(response["rows"].map(questionnaire => questionnaire["jcr:uuid"]));
         // turn these questionnaires into options and populate our uuidToTitle
-        setQuestionnaires( response["rows"].map((questionnaire, index) => {
-          let uuid = questionnaire["jcr:uuid"];
-          let title = questionnaire["title"] || questionnaire["@name"];
-          mapObject[uuid] = title;
-          (index == response.returnedrows -1) && setUuidToTitle(mapObject);
-          return uuid;
-        }) );
+        setUuidToTitle(response["rows"].reduce( (result, questionnaire) => {
+            result[questionnaire["jcr:uuid"]] = questionnaire["title"] || questionnaire["@name"];
+            return result;
+          }
+          , {}
+        ));
       })
       .catch(handleError);
   }

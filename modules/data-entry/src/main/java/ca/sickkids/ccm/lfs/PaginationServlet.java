@@ -402,10 +402,17 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         for (int i = 0; i < fieldnames.length; i++) {
             String sanitizedFieldName = sanitizeField(fieldnames[i]);
             // lfs:Subject is handled differently, since it is on the Form itself
-            if (fieldnames[i].equals("lfs:Subject")) {
+            if (fieldnames[i].equals(SUBJECT_IDENTIFIER)) {
                 joindata.append(
                     String.format(
                         " and n.'subject'%s",
+                        comparison
+                    )
+                );
+            } else if (fieldnames[i].equals(QUESTIONNAIRE_IDENTIFIER)) {
+                joindata.append(
+                    String.format(
+                        " and n.'questionnaire'%s",
                         comparison
                     )
                 );
