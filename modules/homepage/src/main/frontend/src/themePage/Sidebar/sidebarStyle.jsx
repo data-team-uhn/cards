@@ -89,11 +89,10 @@ import {
     logoImage: {
       width: "100%",
       display: "inline-block",
-      maxHeight: "30px",
     },
     img: {
-      maxWidth: "90%",
-      maxHeight: "30px",
+      maxWidth: "70%",
+      maxHeight: "80px",
       top: "19px",
       display: "block",
       verticalAlign: "middle",
