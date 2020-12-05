@@ -48,7 +48,6 @@ const QuestionnaireFilter = forwardRef((props, ref) => {
   let [ selection, setSelection ] = useState(defaultValue);
   let [ uuidToTitle, setUuidToTitle ] = useState({});
 
-  let mapObject = {};
   // Obtain information about the questionnaires available to the user
   let initialize = () => {
     setInitialized(true);
