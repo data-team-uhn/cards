@@ -99,6 +99,7 @@ function Form (props) {
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
+  const formURL = `/Forms/${id}`;
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
@@ -107,7 +108,7 @@ function Form (props) {
   // and all the existing answers.
   // Once the data arrives from the server, it will be stored in the `data` state variable.
   let fetchData = () => {
-    fetch(`/Forms/${id}.deep.json`)
+    fetch(formURL + '.deep.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleResponse)
       .catch(handleFetchError);
@@ -140,7 +141,7 @@ function Form (props) {
     setSaveInProgress(true);
     // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
     let data = new FormData(event ? event.currentTarget : formNode.current);
-    fetch(`/Forms/${id}`, {
+    return fetch(formURL, {
       method: "POST",
       body: data,
       headers: {
@@ -309,7 +310,7 @@ function Form (props) {
           <Typography variant="h2">
             {title}
             <DeleteButton
-              entryPath={data ? data["@path"] : "/Forms/"+id}
+              entryPath={data ? data["@path"] : formURL}
               entryName={(data?.subject?.identifier || "Subject") + ": " + (title)}
               entryType={data?.questionnaire?.title || "Form"}
               warning={data ? data["@referenced"] : false}
@@ -323,7 +324,9 @@ function Form (props) {
             : ""
           }
         </Grid>
-        <FormProvider>
+        { /* We also expose the URL of the output form and the save function to any children. This shouldn't interfere
+          with any other values placed inside the context since no variable name should be able to have a '/' in it */}
+        <FormProvider additionalFormData={{['/Save']: saveData, ['/URL']: formURL}}>
           <FormUpdateProvider>
             <SelectorDialog
               allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}

@@ -24,6 +24,7 @@ import PropTypes from "prop-types";
 
 import Answer from "./Answer";
 import DragAndDrop from "../dragAndDrop";
+import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateWriterContext } from "./FormUpdateContext";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
@@ -52,6 +53,7 @@ function FileResourceQuestion(props) {
   let [ uploadedFiles, setUploadedFiles ] = useState(initialDict);
   let [ error, setError ] = useState();
   let [ uploadInProgress, setUploadInProgress ] = useState(false);
+  let [ answerPath, setAnswerPath ] = useState(existingAnswer);
 
   // Default value of knownAnswers is the name of every field we can find in namePattern
   let initialParsedAnswers = {};
@@ -73,8 +75,13 @@ function FileResourceQuestion(props) {
 
   let [ knownAnswers, setKnownAnswers ] = useState(initialParsedAnswers);
 
-  let answers = Object.keys(uploadedFiles).map((filepath) => [uploadedFiles[filepath], filepath]);
+  // The answers to give to our <Answers /> object
+  let [ answers, setAnswers ] = useState([]);
+  //let answers = Object.keys(uploadedFiles).map((filepath) => [uploadedFiles[filepath], filepath]);
   let writer = useFormUpdateWriterContext();
+  let reader = useFormReaderContext();
+  let saveForm = reader['/Save'];
+  let outURL = reader["/URL"] + "/" + answerPath;
 
   // Add files to the pending state
   let addFiles = (files) => {
@@ -87,15 +94,20 @@ function FileResourceQuestion(props) {
     setUploadInProgress(true);
     setError("");
 
-    uploadAllFiles(files)
-      .catch( (err) => {
-        console.log(err);
-        setError(err.ToString());
-        setUploadInProgress(false);
-    })
-      .finally(() => {
-        setUploadInProgress(false);
-      });
+    let savePromise = saveForm();
+    if (savePromise) {
+      savePromise.then(uploadAllFiles(files))
+        .catch( (err) => {
+          console.log(err);
+          setError(err.ToString());
+          setUploadInProgress(false);
+        })
+        .finally(() => {
+          setUploadInProgress(false);
+        });
+    } else {
+      setError("Could not save form to prepare for file upload");
+    }
   };
 
   // Find the icon and load them
@@ -136,22 +148,33 @@ function FileResourceQuestion(props) {
     }
 
     // TODO: Handle duplicate filenames
+    // NB: A lot of the info here is duplicated from Answer. Is a fix possible?
+    // Also NB: Since we save before this, we're guaranteed to have the parent created
     let data = new FormData();
     data.append(file['name'], file);
-    data.append('jcr:primaryType', 'nt:folder');
-    return fetch("/Uploads/", {
+    data.append('jcr:primaryType', 'lfs:FileResourceAnswer');
+    data.append('question', props.questionDefinition['jcr:uuid']);
+    data.append('question@TypeHint', "Reference");
+    return fetch(reader["/URL"] + "/" + answerPath, {
       method: "POST",
       body: data
     }).then((response) =>
       response.ok ? response.text() : Promise.reject(response)
     ).then((response) => {
       // Determine what the output filename is, and save it
-      let uploadFinder = /Content created (.+)<\/title>/;
+      let uploadFinder = /Content (?:created|modified) (.+)<\/title>/;
       let match = response.match(uploadFinder);
-      uploadedFiles[file["name"]] = match[1];
+      let fileURL = match[1] + "/" + file["name"];
+      uploadedFiles[file["name"]] = fileURL;
       setUploadedFiles(uploadedFiles);
+      setAnswers((old) => {
+        let newAnswers = old.slice();
+        newAnswers.push([file["name"], fileURL]);
+        return newAnswers;
+      })
     }).catch((errorObj) => {
       // Is the user logged out? Or did something else happen?
+      console.log(errorObj);
       setError(String(errorObj));
     });
   };
@@ -206,6 +229,7 @@ function FileResourceQuestion(props) {
         questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
         answerNodeType="lfs:FileResourceAnswer"
+        onDecidedOutputPath={setAnswerPath}
         valueType="path"
         {...rest}
         />

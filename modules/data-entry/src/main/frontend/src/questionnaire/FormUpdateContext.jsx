@@ -27,14 +27,16 @@ const FormUpdateWriterContext = React.createContext();
 /**
  * A context provider for a form, which contains update requests to a form
  * @param {Object} props the props to pass onwards to the child, generally its children
+ * @param {Object} extraFunctions Any additional functions to provide via this form update context
  * @returns {Object} a React component with the form provider
  */
 export function FormUpdateProvider(props) {
+  const { extraFunctions, ...rest } = props;
   const [answers, setAnswers] = React.useState(DEFAULT_STATE);
 
   return (
-    <FormUpdateReaderContext.Provider value={answers}>
-      <FormUpdateWriterContext.Provider value={setAnswers} {...props}/>
+    <FormUpdateReaderContext.Provider value={{...answers, ...extraFunctions}}>
+      <FormUpdateWriterContext.Provider value={setAnswers} {...rest}/>
     </FormUpdateReaderContext.Provider>
     );
 }
