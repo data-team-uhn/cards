@@ -255,7 +255,7 @@ function SearchBar(props) {
                       key={i}
                       disabled={result["disabled"]}
                       onClick={(e) => {
-                        // Redirect using React-router
+                        setSearch(result["identifier"]);
                         onSelect(event, result, props);
                         onSelectFinish && onSelectFinish();
                         setPopperOpen(false);
