@@ -81,6 +81,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE", "notes contain");
 
     private static final String SUBJECT_IDENTIFIER = "lfs:Subject";
+    private static final String QUESTIONNAIRE_IDENTIFIER = "lfs:Questionnaire";
 
     @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS"})
     @Override
@@ -247,7 +248,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         StringBuilder joindata = new StringBuilder();
         for (int i = 0; i < joins.length; i++) {
             // Skip this join if it is on lfs:Subject, which does not require a child inner join
-            if (SUBJECT_IDENTIFIER.equals(joins[i])) {
+            if (SUBJECT_IDENTIFIER.equals(joins[i]) || QUESTIONNAIRE_IDENTIFIER.equals(joins[i])) {
                 continue;
             }
 
@@ -311,6 +312,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             if (SUBJECT_IDENTIFIER.equals(fields[i])) {
                 filterdata.append(
                     String.format(" and n.'subject'%s'%s'",
+                        this.sanitizeComparator(comparators[i]),
+                        this.sanitizeField(values[i])
+                    )
+                );
+            } else if (QUESTIONNAIRE_IDENTIFIER.equals(fields[i])) {
+                filterdata.append(
+                    String.format(" and n.'questionnaire'%s'%s'",
                         this.sanitizeComparator(comparators[i]),
                         this.sanitizeField(values[i])
                     )
@@ -394,10 +402,17 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         for (int i = 0; i < fieldnames.length; i++) {
             String sanitizedFieldName = sanitizeField(fieldnames[i]);
             // lfs:Subject is handled differently, since it is on the Form itself
-            if (fieldnames[i].equals("lfs:Subject")) {
+            if (fieldnames[i].equals(SUBJECT_IDENTIFIER)) {
                 joindata.append(
                     String.format(
                         " and n.'subject'%s",
+                        comparison
+                    )
+                );
+            } else if (fieldnames[i].equals(QUESTIONNAIRE_IDENTIFIER)) {
+                joindata.append(
+                    String.format(
+                        " and n.'questionnaire'%s",
                         comparison
                     )
                 );
