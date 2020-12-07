@@ -72,7 +72,7 @@ function Subjects(props) {
 
   // get subject types configured on the system
   if (subjectTypes.length === 0) {
-    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType'`))
+    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType' order by n.'lfs:defaultOrder'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         let optionTypes = Array.from(json["rows"]);

@@ -31,9 +31,13 @@ import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 /***
  * Create a URL that checks for the existence of a subject
  */
-let createQueryURL = (query, type) => {
+let createQueryURL = (query, type, order) => {
   let url = new URL("/query", window.location.origin);
-  url.searchParams.set("query", `SELECT * FROM [${type}] as n` + query);
+  let fullquery = `SELECT * FROM [${type}] as n` + query;
+  if (order) {
+    fullquery += ` order by n.'${order}'`;
+  }
+  url.searchParams.set("query", fullquery);
   return url;
 }
 
@@ -93,7 +97,7 @@ function UnstyledNewSubjectDialog (props) {
             columns={COLUMNS}
             data={allowedTypes?.length ? allowedTypes :
               query => {
-                let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType");
+                let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType", "lfs:defaultOrder");
                 url.searchParams.set("limit", query.pageSize);
                 url.searchParams.set("offset", query.page*query.pageSize);
                 return fetch(url)
@@ -810,7 +814,7 @@ function SubjectSelectorList(props) {
             let condition = (conditions.length === 0) ? "" : ` WHERE ${conditions.join(" AND ")}`
 
             // fetch all subjects
-            let url = createQueryURL( condition, "lfs:Subject");
+            let url = createQueryURL( condition, "lfs:Subject", "lfs:defaultOrder");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
             return fetch(url)
