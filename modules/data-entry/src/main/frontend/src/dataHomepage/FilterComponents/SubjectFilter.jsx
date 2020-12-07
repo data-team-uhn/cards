@@ -50,7 +50,7 @@ const SubjectFilter = forwardRef((props, ref) => {
 
   // Pass information about a selected subject upwards
   let selectSubject = (event, row) => {
-    onChangeInput(row["jcr:uuid"], row["identifier"]);
+    onChangeInput(row["jcr:uuid"], row["entityIdentifier"]);
     setHasSelectedValidSubject(true);
     setError(false);
   }

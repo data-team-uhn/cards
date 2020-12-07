@@ -95,7 +95,7 @@ export function QuickSearchIdentifier(props) {
                 <MatchAvatar matchData={resultData} classes={classes}></MatchAvatar>
               </ListItemAvatar>
               <ListItemText
-                primary={getEntityIdentifier(resultData)}
+                primary={resultData.entityIdentifier || getEntityIdentifier(resultData)}
                 secondary={showMatchInfo && (<QuickSearchMatch matchData={resultData[LFS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>)}
                 className={!showMatchInfo ? classes.dropdownItemTextMiddleAligned : "" + " " + classes.dropdownItem}
               />

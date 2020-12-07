@@ -23,6 +23,7 @@ import { withRouter } from "react-router-dom";
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@material-ui/core";
 import { MenuList, Paper, Popper, withStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
 import DescriptionIcon from "@material-ui/icons/Description";
 import Search from "@material-ui/icons/Search";
 import HeaderStyle from "./headerStyle.jsx";
@@ -128,7 +129,7 @@ function SearchBar(props) {
 
     // Show the results, if any
     if (json["rows"].length > 0) {
-      setResults(json["rows"]);
+      setResults(json["rows"].map( (item) => { item.entityIdentifier = getEntityIdentifier(item); return item; }) );
       if (json.totalrows > json.returnedrows) {
         let more = json.totalrows - json.returnedrows;
         setMoreResults(more);
@@ -255,7 +256,7 @@ function SearchBar(props) {
                       key={i}
                       disabled={result["disabled"]}
                       onClick={(e) => {
-                        setSearch(result["identifier"]);
+                        setSearch(result.entityIdentifier);
                         onSelect(event, result, props);
                         onSelectFinish && onSelectFinish();
                         setPopperOpen(false);
