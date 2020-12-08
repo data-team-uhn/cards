@@ -325,6 +325,7 @@ function SubjectMember (props) {
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => {
             return(<Grid item key={questionnaireTitle}>
               <Typography variant="h6">{questionnaireTitle}</Typography>
+              <Typography variant="subtitle1" color="textSecondary">{subjectGroups[questionnaireTitle]?.[0]?.questionnaire?.description}</Typography>
               <MaterialTable
                 data={subjectGroups[questionnaireTitle]}
                 style={{ boxShadow : 'none' }}
