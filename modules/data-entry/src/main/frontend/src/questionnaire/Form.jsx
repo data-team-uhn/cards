@@ -326,7 +326,11 @@ function Form (props) {
         </Grid>
         { /* We also expose the URL of the output form and the save function to any children. This shouldn't interfere
           with any other values placed inside the context since no variable name should be able to have a '/' in it */}
-        <FormProvider additionalFormData={{['/Save']: saveData, ['/URL']: formURL}}>
+        <FormProvider additionalFormData={{
+          ['/Save']: saveData,
+          ['/URL']: formURL,
+          ['/AllowResave']: ()=>setLastSaveStatus(undefined)
+          }}>
           <FormUpdateProvider>
             <SelectorDialog
               allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}

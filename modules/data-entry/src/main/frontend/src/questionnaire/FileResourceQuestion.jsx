@@ -81,6 +81,9 @@ function FileResourceQuestion(props) {
   let writer = useFormUpdateWriterContext();
   let reader = useFormReaderContext();
   let saveForm = reader['/Save'];
+  // Since adding new entries doesn't trigger the form's onChange, we need to force
+  // the form to allow saving after we finish updating
+  let allowResave = reader['/AllowResave'];
   let outURL = reader["/URL"] + "/" + answerPath;
 
   // Add files to the pending state
@@ -155,7 +158,7 @@ function FileResourceQuestion(props) {
     data.append('jcr:primaryType', 'lfs:FileResourceAnswer');
     data.append('question', props.questionDefinition['jcr:uuid']);
     data.append('question@TypeHint', "Reference");
-    return fetch(reader["/URL"] + "/" + answerPath, {
+    return fetch(outURL, {
       method: "POST",
       body: data
     }).then((response) =>
@@ -171,7 +174,8 @@ function FileResourceQuestion(props) {
         let newAnswers = old.slice();
         newAnswers.push([file["name"], fileURL]);
         return newAnswers;
-      })
+      });
+      allowResave();
     }).catch((errorObj) => {
       // Is the user logged out? Or did something else happen?
       console.log(errorObj);
