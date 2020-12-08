@@ -138,8 +138,15 @@ const questionnaireStyle = theme => ({
         padding: "0 !important"
     },
     subjectContainer: {
+        flexWrap: "nowrap" ,
+        marginBottom: theme.spacing(4),
+    },
+    subjectNestedContainer: {
         marginLeft: theme.spacing(4),
-        marginTop: theme.spacing(4)
+        marginTop: theme.spacing(8),
+        "& .MuiGrid-container" : {
+          marginBottom: "0 !important",
+        }
     },
     subjectNewButton: {
         width: "100%",
@@ -321,7 +328,8 @@ const questionnaireStyle = theme => ({
     },
     subjectChip: {
         color:'white',
-        marginRight: theme.spacing(2)
+        marginBottom: theme.spacing(1),
+        marginRight: theme.spacing(1),
     },
     INCOMPLETEChip: {
         backgroundColor: theme.palette.warning.main
@@ -364,11 +372,6 @@ const questionnaireStyle = theme => ({
     },
     hierarchyEditButton: {
         marginLeft: theme.spacing(1)
-    },
-    patientChartTableTitle: {
-        left: 0,
-        position: "absolute",
-        top: theme.spacing(2),
     },
 });
 

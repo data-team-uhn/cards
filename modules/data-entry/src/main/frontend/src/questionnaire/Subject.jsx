@@ -211,10 +211,10 @@ function SubjectContainer(props) {
   }
 
   return (
-    data && <Grid container spacing={3}>
+    data && <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
       <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed} pageSize={pageSize}/>
       {relatedSubjects && relatedSubjects.length > 0 ?
-        (<Grid item xs={12} className={classes.subjectContainer}>
+        (<Grid item xs={12} className={classes.subjectNestedContainer}>
           {relatedSubjects.map( (subject, i) => {
             // Render component again for each related subject
             return(
@@ -296,7 +296,7 @@ function SubjectMember (props) {
   let identifier = data && data.identifier ? data.identifier : id;
 
   return ( data &&
-    <Grid item xs={12}>
+    <>
       <Grid item>
         <Typography variant={headerStyle}>
           {data?.type?.label || "Subject"} {identifier}
@@ -320,17 +320,18 @@ function SubjectMember (props) {
           : ""
         }
       </Grid>
-      { subjectGroups && Object.keys(subjectGroups).length > 0 && <Grid item>
-        <Grid container spacing={8}> {
+      { subjectGroups && Object.keys(subjectGroups).length > 0 && <>
+        {
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => {
             return(<Grid item key={questionnaireTitle}>
+              <Typography variant="h6">{questionnaireTitle}</Typography>
               <MaterialTable
-                title={<Typography className={classes.patientChartTableTitle} variant="h6">{questionnaireTitle}</Typography>}
+                data={subjectGroups[questionnaireTitle]}
                 style={{ boxShadow : 'none' }}
                 options={{
                   actionsColumnIndex: -1,
                   emptyRowsWhenPaging: false,
-                  search: false,
+                  toolbar: false,
                   pageSize: pageSize,
                   header: false,
                   rowStyle: {
@@ -340,18 +341,19 @@ function SubjectMember (props) {
                 columns={[
                   { title: 'Created',
                     cellStyle: {
-                      minWidth: '110px',
-                      padding: '0',
-                      paddingTop: '12px'
+                      paddingLeft: 0,
+                      fontWeight: "bold",
+                      width: '1%',
+                      whiteSpace: 'nowrap',
                     },
                     render: rowData => <Link to={"/content.html" + rowData["@path"]}>
                                          {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
                                        </Link> },
                   { title: 'Status',
                     cellStyle: {
-                      padding: '0',
-                      paddingTop: '12px',
-                      width: '100px',
+                      width: '1%',
+                      whiteSpace: 'pre-wrap',
+                      paddingBottom: "8px",
                     },
                     render: rowData => <React.Fragment>
                                          {rowData["statusFlags"].map((status) => {
@@ -364,10 +366,6 @@ function SubjectMember (props) {
                                          })}
                                        </React.Fragment> },
                   { title: 'Summary',
-                    cellStyle: {
-                      padding: '12px 0 5px 0',
-                      minWidth: '240px'
-                    },
                     render: rowData => <FormData className={classes.formData} formID={rowData["@name"]} maxDisplayed={maxDisplayed}/> },
                   { title: 'Actions',
                     cellStyle: {
@@ -376,7 +374,6 @@ function SubjectMember (props) {
                       textAlign: 'end'
                     },
                     render: rowData => <DeleteButton
-                                          size="small"
                                           entryPath={rowData["@path"]}
                                           entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
                                           entryType="Form"
@@ -388,14 +385,13 @@ function SubjectMember (props) {
                     Pagination: props => { const { classes, ...other } = props;
                                            return (subjectGroups[questionnaireTitle].length > pageSize && <MTablePagination {...other} />)}
                 }}
-                data={subjectGroups[questionnaireTitle]}
                />
             </Grid>)
           })
         }
-        </Grid>
-      </Grid> }
-    </Grid>
+        </>
+      }
+    </>
   );
 };
 
