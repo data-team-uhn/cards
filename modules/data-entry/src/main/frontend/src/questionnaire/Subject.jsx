@@ -126,7 +126,7 @@ function Subject(props) {
 
   return (
     <React.Fragment>
-      <div className={classes.subjectNewButton} style={{ top: props.contentOffset + 'px' }} >
+      <div className={classes.mainPageAction}>
         <NewFormDialog currentSubject={currentSubject}>
           New form for this Subject
         </NewFormDialog>

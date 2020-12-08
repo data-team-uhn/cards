@@ -148,13 +148,17 @@ const questionnaireStyle = theme => ({
           marginBottom: "0 !important",
         }
     },
-    subjectNewButton: {
-        width: "100%",
-        height: "0px",
-        textAlign: "right",
-        marginRight: "90%",
-        top: "0px",
-        position: 'sticky',
+    mainPageAction: {
+        position: 'fixed',
+        bottom: theme.spacing(2),
+        right: theme.spacing(4),
+        height: theme.spacing(8),
+        zIndex: 100,
+        "& > div" : {
+             position: "absolute !important",
+             top: 0,
+             right: 0,
+        },
     },
     collapsedSection: {
         padding: "0 !important"
@@ -270,8 +274,8 @@ const questionnaireStyle = theme => ({
     },
     subjectHeaderButton: {
         float: "right",
-        marginTop: theme.spacing(2),
-        marginRight: theme.spacing(12)
+        marginTop: theme.spacing(1),
+        marginRight: theme.spacing(-0.5)
     },
     childSubjectHeaderButton: {
         left: theme.spacing(1)
