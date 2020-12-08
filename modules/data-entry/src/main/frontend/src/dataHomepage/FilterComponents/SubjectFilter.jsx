@@ -57,7 +57,7 @@ const SubjectFilter = forwardRef((props, ref) => {
 
   let constructQuery = (query, requestID) => {
     let url = new URL("/query", window.location.origin);
-    let sqlquery = "SELECT s.* FROM [lfs:Subject] as s" + (query.search ? ` WHERE CONTAINS(s.'identifier', '*${query}*')` : "");
+    let sqlquery = "SELECT s.* FROM [lfs:Subject] as s" + (query.search ? ` WHERE CONTAINS(s.'fullIdentifier', '*${query}*')` : "");
     url.searchParams.set("query", sqlquery);
     url.searchParams.set("limit", query.pageSize);
     url.searchParams.set("offset", query.page*query.pageSize);

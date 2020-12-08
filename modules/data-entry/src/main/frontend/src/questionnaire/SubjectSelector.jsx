@@ -25,7 +25,7 @@ import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent,
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import MaterialTable from "material-table";
 
-import { getHierarchy, getSubjectIdFromPath } from "./Subject.jsx";
+import { getHierarchy, getTextHierarchy, getSubjectIdFromPath } from "./Subject.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
@@ -308,19 +308,6 @@ export function NewSubjectDialog (props) {
   let curSubjectRequiresParents = newSubjectType[newSubjectIndex]?.["parent"];
   let disabledControls = disabled || isPosting;
 
-  let parentSet = (currentSubject && (curSubjectRequiresParents?.["@path"] == currentSubject.type["@path"]));
-
-  let handleNewParent = (e) => {
-    //handle SubjectType
-    if (currentSubject && (parentSet)) {
-      return currentSubject;
-    }
-    //handle Subject
-    if (currentSubject && (e["parents"]?.["type"]["@path"] == currentSubject.type["@path"])) {
-      handleNewParent(currentSubject);
-    }
-  }
-
   // Called only by createNewSubject, a callback to create the next child on our list
   let createNewSubjectRecursive = (subject, index) => {
     if (index <= -1) {
@@ -340,17 +327,27 @@ export function NewSubjectDialog (props) {
       }
     }
 
+    // Get the full subject hierarchy of identifiers
+    let fullIdentifier = newSubjectName[index];
+    for (let i = index + 1; i < newSubjectName.length; i++) {
+      if (newSubjectParent[i-1]) {
+        let parentHierarchy = getTextHierarchy(newSubjectParent[i]);
+        fullIdentifier = parentHierarchy + " / " + fullIdentifier;
+        break;
+      } else {
+        fullIdentifier = newSubjectName[i] + " / " + fullIdentifier;
+      }
+    }
+
     // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
     let parent = newSubjectParent[index]?.["jcr:uuid"] || subject;
-    if (parentSet) {
-      parent = handleNewParent(newSubjectType[newSubjectIndex])?.["jcr:uuid"];
-    }
     parent = (parent ? [parent] : []);
     createSubjects(
       globalLoginDisplay,
       [newSubjectName[index]],
       newSubjectType[index],
       parent,
+      fullIdentifier,
       newSubjectName[index],
       (new_subject) => {createNewSubjectRecursive(new_subject, index-1)},
       handleError);
@@ -376,18 +373,11 @@ export function NewSubjectDialog (props) {
       // They haven't selected a parent for the current type yet
       setError("Please select a valid parent.");
     } else if (newSubjectPopperOpen && curSubjectRequiresParents) {
-      if (parentSet) {
-        // Initiate the call if currentSubject is the parent
-        setIsPosting(true);
-        createNewSubjectRecursive(null, newSubjectIndex);
-      }
-      else {
-        // Display the parent type to select
-        setError();
-        setNewSubjectPopperOpen(false);
-        tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
-        setSelectParentPopperOpen(true);
-      }
+      // Display the parent type to select
+      setError();
+      setNewSubjectPopperOpen(false);
+      tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
+      setSelectParentPopperOpen(true);
     } else {
       // Initiate the call
       setIsPosting(true);
@@ -657,7 +647,7 @@ export const SelectorDialog = withStyles(QuestionnaireStyle)(UnstyledSelectorDia
  * @param {func} returnCall The callback after all subjects have been created
  * @param {func} onError The callback if an error occurs during subject creation
  */
-export function createSubjects(globalLoginDisplay, newSubjects, subjectType, subjectParents, subjectToTrack, returnCall, onError) {
+export function createSubjects(globalLoginDisplay, newSubjects, subjectType, subjectParents, fullIdentifier, subjectToTrack, returnCall, onError) {
   let selectedURL = subjectToTrack["@path"];
   let subjectTypeToUse = subjectType["jcr:uuid"] ? subjectType["jcr:uuid"] : subjectType;
   let lastPromise = null;
@@ -681,6 +671,9 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
     requestData.append('identifier', subjectName);
     requestData.append('type', subjectTypeToUse);
     requestData.append('type@TypeHint', 'Reference');
+    
+    requestData.append('fullIdentifier', fullIdentifier);
+    
     subjectParents.forEach((parent) => {
       requestData.append('parents', parent);
       parentCheckQuery.push(`n.'parents'='${parent}'`);

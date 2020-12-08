@@ -803,6 +803,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         subjectProperties.put("type", typeNode);
         if (parent != null) {
             subjectProperties.put("parents", parent);
+            subjectProperties.put("fullIdentifier", getFullIdentifier(subjectId, parent));
         }
         try {
             Node subject = this.resolver.get().create(this.subjectsHomepage.get(), UUID.randomUUID().toString(),
@@ -812,6 +813,34 @@ public class DataImportServlet extends SlingAllMethodsServlet
         } catch (PersistenceException e) {
             return null;
         }
+    }
+
+    /**
+     * Get full hierarchy of subject identifiers.
+     * @param subjectId The identifier for the subject
+     * @param parent The parent of this subject
+     * @return Full hierarchy of subject identifiers.
+     */
+    private String getFullIdentifier(String subjectId, Node parent)
+    {
+        String hierarchy = subjectId;
+        try {
+            String parentId = parent.getProperty("identifier").getString();
+            if (StringUtils.isNotBlank(parentId)) {
+                hierarchy = parentId + " / " + hierarchy;
+            }
+
+            if (parent.getProperties("parent").hasNext()) {
+                Node nextParent = parent.getProperties("parent").nextProperty().getNode();
+                parentId = nextParent.getProperty("identifier").getString();
+                if (StringUtils.isNotBlank(parentId)) {
+                    hierarchy = parentId + " / " + hierarchy;
+                }
+            }
+        } catch (RepositoryException ex) {
+            return hierarchy;
+        }
+        return hierarchy;
     }
 
     /**
