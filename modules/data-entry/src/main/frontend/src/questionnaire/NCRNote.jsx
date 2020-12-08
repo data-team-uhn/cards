@@ -60,7 +60,7 @@ function ParsedNoteSection (props) {
   // Handle the user clicking on a link which corresponds to a suggestion
   let addSuggestion = (event) => {
     event.preventDefault();
-    onAddSuggestion(firstMatch[ONTOLOGY_KEY], firstMatch["names"][0])
+    onAddSuggestion(firstMatch[ONTOLOGY_KEY].replace(/:/g, ""), firstMatch["names"][0])
   }
 
   return (<React.Fragment>
