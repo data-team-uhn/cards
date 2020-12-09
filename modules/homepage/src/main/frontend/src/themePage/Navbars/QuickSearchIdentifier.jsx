@@ -41,9 +41,10 @@ const LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
 // Display how the query matched the result
 export function QuickSearchMatch(props) {
     const { matchData, classes } = props;
+    if (!matchData) { return null; }
     // Adjust the question text to reflect the notes, if the match was on the notes
     let questionText = matchData[LFS_QUERY_QUESTION_KEY] + (matchData[LFS_QUERY_MATCH_NOTES_KEY] ? " / Notes" : "");
-    return matchData && (
+    return (
       <React.Fragment>
         <span className={classes.queryMatchKey}>{questionText}</span>
         <span className={classes.queryMatchSeparator}>: </span>
@@ -51,7 +52,7 @@ export function QuickSearchMatch(props) {
         <span className={classes.highlightedText}>{matchData[LFS_QUERY_MATCH_TEXT_KEY]}</span>
         <span className={classes.queryMatchAfter}>{matchData[LFS_QUERY_MATCH_AFTER_KEY]}</span>
       </React.Fragment>
-    ) || null
+    )
 }
 
 function MatchAvatar(props) {
@@ -82,20 +83,21 @@ function ListItemLink(props) {
 
   // Display a quick search result identifier with link to result section
 export function QuickSearchIdentifier(props) {
-    let { resultData, hideMatchInfo, classes } = props;
+    let { resultData, hideMatchInfo, disableLink, classes } = props;
     let anchorPath = resultData[LFS_QUERY_MATCH_KEY] ? resultData[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY] : '';
     let fullPath = `/content.html${resultData["@path"]}#${anchorPath}`;
     if (resultData["jcr:primaryType"] == "lfs:Questionnaire") {
       fullPath = `/content.html/admin${resultData["@path"]}#${anchorPath}`;
     }
-    return (<ListItemLink href={fullPath}>
+    let showMatchInfo = !hideMatchInfo && resultData[LFS_QUERY_MATCH_KEY];
+    return (<ListItemLink href={disableLink ? '#' : fullPath} className={ !showMatchInfo && classes.dropdownItemMiddleAligned}>
               <ListItemAvatar>
                 <MatchAvatar matchData={resultData} classes={classes}></MatchAvatar>
               </ListItemAvatar>
               <ListItemText
-                primary={getEntityIdentifier(resultData)}
-                secondary={!hideMatchInfo && (<QuickSearchMatch matchData={resultData[LFS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>)}
-                className={classes.dropdownItem}
+                primary={resultData.entityIdentifier || getEntityIdentifier(resultData)}
+                secondary={showMatchInfo && (<QuickSearchMatch matchData={resultData[LFS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>)}
+                className={!showMatchInfo ? classes.dropdownItemTextMiddleAligned : "" + " " + classes.dropdownItem}
               />
            </ListItemLink>)
 }

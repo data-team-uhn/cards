@@ -32,6 +32,7 @@ function HeaderSearchBar(props) {
     <SearchBar
       resultConstructor={QuickSearchIdentifier}
       onSelect={() => {}}
+      showAllResultsLink={true}
       {...rest}
       />
   );

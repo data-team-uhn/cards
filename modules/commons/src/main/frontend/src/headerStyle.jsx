@@ -97,6 +97,13 @@ const headerStyle = theme => ({
   dropdownItem: {
     whiteSpace: "normal"
   },
+  dropdownItemMiddleAligned: {
+    alignItems: "center",
+    padding: 0
+  },
+  dropdownItemTextMiddleAligned: {
+    marginTop: "14px"
+  },
   suggestions: {
     width: theme.spacing(32)
   },
