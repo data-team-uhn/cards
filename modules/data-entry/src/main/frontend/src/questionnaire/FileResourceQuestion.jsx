@@ -47,9 +47,13 @@ function FileResourceQuestion(props) {
     // Check whether or not we have an initial value
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
     // The value can either be a single value or an array of values; force it into a dictionary
-    Array.of(existingAnswer[1].value).flat();
+    Array.of(existingAnswer[1].value).flat()
+    // Finally, split it into a series of [value, label]s
+    .map((element) => [/.+\/(.+?)$/.exec(element)?.[1], element]);
   let initialDict = {};
-  initialValues.forEach((value) => {initialDict[value] = value;});
+  initialValues.forEach((value) => {
+    initialDict[value[0]] = value[1];
+  });
   let [ uploadedFiles, setUploadedFiles ] = useState(initialDict);
   let [ error, setError ] = useState();
   let [ uploadInProgress, setUploadInProgress ] = useState(false);
@@ -66,17 +70,17 @@ function FileResourceQuestion(props) {
 
     // Match each of the values into our default initialParsedAnswers
     initialValues.forEach((filename) => {
-      let results = [...filename.matchAll(nameRegex)].map((match) => match[1]);
+      let results = [...filename[0].matchAll(nameRegex)].map((match) => match[1]);
 
       // Determine which fields we have parsed out
-      initialParsedAnswers[filename] = results;
+      initialParsedAnswers[filename[0]] = results;
     })
   }
 
   let [ knownAnswers, setKnownAnswers ] = useState(initialParsedAnswers);
 
   // The answers to give to our <Answers /> object
-  let [ answers, setAnswers ] = useState([]);
+  let [ answers, setAnswers ] = useState(initialValues);
   //let answers = Object.keys(uploadedFiles).map((filepath) => [uploadedFiles[filepath], filepath]);
   let writer = useFormUpdateWriterContext();
   let reader = useFormReaderContext();
