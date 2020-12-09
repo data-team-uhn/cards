@@ -28,6 +28,7 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import MaterialTable, { MTablePagination } from 'material-table';
 
 import {
+  Avatar,
   CircularProgress,
   Chip,
   Grid,
@@ -122,8 +123,6 @@ function Subject(props) {
     setCurrentSubject(e);
   }
 
-  let parentDetails = currentSubject && currentSubject['parents'] && getHierarchy(currentSubject['parents']);
-
   return (
     <React.Fragment>
       <div className={classes.mainPageAction}>
@@ -131,7 +130,6 @@ function Subject(props) {
           New form for this Subject
         </NewFormDialog>
       </div>
-      {parentDetails && <Typography variant="overline">{parentDetails}</Typography>}
       <SubjectContainer id={currentSubjectId} key={currentSubjectId}  classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject} pageSize={pageSize}/>
     </React.Fragment>
   );
@@ -229,6 +227,30 @@ function SubjectContainer(props) {
 }
 
 /**
+ * Component that displays the subject chart header, with subject id, parents, and actions
+ */
+function SubjectHeader (props) {
+  let {data, classes, title, action} = props;
+  let parentDetails = data && data['parents'] && getHierarchy(data['parents']);
+
+  return (
+    <Grid item className={classes.subjectHeader}>
+      {parentDetails && <Typography variant="overline">{parentDetails}</Typography>}
+      <Typography variant="h2">{title}{action}</Typography>
+      {
+        data && data['jcr:createdBy'] && data['jcr:created'] ?
+        <Typography
+          variant="overline"
+          className={classes.subjectSubHeader}>
+            Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}
+        </Typography>
+        : ""
+      }
+    </Grid>
+  )
+}
+
+/**
  * Component that displays all forms related to a Subject.
  */
 function SubjectMember (props) {
@@ -287,6 +309,7 @@ function SubjectMember (props) {
       </Grid>
     );
   }
+
   // change styling based on 'level'
   let buttonSize = "large";
   let headerStyle = "h2";
@@ -294,32 +317,38 @@ function SubjectMember (props) {
   if (level > 1) {buttonSize = "small"; headerStyle="h5"};
 
   let identifier = data && data.identifier ? data.identifier : id;
+  let label = data?.type?.label || "Subject";
+  let title = `${label} ${identifier}`;
+  let path = data ? data["@path"] : "/Subjects/" + id;
+  let avatar = level > 0 && <Avatar className={classes.subjectAvatar}>{label.split(' ').map(s => s?.charAt(0)).join('').toUpperCase()}</Avatar>;
+  let action = <DeleteButton
+                 entryPath={path}
+                 entryName={title}
+                 entryType={label}
+                 warning={data ? data["@referenced"] : false}
+                 shouldGoBack={level === 0}
+                 buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}
+                 size={level === 0 ? "large" : null}
+               />
 
   return ( data &&
     <>
-      <Grid item>
-        <Typography variant={headerStyle}>
-          {data?.type?.label || "Subject"} {identifier}
-          <DeleteButton
-            entryPath={data ? data["@path"] : "/Subjects/" + id}
-            entryName={(data?.type?.label || "Subject") + " " + (identifier)}
-            entryType={data?.type?.label || "Subject"}
-            warning={data ? data["@referenced"] : false}
-            shouldGoBack={level === 0}
-            buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}
-            size={level === 0 ? "large" : null}
-          />
-        </Typography>
-        {
-          data && data['jcr:createdBy'] && (level == 0) && data['jcr:created'] ?
-            <Typography
-              variant="overline"
-              className={classes.subjectSubHeader}>
-                Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}
-            </Typography>
-          : ""
-        }
-      </Grid>
+    {
+      level == 0 ?
+        <SubjectHeader data={data} classes={classes} title={title} action={action} />
+      :
+        <Grid item className={classes.subjectTitleWithAvatar}>
+          <Grid container direction="row" spacing={1} justify="flex-start">
+            <Grid item xs={0}>{avatar}</Grid>
+            <Grid item>
+              <Typography variant={headerStyle}>
+                 <Link to={"/content.html" + path}>{title}</Link>
+                 {action}
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+      }
       { subjectGroups && Object.keys(subjectGroups).length > 0 && <>
         {
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => {

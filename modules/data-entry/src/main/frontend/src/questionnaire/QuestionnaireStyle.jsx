@@ -131,11 +131,28 @@ const questionnaireStyle = theme => ({
     subjectCard: {
         minHeight: "200px",
     },
+    subjectHeader: {
+        position: "sticky",
+        top: 0,
+        paddingTop: theme.spacing(4) + 'px !important',
+        backgroundColor: theme.palette.background.paper,
+        zIndex: "1010",
+    },
     subjectFormHeader: {
         paddingBottom: "0 !important",
     },
     subjectFormHeaderButton: {
         padding: "0 !important"
+    },
+    subjectAvatar : {
+        backgroundColor: theme.palette.text.primary,
+    },
+    subjectTitleWithAvatar: {
+        marginLeft: theme.spacing(-7),
+        "& a": {
+          color: theme.palette.text.primary,
+          textDecoration: "none",
+        }
     },
     subjectContainer: {
         flexWrap: "nowrap" ,
