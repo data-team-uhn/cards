@@ -300,7 +300,6 @@ function SubjectMember (props) {
           entryPath={data ? data["@path"] : "/Subjects/" + id}
           entryName={(data?.type?.label || "Subject") + " " + (identifier)}
           entryType={data?.type?.label || "Subject"}
-          warning={data ? data["@referenced"] : false}
           shouldGoBack={level === 0}
           buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}
           size={level === 0 ? "large" : null}
@@ -344,7 +343,6 @@ function SubjectMember (props) {
                           entryPath={entry["@path"]}
                           entryName={`${identifier}: ${entry.questionnaire["@name"]}`}
                           entryType="Form"
-                          warning={entry ? entry["@referenced"] : false}
                         />
                       }
                     />
