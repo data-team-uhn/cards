@@ -346,7 +346,7 @@ function SubjectMember (props) {
       :
         <Grid item className={classes.subjectTitleWithAvatar}>
           <Grid container direction="row" spacing={1} justify="flex-start">
-            <Grid item xs={0}>{avatar}</Grid>
+            <Grid item xs={false}>{avatar}</Grid>
             <Grid item>
               <Typography variant={headerStyle}>
                  <Link to={"/content.html" + path}>{title}</Link>
