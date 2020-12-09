@@ -155,6 +155,9 @@ function NewFormDialog(props) {
     // Exit the dialog if we're at the first page or if there is a preset path
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE || presetPath) {
       setDialogOpen(false);
+      if (onClose) {
+        onClose();
+      }
     } else {
       setProgress(PROGRESS_SELECT_QUESTIONNAIRE);
       setSelectedSubject(null);
