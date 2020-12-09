@@ -112,6 +112,7 @@ function UserDashboard(props) {
             options={{
               search: true,
               pageSize: rowCount,
+              showTitle: false,
               rowStyle: rowData => ({
                 // /* It doesn't seem possible to alter the className from here */
                 backgroundColor: (selectedRow && selectedRow["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
