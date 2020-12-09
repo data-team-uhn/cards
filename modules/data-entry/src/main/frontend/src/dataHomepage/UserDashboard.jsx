@@ -18,6 +18,8 @@
 //
 import React, { useState, useEffect } from "react";
 
+import MaterialTable from "material-table";
+
 import { loadExtensions } from "../uiextension/extensionManager";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { MODE_DIALOG } from "../dataHomepage/NewFormDialog.jsx"
@@ -56,13 +58,15 @@ async function getDashboardCreations() {
 // visible by the user. Each LiveTable contains all forms that use the given
 // questionnaire.
 function UserDashboard(props) {
-  const { classes } = props;
+  const { classes, theme } = props;
   let [ dashboardExtensions, setDashboardExtensions ] = useState([]);
   let [ creationExtensions, setCreationExtensions ] = useState([]);
   let [ loading, setLoading ] = useState(true);
   let [ creationLoading, setCreationLoading ] = useState(true);
   let [ selectedCreation, setSelectedCreation ] = useState(-1);
+  let [ selectedRow, setSelectedRow ] = useState(undefined);
   let [ open, setOpen ] = useState(false);
+  let [ rowCount, setRowCount ] = useState(5);
 
   useEffect(() => {
     getDashboardExtensions()
@@ -96,9 +100,31 @@ function UserDashboard(props) {
         }
       </Grid>
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle disableTypography>
-          <Typography variant="h6" color="error" className={classes.dialogTitle}>Add</Typography>
+        <DialogTitle>
+          <Typography variant="h6" className={classes.dialogTitle}>Add</Typography>
         </DialogTitle>
+        <DialogContent>
+          <MaterialTable
+            columns={[
+              { title: 'Type', field: 'lfs:extensionName' },
+            ]}
+            data={creationExtensions}
+            options={{
+              search: true,
+              pageSize: rowCount,
+              rowStyle: rowData => ({
+                // /* It doesn't seem possible to alter the className from here */
+                backgroundColor: (selectedRow && selectedRow["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
+              })
+            }}
+            onRowClick={(event, rowData) => {
+              setSelectedRow(rowData);
+            }}
+            onChangeRowsPerPage={pageSize => {
+              setRowCount(pageSize);
+            }}
+            />
+        </DialogContent>
         <DialogActions>
           <Button
             variant="contained"
@@ -112,33 +138,25 @@ function UserDashboard(props) {
             color="primary"
             onClick={ () => {
               setOpen(false);
-              setSelectedCreation(0);
+              setSelectedCreation(creationExtensions.indexOf(selectedRow));
             }}
             >
-            Create Subject
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={ () => {
-              setOpen(false);
-              setSelectedCreation(1);
-            }}
-            >
-            Create Form
+            Next
           </Button>
         </DialogActions>
       </Dialog>
-      <Tooltip title={"Add"} aria-label="add">
-        <Fab
-          color="primary"
-          aria-label="add"
-          onClick={() => setOpen(true)}
-          disabled={creationLoading}
-        >
-          <AddIcon />
-        </Fab>
-      </Tooltip>
+      <div className={classes.newFormButtonWrapper}>
+        <Tooltip title={"Add"} aria-label="add">
+          <Fab
+            color="primary"
+            aria-label="add"
+            onClick={() => setOpen(true)}
+            disabled={creationLoading}
+          >
+            <AddIcon />
+          </Fab>
+        </Tooltip>
+      </div>
       {
         creationExtensions.map((extension, index) => {
           let Extension = extension["lfs:extensionRender"];
@@ -157,4 +175,4 @@ function UserDashboard(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(UserDashboard);
+export default withStyles(QuestionnaireStyle, {withTheme: true})(UserDashboard);

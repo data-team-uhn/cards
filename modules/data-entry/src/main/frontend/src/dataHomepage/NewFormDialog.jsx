@@ -39,7 +39,7 @@ export const MODE_DIALOG = 1;
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
 function NewFormDialog(props) {
-  const { children, classes, presetPath, currentSubject, theme, mode, open } = { mode:MODE_ACTION, open: false, ...props };
+  const { children, classes, presetPath, currentSubject, theme, mode, open, onClose } = { mode:MODE_ACTION, open: false, ...props };
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ initialized, setInitialized ] = useState(false);
@@ -223,7 +223,15 @@ function NewFormDialog(props) {
 
   return (
     <React.Fragment>
-      <Dialog open={mode === MODE_ACTION ? dialogOpen : open} onClose={() => { setDialogOpen(false); }}>
+      <Dialog
+        open={mode === MODE_ACTION ? dialogOpen : open}
+        onClose={() => {
+          setDialogOpen(false);
+          if (onClose) {
+            onClose();
+          }
+        }}
+      >
         <DialogTitle id="new-form-title">
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ? "Select a questionnaire" : "Select a subject"}
         </DialogTitle>
@@ -334,7 +342,13 @@ function NewFormDialog(props) {
       <NewSubjectDialog
         allowedTypes={parseToArray(selectedQuestionnaire?.["requiredSubjectTypes"])}
         disabled={isFetching}
-        onClose={() => { setNewSubjectPopperOpen(false); setError();}}
+        onClose={() => {
+          setNewSubjectPopperOpen(false);
+          setError();
+          if (onClose) {
+            onClose();
+          }
+        }}
         onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
         currentSubject={currentSubject}
         onSubmit={createForm}

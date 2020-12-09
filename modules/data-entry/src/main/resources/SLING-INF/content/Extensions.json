@@ -121,14 +121,14 @@
         "NewFormDialog": {
             "jcr:primaryType": "lfs:Extension",
             "lfs:extensionPointId": "lfs/coreUI/dashboardcreation/entry",
-            "lfs:extensionName": "New Form",
+            "lfs:extensionName": "Form",
             "lfs:extensionRenderURL": "asset:lfs-dataentry.NewFormDialog.js",
             "lfs:defaultOrder": 2
         },
         "NewSubjectDialog": {
             "jcr:primaryType": "lfs:Extension",
             "lfs:extensionPointId": "lfs/coreUI/dashboardcreation/entry",
-            "lfs:extensionName": "New Subject",
+            "lfs:extensionName": "Subject",
             "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectSelector.js?component=NewSubjectDialog",
             "lfs:defaultOrder": 1
         }

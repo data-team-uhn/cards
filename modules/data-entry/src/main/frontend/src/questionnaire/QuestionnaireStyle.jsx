@@ -106,9 +106,10 @@ const questionnaireStyle = theme => ({
         right: theme.spacing(6.5)
     },
     newFormButtonWrapper: {
-        height: "0px",
         margin: theme.spacing(1),
-        position: "relative"
+        position: "fixed",
+        bottom: theme.spacing(2),
+        right: theme.spacing(2),
     },
     newFormTypePlaceholder: {
         position: 'relative',
