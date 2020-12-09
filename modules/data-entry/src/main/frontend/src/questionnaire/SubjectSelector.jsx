@@ -834,7 +834,7 @@ function SubjectSelectorList(props) {
                 let filterRelated = (e) => {
                   // if the selected questionnaire supports the type of current subject
                   if (e['type']?.['@path'] == currentSubject['type']['@path']) return true;
-                  return getRelatedChild(e).includes(currentSubject['@path'])
+                  return getRelatedChild(e)?.includes(currentSubject['@path'])
                 }
 
                 // recursive function to check if the SubjectType of the selected questionnaire is a child of the 'currentSubject' SubjectType
@@ -855,7 +855,7 @@ function SubjectSelectorList(props) {
                 }
                 return {
                   data: (
-                    (currentSubject && (result['rows'].map((row) => isSubjectRelated(row).includes(currentSubject.type.label)))[0])
+                    (currentSubject && (result['rows'].map((row) => isSubjectRelated(row)?.includes(currentSubject.type.label)))[0])
                     ? result['rows'].filter((e) => filterRelated(e)) : result["rows"]
                   ).map((row) => ({
                     hierarchy: getHierarchy(row, React.Fragment, () => ({})),
