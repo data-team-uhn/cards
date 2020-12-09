@@ -146,8 +146,14 @@ function SubjectContainer(props) {
   let [ error, setError ] = useState();
   // hold related subjects
   let [relatedSubjects, setRelatedSubjects] = useState();
+  // whether the subject has been deleted
+  let [ deleted, setDeleted ] = useState();
   // 'level' of subject component
   const currentLevel = level || 0;
+
+  if (deleted) {
+    return null;
+  }
 
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
@@ -210,7 +216,7 @@ function SubjectContainer(props) {
 
   return (
     data && <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed} pageSize={pageSize}/>
+      <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}}/>
       {relatedSubjects && relatedSubjects.length > 0 ?
         (<Grid item xs={12} className={classes.subjectNestedContainer}>
           {relatedSubjects.map( (subject, i) => {
@@ -254,7 +260,7 @@ function SubjectHeader (props) {
  * Component that displays all forms related to a Subject.
  */
 function SubjectMember (props) {
-  let { id, classes, level, data, maxDisplayed, pageSize } = props;
+  let { id, classes, level, data, maxDisplayed, pageSize, onDelete } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // table data: related forms to the subject
@@ -327,6 +333,7 @@ function SubjectMember (props) {
                  entryType={label}
                  warning={data ? data["@referenced"] : false}
                  shouldGoBack={level === 0}
+                 onComplete={onDelete}
                  buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}
                  size={level === 0 ? "large" : null}
                />
