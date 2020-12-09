@@ -38,7 +38,6 @@ import {
   withStyles
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import NewFormDialog from "./NewFormDialog";
 
 async function getDashboardExtensions() {
   return loadExtensions("DashboardViews")
@@ -68,6 +67,12 @@ function UserDashboard(props) {
   let [ open, setOpen ] = useState(false);
   let [ rowCount, setRowCount ] = useState(5);
 
+  let onClose = () => {
+    setSelectedCreation(-1);
+    setSelectedRow(undefined);
+    setOpen(false);
+  }
+
   useEffect(() => {
     getDashboardExtensions()
       .then(extensions => setDashboardExtensions(extensions))
@@ -91,28 +96,27 @@ function UserDashboard(props) {
     <React.Fragment>
       <Grid container spacing={3}>
         {
-          dashboardExtensions.map((extension) => {
+          dashboardExtensions.map((extension, index) => {
             let Extension = extension["lfs:extensionRender"];
-            return <Grid item lg={12} xl={6}>
+            return <Grid item lg={12} xl={6} key={"extension-" + index}>
               <Extension />
             </Grid>
           })
         }
       </Grid>
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>
-          <Typography variant="h6" className={classes.dialogTitle}>Add</Typography>
-        </DialogTitle>
-        <DialogContent>
+      <Dialog open={open} onClose={onClose}>
+        <DialogTitle className={classes.dialogTitle}>New</DialogTitle>
+        <DialogContent dividers>
           <MaterialTable
             columns={[
-              { title: 'Type', field: 'lfs:extensionName' },
+              { field: 'lfs:extensionName' },
             ]}
             data={creationExtensions}
             options={{
               search: true,
               pageSize: rowCount,
               showTitle: false,
+              paging: creationExtensions.length > 5,
               rowStyle: rowData => ({
                 // /* It doesn't seem possible to alter the className from here */
                 backgroundColor: (selectedRow && selectedRow["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
@@ -130,7 +134,7 @@ function UserDashboard(props) {
           <Button
             variant="contained"
             color="default"
-            onClick={() => setOpen(false)}
+            onClick={onClose}
             >
             Cancel
           </Button>
@@ -141,21 +145,24 @@ function UserDashboard(props) {
               setOpen(false);
               setSelectedCreation(creationExtensions.indexOf(selectedRow));
             }}
+            disabled={typeof(selectedRow) === "undefined"}
             >
             Next
           </Button>
         </DialogActions>
       </Dialog>
       <div className={classes.newFormButtonWrapper}>
-        <Tooltip title={"Add"} aria-label="add">
-          <Fab
-            color="primary"
-            aria-label="add"
-            onClick={() => setOpen(true)}
-            disabled={creationLoading}
-          >
-            <AddIcon />
-          </Fab>
+        <Tooltip title={"New"} aria-label="new">
+          <span>
+            <Fab
+              color="primary"
+              aria-label="new"
+              onClick={() => setOpen(true)}
+              disabled={creationLoading}
+            >
+              <AddIcon />
+            </Fab>
+          </span>
         </Tooltip>
       </div>
       {
@@ -163,12 +170,13 @@ function UserDashboard(props) {
           let Extension = extension["lfs:extensionRender"];
           return <Extension
             open={index === selectedCreation}
-            onClose={() => setSelectedCreation(-1)}
-            onSubmit={() => setSelectedCreation(-1)}
+            onClose={onClose}
+            onSubmit={onClose}
             // NewFormDialog specific argument
             mode={MODE_DIALOG}
             // NewSubjectDialog specific argument
             openNewSubject={true}
+            key={"extensionDialog-" + index}
             />
         })
       }

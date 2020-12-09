@@ -27,6 +27,7 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
+  Divider,
   Tab,
   Tabs,
   Typography,
@@ -67,7 +68,7 @@ function SubjectView(props) {
 
   let fetchSubjectTypes = () => {
     let url = new URL("/query", window.location.origin);
-    url.searchParams.set("query", `SELECT * FROM [lfs:SubjectType] as n`);
+    url.searchParams.set("query", `SELECT * FROM [lfs:SubjectType] as n order by n.'lfs:defaultOrder'`);
     // TODO: Handle pagination?
     url.searchParams.set("limit", 10);
     url.searchParams.set("offset", 0);
@@ -102,11 +103,12 @@ function SubjectView(props) {
         tabsLoading
           ? <CircularProgress/>
           : <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
-              {subjectTypes.map(subject => {
-                return <Tab label={subject['label'] || subject['@name']} />;
+              {subjectTypes.map((subject, index) => {
+                return <Tab label={subject['label'] || subject['@name']} key={"subject-" + index}/>;
               })}
             </Tabs>
       }
+      <Divider />
       <CardContent>
       {
         hasSubjects

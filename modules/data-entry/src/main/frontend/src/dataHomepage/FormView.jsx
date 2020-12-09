@@ -21,7 +21,7 @@ import LiveTable from "./LiveTable.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
-import { Button, Card, CardContent, CardHeader, Tab, Tabs, withStyles } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, Divider, Tab, Tabs, withStyles } from "@material-ui/core";
 import DeleteButton from "./DeleteButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
@@ -63,10 +63,11 @@ function FormView(props) {
         }
       />
       <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
-        {tabs.map(value => {
-          return <Tab label={value} />;
+        {tabs.map((value, index) => {
+          return <Tab label={value}  key={"form-" + index} />;
         })}
       </Tabs>
+      <Divider />
       <CardContent>
         <LiveTable
           columns={columns}
