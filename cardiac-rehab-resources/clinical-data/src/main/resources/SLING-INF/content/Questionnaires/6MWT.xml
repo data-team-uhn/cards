@@ -18,16 +18,21 @@
 -->
 
 <node>
-	<name>Study Visit</name>
+	<name>6MWT</name>
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
-		<value>1</value>
+		<value>4</value>
 		<type>Long</type>
 	</property>
 	<property>
+		<name>description</name>
+		<value>Visits 2,4,7,8</value>
+		<type>String</type>
+	</property>
+	<property>
 		<name>title</name>
-		<value>Study Visit</value>
+		<value>6MWT</value>
 		<type>String</type>
 	</property>
 	<property>
