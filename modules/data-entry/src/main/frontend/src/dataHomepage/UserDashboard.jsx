@@ -104,7 +104,7 @@ function UserDashboard(props) {
           })
         }
       </Grid>
-      <Dialog open={open} onClose={onClose}>
+      <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose}>
         <DialogTitle className={classes.dialogTitle}>New</DialogTitle>
         <DialogContent dividers>
           <MaterialTable
@@ -113,9 +113,9 @@ function UserDashboard(props) {
             ]}
             data={creationExtensions}
             options={{
-              search: true,
+              toolbar: false,
+              header: false,
               pageSize: rowCount,
-              showTitle: false,
               paging: creationExtensions.length > 5,
               rowStyle: rowData => ({
                 // /* It doesn't seem possible to alter the className from here */
