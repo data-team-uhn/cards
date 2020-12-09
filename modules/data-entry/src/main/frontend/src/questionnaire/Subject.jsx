@@ -317,10 +317,7 @@ function SubjectMember (props) {
   }
 
   // change styling based on 'level'
-  let buttonSize = "large";
-  let headerStyle = "h2";
-  if (level == 1) {buttonSize = "medium"; headerStyle="h4"};
-  if (level > 1) {buttonSize = "small"; headerStyle="h5"};
+  let headerStyle = (level == 0 ? "h2" : (level == 1 ? "h4" : "h5"));
 
   let identifier = data && data.identifier ? data.identifier : id;
   let label = data?.type?.label || "Subject";
