@@ -331,7 +331,6 @@ function SubjectMember (props) {
                  entryPath={path}
                  entryName={title}
                  entryType={label}
-                 warning={data ? data["@referenced"] : false}
                  shouldGoBack={level === 0}
                  onComplete={onDelete}
                  buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}

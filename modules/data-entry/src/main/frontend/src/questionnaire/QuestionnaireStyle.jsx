@@ -17,6 +17,8 @@
 //  under the License.
 //
 
+import { green } from '@material-ui/core/colors';
+
 // Props used in grid containers for displaying Form entries
 export const FORM_ENTRY_CONTAINER_PROPS = {
     direction: "column",
@@ -145,7 +147,7 @@ const questionnaireStyle = theme => ({
         padding: "0 !important"
     },
     subjectAvatar : {
-        backgroundColor: theme.palette.text.primary,
+        backgroundColor: green[500],
     },
     subjectTitleWithAvatar: {
         marginLeft: theme.spacing(-7),
