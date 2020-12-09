@@ -32,7 +32,7 @@ let ListInput = (props) => {
   const requiredSubjectTypes = React.useState(objectKey.includes('requiredSubjectTypes'));
   
   if (requiredSubjectTypes && options.length === 0) {
-    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType'`))
+    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType' order by n.'lfs:defaultOrder'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => { 
         let optionTypes = Array.from(json["rows"]); setOptions(optionTypes);
