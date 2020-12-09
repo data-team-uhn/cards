@@ -36,13 +36,6 @@
             "lfs:extensionName": "Subjects",
             "lfs:targetURL": "/content.html/Subjects",
             "lfs:extensionRenderURL": "asset:lfs-dataentry.Subjects.js"
-        },
-        "Patients": {
-            "jcr:primaryType": "lfs:Extension",
-            "lfs:extensionPointId": "lfs/coreUI/view",
-            "lfs:extensionName": "Patients",
-            "lfs:targetURL": "/content.html/Patient",
-            "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectType.js"
         }
     },
     "AdminDashboard": {
@@ -89,14 +82,6 @@
             "lfs:targetURL": "/content.html/Forms",
             "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
             "lfs:defaultOrder": 3
-        },
-        "Patients": {
-            "jcr:primaryType": "lfs:Extension",
-            "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-            "lfs:extensionName": "Patients",
-            "lfs:targetURL": "/content.html/Patient",
-            "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
-            "lfs:defaultOrder": 5
         }
     }
 }

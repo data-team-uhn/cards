@@ -72,7 +72,7 @@ function Subjects(props) {
 
   // get subject types configured on the system
   if (subjectTypes.length === 0) {
-    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType'`))
+    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType' order by n.'lfs:defaultOrder'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         let optionTypes = Array.from(json["rows"]);
@@ -102,8 +102,6 @@ function Subjects(props) {
   if (entry) {
     return <Subject id={entry} contentOffset={props.contentOffset} />;
   }
-
-  // import the function
 
   return (
     <div>
@@ -140,8 +138,9 @@ function Subjects(props) {
         </CardContent>
       </Card>
       <NewSubjectDialog
-        onClose={() => { setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
-        onSubmit={() => { setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
+        onClose={() => { setNewSubjectPopperOpen(false);}}
+        onSubmit={() => { setNewSubjectPopperOpen(false);}}
+        openNewSubject={true}
         open={newSubjectPopperOpen}
         />
     </div>
@@ -149,4 +148,3 @@ function Subjects(props) {
 }
 
 export default withStyles(QuestionnaireStyle)(Subjects);
-

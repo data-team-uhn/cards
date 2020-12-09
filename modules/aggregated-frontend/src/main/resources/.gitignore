@@ -1,2 +1,1 @@
-# Ignore the output of webpack_script.py, which generates this file to pass arguments from maven to webpack
-maven.json
+# This folder needs to be here

@@ -22,7 +22,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${properties.title}</title>
+    <sly data-sly-use.config="/libs/lfs/conf/Version">
+      <meta name="version" content="${config['Version']}">
+    </sly>
+    <sly data-sly-use.config="/libs/lfs/conf/Title">
+      <meta name="title" content="${config['Title']}">
+      <title>${config.Title}</title>
+    </sly>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap" class="next-head"/>
     <script src="/system/sling.js"></script>
