@@ -5,7 +5,7 @@
         "UserDashboard": {
             "jcr:primaryType": "lfs:Extension",
             "lfs:extensionPointId": "lfs/coreUI/view",
-            "lfs:extensionName": "User dashboard",
+            "lfs:extensionName": "Dashboard",
             "lfs:targetURL": "/content.html/Questionnaires/User",
             "lfs:extensionRenderURL": "asset:lfs-dataentry.userDashboard.js"
         },
@@ -62,7 +62,7 @@
         "UserDashboard": {
             "jcr:primaryType": "lfs:Extension",
             "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-            "lfs:extensionName": "User dashboard",
+            "lfs:extensionName": "Dashboard",
             "lfs:targetURL": "/content.html/Questionnaires/User",
             "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
             "lfs:defaultOrder": 0
