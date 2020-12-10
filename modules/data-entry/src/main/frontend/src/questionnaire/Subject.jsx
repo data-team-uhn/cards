@@ -189,8 +189,8 @@ function SubjectContainer(props) {
     );
   }
 
-  // get related SubjectTypes
-  let check_url = createQueryURL(` WHERE n.'parents'='${data['jcr:uuid']}'`, "lfs:Subject");
+  // get related Subjects
+  let check_url = createQueryURL(` WHERE n.'parents'='${data['jcr:uuid']}' order by n.'jcr:created'`, "lfs:Subject");
   let fetchRelated = () => {
     fetch(check_url)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
