@@ -106,9 +106,39 @@ const questionnaireStyle = theme => ({
         right: theme.spacing(6.5)
     },
     dashboardEntry: {
-      "& > *": {
-        height: "100%",
-      },
+        "& > *": {
+            height: "100%",
+            marginTop: theme.spacing(4),
+        },
+        "& .MuiTab-root": {
+            width: "auto",
+            minWidth: theme.spacing(10),
+            paddingLeft: theme.spacing(2),
+            paddingRight: theme.spacing(2),
+            textTransform: "none",
+         },
+         "& .MuiCardContent-root": {
+            padding: theme.spacing(3, 0),
+         },
+         "& .MuiTableCell-body": {
+            padding: theme.spacing(0, 2),
+         },
+    },
+    subjectView : {
+        "& .MuiTabs-indicator": {
+            background: "orange",
+        },
+    },
+    subjectViewAvatar: {
+        background: "orange",
+    },
+    formView: {
+        "& .MuiTabs-indicator": {
+            background: theme.palette.info.main,
+        },
+    },
+    formViewAvatar: {
+        background: theme.palette.info.main,
     },
     newFormButtonWrapper: {
         margin: theme.spacing(1),

@@ -21,7 +21,22 @@ import LiveTable from "./LiveTable.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
-import { Button, Card, CardContent, CardHeader, Divider, Tab, Tabs, withStyles } from "@material-ui/core";
+import {
+  Avatar,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  IconButton,
+  Tab,
+  Tabs,
+  Tooltip,
+  Typography,
+  withStyles
+} from "@material-ui/core";
+import { Link } from 'react-router-dom';
+import DescriptionIcon from '@material-ui/icons/Description';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import DeleteButton from "./DeleteButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
@@ -54,12 +69,18 @@ function FormView(props) {
   const tabs = ["Completed", "Draft"];
 
   return (
-    <Card>
+    <Card className={classes.formView}>
       <CardHeader
-        title={
-          <Button className={classes.cardHeaderButton}>
-            Forms
-          </Button>
+        avatar={<Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
+        title={<Typography variant="h6">Forms</Typography>}
+        action={
+          <Tooltip title="See more">
+            <Link to={"/content.html/Forms"}>
+              <IconButton>
+                <MoreHorizIcon/>
+              </IconButton>
+            </Link>
+          </Tooltip>
         }
       />
       <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
@@ -76,6 +97,7 @@ function FormView(props) {
           filters
           entryType={"Form"}
           actions={actions}
+          disableTopPagination
         />
       </CardContent>
     </Card>

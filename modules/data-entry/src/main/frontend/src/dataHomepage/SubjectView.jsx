@@ -22,17 +22,22 @@ import LiveTable from "./LiveTable.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 import {
-  Button,
+  Avatar,
   Card,
   CardContent,
   CardHeader,
   CircularProgress,
   Divider,
+  IconButton,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
   withStyles
 } from "@material-ui/core";
+import { Link } from 'react-router-dom';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import DeleteButton from "./DeleteButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
@@ -91,12 +96,18 @@ function SubjectView(props) {
   }
 
   return (
-    <Card>
+    <Card className={classes.subjectView}>
       <CardHeader
-        title={
-          <Button className={classes.cardHeaderButton}>
-            Subjects
-          </Button>
+        avatar={<Avatar className={classes.subjectViewAvatar}><AssignmentIndIcon/></Avatar>}
+        title={<Typography variant="h6">Subjects</Typography>}
+        action={
+          <Tooltip title="See more">
+            <Link to={"/content.html/Subjects"}>
+              <IconButton>
+                <MoreHorizIcon/>
+              </IconButton>
+            </Link>
+          </Tooltip>
         }
       />
       {
@@ -118,6 +129,7 @@ function SubjectView(props) {
               defaultLimit={10}
               entryType={"Subject"}
               actions={actions}
+              disableTopPagination
             />
           : <Typography>No results</Typography>
       }
