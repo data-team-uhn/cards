@@ -329,13 +329,13 @@ export function NewSubjectDialog (props) {
 
     // Get the full subject hierarchy of identifiers
     let fullIdentifier = newSubjectName[index];
-    for (let i = index + 1; i < newSubjectName.length; i++) {
-      if (newSubjectParent[i-1]) {
+    for (let i = index; i < newSubjectName.length; i++) {
+      if (newSubjectParent[i]) {
         let parentHierarchy = getTextHierarchy(newSubjectParent[i]);
         fullIdentifier = parentHierarchy + " / " + fullIdentifier;
         break;
-      } else {
-        fullIdentifier = newSubjectName[i] + " / " + fullIdentifier;
+      } else if (newSubjectName[i+1]) {
+          fullIdentifier = newSubjectName[i+1] + " / " + fullIdentifier;
       }
     }
 
