@@ -18,21 +18,26 @@
 //
 
 import React, { useRef, useEffect, useState } from "react";
+import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Input, ListItem, ListItemAvatar, Typography, withStyles } from "@material-ui/core";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import MaterialTable from "material-table";
 
-import { getHierarchy } from "./Subject.jsx";
+import { getHierarchy, getSubjectIdFromPath } from "./Subject.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 /***
  * Create a URL that checks for the existence of a subject
  */
-let createQueryURL = (query, type) => {
+let createQueryURL = (query, type, order) => {
   let url = new URL("/query", window.location.origin);
-  url.searchParams.set("query", `SELECT * FROM [${type}] as n` + query);
+  let fullquery = `SELECT * FROM [${type}] as n` + query;
+  if (order) {
+    fullquery += ` order by n.'${order}'`;
+  }
+  url.searchParams.set("query", fullquery);
   return url;
 }
 
@@ -92,7 +97,7 @@ function UnstyledNewSubjectDialog (props) {
             columns={COLUMNS}
             data={allowedTypes?.length ? allowedTypes :
               query => {
-                let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType");
+                let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType", "lfs:defaultOrder");
                 url.searchParams.set("limit", query.pageSize);
                 url.searchParams.set("offset", query.page*query.pageSize);
                 return fetch(url)
@@ -274,10 +279,11 @@ export const parseToArray = (object) => {
  * @param {bool} disabled If true, all controls are disabled
  * @param {func} onClose Callback fired when the user tries to close this dialog
  * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
+ * @param {bool} openNewSubject whether to redirect to the newly created subject upon successful creation
  * @param {bool} open If true, this dialog is open
  */
 export function NewSubjectDialog (props) {
-  const { allowedTypes, disabled, onClose, onSubmit, open, currentSubject } = props;
+  const { allowedTypes, disabled, onClose, onSubmit, open, currentSubject, openNewSubject } = props;
   const [ error, setError ] = useState("");
   const [ newSubjectName, setNewSubjectName ] = useState([""]);
   const [ newSubjectType, setNewSubjectType ] = useState([""]);
@@ -290,6 +296,7 @@ export function NewSubjectDialog (props) {
   const [ selectParentPopperOpen, setSelectParentPopperOpen ] = useState(false);
 
   const tableRef = useRef();
+  const history = useHistory();
 
   let curSubjectRequiresParents = newSubjectType[newSubjectIndex]?.["parent"];
   let disabledControls = disabled || isPosting;
@@ -312,9 +319,18 @@ export function NewSubjectDialog (props) {
     if (index <= -1) {
       // End of recursion
       setIsPosting(false);
-      onSubmit(subject);
-      clearDialog();
-      return;
+      onClose();
+      // redirect to the new just created subject page
+      let subjectId = getSubjectIdFromPath(subject);
+      if (openNewSubject && subjectId) {
+        history.push({
+          pathname: window.location.pathname + "/" + subjectId
+        });
+        return;
+      } else {
+        onSubmit(subject);
+        return;
+      }
     }
 
     // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
@@ -443,6 +459,7 @@ export function NewSubjectDialog (props) {
   }
 
   let clearDialog = () => {
+    setError();
     setNewSubjectIndex(0);
     setNewSubjectName([""]);
     setNewSubjectType([""]);
@@ -450,7 +467,6 @@ export function NewSubjectDialog (props) {
     setNewSubjectAllowedTypes([]);
     setNewSubjectPopperOpen(true);
     setSelectParentPopperOpen(false);
-    setError();
   }
 
   let closeDialog = () => {
@@ -798,7 +814,7 @@ function SubjectSelectorList(props) {
             let condition = (conditions.length === 0) ? "" : ` WHERE ${conditions.join(" AND ")}`
 
             // fetch all subjects
-            let url = createQueryURL( condition, "lfs:Subject");
+            let url = createQueryURL( condition, "lfs:Subject", "lfs:defaultOrder");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
             return fetch(url)
@@ -822,7 +838,7 @@ function SubjectSelectorList(props) {
                 let filterRelated = (e) => {
                   // if the selected questionnaire supports the type of current subject
                   if (e['type']?.['@path'] == currentSubject['type']['@path']) return true;
-                  return getRelatedChild(e).includes(currentSubject['@path'])
+                  return getRelatedChild(e)?.includes(currentSubject['@path'])
                 }
 
                 // recursive function to check if the SubjectType of the selected questionnaire is a child of the 'currentSubject' SubjectType
@@ -843,7 +859,7 @@ function SubjectSelectorList(props) {
                 }
                 return {
                   data: (
-                    (currentSubject && (result['rows'].map((row) => isSubjectRelated(row).includes(currentSubject.type.label)))[0])
+                    (currentSubject && (result['rows'].map((row) => isSubjectRelated(row)?.includes(currentSubject.type.label)))[0])
                     ? result['rows'].filter((e) => filterRelated(e)) : result["rows"]
                   ).map((row) => ({
                     hierarchy: getHierarchy(row, React.Fragment, () => ({})),

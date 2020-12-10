@@ -39,7 +39,8 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Sling-Initial-Content>SLING-INF/content/;path:=/Questionnaires/</Sling-Initial-Content>
+            <Include-Resource>{maven-resources},src/main/media</Include-Resource>
+            <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

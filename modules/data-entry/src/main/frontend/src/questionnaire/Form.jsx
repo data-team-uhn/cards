@@ -313,7 +313,6 @@ function Form (props) {
               entryPath={data ? data["@path"] : formURL}
               entryName={(data?.subject?.identifier || "Subject") + ": " + (title)}
               entryType={data?.questionnaire?.title || "Form"}
-              warning={data ? data["@referenced"] : false}
               shouldGoBack={true}
               buttonClass={classes.titleButton}
             />

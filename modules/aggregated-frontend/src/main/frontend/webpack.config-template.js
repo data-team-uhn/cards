@@ -58,7 +58,6 @@ ENTRY_CONTENT
         defaultVendors: {
           minChunks: 1,
           minSize: 20000000,
-          filename: '[name].[contenthash].bundle.js',
           test: /[\\/]node_modules[\\/]/,
           name: 'vendor',
           enforce: true,

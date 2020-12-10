@@ -111,18 +111,6 @@ def merge_webpack_files(base_dir, modules_dir, project_to_name_map, webpack_merg
             f.write("%s" % item)
 
 
-# Transfer maven variables to the resources/ folder for easy access
-def write_maven_vars(out_fn, variables):
-    # This will need to be updated to match the arguments given in the pom.xml for this module
-    var_obj = {
-        "version": variables[0],
-        "name": variables[1]
-    }
-
-    with open(out_fn, 'w') as f:
-        json.dump(var_obj, f)
-
-
 def main(args=sys.argv[1:]):
     base_dir = args[0]
     modules_dir = os.path.dirname(base_dir)
@@ -135,7 +123,6 @@ def main(args=sys.argv[1:]):
     project_to_name_map = {}
     merge_packache_json_files(modules_dir, project_to_name_map, package_json_file, base_dir)
     merge_webpack_files(base_dir, modules_dir, project_to_name_map, webpack_merged_template_file, webpack_merged_file)
-    write_maven_vars(maven_var_file, args[1:])
 
 if __name__ == '__main__':
     main()

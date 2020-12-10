@@ -28,20 +28,20 @@ import Navbar from "./Navbars/Navbar";
 import Page from "./Page";
 import PageStart from "./PageStart/PageStart";
 import IndexStyle from "./indexStyle.jsx";
-import MavenVars from "../../../resources/maven.json";
 
 class Main extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      image: "/libs/lfs/resources/cancer-cells.jpg",
+      image: "/libs/lfs/resources/background.jpg",
       color: "blue",
       hasImage: true,
       fixedClasses: "dropdown show",
       mobileOpen: false,
       routes: [],
       contentOffset: 0,
+      title: document.querySelector('meta[name="title"]').content
     };
 
     getRoutes().then(routes => this.setState({routes: routes}));
@@ -78,7 +78,7 @@ class Main extends React.Component {
             render={(props) => {
                 let ThisComponent = route["lfs:extensionRender"];
                 let newProps = {...props, contentOffset: this.state.contentOffset };
-                let title = MavenVars["name"] + " - ";
+                let title = this.state.title + " - ";
                 return (
                   <Page title={title} pageDefaultName={route["lfs:extensionName"]}>
                     <ThisComponent {...newProps} />
@@ -110,8 +110,7 @@ class Main extends React.Component {
           <Suspense fallback={<div>Loading...</div>}>
             <Sidebar
               contentOffset={this.state.contentOffset}
-              logoText={"LFS Data Core"}
-              logoImage={"/libs/lfs/resources/lfs-logo-tmp-cyan.png"}
+              logoImage={"/libs/lfs/resources/logo.png"}
               image={this.state.image}
               handleDrawerToggle={this.handleDrawerToggle}
               open={this.state.mobileOpen}
