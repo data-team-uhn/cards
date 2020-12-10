@@ -18,6 +18,7 @@
  */
 package ca.sickkids.ccm.lfs.dataentry.internal.serialize;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -32,6 +33,7 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
@@ -89,8 +91,7 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
             if (!node.getPath().equals(this.rootNode.get())) {
                 return;
             }
-            Iterator<Resource> forms = this.resolver.get().findResources(
-                "select * from [lfs:Form] as n where n.subject = '" + node.getIdentifier() + "'", Query.JCR_SQL2);
+            Iterator<Resource> forms = this.resolver.get().findResources(generateDataQuery(node), Query.JCR_SQL2);
             final Map<String, JsonArrayBuilder> formsJsons = new HashMap<>();
 
             // Since the adaptTo serialization process uses ThreadLocal variables, we need to serialize other resources
@@ -121,5 +122,29 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
+    }
+
+    private String generateDataQuery(final Node subject) throws RepositoryException
+    {
+        final StringBuilder result =
+            new StringBuilder("select * from [lfs:Form] as n where n.subject = '" + subject.getIdentifier() + "'");
+        Arrays.asList(this.selectors.get().split("\\.")).stream().filter(s -> s.contains(":")).forEach(f -> {
+            final String key = StringUtils.substringBefore(f, ":");
+            final String value = StringUtils.substringAfter(f, ":");
+            switch (key) {
+                case "createdAfter":
+                    result.append(" and n.[jcr:created] >= '").append(value).append('\'');
+                    break;
+                case "createdBefore":
+                    result.append(" and n.[jcr:created] < '").append(value).append('\'');
+                    break;
+                case "createdBy":
+                    result.append(" and n.[jcr:createdBy] = '").append(value).append('\'');
+                    break;
+                default:
+                    break;
+            }
+        });
+        return result.toString();
     }
 }
