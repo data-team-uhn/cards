@@ -41,7 +41,8 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 public class SimpleProcessor implements ResourceJsonProcessor
 {
     private static final List<String> KEEP_JCR_PROPERTIES =
-        Arrays.asList("jcr:created", "jcr:createdBy", "jcr:uuid", "jcr:primaryType");
+        Arrays.asList("jcr:created", "jcr:createdBy", "jcr:lastModified", "jcr:lastModifiedBy", "jcr:uuid",
+            "jcr:primaryType");
 
     @Override
     public String getName()
