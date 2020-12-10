@@ -172,25 +172,28 @@ function Form (props) {
         Accept: "application/json"
       }
     }).then((response) => {
-      if (formNode?.current) {// component is still mounted
-        if (response.ok) {
-          setLastSaveStatus(true);
-          setLastSaveTimestamp(new Date());
-          typeof(successCallback) == "function" && successCallback();
-        } else if (response.status === 500) {
-          response.json().then((json) => {
-              setErrorCode(json["status.code"]);
-              setErrorMessage(json.error.message);
-              openErrorDialog();
-          })
-          setLastSaveStatus(undefined);
-        } else {
-          // If the user is not logged in, offer to log in
-          const sessionInfo = window.Sling.getSessionInfo();
-          if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-            // On first attempt to save while logged out, set status to false to make button text inform user
-            setLastSaveStatus(false);
-          }
+      if (!(formNode?.current)) {
+        // component no longer mounted
+        // nothing to do
+        return;
+      }
+      if (response.ok) {
+        setLastSaveStatus(true);
+        setLastSaveTimestamp(new Date());
+        typeof(successCallback) == "function" && successCallback();
+      } else if (response.status === 500) {
+        response.json().then((json) => {
+          setErrorCode(json["status.code"]);
+          setErrorMessage(json.error.message);
+          openErrorDialog();
+        })
+        setLastSaveStatus(undefined);
+      } else {
+        // If the user is not logged in, offer to log in
+        const sessionInfo = window.Sling.getSessionInfo();
+        if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
+          // On first attempt to save while logged out, set status to false to make button text inform user
+          setLastSaveStatus(false);
         }
       }
       })
@@ -241,7 +244,6 @@ function Form (props) {
     saveData(event, goBack);
   }
 
-  let parentDetails = data?.subject && getHierarchy(data.subject, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"}));
   let title = data?.questionnaire?.title || id || "";
   let subjectName = data?.subject && getTextHierarchy(data?.subject);
   useEffect(() => {
@@ -347,6 +349,8 @@ function Form (props) {
     }
     {saveInProgress && <CircularProgress size={paginationEnabled ? 48 : 56} />}
     </div>
+
+  let parentDetails = data?.subject && getHierarchy(data.subject);
 
   return (
     <form action={data["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
