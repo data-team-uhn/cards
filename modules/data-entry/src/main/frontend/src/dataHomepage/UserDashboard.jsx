@@ -46,8 +46,8 @@ async function getDashboardExtensions() {
     )
 }
 
-async function getDashboardCreations() {
-  return loadExtensions("DashboardCreation")
+async function getMenuItems() {
+  return loadExtensions("DashboardMenuItems")
     .then(extensions => extensions.slice()
       .sort((a, b) => a["lfs:defaultOrder"] - b["lfs:defaultOrder"])
     )
@@ -78,7 +78,7 @@ function UserDashboard(props) {
       .then(extensions => setDashboardExtensions(extensions))
       .catch(err => console.log("Something went wrong loading the user dashboard", err))
       .finally(() => setLoading(false));
-    getDashboardCreations()
+    getMenuItems()
       .then(creations => {
         setCreationExtensions(creations);
       })

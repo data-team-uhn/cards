@@ -74,7 +74,7 @@ function FormView(props) {
         avatar={<Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
         title={<Typography variant="h6">Forms</Typography>}
         action={
-          <Tooltip title="See more">
+          <Tooltip title="Expand">
             <Link to={"/content.html/Forms"}>
               <IconButton>
                 <MoreHorizIcon/>

@@ -101,7 +101,7 @@ function SubjectView(props) {
         avatar={<Avatar className={classes.subjectViewAvatar}><AssignmentIndIcon/></Avatar>}
         title={<Typography variant="h6">Subjects</Typography>}
         action={
-          <Tooltip title="See more">
+          <Tooltip title="Expand">
             <Link to={"/content.html/Subjects"}>
               <IconButton>
                 <MoreHorizIcon/>
