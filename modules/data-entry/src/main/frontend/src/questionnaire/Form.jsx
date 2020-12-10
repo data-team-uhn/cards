@@ -105,19 +105,13 @@ function Form (props) {
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
 
-  let backgroundSave = () => {
-    if (!saveInProgress && lastSaveStatus === undefined) {
-      saveData();
-    }
-  }
-
-  useEffect(backgroundSave, [lastSaveStatus]);
-
   useEffect(() => {
-    window.addEventListener("beforeunload", backgroundSave);
+    window.addEventListener("beforeunload", saveData);
     // When component unmounts:
     return (() => {
-      window.removeEventListener("beforeunload", backgroundSave);
+      // always save when navigating away
+      saveData();
+      window.removeEventListener("beforeunload", saveData);
     });
   }, []);
 
