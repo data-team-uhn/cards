@@ -54,6 +54,8 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
 
     private ThreadLocal<String> rootNode = new ThreadLocal<>();
 
+    private ThreadLocal<Map<String, String>> filters = new ThreadLocal<>();
+
     @Override
     public String getName()
     {
@@ -75,6 +77,13 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
         this.selectors.set(resource.getResourceMetadata().getResolutionPathInfo());
         // We only serialize data for the serialized subject, not other nodes
         this.rootNode.set(resource.getPath());
+        final Map<String, String> filtersMap = new HashMap<>();
+        Arrays.asList(this.selectors.get().split("\\.")).stream()
+            .filter(s -> StringUtils.startsWith(s, "dataFilter:"))
+            .map(s -> StringUtils.substringAfter(s, "dataFilter:"))
+            .forEach(s -> filtersMap.put(StringUtils.substringBefore(s, "="), StringUtils.substringAfter(s, "=")));
+        this.filters.set(filtersMap);
+
     }
 
     @Override
@@ -106,6 +115,9 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
             serializer.join();
             // Now the data JSONs should be available, add them to the subject's JSON
             formsJsons.forEach(json::add);
+            final JsonObjectBuilder filtersJson = Json.createObjectBuilder();
+            this.filters.get().forEach(filtersJson::add);
+            json.add("dataFilters", filtersJson);
         } catch (RepositoryException | InterruptedException e) {
             // Really shouldn't happen
         }
@@ -128,9 +140,7 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
     {
         final StringBuilder result =
             new StringBuilder("select * from [lfs:Form] as n where n.subject = '" + subject.getIdentifier() + "'");
-        Arrays.asList(this.selectors.get().split("\\.")).stream().filter(s -> s.contains(":")).forEach(f -> {
-            final String key = StringUtils.substringBefore(f, ":");
-            final String value = StringUtils.substringAfter(f, ":");
+        this.filters.get().forEach((key, value) -> {
             switch (key) {
                 case "createdAfter":
                     result.append(" and n.[jcr:created] >= '").append(value).append('\'');
