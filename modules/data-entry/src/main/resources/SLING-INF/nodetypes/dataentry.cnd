@@ -373,7 +373,7 @@
 
 //-----------------------------------------------------------------------------
 // A questionnaire is a collection of sections and questions.
-[lfs:Questionnaire] > sling:Folder, mix:referenceable, mix:versionable
+[lfs:Questionnaire] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
   // Attributes
 
   // The list of sections and questions is orderable.
@@ -667,7 +667,7 @@
 
 //-----------------------------------------------------------------------------
 // Forms: a filled in questionnaire.
-[lfs:Form] > sling:Folder, mix:referenceable, mix:versionable
+[lfs:Form] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
   // Attributes
 
   // The answers in a form must be orderable.
@@ -736,7 +736,7 @@
 
 //-----------------------------------------------------------------------------
 // Subjects: the description of a subject.
-[lfs:Subject] > sling:Folder, mix:referenceable, mix:versionable
+[lfs:Subject] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
   // Attributes
 
   // We can use subjects in a query.
