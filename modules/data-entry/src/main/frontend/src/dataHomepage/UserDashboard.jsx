@@ -98,7 +98,7 @@ function UserDashboard(props) {
         {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["lfs:extensionRender"];
-            return <Grid item lg={12} xl={6} key={"extension-" + index}>
+            return <Grid item lg={12} xl={6} key={"extension-" + index} className={classes.dashboardEntry}>
               <Extension />
             </Grid>
           })

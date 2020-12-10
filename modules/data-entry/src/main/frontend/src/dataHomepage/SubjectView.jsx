@@ -116,7 +116,6 @@ function SubjectView(props) {
               columns={columns}
               customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(subjectTypes[activeTab]["jcr:uuid"])}
               defaultLimit={10}
-              filters
               entryType={"Subject"}
               actions={actions}
             />

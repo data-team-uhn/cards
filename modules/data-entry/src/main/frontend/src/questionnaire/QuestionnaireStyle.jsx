@@ -105,6 +105,11 @@ const questionnaireStyle = theme => ({
         bottom: theme.spacing(1),
         right: theme.spacing(6.5)
     },
+    dashboardEntry: {
+      "& > *": {
+        height: "100%",
+      },
+    },
     newFormButtonWrapper: {
         margin: theme.spacing(1),
         position: "fixed",
