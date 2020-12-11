@@ -94,6 +94,7 @@ function FormView(props) {
           columns={columns}
           customUrl={`/Forms.paginate?descending=true${activeTab == tabs.indexOf("Draft") ? '&fieldname=statusFlags&fieldvalue=INCOMPLETE' : ''}`}
           defaultLimit={10}
+          joinChildren="lfs:Answer"
           filters
           entryType={"Form"}
           actions={actions}
