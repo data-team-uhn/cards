@@ -78,7 +78,7 @@ function MatchAvatar(props) {
 }
 
 function ListItemLink(props) {
-  return <ListItem alignItems="flex-start" button component="a" {...props} />;
+  return <ListItem alignItems="center" button component="a" {...props} />;
 }
 
   // Display a quick search result identifier with link to result section
@@ -90,14 +90,14 @@ export function QuickSearchIdentifier(props) {
       fullPath = `/content.html/admin${resultData["@path"]}#${anchorPath}`;
     }
     let showMatchInfo = !hideMatchInfo && resultData[LFS_QUERY_MATCH_KEY];
-    return (<ListItemLink href={disableLink ? '#' : fullPath} className={ !showMatchInfo && classes.dropdownItemMiddleAligned}>
+    return (<ListItemLink href={disableLink ? '#' : fullPath}>
               <ListItemAvatar>
                 <MatchAvatar matchData={resultData} classes={classes}></MatchAvatar>
               </ListItemAvatar>
               <ListItemText
                 primary={resultData.entityIdentifier || getEntityIdentifier(resultData)}
                 secondary={showMatchInfo && (<QuickSearchMatch matchData={resultData[LFS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>)}
-                className={!showMatchInfo ? classes.dropdownItemTextMiddleAligned : "" + " " + classes.dropdownItem}
+                className={classes.dropdownItem}
               />
            </ListItemLink>)
 }

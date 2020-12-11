@@ -95,14 +95,10 @@ const headerStyle = theme => ({
     marginTop: theme.spacing(1)
   },
   dropdownItem: {
-    whiteSpace: "normal"
-  },
-  dropdownItemMiddleAligned: {
-    alignItems: "center",
-    padding: 0
-  },
-  dropdownItemTextMiddleAligned: {
-    marginTop: "14px"
+    whiteSpace: "normal",
+    "& .MuiListItem-root" : {
+      padding: 0,
+    }
   },
   suggestions: {
     width: theme.spacing(32)
