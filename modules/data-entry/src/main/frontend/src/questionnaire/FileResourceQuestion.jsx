@@ -43,7 +43,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // (TODO)
 function FileResourceQuestion(props) {
   const { classes, existingAnswer, ...rest } = props;
-  const { maxAnswers, namePattern } = { ...props.questionDefinition, ...props }
+  const { maxAnswers, minAnswers, namePattern } = { ...props.questionDefinition, ...props }
   let initialValues =
     // Check whether or not we have an initial value
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
@@ -173,13 +173,28 @@ function FileResourceQuestion(props) {
       let uploadFinder = /Content (?:created|modified) (.+)<\/title>/;
       let match = response.match(uploadFinder);
       let fileURL = match[1] + "/" + file["name"];
-      uploadedFiles[file["name"]] = fileURL;
-      setUploadedFiles(uploadedFiles);
-      setAnswers((old) => {
-        let newAnswers = old.slice();
-        newAnswers.push([file["name"], fileURL]);
-        return newAnswers;
-      });
+      if (maxAnswers != 1) {
+        uploadedFiles[file["name"]] = fileURL;
+        setUploadedFiles(uploadedFiles);
+        setAnswers((old) => {
+            let newAnswers = old.slice();
+            newAnswers.push([file["name"], fileURL]);
+            return newAnswers;
+        });
+      } else {
+        // Delete the old value (if any)
+        if (answers.length) {
+          setToDelete((old) => {
+            let newDeletion = old.slice();
+            newDeletion.push(answers[0][1]);
+            return newDeletion;
+          });
+        }
+
+        // Change the new values
+        setUploadedFiles({[file["name"]]: fileURL});
+        setAnswers([[file["name"], fileURL]]);
+      }
       allowResave();
     }).catch((errorObj) => {
       // Is the user logged out? Or did something else happen?
@@ -208,6 +223,16 @@ function FileResourceQuestion(props) {
     allowResave();
   }
 
+  // display error if minimum is not met, display 'at least' if there is no maximum or if max is greater than min
+  const warning = (Object.keys(uploadedFiles).length < minAnswers ? (
+    <Typography color={error ? 'error' : 'textSecondary'} className={classes.warningTypography}>
+      Please upload {maxAnswers !== minAnswers && "at least"} {minAnswers} file{minAnswers > 1 && "s"}.
+    </Typography>
+    ) : (Object.keys(uploadedFiles).length > maxAnswers &&
+    <Typography color={error ? 'error' : 'textSecondary'} className={classes.warningTypography}>
+      Please upload at most {maxAnswers} file{maxAnswers > 1 && "s"}.
+    </Typography>));
+
   return (
     <Question
       {...rest}
@@ -217,6 +242,7 @@ function FileResourceQuestion(props) {
           <LinearProgress color="primary" />
         </Grid>
       ) }
+      {warning}
       <DragAndDrop
         accept={"*.csv"}
         classes={classes}
@@ -224,10 +250,9 @@ function FileResourceQuestion(props) {
         multifile={maxAnswers != 1}
         />
 
-      { error && <Typography variant="error">error</Typography>}
+      { error && <Typography color="error">error</Typography>}
 
       { uploadedFiles && Object.values(uploadedFiles).length > 0 && <span>
-        <Typography variant="h6" className={classes.fileInfo}>Selected files info</Typography>
         {Object.keys(uploadedFiles).map((filepath, idx) =>
           <React.Fragment key={idx}>
             <div>
