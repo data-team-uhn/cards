@@ -47,7 +47,7 @@ const LFS_QUERY_TEXT_KEY = "text";
  * @param {func} onSelectFinish Function to call after onSelect
  * @param {func} queryConstructor Function that takes (query, requestID) and returns a URL to query for suggestions. Default: use /query?query
  * @param {func} resultConstructor Function that constructs a DOM element from a row of results.
- * @param {bool} showAllResultsLink If true, show the link “See all results” of the bottom o the results dropdown
+ * @param {bool} showAllResultsLink If true, show the link “See all results” of the bottom of the results dropdown
  * @param {bool} disableDropdownItemLink If true, disable links for results dropdown items
  * @param {object} staticContext Unused, defined here to trap the inserted prop from being passed on with ...rest to the Input, where it is invalid
  * Other props will be forwarded to the Input element
