@@ -287,6 +287,8 @@ function Filters(props) {
               size="small"
               label={label}
               disabled={disabled}
+              variant="outlined"
+              color="primary"
               onDelete={()=>{
                 const newFilters = activeFilters.slice();
                 newFilters.splice(index, 1);
@@ -306,8 +308,7 @@ function Filters(props) {
       }
       <Button
         size="small"
-        variant="contained"
-        color="default"
+        color="primary"
         className={classes.addFilterButton}
         disabled={disabled}
         onClick={() => {

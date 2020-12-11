@@ -28,7 +28,7 @@ const liveTableStyle = theme => ({
         margin: theme.spacing(0, 1, 0, 0)
     },
     filterContainer: {
-        padding: theme.spacing(0, 1),
+        padding: theme.spacing(0, 2),
     },
     addFilterButton: {
         minWidth: 0,

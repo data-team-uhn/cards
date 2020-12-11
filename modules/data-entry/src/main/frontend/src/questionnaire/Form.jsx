@@ -90,7 +90,8 @@ function Form (props) {
   // - true -> data has been successfully saved
   // - false -> the save attempt failed
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
-  let [ lastSaveStatus, setLastSaveStatus ] = useState(true);
+
+  let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ lastSaveTimestamp, setLastSaveTimestamp ] = useState(null);
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
   let [ selectorDialogError, setSelectorDialogError ] = useState("");
@@ -164,7 +165,6 @@ function Form (props) {
     }
 
     setSaveInProgress(true);
-    // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
     let data = new FormData(formNode.current);
     fetch(`/Forms/${id}`, {
       method: "POST",
@@ -173,7 +173,7 @@ function Form (props) {
         Accept: "application/json"
       }
     }).then((response) => {
-      if (!(formNode?.current)) {
+       if (!(formNode?.current)) {
         // component no longer mounted
         // nothing to do
         return;
@@ -245,6 +245,7 @@ function Form (props) {
     saveData(event, goBack);
   }
 
+  let parentDetails = data?.subject && getHierarchy(data.subject);
   let title = data?.questionnaire?.title || id || "";
   let subjectName = data?.subject && getTextHierarchy(data?.subject);
   useEffect(() => {

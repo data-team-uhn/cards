@@ -30,6 +30,8 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
 const PROGRESS_SELECT_SUBJECT = 1;
+export const MODE_ACTION = 0;
+export const MODE_DIALOG = 1;
 
 /**
  * A component that renders a FAB to open a dialog to create a new form.
@@ -37,8 +39,8 @@ const PROGRESS_SELECT_SUBJECT = 1;
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
 function NewFormDialog(props) {
-  const { children, classes, presetPath, currentSubject, theme } = props;
-  const [ open, setOpen ] = useState(false);
+  const { children, classes, presetPath, currentSubject, theme, mode, open, onClose } = { mode:MODE_ACTION, open: false, ...props };
+  const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ initialized, setInitialized ] = useState(false);
   const [ selectedQuestionnaire, setSelectedQuestionnaire ] = useState();
@@ -49,6 +51,7 @@ function NewFormDialog(props) {
   const [ relatedForms, setRelatedForms ] = useState();
   const [ disableProgress, setDisableProgress ] = useState(false);
   const [ rowCount, setRowCount ] = useState(5);
+  const [ wasOpen, setWasOpen ] = useState(false);
 
   let createForm = (subject) => {
     setError("");
@@ -89,7 +92,7 @@ function NewFormDialog(props) {
       }
       setInitialized(true);
     }
-    setOpen(true);
+    setDialogOpen(true);
     setError("");
     setProgress(presetPath ? PROGRESS_SELECT_SUBJECT : PROGRESS_SELECT_QUESTIONNAIRE);
   }
@@ -151,7 +154,10 @@ function NewFormDialog(props) {
     setError(false);
     // Exit the dialog if we're at the first page or if there is a preset path
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE || presetPath) {
-      setOpen(false);
+      setDialogOpen(false);
+      if (onClose) {
+        onClose();
+      }
     } else {
       setProgress(PROGRESS_SELECT_QUESTIONNAIRE);
       setSelectedSubject(null);
@@ -197,6 +203,12 @@ function NewFormDialog(props) {
   }, [progress]);
 
   const isFetching = numFetchRequests > 0;
+  if (wasOpen !== open) {
+    setWasOpen(open);
+    if (MODE_DIALOG) {
+      openDialog();
+    }
+  }
 
   useEffect(() => {
     if (currentSubject && selectedQuestionnaire) {
@@ -210,11 +222,19 @@ function NewFormDialog(props) {
         setSelectedSubject(null); // remove selectedsubject so next dialog can open (should not create form right away)
       }
     }
-  }, [selectedQuestionnaire, open])
+  }, [selectedQuestionnaire, dialogOpen])
 
   return (
     <React.Fragment>
-      <Dialog open={open} onClose={() => { setOpen(false); }}>
+      <Dialog
+        open={mode === MODE_ACTION ? dialogOpen : open}
+        onClose={() => {
+          setDialogOpen(false);
+          if (onClose) {
+            onClose();
+          }
+        }}
+      >
         <DialogTitle id="new-form-title">
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ? "Select a questionnaire" : "Select a subject"}
         </DialogTitle>
@@ -325,25 +345,34 @@ function NewFormDialog(props) {
       <NewSubjectDialog
         allowedTypes={parseToArray(selectedQuestionnaire?.["requiredSubjectTypes"])}
         disabled={isFetching}
-        onClose={() => { setNewSubjectPopperOpen(false); setError();}}
+        onClose={() => {
+          setNewSubjectPopperOpen(false);
+          setError();
+          if (onClose) {
+            onClose();
+          }
+        }}
         onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
         currentSubject={currentSubject}
         onSubmit={createForm}
         open={newSubjectPopperOpen}
         />
-      <div className={classes.newFormButtonWrapper}>
-        <Tooltip title={children} aria-label="add">
-          <Fab
-            color="primary"
-            aria-label="add"
-            onClick={openDialog}
-            disabled={!open && isFetching}
-          >
-            <AddIcon />
-          </Fab>
-        </Tooltip>
-        {!open && isFetching && <CircularProgress size={56} className={classes.newFormLoadingIndicator} />}
-      </div>
+      {
+        mode === MODE_ACTION &&
+          <div className={classes.newFormButtonWrapper}>
+            <Tooltip title={children} aria-label="add">
+              <Fab
+                color="primary"
+                aria-label="add"
+                onClick={openDialog}
+                disabled={!dialogOpen && isFetching}
+              >
+                <AddIcon />
+              </Fab>
+            </Tooltip>
+            {!dialogOpen && isFetching && <CircularProgress size={56} className={classes.newFormLoadingIndicator} />}
+          </div>
+      }
     </React.Fragment>
   )
 }
