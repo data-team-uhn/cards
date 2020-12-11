@@ -224,11 +224,12 @@ function FileResourceQuestion(props) {
   }
 
   // display error if minimum is not met, display 'at least' if there is no maximum or if max is greater than min
-  const warning = (Object.keys(uploadedFiles).length < minAnswers ? (
+  const warning = (
+    (Object.keys(uploadedFiles).length < minAnswers && minAnswers > 0) ? (
     <Typography color={error ? 'error' : 'textSecondary'} className={classes.warningTypography}>
       Please upload {maxAnswers !== minAnswers && "at least"} {minAnswers} file{minAnswers > 1 && "s"}.
     </Typography>
-    ) : (Object.keys(uploadedFiles).length > maxAnswers &&
+    ) : (Object.keys(uploadedFiles).length > maxAnswers && maxAnswers > 0 &&
     <Typography color="error" className={classes.warningTypography}>
       Please upload at most {maxAnswers} file{maxAnswers > 1 && "s"}.
     </Typography>));
