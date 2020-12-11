@@ -1717,7 +1717,7 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>File upload</value>
+			<value>File upload test (unlimited answers, affects family history)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1728,6 +1728,93 @@
 		<property>
 			<name>maxAnswers</name>
 			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>namePattern</name>
+			<value>@{family_history}.txt</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>file</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>test</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>File upload test (max 2 file)</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>2</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>namePattern</name>
+			<value>@{family_history}.txt</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>file</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>test_min</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>File upload test (min 1 file)</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>namePattern</name>
+			<value>@{family_history}.txt</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>file</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>test_min_max</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>File upload test (min 1 file, max 1, will self-replace)</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
 			<type>Long</type>
 		</property>
 		<property>
