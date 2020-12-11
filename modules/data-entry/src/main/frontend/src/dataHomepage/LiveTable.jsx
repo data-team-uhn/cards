@@ -42,7 +42,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, entryType, actions, admin, ...rest } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, entryType, actions, admin, disableTopPagination, disableBottomPagination, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -342,9 +342,11 @@ function LiveTable(props) {
     // We wrap everything in a Paper for a nice separation, as a Table has no background or border of its own.
     <Paper elevation={0}>
       {filters && <Filters onChangeFilters={handleChangeFilters} disabled={!Boolean(tableData)} {...rest} />}
+      {!disableTopPagination &&
       <div>
         {paginationControls}
       </div>
+      }
       {/*
       // stickyHeader doesn't really work right now, since the Paper just extends all the way down to fit the table.
       // The whole UI needs to be redesigned so that we can set a maximum height to the Paper,
@@ -393,7 +395,7 @@ function LiveTable(props) {
           }
         </TableBody>
       </Table>
-      {paginationControls}
+      {!disableBottomPagination && paginationControls}
       {!tableData && (<LinearProgress className={classes.progressIndicator}/>)}
     </Paper>
   );

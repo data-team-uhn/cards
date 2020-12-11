@@ -16,163 +16,172 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
-import LiveTable from "./LiveTable.jsx";
+import React, { useState, useEffect } from "react";
 
+import MaterialTable from "material-table";
+
+import { loadExtensions } from "../uiextension/extensionManager";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import { MODE_DIALOG } from "../dataHomepage/NewFormDialog.jsx"
 
-import { Button, Card, CardContent, CardHeader, Grid, Link, Typography, withStyles } from "@material-ui/core";
-import NewFormDialog from "./NewFormDialog.jsx";
-import DeleteButton from "./DeleteButton.jsx";
-import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Fab,
+  Grid,
+  Tooltip,
+  Typography,
+  withStyles
+} from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+
+async function getDashboardExtensions() {
+  return loadExtensions("DashboardViews")
+    .then(extensions => extensions.slice()
+      .sort((a, b) => a["lfs:defaultOrder"] - b["lfs:defaultOrder"])
+    )
+}
+
+async function getMenuItems() {
+  return loadExtensions("DashboardMenuItems")
+    .then(extensions => extensions.slice()
+      .sort((a, b) => a["lfs:defaultOrder"] - b["lfs:defaultOrder"])
+    )
+}
 
 // Component that renders the user's dashboard, with one LiveTable per questionnaire
 // visible by the user. Each LiveTable contains all forms that use the given
 // questionnaire.
 function UserDashboard(props) {
-  const { classes } = props;
-  // Store information about each questionnaire and whether or not we have
-  // initialized
-  let [questionnaires, setQuestionnaires] = useState([]);
-  let [initialized, setInitialized] = useState(false);
-  let [numberForms, setNumberForms] = useState();
-  // Error message set when fetching the data from the server fails
-  let [ error, setError ] = useState();
+  const { classes, theme } = props;
+  let [ dashboardExtensions, setDashboardExtensions ] = useState([]);
+  let [ creationExtensions, setCreationExtensions ] = useState([]);
+  let [ loading, setLoading ] = useState(true);
+  let [ creationLoading, setCreationLoading ] = useState(true);
+  let [ selectedCreation, setSelectedCreation ] = useState(-1);
+  let [ selectedRow, setSelectedRow ] = useState(undefined);
+  let [ open, setOpen ] = useState(false);
+  let [ rowCount, setRowCount ] = useState(5);
 
-  // Column configuration for the LiveTables
-  const columns = [
-    {
-      "key": "@name",
-      "label": "Identifier",
-      "format": getEntityIdentifier,
-      "link": "dashboard+path",
-    },
-    {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
-    },
-    {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
-    },
-  ]
-  const actions = [
-    DeleteButton
-  ]
+  let onClose = () => {
+    setSelectedCreation(-1);
+    setSelectedRow(undefined);
+    setOpen(false);
+  }
 
-  // Obtain information about the questionnaires available to the user
-  let initialize = () => {
-    setInitialized(true);
-
-    // Fetch the questionnaires
-    fetch(`/query?${numberForms ? `limit=${numberForms}&`:""}query=select * from [lfs:Questionnaire]`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((response) => {
-        if (response.totalrows == 0) {
-          setError("Access to data is pending the approval of your account");
-        }
-        if (response.returnedrows < response.totalrows) {
-          setNumberForms(response.totalrows);
-          setInitialized(false);
-        } else {
-          setQuestionnaires(response["rows"]);
-        }
+  useEffect(() => {
+    getDashboardExtensions()
+      .then(extensions => setDashboardExtensions(extensions))
+      .catch(err => console.log("Something went wrong loading the user dashboard", err))
+      .finally(() => setLoading(false));
+    getMenuItems()
+      .then(creations => {
+        setCreationExtensions(creations);
       })
-      .catch(handleError);
-  }
+      .catch(err => console.log("Something went wrong loading the user dashboard", err))
+      .finally(() => setCreationLoading(false));
+  }, [])
 
-  // Callback method for the `fetchData` method, invoked when the request failed.
-  let handleError = (response) => {
-    setError(response.statusText ? response.statusText : response.toString());
-    setQuestionnaires([]);  // Prevent an infinite loop if data was not set
-  };
-
-  // If no forms can be obtained, we do not want to keep on re-obtaining questionnaires
-  if (!initialized) {
-    initialize();
-  }
-
-  // If an error was returned, report the error
-  if (error) {
+  if (loading) {
     return (
-      <Card>
-        <CardHeader title="Error"/>
-        <CardContent>
-          <Typography>{error}</Typography>
-        </CardContent>
-      </Card>
+      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 
   return (
     <React.Fragment>
       <Grid container spacing={3}>
-        <Grid item lg={12} xl={6}>
-          <Card>
-            <CardHeader
-              title={
-                  <Button className={classes.cardHeaderButton}>
-                    Incomplete Forms
-                  </Button>
-              }
-            />
-            <CardContent>
-              <LiveTable
-                columns={columns}
-                customUrl='/Forms.paginate?fieldname=statusFlags&fieldvalue=INCOMPLETE'
-                defaultLimit={10}
-                joinChildren="lfs:Answer"
-                filters
-                entryType={"Form"}
-                actions={actions}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-        {questionnaires.map( (questionnaire) => {
-          const customUrl='/Forms.paginate?fieldname=questionnaire&fieldvalue='
-            + encodeURIComponent(questionnaire["jcr:uuid"]);
-          return(
-            <Grid item lg={12} xl={6} key={questionnaire["jcr:uuid"]}>
-              <Card>
-                <CardHeader
-                  title={
-                    <Link href={`/content.html/Forms?questionnaire=${questionnaire["jcr:uuid"]}`}>
-                      <Button className={classes.cardHeaderButton}>
-                        {questionnaire["title"]}
-                      </Button>
-                    </Link>
-                  }
-                  action={
-                    <NewFormDialog presetPath={questionnaire["@path"]}>
-                      New form
-                    </NewFormDialog>
-                  }
-                  classes={{
-                    action: classes.newFormButtonHeader
-                  }}
-                />
-                <CardContent>
-                  <LiveTable
-                    columns={columns}
-                    customUrl={customUrl}
-                    defaultLimit={10}
-                    joinChildren="lfs:Answer"
-                    questionnaire={questionnaire["@path"]}
-                    entryType={questionnaire["title"]}
-                    filters
-                    actions={actions}
-                    />
-                </CardContent>
-              </Card>
+        {
+          dashboardExtensions.map((extension, index) => {
+            let Extension = extension["lfs:extensionRender"];
+            return <Grid item lg={12} xl={6} key={"extension-" + index} className={classes.dashboardEntry}>
+              <Extension />
             </Grid>
-          )
-        })}
+          })
+        }
       </Grid>
+      <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose}>
+        <DialogTitle className={classes.dialogTitle}>New</DialogTitle>
+        <DialogContent dividers>
+          <MaterialTable
+            columns={[
+              { field: 'lfs:extensionName' },
+            ]}
+            data={creationExtensions}
+            options={{
+              toolbar: false,
+              header: false,
+              pageSize: rowCount,
+              paging: creationExtensions.length > 5,
+              rowStyle: rowData => ({
+                // /* It doesn't seem possible to alter the className from here */
+                backgroundColor: (selectedRow && selectedRow["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
+              })
+            }}
+            onRowClick={(event, rowData) => {
+              setSelectedRow(rowData);
+            }}
+            onChangeRowsPerPage={pageSize => {
+              setRowCount(pageSize);
+            }}
+            />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="default"
+            onClick={onClose}
+            >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={ () => {
+              setOpen(false);
+              setSelectedCreation(creationExtensions.indexOf(selectedRow));
+            }}
+            disabled={typeof(selectedRow) === "undefined"}
+            >
+            Next
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <div className={classes.newFormButtonWrapper}>
+        <Tooltip title={"New"} aria-label="new">
+          <span>
+            <Fab
+              color="primary"
+              aria-label="new"
+              onClick={() => setOpen(true)}
+              disabled={creationLoading}
+            >
+              <AddIcon />
+            </Fab>
+          </span>
+        </Tooltip>
+      </div>
+      {
+        creationExtensions.map((extension, index) => {
+          let Extension = extension["lfs:extensionRender"];
+          return <Extension
+            open={index === selectedCreation}
+            onClose={onClose}
+            onSubmit={onClose}
+            // NewFormDialog specific argument
+            mode={MODE_DIALOG}
+            // NewSubjectDialog specific argument
+            openNewSubject={true}
+            key={"extensionDialog-" + index}
+            />
+        })
+      }
     </React.Fragment>
   );
 }
 
-export default withStyles(QuestionnaireStyle)(UserDashboard);
+export default withStyles(QuestionnaireStyle, {withTheme: true})(UserDashboard);

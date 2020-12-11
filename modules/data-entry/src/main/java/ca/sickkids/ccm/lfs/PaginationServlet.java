@@ -83,7 +83,6 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     private static final String SUBJECT_IDENTIFIER = "lfs:Subject";
     private static final String QUESTIONNAIRE_IDENTIFIER = "lfs:Questionnaire";
 
-    @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS"})
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
             throws IOException, IllegalArgumentException
@@ -92,6 +91,46 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         response.setCharacterEncoding("UTF-8");
         final long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
         final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
+
+        String finalquery = createQuery(request);
+
+        Iterator<Resource> results;
+        //Using a QueryManager doesn't always work, but it is faster
+        Session session = null;
+        try {
+            //Get a QueryManager object
+            ResourceResolver resolver = request.getResourceResolver();
+            session = resolver.adaptTo(Session.class);
+            Workspace workspace = session.getWorkspace();
+            QueryManager queryManager = workspace.getQueryManager();
+
+            //Create the Query object
+            Query filterQuery = queryManager.createQuery(finalquery, "JCR-SQL2");
+
+            //Set the limit and offset here to improve query performance
+            filterQuery.setLimit(limit + 1);
+            filterQuery.setOffset(offset);
+
+            //Execute the query
+            QueryResult filterResult = filterQuery.execute();
+            results = new ResourceIterator(request.getResourceResolver(), filterResult.getNodes());
+        } catch (Exception e) {
+            return;
+        }
+
+        // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
+        final Writer out = response.getWriter();
+        try (JsonGenerator jsonGen = Json.createGenerator(out)) {
+            jsonGen.writeStartObject();
+            long[] limits = writeResources(jsonGen, results, offset, limit);
+            writeSummary(jsonGen, request, limits);
+            jsonGen.writeEnd().flush();
+        }
+    }
+
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
+    private String createQuery(final SlingHttpServletRequest request)
+    {
         // If we want this query to be fast, we need to use the exact nodetype requested.
         final Node node = request.getResource().adaptTo(Node.class);
         String nodeType = "";
@@ -156,44 +195,14 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final String[] filtercomparators = request.getParameterValues("filtercomparators");
         final String[] filterempty = request.getParameterValues("filterempty");
         final String[] filternotempty = request.getParameterValues("filternotempty");
+        final boolean sortDescending = Boolean.valueOf(request.getParameter("descending"));
         query.append(parseFilter(filternames, filtervalues, filtertypes, filtercomparators));
         query.append(parseExistence(filterempty, filternotempty));
-
-        query.append(" order by n.'jcr:created'");
+        query.append(" order by n.'jcr:created'").append(sortDescending ? " DESC" : " ASC");
         String finalquery = query.toString();
         LOGGER.debug("Computed final query: {}", finalquery);
-        Iterator<Resource> results;
-        //Using a QueryManager doesn't always work, but it is faster
-        Session session = null;
-        try {
-            //Get a QueryManager object
-            ResourceResolver resolver = request.getResourceResolver();
-            session = resolver.adaptTo(Session.class);
-            Workspace workspace = session.getWorkspace();
-            QueryManager queryManager = workspace.getQueryManager();
 
-            //Create the Query object
-            Query filterQuery = queryManager.createQuery(finalquery, "JCR-SQL2");
-
-            //Set the limit and offset here to improve query performance
-            filterQuery.setLimit(limit + 1);
-            filterQuery.setOffset(offset);
-
-            //Execute the query
-            QueryResult filterResult = filterQuery.execute();
-            results = new ResourceIterator(request.getResourceResolver(), filterResult.getNodes());
-        } catch (Exception e) {
-            return;
-        }
-
-        // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
-        final Writer out = response.getWriter();
-        try (JsonGenerator jsonGen = Json.createGenerator(out)) {
-            jsonGen.writeStartObject();
-            long[] limits = writeResources(jsonGen, results, offset, limit);
-            writeSummary(jsonGen, request, limits);
-            jsonGen.writeEnd().flush();
-        }
+        return finalquery;
     }
 
     /**
