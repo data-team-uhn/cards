@@ -80,10 +80,11 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
         // We only serialize data for the serialized subject, not other nodes
         this.rootNode.set(resource.getPath());
         final Map<String, String> filtersMap = new HashMap<>();
-        Arrays.asList(this.selectors.get().split("\\.")).stream()
+        Arrays.asList(this.selectors.get().split("(?<!\\\\)(?:\\\\\\\\)*\\.")).stream()
             .filter(s -> StringUtils.startsWith(s, "dataFilter:"))
             .map(s -> StringUtils.substringAfter(s, "dataFilter:"))
-            .forEach(s -> filtersMap.put(StringUtils.substringBefore(s, "="), StringUtils.substringAfter(s, "=")));
+            .forEach(s -> filtersMap.put(StringUtils.substringBefore(s, "="),
+                StringUtils.substringAfter(s, "=").replaceAll("\\\\\\.", ".")));
         this.filters.set(filtersMap);
 
     }

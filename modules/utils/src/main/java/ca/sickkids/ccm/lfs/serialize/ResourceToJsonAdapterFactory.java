@@ -261,7 +261,8 @@ public class ResourceToJsonAdapterFactory
         // These have been requested
         final List<String> requestedProcessors =
             new ArrayList<>(resource.getResourceMetadata().getResolutionPathInfo() != null
-                ? Arrays.asList(resource.getResourceMetadata().getResolutionPathInfo().split("\\."))
+                ? Arrays
+                    .asList(resource.getResourceMetadata().getResolutionPathInfo().split("(?<!\\\\)(?:\\\\\\\\)*\\."))
                 : defaults);
         // Add the defaults, if not already selected and not explicitly excluded
         for (String def : defaults) {
