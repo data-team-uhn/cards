@@ -18,7 +18,8 @@
 //
 
 import React, { useState } from "react";
-import { Grid, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
+import { Grid, IconButton, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
+import Close from "@material-ui/icons/Close";
 
 import PropTypes from "prop-types";
 
@@ -81,7 +82,7 @@ function FileResourceQuestion(props) {
 
   // The answers to give to our <Answers /> object
   let [ answers, setAnswers ] = useState(initialValues);
-  //let answers = Object.keys(uploadedFiles).map((filepath) => [uploadedFiles[filepath], filepath]);
+  let [ toDelete, setToDelete ] = useState([]);
   let writer = useFormUpdateWriterContext();
   let reader = useFormReaderContext();
   let saveForm = reader['/Save'];
@@ -187,6 +188,26 @@ function FileResourceQuestion(props) {
     });
   };
 
+  // Delete an answer by its index
+  let deletePath = (index) => {
+    setToDelete((old) => {
+      let newDeletion = old.slice();
+      newDeletion.push(answers[index][1]);
+      return newDeletion;
+    });
+    setUploadedFiles((old) => {
+      let newUploadedFiles = {...old};
+      delete newUploadedFiles[answers[index][0]];
+      return newUploadedFiles;
+    })
+    setAnswers((old) => {
+      let newAnswers = old.slice();
+      newAnswers.splice(index, 1);
+      return newAnswers;
+    });
+    allowResave();
+  }
+
   return (
     <Question
       {...rest}
@@ -207,22 +228,30 @@ function FileResourceQuestion(props) {
 
       { uploadedFiles && Object.values(uploadedFiles).length > 0 && <span>
         <Typography variant="h6" className={classes.fileInfo}>Selected files info</Typography>
-        {Object.keys(uploadedFiles).map((filepath) =>
-          <React.Fragment key={filepath}>
+        {Object.keys(uploadedFiles).map((filepath, idx) =>
+          <React.Fragment key={idx}>
             <div>
               <span>File </span>
               <Link href={uploadedFiles[filepath]} target="_blank" rel="noopener">
                 {filepath}
               </Link>:
+              <IconButton
+                onClick={() => {deletePath(idx)}}
+                className={classes.deleteButton}
+                color="secondary"
+                title="Delete"
+              >
+                <Close color="action" className={classes.deleteIcon}/>
+              </IconButton>
             </div>
             <span>
               {
-                namePattern && varNames.map((name, idx) => (
+                namePattern && varNames.map((name, nameIdx) => (
                   <TextField
                     label={name}
-                    value={knownAnswers?.[filepath]?.[idx]}
+                    value={knownAnswers?.[filepath]?.[nameIdx]}
                     className={classes.fileDetail}
-                    key={name}
+                    key={nameIdx}
                     readOnly
                   />
                 ))
@@ -241,6 +270,10 @@ function FileResourceQuestion(props) {
         valueType="path"
         {...rest}
         />
+      {/* If we have any uploaded files that we should delete, do so */}
+      {toDelete.map((filename, idx) =>
+        <input type="hidden" name={`${filename}@Delete`} value="0" key={idx}/>
+      )}
     </Question>);
 }
 
