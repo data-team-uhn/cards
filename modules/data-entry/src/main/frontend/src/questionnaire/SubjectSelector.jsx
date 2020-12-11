@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -27,6 +27,7 @@ import MaterialTable from "material-table";
 
 import { getHierarchy, getSubjectIdFromPath } from "./Subject.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 /***
  * Create a URL that checks for the existence of a subject
@@ -59,6 +60,8 @@ let createQueryURL = (query, type, order) => {
 function UnstyledNewSubjectDialog (props) {
   const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
+
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   const COLUMNS = [
     { title: 'Subject type', field: 'label' },
@@ -100,7 +103,7 @@ function UnstyledNewSubjectDialog (props) {
                 let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType", "lfs:defaultOrder");
                 url.searchParams.set("limit", query.pageSize);
                 url.searchParams.set("offset", query.page*query.pageSize);
-                return fetch(url)
+                return fetchWithReLogin(globalLoginDisplay, url)
                   .then(response => response.json())
                   .then(result => {
                     return {
@@ -170,6 +173,8 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
 function UnstyledSelectParentDialog (props) {
   const { classes, childType, continueDisabled, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
   const COLUMNS = [
     { title: 'Subject', field: 'hierarchy' },
   ];
@@ -192,7 +197,7 @@ function UnstyledSelectParentDialog (props) {
                   let url = createQueryURL(` WHERE n.type='${parentType?.["jcr:uuid"]}'` + (query.search ? ` AND CONTAINS(n.identifier, '*${query.search}*')` : ""), "lfs:Subject");
                   url.searchParams.set("limit", query.pageSize);
                   url.searchParams.set("offset", query.page*query.pageSize);
-                  return fetch(url)
+                  return fetchWithReLogin(globalLoginDisplay, url)
                     .then(response => response.json())
                     .then(result => {
                       return {
@@ -295,6 +300,8 @@ export function NewSubjectDialog (props) {
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(true);
   const [ selectParentPopperOpen, setSelectParentPopperOpen ] = useState(false);
 
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
   const tableRef = useRef();
   const history = useHistory();
 
@@ -340,6 +347,7 @@ export function NewSubjectDialog (props) {
     }
     parent = (parent ? [parent] : []);
     createSubjects(
+      globalLoginDisplay,
       [newSubjectName[index]],
       newSubjectType[index],
       parent,
@@ -531,6 +539,8 @@ function UnstyledSelectorDialog (props) {
   const [ error, setError ] = useState("");
   const [ disableProgress, setDisableProgress ] = useState(false);
 
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
   // Handle the user clicking on a subject, potentially submitting it
   let selectSubject = (subject) => {
     if (selectedSubject == subject) {
@@ -545,7 +555,7 @@ function UnstyledSelectorDialog (props) {
 
     setIsPosting(true);
 
-    fetch(url)
+    fetchWithReLogin(globalLoginDisplay, url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((data) => appendPath(data, subjectPath))
       .then(onChange)
@@ -647,7 +657,7 @@ export const SelectorDialog = withStyles(QuestionnaireStyle)(UnstyledSelectorDia
  * @param {func} returnCall The callback after all subjects have been created
  * @param {func} onError The callback if an error occurs during subject creation
  */
-export function createSubjects(newSubjects, subjectType, subjectParents, subjectToTrack, returnCall, onError) {
+export function createSubjects(globalLoginDisplay, newSubjects, subjectType, subjectParents, subjectToTrack, returnCall, onError) {
   let selectedURL = subjectToTrack["@path"];
   let subjectTypeToUse = subjectType["jcr:uuid"] ? subjectType["jcr:uuid"] : subjectType;
   let lastPromise = null;
@@ -685,7 +695,7 @@ export function createSubjects(newSubjects, subjectType, subjectParents, subject
     }
 
     let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${subjectName}'` + parentCheckQueryString, "lfs:Subject");
-    let newPromise = fetch( checkAlreadyExistsURL )
+    let newPromise = fetchWithReLogin(globalLoginDisplay, checkAlreadyExistsURL)
       .then( (response) => response.ok ? response.json() : Promise.reject(response))
       .then( (json) => {
         if (json?.rows?.length > 0) {
@@ -706,9 +716,9 @@ export function createSubjects(newSubjects, subjectType, subjectParents, subject
     if (lastPromise) {
       lastPromise
         .then(newPromise)
-        .then(() => {fetch( url, { method: 'POST', body: requestData })});
+        .then(() => {fetchWithReLogin(globalLoginDisplay, url, { method: 'POST', body: requestData })});
     } else {
-      lastPromise = newPromise.then(() => fetch( url, { method: 'POST', body: requestData }));
+      lastPromise = newPromise.then(() => fetchWithReLogin(globalLoginDisplay, url, { method: 'POST', body: requestData }));
     }
   }
   // If we're finished creating subjects, create the rest of the form
@@ -771,9 +781,11 @@ function SubjectSelectorList(props) {
   const [ relatedSubjects, setRelatedSubjects ] = useState();
   const [ rowCount, setRowCount ] = useState(5);
 
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
   // fetch the Subjects of each form of this questionnaire type
   let filterArray = () => {
-    fetch(`/query?query=SELECT distinct s.* FROM [lfs:Subject] AS s inner join [lfs:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'`)
+    fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT distinct s.* FROM [lfs:Subject] AS s inner join [lfs:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'`)
     .then(response => response.json())
     .then(result => {
       setRelatedSubjects(result.rows);
@@ -817,7 +829,7 @@ function SubjectSelectorList(props) {
             let url = createQueryURL( condition, "lfs:Subject", "lfs:defaultOrder");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
-            return fetch(url)
+            return fetchWithReLogin(globalLoginDisplay, url)
               .then(response => response.json())
               .then(result => {
                 // recursive function to filter and find related subjects to the currentSubject
@@ -890,7 +902,7 @@ function SubjectSelectorList(props) {
             request_data.append('identifier', newData["identifier"]);
 
             let check_url = createQueryURL(` WHERE n.'identifier'='${newData["identifier"]}'`, "lfs:Subject");
-            return fetch( check_url )
+            return fetchWithReLogin(globalLoginDisplay, check_url)
               .then( (response) => response.ok ? response.json() : Promise.reject(response))
               .then( (json) => {
                 if (json?.rows?.length > 0) {
@@ -899,12 +911,12 @@ function SubjectSelectorList(props) {
                 }
               })
               .then( () => (
-                fetch( url, { method: 'POST', body: request_data })
+                fetchWithReLogin(globalLoginDisplay, url, { method: 'POST', body: request_data })
                   .then( () => (
                     // Continually attempt to query the newly inserted data until we are certain it is findable
                     new Promise((resolve, reject) => {
                       let checkForNew = () => {
-                        fetch(check_url)
+                        fetchWithReLogin(globalLoginDisplay, check_url)
                         .then((response) => response.ok ? response.json() : Promise.reject(response))
                         .then((json) => {
                           if (json.returnedrows > 0) {
@@ -930,7 +942,7 @@ function SubjectSelectorList(props) {
             let request_data = new FormData();
             request_data.append(':operation', 'delete');
             onDelete(oldData);
-            return fetch( url, { method: 'POST', body: request_data })
+            return fetchWithReLogin(globalLoginDisplay, url, { method: 'POST', body: request_data })
             } : undefined),
         }}
         options={{
