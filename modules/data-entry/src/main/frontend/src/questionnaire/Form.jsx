@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import {
+  Breadcrumbs,
   Button,
   CircularProgress,
   Grid,
@@ -85,6 +86,7 @@ function Form (props) {
   // - false -> the save attempt failed
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
+  let [ lastSaveTimestamp, setLastSaveTimestamp ] = useState(null);
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
   let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
@@ -148,6 +150,7 @@ function Form (props) {
     }).then((response) => {
       if (response.ok) {
         setLastSaveStatus(true);
+        setLastSaveTimestamp(new Date());
       } else if (response.status === 500) {
         response.json().then((json) => {
             setErrorCode(json["status.code"]);
@@ -315,11 +318,18 @@ function Form (props) {
               buttonClass={classes.titleButton}
             />
           </Typography>
+          <Breadcrumbs separator="·">
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
             <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
             : ""
           }
+          {
+            lastSaveTimestamp ?
+            <Typography variant="overline">{saveInProgress ? "Saving ... " : "Saved " + moment(lastSaveTimestamp.toISOString()).calendar()}</Typography>
+            : ""
+          }
+          </Breadcrumbs>
         </Grid>
         <FormProvider>
           <SelectorDialog
