@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 import { Grid, IconButton, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
-import Close from "@material-ui/icons/Close";
+import Delete from "@material-ui/icons/Delete";
 
 import PropTypes from "prop-types";
 
@@ -229,7 +229,7 @@ function FileResourceQuestion(props) {
       Please upload {maxAnswers !== minAnswers && "at least"} {minAnswers} file{minAnswers > 1 && "s"}.
     </Typography>
     ) : (Object.keys(uploadedFiles).length > maxAnswers &&
-    <Typography color={error ? 'error' : 'textSecondary'} className={classes.warningTypography}>
+    <Typography color="error" className={classes.warningTypography}>
       Please upload at most {maxAnswers} file{maxAnswers > 1 && "s"}.
     </Typography>));
 
@@ -266,7 +266,7 @@ function FileResourceQuestion(props) {
                 color="secondary"
                 title="Delete"
               >
-                <Close color="action" className={classes.deleteIcon}/>
+                <Delete color="action" className={classes.deleteIcon}/>
               </IconButton>
             </div>
             <span>
