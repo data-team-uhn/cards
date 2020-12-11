@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.sickkids.ccm.lfs.subjectcompletion;
+package ca.sickkids.ccm.lfs.subjects.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +66,7 @@ public class SubjectCompletionEditor extends DefaultEditor
      * @param nodeBuilder a list of NodeBuilder objects starting from the root of the JCR tree and moving down towards
      *            the current node.
      * @param subject the subject node found up the tree, if any; may be {@code null} if no subject node has been
-     *            encountered so  far
+     *            encountered so far
      * @param session the session used to retrieve subjects by UUID
      */
     public SubjectCompletionEditor(final List<NodeBuilder> nodeBuilder, final NodeBuilder subject,
@@ -96,6 +96,14 @@ public class SubjectCompletionEditor extends DefaultEditor
     }
 
     @Override
+    public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
+    {
+        final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
+        tmpList.add(this.currentNodeBuilder.getChildNode(name));
+        return new SubjectCompletionEditor(tmpList, this.subject, this.session);
+    }
+
+    @Override
     public void leave(NodeState before, NodeState after) throws CommitFailedException
     {
         if (isSubject(this.currentNodeBuilder)) {
@@ -118,7 +126,7 @@ public class SubjectCompletionEditor extends DefaultEditor
     private void summarize() throws RepositoryException
     {
         final List<String> identifiers = new ArrayList<>();
-        Node subjectNode = (Node) this.currentNodeBuilder;
+        Node subjectNode = this.session.getNodeByIdentifier(this.currentNodeBuilder.getString("jcr:uuid"));
 
         // Iterate through all parents of this node
         while (subjectNode != null) {

@@ -25,9 +25,9 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-subject-completion</artifactId>
+  <artifactId>lfs-subjects</artifactId>
   <packaging>bundle</packaging>
-  <name>Add fullIdentifier property upon Subject node creation</name>
+  <name>LFS - APIs for handling subjects</name>
 
   <build>
     <plugins>
