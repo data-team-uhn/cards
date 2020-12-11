@@ -321,9 +321,6 @@ const questionnaireStyle = theme => ({
         padding: theme.spacing(1),
         fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     },
-    warningIcon: {
-        color: theme.palette.warning.main
-    },
     subjectChip: {
         color:'white',
         marginLeft: theme.spacing(2)

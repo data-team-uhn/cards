@@ -4,8 +4,8 @@
     "jcr:primaryType": "nt:unstructured",
     "Version": "${lfs.version}"
   },
-  "Name": {
+  "Title": {
     "jcr:primaryType": "nt:unstructured",
-    "Name": "${lfs.name}"
+    "Title": "${lfs.name}"
   }
 }

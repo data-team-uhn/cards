@@ -19,7 +19,7 @@
 import React, { useEffect, useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import Subject from "../questionnaire/Subject.jsx";
-import { getHierarchy } from "../questionnaire/Subject.jsx";
+import { getHierarchy, getSubjectIdFromPath } from "../questionnaire/Subject.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
@@ -72,7 +72,7 @@ function Subjects(props) {
 
   // get subject types configured on the system
   if (subjectTypes.length === 0) {
-    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType'`))
+    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType' order by n.'lfs:defaultOrder'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         let optionTypes = Array.from(json["rows"]);
@@ -89,7 +89,7 @@ function Subjects(props) {
     DeleteButton
   ]
 
-  const entry = /Subjects\/(.+)/.exec(location.pathname);
+  const entry = getSubjectIdFromPath(location.pathname);
 
   // Clear the page name overwriting if moving from a specific Subject to the Subjects page
   const pageNameWriter = usePageNameWriterContext();
@@ -100,10 +100,8 @@ function Subjects(props) {
   }, [entry]);
 
   if (entry) {
-    return <Subject id={entry[1]} contentOffset={props.contentOffset} />;
+    return <Subject id={entry} contentOffset={props.contentOffset} />;
   }
-
-  // import the function
 
   return (
     <div>
@@ -138,8 +136,9 @@ function Subjects(props) {
         </CardContent>
       </Card>
       <NewSubjectDialog
-        onClose={() => { setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
-        onSubmit={() => { setNewSubjectPopperOpen(false); setRequestFetchData(requestFetchData+1);}}
+        onClose={() => { setNewSubjectPopperOpen(false);}}
+        onSubmit={() => { setNewSubjectPopperOpen(false);}}
+        openNewSubject={true}
         open={newSubjectPopperOpen}
         />
     </div>
@@ -147,4 +146,3 @@ function Subjects(props) {
 }
 
 export default withStyles(QuestionnaireStyle)(Subjects);
-
