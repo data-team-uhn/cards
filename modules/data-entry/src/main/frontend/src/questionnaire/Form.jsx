@@ -99,6 +99,16 @@ function Form (props) {
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
 
+  useEffect(() => {
+    window.addEventListener("beforeunload", saveData);
+    // When component unmounts:
+    return (() => {
+      // always save when navigating away
+      saveData();
+      window.removeEventListener("beforeunload", saveData);
+    });
+  }, []);
+
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
   // such as authorship and versioning information, the associated subject,
@@ -137,8 +147,7 @@ function Form (props) {
     }
 
     setSaveInProgress(true);
-    // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
-    let data = new FormData(event ? event.currentTarget : formNode.current);
+    let data = new FormData(formNode.current);
     fetch(`/Forms/${id}`, {
       method: "POST",
       body: data,
@@ -146,6 +155,11 @@ function Form (props) {
         Accept: "application/json"
       }
     }).then((response) => {
+       if (!(formNode?.current)) {
+        // component no longer mounted
+        // nothing to do
+        return;
+      }
       if (response.ok) {
         setLastSaveStatus(true);
       } else if (response.status === 500) {
@@ -165,7 +179,7 @@ function Form (props) {
         }
       }
       })
-      .finally(() => setSaveInProgress(false));
+      .finally(() => {formNode?.current && setSaveInProgress(false)});
   }
 
   // Open the login page in a new popup window, centered wrt the parent window
@@ -212,7 +226,7 @@ function Form (props) {
     saveData(event);
   }
 
-  let parentDetails = data?.subject && getHierarchy(data.subject, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"}));
+  let parentDetails = data?.subject && getHierarchy(data.subject);
   let title = data?.questionnaire?.title || id || "";
   let subjectName = data?.subject && getTextHierarchy(data?.subject);
   useEffect(() => {
