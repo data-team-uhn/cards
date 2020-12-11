@@ -258,6 +258,11 @@ public class DataImportServlet extends SlingAllMethodsServlet
                 LOGGER.warn("Failed to parse row [{}]: {}", row.getRecordNumber(), e.getMessage());
             }
         });
+        try {
+            form.adaptTo(Node.class).getSession().getWorkspace().getVersionManager().checkin(form.getPath());
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to checkin form {}: {}", form.getPath(), e.getMessage(), e);
+        }
     }
 
     /**
@@ -651,6 +656,12 @@ public class DataImportServlet extends SlingAllMethodsServlet
             formProperties.put("questionnaire", this.questionnaire.get());
             formProperties.put("subject", subject);
             result = this.resolver.get().create(this.formsHomepage.get(), UUID.randomUUID().toString(), formProperties);
+        } else {
+            try {
+                result.adaptTo(Node.class).getSession().getWorkspace().getVersionManager().checkout(result.getPath());
+            } catch (RepositoryException e) {
+                LOGGER.warn("Failed to checkout form {}: {}", result.getPath(), e.getMessage(), e);
+            }
         }
         return result;
     }
@@ -807,11 +818,15 @@ public class DataImportServlet extends SlingAllMethodsServlet
         try {
             Node subject = this.resolver.get().create(this.subjectsHomepage.get(), UUID.randomUUID().toString(),
                 subjectProperties).adaptTo(Node.class);
+            subject.getSession().getWorkspace().getVersionManager().checkin(subject.getPath());
             this.subjectCache.get().put(subjectKey, subject);
             return subject;
         } catch (PersistenceException e) {
-            return null;
+            LOGGER.warn("Failed to create new subject {}: {}", subjectKey, e.getMessage(), e);
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to checking new subject {}: {}", subjectKey, e.getMessage(), e);
         }
+        return null;
     }
 
     /**
