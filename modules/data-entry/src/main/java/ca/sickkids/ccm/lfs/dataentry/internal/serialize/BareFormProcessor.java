@@ -18,9 +18,7 @@
  */
 package ca.sickkids.ccm.lfs.dataentry.internal.serialize;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -28,7 +26,6 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import javax.jcr.Value;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -188,27 +185,7 @@ public class BareFormProcessor implements ResourceJsonProcessor
     {
         // Replace the subject reference with the label of the actual subject (and its parents)
         if (node.isNodeType("lfs:Form") && "subject".equals(property.getName())) {
-            try {
-                Node subject = property.getNode();
-                final List<String> identifiers = new ArrayList<>();
-                while (subject != null) {
-                    identifiers.add(subject.getProperty("identifier").getString());
-                    if (!subject.hasProperty("parents")) {
-                        break;
-                    }
-                    Value parent;
-                    if (subject.getProperty("parents").isMultiple()) {
-                        parent = subject.getProperty("parents").getValues()[0];
-                    } else {
-                        parent = subject.getProperty("parents").getValue();
-                    }
-                    subject = node.getSession().getNodeByIdentifier(parent.getString());
-                }
-
-                return Json.createValue(identifiers.stream().reduce((result, parent) -> parent + " / " + result).get());
-            } catch (RepositoryException | NullPointerException e) {
-                // Bad data, just return the original input
-            }
+            return Json.createValue(property.getNode().getProperty("fullIdentifier").getString());
         }
         return input;
     }

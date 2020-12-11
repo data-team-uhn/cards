@@ -25,7 +25,7 @@ import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent,
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import MaterialTable from "material-table";
 
-import { getHierarchy, getTextHierarchy, getSubjectIdFromPath } from "./Subject.jsx";
+import { getHierarchy, getSubjectIdFromPath } from "./Subject.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
@@ -327,18 +327,6 @@ export function NewSubjectDialog (props) {
       }
     }
 
-    // Get the full subject hierarchy of identifiers
-    let fullIdentifier = newSubjectName[index];
-    for (let i = index; i < newSubjectName.length; i++) {
-      if (newSubjectParent[i]) {
-        let parentHierarchy = getTextHierarchy(newSubjectParent[i]);
-        fullIdentifier = parentHierarchy + " / " + fullIdentifier;
-        break;
-      } else if (newSubjectName[i+1]) {
-          fullIdentifier = newSubjectName[i+1] + " / " + fullIdentifier;
-      }
-    }
-
     // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
     let parent = newSubjectParent[index]?.["jcr:uuid"] || subject;
     parent = (parent ? [parent] : []);
@@ -347,7 +335,6 @@ export function NewSubjectDialog (props) {
       [newSubjectName[index]],
       newSubjectType[index],
       parent,
-      fullIdentifier,
       newSubjectName[index],
       (new_subject) => {createNewSubjectRecursive(new_subject, index-1)},
       handleError);
@@ -647,7 +634,7 @@ export const SelectorDialog = withStyles(QuestionnaireStyle)(UnstyledSelectorDia
  * @param {func} returnCall The callback after all subjects have been created
  * @param {func} onError The callback if an error occurs during subject creation
  */
-export function createSubjects(globalLoginDisplay, newSubjects, subjectType, subjectParents, fullIdentifier, subjectToTrack, returnCall, onError) {
+export function createSubjects(globalLoginDisplay, newSubjects, subjectType, subjectParents, subjectToTrack, returnCall, onError) {
   let selectedURL = subjectToTrack["@path"];
   let subjectTypeToUse = subjectType["jcr:uuid"] ? subjectType["jcr:uuid"] : subjectType;
   let lastPromise = null;
@@ -671,9 +658,6 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
     requestData.append('identifier', subjectName);
     requestData.append('type', subjectTypeToUse);
     requestData.append('type@TypeHint', 'Reference');
-    
-    requestData.append('fullIdentifier', fullIdentifier);
-    
     subjectParents.forEach((parent) => {
       requestData.append('parents', parent);
       parentCheckQuery.push(`n.'parents'='${parent}'`);
