@@ -42,7 +42,12 @@
         "maxAnswers": "long",
         "unitOfMeasurement" : "string"
       },
-      "vocabulary": {
+      "file": {
+        "minAnswers": "long",
+        "maxAnswers": "long",
+        "namePattern": "string"
+      },
+      "vocabulary": { 
         "sourceVocabulary": "string",
         "vocabularyFilter": "string",
         "minAnswers": "long",

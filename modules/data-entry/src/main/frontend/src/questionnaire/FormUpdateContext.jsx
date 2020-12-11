@@ -21,22 +21,23 @@ import React from "react";
 
 const DEFAULT_STATE = {};
 
-const FormReaderContext = React.createContext(DEFAULT_STATE);
-const FormWriterContext = React.createContext();
+const FormUpdateReaderContext = React.createContext(DEFAULT_STATE);
+const FormUpdateWriterContext = React.createContext();
 
 /**
- * A context provider for a form, which contains answers and a way to set them
+ * A context provider for a form, which contains update requests to a form
  * @param {Object} props the props to pass onwards to the child, generally its children
+ * @param {Object} extraFunctions Any additional functions to provide via this form update context
  * @returns {Object} a React component with the form provider
  */
-export function FormProvider(props) {
+export function FormUpdateProvider(props) {
+  const { extraFunctions, ...rest } = props;
   const [answers, setAnswers] = React.useState(DEFAULT_STATE);
-  const {additionalFormData, ...rest} = props
 
   return (
-    <FormReaderContext.Provider value={{...answers, ...additionalFormData}}>
-      <FormWriterContext.Provider value={setAnswers} {...rest}/>
-    </FormReaderContext.Provider>
+    <FormUpdateReaderContext.Provider value={{...answers, ...extraFunctions}}>
+      <FormUpdateWriterContext.Provider value={setAnswers} {...rest}/>
+    </FormUpdateReaderContext.Provider>
     );
 }
 
@@ -45,11 +46,11 @@ export function FormProvider(props) {
  * @returns {Object} a React context of values from the parent form
  * @throws an error if it is not within a FormProvider
  */
-export function useFormReaderContext() {
-  const context = React.useContext(FormReaderContext);
+export function useFormUpdateReaderContext() {
+  const context = React.useContext(FormUpdateReaderContext);
 
   if (context == undefined) {
-    throw new Error("useFormReaderContext must be used within a FormProvider")
+    throw new Error("useFormUpdateReaderContext must be used within a FormUpdateProvider")
   }
 
   return context;
@@ -60,11 +61,11 @@ export function useFormReaderContext() {
  * @returns {Object} a React context of values from the parent form
  * @throws an error if it is not within a FormProvider
  */
-export function useFormWriterContext() {
-  const context = React.useContext(FormWriterContext);
+export function useFormUpdateWriterContext() {
+  const context = React.useContext(FormUpdateWriterContext);
 
   if (context == undefined) {
-    throw new Error("useFormWriterContext must be used within a FormProvider")
+    throw new Error("useFormUpdateWriterContext must be used within a FormUpdateProvider")
   }
 
   return context;

@@ -36,6 +36,7 @@ import TextQuestion from "./TextQuestion";
 import ComputedQuestion from "./ComputedQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 import SomaticVariantsQuestion from "./SomaticVariantsQuestion";
+import FileResourceQuestion from "./FileResourceQuestion";
 
 export const QUESTION_TYPES = ["lfs:Question"];
 export const SECTION_TYPES = ["lfs:Section"];

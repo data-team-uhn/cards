@@ -24,6 +24,7 @@ import Close from "@material-ui/icons/Close";
 import PropTypes from 'prop-types';
 
 import Answer, {LABEL_POS, VALUE_POS} from "./Answer";
+import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 // Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
@@ -44,7 +45,7 @@ const GHOST_SENTINEL = "custom-input";
   * @param {bool} error indicates if the current selection is in a state of error
   */
 function MultipleChoice(props) {
-  let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, error, ...rest } = props;
+  let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, error, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
@@ -159,9 +160,11 @@ function MultipleChoice(props) {
   let addOption = (id, name) => {
     if ( !options.some((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name}) &&
         !defaults.some((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name})) {
-      let newOptions = options.slice();
-      newOptions.push([name, id, false]);
-      setOptions(newOptions);
+      setOptions((oldOptions) => {
+        let newOptions = oldOptions.slice();
+        newOptions.push([name, id, false]);
+        return newOptions
+      });
     }
   }
 
@@ -189,6 +192,40 @@ function MultipleChoice(props) {
       setGhostName("");
     }
   }
+
+  // Listen for update commands from other components
+  // Note that this code must appear after the definition of selectOption, or else it'll
+  // run into undefined command issues
+  let reader = useFormUpdateReaderContext();
+  let writer = useFormUpdateWriterContext();
+  let updatedOptions = reader[questionName];
+  useEffect(() => {
+    if (!updatedOptions) {
+      return;
+    }
+
+    // Update our options with everything added in the update command
+    updatedOptions.forEach((option) => {
+      if (isRadio) {
+        selectOption(option, option);
+      } else if (maxAnswers !== 1) {
+        // TODO: We need to perform error validation on the updated field
+        addOption(option, option);
+        selectOption(option, option);
+      } else {
+        setGhostName(option);
+        updateGhost(GHOST_SENTINEL, option);
+        onUpdate && onUpdate(option);
+      }
+    });
+
+    // Remove written data so we don't somehow double-add details
+    writer((old) => {
+      let newData = {...old};
+      delete newData[questionName];
+      return newData;
+    })
+  }, [updatedOptions])
 
   // Hold the input box for either multiple choice type
   let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
@@ -255,6 +292,7 @@ function MultipleChoice(props) {
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
+          questionName={questionName}
           {...rest}
           />
       </React.Fragment>
@@ -266,6 +304,7 @@ function MultipleChoice(props) {
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
+          questionName={questionName}
           {...rest}
           />
       </React.Fragment>
@@ -311,6 +350,7 @@ function MultipleChoice(props) {
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
+          questionName={questionName}
           {...rest}
           />
       </React.Fragment>
@@ -326,6 +366,7 @@ function MultipleChoice(props) {
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
+          questionName={questionName}
           {...rest}
           />
       </React.Fragment>
