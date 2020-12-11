@@ -56,6 +56,20 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
  * {@link ResourceJsonProcessor#isEnabledByDefault(Resource) enabled by default}, for example the {@code properties},
  * {@code identify}, and {@code dereference} processors; to disable them, use their name prefixed by {@code -} in the
  * selectors, e.g. {@code /path/to/resource.-dereference.json}.
+ * <p>
+ * This class uses ThreadLocal variables to maintain state, which means that nested invocations in the same thread are
+ * not supported. If a processor needs to call {@code resource.adaptTo(JsonObject.class)}, it should do so in a new
+ * Thread, for example:
+ * </p>
+ * <code>
+ * final Iterator&lt;Resource&gt; resources = ...;
+ * final List&lt;JsonObject&gt; result = new ArrayList&lt;&gt;();
+ * final Thread serializer = new Thread(() -> resources
+ *     .forEachRemaining(r -> result.add(r.adaptTo(JsonObject.class))));
+ * serializer.start();
+ * serializer.join();
+ * // Now result contains the serialized subresources
+ * </code>
  *
  * @version $Id$
  */
