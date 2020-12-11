@@ -38,6 +38,7 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import EditIcon from '@material-ui/icons/Edit';
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import DoneIcon from "@material-ui/icons/Done";
 import WarningIcon from '@material-ui/icons/Warning';
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
@@ -338,7 +339,7 @@ function Form (props) {
   let closeIcon =
       saveInProgress ? <CloudUploadIcon /> :
       lastSaveStatus === false ? <WarningIcon /> :
-      <CloseIcon />
+      <DoneIcon />
 
   let closeButton =
     <div className={classes.mainActionWrapper}>
