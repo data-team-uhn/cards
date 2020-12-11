@@ -253,9 +253,9 @@ function FileResourceQuestion(props) {
 
       { error && <Typography color="error">error</Typography>}
 
-      { uploadedFiles && Object.values(uploadedFiles).length > 0 && <div className={classes.answerField + " " + classes.fileResourceAnswerField}>
+      { uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
         {Object.keys(uploadedFiles).map((filepath, idx) =>
-          <React.Fragment key={idx}>
+          <li key={idx}>
             <div>
               <span>File </span>
               <Link href={uploadedFiles[filepath]} target="_blank" rel="noopener">
@@ -263,30 +263,29 @@ function FileResourceQuestion(props) {
               </Link>:
               <IconButton
                 onClick={() => {deletePath(idx)}}
-                className={classes.deleteButton}
+                className={classes.deleteButton + " " + classes.fileResourceDeleteButton}
                 color="secondary"
                 title="Delete"
               >
                 <Delete color="action" className={classes.deleteIcon}/>
               </IconButton>
             </div>
-            <span>
-              {
-                namePattern && varNames.map((name, nameIdx) => (
+            { namePattern &&
+              <span>
+                {varNames.map((name, nameIdx) => (
                   <TextField
                     label={name}
                     value={knownAnswers?.[filepath]?.[nameIdx]}
-                    className={classes.fileDetail}
+                    className={classes.fileDetail + " " + classes.fileResourceAnswerInput}
                     key={nameIdx}
                     readOnly
                   />
-                ))
-              }
-            </span>
-            <br />
-          </React.Fragment>
+                ))}
+              </span>
+            }
+          </li>
         )}
-      </div>}
+      </ul>}
       <Answer
         answers={answers}
         questionDefinition={props.questionDefinition}

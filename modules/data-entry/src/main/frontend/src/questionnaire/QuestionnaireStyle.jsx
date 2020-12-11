@@ -381,8 +381,17 @@ const questionnaireStyle = theme => ({
       borderRadius: theme.spacing(1),
       cursor: "pointer"
     },
-    fileResourceAnswerField: {
-      paddingTop: theme.spacing(3)
+    fileResourceAnswerList: {
+      listStyleType: 'none',
+      paddingInlineStart: "0",
+      marginTop: theme.spacing(3)
+    },
+    fileResourceAnswerInput: {
+      marginTop: theme.spacing(-1.25),
+      marginBottom: theme.spacing(3)
+    },
+    fileResourceDeleteButton: {
+      margin: "0"
     }
 });
 
