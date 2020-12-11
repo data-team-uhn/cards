@@ -100,16 +100,16 @@
       <type>String</type>
     </property>
     <node>
-      <name>VMAX</name>
+      <name>Vmax</name>
       <primaryNodeType>lfs:AnswerOption</primaryNodeType>
       <property>
         <name>label</name>
-        <value>VMAX</value>
+        <value>Vmax</value>
         <type>String</type>
       </property>
       <property>
         <name>value</name>
-        <value>VMAX</value>
+        <value>Vmax</value>
         <type>String</type>
       </property>
     </node>
