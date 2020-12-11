@@ -160,9 +160,11 @@ function MultipleChoice(props) {
   let addOption = (id, name) => {
     if ( !options.some((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name}) &&
         !defaults.some((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name})) {
-      let newOptions = options.slice();
-      newOptions.push([name, id, false]);
-      setOptions(newOptions);
+      setOptions((oldOptions) => {
+        let newOptions = oldOptions.slice();
+        newOptions.push([name, id, false]);
+        return newOptions
+      });
     }
   }
 
