@@ -380,6 +380,9 @@ const questionnaireStyle = theme => ({
       textAlign: "center",
       borderRadius: theme.spacing(1),
       cursor: "pointer"
+    },
+    fileResourceAnswerField: {
+      paddingTop: theme.spacing(3)
     }
 });
 

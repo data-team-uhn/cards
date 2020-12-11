@@ -252,7 +252,7 @@ function FileResourceQuestion(props) {
 
       { error && <Typography color="error">error</Typography>}
 
-      { uploadedFiles && Object.values(uploadedFiles).length > 0 && <span>
+      { uploadedFiles && Object.values(uploadedFiles).length > 0 && <div className={classes.answerField + " " + classes.fileResourceAnswerField}>
         {Object.keys(uploadedFiles).map((filepath, idx) =>
           <React.Fragment key={idx}>
             <div>
@@ -285,7 +285,7 @@ function FileResourceQuestion(props) {
             <br />
           </React.Fragment>
         )}
-      </span>}
+      </div>}
       <Answer
         answers={answers}
         questionDefinition={props.questionDefinition}
