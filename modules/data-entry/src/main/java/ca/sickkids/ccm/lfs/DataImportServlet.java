@@ -43,6 +43,7 @@ import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
+import javax.jcr.version.VersionManager;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
@@ -81,6 +82,7 @@ import ca.sickkids.ccm.lfs.spi.SearchUtils;
 )
 @SlingServletResourceTypes(resourceTypes = { "lfs/FormsHomepage" }, methods = { "POST" })
 @SlingServletName(servletName = "Data Import Servlet")
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class DataImportServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -5821127949309764050L;
@@ -111,35 +113,15 @@ public class DataImportServlet extends SlingAllMethodsServlet
         new SimpleDateFormat("M/d/y"));
 
     /** Cached Question nodes. */
-    private final ThreadLocal<Map<String, Node>> questionCache = new ThreadLocal<Map<String, Node>>()
-    {
-        @Override
-        protected Map<String, Node> initialValue()
-        {
-            return new HashMap<>();
-        }
-    };
+    private final ThreadLocal<Map<String, Node>> questionCache = ThreadLocal.withInitial(HashMap::new);
 
     /** Cached Subject nodes (for multiple forms for the same subject, for instance). */
-    private final ThreadLocal<Map<String, Node>> subjectCache = new ThreadLocal<Map<String, Node>>()
-    {
-        @Override
-        protected Map<String, Node> initialValue()
-        {
-            return new HashMap<>();
-        }
-    };
-
+    private final ThreadLocal<Map<String, Node>> subjectCache = ThreadLocal.withInitial(HashMap::new);
 
     /** Cached Question nodes. */
-    private final ThreadLocal<Set<String>> warnedCache = new ThreadLocal<Set<String>>()
-    {
-        @Override
-        protected Set<String> initialValue()
-        {
-            return new HashSet<>();
-        }
-    };
+    private final ThreadLocal<Set<String>> warnedCache = ThreadLocal.withInitial(HashSet::new);
+
+    private final ThreadLocal<Set<String>> nodesToCheckin = ThreadLocal.withInitial(HashSet::new);
 
     /** The Resource Resolver for the current request. */
     private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
@@ -187,6 +169,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         } catch (RepositoryException e) {
             LOGGER.error("Failed to import data: {}", e.getMessage(), e);
         } finally {
+            this.nodesToCheckin.remove();
             this.warnedCache.remove();
             this.questionCache.remove();
             this.formsHomepage.remove();
@@ -229,7 +212,16 @@ public class DataImportServlet extends SlingAllMethodsServlet
                 }
             });
         }
-        request.getResourceResolver().adaptTo(Session.class).save();
+        final Session session = request.getResourceResolver().adaptTo(Session.class);
+        session.save();
+        final VersionManager vm = session.getWorkspace().getVersionManager();
+        this.nodesToCheckin.get().forEach(node -> {
+            try {
+                vm.checkin(node);
+            } catch (RepositoryException e) {
+                LOGGER.warn("Failed to check in node {}: {}", node, e.getMessage(), e);
+            }
+        });
     }
 
     /**
@@ -258,11 +250,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
                 LOGGER.warn("Failed to parse row [{}]: {}", row.getRecordNumber(), e.getMessage());
             }
         });
-        try {
-            form.adaptTo(Node.class).getSession().getWorkspace().getVersionManager().checkin(form.getPath());
-        } catch (RepositoryException e) {
-            LOGGER.warn("Failed to checkin form {}: {}", form.getPath(), e.getMessage(), e);
-        }
+        this.nodesToCheckin.get().add(form.getPath());
     }
 
     /**
@@ -818,8 +806,8 @@ public class DataImportServlet extends SlingAllMethodsServlet
         try {
             Node subject = this.resolver.get().create(this.subjectsHomepage.get(), UUID.randomUUID().toString(),
                 subjectProperties).adaptTo(Node.class);
-            subject.getSession().getWorkspace().getVersionManager().checkin(subject.getPath());
             this.subjectCache.get().put(subjectKey, subject);
+            this.nodesToCheckin.get().add(subject.getPath());
             return subject;
         } catch (PersistenceException e) {
             LOGGER.warn("Failed to create new subject {}: {}", subjectKey, e.getMessage(), e);
