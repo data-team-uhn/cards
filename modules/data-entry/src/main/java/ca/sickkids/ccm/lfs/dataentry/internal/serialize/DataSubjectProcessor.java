@@ -18,7 +18,9 @@
  */
 package ca.sickkids.ccm.lfs.dataentry.internal.serialize;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -118,6 +120,8 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
             final JsonObjectBuilder filtersJson = Json.createObjectBuilder();
             this.filters.get().forEach(filtersJson::add);
             json.add("dataFilters", filtersJson);
+            json.add("exportDate",
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(Calendar.getInstance().getTime()));
         } catch (RepositoryException | InterruptedException e) {
             // Really shouldn't happen
         }
