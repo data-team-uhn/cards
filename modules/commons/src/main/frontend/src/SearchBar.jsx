@@ -256,7 +256,7 @@ function SearchBar(props) {
                       key={i}
                       disabled={result["disabled"]}
                       onClick={(e) => {
-                        setSearch(result.entityIdentifier);
+                        disableDropdownItemLink && setSearch(result.entityIdentifier);
                         onSelect(event, result, props);
                         onSelectFinish && onSelectFinish();
                         setPopperOpen(false);
