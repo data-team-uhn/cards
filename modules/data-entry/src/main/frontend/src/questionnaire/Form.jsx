@@ -169,13 +169,9 @@ function Form (props) {
         })
         setLastSaveStatus(undefined);
       } else {
-        // If the user is not logged in, offer to log in
-        const sessionInfo = window.Sling.getSessionInfo();
-        if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-          // On first attempt to save while logged out, set status to false to make button text inform user
-          setLastSaveStatus(false);
-
-        }
+        setErrorMessage("Saving the data failed");
+        openErrorDialog();
+        setLastSaveStatus(false);
       }
       })
       .finally(() => {formNode?.current && setSaveInProgress(false)});
@@ -386,7 +382,7 @@ function Form (props) {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-            <Typography variant="body1">Server responded with response code {errorCode}:<br />{errorMessage}</Typography>
+            <Typography variant="body1">{errorMessage}</Typography>
         </DialogContent>
       </Dialog>
     </form>
