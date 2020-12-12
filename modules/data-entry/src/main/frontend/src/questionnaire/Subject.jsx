@@ -37,7 +37,6 @@ import {
   Button,
 } from "@material-ui/core";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
-import EditButton from "../dataHomepage/EditButton.jsx";
 
 const QUESTION_TYPES = ["lfs:Question"];
 const SECTION_TYPES = ["lfs:Section"];
