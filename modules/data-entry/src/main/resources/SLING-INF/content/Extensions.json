@@ -5,7 +5,7 @@
         "UserDashboard": {
             "jcr:primaryType": "lfs:Extension",
             "lfs:extensionPointId": "lfs/coreUI/view",
-            "lfs:extensionName": "User dashboard",
+            "lfs:extensionName": "Dashboard",
             "lfs:targetURL": "/content.html/Questionnaires/User",
             "lfs:extensionRenderURL": "asset:lfs-dataentry.userDashboard.js"
         },
@@ -62,7 +62,7 @@
         "UserDashboard": {
             "jcr:primaryType": "lfs:Extension",
             "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-            "lfs:extensionName": "User dashboard",
+            "lfs:extensionName": "Dashboard",
             "lfs:targetURL": "/content.html/Questionnaires/User",
             "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
             "lfs:defaultOrder": 0
@@ -82,6 +82,40 @@
             "lfs:targetURL": "/content.html/Forms",
             "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
             "lfs:defaultOrder": 3
+        }
+    },
+    "DashboardViews": {
+        "jcr:primaryType": "sling:Folder",
+        "FormView": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/dashboardviews/entry",
+            "lfs:extensionName": "Form View",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.FormView.js",
+            "lfs:defaultOrder": 2
+        },
+        "SubjectView": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/dashboardviews/entry",
+            "lfs:extensionName": "Subject View",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectView.js",
+            "lfs:defaultOrder": 1
+        }
+    },
+    "DashboardMenuItems": {
+        "jcr:primaryType": "sling:Folder",
+        "NewFormDialog": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/dashboardmenuitems/entry",
+            "lfs:extensionName": "Form",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.NewFormDialog.js",
+            "lfs:defaultOrder": 2
+        },
+        "NewSubjectDialog": {
+            "jcr:primaryType": "lfs:Extension",
+            "lfs:extensionPointId": "lfs/coreUI/dashboardmenuitems/entry",
+            "lfs:extensionName": "Subject",
+            "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectSelector.js?component=NewSubjectDialog",
+            "lfs:defaultOrder": 1
         }
     }
 }

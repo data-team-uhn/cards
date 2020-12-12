@@ -17,6 +17,8 @@
 //  under the License.
 //
 
+import { green } from '@material-ui/core/colors';
+
 // Props used in grid containers for displaying Form entries
 export const FORM_ENTRY_CONTAINER_PROPS = {
     direction: "column",
@@ -105,10 +107,46 @@ const questionnaireStyle = theme => ({
         bottom: theme.spacing(1),
         right: theme.spacing(6.5)
     },
+    dashboardEntry: {
+        "& > *": {
+            height: "100%",
+            marginTop: theme.spacing(4),
+        },
+        "& .MuiTab-root": {
+            width: "auto",
+            minWidth: theme.spacing(10),
+            paddingLeft: theme.spacing(2),
+            paddingRight: theme.spacing(2),
+            textTransform: "none",
+         },
+         "& .MuiCardContent-root": {
+            padding: theme.spacing(3, 0),
+         },
+         "& .MuiTableCell-body": {
+            padding: theme.spacing(0, 2),
+         },
+    },
+    subjectView : {
+        "& .MuiTabs-indicator": {
+            background: "orange",
+        },
+    },
+    subjectViewAvatar: {
+        background: "orange",
+    },
+    formView: {
+        "& .MuiTabs-indicator": {
+            background: theme.palette.info.main,
+        },
+    },
+    formViewAvatar: {
+        background: theme.palette.info.main,
+    },
     newFormButtonWrapper: {
-        height: "0px",
         margin: theme.spacing(1),
-        position: "relative"
+        position: "fixed",
+        bottom: theme.spacing(2),
+        right: theme.spacing(2),
     },
     newFormTypePlaceholder: {
         position: 'relative',
@@ -131,23 +169,51 @@ const questionnaireStyle = theme => ({
     subjectCard: {
         minHeight: "200px",
     },
+    subjectHeader: {
+        position: "sticky",
+        top: 0,
+        paddingTop: theme.spacing(4) + 'px !important',
+        backgroundColor: theme.palette.background.paper,
+        zIndex: "1010",
+    },
     subjectFormHeader: {
         paddingBottom: "0 !important",
     },
     subjectFormHeaderButton: {
         padding: "0 !important"
     },
-    subjectContainer: {
-        marginLeft: theme.spacing(4),
-        marginTop: theme.spacing(4)
+    subjectAvatar : {
+        backgroundColor: green[500],
     },
-    subjectNewButton: {
-        width: "100%",
-        height: "0px",
-        textAlign: "right",
-        marginRight: "90%",
-        top: "0px",
-        position: 'sticky',
+    subjectTitleWithAvatar: {
+        marginLeft: theme.spacing(-7),
+        "& a": {
+          color: theme.palette.text.primary,
+          textDecoration: "none",
+        }
+    },
+    subjectContainer: {
+        flexWrap: "nowrap" ,
+        marginBottom: theme.spacing(4),
+    },
+    subjectNestedContainer: {
+        marginLeft: theme.spacing(7),
+        marginTop: theme.spacing(4),
+        "& .MuiGrid-container:last-child" : {
+          marginBottom: "0 !important",
+        }
+    },
+    mainPageAction: {
+        position: 'fixed',
+        bottom: theme.spacing(2),
+        right: theme.spacing(4),
+        height: theme.spacing(8),
+        zIndex: 100,
+        "& > div" : {
+             position: "absolute !important",
+             top: 0,
+             right: 0,
+        },
     },
     collapsedSection: {
         padding: "0 !important"
@@ -258,20 +324,15 @@ const questionnaireStyle = theme => ({
     titleButton: {
         float: "right"
     },
-    subjectHeader: {
-        display: "inline-block"
-    },
     subjectSubHeader: {
         display: "block"
     },
     subjectHeaderButton: {
         float: "right",
-        marginTop: theme.spacing(2),
-        marginRight: theme.spacing(12)
+        marginTop: theme.spacing(1),
+        marginRight: theme.spacing(-0.5)
     },
     childSubjectHeaderButton: {
-        display: "inline-block",
-        bottom: theme.spacing(1),
         left: theme.spacing(1)
     },
     addNewSubjectButton: {
@@ -323,7 +384,8 @@ const questionnaireStyle = theme => ({
     },
     subjectChip: {
         color:'white',
-        marginLeft: theme.spacing(2)
+        marginBottom: theme.spacing(1),
+        marginRight: theme.spacing(1),
     },
     INCOMPLETEChip: {
         backgroundColor: theme.palette.warning.main

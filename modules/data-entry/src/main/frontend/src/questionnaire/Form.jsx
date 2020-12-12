@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import {
+  Breadcrumbs,
   Button,
   CircularProgress,
   Grid,
@@ -86,6 +87,7 @@ function Form (props) {
   // - false -> the save attempt failed
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
+  let [ lastSaveTimestamp, setLastSaveTimestamp ] = useState(null);
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
   let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
@@ -100,6 +102,16 @@ function Form (props) {
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
   const formURL = `/Forms/${id}`;
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", saveData);
+    // When component unmounts:
+    return (() => {
+      // always save when navigating away
+      saveData();
+      window.removeEventListener("beforeunload", saveData);
+    });
+  }, []);
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
@@ -139,8 +151,7 @@ function Form (props) {
     }
 
     setSaveInProgress(true);
-    // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
-    let data = new FormData(event ? event.currentTarget : formNode.current);
+    let data = new FormData(formNode.current);
     return fetch(formURL, {
       method: "POST",
       body: data,
@@ -148,8 +159,14 @@ function Form (props) {
         Accept: "application/json"
       }
     }).then((response) => {
+       if (!(formNode?.current)) {
+        // component no longer mounted
+        // nothing to do
+        return;
+      }
       if (response.ok) {
         setLastSaveStatus(true);
+        setLastSaveTimestamp(new Date());
       } else if (response.status === 500) {
         response.json().then((json) => {
             setErrorCode(json["status.code"]);
@@ -167,7 +184,7 @@ function Form (props) {
         }
       }
       })
-      .finally(() => setSaveInProgress(false));
+      .finally(() => {formNode?.current && setSaveInProgress(false)});
   }
 
   // Open the login page in a new popup window, centered wrt the parent window
@@ -214,7 +231,7 @@ function Form (props) {
     saveData(event);
   }
 
-  let parentDetails = data?.subject && getHierarchy(data.subject, Link, (node) => ({href: "/content.html" + node["@path"], target :"_blank"}));
+  let parentDetails = data?.subject && getHierarchy(data.subject);
   let title = data?.questionnaire?.title || id || "";
   let subjectName = data?.subject && getTextHierarchy(data?.subject);
   useEffect(() => {
@@ -317,11 +334,18 @@ function Form (props) {
               buttonClass={classes.titleButton}
             />
           </Typography>
+          <Breadcrumbs separator="·">
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
             <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
             : ""
           }
+          {
+            lastSaveTimestamp ?
+            <Typography variant="overline">{saveInProgress ? "Saving ... " : "Saved " + moment(lastSaveTimestamp.toISOString()).calendar()}</Typography>
+            : ""
+          }
+          </Breadcrumbs>
         </Grid>
         { /* We also expose the URL of the output form and the save function to any children. This shouldn't interfere
           with any other values placed inside the context since no variable name should be able to have a '/' in it */}

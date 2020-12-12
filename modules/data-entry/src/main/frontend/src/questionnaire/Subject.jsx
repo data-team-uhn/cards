@@ -25,15 +25,14 @@ import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
+import MaterialTable, { MTablePagination } from 'material-table';
 
 import {
+  Avatar,
   CircularProgress,
   Chip,
   Grid,
   Typography,
-  Card,
-  CardHeader,
-  CardContent,
   withStyles,
   Button,
 } from "@material-ui/core";
@@ -99,7 +98,7 @@ export function getTextHierarchy (node, withType = false) {
  */
 
 function Subject(props) {
-  let { id, classes, maxDisplayed } = props;
+  let { id, classes, maxDisplayed, pageSize } = props;
   const [currentSubject, setCurrentSubject] = useState();
   const [currentSubjectId, setCurrentSubjectId] = useState(id);
 
@@ -123,17 +122,14 @@ function Subject(props) {
     setCurrentSubject(e);
   }
 
-  let parentDetails = currentSubject && currentSubject['parents'] && getHierarchy(currentSubject['parents']);
-
   return (
     <React.Fragment>
-      <div className={classes.subjectNewButton} style={{ top: props.contentOffset + 'px' }} >
-          <NewFormDialog currentSubject={currentSubject}>
-            New form for this Subject
-          </NewFormDialog>
+      <div className={classes.mainPageAction}>
+        <NewFormDialog currentSubject={currentSubject}>
+          New form for this Subject
+        </NewFormDialog>
       </div>
-      {parentDetails && <Typography variant="overline">{parentDetails}</Typography>}
-      <SubjectContainer id={currentSubjectId} key={currentSubjectId}  classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject}/>
+      <SubjectContainer id={currentSubjectId} key={currentSubjectId}  classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject} pageSize={pageSize}/>
     </React.Fragment>
   );
 }
@@ -142,15 +138,21 @@ function Subject(props) {
  * Component that recursively gets and displays the selected subject and its related SubjectTypes
  */
 function SubjectContainer(props) {
-  let { id, classes, level, maxDisplayed, getSubject } = props;
+  let { id, classes, level, maxDisplayed, pageSize, getSubject } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // hold related subjects
   let [relatedSubjects, setRelatedSubjects] = useState();
+  // whether the subject has been deleted
+  let [ deleted, setDeleted ] = useState();
   // 'level' of subject component
   const currentLevel = level || 0;
+
+  if (deleted) {
+    return null;
+  }
 
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
@@ -186,8 +188,8 @@ function SubjectContainer(props) {
     );
   }
 
-  // get related SubjectTypes
-  let check_url = createQueryURL(` WHERE n.'parents'='${data['jcr:uuid']}'`, "lfs:Subject");
+  // get related Subjects
+  let check_url = createQueryURL(` WHERE n.'parents'='${data['jcr:uuid']}' order by n.'jcr:created'`, "lfs:Subject");
   let fetchRelated = () => {
     fetch(check_url)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -212,14 +214,14 @@ function SubjectContainer(props) {
   }
 
   return (
-    <Grid container spacing={3}>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed}/>
-      {relatedSubjects ?
-        (<Grid item xs={12} className={classes.subjectContainer}>
+    data && <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
+      <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}}/>
+      {relatedSubjects && relatedSubjects.length > 0 ?
+        (<Grid item xs={12} className={classes.subjectNestedContainer}>
           {relatedSubjects.map( (subject, i) => {
             // Render component again for each related subject
             return(
-              <SubjectContainer key={i} classes={classes} id={subject["@name"]} level={currentLevel+1} maxDisplayed={maxDisplayed}/>
+              <SubjectContainer key={i} classes={classes} id={subject["@name"]} level={currentLevel+1} maxDisplayed={maxDisplayed} pageSize={pageSize}/>
             )
           })}
         </Grid>
@@ -230,16 +232,41 @@ function SubjectContainer(props) {
 }
 
 /**
+ * Component that displays the subject chart header, with subject id, parents, and actions
+ */
+function SubjectHeader (props) {
+  let {data, classes, title, action} = props;
+  let parentDetails = data && data['parents'] && getHierarchy(data['parents']);
+
+  return (
+    <Grid item className={classes.subjectHeader}>
+      {parentDetails && <Typography variant="overline">{parentDetails}</Typography>}
+      <Typography variant="h2">{title}{action}</Typography>
+      {
+        data && data['jcr:createdBy'] && data['jcr:created'] ?
+        <Typography
+          variant="overline"
+          className={classes.subjectSubHeader}>
+            Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}
+        </Typography>
+        : ""
+      }
+    </Grid>
+  )
+}
+
+/**
  * Component that displays all forms related to a Subject.
  */
 function SubjectMember (props) {
-  let { id, classes, level, data, maxDisplayed } = props;
+  let { id, classes, level, data, maxDisplayed, pageSize, onDelete } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // table data: related forms to the subject
   let [tableData, setTableData] = useState();
+  let [subjectGroups, setSubjectGroups] = useState();
 
-  const customUrl=`/Forms.paginate?fieldname=subject&fieldvalue=${encodeURIComponent(data['jcr:uuid'])}&includeallstatus=true`;
+  const customUrl=`/Forms.paginate?fieldname=subject&fieldvalue=${encodeURIComponent(data['jcr:uuid'])}&includeallstatus=true&limit=1000`;
 
   // Fetch the forms associated with the subject as JSON from the server
   // It will be stored in the `tableData` state variable
@@ -252,11 +279,18 @@ function SubjectMember (props) {
 
   let handleTableResponse = (json) => {
     setTableData(json.rows);
+    let groups = {};
+    json.rows.map( (entry, i) => {
+      let title = entry.questionnaire.title || entry.questionnaire["@name"];
+      groups[title]?.push(entry) || (groups[title] = [entry]);
+    })
+    setSubjectGroups(groups);
   };
 
   let handleTableError = (response) => {
     setError(response);
     setTableData([]);
+    setSubjectGroups({});
   };
 
   let wordToTitleCase = (word) => {
@@ -280,87 +314,116 @@ function SubjectMember (props) {
       </Grid>
     );
   }
+
   // change styling based on 'level'
-  let buttonSize = "large";
-  let headerStyle = "h2";
-  if (level == 1) {buttonSize = "medium"; headerStyle="h4"};
-  if (level > 1) {buttonSize = "small"; headerStyle="h5"};
+  let headerStyle = (level == 0 ? "h2" : (level == 1 ? "h4" : "h5"));
 
   let identifier = data && data.identifier ? data.identifier : id;
+  let label = data?.type?.label || "Subject";
+  let title = `${label} ${identifier}`;
+  let path = data ? data["@path"] : "/Subjects/" + id;
+  let avatar = level > 0 && <Avatar className={classes.subjectAvatar}>{label.split(' ').map(s => s?.charAt(0)).join('').toUpperCase()}</Avatar>;
+  let action = <DeleteButton
+                 entryPath={path}
+                 entryName={title}
+                 entryType={label}
+                 shouldGoBack={level === 0}
+                 onComplete={onDelete}
+                 buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}
+                 size={level === 0 ? "large" : null}
+               />
 
-  return (
-    <Grid item xs={12}>
-      <Grid item>
-        <span className={classes.subjectHeader}>
-          <Typography variant={headerStyle}>
-            {data?.type?.label || "Subject"} {identifier}
-          </Typography>
-        </span>
-        <DeleteButton
-          entryPath={data ? data["@path"] : "/Subjects/" + id}
-          entryName={(data?.type?.label || "Subject") + " " + (identifier)}
-          entryType={data?.type?.label || "Subject"}
-          shouldGoBack={level === 0}
-          buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}
-          size={level === 0 ? "large" : null}
-        />
-        {
-          data && data['jcr:createdBy'] && data['jcr:created'] ?
-            <Typography
-              variant="overline"
-              className={classes.subjectSubHeader}>
-                Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}
-            </Typography>
-          : ""
-        }
-      </Grid>
-      <Grid item>
-      {tableData ?
-          (<Grid container spacing={3}>
-            {tableData.map( (entry, i) => {
-              return(
-                <Grid item lg={12} xl={6} key={`${entry.questionnaire["jcr:uuid"]}-${i}`}>
-                  <Card className={classes.subjectCard}>
-                    <CardHeader
-                      title={
-                        <React.Fragment>
-                          <Button size={buttonSize} className={classes.subjectFormHeaderButton}>
-                            {entry.questionnaire["@name"]}
-                          </Button>
-                          {entry["statusFlags"].map((status) => {
-                            return <Chip
-                              key={status}
-                              label={wordToTitleCase(status)}
-                              className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
-                              size="small"
-                            />
-                          })}
-                        </React.Fragment>
-                      }
-                      className={classes.subjectFormHeader}
-                      action={
-                        <DeleteButton
-                          entryPath={entry["@path"]}
-                          entryName={`${identifier}: ${entry.questionnaire["@name"]}`}
-                          entryType="Form"
-                        />
-                      }
-                    />
-                    <CardContent>
-                      <FormData formID={entry["@name"]} maxDisplayed={maxDisplayed}/>
-                      <Link to={"/content.html" + entry["@path"]}>
-                        <Typography variant="body2" component="p">See More...</Typography>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              )
-            })}
+  return ( data &&
+    <>
+    {
+      level == 0 ?
+        <SubjectHeader data={data} classes={classes} title={title} action={action} />
+      :
+        <Grid item className={classes.subjectTitleWithAvatar}>
+          <Grid container direction="row" spacing={1} justify="flex-start">
+            <Grid item xs={false}>{avatar}</Grid>
+            <Grid item>
+              <Typography variant={headerStyle}>
+                 <Link to={"/content.html" + path}>{title}</Link>
+                 {action}
+              </Typography>
+            </Grid>
           </Grid>
-          ) : ""
+        </Grid>
+      }
+      { subjectGroups && Object.keys(subjectGroups).length > 0 && <>
+        {
+          Object.keys(subjectGroups).map( (questionnaireTitle, j) => {
+            return(<Grid item key={questionnaireTitle}>
+              <Typography variant="h6">{questionnaireTitle}</Typography>
+              <Typography variant="subtitle1" color="textSecondary">{subjectGroups[questionnaireTitle]?.[0]?.questionnaire?.description}</Typography>
+              <MaterialTable
+                data={subjectGroups[questionnaireTitle]}
+                style={{ boxShadow : 'none' }}
+                options={{
+                  actionsColumnIndex: -1,
+                  emptyRowsWhenPaging: false,
+                  toolbar: false,
+                  pageSize: pageSize,
+                  header: false,
+                  rowStyle: {
+                    verticalAlign: 'top',
+                  }
+                }}
+                columns={[
+                  { title: 'Created',
+                    cellStyle: {
+                      paddingLeft: 0,
+                      fontWeight: "bold",
+                      width: '1%',
+                      whiteSpace: 'nowrap',
+                    },
+                    render: rowData => <Link to={"/content.html" + rowData["@path"]}>
+                                         {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
+                                       </Link> },
+                  { title: 'Status',
+                    cellStyle: {
+                      width: '1%',
+                      whiteSpace: 'pre-wrap',
+                      paddingBottom: "8px",
+                    },
+                    render: rowData => <React.Fragment>
+                                         {rowData["statusFlags"].map((status) => {
+                                           return <Chip
+                                             key={status}
+                                             label={wordToTitleCase(status)}
+                                             className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
+                                             size="small"
+                                           />
+                                         })}
+                                       </React.Fragment> },
+                  { title: 'Summary',
+                    render: rowData => <FormData className={classes.formData} formID={rowData["@name"]} maxDisplayed={maxDisplayed}/> },
+                  { title: 'Actions',
+                    cellStyle: {
+                      padding: '0',
+                      width: '20px',
+                      textAlign: 'end'
+                    },
+                    render: rowData => <DeleteButton
+                                          entryPath={rowData["@path"]}
+                                          entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
+                                          entryType="Form"
+                                          warning={rowData ? rowData["@referenced"] : false}
+                                          onComplete={fetchTableData}
+                                        /> },
+                ]}
+                components={{
+                    Pagination: props => { const { classes, ...other } = props;
+                                           return (subjectGroups[questionnaireTitle].length > pageSize && <MTablePagination {...other} />)}
+                }}
+               />
+            </Grid>)
+          })
         }
-      </Grid>
-    </Grid>
+        </>
+      }
+    </>
   );
 };
 
@@ -466,7 +529,8 @@ Subject.propTypes = {
 }
 
 Subject.defaultProps = {
-  maxDisplayed: 4
+  maxDisplayed: 4,
+  pageSize: 10,
 }
 
 export default withStyles(QuestionnaireStyle)(Subject);

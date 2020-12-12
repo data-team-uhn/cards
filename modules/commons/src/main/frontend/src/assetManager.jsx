@@ -61,8 +61,22 @@ var getAssetURL = async function(assetUrl) {
   }
 
   var assetName = assetUrl.slice(ASSET_PREFIX.length);
+  if (assetName.includes("?")) {
+    assetName = assetName.slice(0, assetName.indexOf("?"));
+  }
   return getAssetsJson()
     .then(json => "/libs/lfs/resources/" + json[assetName]);
+}
+
+// Get the URL parameters from the provided URL or asset URL string.
+//
+// @param {string} assetURL the URL to extract the parameters from, potentially prefixed with ASSET_PREFIX
+// @return a URLSearchParams object containing the parameters from the input
+var getURLParameters = (assetUrl) => {
+  if (!assetUrl || !assetUrl.includes("?")) {
+    return new URLSearchParams();
+  }
+  return new URLSearchParams(assetUrl.slice(assetUrl.indexOf("?") + 1));
 }
 
 // Load a React component from a URL.
@@ -74,6 +88,7 @@ var getAssetURL = async function(assetUrl) {
 var loadAsset = async function(assetURL) {
   if (!assets[assetURL]) {
     if (!assetRequests[assetURL]) {
+      let parameters = getURLParameters(assetURL);
       assetRequests[assetURL] = getAssetURL(assetURL)
         .then(url => {
           // If the URL is empty, return an empty page
@@ -85,7 +100,7 @@ var loadAsset = async function(assetURL) {
             .then(response => response.ok ? response.text() : Promise.reject(response))
             .then(remoteComponentSrc => {
               var returnVal = window.eval(remoteComponentSrc);
-              return returnVal.default;
+              return parameters.has("component") ? returnVal[parameters.get("component")] : returnVal.default;
             });
           })
         .finally(() => assetRequests[assetURL] = null);
