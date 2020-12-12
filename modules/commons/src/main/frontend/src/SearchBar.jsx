@@ -17,7 +17,7 @@
 //  under the License.
 //
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { withRouter } from "react-router-dom";
 
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@material-ui/core";
@@ -27,6 +27,7 @@ import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
 import DescriptionIcon from "@material-ui/icons/Description";
 import Search from "@material-ui/icons/Search";
 import HeaderStyle from "./headerStyle.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 export const DEFAULT_QUERY_URL = "/query";
 export const DEFAULT_MAX_RESULTS = 5;
@@ -67,13 +68,15 @@ function SearchBar(props) {
   const [ showTotalRows, setShowTotalRows ] = useState(true);
   const [ fetched, setFetched ] = useState(false);
 
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
   let input = React.useRef();
   let suggestionMenu = React.useRef();
   let searchBar = React.useRef();
 
   // Fetch saved admin config settings
   let getQuickSearchSettings = () => {
-    fetch('/apps/lfs/config/QuickSearch.json')
+    fetchWithReLogin(globalLoginDisplay, '/apps/lfs/config/QuickSearch.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setFetched(true);
@@ -114,7 +117,7 @@ function SearchBar(props) {
     let new_url = queryConstructor(query, requestID, showTotalRows, allowedResourceTypes, limit);
     // In the closure generated, postprocessResults will look for req_id, instead of requestID+1
     setRequestID(requestID+1);
-    fetch(new_url)
+    fetchWithReLogin(globalLoginDisplay, new_url)
       .then(response => response.ok ? response.json() : Promise.reject(response))
       .then(postprocessResults)
       .catch(handleError);

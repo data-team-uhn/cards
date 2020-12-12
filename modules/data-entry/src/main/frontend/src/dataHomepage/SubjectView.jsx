@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import LiveTable from "./LiveTable.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -40,6 +40,7 @@ import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import DeleteButton from "./DeleteButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 function SubjectView(props) {
   const { classes } = props;
@@ -47,6 +48,8 @@ function SubjectView(props) {
   const [ subjectTypes, setSubjectTypes] = useState([])
   const [ tabsLoading, setTabsLoading ] = useState(null);
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
+
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Column configuration for the LiveTables
   const columns = [
@@ -77,7 +80,7 @@ function SubjectView(props) {
     // TODO: Handle pagination?
     url.searchParams.set("limit", 10);
     url.searchParams.set("offset", 0);
-    return fetch(url)
+    return fetchWithReLogin(globalLoginDisplay, url)
       .then(response => response.json())
       .then(result => {
         setSubjectTypes(result.rows);

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
 import { Card, CardHeader, CardContent, CardActions, Chip, IconButton, Typography, Button, LinearProgress, withStyles } from "@material-ui/core";
 import { Link } from 'react-router-dom';
@@ -25,6 +25,7 @@ import moment from "moment";
 
 import Filters from "./Filters.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 import LiveTableStyle from "./tableStyle.jsx";
 
@@ -72,6 +73,8 @@ function LiveTable(props) {
       new URL(window.location.pathname.substring(window.location.pathname.lastIndexOf("/")) + ".paginate", window.location.origin)
   );
 
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
   // When new data is added, trigger a new fetch
   useEffect(() => {
     if (updateData){
@@ -118,7 +121,7 @@ function LiveTable(props) {
       filters["empties"].forEach((value) => {url.searchParams.append("filterempty", value)});
       filters["notempties"].forEach((value) => {url.searchParams.append("filternotempty", value)});
     }
-    let currentFetch = fetch(url);
+    let currentFetch = fetchWithReLogin(globalLoginDisplay, url);
     setFetchStatus(Object.assign({}, fetchStatus, {
       "currentFetch": currentFetch,
       "fetchError": false,

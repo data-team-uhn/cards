@@ -17,14 +17,14 @@
 //  under the License.
 //
 
-import React, { useEffect, useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, useLocation } from 'react-router-dom';
-
 import PropTypes from "prop-types";
 import moment from "moment";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import MaterialTable, { MTablePagination } from 'material-table';
 
 import {
@@ -147,6 +147,9 @@ function SubjectContainer(props) {
   let [relatedSubjects, setRelatedSubjects] = useState();
   // whether the subject has been deleted
   let [ deleted, setDeleted ] = useState();
+
+  let globalLoginDisplay = useContext(GlobalLoginContext);
+
   // 'level' of subject component
   const currentLevel = level || 0;
 
@@ -159,7 +162,7 @@ function SubjectContainer(props) {
   // such as authorship and versioning information.
   // Once the data arrives from the server, it will be stored in the `data` state variable.
   let fetchData = () => {
-    fetch(`/Subjects/${id}.deep.json`)
+    fetchWithReLogin(globalLoginDisplay, `/Subjects/${id}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleResponse)
       .catch(handleError);
@@ -188,10 +191,9 @@ function SubjectContainer(props) {
     );
   }
 
-  // get related Subjects
-  let check_url = createQueryURL(` WHERE n.'parents'='${data['jcr:uuid']}' order by n.'jcr:created'`, "lfs:Subject");
+  let check_url = createQueryURL(` WHERE n.'parents'='${data?.['jcr:uuid']}' order by n.'jcr:created'`, "lfs:Subject");
   let fetchRelated = () => {
-    fetch(check_url)
+    fetchWithReLogin(globalLoginDisplay, check_url)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((json) => {setRelatedSubjects(json.rows);})
     .catch(handleError);
@@ -266,12 +268,14 @@ function SubjectMember (props) {
   let [tableData, setTableData] = useState();
   let [subjectGroups, setSubjectGroups] = useState();
 
+  let globalLoginDisplay = useContext(GlobalLoginContext);
+
   const customUrl=`/Forms.paginate?fieldname=subject&fieldvalue=${encodeURIComponent(data['jcr:uuid'])}&includeallstatus=true&limit=1000`;
 
   // Fetch the forms associated with the subject as JSON from the server
   // It will be stored in the `tableData` state variable
   let fetchTableData = () => {
-    fetch(customUrl)
+    fetchWithReLogin(globalLoginDisplay, customUrl)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then(handleTableResponse)
     .catch(handleTableError);
@@ -437,10 +441,12 @@ function FormData(props) {
   // number of form question/answers listed, will increase
   let displayed = 0;
 
+  let globalLoginDisplay = useContext(GlobalLoginContext);
+
   // Fetch the form's data from the server
   // It will be stored in the `data` state variable
   let getFormData = (formID) => {
-    fetch(`/Forms/${formID}.deep.json`)
+    fetchWithReLogin(globalLoginDisplay, `/Forms/${formID}.deep.json`)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => setData(json))
         .catch(handleFormError)
