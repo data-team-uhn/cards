@@ -38,7 +38,15 @@ export function fetchWithReLogin(displayLoginCtx, url, fetchArgs) {
               reject(response);
           }
         })
-        .catch((err) => {reject(err)});
+        .catch((err) => {
+          if (!(fetchArgs?.method?.toUpperCase() == 'GET')) {
+             // Forward the errors to non-GET requests for customized feedback to the user
+             resolve(err)
+          } else {
+             // silently catch errors for GET requests
+             reject(err)
+          }
+        });
       }
       fetchFunc();
     });
