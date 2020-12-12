@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -43,7 +43,7 @@ import { getHierarchy, getTextHierarchy } from "./Subject";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";
-import DialogueLoginContainer from "../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import FormPagination from "./FormPagination";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
@@ -91,7 +91,7 @@ function Form (props) {
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
   let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
-  let [ loginDialogShow, setLoginDialogShow ] = useState(false);
+  let [ saveDataPending, setSaveDataPending ] = useState(false);
   let [ errorCode, setErrorCode ] = useState();
   let [ errorMessage, setErrorMessage ] = useState("");
   let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
@@ -113,6 +113,8 @@ function Form (props) {
     });
   }, []);
 
+  let globalLoginDisplay = useContext(GlobalLoginContext);
+
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
   // such as authorship and versioning information, the associated subject,
@@ -120,7 +122,7 @@ function Form (props) {
   // and all the existing answers.
   // Once the data arrives from the server, it will be stored in the `data` state variable.
   let fetchData = () => {
-    fetch(formURL + '.deep.json')
+    fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleResponse)
       .catch(handleFetchError);
@@ -144,15 +146,9 @@ function Form (props) {
     // This stops the normal browser form submission
     event && event.preventDefault();
 
-    // If the previous save attempt failed, instead of trying to save again, open a login popup
-    if (lastSaveStatus === false) {
-      loginToSave();
-      return;
-    }
-
     setSaveInProgress(true);
     let data = new FormData(formNode.current);
-    return fetch(formURL, {
+    return fetchWithReLogin(globalLoginDisplay, formURL, {
       method: "POST",
       body: data,
       headers: {
@@ -187,17 +183,6 @@ function Form (props) {
       .finally(() => {formNode?.current && setSaveInProgress(false)});
   }
 
-  // Open the login page in a new popup window, centered wrt the parent window
-  let loginToSave = () => {
-    setLastSaveStatus(undefined);
-    setLoginDialogShow(true);
-  }
-
-  let handleLogin = (success) => {
-    success && setLoginDialogShow(false);
-    success && saveData();
-  }
-
   // Handle when the subject of the form changes
   let changeSubject = (subject) => {
     setData( (old) => {
@@ -225,7 +210,7 @@ function Form (props) {
     // Do not save when login in progress
     // Prevents issue where submitting login dialog would try to save twice,
     // once before login complete and once after
-    if (loginDialogShow === true) {
+    if (saveDataPending === true) {
       return;
     }
     saveData(event);
@@ -312,10 +297,11 @@ function Form (props) {
       </Grid>
     );
   }
+
   pages.length = 0;
 
   return (
-    <form action={data["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
+    <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         <Grid item className={classes.formHeader} xs={12}>
           { parentDetails && <Typography variant="overline">
@@ -402,7 +388,6 @@ function Form (props) {
             />
         </Grid>
       </Grid>
-      <DialogueLoginContainer isOpen={loginDialogShow} handleLogin={handleLogin}/>
       <Dialog open={errorDialogDisplayed} onClose={closeErrorDialog}>
         <DialogTitle disableTypography>
           <Typography variant="h6" color="error" className={classes.dialogTitle}>Failed to save</Typography>

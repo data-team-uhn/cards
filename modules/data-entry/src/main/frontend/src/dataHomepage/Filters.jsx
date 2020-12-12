@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useContext } from "react";
 import { Chip, Typography, Button, Dialog, CircularProgress, IconButton } from "@material-ui/core";
 import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
@@ -24,6 +24,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import LiveTableStyle from "./tableStyle.jsx";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 // We have to import each filter dependency here to load them properly into the FilterComponentManager
 import DateFilter from "./FilterComponents/DateFilter.jsx";
@@ -58,6 +59,8 @@ function Filters(props) {
   const [toFocus, setFocusRow] = useState(null);
   const notesComparator = "notes contain";
 
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
   // Focus on inputs as they are flagged for focus
   const focusRef = useRef();
   const focusCallback = useCallback(node => {
@@ -87,7 +90,7 @@ function Filters(props) {
       url.searchParams.set("questionnaire", questionnaire);
     }
 
-    fetch(url)
+    fetchWithReLogin(globalLoginDisplay, url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(parseFilterData)
       .catch(setError);

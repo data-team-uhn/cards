@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -27,6 +27,7 @@ import MaterialTable from "material-table";
 
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
 const PROGRESS_SELECT_SUBJECT = 1;
@@ -53,6 +54,8 @@ function NewFormDialog(props) {
   const [ rowCount, setRowCount ] = useState(5);
   const [ wasOpen, setWasOpen ] = useState(false);
 
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
   let createForm = (subject) => {
     setError("");
 
@@ -69,7 +72,7 @@ function NewFormDialog(props) {
     request_data.append('questionnaire@TypeHint', 'Reference');
     request_data.append('subject', subject);
     request_data.append('subject@TypeHint', 'Reference');
-    fetch( URL, { method: 'POST', body: request_data })
+    fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
       .then( (response) => {
         setNumFetchRequests((num) => (num-1));
         if (response.ok) {
@@ -100,7 +103,7 @@ function NewFormDialog(props) {
   let fetchQuestionnaire = (questionnaireName) => {
     // Send a fetch request to determine the subjects available for the specified questionnaire
     let query = `select * from [lfs:Questionnaire] as n where name()='${questionnaireName}'`;
-    fetch('/query?query=' + encodeURIComponent(query))
+    fetchWithReLogin(globalLoginDisplay, '/query?query=' + encodeURIComponent(query))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         // If a matching questionnaire was found, turn it into the actual questionnaire object
@@ -190,7 +193,7 @@ function NewFormDialog(props) {
 
   // get all the forms related to the selectedSubject, saved in the `relatedForms` state
   let filterQuestionnaire = () => {
-    fetch(`/query?query=SELECT distinct q.* FROM [lfs:Questionnaire] AS q inner join [lfs:Form] as f on f.'questionnaire'=q.'jcr:uuid' where f.'subject'='${(currentSubject || selectedSubject)?.['jcr:uuid']}'`)
+    fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT distinct q.* FROM [lfs:Questionnaire] AS q inner join [lfs:Form] as f on f.'questionnaire'=q.'jcr:uuid' where f.'subject'='${(currentSubject || selectedSubject)?.['jcr:uuid']}'`)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((response) => {
       setRelatedForms(response.rows);
@@ -252,10 +255,10 @@ function NewFormDialog(props) {
                 ]}
                 data={query => {
                   let url = new URL("/query", window.location.origin);
-                  url.searchParams.set("query", `select * from [lfs:Questionnaire] as n${query.search ? ` WHERE CONTAINS(n.'title', '*${query.search}*')` : ""}`);
+                  url.searchParams.set("query", `select * from [lfs:Questionnaire] as n${query.search ? ` WHERE CONTAINS(n.'title', '*${query.search}*')` : ""} order by n.'title'`);
                   url.searchParams.set("limit", query.pageSize);
                   url.searchParams.set("offset", query.page*query.pageSize);
-                  return fetch(url)
+                  return fetchWithReLogin(globalLoginDisplay, url)
                     .then(response => response.json())
                     .then(result => {
                       return {
