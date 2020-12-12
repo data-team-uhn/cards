@@ -24,6 +24,7 @@ import {
   Breadcrumbs,
   Button,
   CircularProgress,
+  Fab,
   Grid,
   Link,
   Typography,
@@ -35,6 +36,9 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import EditIcon from '@material-ui/icons/Edit';
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import DoneIcon from "@material-ui/icons/Done";
+import WarningIcon from '@material-ui/icons/Warning';
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";
@@ -368,6 +372,7 @@ function Form (props) {
               })
           }
         </FormProvider>
+        {paginationEnabled ?
         <Grid item xs={12} className={classes.formFooter}>
           <FormPagination
             lastPage={lastValidPage}
@@ -377,6 +382,24 @@ function Form (props) {
             handlePageChange={handlePageChange}
             />
         </Grid>
+        :
+        <Grid item xs={false}>
+          <div className={classes.mainPageAction}>
+            <Fab
+              variant="extended"
+              color={saveInProgress ? "default" : lastSaveStatus === false ? "secondary" : "primary"}
+              disabled={saveInProgress}
+              onClick={handleSubmit}
+            >
+            {
+              saveInProgress ? <><CloudUploadIcon /> Saving...</> :
+              lastSaveStatus === false ? <><WarningIcon /> Save failed</> :
+              <><DoneIcon /> {lastSaveStatus ? "Saved" : "Save"}</>
+            }
+            </Fab>
+          </div>
+        </Grid>
+        }
       </Grid>
       <Dialog open={errorDialogDisplayed} onClose={closeErrorDialog}>
         <DialogTitle disableTypography>
