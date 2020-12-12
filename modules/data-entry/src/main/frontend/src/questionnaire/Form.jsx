@@ -318,7 +318,7 @@ function Form (props) {
               buttonClass={classes.titleButton}
             />
           </Typography>
-          <Breadcrumbs separator=".">
+          <Breadcrumbs separator="·">
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
             <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
