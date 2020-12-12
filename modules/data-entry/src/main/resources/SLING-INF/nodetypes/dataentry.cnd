@@ -162,6 +162,7 @@
   // - date: a date, with optional time
   // - boolean: a yes/no answer
   // - vocabulary: a term from a vocabulary
+  // - file: an uploaded file
   // - computed: a derived value automatically computed based on a formula applied on other values in the questionaire
   // The answer type can be further refined with the following properties
   - dataType (string) = 'text' mandatory autocreated
@@ -210,7 +211,13 @@
   // For chromosome answers, should MT (mitochondria) be listed
   - chromosomeMT (boolean)
 
-  // For file answers, a string specifying if the filename can be processed to extract the subject ID from it.
+  // For file answers, a string specifying how the filename can be processed to extract related fields from it.
+  // The format of this field is a regular expression, combined with @{variable} constructs that will be extracted from the actual filename and set back into the form.
+  // For example:
+  // .{9}_@{gender}_{@relation_to_proband}\.csv
+  // will match a filename that starts with any 9 characters, followed by underscore, followed by the patient's gender, followed by the patient's relation to the proband.
+  // When a file named "001436721_F_Mother.csv" is uploaded in a Demographics form, the "Gender" question will be set to "F" (Female), and the "Relation to proband" question will be set to "Mother".
+  // If a file doesn't match the name pattern, then no form values will be changed.
   - namePattern (string)
 
   // Some questions may be answered with long stories, which may have useful information but should not be stored as-is without curation.
