@@ -147,7 +147,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>File</value>
+			<value>File (de-identified)</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Remove all PII (including visit dates) from files prior to uploading</value>
 			<type>String</type>
 		</property>
     <property>
