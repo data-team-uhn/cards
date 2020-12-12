@@ -23,6 +23,7 @@ import { withRouter } from "react-router-dom";
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@material-ui/core";
 import { MenuList, Paper, Popper, withStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
 import DescriptionIcon from "@material-ui/icons/Description";
 import Search from "@material-ui/icons/Search";
 import HeaderStyle from "./headerStyle.jsx";
@@ -43,15 +44,17 @@ const LFS_QUERY_TEXT_KEY = "text";
  * @param {string} defaultValue The default string to place in the search bar
  * @param {func} onChange Function to call when the input has changed. Default: redirect the user to the found node.
  * @param {func} onPopperClose Function to call when the suggestions list is closed.
- * @param {func} onSelect Function that takes (event, row), called when an option from the autocomplete list is seleceted.
+ * @param {func} onSelect Function that takes (event, row), called when an option from the autocomplete list is selected.
  * @param {func} onSelectFinish Function to call after onSelect
  * @param {func} queryConstructor Function that takes (query, requestID) and returns a URL to query for suggestions. Default: use /query?query
  * @param {func} resultConstructor Function that constructs a DOM element from a row of results.
+ * @param {bool} showAllResultsLink If true, show the link “See all results” of the bottom of the results dropdown
+ * @param {bool} disableDropdownItemLink If true, disable links for results dropdown items
  * @param {object} staticContext Unused, defined here to trap the inserted prop from being passed on with ...rest to the Input, where it is invalid
  * Other props will be forwarded to the Input element
  */
 function SearchBar(props) {
-  const { classes, className, defaultValue, invertColors, onChange, onPopperClose, onSelect, onSelectFinish, queryConstructor, resultConstructor, staticContext, ...rest } = props;
+  const { classes, className, defaultValue, invertColors, onChange, onPopperClose, onSelect, onSelectFinish, queryConstructor, resultConstructor, staticContext, showAllResultsLink, disableDropdownItemLink, ...rest } = props;
   const [ search, setSearch ] = useState(defaultValue);
   const [ results, setResults ] = useState([]);
   const [ moreResults, setMoreResults ] = useState(0);
@@ -129,7 +132,7 @@ function SearchBar(props) {
 
     // Show the results, if any
     if (json["rows"].length > 0) {
-      setResults(json["rows"]);
+      setResults(json["rows"].map( (item) => { item.entityIdentifier = getEntityIdentifier(item); return item; }) );
       if (json.totalrows > json.returnedrows) {
         let more = json.totalrows - json.returnedrows;
         setMoreResults(more);
@@ -152,10 +155,10 @@ function SearchBar(props) {
   // If it's a resource, show avatar, category, and title
   // Otherwise, if it's a generic entry, simply display the name
   function QuickSearchResult(props) {
-    const {resultData} = props;
+    const { resultData, disableLink } = props;
     let ResultConstructor = resultConstructor;
     return resultData["jcr:primaryType"] && (
-      <ResultConstructor resultData={resultData} classes={classes}/>
+      <ResultConstructor resultData={resultData} disableLink={disableLink} classes={classes}/>
     ) || (
        <ListItemText
           primary={resultData.name || ''}
@@ -256,16 +259,16 @@ function SearchBar(props) {
                       key={i}
                       disabled={result["disabled"]}
                       onClick={(e) => {
-                        // Redirect using React-router
+                        disableDropdownItemLink && setSearch(result.entityIdentifier);
                         onSelect(event, result, props);
                         onSelectFinish && onSelectFinish();
                         setPopperOpen(false);
                         }}
                       >
-                      <QuickSearchResult resultData={result} />
+                      <QuickSearchResult resultData={result} disableLink={disableDropdownItemLink}/>
                     </MenuItem>
                   ))}
-                  { !results[0]?.disabled &&
+                  { !results[0]?.disabled && showAllResultsLink &&
                   <Link to={"/content.html/QuickSearchResults?query=" + encodeURIComponent(search)
                               + allowedResourceTypes.map(i => `&allowedResourceTypes=${encodeURIComponent(i)}`).join('')}
                           className={classes.root}>

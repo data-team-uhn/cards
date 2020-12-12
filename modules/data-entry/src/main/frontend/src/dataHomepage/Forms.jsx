@@ -116,9 +116,11 @@ function Forms(props) {
           </Button>
         }
         action={
+        <div className={classes.mainPageAction}>
           <NewFormDialog presetPath={questionnairePath}>
             New form
           </NewFormDialog>
+        </div>
         }
         classes={{
           action: classes.newFormButtonHeader
