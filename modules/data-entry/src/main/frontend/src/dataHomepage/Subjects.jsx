@@ -113,6 +113,7 @@ function Subjects(props) {
             </Button>
           }
           action={
+          <div className={classes.mainPageAction}>
             <div className={classes.newFormButtonWrapper}>
               <Tooltip aria-label="add" title="New Subject">
                 <Fab
@@ -124,6 +125,7 @@ function Subjects(props) {
                 </Fab>
               </Tooltip>
             </div>
+          </div>
           }
         />
         <CardContent>
