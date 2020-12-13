@@ -383,13 +383,14 @@ function Form (props) {
             />
         </Grid>
         :
-        <Grid item xs={false}>
+        <Grid item xs={false} className={classes.formBottom}>
           <div className={classes.mainPageAction}>
             <Fab
               variant="extended"
               color={saveInProgress ? "default" : lastSaveStatus === false ? "secondary" : "primary"}
               disabled={saveInProgress}
               onClick={handleSubmit}
+              className={classes.saveButton}
             >
             {
               saveInProgress ? <><CloudUploadIcon /> Saving...</> :

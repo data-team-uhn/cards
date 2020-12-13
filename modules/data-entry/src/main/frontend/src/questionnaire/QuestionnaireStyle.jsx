@@ -101,11 +101,17 @@ const questionnaireStyle = theme => ({
         border: "1px solid",
         display: "inline-block"
     },
+    formBottom: {
+        minHeight: theme.spacing(8),
+    },
     saveButton: {
-        position: "fixed",
-        top: 'auto',
-        bottom: theme.spacing(1),
-        right: theme.spacing(6.5)
+        marginTop: theme.spacing(1),
+        "& .MuiFab-label" : {
+          marginRight: theme.spacing(1),
+        },
+        "& .MuiSvgIcon-root" : {
+          marginRight: theme.spacing(1),
+        },
     },
     dashboardEntry: {
         "& > *": {
