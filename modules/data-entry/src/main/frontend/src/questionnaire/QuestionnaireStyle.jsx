@@ -296,7 +296,7 @@ const questionnaireStyle = theme => ({
         width: "100%",
         top: 0,
         paddingTop: theme.spacing(4) + 'px !important',
-        backgroundColor: "white",
+        backgroundColor: theme.palette.background.paper,
         opacity: 1,
         zIndex: "1010",
         margin: theme.spacing(2),
