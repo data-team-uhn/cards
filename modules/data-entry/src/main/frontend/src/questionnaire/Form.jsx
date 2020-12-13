@@ -172,17 +172,14 @@ function Form (props) {
             openErrorDialog();
         })
         setLastSaveStatus(undefined);
-      } else {
-        // If the user is not logged in, offer to log in
-        const sessionInfo = window.Sling.getSessionInfo();
-        if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-          // On first attempt to save while logged out, set status to false to make button text inform user
-          setLastSaveStatus(false);
-
-        }
       }
-      })
-      .finally(() => {formNode?.current && setSaveInProgress(false)});
+    }).catch((err) => {
+        setErrorCode(0);
+        setErrorMessage(err?.message);
+        openErrorDialog();
+        setLastSaveStatus(undefined);
+    })
+    .finally(() => {formNode?.current && setSaveInProgress(false)});
   }
 
   // Handle when the subject of the form changes
@@ -410,7 +407,11 @@ function Form (props) {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-            <Typography variant="body1">Server responded with response code {errorCode}:<br />{errorMessage}</Typography>
+            <Typography variant="h6">Your changes were not saved.</Typography>
+            <Typography variant="body1" paragraph>Server responded with response code {errorCode}: {errorMessage}</Typography>
+            {lastSaveTimestamp &&
+            <Typography variant="body1" paragraph>Time of the last successful save: {moment(lastSaveTimestamp.toISOString()).calendar()}</Typography>
+            }
         </DialogContent>
       </Dialog>
     </form>
