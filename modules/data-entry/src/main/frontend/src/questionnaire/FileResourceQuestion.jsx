@@ -71,7 +71,7 @@ function FileResourceQuestion(props) {
 
     // Match each of the values into our default initialParsedAnswers
     initialValues.forEach((filename) => {
-      let results = filename[0].match(nameRegex).slice(1);
+      let results = filename[0].match(nameRegex)?.slice(1);
 
       // Determine which fields we have parsed out
       initialParsedAnswers[filename[0]] = results;
@@ -132,16 +132,18 @@ function FileResourceQuestion(props) {
     // Determine whether or not the filename matches the namePattern (if given)
     if (namePattern) {
       // Regex out variable names from the namePattern
-      var results = file['name'].match(nameRegex).slice(1);
+      var results = file['name'].match(nameRegex)?.slice(1);
 
       // At this point, results contains each match, which all correspond to their respective entry in varNames
       writer((oldCommands) => {
         let newCommands = {...oldCommands};
         for (let i = 0; i < varNames.length; i++) {
-          if (varNames[i] in newCommands) {
-            newCommands[varNames[i]].push(results[i]);
-          } else {
-            newCommands[varNames[i]] = [results[i]];
+          if (results && results[i]) {
+            if (varNames[i] in newCommands) {
+              newCommands[varNames[i]].push(results[i]);
+            } else {
+              newCommands[varNames[i]] = [results[i]];
+            }
           }
         }
         return newCommands;
