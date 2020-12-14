@@ -24,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,8 +32,10 @@ import java.util.Set;
 
 import javax.jcr.Node;
 
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +47,12 @@ public class NightlyExportTask implements Runnable
     protected static final Logger LOGGER = LoggerFactory.getLogger(NightlyExport.class);
 
     /** The Resource Resolver for the current request. */
-    private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
+    private final ResourceResolverFactory resolverFactory;
+
+    NightlyExportTask(final ResourceResolverFactory resolverFactory)
+    {
+        this.resolverFactory = resolverFactory;
+    }
 
     private void output(String input, String filename, String dateString)
     {
@@ -62,30 +70,35 @@ public class NightlyExportTask implements Runnable
 
     private Set<String> getChangedSubjects()
     {
-        Set<String> subjects = new HashSet<String>();
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            Set<String> subjects = new HashSet<>();
 
-        final Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, -1);
-        String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+            final Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DATE, -1);
+            String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
 
-        String query = String.format("select n from [lfs:Question] as n where n.[jcr:created] >=%s", yesterday);
+            String query = String.format("select n from [lfs:Form] as n where n.[jcr:created] >= '%s'", yesterday);
 
-        Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
-        while (results.hasNext()) {
-            try {
-                String subjectId = results.next().adaptTo(Node.class).getProperty("subject").getString();
-                subjects.add(subjectId);
-                // TODO: Remove logging
-                LOGGER.error(subjectId);
-            } catch (Exception e) {
-                // TODO: Handle
-                // Do nothing for now
+            Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
+            while (results.hasNext()) {
+                try {
+                    String subjectId = results.next().adaptTo(Node.class).getProperty("subject").getString();
+                    subjects.add(subjectId);
+                    // TODO: Remove logging
+                    LOGGER.error(subjectId);
+                } catch (Exception e) {
+                    // TODO: Handle
+                    // Do nothing for now
+                }
             }
+            return subjects;
+        } catch (LoginException e) {
+            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         }
-
-        return subjects;
+        return Collections.emptySet();
     }
 
+    @Override
     public void run()
     {
         LOGGER.info("Executing NightlyExport");

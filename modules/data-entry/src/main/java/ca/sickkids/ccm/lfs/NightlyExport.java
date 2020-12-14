@@ -19,24 +19,31 @@
 
 package ca.sickkids.ccm.lfs;
 
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
 import org.apache.sling.commons.scheduler.Scheduler;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component
+@Component(immediate = true)
 public class NightlyExport
 {
     /** Default log. */
     protected static final Logger LOGGER = LoggerFactory.getLogger(NightlyExport.class);
 
+    /** The Resource Resolver for the current request. */
+    @Reference
+    private ResourceResolverFactory resolverFactory;
+
     /** The scheduler for rescheduling jobs. */
     @Reference
     private Scheduler scheduler;
 
+    @Activate
     protected void activate(ComponentContext componentContext) throws Exception
     {
         LOGGER.error("NightlyExport activating");
@@ -45,7 +52,7 @@ public class NightlyExport
         options.name("NightlyExport");
         options.canRunConcurrently(true);
 
-        final Runnable exportJob = new NightlyExportTask();
+        final Runnable exportJob = new NightlyExportTask(this.resolverFactory);
 
         try {
             this.scheduler.schedule(exportJob, options);
