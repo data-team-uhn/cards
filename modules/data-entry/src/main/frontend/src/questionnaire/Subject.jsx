@@ -502,24 +502,34 @@ function FormData(props) {
 
     if (existingQuestionAnswer && existingQuestionAnswer[1]["value"] && (displayed < maxDisplayed)) {
       let existingAnswerValue = existingQuestionAnswer[1]["value"];
-      let content = "";
       // TODO: Other question types will need to be handled as well
+      let content = "";
+      console.log(existingQuestionAnswer);
       switch(entryDefinition["dataType"]) {
         case "file":
-          content = <Link to={existingAnswerValue}>{existingAnswerValue}</Link>
+          // The value can either be a single value or an array of values; force it into an array
+          existingAnswerValue = Array.of(existingAnswerValue).flat();
+          console.log(existingAnswerValue);
+          content = <>
+            {existingAnswerValue.map((answerValue, idx) => {
+              let filename = /[^/]*$/.exec(answerValue)[0];
+              let prefix = idx > 0 ? ", " : ""; // Seperator space between different files
+              return <>{prefix}<a href={answerValue} target="_blank" rel="noopener">{filename}</a></>
+            })}
+            </>
           break;
         default:
           // Check for a label and use the label instead of the value, if present
           let answerValue = entryDefinition[existingAnswerValue]?.["label"]
             ? entryDefinition[existingAnswerValue]["label"]
             : existingAnswerValue;
-          content = `${questionTitle}: ${answerValue}`;
+          content = `${answerValue}`;
           break;
       }
       // If count of displayed <= max, increase count of displayed
       displayed++;
       return (
-        <Typography variant="body2" component="p" key={key}>{content}</Typography>
+        <Typography variant="body2" component="p" key={key}>{questionTitle}: {content}</Typography>
       );
     }
     else return;
