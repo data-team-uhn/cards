@@ -92,9 +92,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
 
     /**
      * Mark a node for deletion upon session save.
-     *
-     * @param node the node to be deleted
-     * @throws RepositoryException if marking the node for deletion fails due to repository errors
      */
     private NodeConsumer deleteNode = (node) -> {
         node.remove();
@@ -103,8 +100,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
 
     /**
      * Add a node to a list of traversed nodes.
-     *
-     * @param node the node to be listed
      */
     private NodeConsumer traverseNode = (node) -> {
         this.nodesTraversed.get().add(node);
