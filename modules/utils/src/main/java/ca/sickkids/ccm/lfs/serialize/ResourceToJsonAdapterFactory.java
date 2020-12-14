@@ -56,6 +56,20 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
  * {@link ResourceJsonProcessor#isEnabledByDefault(Resource) enabled by default}, for example the {@code properties},
  * {@code identify}, and {@code dereference} processors; to disable them, use their name prefixed by {@code -} in the
  * selectors, e.g. {@code /path/to/resource.-dereference.json}.
+ * <p>
+ * This class uses ThreadLocal variables to maintain state, which means that nested invocations in the same thread are
+ * not supported. If a processor needs to call {@code resource.adaptTo(JsonObject.class)}, it should do so in a new
+ * Thread, for example:
+ * </p>
+ * <code>
+ * final Iterator&lt;Resource&gt; resources = ...;
+ * final List&lt;JsonObject&gt; result = new ArrayList&lt;&gt;();
+ * final Thread serializer = new Thread(() -> resources
+ *     .forEachRemaining(r -> result.add(r.adaptTo(JsonObject.class))));
+ * serializer.start();
+ * serializer.join();
+ * // Now result contains the serialized subresources
+ * </code>
  *
  * @version $Id$
  */
@@ -246,8 +260,17 @@ public class ResourceToJsonAdapterFactory
             .map(ResourceJsonProcessor::getName).collect(Collectors.toList());
         // These have been requested
         final List<String> requestedProcessors =
+            // Split by unescaped dots. A backslash escapes a dot, but two backslashes are just one escaped backslash.
+            // Match by:
+            // - no preceding backslash, i.e. start counting at the first backslash (?<!\)
+            // - an even number of backslashes, i.e. any number of groups of two backslashes (?:\\)*
+            // - a literal dot \.
+            // Each backslash, except the \., is escaped twice, once as a special escape char inside a Java string, and
+            // once as a special escape char inside a RegExp. The one before the dot is escaped only once as a special
+            // char inside a Java string, since it must retain its escaping meaning in the RegExp.
             new ArrayList<>(resource.getResourceMetadata().getResolutionPathInfo() != null
-                ? Arrays.asList(resource.getResourceMetadata().getResolutionPathInfo().split("\\."))
+                ? Arrays
+                    .asList(resource.getResourceMetadata().getResolutionPathInfo().split("(?<!\\\\)(?:\\\\\\\\)*\\."))
                 : defaults);
         // Add the defaults, if not already selected and not explicitly excluded
         for (String def : defaults) {

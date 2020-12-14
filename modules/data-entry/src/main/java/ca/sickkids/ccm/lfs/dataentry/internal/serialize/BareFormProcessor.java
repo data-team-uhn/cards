@@ -158,12 +158,8 @@ public class BareFormProcessor implements ResourceJsonProcessor
                 final String childId = child.getIdentifier();
                 if (child.isNodeType("lfs:Answer") && this.childrenJsons.get().containsKey(childId)) {
                     final JsonObject childJson = this.childrenJsons.get().get(childId);
-                    if (childJson.size() > 1) {
-                        // The question label is always present, so only one item means the answer is empty
-                        // Only include non-empty answers in the parent JSON
-                        final String childLabel = this.questionNames.get().get(childId);
-                        json.add(childLabel, childJson);
-                    }
+                    final String childLabel = this.questionNames.get().get(childId);
+                    json.add(childLabel, childJson);
                     this.childrenJsons.get().remove(childId);
                     this.questionNames.get().remove(childId);
                 }
