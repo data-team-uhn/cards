@@ -21,7 +21,7 @@
 
 # Initial content
 [artifacts startLevel=7]
-    org.apache.sling/org.apache.sling.starter.startup/1.0.7-SNAPSHOT
+    org.apache.sling/org.apache.sling.starter.startup/1.0.6
 
 [configurations]
   # By default, deny self-registration
