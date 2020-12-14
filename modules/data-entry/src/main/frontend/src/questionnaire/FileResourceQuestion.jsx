@@ -257,7 +257,7 @@ function FileResourceQuestion(props) {
           <li key={idx}>
             <div>
               <span>File </span>
-              <Link href={uploadedFiles[filepath]} target="_blank" rel="noopener">
+              <Link href={uploadedFiles[filepath]} target="_blank" rel="noopener" download>
                 {filepath}
               </Link>:
               <IconButton

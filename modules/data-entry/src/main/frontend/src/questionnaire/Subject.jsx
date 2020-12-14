@@ -514,7 +514,7 @@ function FormData(props) {
             {existingAnswerValue.map((answerValue, idx) => {
               let filename = /[^/]*$/.exec(answerValue)[0];
               let prefix = idx > 0 ? ", " : ""; // Seperator space between different files
-              return <>{prefix}<a href={answerValue} target="_blank" rel="noopener">{filename}</a></>
+              return <>{prefix}<a href={answerValue} target="_blank" rel="noopener" download>{filename}</a></>
             })}
             </>
           break;
