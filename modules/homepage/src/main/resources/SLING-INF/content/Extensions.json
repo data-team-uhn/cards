@@ -26,6 +26,7 @@
         }
     },
     "AdminDashboard": {
+        "jcr:primaryType": "sling:Folder",
         "QuickSearchConfiguration": {
             "jcr:primaryType": "lfs:Extension",
             "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
@@ -38,13 +39,16 @@
     },
     "Sidebar": {
         "jcr:primaryType": "sling:Folder",
-        "Administration": {
-            "jcr:primaryType": "lfs:Extension",
-            "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-            "lfs:extensionName": "Administration",
-            "lfs:icon": "asset:lfs-homepage.adminIcon.js",
-            "lfs:targetURL": "/content.html/admin",
-            "lfs:defaultOrder": 90
+        "AdminEntries": {
+            "jcr:primaryType": "sling:Folder",
+            "Administration": {
+                "jcr:primaryType": "lfs:Extension",
+                "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+                "lfs:extensionName": "Administration",
+                "lfs:icon": "asset:lfs-homepage.adminIcon.js",
+                "lfs:targetURL": "/content.html/admin",
+                "lfs:defaultOrder": 90
+            }
         }
     }
 }
