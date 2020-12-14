@@ -24,6 +24,7 @@ import {
   Breadcrumbs,
   Button,
   CircularProgress,
+  Fab,
   Grid,
   Link,
   Typography,
@@ -35,6 +36,9 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import EditIcon from '@material-ui/icons/Edit';
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import DoneIcon from "@material-ui/icons/Done";
+import WarningIcon from '@material-ui/icons/Warning';
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";
@@ -168,17 +172,14 @@ function Form (props) {
             openErrorDialog();
         })
         setLastSaveStatus(undefined);
-      } else {
-        // If the user is not logged in, offer to log in
-        const sessionInfo = window.Sling.getSessionInfo();
-        if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-          // On first attempt to save while logged out, set status to false to make button text inform user
-          setLastSaveStatus(false);
-
-        }
       }
-      })
-      .finally(() => {formNode?.current && setSaveInProgress(false)});
+    }).catch((err) => {
+        setErrorCode(0);
+        setErrorMessage(err?.message);
+        openErrorDialog();
+        setLastSaveStatus(undefined);
+    })
+    .finally(() => {formNode?.current && setSaveInProgress(false)});
   }
 
   // Handle when the subject of the form changes
@@ -368,6 +369,7 @@ function Form (props) {
               })
           }
         </FormProvider>
+        {paginationEnabled ?
         <Grid item xs={12} className={classes.formFooter}>
           <FormPagination
             lastPage={lastValidPage}
@@ -377,6 +379,25 @@ function Form (props) {
             handlePageChange={handlePageChange}
             />
         </Grid>
+        :
+        <Grid item xs={false} className={classes.formBottom}>
+          <div className={classes.mainPageAction}>
+            <Fab
+              variant="extended"
+              color={saveInProgress ? "default" : lastSaveStatus === false ? "secondary" : "primary"}
+              disabled={saveInProgress}
+              onClick={handleSubmit}
+              className={classes.saveButton}
+            >
+            {
+              saveInProgress ? <><CloudUploadIcon /> Saving...</> :
+              lastSaveStatus === false ? <><WarningIcon /> Save failed</> :
+              <><DoneIcon /> {lastSaveStatus ? "Saved" : "Save"}</>
+            }
+            </Fab>
+          </div>
+        </Grid>
+        }
       </Grid>
       <Dialog open={errorDialogDisplayed} onClose={closeErrorDialog}>
         <DialogTitle disableTypography>
@@ -386,7 +407,11 @@ function Form (props) {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-            <Typography variant="body1">Server responded with response code {errorCode}:<br />{errorMessage}</Typography>
+            <Typography variant="h6">Your changes were not saved.</Typography>
+            <Typography variant="body1" paragraph>Server responded with response code {errorCode}: {errorMessage}</Typography>
+            {lastSaveTimestamp &&
+            <Typography variant="body1" paragraph>Time of the last successful save: {moment(lastSaveTimestamp.toISOString()).calendar()}</Typography>
+            }
         </DialogContent>
       </Dialog>
     </form>

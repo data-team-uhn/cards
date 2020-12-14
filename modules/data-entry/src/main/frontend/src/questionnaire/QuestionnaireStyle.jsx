@@ -101,11 +101,17 @@ const questionnaireStyle = theme => ({
         border: "1px solid",
         display: "inline-block"
     },
+    formBottom: {
+        minHeight: theme.spacing(8),
+    },
     saveButton: {
-        position: "fixed",
-        top: 'auto',
-        bottom: theme.spacing(1),
-        right: theme.spacing(6.5)
+        marginTop: theme.spacing(1),
+        "& .MuiFab-label" : {
+          marginRight: theme.spacing(1),
+        },
+        "& .MuiSvgIcon-root" : {
+          marginRight: theme.spacing(1),
+        },
     },
     dashboardEntry: {
         "& > *": {
@@ -290,7 +296,7 @@ const questionnaireStyle = theme => ({
         width: "100%",
         top: 0,
         paddingTop: theme.spacing(4) + 'px !important',
-        backgroundColor: "white",
+        backgroundColor: theme.palette.background.paper,
         opacity: 1,
         zIndex: "1010",
         margin: theme.spacing(2),
