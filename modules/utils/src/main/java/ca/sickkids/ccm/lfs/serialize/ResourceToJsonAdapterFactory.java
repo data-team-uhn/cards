@@ -260,6 +260,14 @@ public class ResourceToJsonAdapterFactory
             .map(ResourceJsonProcessor::getName).collect(Collectors.toList());
         // These have been requested
         final List<String> requestedProcessors =
+            // Split by unescaped dots. A backslash escapes a dot, but two backslashes are just one escaped backslash.
+            // Match by:
+            // - no preceding backslash, i.e. start counting at the first backslash (?<!\)
+            // - an even number of backslashes, i.e. any number of groups of two backslashes (?:\\)*
+            // - a literal dot \.
+            // Each backslash, except the \., is escaped twice, once as a special escape char inside a Java string, and
+            // once as a special escape char inside a RegExp. The one before the dot is escaped only once as a special
+            // char inside a Java string, since it must retain its escaping meaning in the RegExp.
             new ArrayList<>(resource.getResourceMetadata().getResolutionPathInfo() != null
                 ? Arrays
                     .asList(resource.getResourceMetadata().getResolutionPathInfo().split("(?<!\\\\)(?:\\\\\\\\)*\\."))

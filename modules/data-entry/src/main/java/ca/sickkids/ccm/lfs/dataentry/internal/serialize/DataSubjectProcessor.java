@@ -80,6 +80,14 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
         // We only serialize data for the serialized subject, not other nodes
         this.rootNode.set(resource.getPath());
         final Map<String, String> filtersMap = new HashMap<>();
+        // Split by unescaped dots. A backslash escapes a dot, but two backslashes are just one escaped backslash.
+        // Match by:
+        // - no preceding backslash, i.e. start counting at the first backslash (?<!\)
+        // - an even number of backslashes, i.e. any number of groups of two backslashes (?:\\)*
+        // - a literal dot \.
+        // Each backslash, except the \., is escaped twice, once as a special escape char inside a Java string, and
+        // once as a special escape char inside a RegExp. The one before the dot is escaped only once as a special
+        // char inside a Java string, since it must retain its escaping meaning in the RegExp.
         Arrays.asList(this.selectors.get().split("(?<!\\\\)(?:\\\\\\\\)*\\.")).stream()
             .filter(s -> StringUtils.startsWith(s, "dataFilter:"))
             .map(s -> StringUtils.substringAfter(s, "dataFilter:"))
