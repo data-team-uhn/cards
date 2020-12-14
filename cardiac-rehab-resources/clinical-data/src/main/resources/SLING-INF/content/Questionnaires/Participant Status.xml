@@ -395,7 +395,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>Month and year only: YYYY/MM</value>
+				<value>Month and year only: MM/YYYY</value>
 				<type>String</type>
 			</property>
 			<property>
