@@ -501,12 +501,21 @@ function FormData(props) {
     const questionTitle = entryDefinition["text"];
 
     if (existingQuestionAnswer && existingQuestionAnswer[1]["value"] && (displayed < maxDisplayed)) {
-      // Check for a label and use the label instead of the value, if present
-      let existingQuestionAnswerValue = existingQuestionAnswer[1]["value"];
-      let answerValue = entryDefinition[existingQuestionAnswerValue]?.["label"]
-        ? entryDefinition[existingQuestionAnswerValue]["label"]
-        : existingQuestionAnswerValue;
-      let content = `${questionTitle}: ${answerValue}`;
+      let existingAnswerValue = existingQuestionAnswer[1]["value"];
+      let content = "";
+      // TODO: Other question types will need to be handled as well
+      switch(entryDefinition["dataType"]) {
+        case "file":
+          content = <Link to={existingAnswerValue}>{existingAnswerValue}</Link>
+          break;
+        default:
+          // Check for a label and use the label instead of the value, if present
+          let answerValue = entryDefinition[existingAnswerValue]?.["label"]
+            ? entryDefinition[existingAnswerValue]["label"]
+            : existingAnswerValue;
+          content = `${questionTitle}: ${answerValue}`;
+          break;
+      }
       // If count of displayed <= max, increase count of displayed
       displayed++;
       return (
