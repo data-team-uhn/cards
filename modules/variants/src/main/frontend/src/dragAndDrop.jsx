@@ -93,6 +93,7 @@ export default function DragAndDrop(props) {
        onClick={handleClick.bind(this)}
        ref={dropRef}
     >
+      {/* NB: value="" is used to allow the same file to be re-uploaded multiple times */}
       <input id="file-input"
         type="file"
         accept={accept}
@@ -101,6 +102,7 @@ export default function DragAndDrop(props) {
         ref={inputRef}
         style={{display: 'none'}}
         onChange={onChangeFile.bind(this)}
+        value=""
       />
       <div className={drag ? classes.active : classes.dropzone} >
           <IconButton color="primary" component="span">

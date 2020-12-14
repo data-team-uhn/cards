@@ -82,7 +82,6 @@ function FileResourceQuestion(props) {
 
   // The answers to give to our <Answers /> object
   let [ answers, setAnswers ] = useState(initialValues);
-  let [ toDelete, setToDelete ] = useState([]);
   let writer = useFormUpdateWriterContext();
   let reader = useFormReaderContext();
   let saveForm = reader['/Save'];
@@ -184,15 +183,6 @@ function FileResourceQuestion(props) {
             return newAnswers;
         });
       } else {
-        // Delete the old value (if any)
-        if (answers.length) {
-          setToDelete((old) => {
-            let newDeletion = old.slice();
-            newDeletion.push(answers[0][1]);
-            return newDeletion;
-          });
-        }
-
         // Change the new values
         setUploadedFiles({[file["name"]]: fileURL});
         setAnswers([[file["name"], fileURL]]);
@@ -207,11 +197,13 @@ function FileResourceQuestion(props) {
 
   // Delete an answer by its index
   let deletePath = (index) => {
-    setToDelete((old) => {
-      let newDeletion = old.slice();
-      newDeletion.push(answers[index][1]);
-      return newDeletion;
-    });
+    // Rather than waiting to delete, we'll just delete it immediately
+    let data = new FormData();
+    data.append(':operation', 'delete');
+    fetch(uploadedFiles[answers[index][0]], {
+      method: "POST",
+      body: data
+      });
     setUploadedFiles((old) => {
       let newUploadedFiles = {...old};
       delete newUploadedFiles[answers[index][0]];
@@ -297,10 +289,6 @@ function FileResourceQuestion(props) {
         valueType="path"
         {...rest}
         />
-      {/* If we have any uploaded files that we should delete, do so */}
-      {toDelete.map((filename, idx) =>
-        <input type="hidden" name={`${filename}@Delete`} value="0" key={idx}/>
-      )}
     </Question>);
 }
 
