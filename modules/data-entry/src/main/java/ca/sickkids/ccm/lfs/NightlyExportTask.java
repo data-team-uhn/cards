@@ -31,6 +31,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.json.JsonObject;
 
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -54,41 +56,68 @@ public class NightlyExportTask implements Runnable
         this.resolverFactory = resolverFactory;
     }
 
-    private void output(String input, String filename, String dateString)
+    @Override
+    public void run()
     {
-        String path = String.format("exports/%s/", dateString);
-        try {
-            File directory = new File(path);
-            directory.mkdirs();
-            FileWriter file = new FileWriter(path + filename);
-            file.write(input);
-            file.close();
-        } catch (IOException e) {
-            LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
+        LOGGER.info("Executing NightlyExport");
+        Date date = new Date();
+        String fileDateString = new SimpleDateFormat("yyyyMMdd").format(date);
+
+        final Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);
+        String requestDateString = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+
+        Set<String> changedSubjects = this.getChangedSubjects(requestDateString);
+
+        for (String subjectId : changedSubjects) {
+            SubjectContents subjectContents = getSubjectContents(subjectId, requestDateString);
+            if (subjectContents != null) {
+                String filename = String.format("%s_formData_%s.json", subjectId, fileDateString);
+                this.output(subjectContents, filename, fileDateString);
+            }
         }
     }
 
-    private Set<String> getChangedSubjects()
+    private final class SubjectContents
+    {
+        private String data;
+        private String url;
+
+        SubjectContents(String data, String url)
+        {
+            this.data = data;
+            this.url = url;
+        }
+
+        public String getData()
+        {
+            return this.data;
+        }
+
+        public String getUrl()
+        {
+            return this.url;
+        }
+    }
+
+    private Set<String> getChangedSubjects(String requestDateString)
     {
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             Set<String> subjects = new HashSet<>();
-
-            final Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DATE, -1);
-            String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
-
-            String query = String.format("select n from [lfs:Form] as n where n.[jcr:created] >= '%s'", yesterday);
+            String query = String.format(
+                "SELECT subject.* FROM [lfs:Form] AS form INNER JOIN [lfs:Subject] AS subject"
+                    + " ON form.'subject'=subject.[jcr:uuid] WHERE form.[jcr:created] >= '%s'",
+                requestDateString
+            );
 
             Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
             while (results.hasNext()) {
                 try {
-                    String subjectId = results.next().adaptTo(Node.class).getProperty("subject").getString();
+                    String subjectId = results.next().adaptTo(Node.class).getName();
+                    subjectId = subjectId.substring(subjectId.lastIndexOf("/") + 1);
                     subjects.add(subjectId);
-                    // TODO: Remove logging
-                    LOGGER.error(subjectId);
-                } catch (Exception e) {
-                    // TODO: Handle
-                    // Do nothing for now
+                } catch (RepositoryException e) {
+                    LOGGER.warn("Failed to retrieve name of updated subject: {}", e.getMessage(), e);
                 }
             }
             return subjects;
@@ -98,24 +127,32 @@ public class NightlyExportTask implements Runnable
         return Collections.emptySet();
     }
 
-    @Override
-    public void run()
+    private SubjectContents getSubjectContents(String subjectId, String requestDateString)
     {
-        LOGGER.info("Executing NightlyExport");
-        Date date = new Date();
-        String dateString = new SimpleDateFormat("yyyyMMdd").format(date);
+        String subjectDataUrl = String.format(
+            "/Subjects/%s.data.deep.bare.-identify.dataFilter:createdAfter=%s",
+            subjectId,
+            requestDateString
+        );
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            Resource subjectData = resolver.resolve(subjectDataUrl);
+            return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(), subjectDataUrl);
+        } catch (LoginException e) {
+            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
+            return null;
+        }
+    }
 
-        Set<String> changedSubjects = this.getChangedSubjects();
-
-        for (String subjectId : changedSubjects) {
-            String subjectJson = "json contents";
-
-            // TODO: Query endpoint from LFS-757 to set subject json.
-            // Type String is a placeholder
-
-            String filename = String.format("%s_formData_%s.json", subjectId, dateString);
-            this.output(subjectJson, filename, dateString);
-
+    private void output(SubjectContents input, String filename, String dateString)
+    {
+        String path = String.format("%s/cards-exports/%s/", System.getProperty("user.home"), dateString);
+        File directory = new File(path);
+        directory.mkdirs();
+        try (FileWriter file = new FileWriter(path + filename)) {
+            file.write(input.getData());
+            LOGGER.info("Exported {} to {}, size {}B", input.getUrl(), path, directory.length());
+        } catch (IOException e) {
+            LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
         }
     }
 }
