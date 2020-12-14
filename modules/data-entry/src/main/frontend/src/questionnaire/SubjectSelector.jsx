@@ -194,7 +194,7 @@ function UnstyledSelectParentDialog (props) {
               title=""
               columns={COLUMNS}
               data={query => {
-                  let url = createQueryURL(` WHERE n.type='${parentType?.["jcr:uuid"]}'` + (query.search ? ` AND CONTAINS(n.identifier, '*${query.search}*')` : ""), "lfs:Subject");
+                  let url = createQueryURL(` WHERE n.type='${parentType?.["jcr:uuid"]}'` + (query.search ? ` AND CONTAINS(n.fullIdentifier, '*${query.search}*')` : ""), "lfs:Subject", "fullIdentifier");
                   url.searchParams.set("limit", query.pageSize);
                   url.searchParams.set("offset", query.page*query.pageSize);
                   return fetchWithReLogin(globalLoginDisplay, url)
@@ -798,12 +798,12 @@ function SubjectSelectorList(props) {
               conditions.push("(" + allowedTypes.map((type) => `n.'type' = '${type["jcr:uuid"]}'`).join(" OR ") + ")");
             }
             if (query.search) {
-              conditions.push(`CONTAINS(n.identifier, '*${query.search}*')`);
+              conditions.push(`CONTAINS(n.fullIdentifier, '*${query.search}*')`);
             }
             let condition = (conditions.length === 0) ? "" : ` WHERE ${conditions.join(" AND ")}`
 
             // fetch all subjects
-            let url = createQueryURL( condition, "lfs:Subject", "lfs:defaultOrder");
+            let url = createQueryURL( condition, "lfs:Subject", "fullIdentifier");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
             return fetchWithReLogin(globalLoginDisplay, url)
