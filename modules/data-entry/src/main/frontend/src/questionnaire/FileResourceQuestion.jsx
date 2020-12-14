@@ -177,13 +177,17 @@ function FileResourceQuestion(props) {
       let match = response.match(uploadFinder);
       let fileURL = match[1] + "/" + file["name"];
       if (maxAnswers != 1) {
-        uploadedFiles[file["name"]] = fileURL;
-        setUploadedFiles(uploadedFiles);
-        setAnswers((old) => {
+        // Guard against duplicates
+        if (!(file["name"] in uploadedFiles)) {
+          setUploadedFiles((old) => {
+            return {...old, [file["name"]]: fileURL};
+          });
+          setAnswers((old) => {
             let newAnswers = old.slice();
             newAnswers.push([file["name"], fileURL]);
             return newAnswers;
-        });
+          });
+        }
       } else {
         // Change the new values
         setUploadedFiles({[file["name"]]: fileURL});
