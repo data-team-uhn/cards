@@ -239,7 +239,6 @@ function FileResourceQuestion(props) {
       ) }
       {warning}
       <DragAndDrop
-        accept={"*.csv"}
         classes={classes}
         handleDrop={addFiles}
         multifile={maxAnswers != 1}
