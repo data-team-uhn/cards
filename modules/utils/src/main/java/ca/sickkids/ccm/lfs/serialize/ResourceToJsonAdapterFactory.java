@@ -64,8 +64,8 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
  * <code>
  * final Iterator&lt;Resource&gt; resources = ...;
  * final List&lt;JsonObject&gt; result = new ArrayList&lt;&gt;();
- * final Thread serializer = new Thread(() -> resources
- *     .forEachRemaining(r -> result.add(r.adaptTo(JsonObject.class))));
+ * final Thread serializer = new Thread(() -&gt; resources
+ *     .forEachRemaining(r -&gt; result.add(r.adaptTo(JsonObject.class))));
  * serializer.start();
  * serializer.join();
  * // Now result contains the serialized subresources
