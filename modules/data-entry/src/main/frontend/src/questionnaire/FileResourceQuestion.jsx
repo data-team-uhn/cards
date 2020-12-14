@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Grid, IconButton, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
 import Delete from "@material-ui/icons/Delete";
 
@@ -25,6 +25,7 @@ import PropTypes from "prop-types";
 
 import Answer from "./Answer";
 import DragAndDrop from "../dragAndDrop";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateWriterContext } from "./FormUpdateContext";
 import Question from "./Question";
@@ -89,6 +90,7 @@ function FileResourceQuestion(props) {
   // the form to allow saving after we finish updating
   let allowResave = reader['/AllowResave'];
   let outURL = reader["/URL"] + "/" + answerPath;
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Add files to the pending state
   let addFiles = (files) => {
@@ -164,7 +166,7 @@ function FileResourceQuestion(props) {
     data.append('jcr:primaryType', 'lfs:FileResourceAnswer');
     data.append('question', props.questionDefinition['jcr:uuid']);
     data.append('question@TypeHint', "Reference");
-    return fetch(outURL, {
+    return fetchWithReLogin(globalLoginDisplay, outURL, {
       method: "POST",
       body: data
     }).then((response) =>
@@ -200,7 +202,7 @@ function FileResourceQuestion(props) {
     // Rather than waiting to delete, we'll just delete it immediately
     let data = new FormData();
     data.append(':operation', 'delete');
-    fetch(uploadedFiles[answers[index][0]], {
+    fetchWithReLogin(globalLoginDisplay, uploadedFiles[answers[index][0]], {
       method: "POST",
       body: data
       });
