@@ -504,12 +504,10 @@ function FormData(props) {
       let existingAnswerValue = existingQuestionAnswer[1]["value"];
       // TODO: Other question types will need to be handled as well
       let content = "";
-      console.log(existingQuestionAnswer);
       switch(entryDefinition["dataType"]) {
         case "file":
           // The value can either be a single value or an array of values; force it into an array
           existingAnswerValue = Array.of(existingAnswerValue).flat();
-          console.log(existingAnswerValue);
           content = <>
             {existingAnswerValue.map((answerValue, idx) => {
               let filename = /[^/]*$/.exec(answerValue)[0];
