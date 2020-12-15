@@ -93,14 +93,16 @@ export default function VocabulariesAdminPage() {
 
   // called when api key is changed, on success
   function resetTest(e) {
+    //testing - do nothing
+
     // FIX: API KEY SHOWING 'NULL' - might be from default states
-    setBioPortalApiKey(submittedApiKey);
-    addNode(submittedApiKey);
-    setDisplayChangeKey(false);
-    // reload list
-    setRemoteLoaded(false);
-    setLocalLoaded(false);
-    setDisplayTables(false);
+    // setBioPortalApiKey(submittedApiKey);
+    // addNode(submittedApiKey);
+    // setDisplayChangeKey(false);
+    // // reload list
+    // setRemoteLoaded(false);
+    // setLocalLoaded(false);
+    // setDisplayTables(false);
   }
 
   function addNode(apiKey) {
@@ -203,20 +205,28 @@ export default function VocabulariesAdminPage() {
 
   // useEffect - fetch new list when there is a new key.
   useEffect(() => {
+    setDisplayChangeKey(false);
+    // reload list
+    setRemoteLoaded(false);
+    setLocalLoaded(false);
+    setDisplayTables(false);
+
     /* If the BioPortal API key cannot be loaded, assume the remote (empty)
       * data has been loaded.
       */
-    fetchBioPortalApiKey(setSubmittedApiKey, setIsFromNode, () => {
+    fetchBioPortalApiKey(setBioPortalApiKey, setIsFromNode, () => {
         setRemoteLoaded(true);
         console.error("Can't fetch bioPortal API key");
     });
   }, [bioPortalApiKey])
 
   function addNewKey() {
+    // create node
+    addNode(customApiKey);
     // set here, will trigger fetch in vocabularyDirectory
     // on fetch success, 'resetTest' is called
     // on fetch fail, 'handleErrorModal is called
-    setSubmittedApiKey(customApiKey);
+    setBioPortalApiKey(customApiKey);
   }
 
   return (
@@ -237,7 +247,7 @@ export default function VocabulariesAdminPage() {
         updateLocalList={updateLocalList}
         addSetter={addSetter}
         setPhase={setPhase}
-        apiKey={submittedApiKey}
+        apiKey={bioPortalApiKey}
         resetTest={resetTest}
         setErrorModal={handleErrorModal}
       />
@@ -319,7 +329,7 @@ export default function VocabulariesAdminPage() {
         setPhase={setPhase}
         updateLocalList={updateLocalList}
         addSetter={addSetter}
-        apiKey={submittedApiKey}
+        apiKey={bioPortalApiKey}
         resetTest={resetTest}
         setErrorModal={handleErrorModal}
       />

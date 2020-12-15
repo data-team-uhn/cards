@@ -93,8 +93,7 @@ public class VocabularyBioPortalApiKeyServlet extends SlingSafeMethodsServlet
                 // if node exists
                 jsonGen.write(RESPONSE_JSON_KEY, this.getAPIKeyFromNode(res));
                 jsonGen.write("isNode", true);
-            }
-            else {
+            } else {
                 // if node does not exist, get api key from env variable
                 jsonGen.write(RESPONSE_JSON_KEY, this.getAPIKeyFromEnvironment());
                 jsonGen.write("isNode", false);

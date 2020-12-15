@@ -106,9 +106,9 @@ export default function VocabularyDirectory(props) {
   }
 
   // load vocab list when API key changes
-  useEffect(() => {
-    setCurStatus(Status["Init"]);
-  }, [props.apiKey])
+  // useEffect(() => {
+  //   setCurStatus(Status["Init"]);
+  // }, [props.apiKey])
 
   const classes = useStyles();
 
