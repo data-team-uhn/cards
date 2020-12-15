@@ -25,3 +25,4 @@
 
 [artifacts runModes=cardiac_rehab]
     ca.sickkids.ccm.lfs/cardiac-rehab-resources-clinical-data/${lfs.version}
+    ca.sickkids.ccm.lfs/cardiac-rehab-backend/${lfs.version}
