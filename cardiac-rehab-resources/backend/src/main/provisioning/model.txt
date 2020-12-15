@@ -17,6 +17,13 @@
 #  under the License.
 #
 
-[feature name=cardiac-rehab-resources-clinical-data]
+# The LFS homepage
+[feature name=cardiac-rehab-backend]
 
-[artifacts runModes=cardiac_rehab]
+[artifacts runModes=cardiac_rehab startLevel=10]
+
+[configurations]
+  org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-lfs-export
+    user.mapping=[
+      "ca.sickkids.ccm.lfs.cardiac-rehab-backend\=sling-readall"
+    ]

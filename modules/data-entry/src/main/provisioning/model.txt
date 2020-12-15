@@ -94,9 +94,3 @@
                 allow jcr:read for everyone \
             end \
           "]
-
-[configurations]
-  org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-lfs-export
-    user.mapping=[
-      "ca.sickkids.ccm.lfs.dataentry\=sling-readall"
-    ]

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package ca.sickkids.ccm.lfs;
+package ca.sickkids.ccm.lfs.cardiacrehab.internal.serialize;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -130,7 +130,7 @@ public class NightlyExportTask implements Runnable
     private SubjectContents getSubjectContents(String subjectId, String requestDateString)
     {
         String subjectDataUrl = String.format(
-            "/Subjects/%s.data.deep.bare.-identify.dataFilter:createdAfter=%s",
+            "/Subjects/%s.data.deep.bare.-identify.relativeDates.dataFilter:createdAfter=%s",
             subjectId,
             requestDateString
         );
