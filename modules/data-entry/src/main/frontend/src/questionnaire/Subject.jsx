@@ -534,8 +534,14 @@ function FormData(props) {
                   : (entryDefinition?.["unknownLabel"] || "Unknown")
           break;
         case "pedigree":
-          // These are skipped
-          return <></>;
+          if (!existingAnswerValue) {
+            // Display absolutely nothing if the value does not exist
+            return <></>;
+          } else {
+            // Display Pedigree: yes if the value does exist
+            content = "Yes";
+          }
+          break;
         default:
           // Check for a label and use the label instead of the value, if present
           let answerValue = entryDefinition[existingAnswerValue]?.["label"]
