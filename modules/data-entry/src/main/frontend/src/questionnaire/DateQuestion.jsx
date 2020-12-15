@@ -236,7 +236,7 @@ function DateQuestion(props) {
     isDate ? "date" :
     "datetime-local";
 
-  if (isMonth && monthDateString == "" && existingAnswer) {
+  if (isMonth && monthDateString == "" && currentStartValue) {
     setMonthDateString(momentStringToDisplayMonth(currentStartValue));
   }
 
