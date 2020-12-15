@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package ca.sickkids.ccm.lfs.cardiacrehab.internal.serialize;
+package ca.sickkids.ccm.lfs.cardiacrehab.internal.export;
 
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
@@ -47,8 +47,7 @@ public class NightlyExport
     protected void activate(ComponentContext componentContext) throws Exception
     {
         LOGGER.error("NightlyExport activating");
-        // TODO: Change from every minute to every day at 11:30pm ("30 23 * * * ?")
-        ScheduleOptions options = this.scheduler.EXPR("0 * * * * ?");
+        ScheduleOptions options = this.scheduler.EXPR("30 23 * * * ?");
         options.name("NightlyExport");
         options.canRunConcurrently(true);
 

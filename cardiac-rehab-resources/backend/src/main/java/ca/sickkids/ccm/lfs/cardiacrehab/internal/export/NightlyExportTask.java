@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package ca.sickkids.ccm.lfs.cardiacrehab.internal.serialize;
+package ca.sickkids.ccm.lfs.cardiacrehab.internal.export;
 
 import java.io.File;
 import java.io.FileWriter;
