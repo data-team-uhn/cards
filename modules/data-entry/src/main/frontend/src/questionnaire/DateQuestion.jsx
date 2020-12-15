@@ -55,7 +55,7 @@ const ALLOWABLE_DATETIME_FORMATS = DATE_FORMATS.concat(DATETIME_FORMATS)
 
 // Truncates fields in the given moment object or date string
 // according to the given format string
-function amendMoment(date, format) {
+export function amendMoment(date, format) {
   let new_date = date;
   if (typeof new_date === "string") {
     new_date = moment(new_date);
