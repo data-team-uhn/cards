@@ -650,6 +650,7 @@ export default function VariantFilesContainer() {
       ) }
 
       <DragAndDrop
+        accept={".csv"}
         multifile={false}
         handleDrop={onDrop}
         classes={classes}

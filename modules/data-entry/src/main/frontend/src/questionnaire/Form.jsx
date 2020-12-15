@@ -46,6 +46,7 @@ import moment from "moment";
 import { getHierarchy, getTextHierarchy } from "./Subject";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
+import { FormUpdateProvider } from "./FormUpdateContext";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import FormPagination from "./FormPagination";
@@ -104,6 +105,7 @@ function Form (props) {
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
+  const formURL = `/Forms/${id}`;
 
   useEffect(() => {
     window.addEventListener("beforeunload", saveData);
@@ -124,7 +126,7 @@ function Form (props) {
   // and all the existing answers.
   // Once the data arrives from the server, it will be stored in the `data` state variable.
   let fetchData = () => {
-    fetchWithReLogin(globalLoginDisplay, `/Forms/${id}.deep.json`)
+    fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleResponse)
       .catch(handleFetchError);
@@ -150,7 +152,7 @@ function Form (props) {
 
     setSaveInProgress(true);
     let data = new FormData(formNode.current);
-    fetchWithReLogin(globalLoginDisplay, `/Forms/${id}`, {
+    return fetchWithReLogin(globalLoginDisplay, formURL, {
       method: "POST",
       body: data,
       headers: {
@@ -312,7 +314,7 @@ function Form (props) {
           <Typography variant="h2">
             {title}
             <DeleteButton
-              entryPath={data ? data["@path"] : "/Forms/"+id}
+              entryPath={data ? data["@path"] : formURL}
               entryName={(data?.subject?.identifier || "Subject") + ": " + (title)}
               entryType={data?.questionnaire?.title || "Form"}
               shouldGoBack={true}
@@ -332,42 +334,50 @@ function Form (props) {
           }
           </Breadcrumbs>
         </Grid>
-        <FormProvider>
-          <SelectorDialog
-            allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}
-            error={selectorDialogError}
-            open={selectorDialogOpen}
-            onChange={changeSubject}
-            onClose={() => {setSelectorDialogOpen(false)}}
-            onError={setSelectorDialogError}
-            title="Set subject"
-            selectedQuestionnaire={data?.questionnaire}
-            />
-          {changedSubject && data &&
-            <React.Fragment>
-              <input type="hidden" name={`${data["@path"]}/subject`} value={changedSubject["@path"]}></input>
-              <input type="hidden" name={`${data["@path"]}/subject@TypeHint`} value="Reference"></input>
-            </React.Fragment>
-          }
-          {
-            data && Object.entries(data.questionnaire)
-              .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-              .map(([key, entryDefinition]) => {
-                let pageResult = addPage(entryDefinition);
-                return <FormEntry
-                  key={key}
-                  entryDefinition={entryDefinition}
-                  path={"."}
-                  depth={0}
-                  existingAnswers={data}
-                  keyProp={key}
-                  classes={classes}
-                  onChange={()=>setLastSaveStatus(undefined)}
-                  visibleCallback={pageResult.callback}
-                  pageActive={pageResult.page.visible}
-                />
-              })
-          }
+        { /* We also expose the URL of the output form and the save function to any children. This shouldn't interfere
+          with any other values placed inside the context since no variable name should be able to have a '/' in it */}
+        <FormProvider additionalFormData={{
+          ['/Save']: saveData,
+          ['/URL']: formURL,
+          ['/AllowResave']: ()=>setLastSaveStatus(undefined)
+          }}>
+          <FormUpdateProvider>
+            <SelectorDialog
+              allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}
+              error={selectorDialogError}
+              open={selectorDialogOpen}
+              onChange={changeSubject}
+              onClose={() => {setSelectorDialogOpen(false)}}
+              onError={setSelectorDialogError}
+              title="Set subject"
+              selectedQuestionnaire={data?.questionnaire}
+              />
+            {changedSubject &&
+              <React.Fragment>
+                <input type="hidden" name={`${data["@path"]}/subject`} value={changedSubject["@path"]}></input>
+                <input type="hidden" name={`${data["@path"]}/subject@TypeHint`} value="Reference"></input>
+              </React.Fragment>
+            }
+            {
+              Object.entries(data.questionnaire)
+                .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+                .map(([key, entryDefinition]) => {
+                  let pageResult = addPage(entryDefinition);
+                  return <FormEntry
+                    key={key}
+                    entryDefinition={entryDefinition}
+                    path={"."}
+                    depth={0}
+                    existingAnswers={data}
+                    keyProp={key}
+                    classes={classes}
+                    onChange={()=>setLastSaveStatus(undefined)}
+                    visibleCallback={pageResult.callback}
+                    pageActive={pageResult.page.visible}
+                  />
+                })
+            }
+          </FormUpdateProvider>
         </FormProvider>
         {paginationEnabled ?
         <Grid item xs={12} className={classes.formFooter}>

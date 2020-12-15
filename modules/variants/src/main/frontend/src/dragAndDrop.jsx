@@ -23,7 +23,7 @@ import { IconButton, Typography } from "@material-ui/core";
 import AttachFile from '@material-ui/icons/AttachFile';
 
 export default function DragAndDrop(props) {
-  const { multifile, handleDrop, classes, error } = props;
+  const { accept, multifile, handleDrop, classes, error } = props;
   const [drag, setDrag] = useState(false);
   const [dragCounter, setDragCounter] = useState(0);
 
@@ -93,14 +93,16 @@ export default function DragAndDrop(props) {
        onClick={handleClick.bind(this)}
        ref={dropRef}
     >
+      {/* NB: value="" is used to allow the same file to be re-uploaded multiple times */}
       <input id="file-input"
         type="file"
-        accept=".csv"
+        accept={accept}
         name="*"
-        multiple={ multifile }
+        multiple={multifile}
         ref={inputRef}
         style={{display: 'none'}}
         onChange={onChangeFile.bind(this)}
+        value=""
       />
       <div className={drag ? classes.active : classes.dropzone} >
           <IconButton color="primary" component="span">
