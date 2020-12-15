@@ -502,7 +502,7 @@ function FormData(props) {
     // question title, to be used when 'previewing' the form
     const questionTitle = entryDefinition["text"];
 
-    if (existingQuestionAnswer && existingQuestionAnswer[1]["value"] && (displayed < maxDisplayed)) {
+    if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined" && (displayed < maxDisplayed)) {
       let existingAnswerValue = existingQuestionAnswer[1]["value"];
       // TODO: Other question types will need to be handled as well
       let content = "";
