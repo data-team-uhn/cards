@@ -46,9 +46,9 @@ import org.slf4j.LoggerFactory;
 public class NightlyExportTask implements Runnable
 {
     /** Default log. */
-    protected static final Logger LOGGER = LoggerFactory.getLogger(NightlyExport.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NightlyExportTask.class);
 
-    /** The Resource Resolver for the current request. */
+    /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
     NightlyExportTask(final ResourceResolverFactory resolverFactory)
@@ -67,14 +67,36 @@ public class NightlyExportTask implements Runnable
         calendar.add(Calendar.DATE, -1);
         String requestDateString = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
 
-        Set<String> changedSubjects = this.getChangedSubjects(requestDateString);
+        Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(requestDateString);
 
-        for (String subjectId : changedSubjects) {
-            SubjectContents subjectContents = getSubjectContents(subjectId, requestDateString);
+        for (SubjectIdentifier identifier : changedSubjects) {
+            SubjectContents subjectContents = getSubjectContents(identifier.getPath(), requestDateString);
             if (subjectContents != null) {
-                String filename = String.format("%s_formData_%s.json", subjectId, fileDateString);
+                String filename = String.format("%s_formData_%s.json", identifier.getParticipantId(), fileDateString);
                 this.output(subjectContents, filename, fileDateString);
             }
+        }
+    }
+
+    private final class SubjectIdentifier
+    {
+        private String path;
+        private String participantId;
+
+        SubjectIdentifier(String path, String participantId)
+        {
+            this.path = path;
+            this.participantId = participantId;
+        }
+
+        public String getPath()
+        {
+            return this.path;
+        }
+
+        public String getParticipantId()
+        {
+            return this.participantId;
         }
     }
 
@@ -100,10 +122,10 @@ public class NightlyExportTask implements Runnable
         }
     }
 
-    private Set<String> getChangedSubjects(String requestDateString)
+    private Set<SubjectIdentifier> getChangedSubjects(String requestDateString)
     {
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            Set<String> subjects = new HashSet<>();
+            Set<SubjectIdentifier> subjects = new HashSet<>();
             String query = String.format(
                 "SELECT subject.* FROM [lfs:Form] AS form INNER JOIN [lfs:Subject] AS subject"
                     + " ON form.'subject'=subject.[jcr:uuid] WHERE form.[jcr:created] >= '%s'",
@@ -112,13 +134,15 @@ public class NightlyExportTask implements Runnable
 
             Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
             while (results.hasNext()) {
+                Resource subject = results.next();
+                String path = subject.getPath();
+                String participantId = null;
                 try {
-                    String subjectId = results.next().adaptTo(Node.class).getName();
-                    subjectId = subjectId.substring(subjectId.lastIndexOf("/") + 1);
-                    subjects.add(subjectId);
+                    participantId = subject.adaptTo(Node.class).getProperty("identifier").getString();
                 } catch (RepositoryException e) {
                     LOGGER.warn("Failed to retrieve name of updated subject: {}", e.getMessage(), e);
                 }
+                subjects.add(new SubjectIdentifier(path, participantId));
             }
             return subjects;
         } catch (LoginException e) {
@@ -127,11 +151,11 @@ public class NightlyExportTask implements Runnable
         return Collections.emptySet();
     }
 
-    private SubjectContents getSubjectContents(String subjectId, String requestDateString)
+    private SubjectContents getSubjectContents(String path, String requestDateString)
     {
         String subjectDataUrl = String.format(
-            "/Subjects/%s.data.deep.bare.-identify.relativeDates.dataFilter:createdAfter=%s",
-            subjectId,
+            "%s.data.deep.bare.-identify.relativeDates.dataFilter:createdAfter=%s",
+            path,
             requestDateString
         );
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {

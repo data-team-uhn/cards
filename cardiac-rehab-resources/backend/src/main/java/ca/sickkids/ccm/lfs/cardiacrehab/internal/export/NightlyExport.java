@@ -33,9 +33,9 @@ import org.slf4j.LoggerFactory;
 public class NightlyExport
 {
     /** Default log. */
-    protected static final Logger LOGGER = LoggerFactory.getLogger(NightlyExport.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NightlyExport.class);
 
-    /** The Resource Resolver for the current request. */
+    /** Provides access to resources. */
     @Reference
     private ResourceResolverFactory resolverFactory;
 
@@ -46,7 +46,7 @@ public class NightlyExport
     @Activate
     protected void activate(ComponentContext componentContext) throws Exception
     {
-        LOGGER.error("NightlyExport activating");
+        LOGGER.info("NightlyExport activating");
         ScheduleOptions options = this.scheduler.EXPR("30 23 * * * ?");
         options.name("NightlyExport");
         options.canRunConcurrently(true);
@@ -56,7 +56,7 @@ public class NightlyExport
         try {
             this.scheduler.schedule(exportJob, options);
         } catch (Exception e) {
-            LOGGER.error("NightlyExport Failed to schedule");
+            LOGGER.error("NightlyExport Failed to schedule: {}", e.getMessage(), e);
         }
     }
 }
