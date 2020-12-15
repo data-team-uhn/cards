@@ -78,7 +78,7 @@ public class NightlyExportTask implements Runnable
         }
     }
 
-    private final class SubjectIdentifier
+    private static final class SubjectIdentifier
     {
         private String path;
         private String participantId;
@@ -100,7 +100,7 @@ public class NightlyExportTask implements Runnable
         }
     }
 
-    private final class SubjectContents
+    private static final class SubjectContents
     {
         private String data;
         private String url;
