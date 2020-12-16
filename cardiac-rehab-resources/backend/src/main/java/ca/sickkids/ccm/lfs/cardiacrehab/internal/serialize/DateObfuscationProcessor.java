@@ -56,6 +56,8 @@ public class DateObfuscationProcessor implements ResourceJsonProcessor
 {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
+    private static final SimpleDateFormat MONTH_YEAR_DATE_FORMAT = new SimpleDateFormat("MM-yyyy");
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DateObfuscationProcessor.class);
 
     private final ThreadLocal<Map<String, Long>> dates = ThreadLocal.withInitial(HashMap::new);
@@ -117,6 +119,12 @@ public class DateObfuscationProcessor implements ResourceJsonProcessor
     {
         try {
             if (input != null && property.getType() == PropertyType.DATE && property.getDate() != null) {
+                // The date of birth gets special treatment: instead of obfuscating it, just output month and year
+                if (node.hasProperty("question") && "/Questionnaires/Participant Status/Demographics/date of birth"
+                    .equals(node.getProperty("question").getNode().getPath()) && "value".equals(property.getName())) {
+                    return Json.createValue(MONTH_YEAR_DATE_FORMAT.format(property.getDate().getTime()));
+                }
+
                 if (this.baseDate != null) {
                     this.dates.get().put(property.getPath(),
                         this.baseDate.until(property.getDate().toInstant(), ChronoUnit.DAYS));
