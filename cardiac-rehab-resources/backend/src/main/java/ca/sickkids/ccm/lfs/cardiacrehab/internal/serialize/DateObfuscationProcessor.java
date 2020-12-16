@@ -46,7 +46,7 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 
 /**
  * Obfuscate all date fields by serializing them as a relative offset from a specific reference date. The reference date
- * is defined in an environment variable called {@code REFERENCE_DATE}. The The name of this processor is
+ * is defined in an environment variable called {@code REFERENCE_DATE}. The name of this processor is
  * {@code relativeDates}.
  *
  * @version $Id$
@@ -60,9 +60,9 @@ public class DateObfuscationProcessor implements ResourceJsonProcessor
 
     private final ThreadLocal<Map<String, Long>> dates = ThreadLocal.withInitial(HashMap::new);
 
-    private ThreadLocal<Boolean> bareExport = new ThreadLocal<>();
+    private final ThreadLocal<Boolean> bareExport = new ThreadLocal<>();
 
-    private ThreadLocal<String> rootNode = new ThreadLocal<>();
+    private final ThreadLocal<String> rootNode = new ThreadLocal<>();
 
     private Instant baseDate;
 
@@ -119,7 +119,7 @@ public class DateObfuscationProcessor implements ResourceJsonProcessor
             if (input != null && property.getType() == PropertyType.DATE && property.getDate() != null) {
                 if (this.baseDate != null) {
                     this.dates.get().put(property.getPath(),
-                        this.baseDate.until(property.getValue().getDate().toInstant(), ChronoUnit.DAYS));
+                        this.baseDate.until(property.getDate().toInstant(), ChronoUnit.DAYS));
                 } else {
                     this.dates.get().put(property.getPath(), null);
                 }
@@ -146,8 +146,8 @@ public class DateObfuscationProcessor implements ResourceJsonProcessor
             }
             if (this.bareExport.get() && this.rootNode.get().equals(node.getPath())) {
                 json.remove("created");
-                json.add("@created_differential", this.baseDate
-                    .until(node.getProperty("jcr:created").getValue().getDate().toInstant(), ChronoUnit.DAYS));
+                json.add("@created_differential", this.baseDate == null ? null : this.baseDate
+                    .until(node.getProperty("jcr:created").getDate().toInstant(), ChronoUnit.DAYS));
             }
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to access properties of {}: {}", node, e.getMessage(), e);
