@@ -33,6 +33,7 @@ argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard 
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
 argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer service to the cluster', action='store_true')
 argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of MongoDB) as the back-end for Oak/JCR', action='store_true')
+argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
@@ -56,7 +57,7 @@ yaml_obj['version'] = '3'
 yaml_obj['volumes'] = {}
 yaml_obj['services'] = {}
 
-if not args.oak_filesystem:
+if not (args.oak_filesystem or args.external_mongo):
     #Create configuration databases
     for i in range(CONFIGDB_REPLICA_COUNT):
         service_name = "config{}".format(i)
@@ -240,6 +241,23 @@ if ENABLE_NCR:
 	yaml_obj['services']['neuralcr']['networks'] = {}
 	yaml_obj['services']['neuralcr']['networks']['internalnetwork'] = {}
 	yaml_obj['services']['neuralcr']['networks']['internalnetwork']['aliases'] = ['neuralcr']
+
+if args.external_mongo:
+	ext_mongo_address = input("Enter the address of the MongoDB server: ")
+	ext_mongo_credentials = input("Enter the username:password for the MongoDB server (leave blank for no password): ")
+	ext_mongo_db_name = input("Enter the Sling storage database name on the MongoDB server (default: db): ")
+	yaml_obj['services']['lfsinitial']['environment'].append("EXTERNAL_MONGO_ADDRESS={}".format(ext_mongo_address))
+	if len(ext_mongo_credentials) != 0:
+		#Create the secrets directory if it does not exist
+		if not os.path.exists('secrets'):
+			os.mkdir('secrets')
+		with open('secrets/mongo_credentials', 'w') as f_mongo_creds:
+			f_mongo_creds.write(ext_mongo_credentials)
+		yaml_obj['services']['lfsinitial']['volumes'] = ["./secrets:/run/secrets:ro"]
+
+	if len(ext_mongo_db_name) != 0:
+		yaml_obj['services']['lfsinitial']['environment'].append("CUSTOM_MONGO_DB_NAME={}".format(ext_mongo_db_name))
+
 
 #Configure the proxy container
 print("Configuring service: proxy")

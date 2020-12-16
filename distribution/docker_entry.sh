@@ -50,4 +50,43 @@ echo "PROJECT_VERSION = $PROJECT_VERSION"
 SLING_RUN_MODES_LIST="${INITIAL_SLING_NODE:+initial_sling_node,}${OAK_MONGO:+oak_mongo,}${DEV:+dev,}${ADDITIONAL_RUN_MODES}"
 SLING_RUN_MODES_LIST="${SLING_RUN_MODES_LIST/%,}"
 
+if [ ! -z $EXTERNAL_MONGO_ADDRESS ]
+then
+  echo "Patching JAR with external MongoDB address"
+  workdir=$(pwd)
+  mkdir /patched_jar
+  cp ${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar /patched_jar
+  cd /patched_jar
+  unzip ${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar
+  rm ${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar
+
+  #Do the patching ...
+  echo -ne 's/\mongouri="mongodb:\/\/mongo:27017\"/mongouri=\"mongodb:\/\/' > script.sed
+  if [ -e /run/secrets/mongo_credentials ]
+  then
+    cat /run/secrets/mongo_credentials >> script.sed
+    echo -ne '@' >> script.sed
+  fi
+  echo -ne "$EXTERNAL_MONGO_ADDRESS" >> script.sed
+  echo '\"/g' >> script.sed
+  sed -i -f script.sed resources/provisioning/model.txt
+  sed -i -f script.sed resources/config/oak_mongo/org.apache.jackrabbit.oak.plugins.document.DocumentNodeStoreService.config
+  rm script.sed
+
+  if [ ! -z $CUSTOM_MONGO_DB_NAME ]
+  then
+    echo -ne 's/db=\"sling\"/db=\"' > script.sed
+    echo -ne "$CUSTOM_MONGO_DB_NAME" >> script.sed
+    echo '\"/g' >> script.sed
+    sed -i -f script.sed resources/provisioning/model.txt
+    sed -i -f script.sed resources/config/oak_mongo/org.apache.jackrabbit.oak.plugins.document.DocumentNodeStoreService.config
+    rm script.sed
+  fi
+
+  #Repack the JAR file
+  zip -r $workdir/${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar .
+  cd $workdir
+  rm -rf /patched_jar
+fi
+
 java ${SLING_RUN_MODES_CUSTOM:+-Dsling.run.modes=}$SLING_RUN_MODES_LIST ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar ${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar
