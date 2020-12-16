@@ -81,6 +81,21 @@ export function amendMoment(date, format) {
   return(new_date.startOf(truncateTo));
 }
 
+// Convert a moment string to a month display
+export function momentStringToDisplayMonth(displayFormat, value) {
+  value = value.replace('-','/');
+
+  // Switch month and year if required as Moment returns a fixed order
+  let monthIndex = displayFormat.toLowerCase().indexOf('m');
+  if (monthIndex === 0) {
+    // Switch back from moment supported yyyy/mm to desired mm/yyyy.
+    value = [value.slice(5, 7), '/', value.slice(0, 4)].join('');
+  } else if (value.length > 7) {
+    // Cut off any text beyond "yyyy/mm"
+    value = value.substring(0, 7);
+  }
+  return value;
+}
 // Component that renders a date/time question
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
@@ -216,28 +231,13 @@ function DateQuestion(props) {
     return value.replace('/', '-') + '-01'
   }
 
-  let momentStringToDisplayMonth = (value) => {
-    value = value.replace('-','/');
-
-    // Switch month and year if required as Moment returns a fixed order
-    let monthIndex = displayFormat.toLowerCase().indexOf('m');
-    if (monthIndex === 0) {
-      // Switch back from moment supported yyyy/mm to desired mm/yyyy.
-      value = [value.slice(5, 7), '/', value.slice(0, 4)].join('');
-    } else if (value.length > 7) {
-      // Cut off any text beyond "yyyy/mm"
-      value = value.substring(0, 7);
-    }
-    return value;
-  }
-
   // Determine the granularity of the input textfield
   const textFieldType = isMonth ? "text" :
     isDate ? "date" :
     "datetime-local";
 
   if (isMonth && monthDateString == "" && currentStartValue) {
-    setMonthDateString(momentStringToDisplayMonth(currentStartValue));
+    setMonthDateString(momentStringToDisplayMonth(displayFormat, currentStartValue));
   }
 
   // Determine how to display the currently selected value
@@ -292,13 +292,13 @@ function DateQuestion(props) {
             if (validateMonthString(monthDateString)) {
               let parsedDate = boundDate(amendMoment(displayMonthToMomentString(monthDateString), dateFormat));
               changeDate(parsedDate);
-              setMonthDateString(momentStringToDisplayMonth(momentToString(parsedDate)));
+              setMonthDateString(momentStringToDisplayMonth(displayFormat, momentToString(parsedDate)));
 
               // Also fix the end date if it is earlier than the given start date
               let parsedEndDate = boundEndDate(selectedEndDate, parsedDate);
               if (type === INTERVAL_TYPE) {
                 changeEndDate(parsedEndDate);
-                setEndMonthDateString(momentStringToDisplayMonth(momentToString(parsedEndDate)));
+                setEndMonthDateString(momentStringToDisplayMonth(displayFormat, momentToString(parsedEndDate)));
               }
             }
           }
@@ -339,7 +339,7 @@ function DateQuestion(props) {
               if (validateMonthString(monthDateString)) {
                 let parsedDate = boundEndDate(amendMoment(displayMonthToMomentString(monthDateString), dateFormat), selectedDate);
                 changeEndDate(parsedDate);
-                setEndMonthDateString(momentStringToDisplayMonth(momentToString(parsedDate)));
+                setEndMonthDateString(momentStringToDisplayMonth(displayFormat, momentToString(parsedDate)));
               }
             }
           }}
