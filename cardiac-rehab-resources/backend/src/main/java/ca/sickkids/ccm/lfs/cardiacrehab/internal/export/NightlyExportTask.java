@@ -22,10 +22,9 @@ package ca.sickkids.ccm.lfs.cardiacrehab.internal.export;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -58,12 +57,9 @@ public class NightlyExportTask implements Runnable
     public void run()
     {
         LOGGER.info("Executing NightlyExport");
-        Date date = new Date();
-        String fileDateString = new SimpleDateFormat("yyyyMMdd").format(date);
-
-        final Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, -1);
-        String requestDateString = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+        LocalDate today = LocalDate.now();
+        String fileDateString = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String requestDateString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(requestDateString);
 
@@ -167,9 +163,11 @@ public class NightlyExportTask implements Runnable
         String path = String.format("%s/cards-exports/%s/", System.getProperty("user.home"), dateString);
         File directory = new File(path);
         directory.mkdirs();
-        try (FileWriter file = new FileWriter(path + filename)) {
+        try {
+            FileWriter file = new FileWriter(path + filename);
             file.write(input.getData());
-            LOGGER.info("Exported {} to {}, size {}B", input.getUrl(), path, directory.length());
+            file.close();
+            LOGGER.info("Exported {} to {}, size {}B", input.getUrl(), path, new File(path + filename).length());
         } catch (IOException e) {
             LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
         }
