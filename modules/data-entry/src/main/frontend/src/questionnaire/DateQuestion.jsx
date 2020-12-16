@@ -50,6 +50,7 @@ export const DATETIME_FORMATS = [
 
 const TIMESTAMP_TYPE = "timestamp";
 const INTERVAL_TYPE = "interval";
+const slingDateFormat = "yyyy-MM-dd HH:mm:ss";
 
 const ALLOWABLE_DATETIME_FORMATS = DATE_FORMATS.concat(DATETIME_FORMATS)
 
@@ -104,27 +105,6 @@ export function amendMoment(date, format) {
 function DateQuestion(props) {
   let {existingAnswer, displayFormat, classes, ...rest} = props;
   let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy-MM-dd", minAnswers: 0, type: TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
-  let currentStartValue = existingAnswer && existingAnswer[1].value && Array.of(existingAnswer[1].value).flat()[0].split("T")[0] || null;
-
-  const isMonth = MONTH_FORMATS.includes(dateFormat);
-  const isDate = DATE_FORMATS.includes(dateFormat);
-
-  const [selectedDate, changeDate] = useState(amendMoment(moment(currentStartValue), dateFormat));
-  // FIXME There's no way to store the end date currently. Maybe add existingAnswer[1].endValue?
-  const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), dateFormat));
-  const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("Invalid date");
-  const [monthDateString, setMonthDateString] = useState("");
-  const [endMonthDateString, setEndMonthDateString] = useState("");
-  const upperLimitMoment = amendMoment(moment(upperLimit), dateFormat);
-  const lowerLimitMoment = amendMoment(moment(lowerLimit), dateFormat);
-  const monthRegExp = "1[0-2]|0?[1-9]";
-  const strictMonthRegExp = "1[0-2]|0[1-9]";
-  const yearRegExp = "\\d{4}";
-  let inputRegExp = new RegExp();
-  let strictInputRegExp = new RegExp();
-
-  // const monthYearTest = new RegExp(/\d{4}\/(0[1-9]|10|11|12)/);
 
   // If we're given a year, instead supply the NumberQuestion widget
   if (dateFormat === DATE_FORMATS[0]) {
@@ -142,6 +122,26 @@ function DateQuestion(props) {
         />
     );
   }
+
+  let currentStartValue = existingAnswer && existingAnswer[1].value && Array.of(existingAnswer[1].value).flat()[0].split("T")[0] || null;
+
+  const isMonth = MONTH_FORMATS.includes(dateFormat);
+  const isDate = DATE_FORMATS.includes(dateFormat);
+
+  const [selectedDate, changeDate] = useState(amendMoment(moment(currentStartValue), slingDateFormat));
+  // FIXME There's no way to store the end date currently. Maybe add existingAnswer[1].endValue?
+  const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), slingDateFormat));
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Invalid date");
+  const [monthDateString, setMonthDateString] = useState("");
+  const [endMonthDateString, setEndMonthDateString] = useState("");
+  const upperLimitMoment = amendMoment(moment(upperLimit), slingDateFormat);
+  const lowerLimitMoment = amendMoment(moment(lowerLimit), slingDateFormat);
+  const monthRegExp = "1[0-2]|0?[1-9]";
+  const strictMonthRegExp = "1[0-2]|0[1-9]";
+  const yearRegExp = "\\d{4}";
+  let inputRegExp = new RegExp();
+  let strictInputRegExp = new RegExp();
 
   if (isMonth) {
     // Create a user friendly displayFormat and a sling-compatible dateFormat
@@ -249,9 +249,9 @@ function DateQuestion(props) {
     outputDateString = monthDateString;
     outputEndDateString = endMonthDateString;
   }
-  let outputAnswers = [["date", selectedDate.isValid() ? selectedDate.formatWithJDF(dateFormat) : '']];
+  let outputAnswers = [["date", selectedDate.isValid() ? selectedDate.formatWithJDF(slingDateFormat) : '']];
   if (type === INTERVAL_TYPE) {
-    outputAnswers.push(["endDate", selectedEndDate.isValid() ? selectedEndDate.formatWithJDF(dateFormat) : ''])
+    outputAnswers.push(["endDate", selectedEndDate.isValid() ? selectedEndDate.formatWithJDF(slingDateFormat) : ''])
   }
 
   return (
