@@ -85,7 +85,7 @@ const Sidebar = ({ ...props }) => {
     <List className={classes.list}>
       {loading ?
         /* Add some skeleton UI of varying heights */
-        [...Array(7)].map((_, index) => (
+        [...Array(5)].map((_, index) => (
         <ListItem button className={classNames(classes.itemLink, classes.skeletonItem)} key={index}>
           <div className={classNames(classes.itemIcon, classes.skeletonButton)}></div>
           {/* The primary text here is a random amount of spaces between 1 and 30*/}
@@ -101,19 +101,11 @@ const Sidebar = ({ ...props }) => {
 
   var adminLinks = (
     <List className={classes.adminSidebar}>
-      {loading ?
-        /* Add some skeleton UI of varying heights */
-        [...Array(3)].map((_, index) => (
-        <ListItem button className={classNames(classes.itemLink, classes.skeletonItem, index == 0 && classes[color])} key={index}>
-          <div className={classNames(classes.itemIcon, classes.skeletonButton)}></div>
-          {/* The primary text here is a random amount of spaces between 1 and 30*/}
-          <ListItemText primary="&nbsp;" className={classNames(classes.itemText, classes.skeletonText)}/>
-        </ListItem>
-        ))
+      {loading ? <></>
       : entries.filter(entry => _isAdministrativeButton(entry["lfs:defaultOrder"]))
           .map((entry, key) => {
             // To make it stand out, the admin link is also active
-            const isActive = entry["lfs:targetURL"] === "/content.html/admin" || isRouteActive(entry["lfs:targetURL"]);
+            const isActive = isRouteActive(entry["lfs:targetURL"]);
             return(generateListItem(entry, key, isActive));
           })}
     </List>
