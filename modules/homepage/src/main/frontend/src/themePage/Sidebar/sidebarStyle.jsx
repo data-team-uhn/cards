@@ -171,7 +171,8 @@ import {
     },
     versionText: {
       textAlign: "center",
-      color: whiteColor
+      color: whiteColor,
+      margin: theme.spacing(4, 2, 0),
     },
     purple: {
       backgroundColor: primaryColor[0],

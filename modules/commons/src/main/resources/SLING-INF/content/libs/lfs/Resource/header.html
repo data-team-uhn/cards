@@ -26,11 +26,11 @@
       <meta name="version" content="${config['Version']}">
     </sly>
     <sly data-sly-use.config="/libs/lfs/conf/PlatformName">
-      <meta name="title" content="${config['PlatformName']}">
-      <title>${config.PlatformName}</title>
+      <meta name="platformName" content="${config['PlatformName']}">
     </sly>
     <sly data-sly-use.config="/libs/lfs/conf/AppName">
-      <meta name="appName" content="${config['AppName']}">
+      <meta name="title" content="${config['AppName']}">
+      <title>${config.AppName}</title>
     </sly>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap" class="next-head"/>

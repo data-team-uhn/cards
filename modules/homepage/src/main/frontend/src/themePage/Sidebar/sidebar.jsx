@@ -99,10 +99,10 @@ const Sidebar = ({ ...props }) => {
     </List>
   );
 
-  let platformName = document.querySelector('meta[name="title"]').content;
-  let appName = document.querySelector('meta[name="appName"]').content;
+  let platformName = document.querySelector('meta[name="platformName"]').content;
+  let appName = document.querySelector('meta[name="title"]').content;
   let version = document.querySelector('meta[name="version"]').content;
-  var versionInfo = <Typography variant="subtitle2" className={classes.versionText}>{platformName} | {appName} v{version}</Typography>
+  var versionInfo = <Typography variant="subtitle2" className={classes.versionText}>{appName} | {platformName} v{version}</Typography>
 
   var adminLinks = (
     <List className={classes.adminSidebar}>
