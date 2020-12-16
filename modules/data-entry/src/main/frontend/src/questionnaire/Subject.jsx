@@ -535,7 +535,7 @@ function FormData(props) {
           } else {
             content = isDate ? date.format(moment.HTML5_FMT.DATE) :
               date.format(moment.HTML5_FMT.DATETIME_LOCAL);
-            content = content.replace('-','/');
+            content = content.replaceAll('-','/');
           }
           break;
         case "boolean":
