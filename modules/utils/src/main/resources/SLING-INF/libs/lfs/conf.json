@@ -4,8 +4,12 @@
     "jcr:primaryType": "nt:unstructured",
     "Version": "${lfs.version}"
   },
-  "Title": {
+  "AppName": {
     "jcr:primaryType": "nt:unstructured",
-    "Title": "${lfs.name}"
+    "AppName": "${app.name}"
+  },
+  "PlatformName": {
+    "jcr:primaryType": "nt:unstructured",
+    "PlatformName": "${platform.name}"
   }
 }

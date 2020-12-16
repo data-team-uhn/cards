@@ -169,6 +169,10 @@ import {
     whiteFont: {
       color: whiteColor
     },
+    versionText: {
+      textAlign: "center",
+      color: whiteColor
+    },
     purple: {
       backgroundColor: primaryColor[0],
       ...primaryBoxShadow,

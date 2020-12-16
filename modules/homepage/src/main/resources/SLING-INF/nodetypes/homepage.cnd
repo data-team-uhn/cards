@@ -39,4 +39,4 @@
   // Hardcode the resource supertype: the Homepage is a resource
   - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
   // Set a default title
-  - title (String) = "${lfs.name}" mandatory autocreated
+  - title (String) = "${platform.name}" mandatory autocreated

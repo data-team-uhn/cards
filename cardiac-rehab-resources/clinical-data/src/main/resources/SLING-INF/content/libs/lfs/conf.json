@@ -1,7 +1,7 @@
 {
   "jcr:primaryType": "sling:Folder",
-  "Title": {
+  "PlatformName": {
     "jcr:primaryType": "nt:unstructured",
-    "Title": "Cards 4 CaRe"
+    "PlatformName": "Cards 4 CaRe"
   }
 }

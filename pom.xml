@@ -145,7 +145,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <lfs.version>${project.version}</lfs.version>
-    <lfs.name>LFS Data Core</lfs.name>
+    <platform.name>LFS Data Core</platform.name>
+    <app.name>CARDS</app.name>
     <slf4j.version>1.7.26</slf4j.version>
     <jackrabbit.version>2.16.3</jackrabbit.version>
     <oak.version>1.8.8</oak.version>
