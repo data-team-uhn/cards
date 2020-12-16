@@ -30,8 +30,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.json.JsonObject;
 
 import org.apache.sling.api.resource.LoginException;
@@ -81,6 +79,7 @@ public class NightlyExportTask implements Runnable
     private static final class SubjectIdentifier
     {
         private String path;
+
         private String participantId;
 
         SubjectIdentifier(String path, String participantId)
@@ -103,6 +102,7 @@ public class NightlyExportTask implements Runnable
     private static final class SubjectContents
     {
         private String data;
+
         private String url;
 
         SubjectContents(String data, String url)
@@ -136,12 +136,7 @@ public class NightlyExportTask implements Runnable
             while (results.hasNext()) {
                 Resource subject = results.next();
                 String path = subject.getPath();
-                String participantId = null;
-                try {
-                    participantId = subject.adaptTo(Node.class).getProperty("identifier").getString();
-                } catch (RepositoryException e) {
-                    LOGGER.warn("Failed to retrieve name of updated subject: {}", e.getMessage(), e);
-                }
+                String participantId = subject.getValueMap().get("identifier", String.class);
                 subjects.add(new SubjectIdentifier(path, participantId));
             }
             return subjects;
