@@ -386,16 +386,17 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>date of birth</name>
+			<name>year of birth</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Date of birth</value>
+				<value>Year of birth</value>
 				<type>String</type>
 			</property>
 			<property>
+			<property>
 				<name>description</name>
-				<value>Month and year only: MM/YYYY</value>
+				<value>Format: YYYY, for example 1950</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -405,7 +406,7 @@
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>MM-yyyy</value>
+				<value>yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
