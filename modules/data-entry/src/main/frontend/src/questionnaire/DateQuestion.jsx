@@ -82,7 +82,7 @@ export function amendMoment(date, format) {
 }
 
 // Convert a moment string to a month display
-export function momentStringToDisplayMonth(displayFormat, value) {
+function momentStringToDisplayMonth(displayFormat, value) {
   value = value.replace('-','/');
 
   // Switch month and year if required as Moment returns a fixed order
@@ -95,6 +95,27 @@ export function momentStringToDisplayMonth(displayFormat, value) {
     value = value.substring(0, 7);
   }
   return value;
+}
+
+// Format a DateAnswer given the given dateFormat
+export function formatDateAnswer(dateFormat, value) {
+  let date = amendMoment(moment(value), dateFormat);
+  let isMonth = MONTH_FORMATS.includes(dateFormat);
+  let isDate = DATE_FORMATS.includes(dateFormat);
+  if (dateFormat === DATE_FORMATS[0]) {
+    // Year-only dates are displayed like a number
+    return value;
+  } else if (isMonth) {
+    return momentStringToDisplayMonth(
+      dateFormat,
+      !date.isValid() ? "" :
+      date.format(moment.HTML5_FMT.MONTH)
+      );
+  } else {
+    let content = isDate ? date.format(moment.HTML5_FMT.DATE) :
+      date.format(moment.HTML5_FMT.DATETIME_LOCAL);
+    return content.replaceAll('-','/');
+  }
 }
 // Component that renders a date/time question
 // Selected answers are placed in a series of <input type="hidden"> tags for
