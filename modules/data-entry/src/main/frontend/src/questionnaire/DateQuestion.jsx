@@ -99,6 +99,7 @@ function momentStringToDisplayMonth(displayFormat, value) {
 
 // Format a DateAnswer given the given dateFormat
 export function formatDateAnswer(dateFormat, value) {
+  dateFormat = dateFormat || "yyyy-MM-dd";
   let date = amendMoment(moment(value), dateFormat);
   let isMonth = MONTH_FORMATS.includes(dateFormat);
   let isDate = DATE_FORMATS.includes(dateFormat);
