@@ -21,6 +21,8 @@ import React, { useState, useContext, useEffect } from "react";
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
+
+import { amendMoment, MONTH_FORMATS, DATE_FORMATS } from "./DateQuestion.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
@@ -500,7 +502,7 @@ function FormData(props) {
     // question title, to be used when 'previewing' the form
     const questionTitle = entryDefinition["text"];
 
-    if (existingQuestionAnswer && existingQuestionAnswer[1]["value"] && (displayed < maxDisplayed)) {
+    if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined" && (displayed < maxDisplayed)) {
       let existingAnswerValue = existingQuestionAnswer[1]["value"];
       // TODO: Other question types will need to be handled as well
       let content = "";
@@ -516,12 +518,37 @@ function FormData(props) {
             })}
             </>
           break;
+        case "date":
+          let date = amendMoment(moment(existingAnswerValue), entryDefinition?.["dateFormat"]);
+          // NB: This code is ripped from DateQuestion, and will need to change if DateQuestion changes its method of displaying dates
+          let isMonth = MONTH_FORMATS.includes(entryDefinition?.["dateFormat"]);
+          let isDate = DATE_FORMATS.includes(entryDefinition?.["dateFormat"]);
+          content = !date.isValid() ? "" :
+            isMonth ? date.format(moment.HTML5_FMT.MONTH) :
+            isDate ? date.format(moment.HTML5_FMT.DATE) :
+            date.format(moment.HTML5_FMT.DATETIME_LOCAL);
+          break;
+        case "boolean":
+          content = existingAnswerValue == 1 ? (entryDefinition?.["yesLabel"] || "Yes")
+                  : existingAnswerValue == 0 ? (entryDefinition?.["noLabel"] || "No")
+                  : (entryDefinition?.["unknownLabel"] || "Unknown")
+          break;
+        case "pedigree":
+          if (!existingAnswerValue) {
+            // Display absolutely nothing if the value does not exist
+            return <></>;
+          } else {
+            // Display Pedigree: yes if the value does exist
+            content = "Yes";
+          }
+          break;
         default:
           // Check for a label and use the label instead of the value, if present
           let answerValue = entryDefinition[existingAnswerValue]?.["label"]
             ? entryDefinition[existingAnswerValue]["label"]
             : existingAnswerValue;
-          content = `${answerValue}`;
+          let units = entryDefinition?.unitOfMeasurement ? (" " + entryDefinition.unitOfMeasurement) : "";
+          content = `${answerValue} ${units}`;
           break;
       }
       // If count of displayed <= max, increase count of displayed
