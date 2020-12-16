@@ -152,11 +152,7 @@ public class DateObfuscationProcessor implements ResourceJsonProcessor
                         value != null ? Json.createValue(value) : JsonValue.NULL);
                 }
             }
-            if (this.bareExport.get() && this.rootNode.get().equals(node.getPath())) {
-                json.remove("created");
-                json.add("@created_differential", this.baseDate == null ? JsonValue.NULL : Json.createValue(
-                    this.baseDate.until(node.getProperty("jcr:created").getDate().toInstant(), ChronoUnit.DAYS)));
-            }
+            json.remove("created");
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to access properties of {}: {}", node, e.getMessage(), e);
         }
