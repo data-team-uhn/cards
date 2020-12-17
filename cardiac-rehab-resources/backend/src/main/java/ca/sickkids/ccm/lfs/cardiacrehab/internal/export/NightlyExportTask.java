@@ -35,11 +35,9 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component
 public class NightlyExportTask implements Runnable
 {
     /** Default log. */
@@ -66,10 +64,18 @@ public class NightlyExportTask implements Runnable
         for (SubjectIdentifier identifier : changedSubjects) {
             SubjectContents subjectContents = getSubjectContents(identifier.getPath(), requestDateString);
             if (subjectContents != null) {
-                String filename = String.format("%s_formData_%s.json", identifier.getParticipantId(), fileDateString);
+                String filename = String.format(
+                    "%s_formData_%s.json",
+                    cleanString(identifier.getParticipantId()),
+                    fileDateString);
                 this.output(subjectContents, filename, fileDateString);
             }
         }
+    }
+
+    private String cleanString(String input)
+    {
+        return input.replaceAll("[^A-Za-z0-9]", "");
     }
 
     private static final class SubjectIdentifier
@@ -163,13 +169,19 @@ public class NightlyExportTask implements Runnable
         String path = String.format("%s/cards-exports/%s/", System.getProperty("user.home"), dateString);
         File directory = new File(path);
         directory.mkdirs();
-        try {
-            FileWriter file = new FileWriter(path + filename);
+        boolean success = false;
+        try (FileWriter file = new FileWriter(path + filename)) {
             file.write(input.getData());
-            file.close();
-            LOGGER.info("Exported {} to {}, size {}B", input.getUrl(), path, new File(path + filename).length());
+            success = true;
         } catch (IOException e) {
             LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
+        }
+        if (success) {
+            LOGGER.info(
+                "Exported {} to {}, size {}B",
+                input.getUrl(),
+                path + filename,
+                new File(path + filename).length());
         }
     }
 }
