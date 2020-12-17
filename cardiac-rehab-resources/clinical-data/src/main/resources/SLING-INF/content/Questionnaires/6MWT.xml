@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>Visits 2, 4, 7, 8</value>
+		<value>Visits 2,4,7,8</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -57,7 +57,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>2, 4, 7, 8</value>
+			<value>1-8</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -771,11 +771,6 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
 		</node>
 		<node>
 			<name>wd_lap_dist</name>
@@ -797,11 +792,6 @@
 			</property>
 			<property>
 				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
@@ -829,11 +819,6 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
 		</node>
 		<node>
 			<name>wd_tol_dis</name>
@@ -841,6 +826,11 @@
 			<property>
 				<name>text</name>
 				<value>Total distance</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>m</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -855,11 +845,6 @@
 			</property>
 			<property>
 				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>

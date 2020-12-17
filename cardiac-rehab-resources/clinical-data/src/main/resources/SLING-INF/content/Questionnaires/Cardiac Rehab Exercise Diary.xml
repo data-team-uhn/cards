@@ -341,23 +341,13 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>unitOfMeasurement</name>
 				<value>m</value>
 				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>0</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
 			</property>
 		</node>
 		<node>

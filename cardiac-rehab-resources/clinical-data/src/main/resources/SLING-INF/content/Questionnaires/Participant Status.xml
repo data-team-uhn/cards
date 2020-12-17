@@ -74,7 +74,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>enrolled   = Enrolled			</name>
+				<name>enrolled</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -88,7 +88,7 @@
 				</property>
 			</node>
 			<node>
-				<name>withdrawn_study   = Withdrawn by study staff	</name>
+				<name>withdrawn_study</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -102,7 +102,7 @@
 				</property>
 			</node>
 			<node>
-				<name>withdrawn_subject   = Withdrawn by subject	</name>
+				<name>withdrawn_subject</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -116,7 +116,7 @@
 				</property>
 			</node>
 			<node>
-				<name>exited = Completed study</name>
+				<name>exited</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -375,11 +375,6 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
 		</node>
 	</node>
 	<node>
@@ -391,16 +386,16 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>year_of_birth</name>
+			<name>date of birth</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Year of birth</value>
+				<value>Date of birth</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>description</name>
-				<value>Format: YYYY, for example 1950</value>
+				<value>year only</value>
 				<type>String</type>
 			</property>
 			<property>

@@ -154,6 +154,8 @@ def process_options(question, row):
             date = "MM-dd-yyyy"
         if date == "MM/YYYY" or date == "MM-YYYY":
             date = "MM-yyyy"
+        if date == "YYYY":
+            date = "yyyy"
         question['dateFormat'] = date
     elif question['dataType'] == "time":
         question['dateFormat'] = row['Options (if applicable)']
@@ -193,7 +195,7 @@ def insert_options(question, row):
             question.update({'displayMode': 'list+input'})
         elif '=' in option:
             options = option.split('=')
-            answer_option = {option.replace("/", "-"): {
+            answer_option = {options[0].strip().replace("/", "-"): {
                 'jcr:primaryType': 'lfs:AnswerOption',
                 'label': options[1].strip(),
                 'value': options[0].strip()

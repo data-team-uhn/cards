@@ -65,7 +65,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>1, 8</value>
+				<value>1-8</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -142,7 +142,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0 = Avoid walking or exercise (e.g. always use elevators, drive whenever possible instead of walking)</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -156,7 +156,7 @@
 				</property>
 			</node>
 			<node>
-				<name>1 = Walking for pleasure, routinely use stairs, occasionally exercise sufficiently to use heavy breathing or perspiration</name>
+				<name>1</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -170,7 +170,7 @@
 				</property>
 			</node>
 			<node>
-				<name>2 = 10-60 min per week of recreational activity (e.g. golf, bowling, yard work)</name>
+				<name>2</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -184,7 +184,7 @@
 				</property>
 			</node>
 			<node>
-				<name>3 = Over 1 hour per week of recreational activity (e.g. golf, bowling, yard work)</name>
+				<name>3</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -198,7 +198,7 @@
 				</property>
 			</node>
 			<node>
-				<name>4 = Run less than 1 mile per week, or spend less than 30 minutes in comparable physical activity per week</name>
+				<name>4</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -212,7 +212,7 @@
 				</property>
 			</node>
 			<node>
-				<name>5 = Run 1 to 5 miles, walk 3 to 6 miles or spend 30 to 60 minutes in comparable physical activity per week</name>
+				<name>5</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -226,7 +226,7 @@
 				</property>
 			</node>
 			<node>
-				<name>6 = Run 5 to 10 miles, walk 7 to 13 miles, or spend 1 to 3 hours in comparable physical activity per week</name>
+				<name>6</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -240,7 +240,7 @@
 				</property>
 			</node>
 			<node>
-				<name>7 = 11 to 15 miles, walk 14 to 20 miles or spend 3 to 5 hours in comparable physical activity per week</name>
+				<name>7</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -254,7 +254,7 @@
 				</property>
 			</node>
 			<node>
-				<name>8 = Run 16 to 20 miles, walk 21 to 26 miles or spend 6 to 8 hours in comparable physical activity per week</name>
+				<name>8</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -268,7 +268,7 @@
 				</property>
 			</node>
 			<node>
-				<name>9 = Run 21 to 25 miles, walk 27 to 33 miles, or spend 9 to 11 hours in comparable physical activity per week</name>
+				<name>9</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -282,7 +282,7 @@
 				</property>
 			</node>
 			<node>
-				<name><![CDATA[10 = Run >25 miles, walk >34 miles or spend > 12 hours in comparable physical activity per week]]></name>
+				<name>10</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -387,7 +387,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>2.75=Yes</name>
+				<name>2.75</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -401,7 +401,7 @@
 				</property>
 			</node>
 			<node>
-				<name>0=No</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -444,7 +444,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>1.75=Yes</name>
+				<name>1.75</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -458,7 +458,7 @@
 				</property>
 			</node>
 			<node>
-				<name>0=No</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -501,7 +501,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>2.75=Yes</name>
+				<name>2.75</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -515,7 +515,7 @@
 				</property>
 			</node>
 			<node>
-				<name>0=No</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -558,7 +558,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>5.5=Yes</name>
+				<name>5.5</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -572,7 +572,7 @@
 				</property>
 			</node>
 			<node>
-				<name>0=No</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -615,7 +615,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>8=Yes</name>
+				<name>8</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -629,7 +629,7 @@
 				</property>
 			</node>
 			<node>
-				<name>0=No</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -672,7 +672,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>2.7=Yes</name>
+				<name>2.7</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -686,7 +686,7 @@
 				</property>
 			</node>
 			<node>
-				<name>0=No</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -729,7 +729,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>3.5=Yes</name>
+				<name>3.5</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -743,7 +743,7 @@
 				</property>
 			</node>
 			<node>
-				<name>0=No</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -786,7 +786,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>8=Yes</name>
+				<name>8</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -800,7 +800,7 @@
 				</property>
 			</node>
 			<node>
-				<name>0=No</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -843,7 +843,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>4.5=Yes</name>
+				<name>4.5</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -857,7 +857,7 @@
 				</property>
 			</node>
 			<node>
-				<name>0=No</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -900,7 +900,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>5.25=Yes</name>
+				<name>5.25</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -914,7 +914,7 @@
 				</property>
 			</node>
 			<node>
-				<name>0=No</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -957,7 +957,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>6=Yes</name>
+				<name>6</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -971,7 +971,7 @@
 				</property>
 			</node>
 			<node>
-				<name>0=No</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1014,7 +1014,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>7.5=Yes</name>
+				<name>7.5</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1028,7 +1028,7 @@
 				</property>
 			</node>
 			<node>
-				<name>0=No</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1201,7 +1201,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0 = None</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1215,7 +1215,7 @@
 				</property>
 			</node>
 			<node>
-				<name>1 =Mild </name>
+				<name>1</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1229,7 +1229,7 @@
 				</property>
 			</node>
 			<node>
-				<name>2 = Moderate</name>
+				<name>2</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1243,7 +1243,7 @@
 				</property>
 			</node>
 			<node>
-				<name>3 = Severe</name>
+				<name>3</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1257,7 +1257,7 @@
 				</property>
 			</node>
 			<node>
-				<name>4 = Unable to do</name>
+				<name>4</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1300,7 +1300,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0 = None</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1314,7 +1314,7 @@
 				</property>
 			</node>
 			<node>
-				<name>1 =Mild </name>
+				<name>1</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1328,7 +1328,7 @@
 				</property>
 			</node>
 			<node>
-				<name>2 = Moderate</name>
+				<name>2</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1342,7 +1342,7 @@
 				</property>
 			</node>
 			<node>
-				<name>3 = Severe</name>
+				<name>3</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1356,7 +1356,7 @@
 				</property>
 			</node>
 			<node>
-				<name>4 = Unable to do</name>
+				<name>4</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1399,7 +1399,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0 = None</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1413,7 +1413,7 @@
 				</property>
 			</node>
 			<node>
-				<name>1 =Mild </name>
+				<name>1</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1427,7 +1427,7 @@
 				</property>
 			</node>
 			<node>
-				<name>2 = Moderate</name>
+				<name>2</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1441,7 +1441,7 @@
 				</property>
 			</node>
 			<node>
-				<name>3 = Severe</name>
+				<name>3</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1455,7 +1455,7 @@
 				</property>
 			</node>
 			<node>
-				<name>4 = Unable to do</name>
+				<name>4</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1498,7 +1498,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0 = None</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1512,7 +1512,7 @@
 				</property>
 			</node>
 			<node>
-				<name>1 =Mild </name>
+				<name>1</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1526,7 +1526,7 @@
 				</property>
 			</node>
 			<node>
-				<name>2 = Moderate</name>
+				<name>2</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1540,7 +1540,7 @@
 				</property>
 			</node>
 			<node>
-				<name>3 = Severe</name>
+				<name>3</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1554,7 +1554,7 @@
 				</property>
 			</node>
 			<node>
-				<name>4 = Unable to do</name>
+				<name>4</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1597,7 +1597,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0 = None</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1611,7 +1611,7 @@
 				</property>
 			</node>
 			<node>
-				<name>1 =Mild </name>
+				<name>1</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1625,7 +1625,7 @@
 				</property>
 			</node>
 			<node>
-				<name>2 = Moderate</name>
+				<name>2</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1639,7 +1639,7 @@
 				</property>
 			</node>
 			<node>
-				<name>3 = Severe</name>
+				<name>3</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1653,7 +1653,7 @@
 				</property>
 			</node>
 			<node>
-				<name>4 = Unable to do</name>
+				<name>4</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1696,7 +1696,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0 = No or Don’t Know</name>
+				<name>0</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1710,7 +1710,7 @@
 				</property>
 			</node>
 			<node>
-				<name>1 = Yes</name>
+				<name>1</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>

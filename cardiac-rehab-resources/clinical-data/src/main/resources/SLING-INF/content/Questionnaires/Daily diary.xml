@@ -141,11 +141,6 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>n</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
