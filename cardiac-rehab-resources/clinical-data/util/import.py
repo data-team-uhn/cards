@@ -352,8 +352,6 @@ def csv_to_json(title):
                         'text': text,
                         'dataType': convert_to_LFS_data_type(row['Field Type'])
                     }
-                if row['Field Type'].endswith("(single)"):
-                    parent[question]['maxAnswers'] = 1
                 if row['Options (if applicable)']:
                     process_options(parent[question], row)
                     if not "multiple" in row['Field Type']:
@@ -379,6 +377,8 @@ def csv_to_json(title):
                         prepare_conditional_string(value [5:], parent[question + 'Section'])
                         # The presence of a conditional will also prevent the question from being inserted into the main thing
                         del parent[question]
+                if row['Field Type'].endswith("(single)"):
+                    parent[question]['maxAnswers'] = 1
 
     if len(section) > 0:
         questionnaire[section['label']] = dict.copy(section)
