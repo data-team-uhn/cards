@@ -386,7 +386,7 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>year of birth</name>
+			<name>year_of_birth</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
