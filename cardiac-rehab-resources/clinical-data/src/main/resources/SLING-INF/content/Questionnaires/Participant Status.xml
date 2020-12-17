@@ -375,6 +375,11 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 		</node>
 	</node>
 	<node>

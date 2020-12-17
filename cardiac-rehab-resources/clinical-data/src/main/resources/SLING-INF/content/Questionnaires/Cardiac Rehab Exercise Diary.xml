@@ -336,12 +336,12 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>What was the 6MWT total distance?</value>
+				<value>What was the exercise total distance?</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -351,6 +351,11 @@
 			</property>
 			<property>
 				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
