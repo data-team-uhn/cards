@@ -1,7 +1,7 @@
 {
   "jcr:primaryType": "sling:Folder",
-  "Title": {
+  "AppName": {
     "jcr:primaryType": "nt:unstructured",
-    "Title": "Cards 4 Kids"
+    "AppName": "Cards 4 Kids"
   }
 }

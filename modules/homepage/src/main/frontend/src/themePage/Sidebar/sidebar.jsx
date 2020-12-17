@@ -16,7 +16,7 @@ import { NavLink } from "react-router-dom";
 // @material-ui/core components
 import { withStyles } from "@material-ui/core";
 import { loadExtensions } from "../../uiextension/extensionManager";
-import { Drawer, Hidden, List, ListItem, ListItemText } from "@material-ui/core";
+import { Drawer, Hidden, List, ListItem, ListItemText, Typography } from "@material-ui/core";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 import sidebarStyle from "./sidebarStyle.jsx";
@@ -99,6 +99,11 @@ const Sidebar = ({ ...props }) => {
     </List>
   );
 
+  let platformName = document.querySelector('meta[name="platformName"]').content;
+  let appName = document.querySelector('meta[name="title"]').content;
+  let version = document.querySelector('meta[name="version"]').content;
+  var versionInfo = <Typography variant="subtitle2" className={classes.versionText}>{appName} | {platformName} v{version}</Typography>
+
   var adminLinks = (
     <List className={classes.adminSidebar}>
       {loading ? <></>
@@ -108,6 +113,7 @@ const Sidebar = ({ ...props }) => {
             const isActive = isRouteActive(entry["lfs:targetURL"]);
             return(generateListItem(entry, key, isActive));
           })}
+      {versionInfo}
     </List>
   );
 
