@@ -394,7 +394,6 @@
 				<type>String</type>
 			</property>
 			<property>
-			<property>
 				<name>description</name>
 				<value>Format: YYYY, for example 1950</value>
 				<type>String</type>
