@@ -215,10 +215,13 @@ DATA_TO_LFS_TYPE = {
     'datetime': 'date',
     'date': 'date',
     'string': 'text',
+    'string (single)': 'text',
     'string (multiple can be selected)': 'text',
     'boolean (true/false)': "boolean",
     'decimal': 'decimal',
+    'decimal (single)': 'decimal',
     'integer': 'long',
+    'integer (single)': 'long',
     'computed (decimal)': 'computed',
     'computed (integer)': 'computed',
     'time': 'time',
@@ -349,6 +352,8 @@ def csv_to_json(title):
                         'text': text,
                         'dataType': convert_to_LFS_data_type(row['Field Type'])
                     }
+                if row['Field Type'].endswith("(single)"):
+                    parent[question]['maxAnswers'] = 1
                 if row['Options (if applicable)']:
                     process_options(parent[question], row)
                     if not "multiple" in row['Field Type']:

@@ -371,6 +371,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -386,16 +391,16 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>date of birth</name>
+			<name>year_of_birth</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Date of birth</value>
+				<value>Year of birth</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>description</name>
-				<value>year only</value>
+				<value>Format: YYYY, for example 1950</value>
 				<type>String</type>
 			</property>
 			<property>
