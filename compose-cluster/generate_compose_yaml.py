@@ -227,7 +227,7 @@ yaml_obj['services']['lfsinitial']['environment'].append("LFS_RELOAD=${LFS_RELOA
 if args.oak_filesystem:
     yaml_obj['services']['lfsinitial']['environment'].append("OAK_FILESYSTEM=true")
 
-if not args.oak_filesystem:
+if not (args.oak_filesystem or args.external_mongo):
     yaml_obj['services']['lfsinitial']['depends_on'] = ['router']
 
 #Configure the NCR container (if enabled) - only one for now
