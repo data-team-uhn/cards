@@ -381,6 +381,7 @@
             <exclude>compose-cluster/initializer/initialize_all.sh</exclude>
             <exclude>compose-cluster/mongos/mongo-router.conf</exclude>
             <exclude>compose-cluster/shard*/**</exclude>
+            <exclude>compose-cluster/secrets/**</exclude>
           </excludes>
         </configuration>
         <executions>
