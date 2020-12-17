@@ -50,6 +50,7 @@ export const DATETIME_FORMATS = [
 
 const TIMESTAMP_TYPE = "timestamp";
 const INTERVAL_TYPE = "interval";
+const slingDateFormat = "yyyy-MM-dd HH:mm:ss";
 
 const ALLOWABLE_DATETIME_FORMATS = DATE_FORMATS.concat(DATETIME_FORMATS)
 
@@ -80,6 +81,43 @@ export function amendMoment(date, format) {
   return(new_date.startOf(truncateTo));
 }
 
+// Convert a moment string to a month display
+function momentStringToDisplayMonth(displayFormat, value) {
+  value = value.replace('-','/');
+
+  // Switch month and year if required as Moment returns a fixed order
+  let monthIndex = displayFormat.toLowerCase().indexOf('m');
+  if (monthIndex === 0) {
+    // Switch back from moment supported yyyy/mm to desired mm/yyyy.
+    value = [value.slice(5, 7), '/', value.slice(0, 4)].join('');
+  } else if (value.length > 7) {
+    // Cut off any text beyond "yyyy/mm"
+    value = value.substring(0, 7);
+  }
+  return value;
+}
+
+// Format a DateAnswer given the given dateFormat
+export function formatDateAnswer(dateFormat, value) {
+  dateFormat = dateFormat || "yyyy-MM-dd";
+  let date = amendMoment(moment(value), dateFormat);
+  let isMonth = MONTH_FORMATS.includes(dateFormat);
+  let isDate = DATE_FORMATS.includes(dateFormat);
+  if (dateFormat === DATE_FORMATS[0]) {
+    // Year-only dates are displayed like a number
+    return value;
+  } else if (isMonth) {
+    return momentStringToDisplayMonth(
+      dateFormat,
+      !date.isValid() ? "" :
+      date.format(moment.HTML5_FMT.MONTH)
+      );
+  } else {
+    let content = isDate ? date.format(moment.HTML5_FMT.DATE) :
+      date.format(moment.HTML5_FMT.DATETIME_LOCAL);
+    return content.replaceAll('-','/');
+  }
+}
 // Component that renders a date/time question
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
@@ -104,27 +142,6 @@ export function amendMoment(date, format) {
 function DateQuestion(props) {
   let {existingAnswer, displayFormat, classes, ...rest} = props;
   let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy-MM-dd", minAnswers: 0, type: TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
-  let currentStartValue = existingAnswer && existingAnswer[1].value && Array.of(existingAnswer[1].value).flat()[0].split("T")[0] || null;
-
-  const isMonth = MONTH_FORMATS.includes(dateFormat);
-  const isDate = DATE_FORMATS.includes(dateFormat);
-
-  const [selectedDate, changeDate] = useState(amendMoment(moment(currentStartValue), dateFormat));
-  // FIXME There's no way to store the end date currently. Maybe add existingAnswer[1].endValue?
-  const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), dateFormat));
-  const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("Invalid date");
-  const [monthDateString, setMonthDateString] = useState("");
-  const [endMonthDateString, setEndMonthDateString] = useState("");
-  const upperLimitMoment = amendMoment(moment(upperLimit), dateFormat);
-  const lowerLimitMoment = amendMoment(moment(lowerLimit), dateFormat);
-  const monthRegExp = "1[0-2]|0?[1-9]";
-  const strictMonthRegExp = "1[0-2]|0[1-9]";
-  const yearRegExp = "\\d{4}";
-  let inputRegExp = new RegExp();
-  let strictInputRegExp = new RegExp();
-
-  // const monthYearTest = new RegExp(/\d{4}\/(0[1-9]|10|11|12)/);
 
   // If we're given a year, instead supply the NumberQuestion widget
   if (dateFormat === DATE_FORMATS[0]) {
@@ -142,6 +159,26 @@ function DateQuestion(props) {
         />
     );
   }
+
+  let currentStartValue = existingAnswer && existingAnswer[1].value && Array.of(existingAnswer[1].value).flat()[0].split("T")[0] || null;
+
+  const isMonth = MONTH_FORMATS.includes(dateFormat);
+  const isDate = DATE_FORMATS.includes(dateFormat);
+
+  const [selectedDate, changeDate] = useState(amendMoment(moment(currentStartValue), slingDateFormat));
+  // FIXME There's no way to store the end date currently. Maybe add existingAnswer[1].endValue?
+  const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), slingDateFormat));
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Invalid date");
+  const [monthDateString, setMonthDateString] = useState("");
+  const [endMonthDateString, setEndMonthDateString] = useState("");
+  const upperLimitMoment = amendMoment(moment(upperLimit), slingDateFormat);
+  const lowerLimitMoment = amendMoment(moment(lowerLimit), slingDateFormat);
+  const monthRegExp = "1[0-2]|0?[1-9]";
+  const strictMonthRegExp = "1[0-2]|0[1-9]";
+  const yearRegExp = "\\d{4}";
+  let inputRegExp = new RegExp();
+  let strictInputRegExp = new RegExp();
 
   if (isMonth) {
     // Create a user friendly displayFormat and a sling-compatible dateFormat
@@ -216,28 +253,13 @@ function DateQuestion(props) {
     return value.replace('/', '-') + '-01'
   }
 
-  let momentStringToDisplayMonth = (value) => {
-    value = value.replace('-','/');
-
-    // Switch month and year if required as Moment returns a fixed order
-    let monthIndex = displayFormat.toLowerCase().indexOf('m');
-    if (monthIndex === 0) {
-      // Switch back from moment supported yyyy/mm to desired mm/yyyy.
-      value = [value.slice(5, 7), '/', value.slice(0, 4)].join('');
-    } else if (value.length > 7) {
-      // Cut off any text beyond "yyyy/mm"
-      value = value.substring(0, 7);
-    }
-    return value;
-  }
-
   // Determine the granularity of the input textfield
   const textFieldType = isMonth ? "text" :
     isDate ? "date" :
     "datetime-local";
 
   if (isMonth && monthDateString == "" && currentStartValue) {
-    setMonthDateString(momentStringToDisplayMonth(currentStartValue));
+    setMonthDateString(momentStringToDisplayMonth(displayFormat, currentStartValue));
   }
 
   // Determine how to display the currently selected value
@@ -249,9 +271,9 @@ function DateQuestion(props) {
     outputDateString = monthDateString;
     outputEndDateString = endMonthDateString;
   }
-  let outputAnswers = [["date", selectedDate.isValid() ? selectedDate.formatWithJDF(dateFormat) : '']];
+  let outputAnswers = [["date", selectedDate.isValid() ? selectedDate.formatWithJDF(slingDateFormat) : '']];
   if (type === INTERVAL_TYPE) {
-    outputAnswers.push(["endDate", selectedEndDate.isValid() ? selectedEndDate.formatWithJDF(dateFormat) : ''])
+    outputAnswers.push(["endDate", selectedEndDate.isValid() ? selectedEndDate.formatWithJDF(slingDateFormat) : ''])
   }
 
   return (
@@ -292,13 +314,13 @@ function DateQuestion(props) {
             if (validateMonthString(monthDateString)) {
               let parsedDate = boundDate(amendMoment(displayMonthToMomentString(monthDateString), dateFormat));
               changeDate(parsedDate);
-              setMonthDateString(momentStringToDisplayMonth(momentToString(parsedDate)));
+              setMonthDateString(momentStringToDisplayMonth(displayFormat, momentToString(parsedDate)));
 
               // Also fix the end date if it is earlier than the given start date
               let parsedEndDate = boundEndDate(selectedEndDate, parsedDate);
               if (type === INTERVAL_TYPE) {
                 changeEndDate(parsedEndDate);
-                setEndMonthDateString(momentStringToDisplayMonth(momentToString(parsedEndDate)));
+                setEndMonthDateString(momentStringToDisplayMonth(displayFormat, momentToString(parsedEndDate)));
               }
             }
           }
@@ -339,7 +361,7 @@ function DateQuestion(props) {
               if (validateMonthString(monthDateString)) {
                 let parsedDate = boundEndDate(amendMoment(displayMonthToMomentString(monthDateString), dateFormat), selectedDate);
                 changeEndDate(parsedDate);
-                setEndMonthDateString(momentStringToDisplayMonth(momentToString(parsedDate)));
+                setEndMonthDateString(momentStringToDisplayMonth(displayFormat, momentToString(parsedDate)));
               }
             }
           }}

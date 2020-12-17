@@ -22,7 +22,7 @@ import { Link, useLocation } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 
-import { amendMoment, MONTH_FORMATS, DATE_FORMATS } from "./DateQuestion.jsx";
+import { formatDateAnswer } from "./DateQuestion.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
@@ -519,14 +519,7 @@ function FormData(props) {
             </>
           break;
         case "date":
-          let date = amendMoment(moment(existingAnswerValue), entryDefinition?.["dateFormat"]);
-          // NB: This code is ripped from DateQuestion, and will need to change if DateQuestion changes its method of displaying dates
-          let isMonth = MONTH_FORMATS.includes(entryDefinition?.["dateFormat"]);
-          let isDate = DATE_FORMATS.includes(entryDefinition?.["dateFormat"]);
-          content = !date.isValid() ? "" :
-            isMonth ? date.format(moment.HTML5_FMT.MONTH) :
-            isDate ? date.format(moment.HTML5_FMT.DATE) :
-            date.format(moment.HTML5_FMT.DATETIME_LOCAL);
+          content = formatDateAnswer(entryDefinition?.["dateFormat"], existingAnswerValue);
           break;
         case "boolean":
           content = existingAnswerValue == 1 ? (entryDefinition?.["yesLabel"] || "Yes")
