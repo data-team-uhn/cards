@@ -83,6 +83,10 @@
   // Mandatory, every option needs a stored value.
   - value (string) mandatory
 
+  // If set, selecting this answer in a multiple choice question will remove _all other options_ (as in a "none of the above" option)
+  // In addition, selecting any other answer will unselect this option
+  - noneOfTheAbove (boolean)
+
   // Children
 
   // Answer options can be hierarchical, so an option may have suboptions.
