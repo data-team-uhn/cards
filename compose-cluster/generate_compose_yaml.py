@@ -221,7 +221,7 @@ yaml_obj['services']['lfsinitial']['networks']['internalnetwork']['aliases'] = [
 
 yaml_obj['services']['lfsinitial']['environment'] = []
 yaml_obj['services']['lfsinitial']['environment'].append("INITIAL_SLING_NODE=true")
-if not args.oak_filesystem:
+if not (args.oak_filesystem or args.external_mongo):
     yaml_obj['services']['lfsinitial']['environment'].append("INSIDE_DOCKER_COMPOSE=true")
 yaml_obj['services']['lfsinitial']['environment'].append("LFS_RELOAD=${LFS_RELOAD:-}")
 if args.oak_filesystem:
