@@ -1028,6 +1028,11 @@
 					<value>N/A</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>true</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>Cane (right)</name>
@@ -1284,6 +1289,11 @@
 					<value>N/A</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>true</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>Chest pain</name>
@@ -1468,6 +1478,11 @@
 					<value>N/A</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>true</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>Muscular Fatigue</name>
@@ -1603,6 +1618,11 @@
 					<name>value</name>
 					<value>N/A</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>true</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 			<node>
