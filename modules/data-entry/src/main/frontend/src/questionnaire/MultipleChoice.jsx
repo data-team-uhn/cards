@@ -121,7 +121,14 @@ function MultipleChoice(props) {
       return false;
     } else if (noneOfTheAboveOption == id) {
       // If the noneOfTheAboveOption is selected, other elements are deselected but user-input options remain
-      setSelection([[name, id]]);
+      setSelection((old) => {
+        // Only keep options that are user-input
+        let defaultOptions = defaults.filter(option => option[IS_DEFAULT_POS]).map((option) => option[VALUE_POS]);
+        let newSelection = old.slice().filter((option) => !defaultOptions.includes(option[VALUE_POS]));
+        newSelection.push([name, id]);
+        console.log(newSelection);
+        return newSelection;
+      });
       // OK to clear input (we more-or-less should never get here via a user-entered input)
       // The only instance where the user input something but we trigger a "none of the above" is when they type
       // the value corresponding to the "none of the above", which should clear the input anyway
