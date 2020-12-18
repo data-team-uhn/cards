@@ -112,6 +112,8 @@ function MultipleChoice(props) {
     // If the naOption is selected, all other elements are deselected
     if (naOption == id) {
       setSelection([[name, id]]);
+      // Clear any user-input options
+      setOptions(all_options);
       // OK to clear input, since they're removing everything else
       return false;
     }
