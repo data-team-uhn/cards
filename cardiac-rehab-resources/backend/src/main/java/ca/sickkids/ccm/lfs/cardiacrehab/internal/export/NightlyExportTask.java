@@ -27,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.json.JsonObject;
@@ -98,6 +99,32 @@ public class NightlyExportTask implements Runnable
         public String getParticipantId()
         {
             return this.participantId;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return Objects.hashCode(this.path.hashCode()) + Objects.hashCode(this.participantId.hashCode());
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || this.getClass() != obj.getClass()) {
+                return false;
+            }
+            SubjectIdentifier other = (SubjectIdentifier) obj;
+            return Objects.equals(this.path, other.getPath())
+                && Objects.equals(this.participantId, other.getParticipantId());
+        }
+
+        @Override
+        public String toString()
+        {
+            return String.format("{path:\"%s\",participantId:\"%s\"}", this.path, this.participantId);
         }
     }
 
