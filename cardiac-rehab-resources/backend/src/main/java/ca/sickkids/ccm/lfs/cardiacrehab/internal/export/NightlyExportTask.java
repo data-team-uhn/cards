@@ -196,19 +196,11 @@ public class NightlyExportTask implements Runnable
         String path = String.format("%s/cards-exports/%s/", System.getProperty("user.home"), dateString);
         File directory = new File(path);
         directory.mkdirs();
-        boolean success = false;
         try (FileWriter file = new FileWriter(path + filename)) {
             file.write(input.getData());
-            success = true;
+            LOGGER.info("Exported {} to {}", input.getUrl(), path + filename);
         } catch (IOException e) {
             LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
-        }
-        if (success) {
-            LOGGER.info(
-                "Exported {} to {}, size {}B",
-                input.getUrl(),
-                path + filename,
-                new File(path + filename).length());
         }
     }
 }
