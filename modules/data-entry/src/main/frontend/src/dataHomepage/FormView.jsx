@@ -46,7 +46,7 @@ function FormView(props) {
   const [ activeTab, setActiveTab ] = useState(0);
   const [ title, setTitle ] = useState(typeof(props.title) != 'undefined' ? props.title : "Forms");
   const [ subtitle, setSubtitle ] = useState();
-  const [ questionnairePath, SetQuestionnairePath ] = useState();
+  const [ questionnairePath, setQuestionnairePath ] = useState();
   const [ qFetchSent, setQFetchStatus ] = useState(false);
 
   // Column configuration for the LiveTables
@@ -88,7 +88,7 @@ function FormView(props) {
         if (qData) {
           setTitle(qData["title"]);
           setSubtitle(qData["description"]);
-          setQuesionnairePath(qData["@path"]);
+          setQuestionnairePath(qData["@path"]);
         }
       });
     }

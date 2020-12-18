@@ -28,7 +28,7 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 function Forms(props) {
   const { location, classes } = props;
-  const questionnaireID = /questionnaire=([^&]+)/.exec(location.search);
+  const questionnaireID = /questionnaire=([^&]+)/.exec(location.search)?.[1];
   const pageNameWriter = usePageNameWriterContext();
 
   const entry = /Forms\/(.+)/.exec(location.pathname);
