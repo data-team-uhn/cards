@@ -74,7 +74,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>enrolled   = Enrolled			</name>
+				<name>enrolled</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -88,7 +88,7 @@
 				</property>
 			</node>
 			<node>
-				<name>withdrawn_study   = Withdrawn by study staff	</name>
+				<name>withdrawn_study</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -102,7 +102,7 @@
 				</property>
 			</node>
 			<node>
-				<name>withdrawn_subject   = Withdrawn by subject	</name>
+				<name>withdrawn_subject</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -116,7 +116,7 @@
 				</property>
 			</node>
 			<node>
-				<name>exited = Completed study</name>
+				<name>exited</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>

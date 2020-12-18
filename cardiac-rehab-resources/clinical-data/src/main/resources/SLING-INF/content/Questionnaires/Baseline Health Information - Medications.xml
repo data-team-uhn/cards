@@ -164,7 +164,7 @@
 				</property>
 			</node>
 			<node>
-				<name>Beta-blocker = Beta-blocker (e.g. metoprolol, atenolol, propranolol, etc) or non-dihydropyridine calcium channel blocker (e.g. diltiazem, verapamil, etc)</name>
+				<name>Beta-blocker</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1825,7 +1825,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>1</value>
+							<value>2</value>
 						</values>
 						<type>String</type>
 					</property>

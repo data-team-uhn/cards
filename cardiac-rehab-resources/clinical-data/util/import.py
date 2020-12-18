@@ -154,6 +154,8 @@ def process_options(question, row):
             date = "MM-dd-yyyy"
         if date == "MM/YYYY" or date == "MM-YYYY":
             date = "MM-yyyy"
+        if date == "YYYY":
+            date = "yyyy"
         question['dateFormat'] = date
     elif question['dataType'] == "time":
         question['dateFormat'] = row['Options (if applicable)']
@@ -193,7 +195,7 @@ def insert_options(question, row):
             question.update({'displayMode': 'list+input'})
         elif '=' in option:
             options = option.split('=')
-            answer_option = {option.replace("/", "-"): {
+            answer_option = {options[0].strip().replace("/", "-"): {
                 'jcr:primaryType': 'lfs:AnswerOption',
                 'label': options[1].strip(),
                 'value': options[0].strip()
@@ -213,10 +215,13 @@ DATA_TO_LFS_TYPE = {
     'datetime': 'date',
     'date': 'date',
     'string': 'text',
+    'string (single)': 'text',
     'string (multiple can be selected)': 'text',
     'boolean (true/false)': "boolean",
     'decimal': 'decimal',
+    'decimal (single)': 'decimal',
     'integer': 'long',
+    'integer (single)': 'long',
     'computed (decimal)': 'computed',
     'computed (integer)': 'computed',
     'time': 'time',
@@ -372,6 +377,8 @@ def csv_to_json(title):
                         prepare_conditional_string(value [5:], parent[question + 'Section'])
                         # The presence of a conditional will also prevent the question from being inserted into the main thing
                         del parent[question]
+                if row['Field Type'].endswith("(single)"):
+                    parent[question]['maxAnswers'] = 1
 
     if len(section) > 0:
         questionnaire[section['label']] = dict.copy(section)
