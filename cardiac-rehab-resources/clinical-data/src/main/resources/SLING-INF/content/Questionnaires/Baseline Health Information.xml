@@ -2346,6 +2346,11 @@
 					<value>None of the above</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>true</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 		<node>
@@ -2510,6 +2515,11 @@
 					<value>None of the above</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>true</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 		<node>
@@ -2590,6 +2600,11 @@
 					<value>No cancer history</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>true</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 		<node>
@@ -2669,6 +2684,11 @@
 					<name>value</name>
 					<value>None of the above</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>true</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 		</node>
@@ -3259,6 +3279,11 @@
 					<name>value</name>
 					<value>None of the above</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>true</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 		</node>

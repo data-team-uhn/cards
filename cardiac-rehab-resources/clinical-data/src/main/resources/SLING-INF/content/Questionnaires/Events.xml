@@ -1360,6 +1360,11 @@
 						<value>None</value>
 						<type>String</type>
 					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>true</value>
+						<type>Boolean</type>
+					</property>
 				</node>
 			</node>
 			<node>
@@ -1650,6 +1655,11 @@
 						<name>value</name>
 						<value>None</value>
 						<type>String</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>true</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
@@ -1951,6 +1961,11 @@
 						<name>value</name>
 						<value>None</value>
 						<type>String</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>true</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>

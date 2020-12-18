@@ -42,10 +42,12 @@ const GHOST_SENTINEL = "custom-input";
   * @param {func} onChange Callback for when an option is removed, receives as argument the value of the removed option
   * @param {Object} additionalInputProps additional props to be set on the input element
   * @param {Object} muiInputProps additional props to be forwarded to the MUI input element
+  * @param {Object} naValue if provided, any answer with this value will de-select all other selected options, and will be unselected if any other option is selected
+  * @param {Object} noneOfTheAboveValue if provided, any answer with this value will de-select all other pre-defined options, and will be unselected if any other option is selected
   * @param {bool} error indicates if the current selection is in a state of error
   */
 function MultipleChoice(props) {
-  let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, error, questionName, ...rest } = props;
+  let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
@@ -53,6 +55,11 @@ function MultipleChoice(props) {
     .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
     // Only extract the labels and internal values from the node
     .map(value => [value.label || value.value, value.value, true]);
+  // Locate an option referring to the "none of the above", if it exists
+  let naOption = naValue || Object.values(props.questionDefinition)
+    .find((value) => value['notApplicable'])?.["value"];
+  let noneOfTheAboveOption = noneOfTheAboveValue || Object.values(props.questionDefinition)
+    .find((value) => value['noneOfTheAbove'])?.["value"];
   const isBare = defaults.length === 0 && maxAnswers === 1;
   const isRadio = defaults.length > 0 && maxAnswers === 1;
   const isSelect = displayMode === "select";
@@ -86,7 +93,7 @@ function MultipleChoice(props) {
   let inputEl = null;
 
   let selectOption = (id, name, checked = false) => {
-    // When selecting a new option, remove the ["",""] answer, as it no longer has a purpose
+    // Selecting a radio button option will select only that option
     if (isRadio) {
       let defaultOption = defaults.filter((option) => {return option[VALUE_POS] === name || option[LABEL_POS] === name})[0];
       if (defaultOption) {
@@ -105,6 +112,29 @@ function MultipleChoice(props) {
       return unselect(id, name);
     }
 
+    // If the naOption is selected, all other elements are deselected and user-input options are cleared
+    if (naOption == id) {
+      setSelection([[name, id]]);
+      // Clear any user-input options
+      setOptions(all_options);
+      // OK to clear input, since they're removing everything else
+      return false;
+    } else if (noneOfTheAboveOption == id) {
+      // If the noneOfTheAboveOption is selected, other elements are deselected but user-input options remain
+      setSelection((old) => {
+        // Only keep options that are user-input
+        let defaultOptions = defaults.filter(option => option[IS_DEFAULT_POS]).map((option) => option[VALUE_POS]);
+        let newSelection = old.slice().filter((option) => !defaultOptions.includes(option[VALUE_POS]));
+        newSelection.push([name, id]);
+        console.log(newSelection);
+        return newSelection;
+      });
+      // OK to clear input (we more-or-less should never get here via a user-entered input)
+      // The only instance where the user input something but we trigger a "none of the above" is when they type
+      // the value corresponding to the "none of the above", which should clear the input anyway
+      return false;
+    }
+
     // Do not add anything if we are at our maximum number of selections
     if (maxAnswers > 0 && selection.length >= maxAnswers) {
       return;
@@ -120,6 +150,10 @@ function MultipleChoice(props) {
     // If we're inserting a new entry, we should never add the empty tracker
     newSelection = newSelection.filter((option) => {
       return (option[VALUE_POS] !== "" && option[LABEL_POS] !== "")
+        // And if we've gotten here and there's an "na" option, we remove it from the selection
+        && (!naOption || option[VALUE_POS] != naOption)
+        // The same goes for a "none of the above" option
+        && (!noneOfTheAboveOption || option[VALUE_POS] != noneOfTheAboveOption)
     });
 
     // Check if any of the predefined options matches the user input. If yes, select it instead of adding a new entry

@@ -844,6 +844,11 @@
 				<value>N/A</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>notApplicable</name>
+				<value>true</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 	</node>
 	<node>
