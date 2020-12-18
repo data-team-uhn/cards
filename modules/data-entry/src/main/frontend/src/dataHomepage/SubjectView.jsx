@@ -29,6 +29,7 @@ import {
   CircularProgress,
   Divider,
   IconButton,
+  Fab,
   Tab,
   Tabs,
   Tooltip,
@@ -38,12 +39,15 @@ import {
 import { Link } from 'react-router-dom';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import AddIcon from '@material-ui/icons/Add';
 import DeleteButton from "./DeleteButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 
 function SubjectView(props) {
   const { classes } = props;
+  const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ activeTab, setActiveTab ] = useState(0);
   const [ subjectTypes, setSubjectTypes] = useState([])
   const [ tabsLoading, setTabsLoading ] = useState(null);
@@ -100,10 +104,12 @@ function SubjectView(props) {
 
   return (
     <Card className={classes.subjectView}>
+      {!props.disableHeader &&
       <CardHeader
-        avatar={<Avatar className={classes.subjectViewAvatar}><AssignmentIndIcon/></Avatar>}
+        avatar={!props.disableAvatar && <Avatar className={classes.subjectViewAvatar}><AssignmentIndIcon/></Avatar>}
         title={<Typography variant="h6">Subjects</Typography>}
         action={
+          !props.expanded &&
           <Tooltip title="Expand">
             <Link to={"/content.html/Subjects"}>
               <IconButton>
@@ -113,6 +119,7 @@ function SubjectView(props) {
           </Tooltip>
         }
       />
+      }
       {
         tabsLoading
           ? <CircularProgress/>
@@ -137,6 +144,29 @@ function SubjectView(props) {
           : <Typography>No results</Typography>
       }
       </CardContent>
+      {props.expanded &&
+      <>
+        <div className={classes.mainPageAction}>
+          <div className={classes.newFormButtonWrapper}>
+            <Tooltip aria-label="add" title="New Subject">
+              <Fab
+                color="primary"
+                aria-label="add"
+                onClick={() => {setNewSubjectPopperOpen(true)}}
+              >
+                <AddIcon />
+              </Fab>
+            </Tooltip>
+          </div>
+        </div>
+        <NewSubjectDialog
+          onClose={() => { setNewSubjectPopperOpen(false);}}
+          onSubmit={() => { setNewSubjectPopperOpen(false);}}
+          openNewSubject={true}
+          open={newSubjectPopperOpen}
+        />
+      </>
+      }
     </Card>
   );
 }
