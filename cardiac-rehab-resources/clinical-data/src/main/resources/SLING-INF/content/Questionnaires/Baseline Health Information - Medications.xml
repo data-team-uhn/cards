@@ -281,7 +281,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>How many medications are prescribed?</value>
+				<value>Aside from beta-blockers, how many medications are prescribed?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -876,7 +876,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>1</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -945,7 +945,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>1</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1108,7 +1108,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>1</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1238,7 +1238,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>1</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1316,7 +1316,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>1</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1385,7 +1385,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>2</value>
+							<value>1</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1454,7 +1454,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>2</value>
+							<value>1</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1617,7 +1617,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>2</value>
+							<value>1</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1747,7 +1747,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>2</value>
+							<value>1</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1825,7 +1825,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>2</value>
+							<value>1</value>
 						</values>
 						<type>String</type>
 					</property>
