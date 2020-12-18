@@ -1029,7 +1029,7 @@
 					<type>String</type>
 				</property>
 				<property>
-					<name>noneOfTheAbove</name>
+					<name>notApplicable</name>
 					<value>true</value>
 					<type>Boolean</type>
 				</property>
@@ -1290,7 +1290,7 @@
 					<type>String</type>
 				</property>
 				<property>
-					<name>noneOfTheAbove</name>
+					<name>notApplicable</name>
 					<value>true</value>
 					<type>Boolean</type>
 				</property>
@@ -1479,7 +1479,7 @@
 					<type>String</type>
 				</property>
 				<property>
-					<name>noneOfTheAbove</name>
+					<name>notApplicable</name>
 					<value>true</value>
 					<type>Boolean</type>
 				</property>
@@ -1620,7 +1620,7 @@
 					<type>String</type>
 				</property>
 				<property>
-					<name>noneOfTheAbove</name>
+					<name>notApplicable</name>
 					<value>true</value>
 					<type>Boolean</type>
 				</property>
