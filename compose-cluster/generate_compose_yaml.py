@@ -243,9 +243,9 @@ if ENABLE_NCR:
 	yaml_obj['services']['neuralcr']['networks']['internalnetwork']['aliases'] = ['neuralcr']
 
 if args.external_mongo:
-	ext_mongo_address = input("Enter the address of the MongoDB server: ")
+	ext_mongo_address = input("Enter the address of the MongoDB server (ip, hostname, or domain name, optionally followed by port, e.g. mongo.localdomain:27017): ")
 	ext_mongo_credentials = input("Enter the username:password for the MongoDB server (leave blank for no password): ")
-	ext_mongo_db_name = input("Enter the Sling storage database name on the MongoDB server (default: db): ")
+	ext_mongo_db_name = input("Enter the Sling storage database name on the MongoDB server (default: sling): ")
 	yaml_obj['services']['lfsinitial']['environment'].append("EXTERNAL_MONGO_ADDRESS={}".format(ext_mongo_address))
 	if len(ext_mongo_credentials) != 0:
 		#Create the secrets directory if it does not exist
