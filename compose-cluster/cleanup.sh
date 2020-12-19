@@ -29,4 +29,7 @@ rm initializer/initialize_all.sh
 echo "Removing mongos/mongo-router.conf"
 rm mongos/mongo-router.conf
 
+echo "Removing secrets"
+rm -r secrets
+
 echo "Done"

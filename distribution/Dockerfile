@@ -18,6 +18,11 @@
 # Start from a small JRE8 base image
 FROM openjdk:8-jre-alpine
 
+# Install utilities for patching the JAR file, if such is necessary
+RUN apk add \
+  unzip \
+  zip
+
 # Optional: enable remote debugging at port 5005
 ENV DEBUG=
 
