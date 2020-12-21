@@ -19,9 +19,6 @@
 
 package ca.sickkids.ccm.lfs.cardiacrehab.internal.export;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -38,6 +35,11 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 public class NightlyExportTask implements Runnable
 {
@@ -193,6 +195,7 @@ public class NightlyExportTask implements Runnable
 
     private void output(SubjectContents input, String filename, String dateString)
     {
+        /*
         String path = String.format("%s/cards-exports/%s/", System.getProperty("user.home"), dateString);
         File directory = new File(path);
         directory.mkdirs();
@@ -200,6 +203,19 @@ public class NightlyExportTask implements Runnable
             file.write(input.getData());
             LOGGER.info("Exported {} to {}", input.getUrl(), path + filename);
         } catch (IOException e) {
+            LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
+        }
+        */
+        LOGGER.warn("Setting up EndpointConfiguration");
+        final EndpointConfiguration endpointConfig = new EndpointConfiguration("http://localhost:9000/", "us-west-1");
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+            .withEndpointConfiguration(endpointConfig)
+            .build();
+        try {
+            LOGGER.warn("START: s3.putObject()");
+            s3.putObject("sample", "test.txt", input.getData());
+            LOGGER.warn("END: s3.putObject()");
+        } catch (AmazonServiceException e) {
             LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
         }
     }
