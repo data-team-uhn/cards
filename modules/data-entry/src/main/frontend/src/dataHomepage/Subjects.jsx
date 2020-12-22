@@ -98,13 +98,8 @@ function Subjects(props) {
   return (
     <Grid container direction="column" spacing={4}>
       <Grid item className={classes.dashboardEntry}>
-         <Typography variant="h2">Subjects</Typography>
-      </Grid>
-      <Grid item>
         <SubjectView
           expanded
-          disableHeader
-          title=""
           columns={columns}
         />
       </Grid>

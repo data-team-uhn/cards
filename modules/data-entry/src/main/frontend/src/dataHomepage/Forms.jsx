@@ -76,13 +76,8 @@ function Forms(props) {
   return (
     <Grid container direction="column" spacing={4}>
       <Grid item className={classes.dashboardEntry}>
-        <Typography variant="h2">Forms</Typography>
-      </Grid>
-      <Grid item>
         <FormView
           expanded
-          disableAvatar
-          title=""
           columns={columns}
           questionnaire={questionnaireID}
         />
