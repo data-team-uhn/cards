@@ -42,7 +42,7 @@ import NewFormDialog from "./NewFormDialog.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function FormView(props) {
-  const { questionnaire, classes } = props;
+  const { questionnaire, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
   const [ activeTab, setActiveTab ] = useState(0);
   const [ title, setTitle ] = useState(typeof(props.title) != 'undefined' ? props.title : "Forms");
   const [ subtitle, setSubtitle ] = useState();
@@ -96,9 +96,9 @@ function FormView(props) {
 
   return (
     <Card className={classes.formView}>
-      {(!props.expanded || !props.disableHeader && !props.disableAvatar && title) &&
+      {(!expanded || !disableHeader && !disableAvatar && (title || questionnaire)) &&
       <CardHeader
-        avatar={!props.disableAvatar && <Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
+        avatar={!disableAvatar && <Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
         title={
           <>
             <Typography variant="h6">{title}</Typography>
@@ -106,7 +106,7 @@ function FormView(props) {
           </>
         }
         action={
-          !props.expanded &&
+          !expanded &&
           <Tooltip title="Expand">
             <Link to={"/content.html/Forms"}>
               <IconButton>
@@ -132,9 +132,9 @@ function FormView(props) {
           filters
           entryType={"Form"}
           actions={actions}
-          disableTopPagination={!props.topPagination}
+          disableTopPagination={!topPagination}
         />
-      {props.expanded &&
+      {expanded &&
         <div className={classes.mainPageAction}>
           <NewFormDialog presetPath={questionnairePath}>
             New form

@@ -46,7 +46,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 
 function SubjectView(props) {
-  const { classes } = props;
+  const { expanded, disableHeader, disableAvatar, topPagination, classes } = props;
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ activeTab, setActiveTab ] = useState(0);
   const [ subjectTypes, setSubjectTypes] = useState([])
@@ -104,9 +104,9 @@ function SubjectView(props) {
 
   return (
     <Card className={classes.subjectView}>
-      {!props.disableHeader &&
+      {!disableHeader &&
       <CardHeader
-        avatar={!props.disableAvatar && <Avatar className={classes.subjectViewAvatar}><AssignmentIndIcon/></Avatar>}
+        avatar={!disableAvatar && <Avatar className={classes.subjectViewAvatar}><AssignmentIndIcon/></Avatar>}
         title={<Typography variant="h6">Subjects</Typography>}
         action={
           !props.expanded &&
@@ -123,6 +123,8 @@ function SubjectView(props) {
       {
         tabsLoading
           ? <CircularProgress/>
+          : subjectTypes.length <= 1 ?
+          <></>
           : <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
               {subjectTypes.map((subject, index) => {
                 return <Tab label={subject['label'] || subject['@name']} key={"subject-" + index}/>;
@@ -139,12 +141,12 @@ function SubjectView(props) {
               defaultLimit={10}
               entryType={"Subject"}
               actions={actions}
-              disableTopPagination
+              disableTopPagination={!topPagination}
             />
           : <Typography>No results</Typography>
       }
       </CardContent>
-      {props.expanded &&
+      {expanded &&
       <>
         <div className={classes.mainPageAction}>
           <div className={classes.newFormButtonWrapper}>

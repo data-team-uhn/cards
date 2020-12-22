@@ -82,7 +82,6 @@ function Forms(props) {
         <FormView
           expanded
           disableAvatar
-          topPagination
           title=""
           columns={columns}
           questionnaire={questionnaireID}

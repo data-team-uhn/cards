@@ -104,7 +104,6 @@ function Subjects(props) {
         <SubjectView
           expanded
           disableHeader
-          topPagination
           title=""
           columns={columns}
         />
