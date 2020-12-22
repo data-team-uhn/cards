@@ -47,7 +47,7 @@ public class NightlyExport
     protected void activate(ComponentContext componentContext) throws Exception
     {
         LOGGER.info("NightlyExport activating");
-        ScheduleOptions options = this.scheduler.EXPR("0 * * * * ?");
+        ScheduleOptions options = this.scheduler.EXPR("30 23 * * * ?");
         options.name("NightlyExport");
         options.canRunConcurrently(true);
 
