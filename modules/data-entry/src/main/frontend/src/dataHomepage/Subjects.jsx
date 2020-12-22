@@ -17,16 +17,13 @@
 //  under the License.
 //
 import React, { useEffect, useState } from "react";
-import LiveTable from "./LiveTable.jsx";
 import Subject from "../questionnaire/Subject.jsx";
+import SubjectView from "./SubjectView.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "../questionnaire/Subject.jsx";
-import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
-import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles, ListItemText, Tooltip, Fab } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import { Button, Grid, Typography, withStyles } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import DeleteButton from "./DeleteButton.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 const tableColumns = [
@@ -63,12 +60,25 @@ function Subjects(props) {
   const { classes } = props;
   // fix issue with classes
 
-  let [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   // When a new subject is added, state will be updated and trigger a livetable refresh
   const [ requestFetchData, setRequestFetchData ] = useState(0);
   // subject types configured on the system
   let [ subjectTypes, setSubjectTypes ] = React.useState([]);
   let [ columns, setColumns ] = React.useState(tableColumns);
+
+  const entry = getSubjectIdFromPath(location.pathname);
+
+  // Clear the page name overwriting if moving from a specific Subject to the Subjects page
+  const pageNameWriter = usePageNameWriterContext();
+  useEffect(() => {
+    if (!entry) {
+      pageNameWriter("");
+    }
+  }, [entry]);
+
+  if (entry) {
+    return <Subject id={entry} contentOffset={props.contentOffset} />;
+  }
 
   // get subject types configured on the system
   if (subjectTypes.length === 0) {
@@ -85,65 +95,15 @@ function Subjects(props) {
       });
   }
 
-  const actions = [
-    DeleteButton
-  ]
-
-  const entry = getSubjectIdFromPath(location.pathname);
-
-  // Clear the page name overwriting if moving from a specific Subject to the Subjects page
-  const pageNameWriter = usePageNameWriterContext();
-  useEffect(() => {
-    if (!entry) {
-      pageNameWriter("");
-    }
-  }, [entry]);
-
-  if (entry) {
-    return <Subject id={entry} contentOffset={props.contentOffset} />;
-  }
-
   return (
-    <div>
-      <Card>
-        <CardHeader
-          title={
-            <Button className={classes.cardHeaderButton}>
-              Subjects
-            </Button>
-          }
-          action={
-          <div className={classes.mainPageAction}>
-            <div className={classes.newFormButtonWrapper}>
-              <Tooltip aria-label="add" title="New Subject">
-                <Fab
-                  color="primary"
-                  aria-label="add"
-                  onClick={() => {setNewSubjectPopperOpen(true)}}
-                >
-                  <AddIcon />
-                </Fab>
-              </Tooltip>
-            </div>
-          </div>
-          }
+    <Grid container direction="column" spacing={4}>
+      <Grid item className={classes.dashboardEntry}>
+        <SubjectView
+          expanded
+          columns={columns}
         />
-        <CardContent>
-          <LiveTable
-            columns={columns}
-            updateData={requestFetchData}
-            actions={actions}
-            entryType={"Subject"}
-          />
-        </CardContent>
-      </Card>
-      <NewSubjectDialog
-        onClose={() => { setNewSubjectPopperOpen(false);}}
-        onSubmit={() => { setNewSubjectPopperOpen(false);}}
-        openNewSubject={true}
-        open={newSubjectPopperOpen}
-        />
-    </div>
+      </Grid>
+    </Grid>
   );
 }
 

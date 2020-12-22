@@ -17,25 +17,18 @@
 //  under the License.
 //
 import React, { useEffect, useState } from "react";
-import LiveTable from "./LiveTable.jsx";
 import Form from "../questionnaire/Form.jsx";
 import { getHierarchy } from "../questionnaire/Subject.jsx";
 
-import { Button, Card, CardContent, CardHeader, Grid, Link, withStyles } from "@material-ui/core";
+import { Grid, Typography, withStyles } from "@material-ui/core";
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import NewFormDialog from "./NewFormDialog.jsx";
-import DeleteButton from "./DeleteButton.jsx";
+import FormView from "./FormView.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 function Forms(props) {
-  const { match, location, classes } = props;
-
-  const [ title, setTitle ] = useState("Forms");
-  const [ titleFetchSent, setFetchStatus ] = useState(false);
-  const [ questionnairePath, setQuestionnairePath ] = useState(undefined);
-  const [ questionnaireDetails, setQuestionnaireDetails ] = useState();
-  const questionnaireID = /questionnaire=([^&]+)/.exec(location.search);
+  const { location, classes } = props;
+  const questionnaireID = /questionnaire=([^&]+)/.exec(location.search)?.[1];
   const pageNameWriter = usePageNameWriterContext();
 
   const entry = /Forms\/(.+)/.exec(location.pathname);
@@ -51,29 +44,6 @@ function Forms(props) {
     return <Form id={entry[1]} key={location.pathname}/>;
   }
 
-  // Convert from a questionnaire ID to the title of the form we're editing
-  let getQuestionnaireTitle = (id) => {
-    setFetchStatus(true);
-    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Questionnaire] as n WHERE n.'jcr:uuid'='${id}'`))
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        setTitle(json["rows"][0]["title"]);
-        setQuestionnairePath(json["rows"][0]["@path"]);
-        setQuestionnaireDetails(json["rows"][0]);
-      });
-  }
-
-  let customUrl = undefined;
-  // Formulate a custom pagination request if a questionnaire ID is given
-  if (questionnaireID) {
-    customUrl='/Forms.paginate?fieldname=questionnaire&fieldvalue='
-            + encodeURIComponent(questionnaireID[1]);
-
-    // Also fetch the title if we haven't yet
-    if (!titleFetchSent) {
-      getQuestionnaireTitle(questionnaireID[1]);
-    }
-  }
   const columns = [
     {
       "key": "@name",
@@ -102,41 +72,17 @@ function Forms(props) {
       "format": "string",
     },
   ]
-  const actions = [
-    DeleteButton
-  ]
 
   return (
-    <Card>
-      <CardHeader
-        color={"warning"/* Does nothing */}
-        title={
-          <Button className={classes.cardHeaderButton}>
-            {title}
-          </Button>
-        }
-        action={
-        <div className={classes.mainPageAction}>
-          <NewFormDialog presetPath={questionnairePath}>
-            New form
-          </NewFormDialog>
-        </div>
-        }
-        classes={{
-          action: classes.newFormButtonHeader
-        }}
-      />
-      <CardContent>
-        <LiveTable
+    <Grid container direction="column" spacing={4}>
+      <Grid item className={classes.dashboardEntry}>
+        <FormView
+          expanded
           columns={columns}
-          customUrl={customUrl}
-          filters
-          joinChildren="lfs:Answer"
-          actions={actions}
-          entryType="Form"
-          />
-      </CardContent>
-    </Card>
+          questionnaire={questionnaireID}
+        />
+      </Grid>
+    </Grid>
   );
 }
 

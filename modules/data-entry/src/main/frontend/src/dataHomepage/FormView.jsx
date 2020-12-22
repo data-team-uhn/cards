@@ -38,11 +38,16 @@ import { Link } from 'react-router-dom';
 import DescriptionIcon from '@material-ui/icons/Description';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import DeleteButton from "./DeleteButton.jsx";
+import NewFormDialog from "./NewFormDialog.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function FormView(props) {
-  const { classes } = props;
+  const { questionnaire, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
   const [ activeTab, setActiveTab ] = useState(0);
+  const [ title, setTitle ] = useState(typeof(props.title) != 'undefined' ? props.title : "Forms");
+  const [ subtitle, setSubtitle ] = useState();
+  const [ questionnairePath, setQuestionnairePath ] = useState();
+  const [ qFetchSent, setQFetchStatus ] = useState(false);
 
   // Column configuration for the LiveTables
   const columns = [
@@ -68,12 +73,40 @@ function FormView(props) {
   ]
   const tabs = ["Completed", "Draft"];
 
+  let qFilter = undefined;
+
+  if (questionnaire) {
+    // Set the questionnaire filter for displayed forms
+    qFilter = '&fieldname=questionnaire&fieldvalue=' + encodeURIComponent(questionnaire);
+    // Also fetch the title and other info if we haven't yet
+    if (!qFetchSent) {
+      setQFetchStatus(true);
+      fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Questionnaire] as n WHERE n.'jcr:uuid'='${questionnaire}'`))
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        let qData = json["rows"][0];
+        if (qData) {
+          setTitle(qData["title"]);
+          setSubtitle(qData["description"]);
+          setQuestionnairePath(qData["@path"]);
+        }
+      });
+    }
+  }
+
   return (
     <Card className={classes.formView}>
+      {(!expanded || !disableHeader && !disableAvatar && (title || questionnaire)) &&
       <CardHeader
-        avatar={<Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
-        title={<Typography variant="h6">Forms</Typography>}
+        avatar={!disableAvatar && <Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
+        title={
+          <>
+            <Typography variant="h6">{title}</Typography>
+            <Typography variant="subtitle1">{subtitle}</Typography>
+          </>
+        }
         action={
+          !expanded &&
           <Tooltip title="Expand">
             <Link to={"/content.html/Forms"}>
               <IconButton>
@@ -83,6 +116,7 @@ function FormView(props) {
           </Tooltip>
         }
       />
+      }
       <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
         {tabs.map((value, index) => {
           return <Tab label={value}  key={"form-" + index} />;
@@ -91,15 +125,22 @@ function FormView(props) {
       <Divider />
       <CardContent>
         <LiveTable
-          columns={columns}
-          customUrl={`/Forms.paginate?descending=true${activeTab == tabs.indexOf("Draft") ? '&fieldname=statusFlags&fieldvalue=INCOMPLETE' : ''}`}
+          columns={props.columns || columns}
+          customUrl={`/Forms.paginate?descending=true${qFilter}${activeTab == tabs.indexOf("Draft") ? '&fieldname=statusFlags&fieldvalue=INCOMPLETE' : ''}`}
           defaultLimit={10}
           joinChildren="lfs:Answer"
           filters
           entryType={"Form"}
           actions={actions}
-          disableTopPagination
+          disableTopPagination={!topPagination}
         />
+      {expanded &&
+        <div className={classes.mainPageAction}>
+          <NewFormDialog presetPath={questionnairePath}>
+            New form
+          </NewFormDialog>
+        </div>
+      }
       </CardContent>
     </Card>
   );
