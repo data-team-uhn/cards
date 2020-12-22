@@ -103,7 +103,7 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-osgi</artifactId>
-      <version>1.11.383</version>
+      <version>1.11.924</version>
     </dependency>
   </dependencies>
 </project>
