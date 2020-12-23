@@ -16,7 +16,7 @@
 */
 
 import React from "react";
-
+import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 
 import { Avatar, Button, Link, Card, CardHeader, CardContent, Grid, Table, TableBody, TableHead, TableRow, TableCell} from "@material-ui/core";
@@ -109,7 +109,7 @@ class UsersManager extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, history } = this.props;
     const headerBackground = this.props.theme.palette.grey['200'];
 
     // Wait to figure out whether or not we are an admin
@@ -120,14 +120,15 @@ class UsersManager extends React.Component {
     if (!this.state.isAdmin) {
       return (
         <>
-          <ChangeUserPasswordDialogue isOpen={this.state.deployChangeUserPassword} handleClose={() => {this.setState({deployChangeUserPassword: false});}} name={this.state.currentUserName} requireOldPassword />
-          <Card className={classes.cardRoot}>
-            <CardContent>
-              <Button onClick={() => this.setState({deployChangeUserPassword: true})}>
-                Change password
-              </Button>
-            </CardContent>
-          </Card>
+          <ChangeUserPasswordDialogue
+            isOpen={true}
+            handleClose={() => {
+              this.setState({deployChangeUserPassword: false});
+              history.push("/content.html/Questionnaires/User");
+            }}
+            name={this.state.currentUserName}
+            requireOldPassword
+            />
         </>
       );
     }
@@ -213,4 +214,4 @@ class UsersManager extends React.Component {
   }
 }
 
-export default withStyles (userboardStyle, {withTheme: true})(UsersManager);
+export default withStyles (userboardStyle, {withTheme: true})(withRouter(UsersManager));
