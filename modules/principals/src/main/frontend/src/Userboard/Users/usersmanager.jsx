@@ -55,7 +55,7 @@ class UsersManager extends React.Component {
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((sessionInfo) => {
         let username = sessionInfo["userID"].toLowerCase();
-        if (this.props.users.find((user) => user["name"] == username)?.["isAdmin"]) {
+        if (this.props.users.find((user) => user["name"].toLowerCase() == username)?.["isAdmin"]) {
           this.setState( {isAdmin: true} );
         } else {
           this.setState( {currentUserName: sessionInfo["userID"]});
