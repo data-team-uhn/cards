@@ -43,8 +43,24 @@ class UsersManager extends React.Component {
 
       deployCreateUser: false,
       deployDeleteUser: false,
-      deployChangeUserPassword: false
+      deployChangeUserPassword: false,
+      isAdmin: false,
+      isLoading: true,
     };
+  }
+
+  componentDidMount() {
+    // Determine whether or not we are the admin user
+    fetch("/system/sling/info.sessionInfo.json")
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((sessionInfo) => {
+        if (sessionInfo["userID"] == "admin") {
+          this.setState( {isAdmin: true} );
+        } else {
+          this.setState( {currentUserName: sessionInfo["userID"]});
+        }
+      })
+      .finally(() => this.setState( {isLoading: false} ));
   }
 
   getUserGroups (userGroups){
@@ -95,6 +111,26 @@ class UsersManager extends React.Component {
   render() {
     const { classes } = this.props;
     const headerBackground = this.props.theme.palette.grey['200'];
+
+    // Wait to figure out whether or not we are an admin
+    if (this.state.isLoading) {
+      return (<></>);
+    }
+
+    if (!this.state.isAdmin) {
+      return (
+        <>
+          <ChangeUserPasswordDialogue isOpen={this.state.deployChangeUserPassword} handleClose={() => {this.setState({deployChangeUserPassword: false});}} name={this.state.currentUserName} requireOldPassword />
+          <Card className={classes.cardRoot}>
+            <CardContent>
+              <Button onClick={() => this.setState({deployChangeUserPassword: true})}>
+                Change password
+              </Button>
+            </CardContent>
+          </Card>
+        </>
+      );
+    }
 
     return (
       <div>

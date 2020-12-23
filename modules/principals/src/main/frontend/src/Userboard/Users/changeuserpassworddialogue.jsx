@@ -29,10 +29,10 @@ class FormFields extends React.Component {
 
   render() {
 
-    const { classes } = this.props;
+    const { classes, requireOldPassword } = this.props;
 
     const {
-      values: { newPwd, newPwdConfirm },
+      values: { newPwd, newPwdConfirm, oldPwd },
       errors,
       touched,
       handleSubmit,
@@ -53,6 +53,21 @@ class FormFields extends React.Component {
         onSubmit={handleSubmit}
         className={classes.form}
       >
+        { requireOldPassword &&
+          <TextField
+            id="oldPwd"
+            name="oldPwd"
+            helperText={touched.oldPwd ? errors.oldPwd : ""}
+            error={touched.oldPwd && Boolean(errors.oldPwd)}
+            label="Old Password"
+            fullWidth
+            type="password"
+            value={oldPwd}
+            onChange={change.bind(null, "oldPwd")}
+            className={classes.form}
+            required
+          />
+        }
         <TextField
           id="newPwd"
           name="newPwd"
@@ -110,7 +125,7 @@ class ChangeUserPasswordDialogue extends React.Component {
         this.handleCloseDialog = this.handleCloseDialog.bind(this);
     }
 
-    handlePasswordChange({ newPwd, newPwdConfirm }) {
+    handlePasswordChange({ newPwd, newPwdConfirm, oldPwd }) {
         // Important note about native fetch, it does not reject failed
         // HTTP codes, it'll only fail when network error
         // Therefore, you must handle the error code yourself.
@@ -126,6 +141,9 @@ class ChangeUserPasswordDialogue extends React.Component {
         let formData = new FormData();
         formData.append('newPwd', newPwd);
         formData.append('newPwdConfirm', newPwdConfirm);
+        if (oldPwd) {
+          formData.append('oldPwd', oldPwd);
+        }
         let url = "/system/userManager/user/" + this.props.name + ".changePassword.html";
 
         // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
@@ -149,17 +167,24 @@ class ChangeUserPasswordDialogue extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, requireOldPassword } = this.props;
         const values = { newPwd: "", newPwdConfirm: "" };
 
-        const validationSchema = Yup.object({
+        let validationSchema = {
           newPwd: Yup.string("")
             .min(8, "Password must contain at least 8 characters")
             .required("Enter new password"),
           newPwdConfirm: Yup.string("Enter new password")
             .required("Confirm new password")
             .oneOf([Yup.ref("newPwd")], "New password does not match"),
-        });
+        };
+
+        if (requireOldPassword) {
+          validationSchema['oldPwd'] = Yup.string("Enter old password")
+            .required("Enter old password");
+        }
+
+        const validationSchemaObj = Yup.object(validationSchema);
 
         return (
             <Dialog
@@ -171,9 +196,9 @@ class ChangeUserPasswordDialogue extends React.Component {
                     <Grid container>
                         {this.state.error && <Typography component="h2" className={classes.errorMessage}>{this.state.error}</Typography>}
                         <Formik
-                            render={props => <FormFieldsComponent {...props} />}
+                            render={props => <FormFieldsComponent {...props} requireOldPassword={requireOldPassword} />}
                             initialValues={values}
-                            validationSchema={validationSchema}
+                            validationSchema={validationSchemaObj}
                             onSubmit={this.handlePasswordChange}
                             onReset={this.handleCloseDialog}
                             ref={el => (this.form = el)}
