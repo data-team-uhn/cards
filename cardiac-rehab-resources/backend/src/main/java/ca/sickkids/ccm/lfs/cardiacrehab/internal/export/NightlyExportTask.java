@@ -19,9 +19,6 @@
 
 package ca.sickkids.ccm.lfs.cardiacrehab.internal.export;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -38,6 +35,14 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 public class NightlyExportTask implements Runnable
 {
@@ -69,7 +74,7 @@ public class NightlyExportTask implements Runnable
                     "%s_formData_%s.json",
                     cleanString(identifier.getParticipantId()),
                     fileDateString);
-                this.output(subjectContents, filename, fileDateString);
+                this.output(subjectContents, filename);
             }
         }
     }
@@ -191,15 +196,25 @@ public class NightlyExportTask implements Runnable
         }
     }
 
-    private void output(SubjectContents input, String filename, String dateString)
+    private void output(SubjectContents input, String filename)
     {
-        String path = String.format("%s/cards-exports/%s/", System.getProperty("user.home"), dateString);
-        File directory = new File(path);
-        directory.mkdirs();
-        try (FileWriter file = new FileWriter(path + filename)) {
-            file.write(input.getData());
-            LOGGER.info("Exported {} to {}", input.getUrl(), path + filename);
-        } catch (IOException e) {
+        final String s3EndpointUrl = System.getenv("S3_ENDPOINT_URL");
+        final String s3EndpointRegion = System.getenv("S3_ENDPOINT_REGION");
+        final String s3BucketName = System.getenv("S3_BUCKET_NAME");
+        final String awsKey = System.getenv("AWS_KEY");
+        final String awsSecret = System.getenv("AWS_SECRET");
+        final EndpointConfiguration endpointConfig =
+            new EndpointConfiguration(s3EndpointUrl, s3EndpointRegion);
+        final AWSCredentials credentials = new BasicAWSCredentials(awsKey, awsSecret);
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+            .withEndpointConfiguration(endpointConfig)
+            .withPathStyleAccessEnabled(true)
+            .withCredentials(new AWSStaticCredentialsProvider(credentials))
+            .build();
+        try {
+            s3.putObject(s3BucketName, filename, input.getData());
+            LOGGER.info("Exported {} to {}", input.getUrl(), filename);
+        } catch (AmazonServiceException e) {
             LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
         }
     }

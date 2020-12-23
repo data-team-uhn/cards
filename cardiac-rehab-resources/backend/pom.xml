@@ -50,12 +50,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <!-- This will automatically add an [artifacts] entry with the jar produced by this module in the provisioning file -->
-          <attach>
-            <type>jar</type>
-          </attach>
-        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -105,6 +99,11 @@
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-osgi</artifactId>
+      <version>1.11.924</version>
     </dependency>
   </dependencies>
 </project>
