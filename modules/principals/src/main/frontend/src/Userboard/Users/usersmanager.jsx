@@ -54,7 +54,7 @@ class UsersManager extends React.Component {
     fetch("/system/sling/info.sessionInfo.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((sessionInfo) => {
-        if (sessionInfo["userID"] == "admin") {
+        if (sessionInfo["userID"].toLowerCase() == "admin") {
           this.setState( {isAdmin: true} );
         } else {
           this.setState( {currentUserName: sessionInfo["userID"]});
