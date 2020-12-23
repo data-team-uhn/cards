@@ -30,9 +30,10 @@ ENV DEBUG=
 ENV DEV=
 
 # Put everything in /opt/lfs
-RUN mkdir -p /opt/lfs/
+RUN mkdir -p /opt/lfs/sling/
 WORKDIR /opt/lfs/
 COPY target/${project.artifactId}-${project.version}.jar .
+COPY logback.xml ./sling/
 
 # This is where Sling stores its data
 # Make this a volume which can be persisted between different container versions
