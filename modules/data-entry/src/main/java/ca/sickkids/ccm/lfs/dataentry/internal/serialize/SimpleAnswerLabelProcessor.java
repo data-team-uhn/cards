@@ -18,10 +18,14 @@
  */
 package ca.sickkids.ccm.lfs.dataentry.internal.serialize;
 
+import java.util.Collection;
 import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -91,17 +95,30 @@ public class SimpleAnswerLabelProcessor
      *
      * @return the question answer associated with this question
      */
-    public String getAnswerLabel(final Node node, final Node question)
+    public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
             String value = node.getProperty(PROP_VALUE).getValue().toString();
             if (question != null && question.hasProperty(PROP_UNITS)) {
                 value = value + " " + question.getProperty(PROP_UNITS).getString();
             }
-            return value;
+            return Json.createValue(value);
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
         return null;
+    }
+
+    /**
+     * Convert list to JsonArray.
+     *
+     * @param list the list of items to convert
+     * @return the JsonArray
+     */
+    public JsonArray createJsonArrayFromList(Collection<String> list)
+    {
+        JsonArrayBuilder jsonArray = Json.createArrayBuilder();
+        list.stream().forEach(item -> jsonArray.add(item));
+        return jsonArray.build();
     }
 }

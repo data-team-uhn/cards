@@ -24,6 +24,7 @@ import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -92,14 +93,14 @@ public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     }
 
     @Override
-    public String getAnswerLabel(final Node node, final Node question)
+    public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
             if (question != null) {
                 Calendar rawValue = node.getProperty(PROP_VALUE).getDate();
                 SimpleDateFormat format = new SimpleDateFormat(question.getProperty("dateFormat").getString());
                 format.setTimeZone(rawValue.getTimeZone());
-                return format.format(rawValue.getTime());
+                return Json.createValue(format.format(rawValue.getTime()));
             }
         } catch (final RepositoryException ex) {
             // Really shouldn't happen

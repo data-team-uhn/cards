@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -39,6 +40,12 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class BooleanLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
+    private static final String YES_LABEL = "yesLabel";
+
+    private static final String NO_LABEL = "noLabel";
+
+    private static final String UNKNOWN_LABEL = "unknownLabel";
+
     @Override
     public String getName()
     {
@@ -90,11 +97,27 @@ public class BooleanLabelProcessor extends SimpleAnswerLabelProcessor implements
     }
 
     @Override
-    public String getAnswerLabel(final Node node, final Node question)
+    public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
             int rawValue = (int) node.getProperty(PROP_VALUE).getLong();
-            return BooleanUtils.toString(BooleanUtils.toBooleanObject(rawValue, 1, 0, -1), "Yes", "No", "Unknown");
+            String yesLabel = "Yes";
+            String noLabel = "No";
+            String unknownLabel = "Unknown";
+
+            if (question != null) {
+                if (question.hasProperty(YES_LABEL)) {
+                    yesLabel = question.getProperty(YES_LABEL).getString();
+                }
+                if (question.hasProperty(NO_LABEL)) {
+                    noLabel = question.getProperty(NO_LABEL).getString();
+                }
+                if (question.hasProperty(UNKNOWN_LABEL)) {
+                    unknownLabel = question.getProperty(UNKNOWN_LABEL).getString();
+                }
+            }
+            Boolean value = BooleanUtils.toBooleanObject(rawValue, 1, 0, -1);
+            return Json.createValue(BooleanUtils.toString(value, yesLabel, noLabel, unknownLabel));
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }

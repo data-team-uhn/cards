@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -89,10 +90,10 @@ public class PedigreeLabelProcessor extends SimpleAnswerLabelProcessor implement
     }
 
     @Override
-    public String getAnswerLabel(final Node node, final Node question)
+    public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
-            return node.getProperty(PROP_VALUE).getValues()[1].toString();
+            return Json.createValue(node.getProperty(PROP_VALUE).getValues()[1].toString());
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }

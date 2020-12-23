@@ -18,8 +18,8 @@
  */
 package ca.sickkids.ccm.lfs.dataentry.internal.serialize;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.jcr.Node;
@@ -29,7 +29,6 @@ import javax.jcr.Value;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
@@ -94,35 +93,35 @@ public class VocabularyLabelProcessor extends SimpleAnswerLabelProcessor impleme
     }
 
     @Override
-    public String getAnswerLabel(final Node node, final Node question)
+    public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
-            List<String> propsSet = new ArrayList<>();
-            List<String> labelSet = new ArrayList<>();
+            Map<String, String> propsMap = new HashMap<>();
 
             Property nodeProp = node.getProperty(PROP_VALUE);
             if (nodeProp.isMultiple()) {
                 for (Value value : nodeProp.getValues()) {
-                    propsSet.add(value.getString());
+                    propsMap.put(value.getString(), value.getString());
                 }
             } else {
-                propsSet.add(nodeProp.getString());
+                propsMap.put(nodeProp.getString(), nodeProp.getString());
             }
 
-            for (String value : propsSet) {
+            if (question == null) {
+                return createJsonArrayFromList(propsMap.values());
+            }
+
+            for (String value : propsMap.keySet()) {
                 if (value.startsWith("/Vocabularies/")) {
                     Node term = node.getSession().getNode(value);
                     String label = term.getProperty("label").getValue().toString();
                     if (label != null) {
-                        labelSet.add(label);
+                        propsMap.put(value, label);
                     }
                 }
             }
 
-            if (!labelSet.isEmpty()) {
-                return StringUtils.join(labelSet, ", ");
-            }
-            return StringUtils.join(propsSet, ", ");
+            return createJsonArrayFromList(propsMap.values());
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }

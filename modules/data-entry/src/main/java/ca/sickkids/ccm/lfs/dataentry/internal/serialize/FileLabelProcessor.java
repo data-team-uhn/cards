@@ -28,7 +28,6 @@ import javax.jcr.RepositoryException;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
@@ -100,18 +99,18 @@ public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     }
 
     @Override
-    public String getAnswerLabel(final Node node, final Node question)
+    public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
             List<String> names = new ArrayList<>();
-            NodeIterator childNodes = node.getNodes("*.csv");
+            NodeIterator childNodes = node.getNodes("*.*");
             while (childNodes.hasNext()) {
                 Node childNode = childNodes.nextNode();
                 if (childNode.isNodeType("nt:file")) {
                     names.add(childNode.getName());
                 }
             }
-            return StringUtils.join(names, ", ");
+            return createJsonArrayFromList(names);
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }

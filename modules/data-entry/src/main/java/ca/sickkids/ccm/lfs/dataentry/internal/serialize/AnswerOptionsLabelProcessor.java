@@ -18,8 +18,8 @@
  */
 package ca.sickkids.ccm.lfs.dataentry.internal.serialize;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.jcr.Node;
@@ -30,7 +30,6 @@ import javax.jcr.Value;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
@@ -95,58 +94,59 @@ public class AnswerOptionsLabelProcessor extends SimpleAnswerLabelProcessor impl
     }
 
     @Override
-    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NestedIfDepth"})
-    public String getAnswerLabel(final Node node, final Node question)
+    public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
-            List<String> propsSet = new ArrayList<>();
-            List<String> labelSet = new ArrayList<>();
+            Map<String, String> propsMap = new HashMap<>();
 
             Property nodeProp = node.getProperty(PROP_VALUE);
             if (nodeProp.isMultiple()) {
                 for (Value value : nodeProp.getValues()) {
-                    propsSet.add(value.getString());
+                    propsMap.put(value.getString(), value.getString());
                 }
             } else {
-                propsSet.add(nodeProp.getString());
+                propsMap.put(nodeProp.getString(), nodeProp.getString());
             }
 
-            if (question != null) {
-
-                NodeIterator childNodes = question.getNodes();
-                if (childNodes.getSize() > 0) {
-
-                    while (childNodes.hasNext()) {
-                        Node optionNode = childNodes.nextNode();
-                        if (!"lfs:AnswerOption".equals(optionNode.getPrimaryNodeType().getName())
-                                || !optionNode.hasProperty(PROP_VALUE)) {
-                            continue;
-                        }
-
-                        String option = optionNode.getProperty(PROP_VALUE).getString();
-                        if (propsSet.contains(option)) {
-                            if (optionNode.hasProperty(PROP_LABEL)) {
-                                labelSet.add(optionNode.getProperty(PROP_LABEL).getString());
-                            } else {
-                                labelSet.add(option);
-                            }
-                        }
-
-                        if (propsSet.size() == labelSet.size()) {
-                            break;
-                        }
-                    }
-                }
+            if (question == null) {
+                return createJsonArrayFromList(propsMap.values());
             }
 
-            if (!labelSet.isEmpty()) {
-                return StringUtils.join(labelSet, ", ");
-            }
-            return StringUtils.join(propsSet, ", ");
+            processOptions(question, propsMap);
+
+            return createJsonArrayFromList(propsMap.values());
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
         return null;
     }
 
+    private void processOptions(final Node question, Map<String, String> propsMap)
+    {
+        try {
+            NodeIterator childNodes = question.getNodes();
+            if (childNodes.getSize() > 0) {
+                int count = 0;
+                while (childNodes.hasNext()) {
+                    Node optionNode = childNodes.nextNode();
+                    if (!"lfs:AnswerOption".equals(optionNode.getPrimaryNodeType().getName())
+                            || !optionNode.hasProperty(PROP_VALUE)) {
+                        continue;
+                    }
+
+                    String option = optionNode.getProperty(PROP_VALUE).getString();
+                    if (propsMap.containsKey(option) && optionNode.hasProperty(PROP_LABEL)) {
+                        propsMap.put(option, optionNode.getProperty(PROP_LABEL).getString());
+                        count++;
+                    }
+
+                    if (propsMap.size() == count) {
+                        break;
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            // Really shouldn't happen
+        }
+    }
 }
