@@ -62,9 +62,9 @@ then
 
   #Do the patching ...
   echo -ne 's/\mongouri="mongodb:\/\/mongo:27017\"/mongouri=\"mongodb:\/\/' > script.sed
-  if [ -e /run/secrets/mongo_credentials ]
+  if [ ! -z $MONGO_AUTH ]
   then
-    cat /run/secrets/mongo_credentials >> script.sed
+    echo -ne "$MONGO_AUTH" >> script.sed
     echo -ne '@' >> script.sed
   fi
   echo -ne "$EXTERNAL_MONGO_ADDRESS" >> script.sed
