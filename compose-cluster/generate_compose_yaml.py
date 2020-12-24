@@ -31,6 +31,7 @@ argparser = argparse.ArgumentParser()
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
 argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
+argparser.add_argument('--custom_env_file', help='Enable a custom file with environment variables')
 argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer service to the cluster', action='store_true')
 argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of MongoDB) as the back-end for Oak/JCR', action='store_true')
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
@@ -219,6 +220,9 @@ yaml_obj['services']['lfsinitial']['networks'] = {}
 yaml_obj['services']['lfsinitial']['networks']['internalnetwork'] = {}
 yaml_obj['services']['lfsinitial']['networks']['internalnetwork']['aliases'] = ['lfsinitial']
 
+if args.custom_env_file:
+    yaml_obj['services']['lfsinitial']['env_file'] = args.custom_env_file
+
 yaml_obj['services']['lfsinitial']['environment'] = []
 yaml_obj['services']['lfsinitial']['environment'].append("INITIAL_SLING_NODE=true")
 if not (args.oak_filesystem or args.external_mongo):
@@ -248,12 +252,7 @@ if args.external_mongo:
 	ext_mongo_db_name = input("Enter the Sling storage database name on the MongoDB server (default: sling): ")
 	yaml_obj['services']['lfsinitial']['environment'].append("EXTERNAL_MONGO_ADDRESS={}".format(ext_mongo_address))
 	if len(ext_mongo_credentials) != 0:
-		#Create the secrets directory if it does not exist
-		if not os.path.exists('secrets'):
-			os.mkdir('secrets')
-		with open('secrets/mongo_credentials', 'w') as f_mongo_creds:
-			f_mongo_creds.write(ext_mongo_credentials)
-		yaml_obj['services']['lfsinitial']['volumes'] = ["./secrets:/run/secrets:ro"]
+		yaml_obj['services']['lfsinitial']['environment'].append("MONGO_AUTH={}".format(ext_mongo_credentials))
 
 	if len(ext_mongo_db_name) != 0:
 		yaml_obj['services']['lfsinitial']['environment'].append("CUSTOM_MONGO_DB_NAME={}".format(ext_mongo_db_name))
