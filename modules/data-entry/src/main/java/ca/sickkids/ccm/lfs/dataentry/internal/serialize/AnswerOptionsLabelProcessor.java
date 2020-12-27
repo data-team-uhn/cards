@@ -18,7 +18,7 @@
  */
 package ca.sickkids.ccm.lfs.dataentry.internal.serialize;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -27,6 +27,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -97,7 +98,7 @@ public class AnswerOptionsLabelProcessor extends SimpleAnswerLabelProcessor impl
     public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
-            Map<String, String> propsMap = new HashMap<>();
+            Map<String, String> propsMap = new LinkedHashMap<>();
 
             Property nodeProp = node.getProperty(PROP_VALUE);
             if (nodeProp.isMultiple()) {
@@ -113,6 +114,10 @@ public class AnswerOptionsLabelProcessor extends SimpleAnswerLabelProcessor impl
             }
 
             processOptions(question, propsMap);
+
+            if (propsMap.size() == 1) {
+                return Json.createValue((String) propsMap.values().toArray()[0]);
+            }
 
             return createJsonArrayFromList(propsMap.values());
         } catch (RepositoryException e) {
