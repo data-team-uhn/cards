@@ -23,13 +23,6 @@ import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
 import headerStyle from "../../headerStyle.jsx";
 
 function Header({ ...props }) {
-  // Create the "brand", i.e. the route taken to get to the current page
-  // (Usually displayed at the top left)
-  function makeBrand() {
-    var matching_routes = props.routes.filter((route) => props.location.pathname === route["lfs:targetURL"]);
-    return matching_routes?.[0]?.["lfs:extensionName"] || " ";
-  }
-
   const { classes, color } = props;
   const appBarClasses = classNames({
     [" " + classes[color]]: color
@@ -38,12 +31,7 @@ function Header({ ...props }) {
   return (
     <AppBar className={classes.appBar + appBarClasses}>
       <Toolbar className={classes.container}>
-        {/* Here we create navbar brand, based on route name */}
-        <div className={classes.flex}>
-          <Button href="#" className={classes.title}>
-            {makeBrand()}
-          </Button>
-        </div>
+        <div className={classes.flex} />
         {/* While the screen is wide enough, display the navbar at the topright */}
         <Hidden smDown implementation="css">
           <AdminNavbarLinks closeSidebar={props.handleDrawerToggle} />
