@@ -79,7 +79,7 @@ function Answer (props) {
           <input type="hidden" name={`${answerPath}/value@TypeHint`} value={valueType}></input>
           {answers.map( (element, index) => {
             return (
-              <input type="hidden" name={`${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS]} value={element[VALUE_POS]}></input>
+              <input type="hidden" name={`${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS] + "" + index} value={element[VALUE_POS]}></input>
               );
           })}
           {

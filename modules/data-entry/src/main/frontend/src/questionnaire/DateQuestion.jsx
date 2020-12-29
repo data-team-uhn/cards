@@ -34,23 +34,29 @@ import AnswerComponentManager from "./AnswerComponentManager";
 
 export const MONTH_FORMATS = [
   "yyyy-MM",
-  "MM-yyyy"
+  "MM-yyyy",
+  "yyyy/MM",
+  "MM/yyyy"
 ]
 
 export const DATE_FORMATS = [
   "yyyy",
+  "yyyy-MM-DD",
   "yyyy-MM-dd",
+  "MM-DD-yyyy",
   "MM-dd-yyyy"
 ].concat(MONTH_FORMATS);
 
 export const DATETIME_FORMATS = [
+  "yyyy-MM-DD HH:mm",
   "yyyy-MM-dd HH:mm",
+  "yyyy-MM-DD HH:mm:ss",
   "yyyy-MM-dd HH:mm:ss"
 ]
 
 const TIMESTAMP_TYPE = "timestamp";
 const INTERVAL_TYPE = "interval";
-const slingDateFormat = "yyyy-MM-dd HH:mm:ss";
+const slingDateFormat = "yyyy-MM-DDTHH:mm:ss";
 
 const ALLOWABLE_DATETIME_FORMATS = DATE_FORMATS.concat(DATETIME_FORMATS)
 
@@ -72,6 +78,8 @@ export function amendMoment(date, format) {
     'M':'year'
   };
   let truncateTo;
+  // Both 'd' and 'D' should truncate to month
+  format = format.replaceAll("D","d");
   for (let [formatSpecifier, targetPrecision] of Object.entries(truncate)) {
     if (format.indexOf(formatSpecifier) < 0) {
       truncateTo = targetPrecision;
@@ -82,15 +90,17 @@ export function amendMoment(date, format) {
 }
 
 // Convert a moment string to a month display
-function momentStringToDisplayMonth(displayFormat, value) {
-  value = value.replace('-','/');
-
+function momentStringToDisplayMonth(dateFormat, value) {
   // Switch month and year if required as Moment returns a fixed order
-  let monthIndex = displayFormat.toLowerCase().indexOf('m');
+  let monthIndex = dateFormat.indexOf('MM');
   if (monthIndex === 0) {
+    let separator = dateFormat[2];
     // Switch back from moment supported yyyy/mm to desired mm/yyyy.
-    value = [value.slice(5, 7), '/', value.slice(0, 4)].join('');
-  } else if (value.length > 7) {
+    value = [value.slice(5, 7), separator, value.slice(0, 4)].join('');
+  } else if (monthIndex === 5) {
+    value = value.replaceAll("-", dateFormat[4]);
+  }
+  if (value.length > 7) {
     // Cut off any text beyond "yyyy/mm"
     value = value.substring(0, 7);
   }
@@ -98,26 +108,36 @@ function momentStringToDisplayMonth(displayFormat, value) {
 }
 
 // Format a DateAnswer given the given dateFormat
-export function formatDateAnswer(dateFormat, value) {
-  dateFormat = dateFormat || "yyyy-MM-dd";
-  let date = amendMoment(moment(value), dateFormat);
-  let isMonth = MONTH_FORMATS.includes(dateFormat);
-  let isDate = DATE_FORMATS.includes(dateFormat);
+export function formatDateAnswer(dateFormat, value, forDisplay = true) {
+  if (!value || value.length === 0) {
+    return "";
+  }
+  if (Array.isArray(value)) {
+    return `${formatDateAnswer(dateFormat, value[0], forDisplay)} to ${formatDateAnswer(dateFormat, value[1], forDisplay)}`;
+  }
   if (dateFormat === DATE_FORMATS[0]) {
     // Year-only dates are displayed like a number
     return value;
-  } else if (isMonth) {
+  }
+  dateFormat = dateFormat || "yyyy-MM-dd";
+  let date = amendMoment(value, dateFormat);
+  let isMonth = MONTH_FORMATS.includes(dateFormat);
+  let isDate = DATE_FORMATS.includes(dateFormat);
+  if (isMonth) {
     return momentStringToDisplayMonth(
       dateFormat,
       !date.isValid() ? "" :
       date.format(moment.HTML5_FMT.MONTH)
       );
+  } else if (forDisplay) {
+    return date.format(dateFormat);
   } else {
     let content = isDate ? date.format(moment.HTML5_FMT.DATE) :
       date.format(moment.HTML5_FMT.DATETIME_LOCAL);
-    return content.replaceAll('-','/');
+    return content;
   }
 }
+
 // Component that renders a date/time question
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
@@ -126,7 +146,6 @@ export function formatDateAnswer(dateFormat, value) {
 // text: the question to be displayed
 // type: "timestamp" for a single date or "interval" for two dates
 // dateFormat: yyyy, yyyy-MM, yyyy-MM-dd, yyyy-MM-dd hh:mm, yyyy-MM-dd hh:mm:ss
-// displayFormat (defaults to dateFormat)
 // lowerLimit: lower date limit (inclusive) given as an object or string parsable by moment()
 // upperLimit: upper date limit (inclusive) given as an object or string parsable by moment()
 // Other options are passed to the <question> widget
@@ -140,7 +159,7 @@ export function formatDateAnswer(dateFormat, value) {
 //  type="timestamp"
 //  />
 function DateQuestion(props) {
-  let {existingAnswer, displayFormat, classes, ...rest} = props;
+  let {existingAnswer, classes, ...rest} = props;
   let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy-MM-dd", minAnswers: 0, type: TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
 
   // If we're given a year, instead supply the NumberQuestion widget
@@ -160,85 +179,107 @@ function DateQuestion(props) {
     );
   }
 
-  let currentStartValue = existingAnswer && existingAnswer[1].value && Array.of(existingAnswer[1].value).flat()[0].split("T")[0] || null;
-
+  let startValues = existingAnswer && existingAnswer[1].value || "";
   const isMonth = MONTH_FORMATS.includes(dateFormat);
   const isDate = DATE_FORMATS.includes(dateFormat);
 
-  const [selectedDate, changeDate] = useState(amendMoment(moment(currentStartValue), slingDateFormat));
-  // FIXME There's no way to store the end date currently. Maybe add existingAnswer[1].endValue?
-  const [selectedEndDate, changeEndDate] = useState(amendMoment(moment(), slingDateFormat));
+  const [ displayedDate, setDisplayedDate ] = useState(formatDateAnswer(
+    dateFormat,
+    typeof(startValues) === "object" ? startValues[0] : startValues.replace(/-[0-9]{2}:[0-9]{2}$/gm,
+    ''), isMonth));
+  const [ displayedEndDate, setDisplayedEndDate ] = useState(formatDateAnswer(
+    dateFormat,
+    typeof(startValues) === "object" ? startValues[1].replace(/-[0-9]{2}:[0-9]{2}$/gm,
+    '') : "", isMonth));
+  const upperLimitMoment = upperLimit ? amendMoment(moment(upperLimit), slingDateFormat) : null;
+  const lowerLimitMoment = lowerLimit ? amendMoment(moment(lowerLimit), slingDateFormat) : null;
+
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid date");
-  const [monthDateString, setMonthDateString] = useState("");
-  const [endMonthDateString, setEndMonthDateString] = useState("");
-  const upperLimitMoment = amendMoment(moment(upperLimit), slingDateFormat);
-  const lowerLimitMoment = amendMoment(moment(lowerLimit), slingDateFormat);
-  const monthRegExp = "1[0-2]|0?[1-9]";
-  const strictMonthRegExp = "1[0-2]|0[1-9]";
-  const yearRegExp = "\\d{4}";
+
   let inputRegExp = new RegExp();
   let strictInputRegExp = new RegExp();
 
   if (isMonth) {
-    // Create a user friendly displayFormat and a sling-compatible dateFormat
-    if (typeof displayFormat === "undefined") {
-      displayFormat = dateFormat.replace('-', '/');
-    }
-    dateFormat = DATE_FORMATS[1];
+    const yearRegExp = "\\d{4}";
     // Create a RegExp to test for the display format
-    let regExpString = `^${displayFormat.toLowerCase().replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&')}$`;
-    inputRegExp = new RegExp(regExpString.replace("yyyy", `(${yearRegExp})`).replace("mm", `(${monthRegExp})`));
-    strictInputRegExp = new RegExp(regExpString.replace("yyyy", `(${yearRegExp})`).replace("mm", `(${strictMonthRegExp})`));
-  } else if (typeof displayFormat === "undefined") {
-    // The default value of displayFormat for a non-month date, if not given, is dateFormat's value
-    displayFormat = dateFormat;
+    let regExpString = `^${dateFormat.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`;
+    inputRegExp = new RegExp(regExpString.replace("yyyy", `(${yearRegExp})`).replace("MM", `(1[0-2]|0?[1-9])`));
+    strictInputRegExp = new RegExp(regExpString.replace("yyyy", `(${yearRegExp})`).replace("MM", `(1[0-2]|0[1-9])`));
   }
 
-  // Check that the given date is within the upper/lower limit (if given)
-  let boundDate = (date) => {
-    if (upperLimit && upperLimitMoment < date) {
+  let onChange = (value, isEnd) => {
+    if (isMonth) {
+      setDate(value, isEnd);
+    } else {
+      processChange(value, isEnd);
+    }
+  }
+
+  let onBlur = (value, isEnd) => {
+    if (isMonth && validateMonthString(value)) {
+      processChange(value, isEnd);
+    }
+  }
+
+  let setDate = (value, isEnd) => {
+    if (isEnd) {
+      setDisplayedEndDate(value);
+    } else {
+      setDisplayedDate(value);
+    }
+  }
+
+  let validateMonthString = (value) => {
+    let valid = isValidMonthString(value);
+    if (valid || (minAnswers > 0 && value.length === 0)) {
+      setError(false);
+    } else {
+      let exampleDate = dateFormat.replace("yyyy", "2000").replace("MM", "01");
+      setError(true);
+      setErrorMessage(`Please enter a month in the format ${dateFormat.toLowerCase()}, such as ${exampleDate}`);
+    }
+    return valid;
+  }
+
+  let isValidMonthString = (value) => {
+    return inputRegExp.test(value);
+  }
+
+  let processChange = (value, isEnd) => {
+    let startDate = isEnd ? amendMomentFromString(displayedDate, dateFormat) : null;
+    let parsedDate = formatDateAnswer(dateFormat, boundDate(value, startDate), isMonth);
+    setDate(value.length === 0 ? value : parsedDate, isEnd);
+    if (!isEnd) {
+      // Fix the end date if it is earlier than the start date
+      type === INTERVAL_TYPE && displayedEndDate.length > 0 && setDate(formatDateAnswer(dateFormat, boundDate(displayedEndDate, parsedDate), isMonth), true);
+    }
+  }
+
+  // Check that the given date is within the upper/lower limit (if specified),
+  // and also after an optional startDate
+  let boundDate = (date, startDate = null) => {
+    date = amendMomentFromString(date, dateFormat);
+    if (upperLimitMoment && upperLimitMoment < date) {
       date = upperLimitMoment;
     }
 
-    if (lowerLimit && lowerLimitMoment >= date) {
+    if (lowerLimitMoment && lowerLimitMoment >= date) {
       date = lowerLimitMoment;
     }
-    return(date);
-  }
 
-  // Check that the given date is less than the upper limit, but also
-  // greater than the start date
-  let boundEndDate = (date, startDate) => {
-    date = boundDate(date);
-
-    if (date < startDate) {
+    if (startDate && startDate >= date) {
       date = startDate;
     }
     return(date);
   }
 
-  let momentToString = (date) => {
-    return !date.isValid() ? "" :
-    isMonth ? date.format(moment.HTML5_FMT.MONTH) :
-    isDate ? date.format(moment.HTML5_FMT.DATE) :
-    date.format(moment.HTML5_FMT.DATETIME_LOCAL);
-  }
-
-  let validateMonthString = (value) => {
-    let valid = inputRegExp.test(value)
-    if (valid || (minAnswers > 0 && value.length === 0)) {
-      setError(false);
-    } else {
-      let exampleDate = displayFormat.toLowerCase().replace("yyyy", "2000").replace("mm", "01");
-      setError(true);
-      setErrorMessage(`Please enter a month in the format ${displayFormat.toLowerCase()}, such as ${exampleDate}`);
-    }
-    return valid;
+  let amendMomentFromString = (value, dateFormat) => {
+    return amendMoment((isMonth && typeof value === "string") ? displayMonthToMomentString(value) : value, dateFormat);
   }
 
   let displayMonthToMomentString = (value) => {
-    let monthIndex = displayFormat.toLowerCase().indexOf('m');
+    let monthIndex = dateFormat.indexOf('MM');
     if (!strictInputRegExp.test(value)) {
       // Input has a single digit month. Prepend month with 0 to ensure Moment can handle the date
       value = [value.slice(0, monthIndex), "0", value.slice(monthIndex)].join('');
@@ -247,10 +288,21 @@ function DateQuestion(props) {
     // Make sure month and year are ordered correctly for parsing via Moment
     if (monthIndex === 0) {
       // Moment requires year before month.
-      let yearIndex = displayFormat.toLowerCase().indexOf('y');
+      let yearIndex = dateFormat.indexOf('y');
       value = [value.slice(yearIndex, yearIndex + 4), '-', value.slice(0, 2)].join('');
     }
     return value.replace('/', '-') + '-01'
+  }
+
+  let getSlingDate = (isEnd) => {
+    let dateString = isEnd ? displayedEndDate : displayedDate;
+    if (isMonth && !isValidMonthString(dateString)) {
+      dateString = "";
+    }
+    if (dateString.length > 0) {
+      dateString = amendMomentFromString(dateString, dateFormat).formatWithJDF(slingDateFormat);
+    }
+    return dateString;
   }
 
   // Determine the granularity of the input textfield
@@ -258,34 +310,18 @@ function DateQuestion(props) {
     isDate ? "date" :
     "datetime-local";
 
-  if (isMonth && monthDateString == "" && currentStartValue) {
-    setMonthDateString(momentStringToDisplayMonth(displayFormat, currentStartValue));
+  let outputStart = getSlingDate(false);
+  let outputEnd = getSlingDate(true);
+  let outputAnswers = outputStart.length > 0 ? [["date", outputStart]] : [];
+  if (type === INTERVAL_TYPE && outputEnd.length > 0) {
+    outputAnswers.push(["endDate", outputEnd]);
   }
 
-  // Determine how to display the currently selected value
-  const outputDate = amendMoment(selectedDate, displayFormat);
-  let outputDateString = momentToString(outputDate);
-  const outputEndDate = amendMoment(selectedEndDate, displayFormat);
-  let outputEndDateString = momentToString(outputEndDate);
-  if (isMonth) {
-    outputDateString = monthDateString;
-    outputEndDateString = endMonthDateString;
-  }
-  let outputAnswers = [["date", selectedDate.isValid() ? selectedDate.formatWithJDF(slingDateFormat) : '']];
-  if (type === INTERVAL_TYPE) {
-    outputAnswers.push(["endDate", selectedEndDate.isValid() ? selectedEndDate.formatWithJDF(slingDateFormat) : ''])
-  }
-
-  return (
-    <Question
-      existingAnswer={existingAnswer}
-      text={text}
-      {...rest}
-      >
-      {error && <Typography color='error'>{errorMessage}</Typography>}
+  let getTextField = (isEnd, value) => {
+    return (
       <TextField
         type={textFieldType}
-        className={classes.textField + " " + classes.answerField}
+        className={classes.textField + isEnd ? "" : (" " + classes.answerField)}
         InputLabelProps={{
           shrink: true,
         }}
@@ -296,79 +332,27 @@ function DateQuestion(props) {
           max: upperLimit,
           min: lowerLimit
         }}
-        onChange={
-          (event) => {
-            let value = event.target.value;
-            if (isMonth) {
-              setMonthDateString(value);
-            } else {
-              let parsedDate = boundDate(amendMoment(value, dateFormat));
-              changeDate(parsedDate);
-
-              // Also fix the end date if it is earlier than the given start date
-              type === INTERVAL_TYPE && changeEndDate(boundEndDate(selectedEndDate, parsedDate));
-            }
-          }
-        }
-        onBlur={ () => {
-          if (isMonth) {
-            if (validateMonthString(monthDateString)) {
-              let parsedDate = boundDate(amendMoment(displayMonthToMomentString(monthDateString), dateFormat));
-              changeDate(parsedDate);
-              setMonthDateString(momentStringToDisplayMonth(displayFormat, momentToString(parsedDate)));
-
-              // Also fix the end date if it is earlier than the given start date
-              let parsedEndDate = boundEndDate(selectedEndDate, parsedDate);
-              if (type === INTERVAL_TYPE) {
-                changeEndDate(parsedEndDate);
-                setEndMonthDateString(momentStringToDisplayMonth(displayFormat, momentToString(parsedEndDate)));
-              }
-            }
-          }
-        }}
-        placeholder={displayFormat.toLowerCase()}
-        value={outputDateString}
+        onChange={(event) => onChange(event.target.value, isEnd)}
+        onBlur={() => onBlur(value, isEnd)}
+        placeholder={dateFormat.toLowerCase()}
+        // Browser date picker (used when not a month) requires "-" as separators
+        value={isMonth ? value : value.replaceAll("/", "-")}
       />
+    )
+  }
+
+  return (
+    <Question
+      text={text}
+      {...rest}
+      >
+      {error && <Typography color='error'>{errorMessage}</Typography>}
+      {getTextField(false, displayedDate)}
       { /* If this is an interval, allow the user to select a second date */
       type === INTERVAL_TYPE &&
       <React.Fragment>
         <span className={classes.mdash}>&mdash;</span>
-        <TextField
-          type={textFieldType}
-          className={classes.textField}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          InputProps={{
-            className: classes.textField
-          }}
-          inputProps={{
-            max: upperLimit,
-            min: lowerLimit
-          }}
-          onChange={
-            (event) => {
-              let value = event.target.value;
-              if (isMonth) {
-                setEndMonthDateString(value);
-              } else {
-                let parsedDate = amendMoment(value, dateFormat);
-                changeEndDate(boundEndDate(parsedDate, selectedDate));
-              }
-            }
-          }
-          onBlur={ () => {
-            if (isMonth) {
-              if (validateMonthString(monthDateString)) {
-                let parsedDate = boundEndDate(amendMoment(displayMonthToMomentString(monthDateString), dateFormat), selectedDate);
-                changeEndDate(parsedDate);
-                setEndMonthDateString(momentStringToDisplayMonth(displayFormat, momentToString(parsedDate)));
-              }
-            }
-          }}
-          placeholder={displayFormat.toLowerCase()}
-          value={outputEndDateString}
-        />
+        {getTextField(true,displayedEndDate)}
       </React.Fragment>
       }
       <Answer
@@ -384,7 +368,6 @@ function DateQuestion(props) {
 
 DateQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
-  displayFormat: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS),
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     dateFormat: PropTypes.oneOf(ALLOWABLE_DATETIME_FORMATS),
