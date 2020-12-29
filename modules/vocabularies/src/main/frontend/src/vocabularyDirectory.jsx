@@ -79,7 +79,6 @@ export default function VocabularyDirectory(props) {
     })
     .then(response => response.json())
     .then(function(data) {
-      props.resetTest("e");
 
       if (props.type === "remote") {
         props.setVocabList(data);
@@ -105,7 +104,7 @@ export default function VocabularyDirectory(props) {
     getVocabList(props.link);
   }
 
-  // load vocab list when API key changes
+  // TODO: load vocab list when API key changes
   // useEffect(() => {
   //   setCurStatus(Status["Init"]);
   // }, [props.apiKey])

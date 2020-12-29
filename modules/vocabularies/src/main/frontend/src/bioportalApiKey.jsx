@@ -24,13 +24,11 @@ const JSON_KEY = "apikey";
 export default function fetchBioPortalApiKey(func, isNode, errorHandler) {
   // Parse the response from our FilterServlet
   let parseKey = (keyJson) => {
-    console.log("key returned here")
-    console.log(keyJson); // todo: send bool also
     if (!keyJson[JSON_KEY]) {
       throw "no API key in APIKEY servlet response";
     }
     func(keyJson[JSON_KEY]);
-    isNode(keyJson[isNode]);
+    isNode(keyJson[isNode]); // todo: send bool also, not sure if working
   }
 
   fetch(APIKEY_SERVLET_URL)

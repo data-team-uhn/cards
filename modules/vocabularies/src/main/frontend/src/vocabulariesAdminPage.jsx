@@ -88,30 +88,10 @@ export default function VocabulariesAdminPage() {
   // check if api key is from node
   const [isFromNode, setIsFromNode] = React.useState(false);
 
-  // save possible api key here
-  const [submittedApiKey, setSubmittedApiKey] = React.useState(null);
-
-  // called when api key is changed, on success
-  function resetTest(e) {
-    //testing - do nothing
-
-    // FIX: API KEY SHOWING 'NULL' - might be from default states
-    // setBioPortalApiKey(submittedApiKey);
-    // addNode(submittedApiKey);
-    // setDisplayChangeKey(false);
-    // // reload list
-    // setRemoteLoaded(false);
-    // setLocalLoaded(false);
-    // setDisplayTables(false);
-  }
-
+  // function to create / edit node
   function addNode(apiKey) {
-    // if (targetExists) {
-    // } else {
-      // If the question/section doesn't exist, create it
-
-    // TODO: how to check if node exists already?
-
+    // current creates a new BioportalApiKey node
+    // TODO: check if node exists already? (not sure if necessary, node seems to be replaced)
     const URL = `/libs/lfs/conf/BioportalApiKey`
     var request_data = new FormData();
     request_data.append('key', apiKey);
@@ -121,8 +101,6 @@ export default function VocabulariesAdminPage() {
         console.error("error creating node")
         }
       )
-
-    // }
   }
 
   const localLink = '/query?query=' + encodeURIComponent(`select * from [lfs:Vocabulary]`);
@@ -205,11 +183,12 @@ export default function VocabulariesAdminPage() {
 
   // useEffect - fetch new list when there is a new key.
   useEffect(() => {
+    // RESET STATES
     setDisplayChangeKey(false);
     // reload list
-    setRemoteLoaded(false);
-    setLocalLoaded(false);
-    setDisplayTables(false);
+    // setRemoteLoaded(false);
+    // setLocalLoaded(false);
+    // setDisplayTables(false);
 
     /* If the BioPortal API key cannot be loaded, assume the remote (empty)
       * data has been loaded.
@@ -221,12 +200,11 @@ export default function VocabulariesAdminPage() {
   }, [bioPortalApiKey])
 
   function addNewKey() {
-    // create node
-    addNode(customApiKey);
-    // set here, will trigger fetch in vocabularyDirectory
-    // on fetch success, 'resetTest' is called
-    // on fetch fail, 'handleErrorModal is called
+    // TODO: check if node is created successfully
+    // on fetch success, addNode and setBioPortalApiKey, refresh list
     setBioPortalApiKey(customApiKey);
+    addNode(customApiKey);
+    // on fetch fail, 'handleErrorModal is called
   }
 
   return (
@@ -248,7 +226,6 @@ export default function VocabulariesAdminPage() {
         addSetter={addSetter}
         setPhase={setPhase}
         apiKey={bioPortalApiKey}
-        resetTest={resetTest}
         setErrorModal={handleErrorModal}
       />
 
@@ -330,7 +307,6 @@ export default function VocabulariesAdminPage() {
         updateLocalList={updateLocalList}
         addSetter={addSetter}
         apiKey={bioPortalApiKey}
-        resetTest={resetTest}
         setErrorModal={handleErrorModal}
       />
 
