@@ -503,13 +503,13 @@ function FormData(props) {
     const questionTitle = entryDefinition["text"];
 
     if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined" && (displayed < maxDisplayed)) {
-      let existingAnswerValue = existingQuestionAnswer[1]["value"];
-      // TODO: Other question types will need to be handled as well
+      let existingAnswerValue = existingQuestionAnswer[1]["displayedValue"];
+      // The value can either be a single value or an array of values; force it into an array
+      existingAnswerValue = Array.of(existingAnswerValue).flat();
+
       let content = "";
       switch(entryDefinition["dataType"]) {
         case "file":
-          // The value can either be a single value or an array of values; force it into an array
-          existingAnswerValue = Array.of(existingAnswerValue).flat();
           content = <>
             {existingAnswerValue.map((answerValue, idx) => {
               let filename = /[^/]*$/.exec(answerValue)[0];
@@ -517,14 +517,6 @@ function FormData(props) {
               return <>{prefix}<a href={answerValue} target="_blank" rel="noopener" download>{filename}</a></>
             })}
             </>
-          break;
-        case "date":
-          content = formatDateAnswer(entryDefinition?.["dateFormat"], existingAnswerValue);
-          break;
-        case "boolean":
-          content = existingAnswerValue == 1 ? (entryDefinition?.["yesLabel"] || "Yes")
-                  : existingAnswerValue == 0 ? (entryDefinition?.["noLabel"] || "No")
-                  : (entryDefinition?.["unknownLabel"] || "Unknown")
           break;
         case "pedigree":
           if (!existingAnswerValue) {
@@ -536,12 +528,11 @@ function FormData(props) {
           }
           break;
         default:
-          // Check for a label and use the label instead of the value, if present
-          let answerValue = entryDefinition[existingAnswerValue]?.["label"]
-            ? entryDefinition[existingAnswerValue]["label"]
-            : existingAnswerValue;
-          let units = entryDefinition?.unitOfMeasurement ? (" " + entryDefinition.unitOfMeasurement) : "";
-          content = `${answerValue} ${units}`;
+          content = <>
+            { existingAnswerValue.map((answerValue, idx) => {
+              return <>{answerValue}</>
+            }) }
+            </>
           break;
       }
       // If count of displayed <= max, increase count of displayed
