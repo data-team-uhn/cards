@@ -118,7 +118,9 @@ public class SimpleAnswerLabelProcessor
     public JsonArray createJsonArrayFromList(Collection<String> list)
     {
         JsonArrayBuilder jsonArray = Json.createArrayBuilder();
-        list.stream().forEach(item -> jsonArray.add(item));
+        for (String item : list) {
+            jsonArray.add(item);
+        }
         return jsonArray.build();
     }
 }
