@@ -869,13 +869,18 @@ function SubjectSelectorList(props) {
                     return output;
                   }
                 }
+
+                let filteredData = (currentSubject && (result['rows'].map((row) => isSubjectRelated(row)?.includes(currentSubject.type.label)))[0])
+                    ? result['rows'].filter((e) => filterRelated(e)) : result["rows"];
+                // Auto-select if there is only one type of subject available
+                if (filteredData.length === 1) {
+                  onSelect(filteredData[0]);
+                  handleSelection(filteredData[0]);
+                }
                 return {
-                  data: (
-                    (currentSubject && (result['rows'].map((row) => isSubjectRelated(row)?.includes(currentSubject.type.label)))[0])
-                    ? result['rows'].filter((e) => filterRelated(e)) : result["rows"]
-                  ).map((row) => ({
-                    hierarchy: getHierarchy(row, React.Fragment, () => ({})),
-                    ...row })),
+                  data: filteredData.map((row) => ({
+                          hierarchy: getHierarchy(row, React.Fragment, () => ({})),
+                          ...row })),
                   page: Math.trunc(result["offset"]/result["limit"]),
                   totalCount: result["totalrows"],
                 }}
