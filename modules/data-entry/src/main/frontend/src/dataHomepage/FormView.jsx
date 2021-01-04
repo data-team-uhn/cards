@@ -73,7 +73,7 @@ function FormView(props) {
   ]
   const tabs = ["Completed", "Draft"];
 
-  let qFilter = undefined;
+  let qFilter = '';
 
   if (questionnaire) {
     // Set the questionnaire filter for displayed forms
