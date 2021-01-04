@@ -333,11 +333,12 @@ function LiveTable(props) {
     <TablePagination
       component="div"
       rowsPerPageOptions={[10, 50, 100, 1000]}
-      count={paginationData.total}
+      count={paginationData.total >= 0 ? paginationData.total : -1}
       rowsPerPage={paginationData.limit}
       page={paginationData.page}
       onChangePage={handleChangePage}
       onChangeRowsPerPage={handleChangeRowsPerPage}
+      labelDisplayedRows={({from, to, count}) => `${from}-${to} of ${count >= 0 ? count : `more than ${-1 * paginationData.total}`}`}
     />
   )
 
