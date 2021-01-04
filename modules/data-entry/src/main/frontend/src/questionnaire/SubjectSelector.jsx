@@ -106,6 +106,10 @@ function UnstyledNewSubjectDialog (props) {
                 return fetchWithReLogin(globalLoginDisplay, url)
                   .then(response => response.json())
                   .then(result => {
+                    // Auto-select if there's only one available SubjectType
+                    if (result["rows"].length === 1) {
+                      changeType(result["rows"][0]);
+                    }
                     return {
                       data: result["rows"],
                       page: Math.trunc(result["offset"]/result["limit"]),
@@ -872,7 +876,7 @@ function SubjectSelectorList(props) {
 
                 let filteredData = (currentSubject && (result['rows'].map((row) => isSubjectRelated(row)?.includes(currentSubject.type.label)))[0])
                     ? result['rows'].filter((e) => filterRelated(e)) : result["rows"];
-                // Auto-select if there is only one type of subject available
+                // Auto-select if there is only one subject available
                 if (filteredData.length === 1) {
                   onSelect(filteredData[0]);
                   handleSelection(filteredData[0]);
