@@ -29,10 +29,7 @@ function HeaderLinks (props) {
   useEffect(() => {
     fetch("http://localhost:8080/system/sling/info.sessionInfo.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        setUsername(json["userID"])
-        console.log(json);
-      })
+      .then((json) => setUsername(json["userID"]))
       .catch((error) => console.log(error));
   }, []);
 
