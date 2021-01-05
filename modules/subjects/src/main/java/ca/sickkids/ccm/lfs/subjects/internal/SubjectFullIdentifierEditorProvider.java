@@ -36,13 +36,13 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.component.annotations.ServiceScope;
 
 /**
- * A {@link EditorProvider} returning {@link SubjectCompletionEditor}.
+ * A {@link EditorProvider} returning {@link SubjectFullIdentifierEditor}.
  *
  * @version $Id$
  */
-@Component(name = "SubjectCompletionEditorProvider", service = EditorProvider.class,
+@Component(name = "SubjectFullIdentifierEditorProvider", service = EditorProvider.class,
     scope = ServiceScope.SINGLETON, immediate = true)
-public class SubjectCompletionEditorProvider implements EditorProvider
+public class SubjectFullIdentifierEditorProvider implements EditorProvider
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
@@ -55,10 +55,10 @@ public class SubjectCompletionEditorProvider implements EditorProvider
     {
         if (this.rrf != null && this.rrf.getThreadResourceResolver() != null) {
             Session session = this.rrf.getThreadResourceResolver().adaptTo(Session.class);
-            // Each SubjectCompletionEditor maintains a state, so a new instance must be returned each time
+            // Each SubjectFullIdentifierEditor maintains a state, so a new instance must be returned each time
             final List<NodeBuilder> tmpList = new ArrayList<>();
             tmpList.add(builder);
-            return new SubjectCompletionEditor(tmpList, null, session);
+            return new SubjectFullIdentifierEditor(tmpList, null, session);
         }
         return null;
     }

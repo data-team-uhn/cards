@@ -38,9 +38,9 @@ import org.slf4j.LoggerFactory;
  *
  * @version $Id$
  */
-public class SubjectCompletionEditor extends DefaultEditor
+public class SubjectFullIdentifierEditor extends DefaultEditor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SubjectCompletionEditor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SubjectFullIdentifierEditor.class);
 
     private static final String PROP_FULLID_NAME = "fullIdentifier";
 
@@ -69,7 +69,7 @@ public class SubjectCompletionEditor extends DefaultEditor
      *            encountered so far
      * @param session the session used to retrieve subjects by UUID
      */
-    public SubjectCompletionEditor(final List<NodeBuilder> nodeBuilder, final NodeBuilder subject,
+    public SubjectFullIdentifierEditor(final List<NodeBuilder> nodeBuilder, final NodeBuilder subject,
         final Session session)
     {
         this.currentNodeBuilderPath = nodeBuilder;
@@ -92,7 +92,7 @@ public class SubjectCompletionEditor extends DefaultEditor
     {
         final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new SubjectCompletionEditor(tmpList, this.subject, this.session);
+        return new SubjectFullIdentifierEditor(tmpList, this.subject, this.session);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class SubjectCompletionEditor extends DefaultEditor
     {
         final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new SubjectCompletionEditor(tmpList, this.subject, this.session);
+        return new SubjectFullIdentifierEditor(tmpList, this.subject, this.session);
     }
 
     @Override
@@ -108,10 +108,10 @@ public class SubjectCompletionEditor extends DefaultEditor
     {
         if (isSubject(this.currentNodeBuilder)) {
             try {
-                summarize();
+                computeFullIdentifier();
             } catch (RepositoryException e) {
                 // This is not a fatal error, the subject status is not required for a functional application
-                LOGGER.warn("Unexpected exception while checking the completion status of subject {}",
+                LOGGER.warn("Unexpected exception while computing the full identifier of subject {}",
                     this.currentNodeBuilder.getString("jcr:uuid"));
             }
         }
@@ -123,7 +123,7 @@ public class SubjectCompletionEditor extends DefaultEditor
      *
      * @throws RepositoryException if accessing the repository fails
      */
-    private void summarize() throws RepositoryException
+    private void computeFullIdentifier() throws RepositoryException
     {
         final List<String> identifiers = new ArrayList<>();
         Node subjectNode = this.session.getNodeByIdentifier(this.currentNodeBuilder.getString("jcr:uuid"));
