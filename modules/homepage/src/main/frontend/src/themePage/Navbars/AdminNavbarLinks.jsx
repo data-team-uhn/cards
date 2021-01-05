@@ -12,14 +12,18 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
 // @material-ui/core components
-import { Avatar, ClickAwayListener, Grow, Hidden, IconButton, Link, MenuList, MenuItem, Paper, Popper, withStyles } from "@material-ui/core";
+import { Avatar, ClickAwayListener, Grow, Hidden, IconButton, Link, MenuList, MenuItem, Paper, Popper, Snackbar, withStyles } from "@material-ui/core";
+import CloseIcon from '@material-ui/icons/Close';
 
 import HeaderSearchBar from "./HeaderSearchBar.jsx";
 import headerLinksStyle from "./headerLinksStyle.jsx";
+import ChangeUserPasswordDialogue from "../../Userboard/Users/changeuserpassworddialogue.jsx";
 
 function HeaderLinks (props) {
   const { classes, closeSidebar, theme } = props;
   const [ popperOpen, setPopperOpen ] = useState(false);
+  const [ passwordDialogOpen, setPasswordDialogOpen ] = useState(false);
+  const [ pwdResetSuccessSnackbarOpen, setPwdResetSuccessSnackbarOpen ] = useState(false);
   const [ username, setUsername ] = useState("");
 
   const avatarRef = useRef();
@@ -93,6 +97,9 @@ function HeaderLinks (props) {
                   setPopperOpen(false);
                 }}}>
                 <MenuList role="menu" className={classes.suggestions}>
+                  <MenuItem className={classes.dropdownItem} onClick={() => setPasswordDialogOpen(true)}>
+                    Change password
+                  </MenuItem>
                   <Link href={"/system/sling/logout"}>
                     <MenuItem className={classes.dropdownItem}>
                       Log out
@@ -104,6 +111,26 @@ function HeaderLinks (props) {
           </Grow>
         )}
       </Popper>
+      <ChangeUserPasswordDialogue
+        handleClose={(success) => {
+          setPwdResetSuccessSnackbarOpen(success);
+          setPasswordDialogOpen(false);
+        }}
+        isOpen={passwordDialogOpen}
+        name={username}
+        requireOldPassword
+        />
+      <Snackbar
+        open={pwdResetSuccessSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setPwdResetSuccessSnackbarOpen(false)}
+        message="Password successfully changed!"
+        action={
+          <IconButton size="small" aria-label="close" color="inherit" onClick={() => setPwdResetSuccessSnackbarOpen(false)}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+        />
     </div>
   );
 }
