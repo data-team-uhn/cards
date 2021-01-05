@@ -25,6 +25,7 @@ import java.util.function.Function;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -114,6 +115,11 @@ public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements Re
                 String fileName = item.getString().replace(fullPath, "");
                 names.add(fileName);
             }
+
+            if (names.size() == 1) {
+                return Json.createValue(names.get(0));
+            }
+
             return createJsonArrayFromList(names);
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
