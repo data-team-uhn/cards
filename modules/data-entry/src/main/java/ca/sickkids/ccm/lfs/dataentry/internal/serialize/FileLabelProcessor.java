@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -94,8 +94,13 @@ public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     @Override
     public void addProperty(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
-        final Node question = getQuestionNode(node);
-        json.add(PROP_DISPLAYED_VALUE, getAnswerLabel(node, question));
+        try {
+            if (node.hasProperty("value")) {
+                json.add(PROP_DISPLAYED_VALUE, getAnswerLabel(node, null));
+            }
+        } catch (RepositoryException e) {
+            // Really shouldn't happen
+        }
     }
 
     @Override
@@ -103,12 +108,11 @@ public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     {
         try {
             List<String> names = new ArrayList<>();
-            NodeIterator childNodes = node.getNodes("*.*");
-            while (childNodes.hasNext()) {
-                Node childNode = childNodes.nextNode();
-                if (childNode.isNodeType("nt:file")) {
-                    names.add(childNode.getName());
-                }
+            String fullPath = node.getPath() + "/";
+            Value[] childNodes = node.getProperty("value").getValues();
+            for (Value item : childNodes) {
+                String fileName = item.getString().replace(fullPath, "");
+                names.add(fileName);
             }
             return createJsonArrayFromList(names);
         } catch (final RepositoryException ex) {
