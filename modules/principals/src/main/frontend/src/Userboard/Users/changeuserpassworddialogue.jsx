@@ -62,7 +62,7 @@ class FormFields extends React.Component {
             label="Old Password"
             fullWidth
             type="password"
-            value={oldPwd}
+            value={oldPwd || ""}
             onChange={change.bind(null, "oldPwd")}
             className={classes.form}
             required
@@ -76,7 +76,7 @@ class FormFields extends React.Component {
           label="New Password"
           fullWidth
           type="password"
-          value={newPwd}
+          value={newPwd || ""}
           onChange={change.bind(null, "newPwd")}
           className={classes.form}
           required
@@ -89,7 +89,7 @@ class FormFields extends React.Component {
           label="Confirm New Password"
           fullWidth
           type="password"
-          value={newPwdConfirm}
+          value={newPwdConfirm || ""}
           onChange={change.bind(null, "newPwdConfirm")}
           className={classes.form}
           required
