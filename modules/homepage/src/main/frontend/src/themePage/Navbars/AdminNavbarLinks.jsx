@@ -42,7 +42,7 @@ function HeaderLinks (props) {
   if (username) {
     let usernameSplit = username.split(" ");
     // First name and either the first middle name, or the last name (depending on the number of spaces)
-    initials = usernameSplit[0]?.[0] + usernameSplit[1]?.[0]
+    initials = usernameSplit[0]?.[0] + (usernameSplit[1]?.[0] || "")
       // If there's three names or more, include the last name
       + (usernameSplit.length > 2 ? usernameSplit[usernameSplit.length-1][0] : "");
     initials = initials.toUpperCase();
@@ -54,26 +54,43 @@ function HeaderLinks (props) {
   const expand = window.innerWidth >= theme.breakpoints.values.md;
 
   return (
-    <div ref={headerRef}>
+    <div ref={headerRef} id="adminnavbar">
       <HeaderSearchBar
         invertColors={!expand}
         onSelectFinish={expand ? undefined : closeSidebar}
         className={expand ? undefined : classes.buttonLink}
       />
       {/* Avatar + log out link */}
-      <IconButton
-        aria-label="Log out"
-        className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
-        onClick={() => setPopperOpen(true)}
-        title="Log out"
-        ref={avatarRef}
-      >
-        <Avatar>{initials}</Avatar>
-        <Hidden mdUp implementation="css">
-          <p className={classes.linkText}>Log out</p>
-        </Hidden>
-      </IconButton>
-      {/* Suggestions list using Popper */}
+      <Hidden smDown>
+        <IconButton
+          aria-label="Log out"
+          className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
+          onClick={() => setPopperOpen(true)}
+          title="Log out"
+          ref={avatarRef}
+          >
+          <Avatar>{initials}</Avatar>
+        </IconButton>
+      </Hidden>
+      <Hidden mdUp implementation="css">
+        <Link href={"/system/sling/logout"}>
+          <IconButton
+            aria-label="Log out"
+            className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
+            title="Log out"
+            >
+            <p className={classes.linkText}>Log out</p>
+          </IconButton>
+        </Link>
+        <IconButton
+          aria-label="Change password"
+          className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
+          onClick={() => setPasswordDialogOpen(true)}
+          title="Change password"
+          >
+          <p className={classes.linkText}>Change password</p>
+        </IconButton>
+      </Hidden>
       <Popper
         open={popperOpen}
         anchorEl={avatarRef.current}
@@ -83,25 +100,24 @@ function HeaderLinks (props) {
         }}
         placement = "bottom-end"
         transition
-        keepMounted
         >
         {({ TransitionProps }) => (
           <Grow
             {...TransitionProps}
             style={{transformOrigin: "top"}}
           >
-            <Paper square className={classes.suggestionContainer}>
+            <Paper square>
               <ClickAwayListener onClickAway={(event) => {
                 // Ignore clickaway events if they're just clicking on any component in this object
                 if (!headerRef.current.contains(event.target)) {
                   setPopperOpen(false);
                 }}}>
-                <MenuList role="menu" className={classes.suggestions}>
-                  <MenuItem className={classes.dropdownItem} onClick={() => setPasswordDialogOpen(true)}>
+                <MenuList role="menu">
+                  <MenuItem onClick={() => setPasswordDialogOpen(true)}>
                     Change password
                   </MenuItem>
                   <Link href={"/system/sling/logout"}>
-                    <MenuItem className={classes.dropdownItem}>
+                    <MenuItem>
                       Log out
                     </MenuItem>
                   </Link>

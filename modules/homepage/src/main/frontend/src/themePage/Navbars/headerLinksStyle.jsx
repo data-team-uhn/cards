@@ -50,6 +50,9 @@ const headerLinksStyle = theme => ({
   },
   logout: {
     marginTop: "0px"
+  },
+  aboveBackground: {
+    zIndex: "1301"
   }
 });
 
