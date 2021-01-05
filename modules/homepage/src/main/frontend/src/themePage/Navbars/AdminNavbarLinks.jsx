@@ -12,8 +12,10 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
 // @material-ui/core components
-import { Avatar, ClickAwayListener, Grow, Hidden, IconButton, Link, MenuList, MenuItem, Paper, Popper, Snackbar, withStyles } from "@material-ui/core";
+import { Avatar, ClickAwayListener, Grow, Hidden, IconButton, Link, ListItemIcon, ListItemText, MenuList, MenuItem, Paper, Popper, Snackbar, withStyles } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import HeaderSearchBar from "./HeaderSearchBar.jsx";
 import headerLinksStyle from "./headerLinksStyle.jsx";
@@ -31,7 +33,7 @@ function HeaderLinks (props) {
 
   // TODO: Should we make the username accessible to other components (e.g. via a context)?
   useEffect(() => {
-    fetch("http://localhost:8080/system/sling/info.sessionInfo.json")
+    fetch("/system/sling/info.sessionInfo.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => setUsername(json["userID"]))
       .catch((error) => console.log(error));
@@ -41,10 +43,8 @@ function HeaderLinks (props) {
   let initials = "?";
   if (username) {
     let usernameSplit = username.split(" ");
-    // First name and either the first middle name, or the last name (depending on the number of spaces)
-    initials = usernameSplit[0]?.[0] + (usernameSplit[1]?.[0] || "")
-      // If there's three names or more, include the last name
-      + (usernameSplit.length > 2 ? usernameSplit[usernameSplit.length-1][0] : "");
+    // First name and last name
+    initials = usernameSplit[0]?.[0] + (usernameSplit.length > 1 ? usernameSplit[usernameSplit.length-1][0] : "");
     initials = initials.toUpperCase();
   }
 
@@ -69,7 +69,7 @@ function HeaderLinks (props) {
           title="Log out"
           ref={avatarRef}
           >
-          <Avatar>{initials}</Avatar>
+          <Avatar className={classes.avatar}>{initials}</Avatar>
         </IconButton>
       </Hidden>
       <Hidden mdUp implementation="css">
@@ -114,11 +114,17 @@ function HeaderLinks (props) {
                 }}}>
                 <MenuList role="menu">
                   <MenuItem onClick={() => setPasswordDialogOpen(true)}>
-                    Change password
+                    <ListItemIcon>
+                      <VpnKeyIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Change password" />
                   </MenuItem>
-                  <Link href={"/system/sling/logout"}>
+                  <Link href={"/system/sling/logout"} color="inherit">
                     <MenuItem>
-                      Log out
+                      <ListItemIcon>
+                        <ExitToAppIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Log out" />
                     </MenuItem>
                   </Link>
                 </MenuList>
@@ -140,7 +146,7 @@ function HeaderLinks (props) {
         open={pwdResetSuccessSnackbarOpen}
         autoHideDuration={6000}
         onClose={() => setPwdResetSuccessSnackbarOpen(false)}
-        message="Password successfully changed!"
+        message="Password successfully changed"
         action={
           <IconButton size="small" aria-label="close" color="inherit" onClick={() => setPwdResetSuccessSnackbarOpen(false)}>
             <CloseIcon fontSize="small" />
