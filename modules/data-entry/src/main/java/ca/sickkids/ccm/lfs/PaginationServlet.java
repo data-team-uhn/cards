@@ -79,6 +79,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     // Allowed JCR-SQL2 operators (from https://docs.adobe.com/docs/en/spec/jcr/2.0/6_Query.html#6.7.17%20Operator)
     private static final List<String> COMPARATORS =
         Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE", "notes contain");
+    // Allowed JCR-SQL2 numeric cast types
+    private static final List<String> NUMERIC_CAST_TYPES = Arrays.asList("LONG", "DOUBLE", "DECIMAL");
 
     private static final String SUBJECT_IDENTIFIER = "lfs:Subject";
     private static final String QUESTIONNAIRE_IDENTIFIER = "lfs:Questionnaire";
@@ -359,11 +361,18 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                         )
                     );
                 } else {
+                    String filerQuery = ") and child%d.'value'%s '%s'";
+                    if ("date".equals(types[i])) {
+                        filerQuery = ") and child%d.'value'%s" + " cast('%sT00:00:00.000"
+                                    + new SimpleDateFormat("XXX").format(new Date()) + "' as date)";
+                    } else if (NUMERIC_CAST_TYPES.contains(types[i].toUpperCase())) {
+                        // Casting allows to query more accurately based on non-String properties
+                        filerQuery = ") and child%d.'value'%s" + " cast('%s' as " + types[i] + ")";
+                    }
+
                     filterdata.append(
                         String.format(
-                            ") and child%d.'value'%s" + (("date".equals(types[i]))
-                                ? ("cast('%sT00:00:00.000"
-                                + new SimpleDateFormat("XXX").format(new Date()) + "' as date)") : "'%s'"),
+                            filerQuery,
                             i,
                             this.sanitizeComparator(comparators[i]),
                             this.sanitizeField(values[i])
