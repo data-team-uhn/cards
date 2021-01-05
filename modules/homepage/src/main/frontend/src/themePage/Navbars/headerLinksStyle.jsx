@@ -52,8 +52,11 @@ const headerLinksStyle = theme => ({
     marginTop: "0px"
   },
   aboveBackground: {
-    zIndex: "1301"
-  }
+    zIndex: "1200"
+  },
+  avatar: {
+    backgroundColor: theme.palette.primary.main
+  },
 });
 
 export default headerLinksStyle;
