@@ -120,6 +120,8 @@ export function formatDateAnswer(dateFormat, value, forDisplay = true) {
     return value;
   }
   dateFormat = dateFormat || "yyyy-MM-dd";
+  // Quick fix for moment using a different date specifier than Java
+  dateFormat = dateFormat.replaceAll('d', "D");
   let date = amendMoment(value, dateFormat);
   let isMonth = MONTH_FORMATS.includes(dateFormat);
   let isDate = DATE_FORMATS.includes(dateFormat);
