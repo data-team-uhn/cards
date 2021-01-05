@@ -154,16 +154,16 @@ class ChangeUserPasswordDialogue extends React.Component {
         })
         .then(handleErrors) // Handle errors first
         .then(() => {
-            this.handleCloseDialog();
+            this.handleCloseDialog(true);
         })
         .catch((error) => {
             this.setState({error: error.message});
         });
     }
     
-    handleCloseDialog() {
+    handleCloseDialog(success = false) {
         this.setState({error: ""});
-        this.props.handleClose();
+        this.props.handleClose && this.props.handleClose(success);
     }
 
     render() {
@@ -189,20 +189,20 @@ class ChangeUserPasswordDialogue extends React.Component {
         return (
             <Dialog
                 open={this.props.isOpen}
-                onClose={this.handleCloseDialog}
+                onClose={() => this.handleCloseDialog(false)}
             >
                 <DialogTitle>Change User Password for {this.props.name}</DialogTitle>
                 <DialogContent>
                     <Grid container>
                         {this.state.error && <Typography component="h2" className={classes.errorMessage}>{this.state.error}</Typography>}
                         <Formik
-                            render={props => <FormFieldsComponent {...props} requireOldPassword={requireOldPassword} />}
-                            initialValues={values}
-                            validationSchema={validationSchemaObj}
-                            onSubmit={this.handlePasswordChange}
-                            onReset={this.handleCloseDialog}
-                            ref={el => (this.form = el)}
-                          />
+                          initialValues={values}
+                          validationSchema={validationSchemaObj}
+                          onSubmit={this.handlePasswordChange}
+                          onReset={() => this.handleCloseDialog(false)}
+                          >
+                          {props => <FormFieldsComponent {...props} requireOldPassword={requireOldPassword} />}
+                        </Formik>
                     </Grid>
                 </DialogContent>
             </Dialog>
