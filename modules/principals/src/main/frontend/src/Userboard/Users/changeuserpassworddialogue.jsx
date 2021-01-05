@@ -131,7 +131,7 @@ class ChangeUserPasswordDialogue extends React.Component {
         // Therefore, you must handle the error code yourself.
         function handleErrors(response) {
           if (!response.ok) {
-            throw Error(response.statusText);
+            return Promise.reject(response);
           }
           return response;
         }
@@ -157,8 +157,29 @@ class ChangeUserPasswordDialogue extends React.Component {
             this.handleCloseDialog(true);
         })
         .catch((error) => {
-            this.setState({error: error.message});
+            this.handleError(error);
         });
+    }
+
+    handleError(error) {
+      if (error.status == "500") {
+        // Determine the exact error
+        error.text()
+          .then((text) => {
+            // There should be a line that looks like <td><div id="Message">javax.jcr.RepositoryException: ...</div></td>
+            // Parse it out
+            let msg_re = /div id="Message">(.+)<\/div/;
+            let match = msg_re.exec(text);
+            // Under most cases (invalid password, old password does not match),
+            // we can display a friendlier error by geting rid of the javax.jcr.RepositoryException
+            let friendly_re = /javax.jcr.RepositoryException:(.+)/;
+            let friendly_match = friendly_re.exec(match[1]);
+
+            this.setState({error: friendly_match?.[1] || match?.[1]} || error.statusText);
+          })
+      } else {
+        this.setState({error: error.statusText});
+      }
     }
     
     handleCloseDialog(success = false) {
