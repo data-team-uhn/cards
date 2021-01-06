@@ -248,16 +248,16 @@
 				</property>
 			</node>
 			<node>
-				<name>Other cardiac-related medication</name>
+				<name>Other medication</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Other cardiac-related medication</value>
+					<value>Other medication</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Other cardiac-related medication</value>
+					<value>Other medication</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -279,6 +279,70 @@
 					<value>true</value>
 					<type>Boolean</type>
 				</property>
+			</node>
+		</node>
+		<node>
+			<name>bl_med_types_otherSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>bl_med_types_other</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Specify other medication(s):</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>bl_med_types_#</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Other medication</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -825,6 +889,19 @@
 			</node>
 		</node>
 		<node>
+			<name>bl_med2_recurrentSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<property>
+				<name>recurrent</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Medication</value>
+				<type>String</type>
+			</property>
+		<node>
 			<name>bl_med2_nameSection</name>
 			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
@@ -832,7 +909,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Medication 1 name</value>
+					<value>Medication name</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -850,47 +927,6 @@
 					<value>1</value>
 					<type>Long</type>
 				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value><![CDATA[>]]></value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>bl_med_number</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>0</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
 			</node>
 		</node>
 		<node>
@@ -919,47 +955,6 @@
 					<value>1</value>
 					<type>Long</type>
 				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value><![CDATA[>]]></value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>bl_med_number</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>0</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
 			</node>
 		</node>
 		<node>
@@ -1083,47 +1078,6 @@
 					</property>
 				</node>
 			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value><![CDATA[>]]></value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>bl_med_number</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>0</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
 		</node>
 		<node>
 			<name>bl_med2_frequencySection</name>
@@ -1213,47 +1167,6 @@
 					</property>
 				</node>
 			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value><![CDATA[>]]></value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>bl_med_number</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>0</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
 		</node>
 		<node>
 			<name>bl_med2_ntSection</name>
@@ -1291,555 +1204,47 @@
 					</property>
 				</node>
 			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value><![CDATA[>]]></value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>bl_med_number</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>0</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
 		</node>
 		<node>
-			<name>bl_med3_nameSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value><![CDATA[>]]></value>
+				<type>String</type>
+			</property>
 			<node>
-				<name>bl_med3_name</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Medication 2 name</value>
+					<name>value</name>
+					<values>
+						<value>bl_med_number</value>
+					</values>
 					<type>String</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>use generic name, all lowercase</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value><![CDATA[>]]></value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>bl_med_number</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>bl_med3_dose_valueSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
-			<node>
-				<name>bl_med3_dose_value</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Dose</value>
+					<name>value</name>
+					<values>
+						<value>0</value>
+					</values>
 					<type>String</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>value</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
 				</property>
 			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value><![CDATA[>]]></value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>bl_med_number</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>bl_med3_dose_unitsSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
-			<node>
-				<name>bl_med3_dose_units</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Dose</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>units</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list+input</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>g</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>g</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>g</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>mg</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>mg</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>mg</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>mcg</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>mcg</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>mcg</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Units</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Units</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Units</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Inhalations</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Inhalations</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Inhalations</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>mEq</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>mEq</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>mEq</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value><![CDATA[>]]></value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>bl_med_number</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>bl_med3_frequencySection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
-			<node>
-				<name>bl_med3_frequency</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Frequency</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list+input</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>QD (1x daily)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>QD (1x daily)</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>QD (1x daily)</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>BID (2x daily)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>BID (2x daily)</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>BID (2x daily)</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>TID (3x daily)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>TID (3x daily)</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>TID (3x daily)</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>PRN (as needed)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>PRN (as needed)</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>PRN (as needed)</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value><![CDATA[>]]></value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>bl_med_number</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>bl_med3_ntSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
-			<node>
-				<name>bl_med3_nt</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Click this box if the patient is not taking this prescribed medication:</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Patient-reported not taking</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Patient-reported not taking</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Patient-reported not taking</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value><![CDATA[>]]></value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>bl_med_number</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
 			</node>
 		</node>
 	</node>

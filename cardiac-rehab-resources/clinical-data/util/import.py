@@ -143,6 +143,8 @@ def options_list(categorical_list):
                 categorical_list = categorical_list.replace('/', '-')
             else:
                 split_character = '/'
+        if ';' in categorical_list:
+            split_character = ';'
         option_list = list(categorical_list.split(split_character))
     return option_list
 
@@ -337,9 +339,14 @@ def csv_to_json(title):
                 question = question[:len(question) - 2]
             if question and row['Field Type']:
                 text = row['Question'].strip() or question
-                if text[len(text) - 1] == ")" and " (" in text:
-                    description = text[text.rindex(" (") + 2 : len(text) - 1]
-                    text = text[:text.rindex("(")].strip()
+                dividers = []
+                if text[len(text) - 1] == "]" and " [" in text:
+                    dividers = [" [", "]"]
+                elif text[len(text) - 1] == ")" and " (" in text:
+                    dividers = [" (", ")"]
+                if (len(dividers) == 2):
+                    description = text[text.rindex(dividers[0]) + 2 : len(text) - 1]
+                    text = text[:text.rindex(dividers[0])].strip()
                     parent[question] = {
                         'jcr:primaryType': 'lfs:Question',
                         'text': text,
@@ -394,6 +401,6 @@ def csv_to_json(title):
 
 
 titles = ['6MWD', 'ActiGraph Data', 'Adverse events', 'Baseline Health Information', 'Enrollment Status',
-    'Historical Stress Test', 'Historic Lab Results', 'Questionnaires']
+    'Historical Stress Test', 'Historic Lab Results', 'Questionnaires', 'CPET Interpretation']
 for title in titles:
     csv_to_json(title)

@@ -366,30 +366,6 @@
 			</property>
 		</node>
 		<node>
-			<name>wd_clinic_device</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Which in-clinic device pair is the participant using?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>1-5</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
 			<name>wd_patient_watch</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
@@ -447,181 +423,11 @@
 			</node>
 		</node>
 		<node>
-			<name>wd_clinic_watch</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>In-clinic watch side</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>Left</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Left</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Left</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Right</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Right</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Right</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
-		<node>
 			<name>wd_patient_iphone</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Patient iPhone location</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list+input</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>Left waist (hip clip)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Left waist (hip clip)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Left waist (hip clip)</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Right waist (hip clip)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Right waist (hip clip)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Right waist (hip clip)</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Left back pocket</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Left back pocket</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Left back pocket</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Right back pocket</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Right back pocket</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Right back pocket</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Left front pocket</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Left front pocket</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Left front pocket</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Right front pocket</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Right front pocket</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Right front pocket</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>wd_clinic_iphone</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>In-clinic iPhone location</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -845,8 +651,18 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>computed</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return (@{wd_laps} * @{wd_lap_dist}) + @{wd_part_lap}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>unitOfMeasurement</name>
@@ -855,11 +671,6 @@
 			</property>
 			<property>
 				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
@@ -1424,6 +1235,173 @@
 			</property>
 		</node>
 		<node>
+			<name>wd_stop2Section</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>wd_stop2</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Reason for stopping the test early</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list+input</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>Muscular Fatigue</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Muscular Fatigue</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Muscular Fatigue</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Joint pain</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Joint pain</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Joint pain</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Back pain</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Back pain</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Back pain</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Feeling out of breath</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Feeling out of breath</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Feeling out of breath</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Chest pain-tightness</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Chest pain/tightness</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Chest pain/tightness</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Lightheadedness or dizzy-feeling unsteady</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Lightheadedness or dizzy/feeling unsteady</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Lightheadedness or dizzy/feeling unsteady</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>External interruption</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>External interruption</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>External interruption</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd_stop</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
 			<name>wd_pause1</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
@@ -1443,285 +1421,170 @@
 			</property>
 		</node>
 		<node>
-			<name>wd_stop2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Reason for stopping the test early</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list+input</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>wd_pause2Section</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>N-A</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>wd_pause2</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>N/A</value>
+					<name>text</name>
+					<value>Reason for pausing during the test</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>N/A</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>notApplicable</name>
-					<value>true</value>
-					<type>Boolean</type>
+					<name>displayMode</name>
+					<value>list+input</value>
+					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>Muscular Fatigue</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Muscular Fatigue</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Muscular Fatigue</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Joint pain</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Joint pain</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Joint pain</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Back pain</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Back pain</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Back pain</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Feeling out of breath</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Feeling out of breath</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Feeling out of breath</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Chest pain-tightness</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Chest pain/tightness</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Chest pain/tightness</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Lightheadedness or dizzy-feeling unsteady</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Lightheadedness or dizzy/feeling unsteady</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Lightheadedness or dizzy/feeling unsteady</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>External interruption</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>External interruption</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>External interruption</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>Muscular Fatigue</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Muscular Fatigue</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>Muscular Fatigue</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Joint pain</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Joint pain</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Joint pain</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Back pain</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Back pain</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Back pain</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Feeling out of breath</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Feeling out of breath</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Feeling out of breath</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Chest pain-tightness</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Chest pain/tightness</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Chest pain/tightness</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Lightheadedness or dizzy-feeling unsteady</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Lightheadedness or dizzy/feeling unsteady</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Lightheadedness or dizzy/feeling unsteady</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>External interruption</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>External interruption</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>External interruption</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>wd_pause2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Reason for pausing during the test</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list+input</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>N-A</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>N/A</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>N/A</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>notApplicable</name>
-					<value>true</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>Muscular Fatigue</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Muscular Fatigue</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Muscular Fatigue</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Joint pain</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Joint pain</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Joint pain</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Back pain</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Back pain</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Back pain</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Feeling out of breath</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Feeling out of breath</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Feeling out of breath</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Chest pain-tightness</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Chest pain/tightness</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Chest pain/tightness</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Lightheadedness or dizzy-feeling unsteady</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Lightheadedness or dizzy/feeling unsteady</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Lightheadedness or dizzy/feeling unsteady</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>External interruption</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>External interruption</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>External interruption</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd_pause1_#</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
