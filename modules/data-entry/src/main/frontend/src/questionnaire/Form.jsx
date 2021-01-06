@@ -102,17 +102,21 @@ function Form (props) {
   let [ activePage, setActivePage ] = useState(0);
   let [ pages, setPages ] = useState([]);
   let [ paginationEnabled, setPaginationEnabled ] = useState(false);
+  let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
   const formURL = `/Forms/${id}`;
 
   useEffect(() => {
+    function removeThisHandler() {
+      window.removeEventListener("beforeunload", saveData);
+    }
+    setRemoveWindowHandlers(() => removeThisHandler);
     window.addEventListener("beforeunload", saveData);
     // When component unmounts:
     return (() => {
-      // always save when navigating away
-      saveData();
+      // cleanup event handler
       window.removeEventListener("beforeunload", saveData);
     });
   }, []);
@@ -319,6 +323,7 @@ function Form (props) {
               entryType={data?.questionnaire?.title || "Form"}
               shouldGoBack={true}
               buttonClass={classes.titleButton}
+              removeWindowHandlers={removeWindowHandlers}
             />
           </Typography>
           <Breadcrumbs separator="·">
