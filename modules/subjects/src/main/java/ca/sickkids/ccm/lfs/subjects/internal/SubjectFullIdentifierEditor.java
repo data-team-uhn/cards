@@ -34,7 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An {@link Editor} that sets the fullIdentifier Subject property.
+ * An {@link Editor} that computes and sets the fullIdentifier property for every changed Subject. The full identifier
+ * is a concatenation of the subject's hierarchy, in the format {@code parent's full identifier / subject's identifier}.
  *
  * @version $Id$
  */
@@ -52,34 +53,16 @@ public class SubjectFullIdentifierEditor extends DefaultEditor
     // actual parent node of those properties, so we must manually keep track of the current node.
     private final NodeBuilder currentNodeBuilder;
 
-    private final NodeBuilder subject;
-
-    // This holds a list of NodeBuilders with the first item corresponding to the root of the JCR tree
-    // and the last item corresponding to the current node. By keeping this list, one is capable of
-    // moving up the tree and setting status flags of ancestor nodes based on the status flags of a
-    // descendant node.
-    private final List<NodeBuilder> currentNodeBuilderPath;
-
     /**
      * Simple constructor.
      *
-     * @param nodeBuilder a list of NodeBuilder objects starting from the root of the JCR tree and moving down towards
-     *            the current node.
-     * @param subject the subject node found up the tree, if any; may be {@code null} if no subject node has been
-     *            encountered so far
+     * @param nodeBuilder the current node
      * @param session the session used to retrieve subjects by UUID
      */
-    public SubjectFullIdentifierEditor(final List<NodeBuilder> nodeBuilder, final NodeBuilder subject,
-        final Session session)
+    public SubjectFullIdentifierEditor(final NodeBuilder nodeBuilder, final Session session)
     {
-        this.currentNodeBuilderPath = nodeBuilder;
-        this.currentNodeBuilder = nodeBuilder.get(nodeBuilder.size() - 1);
+        this.currentNodeBuilder = nodeBuilder;
         this.session = session;
-        if (isSubject(this.currentNodeBuilder)) {
-            this.subject = this.currentNodeBuilder;
-        } else {
-            this.subject = subject;
-        }
     }
 
     // When something changes in a node deep in the content tree, the editor is invoked starting with the root node,
@@ -90,17 +73,13 @@ public class SubjectFullIdentifierEditor extends DefaultEditor
     public Editor childNodeAdded(final String name, final NodeState after)
         throws CommitFailedException
     {
-        final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
-        tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new SubjectFullIdentifierEditor(tmpList, this.subject, this.session);
+        return new SubjectFullIdentifierEditor(this.currentNodeBuilder.getChildNode(name), this.session);
     }
 
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
-        final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
-        tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new SubjectFullIdentifierEditor(tmpList, this.subject, this.session);
+        return new SubjectFullIdentifierEditor(this.currentNodeBuilder.getChildNode(name), this.session);
     }
 
     @Override

@@ -16,9 +16,6 @@
  */
 package ca.sickkids.ccm.lfs.subjects.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.jcr.Session;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
@@ -56,9 +53,7 @@ public class SubjectFullIdentifierEditorProvider implements EditorProvider
         if (this.rrf != null && this.rrf.getThreadResourceResolver() != null) {
             Session session = this.rrf.getThreadResourceResolver().adaptTo(Session.class);
             // Each SubjectFullIdentifierEditor maintains a state, so a new instance must be returned each time
-            final List<NodeBuilder> tmpList = new ArrayList<>();
-            tmpList.add(builder);
-            return new SubjectFullIdentifierEditor(tmpList, null, session);
+            return new SubjectFullIdentifierEditor(builder, session);
         }
         return null;
     }
