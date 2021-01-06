@@ -503,23 +503,22 @@ function FormData(props) {
     const questionTitle = entryDefinition["text"];
 
     if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined" && (displayed < maxDisplayed)) {
-      let existingAnswerValue = existingQuestionAnswer[1]["displayedValue"];
+      let prettyPrintedAnswers = existingQuestionAnswer[1]["displayedValue"];
       // The value can either be a single value or an array of values; force it into an array
-      existingAnswerValue = Array.of(existingAnswerValue).flat();
+      prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
 
       let content = "";
       switch(entryDefinition["dataType"]) {
         case "file":
           content = <>
-            {existingAnswerValue.map((answerValue, idx) => {
-              let filename = /[^/]*$/.exec(answerValue)[0];
+            {prettyPrintedAnswers.map((answerValue, idx) => {
               let prefix = idx > 0 ? ", " : ""; // Seperator space between different files
-              return <>{prefix}<a href={answerValue} target="_blank" rel="noopener" download>{filename}</a></>
+              return <>{prefix}<a key={answerValue} href={existingQuestionAnswer[1]["value"][idx]} target="_blank" rel="noopener" download>{answerValue}</a></>
             })}
             </>
           break;
         case "pedigree":
-          if (!existingAnswerValue) {
+          if (!prettyPrintedAnswers) {
             // Display absolutely nothing if the value does not exist
             return <></>;
           } else {
@@ -528,11 +527,7 @@ function FormData(props) {
           }
           break;
         default:
-          content = <>
-            { existingAnswerValue.map((answerValue, idx) => {
-              return <>{answerValue}</>
-            }) }
-            </>
+          content = <>{ prettyPrintedAnswers.join(", ") }</>
           break;
       }
       // If count of displayed <= max, increase count of displayed
