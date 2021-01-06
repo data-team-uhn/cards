@@ -58,6 +58,7 @@ let ComputedQuestion = (props) => {
   const form = useFormReaderContext();
   const startTag = "@{";
   const endTag = "}";
+  const defaultTag = "|";
 
   let setError = (input) => {
     if (error !== input) changeError(input);
@@ -73,13 +74,17 @@ let ComputedQuestion = (props) => {
   }
 
   let missingValue = false;
-  let getQuestionValue = (name, form) => {
+  let getQuestionValue = (name, form, defaultValue) => {
     let value;
     if (form[name] && form[name][0]) {
       value = form[name][0][1];
     }
     if (typeof(value) === "undefined" || value === "") {
-      missingValue = true;
+      if (defaultValue != null) {
+        value = defaultValue;
+      } else {
+        missingValue = true;
+      }
     }
     if (!isNaN(Number(value))) {
       value = Number(value);
@@ -92,17 +97,26 @@ let ComputedQuestion = (props) => {
     let inputValues = [];
     let start = expr.indexOf(startTag);
     let end = expr.indexOf(endTag, start);
+    let optionStart = expr.indexOf(defaultTag, start);
     while(start > -1 && end > -1) {
-      // Push the text between the start and end tags into the list of inputs
-      let inputName = expr.substring(start + 2, end);
+      // Divide the text between the start and end tag the question name and a default value if provided
+      let inputName;
+      let defaultValue = null;
+      if (optionStart > -1 && optionStart < end) {
+        inputName = expr.substring(start + 2, optionStart);
+        defaultValue = expr.substring(optionStart + 2, end);
+      } else {
+        inputName = expr.substring(start + 2, end);
+      }
       if (!inputNames.includes(inputName)) {
         inputNames.push(inputName);
-        inputValues.push(getQuestionValue(inputName, form));
+        inputValues.push(getQuestionValue(inputName, form, defaultValue));
       }
-      // Remove the start and end tags from the expression
+      // Remove the start, end and default tagsfrom the expression
       expr = [expr.substring(0, start), expr.substring(start+2, end), expr.substring(end+1)].join('');
       start = expr.indexOf(startTag, end - 3);
       end = expr.indexOf(endTag, start);
+      optionStart = expr.indexOf(defaultTag, start);
     }
     return [inputNames, inputValues, expr];
   }
