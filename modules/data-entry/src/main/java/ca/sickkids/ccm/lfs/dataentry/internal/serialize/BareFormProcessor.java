@@ -119,8 +119,7 @@ public class BareFormProcessor implements ResourceJsonProcessor
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
-        addSections(node, json);
-        addAnswers(node, json);
+        addSectionsAndAnswers(node, json);
     }
 
     @Override
@@ -130,7 +129,7 @@ public class BareFormProcessor implements ResourceJsonProcessor
         this.questionNames.remove();
     }
 
-    private void addSections(Node node, JsonObjectBuilder json)
+    private void addSectionsAndAnswers(Node node, JsonObjectBuilder json)
     {
         try {
             final NodeIterator children = node.getNodes();
@@ -142,21 +141,7 @@ public class BareFormProcessor implements ResourceJsonProcessor
                     final String childLabel = childJson.getString("section");
                     json.add(childLabel, Json.createObjectBuilder(childJson).remove("section").build());
                     this.childrenJsons.get().remove(childId);
-                }
-            }
-        } catch (RepositoryException e) {
-            // Shouldn't happen
-        }
-    }
-
-    private void addAnswers(Node node, JsonObjectBuilder json)
-    {
-        try {
-            final NodeIterator children = node.getNodes();
-            while (children.hasNext()) {
-                final Node child = children.nextNode();
-                final String childId = child.getIdentifier();
-                if (child.isNodeType("lfs:Answer") && this.childrenJsons.get().containsKey(childId)) {
+                } else if (child.isNodeType("lfs:Answer") && this.childrenJsons.get().containsKey(childId)) {
                     final JsonObject childJson = this.childrenJsons.get().get(childId);
                     final String childLabel = this.questionNames.get().get(childId);
                     json.add(childLabel, childJson);
