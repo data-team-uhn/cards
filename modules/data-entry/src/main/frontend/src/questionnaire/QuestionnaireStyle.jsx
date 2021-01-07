@@ -232,6 +232,21 @@ const questionnaireStyle = theme => ({
           width: "auto",
         },
       },
+    timelinePaper: {
+        padding: "8px 16px",
+        marginBottom: "40px"
+    },
+    mainPageAction: {
+        position: 'fixed',
+        bottom: theme.spacing(2),
+        right: theme.spacing(4),
+        height: theme.spacing(8),
+        zIndex: 100,
+        "& > div" : {
+             position: "absolute !important",
+             top: 0,
+             right: 0,
+        },
     },
     collapsedSection: {
         padding: "0 !important"
