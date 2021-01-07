@@ -16,14 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.dataentry.internal.serialize;
+package ca.sickkids.ccm.lfs.dataentry.internal.serialize.labels;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -33,17 +36,13 @@ import org.osgi.service.component.annotations.Component;
 import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Gets the question answer for number questions.
+ * Gets the question answer for vocabulary questions.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class DefaultLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
+public class VocabularyLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
-    private static final List<String> DEFAULT_RESOURCE_TYPES =
-            Arrays.asList("lfs:LongAnswer", "lfs:DoubleAnswer", "lfs:DecimalAnswer", "lfs:TimeAnswer",
-                "lfs:ChromosomeAnswer", "lfs:ComputedAnswer");
-
     @Override
     public String getName()
     {
@@ -73,7 +72,7 @@ public class DefaultLabelProcessor extends SimpleAnswerLabelProcessor implements
         final Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (DEFAULT_RESOURCE_TYPES.contains(child.getPrimaryNodeType().getName())) {
+            if (child.isNodeType("lfs:VocabularyAnswer")) {
                 return serializeNode.apply(child);
             }
         } catch (RepositoryException e) {
@@ -86,11 +85,51 @@ public class DefaultLabelProcessor extends SimpleAnswerLabelProcessor implements
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (DEFAULT_RESOURCE_TYPES.contains(node.getPrimaryNodeType().getName())) {
+            if (node.isNodeType("lfs:VocabularyAnswer")) {
                 addProperty(node, json, serializeNode);
             }
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
+    }
+
+    @Override
+    public JsonValue getAnswerLabel(final Node node, final Node question)
+    {
+        try {
+            Map<String, String> propsMap = new LinkedHashMap<>();
+
+            Property nodeProp = node.getProperty(PROP_VALUE);
+            if (nodeProp.isMultiple()) {
+                for (Value value : nodeProp.getValues()) {
+                    propsMap.put(value.getString(), value.getString());
+                }
+            } else {
+                propsMap.put(nodeProp.getString(), nodeProp.getString());
+            }
+
+            if (question == null) {
+                return createJsonArrayFromList(propsMap.values());
+            }
+
+            for (String value : propsMap.keySet()) {
+                if (value.startsWith("/Vocabularies/")) {
+                    Node term = node.getSession().getNode(value);
+                    String label = term.getProperty("label").getValue().toString();
+                    if (label != null) {
+                        propsMap.put(value, label);
+                    }
+                }
+            }
+
+            if (propsMap.size() == 1) {
+                return Json.createValue((String) propsMap.values().toArray()[0]);
+            }
+
+            return createJsonArrayFromList(propsMap.values());
+        } catch (final RepositoryException ex) {
+            // Really shouldn't happen
+        }
+        return null;
     }
 }

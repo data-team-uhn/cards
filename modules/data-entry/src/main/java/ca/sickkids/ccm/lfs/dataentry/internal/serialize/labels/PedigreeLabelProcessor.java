@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.dataentry.internal.serialize;
+package ca.sickkids.ccm.lfs.dataentry.internal.serialize.labels;
 
 import java.util.function.Function;
 
@@ -26,26 +26,19 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
 import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Gets the human-readable question answer for boolean questions.
+ * Gets the pedigree question answer as svg picture.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class BooleanLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
+public class PedigreeLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
-    private static final String YES_LABEL = "yesLabel";
-
-    private static final String NO_LABEL = "noLabel";
-
-    private static final String UNKNOWN_LABEL = "unknownLabel";
-
     @Override
     public String getName()
     {
@@ -75,7 +68,7 @@ public class BooleanLabelProcessor extends SimpleAnswerLabelProcessor implements
         final Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (child.isNodeType("lfs:BooleanAnswer")) {
+            if (child.isNodeType("lfs:PedigreeAnswer")) {
                 return serializeNode.apply(child);
             }
         } catch (RepositoryException e) {
@@ -88,7 +81,7 @@ public class BooleanLabelProcessor extends SimpleAnswerLabelProcessor implements
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType("lfs:BooleanAnswer")) {
+            if (node.isNodeType("lfs:PedigreeAnswer")) {
                 addProperty(node, json, serializeNode);
             }
         } catch (RepositoryException e) {
@@ -100,25 +93,8 @@ public class BooleanLabelProcessor extends SimpleAnswerLabelProcessor implements
     public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
-            int rawValue = (int) node.getProperty(PROP_VALUE).getLong();
-            String yesLabel = "Yes";
-            String noLabel = "No";
-            String unknownLabel = "Unknown";
-
-            if (question != null) {
-                if (question.hasProperty(YES_LABEL)) {
-                    yesLabel = question.getProperty(YES_LABEL).getString();
-                }
-                if (question.hasProperty(NO_LABEL)) {
-                    noLabel = question.getProperty(NO_LABEL).getString();
-                }
-                if (question.hasProperty(UNKNOWN_LABEL)) {
-                    unknownLabel = question.getProperty(UNKNOWN_LABEL).getString();
-                }
-            }
-            Boolean value = BooleanUtils.toBooleanObject(rawValue, 1, 0, -1);
-            return Json.createValue(BooleanUtils.toString(value, yesLabel, noLabel, unknownLabel));
-        } catch (final RepositoryException ex) {
+            return Json.createValue(node.getProperty(PROP_VALUE).getValues()[1].toString());
+        } catch (RepositoryException e) {
             // Really shouldn't happen
         }
         return null;

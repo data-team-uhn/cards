@@ -16,10 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.dataentry.internal.serialize;
+package ca.sickkids.ccm.lfs.dataentry.internal.serialize.labels;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.function.Function;
 
 import javax.jcr.Node;
@@ -28,19 +26,26 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
 import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Gets the formatted question answer for date questions.
+ * Gets the human-readable question answer for boolean questions.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
+public class BooleanLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
+    private static final String YES_LABEL = "yesLabel";
+
+    private static final String NO_LABEL = "noLabel";
+
+    private static final String UNKNOWN_LABEL = "unknownLabel";
+
     @Override
     public String getName()
     {
@@ -62,7 +67,6 @@ public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     @Override
     public boolean canProcess(Resource resource)
     {
-        // This only processes forms
         return resource.isResourceType("lfs/Form");
     }
 
@@ -71,7 +75,7 @@ public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements Re
         final Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (child.isNodeType("lfs:DateAnswer")) {
+            if (child.isNodeType("lfs:BooleanAnswer")) {
                 return serializeNode.apply(child);
             }
         } catch (RepositoryException e) {
@@ -84,7 +88,7 @@ public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType("lfs:DateAnswer")) {
+            if (node.isNodeType("lfs:BooleanAnswer")) {
                 addProperty(node, json, serializeNode);
             }
         } catch (RepositoryException e) {
@@ -96,12 +100,24 @@ public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
+            int rawValue = (int) node.getProperty(PROP_VALUE).getLong();
+            String yesLabel = "Yes";
+            String noLabel = "No";
+            String unknownLabel = "Unknown";
+
             if (question != null) {
-                Calendar rawValue = node.getProperty(PROP_VALUE).getDate();
-                SimpleDateFormat format = new SimpleDateFormat(question.getProperty("dateFormat").getString());
-                format.setTimeZone(rawValue.getTimeZone());
-                return Json.createValue(format.format(rawValue.getTime()));
+                if (question.hasProperty(YES_LABEL)) {
+                    yesLabel = question.getProperty(YES_LABEL).getString();
+                }
+                if (question.hasProperty(NO_LABEL)) {
+                    noLabel = question.getProperty(NO_LABEL).getString();
+                }
+                if (question.hasProperty(UNKNOWN_LABEL)) {
+                    unknownLabel = question.getProperty(UNKNOWN_LABEL).getString();
+                }
             }
+            Boolean value = BooleanUtils.toBooleanObject(rawValue, 1, 0, -1);
+            return Json.createValue(BooleanUtils.toString(value, yesLabel, noLabel, unknownLabel));
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }

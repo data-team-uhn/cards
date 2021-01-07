@@ -16,8 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.dataentry.internal.serialize;
+package ca.sickkids.ccm.lfs.dataentry.internal.serialize.labels;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.function.Function;
 
 import javax.jcr.Node;
@@ -32,12 +34,12 @@ import org.osgi.service.component.annotations.Component;
 import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Gets the pedigree question answer as svg picture.
+ * Gets the formatted question answer for date questions.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class PedigreeLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
+public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
     @Override
     public String getName()
@@ -60,6 +62,7 @@ public class PedigreeLabelProcessor extends SimpleAnswerLabelProcessor implement
     @Override
     public boolean canProcess(Resource resource)
     {
+        // This only processes forms
         return resource.isResourceType("lfs/Form");
     }
 
@@ -68,7 +71,7 @@ public class PedigreeLabelProcessor extends SimpleAnswerLabelProcessor implement
         final Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (child.isNodeType("lfs:PedigreeAnswer")) {
+            if (child.isNodeType("lfs:DateAnswer")) {
                 return serializeNode.apply(child);
             }
         } catch (RepositoryException e) {
@@ -81,7 +84,7 @@ public class PedigreeLabelProcessor extends SimpleAnswerLabelProcessor implement
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType("lfs:PedigreeAnswer")) {
+            if (node.isNodeType("lfs:DateAnswer")) {
                 addProperty(node, json, serializeNode);
             }
         } catch (RepositoryException e) {
@@ -93,8 +96,13 @@ public class PedigreeLabelProcessor extends SimpleAnswerLabelProcessor implement
     public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
-            return Json.createValue(node.getProperty(PROP_VALUE).getValues()[1].toString());
-        } catch (RepositoryException e) {
+            if (question != null) {
+                Calendar rawValue = node.getProperty(PROP_VALUE).getDate();
+                SimpleDateFormat format = new SimpleDateFormat(question.getProperty("dateFormat").getString());
+                format.setTimeZone(rawValue.getTimeZone());
+                return Json.createValue(format.format(rawValue.getTime()));
+            }
+        } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }
         return null;

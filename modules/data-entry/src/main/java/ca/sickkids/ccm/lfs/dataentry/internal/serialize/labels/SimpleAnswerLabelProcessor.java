@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package ca.sickkids.ccm.lfs.dataentry.internal.serialize;
+package ca.sickkids.ccm.lfs.dataentry.internal.serialize.labels;
 
 import java.util.Collection;
 import java.util.function.Function;
