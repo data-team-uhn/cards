@@ -109,10 +109,10 @@ function Form (props) {
   const formURL = `/Forms/${id}`;
 
   useEffect(() => {
-    function removeThisHandler() {
+    function removeSaveDataHandler() {
       window.removeEventListener("beforeunload", saveData);
     }
-    setRemoveWindowHandlers(() => removeThisHandler);
+    setRemoveWindowHandlers(() => removeSaveDataHandler);
     window.addEventListener("beforeunload", saveData);
     // When component unmounts:
     return (() => {
