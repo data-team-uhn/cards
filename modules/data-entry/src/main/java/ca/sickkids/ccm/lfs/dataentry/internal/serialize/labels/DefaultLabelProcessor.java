@@ -27,7 +27,6 @@ import javax.jcr.RepositoryException;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
 import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
@@ -41,46 +40,8 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 public class DefaultLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
     private static final List<String> DEFAULT_RESOURCE_TYPES =
-            Arrays.asList("lfs:LongAnswer", "lfs:DoubleAnswer", "lfs:DecimalAnswer", "lfs:TimeAnswer",
-                "lfs:ChromosomeAnswer", "lfs:ComputedAnswer");
-
-    @Override
-    public String getName()
-    {
-        return "labels";
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 75;
-    }
-
-    @Override
-    public boolean isEnabledByDefault(Resource resource)
-    {
-        return true;
-    }
-
-    @Override
-    public boolean canProcess(Resource resource)
-    {
-        return resource.isResourceType("lfs/Form");
-    }
-
-    @Override
-    public JsonValue processChild(final Node node, final Node child, final JsonValue input,
-        final Function<Node, JsonValue> serializeNode)
-    {
-        try {
-            if (DEFAULT_RESOURCE_TYPES.contains(child.getPrimaryNodeType().getName())) {
-                return serializeNode.apply(child);
-            }
-        } catch (RepositoryException e) {
-            // Really shouldn't happen
-        }
-        return input;
-    }
+        Arrays.asList("lfs:LongAnswer", "lfs:DoubleAnswer", "lfs:DecimalAnswer", "lfs:TimeAnswer",
+            "lfs:ChromosomeAnswer", "lfs:ComputedAnswer");
 
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)

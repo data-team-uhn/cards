@@ -28,7 +28,6 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
 import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
@@ -41,45 +40,6 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
-    @Override
-    public String getName()
-    {
-        return "labels";
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 75;
-    }
-
-    @Override
-    public boolean isEnabledByDefault(Resource resource)
-    {
-        return true;
-    }
-
-    @Override
-    public boolean canProcess(Resource resource)
-    {
-        // This only processes forms
-        return resource.isResourceType("lfs/Form");
-    }
-
-    @Override
-    public JsonValue processChild(final Node node, final Node child, final JsonValue input,
-        final Function<Node, JsonValue> serializeNode)
-    {
-        try {
-            if (child.isNodeType("lfs:DateAnswer")) {
-                return serializeNode.apply(child);
-            }
-        } catch (RepositoryException e) {
-            // Really shouldn't happen
-        }
-        return input;
-    }
-
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {

@@ -29,12 +29,16 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
+import org.apache.sling.api.resource.Resource;
+
+import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
+
 /**
  * Class with shared processor functionality to get the human-readable question answer.
  *
  * @version $Id$
  */
-public class SimpleAnswerLabelProcessor
+public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
     protected static final String PROP_VALUE = "value";
 
@@ -45,6 +49,30 @@ public class SimpleAnswerLabelProcessor
     protected static final String PROP_LABEL = "label";
 
     protected static final String PROP_UNITS = "unitOfMeasurement";
+
+    @Override
+    public String getName()
+    {
+        return "labels";
+    }
+
+    @Override
+    public int getPriority()
+    {
+        return 75;
+    }
+
+    @Override
+    public boolean isEnabledByDefault(Resource resource)
+    {
+        return true;
+    }
+
+    @Override
+    public boolean canProcess(Resource resource)
+    {
+        return resource.isResourceType("lfs/Form");
+    }
 
     /**
      * Adds the displayedValue property to the answer JSON.
