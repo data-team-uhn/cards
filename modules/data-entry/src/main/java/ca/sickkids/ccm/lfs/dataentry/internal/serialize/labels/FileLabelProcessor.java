@@ -70,10 +70,10 @@ public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
-            List<String> names = new ArrayList<>();
             String fullPath = node.getPath() + "/";
             Property property = node.getProperty("value");
             if (property.isMultiple()) {
+                List<String> names = new ArrayList<>();
                 for (Value item : property.getValues()) {
                     String fileName = item.getString().replace(fullPath, "");
                     names.add(fileName);
