@@ -10,16 +10,33 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 import PropTypes from "prop-types";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 // @material-ui/core components
-import { Avatar, ClickAwayListener, Grow, Hidden, IconButton, Link, ListItemIcon, ListItemText, MenuList, MenuItem, Paper, Popper, Snackbar, withStyles } from "@material-ui/core";
+import {
+  Avatar,
+  ClickAwayListener,
+  Grow,
+  Hidden,
+  IconButton,
+  Link,
+  ListItemIcon,
+  ListItemText,
+  MenuList,
+  MenuItem,
+  Paper,
+  Popper,
+  Snackbar,
+  withStyles
+} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import classNames from "classnames";
 
 import HeaderSearchBar from "./HeaderSearchBar.jsx";
-import headerLinksStyle from "./headerLinksStyle.jsx";
+import sidebarStyle from "../Sidebar/sidebarStyle.jsx";
 import ChangeUserPasswordDialogue from "../../Userboard/Users/changeuserpassworddialogue.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialogue.js";
 
 function HeaderLinks (props) {
   const { classes, closeSidebar, theme } = props;
@@ -31,9 +48,11 @@ function HeaderLinks (props) {
   const avatarRef = useRef();
   const headerRef = useRef();
 
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
   // TODO: Should we make the username accessible to other components (e.g. via a context)?
   useEffect(() => {
-    fetch("/system/sling/info.sessionInfo.json")
+    fetchWithReLogin(globalLoginDisplay, "/system/sling/info.sessionInfo.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => setUsername(json["userID"]))
       .catch((error) => console.log(error));
@@ -52,6 +71,19 @@ function HeaderLinks (props) {
   // so that they show up white in the sidebar (rather than black on the
   // main page)
   const expand = window.innerWidth >= theme.breakpoints.values.md;
+
+  const menuItems = <MenuList role="menu">
+    <MenuItem onClick={() => setPasswordDialogOpen(true)} className={expand ? "" : classes.itemLink}>
+      <VpnKeyIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
+      <ListItemText primary="Change password" className={expand ? "" : classes.whiteFont}/>
+    </MenuItem>
+    <Link href={"/system/sling/logout"} color="inherit">
+      <MenuItem className={expand ? "" : classes.itemLink}>
+        <ExitToAppIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
+        <ListItemText primary="Log out" className={expand ? classes.logoutText : classNames(classes.logoutText, classes.whiteFont)}/>
+      </MenuItem>
+    </Link>
+  </MenuList>
 
   return (
     <div ref={headerRef} id="adminnavbar">
@@ -73,16 +105,8 @@ function HeaderLinks (props) {
         </IconButton>
       </Hidden>
       <Hidden mdUp implementation="css">
-        <Link href={"/system/sling/logout"}>
-          <IconButton
-            aria-label="Log out"
-            className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
-            title="Log out"
-            >
-            <p className={classes.linkText}>Log out</p>
-          </IconButton>
-        </Link>
-        <IconButton
+        {menuItems}
+        {/*<IconButton
           aria-label="Change password"
           className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
           onClick={() => setPasswordDialogOpen(true)}
@@ -90,6 +114,15 @@ function HeaderLinks (props) {
           >
           <p className={classes.linkText}>Change password</p>
         </IconButton>
+        <Link href={"/system/sling/logout"} className={classes.logoutText}>
+          <IconButton
+            aria-label="Log out"
+            className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
+            title="Log out"
+            >
+            <p className={classes.linkText}>Log out</p>
+          </IconButton>
+        </Link>*/}
       </Hidden>
       <Popper
         open={popperOpen}
@@ -112,22 +145,7 @@ function HeaderLinks (props) {
                 if (!headerRef.current.contains(event.target)) {
                   setPopperOpen(false);
                 }}}>
-                <MenuList role="menu">
-                  <MenuItem onClick={() => setPasswordDialogOpen(true)}>
-                    <ListItemIcon>
-                      <VpnKeyIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Change password" />
-                  </MenuItem>
-                  <Link href={"/system/sling/logout"} color="inherit">
-                    <MenuItem>
-                      <ListItemIcon>
-                        <ExitToAppIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Log out" />
-                    </MenuItem>
-                  </Link>
-                </MenuList>
+                {menuItems}
               </ClickAwayListener>
             </Paper>
           </Grow>
@@ -144,6 +162,7 @@ function HeaderLinks (props) {
         />
       <Snackbar
         open={pwdResetSuccessSnackbarOpen}
+        className={classes.successSnackbar}
         autoHideDuration={6000}
         onClose={() => setPwdResetSuccessSnackbarOpen(false)}
         message="Password successfully changed"
@@ -161,4 +180,4 @@ HeaderLinks.propTypes = {
   closeSidebar: PropTypes.func
 }
 
-export default withStyles(headerLinksStyle, {withTheme: true})(HeaderLinks);
+export default withStyles(sidebarStyle, {withTheme: true})(HeaderLinks);
