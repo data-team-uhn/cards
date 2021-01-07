@@ -1668,60 +1668,105 @@
 			</node>
 		</node>
 		<node>
-			<name>mrb6</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>If NOT “None” for the above questions about going up stairs: When going up one flight of stairs, do you feel out of breath?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>mrb6Section</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>mrb6</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>No or Don’t Know</value>
+					<name>text</name>
+					<value>When going up one flight of stairs, do you feel out of breath?</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>0</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>0</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No or Don’t Know</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>0</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>1</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>1</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>comparator</name>
+					<value><![CDATA[>]]></value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>mrb5</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>0</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -1739,7 +1784,7 @@
 			</property>
 			<property>
 				<name>expression</name>
-				<value>return @{mrb1} + @{mrb2} + @{mrb3} + @{mrb4} + @{mrb5} + @{mrb6}</value>
+				<value>return @{mrb1} + @{mrb2} + @{mrb3} + @{mrb4} + @{mrb5} + @{mrb6:-0}</value>
 				<type>String</type>
 			</property>
 			<property>
