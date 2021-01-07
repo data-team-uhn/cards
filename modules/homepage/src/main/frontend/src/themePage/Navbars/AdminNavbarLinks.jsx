@@ -106,23 +106,6 @@ function HeaderLinks (props) {
       </Hidden>
       <Hidden mdUp implementation="css">
         {menuItems}
-        {/*<IconButton
-          aria-label="Change password"
-          className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
-          onClick={() => setPasswordDialogOpen(true)}
-          title="Change password"
-          >
-          <p className={classes.linkText}>Change password</p>
-        </IconButton>
-        <Link href={"/system/sling/logout"} className={classes.logoutText}>
-          <IconButton
-            aria-label="Log out"
-            className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
-            title="Log out"
-            >
-            <p className={classes.linkText}>Log out</p>
-          </IconButton>
-        </Link>*/}
       </Hidden>
       <Popper
         open={popperOpen}
