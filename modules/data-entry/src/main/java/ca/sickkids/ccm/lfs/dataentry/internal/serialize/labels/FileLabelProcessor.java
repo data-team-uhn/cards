@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.json.Json;
@@ -45,7 +46,7 @@ public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType("lfs:FileResourceAnswer") || node.isNodeType("lfs:SomaticVariantsAnswer")) {
+            if (node.isNodeType("lfs:FileResourceAnswer")) {
                 addProperty(node, json, serializeNode);
             }
         } catch (RepositoryException e) {
@@ -71,17 +72,17 @@ public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements Re
         try {
             List<String> names = new ArrayList<>();
             String fullPath = node.getPath() + "/";
-            Value[] childNodes = node.getProperty("value").getValues();
-            for (Value item : childNodes) {
-                String fileName = item.getString().replace(fullPath, "");
-                names.add(fileName);
+            Property property = node.getProperty("value");
+            if (property.isMultiple()) {
+                for (Value item : property.getValues()) {
+                    String fileName = item.getString().replace(fullPath, "");
+                    names.add(fileName);
+                }
+                return createJsonArrayFromList(names);
+            } else {
+                String fileName = property.getValue().getString().replace(fullPath, "");
+                return Json.createValue(fileName);
             }
-
-            if (names.size() == 1) {
-                return Json.createValue(names.get(0));
-            }
-
-            return createJsonArrayFromList(names);
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }
