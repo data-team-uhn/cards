@@ -20,6 +20,7 @@
 import React, { useState } from "react";
 
 import { Typography, withStyles } from "@material-ui/core";
+import { Avatar, List, ListItem }  from "@material-ui/core";
 
 import PropTypes from "prop-types";
 
@@ -52,6 +53,27 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    text="Test text question (lowercase only)"
 //    />
 function ChromosomeQuestion(props) {
+  // If the form is in the view mode
+  if (props.existingAnswer && !props.isEdit) {
+    let prettyPrintedAnswers = props.existingAnswer[1]["displayedValue"];
+    // The value can either be a single value or an array of values; force it into an array
+    prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
+
+    return (
+      <Question
+        {...rest}
+        >
+        <List>
+          { prettyPrintedAnswers.map( (item) => {
+            return(
+              <ListItem key={item}> {item} </ListItem>
+            )})
+          }
+        </List>
+      </Question>
+    );
+  }
+
   // By default we enable 22 numbered chromosomes plus X and Y
   const defaultValues = {
     chromosomeNumber : 22,
@@ -102,7 +124,8 @@ ChromosomeQuestion.propTypes = {
   text: PropTypes.string,
   minAnswers: PropTypes.number,
   maxAnswers: PropTypes.number,
-  chromosomeNumber: PropTypes.number
+  chromosomeNumber: PropTypes.number,
+  isEdit: PropTypes.bool,
 };
 
 const StyledChromosomeQuestion = withStyles(QuestionnaireStyle)(ChromosomeQuestion)

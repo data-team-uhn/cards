@@ -41,7 +41,8 @@ function Forms(props) {
   }, [entry]);
 
   if (entry) {
-    return <Form id={entry[1]} key={location.pathname}/>;
+    let formId = entry[1].replace(".edit", "");
+    return <Form id={formId} key={location.pathname}/>;
   }
 
   const columns = [

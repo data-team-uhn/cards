@@ -56,7 +56,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //   unknownLabel="Does not compute"
 //   />
 function BooleanQuestion(props) {
-  const {classes, ...rest} = props;
+  const {existingAnswer, isEdit, classes, ...rest} = props;
   const {yesLabel, noLabel, unknownLabel, enableUnknown} = { ...props.questionDefinition, ...props }
   // Define the defaults for yesLabel, etc. here because we want questionDefinition to be able to
   // override them, and the props to be able to override the questionDefinition
@@ -65,11 +65,25 @@ function BooleanQuestion(props) {
     options.push([unknownLabel || "Unknown", "-1", true]);
   }
 
+  // If the form is in the view mode
+  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
+    let prettyPrintedAnswer = existingAnswer[1]["displayedValue"];
+
+    return (
+      <Question
+        {...rest}
+        >
+        { prettyPrintedAnswer }
+      </Question>
+    );
+  }
+
   return (
     <Question
       {...rest}
       >
       <MultipleChoice
+        existingAnswer={existingAnswer}
         answerNodeType="lfs:BooleanAnswer"
         valueType="Long" /* Notably not "Boolean", since we need it to be stored as a long in the backend */
         maxAnswers={1}
@@ -88,7 +102,8 @@ BooleanQuestion.propTypes = {
   enableUnknown: PropTypes.bool,
   yesLabel: PropTypes.string,
   noLabel: PropTypes.string,
-  unknownLabel: PropTypes.string
+  unknownLabel: PropTypes.string,
+  isEdit: PropTypes.bool,
 };
 
 const StyledBooleanQuestion = withStyles(QuestionnaireStyle)(BooleanQuestion)

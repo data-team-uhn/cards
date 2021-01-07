@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 import PropTypes from 'prop-types';
-import { InputAdornment, TextField, Typography, withStyles } from "@material-ui/core";
+import { InputAdornment, TextField, Typography, withStyles, List, ListItem } from "@material-ui/core";
 
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -46,10 +46,31 @@ import { useFormReaderContext } from "./FormContext";
 //  expression="if (@{question_b} === 0) setError('Can not divide by 0'); return @{question_a}/@{question_b}"
 //  />
 let ComputedQuestion = (props) => {
-  const { existingAnswer, classes, ...rest} = props;
+  const { existingAnswer, isEdit, classes, ...rest} = props;
   const { text, expression, unitOfMeasurement } = {...props.questionDefinition, ...props};
   const [error, changeError] = useState(false);
   const [errorMessage, changeErrorMessage] = useState(false);
+
+  // If the form is in the view mode
+  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
+    let prettyPrintedAnswers = existingAnswer[1]["displayedValue"];
+    // The value can either be a single value or an array of values; force it into an array
+    prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
+
+    return (
+      <Question
+        {...rest}
+        >
+        <List>
+          { prettyPrintedAnswers.map( (item) => {
+            return(
+              <ListItem key={item}> {item} </ListItem>
+            )})
+          }
+        </List>
+      </Question>
+    );
+  }
 
   let initialValue = existingAnswer?.[1].value || "";
   const [value, changeValue] = useState(initialValue);
@@ -185,7 +206,8 @@ ComputedQuestion.propTypes = {
     expression: PropTypes.string.isRequired,
     description: PropTypes.string,
     unitOfMeasurement: PropTypes.string
-  }).isRequired
+  }).isRequired,
+  isEdit: PropTypes.bool,
 };
 
 const StyledComputedQuestion = withStyles(QuestionnaireStyle)(ComputedQuestion);

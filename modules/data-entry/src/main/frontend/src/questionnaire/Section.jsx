@@ -63,7 +63,7 @@ function createTitle(label, idx, isRecurrent) {
  * @param {Object} sectionDefinition the section definition JSON
  */
 function Section(props) {
-  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive } = props;
+  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit } = props;
   const isRecurrent = sectionDefinition['recurrent'];
 
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
@@ -228,6 +228,7 @@ function Section(props) {
                         keyProp={key}
                         classes={classes}
                         onChange={onChange}
+                        isEdit={isEdit}
                         sectionAnswersState={removableAnswers}
                         onAddedAnswerPath={(newAnswers) => {
                           newAnswers[ID_STATE_KEY] = newAnswers[ID_STATE_KEY] + 1;

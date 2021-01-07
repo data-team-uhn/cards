@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 
-import { Typography, withStyles } from "@material-ui/core";
+import { Typography, withStyles, List, ListItem } from "@material-ui/core";
 
 import PropTypes from "prop-types";
 
@@ -57,10 +57,31 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    errorText={"Please enter a lowercase input"}
 //    />
 function TextQuestion(props) {
-  let { errorText, ...rest } = props;
+  let { existingAnswer, isEdit, errorText, ...rest } = props;
   let { displayMode, regexp } = {...props.questionDefinition, ...props};
   const [error, setError] = useState(false);
   const regexTest = new RegExp(regexp);
+
+  // If the form is in the view mode
+  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
+    let prettyPrintedAnswers = existingAnswer[1]["displayedValue"];
+    // The value can either be a single value or an array of values; force it into an array
+    prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
+
+    return (
+      <Question
+        {...rest}
+        >
+        <List>
+          { prettyPrintedAnswers.map( (item) => {
+            return(
+              <ListItem key={item}> {item} </ListItem>
+            )})
+          }
+        </List>
+      </Question>
+    );
+  }
 
   // Callback function if a regex is defined
   let checkRegex = (text) => {
@@ -75,6 +96,7 @@ function TextQuestion(props) {
       >
       {error && <Typography color='error'>{errorText}</Typography>}
       <MultipleChoice
+        existingAnswer={existingAnswer}
         input={displayMode === "input" || displayMode === "list+input"}
         textbox={displayMode === "textbox"}
         onUpdate={checkRegex}
@@ -96,7 +118,8 @@ TextQuestion.propTypes = {
   minAnswers: PropTypes.number,
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
-  errorText: PropTypes.string
+  errorText: PropTypes.string,
+  isEdit: PropTypes.bool,
 };
 
 TextQuestion.defaultProps = {

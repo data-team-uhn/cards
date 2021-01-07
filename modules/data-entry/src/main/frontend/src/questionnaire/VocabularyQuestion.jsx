@@ -18,7 +18,7 @@
 //
 
 import React from "react";
-import { withStyles } from "@material-ui/core";
+import { withStyles, List, ListItem } from "@material-ui/core";
 
 import PropTypes from "prop-types";
 
@@ -62,7 +62,7 @@ import VocabularySelector from "../vocabSelector/select.jsx";
 //   }}
 //   />
 function VocabularyQuestion(props) {
-  let { classes, ...rest } = props;
+  let { existingAnswer, isEdit, classes, ...rest } = props;
   let { enableNotes, maxAnswers, sourceVocabularies, vocabularyFilter } = { ...props.questionDefinition, ...props };
   let defaultSuggestions = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
@@ -72,6 +72,27 @@ function VocabularyQuestion(props) {
     .map(value => [value.label || value.value, value.value, true])
     // Reparse defaults into a format VocabularySelector understands
     .reduce((object, value) => ({...object, [value[VALUE_POS]]: value[LABEL_POS]}), {});
+
+  // If the form is in the view mode
+  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
+    let prettyPrintedAnswers = existingAnswer[1]["displayedValue"];
+    // The value can either be a single value or an array of values; force it into an array
+    prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
+
+    return (
+      <Question
+        {...rest}
+        >
+        <List>
+          { prettyPrintedAnswers.map( (item) => {
+            return(
+              <ListItem key={item}> {item} </ListItem>
+            )})
+          }
+        </List>
+      </Question>
+    );
+  }
 
   return (
     <Question

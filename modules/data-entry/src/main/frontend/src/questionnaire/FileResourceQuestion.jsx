@@ -18,7 +18,7 @@
 //
 
 import React, { useContext, useState } from "react";
-import { Grid, IconButton, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
+import { Grid, IconButton, LinearProgress, Link, TextField, Typography, withStyles, List, ListItem } from "@material-ui/core";
 import Delete from "@material-ui/icons/Delete";
 
 import PropTypes from "prop-types";
@@ -43,7 +43,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // Sample usage:
 // (TODO)
 function FileResourceQuestion(props) {
-  const { classes, existingAnswer, ...rest } = props;
+  const { classes, existingAnswer, isEdit, ...rest } = props;
   const { maxAnswers, minAnswers, namePattern } = { ...props.questionDefinition, ...props }
   let initialValues =
     // Check whether or not we have an initial value
@@ -60,6 +60,30 @@ function FileResourceQuestion(props) {
   let [ error, setError ] = useState();
   let [ uploadInProgress, setUploadInProgress ] = useState(false);
   let [ answerPath, setAnswerPath ] = useState(existingAnswer);
+
+  // If the form is in the view mode
+  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
+    let prettyPrintedAnswers = existingAnswer[1]["displayedValue"];
+    // The value can either be a single value or an array of values; force it into an array
+    prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
+
+    return (
+      <Question
+        {...rest}
+        >
+        <List>
+          { prettyPrintedAnswers.map((answerValue, idx) => {
+            let prefix = idx > 0 ? ", " : ""; // Seperator space between different files
+            return(
+              <ListItem key={idx}>
+                {prefix}<a key={answerValue} href={existingAnswer[1]["value"][idx]} target="_blank" rel="noopener" download>{answerValue}</a>
+              </ListItem>
+            )
+          })}
+        </List>
+      </Question>
+    );
+  }
 
   // Default value of knownAnswers is the name of every field we can find in namePattern
   let initialParsedAnswers = {};
@@ -302,7 +326,8 @@ FileResourceQuestion.propTypes = {
   questionDefinition: PropTypes.shape({
     text: PropTypes.string.isRequired,
   }).isRequired,
-  namePattern: PropTypes.string
+  namePattern: PropTypes.string,
+  isEdit: PropTypes.bool,
 };
 
 const StyledFileResourceQuestion = withStyles(QuestionnaireStyle)(FileResourceQuestion)

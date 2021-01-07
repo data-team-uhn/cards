@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 
-import { TextField, Typography, withStyles } from "@material-ui/core";
+import { TextField, Typography, withStyles, List, ListItem } from "@material-ui/core";
 
 import PropTypes from "prop-types";
 
@@ -81,7 +81,7 @@ class Time {
 //  upperLimit={"23:59"}
 //  />
 function TimeQuestion(props) {
-  let {existingAnswer, classes, ...rest} = props;
+  let {existingAnswer, isEdit, classes, ...rest} = props;
   let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {...props.questionDefinition, ...props};
   let currentStartValue = (existingAnswer && existingAnswer[1].value && new Time(existingAnswer[1].value).isValid)
     ? existingAnswer[1].value : "";
@@ -93,6 +93,27 @@ function TimeQuestion(props) {
   const lowerTime = new Time(lowerLimit, isMinuteSeconds);
   const upperTime = new Time(upperLimit, isMinuteSeconds);
   const minuteSecondTest = new RegExp(/([0-5]\d):([0-5]\d)/);
+
+  // If the form is in the view mode
+  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
+    let prettyPrintedAnswers = existingAnswer[1]["displayedValue"];
+    // The value can either be a single value or an array of values; force it into an array
+    prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
+
+    return (
+      <Question
+        {...rest}
+        >
+        <List>
+          { prettyPrintedAnswers.map( (item) => {
+            return(
+              <ListItem key={item}> {item} </ListItem>
+            )})
+          }
+        </List>
+      </Question>
+    );
+  }
 
   let checkError = (timeString) => {
     let time = new Time(timeString, isMinuteSeconds);
@@ -158,7 +179,8 @@ TimeQuestion.propTypes = {
   lowerLimit: PropTypes.string,
   upperLimit: PropTypes.string,
   errorText: PropTypes.string,
-  dateFormat: PropTypes.string
+  dateFormat: PropTypes.string,
+  isEdit: PropTypes.bool,
 };
 
 const StyledTimeQuestion = withStyles(QuestionnaireStyle)(TimeQuestion);

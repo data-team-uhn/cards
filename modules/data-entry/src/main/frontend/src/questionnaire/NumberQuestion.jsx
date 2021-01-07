@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 
-import { InputAdornment, TextField, Typography, withStyles } from "@material-ui/core";
+import { InputAdornment, TextField, Typography, withStyles, List, ListItem } from "@material-ui/core";
 import NumberFormat from 'react-number-format';
 
 import PropTypes from "prop-types";
@@ -61,6 +61,7 @@ const DATA_TO_VALUE_TYPE = {
 //  type: One of "integer" or "float" (default: "float")
 //  errorText: String to display when the input is not valid (default: "invalid input")
 //  isRange: Whether or not to display a range instead of a single value
+//  isEdit: Whether or not the form is in the edit mode or view mode
 //
 // Sample usage:
 // <NumberQuestion
@@ -74,8 +75,8 @@ const DATA_TO_VALUE_TYPE = {
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  const { existingAnswer, errorText, isRange, classes, ...rest} = props;
-  const { text, dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
+  const { existingAnswer, errorText, isRange, isEdit, classes, ...rest} = props;
+  const { dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
   const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
   const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
   const [error, setError] = useState(false);
@@ -85,6 +86,27 @@ function NumberQuestion(props) {
   // The following two are only used if a default is not given, as we switch to handling values here
   const [input, setInput] = useState(initialValue);
   const [endInput, setEndInput] = useState(undefined);
+
+  // If the form is in the view mode
+  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
+    let prettyPrintedAnswers = existingAnswer[1]["displayedValue"];
+    // The value can either be a single value or an array of values; force it into an array
+    prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
+
+    return (
+      <Question
+        {...rest}
+        >
+        <List>
+          { prettyPrintedAnswers.map( (item) => {
+            return(
+              <ListItem key={item}> {item} </ListItem>
+            )})
+          }
+        </List>
+      </Question>
+    );
+  }
 
   // Callback function for our min/max
   let hasError = (text) => {
@@ -159,8 +181,6 @@ function NumberQuestion(props) {
 
   return (
     <Question
-      text={text}
-      existingAnswer={existingAnswer}
       {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
@@ -261,11 +281,13 @@ NumberQuestion.propTypes = {
   maxValue: PropTypes.number,
   errorText: PropTypes.string,
   isRange: PropTypes.bool,
+  isEdit: PropTypes.bool,
 };
 
 NumberQuestion.defaultProps = {
   errorText: "Invalid input",
-  isRange: false
+  isRange: false,
+  isEdit: false
 };
 
 const StyledNumberQuestion = withStyles(QuestionnaireStyle)(NumberQuestion)

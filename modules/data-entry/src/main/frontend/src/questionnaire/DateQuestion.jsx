@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 
-import { TextField, Typography, withStyles } from "@material-ui/core";
+import { TextField, Typography, withStyles, List, ListItem } from "@material-ui/core";
 
 import PropTypes from "prop-types";
 import moment from "moment";
@@ -140,8 +140,29 @@ export function formatDateAnswer(dateFormat, value) {
 //  type="timestamp"
 //  />
 function DateQuestion(props) {
-  let {existingAnswer, displayFormat, classes, ...rest} = props;
+  let {existingAnswer, displayFormat, isEdit, classes, ...rest} = props;
   let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy-MM-dd", minAnswers: 0, type: TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
+
+  // If the form is in the view mode
+  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
+    let prettyPrintedAnswers = existingAnswer[1]["displayedValue"];
+    // The value can either be a single value or an array of values; force it into an array
+    prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
+
+    return (
+      <Question
+        {...rest}
+        >
+        <List>
+          { prettyPrintedAnswers.map( (item) => {
+            return(
+              <ListItem key={item}> {item} </ListItem>
+            )})
+          }
+        </List>
+      </Question>
+    );
+  }
 
   // If we're given a year, instead supply the NumberQuestion widget
   if (dateFormat === DATE_FORMATS[0]) {
@@ -390,7 +411,8 @@ DateQuestion.propTypes = {
     type: PropTypes.oneOf([TIMESTAMP_TYPE, INTERVAL_TYPE]),
     lowerLimit: PropTypes.object,
     upperLimit: PropTypes.object,
-  })
+  }),
+  isEdit: PropTypes.bool,
 };
 
 const StyledDateQuestion = withStyles(QuestionnaireStyle)(DateQuestion);

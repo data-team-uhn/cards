@@ -30,8 +30,26 @@ import moment from "moment";
 // Component to display the name of the file stored under the answer, along with the creator and creation date.
 
 function SomaticVariantsQuestion(props) {
-  let { existingAnswer, classes, ...rest } = props;
+  let { existingAnswer, isEdit, classes, ...rest } = props;
   let file = existingAnswer?.[1][Object.keys(existingAnswer[1]).find(key => existingAnswer[1][key]["jcr:primaryType"] === "nt:file")];
+
+  // If the form is in the view mode
+  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
+    let prettyPrintedAnswers = existingAnswer[1]["displayedValue"];
+    // The value can either be a single value or an array of values; force it into an array
+    prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
+
+    return (
+      <Question
+        {...rest}
+        >
+        {prettyPrintedAnswers.map((answerValue, idx) => {
+          let prefix = idx > 0 ? ", " : ""; // Seperator space between different files
+          return <>{prefix}<a key={answerValue} href={existingAnswer[1]["value"][idx]} target="_blank" rel="noopener" download>{answerValue}</a></>
+        })}
+      </Question>
+    );
+  }
 
   return (
     <Question
@@ -50,7 +68,8 @@ function SomaticVariantsQuestion(props) {
 }
 
 SomaticVariantsQuestion.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  isEdit: PropTypes.bool,
 };
 
 const StyledSomaticVariantsQuestion = withStyles(QuestionnaireStyle)(SomaticVariantsQuestion)
