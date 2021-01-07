@@ -18,8 +18,6 @@
  */
 package ca.sickkids.ccm.lfs.dataentry.internal.serialize.labels;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Function;
 
 import javax.jcr.Node;
@@ -39,15 +37,21 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class DefaultLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
-    private static final List<String> DEFAULT_RESOURCE_TYPES =
-        Arrays.asList("lfs:LongAnswer", "lfs:DoubleAnswer", "lfs:DecimalAnswer", "lfs:TimeAnswer",
-            "lfs:ChromosomeAnswer", "lfs:ComputedAnswer");
+    private static final String DEFAULT_RESOURCE_TYPE = "lfs:Answer";
+
+    @Override
+    public int getPriority()
+    {
+        // Unlike all other label processors, this has a lower priority, since it provides a default label that can
+        // later be customized for specific types of answers
+        return 70;
+    }
 
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (DEFAULT_RESOURCE_TYPES.contains(node.getPrimaryNodeType().getName())) {
+            if (node.isNodeType(DEFAULT_RESOURCE_TYPE)) {
                 addProperty(node, json, serializeNode);
             }
         } catch (RepositoryException e) {
