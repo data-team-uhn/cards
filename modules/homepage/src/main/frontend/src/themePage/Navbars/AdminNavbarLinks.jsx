@@ -18,6 +18,7 @@ import {
   Grow,
   Hidden,
   IconButton,
+  ListItemIcon,
   ListItemText,
   MenuList,
   MenuItem,
@@ -71,14 +72,27 @@ function HeaderLinks (props) {
   // main page)
   const expand = window.innerWidth >= theme.breakpoints.values.md;
 
+  // Helper component to automatically enclose any children in a ListItemIcon if necessary
+  let ExpandableIcon = (props) => {
+    return expand ?
+      <ListItemIcon {...props}>
+        {props.children}
+      </ListItemIcon>
+    : props.children
+  }
+
   const menuItems = <MenuList role="menu">
     <MenuItem onClick={() => setPasswordDialogOpen(true)} className={expand ? "" : classes.itemLink}>
-      <VpnKeyIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
+      <ExpandableIcon>
+        <VpnKeyIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
+      </ExpandableIcon>
       <ListItemText primary="Change password" className={expand ? "" : classes.whiteFont}/>
     </MenuItem>
     {/* Use an onClick instead of a Link to remove the unremovable underline styling */}
     <MenuItem onClick={() => window.location.href = "/system/sling/logout"} className={expand ? "" : classes.itemLink}>
-      <ExitToAppIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
+      <ExpandableIcon>
+        <ExitToAppIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
+      </ExpandableIcon>
       <ListItemText primary="Log out" className={expand ? "" : classes.whiteFont}/>
     </MenuItem>
   </MenuList>
