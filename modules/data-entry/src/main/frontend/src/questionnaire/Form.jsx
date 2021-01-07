@@ -228,9 +228,13 @@ function Form (props) {
     pageNameWriter((subjectName ? subjectName + ": " : "") + title);
   }, [subjectName, title])
 
+  // Load the Form, only once, upon initialization
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
-    fetchData();
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
