@@ -18,14 +18,13 @@ import {
   Grow,
   Hidden,
   IconButton,
-  Link,
-  ListItemIcon,
   ListItemText,
   MenuList,
   MenuItem,
   Paper,
   Popper,
   Snackbar,
+  Tooltip,
   withStyles
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
@@ -93,15 +92,15 @@ function HeaderLinks (props) {
       />
       {/* Avatar + log out link */}
       <Hidden smDown>
-        <IconButton
-          aria-label="Log out"
-          className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
-          onClick={() => setPopperOpen(true)}
-          title="Log out"
-          ref={avatarRef}
-          >
-          <Avatar className={classes.avatar}>{initials}</Avatar>
-        </IconButton>
+        <Tooltip title={username}>
+          <IconButton
+            className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
+            onClick={() => setPopperOpen((open) => !open)}
+            ref={avatarRef}
+            >
+            <Avatar className={classes.avatar}>{initials}</Avatar>
+          </IconButton>
+        </Tooltip>
       </Hidden>
       <Hidden mdUp implementation="css">
         {menuItems}
