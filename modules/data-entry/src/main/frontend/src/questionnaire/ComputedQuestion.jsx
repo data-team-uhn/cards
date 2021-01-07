@@ -58,6 +58,7 @@ let ComputedQuestion = (props) => {
   const form = useFormReaderContext();
   const startTag = "@{";
   const endTag = "}";
+  const defaultTag = ":-";
 
   let setError = (input) => {
     if (error !== input) changeError(input);
@@ -73,13 +74,17 @@ let ComputedQuestion = (props) => {
   }
 
   let missingValue = false;
-  let getQuestionValue = (name, form) => {
+  let getQuestionValue = (name, form, defaultValue) => {
     let value;
     if (form[name] && form[name][0]) {
       value = form[name][0][1];
     }
     if (typeof(value) === "undefined" || value === "") {
-      missingValue = true;
+      if (defaultValue != null) {
+        value = defaultValue;
+      } else {
+        missingValue = true;
+      }
     }
     if (!isNaN(Number(value))) {
       value = Number(value);
@@ -93,15 +98,24 @@ let ComputedQuestion = (props) => {
     let start = expr.indexOf(startTag);
     let end = expr.indexOf(endTag, start);
     while(start > -1 && end > -1) {
-      // Push the text between the start and end tags into the list of inputs
-      let inputName = expr.substring(start + 2, end);
+      let optionStart = expr.indexOf(defaultTag, start);
+      let hasOption = (optionStart > -1 && optionStart < end);
+      // Divide the text between the start and end tag the question name and a default value if provided
+      let inputName;
+      let defaultValue = null;
+      if (hasOption) {
+        inputName = expr.substring(start + startTag.length, optionStart);
+        defaultValue = expr.substring(optionStart + defaultTag.length, end);
+      } else {
+        inputName = expr.substring(start + startTag.length, end);
+      }
       if (!inputNames.includes(inputName)) {
         inputNames.push(inputName);
-        inputValues.push(getQuestionValue(inputName, form));
+        inputValues.push(getQuestionValue(inputName, form, defaultValue));
       }
-      // Remove the start and end tags from the expression
-      expr = [expr.substring(0, start), expr.substring(start+2, end), expr.substring(end+1)].join('');
-      start = expr.indexOf(startTag, end - 3);
+      // Remove the start and end tags as well as the default option if provided
+      expr = [expr.substring(0, start), expr.substring(start + startTag.length, hasOption ? optionStart : end), expr.substring(end + endTag.length)].join('');
+      start = expr.indexOf(startTag, hasOption ? optionStart : end - startTag.length);
       end = expr.indexOf(endTag, start);
     }
     return [inputNames, inputValues, expr];
