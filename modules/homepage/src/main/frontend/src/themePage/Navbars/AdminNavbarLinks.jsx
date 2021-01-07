@@ -77,12 +77,11 @@ function HeaderLinks (props) {
       <VpnKeyIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
       <ListItemText primary="Change password" className={expand ? "" : classes.whiteFont}/>
     </MenuItem>
-    <Link href={"/system/sling/logout"} color="inherit">
-      <MenuItem className={expand ? "" : classes.itemLink}>
-        <ExitToAppIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
-        <ListItemText primary="Log out" className={expand ? classes.logoutText : classNames(classes.logoutText, classes.whiteFont)}/>
-      </MenuItem>
-    </Link>
+    {/* Use an onClick instead of a Link to remove the unremovable underline styling */}
+    <MenuItem onClick={() => window.location.href = "/system/sling/logout"} className={expand ? "" : classes.itemLink}>
+      <ExitToAppIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
+      <ListItemText primary="Log out" className={expand ? "" : classes.whiteFont}/>
+    </MenuItem>
   </MenuList>
 
   return (

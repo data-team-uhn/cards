@@ -314,9 +314,6 @@ import {
     successSnackbar: {
       backgroundColor: theme.palette.success.main
     },
-    logoutText: {
-      textDecoration: "none"
-    },
     buttonLink: {
       [theme.breakpoints.down("sm")]: {
         display: "flex",
