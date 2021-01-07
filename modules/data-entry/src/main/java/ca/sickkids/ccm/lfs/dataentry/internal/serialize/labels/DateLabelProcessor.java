@@ -23,8 +23,11 @@ import java.util.Calendar;
 import java.util.function.Function;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -57,10 +60,21 @@ public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     {
         try {
             if (question != null) {
-                Calendar rawValue = node.getProperty(PROP_VALUE).getDate();
+                Property property = node.getProperty(PROP_VALUE);
                 SimpleDateFormat format = new SimpleDateFormat(question.getProperty("dateFormat").getString());
-                format.setTimeZone(rawValue.getTimeZone());
-                return Json.createValue(format.format(rawValue.getTime()));
+                if (property.isMultiple()) {
+                    JsonArrayBuilder result = Json.createArrayBuilder();
+                    for (Value v : property.getValues()) {
+                        Calendar rawValue = v.getDate();
+                        format.setTimeZone(rawValue.getTimeZone());
+                        result.add(Json.createValue(format.format(rawValue.getTime())));
+                    }
+                    return result.build();
+                } else {
+                    Calendar rawValue = property.getDate();
+                    format.setTimeZone(rawValue.getTimeZone());
+                    return Json.createValue(format.format(rawValue.getTime()));
+                }
             }
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
