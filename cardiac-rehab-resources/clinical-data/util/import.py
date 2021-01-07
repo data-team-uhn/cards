@@ -324,7 +324,7 @@ def csv_to_json(title):
                         description = parse_description(row['Sub-report'])
                         if (len(description) > 0):
                             questionnaire['description'] = description
-                    questionnaire['title'] = main_questionnaire['title'] + ": " + clean_title(row['Sub-report'])
+                    questionnaire['title'] = clean_title(row['Sub-report'])
                     questionnaire['jcr:reference:requiredSubjectTypes'] = ["/SubjectTypes/Patient"]
                 section['jcr:primaryType'] = 'lfs:Section'
                 section['label'] = clean_title(row['Sub-report'])

@@ -18,7 +18,7 @@
 -->
 
 <node>
-	<name>Baseline Health Information - Medications</name>
+	<name>Baseline Medications</name>
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
@@ -32,7 +32,7 @@
 	</property>
 	<property>
 		<name>title</name>
-		<value>Baseline Health Information: Medications</value>
+		<value>Baseline Medications</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -43,11 +43,11 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>Medications</name>
+		<name>Baseline Medications</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Medications</value>
+			<value>Baseline Medications</value>
 			<type>String</type>
 		</property>
 		<node>

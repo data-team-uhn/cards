@@ -18,7 +18,7 @@
 -->
 
 <node>
-	<name>Baseline Health Information - Cardiovascular parameters</name>
+	<name>Baseline Cardiovascular Parameters</name>
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
@@ -32,7 +32,7 @@
 	</property>
 	<property>
 		<name>title</name>
-		<value>Baseline Health Information: Cardiovascular parameters</value>
+		<value>Baseline Cardiovascular Parameters</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -43,11 +43,11 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>Cardiovascular parameters</name>
+		<name>Baseline Cardiovascular Parameters</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Cardiovascular parameters</value>
+			<value>Baseline Cardiovascular Parameters</value>
 			<type>String</type>
 		</property>
 		<node>
