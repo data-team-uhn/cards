@@ -144,7 +144,9 @@ function HeaderLinks (props) {
         />
       <Snackbar
         open={pwdResetSuccessSnackbarOpen}
-        className={classes.successSnackbar}
+        ContentProps={{
+          className: classes.successSnackbar
+        }}
         autoHideDuration={6000}
         onClose={() => setPwdResetSuccessSnackbarOpen(false)}
         message="Password successfully changed"
