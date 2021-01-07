@@ -22,7 +22,9 @@ import java.util.Collection;
 import java.util.function.Function;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -123,11 +125,24 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
     protected JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
-            String value = node.getProperty(PROP_VALUE).getValue().toString();
-            if (question != null && question.hasProperty(PROP_UNITS)) {
-                value = value + " " + question.getProperty(PROP_UNITS).getString();
+            Property property = node.getProperty(PROP_VALUE);
+            if (property.isMultiple()) {
+                JsonArrayBuilder result = Json.createArrayBuilder();
+                for (Value v : property.getValues()) {
+                    String value = v.toString();
+                    if (question != null && question.hasProperty(PROP_UNITS)) {
+                        value = value + " " + question.getProperty(PROP_UNITS).getString();
+                    }
+                    result.add(Json.createValue(value));
+                }
+                return result.build();
+            } else {
+                String value = property.getValue().toString();
+                if (question != null && question.hasProperty(PROP_UNITS)) {
+                    value = value + " " + question.getProperty(PROP_UNITS).getString();
+                }
+                return Json.createValue(value);
             }
-            return Json.createValue(value);
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
