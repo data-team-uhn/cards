@@ -198,7 +198,7 @@ function UnstyledSelectParentDialog (props) {
               title=""
               columns={COLUMNS}
               data={query => {
-                  let url = createQueryURL(` WHERE n.type='${parentType?.["jcr:uuid"]}'` + (query.search ? ` AND CONTAINS(n.identifier, '*${query.search}*')` : ""), "lfs:Subject");
+                  let url = createQueryURL(` WHERE n.type='${parentType?.["jcr:uuid"]}'` + (query.search ? ` AND CONTAINS(n.fullIdentifier, '*${query.search}*')` : ""), "lfs:Subject", "fullIdentifier");
                   url.searchParams.set("limit", query.pageSize);
                   url.searchParams.set("offset", query.page*query.pageSize);
                   return fetchWithReLogin(globalLoginDisplay, url)
@@ -312,19 +312,6 @@ export function NewSubjectDialog (props) {
   let curSubjectRequiresParents = newSubjectType[newSubjectIndex]?.["parent"];
   let disabledControls = disabled || isPosting;
 
-  let parentSet = (currentSubject && (curSubjectRequiresParents?.["@path"] == currentSubject.type["@path"]));
-
-  let handleNewParent = (e) => {
-    //handle SubjectType
-    if (currentSubject && (parentSet)) {
-      return currentSubject;
-    }
-    //handle Subject
-    if (currentSubject && (e["parents"]?.["type"]["@path"] == currentSubject.type["@path"])) {
-      handleNewParent(currentSubject);
-    }
-  }
-
   // Called only by createNewSubject, a callback to create the next child on our list
   let createNewSubjectRecursive = (subject, index) => {
     if (index <= -1) {
@@ -346,9 +333,6 @@ export function NewSubjectDialog (props) {
 
     // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
     let parent = newSubjectParent[index]?.["jcr:uuid"] || subject;
-    if (parentSet) {
-      parent = handleNewParent(newSubjectType[newSubjectIndex])?.["jcr:uuid"];
-    }
     parent = (parent ? [parent] : []);
     createSubjects(
       globalLoginDisplay,
@@ -380,18 +364,11 @@ export function NewSubjectDialog (props) {
       // They haven't selected a parent for the current type yet
       setError("Please select a valid parent.");
     } else if (newSubjectPopperOpen && curSubjectRequiresParents) {
-      if (parentSet) {
-        // Initiate the call if currentSubject is the parent
-        setIsPosting(true);
-        createNewSubjectRecursive(null, newSubjectIndex);
-      }
-      else {
-        // Display the parent type to select
-        setError();
-        setNewSubjectPopperOpen(false);
-        tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
-        setSelectParentPopperOpen(true);
-      }
+      // Display the parent type to select
+      setError();
+      setNewSubjectPopperOpen(false);
+      tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
+      setSelectParentPopperOpen(true);
     } else {
       // Initiate the call
       setIsPosting(true);
@@ -825,12 +802,12 @@ function SubjectSelectorList(props) {
               conditions.push("(" + allowedTypes.map((type) => `n.'type' = '${type["jcr:uuid"]}'`).join(" OR ") + ")");
             }
             if (query.search) {
-              conditions.push(`CONTAINS(n.identifier, '*${query.search}*')`);
+              conditions.push(`CONTAINS(n.fullIdentifier, '*${query.search}*')`);
             }
             let condition = (conditions.length === 0) ? "" : ` WHERE ${conditions.join(" AND ")}`
 
             // fetch all subjects
-            let url = createQueryURL( condition, "lfs:Subject", "lfs:defaultOrder");
+            let url = createQueryURL( condition, "lfs:Subject", "fullIdentifier");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
             return fetchWithReLogin(globalLoginDisplay, url)
