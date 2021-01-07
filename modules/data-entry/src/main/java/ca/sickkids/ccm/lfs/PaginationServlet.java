@@ -486,14 +486,14 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      */
     private void writeSummary(final JsonGenerator jsonGen, final SlingHttpServletRequest request, final long[] limits)
     {
-        final boolean isApprox = (limits[3] > (QUERY_SIZE_MULTIPLIER * limits[1]));
+        final boolean totalIsApproximate = (limits[3] > (QUERY_SIZE_MULTIPLIER * limits[1]));
         jsonGen.write("req", request.getParameter("req"));
         jsonGen.write("offset", limits[0]);
         jsonGen.write("limit", limits[1]);
         jsonGen.write("returnedrows", limits[2]);
-        jsonGen.write("totalrows", isApprox
+        jsonGen.write("totalrows", totalIsApproximate
             ? ((QUERY_SIZE_MULTIPLIER * limits[1]) + limits[0]) : (limits[0] + limits[3]));
-        jsonGen.write("isApprox", isApprox);
+        jsonGen.write("totalIsApproximate", totalIsApproximate);
     }
 
     private long[] writeResources(final JsonGenerator jsonGen, final Iterator<Resource> nodes,
