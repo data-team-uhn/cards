@@ -18,7 +18,7 @@
 -->
 
 <node>
-	<name>Medication Change</name>
+	<name>Event - Clinical</name>
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>title</name>
-		<value>Medication Change</value>
+		<value>Event: Clinical</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -67,45 +67,16 @@
 		</property>
 	</node>
 	<node>
-		<name>event_ed</name>
+		<name>ce_class</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>End date</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>date</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dateFormat</name>
-			<value>MM-dd-yyyy</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>event_type</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Type of event</value>
+			<value>Class of clinical event</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>description</name>
-			<value>Separately code each change: e.g., if a medication change occurs within a clinical event, add two new events. For events occurring on a single day, start date and end date are the same.</value>
+			<value>*If an ED visit led to a hospitalization, mark as a hospitalization</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -129,256 +100,180 @@
 			<type>Long</type>
 		</property>
 		<node>
-			<name>Medication change</name>
+			<name>Hospitalization</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Medication change</value>
+				<value>Hospitalization</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Medication change</value>
+				<value>Hospitalization</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>Clinical event</name>
+			<name>Emergency department-urgent care visit</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Clinical event</value>
+				<value>Emergency department/urgent care visit</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Clinical event</value>
+				<value>Emergency department/urgent care visit</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Outpatient test, cardiovascular</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Outpatient test, cardiovascular</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Outpatient test, cardiovascular</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Outpatient procedure, cardiovascular</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Outpatient procedure, cardiovascular</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Outpatient procedure, cardiovascular</value>
 				<type>String</type>
 			</property>
 		</node>
 	</node>
 	<node>
-		<name>med_changeSection</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<name>ce_cc</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Chief complaint</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>ce_diagnosis</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Diagnosis</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list+input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 		<node>
-			<name>med_change</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<name>CAD</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Type of medication change</value>
+				<name>label</name>
+				<value>CAD</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>value</name>
+				<value>CAD</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>Started</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Started</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Started</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Increased</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Increased</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Increased</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Decreased</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Decreased</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Decreased</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Discontinued</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Discontinued</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Discontinued</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Other change</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Other change</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Other change</value>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
-			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<name>CHF</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
-				<name>comparator</name>
-				<value>=</value>
+				<name>label</name>
+				<value>CHF</value>
 				<type>String</type>
 			</property>
-			<node>
-				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>event_type</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>Medication change</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>isReference</name>
-					<value>False</value>
-					<type>Boolean</type>
-				</property>
-			</node>
+			<property>
+				<name>value</name>
+				<value>CHF</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Arrhythmia</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Arrhythmia</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Arrhythmia</value>
+				<type>String</type>
+			</property>
 		</node>
 	</node>
 	<node>
-		<name>med_nameSection</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
-		<node>
-			<name>med_name</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Medication name</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>use generic name, all lowercase</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
-			<property>
-				<name>comparator</name>
-				<value>=</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>event_type</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>Medication change</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>isReference</name>
-					<value>False</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-		</node>
+		<name>ce_test</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Were any clinical tests performed?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>boolean</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
-		<name>med_catSection</name>
+		<name>ce_test_2Section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>med_cat</name>
+			<name>ce_test_2</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Medication Category</value>
+				<value>If yes, type of clinical test:</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -392,153 +287,125 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Antiarrhythmic </name>
+				<name>Exercise stress test</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Antiarrhythmic </value>
+					<value>Exercise stress test</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Antiarrhythmic </value>
+					<value>Exercise stress test</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>Anticoagulant </name>
+				<name>Nuclear stress test</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Anticoagulant </value>
+					<value>Nuclear stress test</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Anticoagulant </value>
+					<value>Nuclear stress test</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>Aspirin</name>
+				<name>Nuclear pharmacologic stress test</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Aspirin</value>
+					<value>Nuclear pharmacologic stress test</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Aspirin</value>
+					<value>Nuclear pharmacologic stress test</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>Other antiplatelet </name>
+				<name>Transthoracic echocardiogram</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Other antiplatelet </value>
+					<value>Transthoracic echocardiogram</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Other antiplatelet </value>
+					<value>Transthoracic echocardiogram</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>Beta-blocker </name>
+				<name>Transesophageal echocardiogram</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Beta-blocker </value>
+					<value>Transesophageal echocardiogram</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Beta-blocker </value>
+					<value>Transesophageal echocardiogram</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>Antihypertensive (not beta-blocker and not non-dihydropyridine calcium channel blocker)</name>
+				<name>Cardiac CT</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Antihypertensive (not beta-blocker and not non-dihydropyridine calcium channel blocker)</value>
+					<value>Cardiac CT</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Antihypertensive (not beta-blocker and not non-dihydropyridine calcium channel blocker)</value>
+					<value>Cardiac CT</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>Diuretic </name>
+				<name>Cardiac MRI</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Diuretic </value>
+					<value>Cardiac MRI</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Diuretic </value>
+					<value>Cardiac MRI</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>Statin</name>
+				<name>None</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Statin</value>
+					<value>None</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Statin</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Other lipid-lowering</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Other lipid-lowering</value>
+					<value>None</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Other lipid-lowering</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Non-cardiac medication</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Non-cardiac medication</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Non-cardiac medication</value>
-					<type>String</type>
+					<name>notApplicable</name>
+					<value>true</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 		</node>
@@ -556,7 +423,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>event_type</value>
+						<value>ce_test</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -572,7 +439,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>Medication change</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -585,14 +452,239 @@
 		</node>
 	</node>
 	<node>
-		<name>med_contraSection</name>
+		<name>ce_stress_test</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Stress test results</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<node>
+			<name>Positive</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Positive</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Positive</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Negative</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Negative</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Negative</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Equivocal</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Equivocal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Equivocal</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>ce_procedure</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Were any procedures performed?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>boolean</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>ce_procedure2Section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>med_contra</name>
+			<name>ce_procedure2</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Was there contraindication or intolerance to this medication?</value>
+				<value>If yes, type of procedure:</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list+input</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>Cardiac catheterization (with no intervention)</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Cardiac catheterization (with no intervention)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Cardiac catheterization (with no intervention)</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Electrophysiology (EP) procedure</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Electrophysiology (EP) procedure</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Electrophysiology (EP) procedure</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>None</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>None</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>None</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>true</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>ce_procedure</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>1</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+	</node>
+	<node>
+		<name>ce_intervention</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Was an intervention performed?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>boolean</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>ce_intervention2Section</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<node>
+			<name>ce_intervention2</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>If yes, type of intervention:</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -606,69 +698,181 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Yes</name>
+				<name>Atrial fibrillation - flutter ablation</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Yes</value>
+					<value>Atrial fibrillation / flutter ablation</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Yes</value>
+					<value>Atrial fibrillation / flutter ablation</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>No</name>
+				<name>CABG</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>No</value>
+					<value>CABG</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>No</value>
+					<value>CABG</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>N-A (e.g. for a new medication)</name>
+				<name>Cardiac transplant</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>N/A (e.g. for a new medication)</value>
+					<value>Cardiac transplant</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>N/A (e.g. for a new medication)</value>
+					<value>Cardiac transplant</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>Unsure</name>
+				<name>Implantable device (e.g. pacemaker or defibrillator)</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Unsure</value>
+					<value>Implantable device (e.g. pacemaker or defibrillator)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Unsure</value>
+					<value>Implantable device (e.g. pacemaker or defibrillator)</value>
 					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>PCI</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>PCI</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>PCI</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>TAVR</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>TAVR</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>TAVR</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Valve surgery</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Valve surgery</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Valve surgery</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Ventricular assist device</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Ventricular assist device</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Ventricular assist device</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Other cardiac surgery</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Other cardiac surgery</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Other cardiac surgery</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Other cardiac cath therapy</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Other cardiac cath therapy</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Other cardiac cath therapy</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Other EP intervention (not AF-AFL ablation)</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Other EP intervention (not AF/AFL ablation)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Other EP intervention (not AF/AFL ablation)</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>None</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>None</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>None</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>true</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 		</node>
@@ -686,7 +890,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>event_type</value>
+						<value>ce_intervention</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -702,7 +906,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>Medication change</value>
+						<value>1</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -715,14 +919,19 @@
 		</node>
 	</node>
 	<node>
-		<name>med_reasonSection</name>
+		<name>other_csSection</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>med_reason</name>
+			<name>other_cs</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>If no, reason for medication change:</value>
+				<value>Explain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>other cardiac surgery</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -750,7 +959,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>med_contra</value>
+						<value>ce_intervention2</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -766,7 +975,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>0</value>
+						<value>Other cardiac surgery</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -777,5 +986,157 @@
 				</property>
 			</node>
 		</node>
+	</node>
+	<node>
+		<name>other_cctSection</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<node>
+			<name>other_cct</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Explain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>other cardiac cath therapy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>ce_intervention2</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>Other cardiac cath therapy</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+	</node>
+	<node>
+		<name>other_epSection</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<node>
+			<name>other_ep</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Explain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>other EP intervention</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>ce_intervention2</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>Other EP intervention (not AF/AFL ablation)</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+	</node>
+	<node>
+		<name>comments</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Comments</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
 	</node>
 </node>
