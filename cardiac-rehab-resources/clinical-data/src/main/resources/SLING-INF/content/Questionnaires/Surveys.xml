@@ -1784,7 +1784,7 @@
 			</property>
 			<property>
 				<name>expression</name>
-				<value>return @{mrb1} + @{mrb2} + @{mrb3} + @{mrb4} + @{mrb5} + @{mrb6|0}</value>
+				<value>return @{mrb1} + @{mrb2} + @{mrb3} + @{mrb4} + @{mrb5} + @{mrb6:-0}</value>
 				<type>String</type>
 			</property>
 			<property>

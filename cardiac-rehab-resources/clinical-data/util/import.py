@@ -166,7 +166,7 @@ def process_options(question, row):
 
 def insert_expression(question, expression):
     control_chars = "+-/* ()"
-    neutral_chars = ".0123456789|"
+    neutral_chars = ".0123456789:-"
     start_chars = "@{"
     end_chars = "}"
     was_control = True
