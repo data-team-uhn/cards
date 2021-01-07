@@ -83,7 +83,7 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
      * @param serializeNode a function that can be invoked to serialize a new node, receiving a Node as input, and
      *            returning a JSON representation
      */
-    public void addProperty(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
+    protected void addProperty(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
             if (node.hasProperty(PROP_VALUE)) {
@@ -101,7 +101,7 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
      * @param node the node being serialized, may be other than the top resource
      * @return the question Node object associated with this answer or null
      */
-    public Node getQuestionNode(final Node node)
+    protected Node getQuestionNode(final Node node)
     {
         try {
             if (node.hasProperty(PROP_QUESTION)) {
@@ -120,7 +120,7 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
      * @param question the question node that is an answer's child
      * @return the question answer associated with this question
      */
-    public JsonValue getAnswerLabel(final Node node, final Node question)
+    protected JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
             String value = node.getProperty(PROP_VALUE).getValue().toString();
@@ -140,7 +140,7 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
      * @param list the list of items to convert
      * @return the JsonArray
      */
-    public JsonArray createJsonArrayFromList(Collection<String> list)
+    protected JsonArray createJsonArrayFromList(Collection<String> list)
     {
         JsonArrayBuilder jsonArray = Json.createArrayBuilder();
         for (String item : list) {
