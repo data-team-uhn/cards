@@ -323,7 +323,7 @@ function Form (props) {
               entryType={data?.questionnaire?.title || "Form"}
               shouldGoBack={true}
               buttonClass={classes.titleButton}
-              removeWindowHandlers={removeWindowHandlers}
+              onComplete={removeWindowHandlers}
             />
           </Typography>
           <Breadcrumbs separator="·">
