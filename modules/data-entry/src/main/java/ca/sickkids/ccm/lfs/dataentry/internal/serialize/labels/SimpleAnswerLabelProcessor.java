@@ -82,7 +82,6 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
      *            {@code null}
      * @param serializeNode a function that can be invoked to serialize a new node, receiving a Node as input, and
      *            returning a JSON representation
-     *
      */
     public void addProperty(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
@@ -100,7 +99,6 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
      * Gets the question node associated with the answer.
      *
      * @param node the node being serialized, may be other than the top resource
-     *
      * @return the question Node object associated with this answer or null
      */
     public Node getQuestionNode(final Node node)
@@ -120,7 +118,6 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
      *
      * @param node the node being serialized, may be other than the top resource
      * @param question the question node that is an answer's child
-     *
      * @return the question answer associated with this question
      */
     public JsonValue getAnswerLabel(final Node node, final Node question)

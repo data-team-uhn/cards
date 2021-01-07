@@ -96,7 +96,7 @@ public class AnswerOptionsLabelProcessor extends SimpleAnswerLabelProcessor impl
                 while (childNodes.hasNext()) {
                     Node optionNode = childNodes.nextNode();
                     if (!"lfs:AnswerOption".equals(optionNode.getPrimaryNodeType().getName())
-                            || !optionNode.hasProperty(PROP_VALUE)) {
+                        || !optionNode.hasProperty(PROP_VALUE)) {
                         continue;
                     }
 
