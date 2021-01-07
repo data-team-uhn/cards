@@ -21,11 +21,6 @@
 	<name>Event - Clinical</name>
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
-		<name>maxPerSubject</name>
-		<value>1</value>
-		<type>Long</type>
-	</property>
-	<property>
 		<name>title</name>
 		<value>Event: Clinical</value>
 		<type>String</type>
