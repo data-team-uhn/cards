@@ -53,6 +53,7 @@ function LiveTable(props) {
       "displayed": 0,
       "total": -1,
       "page": 0,
+      "totalIsApproximate": false,
     }
   );
   const [fetchStatus, setFetchStatus] = useState(
@@ -145,6 +146,7 @@ function LiveTable(props) {
         "displayed": json.returnedrows,
         "total": json.totalrows,
         "page": Math.floor(json.offset / json.limit),
+        "totalIsApproximate": json.totalIsApproximate,
       }
     );
   };
@@ -333,11 +335,14 @@ function LiveTable(props) {
     <TablePagination
       component="div"
       rowsPerPageOptions={[10, 50, 100, 1000]}
-      count={paginationData.total}
+      count={paginationData.totalIsApproximate ? -1 : paginationData.total}
       rowsPerPage={paginationData.limit}
       page={paginationData.page}
       onChangePage={handleChangePage}
       onChangeRowsPerPage={handleChangeRowsPerPage}
+      labelDisplayedRows={({from, to, count}) =>
+          `${from}-${to} of ${paginationData.totalIsApproximate ? `more than ${paginationData.total}` : count}`
+      }
     />
   )
 

@@ -76,6 +76,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
     private static final long serialVersionUID = -6068156942302219324L;
 
+    private static final int QUERY_SIZE_MULTIPLIER = 10;
+
     // Allowed JCR-SQL2 operators (from https://docs.adobe.com/docs/en/spec/jcr/2.0/6_Query.html#6.7.17%20Operator)
     private static final List<String> COMPARATORS =
         Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE", "notes contain");
@@ -108,7 +110,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             Query filterQuery = queryManager.createQuery(finalquery, "JCR-SQL2");
 
             //Set the limit and offset here to improve query performance
-            filterQuery.setLimit(limit + 1);
+            filterQuery.setLimit((QUERY_SIZE_MULTIPLIER * limit) + 1);
             filterQuery.setOffset(offset);
 
             //Execute the query
@@ -484,11 +486,14 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      */
     private void writeSummary(final JsonGenerator jsonGen, final SlingHttpServletRequest request, final long[] limits)
     {
+        final boolean totalIsApproximate = (limits[3] > (QUERY_SIZE_MULTIPLIER * limits[1]));
         jsonGen.write("req", request.getParameter("req"));
         jsonGen.write("offset", limits[0]);
         jsonGen.write("limit", limits[1]);
         jsonGen.write("returnedrows", limits[2]);
-        jsonGen.write("totalrows", (limits[3] > limits[1]) ? -1 : (limits[0] + limits[2]));
+        jsonGen.write("totalrows", totalIsApproximate
+            ? ((QUERY_SIZE_MULTIPLIER * limits[1]) + limits[0]) : (limits[0] + limits[3]));
+        jsonGen.write("totalIsApproximate", totalIsApproximate);
     }
 
     private long[] writeResources(final JsonGenerator jsonGen, final Iterator<Resource> nodes,
