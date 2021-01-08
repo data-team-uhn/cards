@@ -927,7 +927,7 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>long</value>
+			<value>text</value>
 			<type>String</type>
 		</property>
 		<node>
