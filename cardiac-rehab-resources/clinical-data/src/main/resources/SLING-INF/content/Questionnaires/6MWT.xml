@@ -804,197 +804,14 @@
 			</property>
 		</node>
 		<node>
-			<name>wd_aid2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>What type of walking aid?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list+input</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>N-A</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>N/A</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>N/A</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>notApplicable</name>
-					<value>true</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>Cane (right)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Cane (right)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Cane (right)</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Cane (left)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Cane (left)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Cane (left)</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Walker with wheels</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Walker with wheels</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Walker with wheels</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Walker without wheels</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Walker without wheels</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Walker without wheels</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Crutches (right)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Crutches (right)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Crutches (right)</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Cruthches (left)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Cruthches (left)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Cruthches (left)</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Leg brace (right)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Leg brace (right)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Leg brace (right)</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Leg brace (left)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Leg brace (left)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Leg brace (left)</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Prosthetic (right)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Prosthetic (right)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Prosthetic (right)</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Prosthetic (left)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Prosthetic (left)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Prosthetic (left)</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>wd_aid3Section</name>
+			<name>wd_aid2Section</name>
 			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>wd_aid3</name>
+				<name>wd_aid2</name>
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Explain</value>
+					<value>What type of walking aid?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1002,6 +819,156 @@
 					<value>text</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list+input</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>Cane (right)</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Cane (right)</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Cane (right)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Cane (left)</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Cane (left)</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Cane (left)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Walker with wheels</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Walker with wheels</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Walker with wheels</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Walker without wheels</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Walker without wheels</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Walker without wheels</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Crutches (right)</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Crutches (right)</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Crutches (right)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Cruthches (left)</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Cruthches (left)</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Cruthches (left)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Leg brace (right)</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Leg brace (right)</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Leg brace (right)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Leg brace (left)</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Leg brace (left)</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Leg brace (left)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Prosthetic (right)</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Prosthetic (right)</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Prosthetic (right)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Prosthetic (left)</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Prosthetic (left)</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Prosthetic (left)</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
 				<name>condition</name>
@@ -1017,7 +984,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>wd_aid2</value>
+							<value>wd_aid</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1033,7 +1000,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>N/A</value>
+							<value>1</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1065,130 +1032,156 @@
 			</property>
 		</node>
 		<node>
-			<name>wd_symp2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>What symptoms?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list+input</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>wd_symp2Section</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>N-A</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>wd_symp2</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>N/A</value>
+					<name>text</name>
+					<value>What symptoms?</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>N/A</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>notApplicable</name>
-					<value>true</value>
-					<type>Boolean</type>
+					<name>displayMode</name>
+					<value>list+input</value>
+					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>Chest pain</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Chest pain</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Chest pain</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Shortness of breath</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Shortness of breath</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Shortness of breath</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Lightheadedness</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Lightheadedness</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Lightheadedness</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Palpitations</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Palpitations</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Palpitations</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Leg fatigue</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Leg fatigue</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Leg fatigue</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>General fatigue</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>General fatigue</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>General fatigue</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>Chest pain</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Chest pain</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>Chest pain</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Shortness of breath</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Shortness of breath</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Shortness of breath</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Lightheadedness</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Lightheadedness</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Lightheadedness</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Palpitations</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Palpitations</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Palpitations</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Leg fatigue</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Leg fatigue</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Leg fatigue</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>General fatigue</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>General fatigue</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>General fatigue</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd_symp</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -1559,7 +1552,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>wd_pause1_#</value>
+							<value>wd_pause1</value>
 						</values>
 						<type>String</type>
 					</property>

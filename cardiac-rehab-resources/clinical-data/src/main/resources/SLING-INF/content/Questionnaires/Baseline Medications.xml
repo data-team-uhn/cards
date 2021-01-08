@@ -350,7 +350,12 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Aside from beta-blockers, how many medications are prescribed?</value>
+				<value>Number of medications prescribed:</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Excluding beta-blockers</value>
 				<type>String</type>
 			</property>
 			<property>
