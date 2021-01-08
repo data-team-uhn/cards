@@ -165,6 +165,7 @@ Main.propTypes = {
 const MainComponent = (withStyles(IndexStyle, {withTheme: true})(Main));
 
 const hist = createBrowserHistory();
+hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
 ReactDOM.render(
   <Router history={hist}>
     <Switch>
