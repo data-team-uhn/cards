@@ -57,7 +57,7 @@ ENTRY_CONTENT
       cacheGroups: {
         defaultVendors: {
           minChunks: 1,
-          minSize: 20000000,
+          minSize: 200,
           test: /[\\/]node_modules[\\/]/,
           name: 'vendor',
           enforce: true,
