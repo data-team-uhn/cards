@@ -38,6 +38,7 @@ import { Link } from 'react-router-dom';
 import DescriptionIcon from '@material-ui/icons/Description';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import DeleteButton from "./DeleteButton.jsx";
+import EditButton from "./EditButton.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
@@ -69,6 +70,7 @@ function FormView(props) {
     },
   ]
   const actions = [
+    EditButton,
     DeleteButton
   ]
   const tabs = ["Completed", "Draft"];
