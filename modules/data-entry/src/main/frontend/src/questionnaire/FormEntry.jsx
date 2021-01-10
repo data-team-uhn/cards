@@ -71,7 +71,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
     .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
 
-  // Not show anything if view mode and no value
+  // Do not show anything if in view mode and no value is recorded yet
   if (!existingQuestionAnswer?.[1]["displayedValue"] && !isEdit) {
     return null;
   }

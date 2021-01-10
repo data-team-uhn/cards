@@ -41,7 +41,7 @@ function Forms(props) {
   }, [entry]);
 
   if (entry) {
-    let formId = entry[1].replace(".edit", "");
+    let formId = entry[1].split(".")[0];
     return <Form id={formId} key={location.pathname}/>;
   }
 

@@ -111,18 +111,20 @@ function Form (props) {
   const formURL = `/Forms/${id}`;
   const isEdit = window.location.pathname.endsWith(".edit");
 
-  useEffect(() => {
-    function removeSaveDataHandler() {
-      window.removeEventListener("beforeunload", saveData);
-    }
-    setRemoveWindowHandlers(() => removeSaveDataHandler);
-    window.addEventListener("beforeunload", saveData);
-    // When component unmounts:
-    return (() => {
-      // cleanup event handler
-      window.removeEventListener("beforeunload", saveData);
-    });
-  }, []);
+  if (isEdit) {
+    useEffect(() => {
+      function removeSaveDataHandler() {
+        window.removeEventListener("beforeunload", saveData);
+      }
+      setRemoveWindowHandlers(() => removeSaveDataHandler);
+      window.addEventListener("beforeunload", saveData);
+      // When component unmounts:
+      return (() => {
+        // cleanup event handler
+        window.removeEventListener("beforeunload", saveData);
+      });
+    }, []);
+  }
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -418,7 +420,7 @@ function Form (props) {
                 variant="extended"
                 color="primary"
                 onClick={onEdit}
-                className={classes.saveButton}
+                className={classes.actionButton}
               >
                 <EditIcon />Edit
               </Fab>
@@ -429,7 +431,7 @@ function Form (props) {
 	              color={saveInProgress ? "default" : lastSaveStatus === false ? "secondary" : "primary"}
 	              disabled={saveInProgress}
 	              onClick={handleSubmit}
-	              className={classes.saveButton}
+	              className={classes.actionButton}
 	          >
 	            {
 	              saveInProgress ? <><CloudUploadIcon /> Saving...</> :
