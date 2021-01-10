@@ -26,6 +26,7 @@ import PropTypes from "prop-types";
 
 import Answer from "./Answer";
 import Question from "./Question";
+import DefaultAnswer from "./DefaultAnswer";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import MultipleChoice from "./MultipleChoice";
 
@@ -89,23 +90,7 @@ function NumberQuestion(props) {
 
   // If the form is in the view mode
   if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
-    let prettyPrintedAnswers = existingAnswer[1]["displayedValue"];
-    // The value can either be a single value or an array of values; force it into an array
-    prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
-
-    return (
-      <Question
-        {...rest}
-        >
-        <List>
-          { prettyPrintedAnswers.map( (item) => {
-            return(
-              <ListItem key={item}> {item} </ListItem>
-            )})
-          }
-        </List>
-      </Question>
-    );
+    return <DefaultAnswer prettyAnswers={existingAnswer[1]["displayedValue"]} {...rest}/>;
   }
 
   // Callback function for our min/max
