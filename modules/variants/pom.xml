@@ -39,7 +39,7 @@
           <instructions>
             <Sling-Nodetypes>SLING-INF/nodetypes/variants.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
-              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true,
+              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
               SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
               SLING-INF/content/Extensions/Sidebar/;path:=/Extensions/Sidebar/;overwrite:=true
             </Sling-Initial-Content>
