@@ -1071,11 +1071,6 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>mL/kg/min</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -1135,7 +1130,7 @@
 			</property>
 			<property>
 				<name>unitOfMeasurement</name>
-				<value>mL/kg/min</value>
+				<value>METS</value>
 				<type>String</type>
 			</property>
 		</node>

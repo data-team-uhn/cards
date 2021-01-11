@@ -192,7 +192,12 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Relevant diagnoses: check all that apply</value>
+				<value>Relevant diagnoses</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>check all that apply</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -519,6 +524,20 @@
 				</property>
 			</node>
 			<node>
+				<name>Insufficiently physical active</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Insufficiently physical active</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Insufficiently physical active</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
 				<name>MI (STEMI or NSTEMI)</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
@@ -529,6 +548,20 @@
 				<property>
 					<name>value</name>
 					<value>MI (STEMI or NSTEMI)</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Overweight-Obesity</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Overweight/Obesity</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Overweight/Obesity</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -2203,7 +2236,12 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Diseases of the musculoskeletal system or connective tissue: check all that apply</value>
+				<value>Diseases of the musculoskeletal system or connective tissue</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>check all that apply</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2358,7 +2396,12 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Diseases of the nervous system: check all that apply</value>
+				<value>Diseases of the nervous system</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>check all that apply</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3067,7 +3110,12 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Family history: 1st degree (parents, siblings, children) - check all that apply</value>
+				<value>Family history: 1st degree (parents, siblings, children)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>check all that apply</value>
 				<type>String</type>
 			</property>
 			<property>
