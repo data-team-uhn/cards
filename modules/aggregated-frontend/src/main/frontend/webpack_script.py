@@ -49,6 +49,7 @@ def merge_packache_json_files(modules_dir, project_to_name_map, package_json_fil
                 package_merged["name"] = package_name
                 package_merged["description"] = 'Merged package.json'
                 package_merged["repository"]["directory"] = "modules"
+                package_merged["resolutions"] = {}
                 continue
 
             # Merge contents
@@ -57,6 +58,8 @@ def merge_packache_json_files(modules_dir, project_to_name_map, package_json_fil
                     package_merged["babel"]["plugins"].append(i)
             package_merged["devDependencies"].update(package["devDependencies"])
             package_merged["dependencies"].update(package["dependencies"])
+            if "resolutions" in package:
+                package_merged["resolutions"].update(package["resolutions"])
 
     with open(package_json_file, "w+") as f:
         f.write(json.dumps(package_merged, indent=2, sort_keys=False))

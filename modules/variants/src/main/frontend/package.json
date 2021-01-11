@@ -27,7 +27,7 @@
     "moment": "^2.29.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.11.6",
+    "@babel/core": "^7.12.10",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
@@ -39,5 +39,8 @@
     "webpack": "^5.12.2",
     "webpack-cli": "^4.3.1",
     "webpack-assets-manifest": "5.0.0"
+  },
+  "resolutions": {
+    "@babel/runtime": "^7.12.5"
   }
 }
