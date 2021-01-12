@@ -101,6 +101,16 @@ function Section(props) {
     sectionDefinition,
     formContext);
 
+  // Determine if the section has any answers
+  let hasAnswers = isEdit;
+  if (!isEdit && existingAnswer[0]) {
+    Object.entries(existingAnswer[0][1]).forEach( ([key, item]) => {
+      if (item.displayedValue) {
+        hasAnswers = true;
+      }
+    })
+  }
+
   if (visibleCallback) visibleCallback(displayed);
 
   let closeDialog = () => {
@@ -123,7 +133,7 @@ function Section(props) {
   }
 
   const collapseClasses = [];
-  if (!displayed) {
+  if (isEdit && !displayed || !isEdit && !hasAnswers) {
     collapseClasses.push(classes.collapsedSection);
   }
   if (hasHeader) {
@@ -140,9 +150,9 @@ function Section(props) {
   <React.Fragment>
     {/* if conditional is true, the collapse component is rendered and displayed.
         else, the corresponding input tag to the conditional section is deleted  */}
-    {displayed
+    {isEdit && displayed || !isEdit && hasAnswers
       ? (<Collapse
-      in={displayed}
+      in={isEdit && displayed || !isEdit && hasAnswers}
       component={Grid}
       item
       mountOnEnter
@@ -152,7 +162,7 @@ function Section(props) {
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;
           const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
-          const hiddenSection = displayed && labelsToHide[uuid];
+          const hiddenSection = (isEdit && displayed || !isEdit && hasAnswers) && labelsToHide[uuid];
           return <div
             key={uuid}
             className={"recurrentSectionInstance " + classes.recurrentSectionInstance}

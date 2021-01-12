@@ -120,7 +120,7 @@ function PedigreeQuestion(props) {
         isEdit ? <Link onClick={() => {setExpanded(true);}}>
           {image_div}
         </Link>
-        : {image_div}
+        : <span> {image_div} </span>
       )}
       <Dialog fullScreen open={expanded}
         onEntering={() => { openPedigree(); }}
