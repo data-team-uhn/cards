@@ -111,8 +111,8 @@ function Form (props) {
   const formURL = `/Forms/${id}`;
   const isEdit = window.location.pathname.endsWith(".edit");
 
-  if (isEdit) {
-    useEffect(() => {
+  useEffect(() => {
+    if (isEdit) {
       function removeSaveDataHandler() {
         window.removeEventListener("beforeunload", saveData);
       }
@@ -123,8 +123,8 @@ function Form (props) {
         // cleanup event handler
         window.removeEventListener("beforeunload", saveData);
       });
-    }, []);
-  }
+    }
+  }, [isEdit]);
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
