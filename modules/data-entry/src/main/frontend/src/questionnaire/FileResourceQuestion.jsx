@@ -66,6 +66,7 @@ function FileResourceQuestion(props) {
     let prettyPrintedAnswers = existingAnswer[1]["displayedValue"];
     // The value can either be a single value or an array of values; force it into an array
     prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
+    let hrefs = Array.of(existingAnswer[1]["value"]).flat();
 
     return (
       <Question
@@ -75,7 +76,7 @@ function FileResourceQuestion(props) {
           { prettyPrintedAnswers.map((answerValue, idx) => {
             return(
               <ListItem key={idx}>
-                <a key={answerValue} href={existingAnswer[1]["value"][idx]} target="_blank" rel="noopener" download>{answerValue}</a>
+                <a key={answerValue} href={hrefs[idx]} target="_blank" rel="noopener" download>{answerValue}</a>
               </ListItem>
             )
           })}
