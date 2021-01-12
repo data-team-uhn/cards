@@ -33,23 +33,6 @@ function SomaticVariantsQuestion(props) {
   let { existingAnswer, isEdit, classes, ...rest } = props;
   let file = existingAnswer?.[1][Object.keys(existingAnswer[1]).find(key => existingAnswer[1][key]["jcr:primaryType"] === "nt:file")];
 
-  // If the form is in the view mode
-  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
-    let prettyPrintedAnswers = existingAnswer[1]["displayedValue"];
-    // The value can either be a single value or an array of values; force it into an array
-    prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
-
-    return (
-      <Question
-        {...rest}
-        >
-        {prettyPrintedAnswers.map((answerValue, idx) => {
-          return <a key={answerValue} href={existingAnswer[1]["value"][idx]} target="_blank" rel="noopener" download>{answerValue}</a>
-        })}
-      </Question>
-    );
-  }
-
   return (
     <Question
       {...rest}
@@ -59,9 +42,9 @@ function SomaticVariantsQuestion(props) {
           File <IconButton size="small" color="primary"><a href={file["@path"]} download><GetApp /></a></IconButton><a href={file["@path"]} download>{file["@name"]}</a> uploaded by {file["jcr:createdBy"]} on {moment(file["jcr:created"]).format("dddd, MMMM Do YYYY")}
         </Typography>
         :
-        <Typography variant="caption" color="textSecondary">
+        isEdit ? <Typography variant="caption" color="textSecondary">
           You can upload variants through the <Link to="/content.html/Variants">Variant File Uploader</Link>.
-        </Typography>
+        </Typography> : ''
         }
     </Question>);
 }
