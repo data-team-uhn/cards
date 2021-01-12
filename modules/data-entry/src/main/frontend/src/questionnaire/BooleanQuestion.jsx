@@ -22,6 +22,7 @@ import { withStyles } from "@material-ui/core";
 
 import PropTypes from "prop-types";
 
+import DefaultAnswer from "./DefaultAnswer";
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
@@ -57,25 +58,18 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //   />
 function BooleanQuestion(props) {
   const {existingAnswer, isEdit, classes, ...rest} = props;
+
+  // If the form is in the view mode
+  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
+    return <DefaultAnswer prettyAnswers={existingAnswer[1]["displayedValue"]} {...rest}/>;
+  }
+
   const {yesLabel, noLabel, unknownLabel, enableUnknown} = { ...props.questionDefinition, ...props }
   // Define the defaults for yesLabel, etc. here because we want questionDefinition to be able to
   // override them, and the props to be able to override the questionDefinition
   let options = [[yesLabel || "Yes", "1", true], [noLabel || "No", "0", true]];
   if (enableUnknown) {
     options.push([unknownLabel || "Unknown", "-1", true]);
-  }
-
-  // If the form is in the view mode
-  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
-    let prettyPrintedAnswer = existingAnswer[1]["displayedValue"];
-
-    return (
-      <Question
-        {...rest}
-        >
-        { prettyPrintedAnswer }
-      </Question>
-    );
   }
 
   return (
