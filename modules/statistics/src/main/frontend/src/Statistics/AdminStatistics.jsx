@@ -238,12 +238,12 @@ function StatisticDialog(props) {
       var request_data = new FormData();
       request_data.append('jcr:primaryType', 'lfs:Statistic');
       request_data.append('name', name);
-      request_data.append('xVar', xVar);
+      xVar.split(",").forEach((variable) => request_data.append('xVar', variable));
       request_data.append('xVar@TypeHint', 'Reference');
       request_data.append('yVar', yVar);
       request_data.append('yVar@TypeHint', 'Reference');
       if (splitVar) {
-        request_data.append('splitVar', splitVar);
+        splitVar.split(",").forEach((variable) => request_data.append('splitVar', variable));
         request_data.append('splitVar@TypeHint', 'Reference');
       }
       fetch( URL, { method: 'POST', body: request_data })
