@@ -73,10 +73,9 @@ function FileResourceQuestion(props) {
         >
         <List>
           { prettyPrintedAnswers.map((answerValue, idx) => {
-            let prefix = idx > 0 ? ", " : ""; // Seperator space between different files
             return(
               <ListItem key={idx}>
-                {prefix}<a key={answerValue} href={existingAnswer[1]["value"][idx]} target="_blank" rel="noopener" download>{answerValue}</a>
+                <a key={answerValue} href={existingAnswer[1]["value"][idx]} target="_blank" rel="noopener" download>{answerValue}</a>
               </ListItem>
             )
           })}
