@@ -44,8 +44,7 @@ function SomaticVariantsQuestion(props) {
         {...rest}
         >
         {prettyPrintedAnswers.map((answerValue, idx) => {
-          let prefix = idx > 0 ? ", " : ""; // Seperator space between different files
-          return <>{prefix}<a key={answerValue} href={existingAnswer[1]["value"][idx]} target="_blank" rel="noopener" download>{answerValue}</a></>
+          return <a key={answerValue} href={existingAnswer[1]["value"][idx]} target="_blank" rel="noopener" download>{answerValue}</a>
         })}
       </Question>
     );
