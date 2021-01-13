@@ -415,17 +415,7 @@ function Form (props) {
         :
         <Grid item xs={false} className={classes.formBottom}>
           <div className={classes.mainPageAction}>
-            { !isEdit &&
-              <Fab
-                variant="extended"
-                color="primary"
-                onClick={onEdit}
-                className={classes.actionButton}
-              >
-                <EditIcon />Edit
-              </Fab>
-            }
-            { isEdit &&
+            { isEdit ?
 	          <Fab
 	              variant="extended"
 	              color={saveInProgress ? "default" : lastSaveStatus === false ? "secondary" : "primary"}
@@ -439,6 +429,15 @@ function Form (props) {
 	              <><DoneIcon /> {lastSaveStatus ? "Saved" : "Save"}</>
 	            }
 	          </Fab>
+	        :
+              <Fab
+                variant="extended"
+                color="primary"
+                onClick={onEdit}
+                className={classes.actionButton}
+              >
+                <EditIcon /> Edit
+              </Fab>
 	        }
           </div>
         </Grid>
