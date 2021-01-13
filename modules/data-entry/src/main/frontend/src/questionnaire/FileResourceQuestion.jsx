@@ -61,29 +61,6 @@ function FileResourceQuestion(props) {
   let [ uploadInProgress, setUploadInProgress ] = useState(false);
   let [ answerPath, setAnswerPath ] = useState(existingAnswer);
 
-  // If the form is in the view mode
-  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
-    let prettyPrintedAnswers = existingAnswer[1]["displayedValue"];
-    // The value can either be a single value or an array of values; force it into an array
-    prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
-    let hrefs = Array.of(existingAnswer[1]["value"]).flat();
-
-    return (
-      <Question
-        {...rest}
-        >
-        <List>
-          { prettyPrintedAnswers.map((answerValue, idx) => {
-            return(
-              <ListItem key={idx}>
-                <a key={answerValue} href={hrefs[idx]} target="_blank" rel="noopener" download>{answerValue}</a>
-              </ListItem>
-            )
-          })}
-        </List>
-      </Question>
-    );
-  }
 
   // Default value of knownAnswers is the name of every field we can find in namePattern
   let initialParsedAnswers = {};
@@ -258,8 +235,17 @@ function FileResourceQuestion(props) {
       Please upload at most {maxAnswers} file{maxAnswers > 1 && "s"}.
     </Typography>));
 
+  let hrefs = Array.of(existingAnswer?.[1]["value"]).flat();
+  let defaultDisplayFormatter = function(label, idx) {
+    return <a href={hrefs[idx]} target="_blank" rel="noopener" download>{label}</a>;
+  }
+
   return (
     <Question
+      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
+      isEdit={isEdit}
+      displayDefault={true}
+      defaultDisplayFormatter={defaultDisplayFormatter}
       {...rest}
       >
       { uploadInProgress && (
