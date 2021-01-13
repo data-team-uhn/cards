@@ -114,6 +114,7 @@ function PedigreeQuestion(props) {
 
   return (
     <Question
+      preventDefaultView={true}
       {...rest}
       >
       {image_div && (

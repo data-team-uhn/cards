@@ -140,7 +140,7 @@ export function formatDateAnswer(dateFormat, value) {
 //  type="timestamp"
 //  />
 function DateQuestion(props) {
-  let {existingAnswer, displayFormat, isEdit, classes, ...rest} = props;
+  let {existingAnswer, displayFormat, classes, ...rest} = props;
   let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy-MM-dd", minAnswers: 0, type: TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
 
   // If we're given a year, instead supply the NumberQuestion widget
@@ -278,9 +278,7 @@ function DateQuestion(props) {
 
   return (
     <Question
-      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
-      isEdit={isEdit}
-      displayDefault={true}
+      existingAnswer={existingAnswer}
       text={text}
       {...rest}
       >

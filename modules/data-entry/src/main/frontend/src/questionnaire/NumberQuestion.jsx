@@ -75,7 +75,7 @@ const DATA_TO_VALUE_TYPE = {
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  const { existingAnswer, errorText, isRange, isEdit, classes, ...rest} = props;
+  const { existingAnswer, errorText, isRange, classes, ...rest} = props;
   const { dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
   const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
   const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
@@ -160,9 +160,7 @@ function NumberQuestion(props) {
 
   return (
     <Question
-      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
-      isEdit={isEdit}
-      displayDefault={true}
+      existingAnswer={existingAnswer}
       {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}

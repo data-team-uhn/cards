@@ -81,9 +81,6 @@ function ChromosomeQuestion(props) {
 
   return (
     <Question
-      prettyAnswers={props.existingAnswer?.[1]["displayedValue"]}
-      isEdit={props.isEdit}
-      displayDefault={true}
       {...props}
       >
       <MultipleChoice

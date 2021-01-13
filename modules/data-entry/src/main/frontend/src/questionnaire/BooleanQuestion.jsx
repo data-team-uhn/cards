@@ -56,9 +56,9 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //   unknownLabel="Does not compute"
 //   />
 function BooleanQuestion(props) {
-  const {existingAnswer, isEdit, classes, ...rest} = props;
-
+  const {classes, ...rest} = props;
   const {yesLabel, noLabel, unknownLabel, enableUnknown} = { ...props.questionDefinition, ...props }
+
   // Define the defaults for yesLabel, etc. here because we want questionDefinition to be able to
   // override them, and the props to be able to override the questionDefinition
   let options = [[yesLabel || "Yes", "1", true], [noLabel || "No", "0", true]];
@@ -68,13 +68,9 @@ function BooleanQuestion(props) {
 
   return (
     <Question
-      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
-      isEdit={isEdit}
-      displayDefault={true}
       {...rest}
       >
       <MultipleChoice
-        existingAnswer={existingAnswer}
         answerNodeType="lfs:BooleanAnswer"
         valueType="Long" /* Notably not "Boolean", since we need it to be stored as a long in the backend */
         maxAnswers={1}

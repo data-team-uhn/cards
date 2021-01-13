@@ -81,7 +81,7 @@ class Time {
 //  upperLimit={"23:59"}
 //  />
 function TimeQuestion(props) {
-  let {existingAnswer, isEdit, classes, ...rest} = props;
+  let {existingAnswer, classes, ...rest} = props;
   let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {...props.questionDefinition, ...props};
   let currentStartValue = (existingAnswer && existingAnswer[1].value && new Time(existingAnswer[1].value).isValid)
     ? existingAnswer[1].value : "";
@@ -115,9 +115,7 @@ function TimeQuestion(props) {
   let outputAnswers = [["time", selectedTime]];
   return (
     <Question
-      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
-      isEdit={isEdit}
-      displayDefault={true}
+      existingAnswer={existingAnswer}
       text={text}
       {...rest}
       >

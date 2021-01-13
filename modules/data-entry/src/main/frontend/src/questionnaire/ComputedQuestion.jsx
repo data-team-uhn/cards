@@ -46,7 +46,7 @@ import { useFormReaderContext } from "./FormContext";
 //  expression="if (@{question_b} === 0) setError('Can not divide by 0'); return @{question_a}/@{question_b}"
 //  />
 let ComputedQuestion = (props) => {
-  const { existingAnswer, isEdit, classes, ...rest} = props;
+  const { existingAnswer, classes, ...rest} = props;
   const { text, expression, unitOfMeasurement } = {...props.questionDefinition, ...props};
   const [error, changeError] = useState(false);
   const [errorMessage, changeErrorMessage] = useState(false);
@@ -155,9 +155,7 @@ let ComputedQuestion = (props) => {
 
   return (
     <Question
-      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
-      isEdit={isEdit}
-      displayDefault={true}
+      existingAnswer={existingAnswer}
       text={text}
       {...rest}
       >

@@ -96,6 +96,8 @@ function Section(props) {
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
   const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
 
+  const isDisplayed = isEdit && displayed || !isEdit && hasAnswers;
+
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const displayed = ConditionalComponentManager.evaluateCondition(
     sectionDefinition,
@@ -150,9 +152,9 @@ function Section(props) {
   <React.Fragment>
     {/* if conditional is true, the collapse component is rendered and displayed.
         else, the corresponding input tag to the conditional section is deleted  */}
-    {isEdit && displayed || !isEdit && hasAnswers
+    { isDisplayed
       ? (<Collapse
-      in={isEdit && displayed || !isEdit && hasAnswers}
+      in={isDisplayed}
       component={Grid}
       item
       mountOnEnter
@@ -162,7 +164,7 @@ function Section(props) {
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;
           const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
-          const hiddenSection = (isEdit && displayed || !isEdit && hasAnswers) && labelsToHide[uuid];
+          const hiddenSection = isDisplayed && labelsToHide[uuid];
           return <div
             key={uuid}
             className={"recurrentSectionInstance " + classes.recurrentSectionInstance}

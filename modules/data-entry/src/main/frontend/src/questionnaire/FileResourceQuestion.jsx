@@ -43,7 +43,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // Sample usage:
 // (TODO)
 function FileResourceQuestion(props) {
-  const { classes, existingAnswer, isEdit, ...rest } = props;
+  const { classes, existingAnswer, ...rest } = props;
   const { maxAnswers, minAnswers, namePattern } = { ...props.questionDefinition, ...props }
   let initialValues =
     // Check whether or not we have an initial value
@@ -242,9 +242,7 @@ function FileResourceQuestion(props) {
 
   return (
     <Question
-      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
-      isEdit={isEdit}
-      displayDefault={true}
+      existingAnswer={existingAnswer}
       defaultDisplayFormatter={defaultDisplayFormatter}
       {...rest}
       >

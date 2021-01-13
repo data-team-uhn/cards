@@ -35,6 +35,7 @@ function SomaticVariantsQuestion(props) {
 
   return (
     <Question
+      preventDefaultView={true}
       {...rest}
       >
       { file && file['jcr:createdBy'] && file['jcr:created'] ?

@@ -62,7 +62,7 @@ import VocabularySelector from "../vocabSelector/select.jsx";
 //   }}
 //   />
 function VocabularyQuestion(props) {
-  let { existingAnswer, isEdit, classes, ...rest } = props;
+  let { classes, ...rest } = props;
   let { enableNotes, maxAnswers, sourceVocabularies, vocabularyFilter } = { ...props.questionDefinition, ...props };
   let defaultSuggestions = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
@@ -75,9 +75,6 @@ function VocabularyQuestion(props) {
 
   return (
     <Question
-      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
-      isEdit={isEdit}
-      displayDefault={true}
       {...rest}
       >
       <VocabularySelector
