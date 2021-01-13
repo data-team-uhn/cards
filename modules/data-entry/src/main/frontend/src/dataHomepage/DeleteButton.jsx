@@ -39,7 +39,6 @@ function DeleteButton(props) {
   const [ dialogAction, setDialogAction ] = useState("");
   const [ deleteRecursive, setDeleteRecursive ] = useState(false);
   const [ entryNotFound, setEntryNotFound ] = useState(false);
-  const [ deletionStatus, setDeletionStatus ] = useState(undefined);
 
   const defaultDialogAction = `Are you sure you want to delete ${entryName}?`;
   const defaultErrorMessage = entryName + " could not be removed.";
@@ -73,16 +72,7 @@ function DeleteButton(props) {
   }
 
   let handleError = (status, response) => {
-    // If the user is not logged in, offer to log in
-    const sessionInfo = window.Sling.getSessionInfo();
-    if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-      // On first attempt to save while logged out, set status to false to make button text inform user
-      setDeletionStatus(false);
-      setDialogAction(defaultErrorMessage);
-    } else if (status === 401) {
-      setErrorMessage(`${defaultErrorMessage} You are not permitted to perform that action.`);
-      openError();
-    } else if (status === 404) {
+    if (status === 404) {
       setErrorMessage(`${entryName} could not be found. This ${entryType ? entryType : "item"} may have already been deleted.`);
       setEntryNotFound(true);
       openError();
@@ -115,26 +105,6 @@ function DeleteButton(props) {
     }
   }
 
-  let handleDeleteButtonClicked = () => {
-    if (deletionStatus === false) {
-      handleLogin();
-    } else {
-      handleDelete();
-    }
-  }
-
-  let handleLogin = () => {
-    const width = 600;
-    const height = 800;
-    const top = window.top.outerHeight / 2 + window.top.screenY - (height / 2);
-    const left = window.top.outerWidth / 2 + window.top.screenX - (width / 2);
-    // After a successful log in, the login dialog code will "open" the specified resource, which results in executing the specified javascript code
-    window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${width}, height=${height}, top=${top}, left=${left}`);
-    // Reset the dialog message and log in button
-    setDeletionStatus(undefined);
-    setDialogAction(defaultDialogAction);
-  }
-
   let handleDelete = () => {
     let url = new URL(entryPath, window.location.origin);
     if (deleteRecursive) {
@@ -147,7 +117,6 @@ function DeleteButton(props) {
       }
     }).then((response) => {
       if (response.ok)  {
-        setDeletionStatus(true);
         closeDialog();
         if (onComplete) {onComplete();}
         if (shouldGoBack) {goBack();}
@@ -194,8 +163,8 @@ function DeleteButton(props) {
             <Typography variant="body1">{dialogAction}</Typography>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-            <Button variant="contained" color="secondary" size="small" onClick={() => handleDeleteButtonClicked()}>
-              { deletionStatus === false ? "Log in and Try Again?" : (deleteRecursive ? "Delete All" : "Delete")}
+            <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete()}>
+              { deleteRecursive ? "Delete All" : "Delete" }
             </Button>
             <Button variant="contained" size="small" onClick={closeDialog}>Close</Button>
         </DialogActions>
