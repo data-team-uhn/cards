@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 
-import { InputAdornment, TextField, Typography, withStyles, List, ListItem } from "@material-ui/core";
+import { InputAdornment, TextField, Typography, withStyles } from "@material-ui/core";
 import NumberFormat from 'react-number-format';
 
 import PropTypes from "prop-types";

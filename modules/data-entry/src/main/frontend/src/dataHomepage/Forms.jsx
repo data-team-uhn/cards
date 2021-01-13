@@ -31,7 +31,7 @@ function Forms(props) {
   const questionnaireID = /questionnaire=([^&]+)/.exec(location.search)?.[1];
   const pageNameWriter = usePageNameWriterContext();
 
-  const entry = /Forms\/(.+)/.exec(location.pathname);
+  const entry = /Forms\/([^.]+)/.exec(location.pathname);
 
   // When moving from a specific form to the "Forms" page, ensure that the title properly changes
   useEffect(() => {
@@ -41,8 +41,7 @@ function Forms(props) {
   }, [entry]);
 
   if (entry) {
-    let formId = entry[1].split(".")[0];
-    return <Form id={formId} key={location.pathname}/>;
+    return <Form id={entry[1]} key={location.pathname}/>;
   }
 
   const columns = [

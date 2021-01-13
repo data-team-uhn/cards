@@ -104,7 +104,7 @@ const questionnaireStyle = theme => ({
     formBottom: {
         minHeight: theme.spacing(8),
     },
-    saveButton: {
+    actionButton: {
         marginTop: theme.spacing(1),
         "& .MuiFab-label" : {
           marginRight: theme.spacing(1),

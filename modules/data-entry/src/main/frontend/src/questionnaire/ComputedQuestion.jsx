@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 import PropTypes from 'prop-types';
-import { InputAdornment, TextField, Typography, withStyles, List, ListItem } from "@material-ui/core";
+import { InputAdornment, TextField, Typography, withStyles } from "@material-ui/core";
 
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";

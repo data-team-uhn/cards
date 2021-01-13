@@ -20,7 +20,6 @@
 import React, { useState } from "react";
 
 import { Typography, withStyles } from "@material-ui/core";
-import { Avatar, List, ListItem }  from "@material-ui/core";
 
 import PropTypes from "prop-types";
 

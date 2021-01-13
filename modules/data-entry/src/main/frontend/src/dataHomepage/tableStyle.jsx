@@ -46,7 +46,7 @@ const liveTableStyle = theme => ({
             margin: theme.spacing(0.5),
         },
     },
-    actionButton: {
+    saveButton: {
         position: 'absolute',
         right: theme.spacing(2)
     },
