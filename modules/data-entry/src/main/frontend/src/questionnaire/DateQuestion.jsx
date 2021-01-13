@@ -28,7 +28,6 @@ import * as jdfp from "moment-jdateformatparser";
 import Answer from "./Answer";
 import NumberQuestion from "./NumberQuestion";
 import Question from "./Question";
-import DefaultAnswer from "./DefaultAnswer";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -143,11 +142,6 @@ export function formatDateAnswer(dateFormat, value) {
 function DateQuestion(props) {
   let {existingAnswer, displayFormat, isEdit, classes, ...rest} = props;
   let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy-MM-dd", minAnswers: 0, type: TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
-
-  // If the form is in the view mode
-  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
-    return <DefaultAnswer prettyAnswers={existingAnswer[1]["displayedValue"]} {...rest}/>;
-  }
 
   // If we're given a year, instead supply the NumberQuestion widget
   if (dateFormat === DATE_FORMATS[0]) {
@@ -284,6 +278,9 @@ function DateQuestion(props) {
 
   return (
     <Question
+      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
+      isEdit={isEdit}
+      displayDefault={true}
       text={text}
       {...rest}
       >

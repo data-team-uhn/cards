@@ -25,7 +25,6 @@ import PropTypes from "prop-types";
 
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
-import DefaultAnswer from "./DefaultAnswer";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -53,11 +52,6 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    text="Test text question (lowercase only)"
 //    />
 function ChromosomeQuestion(props) {
-  // If the form is in the view mode
-  if (props.existingAnswer && !props.isEdit) {
-    return <DefaultAnswer prettyAnswers={props.existingAnswer[1]["displayedValue"]} {...rest}/>;
-  }
-
   // By default we enable 22 numbered chromosomes plus X and Y
   const defaultValues = {
     chromosomeNumber : 22,
@@ -87,6 +81,9 @@ function ChromosomeQuestion(props) {
 
   return (
     <Question
+      prettyAnswers={props.existingAnswer?.[1]["displayedValue"]}
+      isEdit={props.isEdit}
+      displayDefault={true}
       {...props}
       >
       <MultipleChoice

@@ -24,7 +24,6 @@ import { InputAdornment, TextField, Typography, withStyles } from "@material-ui/
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
-import DefaultAnswer from "./DefaultAnswer";
 import QuestionnaireStyle from './QuestionnaireStyle';
 import { useFormReaderContext } from "./FormContext";
 
@@ -51,11 +50,6 @@ let ComputedQuestion = (props) => {
   const { text, expression, unitOfMeasurement } = {...props.questionDefinition, ...props};
   const [error, changeError] = useState(false);
   const [errorMessage, changeErrorMessage] = useState(false);
-
-  // If the form is in the view mode
-  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
-    return <DefaultAnswer prettyAnswers={existingAnswer[1]["displayedValue"]} {...rest}/>;
-  }
 
   let initialValue = existingAnswer?.[1].value || "";
   const [value, changeValue] = useState(initialValue);
@@ -161,6 +155,9 @@ let ComputedQuestion = (props) => {
 
   return (
     <Question
+      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
+      isEdit={isEdit}
+      displayDefault={true}
       text={text}
       {...rest}
       >

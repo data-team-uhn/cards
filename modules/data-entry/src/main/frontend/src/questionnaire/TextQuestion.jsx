@@ -25,7 +25,6 @@ import PropTypes from "prop-types";
 
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
-import DefaultAnswer from "./DefaultAnswer";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -63,11 +62,6 @@ function TextQuestion(props) {
   const [error, setError] = useState(false);
   const regexTest = new RegExp(regexp);
 
-  // If the form is in the view mode
-  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
-    return <DefaultAnswer prettyAnswers={existingAnswer[1]["displayedValue"]} {...rest}/>;
-  }
-
   // Callback function if a regex is defined
   let checkRegex = (text) => {
     if (regexp) {
@@ -77,6 +71,9 @@ function TextQuestion(props) {
 
   return (
     <Question
+      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
+      isEdit={isEdit}
+      displayDefault={true}
       {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
@@ -104,7 +101,7 @@ TextQuestion.propTypes = {
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
   errorText: PropTypes.string,
-  isEdit: PropTypes.bool,
+  isEdit: PropTypes.bool
 };
 
 TextQuestion.defaultProps = {

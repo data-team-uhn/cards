@@ -25,7 +25,6 @@ import PropTypes from "prop-types";
 
 import Answer from "./Answer";
 import Question from "./Question";
-import DefaultAnswer from "./DefaultAnswer";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import TextQuestion from "./TextQuestion";
 
@@ -95,11 +94,6 @@ function TimeQuestion(props) {
   const upperTime = new Time(upperLimit, isMinuteSeconds);
   const minuteSecondTest = new RegExp(/([0-5]\d):([0-5]\d)/);
 
-  // If the form is in the view mode
-  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
-    return <DefaultAnswer prettyAnswers={existingAnswer[1]["displayedValue"]} {...rest}/>;
-  }
-
   let checkError = (timeString) => {
     let time = new Time(timeString, isMinuteSeconds);
     if (isMinuteSeconds && !minuteSecondTest.test(timeString)) {
@@ -121,6 +115,9 @@ function TimeQuestion(props) {
   let outputAnswers = [["time", selectedTime]];
   return (
     <Question
+      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
+      isEdit={isEdit}
+      displayDefault={true}
       text={text}
       {...rest}
       >

@@ -24,7 +24,6 @@ import PropTypes from "prop-types";
 
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 import Question from "./Question";
-import DefaultAnswer from "./DefaultAnswer";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -74,13 +73,11 @@ function VocabularyQuestion(props) {
     // Reparse defaults into a format VocabularySelector understands
     .reduce((object, value) => ({...object, [value[VALUE_POS]]: value[LABEL_POS]}), {});
 
-  // If the form is in the view mode
-  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
-    return <DefaultAnswer prettyAnswers={existingAnswer[1]["displayedValue"]} {...rest}/>;
-  }
-
   return (
     <Question
+      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
+      isEdit={isEdit}
+      displayDefault={true}
       {...rest}
       >
       <VocabularySelector

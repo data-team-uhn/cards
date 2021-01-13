@@ -26,7 +26,6 @@ import PropTypes from "prop-types";
 
 import Answer from "./Answer";
 import Question from "./Question";
-import DefaultAnswer from "./DefaultAnswer";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import MultipleChoice from "./MultipleChoice";
 
@@ -87,11 +86,6 @@ function NumberQuestion(props) {
   // The following two are only used if a default is not given, as we switch to handling values here
   const [input, setInput] = useState(initialValue);
   const [endInput, setEndInput] = useState(undefined);
-
-  // If the form is in the view mode
-  if (existingAnswer?.[1]["displayedValue"] && !isEdit) {
-    return <DefaultAnswer prettyAnswers={existingAnswer[1]["displayedValue"]} {...rest}/>;
-  }
 
   // Callback function for our min/max
   let hasError = (text) => {
@@ -166,6 +160,9 @@ function NumberQuestion(props) {
 
   return (
     <Question
+      prettyAnswers={existingAnswer?.[1]["displayedValue"]}
+      isEdit={isEdit}
+      displayDefault={true}
       {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
