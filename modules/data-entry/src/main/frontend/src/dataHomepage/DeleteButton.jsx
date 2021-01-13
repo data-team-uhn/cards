@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { withRouter, useHistory } from "react-router-dom";
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@material-ui/core";
@@ -24,6 +24,7 @@ import { Tooltip, Typography, withStyles } from "@material-ui/core";
 import { Delete, Close } from "@material-ui/icons";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 /**
  * A component that renders an icon to open a dialog to delete an entry.
@@ -43,6 +44,8 @@ function DeleteButton(props) {
   const defaultDialogAction = `Are you sure you want to delete ${entryName}?`;
   const defaultErrorMessage = entryName + " could not be removed.";
   const history = useHistory();
+
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let openDialog = () => {
     closeError();
@@ -137,7 +140,7 @@ function DeleteButton(props) {
     if (deleteRecursive) {
       url.searchParams.set("recursive", true);
     }
-    fetch( url, {
+    fetchWithReLogin(globalLoginDisplay, url, {
       method: 'DELETE',
       headers: {
         Accept: "application/json"
