@@ -102,7 +102,7 @@ ChromosomeQuestion.propTypes = {
   text: PropTypes.string,
   minAnswers: PropTypes.number,
   maxAnswers: PropTypes.number,
-  chromosomeNumber: PropTypes.number,
+  chromosomeNumber: PropTypes.number
 };
 
 const StyledChromosomeQuestion = withStyles(QuestionnaireStyle)(ChromosomeQuestion)
