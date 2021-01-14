@@ -264,7 +264,7 @@ NumberQuestion.propTypes = {
 
 NumberQuestion.defaultProps = {
   errorText: "Invalid input",
-  isRange: false,
+  isRange: false
 };
 
 const StyledNumberQuestion = withStyles(QuestionnaireStyle)(NumberQuestion)
