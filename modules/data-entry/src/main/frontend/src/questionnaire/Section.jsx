@@ -96,12 +96,12 @@ function Section(props) {
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
   const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
 
-  const isDisplayed = isEdit && displayed || !isEdit && hasAnswers;
-
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const displayed = ConditionalComponentManager.evaluateCondition(
     sectionDefinition,
     formContext);
+
+  const isDisplayed = isEdit && displayed || !isEdit && hasAnswers;
 
   // Determine if the section has any answers
   let hasAnswers = isEdit;
