@@ -89,7 +89,7 @@ BooleanQuestion.propTypes = {
   enableUnknown: PropTypes.bool,
   yesLabel: PropTypes.string,
   noLabel: PropTypes.string,
-  unknownLabel: PropTypes.string,
+  unknownLabel: PropTypes.string
 };
 
 const StyledBooleanQuestion = withStyles(QuestionnaireStyle)(BooleanQuestion)
