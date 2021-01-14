@@ -20,7 +20,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Card, CardHeader, CardContent, List, ListItem, withStyles } from "@material-ui/core";
+import { Card, CardHeader, CardContent, List, ListItem, Typography, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
@@ -48,6 +48,9 @@ function Question (props) {
           </List>
           :
           children
+        }
+        { !isEdit && existingAnswer?.[1]["note"] &&
+          <><Typography variant="subtitle1">Notes:</Typography> {existingAnswer?.[1]["note"]}</>
         }
       </CardContent>
     </Card>
