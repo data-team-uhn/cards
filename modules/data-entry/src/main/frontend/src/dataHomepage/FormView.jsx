@@ -70,8 +70,8 @@ function FormView(props) {
     },
   ]
   const actions = [
-    EditButton,
-    DeleteButton
+    DeleteButton,
+    EditButton
   ]
   const tabs = ["Completed", "Draft"];
 
