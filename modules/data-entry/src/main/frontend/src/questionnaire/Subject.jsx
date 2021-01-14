@@ -415,10 +415,7 @@ function SubjectMember (props) {
                     render: rowData => <React.Fragment>
                                          <EditButton
                                            entryPath={rowData["@path"]}
-                                           entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
                                            entryType="Form"
-                                           warning={rowData ? rowData["@referenced"] : false}
-                                           onComplete={fetchTableData}
                                          /> 
                                          <DeleteButton
                                            entryPath={rowData["@path"]}
