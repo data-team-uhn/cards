@@ -22,7 +22,7 @@ import { Link, useLocation, withRouter } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 
-import { formatDateAnswer } from "./DateQuestion.jsx";
+import DateQuestionUtilities from "./DateQuestionUtilities.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
