@@ -160,7 +160,6 @@ TimeQuestion.propTypes = {
   upperLimit: PropTypes.string,
   errorText: PropTypes.string,
   dateFormat: PropTypes.string,
-  isEdit: PropTypes.bool,
 };
 
 const StyledTimeQuestion = withStyles(QuestionnaireStyle)(TimeQuestion);

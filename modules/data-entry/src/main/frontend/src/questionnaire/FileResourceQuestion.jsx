@@ -18,7 +18,7 @@
 //
 
 import React, { useContext, useState } from "react";
-import { Grid, IconButton, LinearProgress, Link, TextField, Typography, withStyles, List, ListItem } from "@material-ui/core";
+import { Grid, IconButton, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
 import Delete from "@material-ui/icons/Delete";
 
 import PropTypes from "prop-types";
@@ -60,7 +60,6 @@ function FileResourceQuestion(props) {
   let [ error, setError ] = useState();
   let [ uploadInProgress, setUploadInProgress ] = useState(false);
   let [ answerPath, setAnswerPath ] = useState(existingAnswer);
-
 
   // Default value of knownAnswers is the name of every field we can find in namePattern
   let initialParsedAnswers = {};
@@ -311,7 +310,6 @@ FileResourceQuestion.propTypes = {
     text: PropTypes.string.isRequired,
   }).isRequired,
   namePattern: PropTypes.string,
-  isEdit: PropTypes.bool,
 };
 
 const StyledFileResourceQuestion = withStyles(QuestionnaireStyle)(FileResourceQuestion)

@@ -61,7 +61,6 @@ const DATA_TO_VALUE_TYPE = {
 //  type: One of "integer" or "float" (default: "float")
 //  errorText: String to display when the input is not valid (default: "invalid input")
 //  isRange: Whether or not to display a range instead of a single value
-//  isEdit: Whether or not the form is in the edit mode or view mode
 //
 // Sample usage:
 // <NumberQuestion
@@ -261,13 +260,11 @@ NumberQuestion.propTypes = {
   maxValue: PropTypes.number,
   errorText: PropTypes.string,
   isRange: PropTypes.bool,
-  isEdit: PropTypes.bool,
 };
 
 NumberQuestion.defaultProps = {
   errorText: "Invalid input",
   isRange: false,
-  isEdit: false
 };
 
 const StyledNumberQuestion = withStyles(QuestionnaireStyle)(NumberQuestion)

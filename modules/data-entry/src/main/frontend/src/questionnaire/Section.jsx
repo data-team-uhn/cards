@@ -101,8 +101,6 @@ function Section(props) {
     sectionDefinition,
     formContext);
 
-  const isDisplayed = isEdit && displayed || !isEdit && hasAnswers;
-
   // Determine if the section has any answers
   let hasAnswers = isEdit;
   if (!isEdit && existingAnswer[0]) {
@@ -112,6 +110,8 @@ function Section(props) {
       }
     })
   }
+
+  const isDisplayed = isEdit && displayed || !isEdit && hasAnswers;
 
   if (visibleCallback) visibleCallback(displayed);
 

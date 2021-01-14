@@ -118,7 +118,8 @@ function PedigreeQuestion(props) {
       {...rest}
       >
       {image_div && (
-        isEdit ? <Link onClick={() => {setExpanded(true);}}>
+        isEdit ?
+        <Link onClick={() => {setExpanded(true);}}>
           {image_div}
         </Link>
         : <span> {image_div} </span>

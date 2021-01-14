@@ -90,7 +90,6 @@ BooleanQuestion.propTypes = {
   yesLabel: PropTypes.string,
   noLabel: PropTypes.string,
   unknownLabel: PropTypes.string,
-  isEdit: PropTypes.bool,
 };
 
 const StyledBooleanQuestion = withStyles(QuestionnaireStyle)(BooleanQuestion)

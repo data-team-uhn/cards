@@ -187,7 +187,6 @@ ComputedQuestion.propTypes = {
     description: PropTypes.string,
     unitOfMeasurement: PropTypes.string
   }).isRequired,
-  isEdit: PropTypes.bool,
 };
 
 const StyledComputedQuestion = withStyles(QuestionnaireStyle)(ComputedQuestion);

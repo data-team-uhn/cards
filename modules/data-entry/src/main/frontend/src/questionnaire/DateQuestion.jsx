@@ -392,7 +392,6 @@ DateQuestion.propTypes = {
     lowerLimit: PropTypes.object,
     upperLimit: PropTypes.object,
   }),
-  isEdit: PropTypes.bool,
 };
 
 const StyledDateQuestion = withStyles(QuestionnaireStyle)(DateQuestion);

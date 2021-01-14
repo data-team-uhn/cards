@@ -97,7 +97,6 @@ TextQuestion.propTypes = {
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
   errorText: PropTypes.string,
-  isEdit: PropTypes.bool
 };
 
 TextQuestion.defaultProps = {
