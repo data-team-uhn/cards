@@ -186,7 +186,7 @@ ComputedQuestion.propTypes = {
     expression: PropTypes.string.isRequired,
     description: PropTypes.string,
     unitOfMeasurement: PropTypes.string
-  }).isRequired,
+  }).isRequired
 };
 
 const StyledComputedQuestion = withStyles(QuestionnaireStyle)(ComputedQuestion);
