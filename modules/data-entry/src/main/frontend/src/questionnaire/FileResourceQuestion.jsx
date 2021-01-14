@@ -309,7 +309,7 @@ FileResourceQuestion.propTypes = {
   questionDefinition: PropTypes.shape({
     text: PropTypes.string.isRequired,
   }).isRequired,
-  namePattern: PropTypes.string,
+  namePattern: PropTypes.string
 };
 
 const StyledFileResourceQuestion = withStyles(QuestionnaireStyle)(FileResourceQuestion)
