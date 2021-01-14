@@ -391,7 +391,7 @@ DateQuestion.propTypes = {
     type: PropTypes.oneOf([TIMESTAMP_TYPE, INTERVAL_TYPE]),
     lowerLimit: PropTypes.object,
     upperLimit: PropTypes.object,
-  }),
+  })
 };
 
 const StyledDateQuestion = withStyles(QuestionnaireStyle)(DateQuestion);
