@@ -312,7 +312,7 @@ export default function VariantFilesContainer() {
                             })
                             .catch((err) => {console.log(err); reject(err);})
                         }
-                        resolve(file);
+
                       } else {
                         // if a tumor subject is not found
                         // record in variables that a tumor and a region didn’t exist and generate a new random uuid as their path
