@@ -96,7 +96,7 @@ TextQuestion.propTypes = {
   minAnswers: PropTypes.number,
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
-  errorText: PropTypes.string,
+  errorText: PropTypes.string
 };
 
 TextQuestion.defaultProps = {
