@@ -45,7 +45,7 @@ function Note (props) {
   const noteIsEmpty = note == null || note == "";
 
   return (<React.Fragment>
-    <div className = {classes.toggleNotesContainer}>
+    <div className = {classes.notesContainer}>
       <Tooltip
         title = {visible ? "Hide notes" : (noteIsEmpty ? "Add notes" : "Show notes")}
         >

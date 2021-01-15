@@ -49,10 +49,11 @@ function Question (props) {
           :
           children
         }
-        { !isEdit && existingAnswer?.[1]["note"] &&
-          <ListItem key="note">
-            <Typography variant="subtitle1" className={classes.notesViewDisplay} >Notes: </Typography> {existingAnswer?.[1]["note"]}
-          </ListItem>
+        { !isEdit && existingAnswer?.[1]?.note &&
+          <div className={classes.notesContainer}>
+            <Typography variant="subtitle1">Notes</Typography>
+            {existingAnswer.[1].note}
+          </div>
         }
       </CardContent>
     </Card>

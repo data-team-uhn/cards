@@ -281,7 +281,7 @@ const questionnaireStyle = theme => ({
     highlightedTitle: {
         color: theme.palette.primary.light,
     },
-    toggleNotesContainer: {
+    notesContainer: {
         padding: theme.spacing(1, 0, 1, 2)
     },
     toggleNotesButton: {
@@ -460,9 +460,6 @@ const questionnaireStyle = theme => ({
     },
     fileResourceDeleteButton: {
       margin: "0"
-    },
-    notesViewDisplay: {
-        paddingRight: theme.spacing(1)
     }
 });
 
