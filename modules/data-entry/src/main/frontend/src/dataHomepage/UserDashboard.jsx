@@ -89,7 +89,7 @@ function UserDashboard(props) {
       .finally(() => setCreationLoading(false));
   }, [])
 
-  if (loading || globalLoginDisplay.getDialogOpenStatus()) {
+  if (loading) {
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );

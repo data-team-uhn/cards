@@ -45,7 +45,7 @@ class Main extends React.Component {
       title: document.querySelector('meta[name="title"]').content,
       color: document.querySelector('meta[name="themeColor"]')?.content || "blue",
       loginDialogOpen: false,
-      loginHandler: undefined,
+      loginHandler: [],
     };
 
     getRoutes().then(routes => this.setState({routes: routes}));
@@ -104,17 +104,18 @@ class Main extends React.Component {
       <React.Fragment>
       <GlobalLoginContext.Provider
         value={{
-          dialogOpen: (loginHandlerFcn) => {
+          dialogOpen: (loginHandlerFcn, noQueue) => {
             let handler = ((success) => {
-              success && this.setState({
-                loginDialogOpen: false,
-                loginHandler: undefined
+              success && this.state.loginDialogOpen && this.setState({
+                loginDialogOpen: false
               });
               success && loginHandlerFcn();
             });
             (!this.state.loginDialogOpen) && this.setState({
-              loginDialogOpen: true,
-              loginHandler: handler
+              loginDialogOpen: true
+            });
+            (!noQueue) && this.setState({
+              loginHandler: this.state.loginHandler.concat(handler)
             });
           },
           getDialogOpenStatus: () => {
@@ -130,7 +131,17 @@ class Main extends React.Component {
             }
           }
         />
-        <DialogueLoginContainer isOpen={this.state.loginDialogOpen} handleLogin={this.state.loginHandler}/>
+        <DialogueLoginContainer
+          isOpen={this.state.loginDialogOpen}
+          handleLogin={(success) => {
+            if (success) {
+              for (let i = 0; i < this.state.loginHandler.length; i++) {
+                this.state.loginHandler[i](success);
+              }
+              this.setState({loginHandler: []});
+            }
+          }}
+        />
         <div className={classes.wrapper} style={ { position: 'relative', top: this.state.contentOffset + 'px' } }>
           <Suspense fallback={<div>Loading...</div>}>
             <Sidebar
