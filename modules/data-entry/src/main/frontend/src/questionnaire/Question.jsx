@@ -50,7 +50,9 @@ function Question (props) {
           children
         }
         { !isEdit && existingAnswer?.[1]["note"] &&
-          <><Typography variant="subtitle1">Notes:</Typography> {existingAnswer?.[1]["note"]}</>
+          <ListItem key="note">
+            <Typography variant="subtitle1" className={classes.notesViewDisplay} >Notes: </Typography> {existingAnswer?.[1]["note"]}
+          </ListItem>
         }
       </CardContent>
     </Card>

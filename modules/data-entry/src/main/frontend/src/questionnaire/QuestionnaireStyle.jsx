@@ -460,6 +460,9 @@ const questionnaireStyle = theme => ({
     },
     fileResourceDeleteButton: {
       margin: "0"
+    },
+    notesViewDisplay: {
+        paddingRight: theme.spacing(1)
     }
 });
 
