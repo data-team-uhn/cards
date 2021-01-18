@@ -63,7 +63,7 @@ function DateQuestionYear(props) {
       valueType="Long"
       existingAnswer={existingAnswer}
       maxValue={upperLimit || 9999}
-      minValue={lowerLimit || 0}
+      minValue={lowerLimit || 1000}
       {...rest}
       />
   );
