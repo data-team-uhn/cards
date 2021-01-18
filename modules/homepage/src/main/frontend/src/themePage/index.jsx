@@ -114,7 +114,8 @@ class Main extends React.Component {
             (!this.state.loginDialogOpen) && this.setState({
               loginDialogOpen: true
             });
-            (!noQueue) && this.setState({
+            let shouldAddHandler = (!noQueue) || (this.state.loginHandler.length < 1);
+            shouldAddHandler && this.setState({
               loginHandler: this.state.loginHandler.concat(handler)
             });
           },
