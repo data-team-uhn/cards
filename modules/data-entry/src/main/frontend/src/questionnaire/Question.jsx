@@ -52,7 +52,7 @@ function Question (props) {
         { !isEdit && existingAnswer?.[1]?.note &&
           <div className={classes.notesContainer}>
             <Typography variant="subtitle1">Notes</Typography>
-            {existingAnswer.[1].note}
+            {existingAnswer[1].note}
           </div>
         }
       </CardContent>

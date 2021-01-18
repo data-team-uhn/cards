@@ -72,7 +72,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
 
   // Do not show anything if in view mode and no value is recorded yet
-  if (!existingQuestionAnswer?.[1]["displayedValue"] && !isEdit && questionDefinition.dataType != "somaticVariantsFile") {
+  if (!(existingQuestionAnswer?.[1]["displayedValue"] || existingQuestionAnswer?.[1]["note"]) && !isEdit && questionDefinition.dataType != "somaticVariantsFile") {
     return null;
   }
 

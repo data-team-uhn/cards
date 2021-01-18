@@ -105,7 +105,7 @@ function Section(props) {
   let hasAnswers = isEdit;
   if (!isEdit && existingAnswer[0]) {
     Object.entries(existingAnswer[0][1]).forEach( ([key, item]) => {
-      if (item.displayedValue) {
+      if (item.displayedValue || item.note) {
         hasAnswers = true;
       }
     })
