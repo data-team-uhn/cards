@@ -45,7 +45,7 @@ class Main extends React.Component {
       title: document.querySelector('meta[name="title"]').content,
       color: document.querySelector('meta[name="themeColor"]')?.content || "blue",
       loginDialogOpen: false,
-      loginHandler: [],
+      loginHandlers: [],
     };
 
     getRoutes().then(routes => this.setState({routes: routes}));
@@ -104,7 +104,7 @@ class Main extends React.Component {
       <React.Fragment>
       <GlobalLoginContext.Provider
         value={{
-          dialogOpen: (loginHandlerFcn, noQueue) => {
+          dialogOpen: (loginHandlerFcn, discardOnFailure) => {
             let handler = ((success) => {
               success && this.state.loginDialogOpen && this.setState({
                 loginDialogOpen: false
@@ -114,9 +114,9 @@ class Main extends React.Component {
             (!this.state.loginDialogOpen) && this.setState({
               loginDialogOpen: true
             });
-            let shouldAddHandler = (!noQueue) || (this.state.loginHandler.length < 1);
+            let shouldAddHandler = (!discardOnFailure) || (this.state.loginHandlers.length < 1);
             shouldAddHandler && this.setState({
-              loginHandler: this.state.loginHandler.concat(handler)
+              loginHandlers: this.state.loginHandlers.concat(handler)
             });
           },
           getDialogOpenStatus: () => {
@@ -136,10 +136,10 @@ class Main extends React.Component {
           isOpen={this.state.loginDialogOpen}
           handleLogin={(success) => {
             if (success) {
-              for (let i = 0; i < this.state.loginHandler.length; i++) {
-                this.state.loginHandler[i](success);
+              for (let i = 0; i < this.state.loginHandlers.length; i++) {
+                this.state.loginHandlers[i](success);
               }
-              this.setState({loginHandler: []});
+              this.setState({loginHandlers: []});
             }
           }}
         />

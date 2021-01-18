@@ -23,15 +23,15 @@ import MainLoginComponent from './loginMainComponent';
 
 export const GlobalLoginContext = React.createContext();
 
-export function fetchWithReLogin(displayLoginCtx, url, fetchArgs, noQueue) {
+export function fetchWithReLogin(displayLoginCtx, url, fetchArgs, discardOnFailure) {
     return new Promise(function(resolve, reject) {
       function fetchFunc() {
         fetch(url, fetchArgs)
         .then((response) => {
           if (response.status == 401 || response.status == 500) {
-              displayLoginCtx.dialogOpen(fetchFunc, noQueue);
+              displayLoginCtx.dialogOpen(fetchFunc, discardOnFailure);
           } else if (response.ok && response.url.startsWith(window.location.origin + "/login")) {
-              displayLoginCtx.dialogOpen(fetchFunc, noQueue);
+              displayLoginCtx.dialogOpen(fetchFunc, discardOnFailure);
           } else if (response.ok || response.status == 404 || response.status == 409) {
               resolve(response);
           } else {
