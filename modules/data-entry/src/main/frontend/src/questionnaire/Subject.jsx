@@ -39,6 +39,7 @@ import {
   Button,
 } from "@material-ui/core";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
+import EditButton from "../dataHomepage/EditButton.jsx";
 
 const QUESTION_TYPES = ["lfs:Question"];
 const SECTION_TYPES = ["lfs:Section"];
@@ -411,13 +412,19 @@ function SubjectMember (props) {
                       width: '20px',
                       textAlign: 'end'
                     },
-                    render: rowData => <DeleteButton
-                                          entryPath={rowData["@path"]}
-                                          entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
-                                          entryType="Form"
-                                          warning={rowData ? rowData["@referenced"] : false}
-                                          onComplete={fetchTableData}
-                                        /> },
+                    render: rowData => <React.Fragment>
+                                         <EditButton
+                                           entryPath={rowData["@path"]}
+                                           entryType="Form"
+                                         /> 
+                                         <DeleteButton
+                                           entryPath={rowData["@path"]}
+                                           entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
+                                           entryType="Form"
+                                           warning={rowData ? rowData["@referenced"] : false}
+                                           onComplete={fetchTableData}
+                                         />
+                                       </React.Fragment> },
                 ]}
                 components={{
                     Pagination: props => { const { classes, ...other } = props;

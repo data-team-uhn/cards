@@ -155,6 +155,7 @@ let ComputedQuestion = (props) => {
 
   return (
     <Question
+      existingAnswer={existingAnswer}
       text={text}
       {...rest}
       >

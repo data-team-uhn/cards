@@ -58,6 +58,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 function BooleanQuestion(props) {
   const {classes, ...rest} = props;
   const {yesLabel, noLabel, unknownLabel, enableUnknown} = { ...props.questionDefinition, ...props }
+
   // Define the defaults for yesLabel, etc. here because we want questionDefinition to be able to
   // override them, and the props to be able to override the questionDefinition
   let options = [[yesLabel || "Yes", "1", true], [noLabel || "No", "0", true]];

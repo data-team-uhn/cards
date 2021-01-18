@@ -115,6 +115,7 @@ function TimeQuestion(props) {
   let outputAnswers = [["time", selectedTime]];
   return (
     <Question
+      existingAnswer={existingAnswer}
       text={text}
       {...rest}
       >

@@ -46,7 +46,7 @@ import PedigreeEditor from "../pedigree/pedigree";
 //      }}
 //    />
 function PedigreeQuestion(props) {
-  const { existingAnswer, classes, ...rest } = props;
+  const { existingAnswer, isEdit, classes, ...rest } = props;
   const [ expanded, setExpanded ] = useState(false);
   // default pedigreeData state variable to the pedigree saved in LFS:
   const [ pedigreeData, setPedigree ] = useState(existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value
@@ -114,12 +114,15 @@ function PedigreeQuestion(props) {
 
   return (
     <Question
+      preventDefaultView={true}
       {...rest}
       >
       {image_div && (
+        isEdit ?
         <Link onClick={() => {setExpanded(true);}}>
           {image_div}
         </Link>
+        : <span> {image_div} </span>
       )}
       <Dialog fullScreen open={expanded}
         onEntering={() => { openPedigree(); }}
@@ -146,7 +149,8 @@ PedigreeQuestion.propTypes = {
     text: PropTypes.string.isRequired,
     description: PropTypes.string
   }).isRequired,
-  existingAnswer: PropTypes.array
+  existingAnswer: PropTypes.array,
+  isEdit: PropTypes.bool,
 }
 
 const StyledPedigreeQuestion = withStyles(QuestionnaireStyle)(PedigreeQuestion)

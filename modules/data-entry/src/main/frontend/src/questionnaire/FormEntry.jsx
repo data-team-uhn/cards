@@ -52,7 +52,7 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
  * @param {Object} classes style classes
  * @returns a React component that renders the question
  */
-let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive) => {
+let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit) => {
   const questionRef = useRef();
   const anchor = location.hash.substr(1);
   // create a ref to store the question container DOM element
@@ -70,6 +70,12 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
+
+  // Do not show anything if in view mode and no value is recorded yet
+  if (!(existingQuestionAnswer?.[1]["displayedValue"] || existingQuestionAnswer?.[1]["note"]) && !isEdit && questionDefinition.dataType != "somaticVariantsFile") {
+    return null;
+  }
+
   // This variable must start with an upper case letter so that React treats it as a component
   const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
 
@@ -92,6 +98,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
         onChange={onChange}
         onAddedAnswerPath={onAddedAnswerPath}
         sectionAnswersState={sectionAnswersState}
+        isEdit={isEdit}
         />
     </Grid>
   );
@@ -108,7 +115,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
  * @param {string} key the node name of the section definition JCR node
  * @returns a React component that renders the section
  */
-let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, visibleCallback, pageActive) => {
+let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, visibleCallback, pageActive, isEdit) => {
   // Find the existing AnswerSection for this section, if available
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
@@ -124,6 +131,7 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
       onChange={onChange}
       visibleCallback={visibleCallback}
       pageActive={pageActive}
+      isEdit={isEdit}
       />
   );
 }
@@ -140,13 +148,13 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
  * @returns a React component that renders the section
  */
  export default function FormEntry(props) {
-  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, visibleCallback, pageActive} = props;
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, visibleCallback, pageActive, isEdit} = props;
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
-    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive);
+    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive) ;
+    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit);
   }
 }
