@@ -588,7 +588,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Total lap distance</value>
+				<value>Whole lap distance</value>
 				<type>String</type>
 			</property>
 			<property>
