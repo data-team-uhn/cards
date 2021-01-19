@@ -87,7 +87,15 @@ public class ProgenyServlet extends SlingSafeMethodsServlet
         }
     }
 
-    // Get all progeny of the current node
+    /**
+     * Get all progeny of the current node.
+     *
+     * @param resolver A reference to a ResourceResolver
+     * @param subjectNodePath The path to the subject node type whose progeny you are trying to access
+     * @param seenNodes A map of nodes that we have seen, to avoid cyclical references
+     * @return All nodes that consider the given SubjectType their parent, and t heir grandchildren and so on
+     * @throws RepositoryException If a request to the ResourceResolver fails
+     */
     public JsonObject getAllProgeny(ResourceResolver resolver, String subjectNodePath, Map<String, Boolean> seenNodes)
         throws RepositoryException
     {
@@ -118,18 +126,20 @@ public class ProgenyServlet extends SlingSafeMethodsServlet
 
         // Copy over this node's info
         builder.add("progeny", arrayBuilder.build());
-        this.copyObjectExceptProgeny(builder, subjectResource.adaptTo(JsonObject.class));
+        this.copyJsonObject(builder, subjectResource.adaptTo(JsonObject.class));
         return builder.build();
     }
 
-    // Copy the object
-    private void copyObjectExceptProgeny(JsonObjectBuilder builder, JsonObject toAdd)
+    /**
+     * Copy over a JsonObject's values into the given JsonObjectBuilder.
+     *
+     * @param builder A reference to a JsonObjectBuilder to add key/value pairs t o
+     * @param toAdd A JsonObject whose values you want to add
+     */
+    private void copyJsonObject(JsonObjectBuilder builder, JsonObject toAdd)
     {
         // Copy over the keys
         for (Entry<String, JsonValue> entry : toAdd.entrySet()) {
-            if ("progeny".equals(entry.getKey())) {
-                continue;
-            }
             builder.add(entry.getKey(), entry.getValue());
         }
     }
