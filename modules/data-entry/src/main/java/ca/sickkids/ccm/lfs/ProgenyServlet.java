@@ -112,10 +112,7 @@ public class ProgenyServlet extends SlingSafeMethodsServlet
             }
             seenNodes.put(path, true);
 
-            resource = resolver.resolve(path.concat(DEEP_JSON_SUFFIX));
-
             JsonObject progeny = this.getAllProgeny(resolver, path, seenNodes);
-            //builder.add(node.getIdentifier(), progeny);
             arrayBuilder.add(progeny);
         }
 

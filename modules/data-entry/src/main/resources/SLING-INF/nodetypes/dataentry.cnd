@@ -809,7 +809,7 @@
   - description (String)
 
   // Any number of parent subject types that are required by this subject type
-  - requiredParentType (String) multiple
+  - parent (String) multiple
 
 //-----------------------------------------------------------------------------
 // The homepage for any SubjectTypes.
