@@ -16,14 +16,13 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import MaterialTable from "material-table";
 
 import { loadExtensions } from "../uiextension/extensionManager";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import { MODE_DIALOG } from "../dataHomepage/NewFormDialog.jsx"
-import { GlobalLoginContext } from "../login/loginDialogue.js";
+import { MODE_DIALOG } from "../dataHomepage/NewFormDialog.jsx";
 
 import {
   Button,
@@ -73,8 +72,6 @@ function UserDashboard(props) {
     setSelectedRow(undefined);
     setOpen(false);
   }
-
-  let globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
     getDashboardExtensions()
