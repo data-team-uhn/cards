@@ -85,7 +85,8 @@ function DateQuestionMonth(props) {
       setDate(value.length === 0 ? value : parsedDate, isEnd);
       if (!isEnd) {
         // Fix the end date if it is earlier than the start date
-        type === DateQuestionUtilities.INTERVAL_TYPE && displayedEndDate.length > 0 && setDate(DateQuestionUtilities.formatDateAnswer(dateFormat, boundDate(displayedEndDate, parsedDate), true));
+        type === DateQuestionUtilities.INTERVAL_TYPE && displayedEndDate.length > 0
+          && setDate(DateQuestionUtilities.formatDateAnswer(dateFormat, boundDate(displayedEndDate, parsedDate)), true);
       }
     }
   }

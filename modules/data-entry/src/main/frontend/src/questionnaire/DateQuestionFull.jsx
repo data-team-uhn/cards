@@ -78,8 +78,8 @@ function DateQuestionFull(props) {
   }
 
   let processChange = (value, isEnd) => {
-    let startDate = isEnd ? startDate : null;
-    let parsedDate = boundDate(value, startDate);
+    let lowerBoundDate = isEnd ? startDate : null;
+    let parsedDate = boundDate(value, lowerBoundDate);
     setDate(parsedDate, isEnd);
     if (!isEnd && type === DateQuestionUtilities.INTERVAL_TYPE && endDate) {
       // Fix the end date if it is earlier than the start date
