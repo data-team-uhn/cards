@@ -32,10 +32,8 @@ export function fetchWithReLogin(displayLoginCtx, url, fetchArgs, discardOnFailu
               displayLoginCtx.dialogOpen(fetchFunc, discardOnFailure);
           } else if (response.ok && response.url.startsWith(window.location.origin + "/login")) {
               displayLoginCtx.dialogOpen(fetchFunc, discardOnFailure);
-          } else if (response.ok || response.status == 404 || response.status == 409) {
-              resolve(response);
           } else {
-              reject(response);
+              resolve(response);
           }
         })
         .catch((err) => {reject(err)});
