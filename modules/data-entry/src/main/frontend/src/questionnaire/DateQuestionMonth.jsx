@@ -58,19 +58,14 @@ function DateQuestionMonth(props) {
 
   let startValues = existingAnswer && existingAnswer[1].value || "";
 
-  let stripTimeZone = (dateString) => {
-    // Remove the time zone (eg. "-5:00") from the end of a sling provided date string
-    return dateString.replace(/-[0-9]{2}:[0-9]{2}$/gm, '');
-  }
-
   const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.formatDateAnswer(
     dateFormat,
-    stripTimeZone(typeof(startValues) === "object" ? startValues[0] : startValues)));
+    DateQuestionUtilities.stripTimeZone(typeof(startValues) === "object" ? startValues[0] : startValues)));
   const [ displayedEndDate, setDisplayedEndDate ] = useState(DateQuestionUtilities.formatDateAnswer(
     dateFormat,
-    stripTimeZone(typeof(startValues) === "object" ? startValues[1] : "")));
-  const upperLimitMoment = upperLimit ? DateQuestionUtilities.amendMoment(moment(upperLimit), DateQuestionUtilities.slingDateFormat) : null;
-  const lowerLimitMoment = lowerLimit ? DateQuestionUtilities.amendMoment(moment(lowerLimit), DateQuestionUtilities.slingDateFormat) : null;
+    DateQuestionUtilities.stripTimeZone(typeof(startValues) === "object" ? startValues[1] : "")));
+  const upperLimitMoment = DateQuestionUtilities.amendMoment(upperLimit);
+  const lowerLimitMoment = DateQuestionUtilities.amendMoment(lowerLimit);
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid date");
@@ -193,8 +188,7 @@ function DateQuestionMonth(props) {
         onChange={(event) => setDate(event.target.value, isEnd)}
         onBlur={() => onBlur(value, isEnd)}
         placeholder={dateFormat.toLowerCase()}
-        // Browser date picker (used when not a month) requires "-" as separators
-        value={value }
+        value={value}
       />
     )
   }
@@ -210,7 +204,7 @@ function DateQuestionMonth(props) {
       type === DateQuestionUtilities.INTERVAL_TYPE &&
       <React.Fragment>
         <span className={classes.mdash}>&mdash;</span>
-        {getTextField(true,displayedEndDate)}
+        {getTextField(true, displayedEndDate)}
       </React.Fragment>
       }
       <Answer

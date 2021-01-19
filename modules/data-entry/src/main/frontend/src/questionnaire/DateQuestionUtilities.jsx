@@ -68,6 +68,13 @@ export default class DateQuestionUtilities {
   // Truncates fields in the given moment object or date string
   // according to the given format string
   static amendMoment(date, format) {
+    if (!date) {
+      return null;
+    }
+    if (!format) {
+      format = this.slingDateFormat;
+    }
+
     let new_date = date;
     if (typeof new_date === "string") {
       new_date = moment(new_date);
@@ -138,5 +145,10 @@ export default class DateQuestionUtilities {
     } else {
       return date.format(dateFormat);
     }
+  }
+
+  static stripTimeZone(dateString) {
+    // Remove the time zone (eg. "-05:00") from the end of a sling provided date string
+    return dateString.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
   }
 }

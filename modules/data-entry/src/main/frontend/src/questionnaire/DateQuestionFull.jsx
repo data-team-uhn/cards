@@ -57,22 +57,14 @@ function DateQuestionFull(props) {
 
   let startValues = existingAnswer && existingAnswer[1].value || "";
 
-  let stripTimeZone = (dateString) => {
-    // Remove the time zone (eg. "-5:00") from the end of a sling provided date string
-    return dateString.replace(/-[0-9]{2}:[0-9]{2}$/gm, '');
-  }
-
   const [ startDate, setStartDate ] = useState(DateQuestionUtilities.amendMoment(
-    stripTimeZone(typeof(startValues) === "object" ? startValues[0] : startValues),
-    DateQuestionUtilities.slingDateFormat)
-  );
+    DateQuestionUtilities.stripTimeZone(typeof(startValues) === "object" ? startValues[0] : startValues)
+  ));
   const [ endDate, setEndDate ] = useState(
-    typeof(startValues) === "object"
-    ? DateQuestionUtilities.amendMoment(stripTimeZone(startValues[1]), DateQuestionUtilities.slingDateFormat)
-    : null
+    typeof(startValues) === "object" ? DateQuestionUtilities.amendMoment(DateQuestionUtilities.stripTimeZone(startValues[1])) : null
   );
-  const upperLimitMoment = upperLimit ? DateQuestionUtilities.amendMoment(upperLimit, DateQuestionUtilities.slingDateFormat) : null;
-  const lowerLimitMoment = lowerLimit ? DateQuestionUtilities.amendMoment(lowerLimit, DateQuestionUtilities.slingDateFormat) : null;
+  const upperLimitMoment = DateQuestionUtilities.amendMoment(upperLimit);
+  const lowerLimitMoment = DateQuestionUtilities.amendMoment(lowerLimit);
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid date");
@@ -123,6 +115,12 @@ function DateQuestionFull(props) {
     ? "datetime-local"
     : "date";
 
+  let momentToString = (date) => {
+    return (!date || !date.isValid()) ? "" :
+    textFieldType === "date" ? date.format(moment.HTML5_FMT.DATE) :
+    date.format(moment.HTML5_FMT.DATETIME_LOCAL);
+  }
+
   let outputStart = getSlingDate(false);
   let outputEnd = getSlingDate(true);
   let outputAnswers = outputStart && outputStart !== "Invalid date" ? [["date", outputStart]] : [];
@@ -147,6 +145,7 @@ function DateQuestionFull(props) {
         }}
         onChange={(event) => processChange(event.target.value, isEnd)}
         placeholder={dateFormat.toLowerCase()}
+        value={value}
       />
     )
   }
@@ -157,12 +156,12 @@ function DateQuestionFull(props) {
       {...rest}
       >
       {error && <Typography color='error'>{errorMessage}</Typography>}
-      {getTextField(false, startDate)}
+      {getTextField(false, momentToString(startDate))}
       { /* If this is an interval, allow the user to select a second date */
       type === DateQuestionUtilities.INTERVAL_TYPE &&
       <React.Fragment>
         <span className={classes.mdash}>&mdash;</span>
-        {getTextField(true,endDate)}
+        {getTextField(true, momentToString(endDate))}
       </React.Fragment>
       }
       <Answer
