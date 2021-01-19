@@ -42,6 +42,7 @@ export const MODE_DIALOG = 1;
  */
 function NewFormDialog(props) {
   const { children, classes, presetPath, currentSubject, theme, mode, open, onClose } = { mode:MODE_ACTION, open: false, ...props };
+  const [ currentSubjectTypeDetails, setCurrentSubjectTypeDetails ] = useState();
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ initialized, setInitialized ] = useState(false);
@@ -228,6 +229,23 @@ function NewFormDialog(props) {
     }
   }, [selectedQuestionnaire, dialogOpen])
 
+  // Refresh our information about the progeny of the current subject's type
+  useEffect(() => {
+    if (currentSubject) {
+      fetch(currentSubject["type"]["@path"] + ".progeny.json")
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((json) => setCurrentSubjectTypeDetails(json));
+    }
+  }, [currentSubject]);
+
+  let recursivelyGetProgenyID = (parent) => {
+    let progenyNames = [parent["jcr:uuid"]];
+    for (let child in parent["progeny"]) {
+      progenyNames = progenyNames.concat(recursivelyGetProgenyID(parent["progeny"][child]));
+    }
+    return progenyNames;
+  }
+
   return (
     <React.Fragment>
       <Dialog
@@ -260,8 +278,11 @@ function NewFormDialog(props) {
                   if (query.search) {
                     sqlQuery.addConditional(`CONTAINS(n.'title', '*${query.search}*')`);
                   }
-                  if (currentSubject?.['type']?.['jcr:uuid']) {
-                    sqlQuery.addConditional(` n.'requiredSubjectTypes'='${currentSubject['type']['jcr:uuid']}'`);
+                  if (currentSubjectTypeDetails) {
+                    // Recursively add all of the progeny to the query
+                    let progenyList = recursivelyGetProgenyID(currentSubjectTypeDetails);
+                    let subjectTypeConditional = "(n.'requiredSubjectTypes'='" + progenyList.join("' OR n.'requiredSubjectTypes'='") + "')";
+                    sqlQuery.addConditional(subjectTypeConditional);
                   }
                   url.searchParams.set("query", sqlQuery.build());
                   url.searchParams.set("limit", query.pageSize);
