@@ -22,7 +22,6 @@
 
 [artifacts runModes=cardiac_rehab startLevel=10]
     ca.sickkids.ccm.lfs/cardiac-rehab-backend
-    com.amazonaws/aws-java-sdk-osgi
     com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/2.6.7
     io.netty/netty-codec-http/4.1.17.Final
     io.netty/netty-codec/4.1.17.Final
