@@ -28,6 +28,7 @@ import MaterialTable from "material-table";
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import SqlQuery from "../sqlQuery.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
 const PROGRESS_SELECT_SUBJECT = 1;
@@ -255,7 +256,14 @@ function NewFormDialog(props) {
                 ]}
                 data={query => {
                   let url = new URL("/query", window.location.origin);
-                  url.searchParams.set("query", `select * from [lfs:Questionnaire] as n${query.search ? ` WHERE CONTAINS(n.'title', '*${query.search}*')` : ""} order by n.'title'`);
+                  let sqlQuery = new SqlQuery("select * from [lfs:Questionnaire] as n", "order by n.'title'");
+                  if (query.search) {
+                    sqlQuery.addConditional(`CONTAINS(n.'title', '*${query.search}*')`);
+                  }
+                  if (currentSubject?.['type']?.['jcr:uuid']) {
+                    sqlQuery.addConditional(` n.'requiredSubjectTypes'='${currentSubject['type']['jcr:uuid']}'`);
+                  }
+                  url.searchParams.set("query", sqlQuery.build());
                   url.searchParams.set("limit", query.pageSize);
                   url.searchParams.set("offset", query.page*query.pageSize);
                   return fetchWithReLogin(globalLoginDisplay, url)
