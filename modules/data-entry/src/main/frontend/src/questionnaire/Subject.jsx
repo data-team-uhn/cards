@@ -466,9 +466,13 @@ function FormData(props) {
     setData([]);  // Prevent an infinite loop if data was not set
   };
 
+  // Fetch this Form's data
+  useEffect(() => {
+    getFormData(formID);
+  }, []);
+
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
-    getFormData(formID);
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
