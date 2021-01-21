@@ -78,6 +78,10 @@ function DateQuestionFull(props) {
   }
 
   let processChange = (value, isEnd) => {
+    setDate(DateQuestionUtilities.amendMoment(value, dateFormat), isEnd);
+  }
+
+  let processBlur = (value, isEnd) => {
     let lowerBoundDate = isEnd ? startDate : null;
     let parsedDate = boundDate(value, lowerBoundDate);
     setDate(parsedDate, isEnd);
@@ -144,6 +148,7 @@ function DateQuestionFull(props) {
           min: lowerLimit
         }}
         onChange={(event) => processChange(event.target.value, isEnd)}
+        onBlur={(event) => processBlur(event.target.value, isEnd)}
         placeholder={dateFormat.toLowerCase()}
         value={value}
       />
