@@ -24,13 +24,13 @@ function AppInfo (props) {
   const { classes, textVariant, showTeamInfo } = props;
   let variant = textVariant || "subtitle2";
 
-  let platformName = document.querySelector('meta[name="platformName"]').content;
-  let appName = document.querySelector('meta[name="title"]').content;
-  let version = document.querySelector('meta[name="version"]').content;
+  let platformName = document.querySelector('meta[name="platformName"]')?.content;
+  let appName = document.querySelector('meta[name="title"]')?.content;
+  let version = document.querySelector('meta[name="version"]')?.content;
 
   return (
     <>
-      <Typography variant={variant} component="div">{appName} | {platformName} v{version}</Typography>
+      <Typography variant={variant} component="div">{appName ?  appName + " | " : ''} {platformName} {version ? "v" + version : ''}</Typography>
       {showTeamInfo &&
         <Typography variant={variant} component="div">
           by
