@@ -18,7 +18,7 @@
 //
 
 import React from "react";
-import { Typography } from "@material-ui/core";
+import { Tooltip, Typography } from "@material-ui/core";
 
 function AppInfo (props) {
   const { classes, textVariant, showTeamInfo } = props;
@@ -34,9 +34,11 @@ function AppInfo (props) {
       {showTeamInfo &&
         <Typography variant={variant} component="div">
           by
-          <a href="https://uhndata.io/" target="_blank">
-            <img src="/libs/lfs/resources/data-logo.png" width="80" alt="DATA" />
-          </a>
+          <Tooltip title="DATA Team @ UHN">
+            <a href="https://uhndata.io/" target="_blank">
+              <img src="/libs/lfs/resources/data-logo.png" width="80" alt="DATA" />
+            </a>
+          </Tooltip>
         </Typography>
       }
     </>
