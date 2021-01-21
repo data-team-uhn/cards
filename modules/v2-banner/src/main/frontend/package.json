@@ -1,13 +1,13 @@
 {
-    "name": "lfs-v1-banner",
+    "name": "lfs-v2-banner",
     "version": "0.1.0",
-    "description": "V1 Banner",
+    "description": "V2 Banner",
     "author": "SickKids",
     "license": "Apache-2.0",
     "repository": {
       "type": "git",
       "url": "https://github.com/ccmbioinfo/lfs.git",
-      "directory": "modules/v1-banner/src/main/frontend"
+      "directory": "modules/v2-banner/src/main/frontend"
     },
     "babel": {
       "presets": [

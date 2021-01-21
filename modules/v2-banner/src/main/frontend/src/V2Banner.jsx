@@ -35,13 +35,13 @@ const appbarStyle = theme => ({
   }
 });
 
-export default function V1Banner(props) {
+export default function V2Banner(props) {
   const StyledAppBar = withStyles(appbarStyle)(AppBar);
 
   return (
     <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
-        <Typography variant="h6">This banner appears only in Version 1.</Typography>
+        <Typography variant="h6">This banner appears only in Version 2.</Typography>
       </Toolbar>
     </StyledAppBar>
   );

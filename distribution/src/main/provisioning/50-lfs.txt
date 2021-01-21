@@ -51,7 +51,7 @@
     ca.sickkids.ccm.lfs/lfs-aggregated-frontend/${lfs.version}
 
     ca.sickkids.ccm.lfs/lfs-modules-common-test-banner/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-modules-v1-test-banner/${lfs.version}
+    ca.sickkids.ccm.lfs/lfs-modules-v2-test-banner/${lfs.version}
     ca.sickkids.ccm.lfs/lfs-modules-sidebar-test/${lfs.version}
 
 [artifacts runModes=permissions_ownership]

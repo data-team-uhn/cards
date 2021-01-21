@@ -24,9 +24,9 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-modules-v1-test-banner</artifactId>
+  <artifactId>lfs-modules-v2-test-banner</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - V1 Test Banner</name>
+  <name>LFS - V2 Test Banner</name>
 
   <build>
     <plugins>

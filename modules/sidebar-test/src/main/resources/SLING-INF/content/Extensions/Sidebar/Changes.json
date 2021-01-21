@@ -1,8 +1,8 @@
 {
   "jcr:primaryType": "lfs:Extension",
   "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-  "lfs:extensionName": "Before the upgrade",
+  "lfs:extensionName": "After the upgrade",
   "lfs:targetURL": "/content.html/Forms",
   "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
-  "lfs:defaultOrder": 52
+  "lfs:defaultOrder": 49
 }

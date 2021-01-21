@@ -31,7 +31,7 @@ import WarningIcon from '@material-ui/icons/Warning';
 
 const appbarStyle = theme => ({
   root: {
-    backgroundColor: theme.palette.error.light
+    backgroundColor: theme.palette.warning.light
   }
 });
 
@@ -41,7 +41,7 @@ export default function CommonBanner(props) {
   return (
     <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
-        <Typography variant="h6">This banner is red in Version 1.</Typography>
+        <Typography variant="h6">This banner is yellow in Version 2.</Typography>
       </Toolbar>
     </StyledAppBar>
   );
