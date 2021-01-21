@@ -295,24 +295,24 @@ import {
       }
     },
     rose: {
-      backgroundColor: roseColor[0],
+      backgroundColor: roseColor[2],
       boxShadow:
         "0 12px 20px -10px rgba(" +
-        hexToRgb(roseColor[0]) +
+        hexToRgb(roseColor[2]) +
         ",.28), 0 4px 20px 0 rgba(" +
         hexToRgb(blackColor) +
         ",.12), 0 7px 8px -5px rgba(" +
-        hexToRgb(roseColor[0]) +
+        hexToRgb(roseColor[2]) +
         ",.2)",
       "&:hover": {
-        backgroundColor: roseColor[0],
+        backgroundColor: roseColor[2],
         boxShadow:
           "0 12px 20px -10px rgba(" +
-          hexToRgb(roseColor[0]) +
+          hexToRgb(roseColor[2]) +
           ",.28), 0 4px 20px 0 rgba(" +
           hexToRgb(blackColor) +
           ",.12), 0 7px 8px -5px rgba(" +
-          hexToRgb(roseColor[0]) +
+          hexToRgb(roseColor[2]) +
           ",.2)"
       }
     },

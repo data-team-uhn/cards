@@ -6,6 +6,6 @@
   },
   "ThemeColor": {
     "jcr:primaryType": "nt:unstructured",
-    "ThemeColor": "purple"
+    "ThemeColor": "rose"
   }
 }
