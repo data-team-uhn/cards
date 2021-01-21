@@ -16,10 +16,11 @@ import { NavLink } from "react-router-dom";
 // @material-ui/core components
 import { withStyles } from "@material-ui/core";
 import { loadExtensions } from "../../uiextension/extensionManager";
-import { Drawer, Hidden, List, ListItem, ListItemText, Typography } from "@material-ui/core";
+import { Drawer, Hidden, List, ListItem, ListItemText } from "@material-ui/core";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 import sidebarStyle from "./sidebarStyle.jsx";
+import AppInfo from "./AppInfo.jsx";
 
 const Sidebar = ({ ...props }) => {
   // Verifies if routeName is the one active
@@ -99,21 +100,17 @@ const Sidebar = ({ ...props }) => {
     </List>
   );
 
-  let platformName = document.querySelector('meta[name="platformName"]').content;
-  let appName = document.querySelector('meta[name="title"]').content;
-  let version = document.querySelector('meta[name="version"]').content;
-  var versionInfo = <Typography variant="subtitle2" className={classes.versionText}>{appName} | {platformName} v{version}</Typography>
-
   var adminLinks = (
     <List className={classes.adminSidebar}>
       {loading ? <></>
       : entries.filter(entry => _isAdministrativeButton(entry["lfs:defaultOrder"]))
           .map((entry, key) => {
-            // To make it stand out, the admin link is also active
             const isActive = isRouteActive(entry["lfs:targetURL"]);
             return(generateListItem(entry, key, isActive));
           })}
-      {versionInfo}
+      <div className={classes.appInfo}>
+        <AppInfo showTeamInfo />
+      </div>
     </List>
   );
 

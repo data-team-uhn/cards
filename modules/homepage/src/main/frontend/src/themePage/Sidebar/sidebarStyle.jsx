@@ -169,10 +169,15 @@ import {
     whiteFont: {
       color: whiteColor
     },
-    versionText: {
+    appInfo: {
       textAlign: "center",
       color: whiteColor,
-      margin: theme.spacing(4, 2, 0),
+      margin: theme.spacing(2, 2, 0),
+      padding: theme.spacing(2, 0, 0),
+      borderTop: "1px solid rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
+      "& a" : {
+        marginLeft: theme.spacing(1),
+      },
     },
     purple: {
       backgroundColor: primaryColor[0],
