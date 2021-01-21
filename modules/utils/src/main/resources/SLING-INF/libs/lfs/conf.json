@@ -11,5 +11,9 @@
   "PlatformName": {
     "jcr:primaryType": "nt:unstructured",
     "PlatformName": "${platform.name}"
+  },
+  "ThemeColor": {
+    "jcr:primaryType": "nt:unstructured",
+    "ThemeColor": "${theme.color}"
   }
 }

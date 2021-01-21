@@ -138,7 +138,7 @@ class Main extends React.Component {
               image={this.state.image}
               handleDrawerToggle={this.handleDrawerToggle}
               open={this.state.mobileOpen}
-              color={ "blue" }
+              color={ document.querySelector('meta[name="themeColor"]')?.content || "blue" }
               {...rest}
             />
             <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">

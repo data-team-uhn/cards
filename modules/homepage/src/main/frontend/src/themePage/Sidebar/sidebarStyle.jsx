@@ -16,6 +16,8 @@ import {
     primaryColor,
     primaryBoxShadow,
     infoColor,
+    tealColor,
+    roseColor,
     successColor,
     warningColor,
     dangerColor,
@@ -204,6 +206,28 @@ import {
           ",.2)"
       }
     },
+    teal: {
+      backgroundColor: tealColor[0],
+      boxShadow:
+        "0 12px 20px -10px rgba(" +
+        hexToRgb(tealColor[0]) +
+        ",.28), 0 4px 20px 0 rgba(" +
+        hexToRgb(blackColor) +
+        ",.12), 0 7px 8px -5px rgba(" +
+        hexToRgb(tealColor[0]) +
+        ",.2)",
+      "&:hover": {
+        backgroundColor: tealColor[0],
+        boxShadow:
+          "0 12px 20px -10px rgba(" +
+          hexToRgb(tealColor[0]) +
+          ",.28), 0 4px 20px 0 rgba(" +
+          hexToRgb(blackColor) +
+          ",.12), 0 7px 8px -5px rgba(" +
+          hexToRgb(tealColor[0]) +
+          ",.2)"
+      }
+    },
     green: {
       backgroundColor: successColor[0],
       boxShadow:
@@ -267,6 +291,28 @@ import {
           hexToRgb(blackColor) +
           ",.12), 0 7px 8px -5px rgba(" +
           hexToRgb(dangerColor[0]) +
+          ",.2)"
+      }
+    },
+    rose: {
+      backgroundColor: roseColor[0],
+      boxShadow:
+        "0 12px 20px -10px rgba(" +
+        hexToRgb(roseColor[0]) +
+        ",.28), 0 4px 20px 0 rgba(" +
+        hexToRgb(blackColor) +
+        ",.12), 0 7px 8px -5px rgba(" +
+        hexToRgb(roseColor[0]) +
+        ",.2)",
+      "&:hover": {
+        backgroundColor: roseColor[0],
+        boxShadow:
+          "0 12px 20px -10px rgba(" +
+          hexToRgb(roseColor[0]) +
+          ",.28), 0 4px 20px 0 rgba(" +
+          hexToRgb(blackColor) +
+          ",.12), 0 7px 8px -5px rgba(" +
+          hexToRgb(roseColor[0]) +
           ",.2)"
       }
     },

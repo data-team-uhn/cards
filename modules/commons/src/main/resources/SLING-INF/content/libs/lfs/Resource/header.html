@@ -32,6 +32,9 @@
       <meta name="title" content="${config['AppName']}">
       <title>${config.AppName}</title>
     </sly>
+    <sly data-sly-use.config="/libs/lfs/conf/ThemeColor">
+      <meta name="themeColor" content="${config['ThemeColor']}">
+    </sly>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap" class="next-head"/>
     <script src="/system/sling.js"></script>
