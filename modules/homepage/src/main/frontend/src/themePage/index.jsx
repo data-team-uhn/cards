@@ -43,6 +43,7 @@ class Main extends React.Component {
       routes: [],
       contentOffset: 0,
       title: document.querySelector('meta[name="title"]').content,
+      color: document.querySelector('meta[name="themeColor"]')?.content || "blue",
       loginDialogOpen: false,
       loginHandler: undefined,
     };
@@ -138,7 +139,7 @@ class Main extends React.Component {
               image={this.state.image}
               handleDrawerToggle={this.handleDrawerToggle}
               open={this.state.mobileOpen}
-              color={ document.querySelector('meta[name="themeColor"]')?.content || "blue" }
+              color={ this.state.color }
               {...rest}
             />
             <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
@@ -148,6 +149,7 @@ class Main extends React.Component {
               <Navbar
                 routes={ this.state.routes }
                 handleDrawerToggle={this.handleDrawerToggle}
+                color={ this.state.color }
                 {...rest}
               />
             </div>

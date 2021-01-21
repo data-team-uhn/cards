@@ -354,9 +354,6 @@ import {
     aboveBackground: {
       zIndex: "1200"
     },
-    avatar: {
-      backgroundColor: theme.palette.info.main
-    },
     successSnackbar: {
       backgroundColor: theme.palette.success.main
     },
