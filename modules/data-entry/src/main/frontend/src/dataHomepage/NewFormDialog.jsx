@@ -240,8 +240,8 @@ function NewFormDialog(props) {
 
   let recursivelyGetProgenyID = (parent) => {
     let progenyNames = [parent["jcr:uuid"]];
-    for (let child in parent["progeny"]) {
-      progenyNames = progenyNames.concat(recursivelyGetProgenyID(parent["progeny"][child]));
+    for (let child in parent["@progeny"]) {
+      progenyNames = progenyNames.concat(recursivelyGetProgenyID(parent["@progeny"][child]));
     }
     return progenyNames;
   }
