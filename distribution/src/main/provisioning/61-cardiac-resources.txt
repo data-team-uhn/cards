@@ -18,10 +18,10 @@
 #
 
 # This is the LFS project
-[feature name=lfs-cardiac-resources]
+[feature name=lfs-cards4kids-resources]
 
 [variables]
     lfs.version=0.1-SNAPSHOT
 
-[artifacts runModes=cardiac]
-    ca.sickkids.ccm.lfs/cardiac-resources-clinical-data/${lfs.version}
+[artifacts runModes=cards4kids]
+    ca.sickkids.ccm.lfs/cards4kids-resources-clinical-data/${lfs.version}

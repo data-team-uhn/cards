@@ -22,11 +22,11 @@
 
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>cardiac-rehab-resources</artifactId>
+    <artifactId>cards4care-resources</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cardiac-rehab-resources-clinical-data</artifactId>
+  <artifactId>cards4care-resources-clinical-data</artifactId>
   <packaging>bundle</packaging>
   <name>Cardiac Rehab Resources - Clinical Data</name>
 

@@ -18,11 +18,11 @@
 #
 
 # This is the LFS project
-[feature name=lfs-cardiac-rehab-resources]
+[feature name=lfs-cards4care-resources]
 
 [variables]
     lfs.version=0.1-SNAPSHOT
 
-[artifacts runModes=cardiac_rehab]
-    ca.sickkids.ccm.lfs/cardiac-rehab-resources-clinical-data/${lfs.version}
-    ca.sickkids.ccm.lfs/cardiac-rehab-backend/${lfs.version}/slingfeature/slingfeature
+[artifacts runModes=cards4care]
+    ca.sickkids.ccm.lfs/cards4care-resources-clinical-data/${lfs.version}
+    ca.sickkids.ccm.lfs/cards4care-backend/${lfs.version}/slingfeature/slingfeature

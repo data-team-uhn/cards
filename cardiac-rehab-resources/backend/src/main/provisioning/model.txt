@@ -18,10 +18,10 @@
 #
 
 # The LFS homepage
-[feature name=cardiac-rehab-backend]
+[feature name=cards4care-backend]
 
-[artifacts runModes=cardiac_rehab startLevel=10]
-    ca.sickkids.ccm.lfs/cardiac-rehab-backend
+[artifacts runModes=cards4care startLevel=10]
+    ca.sickkids.ccm.lfs/cards4care-backend
     com.amazonaws/aws-java-sdk-osgi
     com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/2.6.7
     io.netty/netty-codec-http/4.1.17.Final
@@ -37,5 +37,5 @@
 [configurations]
   org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-lfs-export
     user.mapping=[
-      "ca.sickkids.ccm.lfs.cardiac-rehab-backend\=sling-readall"
+      "ca.sickkids.ccm.lfs.cards4care-backend\=sling-readall"
     ]
