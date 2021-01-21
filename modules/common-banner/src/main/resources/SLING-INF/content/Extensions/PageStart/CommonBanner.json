@@ -1,0 +1,6 @@
+{
+  "jcr:primaryType": "lfs:Extension",
+  "lfs:extensionPointId": "lfs/coreUI/pageStart",
+  "lfs:extensionName": "Common Banner",
+  "lfs:extensionRenderURL": "asset:lfs-common-banner.CommonBanner.js"
+}

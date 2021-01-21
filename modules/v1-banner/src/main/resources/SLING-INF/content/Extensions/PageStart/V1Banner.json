@@ -1,0 +1,6 @@
+{
+  "jcr:primaryType": "lfs:Extension",
+  "lfs:extensionPointId": "lfs/coreUI/pageStart",
+  "lfs:extensionName": "V1 Banner",
+  "lfs:extensionRenderURL": "asset:lfs-v1-banner.V1Banner.js"
+}
