@@ -469,7 +469,7 @@ function FormData(props) {
   // Fetch this Form's data
   useEffect(() => {
     getFormData(formID);
-  }, []);
+  }, [formID]);
 
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
