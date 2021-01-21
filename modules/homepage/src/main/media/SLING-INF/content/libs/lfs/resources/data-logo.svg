@@ -1,0 +1,28 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<svg width="2910" height="512" viewBox="0 0 2910 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<rect width="143.026" height="414.57" transform="matrix(1 0 -0.261515 0.965199 334.356 112.04)" fill="#F94900"/>
+<rect width="143.026" height="298.49" transform="matrix(1 0 -0.261515 0.965199 78.0601 224.08)" fill="#F94900"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M734.715 0H590.653L451.88 512.182H788.653C817.747 512.182 846.154 510.442 873.874 506.963C901.661 503.236 928.218 497.396 953.545 489.443C978.872 481.491 1002.72 470.929 1025.08 457.758C1047.7 444.587 1068.27 428.558 1086.77 409.671C1105.54 390.784 1122.09 368.667 1136.42 343.319C1150.82 317.722 1162.47 288.522 1171.35 255.718C1180.18 223.163 1184.29 194.212 1183.69 168.864C1183.09 143.515 1178.52 121.398 1170 102.511C1161.79 83.3756 1149.91 67.3466 1134.36 54.424C1118.88 41.2529 1100.5 30.6912 1079.22 22.7388C1058.21 14.7864 1034.78 9.07067 1008.95 5.59151C983.178 1.86384 955.748 0 926.653 0H778.035L747.836 111.457H881.779C915.507 111.457 943.279 114.44 965.093 120.404C986.974 126.12 1003.51 134.942 1014.69 146.87C1026.21 158.55 1032.72 173.461 1034.24 191.602C1036.02 209.744 1033.58 231.116 1026.91 255.718C1020.25 280.321 1011.11 301.693 999.5 319.834C988.148 337.976 973.484 353.135 955.509 365.312C937.858 377.24 916.51 386.187 891.464 392.151C866.486 397.867 837.132 400.725 803.403 400.725H626.142L700.294 127.045H700.293L734.715 0ZM1321.55 415.263H1576.27L1552.34 315.361H1399.98L1548.41 126.741L1593.86 315.361H1593.8L1640.74 511.32L1640.95 512.182H1800.84L1661.93 0H1502.04L1085.58 512.182H1245.47L1321.55 415.263ZM2167.17 111.457L2058.59 512.182H1915.31L2023.88 111.457H1798.72L1828.92 0H2422.91L2392.71 111.457H2167.17ZM2743.33 485.502L2702.58 315.361H2702.73L2657.29 126.741L2508.86 315.361H2661.12L2685.05 415.263H2430.42L2354.34 512.182H2194.45L2610.91 0H2770.8L2909.71 512.182H2749.82L2743.33 485.502Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip0">
+<rect width="2910" height="512" fill="white"/>
+</clipPath>
+</defs>
+</svg>
