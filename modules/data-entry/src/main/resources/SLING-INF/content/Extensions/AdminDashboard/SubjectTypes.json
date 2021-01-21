@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "lfs:Extension",
+  "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
+  "lfs:extensionName": "Subject Types",
+  "lfs:targetURL": "/content.html/admin/SubjectTypes",
+  "lfs:icon": "asset:lfs-dataentry.subjectTypeIcon.js",
+  "lfs:hint": "Define subject types and relations between them"
+}

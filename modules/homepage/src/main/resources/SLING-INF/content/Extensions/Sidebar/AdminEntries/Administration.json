@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "lfs:Extension",
+  "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+  "lfs:extensionName": "Administration",
+  "lfs:icon": "asset:lfs-homepage.adminIcon.js",
+  "lfs:targetURL": "/content.html/admin",
+  "lfs:defaultOrder": 90
+}

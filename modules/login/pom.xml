@@ -48,11 +48,7 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/login.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
-            <Sling-Initial-Content>
-              SLING-INF/content/login;overwrite:=true;path:=/login,
-              SLING-INF/content/libs/lfs/login;overwrite:=true;path:=/libs/lfs/login,
-              SLING-INF/content/libs/lfs/resources;path:=/libs/lfs/resources
-            </Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/libs/lfs/login/;overwrite:=true;path:=/libs/lfs/login/</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

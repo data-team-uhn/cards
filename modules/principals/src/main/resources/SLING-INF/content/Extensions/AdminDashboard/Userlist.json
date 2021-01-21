@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "lfs:Extension",
+  "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
+  "lfs:extensionName": "Users List",
+  "lfs:defaultOrder": 94,
+  "lfs:targetURL": "/content.html/admin/userlist",
+  "lfs:icon": "asset:lfs-principals.userIcon.js",
+  "lfs:hint": "Manage user accounts"
+}
