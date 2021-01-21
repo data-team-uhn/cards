@@ -40,7 +40,10 @@
         <configuration>
           <instructions>
             <!-- Initial content to be loaded on bundle installation -->
-            <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
+            <Sling-Initial-Content>
+              SLING-INF/content/libs/lfs/Resource/;path:=/libs/lfs/Resource/;overwrite:=true,
+              SLING-INF/content/ROOT/;path:=/;overwrite:=true
+            </Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

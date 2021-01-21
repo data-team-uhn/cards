@@ -45,7 +45,11 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/vocabularies.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
-            <Sling-Initial-Content>SLING-INF/content/;ignoreImportProviders:="zip"</Sling-Initial-Content>
+            <Sling-Initial-Content>
+              SLING-INF/content/apps/lfs/oak%3Aindex/;path:=/oak:index/;overwrite:=true,
+              SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
+              SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwrite:=true
+            </Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
