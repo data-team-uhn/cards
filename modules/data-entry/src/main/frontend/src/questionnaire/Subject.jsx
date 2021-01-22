@@ -186,9 +186,13 @@ function SubjectContainer(props) {
     setData([]);  // Prevent an infinite loop if data was not set
   };
 
+  // Fetch this Subject's data
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
-    fetchData();
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
