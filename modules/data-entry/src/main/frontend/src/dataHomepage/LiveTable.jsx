@@ -99,13 +99,17 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's behavior
 
-  let fetchData = (newPage) => {
+  let fetchData = (newPage, goToStart) => {
     if (fetchStatus.currentFetch) {
       // TODO: abort previous request
     }
 
     let url = new URL(urlBase);
-    url.searchParams.set("offset", newPage.offset);
+    let queryOffset = newPage.offset;
+    if (goToStart) {
+      queryOffset = 0;
+    }
+    url.searchParams.set("offset", queryOffset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
 
@@ -321,7 +325,7 @@ function LiveTable(props) {
   // Initialize the component: if there's no data loaded yet, fetch the first page
 
   if (fetchStatus.currentRequestNumber == -1) {
-    fetchData(paginationData);
+    fetchData(paginationData, true);
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
