@@ -106,7 +106,7 @@ class Main extends React.Component {
         value={{
           dialogOpen: (loginHandlerFcn, discardOnFailure) => {
             let handler = ((success) => {
-              success && this.state.loginDialogOpen && this.setState({
+              success && this.setState({
                 loginDialogOpen: false
               });
               success && loginHandlerFcn();
