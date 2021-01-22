@@ -18,6 +18,7 @@
  */
 package ca.sickkids.ccm.lfs.dataentry.internal.serialize.labels;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.function.Function;
@@ -43,6 +44,8 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
+    private static final DateFormat DEFAULT_FORMAT = SimpleDateFormat.getDateInstance();
+
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
@@ -61,7 +64,8 @@ public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements Re
         try {
             if (question != null) {
                 Property property = node.getProperty(PROP_VALUE);
-                SimpleDateFormat format = new SimpleDateFormat(question.getProperty("dateFormat").getString());
+                DateFormat format = question.hasProperty("dateFormat")
+                    ? new SimpleDateFormat(question.getProperty("dateFormat").getString()) : DEFAULT_FORMAT;
                 if (property.isMultiple()) {
                     JsonArrayBuilder result = Json.createArrayBuilder();
                     for (Value v : property.getValues()) {
