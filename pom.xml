@@ -145,7 +145,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <lfs.version>${project.version}</lfs.version>
-    <app.name>LFS Data Core</app.name>
+    <app.name></app.name>
     <platform.name>CARDS</platform.name>
     <theme.color>blue</theme.color>
     <slf4j.version>1.7.26</slf4j.version>
