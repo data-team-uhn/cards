@@ -105,11 +105,7 @@ function LiveTable(props) {
     }
 
     let url = new URL(urlBase);
-    let queryOffset = newPage.offset;
-    if (goToStart) {
-      queryOffset = 0;
-    }
-    url.searchParams.set("offset", queryOffset);
+    url.searchParams.set("offset", goToStart ? 0 : newPage.offset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
 
