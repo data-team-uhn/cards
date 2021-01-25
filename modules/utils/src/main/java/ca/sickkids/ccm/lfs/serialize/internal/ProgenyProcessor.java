@@ -94,7 +94,6 @@ public class ProgenyProcessor implements ResourceJsonProcessor
             Map<String, Boolean> seenTypes = new HashMap<String, Boolean>();
             JsonObject progeny = getAllProgeny(node.getPath(), seenTypes, true);
             json.add("@progeny", progeny.getJsonArray("@progeny"));
-            LOGGER.warn(progeny.toString());
         } catch (RepositoryException e) {
             // Unlikely, and not critical, just make sure the serialization doesn't fail
             LOGGER.warn("Failed to obtain subject type children: {}", e.getMessage(), e);
