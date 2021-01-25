@@ -34,7 +34,7 @@ function Header({ ...props }) {
         <div className={classes.flex} />
         {/* While the screen is wide enough, display the navbar at the topright */}
         <Hidden smDown implementation="css">
-          <AdminNavbarLinks closeSidebar={props.handleDrawerToggle} />
+          <AdminNavbarLinks closeSidebar={props.handleDrawerToggle} color={color} />
         </Hidden>
         {/* While the screen is too narrow, display the mini sidebar control */}
         <Hidden mdUp implementation="css">
@@ -53,7 +53,7 @@ function Header({ ...props }) {
 
 Header.propTypes = {
   classes: PropTypes.object.isRequired,
-  color: PropTypes.oneOf(["primary", "info", "success", "warning", "danger"])
+  color: PropTypes.oneOf(["primary", "info", "success", "warning", "danger", "blue", "teal", "rose", "red", "orange", "green", "purple"])
 };
 
 export default withStyles(headerStyle)(Header);
