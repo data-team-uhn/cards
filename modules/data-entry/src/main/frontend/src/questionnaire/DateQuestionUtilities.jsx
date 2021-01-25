@@ -50,7 +50,7 @@ export default class DateQuestionUtilities {
   };
 
   static getDateType(dateFormat) {
-    if (typeof(dateFormat) !== "sting") {
+    if (typeof(dateFormat) === "string") {
       const year = dateFormat.toLowerCase().includes(this.yearTag);
       const month = dateFormat.toLowerCase().includes(this.monthTag);
       const day = dateFormat.toLowerCase().includes(this.dayTag);
@@ -62,7 +62,7 @@ export default class DateQuestionUtilities {
       if (year) return this.YEAR_DATE_TYPE;
     }
 
-    return DEFAULT_DATE_TYPE;
+    return this.DEFAULT_DATE_TYPE;
   }
 
   // Truncates fields in the given moment object or date string
