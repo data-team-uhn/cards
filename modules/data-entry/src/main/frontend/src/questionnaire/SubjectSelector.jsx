@@ -287,7 +287,8 @@ export const parseToArray = (object) => {
  * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
  * @param {bool} disabled If true, all controls are disabled
  * @param {func} onClose Callback fired when the user tries to close this dialog
- * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
+ * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button. NB: Submissions
+ * will not call onClose(), so parent components must handle this scenario.
  * @param {bool} openNewSubject whether to redirect to the newly created subject upon successful creation
  * @param {bool} open If true, this dialog is open
  */
@@ -313,26 +314,26 @@ export function NewSubjectDialog (props) {
   let disabledControls = disabled || isPosting;
 
   // Called only by createNewSubject, a callback to create the next child on our list
-  let createNewSubjectRecursive = (subject, index) => {
+  let createNewSubjectRecursive = (subject, index, parentList) => {
     if (index <= -1) {
       // End of recursion
       setIsPosting(false);
-      onClose();
       // redirect to the new just created subject page
       let subjectId = getSubjectIdFromPath(subject);
       if (openNewSubject && subjectId) {
         history.push({
           pathname: "/content.html/Subjects/" + subjectId
         });
-        return;
       } else {
         onSubmit(subject);
-        return;
+        // onClose() shows a graphical glitch (flickering) if used with a redirect
+        // If required, onSubmit() in any parent class can close the selector via the `open` prop
       }
+      return;
     }
 
     // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
-    let parent = newSubjectParent[index]?.["jcr:uuid"] || subject;
+    let parent = parentList[index]?.["jcr:uuid"] || subject;
     parent = (parent ? [parent] : []);
     createSubjects(
       globalLoginDisplay,
@@ -340,7 +341,7 @@ export function NewSubjectDialog (props) {
       newSubjectType[index],
       parent,
       newSubjectName[index],
-      (new_subject) => {createNewSubjectRecursive(new_subject, index-1)},
+      (new_subject) => {createNewSubjectRecursive(new_subject, index-1, parentList)},
       handleError);
   }
 
@@ -364,15 +365,24 @@ export function NewSubjectDialog (props) {
       // They haven't selected a parent for the current type yet
       setError("Please select a valid parent.");
     } else if (newSubjectPopperOpen && curSubjectRequiresParents) {
-      // Display the parent type to select
-      setError();
-      setNewSubjectPopperOpen(false);
-      tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
-      setSelectParentPopperOpen(true);
+      // If we were given a subject whose parent we must be a child of, we can just look there instead
+      if (currentSubject && newSubjectType[newSubjectIndex]?.["parent"]?.["jcr:uuid"] == currentSubject["type"]?.["jcr:uuid"]) {
+        // Set the last parent to the currentSubject
+        let newParentList = newSubjectParent.slice();
+        newParentList[newParentList.length-1] = currentSubject;
+        setIsPosting(true);
+        createNewSubjectRecursive(null, newSubjectIndex, newParentList);
+      } else {
+        // Display the parent type to select
+        setError();
+        setNewSubjectPopperOpen(false);
+        tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
+        setSelectParentPopperOpen(true);
+      }
     } else {
       // Initiate the call
       setIsPosting(true);
-      createNewSubjectRecursive(null, newSubjectIndex);
+      createNewSubjectRecursive(null, newSubjectIndex, newSubjectParent);
     }
   }
 
