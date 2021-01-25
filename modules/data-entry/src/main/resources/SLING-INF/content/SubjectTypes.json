@@ -1,8 +1,0 @@
-{
-  "jcr:primaryType": "lfs:SubjectTypesHomepage",
-  "Patient": {
-    "jcr:primaryType": "lfs:SubjectType",
-    "label": "Patient",
-    "lfs:defaultOrder": 0
-  }
-}

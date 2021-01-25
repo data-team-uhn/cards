@@ -41,7 +41,11 @@
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
             <!-- Initial content to be loaded on bundle installation -->
-            <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
+            <Sling-Initial-Content>
+              SLING-INF/content/libs/lfs/Extension/;path:=/libs/lfs/Extension/;overwrite:=true,
+              SLING-INF/content/libs/lfs/ExtensionPoint/;path:=/libs/lfs/ExtensionPoint/;overwrite:=true,
+              SLING-INF/content/libs/lfs/ExtensionPointFinder/;path:=/libs/lfs/ExtensionPointFinder/;overwrite:=true
+            </Sling-Initial-Content>
             <Sling-Nodetypes>SLING-INF/nodetypes/extension.cnd</Sling-Nodetypes>
           </instructions>
         </configuration>
