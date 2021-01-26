@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "lfs:Extension",
+  "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+  "lfs:extensionName": "Subjects",
+  "lfs:targetURL": "/content.html/Subjects",
+  "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
+  "lfs:defaultOrder": 1
+}

@@ -45,7 +45,7 @@
         <configuration>
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
-            <Sling-Initial-Content>SLING-INF/</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/libs/lfs/conf/;path:=/libs/lfs/conf/;overwrite:=false</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

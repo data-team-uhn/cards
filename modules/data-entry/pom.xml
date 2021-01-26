@@ -42,7 +42,17 @@
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/dataentry.cnd</Sling-Nodetypes>
-            <Sling-Initial-Content>SLING-INF/content/</Sling-Initial-Content>
+            <Sling-Initial-Content>
+              SLING-INF/content/apps/lfs/config/;path:=/apps/lfs/config/;overwrite:=false,
+              SLING-INF/content/libs/lfs/dataQuery/;path:=/libs/lfs/dataQuery/;overwrite:=true,
+              SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwrite:=true,
+              SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwrite:=true,
+              SLING-INF/content/Extensions/DashboardMenuItems/;path:=/Extensions/DashboardMenuItems/;overwrite:=true,
+              SLING-INF/content/Extensions/DashboardViews/;path:=/Extensions/DashboardViews/;overwrite:=true,
+              SLING-INF/content/Extensions/Sidebar/;path:=/Extensions/Sidebar/;overwrite:=true,
+              SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
+              SLING-INF/content/SubjectTypes/;path:=/SubjectTypes/;overwrite:=true
+            </Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

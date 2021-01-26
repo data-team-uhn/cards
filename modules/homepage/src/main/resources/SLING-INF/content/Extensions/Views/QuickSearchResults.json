@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "lfs:Extension",
+  "lfs:extensionPointId": "lfs/coreUI/view",
+  "lfs:extensionName": "Quick Search Results",
+  "lfs:targetURL": "/content.html/QuickSearchResults",
+  "lfs:extensionRenderURL": "asset:lfs-homepage.QuickSearchResults.js"
+}

@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "lfs:Extension",
+  "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+  "lfs:extensionName": "Dashboard",
+  "lfs:targetURL": "/content.html/Questionnaires/User",
+  "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
+  "lfs:defaultOrder": 0
+}
