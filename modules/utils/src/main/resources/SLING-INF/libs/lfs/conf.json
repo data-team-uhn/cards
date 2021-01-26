@@ -6,7 +6,7 @@
   },
   "AppName": {
     "jcr:primaryType": "nt:unstructured",
-    "AppName": "${app.name}"
+    "AppName": "Clinical ARchive for Data Science"
   },
   "PlatformName": {
     "jcr:primaryType": "nt:unstructured",
@@ -14,6 +14,6 @@
   },
   "ThemeColor": {
     "jcr:primaryType": "nt:unstructured",
-    "ThemeColor": "${theme.color}"
+    "ThemeColor": "blue"
   }
 }
