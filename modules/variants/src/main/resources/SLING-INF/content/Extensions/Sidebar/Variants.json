@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "lfs:Extension",
+  "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
+  "lfs:extensionName": "Variants",
+  "lfs:targetURL": "/content.html/Variants",
+  "lfs:icon": "asset:lfs-variants.variantsIcon.js",
+  "lfs:defaultOrder": 20
+}

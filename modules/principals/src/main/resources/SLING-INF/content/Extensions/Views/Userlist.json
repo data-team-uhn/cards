@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "lfs:Extension",
+  "lfs:extensionPointId": "lfs/coreUI/view",
+  "lfs:extensionName": "Users List",
+  "lfs:targetURL": "/content.html/admin/userlist",
+  "lfs:extensionRenderURL": "asset:lfs-principals.userscontainer.js"
+}

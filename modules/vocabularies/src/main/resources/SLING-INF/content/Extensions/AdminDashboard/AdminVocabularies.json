@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "lfs:Extension",
+  "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
+  "lfs:extensionName": "Vocabularies",
+  "lfs:targetURL": "/content.html/admin/Vocabularies",
+  "lfs:icon": "asset:lfs-vocabularies.vocabulariesIcon.js",
+  "lfs:defaultOrder": 92,
+  "lfs:hint": "Install and update medical vocabularies used"
+}

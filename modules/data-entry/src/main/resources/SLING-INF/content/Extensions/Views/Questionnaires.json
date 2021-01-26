@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "lfs:Extension",
+  "lfs:extensionPointId": "lfs/coreUI/view",
+  "lfs:extensionName": "Questionnaires",
+  "lfs:targetURL": "/content.html/admin/Questionnaires",
+  "lfs:extensionRenderURL": "asset:lfs-dataentry.Questionnaires.js"
+}

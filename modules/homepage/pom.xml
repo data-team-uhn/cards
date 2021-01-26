@@ -48,7 +48,14 @@
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/homepage.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
-            <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
+            <Sling-Initial-Content>
+              SLING-INF/content/apps/lfs/ExtensionPoints/;path:=/apps/lfs/ExtensionPoints/;overwrite:=true,
+              SLING-INF/content/libs/lfs/Homepage/;path:=/libs/lfs/Homepage/;overwrite:=true,
+              SLING-INF/content/libs/lfs/resources/;path:=/libs/lfs/resources/;overwrite:=true,
+              SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
+              SLING-INF/content/Extensions/Sidebar/AdminEntries/;path:=/Extensions/Sidebar/AdminEntries/;overwrite:=true,
+              SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwrite:=true
+            </Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
