@@ -46,11 +46,11 @@ import PedigreeEditor from "../pedigree/pedigree";
 //      }}
 //    />
 function PedigreeQuestion(props) {
-  const { existingAnswer, isEdit, classes, ...rest } = props;
+  const { existingAnswer, classes, ...rest } = props;
   const [ expanded, setExpanded ] = useState(false);
   // default pedigreeData state variable to the pedigree saved in LFS:
   const [ pedigreeData, setPedigree ] = useState(existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value
-                                        ? {"image": existingAnswer[1].value[1], "pedigreeJSON": existingAnswer[1].value[0]}
+                                        ? {"image": existingAnswer[1].image, "pedigreeJSON": existingAnswer[1].value[0]}
                                         : {});
 
   // TODO: use another placeholder image? load from resources?
@@ -110,20 +110,24 @@ function PedigreeQuestion(props) {
     setPedigree({"image": pedigreeSVG, "pedigreeJSON": pedigreeJSON});
   };
 
-  let outputAnswers = pedigreeJSON ? [["value", pedigreeJSON], ["image", pedigreeSVG]] : [];
+  let defaultDisplayFormatter = function(label, idx) {
+    return image_div || "";
+  }
+
+  let outputAnswers = pedigreeJSON ? [["value", pedigreeJSON], "image", pedigreeSVG] : [];
+  let answerMap = pedigreeSVG ? new Map().set("image", pedigreeSVG) : null;
 
   return (
     <Question
-      preventDefaultView={true}
+      existingAnswer={existingAnswer}
+      defaultDisplayFormatter={defaultDisplayFormatter}
       {...rest}
       >
-      {image_div && (
-        isEdit ?
+      {image_div &&
         <Link onClick={() => {setExpanded(true);}}>
           {image_div}
         </Link>
-        : <span> {image_div} </span>
-      )}
+      }
       <Dialog fullScreen open={expanded}
         onEntering={() => { openPedigree(); }}
         onExit={() => { closePedigree(); }}
@@ -134,6 +138,7 @@ function PedigreeQuestion(props) {
       </Dialog>
       <Answer
         answers={outputAnswers}
+        answerMap={answerMap}
         questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
         answerNodeType="lfs:PedigreeAnswer"
@@ -150,7 +155,6 @@ PedigreeQuestion.propTypes = {
     description: PropTypes.string
   }).isRequired,
   existingAnswer: PropTypes.array,
-  isEdit: PropTypes.bool,
 }
 
 const StyledPedigreeQuestion = withStyles(QuestionnaireStyle)(PedigreeQuestion)

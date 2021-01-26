@@ -30,7 +30,7 @@ export const VALUE_POS = 1;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, onDecidedOutputPath, sectionAnswersState } = props;
+  let { answers, answerMap, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, onDecidedOutputPath, sectionAnswersState } = props;
   let { enableNotes } = { ...props, ...questionDefinition };
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
@@ -82,6 +82,19 @@ function Answer (props) {
               <input type="hidden" name={`${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS]} value={element[VALUE_POS]}></input>
               );
           })}
+          {
+            answerMap ?
+              Array.from(answerMap.entries()).map(([key, value], index) => {
+                return (
+                  <input
+                    type="hidden"
+                    name={`${answerPath}/${key}`}
+                    key={value === undefined ? index + (answers ? answers.length : 0) : value}
+                    value={value}></input>
+                );
+              })
+            : []
+          }
         </React.Fragment>)
       :
         <input type="hidden" name={`${answerPath}/value@Delete`} value="0"></input>
