@@ -26,6 +26,7 @@ import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 // Unused imports required for the component manager
 import BooleanInput from "./BooleanInput";
 import ListInput from "./ListInput";
+import VocabularyInput from "./VocabularyInput";
 import NumberInput from "./NumberInput";
 import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";
@@ -84,7 +85,7 @@ let Fields = (props) => {
      return keys;
   };
 
-  return edit ? 
+  return edit ?
     Object.entries(JSON).map(([key, value]) => displayEditField(key, value))
     :
     Object.keys(getAllKeys(JSON)).map(key => (data[key] ? displayStaticField(key) : ''));
@@ -95,5 +96,5 @@ Fields.propTypes = {
   JSON: PropTypes.object.isRequired,
   edit: PropTypes.bool.isRequired
 };
-  
+
 export default withStyles(QuestionnaireStyle)(Fields);

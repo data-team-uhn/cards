@@ -47,8 +47,8 @@
         "maxAnswers": "long",
         "namePattern": "string"
       },
-      "vocabulary": { 
-        "sourceVocabulary": "string",
+      "vocabulary": {
+        "sourceVocabulary": "vocabularylist",
         "vocabularyFilter": "string",
         "minAnswers": "long",
         "maxAnswers": "long"
