@@ -140,10 +140,11 @@ public class ProgenyProcessor implements ResourceJsonProcessor
             arrayBuilder.add(progeny);
         }
 
-        // Copy over this node's info
-        if (hasResult) {
-            builder.add("@progeny", arrayBuilder.build());
+        // Copy over this node's info, if any. An empty root node will need an @progeny child.
+        if (hasResult || isRoot) {
+        builder.add("@progeny", arrayBuilder.build());
         }
+
         if (!isRoot) {
             // Copy over the keys
             try
