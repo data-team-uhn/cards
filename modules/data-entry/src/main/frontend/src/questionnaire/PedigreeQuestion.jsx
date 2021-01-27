@@ -115,7 +115,7 @@ function PedigreeQuestion(props) {
   }
 
   let outputAnswers = pedigreeJSON ? [["value", pedigreeJSON], "image", pedigreeSVG] : [];
-  let answerMap = pedigreeSVG ? new Map().set("image", pedigreeSVG) : null;
+  let answerMetadata = pedigreeSVG ? new Map().set("image", pedigreeSVG) : null;
 
   return (
     <Question
@@ -138,7 +138,7 @@ function PedigreeQuestion(props) {
       </Dialog>
       <Answer
         answers={outputAnswers}
-        answerMap={answerMap}
+        answerMetadata={answerMetadata}
         questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
         answerNodeType="lfs:PedigreeAnswer"

@@ -30,7 +30,7 @@ export const VALUE_POS = 1;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, answerMap, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, onDecidedOutputPath, sectionAnswersState } = props;
+  let { answers, answerMetadata, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, onDecidedOutputPath, sectionAnswersState } = props;
   let { enableNotes } = { ...props, ...questionDefinition };
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
@@ -83,8 +83,8 @@ function Answer (props) {
               );
           })}
           {
-            answerMap ?
-              Array.from(answerMap.entries()).map(([key, value], index) => {
+            answerMetadata ?
+              Array.from(answerMetadata.entries()).map(([key, value], index) => {
                 return (
                   <input
                     type="hidden"
