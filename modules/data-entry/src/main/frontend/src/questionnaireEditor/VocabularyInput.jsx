@@ -39,7 +39,7 @@ let VocabularyInput = (props) => {
         let updatedValues = [];
         for (let option in vocabularies) {
           for (let val in value) {
-            if (value[val].name === vocabularies[option].name) {
+            if (value[val] === vocabularies[option].identifier) {
               updatedValues.push(vocabularies[option]);
             }
           }
@@ -59,10 +59,10 @@ let VocabularyInput = (props) => {
 
   return (
     <EditorInput name={objectKey}>
-      <input type="hidden" name={objectKey + "@TypeHint"} value={"Reference"} />
+      <input type="hidden" name={objectKey + "@TypeHint"} value={"String"} />
       {
         // Maps each selected object to a reference type for submitting
-        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject['jcr:uuid']} key={typeObject['jcr:uuid']} />)
+        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject['identifier']} key={typeObject['identifier']} />)
       }
       {
         // Delete the current values within this list if nothing is selected
@@ -77,14 +77,14 @@ let VocabularyInput = (props) => {
         renderValue={(value) => (
           <div>
             {value.map((val) => (
-              <Chip key={val['jcr:uuid']} label={val['name']}/>
+              <Chip key={val['jcr:uuid']} label={val['identifier']}/>
             ))}
           </div>
         )}
       >
       {options.map((name) => (
         <MenuItem key={name['jcr:uuid']} value={name}>
-          <Typography>{name['name']}</Typography>
+          <Typography>{name['identifier']}</Typography>
         </MenuItem>
       ))}
     </Select>
