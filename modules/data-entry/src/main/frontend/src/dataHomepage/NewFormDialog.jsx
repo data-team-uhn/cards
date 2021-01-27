@@ -217,9 +217,9 @@ function NewFormDialog(props) {
 
   useEffect(() => {
     if (currentSubject && selectedQuestionnaire) {
-      // If the questionnaire accepts the selected subject, auto-choose it
-      if ( !selectedQuestionnaire?.["requiredSubjectTypes"] ||
-        selectedQuestionnaire["requiredSubjectTypes"].some((subjectType) => currentSubject["type"]["@path"] == subjectType["@path"])) {
+      // If the questionnaire accepts the selected subject and only that subject, auto-choose it
+      if (selectedQuestionnaire?.["requiredSubjectTypes"].length == 1 &&
+        selectedQuestionnaire["requiredSubjectTypes"][0]?.["@path"] == currentSubject["type"]?.["@path"]) {
         setSelectedSubject(currentSubject); // now that selectedsubject is set, will create form with current subject as subject
       }
       else {
