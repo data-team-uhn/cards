@@ -63,7 +63,7 @@ function createTitle(label, idx, isRecurrent) {
  * @param {Object} sectionDefinition the section definition JSON
  */
 function Section(props) {
-  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive } = props;
+  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit } = props;
   const isRecurrent = sectionDefinition['recurrent'];
 
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
@@ -101,6 +101,18 @@ function Section(props) {
     sectionDefinition,
     formContext);
 
+  // Determine if the section has any answers
+  let hasAnswers = isEdit;
+  if (!isEdit && existingAnswer[0]) {
+    Object.entries(existingAnswer[0][1]).forEach( ([key, item]) => {
+      if (item.displayedValue || item.note) {
+        hasAnswers = true;
+      }
+    })
+  }
+
+  const isDisplayed = isEdit && displayed || !isEdit && hasAnswers;
+
   if (visibleCallback) visibleCallback(displayed);
 
   let closeDialog = () => {
@@ -123,7 +135,7 @@ function Section(props) {
   }
 
   const collapseClasses = [];
-  if (!displayed) {
+  if (isEdit && !displayed || !isEdit && !hasAnswers) {
     collapseClasses.push(classes.collapsedSection);
   }
   if (hasHeader) {
@@ -140,9 +152,9 @@ function Section(props) {
   <React.Fragment>
     {/* if conditional is true, the collapse component is rendered and displayed.
         else, the corresponding input tag to the conditional section is deleted  */}
-    {displayed
+    { isDisplayed
       ? (<Collapse
-      in={displayed}
+      in={isDisplayed}
       component={Grid}
       item
       mountOnEnter
@@ -152,7 +164,7 @@ function Section(props) {
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;
           const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
-          const hiddenSection = displayed && labelsToHide[uuid];
+          const hiddenSection = isDisplayed && labelsToHide[uuid];
           return <div
             key={uuid}
             className={"recurrentSectionInstance " + classes.recurrentSectionInstance}
@@ -228,6 +240,7 @@ function Section(props) {
                         keyProp={key}
                         classes={classes}
                         onChange={onChange}
+                        isEdit={isEdit}
                         sectionAnswersState={removableAnswers}
                         onAddedAnswerPath={(newAnswers) => {
                           newAnswers[ID_STATE_KEY] = newAnswers[ID_STATE_KEY] + 1;

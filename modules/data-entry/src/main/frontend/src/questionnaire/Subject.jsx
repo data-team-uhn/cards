@@ -18,7 +18,7 @@
 //
 
 import React, { useState, useContext, useEffect } from "react";
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, withRouter } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 
@@ -39,6 +39,7 @@ import {
   Button,
 } from "@material-ui/core";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
+import EditButton from "../dataHomepage/EditButton.jsx";
 
 const QUESTION_TYPES = ["lfs:Question"];
 const SECTION_TYPES = ["lfs:Section"];
@@ -155,10 +156,6 @@ function SubjectContainer(props) {
   // 'level' of subject component
   const currentLevel = level || 0;
 
-  if (deleted) {
-    return null;
-  }
-
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
   // such as authorship and versioning information.
@@ -185,9 +182,17 @@ function SubjectContainer(props) {
     setData([]);  // Prevent an infinite loop if data was not set
   };
 
+  // Fetch this Subject's data
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (deleted) {
+    return null;
+  }
+
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
-    fetchData();
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
@@ -260,10 +265,10 @@ function SubjectHeader (props) {
 }
 
 /**
- * Component that displays all forms related to a Subject.
+ * Component that displays all forms related to a Subject. Do not use directly, use SubjectMember instead.
  */
-function SubjectMember (props) {
-  let { id, classes, level, data, maxDisplayed, pageSize, onDelete } = props;
+function SubjectMemberWithoutHistory (props) {
+  let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // table data: related forms to the subject
@@ -303,6 +308,14 @@ function SubjectMember (props) {
     return word[0].toUpperCase() + word.slice(1).toLowerCase();
   }
 
+  // When the main subject is deleted, if they're our top-level patient we'll redirect to Dashboard
+  let handleDeletion = () => {
+    if (level === 0) {
+      history.push("/");
+    }
+    onDelete();
+  }
+
   // If the data has not yet been fetched, fetch
   if (!tableData) {
     fetchTableData();
@@ -333,8 +346,7 @@ function SubjectMember (props) {
                  entryPath={path}
                  entryName={title}
                  entryType={label}
-                 shouldGoBack={level === 0}
-                 onComplete={onDelete}
+                 onComplete={handleDeletion}
                  buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}
                  size={level === 0 ? "large" : null}
                />
@@ -411,13 +423,19 @@ function SubjectMember (props) {
                       width: '20px',
                       textAlign: 'end'
                     },
-                    render: rowData => <DeleteButton
-                                          entryPath={rowData["@path"]}
-                                          entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
-                                          entryType="Form"
-                                          warning={rowData ? rowData["@referenced"] : false}
-                                          onComplete={fetchTableData}
-                                        /> },
+                    render: rowData => <React.Fragment>
+                                         <EditButton
+                                           entryPath={rowData["@path"]}
+                                           entryType="Form"
+                                         /> 
+                                         <DeleteButton
+                                           entryPath={rowData["@path"]}
+                                           entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
+                                           entryType="Form"
+                                           warning={rowData ? rowData["@referenced"] : false}
+                                           onComplete={fetchTableData}
+                                         />
+                                       </React.Fragment> },
                 ]}
                 components={{
                     Pagination: props => { const { classes, ...other } = props;
@@ -432,6 +450,8 @@ function SubjectMember (props) {
     </>
   );
 };
+
+let SubjectMember = withRouter(SubjectMemberWithoutHistory);
 
 // Component that displays a preview of the saved form answers
 function FormData(props) {
@@ -459,9 +479,13 @@ function FormData(props) {
     setData([]);  // Prevent an infinite loop if data was not set
   };
 
+  // Fetch this Form's data
+  useEffect(() => {
+    getFormData(formID);
+  }, [formID]);
+
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
-    getFormData(formID);
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
@@ -480,15 +504,21 @@ function FormData(props) {
       return displayQuestion(entryDefinition, data, key);
     } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
       // If a section is found, filter questions inside the section
-      let currentSection = Object.entries(data.questionnaire)
-        .filter(([key, value]) => SECTION_TYPES.includes(value['jcr:primaryType']) && value["@name"] == entryDefinition["@name"])[0]
-      currentSection = currentSection ? currentSection[1] : "";
+      let currentSection = entryDefinition;
+      if (data.questionnaire) {
+        currentSection = Object.entries(data.questionnaire)
+          .filter(([key, value]) => SECTION_TYPES.includes(value['jcr:primaryType'])
+                               && value["@name"] == entryDefinition["@name"])[0]
+        currentSection = currentSection ? currentSection[1] : "";
+      }
+
       let currentAnswers = Object.entries(data)
-        .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection" && value["section"]["@name"] == entryDefinition["@name"])[0];
+        .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
+                               && value["section"]["@name"] == entryDefinition["@name"])[0];
       currentAnswers = currentAnswers ? currentAnswers[1] : "";
       return (
         Object.entries(currentSection)
-        .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']))
+        .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']) || SECTION_TYPES.includes(value['jcr:primaryType']))
         .map(([key, entryDefinition]) => handleDisplay(entryDefinition, currentAnswers, key))
       )
     }

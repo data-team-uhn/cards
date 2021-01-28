@@ -234,8 +234,15 @@ function FileResourceQuestion(props) {
       Please upload at most {maxAnswers} file{maxAnswers > 1 && "s"}.
     </Typography>));
 
+  let hrefs = Array.of(existingAnswer?.[1]["value"]).flat();
+  let defaultDisplayFormatter = function(label, idx) {
+    return <a href={hrefs[idx]} target="_blank" rel="noopener" download>{label}</a>;
+  }
+
   return (
     <Question
+      existingAnswer={existingAnswer}
+      defaultDisplayFormatter={defaultDisplayFormatter}
       {...rest}
       >
       { uploadInProgress && (

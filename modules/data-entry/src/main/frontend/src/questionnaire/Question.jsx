@@ -20,14 +20,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
+import { Card, CardHeader, CardContent, List, ListItem, Typography, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 // GUI for displaying answers
 function Question (props) {
-  let { classes, children, questionDefinition } = props;
+  let { classes, children, questionDefinition, existingAnswer, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
   let { text, description } = { ...questionDefinition, ...props }
+
   return (
     <Card>
       <CardHeader
@@ -37,7 +38,23 @@ function Question (props) {
         className={classes.questionHeader}
         />
       <CardContent>
-        {children}
+        { !isEdit && !preventDefaultView && existingAnswer ?
+          <List>
+            { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
+              return(
+                <ListItem key={item}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
+              )})
+            }
+          </List>
+          :
+          children
+        }
+        { !isEdit && existingAnswer?.[1]?.note &&
+          <div className={classes.notesContainer}>
+            <Typography variant="subtitle1">Notes</Typography>
+            {existingAnswer[1].note}
+          </div>
+        }
       </CardContent>
     </Card>
     );

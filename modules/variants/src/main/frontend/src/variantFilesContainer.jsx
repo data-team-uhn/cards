@@ -215,12 +215,12 @@ export default function VariantFilesContainer() {
                   .then((json) => {
                     processedFile.sameFiles = json.rows.filter((row) => row["@name"] === file.name);
                     files.push(processedFile);
-                    (i == chosenFiles.length-1) && setSelectedFiles(files);
+                    setSelectedFiles(files);
                   })
                   .finally( () => {resolve();} );
               } else {
                 files.push(processedFile);
-                (i == chosenFiles.length-1) && setSelectedFiles(files);
+                setSelectedFiles(files);
                 resolve();
               }
             });
@@ -311,7 +311,8 @@ export default function VariantFilesContainer() {
                               resolve(file);
                             })
                             .catch((err) => {console.log(err); reject(err);})
-                          }
+                        }
+
                       } else {
                         // if a tumor subject is not found
                         // record in variables that a tumor and a region didn’t exist and generate a new random uuid as their path

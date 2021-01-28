@@ -30,11 +30,12 @@ import moment from "moment";
 // Component to display the name of the file stored under the answer, along with the creator and creation date.
 
 function SomaticVariantsQuestion(props) {
-  let { existingAnswer, classes, ...rest } = props;
+  let { existingAnswer, isEdit, classes, ...rest } = props;
   let file = existingAnswer?.[1][Object.keys(existingAnswer[1]).find(key => existingAnswer[1][key]["jcr:primaryType"] === "nt:file")];
 
   return (
     <Question
+      preventDefaultView={true}
       {...rest}
       >
       { file && file['jcr:createdBy'] && file['jcr:created'] ?
@@ -42,15 +43,16 @@ function SomaticVariantsQuestion(props) {
           File <IconButton size="small" color="primary"><a href={file["@path"]} download><GetApp /></a></IconButton><a href={file["@path"]} download>{file["@name"]}</a> uploaded by {file["jcr:createdBy"]} on {moment(file["jcr:created"]).format("dddd, MMMM Do YYYY")}
         </Typography>
         :
-        <Typography variant="caption" color="textSecondary">
+        isEdit ? <Typography variant="caption" color="textSecondary">
           You can upload variants through the <Link to="/content.html/Variants">Variant File Uploader</Link>.
-        </Typography>
+        </Typography> : ''
         }
     </Question>);
 }
 
 SomaticVariantsQuestion.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  isEdit: PropTypes.bool,
 };
 
 const StyledSomaticVariantsQuestion = withStyles(QuestionnaireStyle)(SomaticVariantsQuestion)

@@ -39,7 +39,7 @@ import ChangeUserPasswordDialogue from "../../Userboard/Users/changeuserpassword
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialogue.js";
 
 function HeaderLinks (props) {
-  const { classes, closeSidebar, theme } = props;
+  const { classes, closeSidebar, theme, color } = props;
   const [ popperOpen, setPopperOpen ] = useState(false);
   const [ passwordDialogOpen, setPasswordDialogOpen ] = useState(false);
   const [ pwdResetSuccessSnackbarOpen, setPwdResetSuccessSnackbarOpen ] = useState(false);
@@ -112,7 +112,7 @@ function HeaderLinks (props) {
             onClick={() => setPopperOpen((open) => !open)}
             ref={avatarRef}
             >
-            <Avatar className={classes.avatar}>{initials}</Avatar>
+            <Avatar className={classes[color]}>{initials}</Avatar>
           </IconButton>
         </Tooltip>
       </Hidden>

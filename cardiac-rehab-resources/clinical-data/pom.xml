@@ -40,7 +40,11 @@
         <configuration>
           <instructions>
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
-            <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
+            <Sling-Initial-Content>
+              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true,
+              SLING-INF/content/libs/lfs/resources/;path:=/libs/lfs/resources/;overwrite:=true,
+              SLING-INF/content/libs/lfs/conf/;path:=/libs/lfs/conf/;overwrite:=false
+            </Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

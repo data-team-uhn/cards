@@ -16,6 +16,8 @@ import {
     primaryColor,
     primaryBoxShadow,
     infoColor,
+    tealColor,
+    roseColor,
     successColor,
     warningColor,
     dangerColor,
@@ -169,10 +171,15 @@ import {
     whiteFont: {
       color: whiteColor
     },
-    versionText: {
+    appInfo: {
       textAlign: "center",
       color: whiteColor,
-      margin: theme.spacing(4, 2, 0),
+      margin: theme.spacing(2, 2, 0),
+      padding: theme.spacing(2, 0, 0),
+      borderTop: "1px solid rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
+      "& a" : {
+        marginLeft: theme.spacing(1),
+      },
     },
     purple: {
       backgroundColor: primaryColor[0],
@@ -201,6 +208,28 @@ import {
           hexToRgb(blackColor) +
           ",.12), 0 7px 8px -5px rgba(" +
           hexToRgb(infoColor[0]) +
+          ",.2)"
+      }
+    },
+    teal: {
+      backgroundColor: tealColor[0],
+      boxShadow:
+        "0 12px 20px -10px rgba(" +
+        hexToRgb(tealColor[0]) +
+        ",.28), 0 4px 20px 0 rgba(" +
+        hexToRgb(blackColor) +
+        ",.12), 0 7px 8px -5px rgba(" +
+        hexToRgb(tealColor[0]) +
+        ",.2)",
+      "&:hover": {
+        backgroundColor: tealColor[0],
+        boxShadow:
+          "0 12px 20px -10px rgba(" +
+          hexToRgb(tealColor[0]) +
+          ",.28), 0 4px 20px 0 rgba(" +
+          hexToRgb(blackColor) +
+          ",.12), 0 7px 8px -5px rgba(" +
+          hexToRgb(tealColor[0]) +
           ",.2)"
       }
     },
@@ -270,6 +299,28 @@ import {
           ",.2)"
       }
     },
+    rose: {
+      backgroundColor: roseColor[2],
+      boxShadow:
+        "0 12px 20px -10px rgba(" +
+        hexToRgb(roseColor[2]) +
+        ",.28), 0 4px 20px 0 rgba(" +
+        hexToRgb(blackColor) +
+        ",.12), 0 7px 8px -5px rgba(" +
+        hexToRgb(roseColor[2]) +
+        ",.2)",
+      "&:hover": {
+        backgroundColor: roseColor[2],
+        boxShadow:
+          "0 12px 20px -10px rgba(" +
+          hexToRgb(roseColor[2]) +
+          ",.28), 0 4px 20px 0 rgba(" +
+          hexToRgb(blackColor) +
+          ",.12), 0 7px 8px -5px rgba(" +
+          hexToRgb(roseColor[2]) +
+          ",.2)"
+      }
+    },
     sidebarWrapper: {
       position: "relative",
       height: "calc(100vh - 75px)",
@@ -307,9 +358,6 @@ import {
     },
     aboveBackground: {
       zIndex: "1200"
-    },
-    avatar: {
-      backgroundColor: theme.palette.info.main
     },
     successSnackbar: {
       backgroundColor: theme.palette.success.main

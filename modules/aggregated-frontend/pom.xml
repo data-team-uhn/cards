@@ -69,7 +69,7 @@
         <configuration>
           <instructions>
             <Include-Resource>src/main/frontend/dist/,{maven-resources}</Include-Resource>
-            <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/libs/lfs/resources/;path:=/libs/lfs/resources/;overwrite:=true</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

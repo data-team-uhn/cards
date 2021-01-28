@@ -278,6 +278,7 @@ function DateQuestion(props) {
 
   return (
     <Question
+      existingAnswer={existingAnswer}
       text={text}
       {...rest}
       >

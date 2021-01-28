@@ -192,6 +192,9 @@ def insert_options(question, row):
     option_list = options_list(row['Options (if applicable)'])
     question.update({'displayMode': 'list'})
     for option in option_list:
+        if len(option) == 0:
+            # Empty option, skip
+            continue
         value = option
         if option.lower() == "other":
             question.update({'displayMode': 'list+input'})

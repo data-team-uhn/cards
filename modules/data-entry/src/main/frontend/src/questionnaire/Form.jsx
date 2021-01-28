@@ -18,6 +18,7 @@
 //
 
 import React, { useEffect, useState, useContext } from "react";
+import { withRouter, useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import {
@@ -106,20 +107,24 @@ function Form (props) {
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
+  const history = useHistory();
   const formURL = `/Forms/${id}`;
+  const isEdit = window.location.pathname.endsWith(".edit");
 
   useEffect(() => {
-    function removeSaveDataHandler() {
-      window.removeEventListener("beforeunload", saveData);
+    if (isEdit) {
+      function removeSaveDataHandler() {
+        window.removeEventListener("beforeunload", saveData);
+      }
+      setRemoveWindowHandlers(() => removeSaveDataHandler);
+      window.addEventListener("beforeunload", saveData);
+      // When component unmounts:
+      return (() => {
+        // cleanup event handler
+        window.removeEventListener("beforeunload", saveData);
+      });
     }
-    setRemoveWindowHandlers(() => removeSaveDataHandler);
-    window.addEventListener("beforeunload", saveData);
-    // When component unmounts:
-    return (() => {
-      // cleanup event handler
-      window.removeEventListener("beforeunload", saveData);
-    });
-  }, []);
+  }, [isEdit]);
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -153,6 +158,9 @@ function Form (props) {
   let saveData = (event) => {
     // This stops the normal browser form submission
     event && event.preventDefault();
+    if (!formNode.current) {
+      return;
+    }
 
     setSaveInProgress(true);
     let data = new FormData(formNode.current);
@@ -219,6 +227,11 @@ function Form (props) {
       return;
     }
     saveData(event);
+  }
+
+  let onEdit = (event) => {
+    // Redirect the user to the edit form mode
+    props.history.push("/content.html" + formURL + '.edit');
   }
 
   let parentDetails = data?.subject && getHierarchy(data.subject);
@@ -383,6 +396,7 @@ function Form (props) {
                     onChange={()=>setLastSaveStatus(undefined)}
                     visibleCallback={pageResult.callback}
                     pageActive={pageResult.page.visible}
+                    isEdit={isEdit}
                   />
                 })
             }
@@ -401,19 +415,30 @@ function Form (props) {
         :
         <Grid item xs={false} className={classes.formBottom}>
           <div className={classes.mainPageAction}>
-            <Fab
-              variant="extended"
-              color={saveInProgress ? "default" : lastSaveStatus === false ? "secondary" : "primary"}
-              disabled={saveInProgress}
-              onClick={handleSubmit}
-              className={classes.saveButton}
-            >
-            {
-              saveInProgress ? <><CloudUploadIcon /> Saving...</> :
-              lastSaveStatus === false ? <><WarningIcon /> Save failed</> :
-              <><DoneIcon /> {lastSaveStatus ? "Saved" : "Save"}</>
-            }
-            </Fab>
+            { isEdit ?
+	          <Fab
+	              variant="extended"
+	              color={saveInProgress ? "default" : lastSaveStatus === false ? "secondary" : "primary"}
+	              disabled={saveInProgress}
+	              onClick={handleSubmit}
+	              className={classes.actionButton}
+	          >
+	            {
+	              saveInProgress ? <><CloudUploadIcon /> Saving...</> :
+	              lastSaveStatus === false ? <><WarningIcon /> Save failed</> :
+	              <><DoneIcon /> {lastSaveStatus ? "Saved" : "Save"}</>
+	            }
+	          </Fab>
+	        :
+              <Fab
+                variant="extended"
+                color="primary"
+                onClick={onEdit}
+                className={classes.actionButton}
+              >
+                <EditIcon /> Edit
+              </Fab>
+	        }
           </div>
         </Grid>
         }
@@ -437,4 +462,4 @@ function Form (props) {
   );
 };
 
-export default withStyles(QuestionnaireStyle)(Form);
+export default withStyles(QuestionnaireStyle)(withRouter(Form));
