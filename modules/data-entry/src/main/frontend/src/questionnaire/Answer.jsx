@@ -83,7 +83,7 @@ function Answer (props) {
               );
           })}
           {
-            answerMetadata ?
+            answerMetadata &&
               Array.from(answerMetadata.entries()).map(([key, value], index) => {
                 return (
                   <input
@@ -93,7 +93,6 @@ function Answer (props) {
                     value={value}></input>
                 );
               })
-            : []
           }
         </React.Fragment>)
       :
