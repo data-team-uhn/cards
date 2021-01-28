@@ -18,7 +18,7 @@
 //
 
 import React, { useState, useContext, useEffect } from "react";
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, withRouter } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 
@@ -265,10 +265,10 @@ function SubjectHeader (props) {
 }
 
 /**
- * Component that displays all forms related to a Subject.
+ * Component that displays all forms related to a Subject. Do not use directly, use SubjectMember instead.
  */
-function SubjectMember (props) {
-  let { id, classes, level, data, maxDisplayed, pageSize, onDelete } = props;
+function SubjectMemberWithoutHistory (props) {
+  let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // table data: related forms to the subject
@@ -308,6 +308,14 @@ function SubjectMember (props) {
     return word[0].toUpperCase() + word.slice(1).toLowerCase();
   }
 
+  // When the main subject is deleted, if they're our top-level patient we'll redirect to Dashboard
+  let handleDeletion = () => {
+    if (level === 0) {
+      history.push("/");
+    }
+    onDelete();
+  }
+
   // If the data has not yet been fetched, fetch
   if (!tableData) {
     fetchTableData();
@@ -338,8 +346,7 @@ function SubjectMember (props) {
                  entryPath={path}
                  entryName={title}
                  entryType={label}
-                 shouldGoBack={level === 0}
-                 onComplete={onDelete}
+                 onComplete={handleDeletion}
                  buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}
                  size={level === 0 ? "large" : null}
                />
@@ -443,6 +450,8 @@ function SubjectMember (props) {
     </>
   );
 };
+
+let SubjectMember = withRouter(SubjectMemberWithoutHistory);
 
 // Component that displays a preview of the saved form answers
 function FormData(props) {
