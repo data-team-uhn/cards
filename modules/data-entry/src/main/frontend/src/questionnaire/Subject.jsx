@@ -156,10 +156,6 @@ function SubjectContainer(props) {
   // 'level' of subject component
   const currentLevel = level || 0;
 
-  if (deleted) {
-    return null;
-  }
-
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
   // such as authorship and versioning information.
@@ -190,6 +186,10 @@ function SubjectContainer(props) {
   useEffect(() => {
     fetchData();
   }, []);
+
+  if (deleted) {
+    return null;
+  }
 
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
