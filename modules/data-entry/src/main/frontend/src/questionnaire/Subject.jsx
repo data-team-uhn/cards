@@ -267,7 +267,7 @@ function SubjectHeader (props) {
 /**
  * Component that displays all forms related to a Subject. Do not use directly, use SubjectMember instead.
  */
-function SubjectMemberWithoutHistory (props) {
+function SubjectMemberInternal (props) {
   let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
@@ -451,7 +451,7 @@ function SubjectMemberWithoutHistory (props) {
   );
 };
 
-let SubjectMember = withRouter(SubjectMemberWithoutHistory);
+let SubjectMember = withRouter(SubjectMemberInternal);
 
 // Component that displays a preview of the saved form answers
 function FormData(props) {
