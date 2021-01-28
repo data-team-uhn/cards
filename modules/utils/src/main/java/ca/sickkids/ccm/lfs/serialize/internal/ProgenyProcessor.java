@@ -52,7 +52,8 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class ProgenyProcessor implements ResourceJsonProcessor
 {
-    /** Default log. */
+    private static final String PROGENY_PROPERTY_KEY = "@progeny";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ProgenyProcessor.class);
 
     private ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
@@ -93,7 +94,7 @@ public class ProgenyProcessor implements ResourceJsonProcessor
         try {
             Map<String, Boolean> seenTypes = new HashMap<String, Boolean>();
             JsonObject progeny = getAllProgeny(node.getPath(), seenTypes, true);
-            json.add("@progeny", progeny.getJsonArray("@progeny"));
+            json.add(PROGENY_PROPERTY_KEY, progeny.getJsonArray(PROGENY_PROPERTY_KEY));
         } catch (RepositoryException e) {
             // Unlikely, and not critical, just make sure the serialization doesn't fail
             LOGGER.warn("Failed to obtain subject type children: {}", e.getMessage(), e);
@@ -142,7 +143,7 @@ public class ProgenyProcessor implements ResourceJsonProcessor
 
         // Copy over this node's info, if any. An empty root node will need an @progeny child.
         if (hasResult || isRoot) {
-        builder.add("@progeny", arrayBuilder.build());
+            builder.add(PROGENY_PROPERTY_KEY, arrayBuilder.build());
         }
 
         if (!isRoot) {
