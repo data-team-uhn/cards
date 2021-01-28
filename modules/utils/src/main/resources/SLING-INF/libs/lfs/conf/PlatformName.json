@@ -1,4 +1,0 @@
-{
-  "jcr:primaryType": "nt:unstructured",
-  "PlatformName": "${platform.name}"
-}
