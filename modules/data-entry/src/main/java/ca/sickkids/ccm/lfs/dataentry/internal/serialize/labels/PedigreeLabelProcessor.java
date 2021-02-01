@@ -54,7 +54,7 @@ public class PedigreeLabelProcessor extends SimpleAnswerLabelProcessor implement
     public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
-            return Json.createValue(node.getProperty(PROP_VALUE).getValues()[1].toString());
+            return Json.createValue(node.getProperty("image").getValue().toString());
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
