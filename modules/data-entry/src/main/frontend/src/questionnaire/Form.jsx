@@ -126,6 +126,17 @@ function Form (props) {
     }
   }, [isEdit]);
 
+  useEffect(() => {
+    if (isEdit) {
+      let checkoutForm = new FormData();
+      checkoutForm.set(":operation", "checkout");
+      fetchWithReLogin(globalLoginDisplay, formURL, {
+        method: "POST",
+        body: checkoutForm
+      });
+    }
+  }, [isEdit]);
+
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Fetch the form's data as JSON from the server.
