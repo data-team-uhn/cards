@@ -311,6 +311,8 @@ export default function VariantFilesContainer() {
                               resolve(file);
                             })
                             .catch((err) => {console.log(err); reject(err);})
+                        } else {
+                          resolve(file);
                         }
 
                       } else {
@@ -374,7 +376,9 @@ export default function VariantFilesContainer() {
                           resolve(file);
                         })
                         .catch((err) => {console.log(err); reject(err);})
-                      }
+                    } else {
+                      resolve(file);
+                    }
 
                   } else {
                     // if a tumor subject is not found
