@@ -50,7 +50,7 @@ function PedigreeQuestion(props) {
   const [ expanded, setExpanded ] = useState(false);
   // default pedigreeData state variable to the pedigree saved in LFS:
   const [ pedigreeData, setPedigree ] = useState(existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value
-                                        ? {"image": existingAnswer[1].image, "pedigreeJSON": existingAnswer[1].value[0]}
+                                        ? {"image": existingAnswer[1].image, "pedigreeJSON": existingAnswer[1].value}
                                         : {});
 
   // TODO: use another placeholder image? load from resources?
@@ -114,7 +114,7 @@ function PedigreeQuestion(props) {
     return image_div || "";
   }
 
-  let outputAnswers = pedigreeJSON ? [["value", pedigreeJSON], "image", pedigreeSVG] : [];
+  let outputAnswers = pedigreeJSON ? [["value", pedigreeJSON]] : [];
   let answerMetadata = pedigreeSVG ? new Map().set("image", pedigreeSVG) : null;
 
   return (
