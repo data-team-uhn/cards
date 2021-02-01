@@ -49,6 +49,20 @@
                     "propertyIndex": true,
                     "nodeScopeIndex": false,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "lastModified": {
+                    "name": "jcr:lastModified",
+                    "ordered": true,
+                    "propertyIndex": true,
+                    "nodeScopeIndex": false,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "statusFlags": {
+                    "name": "statusFlags",
+                    "propertyIndex": true,
+                    "nodeScopeIndex": true,
+                    "analyzed": true,
+                    "jcr:primaryType": "nt:unstructured"
                 }
             }
         }

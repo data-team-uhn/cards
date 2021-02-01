@@ -170,6 +170,12 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
                 case "statusNot":
                     result.append(" and not contains(n.[statusFlags], '").append(value).append("')");
                     break;
+                case "modifiedAfter":
+                    result.append(" and n.[jcr:lastModified] >= '").append(value).append('\'');
+                    break;
+                case "modifiedBefore":
+                    result.append(" and n.[jcr:lastModified] < '").append(value).append('\'');
+                    break;
                 default:
                     break;
             }
