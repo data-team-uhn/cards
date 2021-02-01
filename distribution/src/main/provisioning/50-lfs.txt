@@ -29,6 +29,8 @@
 
     ca.sickkids.ccm.lfs/lfs-form-completion-status/${lfs.version}
 
+    ca.sickkids.ccm.lfs/lfs-last-modified-property/${lfs.version}
+
     ca.sickkids.ccm.lfs/lfs-subjects/${lfs.version}
 
     # Add support for external authenticators
