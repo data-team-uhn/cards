@@ -123,15 +123,27 @@ function Form (props) {
         body: checkoutForm
       });
 
-      function removeSaveDataHandler() {
-        window.removeEventListener("beforeunload", saveData);
+      function performCheckIn() {
+        let checkinForm = new FormData();
+        checkinForm.set(":operation", "checkin");
+        fetchWithReLogin(globalLoginDisplay, formURL, {
+          method: "POST",
+          body: checkinForm
+        });
       }
-      setRemoveWindowHandlers(() => removeSaveDataHandler);
+
+      function removeBeforeUnloadHandlers() {
+        window.removeEventListener("beforeunload", saveData);
+        window.removeEventListener("beforeunload", performCheckIn);
+      }
+      setRemoveWindowHandlers(() => removeBeforeUnloadHandlers);
       window.addEventListener("beforeunload", saveData);
+      window.addEventListener("beforeunload", performCheckIn);
       // When component unmounts:
       return (() => {
         // cleanup event handler
         window.removeEventListener("beforeunload", saveData);
+        window.removeEventListener("beforeunload", performCheckIn);
       });
     }
   }, [isEdit]);
