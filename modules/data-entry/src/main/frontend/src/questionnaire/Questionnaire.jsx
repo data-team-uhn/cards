@@ -81,6 +81,20 @@ let Questionnaire = (props) => {
       method: "POST",
       body: checkoutForm
     });
+
+    function performCheckIn() {
+      let checkinForm = new FormData();
+      checkinForm.set(":operation", "checkin");
+      fetch(`/Questionnaires/${id}`, {
+        method: "POST",
+        body: checkinForm
+      });
+    }
+
+    window.addEventListener("beforeunload", performCheckIn);
+    return (() => {
+      window.removeEventListener("beforeunload", performCheckIn);
+    });
   }, []);
 
   return (
