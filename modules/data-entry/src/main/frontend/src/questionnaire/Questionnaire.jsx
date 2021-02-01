@@ -73,6 +73,16 @@ let Questionnaire = (props) => {
     pageNameWriter(questionnaireTitle);
   }, [questionnaireTitle]);
 
+  useEffect(() => {
+    //Perform a JCR check-out of the Questionnaire
+    let checkoutForm = new FormData();
+    checkoutForm.set(":operation", "checkout");
+    fetch(`/Questionnaires/${id}`, {
+      method: "POST",
+      body: checkoutForm
+    });
+  }, []);
+
   return (
     <>
       { error &&
