@@ -110,9 +110,19 @@ function Form (props) {
   const history = useHistory();
   const formURL = `/Forms/${id}`;
   const isEdit = window.location.pathname.endsWith(".edit");
+  let globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
     if (isEdit) {
+
+      //Perform a JCR check-out of the Form
+      let checkoutForm = new FormData();
+      checkoutForm.set(":operation", "checkout");
+      fetchWithReLogin(globalLoginDisplay, formURL, {
+        method: "POST",
+        body: checkoutForm
+      });
+
       function removeSaveDataHandler() {
         window.removeEventListener("beforeunload", saveData);
       }
@@ -125,19 +135,6 @@ function Form (props) {
       });
     }
   }, [isEdit]);
-
-  useEffect(() => {
-    if (isEdit) {
-      let checkoutForm = new FormData();
-      checkoutForm.set(":operation", "checkout");
-      fetchWithReLogin(globalLoginDisplay, formURL, {
-        method: "POST",
-        body: checkoutForm
-      });
-    }
-  }, [isEdit]);
-
-  let globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
