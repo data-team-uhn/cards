@@ -114,15 +114,6 @@ function Form (props) {
 
   useEffect(() => {
     if (isEdit) {
-
-      //Perform a JCR check-out of the Form
-      let checkoutForm = new FormData();
-      checkoutForm.set(":operation", "checkout");
-      fetchWithReLogin(globalLoginDisplay, formURL, {
-        method: "POST",
-        body: checkoutForm
-      });
-
       function performCheckIn() {
         let checkinForm = new FormData();
         checkinForm.set(":operation", "checkin");
@@ -166,6 +157,15 @@ function Form (props) {
     setData(json);
     setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
     setPages([]);
+    if (isEdit) {
+      //Perform a JCR check-out of the Form
+      let checkoutForm = new FormData();
+      checkoutForm.set(":operation", "checkout");
+      fetchWithReLogin(globalLoginDisplay, formURL, {
+        method: "POST",
+        body: checkoutForm
+      });
+    }
   };
 
   // Callback method for the `fetchData` method, invoked when the request failed.
