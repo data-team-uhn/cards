@@ -125,7 +125,7 @@ function PedigreeQuestion(props) {
           <Link onClick={() => {setExpanded(true);}}>
             {image_div}
           </Link>
-          { pedigreeData.image && <DeleteButton
+          { pedigreeData.image && existingAnswer && <DeleteButton
               entryPath={existingAnswer[1]["@path"]}
               entryName={"pedigree"}
               entryType={"Pedigree"}
