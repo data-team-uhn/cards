@@ -2,6 +2,6 @@
   {
     "description" : "string",
     "maxPerSubject": "long",
-    "requiredSubjectTypes": "list"
+    "requiredSubjectTypes": "list.subjectTypes"
   }
 ]

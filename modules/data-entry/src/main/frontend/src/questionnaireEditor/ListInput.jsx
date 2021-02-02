@@ -25,22 +25,52 @@ import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "./QuestionComponentManager";
 
+class VocabularyDefinition {
+  static primaryType = "lfs:Vocabulary";
+  static saveType = "String";
+  static displayVariable = "identifier";
+  static orderVariable = this.primaryType;
+  static saveVariable = this.displayVariable;
+  static uniqueIdentifier = "jcr:uuid";
+}
+class SubjectTypeDefinition {
+  static primaryType = "lfs:SubjectType";
+  static saveType = "Reference";
+  static displayVariable = "label";
+  static orderVariable = "lfs:defaultOrder";
+  static saveVariable = "jcr:uuid";
+  static uniqueIdentifier = "jcr:uuid";
+}
+
 let ListInput = (props) => {
-  let { objectKey, data } = props;
+  let { objectKey, data, value: fieldDefinition } = props;
   let [ value, setValue ] = React.useState(Array.isArray(data[objectKey]) ? data[objectKey] : data[objectKey] ? [data[objectKey]] : []);
   const [ options, setOptions ] = React.useState([]);
   const requiredSubjectTypes = React.useState(objectKey.includes('requiredSubjectTypes'));
-  
+
+  let type;
+
+  switch (fieldDefinition) {
+    case "list.vocabularies":
+      type = VocabularyDefinition;
+      break;
+    default:
+    case "list.subjectTypes":
+      // Default to subject types
+      type = SubjectTypeDefinition;
+  }
+
   if (requiredSubjectTypes && options.length === 0) {
-    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType' order by n.'lfs:defaultOrder'`))
+    fetch('/query?query=' + encodeURIComponent(`select * from [${type.primaryType}] as n order by n.'${type.orderVariable}'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => { 
+      .then((json) => {
         let optionTypes = Array.from(json["rows"]); setOptions(optionTypes);
         let updatedValues = [];
         for (let option in optionTypes) {
-          for (let val in value) { 
-            if (value[val].label === optionTypes[option].label) {
-              updatedValues.push(optionTypes[option]); 
+          for (let val in value) {
+            let compareVal = typeof(val) === "string" ? val : val[type.saveVariable];
+            if (compareVal === option[type.saveVariable]) {
+              updatedValues.push(option);
             }
           }
         }
@@ -59,10 +89,10 @@ let ListInput = (props) => {
 
   return (
     <EditorInput name={objectKey}>
-      <input type="hidden" name={objectKey + "@TypeHint"} value={"Reference"} />
-      { 
+      <input type="hidden" name={objectKey + "@TypeHint"} value={type.saveType} />
+      {
         // Maps each selected object to a reference type for submitting
-        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject['jcr:uuid']} key={typeObject['jcr:uuid']} />)
+        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject[type.saveVariable]} key={typeObject[type.uniqueIdentifier]} />)
       }
       {
         // Delete the current values within this list if nothing is selected
@@ -77,14 +107,14 @@ let ListInput = (props) => {
         renderValue={(value) => (
           <div>
             {value.map((val) => (
-              <Chip key={val['jcr:uuid']} label={val['label']}/>
+              <Chip key={val[type.uniqueIdentifier]} label={val[type.displayVariable]}/>
             ))}
           </div>
         )}
       >
       {options.map((name) => (
-        <MenuItem key={name['jcr:uuid']} value={name}>
-          <Typography>{name['label']}</Typography>
+        <MenuItem key={name[type.uniqueIdentifier]} value={name}>
+          <Typography>{name[type.displayVariable]}</Typography>
         </MenuItem>
       ))}
     </Select>
@@ -92,7 +122,7 @@ let ListInput = (props) => {
   )
 }
 
-ListInput.propTypes = { 
+ListInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired
 };
@@ -101,7 +131,7 @@ var StyledListInput = withStyles(QuestionnaireStyle)(ListInput);
 export default StyledListInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
-  if (["list"].includes(definition)) {
+  if (typeof(definition) === "string" && definition.startsWith("list")) {
     return [StyledListInput, 50];
   }
 });
