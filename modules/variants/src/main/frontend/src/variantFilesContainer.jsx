@@ -188,6 +188,10 @@ export default function VariantFilesContainer() {
     (function loop(i) {
         if (i < chosenFiles.length) new Promise((resolve, reject) => {
           let file = chosenFiles[i];
+          if (file.name.includes("'")) {
+            setError("File name " + file.name + " contains special character <'> that is not allowed");
+            return;
+          }
 
           let parsed = file.name.split('.csv')[0].split('_');
           if (parsed.length < 2 || parsed[0] == "" || parsed[1] == "") {
@@ -223,7 +227,8 @@ export default function VariantFilesContainer() {
                 setSelectedFiles(files);
                 resolve();
               }
-            });
+            })
+            .catch((err) => {setError("Internal server error while fetching file versions");});
         })
         .then(loop.bind(null, i+1));
     })(0);
@@ -451,7 +456,8 @@ export default function VariantFilesContainer() {
           // find all files with this name
           newFiles[index] = file;
           setSelectedFiles(newFiles);
-      });
+      })
+      .catch((err) => {setError("Internal server error while fetching file versions for " + fileName);});
   };
 
   // Change of subject id implies reset tumor subject info and re-fetching all data
@@ -468,7 +474,8 @@ export default function VariantFilesContainer() {
           // find all files with this name
           newFiles[index] = file;
           setSelectedFiles(newFiles);
-        });
+        })
+      .catch((err) => {setError("Internal server error while fetching file versions for " + fileName);});
   };
 
   // Change of subject id implies reset region subject info and re-fetching all data
@@ -485,7 +492,8 @@ export default function VariantFilesContainer() {
           // find all files with this name
           newFiles[index] = file;
           setSelectedFiles(newFiles);
-        });
+        })
+      .catch((err) => {setError("Internal server error while fetching file versions for " + fileName);});
   };
 
   let cleanForm = () => {
