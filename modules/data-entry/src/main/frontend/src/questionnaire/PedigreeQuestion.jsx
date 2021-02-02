@@ -53,6 +53,7 @@ function PedigreeQuestion(props) {
   const [ pedigreeData, setPedigree ] = useState(existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value
                                         ? {"image": existingAnswer[1].image, "pedigreeJSON": existingAnswer[1].value}
                                         : {});
+  let [ answerPath, setAnswerPath ] = useState(existingAnswer ? existingAnswer[1]["@path"] : '');
 
   // TODO: use another placeholder image? load from resources?
   const PLACEHOLDER_SVG = '<svg width="300" height="100"><rect fill="#e5e5e5" height="102" width="302" y="-1" x="-1"/>'+
@@ -74,7 +75,7 @@ function PedigreeQuestion(props) {
 
   if (pedigreeData && pedigreeData.image && pedigreeData.pedigreeJSON) {
     // use pedigree stored in React component state:
-    // default value for that state is the pedogree loaded from LFS, but it gets overwritten each time pedigree is saved
+    // default value for that state is the pedigree loaded from LFS, but it gets overwritten each time pedigree is saved
     // from the pedogre editor, even if that data isnot yet saved to LFS
     pedigreeSVG  = pedigreeData.image;
     pedigreeJSON = pedigreeData.pedigreeJSON;
@@ -119,6 +120,13 @@ function PedigreeQuestion(props) {
   let outputAnswers = pedigreeJSON ? [["value", pedigreeJSON]] : [];
   let answerMetadata = pedigreeSVG ? new Map().set("image", pedigreeSVG) : null;
 
+  var onSetAnswerPath = function (answerPath) {
+    const entry = /\/Forms\/([^.]+)/.exec(location.pathname);
+    if (entry) {
+      return setAnswerPath(entry[0] + answerPath.replace(props.path, ''));
+    }
+  };
+
   return (
     <Question
       existingAnswer={existingAnswer}
@@ -130,8 +138,8 @@ function PedigreeQuestion(props) {
           <Link onClick={() => {setExpanded(true);}}>
             {image_div}
           </Link>
-          { pedigreeData.image && existingAnswer && <DeleteButton
-              entryPath={existingAnswer[1]["@path"]}
+          { pedigreeData.image && answerPath && <DeleteButton
+              entryPath={answerPath}
               entryName={"pedigree"}
               entryType={"Pedigree"}
               shouldGoBack={false}
@@ -155,6 +163,7 @@ function PedigreeQuestion(props) {
         existingAnswer={existingAnswer}
         answerNodeType="lfs:PedigreeAnswer"
         valueType="String"
+        onDecidedOutputPath={onSetAnswerPath}
         {...rest}
       />
     </Question>);
