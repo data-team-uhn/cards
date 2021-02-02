@@ -330,6 +330,9 @@ const questionnaireStyle = theme => ({
     titleButton: {
         float: "right"
     },
+    pedigreeDeleteButton: {
+        verticalAlign: "top"
+    },
     subjectSubHeader: {
         display: "block"
     },
