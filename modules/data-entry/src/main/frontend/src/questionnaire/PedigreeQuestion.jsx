@@ -25,6 +25,7 @@ import PropTypes from "prop-types";
 
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
+import DeleteButton from "../dataHomepage/DeleteButton";
 
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -46,7 +47,7 @@ import PedigreeEditor from "../pedigree/pedigree";
 //      }}
 //    />
 function PedigreeQuestion(props) {
-  const { existingAnswer, isEdit, classes, ...rest } = props;
+  const { existingAnswer, isEdit, onSave, classes, ...rest } = props;
   const [ expanded, setExpanded ] = useState(false);
   // default pedigreeData state variable to the pedigree saved in LFS:
   const [ pedigreeData, setPedigree ] = useState(existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value
@@ -108,6 +109,7 @@ function PedigreeQuestion(props) {
     // TODO: verify if pedigree will be saved
     // state change should trigger re-render
     setPedigree({"image": pedigreeSVG, "pedigreeJSON": pedigreeJSON});
+    onSave && onSave();
   };
 
   let outputAnswers = pedigreeJSON ? [["value", pedigreeJSON], ["image", pedigreeSVG]] : [];
@@ -119,9 +121,19 @@ function PedigreeQuestion(props) {
       >
       {image_div && (
         isEdit ?
-        <Link onClick={() => {setExpanded(true);}}>
-          {image_div}
-        </Link>
+        <>
+          <Link onClick={() => {setExpanded(true);}}>
+            {image_div}
+          </Link>
+          { pedigreeData.image && <DeleteButton
+              entryPath={existingAnswer[1]["@path"]}
+              entryName={"pedigree"}
+              entryType={"Pedigree"}
+              shouldGoBack={false}
+              buttonClass={classes.pedigreeDeleteButton}
+              onComplete={() => {setPedigree({});}}
+            /> }
+        </>
         : <span> {image_div} </span>
       )}
       <Dialog fullScreen open={expanded}

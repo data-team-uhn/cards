@@ -397,6 +397,7 @@ function Form (props) {
                     visibleCallback={pageResult.callback}
                     pageActive={pageResult.page.visible}
                     isEdit={isEdit}
+                    onSave={saveData}
                   />
                 })
             }
