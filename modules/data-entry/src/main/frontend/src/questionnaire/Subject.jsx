@@ -316,10 +316,10 @@ function SubjectMemberInternal (props) {
     onDelete();
   }
 
-  // If the data has not yet been fetched, fetch
-  if (!tableData) {
+  // Fetch table data for all forms related to a Subject
+  useEffect(() => {
     fetchTableData();
-  }
+  }, []);
 
   // If an error was returned, do not display a subject at all, but report the error
   if (error) {
