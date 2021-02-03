@@ -31,6 +31,7 @@ class MainLoginContainer extends React.Component {
     this.state = {
       signInShown: true,
       signUpEnabled : false,
+      isLongForm: !!window.location.pathname.startsWith("/login"),
       title: document.querySelector('meta[name="title"]').content
     }
   }
@@ -51,6 +52,7 @@ class MainLoginContainer extends React.Component {
           <Grid item>
             <img src="/libs/lfs/resources/logo_light_bg.png" alt="this.state.title" className={classes.logo}/>
           </Grid>
+          { this.state.isLongForm &&
           <Grid item>
             <Grid container direction="column" spacing={0} alignItems="center" alignContent="center">
               <Grid item>
@@ -68,10 +70,11 @@ class MainLoginContainer extends React.Component {
               </Grid>
             </Grid>
           </Grid>
+          }
           <Grid item>
           { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} redirectOnLogin={this.props.redirectOnLogin}/> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }
           </Grid>
-          { (!this.state.signInShown || this.state.signUpEnabled) &&
+          { this.state.isLongForm && (!this.state.signInShown || this.state.signUpEnabled) &&
             <Grid item>
               <Button
                 fullWidth
