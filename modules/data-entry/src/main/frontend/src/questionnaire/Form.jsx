@@ -377,6 +377,9 @@ function Form (props) {
           {
             lastSaveTimestamp ?
             <Typography variant="overline">{saveInProgress ? "Saving ... " : "Saved " + moment(lastSaveTimestamp.toISOString()).calendar()}</Typography>
+            :
+            data && data['jcr:lastModified'] ?
+            <Typography variant="overline">{"Last modified " + moment(data['jcr:lastModified']).calendar()}</Typography>
             : ""
           }
           </Breadcrumbs>
