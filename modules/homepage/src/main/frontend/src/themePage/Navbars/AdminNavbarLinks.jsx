@@ -93,7 +93,7 @@ function HeaderLinks (props) {
       <ExpandableIcon>
         <ExitToAppIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
       </ExpandableIcon>
-      <ListItemText primary="Log out" className={expand ? "" : classes.whiteFont}/>
+      <ListItemText primary="Sign out" className={expand ? "" : classes.whiteFont}/>
     </MenuItem>
   </MenuList>
 
@@ -104,7 +104,7 @@ function HeaderLinks (props) {
         onSelectFinish={expand ? undefined : closeSidebar}
         className={expand ? undefined : classes.buttonLink}
       />
-      {/* Avatar + log out link */}
+      {/* Avatar + sign out link */}
       <Hidden smDown>
         <Tooltip title={username}>
           <IconButton

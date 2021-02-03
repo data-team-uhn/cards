@@ -32,23 +32,19 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
+    padding: theme.spacing(2, 3, 3),
   },
   selfContained: {
     marginTop: theme.spacing(10),
     marginBottom: theme.spacing(2),
   },
-  buttonIcon: {
-    verticalAlign: 'middle',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-    verticalAlign: 'middle',
+  logo: {
+    maxWidth: "200px",
   },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
+    textAlign: "center",
   },
   formAction: {
     float: 'right',
@@ -56,7 +52,12 @@ const styles = theme => ({
     marginLeft: theme.spacing(2)
   },
   submit: {
-    marginTop: theme.spacing(3)
+    backgroundColor: "#002244 !important", // Midnight blue, matches the DATA logo
+    marginTop: theme.spacing(3),
+    width: "auto !important",
+    "&:hover" : {
+      backgroundColor: "#002266 !important",
+    },
   },
   closeButton: {
     float: 'right',

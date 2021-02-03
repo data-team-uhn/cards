@@ -20,9 +20,7 @@ import React from 'react';
 import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
 
-import { Avatar, Button, Paper, Typography, withStyles } from '@material-ui/core';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import { Button, Grid, Paper, Tooltip, Typography, withStyles } from '@material-ui/core';
 
 import styles from "../styling/styles";
 
@@ -32,6 +30,7 @@ class MainLoginContainer extends React.Component {
 
     this.state = {
       signInShown: true,
+      signUpEnabled : false,
       title: document.querySelector('meta[name="title"]').content
     }
   }
@@ -47,32 +46,45 @@ class MainLoginContainer extends React.Component {
     const { classes, selfContained } = this.props;
 
     return (
-      <div>
-        <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`}>
-          <Typography component="h1" variant="overline">
-            {this.state.title}
-          </Typography>
-          <Typography component="h2" variant="h5">
-            {this.state.signInShown ? "Sign In" : "Sign Up" }
-          </Typography>
-          <Avatar className={classes.avatar}>
-            { this.state.signInShown ? <ExitToAppIcon/> : <PersonAddIcon/> }
-          </Avatar>
+      <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
+        <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
+          <Grid item>
+            <img src="/libs/lfs/resources/logo_light_bg.png" alt="this.state.title" className={classes.logo}/>
+          </Grid>
+          <Grid item>
+            <Grid container direction="column" spacing={0} alignItems="center" alignContent="center">
+              <Grid item>
+                <Typography variant="caption" component="div">{this.state.title}</Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="caption" component="div">by</Typography>
+              </Grid>
+              <Grid item>
+                <Tooltip title="DATA Team @ UHN">
+                  <a href="https://uhndata.io/" target="_blank">
+                    <img src="/libs/lfs/resources/data-logo_light_bg.png" width="80" alt="DATA" />
+                  </a>
+                </Tooltip>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item>
           { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} redirectOnLogin={this.props.redirectOnLogin}/> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }
-          <Typography>
-            { this.state.signInShown ? "Don't have an account?" : "Already have an account?" }
-          </Typography>
-          <Button
-            fullWidth
-            variant="contained"
-            color="default"
-            className={classes.main}
-            onClick={this.handleSwap}
-          >
-          { this.state.signInShown ? <span><PersonAddIcon className={classes.buttonIcon}/> Request an account</span> : <span><ExitToAppIcon className={classes.buttonIcon}/> Sign In</span> }
-          </Button>
-        </Paper>
-      </div>
+          </Grid>
+          { (!this.state.signInShown || this.state.signUpEnabled) &&
+            <Grid item>
+              <Button
+                fullWidth
+                color="default"
+                className={classes.main}
+                onClick={this.handleSwap}
+               >
+                { this.state.signInShown ?  "Sign up" : "Sign In" }
+              </Button>
+            </Grid>
+          }
+        </Grid>
+      </Paper>
     );
   }
 }
