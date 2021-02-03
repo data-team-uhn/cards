@@ -26,7 +26,6 @@ import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 // Unused imports required for the component manager
 import BooleanInput from "./BooleanInput";
 import ListInput from "./ListInput";
-import VocabularyInput from "./VocabularyInput";
 import NumberInput from "./NumberInput";
 import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";

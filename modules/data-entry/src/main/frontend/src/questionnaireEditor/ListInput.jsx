@@ -25,49 +25,19 @@ import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "./QuestionComponentManager";
 
-class VocabularyDefinition {
-  static primaryType = "lfs:Vocabulary";
-  static saveType = "String";
-  static displayVariable = "identifier";
-  static orderVariable = this.primaryType;
-  static saveVariable = this.displayVariable;
-  static uniqueIdentifier = "jcr:uuid";
-}
-class SubjectTypeDefinition {
-  static primaryType = "lfs:SubjectType";
-  static saveType = "Reference";
-  static displayVariable = "label";
-  static orderVariable = "lfs:defaultOrder";
-  static saveVariable = "jcr:uuid";
-  static uniqueIdentifier = "jcr:uuid";
-}
-
 let ListInput = (props) => {
-  let { objectKey, data, value: fieldDefinition } = props;
+  let { objectKey, data, value: type } = props;
   let [ value, setValue ] = React.useState(Array.isArray(data[objectKey]) ? data[objectKey] : data[objectKey] ? [data[objectKey]] : []);
   const [ options, setOptions ] = React.useState([]);
-  const requiredSubjectTypes = React.useState(objectKey.includes('requiredSubjectTypes'));
 
-  let type;
-
-  switch (fieldDefinition) {
-    case "list.vocabularies":
-      type = VocabularyDefinition;
-      break;
-    default:
-    case "list.subjectTypes":
-      // Default to subject types
-      type = SubjectTypeDefinition;
-  }
-
-  if (requiredSubjectTypes && options.length === 0) {
+  if (options.length === 0) {
     fetch('/query?query=' + encodeURIComponent(`select * from [${type.primaryType}] as n order by n.'${type.orderVariable}'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         let optionTypes = Array.from(json["rows"]); setOptions(optionTypes);
         let updatedValues = [];
-        for (let option in optionTypes) {
-          for (let val in value) {
+        for (let option of optionTypes) {
+          for (let val of value) {
             let compareVal = typeof(val) === "string" ? val : val[type.saveVariable];
             if (compareVal === option[type.saveVariable]) {
               updatedValues.push(option);
@@ -92,7 +62,7 @@ let ListInput = (props) => {
       <input type="hidden" name={objectKey + "@TypeHint"} value={type.saveType} />
       {
         // Maps each selected object to a reference type for submitting
-        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject[type.saveVariable]} key={typeObject[type.uniqueIdentifier]} />)
+        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject[type.saveVariable]} key={typeObject["jcr:uuid"]} />)
       }
       {
         // Delete the current values within this list if nothing is selected
@@ -103,17 +73,17 @@ let ListInput = (props) => {
         multiple
         value={value}
         onChange={handleChange}
-        input={requiredSubjectTypes ? <Input id={objectKey} /> : null}
+        input={<Input id={objectKey} />}
         renderValue={(value) => (
           <div>
             {value.map((val) => (
-              <Chip key={val[type.uniqueIdentifier]} label={val[type.displayVariable]}/>
+              <Chip key={val["jcr:uuid"]} label={val[type.displayVariable]}/>
             ))}
           </div>
         )}
       >
       {options.map((name) => (
-        <MenuItem key={name[type.uniqueIdentifier]} value={name}>
+        <MenuItem key={name["jcr:uuid"]} value={name}>
           <Typography>{name[type.displayVariable]}</Typography>
         </MenuItem>
       ))}
@@ -131,7 +101,9 @@ var StyledListInput = withStyles(QuestionnaireStyle)(ListInput);
 export default StyledListInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
-  if (typeof(definition) === "string" && definition.startsWith("list")) {
+  console.log(typeof(definition))
+  if (definition.type && definition.type === "list") {
+    // typeof(definition) === "string" && definition.startsWith("list")) {
     return [StyledListInput, 50];
   }
 });

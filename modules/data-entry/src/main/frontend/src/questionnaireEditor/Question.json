@@ -48,7 +48,14 @@
         "namePattern": "string"
       },
       "vocabulary": {
-        "sourceVocabularies": "list.vocabularies",
+        "sourceVocabularies": {
+          "type": "list",
+          "primaryType": "lfs:Vocabulary",
+          "saveType": "String",
+          "displayVariable": "identifier",
+          "orderVariable": "lfs:Vocabulary",
+          "saveVariable": "identifier"
+        },
         "vocabularyFilter": "string",
         "minAnswers": "long",
         "maxAnswers": "long"
