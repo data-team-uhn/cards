@@ -370,6 +370,11 @@ function Form (props) {
             : ""
           }
           {
+            data && data['jcr:isCheckedOut'] ?
+            <Typography variant="overline" className={classes.warningStatus}>Another user is editing</Typography>
+            : ""
+          }
+          {
             lastSaveTimestamp ?
             <Typography variant="overline">{saveInProgress ? "Saving ... " : "Saved " + moment(lastSaveTimestamp.toISOString()).calendar()}</Typography>
             : ""
