@@ -17,11 +17,13 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Dialog, DialogContent, Link, withStyles } from "@material-ui/core";
 
 import PropTypes from "prop-types";
+
+import { useFormReaderContext } from "./FormContext";
 
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
@@ -47,13 +49,16 @@ import PedigreeEditor from "../pedigree/pedigree";
 //      }}
 //    />
 function PedigreeQuestion(props) {
-  const { existingAnswer, onSave, classes, ...rest } = props;
+  const { existingAnswer, classes, ...rest } = props;
   const [ expanded, setExpanded ] = useState(false);
   // default pedigreeData state variable to the pedigree saved in LFS:
   const [ pedigreeData, setPedigree ] = useState(existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value
                                         ? {"image": existingAnswer[1].image, "pedigreeJSON": existingAnswer[1].value}
                                         : {});
   let [ answerPath, setAnswerPath ] = useState(existingAnswer ? existingAnswer[1]["@path"] : '');
+
+  let reader = useFormReaderContext();
+  let saveForm = reader['/Save'];
 
   // TODO: use another placeholder image? load from resources?
   const PLACEHOLDER_SVG = '<svg width="300" height="100"><rect fill="#e5e5e5" height="102" width="302" y="-1" x="-1"/>'+
@@ -76,11 +81,18 @@ function PedigreeQuestion(props) {
   if (pedigreeData && pedigreeData.image && pedigreeData.pedigreeJSON) {
     // use pedigree stored in React component state:
     // default value for that state is the pedigree loaded from LFS, but it gets overwritten each time pedigree is saved
-    // from the pedogre editor, even if that data isnot yet saved to LFS
+    // from the pedigree editor, even if that data is not yet saved to LFS
     pedigreeSVG  = pedigreeData.image;
     pedigreeJSON = pedigreeData.pedigreeJSON;
     displayedImage = resizeSVG(pedigreeSVG, PEDIGREE_THUMBNAIL_WIDTH);
   }
+
+  let [ outputAnswers, setOutputAnswers ] = useState(pedigreeJSON ? [["value", pedigreeJSON]] : []);
+  let answerMetadata = pedigreeSVG ? new Map().set("image", pedigreeSVG) : null;
+
+  useEffect(() => {
+    setOutputAnswers(pedigreeJSON ? [["value", pedigreeJSON]] : []);
+  }, [pedigreeJSON]);
 
   var image_div = (
     <div className={classes.pedigreeThumbnail}>
@@ -107,18 +119,17 @@ function PedigreeQuestion(props) {
   };
 
   var onUpdatedPedigree = function (pedigreeJSON, pedigreeSVG) {
-    // TODO: verify if pedigree will be saved
-    // state change should trigger re-render
+    // state change will trigger re-render
     setPedigree({"image": pedigreeSVG, "pedigreeJSON": pedigreeJSON});
-    onSave && onSave();
+    let savePromise = saveForm();
+    if (savePromise) {
+      savePromise.then(console.log("Pedigree saved"));
+    }
   };
 
   let defaultDisplayFormatter = function(label, idx) {
     return image_div || "";
   }
-
-  let outputAnswers = pedigreeJSON ? [["value", pedigreeJSON]] : [];
-  let answerMetadata = pedigreeSVG ? new Map().set("image", pedigreeSVG) : null;
 
   var onSetAnswerPath = function (answerPath) {
     const entry = /\/Forms\/([^.]+)/.exec(location.pathname);
