@@ -79,7 +79,15 @@ function NewFormDialog(props) {
           // Redirect the user to the new uuid
           // FIXME: Would be better to somehow obtain the router prefix from props
           // but that is not currently possible
-          props.history.push("/content.html" + URL + '.edit');
+          let checkinForm = new FormData();
+          checkinForm.set(":operation", "checkin");
+          fetchWithReLogin(globalLoginDisplay, URL, {
+            method: "POST",
+            body: checkinForm
+          })
+          .then( (response) => {
+            props.history.push("/content.html" + URL + '.edit');
+          });
         } else {
           return(Promise.reject(response));
         }
