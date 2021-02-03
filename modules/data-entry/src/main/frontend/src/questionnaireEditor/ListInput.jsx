@@ -101,7 +101,6 @@ var StyledListInput = withStyles(QuestionnaireStyle)(ListInput);
 export default StyledListInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
-  console.log(typeof(definition))
   if (definition.type && definition.type === "list") {
     // typeof(definition) === "string" && definition.startsWith("list")) {
     return [StyledListInput, 50];
