@@ -24,6 +24,7 @@ import javax.jcr.Session;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
+import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
@@ -69,7 +70,11 @@ public class LastModifiedEditor extends DefaultEditor
     @Override
     public void propertyChanged(PropertyState before, PropertyState after) throws CommitFailedException
     {
-        updateLastModified(after);
+        if ("jcr:isCheckedOut".equals(before.getName())) {
+            if (!after.getValue(Type.BOOLEAN)) {
+                updateLastModified(after);
+            }
+        }
     }
 
     // When something changes in a node deep in the content tree, the editor is invoked starting with the root node,
