@@ -45,7 +45,7 @@ class Main extends React.Component {
       title: document.querySelector('meta[name="title"]').content,
       color: document.querySelector('meta[name="themeColor"]')?.content || "blue",
       loginDialogOpen: false,
-      loginHandler: undefined,
+      loginHandlers: [],
     };
 
     getRoutes().then(routes => this.setState({routes: routes}));
@@ -104,17 +104,19 @@ class Main extends React.Component {
       <React.Fragment>
       <GlobalLoginContext.Provider
         value={{
-          dialogOpen: (loginHandlerFcn) => {
+          dialogOpen: (loginHandlerFcn, discardOnFailure) => {
             let handler = ((success) => {
               success && this.setState({
-                loginDialogOpen: false,
-                loginHandler: undefined
+                loginDialogOpen: false
               });
               success && loginHandlerFcn();
             });
             (!this.state.loginDialogOpen) && this.setState({
-              loginDialogOpen: true,
-              loginHandler: handler
+              loginDialogOpen: true
+            });
+            let shouldAddHandler = (!discardOnFailure) || (this.state.loginHandlers.length < 1);
+            shouldAddHandler && this.setState({
+              loginHandlers: this.state.loginHandlers.concat(handler)
             });
           },
           getDialogOpenStatus: () => {
@@ -130,7 +132,17 @@ class Main extends React.Component {
             }
           }
         />
-        <DialogueLoginContainer isOpen={this.state.loginDialogOpen} handleLogin={this.state.loginHandler}/>
+        <DialogueLoginContainer
+          isOpen={this.state.loginDialogOpen}
+          handleLogin={(success) => {
+            if (success) {
+              for (let i = 0; i < this.state.loginHandlers.length; i++) {
+                this.state.loginHandlers[i](success);
+              }
+              this.setState({loginHandlers: []});
+            }
+          }}
+        />
         <div className={classes.wrapper} style={ { position: 'relative', top: this.state.contentOffset + 'px' } }>
           <Suspense fallback={<div>Loading...</div>}>
             <Sidebar
