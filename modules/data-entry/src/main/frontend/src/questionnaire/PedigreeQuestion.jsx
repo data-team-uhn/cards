@@ -19,7 +19,7 @@
 
 import React, { useEffect, useState } from "react";
 
-import { Dialog, DialogContent, Link, withStyles } from "@material-ui/core";
+import { Button, Dialog, DialogContent, Grid, Link, Tooltip, withStyles } from "@material-ui/core";
 
 import PropTypes from "prop-types";
 
@@ -60,23 +60,19 @@ function PedigreeQuestion(props) {
   let reader = useFormReaderContext();
   let saveForm = reader['/Save'];
 
-  // TODO: use another placeholder image? load from resources?
-  const PLACEHOLDER_SVG = '<svg width="300" height="100"><rect fill="#e5e5e5" height="102" width="302" y="-1" x="-1"/>'+
-                         '<text xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif"' +
-                         'font-size="24" y="55" x="86" stroke="#000" fill="#000000" stroke-width="0">no pedigree</text></svg>';
   // FIXME: hardcoded value
   const PEDIGREE_THUMBNAIL_WIDTH = 300;
 
   var resizeSVG = function(svgText, newWidthInPixels) {
     const newWidth = "$1width=\"" + newWidthInPixels + "px\"";
-    var resizedSVG = svgText.replace(/(<svg[^>]+)height="\d+"/, "$1");
+    var resizedSVG = svgText?.replace(/(<svg[^>]+)height="\d+"/, "$1");
     resizedSVG = resizedSVG.replace(/(<svg[^>]+)width="\d+"/, newWidth);
     return resizedSVG;
   };
 
   var pedigreeJSON = null;
   var pedigreeSVG  = null;
-  var displayedImage = PLACEHOLDER_SVG;
+  var displayedImage = '';
 
   if (pedigreeData && pedigreeData.image && pedigreeData.pedigreeJSON) {
     // use pedigree stored in React component state:
@@ -94,10 +90,7 @@ function PedigreeQuestion(props) {
     setOutputAnswers(pedigreeJSON ? [["value", pedigreeJSON]] : []);
   }, [pedigreeJSON]);
 
-  var image_div = (
-    <div className={classes.pedigreeThumbnail}>
-        <div className={classes.pedigreeSmallSVG} dangerouslySetInnerHTML={{__html: displayedImage}}/>
-    </div>);
+  var image_div = <div className={classes.thumbnail} dangerouslySetInnerHTML={{__html: displayedImage}}/>;
 
   var closeDialog = function () {
     setExpanded(false);
@@ -144,21 +137,30 @@ function PedigreeQuestion(props) {
       defaultDisplayFormatter={defaultDisplayFormatter}
       {...rest}
       >
-      {image_div &&
-        <>
-          <Link onClick={() => {setExpanded(true);}}>
-            {image_div}
-          </Link>
-          { pedigreeData.image && answerPath && <DeleteButton
+      <div className={classes.answerField}>
+      { pedigreeData.image && answerPath ?
+        <Grid container direction="row" justify="flex-start" alignItems="flex-start" spacing={0}>
+          <Grid item>
+            <Tooltip title="Edit Pedigree">
+              <Link className={classes.thumbnailLink} onClick={() => {setExpanded(true);}}>
+                {image_div}
+              </Link>
+            </Tooltip>
+          </Grid>
+          <Grid item>
+            <DeleteButton
               entryPath={answerPath}
               entryName={"pedigree"}
               entryType={"Pedigree"}
               shouldGoBack={false}
-              buttonClass={classes.pedigreeDeleteButton}
               onComplete={() => {setPedigree({});}}
-            /> }
-        </>
+            />
+          </Grid>
+        </Grid>
+        :
+        <Button variant="outlined" onClick={() => {setExpanded(true);}}>Draw</Button>
       }
+      </div>
       <Dialog fullScreen open={expanded}
         onEntering={() => { openPedigree(); }}
         onExit={() => { closePedigree(); }}

@@ -93,13 +93,14 @@ const questionnaireStyle = theme => ({
     warningTypography: {
         padding: theme.spacing(1, 1),
     },
-    pedigreeThumbnail: {
-        display: "inline-block",
+    thumbnail: {
+        border: "1px solid " + theme.palette.divider,
     },
-    pedigreeSmallSVG: {
+    thumbnailLink: {
         cursor: "pointer",
-        border: "1px solid",
-        display: "inline-block"
+        "& div:hover" : {
+          borderColor: "inherit !important",
+        }
     },
     formBottom: {
         minHeight: theme.spacing(8),
@@ -329,9 +330,6 @@ const questionnaireStyle = theme => ({
     },
     titleButton: {
         float: "right"
-    },
-    pedigreeDeleteButton: {
-        verticalAlign: "top"
     },
     subjectSubHeader: {
         display: "block"
