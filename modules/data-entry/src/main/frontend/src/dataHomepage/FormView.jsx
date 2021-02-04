@@ -49,6 +49,7 @@ function FormView(props) {
   const [ subtitle, setSubtitle ] = useState();
   const [ questionnairePath, setQuestionnairePath ] = useState();
   const [ qFetchSent, setQFetchStatus ] = useState(false);
+  const [ filtersURL, setFiltersUrl ] = useState('');
 
   // Column configuration for the LiveTables
   const columns = [
@@ -104,6 +105,10 @@ function FormView(props) {
     }
   }
 
+  let onFiltersChange = (url) => {
+    setFiltersUrl(url);
+  }
+
   return (
     <Card className={classes.formView}>
       {(!expanded || !disableHeader && !disableAvatar && (title || questionnaire)) &&
@@ -118,7 +123,7 @@ function FormView(props) {
         action={
           !expanded &&
           <Tooltip title="Expand">
-            <Link to={"/content.html/Forms" + "?activeTab=" + tabs[activeTab]}>
+            <Link to={"/content.html/Forms" + filtersURL + "&activeTab=" + tabs[activeTab]}>
               <IconButton>
                 <MoreHorizIcon/>
               </IconButton>
@@ -143,6 +148,7 @@ function FormView(props) {
           entryType={"Form"}
           actions={actions}
           disableTopPagination={!topPagination}
+          onFiltersChange={onFiltersChange}
         />
       {expanded &&
         <div className={classes.mainPageAction}>

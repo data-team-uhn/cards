@@ -43,7 +43,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, entryType, actions, admin, disableTopPagination, disableBottomPagination, ...rest } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, entryType, actions, admin, disableTopPagination, disableBottomPagination, onFiltersChange, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -105,23 +105,25 @@ function LiveTable(props) {
     }
 
     let url = new URL(urlBase);
-    url.searchParams.set("offset", goToStart ? 0 : newPage.offset);
-    url.searchParams.set("limit", newPage.limit || paginationData.limit);
-    url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
 
     // filters should be nullable, but if left undefined we use the cached filters
     let filters = (newPage.filters === null ? null : (newPage.filters || cachedFilters));
 
     // Add the filters (if they exist)
     if (filters != null) {
-      url.searchParams.set("joinchildren", joinChildren);
       filters["fields"].forEach((field) => {url.searchParams.append("filternames", field)});
       filters["comparators"].forEach((comparator) => {url.searchParams.append("filtercomparators", comparator)});
       filters["values"].forEach((value) => {url.searchParams.append("filtervalues", value)});
       filters["types"].forEach((type) => {url.searchParams.append("filtertypes", type)});
       filters["empties"].forEach((value) => {url.searchParams.append("filterempty", value)});
       filters["notempties"].forEach((value) => {url.searchParams.append("filternotempty", value)});
+      !newPage.isRedirectParams && onFiltersChange && onFiltersChange(url.search);
+      url.searchParams.set("joinchildren", joinChildren);
     }
+    url.searchParams.set("offset", goToStart ? 0 : newPage.offset);
+    url.searchParams.set("limit", newPage.limit || paginationData.limit);
+    url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
+
     let currentFetch = fetchWithReLogin(globalLoginDisplay, url);
     setFetchStatus(Object.assign({}, fetchStatus, {
       "currentFetch": currentFetch,
@@ -345,6 +347,24 @@ function LiveTable(props) {
       }
     />
   )
+
+  // parse filter data passed in the URL search params
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  if (urlSearchParams.has('filternames')) {
+    let filter_obj = {
+        fields: urlSearchParams.getAll('filternames'),
+        comparators: urlSearchParams.getAll('filtercomparators') || [],
+        values: urlSearchParams.getAll('filtervalues') || [],
+        types: urlSearchParams.getAll('filtertypes') || [],
+        empties: urlSearchParams.getAll('filterempty') || [],
+        notempties: urlSearchParams.getAll('filternotempty') || []
+    };
+    setCachedFilters(filter_obj);
+    fetchData({
+      "filters": filter_obj,
+      "isRedirectParams" : true
+    });
+  }
 
   return (
     // We wrap everything in a Paper for a nice separation, as a Table has no background or border of its own.
