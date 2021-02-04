@@ -317,7 +317,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>bl_med_types_#</value>
+							<value>bl_med_types</value>
 						</values>
 						<type>String</type>
 					</property>
