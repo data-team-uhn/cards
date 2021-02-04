@@ -44,7 +44,7 @@ import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function FormView(props) {
   const { questionnaire, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
-  const [ activeTab, setActiveTab ] = useState(0);
+  
   const [ title, setTitle ] = useState(typeof(props.title) != 'undefined' ? props.title : "Forms");
   const [ subtitle, setSubtitle ] = useState();
   const [ questionnairePath, setQuestionnairePath ] = useState();
@@ -74,6 +74,9 @@ function FormView(props) {
     EditButton
   ]
   const tabs = ["Completed", "Draft"];
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const activeTabParam = urlSearchParams.get('activeTab');
+  const [ activeTab, setActiveTab ] = useState(activeTabParam ? tabs.indexOf(activeTabParam) : 0);
 
   let qFilter = '';
 
@@ -110,7 +113,7 @@ function FormView(props) {
         action={
           !expanded &&
           <Tooltip title="Expand">
-            <Link to={"/content.html/Forms"}>
+            <Link to={"/content.html/Forms" + "?activeTab=" + tabs[activeTab]}>
               <IconButton>
                 <MoreHorizIcon/>
               </IconButton>
