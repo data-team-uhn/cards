@@ -20,7 +20,7 @@ import React from 'react';
 import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
 
-import { Button, Grid, Paper, Tooltip, Typography, withStyles } from '@material-ui/core';
+import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography, withStyles } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 
@@ -55,25 +55,6 @@ class MainLoginContainer extends React.Component {
           <Grid item>
             <img src="/libs/lfs/resources/logo_light_bg.png" alt="this.state.title" className={classes.logo}/>
           </Grid>
-          { this.state.isLongForm &&
-          <Grid item>
-            <Grid container direction="column" spacing={0} alignItems="center" alignContent="center">
-              <Grid item>
-                <Typography variant="caption" component="div">{this.state.title}</Typography>
-              </Grid>
-              <Grid item>
-                <Typography variant="caption" component="div">by</Typography>
-              </Grid>
-              <Grid item>
-                <Tooltip title="DATA Team @ UHN">
-                  <a href="https://uhndata.io/" target="_blank">
-                    <img src="/libs/lfs/resources/data-logo_light_bg.png" width="80" alt="DATA" />
-                  </a>
-                </Tooltip>
-              </Grid>
-            </Grid>
-          </Grid>
-          }
           <Grid item>
           { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} redirectOnLogin={this.props.redirectOnLogin}/> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }
           </Grid>
@@ -88,6 +69,18 @@ class MainLoginContainer extends React.Component {
                 { this.state.signInShown ?  "Sign up" : "Sign In" }
               </Button>
             </Grid>
+          }
+          { this.state.isLongForm &&
+          <Grid item>
+            <Breadcrumbs separator="by" className={classes.appInfo}>
+              <Typography variant="subtitle2">{this.state.title}</Typography>
+              <Tooltip title="DATA Team @ UHN">
+                <a href="https://uhndata.io/" target="_blank">
+                  <img src="/libs/lfs/resources/data-logo_light_bg.png" width="80" alt="DATA" />
+                </a>
+              </Tooltip>
+            </Breadcrumbs>
+          </Grid>
           }
         </Grid>
       </Paper>
