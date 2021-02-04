@@ -73,10 +73,15 @@ function FormView(props) {
     DeleteButton,
     EditButton
   ]
+
   const tabs = ["Completed", "Draft"];
   const urlSearchParams = new URLSearchParams(window.location.search);
   const activeTabParam = urlSearchParams.get('activeTab');
-  const [ activeTab, setActiveTab ] = useState(activeTabParam ? tabs.indexOf(activeTabParam) : 0);
+  let activeTabIndex = 0
+  if (activeTabParam && tabs.indexOf(activeTabParam) > 0) {
+    activeTabIndex = tabs.indexOf(activeTabParam);
+  }
+  const [ activeTab, setActiveTab ] = useState(activeTabIndex);
 
   let qFilter = '';
 

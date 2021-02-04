@@ -94,7 +94,8 @@ function SubjectView(props) {
         setTabsLoading(false);
 
         if (activeTabParam && result.rows.length > 0) {
-          setActiveTab(result.rows.indexOf(result.rows.find(element => element["@name"] === activeTabParam)));
+          let activeTabIndex = result.rows.indexOf(result.rows.find(element => element["@name"] === activeTabParam));
+          activeTabIndex > 0 && setActiveTab(activeTabIndex);
         }
       })
   }
