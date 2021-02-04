@@ -831,11 +831,6 @@
 					<value>list</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
 				<node>
 					<name>Patient-reported not taking</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
