@@ -188,10 +188,6 @@ export default function VariantFilesContainer() {
     (function loop(i) {
         if (i < chosenFiles.length) new Promise((resolve, reject) => {
           let file = chosenFiles[i];
-          if (file.name.includes("'")) {
-            setError("File name " + file.name + " contains special character <'> that is not allowed");
-            return;
-          }
 
           let parsed = file.name.split('.csv')[0].split('_');
           if (parsed.length < 2 || parsed[0] == "" || parsed[1] == "") {
