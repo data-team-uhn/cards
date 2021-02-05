@@ -19,6 +19,8 @@
 import PropTypes from 'prop-types';
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import { appTheme } from "../themePalette.jsx";
 import Sidebar from "./Sidebar/sidebar"
 import { getRoutes } from '../routes';
 import { withStyles } from '@material-ui/core';
@@ -101,6 +103,7 @@ class Main extends React.Component {
     const { classes, ...rest } = this.props;
 
     return (
+      <MuiThemeProvider theme={appTheme}>
       <React.Fragment>
       <GlobalLoginContext.Provider
         value={{
@@ -169,6 +172,7 @@ class Main extends React.Component {
         </div>
       </GlobalLoginContext.Provider>
       </React.Fragment>
+      </MuiThemeProvider>
     );
   }
 }

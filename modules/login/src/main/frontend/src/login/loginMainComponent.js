@@ -21,6 +21,8 @@ import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
 
 import { Button, Grid, Paper, Tooltip, Typography, withStyles } from '@material-ui/core';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import { appTheme } from "../themePalette.jsx";
 
 import styles from "../styling/styles";
 
@@ -47,6 +49,7 @@ class MainLoginContainer extends React.Component {
     const { classes, selfContained } = this.props;
 
     return (
+      <MuiThemeProvider theme={appTheme}>
       <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
         <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
           <Grid item>
@@ -88,6 +91,7 @@ class MainLoginContainer extends React.Component {
           }
         </Grid>
       </Paper>
+      </MuiThemeProvider>
     );
   }
 }
