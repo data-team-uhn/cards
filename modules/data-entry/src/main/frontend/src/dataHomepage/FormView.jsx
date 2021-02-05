@@ -75,12 +75,8 @@ function FormView(props) {
   ]
 
   const tabs = ["Completed", "Draft"];
-  const urlSearchParams = new URLSearchParams(window.location.search);
-  const activeTabParam = urlSearchParams.get('activeTab');
-  let activeTabIndex = 0
-  if (activeTabParam && tabs.indexOf(activeTabParam) > 0) {
-    activeTabIndex = tabs.indexOf(activeTabParam);
-  }
+  const activeTabParam = location.hash.substr(1);
+  let activeTabIndex = Math.max(tabs.indexOf(activeTabParam), 0);
   const [ activeTab, setActiveTab ] = useState(activeTabIndex);
 
   let qFilter = '';
@@ -118,7 +114,7 @@ function FormView(props) {
         action={
           !expanded &&
           <Tooltip title="Expand">
-            <Link to={"/content.html/Forms" + "?activeTab=" + tabs[activeTab]}>
+            <Link to={"/content.html/Forms#" + tabs[activeTab]}>
               <IconButton>
                 <MoreHorizIcon/>
               </IconButton>

@@ -53,8 +53,7 @@ function SubjectView(props) {
   const [ tabsLoading, setTabsLoading ] = useState(null);
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
 
-  const urlSearchParams = new URLSearchParams(window.location.search);
-  const activeTabParam = urlSearchParams.get('activeTab');
+  const activeTabParam = location.hash.substr(1);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -119,7 +118,7 @@ function SubjectView(props) {
         action={
           !expanded &&
           <Tooltip title="Expand">
-            <Link to={"/content.html/Subjects" + ( subjectTypes.length > 0 ? "?activeTab=" + subjectTypes[activeTab]['@name'] : '' )}>
+            <Link to={"/content.html/Subjects#" + ( subjectTypes.length > 0 ? subjectTypes[activeTab]['@name'] : '' )}>
               <IconButton>
                 <MoreHorizIcon/>
               </IconButton>
