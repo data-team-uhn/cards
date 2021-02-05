@@ -8,7 +8,6 @@
   "uninstall": {
     "base": "/Vocabularies/"
   },
-  "local": "/Vocabularies.1.json",
   "recommender": {
     "base": "https://data.bioontology.org/recommender?"
   },

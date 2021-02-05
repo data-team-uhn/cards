@@ -79,6 +79,8 @@ export default function VocabulariesAdminPage() {
   */
   const [bioPortalApiKey, setBioPortalApiKey] = React.useState(null);
 
+  const localLink = '/query?query=' + encodeURIComponent(`select * from [lfs:Vocabulary]`);
+
   function processLocalVocabList(vocabList) {
     setLocalVocabList(vocabList);
     var tempObject = {};
@@ -171,7 +173,7 @@ export default function VocabulariesAdminPage() {
 
       <VocabularyDirectory 
         type="local"
-        link={vocabLinks["local"]}
+        link={localLink}
         vocabList={localVocabList}
         setVocabList={processLocalVocabList}
         acronymPhaseObject={acronymPhaseObject}

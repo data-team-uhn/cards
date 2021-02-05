@@ -49,26 +49,14 @@ const useStyles = makeStyles(theme => ({
   This allows for the reusing of the same code to display a table for both the local and remote vocabularies.
 */
 function reformat(data) {
-  Object.filter = (obj, predicate) => Object.keys(obj)
-                                     .filter( key => predicate(obj[key]) )
-                                     .reduce( (res, key) => (res[key] = obj[key], res), {} );
-  var filtered = Object.filter(data, (val) => ((typeof val) == "object") && 
-                                     (val.hasOwnProperty("jcr:primaryType")) && 
-                                     (val["jcr:primaryType"] === "lfs:Vocabulary"));
-  // Filtered contains all properties of type object that have jcr:primaryType = lfs:Vocabulary
-  var vocabularies = [];
-  // The released date is currently not stored in the local version of the vocabularies. That needs to be changed.
-  Object.keys(filtered).map((key) => vocabularies.push({
-    ontology: {
-      acronym: key,
-      name: filtered[key]["name"]
-    },
-    version: filtered[key]["version"],
-    released: filtered[key]["jcr:created"],
-    description: filtered[key]["description"],
-    source: filtered[key]["source"]
-  }));
-  return vocabularies;
+  data.map((vocabulary) =>  {
+      vocabulary.ontology = {
+        acronym: vocabulary["identifier"],
+        name: vocabulary["name"]
+      };
+      vocabulary.released = vocabulary["jcr:created"];
+  });
+  return data;
 }
 
 // Requests list of Vocabularies from Bioontology API. Currently only renders a table to display items if they are form the remote source
@@ -94,7 +82,7 @@ export default function VocabularyDirectory(props) {
       if (props.type === "remote") {
         props.setVocabList(data);
       } else if (props.type === "local") {
-        props.setVocabList(reformat(data));
+        props.setVocabList(reformat(data.rows));
       }
     })
     .catch(function(error) {
