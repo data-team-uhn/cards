@@ -812,7 +812,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         } catch (PersistenceException e) {
             LOGGER.warn("Failed to create new subject {}: {}", subjectKey, e.getMessage(), e);
         } catch (RepositoryException e) {
-            LOGGER.warn("Failed to checking new subject {}: {}", subjectKey, e.getMessage(), e);
+            LOGGER.warn("Failed to check in new subject {}: {}", subjectKey, e.getMessage(), e);
         }
         return null;
     }

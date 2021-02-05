@@ -32,9 +32,9 @@ import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
 
 /**
- * A sample {@link Editor} that updates the jcr:lastModified and
+ * An {@link Editor} that updates the jcr:lastModified and
  * jcr:lastModifiedBy properties with the date/time and the username
- * of the last check-in or check-out operation.
+ * of the last check-in operation.
  *
  * @version $Id$
  */
