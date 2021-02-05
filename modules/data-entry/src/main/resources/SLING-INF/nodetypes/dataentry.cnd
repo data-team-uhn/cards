@@ -290,7 +290,7 @@
 // A conditional group is a set of conditions that can be imposed on e.g. the display of a section.
 // The conditions are listed as children of this, and may be turned from an OR to an AND via the
 // `requireAll` property.
-[lfs:ConditionalGroup] > sling:Resource
+[lfs:ConditionalGroup] > sling:Folder
   // Attributes
 
   // Conditionals are queryable
@@ -307,11 +307,11 @@
   - requireAll (BOOLEAN) = false mandatory autocreated
 
   // This conditional may contain any number of conditionals or conditional groups
-  + * (lfs:ConditionalGroup, lfs:Conditional) = lfs:Question
+  + * (lfs:Conditional, lfs:ConditionalGroup) = lfs:Conditional
 
 //-----------------------------------------------------------------------------
 // A conditional is a condition that can be imposed on e.g. the display of a section.
-[lfs:Conditional] > sling:Resource
+[lfs:Conditional] > sling:Folder
   // Attributes
 
   // Conditionals are queryable
