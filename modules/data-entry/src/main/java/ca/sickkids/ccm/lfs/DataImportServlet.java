@@ -834,8 +834,8 @@ public class DataImportServlet extends SlingAllMethodsServlet
         }
 
         String result = null;
-        String[] suffices = { "", " ID" };
-        for (String suffix : suffices) {
+        String[] suffixes = { "", " ID" };
+        for (String suffix : suffixes) {
             try {
                 result = row.get(label + suffix);
                 if (StringUtils.isNotBlank(result)) {
