@@ -44,24 +44,7 @@ class UsersManager extends React.Component {
       deployCreateUser: false,
       deployDeleteUser: false,
       deployChangeUserPassword: false,
-      isAdmin: false,
-      isLoading: true,
     };
-  }
-
-  componentDidMount() {
-    // Determine whether or not we are the admin user
-    fetch("/system/sling/info.sessionInfo.json")
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((sessionInfo) => {
-        let username = sessionInfo["userID"].toLowerCase();
-        if (this.props.users.find((user) => user["name"].toLowerCase() == username)?.["isAdmin"]) {
-          this.setState( {isAdmin: true} );
-        } else {
-          this.setState( {currentUserName: sessionInfo["userID"]});
-        }
-      })
-      .finally(() => this.setState( {isLoading: false} ));
   }
 
   getUserGroups (userGroups){
@@ -112,27 +95,6 @@ class UsersManager extends React.Component {
   render() {
     const { classes, history } = this.props;
     const headerBackground = this.props.theme.palette.grey['200'];
-
-    // Wait to figure out whether or not we are an admin
-    if (this.state.isLoading) {
-      return (<></>);
-    }
-
-    if (!this.state.isAdmin) {
-      return (
-        <>
-          <ChangeUserPasswordDialogue
-            isOpen={true}
-            handleClose={() => {
-              this.setState({deployChangeUserPassword: false});
-              history.push("/content.html/Questionnaires/User");
-            }}
-            name={this.state.currentUserName}
-            requireOldPassword
-            />
-        </>
-      );
-    }
 
     return (
       <div>
