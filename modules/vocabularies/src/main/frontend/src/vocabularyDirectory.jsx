@@ -64,10 +64,10 @@ export default function VocabularyDirectory(props) {
   const [curStatus, setCurStatus] = React.useState(Status["Init"]);
 
   // Function that fetches list of Vocabularies from Bioontology API
-  function getVocabList(url) {
+  function getVocabList() {
     setCurStatus(Status["Loading"]);
     var badResponse = false;
-    fetch(url)
+    fetch(props.link)
     .then((response) => {
       var code = response.status;
       if (code >= 400) {
@@ -91,7 +91,6 @@ export default function VocabularyDirectory(props) {
       props.setErrorModal(true);
       setCurStatus(Status["Error"]);
       badResponse = true;
-      props.setErrorModal(true);
     })
     .finally(function() {
       if (!badResponse) {
@@ -101,7 +100,7 @@ export default function VocabularyDirectory(props) {
   }
 
   if (curStatus == Status["Init"] && props.link !== "") {
-    getVocabList(props.link);
+    getVocabList();
   }
 
   // TODO: load vocab list when API key changes
