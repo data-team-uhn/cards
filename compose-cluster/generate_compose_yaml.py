@@ -266,7 +266,10 @@ yaml_obj['services']['proxy'] = {}
 yaml_obj['services']['proxy']['build'] = {}
 yaml_obj['services']['proxy']['build']['context'] = "proxy"
 
-yaml_obj['services']['proxy']['ports'] = ["8080:80"]
+if SSL_PROXY:
+	yaml_obj['services']['proxy']['ports'] = ["443:443"]
+else:
+	yaml_obj['services']['proxy']['ports'] = ["8080:80"]
 
 yaml_obj['services']['proxy']['networks'] = {}
 yaml_obj['services']['proxy']['networks']['internalnetwork'] = {}
