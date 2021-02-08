@@ -49,6 +49,6 @@
     <module>variants</module>
     <module>demo-banner</module>
     <module>aggregated-frontend</module>
-    <module>last-modified-property</module>
+    <module>versioning</module>
   </modules>
 </project>
