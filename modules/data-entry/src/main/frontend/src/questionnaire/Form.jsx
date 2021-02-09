@@ -114,27 +114,15 @@ function Form (props) {
 
   useEffect(() => {
     if (isEdit) {
-      function performCheckIn() {
-        let checkinForm = new FormData();
-        checkinForm.set(":operation", "checkin");
-        fetchWithReLogin(globalLoginDisplay, formURL, {
-          method: "POST",
-          body: checkinForm
-        });
-      }
-
       function removeBeforeUnloadHandlers() {
-        window.removeEventListener("beforeunload", saveData);
-        window.removeEventListener("beforeunload", performCheckIn);
+        window.removeEventListener("beforeunload", saveDataWithCheckin);
       }
       setRemoveWindowHandlers(() => removeBeforeUnloadHandlers);
-      window.addEventListener("beforeunload", saveData);
-      window.addEventListener("beforeunload", performCheckIn);
+      window.addEventListener("beforeunload", saveDataWithCheckin);
       // When component unmounts:
       return (() => {
         // cleanup event handler
-        window.removeEventListener("beforeunload", saveData);
-        window.removeEventListener("beforeunload", performCheckIn);
+        window.removeEventListener("beforeunload", saveDataWithCheckin);
       });
     }
   }, [isEdit]);
@@ -175,7 +163,7 @@ function Form (props) {
   };
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
-  let saveData = (event) => {
+  let saveData = (event, performCheckin) => {
     // This stops the normal browser form submission
     event && event.preventDefault();
     if (!formNode.current) {
@@ -184,6 +172,9 @@ function Form (props) {
 
     setSaveInProgress(true);
     let data = new FormData(formNode.current);
+    if (performCheckin) {
+        data.append(":checkinSave", "true");
+    }
     return fetchWithReLogin(globalLoginDisplay, formURL, {
       method: "POST",
       body: data,
@@ -214,6 +205,10 @@ function Form (props) {
         setLastSaveStatus(undefined);
     })
     .finally(() => {formNode?.current && setSaveInProgress(false)});
+  }
+
+  let saveDataWithCheckin = (event) => {
+      return saveData(event, true);
   }
 
   // Handle when the subject of the form changes
