@@ -52,12 +52,8 @@ const styles = theme => ({
     marginLeft: theme.spacing(2)
   },
   submit: {
-    backgroundColor: "#002244 !important", // Midnight blue, matches the DATA logo
     marginTop: theme.spacing(3),
     width: "auto !important",
-    "&:hover" : {
-      backgroundColor: "#002266 !important",
-    },
   },
   closeButton: {
     float: 'right',
