@@ -60,10 +60,10 @@ function generateRemoteLink(apiKey) {
 export default function VocabulariesAdminPage() {
   const [remoteVocabList, setRemoteVocabList] = React.useState([]);
   const [localVocabList, setLocalVocabList] = React.useState([]);
-  const [customApiKey, setCustomApiKey] = React.useState(null);
+  const [customApiKey, setCustomApiKey] = React.useState('');
   const [displayChangeKey, setDisplayChangeKey] = React.useState(false);
   /*
-    The following object will map Acronym -> Release Date for a vocabulary. 
+    The following object will map Acronym -> Release Date for a vocabulary.
     This allows for efficiently figuring out whether an installed vocabulary is up to date 
   */
   const [acronymDateObject, setAcronymDateObject] = React.useState({});
@@ -80,25 +80,24 @@ export default function VocabulariesAdminPage() {
   const [remoteLoaded, setRemoteLoaded] = React.useState(false);
   const [localLoaded, setLocalLoaded] = React.useState(false);
   const [displayTables, setDisplayTables] = React.useState(false);
-  const [showErrorModal, setShowErrorModal] = React.useState(false);
   /*
     Initially the key will be fetched from a script service.
   */
   const [bioPortalApiKey, setBioPortalApiKey] = React.useState(null);
-  // check if api key is from node
-  const [isFromNode, setIsFromNode] = React.useState(false);
 
   // function to create / edit node
-  function addNode(apiKey) {
-    // current creates a new BioportalApiKey node
-    // TODO: check if node exists already? (not sure if necessary, node seems to be replaced)
+  function addNewKey() {
     const URL = `/libs/lfs/conf/BioportalApiKey`
     var request_data = new FormData();
-    request_data.append('key', apiKey);
+    request_data.append('key', customApiKey);
     fetch(URL, { method: 'POST', body: request_data })
-      .then((response) => response.ok ? console.log("saved to node") : Promise.reject(response))
-      .catch(() => {
-        console.error("error creating node")
+      .then((response) => response.ok ? response : Promise.reject(response))
+      .then((data) => {
+          setBioPortalApiKey(customApiKey);
+          console.log("saved to node");
+        })
+      .catch((error) => {
+        console.error("error creating node: " + error)
         }
       )
   }
@@ -118,6 +117,12 @@ export default function VocabulariesAdminPage() {
   function processRemoteVocabList(vocabList) {
     setRemoteVocabList(vocabList);
     setRemoteLoaded(true);
+    var tempAcronymPhaseObject = {};
+    vocabList.map((vocab) => {
+      tempAcronymPhaseObject[vocab.ontology.acronym] = determinePhase(vocab.ontology.acronym, vocab.released)
+    });
+    setAcronymPhaseObject(tempAcronymPhaseObject);
+    setDisplayTables(true);
   }
 
   function addSetter(acronym, setFunction, type) {
@@ -167,54 +172,38 @@ export default function VocabulariesAdminPage() {
     return (remoteReleaseDate > localInstallDate ? Phase["Update Available"] : Phase["Latest"]);
   }
 
-  if (localLoaded && remoteLoaded && !displayTables) {
-    var tempAcronymPhaseObject = {};
-    remoteVocabList.map((vocab) => {
-      tempAcronymPhaseObject[vocab.ontology.acronym] = determinePhase(vocab.ontology.acronym, vocab.released)
-    });
-    setAcronymPhaseObject(tempAcronymPhaseObject);
-    setDisplayTables(true);
-  }
-
   function handleErrorModal(isError) {
     // show modal
-    setShowErrorModal(isError);
+    setError(isError);
   }
 
-  // useEffect - fetch new list when there is a new key.
   useEffect(() => {
-    // RESET STATES
-    setDisplayChangeKey(false);
-    // reload list
-    // setRemoteLoaded(false);
-    // setLocalLoaded(false);
-    // setDisplayTables(false);
-
     /* If the BioPortal API key cannot be loaded, assume the remote (empty)
       * data has been loaded.
       */
-    fetchBioPortalApiKey(setBioPortalApiKey, setIsFromNode, () => {
+    fetchBioPortalApiKey( (apiKey) => {
+        setBioPortalApiKey(apiKey);
+        setCustomApiKey(apiKey);
         setRemoteLoaded(true);
-        console.error("Can't fetch bioPortal API key");
+        setDisplayChangeKey(false);
+      }, () => {
+        setRemoteLoaded(true);
+        setDisplayChangeKey(true);
     });
   }, [bioPortalApiKey])
-
-  function addNewKey() {
-    // TODO: check if node is created successfully
-    // on fetch success, addNode and setBioPortalApiKey, refresh list
-    setBioPortalApiKey(customApiKey);
-    addNode(customApiKey);
-    // on fetch fail, 'handleErrorModal is called
-  }
 
   return (
     <Grid container direction="column" spacing={4} justify="space-between">
       <Grid item>
-        <Typography variant="h2">
+        <Typography variant="h6">
           Installed
         </Typography>
       </Grid>
-
+      { localVocabList.length == 0 &&
+          <Grid item>
+            <Typography color="textSecondary">No local vocabularies are installed yet.</Typography>
+          </Grid>
+       }
       <VocabularyDirectory 
         type="local"
         link={localLink}
@@ -226,76 +215,67 @@ export default function VocabulariesAdminPage() {
         addSetter={addSetter}
         setPhase={setPhase}
         apiKey={bioPortalApiKey}
-        setErrorModal={handleErrorModal}
       />
 
       <Grid item>
-        <Typography variant="h2">
+        <Typography variant="h6">
           Install from local file
         </Typography>
       </Grid>
-
-      <OwlInstaller updateLocalList={updateLocalList}/>
+      <Grid item>
+        <OwlInstaller updateLocalList={updateLocalList}/>
+      </Grid>
 
       <Grid item>
-        <Typography variant="h2">
+        <Typography variant="h6">
           Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
         </Typography>
       </Grid>
 
-      {bioPortalApiKey === null
-        ? (
-          <Grid>
-          <Grid item>
-            <Typography>Your system does not have a Bioportal API Key configured</Typography>
-            <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
-          </Grid>
-          <Grid item>
-            <Button color="primary" href="https://bioportal.bioontology.org/help#Getting_an_API_key">Get API Key</Button>
-          </Grid>
-          <Grid item>
+      { !bioPortalApiKey &&
+         <Grid item>
+           <Typography>Your system does not have a <a href="https://bioportal.bioontology.org/help#Getting_an_API_key" target="_blank">Bioportal API Key</a> configured.</Typography>
+           <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
+         </Grid>
+      }
+
+      <Grid item>
+        <Grid container
+          direction="row"
+          alignItems="center"
+          spacing={1}
+        >
+          <Grid item xs={6}>
             <TextField
-                 variant="outlined"
-                 onChange={(evt) => {setCustomApiKey(evt.target.value)}}
-                 value={customApiKey}
-                 name="customApiKey"
-                 label="Enter your Bioportal API key:"
-                 fullWidth={true}
+              InputProps={{
+                readOnly: !displayChangeKey,
+              }}
+              variant={displayChangeKey ? "outlined" : "filled" }
+              onChange={(evt) => {setCustomApiKey(evt.target.value)}}
+              value={customApiKey}
+              name="customApiKey"
+              label={ displayChangeKey ? "Enter new Bioportal API key:" : "Bioportal API key:" }
+              fullWidth={true}
             />
-            <Button color="primary" onClick={() => {addNewKey()}}>Submit</Button> 
           </Grid>
-          </Grid>
-        )
-        : (
-          <Grid>
-          {displayChangeKey
-            ? (
-              <Grid item>
-                <TextField
-                  variant="outlined"
-                  onChange={(evt) => {setCustomApiKey(evt.target.value)}}
-                  // below: value should have previous key already filled in
-                  value={customApiKey}
-                  name="customApiKey"
-                  label="Enter the new Bioportal API key:"
-                  fullWidth={true}
-                />
-                {/* TODO: update button should have same functionality as above submit button */}
-                <Button onClick={() => {addNewKey();}} color="primary">Update</Button>
-                <Button onClick={() => {setDisplayChangeKey(false)}} color="primary">Cancel</Button>
-              </Grid>
-            )
-            : (
-              <Grid item>
-                <Typography>API Key: {bioPortalApiKey}</Typography>
-                <Button onClick={() => {setDisplayChangeKey(true)}} color="primary">Change</Button> 
-              </Grid>
-            )
+          <Grid item>
+            { !displayChangeKey && bioPortalApiKey &&
+              <Button variant="contained" color="primary" onClick={() => {setDisplayChangeKey(true);}}>Change</Button>
             }
           </Grid>
-        )
-      }
-       
+          <Grid item>
+            { displayChangeKey &&
+              <Button color="primary" disabled={!customApiKey} variant="contained" onClick={() => {addNewKey();}}>Submit</Button>
+            }
+          </Grid>
+          <Grid item>
+            { displayChangeKey && bioPortalApiKey &&
+              <Button color="default" variant="contained" onClick={() => {setDisplayChangeKey(false);}}>Cancel</Button>
+            }
+          </Grid>
+        </Grid>
+      </Grid>
+
       <VocabularyDirectory 
         type="remote"
         link={generateRemoteLink(bioPortalApiKey)}
@@ -307,14 +287,7 @@ export default function VocabulariesAdminPage() {
         updateLocalList={updateLocalList}
         addSetter={addSetter}
         apiKey={bioPortalApiKey}
-        setErrorModal={handleErrorModal}
       />
-
-      <Dialog open={showErrorModal} onClose={() => { setShowErrorModal(false); }}>
-        <DialogContent>
-          Could not access Bioportal services. The API Key {customApiKey} appears to be invalid.
-        </DialogContent>
-      </Dialog>
     </Grid>
   );
 }

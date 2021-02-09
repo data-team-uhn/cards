@@ -20,29 +20,15 @@
 import React, {useEffect} from "react";
 
 import { 
-  Button, 
-  Grid, 
+  Button,
+  Grid,
   LinearProgress,
-  makeStyles,
-  Typography 
+  Typography
 } from "@material-ui/core";
 
 import VocabularyTable from "./vocabularyTable";
 
 const Status = require("./statusCodes.json");
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  button: {
-    margin: theme.spacing(1),
-    textTransform: "none",
-    color: "white",
-    borderRadius: 3,
-    border: 0
-  }
-}));
 
 /*
   This function reformats the data from the local source into the format of data from the remote source. 
@@ -68,16 +54,7 @@ export default function VocabularyDirectory(props) {
     setCurStatus(Status["Loading"]);
     var badResponse = false;
     fetch(props.link)
-    .then((response) => {
-      var code = response.status;
-      if (code >= 400) {
-        badResponse = true;
-        setCurStatus(Status["Error"]);
-        return Promise.reject(response);
-      }
-      return response;
-    })
-    .then(response => response.json())
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then(function(data) {
 
       if (props.type === "remote") {
@@ -86,34 +63,29 @@ export default function VocabularyDirectory(props) {
         props.setVocabList(reformat(data.rows));
       }
     })
-    .catch(function(error) {
-      // ERROR MODAL
-      props.setErrorModal(true);
+    .catch((error) => {
       setCurStatus(Status["Error"]);
       badResponse = true;
     })
-    .finally(function() {
+    .finally(() =>{
       if (!badResponse) {
         setCurStatus(Status["Loaded"]);
       }
     });
   }
 
-  if (curStatus == Status["Init"] && props.link !== "") {
+  if (curStatus == Status["Init"] && props.link) {
     getVocabList();
   }
 
-  // TODO: load vocab list when API key changes
-  // useEffect(() => {
-  //   setCurStatus(Status["Init"]);
-  // }, [props.apiKey])
-
-  const classes = useStyles();
+  useEffect(() => {
+    getVocabList();
+  }, [props.link])
 
   return(
     <React.Fragment>
     {(curStatus == Status["Loading"]) && (
-      <Grid item className={classes.root}>
+      <Grid item>
         <LinearProgress color={(props.type === "remote" ? "primary" : "secondary" )} />
       </Grid>
     )}
@@ -121,15 +93,18 @@ export default function VocabularyDirectory(props) {
       <React.Fragment>
         <Grid item>
           <Typography color="error">
-            The list of Bioportal vocabularies is currently inaccessible
+            The list of Bioportal vocabularies is currently inaccessible.
           </Typography>
-
-          <Button variant="contained" color="primary" className={classes.button} onClick={getVocabList}>
+          { props.apiKey && <Typography color="error">
+            Could not access Bioportal services. The API Key {props.apiKey} appears to be invalid.
+          </Typography>}
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary" onClick={getVocabList}>
             <Typography variant="button">Retry</Typography>
           </Button>
         </Grid>
       </React.Fragment>
-     
     )}
     {(curStatus == Status["Loaded"] && props.displayTables) && (
       <VocabularyTable

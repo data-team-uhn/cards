@@ -21,14 +21,13 @@ const APIKEY_SERVLET_URL = "/Vocabularies.bioportalApiKey";
 
 const JSON_KEY = "apikey";
 
-export default function fetchBioPortalApiKey(func, isNode, errorHandler) {
+export default function fetchBioPortalApiKey(func, errorHandler) {
   // Parse the response from our FilterServlet
   let parseKey = (keyJson) => {
     if (!keyJson[JSON_KEY]) {
       throw "no API key in APIKEY servlet response";
     }
     func(keyJson[JSON_KEY]);
-    isNode(keyJson[isNode]); // todo: send bool also, not sure if working
   }
 
   fetch(APIKEY_SERVLET_URL)

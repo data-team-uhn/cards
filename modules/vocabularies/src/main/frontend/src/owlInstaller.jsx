@@ -31,16 +31,12 @@ import {
 const Status = require("./statusCodes.json");
 
 const useStyles = makeStyles(theme => ({
-  owlInstaller: {
-    textTransform: "none"
-  },
   buttonProgress: {
     top: "50%",
     left: "50%",
     position: "absolute",
     marginTop: -12,
-    marginLeft: -12,
-    textTransform: "none"
+    marginLeft: -12
   },
   install: {
     background: theme.palette.success.main,
@@ -75,10 +71,6 @@ const useStyles = makeStyles(theme => ({
     "&:hover": {
       background: theme.palette.warning.dark
     }
-  },
-  wrapper: {
-    position: "relative",
-    display: "inline-block"
   }
 }));
 
@@ -86,48 +78,47 @@ export default function OwlInstaller(props) {
 
   const classes = useStyles();
 
-  let [ phase, setPhase ] = useState("Install");
+  let [ phase, setPhase ] = useState("install");
   let [ owlSelected, setOwlSelected ] = useState("Select File");
   let [ owlIdentifier, setOwlIdentifier ] = useState("");
   let [ owlName, setOwlName ] = useState("");
   let [ owlVersion, setOwlVersion ] = useState("");
 
-  let disableInstall = (phase != "Install")
+  let disableInstall = (phase != "install")
       || (owlSelected == "Select File")
       || (owlIdentifier == "")
       || (owlName == "")
       || (owlVersion == "");
 
   let handleSubmit = (event) => {
+    setPhase("installing");
+    event.preventDefault();
+
     const form = event.target;
     fetch(form.action, {
       method: form.method,
       body: new FormData(form)
     })
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((res) => {
-        if (!res.ok) {
-            throw new Error("Server Ontology Error");
-        } else {
-            setPhase("Installed");
-            setOwlSelected("Select File");
-            setOwlIdentifier("");
-            setOwlName("");
-            setOwlVersion("");
-            props.updateLocalList("add", {
-                source: "fileupload",
-                version: owlVersion,
-                released: new Date().toISOString(),
-                ontology: {
-                    acronym: owlIdentifier,
-                    name: owlName
-                    }
+        setPhase("installed");
+        setOwlSelected("Select File");
+        setOwlIdentifier("");
+        setOwlName("");
+        setOwlVersion("");
+        props.updateLocalList("add", {
+            source: "fileupload",
+            version: owlVersion,
+            released: new Date().toISOString(),
+            ontology: {
+                acronym: owlIdentifier,
+                name: owlName
                 }
-            );
-        }
+            }
+        );
     })
-    .catch((err) => { setPhase("Failed") });
-    setPhase("Installing");
-    event.preventDefault();
+    .catch((err) => { setPhase("failed") });
+    
   }
 
   return(
@@ -140,7 +131,6 @@ export default function OwlInstaller(props) {
       >
         <Grid container
           direction="row"
-          justify="center"
           alignItems="center"
           spacing={1}
         >
@@ -151,13 +141,13 @@ export default function OwlInstaller(props) {
                 id="owl-file"
                 name="filename"
                 onChange={() => {setOwlSelected("File Selected")}}
-                type={(phase == "Install") ? "file" : "button"}
+                type={(phase == "install") ? "file" : "button"}
               />
-              <Tooltip title={(phase == "Install") ? "Select a vocabulary to install" : ""}>
+              <Tooltip title={(phase == "install") ? "Select a vocabulary to install" : ""}>
                 <Button
-                  disabled={(phase == "Installing")}
+                  disabled={(phase == "installing")}
                   variant="contained"
-                  onClick={() => {setPhase("Install")}}
+                  onClick={() => {setPhase("install")}}
                   color="primary"
                   component="span">
                     {owlSelected}
@@ -167,134 +157,77 @@ export default function OwlInstaller(props) {
           </Grid>
 
           <Grid item>
-            {(phase == "Installing") ?
-              (<TextField
-                 disabled
+            <TextField
+                 disabled={(phase == "installing") || (owlSelected == "Select File")}
                  variant="outlined"
-                 onChange={(evt) => {setOwlIdentifier(evt.target.value)}}
-                 value={owlIdentifier}
-                 name="identifier"
-                 label="Identifier"
-               />)
-              :
-              (<TextField
-                 variant="outlined"
-                 error={(owlIdentifier == "")}
+                 error={(phase != "installing") && (owlIdentifier == "") && (owlSelected != "Select File")}
                  onChange={(evt) => {
                    setOwlIdentifier(evt.target.value);
-                   setPhase("Install")
+                   setPhase("install");
                  }}
                  value={owlIdentifier}
                  name="identifier"
                  label="Identifier"
-               />)
-            }
+                 size="small"
+             />
           </Grid>
           <Grid item>
-            {(phase == "Installing") ?
-              (<TextField
-                 disabled
+            <TextField
+                 disabled={(phase == "installing") || (owlSelected == "Select File")}
                  variant="outlined"
-                 onChange={(evt) => {setOwlName(evt.target.value)}}
-                 value={owlName}
-                 name="vocabName"
-                 label="Name"
-               />)
-              :
-              (<TextField
-                 variant="outlined"
-                 error={(owlName == "")}
+                 error={(phase != "installing") && (owlName == "") && (owlSelected != "Select File")}
                  onChange={(evt) => {
                    setOwlName(evt.target.value);
-                   setPhase("Install")
+                   setPhase("install");
                  }}
                  value={owlName}
                  name="vocabName"
                  label="Name"
-               />)
-            }
+                 size="small"
+             />
           </Grid>
           <Grid item>
-            {(phase == "Installing") ?
-              (<TextField
-                 disabled
+            <TextField
+                 disabled={(phase == "installing") || (owlSelected == "Select File")}
                  variant="outlined"
-                 onChange={(evt) => {setOwlVersion(evt.target.value)}}
-                 value={owlVersion}
-                 name="version"
-                 label="Version"
-               />)
-              :
-              (<TextField
-                 variant="outlined"
-                 error={(owlVersion == "")}
+                 error={(phase != "installing") && (owlVersion == "") && (owlSelected != "Select File")}
                  onChange={(evt) => {
                    setOwlVersion(evt.target.value);
-                   setPhase("Install")
+                   setPhase("install");
                  }}
                  value={owlVersion}
                  name="version"
                  label="Version"
-              />)
-            }
+                 size="small"
+             />
           </Grid>
 
           <Grid item>
             <label htmlFor="owl-install">
-              <input style={{ display: 'none' }} id="owl-install" name="owl-install" type={disableInstall ? "button" : "submit"}/>
-                <Tooltip title={(phase == "Install") ? "Install this vocabulary" : ""}>
-                  <span className={classes.wrapper}>
-                      {(phase == "Install") &&
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          component="span"
-                          disabled={disableInstall}
-                          className={classes.owlInstaller + " " + classes.install}
-                        >
-                          {phase}
-                        </Button>
-                      }
-                      {(phase == "Installed") &&
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          component="span"
-                          className={classes.owlInstaller + " " + classes.installed}
-                        >
-                          {phase}
-                        </Button>
-                      }
-                      {(phase == "Failed") &&
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          component="span"
-                          className={classes.owlInstaller + " " + classes.failed}
-                        >
-                          {phase}
-                        </Button>
-                      }
-                      {(phase == "Installing") &&
-                        <Button
-                          disabled
-                          variant="contained"
-                          color="primary"
-                          component="span"
-                          className={classes.owlInstaller}
-                        >
-                          {phase}
-                        </Button>
-                      }
-                      {(phase == "Installing") &&
-                        <CircularProgress
-                          size={24}
-                          className={classes.buttonProgress + " " + classes.installingColor}
-                        />
-                      }
-                  </span>
-                </Tooltip>
+              <input
+                style={{ display: 'none' }}
+                id="owl-install"
+                name="owl-install"
+                type={disableInstall ? "button" : "submit"}
+              />
+              <Tooltip title={(phase == "install") ? "Install this vocabulary" : ""}>
+                <Button
+                   variant="contained"
+                   color="primary"
+                   component="span"
+                   disabled={(phase == "installing") || (phase == "install" && disableInstall)}
+                   className={classes[phase]}
+                >
+                  {phase}
+                </Button>
+              </Tooltip>
             </label>
+            { (phase == "installing") &&
+               <CircularProgress
+                  size={24}
+                  className={classes.buttonProgress + " " + classes.installingColor}
+                />
+             }
           </Grid>
         </Grid>
       </form>
