@@ -45,13 +45,6 @@ const useStyles = makeStyles(theme => ({
       background: theme.palette.success.dark
     }
   },
-  installed: {
-    background: theme.palette.success.dark,
-    color: theme.palette.success.contrastText,
-    "&:hover": {
-      background: theme.palette.success.dark
-    }
-  },
   failed: {
     background: theme.palette.error.main,
     color: theme.palette.error.contrastText,
@@ -101,24 +94,14 @@ export default function OwlInstaller(props) {
     })
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((res) => {
-        setPhase("installed");
+        setPhase("install");
         setOwlSelected("Select File");
         setOwlIdentifier("");
         setOwlName("");
         setOwlVersion("");
-        props.updateLocalList("add", {
-            source: "fileupload",
-            version: owlVersion,
-            released: new Date().toISOString(),
-            ontology: {
-                acronym: owlIdentifier,
-                name: owlName
-                }
-            }
-        );
+        props.reloadVocabList();
     })
     .catch((err) => { setPhase("failed") });
-    
   }
 
   return(

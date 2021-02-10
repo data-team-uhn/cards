@@ -190,11 +190,11 @@ export default function Search(props) {
       <Grid item>
         {(filterTable ?
         <React.Fragment> 
-          <Typography variant="h3">Browse vocabularies matching </Typography>
-          <Typography variant="h3" className={classes.keywords}>{lastSearch}</Typography>
+          <Typography variant="h6">Browse vocabularies matching </Typography>
+          <Typography variant="h6" className={classes.keywords}>{lastSearch}</Typography>
         </React.Fragment> 
         : 
-        <Typography variant="h3">Browse All</Typography>)}
+        <Typography variant="h6">Browse All</Typography>)}
       </Grid>
     </React.Fragment>
   );

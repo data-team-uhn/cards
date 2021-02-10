@@ -31,18 +31,20 @@ import VocabularyTable from "./vocabularyTable";
 const Status = require("./statusCodes.json");
 
 /*
-  This function reformats the data from the local source into the format of data from the remote source. 
-  This allows for the reusing of the same code to display a table for both the local and remote vocabularies.
+  This function reformats the vocab data for more light unified representation.
 */
-function reformat(data) {
-  data.map((vocabulary) =>  {
-      vocabulary.ontology = {
-        acronym: vocabulary["identifier"],
-        name: vocabulary["name"]
-      };
-      vocabulary.released = vocabulary["jcr:created"];
-  });
-  return data;
+function reformat(data, type) {
+  let vocabs = [];
+  data.map(vocab =>  vocabs.push({
+          status: vocab.status,
+          acronym: type == "remote" ? vocab.ontology.acronym : vocab.identifier,
+          name: type == "remote" ? vocab.ontology.name : vocab.name,
+          source: vocab.source,
+          description: vocab.description,
+          released: type == "remote" ? vocab.released : vocab["jcr:created"],
+          version: vocab.version
+   }));
+   return vocabs;
 }
 
 // Requests list of Vocabularies from Bioontology API. Currently only renders a table to display items if they are form the remote source
@@ -58,9 +60,9 @@ export default function VocabularyDirectory(props) {
     .then(function(data) {
 
       if (props.type === "remote") {
-        props.setVocabList(data);
+        props.setVocabList(reformat(data, props.type));
       } else if (props.type === "local") {
-        props.setVocabList(reformat(data.rows));
+        props.setVocabList(reformat(data.rows, props.type));
       }
     })
     .catch((error) => {
@@ -79,8 +81,8 @@ export default function VocabularyDirectory(props) {
   }
 
   useEffect(() => {
-    getVocabList();
-  }, [props.link])
+    !props.loaded && getVocabList();
+  }, [props.loaded])
 
   return(
     <React.Fragment>

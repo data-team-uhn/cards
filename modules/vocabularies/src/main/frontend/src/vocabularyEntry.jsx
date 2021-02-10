@@ -72,15 +72,16 @@ const StyledTableCell = withStyles(theme => ({
   Then it renders an action button and an about button. It also renders a dialog box for any installation / uninstallation errors
 */
 export default function VocabularyEntry(props) {
-  // The following facillitates the usage of the same code to report errors for both installation and uninstallation
+  const { vocabulary, updatePhase, updateLocalList, hidden, initPhase } = props;
+  // The following facilitates the usage of the same code to report errors for both installation and uninstallation
   const [error, setError] = React.useState(false);
   const [action, setAction] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
 
-  const [phase, setPhase] = React.useState(props.initPhase);
+  const [phase, setPhase] = React.useState(initPhase);
 
   const classes = useStyles();
-  const date = new Date(props.released);
+  const date = new Date(vocabulary.released);
   const bodyTypography = Config["tableBodyTypography"];
 
   const handleClose = () => {setError(false)};
@@ -88,10 +89,10 @@ export default function VocabularyEntry(props) {
   function install() {
     const oldPhase = phase;
     var badResponse = false;
-    props.setPhase(Phase["Installing"]);
+    updatePhase(vocabulary.acronym, Phase["Installing"]);
 
     fetch(
-      vocabLinks["install"]["base"] + "&identifier=" + props.acronym +
+      vocabLinks["install"]["base"] + "&identifier=" + vocabulary.acronym +
       Object.keys(vocabLinks["install"]["params"]).map(
         key => ("&" + key + "=" + vocabLinks["install"]["params"][key])
       ).join(""),
@@ -100,7 +101,7 @@ export default function VocabularyEntry(props) {
     .then((resp) => resp.json())
     .then((resp) => {
       if(!resp["isSuccessful"]) {
-        props.setPhase(oldPhase);
+        updatePhase(vocabulary.acronym, oldPhase);
         setAction("Install");
         setErrorMessage(resp["error"]);
         setError(true);
@@ -108,20 +109,17 @@ export default function VocabularyEntry(props) {
       }
     })
     .catch(function(error) {
-      props.setPhase(oldPhase);
+      updatePhase(vocabulary.acronym, oldPhase);
       setAction("Install");
       setErrorMessage(error);
       setError(true);
       badResponse = true;
     })
     .finally(function() {
-      if(!badResponse) {
-        if (oldPhase === Phase["Update Available"]) {
-          props.updateLocalList("update");
-        } else {
-          props.updateLocalList("add");
-        }
-        props.setPhase(Phase["Latest"]);
+      if (!badResponse) {
+        vocabulary.released = new Date();
+        updateLocalList("add", vocabulary);
+        updatePhase(vocabulary.acronym, Phase["Latest"]);
       }
     });
   }
@@ -129,13 +127,13 @@ export default function VocabularyEntry(props) {
   function uninstall() {
     const oldPhase = phase;
     var badResponse = false;
-    props.setPhase(Phase["Uninstalling"]);
+    updatePhase(vocabulary.acronym, Phase["Uninstalling"]);
 
-    fetch(vocabLinks["uninstall"]["base"] + props.acronym, {method: "DELETE"})
+    fetch(vocabLinks["uninstall"]["base"] + vocabulary.acronym, {method: "DELETE"})
     .then((resp) => {
       const code = resp.status;
       if(Math.floor(code/100) !== 2) {
-        props.setPhase(oldPhase);
+        updatePhase(vocabulary.acronym, oldPhase);
         setAction("Uninstall");
         setErrorMessage("Error " + code + ": " + resp.statusText);
         setError(true);
@@ -144,7 +142,7 @@ export default function VocabularyEntry(props) {
       }
     })
     .catch(function(error) {
-      props.setPhase(oldPhase);
+      updatePhase(vocabulary.acronym, oldPhase);
       setAction("Uninstall");
       setErrorMessage(error);
       setError(true);
@@ -152,35 +150,33 @@ export default function VocabularyEntry(props) {
     })
     .finally(function() {
       if(!badResponse) {
-        props.updateLocalList("remove");
-        props.setPhase(Phase["Not Installed"]);
+        updateLocalList("remove", vocabulary);
+        updatePhase(vocabulary.acronym, Phase["Not Installed"]);
       }
     });
   }
-  React.useEffect(() => {props.addSetter(setPhase);},[0]);
-  
 
   return(
     <React.Fragment>
-      {(!props.hidden) && (
+      {(!hidden) && (
       <React.Fragment>
         <StyledTableRow>
 
           <TableCell component="th" scope="row" >
             <Typography variant={bodyTypography}>
-              {props.acronym}
+              {vocabulary.acronym}
             </Typography>
           </TableCell>
 
           <TableCell>
             <Typography variant={bodyTypography}>
-              {props.name}
+              {vocabulary.name}
             </Typography>
           </TableCell>
 
           <TableCell>
             <Typography variant={bodyTypography} noWrap>
-              {props.version}
+              {vocabulary.version}
             </Typography>
           </TableCell>
 
@@ -191,26 +187,21 @@ export default function VocabularyEntry(props) {
           </TableCell>
 
           <StyledTableCell>
-            {(phase != Phase["Other Source"]) &&
-            <React.Fragment>
-              <VocabularyAction
-                acronym={props.acronym}
-                install={install}
-                uninstall={uninstall}
-                phase={phase}
-              />
-
-              {(!(props?.source == "fileupload")) &&
+            <VocabularyAction
+              acronym={vocabulary.acronym}
+              install={install}
+              uninstall={uninstall}
+              phase={phase}
+            />
+            { vocabulary.description &&
               <VocabularyDetails
-                acronym={props.acronym}
+                acronym={vocabulary.acronym}
                 install={install}
                 uninstall={uninstall}
                 phase={phase}
-                name={props.name}
-                description={props.description}
+                name={vocabulary.name}
+                description={vocabulary.description}
               />
-              }
-            </React.Fragment>
             }
           </StyledTableCell>
 
@@ -226,8 +217,8 @@ export default function VocabularyEntry(props) {
           </DialogTitle>
 
           <DialogContent dividers>
-            <Typography variant="h6">{props.name}</Typography>
-            <Typography variant="subtitle2" gutterBottom>Version: {props.version}</Typography>
+            <Typography variant="h6">{vocabulary.name}</Typography>
+            <Typography variant="subtitle2" gutterBottom>Version: {vocabulary.version}</Typography>
             <Typography paragraph color="error">{errorMessage}</Typography>
           </DialogContent>
 

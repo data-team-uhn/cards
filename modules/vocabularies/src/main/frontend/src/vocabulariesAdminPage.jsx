@@ -58,16 +58,14 @@ function generateRemoteLink(apiKey) {
 }
 
 export default function VocabulariesAdminPage() {
+  /* All remote vocabularies */
   const [remoteVocabList, setRemoteVocabList] = React.useState([]);
+  /* Installed vocabularies */
   const [localVocabList, setLocalVocabList] = React.useState([]);
+  /* User input api key */
   const [customApiKey, setCustomApiKey] = React.useState('');
   const [displayChangeKey, setDisplayChangeKey] = React.useState(false);
   /*
-    The following object will map Acronym -> Release Date for a vocabulary.
-    This allows for efficiently figuring out whether an installed vocabulary is up to date 
-  */
-  const [acronymDateObject, setAcronymDateObject] = React.useState({});
-  /* 
     The Phase represents the state of Vocabulary. It can be 1 of:
       1) Not Installed
       2) Installing
@@ -76,7 +74,6 @@ export default function VocabulariesAdminPage() {
       5) Uninstalling
   */
   const [acronymPhaseObject, setAcronymPhaseObject] = React.useState({});
-  const [acronymPhaseSettersObject, setAcronymPhaseSettersObject] = React.useState({});
   const [remoteLoaded, setRemoteLoaded] = React.useState(false);
   const [localLoaded, setLocalLoaded] = React.useState(false);
   const [displayTables, setDisplayTables] = React.useState(false);
@@ -87,13 +84,14 @@ export default function VocabulariesAdminPage() {
 
   // function to create / edit node
   function addNewKey() {
-    const URL = `/libs/lfs/conf/BioportalApiKey`
+    const URL = `/libs/lfs/conf/BioportalApiKey`;
     var request_data = new FormData();
     request_data.append('key', customApiKey);
     fetch(URL, { method: 'POST', body: request_data })
       .then((response) => response.ok ? response : Promise.reject(response))
       .then((data) => {
           setBioPortalApiKey(customApiKey);
+          setRemoteLoaded(false);
           console.log("saved to node");
         })
       .catch((error) => {
@@ -106,49 +104,49 @@ export default function VocabulariesAdminPage() {
 
   function processLocalVocabList(vocabList) {
     setLocalVocabList(vocabList);
-    var tempObject = {};
-    vocabList.map((vocab) => {
-      tempObject[vocab.ontology.acronym] = vocab.released;
-    });
-    setAcronymDateObject(tempObject);
     setLocalLoaded(true);
   }
 
   function processRemoteVocabList(vocabList) {
     setRemoteVocabList(vocabList);
     setRemoteLoaded(true);
+  }
+
+  /* Set phases for the installed local vocabs once all vocabs are loaded
+     All others have the default not installed phase
+  */
+  function setPhases() {
     var tempAcronymPhaseObject = {};
-    vocabList.map((vocab) => {
-      tempAcronymPhaseObject[vocab.ontology.acronym] = determinePhase(vocab.ontology.acronym, vocab.released)
+
+    localVocabList.map((vocab) => {
+      tempAcronymPhaseObject[vocab.acronym] = Phase["Latest"]; // default
+
+      let remoteVocab = remoteVocabList.find(item => item.acronym == vocab.acronym);
+      if (remoteVocab && remoteVocab.released) {
+        const remoteReleaseDate = new Date(remoteVocab.released);
+        const localInstallDate = new Date(vocab.released);
+        if (remoteReleaseDate > localInstallDate) {
+          tempAcronymPhaseObject[vocab.acronym] = Phase["Update Available"];
+        }
+      }
     });
     setAcronymPhaseObject(tempAcronymPhaseObject);
+
     setDisplayTables(true);
   }
 
-  function addSetter(acronym, setFunction, type) {
-    var copy = acronymPhaseSettersObject;
-    if (copy.hasOwnProperty(acronym)) {
-      copy[acronym][type] = setFunction;
-    } else {
-      var temp = {};
-      temp[type] = setFunction;
-      copy[acronym] = temp;
-    }
-    setAcronymPhaseSettersObject(copy);
-  }
+  useEffect(() => {
+    localLoaded && remoteLoaded && setPhases();
+  }, [localLoaded, remoteLoaded])
 
   function setPhase(acronym, phase) {
-    const setters = acronymPhaseSettersObject[acronym];
-    if (setters.hasOwnProperty("local")) {
-      setters["local"](phase);
-    }
-    if (setters.hasOwnProperty("remote")) {
-      setters["remote"](phase);
-    }
+    let phases = acronymPhaseObject;
+    phases[acronym] = phase;
+    setAcronymPhaseObject(phases);
   }
 
   function updateLocalList(action, vocab) {
-    const acronym = vocab.ontology.acronym;
+    const acronym = vocab.acronym;
 
     if (action === "add") {
       var tempLocalVocabList = localVocabList.slice();
@@ -156,20 +154,11 @@ export default function VocabulariesAdminPage() {
       setLocalVocabList(tempLocalVocabList);
 
     } else if (action === "remove") {
-      var copy = acronymPhaseSettersObject;
-      delete copy[acronym]["local"];
-      setAcronymPhaseSettersObject(copy);
-      setLocalVocabList(localVocabList.filter((vocab) => vocab.ontology.acronym != acronym));
+      let phases = acronymPhaseObject;
+      delete phases[acronym];
+      setAcronymPhaseObject(phases);
+      setLocalVocabList(localVocabList.filter((vocab) => vocab.acronym != acronym));
     }
-  }
-
-  function determinePhase(acronym, released) {
-    if (!acronymDateObject.hasOwnProperty(acronym)) {
-      return Phase["Not Installed"];
-    }
-    const remoteReleaseDate = new Date(released);
-    const localInstallDate = new Date(acronymDateObject[acronym]);
-    return (remoteReleaseDate > localInstallDate ? Phase["Update Available"] : Phase["Latest"]);
   }
 
   function handleErrorModal(isError) {
@@ -184,7 +173,7 @@ export default function VocabulariesAdminPage() {
     fetchBioPortalApiKey( (apiKey) => {
         setBioPortalApiKey(apiKey);
         setCustomApiKey(apiKey);
-        setRemoteLoaded(true);
+        setRemoteLoaded(false);
         setDisplayChangeKey(false);
       }, () => {
         setRemoteLoaded(true);
@@ -203,7 +192,7 @@ export default function VocabulariesAdminPage() {
           <Grid item>
             <Typography color="textSecondary">No local vocabularies are installed yet.</Typography>
           </Grid>
-       }
+      }
       <VocabularyDirectory 
         type="local"
         link={localLink}
@@ -212,9 +201,9 @@ export default function VocabulariesAdminPage() {
         acronymPhaseObject={acronymPhaseObject}
         displayTables={displayTables}
         updateLocalList={updateLocalList}
-        addSetter={addSetter}
         setPhase={setPhase}
         apiKey={bioPortalApiKey}
+        loaded={localLoaded}
       />
 
       <Grid item>
@@ -223,7 +212,7 @@ export default function VocabulariesAdminPage() {
         </Typography>
       </Grid>
       <Grid item>
-        <OwlInstaller updateLocalList={updateLocalList}/>
+        <OwlInstaller updateLocalList={updateLocalList} reloadVocabList={() => {setLocalLoaded(false);}}/>
       </Grid>
 
       <Grid item>
@@ -285,8 +274,8 @@ export default function VocabulariesAdminPage() {
         displayTables={displayTables}
         setPhase={setPhase}
         updateLocalList={updateLocalList}
-        addSetter={addSetter}
         apiKey={bioPortalApiKey}
+        loaded={remoteLoaded}
       />
     </Grid>
   );
