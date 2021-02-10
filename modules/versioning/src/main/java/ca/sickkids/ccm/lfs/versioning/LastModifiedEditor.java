@@ -59,13 +59,6 @@ public class LastModifiedEditor extends DefaultEditor
         this.currentResourceResolver = resourceResolver;
     }
 
-    // Called when a new property is added
-    @Override
-    public void propertyAdded(PropertyState after) throws CommitFailedException
-    {
-        updateLastModified(after);
-    }
-
     // Called when the value of an existing property gets changed
     @Override
     public void propertyChanged(PropertyState before, PropertyState after) throws CommitFailedException
