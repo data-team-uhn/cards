@@ -184,11 +184,11 @@ export default function VocabularyEntry(props) {
             </Typography>
           </TableCell>
 
-          <StyledTableCell>
+          <TableCell>
             <Typography variant={bodyTypography}>
               {date.toString().substring(4,15)}
             </Typography>
-          </StyledTableCell>
+          </TableCell>
 
           <StyledTableCell>
             {(phase != Phase["Other Source"]) &&
