@@ -16,15 +16,16 @@
  */
 package ca.sickkids.ccm.lfs.versioning;
 
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
+import org.apache.jackrabbit.oak.plugins.memory.MemoryNodeBuilder;
 import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
@@ -40,8 +41,6 @@ import org.apache.sling.api.resource.ResourceResolver;
  */
 public class LastModifiedEditor extends DefaultEditor
 {
-    private static final List<String> UPDATE_TYPES = Arrays.asList("lfs/Form", "lfs/Questionnaire");
-
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
     // actual parent node of those properties, so we must manually keep track of the current node.
     private final NodeBuilder currentNodeBuilder;
@@ -86,10 +85,26 @@ public class LastModifiedEditor extends DefaultEditor
         return new LastModifiedEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver);
     }
 
+    private boolean isMixLastModified(NodeBuilder nodeBuilder)
+    {
+        if (nodeBuilder instanceof MemoryNodeBuilder) {
+            final String nodePath = ((MemoryNodeBuilder) nodeBuilder).getPath();
+            final Session thisSession = this.currentResourceResolver.adaptTo(Session.class);
+            try {
+                final Node thisNode = thisSession.getNode(nodePath);
+                if (thisNode.isNodeType("mix:lastModified")) {
+                    return true;
+                }
+            } catch (RepositoryException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
     private void updateLastModified(PropertyState state) throws CommitFailedException
     {
-        String primaryType = this.currentNodeBuilder.getString("sling:resourceType");
-        if (primaryType != null && UPDATE_TYPES.contains(primaryType)) {
+        if (isMixLastModified(this.currentNodeBuilder)) {
             this.currentNodeBuilder.setProperty("jcr:lastModified", Calendar.getInstance());
             final Session thisSession = this.currentResourceResolver.adaptTo(Session.class);
             this.currentNodeBuilder.setProperty("jcr:lastModifiedBy", thisSession.getUserID());
