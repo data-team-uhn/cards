@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.request.RequestParameter;
@@ -41,7 +42,7 @@ public class CheckinSlingPostProcessor implements SlingPostProcessor
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckinSlingPostProcessor.class);
 
     @Override
-    public void process(SlingHttpServletRequest request, List<Modification> changes) throws Exception
+    public void process(SlingHttpServletRequest request, List<Modification> changes) throws RepositoryException
     {
         RequestParameter doCheckin = request.getRequestParameter(":checkinSave");
         final Node n = request.getResource().adaptTo(Node.class);
