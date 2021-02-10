@@ -173,7 +173,7 @@ function Form (props) {
     setSaveInProgress(true);
     let data = new FormData(formNode.current);
     if (performCheckin) {
-        data.append(":checkinSave", "true");
+        data.append(":checkin", "true");
     }
     return fetchWithReLogin(globalLoginDisplay, formURL, {
       method: "POST",

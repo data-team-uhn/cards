@@ -44,7 +44,7 @@ public class CheckinSlingPostProcessor implements SlingPostProcessor
     @Override
     public void process(SlingHttpServletRequest request, List<Modification> changes) throws RepositoryException
     {
-        RequestParameter doCheckin = request.getRequestParameter(":checkinSave");
+        RequestParameter doCheckin = request.getRequestParameter(":checkin");
         final Node n = request.getResource().adaptTo(Node.class);
         if (n != null) {
             n.setProperty("jcr:lastModified", Calendar.getInstance());
