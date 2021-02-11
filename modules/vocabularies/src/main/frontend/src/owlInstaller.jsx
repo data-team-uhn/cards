@@ -25,7 +25,8 @@ import {
   Grid,
   makeStyles,
   TextField,
-  Tooltip
+  Tooltip,
+  Typography
 } from "@material-ui/core";
 
 const Status = require("./statusCodes.json");
@@ -64,6 +65,9 @@ const useStyles = makeStyles(theme => ({
     "&:hover": {
       background: theme.palette.warning.dark
     }
+  },
+  header: {
+    marginTop: theme.spacing(3)
   }
 }));
 
@@ -106,6 +110,12 @@ export default function OwlInstaller(props) {
 
   return(
     <React.Fragment>
+      <Grid item>
+        <Typography className={classes.header} variant="h6">
+          Install from local file
+        </Typography>
+      </Grid>
+      <Grid item>
       <form
         action="/Vocabularies?source=fileupload&overwrite=true"
         method="POST"
@@ -214,6 +224,7 @@ export default function OwlInstaller(props) {
           </Grid>
         </Grid>
       </form>
+      </Grid>
     </React.Fragment>
   );
 }

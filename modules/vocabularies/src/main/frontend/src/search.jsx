@@ -90,16 +90,12 @@ export default function Search(props) {
 
       // Filter the list for vocabularies that meet either of 2 criteria
       let acronymList = props.vocabList.filter(vocab => (
-        // (1) Any of the search keywords is the vocabulary's acronym
-        keywordsList.includes(vocab.ontology.acronym.toLowerCase())
-        ||
-        // (2) There is an intersection of the set of name words and the set of search keywords
-        // The name words are also processed into a list of lower case words
-        vocab.ontology.name.split(" ")
-          .map(S => S.toLowerCase())
-          .some(nameWord => keywordsList.includes(nameWord))
-      // Finally return only the acronyms of the vocabularies that meet above criteria as a list
-      )).map(vocab => vocab.ontology.acronym);
+        // (1) Any of the search keywords contains the vocabulary's acronym
+        keywordsList.some(word => word.includes(vocab.acronym.toLowerCase())
+        // (2) Vocab name contains any of the search keywords as a part of it
+                                  ||vocab.name.toLowerCase().includes(word))
+        // Finally return only the acronyms of the vocabularies that meet above criteria as a list
+       )).map(vocab => vocab.acronym);
 
       setFilterTable(true);
       props.setParentAcronymList(acronymList);
@@ -156,7 +152,6 @@ export default function Search(props) {
     <React.Fragment>
       <Grid item>
         <Grid container alignItems="center" justify="space-between">
-        
           <Grid item xs={12} sm={11}>
             <TextField
               fullWidth

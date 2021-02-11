@@ -23,16 +23,15 @@ import {
   DialogContent,
   Grid,
   TextField,
-  Typography
+  Typography,
+  makeStyles
 } from "@material-ui/core";
 
 import React, {useEffect} from "react";
 
 import VocabularyDirectory from "./vocabularyDirectory";
-
 import OwlInstaller from "./owlInstaller";
-
-import fetchBioPortalApiKey from "./bioportalApiKey";
+import { fetchBioPortalApiKey, BioPortalApiKey } from "./bioportalApiKey";
 
 const Phase = require("./phaseCodes.json");
 const vocabLinks = require("./vocabularyLinks.json");
@@ -62,9 +61,7 @@ export default function VocabulariesAdminPage() {
   const [remoteVocabList, setRemoteVocabList] = React.useState([]);
   /* Installed vocabularies */
   const [localVocabList, setLocalVocabList] = React.useState([]);
-  /* User input api key */
-  const [customApiKey, setCustomApiKey] = React.useState('');
-  const [displayChangeKey, setDisplayChangeKey] = React.useState(false);
+
   /*
     The Phase represents the state of Vocabulary. It can be 1 of:
       1) Not Installed
@@ -74,6 +71,7 @@ export default function VocabulariesAdminPage() {
       5) Uninstalling
   */
   const [acronymPhaseObject, setAcronymPhaseObject] = React.useState({});
+  const [acronymPhaseSettersObject, setAcronymPhaseSettersObject] = React.useState({});
   const [remoteLoaded, setRemoteLoaded] = React.useState(false);
   const [localLoaded, setLocalLoaded] = React.useState(false);
   const [displayTables, setDisplayTables] = React.useState(false);
@@ -81,24 +79,6 @@ export default function VocabulariesAdminPage() {
     Initially the key will be fetched from a script service.
   */
   const [bioPortalApiKey, setBioPortalApiKey] = React.useState(null);
-
-  // function to create / edit node
-  function addNewKey() {
-    const URL = `/libs/lfs/conf/BioportalApiKey`;
-    var request_data = new FormData();
-    request_data.append('key', customApiKey);
-    fetch(URL, { method: 'POST', body: request_data })
-      .then((response) => response.ok ? response : Promise.reject(response))
-      .then((data) => {
-          setBioPortalApiKey(customApiKey);
-          setRemoteLoaded(false);
-          console.log("saved to node");
-        })
-      .catch((error) => {
-        console.error("error creating node: " + error)
-        }
-      )
-  }
 
   const localLink = '/query?query=' + encodeURIComponent(`select * from [lfs:Vocabulary]`);
 
@@ -110,6 +90,32 @@ export default function VocabulariesAdminPage() {
   function processRemoteVocabList(vocabList) {
     setRemoteVocabList(vocabList);
     setRemoteLoaded(true);
+  }
+
+  function addSetter(acronym, setFunction, type) {
+    var copy = acronymPhaseSettersObject;
+    if (copy.hasOwnProperty(acronym)) {
+      copy[acronym][type] = setFunction;
+    } else {
+      var temp = {};
+      temp[type] = setFunction;
+      copy[acronym] = temp;
+    }
+    setAcronymPhaseSettersObject(copy);
+  }
+
+  function setPhase(acronym, phase) {
+    const setters = acronymPhaseSettersObject[acronym];
+    if (setters.hasOwnProperty("local")) {
+      setters["local"](phase);
+    }
+    if (setters.hasOwnProperty("remote")) {
+      setters["remote"](phase);
+    }
+    // update acronyms object
+    let phases = acronymPhaseObject;
+    phases[acronym] = phase;
+    setAcronymPhaseObject(phases);
   }
 
   /* Set phases for the installed local vocabs once all vocabs are loaded
@@ -139,12 +145,6 @@ export default function VocabulariesAdminPage() {
     localLoaded && remoteLoaded && setPhases();
   }, [localLoaded, remoteLoaded])
 
-  function setPhase(acronym, phase) {
-    let phases = acronymPhaseObject;
-    phases[acronym] = phase;
-    setAcronymPhaseObject(phases);
-  }
-
   function updateLocalList(action, vocab) {
     const acronym = vocab.acronym;
 
@@ -154,10 +154,15 @@ export default function VocabulariesAdminPage() {
       setLocalVocabList(tempLocalVocabList);
 
     } else if (action === "remove") {
+      var copy = acronymPhaseSettersObject;
+      delete copy[acronym]["local"];
+      setAcronymPhaseSettersObject(copy);
+
       let phases = acronymPhaseObject;
       delete phases[acronym];
       setAcronymPhaseObject(phases);
-      setLocalVocabList(localVocabList.filter((vocab) => vocab.acronym != acronym));
+
+      setLocalVocabList(localVocabList.filter((vocabulary) => vocabulary.acronym != acronym));
     }
   }
 
@@ -166,23 +171,23 @@ export default function VocabulariesAdminPage() {
     setError(isError);
   }
 
-  useEffect(() => {
-    /* If the BioPortal API key cannot be loaded, assume the remote (empty)
-      * data has been loaded.
-      */
-    fetchBioPortalApiKey( (apiKey) => {
-        setBioPortalApiKey(apiKey);
-        setCustomApiKey(apiKey);
-        setRemoteLoaded(false);
-        setDisplayChangeKey(false);
-      }, () => {
-        setRemoteLoaded(true);
-        setDisplayChangeKey(true);
-    });
-  }, [bioPortalApiKey])
+  function updateBioPortalApiKey(apiKey) {
+    if (apiKey || apiKey == "") {
+      setBioPortalApiKey(apiKey);
+      setRemoteLoaded(false);
+    } else {
+      setRemoteLoaded(true);
+    }
+  }
 
   return (
     <Grid container direction="column" spacing={4} justify="space-between">
+      <Grid item>
+        <Typography variant="h2">
+          Vocabularies
+        </Typography>
+      </Grid>
+
       <Grid item>
         <Typography variant="h6">
           Installed
@@ -201,69 +206,18 @@ export default function VocabulariesAdminPage() {
         acronymPhaseObject={acronymPhaseObject}
         displayTables={displayTables}
         updateLocalList={updateLocalList}
+        addSetter={addSetter}
         setPhase={setPhase}
         apiKey={bioPortalApiKey}
         loaded={localLoaded}
       />
 
-      <Grid item>
-        <Typography variant="h6">
-          Install from local file
-        </Typography>
-      </Grid>
-      <Grid item>
-        <OwlInstaller updateLocalList={updateLocalList} reloadVocabList={() => {setLocalLoaded(false);}}/>
-      </Grid>
+      <OwlInstaller updateLocalList={updateLocalList} reloadVocabList={() => {setLocalLoaded(false);}}/>
 
-      <Grid item>
-        <Typography variant="h6">
-          Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
-        </Typography>
-      </Grid>
-
-      { !bioPortalApiKey &&
-         <Grid item>
-           <Typography>Your system does not have a <a href="https://bioportal.bioontology.org/help#Getting_an_API_key" target="_blank">Bioportal API Key</a> configured.</Typography>
-           <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
-         </Grid>
-      }
-
-      <Grid item>
-        <Grid container
-          direction="row"
-          alignItems="center"
-          spacing={1}
-        >
-          <Grid item xs={6}>
-            <TextField
-              InputProps={{
-                readOnly: !displayChangeKey,
-              }}
-              variant={displayChangeKey ? "outlined" : "filled" }
-              onChange={(evt) => {setCustomApiKey(evt.target.value)}}
-              value={customApiKey}
-              name="customApiKey"
-              label={ displayChangeKey ? "Enter new Bioportal API key:" : "Bioportal API key:" }
-              fullWidth={true}
-            />
-          </Grid>
-          <Grid item>
-            { !displayChangeKey && bioPortalApiKey &&
-              <Button variant="contained" color="primary" onClick={() => {setDisplayChangeKey(true);}}>Change</Button>
-            }
-          </Grid>
-          <Grid item>
-            { displayChangeKey &&
-              <Button color="primary" disabled={!customApiKey} variant="contained" onClick={() => {addNewKey();}}>Submit</Button>
-            }
-          </Grid>
-          <Grid item>
-            { displayChangeKey && bioPortalApiKey &&
-              <Button color="default" variant="contained" onClick={() => {setDisplayChangeKey(false);}}>Cancel</Button>
-            }
-          </Grid>
-        </Grid>
-      </Grid>
+      <BioPortalApiKey
+        bioPortalApiKey={bioPortalApiKey}
+        updateKey={updateBioPortalApiKey}
+      />
 
       <VocabularyDirectory 
         type="remote"
@@ -274,6 +228,7 @@ export default function VocabulariesAdminPage() {
         displayTables={displayTables}
         setPhase={setPhase}
         updateLocalList={updateLocalList}
+        addSetter={addSetter}
         apiKey={bioPortalApiKey}
         loaded={remoteLoaded}
       />

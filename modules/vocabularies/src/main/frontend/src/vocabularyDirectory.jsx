@@ -76,13 +76,9 @@ export default function VocabularyDirectory(props) {
     });
   }
 
-  if (curStatus == Status["Init"] && props.link) {
-    getVocabList();
-  }
-
   useEffect(() => {
     !props.loaded && getVocabList();
-  }, [props.loaded])
+  }, [props.loaded, props.link])
 
   return(
     <React.Fragment>

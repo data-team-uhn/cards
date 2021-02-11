@@ -72,7 +72,7 @@ const StyledTableCell = withStyles(theme => ({
   Then it renders an action button and an about button. It also renders a dialog box for any installation / uninstallation errors
 */
 export default function VocabularyEntry(props) {
-  const { vocabulary, updatePhase, updateLocalList, hidden, initPhase } = props;
+  const { vocabulary, updateLocalList, hidden, initPhase } = props;
   // The following facilitates the usage of the same code to report errors for both installation and uninstallation
   const [error, setError] = React.useState(false);
   const [action, setAction] = React.useState("");
@@ -89,7 +89,8 @@ export default function VocabularyEntry(props) {
   function install() {
     const oldPhase = phase;
     var badResponse = false;
-    updatePhase(vocabulary.acronym, Phase["Installing"]);
+    setPhase(Phase["Installing"]);
+    props.setPhase(Phase["Installing"]);
 
     fetch(
       vocabLinks["install"]["base"] + "&identifier=" + vocabulary.acronym +
@@ -101,7 +102,7 @@ export default function VocabularyEntry(props) {
     .then((resp) => resp.json())
     .then((resp) => {
       if(!resp["isSuccessful"]) {
-        updatePhase(vocabulary.acronym, oldPhase);
+        props.setPhase(oldPhase);
         setAction("Install");
         setErrorMessage(resp["error"]);
         setError(true);
@@ -109,7 +110,8 @@ export default function VocabularyEntry(props) {
       }
     })
     .catch(function(error) {
-      updatePhase(vocabulary.acronym, oldPhase);
+      setPhase(oldPhase);
+      props.setPhase(oldPhase);
       setAction("Install");
       setErrorMessage(error);
       setError(true);
@@ -118,8 +120,8 @@ export default function VocabularyEntry(props) {
     .finally(function() {
       if (!badResponse) {
         vocabulary.released = new Date();
+        props.setPhase(Phase["Latest"]);
         updateLocalList("add", vocabulary);
-        updatePhase(vocabulary.acronym, Phase["Latest"]);
       }
     });
   }
@@ -127,13 +129,13 @@ export default function VocabularyEntry(props) {
   function uninstall() {
     const oldPhase = phase;
     var badResponse = false;
-    updatePhase(vocabulary.acronym, Phase["Uninstalling"]);
+    props.setPhase(Phase["Uninstalling"]);
 
     fetch(vocabLinks["uninstall"]["base"] + vocabulary.acronym, {method: "DELETE"})
     .then((resp) => {
       const code = resp.status;
       if(Math.floor(code/100) !== 2) {
-        updatePhase(vocabulary.acronym, oldPhase);
+        props.setPhase(oldPhase);
         setAction("Uninstall");
         setErrorMessage("Error " + code + ": " + resp.statusText);
         setError(true);
@@ -142,7 +144,7 @@ export default function VocabularyEntry(props) {
       }
     })
     .catch(function(error) {
-      updatePhase(vocabulary.acronym, oldPhase);
+      props.setPhase(oldPhase);
       setAction("Uninstall");
       setErrorMessage(error);
       setError(true);
@@ -150,11 +152,12 @@ export default function VocabularyEntry(props) {
     })
     .finally(function() {
       if(!badResponse) {
+        props.setPhase(Phase["Not Installed"]);
         updateLocalList("remove", vocabulary);
-        updatePhase(vocabulary.acronym, Phase["Not Installed"]);
       }
     });
   }
+  React.useEffect(() => {props.addSetter(setPhase);},[0]);
 
   return(
     <React.Fragment>
