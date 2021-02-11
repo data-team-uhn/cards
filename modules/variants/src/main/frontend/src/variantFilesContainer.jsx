@@ -36,6 +36,7 @@ import GetApp from '@material-ui/icons/GetApp';
 import { v4 as uuidv4 } from 'uuid';
 import moment from "moment";
 import DragAndDrop from "./dragAndDrop.jsx";
+import { escapeJQL } from "./escape.jsx";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -223,7 +224,8 @@ export default function VariantFilesContainer() {
                 setSelectedFiles(files);
                 resolve();
               }
-            });
+            })
+            .catch((err) => {setError("Internal server error while fetching file versions");});
         })
         .then(loop.bind(null, i+1));
     })(0);
@@ -260,7 +262,7 @@ export default function VariantFilesContainer() {
     // 1. Check whether we already have any subjects info not to duplicate
     file = setExistedFileSubjectData(file, files);
 
-    let checkSubjectExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.subject.id}'`);
+    let checkSubjectExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.subject.id)}'`);
     let checkTumorExistsURL = "";
     let checkRegionExistsURL = "";
 
@@ -278,7 +280,7 @@ export default function VariantFilesContainer() {
                 let subject = json.rows[0];
                 // get the path
                 file.subject = generateSubject(file.subject, subject["@path"], true, subject["jcr:uuid"]);
-                checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.tumor.id}' AND s.'parents'='${subject['jcr:uuid']}'`);
+                checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                 // Fire a fetch request for a tumor subject with the patient subject as its parent
                 fetch( checkTumorExistsURL )
@@ -292,7 +294,7 @@ export default function VariantFilesContainer() {
 
                         // If a region subject is defined
                         if (file.region) {
-                          checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.region.id}' AND s.'parents'='${subject['jcr:uuid']}'`);
+                          checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                           // Fire a fetch request for a region subject with the tumor subject as its parent
                           fetch( checkRegionExistsURL )
@@ -311,6 +313,8 @@ export default function VariantFilesContainer() {
                               resolve(file);
                             })
                             .catch((err) => {console.log(err); reject(err);})
+                        } else {
+                          resolve(file);
                         }
 
                       } else {
@@ -341,7 +345,7 @@ export default function VariantFilesContainer() {
 
         } else {
           if (!file.tumor.path) {
-            checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.tumor.id}' AND s.'parents'='${file.subject.uuid}'`);
+            checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${file.subject.uuid}'`);
 
             // Fire a fetch request for a tumor subject with the patient subject as its parent
             fetch( checkTumorExistsURL )
@@ -355,7 +359,7 @@ export default function VariantFilesContainer() {
 
                     // If a region subject is defined
                     if (file.region) {
-                      checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.region.id}' AND s.'parents'='${subject['jcr:uuid']}'`);
+                      checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                       // Fire a fetch request for a region subject with the tumor subject as its parent
                       fetch( checkRegionExistsURL )
@@ -374,7 +378,9 @@ export default function VariantFilesContainer() {
                           resolve(file);
                         })
                         .catch((err) => {console.log(err); reject(err);})
-                      }
+                    } else {
+                      resolve(file);
+                    }
 
                   } else {
                     // if a tumor subject is not found
@@ -390,7 +396,7 @@ export default function VariantFilesContainer() {
 
           } else {
             if (file.region && !file.region.path) {
-              checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${file.region.id}' AND s.'parents'='${file.tumor.uuid}'`);
+              checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${file.tumor.uuid}'`);
 
               // Fire a fetch request for a region subject with the tumor subject as its parent
               fetch( checkRegionExistsURL )
@@ -447,7 +453,8 @@ export default function VariantFilesContainer() {
           // find all files with this name
           newFiles[index] = file;
           setSelectedFiles(newFiles);
-      });
+      })
+      .catch((err) => {setError("Internal server error while fetching file versions for " + fileName);});
   };
 
   // Change of subject id implies reset tumor subject info and re-fetching all data
@@ -464,7 +471,8 @@ export default function VariantFilesContainer() {
           // find all files with this name
           newFiles[index] = file;
           setSelectedFiles(newFiles);
-        });
+        })
+      .catch((err) => {setError("Internal server error while fetching file versions for " + fileName);});
   };
 
   // Change of subject id implies reset region subject info and re-fetching all data
@@ -481,7 +489,8 @@ export default function VariantFilesContainer() {
           // find all files with this name
           newFiles[index] = file;
           setSelectedFiles(newFiles);
-        });
+        })
+      .catch((err) => {setError("Internal server error while fetching file versions for " + fileName);});
   };
 
   let cleanForm = () => {
