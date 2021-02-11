@@ -53,6 +53,8 @@ function SubjectView(props) {
   const [ tabsLoading, setTabsLoading ] = useState(null);
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
 
+  const activeTabParam = location.hash.substr(1);
+
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Column configuration for the LiveTables
@@ -89,6 +91,11 @@ function SubjectView(props) {
       .then(result => {
         setSubjectTypes(result.rows);
         setTabsLoading(false);
+
+        if (activeTabParam && result.rows.length > 0) {
+          let activeTabIndex = result.rows.indexOf(result.rows.find(element => element["@name"] === activeTabParam));
+          activeTabIndex > 0 && setActiveTab(activeTabIndex);
+        }
       })
   }
 
@@ -111,7 +118,7 @@ function SubjectView(props) {
         action={
           !expanded &&
           <Tooltip title="Expand">
-            <Link to={"/content.html/Subjects"}>
+            <Link to={"/content.html/Subjects#" + ( subjectTypes.length > 0 ? subjectTypes[activeTab]['@name'] : '' )}>
               <IconButton>
                 <MoreHorizIcon/>
               </IconButton>
