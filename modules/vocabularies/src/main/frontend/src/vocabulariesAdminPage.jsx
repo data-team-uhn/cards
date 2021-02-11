@@ -74,7 +74,6 @@ export default function VocabulariesAdminPage() {
   const [acronymPhaseSettersObject, setAcronymPhaseSettersObject] = React.useState({});
   const [remoteLoaded, setRemoteLoaded] = React.useState(false);
   const [localLoaded, setLocalLoaded] = React.useState(false);
-  const [displayTables, setDisplayTables] = React.useState(false);
   /*
     Initially the key will be fetched from a script service.
   */
@@ -138,7 +137,6 @@ export default function VocabulariesAdminPage() {
     });
     setAcronymPhaseObject(tempAcronymPhaseObject);
 
-    setDisplayTables(true);
   }
 
   useEffect(() => {
@@ -172,9 +170,12 @@ export default function VocabulariesAdminPage() {
   }
 
   function updateBioPortalApiKey(apiKey) {
-    if (apiKey || apiKey == "") {
+    if (apiKey) {
       setBioPortalApiKey(apiKey);
       setRemoteLoaded(false);
+    } else if (apiKey == "") {
+      setBioPortalApiKey(apiKey);
+      setRemoteLoaded(true);
     } else {
       setRemoteLoaded(true);
     }
@@ -204,7 +205,6 @@ export default function VocabulariesAdminPage() {
         vocabList={localVocabList}
         setVocabList={processLocalVocabList}
         acronymPhaseObject={acronymPhaseObject}
-        displayTables={displayTables}
         updateLocalList={updateLocalList}
         addSetter={addSetter}
         setPhase={setPhase}
@@ -225,7 +225,6 @@ export default function VocabulariesAdminPage() {
         vocabList={remoteVocabList}
         setVocabList={processRemoteVocabList}
         acronymPhaseObject={acronymPhaseObject}
-        displayTables={displayTables}
         setPhase={setPhase}
         updateLocalList={updateLocalList}
         addSetter={addSetter}

@@ -104,7 +104,7 @@ export default function VocabularyDirectory(props) {
         </Grid>
       </React.Fragment>
     )}
-    {(curStatus == Status["Loaded"] && props.displayTables) && (
+    {(curStatus == Status["Loaded"] && props.loaded) && (
       <VocabularyTable
         type={props.type}
         vocabList={props.vocabList}
