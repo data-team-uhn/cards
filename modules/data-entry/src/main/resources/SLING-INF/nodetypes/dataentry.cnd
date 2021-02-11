@@ -759,9 +759,6 @@
   // A reference to an lfs:SubjectType defining this subject
   - type (reference) mandatory
 
-  // A link to any parent Subjects
-  - parents (reference) multiple
-
   // Full hierarchy of Subject identifiers
   - fullIdentifier (String) = ''
 

@@ -1,6 +1,0 @@
-{
-  "jcr:primaryType": "lfs:SubjectType",
-  "label": "Tumor",
-  "jcr:reference:parent": "../Patient",
-  "lfs:defaultOrder": 1
-}

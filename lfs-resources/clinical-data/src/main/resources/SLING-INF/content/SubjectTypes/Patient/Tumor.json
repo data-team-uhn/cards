@@ -1,0 +1,10 @@
+{
+  "jcr:primaryType": "lfs:SubjectType",
+  "label": "Tumor",
+  "lfs:defaultOrder": 1,
+  "TumorRegion": {
+    "jcr:primaryType": "lfs:SubjectType",
+    "label": "Tumor region",
+    "lfs:defaultOrder": 2
+  }
+}

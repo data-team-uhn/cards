@@ -44,7 +44,7 @@
               SLING-INF/content/libs/lfs/conf/;path:=/libs/lfs/conf/;overwrite:=false,
               SLING-INF/content/libs/lfs/resources/;path:=/libs/lfs/resources/;overwrite:=true,
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
-              SLING-INF/content/SubjectTypes/;path:=/SubjectTypes/;overwrite:=true
+              SLING-INF/content/SubjectTypes/;path:=/SubjectTypes/;overwrite:=false,
             </Sling-Initial-Content>
           </instructions>
         </configuration>
