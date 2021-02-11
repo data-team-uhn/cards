@@ -16,7 +16,6 @@
  */
 package ca.sickkids.ccm.lfs.versioning;
 
-import java.util.Calendar;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -45,22 +44,15 @@ public class CheckinSlingPostProcessor implements SlingPostProcessor
     public void process(SlingHttpServletRequest request, List<Modification> changes) throws RepositoryException
     {
         RequestParameter doCheckin = request.getRequestParameter(":checkin");
-        final Node n = request.getResource().adaptTo(Node.class);
-        if (n != null) {
-            n.setProperty("jcr:lastModified", Calendar.getInstance());
-            n.setProperty("jcr:lastModifiedBy", n.getSession().getUserID());
+        if (doCheckin == null) {
+            LOGGER.warn("Running CheckinSlingPostProcessor::process(checkin=false)");
+        } else {
+            LOGGER.warn("Running CheckinSlingPostProcessor::process(checkin=true)");
+            final Node n = request.getResource().adaptTo(Node.class);
             n.getSession().save();
-            changes.add(Modification.onModified(n.getPath() + "/jcr:lastModified"));
-            changes.add(Modification.onModified(n.getPath() + "/jcr:lastModifiedBy"));
-
-            if (doCheckin == null) {
-                LOGGER.warn("Running CheckinSlingPostProcessor::process(checkin=false)");
-            } else {
-                LOGGER.warn("Running CheckinSlingPostProcessor::process(checkin=true)");
-                //TODO: Replace the deprecated checkin() method
-                n.checkin();
-                changes.add(Modification.onCheckin(n.getPath()));
-            }
+            //TODO: Replace the deprecated checkin() method
+            n.checkin();
+            changes.add(Modification.onCheckin(n.getPath()));
         }
     }
 }
