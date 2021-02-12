@@ -1357,7 +1357,12 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Start date: Leave blank if unknown or N/A. If only year is known, code the month and day as 01</value>
+				<value>Start date:</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Leave blank if unknown or N/A. If only year is known, code the month and day as 01</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1381,7 +1386,12 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Stop date: Leave blank if unknown or N/A. If only year is known, code the month and day as 01</value>
+				<value>Stop date:</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Leave blank if unknown or N/A. If only year is known, code the month and day as 01</value>
 				<type>String</type>
 			</property>
 			<property>
