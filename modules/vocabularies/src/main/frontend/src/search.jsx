@@ -90,11 +90,12 @@ export default function Search(props) {
 
       // Filter the list for vocabularies that meet either of 2 criteria
       let acronymList = props.vocabList.filter(vocab => (
-        // (1) Any of the search keywords contains the vocabulary's acronym
-        keywordsList.some(word => word.includes(vocab.acronym.toLowerCase())
-        // (2) Vocab name contains any of the search keywords as a part of it
-                                  ||vocab.name.toLowerCase().includes(word))
-        // Finally return only the acronyms of the vocabularies that meet above criteria as a list
+        keywordsList.some(word => word.includes(
+             // (1) Any of the search keywords contains the vocabulary's acronym
+             vocab.acronym.toLowerCase()) ||
+             // (2) Vocab name contains any of the search keywords as a part of it
+             vocab.name.toLowerCase().includes(word))
+       // Finally return only the acronyms of the vocabularies that meet above criteria as a list
        )).map(vocab => vocab.acronym);
 
       setFilterTable(true);
