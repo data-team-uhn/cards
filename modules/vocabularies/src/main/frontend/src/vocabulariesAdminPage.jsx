@@ -70,7 +70,7 @@ export default function VocabulariesAdminPage() {
       4) Latest
       5) Uninstalling
   */
-  const [acronymPhaseObject, setAcronymPhaseObject] = React.useState({});
+  const [acronymPhaseObject, setAcronymPhaseObject] = React.useState(null);
   const [acronymPhaseSettersObject, setAcronymPhaseSettersObject] = React.useState({});
   const [remoteLoaded, setRemoteLoaded] = React.useState(false);
   const [localLoaded, setLocalLoaded] = React.useState(false);
