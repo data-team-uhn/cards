@@ -25,6 +25,7 @@ import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent,
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import MaterialTable from "material-table";
 
+import { escapeJQL } from "../escape.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./Subject.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -100,7 +101,7 @@ function UnstyledNewSubjectDialog (props) {
             columns={COLUMNS}
             data={allowedTypes?.length ? allowedTypes :
               query => {
-                let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${query.search}*')` : "", "lfs:SubjectType", "lfs:defaultOrder");
+                let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${escapeJQL(query.search)}*')` : "", "lfs:SubjectType", "lfs:defaultOrder");
                 url.searchParams.set("limit", query.pageSize);
                 url.searchParams.set("offset", query.page*query.pageSize);
                 return fetchWithReLogin(globalLoginDisplay, url)
@@ -198,7 +199,7 @@ function UnstyledSelectParentDialog (props) {
               title=""
               columns={COLUMNS}
               data={query => {
-                  let url = createQueryURL(` WHERE n.type='${parentType?.["jcr:uuid"]}'` + (query.search ? ` AND CONTAINS(n.fullIdentifier, '*${query.search}*')` : ""), "lfs:Subject", "fullIdentifier");
+                  let url = createQueryURL(` WHERE n.type='${parentType?.["jcr:uuid"]}'` + (query.search ? ` AND CONTAINS(n.fullIdentifier, '*${escapeJQL(query.search)}*')` : ""), "lfs:Subject", "fullIdentifier");
                   url.searchParams.set("limit", query.pageSize);
                   url.searchParams.set("offset", query.page*query.pageSize);
                   return fetchWithReLogin(globalLoginDisplay, url)
@@ -675,7 +676,7 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
       parentCheckQueryString = " AND n.'parents' IS NULL";
     }
 
-    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${subjectName}'` + parentCheckQueryString, "lfs:Subject");
+    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${escapeJQL(subjectName)}'` + parentCheckQueryString, "lfs:Subject");
     let newPromise = fetchWithReLogin(globalLoginDisplay, checkAlreadyExistsURL)
       .then( (response) => response.ok ? response.json() : Promise.reject(response))
       .then( (json) => {
@@ -802,7 +803,7 @@ function SubjectSelectorList(props) {
               conditions.push("(" + allowedTypes.map((type) => `n.'type' = '${type["jcr:uuid"]}'`).join(" OR ") + ")");
             }
             if (query.search) {
-              conditions.push(`CONTAINS(n.fullIdentifier, '*${query.search}*')`);
+              conditions.push(`CONTAINS(n.fullIdentifier, '*${escapeJQL(query.search)}*')`);
             }
             let condition = (conditions.length === 0) ? "" : ` WHERE ${conditions.join(" AND ")}`
 
@@ -887,7 +888,7 @@ function SubjectSelectorList(props) {
             request_data.append('jcr:primaryType', 'lfs:Subject');
             request_data.append('identifier', newData["identifier"]);
 
-            let check_url = createQueryURL(` WHERE n.'identifier'='${newData["identifier"]}'`, "lfs:Subject");
+            let check_url = createQueryURL(` WHERE n.'identifier'='${escapeJQL(newData["identifier"])}'`, "lfs:Subject");
             return fetchWithReLogin(globalLoginDisplay, check_url)
               .then( (response) => response.ok ? response.json() : Promise.reject(response))
               .then( (json) => {
