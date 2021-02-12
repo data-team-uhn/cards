@@ -50,8 +50,7 @@ public class CheckinSlingPostProcessor implements SlingPostProcessor
             LOGGER.warn("Running CheckinSlingPostProcessor::process(checkin=true)");
             final Node n = request.getResource().adaptTo(Node.class);
             n.getSession().save();
-            //TODO: Replace the deprecated checkin() method
-            n.checkin();
+            n.getSession().getWorkspace().getVersionManager().checkin(n.getPath());
             changes.add(Modification.onCheckin(n.getPath()));
         }
     }
