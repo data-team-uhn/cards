@@ -51,7 +51,7 @@ public class LastModifiedEditorProvider implements EditorProvider
             final ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
             if (myResolver != null) {
                 // Each LastModifiedEditor maintains a state, so a new instance must be returned each time
-                return new LastModifiedEditor(builder, myResolver);
+                return new LastModifiedEditor(builder, myResolver, null);
             }
         }
         return null;

@@ -24,7 +24,6 @@ import javax.jcr.Session;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
-import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.plugins.memory.MemoryNodeBuilder;
 import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
@@ -45,27 +44,41 @@ public class LastModifiedEditor extends DefaultEditor
     // actual parent node of those properties, so we must manually keep track of the current node.
     private final NodeBuilder currentNodeBuilder;
     private final ResourceResolver currentResourceResolver;
+    private final NodeBuilder versionableAncestor;
 
     /**
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
      * @param resourceResolver a ResourceResolver object used to ultimately determine the logged-in user
+     * @param versionableAncestor a NodeBuilder for the ancestor object that is of type mix:lastModified
      */
-    public LastModifiedEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver)
+    public LastModifiedEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver,
+        NodeBuilder versionableAncestor)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.currentResourceResolver = resourceResolver;
+        if (isMixLastModified(nodeBuilder)) {
+            this.versionableAncestor = nodeBuilder;
+        } else {
+            this.versionableAncestor = versionableAncestor;
+        }
     }
 
     // Called when the value of an existing property gets changed
     @Override
     public void propertyChanged(PropertyState before, PropertyState after) throws CommitFailedException
     {
-        if ("jcr:isCheckedOut".equals(before.getName())) {
-            if (!after.getValue(Type.BOOLEAN)) {
-                updateLastModified(after);
-            }
+        propertyAdded(after);
+    }
+
+    // Called when a new property is added
+    @Override
+    public void propertyAdded(final PropertyState after)
+        throws CommitFailedException
+    {
+        if ("value".equals(after.getName())) {
+            handleAnswerChange();
         }
     }
 
@@ -76,13 +89,17 @@ public class LastModifiedEditor extends DefaultEditor
     @Override
     public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
-        return new LastModifiedEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver);
+        return new LastModifiedEditor(this.currentNodeBuilder.getChildNode(name),
+            this.currentResourceResolver,
+            this.versionableAncestor);
     }
 
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
-        return new LastModifiedEditor(this.currentNodeBuilder.getChildNode(name), this.currentResourceResolver);
+        return new LastModifiedEditor(this.currentNodeBuilder.getChildNode(name),
+            this.currentResourceResolver,
+            this.versionableAncestor);
     }
 
     private boolean isMixLastModified(NodeBuilder nodeBuilder)
@@ -102,12 +119,12 @@ public class LastModifiedEditor extends DefaultEditor
         return false;
     }
 
-    private void updateLastModified(PropertyState state) throws CommitFailedException
+    private void handleAnswerChange()
     {
-        if (isMixLastModified(this.currentNodeBuilder)) {
-            this.currentNodeBuilder.setProperty("jcr:lastModified", Calendar.getInstance());
+        if (this.versionableAncestor != null) {
+            this.versionableAncestor.setProperty("jcr:lastModified", Calendar.getInstance());
             final Session thisSession = this.currentResourceResolver.adaptTo(Session.class);
-            this.currentNodeBuilder.setProperty("jcr:lastModifiedBy", thisSession.getUserID());
+            this.versionableAncestor.setProperty("jcr:lastModifiedBy", thisSession.getUserID());
         }
     }
 }
