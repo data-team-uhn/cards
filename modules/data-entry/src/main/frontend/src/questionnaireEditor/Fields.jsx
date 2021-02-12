@@ -84,7 +84,7 @@ let Fields = (props) => {
      return keys;
   };
 
-  return edit ? 
+  return edit ?
     Object.entries(JSON).map(([key, value]) => displayEditField(key, value))
     :
     Object.keys(getAllKeys(JSON)).map(key => (data[key] ? displayStaticField(key) : ''));
@@ -95,5 +95,5 @@ Fields.propTypes = {
   JSON: PropTypes.object.isRequired,
   edit: PropTypes.bool.isRequired
 };
-  
+
 export default withStyles(QuestionnaireStyle)(Fields);

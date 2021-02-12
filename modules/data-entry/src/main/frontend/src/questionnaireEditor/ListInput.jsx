@@ -26,21 +26,21 @@ import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "./QuestionComponentManager";
 
 let ListInput = (props) => {
-  let { objectKey, data } = props;
+  let { objectKey, data, value: type } = props;
   let [ value, setValue ] = React.useState(Array.isArray(data[objectKey]) ? data[objectKey] : data[objectKey] ? [data[objectKey]] : []);
   const [ options, setOptions ] = React.useState([]);
-  const requiredSubjectTypes = React.useState(objectKey.includes('requiredSubjectTypes'));
-  
-  if (requiredSubjectTypes && options.length === 0) {
-    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType' order by n.'lfs:defaultOrder'`))
+
+  if (options.length === 0) {
+    fetch('/query?query=' + encodeURIComponent(`select * from [${type.primaryType}] as n order by n.'${type.orderProperty}'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => { 
+      .then((json) => {
         let optionTypes = Array.from(json["rows"]); setOptions(optionTypes);
         let updatedValues = [];
-        for (let option in optionTypes) {
-          for (let val in value) { 
-            if (value[val].label === optionTypes[option].label) {
-              updatedValues.push(optionTypes[option]); 
+        for (let option of optionTypes) {
+          for (let val of value) {
+            let compareVal = typeof(val) === "string" ? val : val[type.identifierProperty];
+            if (compareVal === option[type.identifierProperty]) {
+              updatedValues.push(option);
             }
           }
         }
@@ -59,10 +59,10 @@ let ListInput = (props) => {
 
   return (
     <EditorInput name={objectKey}>
-      <input type="hidden" name={objectKey + "@TypeHint"} value={"Reference"} />
-      { 
+      <input type="hidden" name={objectKey + "@TypeHint"} value={type.saveType} />
+      {
         // Maps each selected object to a reference type for submitting
-        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject['jcr:uuid']} key={typeObject['jcr:uuid']} />)
+        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject[type.identifierProperty]} key={typeObject["jcr:uuid"]} />)
       }
       {
         // Delete the current values within this list if nothing is selected
@@ -73,18 +73,18 @@ let ListInput = (props) => {
         multiple
         value={value}
         onChange={handleChange}
-        input={requiredSubjectTypes ? <Input id={objectKey} /> : null}
+        input={<Input id={objectKey} />}
         renderValue={(value) => (
           <div>
             {value.map((val) => (
-              <Chip key={val['jcr:uuid']} label={val['label']}/>
+              <Chip key={val["jcr:uuid"]} label={val[type.displayProperty]}/>
             ))}
           </div>
         )}
       >
       {options.map((name) => (
-        <MenuItem key={name['jcr:uuid']} value={name}>
-          <Typography>{name['label']}</Typography>
+        <MenuItem key={name["jcr:uuid"]} value={name}>
+          <Typography>{name[type.displayProperty]}</Typography>
         </MenuItem>
       ))}
     </Select>
@@ -92,7 +92,7 @@ let ListInput = (props) => {
   )
 }
 
-ListInput.propTypes = { 
+ListInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired
 };
@@ -101,7 +101,7 @@ var StyledListInput = withStyles(QuestionnaireStyle)(ListInput);
 export default StyledListInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
-  if (["list"].includes(definition)) {
+  if (definition.type && definition.type === "list") {
     return [StyledListInput, 50];
   }
 });

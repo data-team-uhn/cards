@@ -2,6 +2,13 @@
   {
     "description" : "string",
     "maxPerSubject": "long",
-    "requiredSubjectTypes": "list"
+    "requiredSubjectTypes": {
+      "type": "list",
+      "primaryType": "lfs:SubjectType",
+      "saveType": "Reference",
+      "displayProperty": "label",
+      "orderProperty": "lfs:defaultOrder",
+      "identifierProperty": "jcr:uuid"
+    }
   }
 ]
