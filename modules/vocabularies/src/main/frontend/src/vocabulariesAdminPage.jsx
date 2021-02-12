@@ -148,7 +148,14 @@ export default function VocabulariesAdminPage() {
 
     if (action === "add") {
       var tempLocalVocabList = localVocabList.slice();
-      tempLocalVocabList.push(vocab);
+      // find out if we already have this vocab installed and update it
+      // in case we are updating one
+      let installedIndex = localVocabList.findIndex(item => item.acronym == vocab.acronym);
+      if (installedIndex > -1) {
+        tempLocalVocabList[installedIndex] = vocab;
+      } else {
+        tempLocalVocabList.push(vocab);
+      }
       setLocalVocabList(tempLocalVocabList);
 
     } else if (action === "remove") {
