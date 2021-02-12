@@ -29,14 +29,13 @@ import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
-import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * A {@link EditorProvider} returning {@link LastModifiedEditor}.
  *
  * @version $Id$
  */
-@Component(name = "LastModifiedEditorProvider", service = EditorProvider.class, scope = ServiceScope.SINGLETON)
+@Component
 public class LastModifiedEditorProvider implements EditorProvider
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
