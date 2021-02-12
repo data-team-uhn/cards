@@ -64,6 +64,21 @@ public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements Re
         try {
             if (question != null) {
                 Property property = node.getProperty(PROP_VALUE);
+                // Treating YYYY date format as a special case
+                // because it is sent to save by front-end as a long number value
+                if (question.hasProperty("dateFormat")
+                    && "yyyy".equals(question.getProperty("dateFormat").getString())) {
+                    if (property.isMultiple()) {
+                        JsonArrayBuilder result = Json.createArrayBuilder();
+                        for (Value v : property.getValues()) {
+                            result.add(Json.createValue(v.toString()));
+                        }
+                        return result.build();
+                    } else {
+                        return Json.createValue(property.getValue().toString());
+                    }
+                }
+
                 DateFormat format = question.hasProperty("dateFormat")
                     ? new SimpleDateFormat(question.getProperty("dateFormat").getString()) : DEFAULT_FORMAT;
                 if (property.isMultiple()) {
