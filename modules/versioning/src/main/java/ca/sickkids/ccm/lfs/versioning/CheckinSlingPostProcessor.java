@@ -49,9 +49,11 @@ public class CheckinSlingPostProcessor implements SlingPostProcessor
         } else {
             LOGGER.warn("Running CheckinSlingPostProcessor::process(checkin=true)");
             final Node n = request.getResource().adaptTo(Node.class);
-            n.getSession().save();
-            n.getSession().getWorkspace().getVersionManager().checkin(n.getPath());
-            changes.add(Modification.onCheckin(n.getPath()));
+            if (n.isNodeType("mix:lastModified")) {
+                n.getSession().save();
+                n.getSession().getWorkspace().getVersionManager().checkin(n.getPath());
+                changes.add(Modification.onCheckin(n.getPath()));
+            }
         }
     }
 }
