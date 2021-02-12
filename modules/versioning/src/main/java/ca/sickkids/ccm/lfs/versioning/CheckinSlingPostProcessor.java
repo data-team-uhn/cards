@@ -26,7 +26,6 @@ import org.apache.sling.api.request.RequestParameter;
 import org.apache.sling.servlets.post.Modification;
 import org.apache.sling.servlets.post.SlingPostProcessor;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ServiceScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +34,7 @@ import org.slf4j.LoggerFactory;
  *
  * @version $Id$
  */
-@Component(name = "CheckinSlingPostProcessor", service = SlingPostProcessor.class, scope = ServiceScope.SINGLETON)
+@Component
 public class CheckinSlingPostProcessor implements SlingPostProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckinSlingPostProcessor.class);
