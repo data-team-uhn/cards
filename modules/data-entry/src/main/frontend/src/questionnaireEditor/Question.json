@@ -52,9 +52,9 @@
           "type": "list",
           "primaryType": "lfs:Vocabulary",
           "saveType": "String",
-          "displayVariable": "identifier",
-          "orderVariable": "lfs:Vocabulary",
-          "saveVariable": "identifier"
+          "displayProperty": "identifier",
+          "orderProperty": "lfs:Vocabulary",
+          "identifierProperty": "identifier"
         },
         "vocabularyFilter": "string",
         "minAnswers": "long",

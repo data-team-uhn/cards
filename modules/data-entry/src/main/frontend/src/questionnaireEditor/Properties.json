@@ -6,9 +6,9 @@
       "type": "list",
       "primaryType": "lfs:SubjectType",
       "saveType": "Reference",
-      "displayVariable": "label",
-      "orderVariable": "lfs:defaultOrder",
-      "saveVariable": "jcr:uuid"
+      "displayProperty": "label",
+      "orderProperty": "lfs:defaultOrder",
+      "identifierProperty": "jcr:uuid"
     }
   }
 ]

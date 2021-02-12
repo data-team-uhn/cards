@@ -31,15 +31,15 @@ let ListInput = (props) => {
   const [ options, setOptions ] = React.useState([]);
 
   if (options.length === 0) {
-    fetch('/query?query=' + encodeURIComponent(`select * from [${type.primaryType}] as n order by n.'${type.orderVariable}'`))
+    fetch('/query?query=' + encodeURIComponent(`select * from [${type.primaryType}] as n order by n.'${type.orderProperty}'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         let optionTypes = Array.from(json["rows"]); setOptions(optionTypes);
         let updatedValues = [];
         for (let option of optionTypes) {
           for (let val of value) {
-            let compareVal = typeof(val) === "string" ? val : val[type.saveVariable];
-            if (compareVal === option[type.saveVariable]) {
+            let compareVal = typeof(val) === "string" ? val : val[type.identifierProperty];
+            if (compareVal === option[type.identifierProperty]) {
               updatedValues.push(option);
             }
           }
@@ -62,7 +62,7 @@ let ListInput = (props) => {
       <input type="hidden" name={objectKey + "@TypeHint"} value={type.saveType} />
       {
         // Maps each selected object to a reference type for submitting
-        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject[type.saveVariable]} key={typeObject["jcr:uuid"]} />)
+        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject[type.identifierProperty]} key={typeObject["jcr:uuid"]} />)
       }
       {
         // Delete the current values within this list if nothing is selected
@@ -77,14 +77,14 @@ let ListInput = (props) => {
         renderValue={(value) => (
           <div>
             {value.map((val) => (
-              <Chip key={val["jcr:uuid"]} label={val[type.displayVariable]}/>
+              <Chip key={val["jcr:uuid"]} label={val[type.displayProperty]}/>
             ))}
           </div>
         )}
       >
       {options.map((name) => (
         <MenuItem key={name["jcr:uuid"]} value={name}>
-          <Typography>{name[type.displayVariable]}</Typography>
+          <Typography>{name[type.displayProperty]}</Typography>
         </MenuItem>
       ))}
     </Select>
@@ -102,7 +102,6 @@ export default StyledListInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
   if (definition.type && definition.type === "list") {
-    // typeof(definition) === "string" && definition.startsWith("list")) {
     return [StyledListInput, 50];
   }
 });
