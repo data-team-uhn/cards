@@ -44,10 +44,8 @@ public class CheckinSlingPostProcessor implements SlingPostProcessor
     public void process(SlingHttpServletRequest request, List<Modification> changes) throws RepositoryException
     {
         RequestParameter doCheckin = request.getRequestParameter(":checkin");
-        if (doCheckin == null) {
-            LOGGER.warn("Running CheckinSlingPostProcessor::process(checkin=false)");
-        } else {
-            LOGGER.warn("Running CheckinSlingPostProcessor::process(checkin=true)");
+        if (doCheckin != null) {
+            LOGGER.debug("Running CheckinSlingPostProcessor::process");
             final Node n = request.getResource().adaptTo(Node.class);
             if (n.isNodeType("mix:lastModified")) {
                 n.getSession().save();
