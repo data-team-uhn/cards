@@ -231,13 +231,13 @@ function UnstyledSelectParentDialog (props) {
       <DialogActions>
         { onCreateParent &&
           <Button
-              variant="contained"
-              color="secondary"
-              onClick={onCreateParent}
-              className={classes.createNewSubjectButton}
-              >
-              New subject
-            </Button>
+            variant="contained"
+            color="secondary"
+            onClick={onCreateParent}
+            className={classes.createNewSubjectButton}
+            >
+            New subject
+          </Button>
         }
         <Button
           onClick={onClose}
@@ -310,7 +310,11 @@ export function NewSubjectDialog (props) {
   const tableRef = useRef();
   const history = useHistory();
 
-  let curSubjectRequiresParents = newSubjectType[newSubjectIndex]?.["parent"];
+  console.log(newSubjectType[newSubjectIndex]);
+
+  let parentFindingRegex = /SubjectTypes\/[^\/]/g;
+
+  let curSubjectRequiresParents = newSubjectType[newSubjectIndex]?.["@path"];
   let disabledControls = disabled || isPosting;
 
   // Called only by createNewSubject, a callback to create the next child on our list
