@@ -203,7 +203,7 @@ export default function VocabulariesAdminPage() {
       </Grid>
       { localVocabList.length == 0 &&
           <Grid item>
-            <Typography color="textSecondary">No local vocabularies are installed yet.</Typography>
+            <Typography color="textSecondary">No vocabularies have been installed yet.</Typography>
           </Grid>
       }
       <VocabularyDirectory 
