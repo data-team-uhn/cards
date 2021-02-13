@@ -39,6 +39,11 @@ import ChangeUserPasswordDialogue from "../../Userboard/Users/changeuserpassword
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialogue.js";
 
 function HeaderLinks (props) {
+  // Hide the global search bar in all admin screens
+  if (window.location.pathname.startsWith("/content.html/admin")) {
+    return <></>;
+  }
+
   const { classes, closeSidebar, theme, color } = props;
   const [ popperOpen, setPopperOpen ] = useState(false);
   const [ passwordDialogOpen, setPasswordDialogOpen ] = useState(false);
