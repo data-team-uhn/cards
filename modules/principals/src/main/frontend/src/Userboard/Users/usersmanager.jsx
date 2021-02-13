@@ -19,7 +19,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 
-import { Avatar, Button, Link, Card, CardHeader, CardContent, Grid, Table, TableBody, TableHead, TableRow, TableCell} from "@material-ui/core";
+import { Avatar, Button, Fab, Link, Card, CardHeader, CardContent, Grid, Table, TableBody, TableHead, TableRow, TableCell, Tooltip} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
 import userboardStyle from '../userboardStyle.jsx';
@@ -128,12 +128,6 @@ class UsersManager extends React.Component {
                   icon: 'delete',
                   tooltip: 'Delete User',
                   onClick: (event, rowData) => this.handleUserDeleteClick(rowData.tableData.id, rowData.name)
-                },
-                {
-                  icon: () => {return (<Avatar className={classes.addIcon}><AddIcon /></Avatar>)},
-                  tooltip: 'Create New User',
-                  isFreeAction: true,
-                  onClick: (event) => this.setState({deployCreateUser: true})
                 }
               ]}
               onRowClick={(event, rowData, togglePanel) => {this.handleUserRowClick(rowData.tableData.id, rowData.name); togglePanel()}}
@@ -171,6 +165,19 @@ class UsersManager extends React.Component {
                 ) || (<div>User is not in any group</div>)
               }}
             />
+        </div>
+        <div className={classes.newPrincipalButtonWrapper}>
+          <Tooltip title={"Create New User"} aria-label="new">
+            <span>
+              <Fab
+                color="primary"
+                aria-label="new"
+                onClick={(event) => this.setState({deployCreateUser: true})}
+              >
+                <AddIcon />
+              </Fab>
+            </span>
+          </Tooltip>
         </div>
       </div>
     );

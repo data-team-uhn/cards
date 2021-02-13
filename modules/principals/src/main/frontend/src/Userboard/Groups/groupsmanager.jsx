@@ -19,7 +19,7 @@ import React from "react";
 
 import { withStyles } from "@material-ui/core/styles";
 
-import { Avatar, Button, Card, CardHeader, CardContent, Fab, Grid, Table, TableCell, TableBody, TableHead, TableRow } from "@material-ui/core";
+import { Avatar, Button, Card, CardHeader, CardContent, Fab, Grid, Table, TableCell, TableBody, TableHead, TableRow, Tooltip } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
 import userboardStyle from '../userboardStyle.jsx';
@@ -177,12 +177,6 @@ class GroupsManager extends React.Component {
                 icon: 'delete',
                 tooltip: 'Delete Group',
                 onClick: (event, rowData) => this.handleGroupDeleteClick(rowData.tableData.id, rowData.name)
-              },
-              {
-                icon: () => {return (<Avatar className={classes.addIcon}><AddIcon /></Avatar>)},
-                tooltip: 'Create New Group',
-                isFreeAction: true,
-                onClick: (event) => this.setState({deployCreateGroup: true})
               }
              ]}
             onRowClick={(event, rowData, togglePanel) => {this.handleGroupRowClick(rowData.tableData.id, rowData.name); togglePanel()}}
@@ -192,7 +186,7 @@ class GroupsManager extends React.Component {
                 const tableTitle = "Group " + group.name + " users";
 
                 return (
-                <div>
+                  <div>
                     <Card className={classes.cardRoot}>
                       <CardContent>
                         { groupUsers.length > 0 && 
@@ -243,10 +237,23 @@ class GroupsManager extends React.Component {
                         </Grid>
                       </CardContent>
                     </Card>
-                    </div>
+                  </div>
                 )
             }}
           />
+        </div>
+        <div className={classes.newPrincipalButtonWrapper}>
+          <Tooltip title={"Create New Group"} aria-label="new">
+            <span>
+              <Fab
+                color="primary"
+                aria-label="new"
+                onClick={(event) => this.setState({deployCreateGroup: true})}
+              >
+                <AddIcon />
+              </Fab>
+            </span>
+          </Tooltip>
         </div>
       </div>
     );
