@@ -127,7 +127,7 @@ function Subject(props) {
 
   return (
     <React.Fragment>
-      <div className={classes.mainPageAction}>
+      <div className={classes.newFormButtonWrapper}>
         <NewFormDialog currentSubject={currentSubject}>
           New form for this Subject
         </NewFormDialog>

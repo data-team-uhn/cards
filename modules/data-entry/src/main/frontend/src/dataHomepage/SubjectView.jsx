@@ -155,8 +155,7 @@ function SubjectView(props) {
       </CardContent>
       {expanded &&
       <>
-        <div className={classes.mainPageAction}>
-          <div className={classes.newFormButtonWrapper}>
+        <div className={classes.newFormButtonWrapper}>
             <Tooltip aria-label="add" title="New Subject">
               <Fab
                 color="primary"
@@ -166,7 +165,6 @@ function SubjectView(props) {
                 <AddIcon />
               </Fab>
             </Tooltip>
-          </div>
         </div>
         <NewSubjectDialog
           onClose={() => { setNewSubjectPopperOpen(false);}}

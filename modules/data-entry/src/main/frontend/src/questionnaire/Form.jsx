@@ -414,7 +414,7 @@ function Form (props) {
         </Grid>
         :
         <Grid item xs={false} className={classes.formBottom}>
-          <div className={classes.mainPageAction}>
+          <div className={classes.newFormButtonWrapper}>
             { isEdit ?
 	          <Fab
 	              variant="extended"
