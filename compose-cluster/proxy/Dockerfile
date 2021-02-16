@@ -26,6 +26,7 @@ RUN apt-get -y install \
 RUN a2enmod proxy
 RUN a2enmod proxy_http
 RUN a2enmod headers
+RUN a2enmod ssl
 
 COPY 000-default.conf /etc/apache2/sites-enabled/000-default.conf
 

@@ -35,12 +35,14 @@ argparser.add_argument('--custom_env_file', help='Enable a custom file with envi
 argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer service to the cluster', action='store_true')
 argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of MongoDB) as the back-end for Oak/JCR', action='store_true')
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
+argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
 MONGO_REPLICA_COUNT = args.replicas
 CONFIGDB_REPLICA_COUNT = args.config_replicas
 ENABLE_NCR = args.enable_ncr
+SSL_PROXY = args.ssl_proxy
 
 #Validate before doing anything else
 if (MONGO_REPLICA_COUNT % 2) != 1:
@@ -264,7 +266,10 @@ yaml_obj['services']['proxy'] = {}
 yaml_obj['services']['proxy']['build'] = {}
 yaml_obj['services']['proxy']['build']['context'] = "proxy"
 
-yaml_obj['services']['proxy']['ports'] = ["8080:80"]
+if SSL_PROXY:
+	yaml_obj['services']['proxy']['ports'] = ["443:443"]
+else:
+	yaml_obj['services']['proxy']['ports'] = ["8080:80"]
 
 yaml_obj['services']['proxy']['networks'] = {}
 yaml_obj['services']['proxy']['networks']['internalnetwork'] = {}
@@ -273,6 +278,16 @@ yaml_obj['services']['proxy']['networks']['internalnetwork']['aliases'] = ['prox
 yaml_obj['services']['proxy']['depends_on'] = ['lfsinitial']
 if ENABLE_NCR:
 	yaml_obj['services']['proxy']['depends_on'].append('neuralcr')
+
+if SSL_PROXY:
+	shutil.copyfile("proxy/https_000-default.conf", "proxy/000-default.conf")
+	#Volume mount the SSL certificate and key
+	yaml_obj['services']['proxy']['volumes'] = []
+	yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificate.crt:/etc/cert/certificate.crt:ro")
+	yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificatekey.key:/etc/cert/certificatekey.key:ro")
+	yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificatechain.crt:/etc/cert/certificatechain.crt:ro")
+else:
+	shutil.copyfile("proxy/http_000-default.conf", "proxy/000-default.conf")
 
 #Setup the internal network
 print("Configuring the internal network")
