@@ -26,7 +26,7 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards4care-resources</artifactId>
+  <artifactId>cardiac-rehab-resources</artifactId>
   <packaging>pom</packaging>
   <name>Cardiac Rehab Resources</name>
   <description>A collection of cardiac rehab questionnaires.</description>

@@ -26,7 +26,7 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards4kids-resources</artifactId>
+  <artifactId>kids-resources</artifactId>
   <packaging>pom</packaging>
   <name>Cardiac Resources</name>
   <description>A collection of cardiac questionnaires.</description>
