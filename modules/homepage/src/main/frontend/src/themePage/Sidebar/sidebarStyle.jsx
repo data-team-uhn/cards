@@ -354,7 +354,8 @@ import {
       height: "50px"
     },
     logout: {
-      marginTop: "0px"
+      marginTop: "0px",
+      paddingRight: "0px"
     },
     aboveBackground: {
       zIndex: "1200"
