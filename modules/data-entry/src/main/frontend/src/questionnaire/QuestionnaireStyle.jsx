@@ -149,7 +149,7 @@ const questionnaireStyle = theme => ({
     formViewAvatar: {
         background: theme.palette.info.main,
     },
-    newFormButtonWrapper: {
+    mainPageAction: {
         margin: theme.spacing(1),
         position: "fixed",
         bottom: theme.spacing(2),

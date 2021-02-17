@@ -155,7 +155,7 @@ function SubjectView(props) {
       </CardContent>
       {expanded &&
       <>
-        <div className={classes.newFormButtonWrapper}>
+        <div className={classes.mainPageAction}>
             <Tooltip aria-label="add" title="New Subject">
               <Fab
                 color="primary"

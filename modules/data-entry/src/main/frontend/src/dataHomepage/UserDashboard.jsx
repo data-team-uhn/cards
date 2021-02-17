@@ -151,7 +151,7 @@ function UserDashboard(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      <div className={classes.newFormButtonWrapper}>
+      <div className={classes.mainPageAction}>
         <Tooltip title={"New"} aria-label="new">
           <span>
             <Fab

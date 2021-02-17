@@ -362,7 +362,7 @@ function NewFormDialog(props) {
         />
       {
         mode === MODE_ACTION &&
-          <div className={classes.newFormButtonWrapper}>
+          <div className={classes.mainPageAction}>
             <Tooltip title={children} aria-label="add">
               <Fab
                 color="primary"

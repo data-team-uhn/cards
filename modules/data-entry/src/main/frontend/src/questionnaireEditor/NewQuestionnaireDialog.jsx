@@ -132,7 +132,7 @@ function NewQuestionnaireDialog(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      <div className={classes.newFormButtonWrapper}>
+      <div className={classes.mainPageAction}>
         <Tooltip title="New Questionnaire" aria-label="add">
           <Fab
             color="primary"
