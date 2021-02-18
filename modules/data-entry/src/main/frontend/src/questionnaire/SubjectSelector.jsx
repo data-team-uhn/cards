@@ -28,7 +28,7 @@ import MaterialTable from "material-table";
 import { escapeJQL } from "../escape.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./Subject.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, appContext } from "../appContextProvider.js";
 
 /***
  * Create a URL that checks for the existence of a subject
@@ -62,7 +62,7 @@ function UnstyledNewSubjectDialog (props) {
   const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
+  const globalLoginDisplay = useContext(appContext);
 
   const COLUMNS = [
     { title: 'Subject type', field: 'label' },
@@ -178,7 +178,7 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
 function UnstyledSelectParentDialog (props) {
   const { classes, childType, continueDisabled, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
+  const globalLoginDisplay = useContext(appContext);
 
   const COLUMNS = [
     { title: 'Subject', field: 'hierarchy' },
@@ -305,7 +305,7 @@ export function NewSubjectDialog (props) {
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(true);
   const [ selectParentPopperOpen, setSelectParentPopperOpen ] = useState(false);
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
+  const globalLoginDisplay = useContext(appContext);
 
   const tableRef = useRef();
   const history = useHistory();
@@ -521,7 +521,7 @@ function UnstyledSelectorDialog (props) {
   const [ error, setError ] = useState("");
   const [ disableProgress, setDisableProgress ] = useState(false);
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
+  const globalLoginDisplay = useContext(appContext);
 
   // Handle the user clicking on a subject, potentially submitting it
   let selectSubject = (subject) => {
@@ -763,7 +763,7 @@ function SubjectSelectorList(props) {
   const [ relatedSubjects, setRelatedSubjects ] = useState();
   const [ rowCount, setRowCount ] = useState(5);
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
+  const globalLoginDisplay = useContext(appContext);
 
   // fetch the Subjects of each form of this questionnaire type
   let filterArray = () => {

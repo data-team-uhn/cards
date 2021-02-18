@@ -48,7 +48,7 @@ import { getHierarchy, getTextHierarchy } from "./Subject";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, appContext } from "../appContextProvider.js";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import FormPagination from "./FormPagination";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
@@ -126,7 +126,7 @@ function Form (props) {
     }
   }, [isEdit]);
 
-  let globalLoginDisplay = useContext(GlobalLoginContext);
+  let globalLoginDisplay = useContext(appContext);
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,

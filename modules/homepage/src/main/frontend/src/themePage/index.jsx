@@ -30,7 +30,7 @@ import Navbar from "./Navbars/Navbar";
 import Page from "./Page";
 import PageStart from "./PageStart/PageStart";
 import IndexStyle from "./indexStyle.jsx";
-import DialogueLoginContainer, { GlobalLoginContext } from "../login/loginDialogue.js";
+import DialogueLoginContainer, { appContext } from "../appContextProvider.js";
 
 class Main extends React.Component {
   constructor(props) {
@@ -105,7 +105,7 @@ class Main extends React.Component {
     return (
       <MuiThemeProvider theme={appTheme}>
       <React.Fragment>
-      <GlobalLoginContext.Provider
+      <appContext.Provider
         value={{
           dialogOpen: (loginHandlerFcn, discardOnFailure) => {
             let handler = ((success) => {
@@ -170,7 +170,7 @@ class Main extends React.Component {
             </div>
           </Suspense>
         </div>
-      </GlobalLoginContext.Provider>
+      </appContext.Provider>
       </React.Fragment>
       </MuiThemeProvider>
     );

@@ -27,7 +27,7 @@ import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
 import DescriptionIcon from "@material-ui/icons/Description";
 import Search from "@material-ui/icons/Search";
 import HeaderStyle from "./headerStyle.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
+import { fetchWithReLogin, appContext } from "./appContextProvider.js";
 
 export const DEFAULT_QUERY_URL = "/query";
 export const DEFAULT_MAX_RESULTS = 5;
@@ -68,7 +68,7 @@ function SearchBar(props) {
   const [ showTotalRows, setShowTotalRows ] = useState(true);
   const [ fetched, setFetched ] = useState(false);
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
+  const globalLoginDisplay = useContext(appContext);
 
   let input = React.useRef();
   let suggestionMenu = React.useRef();

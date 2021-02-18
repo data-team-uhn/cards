@@ -36,7 +36,7 @@ import classNames from "classnames";
 import HeaderSearchBar from "./HeaderSearchBar.jsx";
 import sidebarStyle from "../Sidebar/sidebarStyle.jsx";
 import ChangeUserPasswordDialogue from "../../Userboard/Users/changeuserpassworddialogue.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialogue.js";
+import { fetchWithReLogin, appContext } from "../../appContextProvider.js";
 
 function HeaderLinks (props) {
   const { classes, closeSidebar, theme, color } = props;
@@ -48,7 +48,7 @@ function HeaderLinks (props) {
   const avatarRef = useRef();
   const headerRef = useRef();
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
+  const globalLoginDisplay = useContext(appContext);
 
   // TODO: Should we make the username accessible to other components (e.g. via a context)?
   useEffect(() => {

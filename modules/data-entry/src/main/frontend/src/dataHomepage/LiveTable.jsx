@@ -25,7 +25,7 @@ import moment from "moment";
 
 import Filters from "./Filters.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, appContext } from "../appContextProvider.js";
 
 import LiveTableStyle from "./tableStyle.jsx";
 
@@ -74,7 +74,7 @@ function LiveTable(props) {
       new URL(window.location.pathname.substring(window.location.pathname.lastIndexOf("/")) + ".paginate", window.location.origin)
   );
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
+  const globalLoginDisplay = useContext(appContext);
 
   // When new data is added, trigger a new fetch
   useEffect(() => {

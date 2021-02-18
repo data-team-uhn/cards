@@ -26,7 +26,7 @@ import { formatDateAnswer } from "./DateQuestion.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, appContext } from "../appContextProvider.js";
 import MaterialTable, { MTablePagination } from 'material-table';
 
 import {
@@ -151,7 +151,7 @@ function SubjectContainer(props) {
   // whether the subject has been deleted
   let [ deleted, setDeleted ] = useState();
 
-  let globalLoginDisplay = useContext(GlobalLoginContext);
+  let globalLoginDisplay = useContext(appContext);
 
   // 'level' of subject component
   const currentLevel = level || 0;
@@ -275,7 +275,7 @@ function SubjectMemberInternal (props) {
   let [tableData, setTableData] = useState();
   let [subjectGroups, setSubjectGroups] = useState();
 
-  let globalLoginDisplay = useContext(GlobalLoginContext);
+  let globalLoginDisplay = useContext(appContext);
 
   const customUrl=`/Forms.paginate?fieldname=subject&fieldvalue=${encodeURIComponent(data['jcr:uuid'])}&includeallstatus=true&limit=1000`;
 
@@ -463,7 +463,7 @@ function FormData(props) {
   // number of form question/answers listed, will increase
   let displayed = 0;
 
-  let globalLoginDisplay = useContext(GlobalLoginContext);
+  let globalLoginDisplay = useContext(appContext);
 
   // Fetch the form's data from the server
   // It will be stored in the `data` state variable

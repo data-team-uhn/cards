@@ -25,7 +25,7 @@ import PropTypes from "prop-types";
 
 import Answer from "./Answer";
 import DragAndDrop from "../dragAndDrop";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, appContext } from "../appContextProvider.js";
 import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateWriterContext } from "./FormUpdateContext";
 import Question from "./Question";
@@ -90,7 +90,7 @@ function FileResourceQuestion(props) {
   // the form to allow saving after we finish updating
   let allowResave = reader['/AllowResave'];
   let outURL = reader["/URL"] + "/" + answerPath;
-  const globalLoginDisplay = useContext(GlobalLoginContext);
+  const globalLoginDisplay = useContext(appContext);
 
   // Add files to the pending state
   let addFiles = (files) => {

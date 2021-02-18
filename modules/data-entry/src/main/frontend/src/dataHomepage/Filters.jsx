@@ -24,7 +24,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import LiveTableStyle from "./tableStyle.jsx";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, appContext } from "../appContextProvider.js";
 
 // We have to import each filter dependency here to load them properly into the FilterComponentManager
 import DateFilter from "./FilterComponents/DateFilter.jsx";
@@ -59,7 +59,7 @@ function Filters(props) {
   const [toFocus, setFocusRow] = useState(null);
   const notesComparator = "notes contain";
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
+  const globalLoginDisplay = useContext(appContext);
 
   // Focus on inputs as they are flagged for focus
   const focusRef = useRef();

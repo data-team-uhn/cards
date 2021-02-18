@@ -24,7 +24,7 @@ import { Tooltip, Typography, withStyles } from "@material-ui/core";
 import { Delete, Close } from "@material-ui/icons";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, appContext } from "../appContextProvider.js";
 
 /**
  * A component that renders an icon to open a dialog to delete an entry.
@@ -44,7 +44,7 @@ function DeleteButton(props) {
   const defaultErrorMessage = entryName + " could not be removed.";
   const history = useHistory();
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
+  const globalLoginDisplay = useContext(appContext);
 
   let openDialog = () => {
     closeError();

@@ -42,7 +42,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteButton from "./DeleteButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, appContext } from "../appContextProvider.js";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 
 function SubjectView(props) {
@@ -55,7 +55,7 @@ function SubjectView(props) {
 
   const activeTabParam = location.hash.substr(1);
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
+  const globalLoginDisplay = useContext(appContext);
 
   // Column configuration for the LiveTables
   const columns = [

@@ -21,8 +21,6 @@ import { Dialog } from '@material-ui/core';
 
 import MainLoginComponent from './loginMainComponent';
 
-export const GlobalLoginContext = React.createContext();
-
 export function fetchWithReLogin(displayLoginCtx, url, fetchArgs, discardOnFailure) {
     return new Promise(function(resolve, reject) {
       function fetchFunc() {

@@ -27,7 +27,7 @@ import MaterialTable from "material-table";
 
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, appContext } from "../appContextProvider.js";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
 const PROGRESS_SELECT_SUBJECT = 1;
@@ -54,7 +54,7 @@ function NewFormDialog(props) {
   const [ rowCount, setRowCount ] = useState(5);
   const [ wasOpen, setWasOpen ] = useState(false);
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
+  const globalLoginDisplay = useContext(appContext);
 
   let createForm = (subject) => {
     setError("");
