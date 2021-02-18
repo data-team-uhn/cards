@@ -418,7 +418,7 @@ function Form (props) {
             { isEdit ?
 	          <Fab
 	              variant="extended"
-	              color={lastSaveStatus === false ? "secondary" : "primary"}
+	              color="primary"
 	              disabled={saveInProgress}
 	              onClick={handleSubmit}
 	              className={classes.actionButton}
