@@ -99,11 +99,14 @@ function HeaderLinks (props) {
 
   return (
     <div ref={headerRef} id="adminnavbar">
-      <HeaderSearchBar
-        invertColors={!expand}
-        onSelectFinish={expand ? undefined : closeSidebar}
-        className={expand ? undefined : classes.buttonLink}
-      />
+      {  // Hide the global search bar in all admin screens
+        !window.location.pathname.startsWith("/content.html/admin") &&
+        <HeaderSearchBar
+          invertColors={!expand}
+          onSelectFinish={expand ? undefined : closeSidebar}
+          className={expand ? undefined : classes.buttonLink}
+        />
+      }
       {/* Avatar + sign out link */}
       <Hidden smDown>
         <Tooltip title={username}>
