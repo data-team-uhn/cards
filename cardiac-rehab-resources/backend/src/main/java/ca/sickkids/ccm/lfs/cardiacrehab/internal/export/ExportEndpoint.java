@@ -33,8 +33,8 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
-    resourceTypes = { "lfs/FormsHomepage" },
-    selectors = { "export" })
+    resourceTypes = { "lfs/SubjectsHomepage" },
+    selectors = { "s3push" })
 public class ExportEndpoint extends SlingSafeMethodsServlet
 {
     @Reference
@@ -43,11 +43,20 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
-        //TODO: Ensure that this can only be run when logged in as admin
+        final Writer out = response.getWriter();
+
+        //Ensure that this can only be run when logged in as admin
+        final String remoteUser = request.getRemoteUser();
+        if (remoteUser == null || !"admin".equals(remoteUser)) {
+            //admin login required
+            response.setStatus(403);
+            out.write("Only admin can perform this operation.");
+            return;
+        }
+
         final Runnable exportJob = new NightlyExportTask(this.resolverFactory);
         final Thread thread = new Thread(exportJob);
         thread.start();
-        final Writer out = response.getWriter();
-        out.write("Sucessfully called the ExportEndpoint");
+        out.write("S3 export started");
     }
 }
