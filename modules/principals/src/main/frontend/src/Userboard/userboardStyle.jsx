@@ -44,7 +44,7 @@ const userboardStyle = theme => ({
       margin: theme.spacing(1),
       position: "fixed",
       bottom: theme.spacing(2),
-      right: theme.spacing(2),
+      right: theme.spacing(4),
     }
 });
 
