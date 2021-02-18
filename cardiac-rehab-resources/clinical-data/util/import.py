@@ -151,6 +151,8 @@ def process_options(question, row):
         date = row['Options (if applicable)']
         if date == "MM/DD/YYYY" or date == "MM-DD-YYYY":
             date = "MM-dd-yyyy"
+        if date == "DD/MM/YYYY" or date == "DD-MM-YYYY":
+            date = "dd-MM-yyyy"
         if date == "MM/YYYY" or date == "MM-YYYY":
             date = "MM-yyyy"
         if date == "YYYY":
@@ -234,6 +236,7 @@ DATA_TO_LFS_TYPE = {
     'string (single)': 'text',
     'string (multiple can be selected)': 'text',
     'boolean (true/false)': "boolean",
+    'boolean': "boolean",
     'decimal': 'decimal',
     'decimal (single)': 'decimal',
     'integer': 'long',

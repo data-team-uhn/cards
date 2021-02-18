@@ -150,7 +150,7 @@
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>DD/MM/YYYY</value>
+				<value>dd-MM-yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
