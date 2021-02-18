@@ -538,16 +538,16 @@
 				</property>
 			</node>
 			<node>
-				<name>Black - African American - African </name>
+				<name>Black - African American - African</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Black / African American / African </value>
+					<value>Black / African American / African</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Black / African American / African </value>
+					<value>Black / African American / African</value>
 					<type>String</type>
 				</property>
 			</node>

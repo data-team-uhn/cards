@@ -81,7 +81,7 @@
 		</property>
 		<property>
 			<name>displayMode</name>
-			<value>list</value>
+			<value>list+input</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -399,7 +399,7 @@
 				</property>
 				<property>
 					<name>notApplicable</name>
-					<value>true</value>
+					<value>True</value>
 					<type>Boolean</type>
 				</property>
 			</node>
@@ -466,11 +466,6 @@
 		</property>
 		<property>
 			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
@@ -605,7 +600,7 @@
 				</property>
 				<property>
 					<name>notApplicable</name>
-					<value>true</value>
+					<value>True</value>
 					<type>Boolean</type>
 				</property>
 			</node>
@@ -866,7 +861,7 @@
 				</property>
 				<property>
 					<name>notApplicable</name>
-					<value>true</value>
+					<value>True</value>
 					<type>Boolean</type>
 				</property>
 			</node>

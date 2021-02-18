@@ -1348,7 +1348,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>long</value>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -2031,16 +2031,16 @@
 					</property>
 				</node>
 				<node>
-					<name>Cane (left) </name>
+					<name>Cane (left)</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Cane (left) </value>
+						<value>Cane (left)</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>Cane (left) </value>
+						<value>Cane (left)</value>
 						<type>String</type>
 					</property>
 				</node>
@@ -2382,7 +2382,7 @@
 				</property>
 				<property>
 					<name>noneOfTheAbove</name>
-					<value>true</value>
+					<value>True</value>
 					<type>Boolean</type>
 				</property>
 			</node>
@@ -2556,7 +2556,7 @@
 				</property>
 				<property>
 					<name>noneOfTheAbove</name>
-					<value>true</value>
+					<value>True</value>
 					<type>Boolean</type>
 				</property>
 			</node>
@@ -2641,7 +2641,7 @@
 				</property>
 				<property>
 					<name>noneOfTheAbove</name>
-					<value>true</value>
+					<value>True</value>
 					<type>Boolean</type>
 				</property>
 			</node>
@@ -2726,7 +2726,7 @@
 				</property>
 				<property>
 					<name>noneOfTheAbove</name>
-					<value>true</value>
+					<value>True</value>
 					<type>Boolean</type>
 				</property>
 			</node>
@@ -3326,7 +3326,7 @@
 				</property>
 				<property>
 					<name>noneOfTheAbove</name>
-					<value>true</value>
+					<value>True</value>
 					<type>Boolean</type>
 				</property>
 			</node>
