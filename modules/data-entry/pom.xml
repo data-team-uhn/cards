@@ -51,7 +51,7 @@
               SLING-INF/content/Extensions/DashboardViews/;path:=/Extensions/DashboardViews/;overwrite:=true,
               SLING-INF/content/Extensions/Sidebar/;path:=/Extensions/Sidebar/;overwrite:=true,
               SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
-              SLING-INF/content/SubjectTypes/;path:=/SubjectTypes/;overwrite:=true
+              SLING-INF/content/SubjectTypes/;path:=/SubjectTypes/;merge:=true;mergeProperties:=true;overwriteProperties:=true;uninstall:=true
             </Sling-Initial-Content>
           </instructions>
         </configuration>

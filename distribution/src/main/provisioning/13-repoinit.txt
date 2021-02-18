@@ -43,6 +43,12 @@
         allow   jcr:read    on /
     end
 
+    create service user sling-jcr-content-loader
+
+    set ACL for sling-jcr-content-loader
+        allow   jcr:all     on /
+    end
+
     # sling-xss
     create service user sling-xss
 
