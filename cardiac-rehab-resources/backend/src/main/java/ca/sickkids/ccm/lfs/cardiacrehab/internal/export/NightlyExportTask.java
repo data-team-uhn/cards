@@ -183,11 +183,8 @@ public class NightlyExportTask implements Runnable
 
     private SubjectContents getSubjectContents(String path, String requestDateString)
     {
-        String subjectDataUrl = String.format(
-            "%s.data.deep.bare.-identify.relativeDates.dataFilter:createdAfter=%s.dataFilter:statusNot=INCOMPLETE",
-            path,
-            requestDateString
-        );
+        String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
+            + ".dataFilter:createdAfter=%s.dataFilter:statusNot=INCOMPLETE", path, requestDateString);
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             Resource subjectData = resolver.resolve(subjectDataUrl);
             return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(), subjectDataUrl);
