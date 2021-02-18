@@ -22,7 +22,7 @@ import React from "react";
 import {
   AppBar,
   withStyles,
-  IconButton,
+  Grid,
   Toolbar,
   Typography
 } from '@material-ui/core';
@@ -41,15 +41,17 @@ export default function DemoBanner(props) {
   return (
     <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
-        <IconButton edge="start" color="inherit">
-          <WarningIcon fontSize="large"/>
-        </IconButton>
-        <Typography variant="h6">
+      <Grid container spacing={1} direction="row" justify="center" alignItems="center" wrap="nowrap">
+        <Grid item><WarningIcon/></Grid>
+        <Grid item>
+        <Typography variant="subtitle2">
           This installation is for demo purposes only.
           Data entered here can be accessed by anyone and is
           periodically deleted. Do not enter any real
           data / patient identifiable information.
         </Typography>
+        </Grid>
+      </Grid>
       </Toolbar>
     </StyledAppBar>
   );
