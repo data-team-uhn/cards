@@ -293,10 +293,11 @@ export const parseToArray = (object) => {
  * @param {bool} open If true, this dialog is open
  */
 export function NewSubjectDialog (props) {
-  const { allowedTypes, disabled, onClose, onSubmit, open, currentSubject, openNewSubject } = props;
+  const { allowedTypes, disabled, onClose, onSubmit, open, openNewSubject } = props;
   const [ error, setError ] = useState("");
   const [ newSubjectName, setNewSubjectName ] = useState([""]);
   const [ newSubjectType, setNewSubjectType ] = useState([""]);
+  const [ newSubjectTypeParent, setNewSubjectTypeParent ] = useState(false);
   const [ newSubjectParent, setNewSubjectParent ] = useState([]);
   const [ newSubjectIndex, setNewSubjectIndex ] = useState(0);
   const [ newSubjectAllowedTypes, setNewSubjectAllowedTypes ] = useState([]);
@@ -310,11 +311,7 @@ export function NewSubjectDialog (props) {
   const tableRef = useRef();
   const history = useHistory();
 
-  console.log(newSubjectType[newSubjectIndex]);
-
-  let parentFindingRegex = /SubjectTypes\/[^\/]/g;
-
-  let curSubjectRequiresParents = newSubjectType[newSubjectIndex]?.["@path"];
+  let curSubjectRequiresParents = newSubjectTypeParent?.["jcr:primaryType"] == "lfs:SubjectType";
   let disabledControls = disabled || isPosting;
 
   // Called only by createNewSubject, a callback to create the next child on our list
@@ -390,17 +387,34 @@ export function NewSubjectDialog (props) {
   }
 
   let changeNewSubjectType = (type) => {
-    // Unselect all parents after this one
     setNewSubjectParent((old) => {
       let newParents = old.slice(0, newSubjectIndex);
       newParents.push("");
       return newParents;
     });
+    // Unselect all parents after this one
     setNewSubjectType((old) => {
       let newTypes = old.slice();
       newTypes[newSubjectIndex] = type;
       return newTypes;
-    })
+    });
+
+    // Also begin a promise to find the parent of the new subject type
+    // The parent is the node one above our current path, so we just grab the info about that parent
+    let newAllowedTypeParent = type["@path"].split("/").slice(0, -1).join("/");
+    let promise;
+    console.log(newAllowedTypeParent);
+    if (newAllowedTypeParent) {
+      promise = fetch(`${newAllowedTypeParent}.full.json`)
+        .then((result) => result.ok ? result.json() : Promise.reject(result))
+        .then((result) => result?.["jcr:primaryType"] == "lfs:SubjectType" ? result : false);
+    } else {
+      promise = new Promise((resolve) => {resolve(false);});
+    }
+
+    promise.then((result) => {
+      setNewSubjectTypeParent(result);
+    });
   }
 
   let changeNewSubjectParent = (parent) => {
@@ -417,25 +431,37 @@ export function NewSubjectDialog (props) {
 
   // Handle the case where the user wants to create a new subject to act as the parent
   let addNewParentSubject = () => {
-    let newAllowedTypes = parseToArray(newSubjectType[newSubjectIndex]["parent"]);
-    setNewSubjectAllowedTypes((old) => {
-      let newTypes = old.slice();
-      newTypes.push(newAllowedTypes);
-      return newTypes;
+    // The parent is the node one above our current path
+    let newAllowedTypeParent = newSubjectType[newSubjectIndex]["@path"].split("/").slice(0, -1).join("/");
+    let promise;
+    if (newAllowedTypeParent) {
+      promise = fetch(`${newAllowedTypeParent}.full.json`)
+        .then((result) => result.ok ? result.json() : Promise.reject(result));
+    } else {
+      promise = new Promise((resolve) => {resolve(false);});
+    }
+
+    promise.then((json) => {
+      let newAllowedTypes = parseToArray(json);
+      setNewSubjectAllowedTypes((old) => {
+        let newTypes = old.slice();
+        newTypes.push(newAllowedTypes);
+        return newTypes;
+      });
+      setNewSubjectIndex((old) => old+1);
+      setNewSubjectName((old) => {
+        let newNames = old.slice();
+        newNames.push("");
+        return newNames;
+      });
+      setNewSubjectType((old) => {
+        let newTypes = old.slice();
+        newTypes.push("");
+        return newTypes;
+      });
+      setNewSubjectPopperOpen(true);
+      setSelectParentPopperOpen(false);
     });
-    setNewSubjectIndex((old) => old+1);
-    setNewSubjectName((old) => {
-      let newNames = old.slice();
-      newNames.push("");
-      return newNames;
-    });
-    setNewSubjectType((old) => {
-      let newTypes = old.slice();
-      newTypes.push("");
-      return newTypes;
-    });
-    setNewSubjectPopperOpen(true);
-    setSelectParentPopperOpen(false);
   }
 
   let goBack = () => {
@@ -457,6 +483,7 @@ export function NewSubjectDialog (props) {
     setNewSubjectIndex(0);
     setNewSubjectName([""]);
     setNewSubjectType([""]);
+    setNewSubjectTypeParent([""]);
     setNewSubjectParent([]);
     setNewSubjectAllowedTypes([]);
     setNewSubjectPopperOpen(true);
@@ -499,7 +526,7 @@ export function NewSubjectDialog (props) {
         onCreateParent={addNewParentSubject}
         onSubmit={createNewSubject}
         open={open && selectParentPopperOpen}
-        parentType={newSubjectType[newSubjectIndex]?.["parent"]}
+        parentType={newSubjectTypeParent}
         tableRef={tableRef}
         value={newSubjectParent[newSubjectIndex]}
         />
