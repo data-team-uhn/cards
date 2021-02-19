@@ -334,8 +334,8 @@ export function NewSubjectDialog (props) {
     }
 
     // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
-    let parent = newSubjectParent[index]?.["jcr:uuid"] || subject;
-    parent = (parent ? [parent] : []);
+    //let parent = newSubjectParent[index]?.["jcr:uuid"] || subject;
+    let parent = newSubjectParent[index]?.["@path"] || subject;
     createSubjects(
       globalLoginDisplay,
       [newSubjectName[index]],
@@ -665,12 +665,12 @@ export const SelectorDialog = withStyles(QuestionnaireStyle)(UnstyledSelectorDia
  *
  * @param {array} newSubjects The new subjects to add to the repository, as an array of strings.
  * @param {array} subjectType The subjectType uuid to use for the new subjects.
- * @param {array} subjectParents Parent subjects required by the subject type.
+ * @param {array} subjectParent Parent subject required by the subject type.
  * @param {object or string} subjectToTrack The selected subject to return the URL for
  * @param {func} returnCall The callback after all subjects have been created
  * @param {func} onError The callback if an error occurs during subject creation
  */
-export function createSubjects(globalLoginDisplay, newSubjects, subjectType, subjectParents, subjectToTrack, returnCall, onError) {
+export function createSubjects(globalLoginDisplay, newSubjects, subjectType, subjectParent, subjectToTrack, returnCall, onError) {
   let selectedURL = subjectToTrack["@path"];
   let subjectTypeToUse = subjectType["jcr:uuid"] ? subjectType["jcr:uuid"] : subjectType;
   let lastPromise = null;
@@ -680,7 +680,7 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
       continue;
     }
 
-    let url = "/Subjects/" + uuidv4();
+    let url = (subjectParent || "/Subjects") + "/" + uuidv4();
 
     // If this is the subject the user has selected, make a note of the output URL
     if (subjectName == subjectToTrack) {
@@ -694,11 +694,6 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
     requestData.append('identifier', subjectName);
     requestData.append('type', subjectTypeToUse);
     requestData.append('type@TypeHint', 'Reference');
-    subjectParents.forEach((parent) => {
-      requestData.append('parents', parent);
-      parentCheckQuery.push(`n.'parents'='${parent}'`);
-    })
-    requestData.append('parents@TypeHint', 'Reference');
 
     let parentCheckQueryString = "";
     if (parentCheckQuery.length) {
