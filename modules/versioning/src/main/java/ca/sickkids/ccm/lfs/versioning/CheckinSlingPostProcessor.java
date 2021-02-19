@@ -47,6 +47,8 @@ public class CheckinSlingPostProcessor implements SlingPostProcessor
             LOGGER.debug("Running CheckinSlingPostProcessor::process");
             final Node n = request.getResource().adaptTo(Node.class);
             if (n.isNodeType("mix:lastModified")) {
+                // At this point, all the changes are done in the session, not yet persisted, and trying to checkin the
+                // node will fail. We must save first, although it is not recommended to do so in a PostProcessor.
                 n.getSession().save();
                 n.getSession().getWorkspace().getVersionManager().checkin(n.getPath());
                 changes.add(Modification.onCheckin(n.getPath()));
