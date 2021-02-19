@@ -15,31 +15,27 @@
   under the License.
 */
 
-// Taken from https://www.creative-tim.com/product/material-dashboard-react
+import React from "react";
+import { Fab, Tooltip, withStyles } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 
-const userboardStyle = theme => ({
-    containerButton: {
-      marginRight: theme.spacing(1),
-    },
-    cardActions: {
-      justifyContent: "flex-end",
-      marginTop: theme.spacing(2)
-    },
-    cardRoot: {
-      paddingLeft: "120px"
-    },
-    info: {
-      backgroundColor: theme.palette.info.main
-    },
-    addIcon: {
-      backgroundColor: theme.palette.primary.main
-    },
-    dialogTitle: {
-      padding: theme.spacing(2,0,2,3)
-    },
-    dialogActions: {
-      padding: theme.spacing(2, 3)
-    }
-});
+import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle.jsx';
 
-export default userboardStyle;
+function NewPrincipalButton(props) {
+  const { title, onClick, classes } = props;
+  return (
+    <div className={classes.mainPageAction}>
+      <Tooltip title={title} aria-label="new">
+        <Fab
+          color="primary"
+          aria-label="new"
+          onClick={onClick}
+        >
+          <AddIcon />
+        </Fab>
+      </Tooltip>
+    </div>
+  );
+}
+
+export default withStyles(QuestionnaireStyle)(NewPrincipalButton);

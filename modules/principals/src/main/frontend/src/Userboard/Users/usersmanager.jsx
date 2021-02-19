@@ -19,13 +19,13 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 
-import { Avatar, Button, Fab, Link, Card, CardHeader, CardContent, Grid, Table, TableBody, TableHead, TableRow, TableCell, Tooltip} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import { Avatar, Button, Link, Card, CardHeader, CardContent, Grid, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateUserDialogue from "./createuserdialogue.jsx";
 import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
 import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx";
+import NewPrincipalButton from "../newPrincipalButton.jsx";
 
 import MaterialTable from 'material-table';
 
@@ -166,19 +166,10 @@ class UsersManager extends React.Component {
               }}
             />
         </div>
-        <div className={classes.newPrincipalButtonWrapper}>
-          <Tooltip title={"Create New User"} aria-label="new">
-            <span>
-              <Fab
-                color="primary"
-                aria-label="new"
-                onClick={(event) => this.setState({deployCreateUser: true})}
-              >
-                <AddIcon />
-              </Fab>
-            </span>
-          </Tooltip>
-        </div>
+        <NewPrincipalButton
+          title="Create new user"
+          onClick={(event) => this.setState({deployCreateUser: true})}
+        />
       </div>
     );
   }

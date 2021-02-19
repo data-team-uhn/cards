@@ -19,13 +19,13 @@ import React from "react";
 
 import { withStyles } from "@material-ui/core/styles";
 
-import { Avatar, Button, Card, CardHeader, CardContent, Fab, Grid, Table, TableCell, TableBody, TableHead, TableRow, Tooltip } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import { Avatar, Button, Card, CardHeader, CardContent, Grid, Table, TableCell, TableBody, TableHead, TableRow } from "@material-ui/core";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";
 import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
 import AddUserToGroupDialogue from "./addusertogroupdialogue.jsx";
+import NewPrincipalButton from "../newPrincipalButton.jsx"
 
 import MaterialTable from 'material-table';
 
@@ -242,19 +242,10 @@ class GroupsManager extends React.Component {
             }}
           />
         </div>
-        <div className={classes.newPrincipalButtonWrapper}>
-          <Tooltip title={"Create New Group"} aria-label="new">
-            <span>
-              <Fab
-                color="primary"
-                aria-label="new"
-                onClick={(event) => this.setState({deployCreateGroup: true})}
-              >
-                <AddIcon />
-              </Fab>
-            </span>
-          </Tooltip>
-        </div>
+        <NewPrincipalButton
+          title="Create new group"
+          onClick={(event) => this.setState({deployCreateGroup: true})}
+        />
       </div>
     );
   }
