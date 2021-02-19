@@ -17,7 +17,6 @@
 //  under the License.
 //
 import React, { useState, useContext } from "react";
-import LiveTable from "./LiveTable.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
@@ -40,8 +39,7 @@ import { Link } from 'react-router-dom';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import LaunchIcon from '@material-ui/icons/Launch';
 import AddIcon from '@material-ui/icons/Add';
-import DeleteButton from "./DeleteButton.jsx";
-import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import SubjectDirectory from "../questionnaire/SubjectDirectory.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import NewItemButton from "../components/NewItemButton.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
@@ -57,29 +55,6 @@ function SubjectView(props) {
   const activeTabParam = location.hash.substr(1);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
-
-  // Column configuration for the LiveTables
-  const columns = [
-    {
-      "key": "@name",
-      "label": "Identifier",
-      "format": getEntityIdentifier,
-      "link": "dashboard+path",
-    },
-    {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
-    },
-    {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
-    },
-  ]
-  const actions = [
-    DeleteButton
-  ]
 
   let fetchSubjectTypes = () => {
     let url = new URL("/query", window.location.origin);
@@ -143,14 +118,7 @@ function SubjectView(props) {
       <CardContent>
       {
         hasSubjects
-          ? <LiveTable
-              columns={columns}
-              customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(subjectTypes[activeTab]["jcr:uuid"])}
-              defaultLimit={10}
-              entryType={"Subject"}
-              actions={actions}
-              disableTopPagination={!topPagination}
-            />
+          ? <SubjectDirectory id={subjectTypes[activeTab]["jcr:uuid"]} disableTopPagination={!topPagination} />
           : <Typography>No results</Typography>
       }
       </CardContent>

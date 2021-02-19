@@ -20,7 +20,7 @@ import React, { useState } from "react";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
-import { Card, CardContent, CardHeader, Typography, withStyles } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, Typography, withStyles } from "@material-ui/core";
 import SubjectDirectory from "../questionnaire/SubjectDirectory.jsx";
 
 /**
@@ -81,9 +81,22 @@ function SubjectType(props) {
   }
 
   return (
-      <React.Fragment>
-        {subjectID && <SubjectDirectory id={subjectID} title={currentTitle}/>}
-      </React.Fragment>
+    <React.Fragment>
+      { subjectID &&
+        <Card>
+          <CardHeader
+            title={
+              <Button className={classes.cardHeaderButton}>
+                {currentTitle}
+              </Button>
+            }
+          />
+          <CardContent>
+            <SubjectDirectory id={subjectID} disableTopPagination={true} />
+          </CardContent>
+        </Card>
+      }
+    </React.Fragment>
   );
 }
 

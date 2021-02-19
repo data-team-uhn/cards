@@ -21,7 +21,7 @@
  * Component that displays all subjects of a specified SubjectType.
  *
  * @example
- * <SubjectDirectory id="ae137c46-c22e-4bf1-8238-953e6315cffc" title="Tumors"/>
+ * <SubjectDirectory id="ae137c46-c22e-4bf1-8238-953e6315cffc" />
  *
  * @param {string} id the identifier of a SubjectType
  * @param {string} title the title of the displayed title
@@ -30,19 +30,20 @@
 import React from "react";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 
-import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
+import { withStyles } from "@material-ui/core";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function SubjectDirectory(props) {
 
-  const { classes, id, title } = props;
+  const { classes, id, disableTopPagination } = props;
 
   const columns = [
     {
       "key": "identifier",
       "label": "Identifier",
-      "format": "string",
+      "format": getEntityIdentifier,
       "link": "dashboard+field:@path",
     },
     {
@@ -61,26 +62,14 @@ function SubjectDirectory(props) {
   ]
 
   return (
-    <div>
-      <Card>
-        <CardHeader
-          title={
-            <Button className={classes.cardHeaderButton}>
-              {title}
-            </Button>
-          }
-        />
-        <CardContent>
-          <LiveTable
-            columns={columns}
-            customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(id)}
-            defaultLimit={10}
-            actions={actions}
-            entryType={"Subject"}
-            />
-        </CardContent>
-      </Card>
-    </div>
+      <LiveTable
+        columns={columns}
+        customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(id)}
+        defaultLimit={10}
+        actions={actions}
+        entryType={"Subject"}
+        disableTopPagination={disableTopPagination}
+      />
   );
 }
 

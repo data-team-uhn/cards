@@ -16,16 +16,21 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
+import React, { useState } from "react";
 import LiveTable from "./LiveTable.jsx";
 import SubjectType from "../questionnaire/SubjectType.jsx";
 
-import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, Fab, Tooltip, withStyles } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import CreateSubjectTypeDialog from "../questionnaire/NewSubjectTypeDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
+import AddIcon from "@material-ui/icons/Add";
 
 function SubjectTypes(props) {
   const { classes } = props;
+  const [ newSubjectTypePopperOpen, setNewSubjectTypePopperOpen ] = useState(false);
+  const [ updateData, setUpdateData ] = useState(false);
+  const [ subjectData, setSubjectData ] = useState([]);
 
   const columns = [
     {
@@ -44,6 +49,11 @@ function SubjectTypes(props) {
       "label": "Created by",
       "format": "string",
     },
+    {
+      "key": "lfs:defaultOrder",
+      "label": "Default Order",
+      "format": "string",
+    },
   ]
   const actions = [
     DeleteButton
@@ -55,6 +65,7 @@ function SubjectTypes(props) {
   }
 
   return (
+  <>
     <Card>
       <CardHeader
         title={
@@ -68,9 +79,34 @@ function SubjectTypes(props) {
           columns={columns}
           actions={actions}
           entryType={"Subject Type"}
-          admin={true} />
+          admin={true}
+          disableTopPagination={true}
+          defaultSort={true}
+          updateData={updateData}
+          onDataFetch={setSubjectData}
+        />
       </CardContent>
     </Card>
+    <div className={classes.mainPageAction}>
+      <Tooltip title={"Create New Group"} aria-label="new">
+        <span>
+          <Fab
+            color="primary"
+            aria-label="new"
+            onClick={() => {setNewSubjectTypePopperOpen(true)}}
+          >
+            <AddIcon />
+          </Fab>
+        </span>
+      </Tooltip>
+    </div>
+    <CreateSubjectTypeDialog
+      onClose={() => { setNewSubjectTypePopperOpen(false);}}
+      onSubmit={() => { setNewSubjectTypePopperOpen(false); setUpdateData(true);}}
+      open={newSubjectTypePopperOpen}
+      subjects={subjectData}
+    />
+  </>
   );
 }
 
