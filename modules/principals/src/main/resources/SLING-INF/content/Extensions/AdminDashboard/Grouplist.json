@@ -1,7 +1,7 @@
 {
   "jcr:primaryType": "lfs:Extension",
   "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
-  "lfs:extensionName": "Groups List",
+  "lfs:extensionName": "Groups",
   "lfs:defaultOrder": 95,
   "lfs:targetURL": "/content.html/admin/grouplist",
   "lfs:icon": "asset:lfs-principals.groupIcon.js",
