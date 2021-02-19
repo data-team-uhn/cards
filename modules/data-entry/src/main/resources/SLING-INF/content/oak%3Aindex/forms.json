@@ -60,8 +60,8 @@
                 "statusFlags": {
                     "name": "statusFlags",
                     "propertyIndex": true,
-                    "nodeScopeIndex": true,
-                    "analyzed": true,
+                    "nodeScopeIndex": false,
+                    "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
                 }
             }
