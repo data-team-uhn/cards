@@ -19,13 +19,13 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 
-import { Avatar, Button, Link, Card, CardHeader, CardContent, Grid, Table, TableBody, TableHead, TableRow, TableCell} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import { Avatar, Button, Link, Card, CardHeader, CardContent, Grid, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateUserDialogue from "./createuserdialogue.jsx";
 import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
 import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx";
+import NewPrincipalButton from "../newPrincipalButton.jsx";
 
 import MaterialTable from 'material-table';
 
@@ -128,12 +128,6 @@ class UsersManager extends React.Component {
                   icon: 'delete',
                   tooltip: 'Delete User',
                   onClick: (event, rowData) => this.handleUserDeleteClick(rowData.tableData.id, rowData.name)
-                },
-                {
-                  icon: () => {return (<Avatar className={classes.addIcon}><AddIcon /></Avatar>)},
-                  tooltip: 'Create New User',
-                  isFreeAction: true,
-                  onClick: (event) => this.setState({deployCreateUser: true})
                 }
               ]}
               onRowClick={(event, rowData, togglePanel) => {this.handleUserRowClick(rowData.tableData.id, rowData.name); togglePanel()}}
@@ -172,6 +166,10 @@ class UsersManager extends React.Component {
               }}
             />
         </div>
+        <NewPrincipalButton
+          title="Create new user"
+          onClick={(event) => this.setState({deployCreateUser: true})}
+        />
       </div>
     );
   }

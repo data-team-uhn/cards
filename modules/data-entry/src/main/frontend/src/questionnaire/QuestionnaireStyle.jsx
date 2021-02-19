@@ -149,11 +149,11 @@ const questionnaireStyle = theme => ({
     formViewAvatar: {
         background: theme.palette.info.main,
     },
-    newFormButtonWrapper: {
+    mainPageAction: {
         margin: theme.spacing(1),
         position: "fixed",
         bottom: theme.spacing(2),
-        right: theme.spacing(2),
+        right: theme.spacing(4),
     },
     newFormTypePlaceholder: {
         position: 'relative',
@@ -209,18 +209,6 @@ const questionnaireStyle = theme => ({
         "& .MuiGrid-container:last-child" : {
           marginBottom: "0 !important",
         }
-    },
-    mainPageAction: {
-        position: 'fixed',
-        bottom: theme.spacing(2),
-        right: theme.spacing(4),
-        height: theme.spacing(8),
-        zIndex: 100,
-        "& > div" : {
-             position: "absolute !important",
-             top: 0,
-             right: 0,
-        },
     },
     collapsedSection: {
         padding: "0 !important"

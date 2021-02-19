@@ -19,13 +19,13 @@ import React from "react";
 
 import { withStyles } from "@material-ui/core/styles";
 
-import { Avatar, Button, Card, CardHeader, CardContent, Fab, Grid, Table, TableCell, TableBody, TableHead, TableRow } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import { Avatar, Button, Card, CardHeader, CardContent, Grid, Table, TableCell, TableBody, TableHead, TableRow } from "@material-ui/core";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";
 import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
 import AddUserToGroupDialogue from "./addusertogroupdialogue.jsx";
+import NewPrincipalButton from "../newPrincipalButton.jsx"
 
 import MaterialTable from 'material-table';
 
@@ -177,12 +177,6 @@ class GroupsManager extends React.Component {
                 icon: 'delete',
                 tooltip: 'Delete Group',
                 onClick: (event, rowData) => this.handleGroupDeleteClick(rowData.tableData.id, rowData.name)
-              },
-              {
-                icon: () => {return (<Avatar className={classes.addIcon}><AddIcon /></Avatar>)},
-                tooltip: 'Create New Group',
-                isFreeAction: true,
-                onClick: (event) => this.setState({deployCreateGroup: true})
               }
              ]}
             onRowClick={(event, rowData, togglePanel) => {this.handleGroupRowClick(rowData.tableData.id, rowData.name); togglePanel()}}
@@ -192,7 +186,7 @@ class GroupsManager extends React.Component {
                 const tableTitle = "Group " + group.name + " users";
 
                 return (
-                <div>
+                  <div>
                     <Card className={classes.cardRoot}>
                       <CardContent>
                         { groupUsers.length > 0 && 
@@ -243,11 +237,15 @@ class GroupsManager extends React.Component {
                         </Grid>
                       </CardContent>
                     </Card>
-                    </div>
+                  </div>
                 )
             }}
           />
         </div>
+        <NewPrincipalButton
+          title="Create new group"
+          onClick={(event) => this.setState({deployCreateGroup: true})}
+        />
       </div>
     );
   }

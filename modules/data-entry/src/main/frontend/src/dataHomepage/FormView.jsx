@@ -141,11 +141,9 @@ function FormView(props) {
           disableTopPagination={!topPagination}
         />
       {expanded &&
-        <div className={classes.mainPageAction}>
-          <NewFormDialog presetPath={questionnairePath}>
-            New form
-          </NewFormDialog>
-        </div>
+        <NewFormDialog presetPath={questionnairePath}>
+          New form
+        </NewFormDialog>
       }
       </CardContent>
     </Card>
