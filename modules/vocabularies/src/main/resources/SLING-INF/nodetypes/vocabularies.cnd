@@ -68,7 +68,7 @@
 
 //-----------------------------------------------------------------------------
 // Vocabulary: a vocabulary of terms with VocabularyTerm nodes as children.
-[lfs:Vocabulary] > sling:Folder, mix:referenceable, mix:versionable
+[lfs:Vocabulary] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
   // Attributes:
 
   // We can use vocabularies a query.

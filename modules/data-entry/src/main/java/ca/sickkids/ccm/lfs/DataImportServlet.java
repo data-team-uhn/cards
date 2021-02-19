@@ -27,7 +27,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +42,8 @@ import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
+import javax.jcr.version.VersionManager;
 import javax.servlet.Servlet;
-import javax.servlet.ServletException;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -81,6 +80,7 @@ import ca.sickkids.ccm.lfs.spi.SearchUtils;
 )
 @SlingServletResourceTypes(resourceTypes = { "lfs/FormsHomepage" }, methods = { "POST" })
 @SlingServletName(servletName = "Data Import Servlet")
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class DataImportServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -5821127949309764050L;
@@ -111,35 +111,15 @@ public class DataImportServlet extends SlingAllMethodsServlet
         new SimpleDateFormat("M/d/y"));
 
     /** Cached Question nodes. */
-    private final ThreadLocal<Map<String, Node>> questionCache = new ThreadLocal<Map<String, Node>>()
-    {
-        @Override
-        protected Map<String, Node> initialValue()
-        {
-            return new HashMap<>();
-        }
-    };
+    private final ThreadLocal<Map<String, Node>> questionCache = ThreadLocal.withInitial(HashMap::new);
 
     /** Cached Subject nodes (for multiple forms for the same subject, for instance). */
-    private final ThreadLocal<Map<String, Node>> subjectCache = new ThreadLocal<Map<String, Node>>()
-    {
-        @Override
-        protected Map<String, Node> initialValue()
-        {
-            return new HashMap<>();
-        }
-    };
-
+    private final ThreadLocal<Map<String, Node>> subjectCache = ThreadLocal.withInitial(HashMap::new);
 
     /** Cached Question nodes. */
-    private final ThreadLocal<Set<String>> warnedCache = new ThreadLocal<Set<String>>()
-    {
-        @Override
-        protected Set<String> initialValue()
-        {
-            return new HashSet<>();
-        }
-    };
+    private final ThreadLocal<Set<String>> warnedCache = ThreadLocal.withInitial(HashSet::new);
+
+    private final ThreadLocal<Set<String>> nodesToCheckin = ThreadLocal.withInitial(HashSet::new);
 
     /** The Resource Resolver for the current request. */
     private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
@@ -167,7 +147,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
 
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
-        throws ServletException, IOException
+        throws IOException
     {
         try {
             final ResourceResolver resourceResolver = request.getResourceResolver();
@@ -179,7 +159,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
             String[] subjectTypesParam = request.getParameterValues(":subjectType");
             // If :subjectType isn't set, then /SubjectTypes/Patient should be assumed to be the default value.
             if (subjectTypesParam == null || subjectTypesParam.length == 0) {
-                subjectTypesParam = new String[]{"/SubjectTypes/Patient"};
+                subjectTypesParam = new String[] { "/SubjectTypes/Patient" };
             }
             this.subjectTypes.set(subjectTypesParam);
 
@@ -187,6 +167,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         } catch (RepositoryException e) {
             LOGGER.error("Failed to import data: {}", e.getMessage(), e);
         } finally {
+            this.nodesToCheckin.remove();
             this.warnedCache.remove();
             this.questionCache.remove();
             this.formsHomepage.remove();
@@ -229,7 +210,16 @@ public class DataImportServlet extends SlingAllMethodsServlet
                 }
             });
         }
-        request.getResourceResolver().adaptTo(Session.class).save();
+        final Session session = request.getResourceResolver().adaptTo(Session.class);
+        session.save();
+        final VersionManager vm = session.getWorkspace().getVersionManager();
+        this.nodesToCheckin.get().forEach(node -> {
+            try {
+                vm.checkin(node);
+            } catch (RepositoryException e) {
+                LOGGER.warn("Failed to check in node {}: {}", node, e.getMessage(), e);
+            }
+        });
     }
 
     /**
@@ -258,6 +248,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
                 LOGGER.warn("Failed to parse row [{}]: {}", row.getRecordNumber(), e.getMessage());
             }
         });
+        this.nodesToCheckin.get().add(form.getPath());
     }
 
     /**
@@ -388,7 +379,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
             return results.next();
         }
 
-        Map<String, Object> answerProperties = new LinkedHashMap<>();
+        Map<String, Object> answerProperties = new HashMap<>();
         answerProperties.put("jcr:primaryType", getAnswerNodeType(question));
         answerProperties.put("question", question);
         Resource answerParent = findOrCreateParent(form, question);
@@ -467,7 +458,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         if (answerSection != null) {
             result = answerSection;
         } else {
-            Map<String, Object> answerSectionProperties = new LinkedHashMap<>();
+            Map<String, Object> answerSectionProperties = new HashMap<>();
             answerSectionProperties.put("jcr:primaryType", "lfs:AnswerSection");
             answerSectionProperties.put("section", section);
             result = this.resolver.get().create(parent, UUID.randomUUID().toString(), answerSectionProperties);
@@ -646,11 +637,17 @@ public class DataImportServlet extends SlingAllMethodsServlet
             result = findForm(subject);
         }
         if (result == null) {
-            final Map<String, Object> formProperties = new LinkedHashMap<>();
+            final Map<String, Object> formProperties = new HashMap<>();
             formProperties.put("jcr:primaryType", "lfs:Form");
             formProperties.put("questionnaire", this.questionnaire.get());
             formProperties.put("subject", subject);
             result = this.resolver.get().create(this.formsHomepage.get(), UUID.randomUUID().toString(), formProperties);
+        } else {
+            try {
+                result.adaptTo(Node.class).getSession().getWorkspace().getVersionManager().checkout(result.getPath());
+            } catch (RepositoryException e) {
+                LOGGER.warn("Failed to checkout form {}: {}", result.getPath(), e.getMessage(), e);
+            }
         }
         return result;
     }
@@ -701,7 +698,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
     {
         Node previous = null;
         Node current = null;
-        for (String type: this.subjectTypes.get()) {
+        for (String type : this.subjectTypes.get()) {
             current = getOrCreateSubject(row, type, current);
             // If this subject identifier is empty, then the last used subject type
             // e.g. If a patient and tumor is specified but no tumor region, then we instead want to create/use
@@ -743,6 +740,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
 
     /***
      * Find a subject with the given parameters.
+     *
      * @param subjectKey A key for this subject to search the cache for
      * @param subjectId The identifier of the subject
      * @param typeNode The Node of the lfs:SubjectType for the subject
@@ -775,7 +773,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
             queryObj.setLimit(1);
             NodeIterator nodeResult = queryObj.execute().getNodes();
 
-            // If a result was found,  cache it and return
+            // If a result was found, cache it and return
             if (nodeResult.hasNext()) {
                 Node subject = nodeResult.nextNode();
                 cache.put(subjectKey, subject);
@@ -789,6 +787,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
 
     /***
      * Create a new subject.
+     *
      * @param subjectId The identifier for the subject
      * @param typeNode The node of the lfs:SubjectType for this subject
      * @param parent The parent of this subject
@@ -797,7 +796,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
      */
     private Node createSubject(String subjectKey, String subjectId, Node typeNode, Node parent)
     {
-        final Map<String, Object> subjectProperties = new LinkedHashMap<>();
+        final Map<String, Object> subjectProperties = new HashMap<>();
         subjectProperties.put("jcr:primaryType", "lfs:Subject");
         subjectProperties.put("identifier", subjectId);
         subjectProperties.put("type", typeNode);
@@ -808,10 +807,14 @@ public class DataImportServlet extends SlingAllMethodsServlet
             Node subject = this.resolver.get().create(this.subjectsHomepage.get(), UUID.randomUUID().toString(),
                 subjectProperties).adaptTo(Node.class);
             this.subjectCache.get().put(subjectKey, subject);
+            this.nodesToCheckin.get().add(subject.getPath());
             return subject;
         } catch (PersistenceException e) {
-            return null;
+            LOGGER.warn("Failed to create new subject {}: {}", subjectKey, e.getMessage(), e);
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to check in new subject {}: {}", subjectKey, e.getMessage(), e);
         }
+        return null;
     }
 
     /**
@@ -831,8 +834,8 @@ public class DataImportServlet extends SlingAllMethodsServlet
         }
 
         String result = null;
-        String[] suffices = {"", " ID"};
-        for (String suffix: suffices) {
+        String[] suffixes = { "", " ID" };
+        for (String suffix : suffixes) {
             try {
                 result = row.get(label + suffix);
                 if (StringUtils.isNotBlank(result)) {

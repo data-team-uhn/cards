@@ -200,3 +200,9 @@
     user.mapping=[
       "org.apache.sling.jcr.resource:validation\=sling-readall"
     ]
+
+  # Enable automatic checkin and checkout of versionable nodes
+  org.apache.sling.servlets.post.impl.SlingPostServlet
+    servlet.post.autoCheckin=B"true"
+    servlet.post.autoCheckout=B"true"
+    servlet.post.checkinNewVersionableNodes=B"true"

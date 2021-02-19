@@ -73,6 +73,30 @@ let Questionnaire = (props) => {
     pageNameWriter(questionnaireTitle);
   }, [questionnaireTitle]);
 
+  useEffect(() => {
+    //Perform a JCR check-out of the Questionnaire
+    let checkoutForm = new FormData();
+    checkoutForm.set(":operation", "checkout");
+    fetch(`/Questionnaires/${id}`, {
+      method: "POST",
+      body: checkoutForm
+    });
+
+    function performCheckIn() {
+      let checkinForm = new FormData();
+      checkinForm.set(":operation", "checkin");
+      fetch(`/Questionnaires/${id}`, {
+        method: "POST",
+        body: checkinForm
+      });
+    }
+
+    window.addEventListener("beforeunload", performCheckIn);
+    return (() => {
+      window.removeEventListener("beforeunload", performCheckIn);
+    });
+  }, []);
+
   return (
     <>
       { error &&

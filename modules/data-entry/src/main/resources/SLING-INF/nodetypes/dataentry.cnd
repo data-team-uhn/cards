@@ -290,7 +290,7 @@
 // A conditional group is a set of conditions that can be imposed on e.g. the display of a section.
 // The conditions are listed as children of this, and may be turned from an OR to an AND via the
 // `requireAll` property.
-[lfs:ConditionalGroup] > sling:Resource
+[lfs:ConditionalGroup] > sling:Folder
   // Attributes
 
   // Conditionals are queryable
@@ -307,11 +307,11 @@
   - requireAll (BOOLEAN) = false mandatory autocreated
 
   // This conditional may contain any number of conditionals or conditional groups
-  + * (lfs:ConditionalGroup, lfs:Conditional) = lfs:Question
+  + * (lfs:Conditional, lfs:ConditionalGroup) = lfs:Conditional
 
 //-----------------------------------------------------------------------------
 // A conditional is a condition that can be imposed on e.g. the display of a section.
-[lfs:Conditional] > sling:Resource
+[lfs:Conditional] > sling:Folder
   // Attributes
 
   // Conditionals are queryable
@@ -373,7 +373,7 @@
 
 //-----------------------------------------------------------------------------
 // A questionnaire is a collection of sections and questions.
-[lfs:Questionnaire] > sling:Folder, mix:referenceable, mix:versionable
+[lfs:Questionnaire] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
   // Attributes
 
   // The list of sections and questions is orderable.
@@ -667,7 +667,7 @@
 
 //-----------------------------------------------------------------------------
 // Forms: a filled in questionnaire.
-[lfs:Form] > sling:Folder, mix:referenceable, mix:versionable
+[lfs:Form] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
   // Attributes
 
   // The answers in a form must be orderable.
@@ -736,7 +736,7 @@
 
 //-----------------------------------------------------------------------------
 // Subjects: the description of a subject.
-[lfs:Subject] > sling:Folder, mix:referenceable, mix:versionable
+[lfs:Subject] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
   // Attributes
 
   // We can use subjects in a query.

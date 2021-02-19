@@ -461,6 +461,9 @@ const questionnaireStyle = theme => ({
     },
     fileResourceDeleteButton: {
       margin: "0"
+    },
+    warningStatus: {
+      color: theme.palette.warning.main
     }
 });
 

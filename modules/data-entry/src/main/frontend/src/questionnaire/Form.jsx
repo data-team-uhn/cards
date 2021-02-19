@@ -110,23 +110,22 @@ function Form (props) {
   const history = useHistory();
   const formURL = `/Forms/${id}`;
   const isEdit = window.location.pathname.endsWith(".edit");
+  let globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
     if (isEdit) {
-      function removeSaveDataHandler() {
-        window.removeEventListener("beforeunload", saveData);
+      function removeBeforeUnloadHandlers() {
+        window.removeEventListener("beforeunload", saveDataWithCheckin);
       }
-      setRemoveWindowHandlers(() => removeSaveDataHandler);
-      window.addEventListener("beforeunload", saveData);
+      setRemoveWindowHandlers(() => removeBeforeUnloadHandlers);
+      window.addEventListener("beforeunload", saveDataWithCheckin);
       // When component unmounts:
       return (() => {
         // cleanup event handler
-        window.removeEventListener("beforeunload", saveData);
+        window.removeEventListener("beforeunload", saveDataWithCheckin);
       });
     }
   }, [isEdit]);
-
-  let globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
@@ -146,6 +145,15 @@ function Form (props) {
     setData(json);
     setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
     setPages([]);
+    if (isEdit) {
+      //Perform a JCR check-out of the Form
+      let checkoutForm = new FormData();
+      checkoutForm.set(":operation", "checkout");
+      fetchWithReLogin(globalLoginDisplay, formURL, {
+        method: "POST",
+        body: checkoutForm
+      });
+    }
   };
 
   // Callback method for the `fetchData` method, invoked when the request failed.
@@ -155,7 +163,7 @@ function Form (props) {
   };
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
-  let saveData = (event) => {
+  let saveData = (event, performCheckin) => {
     // This stops the normal browser form submission
     event && event.preventDefault();
     if (!formNode.current) {
@@ -164,6 +172,9 @@ function Form (props) {
 
     setSaveInProgress(true);
     let data = new FormData(formNode.current);
+    if (performCheckin) {
+        data.append(":checkin", "true");
+    }
     return fetchWithReLogin(globalLoginDisplay, formURL, {
       method: "POST",
       body: data,
@@ -194,6 +205,10 @@ function Form (props) {
         setLastSaveStatus(undefined);
     })
     .finally(() => {formNode?.current && setSaveInProgress(false)});
+  }
+
+  let saveDataWithCheckin = (event) => {
+      return saveData(event, true);
   }
 
   // Handle when the subject of the form changes
@@ -350,8 +365,16 @@ function Form (props) {
             : ""
           }
           {
+            data && data['jcr:isCheckedOut'] ?
+            <Typography variant="overline" className={classes.warningStatus}>Another user is editing</Typography>
+            : ""
+          }
+          {
             lastSaveTimestamp ?
             <Typography variant="overline">{saveInProgress ? "Saving ... " : "Saved " + moment(lastSaveTimestamp.toISOString()).calendar()}</Typography>
+            :
+            data && data['jcr:lastModified'] ?
+            <Typography variant="overline">{"Last modified " + moment(data['jcr:lastModified']).calendar()}</Typography>
             : ""
           }
           </Breadcrumbs>

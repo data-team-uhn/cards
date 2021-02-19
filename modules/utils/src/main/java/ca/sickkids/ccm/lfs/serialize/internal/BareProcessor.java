@@ -118,6 +118,7 @@ public class BareProcessor implements ResourceJsonProcessor
     {
         this.depth.set(this.depth.get() - 1);
         addCreationDate(node, json);
+        addLastModifiedDate(node, json);
         addFileContent(node, json);
     }
 
@@ -144,6 +145,19 @@ public class BareProcessor implements ResourceJsonProcessor
             try {
                 if (node.hasProperty("jcr:created")) {
                     json.add("created", serializeDate(node.getProperty("jcr:created").getDate()));
+                }
+            } catch (RepositoryException e) {
+                // Should't happen, and fixing the date is not that critical
+            }
+        }
+    }
+
+    private void addLastModifiedDate(final Node node, final JsonObjectBuilder json)
+    {
+        if (this.depth.get() == 0) {
+            try {
+                if (node.hasProperty("jcr:lastModified")) {
+                    json.add("lastModified", serializeDate(node.getProperty("jcr:lastModified").getDate()));
                 }
             } catch (RepositoryException e) {
                 // Should't happen, and fixing the date is not that critical
