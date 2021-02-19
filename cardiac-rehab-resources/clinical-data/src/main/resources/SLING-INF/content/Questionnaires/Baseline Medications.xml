@@ -168,12 +168,26 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Beta-blocker (e.g. metoprolol, atenolol, propranolol, etc) or non-dihydropyridine calcium channel blocker (e.g. diltiazem, verapamil, etc)</value>
+					<value>Beta-blocker (e.g. metoprolol, atenolol, propranolol, etc)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
 					<value>Beta-blocker</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Channel-blocker</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Calcium channel blocker (non-dihydropyridine, e.g. diltiazem, verapamil, etc)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Channel-blocker</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -355,7 +369,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>Excluding beta-blockers</value>
+				<value>excluding beta-blockers and CCBs</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -451,7 +465,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Dose</value>
+					<value>Beta-blocker dose</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -525,12 +539,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Dose</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>units</value>
+					<value>Beta-blocker dose units</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -688,7 +697,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Frequency</value>
+					<value>Beta-blocker dose frequency</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -818,7 +827,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Click this box if the patient is not taking this prescribed medication:</value>
+					<value>Click this box if the patient is not taking the prescribed beta-blocker:</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -889,27 +898,14 @@
 			</node>
 		</node>
 		<node>
-			<name>bl_med2_recurrentSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
-			<property>
-				<name>recurrent</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
-				<name>label</name>
-				<value>Medication</value>
-				<type>String</type>
-			</property>
-		<node>
-			<name>bl_med2_nameSection</name>
+			<name>bl_channel-blocker_nameSection</name>
 			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>bl_med2_name</name>
+				<name>bl_channel-blocker_name</name>
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Medication name</value>
+					<value>CCB name</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -928,16 +924,57 @@
 					<type>Long</type>
 				</property>
 			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>bl_med_types</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Channel-blocker</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
 		</node>
 		<node>
-			<name>bl_med2_dose_valueSection</name>
+			<name>bl_channel-blocker_dose_valueSection</name>
 			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>bl_med2_dose_value</name>
+				<name>bl_channel-blocker_dose_value</name>
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Dose</value>
+					<value>CCB Dose</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -951,26 +988,67 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>minValue</name>
+					<value>0.0</value>
+					<type>Double</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
 				</property>
 			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>bl_med_types</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Channel-blocker</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
 		</node>
 		<node>
-			<name>bl_med2_dose_unitsSection</name>
+			<name>bl_channel-blocker_dose_unitsSection</name>
 			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>bl_med2_dose_units</name>
+				<name>bl_channel-blocker_dose_units</name>
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Dose</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>units</value>
+					<value>CCB dose units</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1078,16 +1156,57 @@
 					</property>
 				</node>
 			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>bl_med_types</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Channel-blocker</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
 		</node>
 		<node>
-			<name>bl_med2_frequencySection</name>
+			<name>bl_channel-blocker_frequencySection</name>
 			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>bl_med2_frequency</name>
+				<name>bl_channel-blocker_frequency</name>
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Frequency</value>
+					<value>CCB dose frequency</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1167,16 +1286,57 @@
 					</property>
 				</node>
 			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>bl_med_types</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Channel-blocker</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
 		</node>
 		<node>
-			<name>bl_med2_ntSection</name>
+			<name>bl_channel-blocker_ntSection</name>
 			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>bl_med2_nt</name>
+				<name>bl_channel-blocker_nt</name>
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Click this box if the patient is not taking this prescribed medication:</value>
+					<value>Click this box if the patient is not taking the prescribed CCB:</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1203,6 +1363,88 @@
 						<type>String</type>
 					</property>
 				</node>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>bl_med_types</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Channel-blocker</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>bl_med2_recurrentSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<property>
+				<name>recurrent</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Medication</value>
+				<type>String</type>
+			</property>
+		<node>
+			<name>bl_med2_nameSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>bl_med2_name</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Medication name</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>use generic name, all lowercase</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 			</node>
 		</node>
 		<node>
