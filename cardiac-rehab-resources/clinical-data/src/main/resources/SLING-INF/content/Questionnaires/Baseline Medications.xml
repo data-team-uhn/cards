@@ -885,7 +885,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>Channel-blocker</value>
+							<value>Beta-blocker</value>
 						</values>
 						<type>String</type>
 					</property>
