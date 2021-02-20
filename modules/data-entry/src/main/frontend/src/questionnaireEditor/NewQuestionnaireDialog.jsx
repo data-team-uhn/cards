@@ -19,9 +19,10 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
-import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Tooltip, TextField, Typography, withStyles } from "@material-ui/core";
+import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { v4 as uuidv4 } from 'uuid';
+import NewItemButton from "../components/NewItemButton.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function NewQuestionnaireDialog(props) {
@@ -132,19 +133,11 @@ function NewQuestionnaireDialog(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      <div className={classes.mainPageAction}>
-        <Tooltip title="New Questionnaire" aria-label="add">
-          <Fab
-            color="primary"
-            aria-label="add"
-            onClick={() => { openDialog(); }}
-            disabled={!open && isFetching}
-          >
-            <AddIcon />
-          </Fab>
-        </Tooltip>
-        {!open && isFetching && <CircularProgress size={56} className={classes.newFormLoadingIndicator} />}
-      </div>
+      <NewItemButton
+           title="New questionnaire"
+           onClick={() => { openDialog(); }}
+           loading={!open && isFetching}
+      />
     </React.Fragment>
   )
 }

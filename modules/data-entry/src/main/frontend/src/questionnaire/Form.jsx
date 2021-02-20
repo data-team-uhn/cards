@@ -25,7 +25,6 @@ import {
   Breadcrumbs,
   Button,
   CircularProgress,
-  Fab,
   Grid,
   Link,
   Typography,
@@ -50,6 +49,7 @@ import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import DeleteButton from "../dataHomepage/DeleteButton";
+import MainActionButton from "../components/MainActionButton.jsx";
 import FormPagination from "./FormPagination";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
@@ -439,29 +439,19 @@ function Form (props) {
         <Grid item xs={false} className={classes.formBottom}>
           <div className={classes.mainPageAction}>
             { isEdit ?
-	          <Fab
-	              variant="extended"
-	              color="primary"
-	              disabled={saveInProgress}
-	              onClick={handleSubmit}
-	              className={classes.actionButton}
-	          >
-	            {
-	              saveInProgress ? <><CloudUploadIcon /> Saving...</> :
-	              lastSaveStatus === false ? <><WarningIcon /> Save failed</> :
-	              <><DoneIcon /> {lastSaveStatus ? "Saved" : "Save"}</>
-	            }
-	          </Fab>
-	        :
-              <Fab
-                variant="extended"
-                color="primary"
+              <MainActionButton
+                loading={saveInProgress}
+                onClick={handleSubmit}
+                icon={saveInProgress ? <CloudUploadIcon /> : <DoneIcon />}
+                label={saveInProgress ? "Saving..." : lastSaveStatus ? "Saved" : "Save"}
+              />
+             :
+              <MainActionButton
                 onClick={onEdit}
-                className={classes.actionButton}
-              >
-                <EditIcon /> Edit
-              </Fab>
-	        }
+                icon={<EditIcon />}
+                label="Edit"
+              />
+            }
           </div>
         </Grid>
         }

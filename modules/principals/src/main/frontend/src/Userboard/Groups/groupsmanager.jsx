@@ -25,7 +25,7 @@ import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";
 import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
 import AddUserToGroupDialogue from "./addusertogroupdialogue.jsx";
-import NewPrincipalButton from "../newPrincipalButton.jsx"
+import NewItemButton from "../../components/NewItemButton.jsx"
 
 import MaterialTable from 'material-table';
 
@@ -242,7 +242,7 @@ class GroupsManager extends React.Component {
             }}
           />
         </div>
-        <NewPrincipalButton
+        <NewItemButton
           title="Create new group"
           onClick={(event) => this.setState({deployCreateGroup: true})}
         />

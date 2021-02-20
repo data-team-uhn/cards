@@ -105,15 +105,6 @@ const questionnaireStyle = theme => ({
     formBottom: {
         minHeight: theme.spacing(8),
     },
-    actionButton: {
-        marginTop: theme.spacing(1),
-        "& .MuiFab-label" : {
-          marginRight: theme.spacing(1),
-        },
-        "& .MuiSvgIcon-root" : {
-          marginRight: theme.spacing(1),
-        },
-    },
     dashboardEntry: {
         "& > *": {
             height: "100%",
@@ -149,22 +140,9 @@ const questionnaireStyle = theme => ({
     formViewAvatar: {
         background: theme.palette.info.main,
     },
-    mainPageAction: {
-        margin: theme.spacing(1),
-        position: "fixed",
-        bottom: theme.spacing(2),
-        right: theme.spacing(4),
-    },
     newFormTypePlaceholder: {
         position: 'relative',
         textAlign: 'center'
-    },
-    newFormLoadingIndicator: {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        marginLeft: "-50%",
-        marginTop: "-50%"
     },
     labeledSection: {
         marginTop: theme.spacing(GRID_SPACE_UNIT)

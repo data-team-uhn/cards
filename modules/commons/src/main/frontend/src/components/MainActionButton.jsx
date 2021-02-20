@@ -16,26 +16,25 @@
 */
 
 import React from "react";
-import { Fab, Tooltip, withStyles } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import { Fab, withStyles } from "@material-ui/core";
 
-import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle.jsx';
+import style from './style.jsx';
 
-function NewPrincipalButton(props) {
-  const { title, onClick, classes } = props;
+function MainActionButton(props) {
+  const { icon, label, onClick, loading, classes } = props;
   return (
     <div className={classes.mainPageAction}>
-      <Tooltip title={title} aria-label="new">
         <Fab
+          variant="extended"
           color="primary"
-          aria-label="new"
           onClick={onClick}
+          disabled={loading}
+          className={classes.actionButton}
         >
-          <AddIcon />
+          {icon} {label}
         </Fab>
-      </Tooltip>
     </div>
   );
 }
 
-export default withStyles(QuestionnaireStyle)(NewPrincipalButton);
+export default withStyles(style)(MainActionButton);

@@ -20,12 +20,21 @@ import React, { useState, useEffect, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 
-import { CircularProgress, Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab } from "@material-ui/core";
-import { Tooltip, Typography, withStyles } from "@material-ui/core";
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography,
+  withStyles
+} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import MaterialTable from "material-table";
 
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
+import NewItemButton from "../components/NewItemButton.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
@@ -362,19 +371,11 @@ function NewFormDialog(props) {
         />
       {
         mode === MODE_ACTION &&
-          <div className={classes.mainPageAction}>
-            <Tooltip title={children} aria-label="add">
-              <Fab
-                color="primary"
-                aria-label="add"
-                onClick={openDialog}
-                disabled={!dialogOpen && isFetching}
-              >
-                <AddIcon />
-              </Fab>
-            </Tooltip>
-            {!dialogOpen && isFetching && <CircularProgress size={56} className={classes.newFormLoadingIndicator} />}
-          </div>
+          <NewItemButton
+            title={children}
+            onClick={openDialog}
+            loading={!dialogOpen && isFetching}
+          />
       }
     </React.Fragment>
   )

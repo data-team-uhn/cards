@@ -25,7 +25,7 @@ import userboardStyle from '../userboardStyle.jsx';
 import CreateUserDialogue from "./createuserdialogue.jsx";
 import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
 import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx";
-import NewPrincipalButton from "../newPrincipalButton.jsx";
+import NewItemButton from "../../components/NewItemButton.jsx";
 
 import MaterialTable from 'material-table';
 
@@ -166,7 +166,7 @@ class UsersManager extends React.Component {
               }}
             />
         </div>
-        <NewPrincipalButton
+        <NewItemButton
           title="Create new user"
           onClick={(event) => this.setState({deployCreateUser: true})}
         />

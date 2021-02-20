@@ -43,6 +43,7 @@ import AddIcon from '@material-ui/icons/Add';
 import DeleteButton from "./DeleteButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import NewItemButton from "../components/NewItemButton.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 
 function SubjectView(props) {
@@ -155,17 +156,10 @@ function SubjectView(props) {
       </CardContent>
       {expanded &&
       <>
-        <div className={classes.mainPageAction}>
-            <Tooltip aria-label="add" title="New Subject">
-              <Fab
-                color="primary"
-                aria-label="add"
-                onClick={() => {setNewSubjectPopperOpen(true)}}
-              >
-                <AddIcon />
-              </Fab>
-            </Tooltip>
-        </div>
+        <NewItemButton
+           title="New subject"
+           onClick={() => {setNewSubjectPopperOpen(true)}}
+        />
         <NewSubjectDialog
           onClose={() => { setNewSubjectPopperOpen(false);}}
           onSubmit={() => { setNewSubjectPopperOpen(false);}}
