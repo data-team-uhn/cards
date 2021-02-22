@@ -51,6 +51,77 @@
 			<type>String</type>
 		</property>
 		<node>
+			<name>visit_number</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Visit Number</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>1</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>5</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>5</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>5</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>6</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>6</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>6</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
 			<name>visitdate</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
