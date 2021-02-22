@@ -30,6 +30,7 @@ const style = theme => ({
     left: '50%',
     marginLeft: "-50%",
     marginTop: "-50%",
+    zIndex: 100,
   },
   actionButton: {
     marginTop: theme.spacing(1),
