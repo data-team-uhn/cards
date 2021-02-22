@@ -22,16 +22,32 @@
 
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-parent</artifactId>
+    <artifactId>kids-resources</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cardiac-resources</artifactId>
-  <packaging>pom</packaging>
-  <name>Cardiac Resources</name>
-  <description>A collection of cardiac questionnaires.</description>
+  <artifactId>kids-resources-clinical-data</artifactId>
+  <packaging>bundle</packaging>
+  <name>Cards4Kids Resources - Clinical Data</name>
 
-  <modules>
-    <module>clinical-data</module>
-  </modules>
+  <build>
+    <plugins>
+      <!-- This is an OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Include-Resource>{maven-resources},src/main/media</Include-Resource>
+            <Sling-Initial-Content>
+              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
+              SLING-INF/content/libs/lfs/resources/;path:=/libs/lfs/resources/;overwrite:=true,
+              SLING-INF/content/libs/lfs/conf/;path:=/libs/lfs/conf/;overwrite:=false
+            </Sling-Initial-Content>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

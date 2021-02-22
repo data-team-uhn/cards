@@ -909,7 +909,7 @@
     <module>modules</module>
     <module>distribution</module>
     <module>lfs-resources</module>
-    <module>cardiac-resources</module>
+    <module>kids-resources</module>
     <module>cardiac-rehab-resources</module>
   </modules>
 </project>
