@@ -199,7 +199,7 @@
 		</property>
 		<property>
 			<name>displayMode</name>
-			<value>list</value>
+			<value>list+input</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -367,20 +367,6 @@
 			</property>
 		</node>
 		<node>
-			<name>Other medication</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Other medication</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>Other medication</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
 			<name>None of the above</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
@@ -398,75 +384,6 @@
 				<value>True</value>
 				<type>Boolean</type>
 			</property>
-		</node>
-	</node>
-	<node>
-		<name>med_cat_otherSection</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
-		<node>
-			<name>med_cat_other</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Explain</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>other medication category</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
-			<property>
-				<name>comparator</name>
-				<value>=</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>previous</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>Other medication</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>isReference</name>
-					<value>False</value>
-					<type>Boolean</type>
-				</property>
-			</node>
 		</node>
 	</node>
 	<node>

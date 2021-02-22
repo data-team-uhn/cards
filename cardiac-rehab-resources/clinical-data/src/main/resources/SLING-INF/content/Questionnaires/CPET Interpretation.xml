@@ -1081,16 +1081,30 @@
 					<type>Long</type>
 				</property>
 				<node>
-					<name>Chest pain-tightness difficult tolerating mouthpiece-nose clip</name>
+					<name>Chest pain-tightness</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Chest pain/tightness difficult tolerating mouthpiece/nose clip</value>
+						<value>Chest pain/tightness</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>Chest pain/tightness difficult tolerating mouthpiece/nose clip</value>
+						<value>Chest pain/tightness</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Difficulty tolerating mouthpiece-nose clip</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Difficulty tolerating mouthpiece/nose clip</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Difficulty tolerating mouthpiece/nose clip</value>
 						<type>String</type>
 					</property>
 				</node>
@@ -1193,16 +1207,58 @@
 					</property>
 				</node>
 				<node>
-					<name>External interruption Maximum heart rate Patient request to stop ST changes</name>
+					<name>External interruption</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>External interruption Maximum heart rate Patient request to stop ST changes</value>
+						<value>External interruption</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>External interruption Maximum heart rate Patient request to stop ST changes</value>
+						<value>External interruption</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Maximum heart rate</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Maximum heart rate</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Maximum heart rate</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Patient request to stop</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Patient request to stop</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Patient request to stop</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>ST changes</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>ST changes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>ST changes</value>
 						<type>String</type>
 					</property>
 				</node>
