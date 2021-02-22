@@ -40,8 +40,6 @@ const Phase = require("./phaseCodes.json");
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: "100%",
-    marginTop: theme.spacing(3),
     overflowX: "auto"
   },
   table: {
@@ -64,7 +62,7 @@ export default function VocabularyTable(props) {
   const vocabList = props.vocabList;
   const classes = useStyles();
   const headingTypography = Config["tableHeadingTypography"];
-  const columnWidths = Config["tableColumnWidths"]
+  const columnWidths = Config["tableColumnWidths"];
 
   return(
     <React.Fragment>
@@ -107,7 +105,7 @@ export default function VocabularyTable(props) {
                 </HeaderTableCell>
 
                 <HeaderTableCell width={columnWidths["releaseDate"]}>
-                  <Typography variant={headingTypography}>Release Date</Typography>
+                  <Typography variant={headingTypography}>{props.type === "local" ? "Installation Date" : "Release Date"}</Typography>
                 </HeaderTableCell>
 
                 <HeaderTableCell width={columnWidths["actions"]}/>
@@ -120,25 +118,15 @@ export default function VocabularyTable(props) {
                 if (props.type === "local" || vocab.status === "production" || vocab.status === "beta") {
                   return(
                     <VocabularyEntry
-                      key={vocab.ontology.acronym}
-                      acronym={vocab.ontology.acronym}
-                      name={vocab.ontology.name}
-                      source={vocab.source}
-                      description={vocab.description}
-                      released={vocab.released}
-                      version={vocab.version}
-                      updateLocalList={(action) => {props.updateLocalList(action, vocab)}}
+                      key={vocab.acronym}
+                      vocabulary={vocab}
+                      updateLocalList={props.updateLocalList}
                       // If filterTable is True, then check if the acronym is of a vocabulary to be displayed
                       // If filterTable is False, then don't hide anything
-                      hidden={filterTable && !acronymList.includes(vocab.ontology.acronym)}
-                      initPhase={(vocab.source == "fileupload") ? Phase["Latest"] : (
-                        props.acronymPhaseObject.hasOwnProperty(vocab.ontology.acronym) ?
-                          props.acronymPhaseObject[vocab.ontology.acronym]
-                          :
-                          Phase["Other Source"]
-                      )} 
-                      setPhase={(phase) => props.setPhase(vocab.ontology.acronym, phase)}
-                      addSetter={(setFunction) => props.addSetter(vocab.ontology.acronym, setFunction, props.type)}
+                      hidden={filterTable && !acronymList.includes(vocab.acronym)}
+                      initPhase={props.acronymPhaseObject[vocab.acronym] || Phase["Not Installed"]}
+                      setPhase={(phase) => props.setPhase(vocab.acronym, phase)}	
+                      addSetter={(setFunction) => props.addSetter(vocab.acronym, setFunction, props.type)}
                     />
                   );
                 }

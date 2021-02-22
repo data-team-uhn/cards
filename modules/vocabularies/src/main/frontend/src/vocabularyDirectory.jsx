@@ -17,46 +17,34 @@
 //  under the License.
 //
 
-import React from "react";
+import React, {useEffect} from "react";
 
 import { 
-  Button, 
-  Grid, 
+  Button,
+  Grid,
   LinearProgress,
-  makeStyles,
-  Typography 
+  Typography
 } from "@material-ui/core";
 
 import VocabularyTable from "./vocabularyTable";
 
 const Status = require("./statusCodes.json");
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  button: {
-    margin: theme.spacing(1),
-    textTransform: "none",
-    color: "white",
-    borderRadius: 3,
-    border: 0
-  }
-}));
-
 /*
-  This function reformats the data from the local source into the format of data from the remote source. 
-  This allows for the reusing of the same code to display a table for both the local and remote vocabularies.
+  This function reformats the vocab data for more light unified representation.
 */
-function reformat(data) {
-  data.map((vocabulary) =>  {
-      vocabulary.ontology = {
-        acronym: vocabulary["identifier"],
-        name: vocabulary["name"]
-      };
-      vocabulary.released = vocabulary["jcr:created"];
-  });
-  return data;
+function reformat(data, type) {
+  let vocabs = [];
+  data.map(vocab =>  vocabs.push({
+          status: vocab.status,
+          acronym: type == "remote" ? vocab.ontology.acronym : vocab.identifier,
+          name: type == "remote" ? vocab.ontology.name : vocab.name,
+          source: vocab.source,
+          description: vocab.description,
+          released: type == "remote" ? vocab.released : vocab["jcr:created"],
+          version: vocab.version
+   }));
+   return vocabs;
 }
 
 // Requests list of Vocabularies from Bioontology API. Currently only renders a table to display items if they are form the remote source
@@ -64,48 +52,38 @@ export default function VocabularyDirectory(props) {
   const [curStatus, setCurStatus] = React.useState(Status["Init"]);
 
   // Function that fetches list of Vocabularies from Bioontology API
-  function getVocabList(url) {
+  function getVocabList() {
     setCurStatus(Status["Loading"]);
     var badResponse = false;
-    fetch(url)
-    .then((response) => {
-      var code = response.status;
-      if (code >= 400) {
-        badResponse = true;
-        setCurStatus(Status["Error"]);
-        return Promise.reject(response);
-      }
-      return response;
-    })
-    .then(response => response.json())
+    fetch(props.link)
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then(function(data) {
+
       if (props.type === "remote") {
-        props.setVocabList(data);
+        props.setVocabList(reformat(data, props.type));
       } else if (props.type === "local") {
-        props.setVocabList(reformat(data.rows));
+        props.setVocabList(reformat(data.rows, props.type));
       }
     })
-    .catch(function(error) {
+    .catch((error) => {
       setCurStatus(Status["Error"]);
       badResponse = true;
     })
-    .finally(function() {
+    .finally(() =>{
       if (!badResponse) {
         setCurStatus(Status["Loaded"]);
       }
     });
   }
 
-  if (curStatus == Status["Init"] && props.link !== "") {
-    getVocabList(props.link);
-  }
-
-  const classes = useStyles();
+  useEffect(() => {
+    !props.loaded && props.link && getVocabList();
+  }, [props.loaded, props.link])
 
   return(
     <React.Fragment>
     {(curStatus == Status["Loading"]) && (
-      <Grid item className={classes.root}>
+      <Grid item>
         <LinearProgress color={(props.type === "remote" ? "primary" : "secondary" )} />
       </Grid>
     )}
@@ -113,17 +91,20 @@ export default function VocabularyDirectory(props) {
       <React.Fragment>
         <Grid item>
           <Typography color="error">
-            The list of Bioportal vocabularies is currently inaccessible
+            The list of Bioportal vocabularies is currently inaccessible.
           </Typography>
-
-          <Button variant="contained" color="primary" className={classes.button} onClick={getVocabList}>
+          { props.apiKey && <Typography color="error">
+            Could not access Bioportal services. The API Key {props.apiKey} appears to be invalid.
+          </Typography>}
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary" onClick={getVocabList}>
             <Typography variant="button">Retry</Typography>
           </Button>
         </Grid>
       </React.Fragment>
-     
     )}
-    {(curStatus == Status["Loaded"] && props.displayTables) && (
+    {(curStatus == Status["Loaded"] && props.acronymPhaseObject) && (
       <VocabularyTable
         type={props.type}
         vocabList={props.vocabList}
