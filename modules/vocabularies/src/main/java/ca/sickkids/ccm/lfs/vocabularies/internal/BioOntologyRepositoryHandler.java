@@ -35,10 +35,13 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.sickkids.ccm.lfs.vocabularies.VocabularyBioPortalApiKeyServlet;
 import ca.sickkids.ccm.lfs.vocabularies.spi.RepositoryHandler;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescription;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescriptionBuilder;
@@ -71,9 +74,10 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
     private static final String REQUEST_DOWNLOAD_FORMAT_RDF =
         "&download_format=rdf";
 
-    /** OS environment variable which has the api key for bioontology portal. */
-    private static final String APIKEY_ENVIRONMENT_VARIABLE =
-        "BIOPORTAL_APIKEY";
+    private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
+
+    @Reference
+    private VocabularyBioPortalApiKeyServlet apiKey;
 
     @Override
     public String getRepositoryName()
@@ -92,8 +96,9 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
     public VocabularyDescription getVocabularyDescription(String identifier, String version)
         throws IllegalArgumentException, IOException
     {
+        String resourceConfiguration = this.getRequestConfiguration();
         final String submissionsURL = "https://data.bioontology.org/ontologies/" + identifier
-            + "/submissions" + this.getRequestConfiguration();
+            + "/submissions" + resourceConfiguration;
         HttpGet httpget = new HttpGet(submissionsURL);
         httpget.setHeader("Accept", "application/json");
         try (CloseableHttpClient httpclient = HttpClientBuilder.create().build();
@@ -117,6 +122,9 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
                     ? false
                     : RDF_VOCABULARY_FORMATS.contains(ontologyLanguage.toUpperCase());
 
+                String sourceConfiguration = resourceConfiguration
+                    + (requireRDFDownload ? REQUEST_DOWNLOAD_FORMAT_RDF : "");
+
                 VocabularyDescriptionBuilder desc = new VocabularyDescriptionBuilder();
                 desc.withIdentifier(identifier)
                     .withVersion(getVersion(submission))
@@ -124,7 +132,7 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
                     .withDescription(submission.getString("description", null))
                     .withWebsite(submission.getString("homepage", null))
                     .withCitation(submission.getString("publication", null))
-                    .withSource(submission.getString("@id") + "/download" + getSourceConfiguration(requireRDFDownload))
+                    .withSource(submission.getString("@id") + "/download" + sourceConfiguration)
                     .withSourceFormat(ontologyLanguage);
                 return desc.build();
             } else {
@@ -216,31 +224,10 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
      */
     private String getRequestConfiguration()
     {
-        return REQUEST_CONFIGURATION + this.getAPIKeyFromEnvironment();
-    }
-
-    /**
-     * Returns extra query parameters specific to vocabulary download requests.
-     * This includes the API key, as well as vocabulary format specification.
-     *
-     * @param requestRDF when true, an extra parameter is added to explicitly
-     *                   request the vocabulary to be in RDF format
-     * @return extra query parameters completed with the latest API key
-     */
-    private String getSourceConfiguration(boolean requestRDF)
-    {
-        return getRequestConfiguration() + (requestRDF ? REQUEST_DOWNLOAD_FORMAT_RDF : "");
-    }
-
-    /**
-     * Retrieves BioPortal API key from the OS environment variable.
-     * If the environment variable is not specified returns an empty string.
-     *
-     * @return BioPortal API key
-     */
-    private String getAPIKeyFromEnvironment()
-    {
-        String apiKey = System.getenv(APIKEY_ENVIRONMENT_VARIABLE);
-        return StringUtils.isBlank(apiKey) ? "" : apiKey;
+        String key = this.apiKey.getAPIKeyFromNode(this.resolver.get());
+        if ("".equals(key)) {
+            key = this.apiKey.getAPIKeyFromEnvironment();
+        }
+        return REQUEST_CONFIGURATION + key;
     }
 }

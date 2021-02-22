@@ -17,6 +17,16 @@
 //  under the License.
 //
 
+import {
+  Button,
+  Grid,
+  TextField,
+  Typography,
+  makeStyles
+} from "@material-ui/core";
+
+import React, {useEffect} from "react";
+
 const APIKEY_SERVLET_URL = "/Vocabularies.bioportalApiKey";
 
 const JSON_KEY = "apikey";
@@ -34,4 +44,101 @@ export default function fetchBioPortalApiKey(func, errorHandler) {
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(parseKey)
       .catch(errorHandler);
+}
+
+
+const useStyles = makeStyles(theme => ({
+  header: {
+    marginTop: theme.spacing(3)
+  }
+}));
+
+export function BioPortalApiKey(props) {
+  const classes = useStyles();
+  const { bioPortalApiKey, updateKey } = props;
+
+  /* User input api key */
+  const [customApiKey, setCustomApiKey] = React.useState('');
+  const [displayChangeKey, setDisplayChangeKey] = React.useState(false);
+
+  // function to create / edit node
+  function addNewKey() {
+    const URL = `/libs/lfs/conf/BioportalApiKey`;
+    var request_data = new FormData();
+    request_data.append('key', customApiKey);
+    fetch(URL, { method: 'POST', body: request_data })
+      .then((response) => response.ok ? response : Promise.reject(response))
+      .then((data) => {
+          updateKey(customApiKey);
+      })
+      .catch((error) => {
+        console.error("Error creating BioportalApiKey node: " + error)
+      }
+    )
+  }
+
+  useEffect(() => {
+    fetchBioPortalApiKey( (apiKey) => {
+        updateKey(apiKey);
+        setCustomApiKey(apiKey);
+        setDisplayChangeKey(false);
+      }, () => {
+        updateKey(false);
+        setDisplayChangeKey(true);
+    });
+  }, [bioPortalApiKey])
+
+  return(
+    <React.Fragment>
+      <Grid item>
+        <Typography className={classes.header} variant="h6">
+          Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
+        </Typography>
+      </Grid>
+
+      { !bioPortalApiKey &&
+         <Grid item>
+           <Typography>Your system does not have a <a href="https://bioportal.bioontology.org/help#Getting_an_API_key" target="_blank">Bioportal API Key</a> configured.</Typography>
+           <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
+         </Grid>
+      }
+
+      <Grid item>
+        <Grid container
+          direction="row"
+          alignItems="center"
+          spacing={1}
+        >
+          <Grid item xs={6}>
+            <TextField
+              InputProps={{
+                readOnly: !displayChangeKey,
+              }}
+              variant={displayChangeKey ? "outlined" : "filled" }
+              onChange={(evt) => {setCustomApiKey(evt.target.value)}}
+              value={customApiKey}
+              name="customApiKey"
+              label={ displayChangeKey ? "Enter new Bioportal API key:" : "Bioportal API key:" }
+              fullWidth={true}
+            />
+          </Grid>
+          <Grid item>
+            { !displayChangeKey && bioPortalApiKey &&
+              <Button variant="contained" color="primary" onClick={() => {setDisplayChangeKey(true);}}>Change</Button>
+            }
+          </Grid>
+          <Grid item>
+            { displayChangeKey &&
+              <Button color="primary" variant="contained" onClick={() => {addNewKey();}}>Submit</Button>
+            }
+          </Grid>
+          <Grid item>
+            { displayChangeKey && bioPortalApiKey &&
+              <Button color="default" variant="contained" onClick={() => {setDisplayChangeKey(false);}}>Cancel</Button>
+            }
+          </Grid>
+        </Grid>
+      </Grid>
+    </React.Fragment>
+  );
 }
