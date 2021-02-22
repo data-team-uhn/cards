@@ -163,7 +163,7 @@ public class NightlyExportTask implements Runnable
             String query = String.format(
                 "SELECT subject.* FROM [lfs:Form] AS form INNER JOIN [lfs:Subject] AS subject"
                     + " ON form.'subject'=subject.[jcr:uuid]"
-                    + " WHERE form.[jcr:created] >= '%s' AND NOT CONTAINS(form.[statusFlags], 'INCOMPLETE')",
+                    + " WHERE form.[jcr:lastModified] >= '%s' AND NOT CONTAINS(form.[statusFlags], 'INCOMPLETE')",
                 requestDateString
             );
 
@@ -184,7 +184,7 @@ public class NightlyExportTask implements Runnable
     private SubjectContents getSubjectContents(String path, String requestDateString)
     {
         String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
-            + ".dataFilter:createdAfter=%s.dataFilter:statusNot=INCOMPLETE", path, requestDateString);
+            + ".dataFilter:modifiedAfter=%s.dataFilter:statusNot=INCOMPLETE", path, requestDateString);
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             Resource subjectData = resolver.resolve(subjectDataUrl);
             return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(), subjectDataUrl);
