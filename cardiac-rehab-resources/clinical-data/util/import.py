@@ -138,11 +138,8 @@ def options_list(categorical_list):
         if '(' in categorical_list:
             categorical_list = categorical_list.replace(')', '')
             categorical_list = categorical_list.replace('(', '')
-        if '/' in categorical_list:
-            if ',' in categorical_list:
-                categorical_list = categorical_list.replace('/', '-')
-            else:
-                split_character = '/'
+        if '/' in categorical_list and not ',' in categorical_list:
+            split_character = '/'
         if ';' in categorical_list:
             split_character = ';'
         option_list = list(categorical_list.split(split_character))
@@ -154,6 +151,8 @@ def process_options(question, row):
         date = row['Options (if applicable)']
         if date == "MM/DD/YYYY" or date == "MM-DD-YYYY":
             date = "MM-dd-yyyy"
+        if date == "DD/MM/YYYY" or date == "DD-MM-YYYY":
+            date = "dd-MM-yyyy"
         if date == "MM/YYYY" or date == "MM-YYYY":
             date = "MM-yyyy"
         if date == "YYYY":
@@ -196,24 +195,38 @@ def insert_options(question, row):
             # Empty option, skip
             continue
         value = option
-        if option.lower() == "other":
+        if option.lower().strip() == "other":
             question.update({'displayMode': 'list+input'})
         elif '=' in option:
             options = option.split('=')
-            answer_option = {options[0].strip().replace("/", "-"): {
+            label = options[1].strip()
+            option_details = {
                 'jcr:primaryType': 'lfs:AnswerOption',
-                'label': options[1].strip(),
+                'label': label,
                 'value': options[0].strip()
-            }}
+            }
+            answer_option = {options[0].strip().replace("/", "-"):
+                add_option_properties(option_details, label)
+            }
             question.update(answer_option)
         else:
-            answer_option = {option.replace("/", "-"): {
+            option_details = {
                 'jcr:primaryType': 'lfs:AnswerOption',
-                'label': value,
-                'value': value
-            }}
+                'label': value.strip(),
+                'value': value.strip()
+            }
+            answer_option = {option.replace("/", "-").strip():
+                add_option_properties(option_details, value)
+            }
             question.update(answer_option)
 
+def add_option_properties(option, label):
+    base_label = label.lower().strip()
+    if base_label == "none of the above":
+        option['noneOfTheAbove'] = True
+    if base_label == "n/a" or base_label == "not applicable" or base_label == "none":
+        option['notApplicable'] = True
+    return option
 
 # Converts the data type in 'UserFormatType' to one supported in LFS
 DATA_TO_LFS_TYPE = {
@@ -223,6 +236,7 @@ DATA_TO_LFS_TYPE = {
     'string (single)': 'text',
     'string (multiple can be selected)': 'text',
     'boolean (true/false)': "boolean",
+    'boolean': "boolean",
     'decimal': 'decimal',
     'decimal (single)': 'decimal',
     'integer': 'long',

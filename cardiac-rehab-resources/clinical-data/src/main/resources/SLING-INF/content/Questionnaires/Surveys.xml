@@ -64,9 +64,14 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>1, 8</value>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>minValue</name>
@@ -83,6 +88,34 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<node>
+				<name>1</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>8</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>8</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>8</value>
+					<type>String</type>
+				</property>
+			</node>
 		</node>
 		<node>
 			<name>pal_date</name>
@@ -1208,6 +1241,11 @@
 					<value>0</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>1</name>
@@ -1306,6 +1344,11 @@
 					<name>value</name>
 					<value>0</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 			<node>
@@ -1406,6 +1449,11 @@
 					<value>0</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>1</name>
@@ -1505,6 +1553,11 @@
 					<value>0</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>1</name>
@@ -1603,6 +1656,11 @@
 					<name>value</name>
 					<value>0</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 			<node>

@@ -50,8 +50,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Has the patient had a stress test 
-prior to joining the study?</value>
+				<value>Has the patient had a stress test prior to joining the study?</value>
 				<type>String</type>
 			</property>
 			<property>

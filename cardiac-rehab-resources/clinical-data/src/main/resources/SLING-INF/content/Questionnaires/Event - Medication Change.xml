@@ -62,35 +62,6 @@
 		</property>
 	</node>
 	<node>
-		<name>event_ed</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>End date</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>date</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dateFormat</name>
-			<value>MM-dd-yyyy</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
 		<name>med_change</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
@@ -242,30 +213,30 @@
 			<type>Long</type>
 		</property>
 		<node>
-			<name>Antiarrhythmic </name>
+			<name>Antiarrhythmic (eg Amiodarone, Sotalol, Mexiletene)</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Antiarrhythmic </value>
+				<value>Antiarrhythmic (eg Amiodarone, Sotalol, Mexiletene)</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Antiarrhythmic </value>
+				<value>Antiarrhythmic (eg Amiodarone, Sotalol, Mexiletene)</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>Anticoagulant </name>
+			<name>Anticoagulant (eg Warfarin-coumadin, Pradaxa-dabigatran, rivaroxaban, apixaban, enoxaparin-Lovenox)</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Anticoagulant </value>
+				<value>Anticoagulant (eg Warfarin/coumadin, Pradaxa/dabigatran, rivaroxaban, apixaban, enoxaparin/Lovenox)</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Anticoagulant </value>
+				<value>Anticoagulant (eg Warfarin/coumadin, Pradaxa/dabigatran, rivaroxaban, apixaban, enoxaparin/Lovenox)</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -284,30 +255,44 @@
 			</property>
 		</node>
 		<node>
-			<name>Other antiplatelet </name>
+			<name>Other Antiplatelet (eg Plavix-clopidogrel, Brilinta-ticagrelor, Effient-prasugrel)</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Other antiplatelet </value>
+				<value>Other Antiplatelet (eg Plavix/clopidogrel, Brilinta/ticagrelor, Effient/prasugrel)</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Other antiplatelet </value>
+				<value>Other Antiplatelet (eg Plavix/clopidogrel, Brilinta/ticagrelor, Effient/prasugrel)</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>Beta-blocker </name>
+			<name>Beta-blocker</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Beta-blocker </value>
+				<value>Beta-blocker (e.g. metoprolol, atenolol, propranolol, etc)</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Beta-blocker </value>
+				<value>Beta-blocker</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Channel-blocker</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Calcium channel-blocker (non-dihydropyridine, e.g. diltiazem, verapamil, etc)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Channel-blocker</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -326,16 +311,16 @@
 			</property>
 		</node>
 		<node>
-			<name>Diuretic </name>
+			<name>Diuretic - Lasix-forusemide, torsemide, metalozone</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Diuretic </value>
+				<value>Diuretic - Lasix/forusemide, torsemide, metalozone</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Diuretic </value>
+				<value>Diuretic - Lasix/forusemide, torsemide, metalozone</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -354,31 +339,50 @@
 			</property>
 		</node>
 		<node>
-			<name>Other lipid-lowering</name>
+			<name>Other lipid-lowering - Zetia-ezetimibe</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Other lipid-lowering</value>
+				<value>Other lipid-lowering - Zetia/ezetimibe</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Other lipid-lowering</value>
+				<value>Other lipid-lowering - Zetia/ezetimibe</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>Non-cardiac medication</name>
+			<name>Diabetes medication</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Non-cardiac medication</value>
+				<value>Diabetes medication</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Non-cardiac medication</value>
+				<value>Diabetes medication</value>
 				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>None of the above</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>None of the above</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>None of the above</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 	</node>

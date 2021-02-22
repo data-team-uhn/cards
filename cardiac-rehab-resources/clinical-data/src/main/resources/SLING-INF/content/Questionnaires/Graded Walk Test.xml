@@ -18,7 +18,7 @@
 -->
 
 <node>
-	<name>Baseline Cardiovascular Parameters</name>
+	<name>Graded Walk Test</name>
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
@@ -27,12 +27,12 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>Visits 1, 5, 6, 8</value>
+		<value>Visits 3, 5, 6, 8</value>
 		<type>String</type>
 	</property>
 	<property>
 		<name>title</name>
-		<value>Baseline Cardiovascular Parameters</value>
+		<value>Graded Walk Test</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -43,19 +43,19 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>Baseline Cardiovascular Parameters</name>
+		<name>Graded Walk Test Details</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Baseline Cardiovascular Parameters</value>
+			<value>Graded Walk Test Details</value>
 			<type>String</type>
 		</property>
 		<node>
-			<name>cardiovascular-visit</name>
+			<name>gw_number</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Visit Number</value>
+				<value>Graded walk test visit number</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -74,31 +74,21 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>minValue</name>
-				<value>1.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>maxValue</name>
-				<value>8.0</value>
-				<type>Double</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>1</name>
+				<name>3</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>1</value>
+					<value>3</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>1</value>
+					<value>3</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -146,22 +136,27 @@
 			</node>
 		</node>
 		<node>
-			<name>resting_sbp</name>
+			<name>gw_date</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>SBP</value>
+				<value>Date of graded walk test</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>long</value>
+				<value>date</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>minValue</name>
-				<value>0.0</value>
-				<type>Double</type>
+				<name>dateFormat</name>
+				<value>dd-MM-yyyy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -170,22 +165,94 @@
 			</property>
 		</node>
 		<node>
-			<name>resting_dbp</name>
+			<name>gw_test</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>DBP</value>
+				<value>Graded walk test performed</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>long</value>
+				<value>text</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>minValue</name>
-				<value>0.0</value>
-				<type>Double</type>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>min</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>Indoor</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Indoor</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Indoor</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Outdoor</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Outdoor</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Outdoor</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>gw_time</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Time performed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>HH:MM (24 hour clock)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>bpm</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -194,27 +261,17 @@
 			</property>
 		</node>
 		<node>
-			<name>resting_hr</name>
+			<name>gw_comments</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>HR</value>
+				<value>Comments</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>long</value>
+				<value>text</value>
 				<type>String</type>
-			</property>
-			<property>
-				<name>minValue</name>
-				<value>0.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
 			</property>
 		</node>
 	</node>

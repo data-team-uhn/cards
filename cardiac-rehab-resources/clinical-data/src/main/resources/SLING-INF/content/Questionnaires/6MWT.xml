@@ -56,15 +56,76 @@
 			<type>String</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>2, 4, 7, 8</value>
+			<name>displayMode</name>
+			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>minAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<node>
+			<name>2</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>2</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>2</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>4</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>4</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>4</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>7</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>7</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>7</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>8</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>8</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>8</value>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>Date</name>

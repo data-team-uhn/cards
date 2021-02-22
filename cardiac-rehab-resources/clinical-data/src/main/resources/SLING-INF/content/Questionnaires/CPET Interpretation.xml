@@ -51,6 +51,77 @@
 			<type>String</type>
 		</property>
 		<node>
+			<name>visit_number</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Visit Number</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>1</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>5</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>5</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>5</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>6</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>6</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>6</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
 			<name>visitdate</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
@@ -218,30 +289,30 @@
 				</property>
 			</node>
 			<node>
-				<name> Seated</name>
+				<name>Seated</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Seated</value>
+					<value>Seated</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Seated</value>
+					<value>Seated</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name> Standing</name>
+				<name>Standing</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Standing</value>
+					<value>Standing</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Standing</value>
+					<value>Standing</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -375,17 +446,36 @@
 					</property>
 				</node>
 				<node>
-					<name> Right</name>
+					<name>Right</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value> Right</value>
+						<value>Right</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value> Right</value>
+						<value>Right</value>
 						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>N-A</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>N/A</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>N/A</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
@@ -449,7 +539,7 @@
 				</property>
 				<property>
 					<name>displayMode</name>
-					<value>list</value>
+					<value>list+input</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -477,87 +567,92 @@
 					</property>
 				</node>
 				<node>
-					<name> Right waist hip clip</name>
+					<name>Right waist hip clip</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value> Right waist hip clip</value>
+						<value>Right waist hip clip</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value> Right waist hip clip</value>
+						<value>Right waist hip clip</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name> Left back pocket</name>
+					<name>Left back pocket</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value> Left back pocket</value>
+						<value>Left back pocket</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value> Left back pocket</value>
+						<value>Left back pocket</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name> Right back pocket</name>
+					<name>Right back pocket</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value> Right back pocket</value>
+						<value>Right back pocket</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value> Right back pocket</value>
+						<value>Right back pocket</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name> Left front pocket</name>
+					<name>Left front pocket</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value> Left front pocket</value>
+						<value>Left front pocket</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value> Left front pocket</value>
+						<value>Left front pocket</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name> Right front pocket</name>
+					<name>Right front pocket</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value> Right front pocket</value>
+						<value>Right front pocket</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value> Right front pocket</value>
+						<value>Right front pocket</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name> Other</name>
+					<name>N-A</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value> Other</value>
+						<value>N/A</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value> Other</value>
+						<value>N/A</value>
 						<type>String</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
@@ -649,31 +744,36 @@
 					</property>
 				</node>
 				<node>
-					<name> False</name>
+					<name>False</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value> False</value>
+						<value>False</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value> False</value>
+						<value>False</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name> Not Applicable</name>
+					<name>Not Applicable</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value> Not Applicable</value>
+						<value>Not Applicable</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value> Not Applicable</value>
+						<value>Not Applicable</value>
 						<type>String</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
@@ -765,31 +865,36 @@
 					</property>
 				</node>
 				<node>
-					<name> False</name>
+					<name>False</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value> False</value>
+						<value>False</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value> False</value>
+						<value>False</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name> Not Applicable</name>
+					<name>Not Applicable</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value> Not Applicable</value>
+						<value>Not Applicable</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value> Not Applicable</value>
+						<value>Not Applicable</value>
 						<type>String</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
@@ -936,7 +1041,7 @@
 				</property>
 				<property>
 					<name>displayMode</name>
-					<value>list</value>
+					<value>list+input</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -950,16 +1055,30 @@
 					<type>Long</type>
 				</property>
 				<node>
-					<name>Standard Bruce Modified Bruce. Other</name>
+					<name>Standard Bruce</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Standard Bruce Modified Bruce. Other</value>
+						<value>Standard Bruce</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>Standard Bruce Modified Bruce. Other</value>
+						<value>Standard Bruce</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Modified Bruce</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Modified Bruce</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Modified Bruce</value>
 						<type>String</type>
 					</property>
 				</node>
@@ -1033,58 +1152,72 @@
 					<type>Long</type>
 				</property>
 				<node>
-					<name>Chest pain-tightness difficult tolerating mouthpiece-nose clip</name>
+					<name>Chest pain-tightness</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Chest pain/tightness difficult tolerating mouthpiece/nose clip</value>
+						<value>Chest pain/tightness</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>Chest pain/tightness difficult tolerating mouthpiece/nose clip</value>
+						<value>Chest pain/tightness</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name>Shortness of breath </name>
+					<name>Difficulty tolerating mouthpiece-nose clip</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Shortness of breath </value>
+						<value>Difficulty tolerating mouthpiece/nose clip</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>Shortness of breath </value>
+						<value>Difficulty tolerating mouthpiece/nose clip</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name>Leg fatigue-discomfort </name>
+					<name>Shortness of breath</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Leg fatigue/discomfort </value>
+						<value>Shortness of breath</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>Leg fatigue/discomfort </value>
+						<value>Shortness of breath</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name>General fatigue </name>
+					<name>Leg fatigue-discomfort</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>General fatigue </value>
+						<value>Leg fatigue/discomfort</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>General fatigue </value>
+						<value>Leg fatigue/discomfort</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>General fatigue</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>General fatigue</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>General fatigue</value>
 						<type>String</type>
 					</property>
 				</node>
@@ -1103,58 +1236,100 @@
 					</property>
 				</node>
 				<node>
-					<name>Arrhythmia </name>
+					<name>Arrhythmia</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Arrhythmia </value>
+						<value>Arrhythmia</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>Arrhythmia </value>
+						<value>Arrhythmia</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name>Lightheadedness, dizzy or feeling unsteady </name>
+					<name>Lightheadedness, dizzy or feeling unsteady</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Lightheadedness, dizzy or feeling unsteady </value>
+						<value>Lightheadedness, dizzy or feeling unsteady</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>Lightheadedness, dizzy or feeling unsteady </value>
+						<value>Lightheadedness, dizzy or feeling unsteady</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name>Joint-muscle pain </name>
+					<name>Joint-muscle pain</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Joint/muscle pain </value>
+						<value>Joint/muscle pain</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>Joint/muscle pain </value>
+						<value>Joint/muscle pain</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name>External interruption Maximum heart rate Patient request to stop ST changes</name>
+					<name>External interruption</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>External interruption Maximum heart rate Patient request to stop ST changes</value>
+						<value>External interruption</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>External interruption Maximum heart rate Patient request to stop ST changes</value>
+						<value>External interruption</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Maximum heart rate</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Maximum heart rate</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Maximum heart rate</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Patient request to stop</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Patient request to stop</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Patient request to stop</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>ST changes</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>ST changes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>ST changes</value>
 						<type>String</type>
 					</property>
 				</node>
@@ -1329,30 +1504,30 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				</property>
 			</node>
 			<node>
-				<name> Beta blocker</name>
+				<name>Beta blocker</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Beta blocker</value>
+					<value>Beta blocker</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Beta blocker</value>
+					<value>Beta blocker</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name> Heart failure</name>
+				<name>Heart failure</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Heart failure</value>
+					<value>Heart failure</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Heart failure</value>
+					<value>Heart failure</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1542,30 +1717,30 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				</property>
 			</node>
 			<node>
-				<name> No</name>
+				<name>No</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> No</value>
+					<value>No</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> No</value>
+					<value>No</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name> Undetermined</name>
+				<name>Undetermined</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Undetermined</value>
+					<value>Undetermined</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Undetermined</value>
+					<value>Undetermined</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1613,44 +1788,44 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				</property>
 			</node>
 			<node>
-				<name> Average</name>
+				<name>Average</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Average</value>
+					<value>Average</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Average</value>
+					<value>Average</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name> Reduced </name>
+				<name>Reduced</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Reduced </value>
+					<value>Reduced</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Reduced </value>
+					<value>Reduced</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name> Severely Reduced</name>
+				<name>Severely Reduced</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Severely Reduced</value>
+					<value>Severely Reduced</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Severely Reduced</value>
+					<value>Severely Reduced</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1698,30 +1873,30 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				</property>
 			</node>
 			<node>
-				<name> Abnormal</name>
+				<name>Abnormal</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Abnormal</value>
+					<value>Abnormal</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Abnormal</value>
+					<value>Abnormal</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name> Undetermined</name>
+				<name>Undetermined</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Undetermined</value>
+					<value>Undetermined</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Undetermined</value>
+					<value>Undetermined</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1770,30 +1945,30 @@ Abnormal if below the range</value>
 				</property>
 			</node>
 			<node>
-				<name> Abnormal</name>
+				<name>Abnormal</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Abnormal</value>
+					<value>Abnormal</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Abnormal</value>
+					<value>Abnormal</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name> Undetermined</name>
+				<name>Undetermined</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Undetermined</value>
+					<value>Undetermined</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Undetermined</value>
+					<value>Undetermined</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1842,30 +2017,30 @@ Abnormal is fall in systolic BP >20 mmHg from the highest peak sBP during the te
 				</property>
 			</node>
 			<node>
-				<name> Abnormal</name>
+				<name>Abnormal</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Abnormal</value>
+					<value>Abnormal</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Abnormal</value>
+					<value>Abnormal</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name> Undetermined</name>
+				<name>Undetermined</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Undetermined</value>
+					<value>Undetermined</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Undetermined</value>
+					<value>Undetermined</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1915,30 +2090,30 @@ Normal = less than 34 at anaerobic threshold
 				</property>
 			</node>
 			<node>
-				<name> Abnormal</name>
+				<name>Abnormal</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Abnormal</value>
+					<value>Abnormal</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Abnormal</value>
+					<value>Abnormal</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name> Undetermined</name>
+				<name>Undetermined</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Undetermined</value>
+					<value>Undetermined</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Undetermined</value>
+					<value>Undetermined</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1986,30 +2161,30 @@ Normal = less than 34 at anaerobic threshold
 				</property>
 			</node>
 			<node>
-				<name> Abnormal</name>
+				<name>Abnormal</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Abnormal</value>
+					<value>Abnormal</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Abnormal</value>
+					<value>Abnormal</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name> Undetermined</name>
+				<name>Undetermined</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Undetermined</value>
+					<value>Undetermined</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Undetermined</value>
+					<value>Undetermined</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -2038,7 +2213,7 @@ Normal = less than 34 at anaerobic threshold
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>list</value>
+				<value>list+input</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2066,30 +2241,16 @@ Normal = less than 34 at anaerobic threshold
 				</property>
 			</node>
 			<node>
-				<name> Atrial Fibrillation</name>
+				<name>Atrial Fibrillation</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value> Atrial Fibrillation</value>
+					<value>Atrial Fibrillation</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value> Atrial Fibrillation</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name> Other</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value> Other</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value> Other</value>
+					<value>Atrial Fibrillation</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -2326,6 +2487,11 @@ Normal = less than 34 at anaerobic threshold
 					<value>None of the above</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 		<node>
@@ -2531,6 +2697,11 @@ Normal = less than 34 at anaerobic threshold
 					<name>value</name>
 					<value>None of the above</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 		</node>
@@ -2922,6 +3093,11 @@ See Fletcher, Circulation 2013:
 					<value>None of the above</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 		<node>
@@ -3128,6 +3304,11 @@ See Fletcher, Circulation 2013:
 					<value>None of the above</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 		<node>
@@ -3216,6 +3397,11 @@ See Fletcher, Circulation 2013:
 					<name>value</name>
 					<value>None of the above</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 		</node>

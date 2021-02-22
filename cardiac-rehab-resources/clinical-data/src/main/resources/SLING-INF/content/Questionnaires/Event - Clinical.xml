@@ -81,7 +81,7 @@
 		</property>
 		<property>
 			<name>displayMode</name>
-			<value>list</value>
+			<value>list+input</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -399,7 +399,7 @@
 				</property>
 				<property>
 					<name>notApplicable</name>
-					<value>true</value>
+					<value>True</value>
 					<type>Boolean</type>
 				</property>
 			</node>
@@ -447,74 +447,114 @@
 		</node>
 	</node>
 	<node>
-		<name>ce_stress_test</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Stress test results</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>list</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
+		<name>ce_stress_testSection</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>Positive</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<name>ce_stress_test</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
-				<name>label</name>
-				<value>Positive</value>
+				<name>text</name>
+				<value>Stress test results</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>value</name>
-				<value>Positive</value>
+				<name>dataType</name>
+				<value>text</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>Positive</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Positive</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Positive</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Negative</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Negative</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Negative</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Equivocal</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Equivocal</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Equivocal</value>
+					<type>String</type>
+				</property>
+			</node>
 		</node>
 		<node>
-			<name>Negative</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
 			<property>
-				<name>label</name>
-				<value>Negative</value>
+				<name>comparator</name>
+				<value>=</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>value</name>
-				<value>Negative</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>Equivocal</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Equivocal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>Equivocal</value>
-				<type>String</type>
-			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>ce_test</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>1</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
 		</node>
 	</node>
 	<node>
@@ -605,7 +645,7 @@
 				</property>
 				<property>
 					<name>notApplicable</name>
-					<value>true</value>
+					<value>True</value>
 					<type>Boolean</type>
 				</property>
 			</node>
@@ -866,7 +906,7 @@
 				</property>
 				<property>
 					<name>notApplicable</name>
-					<value>true</value>
+					<value>True</value>
 					<type>Boolean</type>
 				</property>
 			</node>
