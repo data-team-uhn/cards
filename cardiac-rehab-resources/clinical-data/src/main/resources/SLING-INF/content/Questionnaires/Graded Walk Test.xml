@@ -55,7 +55,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Graded walk test number</value>
+				<value>Graded walk test visit number</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -79,34 +79,6 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>2</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
 				<name>3</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
@@ -121,16 +93,44 @@
 				</property>
 			</node>
 			<node>
-				<name>4</name>
+				<name>5</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>4</value>
+					<value>5</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>4</value>
+					<value>5</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>6</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>6</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>6</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>8</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>8</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>8</value>
 					<type>String</type>
 				</property>
 			</node>
