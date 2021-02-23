@@ -403,7 +403,6 @@ export function NewSubjectDialog (props) {
     // The parent is the node one above our current path, so we just grab the info about that parent
     let newAllowedTypeParent = type["@path"].split("/").slice(0, -1).join("/");
     let promise;
-    console.log(newAllowedTypeParent);
     if (newAllowedTypeParent) {
       promise = fetch(`${newAllowedTypeParent}.full.json`)
         .then((result) => result.ok ? result.json() : Promise.reject(result))

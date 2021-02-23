@@ -29,7 +29,7 @@
 		<name>requiredSubjectTypes</name>
 		<values>
 			<value>/SubjectTypes/Patient</value>
-			<value>/SubjectTypes/Tumor</value>
+			<value>/SubjectTypes/Patient/Tumor</value>
 		</values>
 		<type>Reference</type>
 	</property>
