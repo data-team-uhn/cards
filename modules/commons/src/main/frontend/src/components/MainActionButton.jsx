@@ -16,24 +16,40 @@
 */
 
 import React from "react";
-import { Fab, withStyles } from "@material-ui/core";
+import { CircularProgress, Fab, Tooltip, withStyles } from "@material-ui/core";
 
 import style from './style.jsx';
 
 function MainActionButton(props) {
-  const { icon, label, onClick, loading, classes } = props;
-  return (
-    <div className={classes.mainPageAction}>
-        <Fab
-          variant="extended"
-          color="primary"
-          onClick={onClick}
-          disabled={loading}
-          className={classes.actionButton}
-        >
-          {icon} {label}
-        </Fab>
+  const { icon, label, title, ariaLabel, onClick, inProgress, classes } = props;
+
+  let extended = !!label;
+
+  let button = (
+    <div className={classes.mainActionButton}>
+      <Fab
+        variant={extended ? "extended" : "round"}
+        color="primary"
+        onClick={onClick}
+        disabled={inProgress}
+        aria-label={ariaLabel}
+      >
+        {icon}{label}
+      </Fab>
+      {inProgress && <CircularProgress size={extended ? 32 : 56} />}
     </div>
+  );
+
+  return (
+    <>
+    { title ?
+      <Tooltip title={title}>
+        {button}
+      </Tooltip>
+      :
+      button
+    }
+    </>
   );
 }
 

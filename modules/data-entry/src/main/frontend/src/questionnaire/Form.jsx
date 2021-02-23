@@ -440,7 +440,7 @@ function Form (props) {
           <div className={classes.mainPageAction}>
             { isEdit ?
               <MainActionButton
-                loading={saveInProgress}
+                inProgress={saveInProgress}
                 onClick={handleSubmit}
                 icon={saveInProgress ? <CloudUploadIcon /> : <DoneIcon />}
                 label={saveInProgress ? "Saving..." : lastSaveStatus ? "Saved" : "Save"}

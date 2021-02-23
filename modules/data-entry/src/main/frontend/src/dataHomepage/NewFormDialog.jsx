@@ -374,7 +374,7 @@ function NewFormDialog(props) {
           <NewItemButton
             title={children}
             onClick={openDialog}
-            loading={!dialogOpen && isFetching}
+            inProgress={!dialogOpen && isFetching}
           />
       }
     </React.Fragment>

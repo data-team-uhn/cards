@@ -16,28 +16,18 @@
 */
 
 import React from "react";
-import { CircularProgress, Fab, Tooltip, withStyles } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-
-import style from './style.jsx';
+import MainActionButton from './MainActionButton.jsx';
 
 function NewItemButton(props) {
-  const { title, onClick, loading, classes } = props;
+  const { classes, ...rest } = props;
   return (
-    <div className={classes.mainPageAction}>
-      <Tooltip title={title} aria-label="new">
-        <Fab
-          color="primary"
-          aria-label="new"
-          onClick={onClick}
-          disabled={loading}
-        >
-          <AddIcon />
-        </Fab>
-      </Tooltip>
-      {loading && <CircularProgress size={56} className={classes.newItemLoadingIndicator} />}
-    </div>
+    <MainActionButton
+      ariaLabel="new"
+      icon={<AddIcon />}
+      {...rest}
+    />
   );
 }
 
-export default withStyles(style)(NewItemButton);
+export default NewItemButton;

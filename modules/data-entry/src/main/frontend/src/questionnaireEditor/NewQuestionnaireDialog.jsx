@@ -136,7 +136,7 @@ function NewQuestionnaireDialog(props) {
       <NewItemButton
            title="New questionnaire"
            onClick={() => { openDialog(); }}
-           loading={!open && isFetching}
+           inProgress={!open && isFetching}
       />
     </React.Fragment>
   )

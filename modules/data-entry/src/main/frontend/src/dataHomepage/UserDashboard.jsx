@@ -153,7 +153,7 @@ function UserDashboard(props) {
       <NewItemButton
         title="New..."
         onClick={() => setOpen(true)}
-        loading={creationLoading}
+        inProgress={creationLoading}
       />
       {
         creationExtensions.map((extension, index) => {

@@ -18,26 +18,24 @@
 //
 
 const style = theme => ({
-  mainPageAction: {
+  mainActionButton: {
     margin: theme.spacing(1),
     position: "fixed",
     bottom: theme.spacing(2),
     right: theme.spacing(4),
-  },
-  newItemLoadingIndicator: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginLeft: "-50%",
-    marginTop: "-50%",
     zIndex: 100,
-  },
-  actionButton: {
-    marginTop: theme.spacing(1),
-    "& .MuiFab-label" : {
+    "& .MuiCircularProgress-root" : {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+    },
+    "& .MuiFab-extended + .MuiCircularProgress-root" : {
+      margin: theme.spacing(1, 1.5),
+    },
+    "& .MuiFab-extended .MuiSvgIcon-root" : {
       marginRight: theme.spacing(1),
     },
-    "& .MuiSvgIcon-root" : {
+    "& .MuiFab-extended .MuiFab-label" : {
       marginRight: theme.spacing(1),
     },
   },
