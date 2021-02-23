@@ -214,9 +214,9 @@ function SubjectContainer(props) {
   };
 
   // Fetch this Subject's data
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
   if (deleted) {
     return null;

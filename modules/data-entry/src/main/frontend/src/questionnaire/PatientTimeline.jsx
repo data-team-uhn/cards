@@ -58,16 +58,19 @@ function PatientTimeline(props) {
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
-  let fetchFormData = (path) => {
+  let fetchFormData = (path, level, names) => {
     return fetchWithReLogin(globalLoginDisplay, `${path}.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(async (response) => {
+        let json = await response.json();
+        return response.ok ? {response: json, level: level, names: names} : Promise.reject(response)
+      })
       // .catch(handleFormError)
   }
 
   let getFormData = async (baseForms) => {
     let formDataPromises = [];
     for (const form of baseForms) {
-      formDataPromises.push(fetchFormData(form["@path"]));
+      formDataPromises.push(fetchFormData(form.row["@path"], form.level, form.names));
     }
     let results = await Promise.all(formDataPromises);
     console.log("getFormData");
@@ -75,23 +78,33 @@ function PatientTimeline(props) {
     return results;
   }
 
-  let fetchForms = (customUrl) => {
-    return fetchWithReLogin(globalLoginDisplay, customUrl)
-    .then((response) => response.ok ? response.json() : Promise.reject(response));
+  let fetchForms = (customUrl, level, names) => {
+    return Promise.resolve(fetchWithReLogin(globalLoginDisplay, customUrl)
+    .then(async (response) => {
+      let json = await response.json();
+      return response.ok ? {response: json, level: level, names: names} : Promise.reject(response)
+    }));
     // .catch(handleTableError);
   };
 
-  let getSubjects = (parent) => {
+  let getSubjects = (parent, level, names) => {
     let subjects = [];
     console.log("Getting subjects");
     console.log(parent);
     console.log(parent["@progeny"]);
+    if (!names) {
+      names = [];
+    }
+    let newNames = [...names];
     if (parent) {
       if (parent["jcr:uuid"]) {
-        subjects.push(parent["jcr:uuid"]);
+        if (level > 0) {
+          newNames.push(parent["identifier"]);
+        }
+        subjects.push({uuid: parent["jcr:uuid"], names: newNames, level: level});
       }
       for (const child of parent["@progeny"] || []) {
-        subjects = subjects.concat(getSubjects(child));
+        subjects = subjects.concat(getSubjects(child, level+1, newNames));
       }
     }
     return subjects;
@@ -103,17 +116,21 @@ function PatientTimeline(props) {
     // TODO: add subject hierarchy to questionnaire title
     // Will be made easy by LFS-911
 
-    let subjects = getSubjects(rootSubject);
+    let subjects = getSubjects(rootSubject, 0);
     console.log("getSubjects");
     console.log(subjects);
     let formPromises = [];
 
-    for (const subjectId of subjects) {
-      const formUrl = `/Forms.paginate?fieldname=subject&fieldvalue=${encodeURIComponent(subjectId)}&includeallstatus=true&limit=1000`;
-      formPromises.push(fetchForms(formUrl));
+    for (const subject of subjects) {
+      const formUrl = `/Forms.paginate?fieldname=subject&fieldvalue=${encodeURIComponent(subject.uuid)}&includeallstatus=true&limit=1000`;
+      formPromises.push(fetchForms(formUrl, subject.level, subject.names));
     }
+    // console.log("getSubjects: promises created");
+    // console.log(formPromises);
     let results = await Promise.all(formPromises);
-    results = [].concat.apply([], results.map(formData => formData.rows))
+    // console.log("getSubjects: results");
+    // console.log(results);
+    results = [].concat.apply([], results.map(formData => formData.response.rows.map(row => {return {row: row, level: formData.level, names: formData.names}})))
     console.log("getForms");
     console.log(results);
     return results;
@@ -121,13 +138,15 @@ function PatientTimeline(props) {
 
   let dateAnswerData = [];
   let currentFormTitle;
+  let currentLevel;
+  let currentNames;
   let handleDisplayQuestion = (entryDefinition, data, key) => {
     const existingQuestionAnswer = data && Object.entries(data)
       .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
         && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
     if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
       if (existingQuestionAnswer[1]["jcr:primaryType"] === "lfs:DateAnswer") {
-        dateAnswerData.push({"date": existingQuestionAnswer[1], followup:[], formTitle: currentFormTitle});
+        dateAnswerData.push({"date": existingQuestionAnswer[1], followup:[], formTitle: currentFormTitle, level: currentLevel, names: currentNames});
       } else if (dateAnswerData.length > 0 && dateAnswerData[dateAnswerData.length - 1].followup.length < NUM_QUESTIONS) {
         dateAnswerData[dateAnswerData.length - 1].followup.push(displayQuestion(entryDefinition, data, key));
       }
@@ -136,11 +155,13 @@ function PatientTimeline(props) {
 
   let getDateQuestions = (formDetails) => {
     formDetails.map(form => {
-      currentFormTitle = form.questionnaire["@name"];
-      Object.entries(form.questionnaire)
+      currentLevel = form.level;
+      currentNames = form.names;
+      currentFormTitle = form.response.questionnaire["@name"];
+      Object.entries(form.response.questionnaire)
       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
       .map(([key, entryDefinition]) => {
-        handleDisplay(entryDefinition, form, key, handleDisplayQuestion);
+        handleDisplay(entryDefinition, form.response, key, handleDisplayQuestion);
       })
     });
     setDateAnswers(dateAnswerData.sort((a, b) => {
@@ -186,9 +207,11 @@ function DateTimelineEntry(classes, data, index, length) {
   let formIndex = dateAnswer && dateAnswer["@path"].indexOf("/", "/Forms/".length+1);
   let formPath = dateAnswer && dateAnswer["@path"].substring(0, formIndex)
 
+  // console.log(dateAnswer);
+
   // TODO: Implement level. Will be made easier when 911 is complete
-  let level = 0;
-  let formTitle = data.formTitle;
+  let level = data.level;
+  let formTitle = `${data.names?.length > 0 ? data.names.join(" / ") + ": " : ""}${data.formTitle}`;
 
   return <TimelineItem key={index}>
       <TimelineOppositeContent>
