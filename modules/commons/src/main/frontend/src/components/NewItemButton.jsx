@@ -20,12 +20,11 @@ import AddIcon from "@material-ui/icons/Add";
 import MainActionButton from './MainActionButton.jsx';
 
 function NewItemButton(props) {
-  const { classes, ...rest } = props;
   return (
     <MainActionButton
       ariaLabel="new"
       icon={<AddIcon />}
-      {...rest}
+      {...props}
     />
   );
 }
