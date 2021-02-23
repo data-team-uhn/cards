@@ -198,7 +198,7 @@ export default function VariantFilesContainer() {
           file.subject  = {"id" : parsed[0]};
           file.tumor    = {"id" : parsed[1]};
           if (parsed.length > 2) {
-            file.region = {"id" : parsed[2]};
+            file.region = {"id" : parsed.slice(2).join("_")};
           }
 
           setSingleFileSubjectData(file, files)
