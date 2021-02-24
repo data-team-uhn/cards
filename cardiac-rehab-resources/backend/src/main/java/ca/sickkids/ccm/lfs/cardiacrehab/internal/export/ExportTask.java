@@ -44,15 +44,15 @@ import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
-public class NightlyExportTask implements Runnable
+public class ExportTask implements Runnable
 {
     /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(NightlyExportTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExportTask.class);
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
-    NightlyExportTask(final ResourceResolverFactory resolverFactory)
+    ExportTask(final ResourceResolverFactory resolverFactory)
     {
         this.resolverFactory = resolverFactory;
     }
