@@ -404,7 +404,7 @@ export function NewSubjectDialog (props) {
     let newAllowedTypeParent = type["@path"].split("/").slice(0, -1).join("/");
     let promise;
     if (newAllowedTypeParent) {
-      promise = fetch(`${newAllowedTypeParent}.full.json`)
+      promise = fetchWithReLogin(globalLoginDisplay, `${newAllowedTypeParent}.full.json`)
         .then((result) => result.ok ? result.json() : Promise.reject(result))
         .then((result) => result?.["jcr:primaryType"] == "lfs:SubjectType" ? result : false);
     } else {
@@ -434,7 +434,7 @@ export function NewSubjectDialog (props) {
     let newAllowedTypeParent = newSubjectType[newSubjectIndex]["@path"].split("/").slice(0, -1).join("/");
     let promise;
     if (newAllowedTypeParent) {
-      promise = fetch(`${newAllowedTypeParent}.full.json`)
+      promise = fetchWithReLogin(globalLoginDisplay, `${newAllowedTypeParent}.full.json`)
         .then((result) => result.ok ? result.json() : Promise.reject(result));
     } else {
       promise = new Promise((resolve) => {resolve(false);});
