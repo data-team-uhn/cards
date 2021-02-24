@@ -52,7 +52,7 @@ public class NightlyExport
         options.name("NightlyExport");
         options.canRunConcurrently(true);
 
-        final Runnable exportJob = new ExportTask(this.resolverFactory);
+        final Runnable exportJob = new ExportTask(this.resolverFactory, "nightly");
 
         try {
             this.scheduler.schedule(exportJob, options);

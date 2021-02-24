@@ -51,14 +51,23 @@ public class ExportTask implements Runnable
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
+    private final String exportRunMode;
 
-    ExportTask(final ResourceResolverFactory resolverFactory)
+    ExportTask(final ResourceResolverFactory resolverFactory, final String exportRunMode)
     {
         this.resolverFactory = resolverFactory;
+        this.exportRunMode = exportRunMode;
     }
 
     @Override
     public void run()
+    {
+        if ("nightly".equals(this.exportRunMode)) {
+            doNightlyExport();
+        }
+    }
+
+    public void doNightlyExport()
     {
         LOGGER.info("Executing NightlyExport");
         LocalDate today = LocalDate.now();
