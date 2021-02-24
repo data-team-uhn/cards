@@ -70,6 +70,15 @@ function CreateSubjectTypeDialog(props) {
     });
   }
 
+  let close = () => {
+    setError("");
+    setNewName(null);
+    setParentSubject("");
+    setOrder(0);
+    setIsDuplicateName(false);
+    onClose();
+  }
+
   return (
     <Dialog
         open={open}
@@ -129,7 +138,7 @@ function CreateSubjectTypeDialog(props) {
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
         <Button disabled={!newName || isDuplicateName} color="primary" variant="contained" size="small" onClick={(event) => { event.preventDefault(); handleCreateSubjectType(); }}>Create Subject Type</Button>
-        <Button variant="contained" size="small" onClick={onClose}>Close</Button>
+        <Button variant="contained" size="small" onClick={close}>Close</Button>
       </DialogActions>
     </Dialog>
   );

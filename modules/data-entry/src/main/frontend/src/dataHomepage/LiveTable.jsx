@@ -45,7 +45,7 @@ function LiveTable(props) {
 
   const { customUrl, columns, defaultLimit, joinChildren, updateData, classes,
     filters, entryType, actions, admin, disableTopPagination, disableBottomPagination,
-    defaultSort, onDataFetch, ...rest } = props;
+    defaultSort, onDataReceived, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -144,10 +144,10 @@ function LiveTable(props) {
       let sortedData = json.rows.slice()
         .sort((a, b) => a["lfs:defaultOrder"] - b["lfs:defaultOrder"]);
       setTableData(sortedData);
-      onDataFetch && onDataFetch(sortedData);
+      onDataReceived && onDataReceived(sortedData);
     } else {
       setTableData(json.rows);
-      onDataFetch && onDataFetch(json.rows);
+      onDataReceived && onDataReceived(json.rows);
     }
 
     setPaginationData(

@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LiveTable from "./LiveTable.jsx";
 import SubjectType from "../questionnaire/SubjectType.jsx";
 
@@ -59,6 +59,13 @@ function SubjectTypes(props) {
     DeleteButton
   ]
 
+  // When the subject data is changed, set the update data flag to false
+  useEffect(() => {
+    if (subjectData){
+      setUpdateData(false);
+    }
+  }, [subjectData]);
+
   const entry = /SubjectTypes\/(.+)/.exec(location.pathname);
   if (entry) {
     return <SubjectType id={entry[1]} classes={classes}/>;
@@ -83,12 +90,12 @@ function SubjectTypes(props) {
           disableTopPagination={true}
           defaultSort={true}
           updateData={updateData}
-          onDataFetch={setSubjectData}
+          onDataReceived={setSubjectData}
         />
       </CardContent>
     </Card>
     <div className={classes.mainPageAction}>
-      <Tooltip title={"Create New Group"} aria-label="new">
+      <Tooltip title={"Create New Subject Type"} aria-label="new">
         <span>
           <Fab
             color="primary"
