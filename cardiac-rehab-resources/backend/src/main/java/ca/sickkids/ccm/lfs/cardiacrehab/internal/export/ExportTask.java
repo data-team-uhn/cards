@@ -62,7 +62,7 @@ public class ExportTask implements Runnable
     @Override
     public void run()
     {
-        if ("nightly".equals(this.exportRunMode)) {
+        if ("nightly".equals(this.exportRunMode) || "manualToday".equals(this.exportRunMode)) {
             doNightlyExport();
         }
     }

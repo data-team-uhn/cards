@@ -54,7 +54,7 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
             return;
         }
 
-        final Runnable exportJob = new ExportTask(this.resolverFactory, "manual");
+        final Runnable exportJob = new ExportTask(this.resolverFactory, "manualToday");
         final Thread thread = new Thread(exportJob);
         thread.start();
         out.write("S3 export started");
