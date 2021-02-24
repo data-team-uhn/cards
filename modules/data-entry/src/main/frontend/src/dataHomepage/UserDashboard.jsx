@@ -21,6 +21,7 @@ import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
 
 import { loadExtensions } from "../uiextension/extensionManager";
+import NewItemButton from "../components/NewItemButton.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { MODE_DIALOG } from "../dataHomepage/NewFormDialog.jsx";
 
@@ -31,9 +32,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Fab,
   Grid,
-  Tooltip,
   Typography,
   withStyles
 } from "@material-ui/core";
@@ -151,20 +150,11 @@ function UserDashboard(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      <div className={classes.mainPageAction}>
-        <Tooltip title={"New"} aria-label="new">
-          <span>
-            <Fab
-              color="primary"
-              aria-label="new"
-              onClick={() => setOpen(true)}
-              disabled={creationLoading}
-            >
-              <AddIcon />
-            </Fab>
-          </span>
-        </Tooltip>
-      </div>
+      <NewItemButton
+        title="New..."
+        onClick={() => setOpen(true)}
+        inProgress={creationLoading}
+      />
       {
         creationExtensions.map((extension, index) => {
           let Extension = extension["lfs:extensionRender"];
