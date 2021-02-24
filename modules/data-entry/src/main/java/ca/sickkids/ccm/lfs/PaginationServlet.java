@@ -156,7 +156,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             ));
 
         // Check only for the children of the requested homepage
-        query.append(" where ischildnode(n, '" + request.getResource().getPath() + "')");
+        query.append(" where isdescendantnode(n, '" + request.getResource().getPath() + "')");
 
         // Full text search; \ and ' must be escaped
         final String filter = request.getParameter("filter");
