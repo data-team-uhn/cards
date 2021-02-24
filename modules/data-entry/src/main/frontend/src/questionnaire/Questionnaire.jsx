@@ -144,6 +144,7 @@ let Questionnaire = (props) => {
       { data &&
         <Grid item>
           <CreationMenu
+            isMainAction={true}
             data={data}
             onClose={() => { reloadData(); }}
           />
