@@ -150,9 +150,9 @@ def process_options(question, row):
     if question['dataType'] == "date":
         date = row['Options (if applicable)']
         if date == "MM/DD/YYYY" or date == "MM-DD-YYYY":
-            date = "MM/dd/yyyy"
+            date = "MM/DD/yyyy"
         if date == "DD/MM/YYYY" or date == "DD-MM-YYYY":
-            date = "dd/MM/yyyy"
+            date = "DD/MM/yyyy"
         if date == "MM/YYYY" or date == "MM-YYYY":
             date = "MM/yyyy"
         if date == "YYYY":
