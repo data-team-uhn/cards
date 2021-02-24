@@ -92,4 +92,4 @@ fi
 #Execute the volume_mounted_init.sh script if it is present
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
-java ${SLING_RUN_MODES_CUSTOM:+-Dsling.run.modes=}$SLING_RUN_MODES_LIST ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar ${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar
+java -Djdk.xml.entityExpansionLimit=0 ${SLING_RUN_MODES_CUSTOM:+-Dsling.run.modes=}$SLING_RUN_MODES_LIST ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar ${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar
