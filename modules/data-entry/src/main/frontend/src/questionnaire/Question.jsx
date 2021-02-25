@@ -27,7 +27,7 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 // GUI for displaying answers
 function Question (props) {
   let { classes, children, questionDefinition, existingAnswer, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
-  let { text, description } = { ...questionDefinition, ...props }
+  let { text, compact, description } = { ...questionDefinition, ...props }
 
   return (
     <Card>
@@ -37,7 +37,7 @@ function Question (props) {
         subheader={description}
         className={classes.questionHeader}
         />
-      <CardContent>
+      <CardContent className={compact ? classes.compactLayout : null}>
         { !isEdit && !preventDefaultView && existingAnswer ?
           <List>
             { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
