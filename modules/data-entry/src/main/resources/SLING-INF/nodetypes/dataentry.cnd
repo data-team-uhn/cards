@@ -182,6 +182,9 @@
   - minValue (double)
   - maxValue (double)
 
+  // For questions that have a list of options, whether the options are displayed on a single line (compact) or one per line (default)
+  - compact (boolean)
+
   // For numeric answers, the measurement unit used for the value (kg, cm, cGy...).
   // This will be displayed as an input end adornment.
   - unitOfMeasurement (string)

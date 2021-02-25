@@ -188,6 +188,22 @@ const questionnaireStyle = theme => ({
           marginBottom: "0 !important",
         }
     },
+    compactLayout : {
+      "& .MuiFormGroup-root" : {
+        flexDirection: "row",
+      },
+      "& .MuiListItem-root" : {
+        display: "inline-flex",
+        width: "auto",
+      },
+      "& .MuiList-root" : {
+        display: "inline-block",
+      },
+      "& .MuiList-root + div > .MuiFormControl-root" : {
+        minWidth: "100px",
+        marginTop: "-10px",
+      },
+    },
     collapsedSection: {
         padding: "0 !important"
     },
