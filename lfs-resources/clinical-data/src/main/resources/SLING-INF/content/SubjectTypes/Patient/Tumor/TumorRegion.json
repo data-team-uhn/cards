@@ -1,0 +1,5 @@
+{
+  "jcr:primaryType": "lfs:SubjectType",
+  "label": "Tumor region",
+  "lfs:defaultOrder": 2
+}
