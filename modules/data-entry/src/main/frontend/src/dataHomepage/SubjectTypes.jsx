@@ -23,7 +23,9 @@ import SubjectType from "../questionnaire/SubjectType.jsx";
 import { Button, Card, CardContent, CardHeader, Fab, Tooltip, withStyles } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import CreateSubjectTypeDialog from "../questionnaire/NewSubjectTypeDialog.jsx";
+import NewItemButton from "../components/NewItemButton.jsx";
 import DeleteButton from "./DeleteButton.jsx";
+import EditButton from "./EditButton.jsx";
 import AddIcon from "@material-ui/icons/Add";
 
 function SubjectTypes(props) {
@@ -31,7 +33,8 @@ function SubjectTypes(props) {
   const [ newSubjectTypePopperOpen, setNewSubjectTypePopperOpen ] = useState(false);
   const [ updateData, setUpdateData ] = useState(false);
   const [ subjectData, setSubjectData ] = useState([]);
-
+  const [ editSubject, setEditSubject ] = useState(null);
+  const [ isEdit, setIsEdit ] = useState(false);
   const columns = [
     {
       "key": "label",
@@ -56,7 +59,8 @@ function SubjectTypes(props) {
     },
   ]
   const actions = [
-    DeleteButton
+    DeleteButton,
+    EditButton
   ]
 
   // When the subject data is changed, set the update data flag to false
@@ -66,9 +70,23 @@ function SubjectTypes(props) {
     }
   }, [subjectData]);
 
-  const entry = /SubjectTypes\/(.+)/.exec(location.pathname);
-  if (entry) {
-    return <SubjectType id={entry[1]} classes={classes}/>;
+  useEffect(() => {
+    setIsEdit(false);
+    setEditSubject(null);
+    const entry = /SubjectTypes\/(.+)/.exec(location.pathname);
+    // for edit mode show dialog to allow to modify only the default order
+    if (entry && entry[1].endsWith('.edit')) {
+      let path = "/" + entry[0].replace('.edit', '');
+      let subject = subjectData.find(subject => subject["@path"] === path);
+      setIsEdit(true);
+      setEditSubject(subject);
+      setNewSubjectTypePopperOpen(true);
+    }
+  }, [location.pathname]);
+
+  let subjectPath = /SubjectTypes\/(.+)/.exec(location.pathname);
+  if (subjectPath && !subjectPath[1].endsWith('.edit')) {
+    return <SubjectType id={subjectPath[1]} classes={classes}/>;
   }
 
   return (
@@ -94,25 +112,18 @@ function SubjectTypes(props) {
         />
       </CardContent>
     </Card>
-    <div className={classes.mainPageAction}>
-      <Tooltip title={"Create New Subject Type"} aria-label="new">
-        <span>
-          <Fab
-            color="primary"
-            aria-label="new"
-            onClick={() => {setNewSubjectTypePopperOpen(true)}}
-          >
-            <AddIcon />
-          </Fab>
-        </span>
-      </Tooltip>
-    </div>
-    <CreateSubjectTypeDialog
+    <NewItemButton
+      title="New subject type"
+      onClick={() => { setNewSubjectTypePopperOpen(true); }}
+    />
+    { newSubjectTypePopperOpen && <CreateSubjectTypeDialog
       onClose={() => { setNewSubjectTypePopperOpen(false);}}
       onSubmit={() => { setNewSubjectTypePopperOpen(false); setUpdateData(true);}}
       open={newSubjectTypePopperOpen}
       subjects={subjectData}
-    />
+      isEdit={isEdit}
+      editSubject={editSubject}
+    /> }
   </>
   );
 }

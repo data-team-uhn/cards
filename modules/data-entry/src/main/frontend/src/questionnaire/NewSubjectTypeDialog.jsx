@@ -16,18 +16,20 @@
 */
 
 import React, { useState } from "react";
+import { useHistory } from 'react-router-dom';
 
-import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, InputLabel, MenuItem, TextField, Typography, Select, withStyles  } from "@material-ui/core";
+import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, InputLabel, MenuItem, TextField, Typography, Select, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 function CreateSubjectTypeDialog(props) {
-  const { open, onClose, onSubmit, subjects, classes } = props;
-  const [ newName, setNewName ] = useState(null);
-  const [ parentSubject, setParentSubject ] = useState("");
-  const [ order, setOrder ] = useState(0);
+  const { open, onClose, onSubmit, subjects, isEdit, editSubject, classes } = props;
+  const [ newName, setNewName ] = useState("");
+  const [ parentSubject, setParentSubject ] = useState(editSubject ? editSubject["@path"].replace("/" + editSubject["@name"], "") : "");
+  const [ order, setOrder ] = useState(editSubject && editSubject["lfs:defaultOrder"] ? editSubject["lfs:defaultOrder"] : 0);
   const [ error, setError ] = useState(null);
   const [ isDuplicateName, setIsDuplicateName ] = useState(false);
+  const history = useHistory();
 
   let validateName = (name) => {
     setIsDuplicateName(false);
@@ -41,22 +43,23 @@ function CreateSubjectTypeDialog(props) {
 
   let handleCreateSubjectType = () => {
     setError("");
-
-    let formInfo = {};
-    formInfo["jcr:primaryType"] = "lfs:SubjectType";
-    if (parentSubject) {
-      formInfo["jcr:reference:parent"] = "../" + parentSubject;
-    }
-    formInfo["label"] = newName;
-    formInfo["lfs:defaultOrder"] = order;
-
     let formData = new FormData();
-    formData.append(':contentType', 'json');
-    formData.append(':operation', 'import');
-    formData.append(':nameHint', newName);
-    formData.append(':content', JSON.stringify(formInfo));
 
-    fetch('/SubjectTypes', {
+    if (!isEdit) {
+      let formInfo = {};
+      formInfo["jcr:primaryType"] = "lfs:SubjectType";
+      formInfo["label"] = newName;
+      formInfo["lfs:defaultOrder"] = order;
+
+      formData.append(':contentType', 'json');
+      formData.append(':operation', 'import');
+      formData.append(':nameHint', newName);
+      formData.append(':content', JSON.stringify(formInfo));
+    } else {
+      formData.append("lfs:defaultOrder", order);
+    }
+
+    fetch(isEdit ? editSubject["@path"] : parentSubject, {
         method: 'POST',
         body: formData
     })
@@ -66,23 +69,35 @@ function CreateSubjectTypeDialog(props) {
           return;
         }
         onSubmit();
-        onClose();
+
+        if (isEdit) {
+          history.push({
+            pathname: "/content.html/admin/SubjectTypes"
+          });
+        } else {
+          onClose();
+        }
     });
   }
 
   let close = () => {
     setError("");
-    setNewName(null);
+    setNewName("");
     setParentSubject("");
     setOrder(0);
     setIsDuplicateName(false);
     onClose();
+    if (isEdit) {
+      history.push({
+        pathname: "/content.html/admin/SubjectTypes"
+      });
+    }
   }
 
   return (
     <Dialog
-        open={open}
-        onClose={onClose}
+      open={open}
+      onClose={onClose}
     >
       <DialogTitle>Create New Subject Type</DialogTitle>
       <DialogContent>
@@ -92,6 +107,8 @@ function CreateSubjectTypeDialog(props) {
           </Grid>
           <Grid item xs={8}>
             <TextField
+                disabled={isEdit}
+                value={isEdit ? editSubject["@name"] : newName}
                 id="name"
                 name="name"
                 onChange={(event) => { setNewName(event.target.value); setError(""); validateName(event.target.value); }}
@@ -100,44 +117,57 @@ function CreateSubjectTypeDialog(props) {
                 helperText={isDuplicateName ? "This name already exists" : "Required*"}
             />
           </Grid>
-          { subjects && subjects.length > 0 && <><Grid item xs={4}>
-              <Typography>Parent subject type</Typography>
-            </Grid>
-            <Grid item xs={8}>
-		    <Select
-		      labelId="parent"
-	          label="optional"
-	          value={parentSubject}
-	          onChange={(event) => setParentSubject(event.target.value)}
-	          className={classes.selectParent}
-	          displayEmpty
-	        >
-	          <MenuItem key="none" value="">
-	             <em>None</em>
-	          </MenuItem>
-	          { subjects.map((option) => (
-	            <MenuItem key={option["jcr:uuid"]} value={option.label}>
-	              {option.label}
-	            </MenuItem>
-	           )) }
-		    </Select>
-          </Grid></> }
+          { (isEdit || subjects && subjects.length > 0) &&
+            <>
+              <Grid item xs={4}>
+                <Typography>Parent subject type</Typography>
+              </Grid>
+              <Grid item xs={8}>
+                <Select
+                  disabled={isEdit}
+                  labelId="parent"
+                  label="optional"
+                  value={parentSubject}
+                  onChange={(event) => setParentSubject(event.target.value)}
+                  className={classes.selectParent}
+                  displayEmpty
+                >
+                  <MenuItem key="none" value="">
+                     <em>None</em>
+                  </MenuItem>
+                  { subjects.map((option) => (
+                    <MenuItem key={option["jcr:uuid"]} value={option["@path"]}>
+                      {option.label}
+                    </MenuItem>
+                   )) }
+                </Select>
+              </Grid>
+            </>
+          }
           <Grid item xs={4}>
             <Typography>Subject type order</Typography>
           </Grid>
           <Grid item xs={8}>
             <TextField
-	          type="number"
-	          inputProps={{min: 0}}
-	          value={order}
-	          onChange={(event) => setOrder(event.target.value)}
-	        />
+              type="number"
+              inputProps={{min: 0}}
+              value={order}
+              onChange={(event) => setOrder(event.target.value)}
+            />
           </Grid>
         </Grid>
         {error && <Typography color='error'>{error}</Typography>}
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
-        <Button disabled={!newName || isDuplicateName} color="primary" variant="contained" size="small" onClick={(event) => { event.preventDefault(); handleCreateSubjectType(); }}>Create Subject Type</Button>
+        <Button
+          disabled={!isEdit && (!newName || isDuplicateName)}
+          color="primary"
+          variant="contained"
+          size="small"
+          onClick={(event) => { event.preventDefault(); handleCreateSubjectType(); }}
+         >
+          { isEdit ? "Save" : "Create Subject Type" }
+        </Button>
         <Button variant="contained" size="small" onClick={close}>Close</Button>
       </DialogActions>
     </Dialog>
