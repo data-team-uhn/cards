@@ -62,7 +62,6 @@ let CreationMenu = (props) => {
           id={"simple-menu" + data['@name']}
           anchorEl={anchorEl}
           keepMounted
-          placement={isMainAction ? "top-end" : "bottom-end"}
           open={Boolean(anchorEl)}
           onClose={handleCloseMenu}
       >
