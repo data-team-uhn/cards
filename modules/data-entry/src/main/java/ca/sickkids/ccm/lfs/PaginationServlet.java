@@ -155,7 +155,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             request.getParameterValues("filternotempty")
             ));
 
-        // Check only for the children of the requested homepage
+        // Check only for the descendants of the requested homepage
         query.append(" where isdescendantnode(n, '" + request.getResource().getPath() + "')");
 
         // Full text search; \ and ' must be escaped
