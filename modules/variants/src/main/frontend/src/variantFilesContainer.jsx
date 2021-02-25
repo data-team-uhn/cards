@@ -157,12 +157,12 @@ export default function VariantFilesContainer() {
       .then((json) => {setPatientSubjectUUID(json["jcr:uuid"])})
       .catch(handleError);
 
-    fetch("/SubjectTypes/Tumor.json")
+    fetch("/SubjectTypes/Patient/Tumor.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {setTumorSubjectUUID(json["jcr:uuid"])})
       .catch(handleError);
 
-    fetch("/SubjectTypes/TumorRegion.json")
+    fetch("/SubjectTypes/Patient/Tumor/TumorRegion.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {setRegionSubjectUUID(json["jcr:uuid"])})
       .catch(handleError);
