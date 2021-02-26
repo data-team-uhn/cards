@@ -299,9 +299,13 @@ function MultipleChoice(props) {
   }
 
   // display error if minimum is not met, display 'at least' if there is no maximum or if max is greater than min
-  const warning = selection.length < minAnswers && (
-    <Typography color={error ? 'error' : 'textSecondary'} className={classes.warningTypography}>
-      Please select {maxAnswers !== minAnswers && "at least"} {minAnswers} option{minAnswers > 1 && "s"}.
+  const instructions = minAnswers > 0 && (
+    <Typography color={error || selection.length < minAnswers ? 'secondary' : 'textSecondary'} className={classes.answerInstructions} variant="caption">
+      {minAnswers == 1 ?
+      "This question is mandatory"
+      :
+      "Please select " + (maxAnswers !== minAnswers ? "at least" : "" ) + minAnswers + " options"
+      }
     </Typography>
     );
 
@@ -346,6 +350,7 @@ function MultipleChoice(props) {
   } else if (isRadio) {
     return (
       <React.Fragment>
+        {instructions}
         <RadioGroup
           aria-label="selection"
           name="selection"
@@ -380,7 +385,6 @@ function MultipleChoice(props) {
           }
         </RadioGroup>
         {ghostInput}
-        {warning}
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
@@ -392,11 +396,11 @@ function MultipleChoice(props) {
   } else {
     return (
       <React.Fragment>
+        {instructions}
         <List className={classes.checkboxList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
         </List>
         {ghostInput}
-        {warning}
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}

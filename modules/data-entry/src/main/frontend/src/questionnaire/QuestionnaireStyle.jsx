@@ -90,8 +90,8 @@ const questionnaireStyle = theme => ({
     hiddenQuestion: {
         display: "none"
     },
-    warningTypography: {
-        padding: theme.spacing(1, 1),
+    answerInstructions: {
+        padding: theme.spacing(1, 0),
     },
     thumbnail: {
         border: "1px solid " + theme.palette.divider,
