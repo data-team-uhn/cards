@@ -182,17 +182,17 @@ function DateQuestionFull(props) {
 
 DateQuestionFull.propTypes = DateQuestionUtilities.PROP_TYPES;
 
-const StyledDateQuestion = withStyles(QuestionnaireStyle)(DateQuestionFull);
-export default StyledDateQuestion;
+const StyledDateQuestionFull = withStyles(QuestionnaireStyle)(DateQuestionFull);
+export default StyledDateQuestionFull;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date") {
     let dateType = DateQuestionUtilities.getDateType(questionDefinition.dateFormat)
     if ( dateType === DateQuestionUtilities.FULL_DATE_TYPE || dateType === DateQuestionUtilities.DATETIME_TYPE) {
-      return [StyledDateQuestion, 60];
+      return [StyledDateQuestionFull, 60];
     } else {
       // Default date handler
-      return [StyledDateQuestion, 50];
+      return [StyledDateQuestionFull, 50];
     }
   }
 });

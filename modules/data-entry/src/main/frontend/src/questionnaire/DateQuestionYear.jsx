@@ -21,8 +21,6 @@ import React from "react";
 
 import { withStyles } from "@material-ui/core";
 
-import PropTypes from "prop-types";
-
 import NumberQuestion from "./NumberQuestion";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
@@ -71,13 +69,13 @@ function DateQuestionYear(props) {
 
 DateQuestionYear.propTypes = DateQuestionUtilities.PROP_TYPES;
 
-const StyledDateQuestion = withStyles(QuestionnaireStyle)(DateQuestionYear);
-export default StyledDateQuestion;
+const StyledDateQuestionYear = withStyles(QuestionnaireStyle)(DateQuestionYear);
+export default StyledDateQuestionYear;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date"
     && DateQuestionUtilities.getDateType(questionDefinition.dateFormat) === DateQuestionUtilities.YEAR_DATE_TYPE)
   {
-    return [StyledDateQuestion, 60];
+    return [StyledDateQuestionYear, 60];
   }
 });

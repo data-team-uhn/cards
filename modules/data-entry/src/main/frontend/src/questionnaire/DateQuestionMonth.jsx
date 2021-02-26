@@ -21,8 +21,6 @@ import React, { useState } from "react";
 
 import { TextField, Typography, withStyles } from "@material-ui/core";
 
-import PropTypes from "prop-types";
-import moment from "moment";
 import * as jdfp from "moment-jdateformatparser";
 
 import Answer from "./Answer";
@@ -221,13 +219,13 @@ function DateQuestionMonth(props) {
 
 DateQuestionMonth.propTypes = DateQuestionUtilities.PROP_TYPES;
 
-const StyledDateQuestion = withStyles(QuestionnaireStyle)(DateQuestionMonth);
-export default StyledDateQuestion;
+const StyledDateQuestionMonth = withStyles(QuestionnaireStyle)(DateQuestionMonth);
+export default StyledDateQuestionMonth;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date"
     && DateQuestionUtilities.getDateType(questionDefinition.dateFormat) === DateQuestionUtilities.MONTH_DATE_TYPE)
   {
-    return [StyledDateQuestion, 60];
+    return [StyledDateQuestionMonth, 60];
   }
 });
