@@ -190,18 +190,26 @@ const questionnaireStyle = theme => ({
     },
     compactLayout : {
       "& .MuiFormGroup-root" : {
-        flexDirection: "row",
+        [theme.breakpoints.up('sm')]: {
+          flexDirection: "row",
+        }
       },
       "& .MuiListItem-root" : {
-        display: "inline-flex",
-        width: "auto",
+        [theme.breakpoints.up('sm')]: {
+          display: "inline-flex",
+          width: "auto",
+        },
       },
       "& .MuiList-root" : {
-        display: "inline-block",
+        [theme.breakpoints.up('sm')]: {
+          display: "inline-block",
+        },
       },
       "& .MuiList-root + div > .MuiFormControl-root" : {
-        minWidth: "100px",
-        marginTop: "-10px",
+        [theme.breakpoints.up('sm')]: {
+          minWidth: "100px",
+          marginTop: "-10px",
+        },
       },
     },
     collapsedSection: {
