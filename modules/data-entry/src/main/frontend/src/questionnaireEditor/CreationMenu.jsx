@@ -26,11 +26,12 @@ import {
 } from "@material-ui/core";
 
 import EditDialog from "./EditDialog";
+import NewItemButton from "../components/NewItemButton";
 
 // Menu for creating questions or sections
 
 let CreationMenu = (props) => {
-  const { data, onClose } = props;
+  const { isMainAction, data, onClose } = props;
   let [ anchorEl, setAnchorEl ] = useState(null);
   let [ entityType, setEntityType ] = useState('Question');
   let [ dialogOpen, setDialogOpen ] = useState(false);
@@ -50,9 +51,13 @@ let CreationMenu = (props) => {
 
   return (
     <>
+      { isMainAction ?
+      <NewItemButton title="Add..." onClick={handleOpenMenu} />
+      :
       <Button aria-controls={"simple-menu" + data['@name']} aria-haspopup="true" onClick={handleOpenMenu}>
         Add...
       </Button>
+      }
       <Menu
           id={"simple-menu" + data['@name']}
           anchorEl={anchorEl}
@@ -77,8 +82,13 @@ let CreationMenu = (props) => {
 }
 
 CreationMenu.propTypes = {
+  isMainAction: PropTypes.bool,
   data: PropTypes.object.isRequired,
   onClose: PropTypes.func
 };
+
+CreationMenu.defaultProps = {
+  isMainAction: false,
+}
 
 export default CreationMenu;
