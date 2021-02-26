@@ -22,7 +22,6 @@ import { Link, useLocation, withRouter } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 
-import { formatDateAnswer } from "./DateQuestion.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
@@ -427,7 +426,7 @@ function SubjectMemberInternal (props) {
                                          <EditButton
                                            entryPath={rowData["@path"]}
                                            entryType="Form"
-                                         /> 
+                                         />
                                          <DeleteButton
                                            entryPath={rowData["@path"]}
                                            entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
