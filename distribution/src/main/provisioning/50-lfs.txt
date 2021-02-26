@@ -54,3 +54,10 @@
 
 [artifacts runModes=permissions_ownership]
     ca.sickkids.ccm.lfs/lfs-permissions-ownership/${lfs.version}
+
+[:repoinit]
+    # This is required to work around bug SLING-10169
+    # FIXME: Remove this one SLING-10169 is fixed and we upgrade to a newer version of sling-servlet-post
+    set ACL for everyone
+        allow   jcr:read    on / restriction(lfs:root)
+    end
