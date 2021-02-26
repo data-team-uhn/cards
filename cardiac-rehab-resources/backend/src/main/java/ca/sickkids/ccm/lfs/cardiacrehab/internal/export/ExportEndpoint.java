@@ -20,6 +20,9 @@ package ca.sickkids.ccm.lfs.cardiacrehab.internal.export;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import javax.servlet.Servlet;
 
@@ -54,9 +57,29 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
             return;
         }
 
-        final Runnable exportJob = new ExportTask(this.resolverFactory, "manualToday");
+        final LocalDate dateLowerBound = this.strToDate(request.getParameter("dateLowerBound"));
+        final LocalDate dateUpperBound = this.strToDate(request.getParameter("dateUpperBound"));
+        final String exportRunMode = (dateLowerBound != null && dateUpperBound != null)
+            ? "manualBetween"
+            : (dateLowerBound != null && dateUpperBound == null) ? "manualAfter" : "manualToday";
+
+        final Runnable exportJob = ("manualToday".equals(exportRunMode))
+            ? new ExportTask(this.resolverFactory, exportRunMode)
+            : new ExportTask(this.resolverFactory, exportRunMode, dateLowerBound, dateUpperBound);
         final Thread thread = new Thread(exportJob);
         thread.start();
         out.write("S3 export started");
+    }
+
+    private LocalDate strToDate(final String date)
+    {
+        if (date == null) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        } catch (DateTimeParseException e) {
+            return null;
+        }
     }
 }
