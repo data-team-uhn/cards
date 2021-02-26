@@ -321,7 +321,7 @@ VocabularySelector.propTypes = {
 VocabularySelector.defaultProps = {
     title: "VocabularySelector",
     max: 0,
-    searchDefault: 'Other (specify here)'
+    searchDefault: ''
 };
 
 export default withStyles(SelectorStyle)(VocabularySelector);
