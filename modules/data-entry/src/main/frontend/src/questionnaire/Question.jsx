@@ -20,7 +20,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Card, CardHeader, CardContent, List, ListItem, Typography, withStyles } from "@material-ui/core";
+import { Grid, List, ListItem, Typography, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
@@ -29,15 +29,15 @@ function Question (props) {
   let { classes, children, questionDefinition, existingAnswer, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
   let { text, compact, description } = { ...questionDefinition, ...props }
 
+  let compactForm = true;
+
   return (
-    <Card>
-      <CardHeader
-        title={text}
-        titleTypographyProps={{ variant: 'h6' }}
-        subheader={description}
-        className={classes.questionHeader}
-        />
-      <CardContent className={compact ? classes.compactLayout : null}>
+    <Grid container direction={compactForm ? "row" : column } spacing={3} justify="flex-start" alignItems="flex-start" >
+      <Grid item xs={4}>
+        <Typography variant="h6">{text}</Typography>
+        <Typography variant="caption">{description}</Typography>
+      </Grid>
+      <Grid item className={compact ? classes.compactLayout : null} xs={8}>
         { !isEdit && !preventDefaultView && existingAnswer ?
           <List>
             { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
@@ -55,8 +55,8 @@ function Question (props) {
             {existingAnswer[1].note}
           </div>
         }
-      </CardContent>
-    </Card>
+      </Grid>
+    </Grid>
     );
 }
 
