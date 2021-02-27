@@ -30,16 +30,18 @@ function Question (props) {
   let { text, description } = { ...questionDefinition, ...props }
 
   return (
-    <Card>
+    <Card
+      className={classes.questionCard}
+      >
       <CardHeader
         title={text}
         titleTypographyProps={{ variant: 'h6' }}
-        subheader={description}
-        className={classes.questionHeader}
+        subheader={isEdit ? description : null}
+        subheaderTypographyProps={{ variant: 'caption' }}
         />
       <CardContent>
         { !isEdit && !preventDefaultView && existingAnswer ?
-          <List>
+          <List className={classes.viewModeAnswers}>
             { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
               return(
                 <ListItem key={item}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>

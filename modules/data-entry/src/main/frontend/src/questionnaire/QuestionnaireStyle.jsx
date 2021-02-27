@@ -31,6 +31,29 @@ export const FORM_ENTRY_CONTAINER_PROPS = {
 const GRID_SPACE_UNIT = FORM_ENTRY_CONTAINER_PROPS.spacing/2;
 
 const questionnaireStyle = theme => ({
+    questionCard : {
+      "& .MuiCardHeader-root" : {
+        padding: theme.spacing(1, 3, 0, 3),
+      },
+      "& .MuiCardContent-root" : {
+        paddingLeft: theme.spacing(3),
+        paddingRight: theme.spacing(3),
+      },
+      "& .MuiFormGroup-root": {
+        marginLeft: theme.spacing(-2),
+      },
+      "& .MuiList-root": {
+        marginLeft: theme.spacing(-2),
+      }
+    },
+    viewModeAnswers :{
+      marginTop: theme.spacing(-2),
+      padding: theme.spacing(0),
+      "& .MuiListItem-root" : {
+        paddingTop: theme.spacing(0),
+        paddingBottom: theme.spacing(0),
+      }
+    },
     checkbox: {
         margin: theme.spacing(-2,0),
     },
@@ -47,14 +70,15 @@ const questionnaireStyle = theme => ({
         padding: theme.spacing(0, 2, 0, 2),
     },
     searchWrapper: {
-        margin: theme.spacing(0, 0, 0, 6),
+        margin: theme.spacing(0),
         position: 'relative',
         display: 'inline-block',
-        paddingBottom: "0px",
-        paddingTop: theme.spacing(1)
+        padding: theme.spacing(.5, 0, 0, 0),
+        "& textarea" : {
+          paddingLeft: theme.spacing(4),
+        },
     },
     answerField: {
-        margin: theme.spacing(0, 0, 0, 6),
         position: 'relative',
     },
     textField: {
@@ -83,9 +107,6 @@ const questionnaireStyle = theme => ({
     },
     cardHeaderButton: {
         // No styles here yet
-    },
-    questionHeader: {
-        paddingBottom: theme.spacing(0),
     },
     hiddenQuestion: {
         display: "none"
@@ -149,7 +170,6 @@ const questionnaireStyle = theme => ({
     },
     sectionHeader: {
         paddingBottom: "0 !important",
-        marginBottom: theme.spacing(-1)
     },
     subjectCard: {
         minHeight: "200px",
@@ -249,14 +269,14 @@ const questionnaireStyle = theme => ({
         color: theme.palette.primary.light,
     },
     notesContainer: {
-        padding: theme.spacing(1, 0, 1, 2)
+        padding: theme.spacing(1, 0, 1)
     },
     toggleNotesButton: {
         textTransform: "none"
     },
     noteSection: {
         display: "block",
-        marginLeft: theme.spacing(6)
+        marginLeft: theme.spacing(0)
     },
     formHeader: {
         position: "sticky",
