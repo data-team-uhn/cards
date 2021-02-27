@@ -87,11 +87,7 @@ const questionnaireStyle = theme => ({
         minWidth: "250px",
     },
     noteTextField: {
-        // the input in notes should be the width of the form
-        width: "50%",
-        "&.Mui-focused": {
-            width: "100%",
-        }
+        width: "100%",
     },
     checkboxList: {
         padding: theme.spacing(0),
@@ -269,7 +265,7 @@ const questionnaireStyle = theme => ({
         color: theme.palette.primary.light,
     },
     notesContainer: {
-        padding: theme.spacing(1, 0, 1)
+        padding: theme.spacing(3, 0, 1)
     },
     toggleNotesButton: {
         textTransform: "none"
