@@ -82,7 +82,6 @@ function VocabularyQuestion(props) {
         max = {maxAnswers}
         defaultSuggestions = {defaultSuggestions}
         source = {sourceVocabularies}
-        searchDefault = {Object.keys(defaultSuggestions || {}).length > 0 ? "Other (please specify)" : ""}
         {...rest}
       />
     </Question>);

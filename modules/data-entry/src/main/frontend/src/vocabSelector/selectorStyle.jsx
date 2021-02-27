@@ -47,6 +47,9 @@ const selectorStyle = theme => ({
     ghostFormControl: {
         height: "0px",
     },
+    hiddenGhostFormControl : {
+        display: "none",
+    },
     selectionList: {
         paddingBottom: "0px",
     }

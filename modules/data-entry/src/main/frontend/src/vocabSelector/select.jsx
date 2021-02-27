@@ -48,7 +48,7 @@ const IS_SELECTED_POS = 3;
 //  searchDefault: Default text to place in search bar before user input
 // Other arguments are passed onto contained Thesaurus element
 function VocabularySelector(props) {
-  const {defaultSuggestions, existingAnswer, source, vocabularyFilter, max, selectionContainer, questionDefinition, classes, ...rest} = props;
+  const {defaultSuggestions, existingAnswer, source, vocabularyFilter, max, selectionContainer, questionDefinition, searchDefault, classes, ...rest} = props;
 
   const [defaultListChildren, setDefaultListChildren] = useState([]);
   const [listChildren, setListChildren] = useState([]);
@@ -61,6 +61,7 @@ function VocabularySelector(props) {
   const isRadio = max === 1;
   const reminderText = `Please select at most ${max} options.`;
   const selectedListChildren = listChildren.filter( (element) => element[IS_SELECTED_POS] );
+  const hasDefaultOptions = (Object.keys(defaultSuggestions || {}).length > 0);
 
   let thesaurusRef = null;
 
@@ -89,7 +90,7 @@ function VocabularySelector(props) {
             label="&nbsp;"
             name={radioName}
             value={radioValue}
-            className={classes.ghostFormControl + " " + classes.childFormControl}
+            className={hasDefaultOptions ? (classes.ghostFormControl + " " + classes.childFormControl) : classes.hiddenGhostFormControl}
             classes={{
               label: classes.inputLabel
             }}
@@ -272,7 +273,8 @@ function VocabularySelector(props) {
         overrideText = {disabled ? reminderText : undefined }
         clearOnClick = {!isRadio}
         onInputFocus = {() => {setRadioSelect(radioValue);}}
-        isNested = {isRadio}
+        searchDefault = {searchDefault || (hasDefaultOptions ? "Other (please specify)" : "")}
+        isNested = {isRadio && hasDefaultOptions}
         {...rest}
       >
         {max > 1 ?(<Typography>{reminderText}</Typography>) : ''}
