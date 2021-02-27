@@ -84,7 +84,7 @@ class VocabularyQuery extends React.Component {
   }
 
   render() {
-    const { classes, defaultValue, disabled, inputRef, noMargin, onInputFocus, placeholder, searchDefault, vocabularies } = this.props;
+    const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onInputFocus, placeholder, searchDefault, vocabularies } = this.props;
 
     const inputEl = (<Input
       disabled={disabled}
@@ -136,7 +136,7 @@ class VocabularyQuery extends React.Component {
           {noMargin ?
           inputEl
           :
-          <FormControl className={classes.search}>
+          <FormControl className={isNested ? classes.nestedSearchInput : classes.search}>
             <InputLabel
               classes={{
                 root: classes.searchLabel,

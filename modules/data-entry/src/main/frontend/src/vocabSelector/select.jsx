@@ -272,6 +272,7 @@ function VocabularySelector(props) {
         overrideText = {disabled ? reminderText : undefined }
         clearOnClick = {!isRadio}
         onInputFocus = {() => {setRadioSelect(radioValue);}}
+        isNested = {isRadio}
         {...rest}
       >
         {max > 1 ?(<Typography>{reminderText}</Typography>) : ''}

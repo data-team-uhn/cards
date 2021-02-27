@@ -81,6 +81,10 @@ const questionnaireStyle = theme => ({
     answerField: {
         position: 'relative',
     },
+    nestedInput: {
+        minWidth: "218px",
+        marginLeft: theme.spacing(4),
+    },
     textField: {
         // Differing input types have differing widths, so setting width:100%
         // is insufficient in making sure all components are the same size

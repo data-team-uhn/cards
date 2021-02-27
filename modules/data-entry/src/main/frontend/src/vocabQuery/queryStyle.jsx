@@ -149,6 +149,15 @@ const thesaurusStyle = theme => ({
     paddingBottom: "0px",
     margin: "0px"
   },
+  nestedSearchInput: {
+    marginLeft: theme.spacing(4),
+    "& .MuiInputBase-root" : {
+      maxWidth: "218px",
+    },
+    "& .MuiLinearProgress-root": {
+      marginLeft: theme.spacing(4),
+    }
+  },
   searchInput: {
     marginTop: "6px !important",
   },
