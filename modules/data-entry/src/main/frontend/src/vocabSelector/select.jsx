@@ -49,6 +49,7 @@ const IS_SELECTED_POS = 3;
 // Other arguments are passed onto contained Thesaurus element
 function VocabularySelector(props) {
   const {defaultSuggestions, existingAnswer, source, vocabularyFilter, max, selectionContainer, questionDefinition, searchDefault, classes, ...rest} = props;
+  const {selectionUpdated} = props;
 
   const [defaultListChildren, setDefaultListChildren] = useState([]);
   const [listChildren, setListChildren] = useState([]);
@@ -59,9 +60,12 @@ function VocabularySelector(props) {
   
   const disabled = max > 1 && selected >= max;
   const isRadio = max === 1;
-  const reminderText = `Please select at most ${max} options.`;
   const selectedListChildren = listChildren.filter( (element) => element[IS_SELECTED_POS] );
   const hasDefaultOptions = (Object.keys(defaultSuggestions || {}).length > 0);
+
+  useEffect(() => {
+    selectionUpdated && selectionUpdated(selectedListChildren?.length || 0);
+  }, [selectedListChildren]);
 
   let thesaurusRef = null;
 
@@ -270,14 +274,12 @@ function VocabularySelector(props) {
         vocabularies = {source}
         ref = {(ref) => {thesaurusRef = ref;}}
         disabled = {disabled}
-        overrideText = {disabled ? reminderText : undefined }
         clearOnClick = {!isRadio}
         onInputFocus = {() => {setRadioSelect(radioValue);}}
         searchDefault = {searchDefault || (hasDefaultOptions ? "Other (please specify)" : "")}
         isNested = {isRadio && hasDefaultOptions}
         {...rest}
       >
-        {max > 1 ?(<Typography>{reminderText}</Typography>) : ''}
         {
           // If we don't have an external container, add results here
           typeof selectionContainer === "undefined" && generateList(disabled, isRadio)

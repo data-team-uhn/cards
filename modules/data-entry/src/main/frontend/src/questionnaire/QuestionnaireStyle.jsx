@@ -112,6 +112,7 @@ const questionnaireStyle = theme => ({
         display: "none"
     },
     answerInstructions: {
+        margin: theme.spacing(-3,0,1),
         padding: theme.spacing(1, 0),
     },
     thumbnail: {

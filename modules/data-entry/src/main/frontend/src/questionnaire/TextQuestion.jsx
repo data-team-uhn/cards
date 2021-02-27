@@ -71,6 +71,7 @@ function TextQuestion(props) {
 
   return (
     <Question
+      disableInstructions
       {...rest}
       >
       {error && <Typography color='error'>{errorText}</Typography>}

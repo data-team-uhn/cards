@@ -133,9 +133,9 @@ function PedigreeQuestion(props) {
 
   return (
     <Question
-      existingAnswer={existingAnswer}
       defaultDisplayFormatter={defaultDisplayFormatter}
-      {...rest}
+      currentAnswers={outputAnswers.length}
+      {...props}
       >
       <div className={classes.answerField}>
       { pedigreeData.image && answerPath ?

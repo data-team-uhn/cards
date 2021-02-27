@@ -223,17 +223,6 @@ function FileResourceQuestion(props) {
     allowResave();
   }
 
-  // display error if minimum is not met, display 'at least' if there is no maximum or if max is greater than min
-  const warning = (
-    (Object.keys(uploadedFiles).length < minAnswers && minAnswers > 0) ? (
-    <Typography color={error ? 'error' : 'textSecondary'} className={classes.warningTypography}>
-      Please upload {maxAnswers !== minAnswers && "at least"} {minAnswers} file{minAnswers > 1 && "s"}.
-    </Typography>
-    ) : (Object.keys(uploadedFiles).length > maxAnswers && maxAnswers > 0 &&
-    <Typography color="error" className={classes.warningTypography}>
-      Please upload at most {maxAnswers} file{maxAnswers > 1 && "s"}.
-    </Typography>));
-
   let hrefs = Array.of(existingAnswer?.[1]["value"]).flat();
   let defaultDisplayFormatter = function(label, idx) {
     return <a href={hrefs[idx]} target="_blank" rel="noopener" download>{label}</a>;
@@ -241,16 +230,16 @@ function FileResourceQuestion(props) {
 
   return (
     <Question
-      existingAnswer={existingAnswer}
+      answerLabel="file"
+      currentAnswers={Object.keys(uploadedFiles || {}).length}
       defaultDisplayFormatter={defaultDisplayFormatter}
-      {...rest}
+      {...props}
       >
       { uploadInProgress && (
         <Grid item className={classes.root}>
           <LinearProgress color="primary" />
         </Grid>
       ) }
-      {warning}
       <DragAndDrop
         classes={classes}
         handleDrop={addFiles}

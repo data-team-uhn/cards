@@ -26,6 +26,7 @@ import PropTypes from 'prop-types';
 import Answer, {LABEL_POS, VALUE_POS} from "./Answer";
 import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+import AnswerInstructions from "./AnswerInstructions.jsx";
 
 // Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
 const IS_DEFAULT_POS = 2;
@@ -298,24 +299,18 @@ function MultipleChoice(props) {
     selectOption(...args);
   }
 
-  // display error if minimum is not met, display 'at least' if there is no maximum or if max is greater than min
-  const instructions = minAnswers > 0 && (
-    <Typography color={error || selection.length < minAnswers ? 'secondary' : 'textSecondary'} className={classes.answerInstructions} variant="caption">
-      {minAnswers == 1 ?
-      "This question is mandatory"
-      :
-      "Please select " + (maxAnswers !== minAnswers ? "at least" : "" ) + minAnswers + " options"
-      }
-    </Typography>
-    );
-
   // Remove the ["", ""] unless there are only zero or one answer items
   var answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
   answers = ((answers.length < 2) ? answers : answers.filter(item => item[LABEL_POS] !== ''));
 
+  // When counting current answers for proper highlighting of answer instructions to the user, exclude the empty one
+  let currentAnswers = answers.filter(item => item[VALUE_POS] !== '').length;
+  const instructions = <AnswerInstructions currentAnswers={currentAnswers} {...props.questionDefinition} {...props} />;
+
   if (isSelect) {
     return (
       <React.Fragment>
+        {instructions}
         <Select
           value={selection?.[0]?.[0] || ''}
           className={classes.textField + ' ' + classes.answerField}
@@ -338,6 +333,7 @@ function MultipleChoice(props) {
   } else if (isBare) {
     return(
       <React.Fragment>
+        {instructions}
         {ghostInput}
         <Answer
           answers={answers}

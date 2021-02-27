@@ -151,4 +151,8 @@ export default class DateQuestionUtilities {
     // Remove the time zone (eg. "-05:00") from the end of a sling provided date string
     return dateString.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
   }
+
+  static isAnswerComplete(answers, type) {
+    return type == this.INTERVAL_TYPE && answers.length == 2 || answers.length == 1;
+  }
 }

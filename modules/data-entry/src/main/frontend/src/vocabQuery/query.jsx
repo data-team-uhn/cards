@@ -611,6 +611,7 @@ VocabularyQuery.propTypes = {
 VocabularyQuery.defaultProps = {
   vocabularies: ['hpo'],
   searchDefault: 'Search',
+  overrideText: '',
   clearOnClick: true
 };
 

@@ -23,11 +23,12 @@ import PropTypes from "prop-types";
 import { Card, CardHeader, CardContent, List, ListItem, Typography, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
+import AnswerInstructions from "./AnswerInstructions";
 
 // GUI for displaying answers
 function Question (props) {
   let { classes, children, questionDefinition, existingAnswer, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
-  let { text, description } = { ...questionDefinition, ...props }
+  let { text, description, disableInstructions } = { ...questionDefinition, ...props }
 
   return (
     <Card
@@ -40,6 +41,12 @@ function Question (props) {
         subheaderTypographyProps={{ variant: 'caption' }}
         />
       <CardContent>
+        { isEdit && !disableInstructions &&
+          <AnswerInstructions
+             {...questionDefinition}
+             {...props}
+          />
+        }
         { !isEdit && !preventDefaultView && existingAnswer ?
           <List className={classes.viewModeAnswers}>
             { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
@@ -65,7 +72,12 @@ function Question (props) {
 Question.propTypes = {
     classes: PropTypes.object.isRequired,
     text: PropTypes.string,
-    description: PropTypes.string
+    description: PropTypes.string,
+    disableInstructions: PropTypes.bool,
+};
+
+Question.defaultProps = {
+    disableInstructions: false,
 };
 
 export default withStyles(QuestionnaireStyle)(Question);
