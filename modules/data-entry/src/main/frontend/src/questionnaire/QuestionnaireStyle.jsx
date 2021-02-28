@@ -189,11 +189,6 @@ const questionnaireStyle = theme => ({
         }
     },
     compactLayout : {
-      "& .MuiFormGroup-root" : {
-        [theme.breakpoints.up('sm')]: {
-          flexDirection: "row",
-        }
-      },
       "& .MuiList-root" : {
         [theme.breakpoints.up('sm')]: {
           display: "inline-block",

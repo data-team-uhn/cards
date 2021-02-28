@@ -352,6 +352,7 @@ function MultipleChoice(props) {
           className={classes.selectionList}
           value={selection.length > 0 && selection[0][VALUE_POS]}
         >
+          <List>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
           {/* Ghost radio for the text input */}
           {
@@ -378,6 +379,7 @@ function MultipleChoice(props) {
             />
           </ListItem>
           }
+          </List>
         </RadioGroup>
         {ghostInput}
         {warning}
