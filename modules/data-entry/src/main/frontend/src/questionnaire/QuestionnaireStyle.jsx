@@ -39,9 +39,6 @@ const questionnaireStyle = theme => ({
         paddingLeft: theme.spacing(3),
         paddingRight: theme.spacing(3),
       },
-      "& .MuiFormGroup-root": {
-        marginLeft: theme.spacing(-2),
-      },
       "& .MuiList-root": {
         marginLeft: theme.spacing(-2),
       }
@@ -93,7 +90,7 @@ const questionnaireStyle = theme => ({
     noteTextField: {
         width: "100%",
     },
-    checkboxList: {
+    optionsList: {
         padding: theme.spacing(0),
     },
     deleteButton: {

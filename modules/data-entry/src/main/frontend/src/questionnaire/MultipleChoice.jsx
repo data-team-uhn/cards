@@ -353,6 +353,7 @@ function MultipleChoice(props) {
           className={classes.selectionList}
           value={selection.length > 0 && selection[0][VALUE_POS]}
         >
+          <List className={classes.optionsList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
           {/* Ghost radio for the text input */}
           {
@@ -379,6 +380,7 @@ function MultipleChoice(props) {
             />
           </ListItem>
           }
+          </List>
         </RadioGroup>
         {ghostInput}
         <Answer
@@ -393,7 +395,7 @@ function MultipleChoice(props) {
     return (
       <React.Fragment>
         {instructions}
-        <List className={classes.checkboxList}>
+        <List className={classes.optionsList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
         </List>
         {ghostInput}
