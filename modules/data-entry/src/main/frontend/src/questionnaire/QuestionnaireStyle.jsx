@@ -194,12 +194,6 @@ const questionnaireStyle = theme => ({
           flexDirection: "row",
         }
       },
-      "& .MuiListItem-root" : {
-        [theme.breakpoints.up('sm')]: {
-          display: "inline-flex",
-          width: "auto",
-        },
-      },
       "& .MuiList-root" : {
         [theme.breakpoints.up('sm')]: {
           display: "inline-block",
@@ -209,6 +203,12 @@ const questionnaireStyle = theme => ({
         [theme.breakpoints.up('sm')]: {
           minWidth: "100px",
           marginTop: "-10px",
+        },
+      },
+      "& .MuiListItem-root" : {
+        [theme.breakpoints.up('sm')]: {
+          display: "inline-flex",
+          width: "auto",
         },
       },
     },
