@@ -41,6 +41,10 @@ const questionnaireStyle = theme => ({
       },
       "& .MuiList-root": {
         marginLeft: theme.spacing(-2),
+      },
+      "& .MuiListItem-root:hover" : {
+        background: theme.palette.action.hover,
+        borderRadius: theme.spacing(0.5),
       }
     },
     viewModeAnswers :{
