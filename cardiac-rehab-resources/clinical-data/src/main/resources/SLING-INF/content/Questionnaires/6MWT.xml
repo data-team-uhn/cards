@@ -70,6 +70,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
 		<node>
 			<name>2</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
@@ -150,7 +155,7 @@
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>MM-dd-yyyy</value>
+				<value>MM/DD/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -605,13 +610,13 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>6-20</value>
+				<name>dataType</name>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>long</value>
+				<name>description</name>
+				<value>6-20</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -745,13 +750,13 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>6-20</value>
+				<name>dataType</name>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>long</value>
+				<name>description</name>
+				<value>6-20</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1254,13 +1259,13 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>e.g. phone call, people in the way, etc.</value>
+				<name>dataType</name>
+				<value>boolean</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>boolean</value>
+				<name>description</name>
+				<value>(e.g. Phone call, people in the way, etc.)</value>
 				<type>String</type>
 			</property>
 			<property>

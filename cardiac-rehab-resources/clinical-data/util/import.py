@@ -403,6 +403,10 @@ def csv_to_json(title):
                         del parent[question]
                 if row['Field Type'].endswith("(single)"):
                     parent[question]['maxAnswers'] = 1
+                if 'Compact' in row and row['Compact'] != '':
+                    value = row['Compact']
+                    if value[0].lower() == "y":
+                        parent[question]['compact'] = True
 
     if len(section) > 0:
         questionnaire[section['label']] = dict.copy(section)

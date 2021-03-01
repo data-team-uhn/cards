@@ -145,7 +145,7 @@
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>MM-dd-yyyy</value>
+				<value>MM/DD/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -182,7 +182,7 @@
 				</property>
 				<property>
 					<name>dateFormat</name>
-					<value>MM-dd-yyyy</value>
+					<value>MM/DD/yyyy</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -301,7 +301,7 @@
 				</property>
 				<property>
 					<name>dateFormat</name>
-					<value>MM-dd-yyyy</value>
+					<value>MM/DD/yyyy</value>
 					<type>String</type>
 				</property>
 				<property>
