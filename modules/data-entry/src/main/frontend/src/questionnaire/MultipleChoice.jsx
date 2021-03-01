@@ -352,7 +352,7 @@ function MultipleChoice(props) {
           className={classes.selectionList}
           value={selection.length > 0 && selection[0][VALUE_POS]}
         >
-          <List>
+          <List className={classes.optionsList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
           {/* Ghost radio for the text input */}
           {
@@ -394,7 +394,7 @@ function MultipleChoice(props) {
   } else {
     return (
       <React.Fragment>
-        <List className={classes.checkboxList}>
+        <List className={classes.optionsList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
         </List>
         {ghostInput}

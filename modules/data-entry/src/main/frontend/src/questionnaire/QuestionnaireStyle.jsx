@@ -69,7 +69,7 @@ const questionnaireStyle = theme => ({
             width: "100%",
         }
     },
-    checkboxList: {
+    optionsList: {
         padding: theme.spacing(0),
     },
     deleteButton: {
