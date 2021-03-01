@@ -504,6 +504,20 @@ const questionnaireStyle = theme => ({
     answerOptionDeleteButton: {
       right: theme.spacing(-3),
     },
+    circle: {
+        background: theme.palette.background.paper,
+        border: "2px solid",
+        borderColor: theme.palette.grey["400"],
+        position: "absolute",
+        top: "50%",
+        transform: "translateY(calc(-50% + 14px))",
+        width: "35px",
+        height: "35px",
+        borderRadius: "50%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+    }
 });
 
 export default questionnaireStyle;

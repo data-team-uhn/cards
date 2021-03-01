@@ -17,8 +17,9 @@
 //  under the License.
 //
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
+import moment from "moment";
 import { Link, Paper } from '@material-ui/core'
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
@@ -41,16 +42,25 @@ import {
 const NUM_QUESTIONS = 2;
 const STRIPPED_STRINGS = ["date of", "date"]
 
+function CustomTimelineConnector(props) {
+  let { classes, text } = props;
+  return <React.Fragment>
+      <div className={classes.circle}>
+        <Typography variant="body2">{text}</Typography>
+      </div>
+      <TimelineConnector />
+    </React.Fragment>
+}
+
 /**
- * Component that displays a Subject's Patient Chart.
+ * Component that displays a Subject's Timeline Chart.
  *
  * @example
  * <Subject id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
  *
  * @param {string} id the identifier of a subject; this is the JCR node name
  */
-
-function PatientTimeline(props) {
+function SubjectTimeline(props) {
   let { id, classes, pageSize, subject } = props;
   let [dateAnswers, setDateAnswers] = useState(null);
   // Error message set when fetching the data from the server fails
@@ -73,8 +83,6 @@ function PatientTimeline(props) {
       formDataPromises.push(fetchFormData(form.row["@path"], form.level, form.names));
     }
     let results = await Promise.all(formDataPromises);
-    console.log("getFormData");
-    console.log(results);
     return results;
   }
 
@@ -89,9 +97,6 @@ function PatientTimeline(props) {
 
   let getSubjects = (parent, level, names) => {
     let subjects = [];
-    console.log("Getting subjects");
-    console.log(parent);
-    console.log(parent["@progeny"]);
     if (!names) {
       names = [];
     }
@@ -113,26 +118,17 @@ function PatientTimeline(props) {
   let getForms = async () => {
     let rootSubject = subject;
     // TODO: convert rootSubject to top level parent
-    // TODO: add subject hierarchy to questionnaire title
     // Will be made easy by LFS-911
 
     let subjects = getSubjects(rootSubject, 0);
-    console.log("getSubjects");
-    console.log(subjects);
     let formPromises = [];
 
     for (const subject of subjects) {
       const formUrl = `/Forms.paginate?fieldname=subject&fieldvalue=${encodeURIComponent(subject.uuid)}&includeallstatus=true&limit=1000`;
       formPromises.push(fetchForms(formUrl, subject.level, subject.names));
     }
-    // console.log("getSubjects: promises created");
-    // console.log(formPromises);
     let results = await Promise.all(formPromises);
-    // console.log("getSubjects: results");
-    // console.log(results);
-    results = [].concat.apply([], results.map(formData => formData.response.rows.map(row => {return {row: row, level: formData.level, names: formData.names}})))
-    console.log("getForms");
-    console.log(results);
+    results = [].concat.apply([], results.map(formData => formData.response.rows.map(row => {return {row: row, level: formData.level, names: formData.names}})));
     return results;
   }
 
@@ -169,25 +165,32 @@ function PatientTimeline(props) {
     }));
   }
 
-  if (dateAnswers === null) {
-    setDateAnswers(false);
+  useEffect(() => {
+    console.log("SubjectTimeline");
+    console.log(subject);
     getForms().then(baseForms => getFormData(baseForms))
     .then(formDetails => getDateQuestions(formDetails));
-  }
+  }, [subject]);
 
   // Callback method for the `fetchData` method, invoked when the request failed.
   let handleError = (response) => {
     setError(response);
   };
 
+  let nextDate;
   return <Timeline align="alternate">
-    { dateAnswers && dateAnswers.map((dateAnswer, index) => DateTimelineEntry(classes, dateAnswer, index, dateAnswers.length)) }
+    {
+      dateAnswers && dateAnswers.map((dateAnswer, index) => {
+        nextDate = (index + 1 < dateAnswers.length) ? dateAnswers[index + 1] : null;
+        return DateTimelineEntry(classes, dateAnswer, index, dateAnswers.length, nextDate);
+      })
+    }
   </Timeline>;
 }
 
-function DateTimelineEntry(classes, data, index, length) {
+function DateTimelineEntry(classes, data, index, length, nextDateAnswer) {
   let dateAnswer = data.date;
-  let date = formatDateAnswer(dateAnswer.question?.dateFormat, dateAnswer.value);
+  let dateText = formatDateAnswer(dateAnswer.question?.dateFormat, dateAnswer.value);
   let questionTitle = dateAnswer.question?.text;
 
   // Strip unwanted strings from the question title
@@ -203,44 +206,54 @@ function DateTimelineEntry(classes, data, index, length) {
     questionTitle = questionTitle[0].toUpperCase().concat(questionTitle.substring(1));
   }
 
+  // Compute the displayed difference
+  // TODO: Move to DateQuestionUtilities after rebase
+  let difference = null;
+  if (nextDateAnswer?.date?.value) {
+    let currentDate = moment(dateAnswer.value);
+    let nextDate = moment(nextDateAnswer?.date?.value);
+    let divisions = ["years", "months", "days"];
+    for(const division of divisions) {
+      let diff = nextDate.diff(currentDate, division);
+      if (diff > 0) {
+        console.log(division);
+        difference = diff + division.charAt(0);
+        break;
+      }
+    }
+  }
+
   let questionPath = dateAnswer && dateAnswer.question && dateAnswer.question["@path"];
   let formIndex = dateAnswer && dateAnswer["@path"].indexOf("/", "/Forms/".length+1);
   let formPath = dateAnswer && dateAnswer["@path"].substring(0, formIndex)
-
-  // console.log(dateAnswer);
-
-  // TODO: Implement level. Will be made easier when 911 is complete
-  let level = data.level;
   let formTitle = `${data.names?.length > 0 ? data.names.join(" / ") + ": " : ""}${data.formTitle}`;
 
   return <TimelineItem key={index}>
       <TimelineOppositeContent>
-        <Typography color="textSecondary">{date}</Typography>
+        <Typography color="textSecondary">{dateText}</Typography>
       </TimelineOppositeContent>
       <TimelineSeparator>
-        <TimelineDot color={level == 0 ? "primary" : (level == 1 ? "secondary" : "default")}/>
-        {index !== (length - 1) && <TimelineConnector />}
+        <TimelineDot color={data.level == 0 ? "primary" : (data.level == 1 ? "secondary" : "default")}/>
+        {index !== (length - 1) && (difference ? <CustomTimelineConnector classes={classes} text={difference}/> : <TimelineConnector />)}
       </TimelineSeparator>
         <TimelineContent>
           <Paper elevation={3} className={classes.timelinePaper}>
             <Typography variant="h6" component="h1">
               {questionTitle} (<Link href={`/content.html${formPath}#${questionPath}`}>{formTitle}</Link>)
             </Typography>
-            {/* TODO: fix entered on displaying wrong date */}
-            <Typography variant="caption">Entered on {formatDateAnswer("yyyy-mm-DD", dateAnswer["jcr:created"])} by {dateAnswer["jcr:createdBy"]}</Typography>
             {data.followup}
           </Paper>
         </TimelineContent>
     </TimelineItem>;
 }
 
-PatientTimeline.propTypes = {
+SubjectTimeline.propTypes = {
   id: PropTypes.string
 }
 
-PatientTimeline.defaultProps = {
+SubjectTimeline.defaultProps = {
   maxDisplayed: 4,
   pageSize: 10,
 }
 
-export default withStyles(QuestionnaireStyle)(PatientTimeline);
+export default withStyles(QuestionnaireStyle)(SubjectTimeline);

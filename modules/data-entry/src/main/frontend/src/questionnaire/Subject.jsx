@@ -42,7 +42,7 @@ import {
 import FileIcon from "@material-ui/icons/InsertDriveFile";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
-import PatientTimeline from "./PatientTimeline.jsx";
+import SubjectTimeline from "./SubjectTimeline.jsx";
 
 export const QUESTION_TYPES = ["lfs:Question"];
 export const SECTION_TYPES = ["lfs:Section"];
@@ -105,14 +105,16 @@ export function getTextHierarchy (node, withType = false) {
 
 function Subject(props) {
   let { id, classes, maxDisplayed, pageSize } = props;
-  const [currentSubject, setCurrentSubject] = useState();
-  const [currentSubjectId, setCurrentSubjectId] = useState(id);
+  const [ currentSubject, setCurrentSubject ] = useState();
+  const [ currentSubjectId, setCurrentSubjectId ] = useState(id);
   const [ activeTab, setActiveTab ] = useState(0);
 
-  const tabs = ["PatientChart", "Timeline"]
+  const tabs = ["Chart", "Timeline"]
   const location = useLocation();
 
   useEffect(() => {
+    console.log("Subject useEffect");
+    console.log(location);
     let newId = getSubjectIdFromPath(location.pathname);
     newId && setCurrentSubjectId(newId);
   }, [location]);
@@ -149,7 +151,7 @@ function Subject(props) {
           </Tabs>
         }
         {
-          activeTab === tabs.indexOf("PatientChart")
+          activeTab === tabs.indexOf("Chart")
           ? <SubjectContainer
               id={currentSubjectId}
               key={currentSubjectId}
@@ -158,7 +160,7 @@ function Subject(props) {
               pageSize={pageSize}
               subject={currentSubject}
             />
-          : <PatientTimeline
+          : <SubjectTimeline
               id={currentSubjectId}
               classes={classes}
               pageSize={pageSize}
@@ -184,49 +186,13 @@ function SubjectContainer(props) {
   // 'level' of subject component
   const currentLevel = level || 0;
 
-  // // Fetch the subject's data as JSON from the server.
-  // // The data will contain the subject metadata,
-  // // such as authorship and versioning information.
-  // // Once the data arrives from the server, it will be stored in the `data` state variable.
-  // let fetchData = () => {
-  //   let strippedPath = path.endsWith('/') ? path.slice(0, -1) : path;
-  //   fetchWithReLogin(globalLoginDisplay, `${strippedPath}.deep.json`)
-  //     .then((response) => response.ok ? response.json() : Promise.reject(response))
-  //     .then(handleResponse)
-  //     .catch(handleError);
-  // };
-
-  // // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
-  // let handleResponse = (json) => {
-  //   if (currentLevel == 0) {
-  //     // sends the data to the parent component
-  //     getSubject(json);
-  //   }
-  //   setData(json);
-  // };
-  if (deleted) {
-    return null;
-  }
-
   // Callback method for the `fetchData` method, invoked when the request failed.
   let handleError = (response) => {
     setError(response);
   };
 
-  // Fetch this Subject's data
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
-
   if (deleted) {
     return null;
-  }
-
-  // If the data has not yet been fetched, return an in-progress symbol
-  if (!subject) {
-    return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
-    );
   }
 
   let check_url = createQueryURL(` WHERE n.'parents'='${subject?.['jcr:uuid']}' order by n.'jcr:created'`, "lfs:Subject");
@@ -237,8 +203,22 @@ function SubjectContainer(props) {
     .catch(handleError);
   }
 
-  if (!relatedSubjects) {
-    fetchRelated();
+  // Fetch this Subject's data
+  useEffect(() => {
+    console.log("SubjectContainer useEffect");
+    console.log(subject);
+    if (subject) {
+      fetchRelated();
+    } else {
+      setRelatedSubjects(null);
+    }
+  }, [subject]);
+
+  // If the data has not yet been fetched, return an in-progress symbol
+  if (!subject) {
+    return (
+      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+    );
   }
 
   if (error) {
@@ -312,27 +292,24 @@ function SubjectHeader(props) {
     setSubject({});  // Prevent an infinite loop if data was not set
   };
 
+  // // Fetch children
+  // let fetchRelated = () => {
+  //   let checkRelated_url = createQueryURL(` WHERE n.'parents'='${subject.data.['jcr:uuid']}' order by n.'jcr:created'`, "lfs:Subject");
+  //   fetchWithReLogin(globalLoginDisplay, checkRelated_url)
+  //   .then((response) => response.ok ? response.json() : Promise.reject(response))
+  //   .then((json) => {
+  //     subject.data.formGroups = json.rows;
+  //     setSubject(subject)
+  //   })
+  //   .catch(handleError);
+  // }
 
-
-
-  // Fetch children
-  let fetchRelated = () => {
-    let checkRelated_url = createQueryURL(` WHERE n.'parents'='${subject.data.['jcr:uuid']}' order by n.'jcr:created'`, "lfs:Subject");
-    fetchWithReLogin(globalLoginDisplay, checkRelated_url)
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then((json) => {
-      subject.data.formGroups = json.rows;
-      setSubject(subject)
-    })
-    .catch(handleError);
-  }
-
-  // If the data has not yet been fetched, return an in-progress symbol
-  if (subject === null) {
-    // Make sure that only 1 fetch is sent
-    setSubject({});
+  // Fetch this Subject's data
+  useEffect(() => {
+    console.log("SubjectHeader useEffect");
+    console.log(id);
     fetchSubjectData();
-  }
+  }, [id]);
 
   if (!subject?.data) {
     // TODO: Remove grid container and move center into parent grid when required
@@ -393,9 +370,7 @@ function SubjectMemberInternal (props) {
   let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
-  // table data: related forms to the subject
-  let [tableData, setTableData] = useState();
-  let [subjectGroups, setSubjectGroups] = useState();
+  let [ subjectGroups, setSubjectGroups ] = useState();
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -411,7 +386,6 @@ function SubjectMemberInternal (props) {
   };
 
   let handleTableResponse = (json) => {
-    setTableData(json.rows);
     let groups = {};
     json.rows.map( (entry, i) => {
       let title = entry.questionnaire.title || entry.questionnaire["@name"];
@@ -422,7 +396,6 @@ function SubjectMemberInternal (props) {
 
   let handleTableError = (response) => {
     setError(response);
-    setTableData([]);
     setSubjectGroups({});
   };
 
@@ -440,8 +413,10 @@ function SubjectMemberInternal (props) {
 
   // Fetch table data for all forms related to a Subject
   useEffect(() => {
+    console.log("SubjectMemberInternal useEffect");
+    console.log(data);
     fetchTableData();
-  }, []);
+  }, [data]);
 
   // If an error was returned, do not display a subject at all, but report the error
   if (error) {
@@ -601,6 +576,8 @@ function FormData(props) {
 
   // Fetch this Form's data
   useEffect(() => {
+    console.log("FormData useEffect");
+    console.log(formID);
     getFormData(formID);
   }, [formID]);
 
@@ -621,7 +598,7 @@ function FormData(props) {
   // Handle questions and sections differently
   let handleDisplayQuestion = (entryDefinition, data, key) => {
     let result = displayQuestion(entryDefinition, data, key);
-    if (result) {
+    if (result && displayed < maxDisplayed) {
       displayed++;
     } else {
       result = <></>;
@@ -660,10 +637,23 @@ export function displayQuestion(entryDefinition, data, key) {
     let content = "";
     switch(entryDefinition["dataType"]) {
       case "file":
+        // The value can either be a single value or an array of values; force it into an array
+        let paths = Array.of(existingQuestionAnswer[1]["value"]).flat();
         content = <>
           {prettyPrintedAnswers.map((answerValue, idx) => {
-            let prefix = idx > 0 ? ", " : ""; // Seperator space between different files
-            return <>{prefix}<a key={answerValue} href={existingQuestionAnswer[1]["value"][idx]} target="_blank" rel="noopener" download>{answerValue}</a></>
+            // Encode the filename to ensure special charactars don't result in a broken link
+            let path = paths[idx].slice(0, paths[idx].lastIndexOf(answerValue)) + encodeURIComponent(answerValue);
+            return (
+                <Tooltip key={answerValue} title={"Download " + answerValue}>
+                  <Chip
+                    icon={<FileIcon />}
+                    label={<a href={path} target="_blank" rel="noopener" download={answerValue}>{answerValue}</a>}
+                    color="primary"
+                    variant="outlined"
+                    size="small"
+                  />
+                </Tooltip>
+            );
           })}
           </>
         break;
@@ -681,7 +671,7 @@ export function displayQuestion(entryDefinition, data, key) {
         break;
     }
     return (
-      <Typography variant="body2" component="p" key={key}>{questionTitle}: {content}</Typography>
+      <Typography variant="body2" component="div" key={key} className={classes.formPreviewQuestion}>{questionTitle}: {content}</Typography>
     );
   }
   else return null;
@@ -721,75 +711,3 @@ Subject.defaultProps = {
 }
 
 export default withStyles(QuestionnaireStyle)(Subject);
-
-
-  // // Display the questions/question found within sections
-  // let displayQuestion = (entryDefinition, data, key) => {
-  //   const existingQuestionAnswer = data && Object.entries(data)
-  //     .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
-  //       && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
-
-  //   // question title, to be used when 'previewing' the form
-  //   const questionTitle = entryDefinition["text"];
-
-  //   if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined" && (displayed < maxDisplayed)) {
-  //     let prettyPrintedAnswers = existingQuestionAnswer[1]["displayedValue"];
-  //     // The value can either be a single value or an array of values; force it into an array
-  //     prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
-
-  //     let content = "";
-  //     switch(entryDefinition["dataType"]) {
-  //       case "file":
-  //         // The value can either be a single value or an array of values; force it into an array
-  //         let paths = Array.of(existingQuestionAnswer[1]["value"]).flat();
-  //         content = <>
-  //           {prettyPrintedAnswers.map((answerValue, idx) => {
-  //             // Encode the filename to ensure special charactars don't result in a broken link
-  //             let path = paths[idx].slice(0, paths[idx].lastIndexOf(answerValue)) + encodeURIComponent(answerValue);
-  //             return (
-  //                <Tooltip key={answerValue} title={"Download " + answerValue}>
-  //                  <Chip
-  //                    icon={<FileIcon />}
-  //                    label={<a href={path} target="_blank" rel="noopener" download={answerValue}>{answerValue}</a>}
-  //                    color="primary"
-  //                    variant="outlined"
-  //                    size="small"
-  //                  />
-  //                </Tooltip>
-  //             );
-  //           })}
-  //           </>
-  //         break;
-  //       case "pedigree":
-  //         if (!prettyPrintedAnswers) {
-  //           // Display absolutely nothing if the value does not exist
-  //           return <></>;
-  //         } else {
-  //           // Display Pedigree: yes if the value does exist
-  //           content = "Yes";
-  //         }
-  //         break;
-  //       default:
-  //         content = <>{ prettyPrintedAnswers.join(", ") }</>
-  //         break;
-  //     }
-  //     // If count of displayed <= max, increase count of displayed
-  //     displayed++;
-  //     return (
-  //       <Typography variant="body2" component="div" key={key} className={classes.formPreviewQuestion}>{questionTitle}: {content}</Typography>
-  //     );
-  //   }
-  //   else return;
-  // };
-
-  // if (data && data.questionnaire) {
-  //   return (
-  //     <React.Fragment>
-  //       {
-  //         Object.entries(data.questionnaire)
-  //         .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-  //         .map(([key, entryDefinition]) => handleDisplay(entryDefinition, data, key))
-  //       }
-  //     </React.Fragment>
-  //   );
-  // }
