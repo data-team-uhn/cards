@@ -59,7 +59,7 @@ function CreateSubjectTypeDialog(props) {
       formData.append("lfs:defaultOrder", order);
     }
 
-    fetch(isEdit ? editSubject["@path"] : parentSubject, {
+    fetch(isEdit ? editSubject["@path"] : parentSubject || '/SubjectTypes', {
         method: 'POST',
         body: formData
     })
