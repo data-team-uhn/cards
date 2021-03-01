@@ -7,11 +7,16 @@
       "hidden": {},
       "input": {},
       "textbox": {},
-      "list": {},
-      "list+input" : {}
+      "list": {
+        "compact" : "boolean"
+      },
+      "list+input" : {
+        "compact" : "boolean"
+      }
     },
     "dataType": {
       "boolean": {
+        "compact" : "boolean",
         "minAnswers": {"0":{}, "1":{}},
         "yesLabel": "string",
         "noLabel": "string",

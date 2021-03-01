@@ -264,7 +264,7 @@ function MultipleChoice(props) {
   // Hold the input box for either multiple choice type
   let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
       <TextField
-        helperText={maxAnswers !== 1 && "Press ENTER to add a new line"}
+        helperText={maxAnswers !== 1 && "Press ENTER to add a new option"}
         className={classes.textField + (maxAnswers === 1 && (!defaults || defaults.length == 0) ? (' ' + classes.answerField) : '')}
         onChange={(event) => {
           setGhostName(event.target.value);
@@ -352,6 +352,7 @@ function MultipleChoice(props) {
           className={classes.selectionList}
           value={selection.length > 0 && selection[0][VALUE_POS]}
         >
+          <List className={classes.optionsList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
           {/* Ghost radio for the text input */}
           {
@@ -378,6 +379,7 @@ function MultipleChoice(props) {
             />
           </ListItem>
           }
+          </List>
         </RadioGroup>
         {ghostInput}
         {warning}
@@ -392,7 +394,7 @@ function MultipleChoice(props) {
   } else {
     return (
       <React.Fragment>
-        <List className={classes.checkboxList}>
+        <List className={classes.optionsList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
         </List>
         {ghostInput}
