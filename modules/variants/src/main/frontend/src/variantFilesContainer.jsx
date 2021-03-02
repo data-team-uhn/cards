@@ -610,10 +610,10 @@ export default function VariantFilesContainer() {
         json[file.subject.path.replace("/Subjects", "Subjects")] = generateSubjectJson("Patient", file.subject.id);
       }
       if (!file.tumor.existed) {
-        json[file.tumor.path.replace("/Subjects", "Subjects")] = generateSubjectJson("Tumor", file.tumor.id, file.subject.path);
+        json[file.tumor.path.replace("/Subjects", "Subjects")] = generateSubjectJson("Patient/Tumor", file.tumor.id, file.subject.path);
       }
       if (file.region && !file.region.existed) {
-        json[file.region.path.replace("/Subjects", "Subjects")] = generateSubjectJson("TumorRegion", file.region.id, file.tumor.path);
+        json[file.region.path.replace("/Subjects", "Subjects")] = generateSubjectJson("Patient/Tumor/TumorRegion", file.region.id, file.tumor.path);
       }
 
       let formInfo = {};
