@@ -42,7 +42,7 @@ const selectorStyle = theme => ({
         margin: theme.spacing(-2,0),
     },
     ghostRadiobox: {
-        margin: theme.spacing(0,0,-5,2),
+        margin: theme.spacing(0,0,-5,0),
     },
     ghostFormControl: {
         height: "0px",
@@ -50,8 +50,11 @@ const selectorStyle = theme => ({
     hiddenGhostFormControl : {
         display: "none",
     },
+    ghostListItem: {
+        padding: theme.spacing(0, 2, 0, 2),
+    },
     selectionList: {
-        paddingBottom: "0px",
+        padding: theme.spacing(0),
     }
 });
 

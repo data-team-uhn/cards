@@ -152,7 +152,7 @@ const thesaurusStyle = theme => ({
   nestedSearchInput: {
     marginLeft: theme.spacing(4),
     "& .MuiInputBase-root" : {
-      maxWidth: "218px",
+      width: "218px !important",
     },
     "& .MuiLinearProgress-root": {
       marginLeft: theme.spacing(4),

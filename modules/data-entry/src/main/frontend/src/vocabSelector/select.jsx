@@ -19,7 +19,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
-import { FormControlLabel, List, RadioGroup, Typography, withStyles, Radio } from "@material-ui/core";
+import { FormControlLabel, List, ListItem, RadioGroup, Typography, withStyles, Radio } from "@material-ui/core";
 
 import { MakeRequest } from "../vocabQuery/util.jsx";
 import Answer, { VALUE_POS } from "../questionnaire/Answer.jsx";
@@ -80,8 +80,10 @@ function VocabularySelector(props) {
           value={radioSelect}
           onChange={changeRadio}
         >
+        <List className={classes.selectionList}>
           {generateListChildren(disabled, isRadio)}
           {/* Ghost radio for the text input */}
+          <ListItem className={classes.ghostListItem}>
           <FormControlLabel
             control={
             <Radio
@@ -94,11 +96,13 @@ function VocabularySelector(props) {
             label="&nbsp;"
             name={radioName}
             value={radioValue}
-            className={hasDefaultOptions ? (classes.ghostFormControl + " " + classes.childFormControl) : classes.hiddenGhostFormControl}
+            className={hasDefaultOptions ? classes.ghostFormControl : classes.hiddenGhostFormControl}
             classes={{
               label: classes.inputLabel
             }}
           />
+          </ListItem>
+        </List>
         </RadioGroup>
       );
     } else {
