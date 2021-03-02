@@ -47,7 +47,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>MM-dd-yyyy</value>
+			<value>MM/DD/yyyy</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -961,12 +961,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Explain</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>other cardiac surgery</value>
+				<value>Specify other cardiac surgery</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1030,12 +1025,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Explain</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>other cardiac cath therapy</value>
+				<value>Specify other cardiac cath therapy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1099,12 +1089,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Explain</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>other EP intervention</value>
+				<value>Specify other EP intervention</value>
 				<type>String</type>
 			</property>
 			<property>
