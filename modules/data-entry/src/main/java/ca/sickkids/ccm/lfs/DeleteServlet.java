@@ -75,9 +75,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
     /** A list of all nodes traversed by {@code traverseNode}. */
     private final ThreadLocal<List<Node>> nodesTraversed = ThreadLocal.withInitial(() -> new ArrayList<>());
 
-    /** A list of all parent nodes of nodes traversed by {@code traverseNode}. */
-    private final ThreadLocal<List<Node>> parentNodesTraversed = ThreadLocal.withInitial(() -> new ArrayList<>());
-
     /** A set of all nodes that should be deleted. */
     private final ThreadLocal<Set<Node>> nodesToDelete = ThreadLocal.withInitial(() -> new HashSet<>());
 
@@ -106,25 +103,10 @@ public class DeleteServlet extends SlingAllMethodsServlet
      * Mark a node for deletion upon session save.
      */
     private NodeConsumer deleteNode = (node) -> {
-        // If we've checked this node out, check it back in
-        if (this.parentNodesTraversed.get().contains(node)) {
-            LOGGER.info("Checking back in: " + node.getPath());
-            node.checkin();
-        }
-
-        // If the parent is versionable, we need to check out the parent as long as it hasn't been slated for removal
-        Node parent = node.getParent();
-        if (parent.isNodeType("mix:versionable") && !this.nodesTraversed.get().contains(parent)) {
-            LOGGER.info("Checking out: " + parent.getPath());
-            parent.checkout();
-            this.parentNodesTraversed.get().add(parent);
-        }
-
         // Keep track of each child node we've already deleted
         boolean isChild = nodeSetContains(this.childNodesDeleted.get(), node) != null;
         boolean alreadyDeleting = nodeSetContains(this.nodesToDelete.get(), node) != null;
         if (!isChild && !alreadyDeleting) {
-            LOGGER.info("Removing: " + node.getPath());
             this.nodesToDelete.get().add(node);
         }
         //this.iterateReferrers(node, this.markChildNodeDeleted, false);
@@ -168,36 +150,16 @@ public class DeleteServlet extends SlingAllMethodsServlet
         return null;
     }
 
-    /**
-     * Mark the children of a node (and, optionally the node itself).
-     *
-     * @param includeRoot whether or not to include the root node as a child
-     */
-    private void markChildNodesDeleted(Node node, boolean includeRoot)
-        throws RepositoryException
-    {
-        final NodeIterator childNodes = node.getNodes();
-        while (childNodes.hasNext()) {
-            markChildNodesDeleted(childNodes.nextNode(), true);
-        }
-
-        if (includeRoot) {
-            LOGGER.info("Including node: " + node.getPath());
-            this.childNodesDeleted.get().add(node);
-        }
-    }
-
     @Override
     public void doDelete(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
         throws ServletException, IOException
     {
         try {
-            LOGGER.info("doDelete began");
             final ResourceResolver resourceResolver = request.getResourceResolver();
             this.resolver.set(resourceResolver);
             this.nodesTraversed.set(new ArrayList<Node>());
-            this.parentNodesTraversed.set(new ArrayList<Node>());
             this.nodesToDelete.set(new HashSet<Node>());
+            this.childNodesDeleted.set(new HashSet<Node>());
 
             final String path = request.getResource().getPath();
             final Boolean recursive = Boolean.parseBoolean(request.getParameter("recursive"));
@@ -205,23 +167,25 @@ public class DeleteServlet extends SlingAllMethodsServlet
             Node node = request.getResource().adaptTo(Node.class);
             if (recursive) {
                 handleRecursiveDeleteChildren(node);
-                this.resolver.get().adaptTo(Session.class).save();
             } else {
                 handleDelete(response, node);
             }
 
-            // Delete all of our pending nodes
+            // Delete all of our pending nodes, checking out the parent to avoid version conflict issues
             for (Node n : this.nodesToDelete.get()) {
+                Node parent = n.getParent();
                 LOGGER.info("Deleting: " + n.getPath());
-                n.remove();
-            }
-
-            // For every parent node that we've checked out and hasn't been removed, check them back in
-            for (Node n : this.parentNodesTraversed.get()) {
-                if (!this.nodesTraversed.get().contains(n)) {
-                    n.checkin();
+                if (parent.isNodeType("mix:versionable")) {
+                    LOGGER.info("Versionable parent found.");
+                    parent.checkout();
+                    n.remove();
+                    parent.checkin();
+                } else {
+                    n.remove();
                 }
             }
+
+            this.resolver.get().adaptTo(Session.class).save();
         } catch (AccessDeniedException e) {
             LOGGER.error("AccessDeniedException trying to delete node: {}", e.getMessage(), e);
             sendJsonError(response, SlingHttpServletResponse.SC_UNAUTHORIZED);
