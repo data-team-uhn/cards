@@ -36,7 +36,7 @@ import {
 } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import DescriptionIcon from '@material-ui/icons/Description';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import LaunchIcon from '@material-ui/icons/Launch';
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
@@ -116,7 +116,7 @@ function FormView(props) {
           <Tooltip title="Expand">
             <Link to={"/content.html/Forms#" + tabs[activeTab]}>
               <IconButton>
-                <MoreHorizIcon/>
+                <LaunchIcon/>
               </IconButton>
             </Link>
           </Tooltip>
