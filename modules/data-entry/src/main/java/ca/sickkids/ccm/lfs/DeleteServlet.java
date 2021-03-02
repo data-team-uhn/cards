@@ -160,6 +160,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
             this.nodesTraversed.set(new ArrayList<Node>());
             this.nodesToDelete.set(new HashSet<Node>());
             this.childNodesDeleted.set(new HashSet<Node>());
+            Set<Node> parentNodes = new HashSet<Node>();
 
             final String path = request.getResource().getPath();
             final Boolean recursive = Boolean.parseBoolean(request.getParameter("recursive"));
@@ -174,18 +175,21 @@ public class DeleteServlet extends SlingAllMethodsServlet
             // Delete all of our pending nodes, checking out the parent to avoid version conflict issues
             for (Node n : this.nodesToDelete.get()) {
                 Node parent = n.getParent();
-                LOGGER.info("Deleting: " + n.getPath());
                 if (parent.isNodeType("mix:versionable")) {
-                    LOGGER.info("Versionable parent found.");
                     parent.checkout();
                     n.remove();
-                    parent.checkin();
+                    parentNodes.add(parent);
                 } else {
                     n.remove();
                 }
             }
 
             this.resolver.get().adaptTo(Session.class).save();
+
+            // Check each parent back in
+            for (Node parent : parentNodes) {
+                parent.checkin();
+            }
         } catch (AccessDeniedException e) {
             LOGGER.error("AccessDeniedException trying to delete node: {}", e.getMessage(), e);
             sendJsonError(response, SlingHttpServletResponse.SC_UNAUTHORIZED);
