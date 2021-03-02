@@ -54,25 +54,151 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>(1-9)</value>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>minValue</name>
-				<value>1.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>maxValue</name>
-				<value>9.0</value>
-				<type>Double</type>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<node>
+				<name>1</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>2</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>3</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>4</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>4</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>4</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>5</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>5</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>5</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>6</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>6</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>6</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>7</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>7</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>7</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>8</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>8</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>8</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>9</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>9</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>9</value>
+					<type>String</type>
+				</property>
+			</node>
 		</node>
 		<node>
 			<name>actg_diary_date</name>
@@ -89,7 +215,7 @@
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>MM-dd-yyyy</value>
+				<value>MM/DD/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>

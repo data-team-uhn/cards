@@ -210,6 +210,25 @@ const questionnaireStyle = theme => ({
           marginBottom: "0 !important",
         }
     },
+    compactLayout : {
+      "& .MuiList-root" : {
+        [theme.breakpoints.up('sm')]: {
+          display: "inline-block",
+        },
+      },
+      "& .MuiList-root + div > .MuiFormControl-root" : {
+        [theme.breakpoints.up('sm')]: {
+          minWidth: "100px",
+          marginTop: "-10px",
+        },
+      },
+      "& .MuiListItem-root" : {
+        [theme.breakpoints.up('sm')]: {
+          display: "inline-flex",
+          width: "auto",
+        },
+      },
+    },
     collapsedSection: {
         padding: "0 !important"
     },

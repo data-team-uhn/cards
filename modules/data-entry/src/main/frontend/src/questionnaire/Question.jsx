@@ -28,7 +28,7 @@ import AnswerInstructions from "./AnswerInstructions";
 // GUI for displaying answers
 function Question (props) {
   let { classes, children, questionDefinition, existingAnswer, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
-  let { text, description, disableInstructions } = { ...questionDefinition, ...props }
+  let { text, compact, description, disableInstructions } = { ...questionDefinition, ...props }
 
   return (
     <Card
@@ -40,7 +40,7 @@ function Question (props) {
         subheader={isEdit ? description : null}
         subheaderTypographyProps={{ variant: 'caption' }}
         />
-      <CardContent>
+      <CardContent className={compact ? classes.compactLayout : null}>
         { isEdit && !disableInstructions &&
           <AnswerInstructions
              {...questionDefinition}

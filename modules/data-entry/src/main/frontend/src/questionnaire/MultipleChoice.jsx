@@ -265,7 +265,7 @@ function MultipleChoice(props) {
   // Hold the input box for either multiple choice type
   let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
       <TextField
-        helperText={maxAnswers !== 1 && "Press ENTER to add a new line"}
+        helperText={maxAnswers !== 1 && "Press ENTER to add a new option"}
         className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
         onChange={(event) => {
           setGhostName(event.target.value);

@@ -83,6 +83,11 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>1</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
@@ -314,7 +319,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>check all that apply</value>
+				<value>Check all that apply</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1460,7 +1465,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>leave blank if unknown</value>
+				<value>Leave blank if unknown</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1489,7 +1494,7 @@
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>MM-dd-yyyy</value>
+				<value>MM/DD/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1518,7 +1523,7 @@
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>MM-dd-yyyy</value>
+				<value>MM/DD/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1833,12 +1838,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Explain</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>other cardiac surgery</value>
+					<value>Specify other cardiac surgery</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1902,12 +1902,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Explain</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>other cardiac cath surgery</value>
+					<value>Specify other cardiac cath surgery</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1971,12 +1966,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Explain</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>other procedure, not listed</value>
+					<value>Specify other procedure, not listed</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2046,12 +2036,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Explain</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>what kind of allergy</value>
+				<value>Specify what kind of allergy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2354,7 +2339,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>check all that apply</value>
+				<value>Check all that apply</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2514,7 +2499,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>check all that apply</value>
+				<value>Check all that apply</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3134,7 +3119,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Explain(other orthopedic surgery)</value>
+					<value>Specify other orthopedic surgery</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3200,7 +3185,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>include only information not captured elsewhere</value>
+				<value>Include only information not captured elsewhere</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3228,7 +3213,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>check all that apply</value>
+				<value>Check all that apply</value>
 				<type>String</type>
 			</property>
 			<property>

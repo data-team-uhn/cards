@@ -78,6 +78,11 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>1</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
@@ -136,7 +141,7 @@
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>MM-dd-yyyy</value>
+				<value>MM/DD/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
