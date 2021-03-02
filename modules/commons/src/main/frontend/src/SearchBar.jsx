@@ -217,7 +217,7 @@ function SearchBar(props) {
       <Popper
         open={popperOpen}
         anchorEl={input.current}
-        className={classes.aboveBackground}
+        className={popperOpen ? classes.aboveBackground : ""}
         modifiers={{
           keepTogether: {enabled: true}
         }}
