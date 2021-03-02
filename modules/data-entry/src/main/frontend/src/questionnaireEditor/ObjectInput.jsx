@@ -61,7 +61,7 @@ let ObjectInput = (props) => {
         <Fields data={data} JSON={value[selectedValue]} edit={true}/>
       </Grid>
       :
-      <Typography color="secondary" variant="subtitle2">Unsupported: {selectedValue}</Typography>
+      (selectedValue != '') && <Typography color="secondary" variant="subtitle2">Unsupported: {selectedValue}</Typography>
     }
     </>
   )
