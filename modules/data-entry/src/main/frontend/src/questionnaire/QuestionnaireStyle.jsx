@@ -42,14 +42,18 @@ const questionnaireStyle = theme => ({
       "& .MuiList-root": {
         marginLeft: theme.spacing(-2),
       },
+    },
+    editModeAnswers: {
       "& .MuiListItem-root:hover" : {
         background: theme.palette.action.hover,
         borderRadius: theme.spacing(0.5),
       }
     },
     viewModeAnswers :{
-      marginTop: theme.spacing(-2),
-      padding: theme.spacing(0),
+      paddingTop: theme.spacing(0),
+      "& .MuiList-root": {
+        padding: theme.spacing(0),
+      },
       "& .MuiListItem-root" : {
         paddingTop: theme.spacing(0),
         paddingBottom: theme.spacing(0),

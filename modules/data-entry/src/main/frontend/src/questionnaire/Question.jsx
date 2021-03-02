@@ -40,7 +40,8 @@ function Question (props) {
         subheader={isEdit ? description : null}
         subheaderTypographyProps={{ variant: 'caption' }}
         />
-      <CardContent className={compact ? classes.compactLayout : null}>
+      <CardContent className={isEdit ? classes.editModeAnswers : classes.viewModeAnswers}>
+        <div className={compact ? classes.compactLayout : null}>
         { isEdit && !disableInstructions &&
           <AnswerInstructions
              {...questionDefinition}
@@ -48,7 +49,7 @@ function Question (props) {
           />
         }
         { !isEdit && !preventDefaultView && existingAnswer ?
-          <List className={classes.viewModeAnswers}>
+          <List>
             { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
               return(
                 <ListItem key={item}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
@@ -64,6 +65,7 @@ function Question (props) {
             {existingAnswer[1].note}
           </div>
         }
+        </div>
       </CardContent>
     </Card>
     );
