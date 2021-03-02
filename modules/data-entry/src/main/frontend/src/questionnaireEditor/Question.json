@@ -76,6 +76,9 @@
         "maxAnswers": "long",
         "errorText": "string",
         "dateFormat": "string"
+      },
+      "pedigree" : {
+        "minAnswers": {"0":{}, "1":{}}
       }
     }
   }
