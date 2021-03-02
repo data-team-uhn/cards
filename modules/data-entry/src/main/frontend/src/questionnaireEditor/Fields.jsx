@@ -65,7 +65,7 @@ let Fields = (props) => {
           <Typography variant="subtitle2">{formatString(key)}:</Typography>
         </Grid>
         <Grid item xs={8}>
-          { Array.isArray(data[key]) ? data[key].map((item) => <Typography>{`${item}`}</Typography>)
+          { Array.isArray(data[key]) ? data[key].map((item) => <Typography key={item}>{`${item}`}</Typography>)
                                      : <Typography>{`${data[key]}`}</Typography>
           }
         </Grid>
