@@ -44,21 +44,74 @@ import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
-public class NightlyExportTask implements Runnable
+public class ExportTask implements Runnable
 {
     /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(NightlyExportTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExportTask.class);
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
+    private final String exportRunMode;
+    private final LocalDate exportLowerBound;
+    private final LocalDate exportUpperBound;
 
-    NightlyExportTask(final ResourceResolverFactory resolverFactory)
+    ExportTask(final ResourceResolverFactory resolverFactory, final String exportRunMode)
     {
         this.resolverFactory = resolverFactory;
+        this.exportRunMode = exportRunMode;
+        this.exportLowerBound = null;
+        this.exportUpperBound = null;
+    }
+
+    ExportTask(final ResourceResolverFactory resolverFactory, final String exportRunMode,
+        final LocalDate exportLowerBound, final LocalDate exportUpperBound)
+    {
+        this.resolverFactory = resolverFactory;
+        this.exportRunMode = exportRunMode;
+        this.exportLowerBound = exportLowerBound;
+        this.exportUpperBound = exportUpperBound;
     }
 
     @Override
     public void run()
+    {
+        if ("nightly".equals(this.exportRunMode) || "manualToday".equals(this.exportRunMode)) {
+            doNightlyExport();
+        } else if ("manualAfter".equals(this.exportRunMode)) {
+            doManualExport(this.exportLowerBound, null);
+        } else if ("manualBetween".equals(this.exportRunMode)) {
+            doManualExport(this.exportLowerBound, this.exportUpperBound);
+        }
+    }
+
+    public void doManualExport(LocalDate lower, LocalDate upper)
+    {
+        LOGGER.info("Executing ManualExport");
+        String fileDateString = lower.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String requestDateStringLower = lower.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String requestDateStringUpper = (upper != null)
+            ? upper.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            : null;
+
+        Set<SubjectIdentifier> changedSubjects = (upper != null)
+            ? this.getChangedSubjectsBounded(requestDateStringLower, requestDateStringUpper)
+            : this.getChangedSubjects(requestDateStringLower);
+
+        for (SubjectIdentifier identifier : changedSubjects) {
+            SubjectContents subjectContents = (upper != null)
+                ? getSubjectContentsBounded(identifier.getPath(), requestDateStringLower, requestDateStringUpper)
+                : getSubjectContents(identifier.getPath(), requestDateStringLower);
+            if (subjectContents != null) {
+                String filename = String.format(
+                    "%s_formData_%s.json",
+                    cleanString(identifier.getParticipantId()),
+                    fileDateString);
+                this.output(subjectContents, filename);
+            }
+        }
+    }
+
+    public void doNightlyExport()
     {
         LOGGER.info("Executing NightlyExport");
         LocalDate today = LocalDate.now();
@@ -181,10 +234,53 @@ public class NightlyExportTask implements Runnable
         return Collections.emptySet();
     }
 
+    private Set<SubjectIdentifier> getChangedSubjectsBounded(String requestDateStringLower,
+        String requestDateStringUpper)
+    {
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            Set<SubjectIdentifier> subjects = new HashSet<>();
+            String query = String.format(
+                "SELECT subject.* FROM [lfs:Form] AS form INNER JOIN [lfs:Subject] AS subject"
+                    + " ON form.'subject'=subject.[jcr:uuid]"
+                    + " WHERE form.[jcr:lastModified] >= '%s'"
+                    + " AND form.[jcr:lastModified] < '%s'"
+                    + " AND NOT CONTAINS(form.[statusFlags], 'INCOMPLETE')",
+                requestDateStringLower, requestDateStringUpper
+            );
+
+            Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
+            while (results.hasNext()) {
+                Resource subject = results.next();
+                String path = subject.getPath();
+                String participantId = subject.getValueMap().get("identifier", String.class);
+                subjects.add(new SubjectIdentifier(path, participantId));
+            }
+            return subjects;
+        } catch (LoginException e) {
+            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
+        }
+        return Collections.emptySet();
+    }
+
     private SubjectContents getSubjectContents(String path, String requestDateString)
     {
         String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
             + ".dataFilter:modifiedAfter=%s.dataFilter:statusNot=INCOMPLETE", path, requestDateString);
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            Resource subjectData = resolver.resolve(subjectDataUrl);
+            return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(), subjectDataUrl);
+        } catch (LoginException e) {
+            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
+    private SubjectContents getSubjectContentsBounded(String path, String requestDateStringLower,
+        String requestDateStringUpper)
+    {
+        String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
+            + ".dataFilter:modifiedAfter=%s.dataFilter:modifiedBefore=%s.dataFilter:statusNot=INCOMPLETE",
+            path, requestDateStringLower, requestDateStringUpper);
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             Resource subjectData = resolver.resolve(subjectDataUrl);
             return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(), subjectDataUrl);
