@@ -471,7 +471,7 @@ const questionnaireStyle = theme => ({
       color: theme.palette.warning.main
     },
     answerOptionInput: {
-      width: "86%"
+      width: "85%"
     },
     answerOptionDeleteButton: {
       right: theme.spacing(-2),

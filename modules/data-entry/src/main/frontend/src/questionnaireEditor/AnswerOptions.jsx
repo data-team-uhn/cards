@@ -67,7 +67,7 @@ let AnswerOptions = (props) => {
   }
 
   let updateInsertedOption = (index, event) => {
-    let inputs = event.target.value.split("=");
+    let inputs = event.target.value.split(/=(.+)/);
     setNewValue(oldValue => {
       var value = oldValue.slice();
       value[index] = inputs[0].trim();
@@ -76,6 +76,16 @@ let AnswerOptions = (props) => {
     setLabels(oldValue => {
       let value = oldValue.slice();
       value[index] = inputs[1] ? inputs[1].trim() : "";
+      return value;
+    });
+  }
+
+  let editOption = (index, event) => {
+    let inputs = event.target.value.split(/=(.+)/);
+    setOptions(oldValue => {
+      var value = oldValue.slice();
+      value[index].value = inputs[0].trim();
+      value[index].label = inputs[1].trim();
       return value;
     });
   }
@@ -109,7 +119,7 @@ let AnswerOptions = (props) => {
       // The text entered on each line should be split
       // by the first occurrence of the separator = if the separator exists
       // e.g. F=Female as <value> = <label>
-      let inputs = tempValue.split("=");
+      let inputs = tempValue.split(/=(.+)/);
 
       setNewValue(oldValue => {
         let value = oldValue.slice();
@@ -140,10 +150,12 @@ let AnswerOptions = (props) => {
       { options.map((value, index) =>
         <React.Fragment key={value['@path']}>
           <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
+          <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
+          <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
           <TextField
             className={classes.answerOptionInput}
-            name={`${value['@path']}/value`}
             defaultValue={value.value + " = " + value.label}
+            onChange={(event) => { editOption(index, event); }}
             multiline
             />
           <IconButton onClick={() => { deleteOption(value) }} className={classes.answerOptionDeleteButton}>
