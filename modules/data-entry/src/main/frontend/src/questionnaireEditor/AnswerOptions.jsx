@@ -34,18 +34,20 @@ import { v4 as uuidv4 } from 'uuid';
 import CloseIcon from '@material-ui/icons/Close';
 
 let AnswerOptions = (props) => {
-  const { objectKey, data, path, saveButtonRef } = props;
+  const { objectKey, data, path, saveButtonRef, classes } = props;
   let [ options, setOptions ] = useState(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
   let [ newUUID, setNewUUID ] = useState([]);
   let [ newValue, setNewValue ] = useState([]);
+  let [ labels, setLabels ] = useState([]);
   let [ deletedOptions, setDeletedOptions ] = useState([]);
-  let [ tempValue, setTempValue ] = useState(''); // Holds new, non-comitted answer options
+  let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
 
   // Clear local state when data changes
   useEffect(() => {
     setOptions(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
     setNewUUID([]);
     setNewValue([]);
+    setLabels([]);
     setDeletedOptions([]);
     setTempValue('');
   }, [data])
@@ -65,11 +67,17 @@ let AnswerOptions = (props) => {
   }
 
   let updateInsertedOption = (index, event) => {
+    let inputs = event.target.value.split("=");
     setNewValue(oldValue => {
       var value = oldValue.slice();
-      value[index] = event.target.value;
+      value[index] = inputs[0].trim();
       return value;
-    })
+    });
+    setLabels(oldValue => {
+      let value = oldValue.slice();
+      value[index] = inputs[1] ? inputs[1].trim() : "";
+      return value;
+    });
   }
 
   let deleteInsertedOption = (index, event) => {
@@ -77,7 +85,12 @@ let AnswerOptions = (props) => {
       let value = oldValue.slice();
       value.splice(index, 1);
       return value;
-    })
+    });
+    setLabels(oldValue => {
+      let value = oldValue.slice();
+      value.splice(index, 1);
+      return value;
+    });
     setNewUUID(oldUuid => {
       let uuid = oldUuid.slice();
       uuid.splice(index, 1);
@@ -93,9 +106,19 @@ let AnswerOptions = (props) => {
         return tempUUID;
       });
 
+      // The text entered on each line should be split
+      // by the first occurrence of the separator = if the separator exists
+      // e.g. F=Female as <value> = <label>
+      let inputs = tempValue.split("=");
+
       setNewValue(oldValue => {
         let value = oldValue.slice();
-        value.push(tempValue);
+        value.push(inputs[0].trim());
+        return value;
+      });
+      setLabels(oldValue => {
+        let value = oldValue.slice();
+        value.push(inputs[1] ? inputs[1].trim() : "");
         return value;
       });
     }
@@ -118,11 +141,12 @@ let AnswerOptions = (props) => {
         <React.Fragment key={value['@path']}>
           <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
           <TextField
+            className={classes.answerOptionInput}
             name={`${value['@path']}/value`}
-            defaultValue={value.value}
+            defaultValue={value.value + " = " + value.label}
             multiline
             />
-          <IconButton onClick={() => { deleteOption(value) }}>
+          <IconButton onClick={() => { deleteOption(value) }} className={classes.answerOptionDeleteButton}>
             <CloseIcon/>
           </IconButton>
         </React.Fragment>
@@ -130,13 +154,15 @@ let AnswerOptions = (props) => {
       { newUUID.map((value, index) =>
         <React.Fragment key={value}>
           <input type='hidden' name={`${path}/${newValue[index]}/jcr:primaryType`} value={'lfs:AnswerOption'} />
+          <input type='hidden' name={`${path}/${newValue[index]}/label`} value={labels[index]} />
+          <input type='hidden' name={`${path}/${newValue[index]}/value`} value={newValue[index]} />
           <TextField
-            name={`${path}/${newValue[index]}/value`}
-            value={newValue[index]}
+            className={classes.answerOptionInput}
+            value={newValue[index] + " = " + labels[index]}
             onChange={(event) => { updateInsertedOption(index, event); }}
             multiline
             />
-          <IconButton onClick={(event) => { deleteInsertedOption(index, event) }}>
+          <IconButton onClick={(event) => { deleteInsertedOption(index, event) }} className={classes.answerOptionDeleteButton}>
             <CloseIcon />
           </IconButton>
         </React.Fragment>
@@ -145,8 +171,9 @@ let AnswerOptions = (props) => {
         <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
       )}
       <TextField
+        fullWidth
         value={tempValue}
-        helperText='Press ENTER to add a new line'
+        helperText='value OR value=label (e.g. F=Female)'
         onChange={(event) => { setTempValue(event.target.value); }}
         onBlur={(event) => { handleInputOption(event); }}
         inputProps={Object.assign({

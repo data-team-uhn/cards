@@ -469,7 +469,14 @@ const questionnaireStyle = theme => ({
     },
     warningStatus: {
       color: theme.palette.warning.main
-    }
+    },
+    answerOptionInput: {
+      width: "86%"
+    },
+    answerOptionDeleteButton: {
+      right: theme.spacing(-2),
+      float: "right"
+    },
 });
 
 export default questionnaireStyle;
