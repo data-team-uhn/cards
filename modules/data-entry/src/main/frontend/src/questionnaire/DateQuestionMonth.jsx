@@ -195,6 +195,7 @@ function DateQuestionMonth(props) {
   return (
     <Question
       text={text}
+      existingAnswer={existingAnswer}
       {...rest}
       >
       {error && <Typography color='error'>{errorMessage}</Typography>}
