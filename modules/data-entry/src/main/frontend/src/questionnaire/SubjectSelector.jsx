@@ -479,7 +479,7 @@ export function NewSubjectDialog (props) {
         open={open && newSubjectPopperOpen}
         value={newSubjectName[newSubjectIndex]}
       />
-      <SelectParentDialog
+      {open && selectParentPopperOpen && <SelectParentDialog
         childType={newSubjectType[newSubjectIndex]}
         continueDisabled={!newSubjectParent[newSubjectIndex]}
         disabled={disabledControls}
@@ -498,7 +498,7 @@ export function NewSubjectDialog (props) {
         parentType={newSubjectType[newSubjectIndex]?.["parent"]}
         tableRef={tableRef}
         value={newSubjectParent[newSubjectIndex]}
-        />
+        /> }
     </React.Fragment>)
 }
 
