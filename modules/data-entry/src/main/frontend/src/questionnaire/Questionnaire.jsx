@@ -109,7 +109,7 @@ let Questionnaire = (props) => {
         classes={classes}
         onActionDone={() => reloadData()}
       >
-      <Grid container direction="column" spacing={4}>
+      <Grid container direction="column" spacing={4} wrap="nowrap">
       <Grid item>
         <Typography variant="h2">{questionnaireTitle} </Typography>
         {
@@ -142,13 +142,11 @@ let Questionnaire = (props) => {
         </Grid>
       }
       { data &&
-        <Grid item>
           <CreationMenu
             isMainAction={true}
             data={data}
             onClose={() => { reloadData(); }}
           />
-        </Grid>
       }
       </Grid>
       </QuestionnaireItemSet>
@@ -167,7 +165,7 @@ let QuestionnaireItemSet = (props) => {
   let { children, onActionDone, data, classes } = props;
 
   return (
-    <Grid container direction="column" spacing={4}>
+    <Grid container direction="column" spacing={4} wrap="nowrap">
       <Grid item>{children}</Grid>
       {
         data ?
@@ -199,7 +197,7 @@ let Question = (props) => {
 
   let displayAnswers = () => {
     return (
-        <Grid container key={data['jcr:uuid']} alignItems='flex-start' spacing={2}>
+        <Grid container key={data['jcr:uuid']} alignItems='flex-start' spacing={4}>
           <Grid item key="label" xs={4}>
             <Typography variant="subtitle2">Answer options:</Typography>
           </Grid>
