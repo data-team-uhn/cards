@@ -27,6 +27,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
@@ -126,9 +127,13 @@ public class BareFormProcessor implements ResourceJsonProcessor
         this.questionNames.remove();
     }
 
-    private void addSectionsAndAnswers(Node node, JsonObjectBuilder json)
+    private void addSectionsAndAnswers(final Node node, final JsonObjectBuilder json)
     {
         try {
+            // Repeatable sections may have different nodes scattered among the children.
+            // The first time we encounter a section, we create a JsonArrayBuilder for it, and add it in the output.
+            // Further instances of that section will be added to this JsonArrayBuilder.
+            final Map<String, JsonArrayBuilder> sectionArrays = new HashMap<>();
             final NodeIterator children = node.getNodes();
             while (children.hasNext()) {
                 final Node child = children.nextNode();
@@ -136,7 +141,12 @@ public class BareFormProcessor implements ResourceJsonProcessor
                 if (child.isNodeType("lfs:AnswerSection") && this.childrenJsons.get().containsKey(childId)) {
                     final JsonObject childJson = this.childrenJsons.get().get(childId);
                     final String childLabel = childJson.getString("section");
-                    json.add(childLabel, Json.createObjectBuilder(childJson).remove("section").build());
+                    final JsonArrayBuilder array =
+                        sectionArrays.computeIfAbsent(childLabel, name -> Json.createArrayBuilder());
+                    array.add(Json.createObjectBuilder(childJson).remove("section").build());
+                    // json.add will build the array and store the result, so further changes to it will not be
+                    // reflected. We need to re-add it every time we modify the array.
+                    json.add(childLabel, array);
                     this.childrenJsons.get().remove(childId);
                 } else if (child.isNodeType("lfs:Answer") && this.childrenJsons.get().containsKey(childId)) {
                     final JsonObject childJson = this.childrenJsons.get().get(childId);
