@@ -23,21 +23,31 @@ import PropTypes from "prop-types";
 import { Card, CardHeader, CardContent, List, ListItem, Typography, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
+import AnswerInstructions from "./AnswerInstructions";
 
 // GUI for displaying answers
 function Question (props) {
   let { classes, children, questionDefinition, existingAnswer, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
-  let { text, compact, description } = { ...questionDefinition, ...props }
+  let { text, compact, description, disableInstructions } = { ...questionDefinition, ...props }
 
   return (
-    <Card>
+    <Card
+      className={classes.questionCard}
+      >
       <CardHeader
         title={text}
         titleTypographyProps={{ variant: 'h6' }}
-        subheader={description}
-        className={classes.questionHeader}
+        subheader={isEdit ? description : null}
+        subheaderTypographyProps={{ variant: 'caption' }}
         />
-      <CardContent className={compact ? classes.compactLayout : null}>
+      <CardContent className={isEdit ? classes.editModeAnswers : classes.viewModeAnswers}>
+        <div className={compact ? classes.compactLayout : null}>
+        { isEdit && !disableInstructions &&
+          <AnswerInstructions
+             {...questionDefinition}
+             {...props}
+          />
+        }
         { !isEdit && !preventDefaultView && existingAnswer ?
           <List>
             { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
@@ -55,6 +65,7 @@ function Question (props) {
             {existingAnswer[1].note}
           </div>
         }
+        </div>
       </CardContent>
     </Card>
     );
@@ -63,7 +74,12 @@ function Question (props) {
 Question.propTypes = {
     classes: PropTypes.object.isRequired,
     text: PropTypes.string,
-    description: PropTypes.string
+    description: PropTypes.string,
+    disableInstructions: PropTypes.bool,
+};
+
+Question.defaultProps = {
+    disableInstructions: false,
 };
 
 export default withStyles(QuestionnaireStyle)(Question);

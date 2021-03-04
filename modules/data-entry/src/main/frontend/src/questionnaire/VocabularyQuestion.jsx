@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React from "react";
+import React, { useState } from "react";
 import { withStyles } from "@material-ui/core";
 
 import PropTypes from "prop-types";
@@ -73,15 +73,19 @@ function VocabularyQuestion(props) {
     // Reparse defaults into a format VocabularySelector understands
     .reduce((object, value) => ({...object, [value[VALUE_POS]]: value[LABEL_POS]}), {});
 
+  let [currentAnswers, setCurrentAnswers] = useState(Array.of(props.existingAnswer?.[VALUE_POS]?.value || []).flat().length);
+
   return (
     <Question
-      {...rest}
+      currentAnswers={currentAnswers}
+      {...props}
       >
       <VocabularySelector
         vocabularyFilter = {vocabularyFilter}
         max = {maxAnswers}
         defaultSuggestions = {defaultSuggestions}
         source = {sourceVocabularies}
+        selectionUpdated = {(count) => setCurrentAnswers(count)}
         {...rest}
       />
     </Question>);

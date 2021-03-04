@@ -115,9 +115,8 @@ function TimeQuestion(props) {
   let outputAnswers = [["time", selectedTime]];
   return (
     <Question
-      existingAnswer={existingAnswer}
-      text={text}
-      {...rest}
+      currentAnswers={!!selectedTime ? 1 : 0}
+      {...props}
       >
       {error && <Typography color='error'>{errorMessage}</Typography>}
       <TextField

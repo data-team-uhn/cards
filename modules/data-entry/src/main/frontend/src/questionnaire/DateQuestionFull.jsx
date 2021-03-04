@@ -157,9 +157,8 @@ function DateQuestionFull(props) {
 
   return (
     <Question
-      text={text}
-      existingAnswer={existingAnswer}
-      {...rest}
+      currentAnswers={DateQuestionUtilities.isAnswerComplete(outputAnswers, type) ? 1 : 0}
+      {...props}
       >
       {error && <Typography color='error'>{errorMessage}</Typography>}
       {getTextField(false, momentToString(startDate))}

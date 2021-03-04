@@ -155,9 +155,8 @@ let ComputedQuestion = (props) => {
 
   return (
     <Question
-      existingAnswer={existingAnswer}
-      text={text}
-      {...rest}
+      currentAnswers={typeof(value) !== "undefined" && value !== "" ? 1 : 0}
+      {...props}
       >
       {error && <Typography color='error'>{errorMessage}</Typography>}
       <TextField

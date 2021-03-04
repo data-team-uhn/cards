@@ -20,15 +20,9 @@
 import { dangerColor, grayColor } from "../themeStyle.jsx";
 
 const selectorStyle = theme => ({
-    selectionChild: {
-        paddingLeft: theme.spacing(0),
-    },
-    childFormControl: {
-        marginLeft: theme.spacing(0),
-    },
     deleteButton: {
         padding: theme.spacing(1,0),
-        margin: theme.spacing(-1,0),
+        margin: theme.spacing(-1,0,-1,-1.5),
         fontSize: "10px",
         minWidth: "42px",
         "& svg": {
@@ -39,8 +33,6 @@ const selectorStyle = theme => ({
         }
     },
     inputLabel: {
-        ...theme.typography.button.body1,
-        paddingLeft: theme.spacing(1),
         display: "inline-block",
     },
     checkbox: {
@@ -55,8 +47,14 @@ const selectorStyle = theme => ({
     ghostFormControl: {
         height: "0px",
     },
+    hiddenGhostFormControl : {
+        display: "none",
+    },
+    ghostListItem: {
+        padding: theme.spacing(0, 2, 0, 2),
+    },
     selectionList: {
-        paddingBottom: "0px",
+        padding: theme.spacing(0),
     }
 });
 

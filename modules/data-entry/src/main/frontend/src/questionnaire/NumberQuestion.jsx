@@ -157,13 +157,16 @@ function NumberQuestion(props) {
     muiInputProps.endAdornment = <InputAdornment position="end">{props.questionDefinition.unitOfMeasurement}</InputAdornment>;
   }
 
+  let hasAnswerOptions = !!(props.defaults || Object.values(props.questionDefinition).some(value => value['jcr:primaryType'] == 'lfs:AnswerOption'));
+
   return (
     <Question
-      existingAnswer={existingAnswer}
-      {...rest}
+      disableInstructions={hasAnswerOptions}
+      currentAnswers={ typeof(input) != "undefined" && input != "" ? 1 : 0 }
+      {...props}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
-      {props.defaults || Object.values(props.questionDefinition).some(value => value['jcr:primaryType'] == 'lfs:AnswerOption') ?
+      { hasAnswerOptions ?
       /* Use MultipleChoice if we have default options */
       <MultipleChoice
         answerNodeType={answerNodeType}

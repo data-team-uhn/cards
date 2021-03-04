@@ -137,14 +137,26 @@ const thesaurusStyle = theme => ({
     backgroundColor: theme.palette.error.dark,
   },
   searchWrapper: {
-    margin: theme.spacing(0, 0, 0, 6.3),
+    margin: theme.spacing(0),
     position: 'relative',
     display: 'inline-block',
-    paddingBottom: "0px",
+    paddingBottom: theme.spacing(0),
+    "& .MuiInputBase-root" : {
+      minWidth: "250px",
+    },
   },
   search: {
     paddingBottom: "0px",
     margin: "0px"
+  },
+  nestedSearchInput: {
+    marginLeft: theme.spacing(4),
+    "& .MuiInputBase-root" : {
+      width: "218px !important",
+    },
+    "& .MuiLinearProgress-root": {
+      marginLeft: theme.spacing(4),
+    }
   },
   searchInput: {
     marginTop: "6px !important",

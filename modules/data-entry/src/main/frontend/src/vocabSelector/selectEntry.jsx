@@ -45,7 +45,7 @@ function VocabularyEntry(props) {
 
   return (
     <React.Fragment>
-      <ListItem key={name} className={classes.selectionChild}>
+      <ListItem key={name}>
           { /* This is either a Checkbox if this is a suggestion, or a button otherwise */
           isPreselected ?
             (

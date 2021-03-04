@@ -26,6 +26,7 @@ import PropTypes from 'prop-types';
 import Answer, {LABEL_POS, VALUE_POS} from "./Answer";
 import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+import AnswerInstructions from "./AnswerInstructions.jsx";
 
 // Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
 const IS_DEFAULT_POS = 2;
@@ -265,7 +266,7 @@ function MultipleChoice(props) {
   let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
       <TextField
         helperText={maxAnswers !== 1 && "Press ENTER to add a new option"}
-        className={classes.textField + (maxAnswers === 1 && (!defaults || defaults.length == 0) ? (' ' + classes.answerField) : '')}
+        className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
         onChange={(event) => {
           setGhostName(event.target.value);
           updateGhost(GHOST_SENTINEL, event.target.value);
@@ -298,20 +299,18 @@ function MultipleChoice(props) {
     selectOption(...args);
   }
 
-  // display error if minimum is not met, display 'at least' if there is no maximum or if max is greater than min
-  const warning = selection.length < minAnswers && (
-    <Typography color={error ? 'error' : 'textSecondary'} className={classes.warningTypography}>
-      Please select {maxAnswers !== minAnswers && "at least"} {minAnswers} option{minAnswers > 1 && "s"}.
-    </Typography>
-    );
-
   // Remove the ["", ""] unless there are only zero or one answer items
   var answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
   answers = ((answers.length < 2) ? answers : answers.filter(item => item[LABEL_POS] !== ''));
 
+  // When counting current answers for proper highlighting of answer instructions to the user, exclude the empty one
+  let currentAnswers = answers.filter(item => item[VALUE_POS] !== '').length;
+  const instructions = <AnswerInstructions currentAnswers={currentAnswers} {...props.questionDefinition} {...props} />;
+
   if (isSelect) {
     return (
       <React.Fragment>
+        {instructions}
         <Select
           value={selection?.[0]?.[0] || ''}
           className={classes.textField + ' ' + classes.answerField}
@@ -334,6 +333,7 @@ function MultipleChoice(props) {
   } else if (isBare) {
     return(
       <React.Fragment>
+        {instructions}
         {ghostInput}
         <Answer
           answers={answers}
@@ -346,6 +346,7 @@ function MultipleChoice(props) {
   } else if (isRadio) {
     return (
       <React.Fragment>
+        {instructions}
         <RadioGroup
           aria-label="selection"
           name="selection"
@@ -382,7 +383,6 @@ function MultipleChoice(props) {
           </List>
         </RadioGroup>
         {ghostInput}
-        {warning}
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
@@ -394,11 +394,11 @@ function MultipleChoice(props) {
   } else {
     return (
       <React.Fragment>
+        {instructions}
         <List className={classes.optionsList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
         </List>
         {ghostInput}
-        {warning}
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}

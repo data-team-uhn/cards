@@ -31,6 +31,34 @@ export const FORM_ENTRY_CONTAINER_PROPS = {
 const GRID_SPACE_UNIT = FORM_ENTRY_CONTAINER_PROPS.spacing/2;
 
 const questionnaireStyle = theme => ({
+    questionCard : {
+      "& .MuiCardHeader-root" : {
+        padding: theme.spacing(1, 3, 0, 3),
+      },
+      "& .MuiCardContent-root" : {
+        paddingLeft: theme.spacing(3),
+        paddingRight: theme.spacing(3),
+      },
+      "& .MuiList-root": {
+        marginLeft: theme.spacing(-2),
+      },
+    },
+    editModeAnswers: {
+      "& .MuiListItem-root:hover" : {
+        background: theme.palette.action.hover,
+        borderRadius: theme.spacing(0.5),
+      }
+    },
+    viewModeAnswers :{
+      paddingTop: theme.spacing(0),
+      "& .MuiList-root": {
+        padding: theme.spacing(0),
+      },
+      "& .MuiListItem-root" : {
+        paddingTop: theme.spacing(0),
+        paddingBottom: theme.spacing(0),
+      }
+    },
     checkbox: {
         margin: theme.spacing(-2,0),
     },
@@ -47,15 +75,20 @@ const questionnaireStyle = theme => ({
         padding: theme.spacing(0, 2, 0, 2),
     },
     searchWrapper: {
-        margin: theme.spacing(0, 0, 0, 6),
+        margin: theme.spacing(0),
         position: 'relative',
         display: 'inline-block',
-        paddingBottom: "0px",
-        paddingTop: theme.spacing(1)
+        padding: theme.spacing(.5, 0, 0, 0),
+        "& textarea" : {
+          paddingLeft: theme.spacing(4),
+        },
     },
     answerField: {
-        margin: theme.spacing(0, 0, 0, 6),
         position: 'relative',
+    },
+    nestedInput: {
+        minWidth: "218px",
+        marginLeft: theme.spacing(4),
     },
     textField: {
         // Differing input types have differing widths, so setting width:100%
@@ -63,11 +96,7 @@ const questionnaireStyle = theme => ({
         minWidth: "250px",
     },
     noteTextField: {
-        // the input in notes should be the width of the form
-        width: "50%",
-        "&.Mui-focused": {
-            width: "100%",
-        }
+        width: "100%",
     },
     optionsList: {
         padding: theme.spacing(0),
@@ -84,14 +113,12 @@ const questionnaireStyle = theme => ({
     cardHeaderButton: {
         // No styles here yet
     },
-    questionHeader: {
-        paddingBottom: theme.spacing(0),
-    },
     hiddenQuestion: {
         display: "none"
     },
-    warningTypography: {
-        padding: theme.spacing(1, 1),
+    answerInstructions: {
+        margin: theme.spacing(-3,0,1),
+        padding: theme.spacing(1, 0),
     },
     thumbnail: {
         border: "1px solid " + theme.palette.divider,
@@ -149,7 +176,6 @@ const questionnaireStyle = theme => ({
     },
     sectionHeader: {
         paddingBottom: "0 !important",
-        marginBottom: theme.spacing(-1)
     },
     subjectCard: {
         minHeight: "200px",
@@ -268,14 +294,14 @@ const questionnaireStyle = theme => ({
         color: theme.palette.primary.light,
     },
     notesContainer: {
-        padding: theme.spacing(1, 0, 1, 2)
+        padding: theme.spacing(3, 0, 1)
     },
     toggleNotesButton: {
         textTransform: "none"
     },
     noteSection: {
         display: "block",
-        marginLeft: theme.spacing(6)
+        marginLeft: theme.spacing(0)
     },
     formHeader: {
         position: "sticky",

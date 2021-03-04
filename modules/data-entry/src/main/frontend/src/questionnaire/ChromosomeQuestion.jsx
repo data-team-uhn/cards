@@ -81,6 +81,7 @@ function ChromosomeQuestion(props) {
 
   return (
     <Question
+      disableInstructions
       {...props}
       >
       <MultipleChoice

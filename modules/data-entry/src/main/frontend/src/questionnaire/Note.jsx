@@ -68,7 +68,7 @@ function Note (props) {
       in = {visible}
       onEntered = {focusInput}
       >
-      <Grid container>
+      <Grid container spacing={2}>
         <Grid item xs={6}>
           <TextField
             value = {note}

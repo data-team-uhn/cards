@@ -68,7 +68,8 @@ function BooleanQuestion(props) {
 
   return (
     <Question
-      {...rest}
+      disableInstructions
+      {...props}
       >
       <MultipleChoice
         answerNodeType="lfs:BooleanAnswer"
