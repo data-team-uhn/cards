@@ -170,18 +170,8 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>date</value>
+				<value>long</value>
 				<type>String</type>
-			</property>
-			<property>
-				<name>dateFormat</name>
-				<value>yyyy</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
 			</property>
 		</node>
 		<node>
@@ -266,7 +256,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>long</value>
+				<value>text</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -967,7 +957,7 @@
 				</property>
 				<property>
 					<name>dataType</name>
-					<value>date</value>
+					<value>time</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1481,7 +1471,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>text</value>
 				<type>String</type>
 			</property>
 			<property>
