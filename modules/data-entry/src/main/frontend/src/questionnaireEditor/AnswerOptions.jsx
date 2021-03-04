@@ -70,7 +70,7 @@ let AnswerOptions = (props) => {
    }
   }
 
-  let editOption = (index, event) => {
+  let updateOption = (index, event) => {
     let inputs = event.target.value.split(/=(.+)/);
     setOptions(oldValue => {
       var value = oldValue.slice();
@@ -121,7 +121,7 @@ let AnswerOptions = (props) => {
           <TextField
             className={classes.answerOptionInput}
             defaultValue={value.value + " = " + value.label}
-            onChange={(event) => { editOption(index, event); }}
+            onChange={(event) => { updateOption(index, event); }}
             multiline
             />
           <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionDeleteButton}>
