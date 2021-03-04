@@ -66,14 +66,14 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
 			<name>compact</name>
 			<value>True</value>
 			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
 		</property>
 		<node>
 			<name>2</name>
@@ -403,471 +403,966 @@
 			</property>
 		</node>
 		<node>
-			<name>wd_st</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Start time</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>time</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dateFormat</name>
-				<value>HH:MM (AM/PM)</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>wd_patient_watch</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Patient watch side</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>wd_stSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>Left</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>wd_st</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Left</value>
+					<name>text</name>
+					<value>Start time</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Left</value>
+					<name>dataType</name>
+					<value>time</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>dateFormat</name>
+					<value>HH:MM (AM/PM)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 			</node>
 			<node>
-				<name>Right</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Right</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>Right</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
-			<name>wd_patient_iphone</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Patient iPhone location</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list+input</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>wd_patient_watchSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>Left waist (hip clip)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>wd_patient_watch</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Left waist (hip clip)</value>
+					<name>text</name>
+					<value>Patient watch side</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Left waist (hip clip)</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>Left</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Left</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Left</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Right</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Right</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Right</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>Right waist (hip clip)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Right waist (hip clip)</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>Right waist (hip clip)</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Left back pocket</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Left back pocket</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Left back pocket</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Right back pocket</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Right back pocket</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Right back pocket</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Left front pocket</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Left front pocket</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Left front pocket</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Right front pocket</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Right front pocket</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Right front pocket</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
-			<name>wd_borg_pre</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>BORG RPE, pre-test</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>6-20</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>wd_laps</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Whole laps completed</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>wd_lap_dist</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Whole lap distance</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>decimal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>unitOfMeasurement</name>
-				<value>m</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>wd_part_lap</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Partial lap distance</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>decimal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>unitOfMeasurement</name>
-				<value>m</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>wd_tol_dis</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Total distance</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>computed</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>expression</name>
-				<value>return (@{wd_laps} * @{wd_lap_dist}) + @{wd_part_lap}</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>unitOfMeasurement</name>
-				<value>m</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>wd_borg_post</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>BORG RPE, post-test</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>6-20</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>wd_proctor_opinion</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Proctor opinion: post-test BORG RPE</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>wd_patient_iphoneSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>Greater than self report</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>wd_patient_iphone</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Greater than self report</value>
+					<name>text</name>
+					<value>Patient iPhone location</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Greater than self report</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list+input</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>Left waist (hip clip)</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Left waist (hip clip)</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Left waist (hip clip)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Right waist (hip clip)</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Right waist (hip clip)</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Right waist (hip clip)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Left back pocket</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Left back pocket</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Left back pocket</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Right back pocket</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Right back pocket</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Right back pocket</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Left front pocket</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Left front pocket</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Left front pocket</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Right front pocket</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Right front pocket</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Right front pocket</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>Same as self report</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Same as self report</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>Same as self report</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Less than self report</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Less than self report</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Less than self report</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Not sure</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Not sure</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Not sure</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
-			<name>wd_aid</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Was a walking aid used during the test?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>boolean</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>wd_borg_preSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>wd_borg_pre</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>BORG RPE, pre-test</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>long</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>6-20</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>wd_lapsSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>wd_laps</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Whole laps completed</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>long</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>wd_lap_distSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>wd_lap_dist</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Whole lap distance</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>decimal</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>m</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>wd_part_lapSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>wd_part_lap</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Partial lap distance</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>decimal</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>m</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>wd_tol_disSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>wd_tol_dis</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Total distance</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>computed</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>expression</name>
+					<value>return (@{wd_laps} * @{wd_lap_dist}) + @{wd_part_lap}</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>m</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>wd_borg_postSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>wd_borg_post</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>BORG RPE, post-test</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>long</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>6-20</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>wd_proctor_opinionSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>wd_proctor_opinion</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Proctor opinion: post-test BORG RPE</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>Greater than self report</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Greater than self report</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Greater than self report</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Same as self report</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Same as self report</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Same as self report</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Less than self report</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Less than self report</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Less than self report</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Not sure</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Not sure</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Not sure</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>wd_aidSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>wd_aid</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Was a walking aid used during the test?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>boolean</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
 		</node>
 		<node>
 			<name>wd_aid2Section</name>
@@ -1079,23 +1574,68 @@
 			</node>
 		</node>
 		<node>
-			<name>wd_symp</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Were any symptoms experienced during the test?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>boolean</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>wd_sympSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>wd_symp</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Were any symptoms experienced during the test?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>boolean</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
 		</node>
 		<node>
 			<name>wd_symp2Section</name>
@@ -1251,47 +1791,137 @@
 			</node>
 		</node>
 		<node>
-			<name>wd_interrupt</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Was the participant interrupted during the test?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>boolean</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>(e.g. Phone call, people in the way, etc.)</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>wd_interruptSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>wd_interrupt</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Was the participant interrupted during the test?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>boolean</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>(e.g. Phone call, people in the way, etc.)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
 		</node>
 		<node>
-			<name>wd_stop</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Did the participant stop the test early?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>boolean</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>wd_stopSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>wd_stop</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Did the participant stop the test early?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>boolean</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
 		</node>
 		<node>
 			<name>wd_stop2Section</name>
@@ -1461,23 +2091,68 @@
 			</node>
 		</node>
 		<node>
-			<name>wd_pause1</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Did the participant stop in the middle of the test, but then continue walking after?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>boolean</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>wd_pause1Section</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>wd_pause1</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Did the participant stop in the middle of the test, but then continue walking after?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>boolean</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
 		</node>
 		<node>
 			<name>wd_pause2Section</name>
