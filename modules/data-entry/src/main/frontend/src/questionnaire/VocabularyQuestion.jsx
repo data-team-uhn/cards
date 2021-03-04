@@ -74,7 +74,7 @@ function VocabularyQuestion(props) {
     // Reparse defaults into a format VocabularySelector understands
     .reduce((object, value) => ({...object, [value[VALUE_POS]]: value[LABEL_POS]}), {});
 
-  let [currentAnswers, setCurrentAnswers] = useState(props.defaults?.length || 0);
+  let [currentAnswers, setCurrentAnswers] = useState(Array.of(props.existingAnswer?.[VALUE_POS]?.value || []).flat().length);
 
   return (
     <Question
