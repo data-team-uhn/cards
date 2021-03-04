@@ -24,7 +24,6 @@ import PropTypes from "prop-types";
 
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 import Question from "./Question";
-import AnswerInstructions from "./AnswerInstructions";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -78,10 +77,9 @@ function VocabularyQuestion(props) {
 
   return (
     <Question
-      disableInstructions
+      currentAnswers={currentAnswers}
       {...props}
       >
-      <AnswerInstructions currentAnswers={currentAnswers} {...props.questionDefinition} />
       <VocabularySelector
         vocabularyFilter = {vocabularyFilter}
         max = {maxAnswers}
