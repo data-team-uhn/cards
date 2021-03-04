@@ -31,10 +31,22 @@ function AnswerInstructions (props) {
   let { classes, minAnswers, maxAnswers, currentAnswers, answerLabel } = props;
   let [ answerIsAcceptable, setAnswerAcceptable] = useState(currentAnswers >= minAnswers && (maxAnswers == 0 || currentAnswers <= maxAnswers));
 
-  let instructionsExist = ( minAnswers > 0 || minAnswers == 0 && maxAnswers > 1);
+  const instructionsExist = minAnswers > 0 || maxAnswers > 1;
+  const isMandatory = minAnswers == 1 && !(maxAnswers > minAnswers);
+  const isAtLeast = !(minAnswers < maxAnswers);
+  const isExactly = minAnswers == maxAnswers;
+  const isUpTo = !(minAnswers > 0);
+  let range = minAnswers + " - " + maxAnswers;
+  if (isUpTo) {
+    range = "up to " + maxAnswers;
+  } else if (isExactly) {
+    range = minAnswers;
+  } else if (isAtLeast) {
+    range = "at least " + minAnswers;
+  }
 
   useEffect(() => {
-    setAnswerAcceptable(currentAnswers >= minAnswers && (maxAnswers == 0 || currentAnswers <= maxAnswers))
+    setAnswerAcceptable((currentAnswers >= minAnswers) && (!(maxAnswers >= minAnswers) || currentAnswers <= maxAnswers))
   }, [currentAnswers]);
 
   return (instructionsExist && (
@@ -44,10 +56,11 @@ function AnswerInstructions (props) {
       className={classes.answerInstructions}
       variant="caption"
     >
-      { (minAnswers == 1 && !(maxAnswers > minAnswers)) ?
-      "This question is mandatory"
-      :
-      "Please provide " + minAnswers + (maxAnswers != minAnswers ? (" - " + maxAnswers) : "" ) + " " + answerLabel + (maxAnswers > 1 ? "s" : "")
+      {
+        (isMandatory) ?
+        "This question is mandatory"
+        :
+        "Please provide " + range + " " + answerLabel + "s"
       }
     </Typography>
     )
@@ -63,6 +76,8 @@ AnswerInstructions.propTypes = {
 };
 
 AnswerInstructions.defaultProps = {
+    minAnswers: 0,
+    maxAnswers: 0,
     currentAnswers: 0,
     answerLabel: "value",
 };
