@@ -18,6 +18,7 @@
 //
 
 import React, { useEffect, useRef, useState } from 'react';
+import { withRouter } from "react-router-dom";
 import PropTypes from 'prop-types';
 import {
   Card,
@@ -65,6 +66,15 @@ let QuestionnaireItemCard = (props) => {
     }
   }, [itemRef]);
 
+  let redirect = () => {
+    setEditDialogOpen(false);
+    onActionDone();
+    props.history.push({
+      pathname: location?.pathname,
+      hash: data["@path"]
+    });
+  }
+
   return (
     <Card variant="outlined" ref={doHighlight ? itemRef : undefined} className={doHighlight ? classes.focusedQuestionnaireItem : ''}>
       <QuestionnaireCardHeader
@@ -97,7 +107,7 @@ let QuestionnaireItemCard = (props) => {
                               data={data}
                               type={type}
                               isOpen={editDialogOpen}
-                              onClose={() => { onActionDone();}}
+                              onClose={() => { redirect();}}
                               onCancel={() => { setEditDialogOpen(false); }}
                             />
       }
@@ -119,4 +129,4 @@ QuestionnaireItemCard.propTypes = {
   onActionDone: PropTypes.func.isRequired,
 };
 
-export default QuestionnaireItemCard;
+export default (withRouter(QuestionnaireItemCard));
