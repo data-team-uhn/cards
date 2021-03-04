@@ -63,18 +63,22 @@ let AnswerOptions = (props) => {
 
   let validateOption = (optionInput) => {
     if (optionInput.indexOf("=") > -1) {
-     setIsDuplicate(false);
-     let inputs = optionInput.split(/=(.+)/);
-     let duplicateOption = options.find( option => option.value === inputs[0] || option.label === inputs[1]);
-     duplicateOption && setIsDuplicate(true);
-   }
+      setIsDuplicate(false);
+      let inputs = optionInput.split(/=(.+)/);
+      let duplicateOption = options.find( option => option.value === inputs[0] || option.label === inputs[1]);
+      duplicateOption && setIsDuplicate(true);
+    }
+  }
+
+  let sanitizeValue = (value) => {
+    return value.trim().replace(/\s/g, '_').replace(/\W/g, '');
   }
 
   let updateOption = (index, event) => {
     let inputs = event.target.value.split(/=(.+)/);
     setOptions(oldValue => {
       var value = oldValue.slice();
-      value[index].value = inputs[0].trim();
+      value[index].value = sanitizeValue(inputs[0]);
       value[index].label = inputs[1] ? inputs[1].trim() : "";
       return value;
     });
@@ -87,7 +91,7 @@ let AnswerOptions = (props) => {
       // e.g. F=Female as <value> = <label>
       let inputs = optionInput.split(/=(.+)/);
       let newOption = {};
-      newOption.value = inputs[0].trim();
+      newOption.value = sanitizeValue(inputs[0]);
       newOption["@path"] = path + "/" + newOption.value;
       newOption.label = inputs[1].trim();
 
