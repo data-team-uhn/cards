@@ -378,9 +378,6 @@ const questionnaireStyle = theme => ({
     invalidSubjectText: {
         fontStyle: "italic"
     },
-    aboveBackground: {
-        zIndex: 1300
-    },
     NCRTooltip: {
         color: theme.palette.primary.main
     },

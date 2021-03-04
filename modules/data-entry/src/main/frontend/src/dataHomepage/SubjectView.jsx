@@ -38,7 +38,7 @@ import {
 } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import LaunchIcon from '@material-ui/icons/Launch';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteButton from "./DeleteButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
@@ -121,7 +121,7 @@ function SubjectView(props) {
           <Tooltip title="Expand">
             <Link to={"/content.html/Subjects#" + ( subjectTypes.length > 0 ? subjectTypes[activeTab]['@name'] : '' )}>
               <IconButton>
-                <MoreHorizIcon/>
+                <LaunchIcon/>
               </IconButton>
             </Link>
           </Tooltip>

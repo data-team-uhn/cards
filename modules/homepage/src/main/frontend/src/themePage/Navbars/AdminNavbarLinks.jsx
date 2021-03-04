@@ -125,7 +125,7 @@ function HeaderLinks (props) {
       <Popper
         open={popperOpen}
         anchorEl={avatarRef.current}
-        className={classes.aboveBackground}
+        className={popperOpen ? classes.aboveBackground : ""}
         modifiers={{
           keepTogether: {enabled: true}
         }}

@@ -622,6 +622,9 @@
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "lfs/ComputedAnswer" mandatory autocreated protected
 
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+
 //-----------------------------------------------------------------------------
 // File resource answers, whose children are nt:files with the answer
 [lfs:FileResourceAnswer] > lfs:Answer

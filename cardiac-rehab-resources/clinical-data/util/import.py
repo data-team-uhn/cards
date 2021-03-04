@@ -149,14 +149,7 @@ def options_list(categorical_list):
 def process_options(question, row):
     if question['dataType'] == "date":
         date = row['Options (if applicable)']
-        if date == "MM/DD/YYYY" or date == "MM-DD-YYYY":
-            date = "MM/DD/yyyy"
-        if date == "DD/MM/YYYY" or date == "DD-MM-YYYY":
-            date = "DD/MM/yyyy"
-        if date == "MM/YYYY" or date == "MM-YYYY":
-            date = "MM/yyyy"
-        if date == "YYYY":
-            date = "yyyy"
+        date = date.replace("D", "d").replace("Y", "y").replace("-", "/")
         question['dateFormat'] = date
     elif question['dataType'] == "time":
         question['dateFormat'] = row['Options (if applicable)']
