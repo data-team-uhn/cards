@@ -256,7 +256,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>long</value>
+				<value>text</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1471,7 +1471,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>text</value>
 				<type>String</type>
 			</property>
 			<property>
