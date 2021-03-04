@@ -170,18 +170,8 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>date</value>
+				<value>long</value>
 				<type>String</type>
-			</property>
-			<property>
-				<name>dateFormat</name>
-				<value>yyyy</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
 			</property>
 		</node>
 		<node>
@@ -967,7 +957,7 @@
 				</property>
 				<property>
 					<name>dataType</name>
-					<value>date</value>
+					<value>time</value>
 					<type>String</type>
 				</property>
 				<property>
