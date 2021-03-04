@@ -35,19 +35,30 @@ let ListInput = (props) => {
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         let optionTypes = Array.from(json["rows"]);
-        if (optionTypes.length == 0) {
+        if (optionTypes.length == 0 && value.length == 0) {
           return;
         }
-        setOptions(optionTypes);
         let updatedValues = [];
-        for (let option of optionTypes) {
-          for (let val of value) {
+        for (let val of value) {
+          let found = false;
+          for (let option of optionTypes) {
             let compareVal = typeof(val) === "string" ? val : val[type.identifierProperty];
             if (compareVal === option[type.identifierProperty]) {
+              found = true;
               updatedValues.push(option);
             }
           }
+          if (!found) {
+            // Add the pre-existing value as an option
+            let newOption = {};
+            newOption[type.identifierProperty] = val;
+            newOption["jcr:uuid"] = val;
+            newOption[type.displayProperty] = val;
+            optionTypes.push(newOption);
+            updatedValues.push(newOption);
+          }
         }
+        setOptions(optionTypes);
         setValue(updatedValues);
       })
       .catch(handleError);
