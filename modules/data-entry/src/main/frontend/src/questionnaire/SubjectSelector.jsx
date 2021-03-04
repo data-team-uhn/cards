@@ -334,7 +334,6 @@ export function NewSubjectDialog (props) {
     }
 
     // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
-    //let parent = newSubjectParent[index]?.["jcr:uuid"] || subject;
     let parent = newSubjectParent[index]?.["@path"] || subject;
     createSubjects(
       globalLoginDisplay,
