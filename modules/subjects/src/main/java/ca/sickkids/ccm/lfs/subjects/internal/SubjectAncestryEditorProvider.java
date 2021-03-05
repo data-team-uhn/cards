@@ -32,12 +32,12 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
- * A {@link EditorProvider} returning {@link SubjectProgenyEditor}.
+ * A {@link EditorProvider} returning {@link SubjectAncestryEditor}.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class SubjectProgenyEditorProvider implements EditorProvider
+public class SubjectAncestryEditorProvider implements EditorProvider
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
@@ -50,8 +50,8 @@ public class SubjectProgenyEditorProvider implements EditorProvider
     {
         if (this.rrf != null && this.rrf.getThreadResourceResolver() != null) {
             Session session = this.rrf.getThreadResourceResolver().adaptTo(Session.class);
-            // Each SubjectProgenyEditor maintains a state, so a new instance must be returned each time
-            return new SubjectProgenyEditor(builder, session);
+            // Each SubjectAncestryEditor maintains a state, so a new instance must be returned each time
+            return new SubjectAncestryEditor(builder, session);
         }
         return null;
     }

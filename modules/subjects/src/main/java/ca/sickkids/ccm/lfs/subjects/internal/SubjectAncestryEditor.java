@@ -19,6 +19,7 @@ package ca.sickkids.ccm.lfs.subjects.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -32,16 +33,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An {@link Editor} that sets the {@code progeny} property for every {@code lfs:Subject}
- * or {@code lfs:SubjectType} with the children of that node.
+ * An {@link Editor} that sets the {@code ancestry} property for every {@code lfs:Subject}
+ * or {@code lfs:SubjectType} with the parents of that node.
  *
  * @version $Id$
  */
-public class SubjectProgenyEditor extends DefaultEditor
+public class SubjectAncestryEditor extends DefaultEditor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SubjectProgenyEditor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SubjectAncestryEditor.class);
 
-    private static final String PROP_PROGENY = "progeny";
+    private static final String PROP_ANCESTORS = "ancestors";
+
+    private static final String PROP_PARENTS = "parents";
 
     private final Session session;
 
@@ -55,7 +58,7 @@ public class SubjectProgenyEditor extends DefaultEditor
      * @param nodeBuilder the current node
      * @param session the session used to retrieve subjects by UUID
      */
-    public SubjectProgenyEditor(final NodeBuilder nodeBuilder, final Session session)
+    public SubjectAncestryEditor(final NodeBuilder nodeBuilder, final Session session)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.session = session;
@@ -69,13 +72,13 @@ public class SubjectProgenyEditor extends DefaultEditor
     public Editor childNodeAdded(final String name, final NodeState after)
         throws CommitFailedException
     {
-        return new SubjectProgenyEditor(this.currentNodeBuilder.getChildNode(name), this.session);
+        return new SubjectAncestryEditor(this.currentNodeBuilder.getChildNode(name), this.session);
     }
 
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
-        return new SubjectProgenyEditor(this.currentNodeBuilder.getChildNode(name), this.session);
+        return new SubjectAncestryEditor(this.currentNodeBuilder.getChildNode(name), this.session);
     }
 
     @Override
@@ -83,46 +86,40 @@ public class SubjectProgenyEditor extends DefaultEditor
     {
         if (isSubject(this.currentNodeBuilder)) {
             try {
-                computeProgeny();
+                computeAncestry();
             } catch (RepositoryException e) {
-                // This is not a fatal error, the subject progeny is not required for a functional application
-                LOGGER.warn("Unexpected exception while computing the progeny of subject {}",
+                // This is not a fatal error, the subject ancestry is not required for a functional application
+                LOGGER.warn("Unexpected exception while computing the ancestry of subject {}",
                     this.currentNodeBuilder.getString("jcr:uuid"));
             }
         }
     }
 
     /**
-     * Gather all children of a given node and store them in the {@code progeny} property.
+     * Gather all parents of a given node and store them in the {@code parents} property.
      *
      * @throws RepositoryException if accessing the repository fails
      */
-    private void computeProgeny() throws RepositoryException
+    private void computeAncestry() throws RepositoryException
     {
-        final List<String> identifiers = getProgeny(this.currentNodeBuilder);
+        final List<String> identifiers = new ArrayList<>();
+        Node parentNode = this.session.getNodeByIdentifier(this.currentNodeBuilder.getString("jcr:uuid"));
 
-        // Get&write progeny to the JCR repo
-        this.currentNodeBuilder.setProperty(PROP_PROGENY, identifiers, Type.WEAKREFERENCES);
-    }
-
-    /**
-     * Gather all identifiers from all the Subject/SubjectType children of the current node
-     * and store them as a string list.
-     *
-     * @throws RepositoryException if accessing the repository fails
-     */
-    private List<String> getProgeny(NodeBuilder node) throws RepositoryException
-    {
-        List<String> progeny = new ArrayList<>();
-
-        // Iterate through all children of this node
-        for (String childName : node.getChildNodeNames()) {
-            NodeBuilder childNode = node.getChildNode(childName);
-            progeny.add(childNode.getProperty("jcr:uuid").getValue(Type.STRING));
-            progeny.addAll(getProgeny(childNode));
+        // Iterate through all parents of this node
+        while (parentNode != null) {
+            parentNode = parentNode.getParent();
+            if (parentNode.hasProperty("jcr:primaryType") && isSubject(parentNode)) {
+                identifiers.add(parentNode.getProperty("jcr:uuid").getString());
+            } else {
+                parentNode = null;
+            }
         }
 
-        return progeny;
+        // Write the parents to the JCR repo (if > 0)
+        if (identifiers.size() > 0) {
+            this.currentNodeBuilder.setProperty(PROP_PARENTS, identifiers.get(0), Type.WEAKREFERENCE);
+            this.currentNodeBuilder.setProperty(PROP_ANCESTORS, identifiers, Type.WEAKREFERENCES);
+        }
     }
 
     /**
@@ -137,6 +134,17 @@ public class SubjectProgenyEditor extends DefaultEditor
     }
 
     /**
+     * Checks if the given node is a Subject or SubjectType node.
+     *
+     * @param node the JCR Node to check
+     * @return {@code true} if the node is a Subject/SubjectType node, {@code false} otherwise
+     */
+    private boolean isSubject(Node node) throws RepositoryException
+    {
+        return "lfs:Subject".equals(getNodeType(node)) || "lfs:SubjectType".equals(getNodeType(node));
+    }
+
+    /**
      * Retrieves the primary node type of a node, as a String.
      *
      * @param node the node whose type to retrieve
@@ -145,5 +153,16 @@ public class SubjectProgenyEditor extends DefaultEditor
     private String getNodeType(NodeBuilder node)
     {
         return node.getProperty("jcr:primaryType").getValue(Type.STRING);
+    }
+
+    /**
+     * Retrieves the primary node type of a node, as a String.
+     *
+     * @param node the node whose type to retrieve
+     * @return a string
+     */
+    private String getNodeType(Node node) throws RepositoryException
+    {
+        return node.getProperty("jcr:primaryType").getString();
     }
 }
