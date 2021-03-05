@@ -48,6 +48,7 @@ let QuestionnaireItemCard = (props) => {
     plain,
     data,
     onActionDone,
+    doHighlight,
     classes
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
@@ -55,10 +56,9 @@ let QuestionnaireItemCard = (props) => {
 
   const itemRef = useRef();
   // if autofocus is needed and specified in the url
-  const doHighlight = (location?.hash?.substr(1) == data["@path"]);
   // create a ref to store the question container DOM element
   useEffect(() => {
-    if (doHighlight) {
+    if (doHighlight || (location?.hash?.substr(1) == data["@path"])) {
       const timer = setTimeout(() => {
           itemRef?.current?.scrollIntoView({block: "center"});
         }, 500);
@@ -66,14 +66,16 @@ let QuestionnaireItemCard = (props) => {
     }
   }, [itemRef]);
 
-  let redirect = () => {
+  let fetchData = () => {
     setEditDialogOpen(false);
-    onActionDone();
-    props.history.push({
-      pathname: location?.pathname,
-      hash: data["@path"]
-    });
-  }
+    fetch(`${data["@path"]}.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        onActionDone(json);
+        itemRef?.current?.scrollIntoView({block: "center"});
+      })
+      .catch(() => onActionDone());
+  };
 
   return (
     <Card variant="outlined" ref={doHighlight ? itemRef : undefined} className={doHighlight ? classes.focusedQuestionnaireItem : ''}>
@@ -107,7 +109,7 @@ let QuestionnaireItemCard = (props) => {
                               data={data}
                               type={type}
                               isOpen={editDialogOpen}
-                              onClose={() => { redirect();}}
+                              onClose={() => { fetchData(); }}
                               onCancel={() => { setEditDialogOpen(false); }}
                             />
       }
