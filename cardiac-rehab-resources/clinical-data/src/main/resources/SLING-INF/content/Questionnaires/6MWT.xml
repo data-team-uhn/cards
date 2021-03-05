@@ -758,6 +758,16 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>minValue</name>
+					<value>6.0</value>
+					<type>Double</type>
+				</property>
+				<property>
+					<name>maxValue</name>
+					<value>20.0</value>
+					<type>Double</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -1121,6 +1131,16 @@
 					<name>description</name>
 					<value>6-20</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>minValue</name>
+					<value>6.0</value>
+					<type>Double</type>
+				</property>
+				<property>
+					<name>maxValue</name>
+					<value>20.0</value>
+					<type>Double</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
