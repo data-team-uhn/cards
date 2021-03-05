@@ -88,7 +88,6 @@ class VocabularyQuery extends React.Component {
 
     const inputEl = (<Input
       disabled={disabled}
-      variant='outlined'
       inputProps={{
         "aria-label": "Search"
       }}
@@ -134,10 +133,11 @@ class VocabularyQuery extends React.Component {
         {this.props.children}
 
         <div className={noMargin ? "" : classes.searchWrapper}>
+          <div className={isNested && classes.nestedSearchInput}>
           {noMargin ?
           inputEl
           :
-          <FormControl className={isNested ? classes.nestedSearchInput : classes.search}>
+          <FormControl className={classes.search}>
             <InputLabel
               classes={{
                 root: classes.searchLabel,
@@ -153,6 +153,7 @@ class VocabularyQuery extends React.Component {
           </FormControl>}
           <br />
           <LinearProgress className={classes.progressIndicator + " " + (this.state.suggestionsLoading ? "" : classes.inactiveProgress)}/>
+          </div>
         </div>
         {/* Suggestions list using Popper */}
         <Popper
