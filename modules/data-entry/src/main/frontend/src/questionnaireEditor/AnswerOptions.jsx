@@ -48,17 +48,17 @@ let AnswerOptions = (props) => {
   }, [data])
 
   let deleteOption = (index) => {
+    setDeletedOptions(old => {
+      let newDeletedOptions = old.slice();
+      newDeletedOptions.push(options[index]);
+      return newDeletedOptions;
+    });
+
     setOptions(oldOptions => {
       let newOptions = oldOptions.slice();
       newOptions.splice(index, 1);
       return newOptions;
-    })
-
-    setDeletedOptions(old => {
-      let newDeletedOptions = old.slice();
-      newDeletedOptions.push(value);
-      return newDeletedOptions;
-    })
+    });
   }
 
   let validateOption = (optionInput) => {
@@ -93,7 +93,7 @@ let AnswerOptions = (props) => {
       let newOption = {};
       newOption.value = sanitizeValue(inputs[0]);
       newOption["@path"] = path + "/" + newOption.value;
-      newOption.label = inputs[1].trim();
+      newOption.label = inputs[1] ? inputs[1].trim() : "";
 
       setOptions(oldValue => {
         var value = oldValue.slice();
@@ -117,6 +117,9 @@ let AnswerOptions = (props) => {
 
   return (
     <EditorInput name={objectKey}>
+      { deletedOptions.map((value, index) =>
+        <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
+      )}
       { options.map((value, index) =>
         <React.Fragment key={value.value}>
           <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
@@ -124,7 +127,7 @@ let AnswerOptions = (props) => {
           <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
           <TextField
             className={classes.answerOptionInput}
-            defaultValue={value.value + " = " + value.label}
+            defaultValue={value.label? value.value + " = " + value.label : value.value}
             onChange={(event) => { updateOption(index, event); }}
             multiline
             />
