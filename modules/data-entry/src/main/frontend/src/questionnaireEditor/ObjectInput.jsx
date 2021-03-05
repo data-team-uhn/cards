@@ -36,7 +36,8 @@ import QuestionComponentManager from "../questionnaireEditor/QuestionComponentMa
 
 let ObjectInput = (props) => {
   let { objectKey, value, data } = props;
-  let [ selectedValue, setSelectedValue ] = useState(data[objectKey] || '');
+  const defaultValue = data[objectKey] || (objectKey === "minAnswers") ? 0 : '';
+  let [ selectedValue, setSelectedValue ] = useState(defaultValue);
   
   return (
     <>
@@ -44,7 +45,7 @@ let ObjectInput = (props) => {
       <Select
         id={objectKey}
         name={objectKey}
-        defaultValue={data[objectKey] || ''}
+        defaultValue={defaultValue}
         onChange={(event) => {
           setSelectedValue(event.target.value);
         }}>

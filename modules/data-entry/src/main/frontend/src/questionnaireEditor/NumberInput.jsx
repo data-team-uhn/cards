@@ -34,8 +34,7 @@ import QuestionComponentManager from "./QuestionComponentManager";
 
 let NumberInput = (props) => {
   let { objectKey, data } = props;
-  let defaultToZero = ["minAnswers", "maxAnswers"].includes(objectKey) || objectKey.includes('maxPerSubject');
-  let defaultValue = defaultToZero ? 0 : '';
+  const defaultValue = props.value === "long" ? 0 : '';
   let [ value, setValue ] = useState(data[objectKey] || defaultValue);
 
   return (
@@ -48,7 +47,7 @@ let NumberInput = (props) => {
         placeholder={objectKey.includes('maxPerSubject') ? 'Unlimited' : ''}
         value={value}
         onChange={(event) => { setValue(event.target.value); }}
-        onBlur={(event) => { setValue(event.target.value ? event.target.value : 0); }}
+        onBlur={(event) => { setValue(event.target.value || defaultValue); }}
         InputProps={{
           inputProps: { 
             min: defaultValue 
