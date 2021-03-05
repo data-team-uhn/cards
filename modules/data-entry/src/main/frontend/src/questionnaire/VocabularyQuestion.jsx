@@ -82,7 +82,7 @@ function VocabularyQuestion(props) {
       >
       <VocabularySelector
         vocabularyFilter = {vocabularyFilter}
-        max = {maxAnswers}
+        max = {+maxAnswers}
         defaultSuggestions = {defaultSuggestions}
         source = {sourceVocabularies}
         selectionUpdated = {(count) => setCurrentAnswers(count)}
