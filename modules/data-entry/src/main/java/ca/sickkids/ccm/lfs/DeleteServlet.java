@@ -109,7 +109,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
         if (!isChild && !alreadyDeleting) {
             this.nodesToDelete.get().add(node);
         }
-        //this.iterateReferrers(node, this.markChildNodeDeleted, false);
         this.iterateChildren(node, this.markChildNodeDeleted, false);
     };
 
@@ -276,6 +275,9 @@ public class DeleteServlet extends SlingAllMethodsServlet
         while (references.hasNext()) {
             iterateReferrers(references.nextProperty().getParent(), consumer, true);
         }
+
+        // Also nab references through children
+        iterateChildren(node, consumer, false);
 
         if (includeRoot) {
             consumer.accept(node);
