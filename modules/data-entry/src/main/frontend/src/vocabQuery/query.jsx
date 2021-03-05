@@ -45,7 +45,7 @@ const MAX_RESULTS = 10;
 //
 // Optional arguments:
 //  disabled: Boolean representing whether or not this element is disabled
-//  searchDefault: Default text to display in search bar when nothing has been entered (default: 'Search')
+//  label: The label of the input, also displayed in in the search bar when nothing has been entered (default: 'Search')
 //  vocabularyFilter: Array of required ancestor elements, of which any term must be a descendent of
 //  overrideText: When not undefined, this will overwrite the contents of the search bar
 //  defaultValue: Default chosen term ID, which will be converted to the real ID when the vocabulary loads
@@ -84,7 +84,7 @@ class VocabularyQuery extends React.Component {
   }
 
   render() {
-    const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onInputFocus, placeholder, searchDefault, vocabularies } = this.props;
+    const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onInputFocus, placeholder, label, vocabularies } = this.props;
 
     const inputEl = (<Input
       disabled={disabled}
@@ -147,7 +147,7 @@ class VocabularyQuery extends React.Component {
               { /* Cover up a bug that causes the label to overlap the defaultValue:
                    if it has a displayed value and isn't focused, don't show the label
                  */ }
-              { (document.activeElement === this.anchorEl || (!defaultValue && !(this.anchorEl?.value))) ? searchDefault : ''}
+              { (document.activeElement === this.anchorEl || (!defaultValue && !(this.anchorEl?.value))) ? label : ''}
             </InputLabel>
             {inputEl}
           </FormControl>}
@@ -615,7 +615,7 @@ VocabularyQuery.propTypes = {
 
 VocabularyQuery.defaultProps = {
   vocabularies: ['hpo'],
-  searchDefault: 'Search',
+  label: 'Search',
   overrideText: '',
   clearOnClick: true
 };

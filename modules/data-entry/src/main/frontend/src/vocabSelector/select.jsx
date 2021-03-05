@@ -45,10 +45,10 @@ const IS_SELECTED_POS = 3;
 //  requiredAncestors: For vocabularies that support ancestries, supplies a required ancestor element. This
 //    can be used to restrict answers to be e.g. descendents of skin conditions
 //  defaultSuggestions: Default suggestions
-//  searchDefault: Default text to place in search bar before user input
+//  label: The label of the search input, also displayed in in the search bar when nothing has been entered
 // Other arguments are passed onto contained Thesaurus element
 function VocabularySelector(props) {
-  const {defaultSuggestions, existingAnswer, source, vocabularyFilter, max, selectionContainer, questionDefinition, searchDefault, classes, ...rest} = props;
+  const {defaultSuggestions, existingAnswer, source, vocabularyFilter, max, selectionContainer, questionDefinition, label, classes, ...rest} = props;
   const {selectionUpdated} = props;
 
   const [listChildren, setListChildren] = useState([]);
@@ -279,9 +279,9 @@ function VocabularySelector(props) {
         ref = {(ref) => {thesaurusRef = ref;}}
         disabled = {disabled}
         clearOnClick = {!isRadio}
-        searchDefault = {searchDefault || (hasDefaultOptions ? "Other (please specify)" : "")}
         defaultValue = {isRadio && radioSelect == radioValue ? radioName : undefined}
         onInputFocus = {() => {if (isRadio && radioSelect != radioValue) {addSelection(radioValue, radioName);}}}
+        label = {label || (hasDefaultOptions ? "Other (please specify)" : "")}
         isNested = {isRadio && hasDefaultOptions}
         {...rest}
       >
@@ -325,13 +325,13 @@ VocabularySelector.propTypes = {
     max: PropTypes.number.isRequired,
     requiredAncestors: PropTypes.array,
     defaultSuggestions: PropTypes.object,
-    searchDefault: PropTypes.string,
+    label: PropTypes.string,
 };
 
 VocabularySelector.defaultProps = {
     title: "VocabularySelector",
     max: 0,
-    searchDefault: ''
+    label: '',
 };
 
 export default withStyles(SelectorStyle)(VocabularySelector);
