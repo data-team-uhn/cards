@@ -45,6 +45,11 @@ function VocabularyEntry(props) {
 
   return (
     <React.Fragment>
+      { /* If it's single select, we only show the predefied options, and any user-entered option
+           will be displayed only in the input. If it's multi select, we also list the user-entered
+           values.
+         */ }
+      {(!isRadio || isPreselected) &&
       <ListItem key={name}>
           { /* This is either a Checkbox if this is a suggestion, or a button otherwise */
           isPreselected ?
@@ -75,7 +80,7 @@ function VocabularyEntry(props) {
                   label: classes.inputLabel
                 }}
               />
-            ) : (
+            ) : !isRadio && (
             <React.Fragment>
               <IconButton
                 onClick={() => {onClick(id, name)}}
@@ -94,6 +99,7 @@ function VocabularyEntry(props) {
           )
           }
       </ListItem>
+      }
     </React.Fragment>
   );
 };

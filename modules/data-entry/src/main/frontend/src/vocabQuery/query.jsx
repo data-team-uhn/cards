@@ -104,7 +104,10 @@ class VocabularyQuery extends React.Component {
           this.queryInput(this.anchorEl.value);
         } else if (event.key == 'ArrowDown') {
           // Move the focus to the suggestions list
-          if (this.menuRef.children.length > 0) {
+          // If the suggestions list isn't open yet, open it
+          if (!this.state.suggestionsVisible && !this.state.suggestionsLoading) {
+            this.queryInput(this.anchorEl.value);
+          } else if (this.menuRef.children.length > 0) {
             this.menuRef.children[0].focus();
           }
         }
@@ -113,14 +116,12 @@ class VocabularyQuery extends React.Component {
         if (onInputFocus !== undefined) {
           onInputFocus(status);
         }
-        this.delayLookup(status);
-        this.anchorEl.select();
       }}
       disabled={disabled}
       className={noMargin ? "" : classes.searchInput}
       multiline={true}
       endAdornment={(
-        <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}}>
+        <InputAdornment position="end" onClick={()=>{this.anchorEl.value ? this.queryInput(this.anchorEl.value) : this.anchorEl.focus();}}>
           <Search />
         </InputAdornment>
       )}
@@ -143,7 +144,10 @@ class VocabularyQuery extends React.Component {
                 shrink: classes.searchShrink,
               }}
             >
-              {searchDefault}
+              { /* Cover up a bug that causes the label to overlap the defaultValue:
+                   if it has a displayed value and isn't focused, don't show the label
+                 */ }
+              { (document.activeElement === this.anchorEl || (!defaultValue && !(this.anchorEl?.value))) ? searchDefault : ''}
             </InputLabel>
             {inputEl}
           </FormControl>}
@@ -560,7 +564,7 @@ class VocabularyQuery extends React.Component {
     if (this.props.clearOnClick) {
       this.anchorEl.value = "";
     }
-    this.anchorEl.select();
+    this.anchorEl.focus();
     this.setState({
       browserOpened: false,
       suggestionsVisible: false,

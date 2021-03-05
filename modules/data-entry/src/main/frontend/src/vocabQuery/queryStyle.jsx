@@ -154,6 +154,9 @@ const thesaurusStyle = theme => ({
     "& .MuiInputBase-root" : {
       width: "218px !important",
     },
+    "& .MuiInputAdornment-root .MuiSvgIcon-root": {
+      cursor: "pointer",
+    },
     "& .MuiLinearProgress-root": {
       marginLeft: theme.spacing(4),
     }

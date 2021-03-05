@@ -51,27 +51,54 @@ function VocabularySelector(props) {
   const {defaultSuggestions, existingAnswer, source, vocabularyFilter, max, selectionContainer, questionDefinition, searchDefault, classes, ...rest} = props;
   const {selectionUpdated} = props;
 
-  const [defaultListChildren, setDefaultListChildren] = useState([]);
   const [listChildren, setListChildren] = useState([]);
+  const [selectedListChildren, setSelectedListChildren] = useState([]);
   const [selected, setSelected] = useState(0);
   const [radioName, setRadioName] = useState("");
   const [radioSelect, setRadioSelect] = useState("");
   const [radioValue, setRadioValue] = useState("&nbsp;");
-  
-  const disabled = max > 1 && selected >= max;
+  const [disabled, setDisabled] = useState(false);
+
   const isRadio = max === 1;
-  const selectedListChildren = listChildren.filter( (element) => element[IS_SELECTED_POS] );
   const hasDefaultOptions = (Object.keys(defaultSuggestions || {}).length > 0);
 
+  // Populate option list when we load for the first time
   useEffect(() => {
-    selectionUpdated && selectionUpdated(selectedListChildren?.length || 0);
+    populateOptions();
+  }, []);
+
+  // Update selection based on the flags in listed options
+  useEffect(() => {
+    setSelectedListChildren(listChildren.filter( (element) => element[IS_SELECTED_POS] ));
+  }, [listChildren]);
+
+  // Update the number of selected options based on the selection
+  // If single select, also update the user option radio button selection, name and value
+  useEffect(() => {
+    setSelected(selectedListChildren?.length || 0);
+    setDisabled(max > 1 && selected >= max);
+    if (isRadio) {
+      let selectedOption = selectedListChildren?.[0];
+      if (selectedOption) {
+        setRadioSelect(selectedOption[ID_POS]);
+        if (!selectedOption[IS_PRESELECT_POS]) {
+          setRadioValue(selectedOption[ID_POS]);
+          setRadioName(selectedOption[NAME_POS]);
+        }
+      }
+    }
   }, [selectedListChildren]);
+
+  // Update disabled status based on number of selected options
+  useEffect(() => {
+    setDisabled(max > 1 && selected >= max);
+    selectionUpdated && selectionUpdated(selected);
+  }, [selected]);
 
   let thesaurusRef = null;
 
   let generateList = (disabled, isRadio) => {
     if (isRadio) {
-      var ghostSelected = radioSelect === "&nbsp;";
       return (
         <RadioGroup
           aria-label="selection"
@@ -87,9 +114,7 @@ function VocabularySelector(props) {
           <FormControlLabel
             control={
             <Radio
-              onChange={() => {setRadioSelect(radioValue)}}
-              onClick={() => {thesaurusRef.anchorEl.select(); setRadioSelect(radioValue)}}
-              disabled={!ghostSelected && disabled}
+              onClick={() => {thesaurusRef.anchorEl.select();}}
               className={classes.ghostRadiobox}
             />
             }
@@ -135,24 +160,10 @@ function VocabularySelector(props) {
 
   // Handle the user clicking on a radio button
   let changeRadio = (event) => {
-    setListChildren(defaultListChildren);
-    setSelected(1);
-    setRadioSelect(event.target.value);
+    addSelection(event.target.value);
   }
 
-  let handleThesaurus = (id, name) => {
-    var isRadio = max === 1;
-    if (isRadio) {
-      setRadioName(name);
-      setRadioValue(id);
-      setSelected(1);
-      setRadioSelect(id);
-    } else {
-      addSelection(id, name);
-    }
-  }
-
-  // Create a new child from the selection with parent
+  // Select a specific value
   let addSelection = (id, name) => {
     // Do not add anything if we are at our maximum number of selections
     if (selected >= max && max > 1 ) {
@@ -161,29 +172,28 @@ function VocabularySelector(props) {
 
     // Prevent closures from mucking up logic by placing everything in an updater function
     setListChildren((oldChildren) => {
-      // Do not add duplicates
-      if (oldChildren.some(element => {return element[ID_POS] === id})) {
-        return oldChildren;
+      // Do not add duplicates. If the option already exists, select it
+      var newChildren = oldChildren.map(element => {
+        // select if it was previously selected, and is not sigle select, or is added now
+        element[IS_SELECTED_POS] = element[IS_SELECTED_POS] && !isRadio || (element[ID_POS] == id);
+        return element;
+      });
+
+      // If the option already existed, there's nothing else to do
+      if (newChildren.some(element => {return element[ID_POS] === id})) {
+        return newChildren;
       }
 
       if (max == 1) {
         // If only 1 child is allowed, replace it instead of copying our array
-        var newChildren = defaultListChildren.slice();
-        newChildren.push([name, id, false, true]);
-        setSelected(1);
-        setRadioSelect(name);
-        return newChildren;
-      } else {
-        // As per React specs, we do not modify the state array directly, but slice and add
-        setSelected(num => num + 1);
-        let newChildren = oldChildren.slice();
-        newChildren.push([name, id, false, true]);
-        return newChildren;
+        newChildren = newChildren.filter(childData => childData[IS_PRESELECT_POS] == true);
       }
+      newChildren.push([name, id, false, true]);
+      return newChildren;
     });
   }
 
-  let populateDefaults = () => {
+  let populateOptions = () => {
     var newChildren = [];
     const hasExistingAnswers = existingAnswer && existingAnswer.length > 1 && existingAnswer[VALUE_POS].value;
     // The existing value, if present, can either be a single value or an array of values; force it into an array
@@ -199,7 +209,7 @@ function VocabularySelector(props) {
       // Determine the name from our vocab
       var escapedId = id.replace(":", "");  // Vocabulary terms have no colons in their JCR node names
       var url = new URL(`${id}.json`, window.location.origin);
-      MakeRequest(url, (status, data) => addDefaultSuggestion(status, data, id));
+      MakeRequest(url, (status, data) => addOption(status, data, id, true));
     };
 
     // If any answers are existing (i.e. we are loading an old form), also populate these
@@ -212,14 +222,14 @@ function VocabularySelector(props) {
         // Determine the name from our vocab
         var escapedId = id.replace(":", "");  // Vocabulary terms have no colons in their JCR node names
         var url = new URL(`${id}.json`, window.location.origin);
-        MakeRequest(url, (status, data) => addDefaultSuggestion(status, data, id, false));
+        MakeRequest(url, (status, data) => addOption(status, data, id, false));
       });
     }
 
     setListChildren(newChildren);
   }
 
-  let addDefaultSuggestion = (status, data, id, isSuggestion) => {
+  let addOption = (status, data, id, isSuggestion) => {
     const hasExistingAnswers = existingAnswer && existingAnswer.length > 1 && existingAnswer[VALUE_POS].value;
     const existingAnswers = existingAnswer && existingAnswer[VALUE_POS].value;
     var name;
@@ -235,7 +245,6 @@ function VocabularySelector(props) {
 
     // Avoid the race condition by using updater functions
     var newChild = [name, id, isSuggestion, hasExistingAnswers && existingAnswers.includes(id)];
-    setDefaultListChildren(oldDefaultListChildren => {var newList = oldDefaultListChildren.slice(); newList.push(newChild); return(newList);});
     setListChildren(oldListChildren => {var newList = oldListChildren.slice(); newList.push(newChild); return(newList);});
   }
 
@@ -253,34 +262,26 @@ function VocabularySelector(props) {
           })
         }
       );
-      if (wasSelected) {
-        setSelected(oldSelected => oldSelected - 1);
-      } else {
-        setSelected(oldSelected => oldSelected + 1);
-      }
       return;
     }
 
     var newChildren = listChildren.filter(element => element[ID_POS] != id);
     setListChildren(newChildren);
-    setSelected(selected - 1);
   }
-
-  // Populate defaults when we load for the first time
-  useEffect(() => {populateDefaults()}, [JSON.stringify(defaultSuggestions)]);
 
   return (
     <React.Fragment>
       <VocabularyQuery
-        onClick = {handleThesaurus}
+        onClick = {addSelection}
         questionDefinition = {questionDefinition}
         vocabularyFilter = {vocabularyFilter}
         vocabularies = {source}
         ref = {(ref) => {thesaurusRef = ref;}}
         disabled = {disabled}
         clearOnClick = {!isRadio}
-        onInputFocus = {() => {setRadioSelect(radioValue);}}
         searchDefault = {searchDefault || (hasDefaultOptions ? "Other (please specify)" : "")}
+        defaultValue = {isRadio && radioSelect == radioValue ? radioName : undefined}
+        onInputFocus = {() => {if (isRadio && radioSelect != radioValue) {addSelection(radioValue, radioName);}}}
         isNested = {isRadio && hasDefaultOptions}
         {...rest}
       >
