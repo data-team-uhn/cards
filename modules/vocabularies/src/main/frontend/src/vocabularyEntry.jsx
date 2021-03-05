@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React from "react";
+import React, { useContext } from "react";
 
 import {
   Dialog,
@@ -35,6 +35,7 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import VocabularyDetails from "./vocabularyDetails"
 import VocabularyAction from "./vocabularyAction"
+import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const Config = require("./config.json");
 const vocabLinks = require('./vocabularyLinks.json');
@@ -83,6 +84,7 @@ export default function VocabularyEntry(props) {
   const classes = useStyles();
   const date = new Date(vocabulary.released);
   const bodyTypography = Config["tableBodyTypography"];
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   const handleClose = () => {setError(false)};
 
@@ -92,7 +94,7 @@ export default function VocabularyEntry(props) {
     setPhase(Phase["Installing"]);
     props.setPhase(Phase["Installing"]);
 
-    fetch(
+    fetchWithReLogin(globalLoginDisplay,
       vocabLinks["install"]["base"] + "&identifier=" + vocabulary.acronym +
       Object.keys(vocabLinks["install"]["params"]).map(
         key => ("&" + key + "=" + vocabLinks["install"]["params"][key])
@@ -131,7 +133,7 @@ export default function VocabularyEntry(props) {
     var badResponse = false;
     props.setPhase(Phase["Uninstalling"]);
 
-    fetch(vocabLinks["uninstall"]["base"] + vocabulary.acronym, {method: "DELETE"})
+    fetchWithReLogin(globalLoginDisplay, vocabLinks["uninstall"]["base"] + vocabulary.acronym, {method: "DELETE"})
     .then((resp) => {
       const code = resp.status;
       if(Math.floor(code/100) !== 2) {
