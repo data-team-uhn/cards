@@ -381,6 +381,14 @@ def csv_to_json(title):
                     parent[question]['minValue'] = float(row['Min Value'])
                 if 'Max Value' in row and row['Max Value']:
                     parent[question]['maxValue'] = float(row['Max Value'])
+                if row['Field Type'].endswith("(single)"):
+                    parent[question]['maxAnswers'] = 1
+                if 'Compact' in row and row['Compact'] != '':
+                    value = row['Compact']
+                    if value[0].lower() == "y":
+                        parent[question]['compact'] = True
+                # Response Required should be the last conditional property.
+                # Otherwise, parent[question] may error out if a conditional section has been created
                 if 'Response Required?' in row and row['Response Required?']:
                     value = row['Response Required?']
                     if value[0].lower() == "y":
@@ -394,13 +402,6 @@ def csv_to_json(title):
                         prepare_conditional_string(value [5:], parent[question + 'Section'])
                         # The presence of a conditional will also prevent the question from being inserted into the main thing
                         del parent[question]
-                if row['Field Type'].endswith("(single)"):
-                    parent[question]['maxAnswers'] = 1
-                if 'Compact' in row and row['Compact'] != '':
-                    value = row['Compact']
-                    if value[0].lower() == "y":
-                        parent[question]['compact'] = True
-
     if len(section) > 0:
         questionnaire[section['label']] = dict.copy(section)
     questionnaires.append(dict.copy(questionnaire))
