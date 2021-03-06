@@ -339,7 +339,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>If applicable, explain why a CPET was not performed:</value>
+					<value>Explain why a CPET was not performed:</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -694,245 +694,155 @@
 			</node>
 		</node>
 		<node>
-			<name>cpet_bb2Section</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<name>cpet_bb2</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Did the patient take a beta-blocker today?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 			<node>
-				<name>cpet_bb2</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<name>True</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Did the patient take a beta-blocker today?</value>
+					<name>label</name>
+					<value>True</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>boolean</value>
+					<name>value</name>
+					<value>True</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>True</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>True</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>True</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>False</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>False</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>False</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Not Applicable</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Not Applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Not Applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>notApplicable</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
 			</node>
 			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<name>False</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>=</value>
+					<name>label</name>
+					<value>False</value>
 					<type>String</type>
 				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet_bb2</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
+				<property>
+					<name>value</name>
+					<value>False</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Not Applicable</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Not Applicable</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Not Applicable</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 		<node>
-			<name>cpet_ccb2Section</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<name>cpet_ccb2</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Did the patient take a calcium channel blocker today?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 			<node>
-				<name>cpet_ccb2</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<name>True</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Did the patient take a calcium channel blocker today?</value>
+					<name>label</name>
+					<value>True</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>boolean</value>
+					<name>value</name>
+					<value>True</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>True</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>True</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>True</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>False</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>False</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>False</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Not Applicable</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Not Applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Not Applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>notApplicable</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
 			</node>
 			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<name>False</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>=</value>
+					<name>label</name>
+					<value>False</value>
 					<type>String</type>
 				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet_ccb2</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
+				<property>
+					<name>value</name>
+					<value>False</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Not Applicable</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Not Applicable</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Not Applicable</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 	</node>
@@ -2745,70 +2655,6 @@ Normal = less than 34 at anaerobic threshold
 					<value>Atrial fibrillation</value>
 					<type>String</type>
 				</property>
-			</node>
-		</node>
-		<node>
-			<name>cpet_other_max_ecgSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
-			<node>
-				<name>cpet_other_max_ecg</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Explain "other" max ECG interpretation</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>previous</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>'other'</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
 			</node>
 		</node>
 		<node>

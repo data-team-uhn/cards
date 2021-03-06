@@ -268,7 +268,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>If yes, type of clinical test:</value>
+				<value>Type of clinical test:</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -584,7 +584,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>If yes, type of procedure:</value>
+				<value>Type of procedure:</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -719,7 +719,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>If yes, type of intervention:</value>
+				<value>Type of intervention:</value>
 				<type>String</type>
 			</property>
 			<property>
