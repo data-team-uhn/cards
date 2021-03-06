@@ -339,7 +339,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>If applicable, explain why a CPET was not performed:</value>
+					<value>Explain why a CPET was not performed:</value>
 					<type>String</type>
 				</property>
 				<property>
