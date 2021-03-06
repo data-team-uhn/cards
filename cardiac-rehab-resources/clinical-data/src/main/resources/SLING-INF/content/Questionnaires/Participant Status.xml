@@ -120,7 +120,7 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>On Hold</value>
+					<value>On hold</value>
 					<type>String</type>
 				</property>
 				<property>
