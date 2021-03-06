@@ -1108,11 +1108,6 @@
 				<value>Weighted sum of Yes replies in dasi1-dasi12</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
 		</node>
 		<node>
 			<name>vo2_peak</name>

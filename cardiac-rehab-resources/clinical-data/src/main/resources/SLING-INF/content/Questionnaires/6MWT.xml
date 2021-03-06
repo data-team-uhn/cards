@@ -201,11 +201,6 @@
 				<value>years</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
 		</node>
 	</node>
 	<node>
