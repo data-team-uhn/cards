@@ -606,21 +606,24 @@ export default function VariantFilesContainer() {
   let assembleJson = (file, csvData) => {
       let json = {};
 
+      let subjectPath = file.subject.path.replace("/Subjects", "Subjects");
+      let tumorPath = file.tumor.path.replace("/Subjects/", "");
+      let regionPath = file.region.path.replace("/Subjects/", "");
       if (!file.subject.existed) {
-        json[file.subject.path.replace("/Subjects", "Subjects")] = generateSubjectJson("Patient", file.subject.id);
+        json[subjectPath] = generateSubjectJson("Patient", file.subject.id);
       }
       if (!file.tumor.existed) {
-        json[file.tumor.path.replace("/Subjects", "Subjects")] = generateSubjectJson("Patient/Tumor", file.tumor.id, file.subject.path);
+        json[subjectPath][tumorPath] = generateSubjectJson("Patient/Tumor", file.tumor.id, file.subject.path);
       }
       if (file.region && !file.region.existed) {
-        json[file.region.path.replace("/Subjects", "Subjects")] = generateSubjectJson("Patient/Tumor/TumorRegion", file.region.id, file.tumor.path);
+        json[subjectPath][tumorPath][regionPath] = generateSubjectJson("Patient/Tumor/TumorRegion", file.region.id, file.tumor.path);
       }
 
       let formInfo = {};
       formInfo["jcr:primaryType"] = "lfs:Form";
       formInfo["jcr:reference:questionnaire"] = "/Questionnaires/SomaticVariants";
       // The subject of the questionnaire is the region
-      formInfo["jcr:reference:subject"] = file?.region?.path || file.tumor.path;
+      formInfo["jcr:reference:subject"] = `/${subjectPath}/${tumorPath}` + (file?.region?.path ? `/${regionPath}` : "");
 
       let fileInfo = {};
       fileInfo["jcr:primaryType"] = "lfs:SomaticVariantsAnswer";
@@ -687,6 +690,9 @@ export default function VariantFilesContainer() {
       { selectedFiles.map( (file, i) => {
 
           const upprogress = uploadProgress ? uploadProgress[file.name] : null;
+          let subjectPath = file.subject.path.replace("/Subjects", "Subjects");
+          let tumorPath = `${subjectPath}/${file.tumor.path.replace(new RegExp(".+/"), "")}`;
+          let regionPath = `${tumorPath}/${file.region.path.replace(new RegExp(".+/"), "")}`;
 
           return (
             <div key={file.name} className={classes.fileInfo}>
@@ -704,9 +710,9 @@ export default function VariantFilesContainer() {
               </div>
               { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ? 
                 <Typography className={classes.fileDetail}>
-                  Subject id: <Link href={file.subject.path.replace("/Subjects", "Subjects")} target="_blank"> {file.subject.id} </Link>
-                  Tumor nb: <Link href={file.tumor.path.replace("/Subjects", "Subjects")} target="_blank"> {file.tumor.id} </Link>
-                  { file?.region?.path && <span>Region nb: <Link href={file.region.path.replace("/Subjects", "Subjects")} target="_blank"> {file.region.id} </Link> </span> }
+                  Subject id: <Link href={subjectPath} target="_blank"> {file.subject.id} </Link>
+                  Tumor nb: <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
+                  { file?.region?.path && <span>Region nb: <Link href={regionPath} target="_blank"> {file.region.id} </Link> </span> }
                   { file.formPath && <span>Form: <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank"> {file.formPath.replace("/Forms/", "")} </Link></span> }
                 </Typography>
               : <span>
