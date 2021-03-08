@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.jcr.Node;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -35,13 +36,12 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.sickkids.ccm.lfs.vocabularies.VocabularyBioPortalApiKeyServlet;
 import ca.sickkids.ccm.lfs.vocabularies.spi.RepositoryHandler;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescription;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescriptionBuilder;
@@ -74,10 +74,10 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
     private static final String REQUEST_DOWNLOAD_FORMAT_RDF =
         "&download_format=rdf";
 
-    private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
+    /** OS environment variable which has the api key for bioontology portal. */
+    private static final String APIKEY_ENVIRONMENT_VARIABLE = "BIOPORTAL_APIKEY";
 
-    @Reference
-    private VocabularyBioPortalApiKeyServlet apiKey;
+    private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
 
     @Override
     public String getRepositoryName()
@@ -224,10 +224,46 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
      */
     private String getRequestConfiguration()
     {
-        String key = this.apiKey.getAPIKeyFromNode(this.resolver.get());
+        String key = this.getAPIKeyFromNode(this.resolver.get());
         if ("".equals(key)) {
-            key = this.apiKey.getAPIKeyFromEnvironment();
+            key = this.getAPIKeyFromEnvironment();
         }
         return REQUEST_CONFIGURATION + key;
+    }
+
+    /**
+     * Retrieves BioPortal API key from the OS environment variable.
+     * If the environment variable is not specified returns an empty string.
+     *
+     * @return BioPortal API key
+     */
+    public String getAPIKeyFromEnvironment()
+    {
+        String apiKey = System.getenv(APIKEY_ENVIRONMENT_VARIABLE);
+        apiKey = StringUtils.isBlank(apiKey) ? "" : apiKey;
+        LOGGER.info("BioPortal API key as set in the OS environment: [{}]", apiKey);
+        return apiKey;
+    }
+
+    /**
+     * Retrieves BioPortal API key from the node. If the key is not specified returns an empty string.
+     *
+     * @param resourceResolver resource resolver
+     * @return BioPortal API key
+     */
+    public String getAPIKeyFromNode(ResourceResolver resourceResolver)
+    {
+        String resourcePath = "/libs/lfs/conf/BioportalApiKey";
+        String apiKey = "";
+
+        try {
+            Resource res = resourceResolver.getResource(resourcePath);
+            Node keyNode = res.adaptTo(Node.class);
+            apiKey = keyNode.getProperty("key").getString();
+            LOGGER.info("BioPortal API key as set in the BioportalApiKey node: [{}]", apiKey);
+        } catch (Exception e) {
+            LOGGER.error("Failed to load BioPortal API key from node: {}", e.getMessage(), e);
+        }
+        return apiKey;
     }
 }
