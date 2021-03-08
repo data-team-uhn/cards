@@ -133,7 +133,7 @@ class VocabularyQuery extends React.Component {
         {this.props.children}
 
         <div className={noMargin ? "" : classes.searchWrapper}>
-          <div className={isNested && classes.nestedSearchInput}>
+          <div className={isNested ? classes.nestedSearchInput : ""}>
           {noMargin ?
           inputEl
           :

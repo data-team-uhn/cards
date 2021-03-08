@@ -55,8 +55,8 @@ function VocabularySelector(props) {
   const [selectedListChildren, setSelectedListChildren] = useState([]);
   const [selected, setSelected] = useState(0);
   const [radioName, setRadioName] = useState("");
-  const [radioSelect, setRadioSelect] = useState("");
-  const [radioValue, setRadioValue] = useState("&nbsp;");
+  const [radioSelect, setRadioSelect] = useState(null);
+  const [radioValue, setRadioValue] = useState("");
   const [disabled, setDisabled] = useState(false);
 
   const isRadio = max === 1;
