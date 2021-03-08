@@ -54,6 +54,7 @@ function VocabularyEntry(props) {
                   isRadio ?
                   (
                     <Radio
+                      name={id}
                       onChange={() => {onClick(id, name, checked);}}
                       disabled={!checked && disabled}
                       className={classes.checkbox}

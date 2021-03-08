@@ -349,7 +349,7 @@ function MultipleChoice(props) {
         {instructions}
         <RadioGroup
           aria-label="selection"
-          name="selection"
+          name={questionName}
           className={classes.selectionList}
           value={selection.length > 0 && selection[0][VALUE_POS]}
         >
@@ -446,6 +446,7 @@ function ResponseChild(props) {
                   isRadio ?
                   (
                     <Radio
+                      name={id}
                       onChange={() => {onClick(id, name, checked);}}
                       disabled={!checked && disabled}
                       className={classes.checkbox}

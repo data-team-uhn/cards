@@ -75,7 +75,7 @@ function VocabularySelector(props) {
       return (
         <RadioGroup
           aria-label="selection"
-          name="selection"
+          name={questionDefinition['@name']}
           className={classes.selectionList}
           value={radioSelect}
           onChange={changeRadio}
