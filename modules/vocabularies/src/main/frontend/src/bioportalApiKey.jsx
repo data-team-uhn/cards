@@ -42,7 +42,6 @@ export default function fetchBioPortalApiKey(globalLoginDisplay, func, errorHand
   }
 
   fetchWithReLogin(globalLoginDisplay, APIKEY_SERVLET_URL)
-  // fetch(APIKEY_SERVLET_URL)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(parseKey)
       .catch(errorHandler);
@@ -70,7 +69,6 @@ export function BioPortalApiKey(props) {
     var request_data = new FormData();
     request_data.append('key', customApiKey);
     fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
-    // fetch(URL, { method: 'POST', body: request_data })
       .then((response) => response.ok ? response : Promise.reject(response))
       .then((data) => {
           updateKey(customApiKey);

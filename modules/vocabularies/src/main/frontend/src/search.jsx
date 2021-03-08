@@ -109,7 +109,7 @@ export default function Search(props) {
         let url = new URL(vocabLinks["recommender"]["base"]);
         url.searchParams.set("apikey", apiKey);
         url.searchParams.set("input", encodeURIComponent(keywords));
-        fetch(url)
+        fetchWithReLogin(globalLoginDisplay, url)
           .then((response) => (response.ok ? response.json() : Promise.reject(response)))
           .then((data) => {
             props.concatParentAcronymList(extractList(data));
