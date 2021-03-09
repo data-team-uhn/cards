@@ -345,7 +345,7 @@ class VocabularyQuery extends React.Component {
       return;
     }
     var url = new URL(`./${selectedVocab}.search.json`, REST_URL);
-    url.searchParams.set("suggest", input);
+    url.searchParams.set("suggest", input.replace(/[\W_]/g,''));
 
     //Are there any filters that should be associated with this request?
     if (this.props?.questionDefinition?.vocabularyFilters?.[selectedVocab]) {
