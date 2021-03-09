@@ -72,7 +72,6 @@ let QuestionnaireItemCard = (props) => {
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         onActionDone(json);
-        itemRef?.current?.scrollIntoView({block: "center"});
       })
       .catch(() => onActionDone());
   };
