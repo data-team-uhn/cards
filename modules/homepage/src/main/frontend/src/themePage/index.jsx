@@ -31,6 +31,7 @@ import Page from "./Page";
 import PageStart from "./PageStart/PageStart";
 import IndexStyle from "./indexStyle.jsx";
 import DialogueLoginContainer, { GlobalLoginContext } from "../login/loginDialogue.js";
+import AppContext from "../AppContext.jsx";
 
 class Main extends React.Component {
   constructor(props) {
@@ -103,6 +104,7 @@ class Main extends React.Component {
     const { classes, ...rest } = this.props;
 
     return (
+      <AppContext>
       <MuiThemeProvider theme={appTheme}>
       <React.Fragment>
       <GlobalLoginContext.Provider
@@ -173,6 +175,7 @@ class Main extends React.Component {
       </GlobalLoginContext.Provider>
       </React.Fragment>
       </MuiThemeProvider>
+      </AppContext>
     );
   }
 }

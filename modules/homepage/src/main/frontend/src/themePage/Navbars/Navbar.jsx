@@ -21,12 +21,16 @@ import Menu from "@material-ui/icons/Menu";
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
 
 import headerStyle from "../../headerStyle.jsx";
+import { useAppContext } from "../../AppContext.jsx";
 
 function Header({ ...props }) {
   const { classes, color } = props;
   const appBarClasses = classNames({
     [" " + classes[color]]: color
   });
+
+  let loginContext = useAppContext("LoginContext");
+  console.log("Got loginContext: ", loginContext);
 
   return (
     <AppBar className={classes.appBar + appBarClasses}>
