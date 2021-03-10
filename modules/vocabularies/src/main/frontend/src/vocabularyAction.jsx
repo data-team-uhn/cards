@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 import {
   Button,
@@ -26,11 +26,13 @@ import {
   DialogContent,
   DialogTitle,
   CircularProgress,
-  List, ListItem, ListItemText, 
+  List, ListItem, ListItemText,
   makeStyles,
   Typography,
   Tooltip
 } from "@material-ui/core";
+
+import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const Phase = require("./phaseCodes.json");
 
@@ -89,11 +91,13 @@ export default function VocabularyAction(props) {
   const handleClose = () => {setDisplayPopup(false);}
   const handleUninstall = () => {setDisplayPopup(false); props.uninstall();}
 
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
   let fetchQuestionnaires = () => {
     if (questionnaires.length === 0) {
       // Send a fetch request to determine the questionnaires available
       const query = `select n.* from [lfs:Questionnaire] as n inner join [lfs:Question] as q on isdescendantnode(q, n) where contains(q.sourceVocabularies, '${props.acronym}')`;
-      fetch(`/query?query=${encodeURIComponent(query)}&limit=100`)
+      fetchWithReLogin(globalLoginDisplay, `/query?query=${encodeURIComponent(query)}&limit=100`)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {
           setQuestionnaires(json["rows"]);
@@ -118,7 +122,7 @@ export default function VocabularyAction(props) {
       let aggregatedQuestions = [];
       let i = 0;
       questionnairesData.forEach( (questionnaire) => {
-        fetch(`${questionnaire["@path"]}.deep.json`)
+        fetchWithReLogin(globalLoginDisplay, `${questionnaire["@path"]}.deep.json`)
           .then((response) => response.ok ? response.json() : Promise.reject(response))
           .then((data) => {
             aggregatedQuestions = aggregatedQuestions.concat(getVocabularyQuestions(data, questionnaire.title));
@@ -171,7 +175,7 @@ export default function VocabularyAction(props) {
         <Tooltip title="Remove this vocabulary">
           <Button onClick={props.uninstall} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
         </Tooltip>
-      </React.Fragment> 
+      </React.Fragment>
     )}
     {(props.phase == Phase["Uninstalling"]) && (
       <span className={classes.wrapper}>
