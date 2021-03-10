@@ -29,7 +29,7 @@ import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineDot from '@material-ui/lab/TimelineDot';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 
-import { formatDateAnswer } from "./DateQuestion.jsx";
+import { formatDateAnswer } from "./DateQuestionUtilities.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { displayQuestion, handleDisplay, ENTRY_TYPES } from "./Subject.jsx";
@@ -190,7 +190,8 @@ function SubjectTimeline(props) {
 
 function DateTimelineEntry(classes, data, index, length, nextDateAnswer) {
   let dateAnswer = data.date;
-  let dateText = formatDateAnswer(dateAnswer.question?.dateFormat, dateAnswer.value);
+  // let dateText = formatDateAnswer(dateAnswer.question?.dateFormat, dateAnswer.value);
+  let dateText = dateAnswer.value;
   let questionTitle = dateAnswer.question?.text;
 
   // Strip unwanted strings from the question title

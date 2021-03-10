@@ -232,6 +232,7 @@ const questionnaireStyle = theme => ({
           width: "auto",
         },
       },
+    },
     timelinePaper: {
         padding: "8px 16px",
         marginBottom: "40px"
