@@ -131,7 +131,7 @@ function Subject(props) {
           New form for this Subject
         </NewFormDialog>
       </div>
-      <SubjectContainer id={currentSubjectId} key={currentSubjectId}  classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject} pageSize={pageSize}/>
+      <SubjectContainer path={`/Subjects/${currentSubjectId}`} key={currentSubjectId} classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject} pageSize={pageSize}/>
     </React.Fragment>
   );
 }
@@ -140,7 +140,7 @@ function Subject(props) {
  * Component that recursively gets and displays the selected subject and its related SubjectTypes
  */
 function SubjectContainer(props) {
-  let { id, classes, level, maxDisplayed, pageSize, getSubject } = props;
+  let { path, classes, level, maxDisplayed, pageSize, getSubject } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -160,7 +160,8 @@ function SubjectContainer(props) {
   // such as authorship and versioning information.
   // Once the data arrives from the server, it will be stored in the `data` state variable.
   let fetchData = () => {
-    fetchWithReLogin(globalLoginDisplay, `/Subjects/${id}.deep.json`)
+    let strippedPath = path.endsWith('/') ? path.slice(0, -1) : path;
+    fetchWithReLogin(globalLoginDisplay, `${strippedPath}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleResponse)
       .catch(handleError);
@@ -223,13 +224,13 @@ function SubjectContainer(props) {
 
   return (
     data && <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={data} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}}/>
+      <SubjectMember classes={classes} id={path} level={currentLevel} data={data} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}}/>
       {relatedSubjects && relatedSubjects.length > 0 ?
         (<Grid item xs={12} className={classes.subjectNestedContainer}>
           {relatedSubjects.map( (subject, i) => {
             // Render component again for each related subject
             return(
-              <SubjectContainer key={i} classes={classes} id={subject["@name"]} level={currentLevel+1} maxDisplayed={maxDisplayed} pageSize={pageSize}/>
+              <SubjectContainer key={i} classes={classes} path={subject["@path"]} level={currentLevel+1} maxDisplayed={maxDisplayed} pageSize={pageSize}/>
             )
           })}
         </Grid>

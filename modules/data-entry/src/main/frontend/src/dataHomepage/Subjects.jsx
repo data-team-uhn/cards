@@ -60,8 +60,6 @@ function Subjects(props) {
   const { classes } = props;
   // fix issue with classes
 
-  // When a new subject is added, state will be updated and trigger a livetable refresh
-  const [ requestFetchData, setRequestFetchData ] = useState(0);
   // subject types configured on the system
   let [ subjectTypes, setSubjectTypes ] = React.useState([]);
   let [ columns, setColumns ] = React.useState(tableColumns);

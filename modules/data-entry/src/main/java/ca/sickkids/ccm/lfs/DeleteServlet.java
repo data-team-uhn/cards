@@ -22,7 +22,9 @@ package ca.sickkids.ccm.lfs;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
@@ -71,8 +73,15 @@ public class DeleteServlet extends SlingAllMethodsServlet
     private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
 
     /** A list of all nodes traversed by {@code traverseNode}. */
-    // private final ThreadLocal<List<Node>> nodesTraversed = new ThreadLocal<>();
     private final ThreadLocal<List<Node>> nodesTraversed = ThreadLocal.withInitial(() -> new ArrayList<>());
+
+    /** A set of all nodes that should be deleted. */
+    private final ThreadLocal<Set<Node>> nodesToDelete = ThreadLocal.withInitial(() -> new HashSet<>());
+
+    /** A set of all nodes that are children of nodes in {@code nodesToDelete}. */
+    private final ThreadLocal<Set<Node>> childNodesDeleted = ThreadLocal.withInitial(() -> new HashSet<>());
+
+    private final ThreadLocal<Node> childNodeExamined = new ThreadLocal<>();
 
     /**
      * A function that operates on a {@link Node}. As opposed to a simple {@code Consumer}, it can forward a
@@ -94,9 +103,14 @@ public class DeleteServlet extends SlingAllMethodsServlet
      * Mark a node for deletion upon session save.
      */
     private NodeConsumer deleteNode = (node) -> {
-        node.remove();
+        // Keep track of each child node we've already deleted
+        boolean isChild = nodeSetContains(this.childNodesDeleted.get(), node) != null;
+        boolean alreadyDeleting = nodeSetContains(this.nodesToDelete.get(), node) != null;
+        if (!isChild && !alreadyDeleting) {
+            this.nodesToDelete.get().add(node);
+        }
+        this.iterateChildren(node, this.markChildNodeDeleted, false);
     };
-
 
     /**
      * Add a node to a list of traversed nodes.
@@ -104,6 +118,36 @@ public class DeleteServlet extends SlingAllMethodsServlet
     private NodeConsumer traverseNode = (node) -> {
         this.nodesTraversed.get().add(node);
     };
+
+    private NodeConsumer markChildNodeDeleted = (node) -> {
+        this.childNodesDeleted.get().add(node);
+
+        // Attempting to delete this node will fail -- remove it
+        // contains() appears to not be working, so we'll unroll the equality here
+        Node toRemove = nodeSetContains(this.nodesToDelete.get(), node);
+        if (toRemove != null) {
+            this.nodesToDelete.get().remove(toRemove);
+        }
+    };
+
+    /**
+     * Determine whether or not a set contains a particular node.
+     * This is necessary because contains() seems to fail to recognize the same node
+     * that was obtained in two different ways.
+     *
+     * @param includeRoot whether or not to include the root node as a child
+     */
+    private Node nodeSetContains(Set<Node> set, Node node)
+        throws RepositoryException
+    {
+        for (Node n : set) {
+            if (n.getPath().equals(node.getPath())) {
+                return n;
+            }
+        }
+
+        return null;
+    }
 
     @Override
     public void doDelete(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
@@ -113,6 +157,9 @@ public class DeleteServlet extends SlingAllMethodsServlet
             final ResourceResolver resourceResolver = request.getResourceResolver();
             this.resolver.set(resourceResolver);
             this.nodesTraversed.set(new ArrayList<Node>());
+            this.nodesToDelete.set(new HashSet<Node>());
+            this.childNodesDeleted.set(new HashSet<Node>());
+            Set<Node> parentNodes = new HashSet<Node>();
 
             final String path = request.getResource().getPath();
             final Boolean recursive = Boolean.parseBoolean(request.getParameter("recursive"));
@@ -120,11 +167,30 @@ public class DeleteServlet extends SlingAllMethodsServlet
             Node node = request.getResource().adaptTo(Node.class);
             if (recursive) {
                 handleRecursiveDeleteChildren(node);
-                this.resolver.get().adaptTo(Session.class).save();
             } else {
                 handleDelete(response, node);
             }
+
+            // Delete all of our pending nodes, checking out the parent to avoid version conflict issues
+            for (Node n : this.nodesToDelete.get()) {
+                Node parent = n.getParent();
+                if (parent.isNodeType("mix:versionable")) {
+                    parent.checkout();
+                    n.remove();
+                    parentNodes.add(parent);
+                } else {
+                    n.remove();
+                }
+            }
+
+            this.resolver.get().adaptTo(Session.class).save();
+
+            // Check each parent back in
+            for (Node parent : parentNodes) {
+                parent.checkin();
+            }
         } catch (AccessDeniedException e) {
+            LOGGER.error("AccessDeniedException trying to delete node: {}", e.getMessage(), e);
             sendJsonError(response, SlingHttpServletResponse.SC_UNAUTHORIZED);
         } catch (RepositoryException e) {
             LOGGER.error("Unknown RepositoryException trying to delete node: {}", e.getMessage(), e);
@@ -151,7 +217,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
         iterateReferrers(node, this.traverseNode);
 
         if (this.nodesTraversed.get().size() == 1) {
-            node.remove();
+            this.deleteNode.accept(node);
             this.resolver.get().adaptTo(Session.class).save();
         } else {
             // Will not be able to delete node due to references. Inform user.
@@ -196,6 +262,57 @@ public class DeleteServlet extends SlingAllMethodsServlet
      *
      * @param node the node to have its referrers and self operated on
      * @param consumer the function to be called on each node
+     * @param includeRoot if true, the consumer will be called on the node itself in addition to its referrers
+     * @throws RepositoryException if any function call fails due to repository errors
+     */
+    private void iterateReferrers(
+        Node node,
+        NodeConsumer consumer,
+        boolean includeRoot
+    ) throws RepositoryException
+    {
+        final PropertyIterator references = node.getReferences();
+        while (references.hasNext()) {
+            iterateReferrers(references.nextProperty().getParent(), consumer, true);
+        }
+
+        // Also nab references through children
+        iterateChildren(node, consumer, false);
+
+        if (includeRoot) {
+            consumer.accept(node);
+        }
+    }
+
+    /**
+     * Recursively call a function on all progeny of a node.
+     *
+     * @param node the node to have its referrers and self operated on
+     * @param consumer the function to be called on each node
+     * @param includeRoot if true, the consumer will be called on the node itself in addition to its referrers
+     * @throws RepositoryException if any function call fails due to repository errors
+     */
+    private void iterateChildren(
+        Node node,
+        NodeConsumer consumer,
+        boolean includeRoot
+    ) throws RepositoryException
+    {
+        final NodeIterator references = node.getNodes();
+        while (references.hasNext()) {
+            iterateChildren(references.nextNode(), consumer, true);
+        }
+
+        if (includeRoot) {
+            consumer.accept(node);
+        }
+    }
+
+    /**
+     * Recursively call a function on all nodes which reference a node, and on the node itself.
+     *
+     * @param node the node to have its referrers and self operated on
+     * @param consumer the function to be called on each node
      * @throws RepositoryException if any function call fails due to repository errors
      */
     private void iterateReferrers(
@@ -203,11 +320,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
         NodeConsumer consumer
     ) throws RepositoryException
     {
-        final PropertyIterator references = node.getReferences();
-        while (references.hasNext()) {
-            iterateReferrers(references.nextProperty().getParent(), consumer);
-        }
-        consumer.accept(node);
+        iterateReferrers(node, consumer, true);
     }
 
     /**
