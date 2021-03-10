@@ -20,8 +20,10 @@
 [feature name=sling-startup]
 
 # Initial content
-[artifacts startLevel=7]
-    org.apache.sling/org.apache.sling.starter.startup/1.0.6
+[artifacts startLevel=5]
+    org.apache.felix/org.apache.felix.healthcheck.api/2.0.2
+    org.apache.felix/org.apache.felix.healthcheck.core/2.0.6
+    org.apache.felix/org.apache.felix.healthcheck.generalchecks/2.0.4
 
 [configurations]
   # By default, deny self-registration
@@ -40,3 +42,26 @@
       "-/apps", \
       "-/system", \
     ]
+
+  org.apache.felix.hc.generalchecks.ServicesCheck
+    hc.tags=[ \
+      "systemalive", \
+    ]
+    services.list=[ \
+      "org.apache.sling.jcr.api.SlingRepository", \
+      "org.apache.sling.engine.auth.Authenticator", \
+      "org.apache.sling.api.resource.ResourceResolverFactory", \
+      "org.apache.sling.api.servlets.ServletResolver", \
+      "javax.script.ScriptEngineManager", \
+    ]
+
+  org.apache.felix.hc.core.impl.filter.ServiceUnavailableFilter-startupandshutdown
+    tags=[ \
+      "systemalive", \
+    ]
+    service.ranking=I"2147483647"
+    osgi.http.whiteboard.context.select="(osgi.http.whiteboard.context.name\=*)"
+    osgi.http.whiteboard.filter.regex="(?!/system/).*"
+    responseTextFor503="classpath:ca.sickkids.ccm.lfs.startup-customization:custom_index.html"
+    autoDisableFilter=B"true"
+    avoid404DuringStartup=B"true"
