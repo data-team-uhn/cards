@@ -607,8 +607,8 @@ export default function VariantFilesContainer() {
       let json = {};
 
       let subjectPath = file.subject?.path?.replace("/Subjects", "Subjects");
-      let tumorPath = file.tumor?.path?.replace("/Subjects/", "");
-      let regionPath = file.region?.path?.replace("/Subjects/", "");
+      let tumorPath = file.tumor?.path?.replace(new RegExp(".+/"), "");
+      let regionPath = file.region?.path?.replace(new RegExp(".+/"), "");
       if (!file.subject.existed) {
         json[subjectPath] = generateSubjectJson("Patient", file.subject.id);
       }
