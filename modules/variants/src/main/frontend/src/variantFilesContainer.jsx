@@ -611,10 +611,16 @@ export default function VariantFilesContainer() {
       let regionPath = file.region?.path?.replace(new RegExp(".+/"), "");
       if (!file.subject.existed) {
         json[subjectPath] = generateSubjectJson("Patient", file.subject.id);
+      } else {
+        json[subjectPath] = {};
       }
+
       if (!file.tumor.existed) {
         json[subjectPath][tumorPath] = generateSubjectJson("Patient/Tumor", file.tumor.id, file.subject.path);
+      } else {
+        json[subjectPath][tumorPath] = {};
       }
+
       if (file.region && !file.region.existed) {
         json[subjectPath][tumorPath][regionPath] = generateSubjectJson("Patient/Tumor/TumorRegion", file.region.id, file.tumor.path);
       }
