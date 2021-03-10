@@ -141,6 +141,7 @@ const thesaurusStyle = theme => ({
     position: 'relative',
     display: 'inline-block',
     paddingBottom: theme.spacing(0),
+    paddingTop: theme.spacing(1),
     "& .MuiInputBase-root" : {
       minWidth: "250px",
     },
@@ -165,7 +166,7 @@ const thesaurusStyle = theme => ({
     marginTop: theme.spacing(-1.5),
   },
   searchShrink: {
-    transform: "translate(0, 12px) scale(0.6)",
+    transform: "translate(0, 12px) scale(0.7)",
   },
   searchButton: {
     margin: "0px",
