@@ -44,6 +44,7 @@ let Questionnaire = (props) => {
   let { id, classes } = props;
   let [ data, setData ] = useState();
   let [ error, setError ] = useState();
+  let [ doHighlight, setDoHighlight ] = useState(false);
 
   let pageNameWriter = usePageNameWriterContext();
 
@@ -62,6 +63,7 @@ let Questionnaire = (props) => {
   let reloadData = (newData) => {
     if (newData) {
       setData(newData);
+      setDoHighlight(true);
     } else {
       setData({});
       fetchData();
@@ -133,6 +135,7 @@ let Questionnaire = (props) => {
             data={data}
             classes={classes}
             onActionDone={reloadData}
+            doHighlight={doHighlight}
           >
               <FieldsGrid
                 classes={classes}
