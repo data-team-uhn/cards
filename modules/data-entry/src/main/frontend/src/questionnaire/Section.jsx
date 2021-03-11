@@ -185,7 +185,7 @@ function Section(props) {
                 hasHeader &&
                   <Grid item className={classes.sectionHeader + " " + (isRecurrent ? classes.recurrentHeader : "")}>
                     {/* Delete this entry and expand this entry button */}
-                    {isRecurrent &&
+                    {isEdit && isRecurrent &&
                       <Tooltip title="Delete section" aria-label="Delete section" >
                         <IconButton
                           color="default"
@@ -258,7 +258,7 @@ function Section(props) {
           </div>
           })
         }
-        {isRecurrent &&
+        {isEdit && isRecurrent &&
         <Grid item className="addSectionContainer">
           <Button
             size="small"
