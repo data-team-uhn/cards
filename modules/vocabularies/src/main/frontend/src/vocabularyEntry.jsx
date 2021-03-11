@@ -81,7 +81,7 @@ export default function VocabularyEntry(props) {
   const [phase, setPhase] = React.useState(initPhase);
 
   const classes = useStyles();
-  const date = new Date(vocabulary.installed || vocabulary.released);
+  const date = new Date(props.type === "local" ? vocabulary.installed : vocabulary.released);
   const bodyTypography = Config["tableBodyTypography"];
 
   const handleClose = () => {setError(false)};

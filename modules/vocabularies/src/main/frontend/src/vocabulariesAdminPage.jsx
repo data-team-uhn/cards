@@ -129,7 +129,7 @@ export default function VocabulariesAdminPage() {
       let remoteVocab = remoteVocabList.find(item => item.acronym == vocab.acronym);
       if (remoteVocab && remoteVocab.released) {
         const remoteReleaseDate = new Date(remoteVocab.released);
-        const localInstallDate = new Date(vocab.released);
+        const localInstallDate = new Date(vocab.installed);
         if (remoteReleaseDate > localInstallDate) {
           tempAcronymPhaseObject[vocab.acronym] = Phase["Update Available"];
         }

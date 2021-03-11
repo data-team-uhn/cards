@@ -119,6 +119,7 @@ export default function VocabularyTable(props) {
                   return(
                     <VocabularyEntry
                       key={vocab.acronym}
+                      type={props.type}
                       vocabulary={vocab}
                       updateLocalList={props.updateLocalList}
                       // If filterTable is True, then check if the acronym is of a vocabulary to be displayed
