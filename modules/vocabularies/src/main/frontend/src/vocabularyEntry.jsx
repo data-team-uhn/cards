@@ -81,7 +81,7 @@ export default function VocabularyEntry(props) {
   const [phase, setPhase] = React.useState(initPhase);
 
   const classes = useStyles();
-  const date = new Date(vocabulary.released);
+  const date = new Date(vocabulary.installed || vocabulary.released);
   const bodyTypography = Config["tableBodyTypography"];
 
   const handleClose = () => {setError(false)};
@@ -119,7 +119,6 @@ export default function VocabularyEntry(props) {
     })
     .finally(function() {
       if (!badResponse) {
-        vocabulary.released = new Date();
         props.setPhase(Phase["Latest"]);
         updateLocalList("add", vocabulary);
       }

@@ -154,7 +154,7 @@ export default function VocabulariesAdminPage() {
       if (installedIndex > -1) {
         tempLocalVocabList[installedIndex] = vocab;
       } else {
-        tempLocalVocabList.push(vocab);
+        tempLocalVocabList.push(Object.assign({installed : new Date()}, vocab));
       }
       setLocalVocabList(tempLocalVocabList);
 
