@@ -193,11 +193,6 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>min</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -253,11 +248,6 @@
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>unitOfMeasurement</name>
-				<value>bpm</value>
-				<type>String</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
