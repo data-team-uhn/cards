@@ -829,6 +829,10 @@ function SubjectSelectorList(props) {
             if (query.search) {
               conditions.push(`CONTAINS(n.fullIdentifier, '*${escapeJQL(query.search)}*')`);
             }
+            if (currentSubject) {
+              let subjectID = currentSubject["jcr:uuid"];
+              conditions.push(`(n.'ancestors'='${subjectID}' OR n.'progeny'='${subjectID}' OR n.'jcr:uuid'='${subjectID}')`);
+            }
             let condition = (conditions.length === 0) ? "" : ` WHERE ${conditions.join(" AND ")}`
 
             // fetch all subjects
@@ -838,46 +842,7 @@ function SubjectSelectorList(props) {
             return fetchWithReLogin(globalLoginDisplay, url)
               .then(response => response.json())
               .then(result => {
-                // recursive function to filter and find related subjects to the currentSubject
-                // should also include subject at the same SubjectType level as currentSubject, if they exist
-
-                let getRelatedChild = (e, array) => {
-                  var array = array || [];
-                  let output = e['parents']?.['@path'];
-                  if (e["parents"]) {
-                    array.push(output);
-                    getRelatedChild(e["parents"], array);
-                    return array;
-                  } else {
-                    return output;
-                  }
-                }
-
-                let filterRelated = (e) => {
-                  // if the selected questionnaire supports the type of current subject
-                  if (e['type']?.['@path'] == currentSubject['type']['@path']) return true;
-                  return getRelatedChild(e)?.includes(currentSubject['@path'])
-                }
-
-                // recursive function to check if the SubjectType of the selected questionnaire is a child of the 'currentSubject' SubjectType
-                // e.g. will return true if the selected questionnaire supports Tumors and the currentSubject SubjectType is Patient
-                // if yes, will filter results to find related subjects (with filterRelated)
-                let toReturn = [];
-
-                let isSubjectRelated = (e) => {
-                  let output = e.type.label;
-                  if (e["parents"]) {
-                    let ancestors = isSubjectRelated(e["parents"]);
-                    toReturn.push(ancestors);
-                    toReturn.push(output);
-                    return toReturn;
-                  } else {
-                    return output;
-                  }
-                }
-
-                let filteredData = (currentSubject && (result['rows'].map((row) => isSubjectRelated(row)?.includes(currentSubject.type.label)))[0])
-                    ? result['rows'].filter((e) => filterRelated(e)) : result["rows"];
+                let filteredData = result["rows"];
                 // Auto-select if there is only one subject available
                 if (filteredData.length === 1) {
                   onSelect(filteredData[0]);

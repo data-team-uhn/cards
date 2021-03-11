@@ -102,7 +102,9 @@ public class SubjectProgenyEditor extends DefaultEditor
         final List<String> identifiers = getProgeny(this.currentNodeBuilder);
 
         // Get&write progeny to the JCR repo
-        this.currentNodeBuilder.setProperty(PROP_PROGENY, identifiers, Type.WEAKREFERENCES);
+        if (identifiers.size() > 0) {
+            this.currentNodeBuilder.setProperty(PROP_PROGENY, identifiers, Type.WEAKREFERENCES);
+        }
     }
 
     /**
