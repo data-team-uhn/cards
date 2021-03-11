@@ -337,15 +337,15 @@ class VocabularyQuery extends React.Component {
     })
   }
 
-  makeMultiRequest = (queue, input, prevData) => {
+  makeMultiRequest = (queue, input, status, prevData) => {
     //Get an vocabulary to search through
     var selectedVocab = queue.pop();
     if (selectedVocab === undefined) {
-      this.showSuggestions(null, {rows: prevData.slice(0, MAX_RESULTS)});
+      this.showSuggestions(status, {rows: prevData.slice(0, MAX_RESULTS)});
       return;
     }
     var url = new URL(`./${selectedVocab}.search.json`, REST_URL);
-    url.searchParams.set("suggest", input);
+    url.searchParams.set("suggest", input.replace(/[^\w\s]/g, ' '));
 
     //Are there any filters that should be associated with this request?
     if (this.props?.questionDefinition?.vocabularyFilters?.[selectedVocab]) {
@@ -356,7 +356,7 @@ class VocabularyQuery extends React.Component {
     }
 
     MakeRequest(url, (status, data) => {
-      this.makeMultiRequest(queue, input, prevData.concat(data['rows']));
+      this.makeMultiRequest(queue, input, status, prevData.concat(!status && data && data['rows'] ? data['rows'] : []));
     });
   }
 
@@ -375,7 +375,7 @@ class VocabularyQuery extends React.Component {
     // Grab suggestions
     //...Make a queue of vocabularies to search through
     var vocabQueue = this.props.vocabularies.slice();
-    this.makeMultiRequest(vocabQueue, input, []);
+    this.makeMultiRequest(vocabQueue, input, null, []);
 
     // Hide the infobox and stop the timer
     this.setState({
@@ -387,7 +387,7 @@ class VocabularyQuery extends React.Component {
 
   // Callback for queryInput to populate the suggestions bar
   showSuggestions = (status, data) => {
-    if (status === null) {
+    if (!status) {
         // Populate this.state.suggestions
         var suggestions = [];
 
@@ -441,7 +441,7 @@ class VocabularyQuery extends React.Component {
           suggestionsLoading: false,
         });
     } else {
-      this.logError("Error: Thesaurus lookup failed with code " + status);
+      this.logError("Failed to search vocabulary term");
     }
   }
 
@@ -494,7 +494,7 @@ class VocabularyQuery extends React.Component {
         infoVocabObtained: vocabPath
       });
     } else {
-      this.logError("Error: vocabulary details lookup failed with code " + status);
+      this.logError("Failed to search vocabulary details");
     }
   }
 
@@ -527,7 +527,7 @@ class VocabularyQuery extends React.Component {
         infoAboveBackground: this.state.browserOpened,
       });
     } else {
-      this.logError("Error: term lookup failed with code " + status);
+      this.logError("Failed to search vocabulary term");
     }
   }
 
@@ -586,6 +586,7 @@ class VocabularyQuery extends React.Component {
     this.setState({
       snackbarVisible: true,
       snackbarMessage: message,
+      suggestionsLoading: false,
     })
   }
 
