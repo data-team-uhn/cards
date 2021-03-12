@@ -72,8 +72,7 @@ function Questionnaires(props) {
           </Button>
         }
         action={
-          <NewQuestionnaireDialog presetpath={true}>
-          </NewQuestionnaireDialog>
+          <NewQuestionnaireDialog />
         }
         classes={{
           action: classes.newFormButtonHeader

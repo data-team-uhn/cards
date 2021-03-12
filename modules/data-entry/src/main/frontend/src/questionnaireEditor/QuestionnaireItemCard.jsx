@@ -18,6 +18,7 @@
 //
 
 import React, { useEffect, useRef, useState } from 'react';
+import { withRouter } from "react-router-dom";
 import PropTypes from 'prop-types';
 import {
   Card,
@@ -47,6 +48,7 @@ let QuestionnaireItemCard = (props) => {
     plain,
     data,
     onActionDone,
+    doHighlight,
     classes
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
@@ -54,16 +56,25 @@ let QuestionnaireItemCard = (props) => {
 
   const itemRef = useRef();
   // if autofocus is needed and specified in the url
-  const doHighlight = (location?.hash?.substr(1) == data["@path"]);
   // create a ref to store the question container DOM element
   useEffect(() => {
-    if (doHighlight) {
+    if (doHighlight || (location?.hash?.substr(1) == data["@path"])) {
       const timer = setTimeout(() => {
           itemRef?.current?.scrollIntoView({block: "center"});
         }, 500);
         return () => clearTimeout(timer);
     }
   }, [itemRef]);
+
+  let fetchData = () => {
+    setEditDialogOpen(false);
+    fetch(`${data["@path"]}.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        onActionDone(json);
+      })
+      .catch(() => onActionDone());
+  };
 
   return (
     <Card variant="outlined" ref={doHighlight ? itemRef : undefined} className={doHighlight ? classes.focusedQuestionnaireItem : ''}>
@@ -97,7 +108,7 @@ let QuestionnaireItemCard = (props) => {
                               data={data}
                               type={type}
                               isOpen={editDialogOpen}
-                              onClose={() => { onActionDone();}}
+                              onClose={() => { fetchData(); }}
                               onCancel={() => { setEditDialogOpen(false); }}
                             />
       }
@@ -119,4 +130,4 @@ QuestionnaireItemCard.propTypes = {
   onActionDone: PropTypes.func.isRequired,
 };
 
-export default QuestionnaireItemCard;
+export default (withRouter(QuestionnaireItemCard));
