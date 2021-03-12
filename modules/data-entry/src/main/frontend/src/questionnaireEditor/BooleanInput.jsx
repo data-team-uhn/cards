@@ -33,13 +33,13 @@ import QuestionComponentManager from "../questionnaireEditor/QuestionComponentMa
 // Boolean Input field used by Edit dialog component
 
 let BooleanInput = (props) => {
-  let { objectKey, data, classes } = props;
+  let { objectKey, data } = props;
   let [ checked, setChecked ] = useState(data?.[objectKey] == true);
 
   return (
     <EditorInput name={objectKey}>
       <Switch
-        className={classes.switch}
+        edge="start"
         id={objectKey}
         onChange={(event) => {setChecked(event.target.checked);}}
         checked={checked}

@@ -59,11 +59,6 @@ const questionnaireStyle = theme => ({
         paddingBottom: theme.spacing(0),
       }
     },
-    switch : {
-      "&.MuiSwitch-root" : {
-        marginLeft: theme.spacing(-1.5),
-      },
-    },
     checkbox: {
         margin: theme.spacing(-2,0),
     },
