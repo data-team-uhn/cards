@@ -39,10 +39,12 @@ import { Link } from 'react-router-dom';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import LaunchIcon from '@material-ui/icons/Launch';
 import AddIcon from '@material-ui/icons/Add';
-import SubjectDirectory from "../questionnaire/SubjectDirectory.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import NewItemButton from "../components/NewItemButton.jsx";
+import DeleteButton from "./DeleteButton.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
+import LiveTable from "./LiveTable.jsx";
 
 function SubjectView(props) {
   const { expanded, disableHeader, disableAvatar, topPagination, classes } = props;
@@ -50,22 +52,49 @@ function SubjectView(props) {
   const [ activeTab, setActiveTab ] = useState(0);
   const [ subjectTypes, setSubjectTypes] = useState([])
   const [ tabsLoading, setTabsLoading ] = useState(null);
+  const [ columns, setColumns ] = React.useState(props.columns || null);
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
 
   const activeTabParam = location.hash.substr(1);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
+  // Default column configuration for the LiveTables to be used from User Dashboard
+  const defaultColumns = [
+    {
+      "key": "@name",
+      "label": "Identifier",
+      "format": getEntityIdentifier,
+      "link": "dashboard+path",
+    },
+    {
+      "key": "jcr:created",
+      "label": "Created on",
+      "format": "date:YYYY-MM-DD HH:mm",
+    },
+    {
+      "key": "jcr:createdBy",
+      "label": "Created by",
+      "format": "string",
+    },
+  ]
+  const actions = [
+    DeleteButton
+  ]
+
   let fetchSubjectTypes = () => {
     let url = new URL("/query", window.location.origin);
     url.searchParams.set("query", `SELECT * FROM [lfs:SubjectType] as n order by n.'lfs:defaultOrder'`);
-    // TODO: Handle pagination?
-    url.searchParams.set("limit", 10);
-    url.searchParams.set("offset", 0);
     return fetchWithReLogin(globalLoginDisplay, url)
       .then(response => response.json())
       .then(result => {
-        setSubjectTypes(result.rows);
+        let optionTypes = Array.from(result.rows);
+        if (columns && optionTypes.length <= 1) {
+          let result = columns.slice();
+          result.splice(1, 2);
+          setColumns(result);
+        }
+        setSubjectTypes(optionTypes);
         setTabsLoading(false);
 
         if (activeTabParam && result.rows.length > 0) {
@@ -118,7 +147,14 @@ function SubjectView(props) {
       <CardContent>
       {
         hasSubjects
-          ? <SubjectDirectory id={subjectTypes[activeTab]["jcr:uuid"]} disableTopPagination={!topPagination} />
+          ? <LiveTable
+              columns={columns || defaultColumns}
+              customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(subjectTypes[activeTab]["jcr:uuid"])}
+              defaultLimit={10}
+              actions={actions}
+              entryType={"Subject"}
+              disableTopPagination={!topPagination}
+            />
           : <Typography>No results</Typography>
       }
       </CardContent>

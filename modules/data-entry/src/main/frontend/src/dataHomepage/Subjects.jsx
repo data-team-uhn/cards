@@ -26,7 +26,23 @@ import { Button, Grid, Typography, withStyles } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
-const tableColumns = [
+function Subjects(props) {
+  const { classes } = props;
+  const entry = getSubjectIdFromPath(location.pathname);
+
+  // Clear the page name overwriting if moving from a specific Subject to the Subjects page
+  const pageNameWriter = usePageNameWriterContext();
+  useEffect(() => {
+    if (!entry) {
+      pageNameWriter("");
+    }
+  }, [entry]);
+
+  if (entry) {
+    return <Subject id={entry} contentOffset={props.contentOffset} />;
+  }
+
+  const columns = [
     {
       "key": "identifier",
       "label": "Identifier",
@@ -54,44 +70,6 @@ const tableColumns = [
       "format": "string",
     },
   ];
-
-function Subjects(props) {
-
-  const { classes } = props;
-  // fix issue with classes
-
-  // subject types configured on the system
-  let [ subjectTypes, setSubjectTypes ] = React.useState([]);
-  let [ columns, setColumns ] = React.useState(tableColumns);
-
-  const entry = getSubjectIdFromPath(location.pathname);
-
-  // Clear the page name overwriting if moving from a specific Subject to the Subjects page
-  const pageNameWriter = usePageNameWriterContext();
-  useEffect(() => {
-    if (!entry) {
-      pageNameWriter("");
-    }
-  }, [entry]);
-
-  if (entry) {
-    return <Subject id={entry} contentOffset={props.contentOffset} />;
-  }
-
-  // get subject types configured on the system
-  if (subjectTypes.length === 0) {
-    fetch('/query?query=' + encodeURIComponent(`select * from [lfs:SubjectType] as n WHERE n.'jcr:primaryType'='lfs:SubjectType' order by n.'lfs:defaultOrder'`))
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        let optionTypes = Array.from(json["rows"]);
-        setSubjectTypes(optionTypes);
-        if (optionTypes.length <= 1) {
-          let result = columns.slice();
-          result.splice(1, 2);
-          setColumns(result);
-        }
-      });
-  }
 
   return (
     <Grid container direction="column" spacing={4}>

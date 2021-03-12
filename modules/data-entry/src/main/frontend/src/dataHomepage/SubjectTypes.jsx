@@ -37,10 +37,9 @@ function SubjectTypes(props) {
   const [ isEdit, setIsEdit ] = useState(false);
   const columns = [
     {
-      "key": "label",
+      "key": "",
       "label": "Label",
-      "format": "string",
-      "link": "dashboard+field:@path",
+      "format": (row) => (<a href={"/content.html/Subjects#" + row['@name']}>{row.label}</a>),
     },
     {
       "key": "jcr:created",
