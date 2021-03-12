@@ -133,13 +133,13 @@ export default function VocabularyEntry(props) {
     var badResponse = false;
     props.setPhase(Phase["Uninstalling"]);
 
-    fetchWithReLogin(globalLoginDisplay, vocabLinks["uninstall"]["base"] + vocabulary.acronym, {method: "DELETE"})
+    fetchWithReLogin(globalLoginDisplay, vocabLinks["uninstall"]["base"] + vocabulary.acronym + "?recursive=true", {method: "DELETE"})
     .then((resp) => {
-      const code = resp.status;
+      const code = resp.status || resp["status.code"];
       if(Math.floor(code/100) !== 2) {
         props.setPhase(oldPhase);
         setAction("Uninstall");
-        setErrorMessage("Error " + code + ": " + resp.statusText);
+        setErrorMessage("Error " + code + ": " + (resp.statusText || resp["status.message"]));
         setError(true);
         badResponse = true;
         return Promise.reject(resp);
@@ -148,7 +148,7 @@ export default function VocabularyEntry(props) {
     .catch(function(error) {
       props.setPhase(oldPhase);
       setAction("Uninstall");
-      setErrorMessage(error);
+      setErrorMessage("");
       setError(true);
       badResponse = true;
     })
