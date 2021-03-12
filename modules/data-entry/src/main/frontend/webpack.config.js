@@ -23,7 +23,6 @@ module.exports = {
     [module_name + 'questionnairesIcon']: '@material-ui/icons/Assignment.js',
     [module_name + 'formsIcon']: '@material-ui/icons/Description.js',
     [module_name + 'userDashboard']: './src/dataHomepage/UserDashboard.jsx',
-    [module_name + 'SubjectType']: './src/dataHomepage/SubjectType.jsx',
     [module_name + 'FormView']: './src/dataHomepage/FormView.jsx',
     [module_name + 'SubjectView']: './src/dataHomepage/SubjectView.jsx',
     [module_name + 'NewFormDialog']: './src/dataHomepage/NewFormDialog.jsx',
