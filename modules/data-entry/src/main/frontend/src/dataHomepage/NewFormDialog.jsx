@@ -276,9 +276,19 @@ function NewFormDialog(props) {
                     // Join the UUIDs of the progeny types, and convert them into conditions
                     // These conditions will be n.'requiredSubjectTypes' (IS NULL or ='<uuid>')
                     let acceptableSubjectTypes = [" IS NULL", `='${currentSubject["type"]["jcr:uuid"]}'`];
-                    if ("progeny" in currentSubject["type"]) {
-                      acceptableSubjectTypes.concat(currentSubject["type"]["progeny"].map((subject) => `='${subject["jcr:uuid"]}'`));
+
+                    let findProgeny = (subjectType) => {
+                      let progeny = Object.values(subjectType)?.filter((property) => property["jcr:primaryType"] === "lfs:SubjectType");
+                      let retVal = [].concat.apply([], progeny.map(subject => findProgeny(subject)));
+                      retVal.push(subjectType);
+                      return retVal;
                     }
+
+                    let progenyTypes = findProgeny(currentSubject["type"]);
+                    if (progenyTypes) {
+                      acceptableSubjectTypes = acceptableSubjectTypes.concat(progenyTypes.map((subject) => `='${subject["jcr:uuid"]}'`));
+                    }
+
                     // Join the conditions together with an OR, and wrap it in brackets
                     conditions.push(
                       "(" + acceptableSubjectTypes.map((condition) => `n.'requiredSubjectTypes'${condition}`).join(" OR ") + ")"
