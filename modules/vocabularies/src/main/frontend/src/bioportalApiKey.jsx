@@ -25,13 +25,14 @@ import {
   makeStyles
 } from "@material-ui/core";
 
-import React, {useEffect} from "react";
+import React, {useEffect, useContext} from "react";
+import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const APIKEY_SERVLET_URL = "/Vocabularies.bioportalApiKey";
 
 const JSON_KEY = "apikey";
 
-export default function fetchBioPortalApiKey(func, errorHandler) {
+export default function fetchBioPortalApiKey(globalLoginDisplay, func, errorHandler) {
   // Parse the response from our FilterServlet
   let parseKey = (keyJson) => {
     if (!keyJson[JSON_KEY]) {
@@ -40,7 +41,7 @@ export default function fetchBioPortalApiKey(func, errorHandler) {
     func(keyJson[JSON_KEY]);
   }
 
-  fetch(APIKEY_SERVLET_URL)
+  fetchWithReLogin(globalLoginDisplay, APIKEY_SERVLET_URL)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(parseKey)
       .catch(errorHandler);
@@ -56,6 +57,7 @@ const useStyles = makeStyles(theme => ({
 export function BioPortalApiKey(props) {
   const classes = useStyles();
   const { bioPortalApiKey, updateKey } = props;
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   /* User input api key */
   const [customApiKey, setCustomApiKey] = React.useState('');
@@ -66,7 +68,7 @@ export function BioPortalApiKey(props) {
     const URL = `/libs/lfs/conf/BioportalApiKey`;
     var request_data = new FormData();
     request_data.append('key', customApiKey);
-    fetch(URL, { method: 'POST', body: request_data })
+    fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
       .then((response) => response.ok ? response : Promise.reject(response))
       .then((data) => {
           updateKey(customApiKey);
@@ -78,7 +80,8 @@ export function BioPortalApiKey(props) {
   }
 
   useEffect(() => {
-    fetchBioPortalApiKey( (apiKey) => {
+    fetchBioPortalApiKey(globalLoginDisplay,
+      (apiKey) => {
         updateKey(apiKey);
         setCustomApiKey(apiKey);
         setDisplayChangeKey(false);
