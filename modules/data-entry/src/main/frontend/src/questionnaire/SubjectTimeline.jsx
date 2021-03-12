@@ -29,7 +29,7 @@ import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineDot from '@material-ui/lab/TimelineDot';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 
-import { formatDateAnswer } from "./DateQuestionUtilities.jsx";
+import DateQuestionUtilities from "./DateQuestionUtilities.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { displayQuestion, handleDisplay, ENTRY_TYPES } from "./Subject.jsx";
@@ -52,6 +52,24 @@ function CustomTimelineConnector(props) {
     </React.Fragment>
 }
 
+let dateDifference = (firstDate, secondDate) => {
+  // Compute the displayed difference
+  let difference = null;
+  if (firstDate && secondDate) {
+    let currentDate = moment(firstDate);
+    let nextDate = moment(secondDate);
+    let divisions = ["years", "months", "days"];
+    for(const division of divisions) {
+      let diff = nextDate.diff(currentDate, division);
+      if (diff > 0) {
+        difference = diff + division.charAt(0);
+        break;
+      }
+    }
+  }
+  return difference;
+}
+
 /**
  * Component that displays a Subject's Timeline Chart.
  *
@@ -62,7 +80,7 @@ function CustomTimelineConnector(props) {
  */
 function SubjectTimeline(props) {
   let { id, classes, pageSize, subject } = props;
-  let [dateAnswers, setDateAnswers] = useState(null);
+  let [dateEntries, setDateEntries] = useState(null);
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
 
@@ -95,32 +113,44 @@ function SubjectTimeline(props) {
     // .catch(handleTableError);
   };
 
-  let getSubjects = (parent, level, names) => {
+  let getRelatedSubjects = (parent, previousLevel, names) => {
     let subjects = [];
     if (!names) {
       names = [];
     }
     let newNames = [...names];
     if (parent) {
+      let newLevel = (previousLevel > -1 || parent["jcr:uuid"] === subject["jcr:uuid"]) ? previousLevel + 1 : previousLevel;
       if (parent["jcr:uuid"]) {
-        if (level > 0) {
-          newNames.push(parent["identifier"]);
+        if (newLevel > 0) {
+          newNames.push(parent.type.label + " " + parent["identifier"]);
         }
-        subjects.push({uuid: parent["jcr:uuid"], names: newNames, level: level});
+        subjects.push({uuid: parent["jcr:uuid"], names: newNames, level: newLevel});
       }
-      for (const child of parent["@progeny"] || []) {
-        subjects = subjects.concat(getSubjects(child, level+1, newNames));
+      const childSubjects = Object.values(parent)
+        .filter(value => value["jcr:primaryType"] == "lfs:Subject");
+      for (const child of childSubjects) {
+        subjects = subjects.concat(getRelatedSubjects(child, newLevel, newNames));
       }
     }
     return subjects;
   }
 
+  let fetchSubject = async (path) => {
+    let result = await fetchWithReLogin(globalLoginDisplay, `${path}.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .catch(handleError);
+    return result;
+  }
+
   let getForms = async () => {
     let rootSubject = subject;
-    // TODO: convert rootSubject to top level parent
-    // Will be made easy by LFS-911
+    if (subject.ancestors && subject.ancestors.length > 0) {
+      let newPath = subject.ancestors[subject.ancestors.length - 1]["@path"];
+      rootSubject = await fetchSubject(newPath);
+    }
 
-    let subjects = getSubjects(rootSubject, 0);
+    let subjects = getRelatedSubjects(rootSubject, -1);
     let formPromises = [];
 
     for (const subject of subjects) {
@@ -136,7 +166,7 @@ function SubjectTimeline(props) {
   let currentFormTitle;
   let currentLevel;
   let currentNames;
-  let handleDisplayQuestion = (entryDefinition, data, key) => {
+  let handleDisplayAnswer = (entryDefinition, data, key) => {
     const existingQuestionAnswer = data && Object.entries(data)
       .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
         && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
@@ -149,27 +179,63 @@ function SubjectTimeline(props) {
     }
   }
 
-  let getDateQuestions = (formDetails) => {
+  let getDateAnswers = (formDetails) => {
     formDetails.map(form => {
       currentLevel = form.level;
       currentNames = form.names;
-      currentFormTitle = form.response.questionnaire["@name"];
+      currentFormTitle = form.response.questionnaire.title;
       Object.entries(form.response.questionnaire)
       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
       .map(([key, entryDefinition]) => {
-        handleDisplay(entryDefinition, form.response, key, handleDisplayQuestion);
+        handleDisplay(entryDefinition, form.response, key, handleDisplayAnswer);
       })
     });
-    setDateAnswers(dateAnswerData.sort((a, b) => {
+
+    return dateAnswerData.sort((a, b) => {
       return a.date.value > b.date.value ? 1 : (a.date.value === b.date.value ? 0 : -1)
-    }));
+    });
+  }
+
+  let simplifyDateAnswer = (dateAnswer) => {
+    return {
+      followup: dateAnswer.followup,
+      formTitle: dateAnswer.formTitle,
+      level: dateAnswer.level,
+      names: dateAnswer.names,
+      questionPath: dateAnswer.date.question["@path"],
+      questionText: dateAnswer.date.question.text,
+      answerPath: dateAnswer.date["@path"]
+    }
+  }
+
+  let getDateEntries = (dateAnswers) => {
+    let newDateEntries = [];
+    let previousDate = null;
+
+    for (const dateAnswer of dateAnswers) {
+      let diff = dateDifference(previousDate, dateAnswer.date.value);
+      if (newDateEntries.length === 0 || diff) {
+        newDateEntries.push({
+          date: dateAnswer.date.value,
+          level: dateAnswer.level,
+          questions: []
+        })
+      } else {
+        let oldLevel = newDateEntries[newDateEntries.length - 1].level;
+        if (oldLevel === -1 || (dateAnswer.level !== -1 && dateAnswer.level < oldLevel)) {
+          newDateEntries[newDateEntries.length - 1].level = dateAnswer.level;
+        }
+      }
+      newDateEntries[newDateEntries.length - 1].questions.push(simplifyDateAnswer(dateAnswer));
+      previousDate = dateAnswer.date.value;
+    }
+    setDateEntries(newDateEntries);
   }
 
   useEffect(() => {
-    console.log("SubjectTimeline");
-    console.log(subject);
     getForms().then(baseForms => getFormData(baseForms))
-    .then(formDetails => getDateQuestions(formDetails));
+    .then(formDetails => getDateAnswers(formDetails))
+    .then(dateAnswers => getDateEntries(dateAnswers));
   }, [subject]);
 
   // Callback method for the `fetchData` method, invoked when the request failed.
@@ -177,23 +243,18 @@ function SubjectTimeline(props) {
     setError(response);
   };
 
-  let nextDate;
   return <Timeline align="alternate">
     {
-      dateAnswers && dateAnswers.map((dateAnswer, index) => {
-        nextDate = (index + 1 < dateAnswers.length) ? dateAnswers[index + 1] : null;
-        return DateTimelineEntry(classes, dateAnswer, index, dateAnswers.length, nextDate);
+      dateEntries && dateEntries.map((dateEntry, index) => {
+        let nextEntry = (index + 1 < dateEntries.length) ? dateEntries[index + 1] : null;
+        return TimelineEntry(classes, dateEntry, index, dateEntries.length, nextEntry);
       })
     }
   </Timeline>;
 }
 
-function DateTimelineEntry(classes, data, index, length, nextDateAnswer) {
-  let dateAnswer = data.date;
-  // let dateText = formatDateAnswer(dateAnswer.question?.dateFormat, dateAnswer.value);
-  let dateText = dateAnswer.value;
-  let questionTitle = dateAnswer.question?.text;
-
+function DateQuestionDisplay(classes, questionData, index, length, rootLevel) {
+  let questionTitle = questionData.questionText;
   // Strip unwanted strings from the question title
   for (const str of STRIPPED_STRINGS) {
     let dateIndex = questionTitle.toLowerCase().indexOf(str);
@@ -207,44 +268,52 @@ function DateTimelineEntry(classes, data, index, length, nextDateAnswer) {
     questionTitle = questionTitle[0].toUpperCase().concat(questionTitle.substring(1));
   }
 
-  // Compute the displayed difference
-  // TODO: Move to DateQuestionUtilities after rebase
-  let difference = null;
-  if (nextDateAnswer?.date?.value) {
-    let currentDate = moment(dateAnswer.value);
-    let nextDate = moment(nextDateAnswer?.date?.value);
-    let divisions = ["years", "months", "days"];
-    for(const division of divisions) {
-      let diff = nextDate.diff(currentDate, division);
-      if (diff > 0) {
-        console.log(division);
-        difference = diff + division.charAt(0);
-        break;
-      }
-    }
+  // Find the first '/' after "/Forms/" in the path
+  let formPath = questionData.answerPath.substring(0, questionData.answerPath.indexOf("/", "/Forms/".length+1))
+  let formTitle = `${questionData.names?.length > 0 ? questionData.names.join(" / ") + ": " : ""}${questionData.formTitle}`;
+  let divClasses = [classes.timelineDateEntry];
+  if (questionData.level === -1 && rootLevel !== -1) {
+    divClasses.push(classes.timelineAncestor)
+  }
+  if (index === length - 1) {
+    divClasses.push(classes.timelineDateEntryFinal)
   }
 
-  let questionPath = dateAnswer && dateAnswer.question && dateAnswer.question["@path"];
-  let formIndex = dateAnswer && dateAnswer["@path"].indexOf("/", "/Forms/".length+1);
-  let formPath = dateAnswer && dateAnswer["@path"].substring(0, formIndex)
-  let formTitle = `${data.names?.length > 0 ? data.names.join(" / ") + ": " : ""}${data.formTitle}`;
+  return <div key={index} className={divClasses.join(",")}>
+    <Typography variant="h6" component="h1">
+      {questionTitle} (<Link href={`/content.html${formPath}#${questionData.questionPath}`}>{formTitle}</Link>)
+    </Typography>
+    {questionData.followup}
+  </div>
+}
+
+function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
+  let dateText = DateQuestionUtilities.formatDateAnswer("yyyy-MM-dd", dateEntry.date);
+  let diff = dateDifference(dateEntry.date, nextEntry && nextEntry.date);
+
+  let paperClasses = [classes.timelinePaper];
+  if (dateEntry.level < 0) {
+    paperClasses.push(classes.timelineAncestor);
+  }
 
   return <TimelineItem key={index}>
       <TimelineOppositeContent>
         <Typography color="textSecondary">{dateText}</Typography>
       </TimelineOppositeContent>
-      <TimelineSeparator>
-        <TimelineDot color={data.level == 0 ? "primary" : (data.level == 1 ? "secondary" : "default")}/>
-        {index !== (length - 1) && (difference ? <CustomTimelineConnector classes={classes} text={difference}/> : <TimelineConnector />)}
+      <TimelineSeparator className={dateEntry.level < 0 ? classes.timelineAncestor : null}>
+        <TimelineDot color={dateEntry.level == 0 ? "primary" : (dateEntry.level == 1 ? "secondary" : "grey")}/>
+        {index !== (length - 1)
+          ? (diff ? <CustomTimelineConnector classes={classes} text={diff}/> : <TimelineConnector />)
+          : null
+        }
       </TimelineSeparator>
-        <TimelineContent>
-          <Paper elevation={3} className={classes.timelinePaper}>
-            <Typography variant="h6" component="h1">
-              {questionTitle} (<Link href={`/content.html${formPath}#${questionPath}`}>{formTitle}</Link>)
-            </Typography>
-            {data.followup}
-          </Paper>
-        </TimelineContent>
+      <TimelineContent>
+        <Paper elevation={3} className={paperClasses.join(",")}>
+          {dateEntry.questions.map((question, index) => {
+            return DateQuestionDisplay(classes, question, index, dateEntry.questions.length, dateEntry.level)
+          })}
+        </Paper>
+      </TimelineContent>
     </TimelineItem>;
 }
 

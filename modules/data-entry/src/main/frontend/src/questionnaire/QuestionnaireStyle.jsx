@@ -237,6 +237,15 @@ const questionnaireStyle = theme => ({
         padding: "8px 16px",
         marginBottom: "40px"
     },
+    timelineAncestor: {
+        opacity: 0.3
+    },
+    timelineDateEntry: {
+        paddingBottom: theme.spacing(2),
+    },
+    timelineDateEntryFinal: {
+        paddingBottom: 0,
+    },
     mainPageAction: {
         position: 'fixed',
         bottom: theme.spacing(2),

@@ -113,8 +113,6 @@ function Subject(props) {
   const location = useLocation();
 
   useEffect(() => {
-    console.log("Subject useEffect");
-    console.log(location);
     let newId = getSubjectIdFromPath(location.pathname);
     newId && setCurrentSubjectId(newId);
   }, [location]);
@@ -205,8 +203,6 @@ function SubjectContainer(props) {
 
   // Fetch this Subject's data
   useEffect(() => {
-    console.log("SubjectContainer useEffect");
-    console.log(subject);
     if (subject) {
       fetchRelated();
     } else {
@@ -292,22 +288,8 @@ function SubjectHeader(props) {
     setSubject({});  // Prevent an infinite loop if data was not set
   };
 
-  // // Fetch children
-  // let fetchRelated = () => {
-  //   let checkRelated_url = createQueryURL(` WHERE n.'parents'='${subject.data.['jcr:uuid']}' order by n.'jcr:created'`, "lfs:Subject");
-  //   fetchWithReLogin(globalLoginDisplay, checkRelated_url)
-  //   .then((response) => response.ok ? response.json() : Promise.reject(response))
-  //   .then((json) => {
-  //     subject.data.formGroups = json.rows;
-  //     setSubject(subject)
-  //   })
-  //   .catch(handleError);
-  // }
-
   // Fetch this Subject's data
   useEffect(() => {
-    console.log("SubjectHeader useEffect");
-    console.log(id);
     fetchSubjectData();
   }, [id]);
 
@@ -413,8 +395,6 @@ function SubjectMemberInternal (props) {
 
   // Fetch table data for all forms related to a Subject
   useEffect(() => {
-    console.log("SubjectMemberInternal useEffect");
-    console.log(data);
     fetchTableData();
   }, [data]);
 
@@ -576,8 +556,6 @@ function FormData(props) {
 
   // Fetch this Form's data
   useEffect(() => {
-    console.log("FormData useEffect");
-    console.log(formID);
     getFormData(formID);
   }, [formID]);
 
@@ -601,7 +579,7 @@ function FormData(props) {
     if (result && displayed < maxDisplayed) {
       displayed++;
     } else {
-      result = <></>;
+      result = null;
     }
     return result;
   }
