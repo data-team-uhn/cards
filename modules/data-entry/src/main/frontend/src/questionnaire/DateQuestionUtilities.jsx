@@ -155,4 +155,22 @@ export default class DateQuestionUtilities {
   static isAnswerComplete(answers, type) {
     return type == this.INTERVAL_TYPE && answers.length == 2 || answers.length == 1;
   }
+
+  static dateDifference = (firstDate, secondDate) => {
+    // Compute the displayed difference
+    let difference = null;
+    if (firstDate && secondDate) {
+      let currentDate = moment(firstDate);
+      let nextDate = moment(secondDate);
+      let divisions = ["years", "months", "days"];
+      for(const division of divisions) {
+        let diff = nextDate.diff(currentDate, division);
+        if (diff > 0) {
+          difference = diff + division.charAt(0);
+          break;
+        }
+      }
+    }
+    return difference;
+}
 }

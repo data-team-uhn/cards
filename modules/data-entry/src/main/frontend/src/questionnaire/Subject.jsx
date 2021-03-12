@@ -294,21 +294,17 @@ function SubjectHeader(props) {
   }, [id]);
 
   if (!subject?.data) {
-    // TODO: Remove grid container and move center into parent grid when required
     return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid item><CircularProgress/></Grid>
     );
   }
 
   if (error) {
     return (
-    // TODO: Remove grid container and move center into parent grid when required
-      <Grid container justify="center">
-        <Grid item>
-          <Typography variant="h2" color="error">
-            Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
-          </Typography>
-        </Grid>
+      <Grid item>
+        <Typography variant="h2" color="error">
+          Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
+        </Typography>
       </Grid>
     );
   }
