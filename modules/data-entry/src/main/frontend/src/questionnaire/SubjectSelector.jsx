@@ -286,6 +286,7 @@ export const parseToArray = (object) => {
  * Component that displays a dialog to create a new subject
  *
  * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
+ * @param {currentSubject} object The preselected subject (e.g. on the Subject page, the subject who's page it is is the 'currentSubject')
  * @param {bool} disabled If true, all controls are disabled
  * @param {func} onClose Callback fired when the user tries to close this dialog
  * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
@@ -293,7 +294,7 @@ export const parseToArray = (object) => {
  * @param {bool} open If true, this dialog is open
  */
 export function NewSubjectDialog (props) {
-  const { allowedTypes, disabled, onClose, onSubmit, open, openNewSubject } = props;
+  const { allowedTypes, currentSubject, disabled, onClose, onSubmit, open, openNewSubject } = props;
   const [ error, setError ] = useState("");
   const [ newSubjectName, setNewSubjectName ] = useState([""]);
   const [ newSubjectType, setNewSubjectType ] = useState([""]);
@@ -315,7 +316,7 @@ export function NewSubjectDialog (props) {
   let disabledControls = disabled || isPosting;
 
   // Called only by createNewSubject, a callback to create the next child on our list
-  let createNewSubjectRecursive = (subject, index) => {
+  let createNewSubjectRecursive = (subject, index, parentList) => {
     if (index <= -1) {
       // End of recursion
       setIsPosting(false);
@@ -334,14 +335,14 @@ export function NewSubjectDialog (props) {
     }
 
     // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
-    let parent = newSubjectParent[index]?.["@path"] || subject;
+    let parent = parentList[index]?.["@path"] || subject;
     createSubjects(
       globalLoginDisplay,
       [newSubjectName[index]],
       newSubjectType[index],
       parent,
       newSubjectName[index],
-      (new_subject) => {createNewSubjectRecursive(new_subject, index-1)},
+      (new_subject) => {createNewSubjectRecursive(new_subject, index-1, parentList)},
       handleError);
   }
 
@@ -365,15 +366,26 @@ export function NewSubjectDialog (props) {
       // They haven't selected a parent for the current type yet
       setError("Please select a valid parent.");
     } else if (newSubjectPopperOpen && curSubjectRequiresParents) {
-      // Display the parent type to select
-      setError();
-      setNewSubjectPopperOpen(false);
-      tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
-      setSelectParentPopperOpen(true);
+      // If we were given a subject whose parent we must be a child of, we can just look there instead
+      // Find everything after the first /
+      let newSubjectParentPath = /(.+)\/.+?/g.exec(newSubjectType[newSubjectIndex]?.["@path"])[1];
+      if (currentSubject && newSubjectParentPath == currentSubject["type"]?.["@path"]) {
+        // Set the last parent to the currentSubject
+        let newParentList = newSubjectParent.slice();
+        newParentList[newParentList.length-1] = currentSubject;
+        setIsPosting(true);
+        createNewSubjectRecursive(null, newSubjectIndex, newParentList);
+      } else {
+        // Display the parent type to select
+        setError();
+        setNewSubjectPopperOpen(false);
+        tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
+        setSelectParentPopperOpen(true);
+      }
     } else {
       // Initiate the call
       setIsPosting(true);
-      createNewSubjectRecursive(null, newSubjectIndex);
+      createNewSubjectRecursive(null, newSubjectIndex, newSubjectParent);
     }
   }
 
@@ -535,6 +547,7 @@ export function NewSubjectDialog (props) {
  * Component that displays the list of subjects in a dialog. Double clicking a subject selects it.
  *
  * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
+ * @param {currentSubject} object The preselected subject (e.g. on the Subject page, the subject who's page it is is the 'currentSubject')
  * @param {bool} open Whether or not this dialog is open
  * @param {func} onChange Callback for when the user changes their selection
  * @param {func} onClose Callback for when the user closes this dialog
@@ -542,7 +555,7 @@ export function NewSubjectDialog (props) {
  * @param {string} title Title of the dialog, if any
  */
 function UnstyledSelectorDialog (props) {
-  const { allowedTypes, classes, disabled, open, onChange, onClose, onError, title, selectedQuestionnaire, ...rest } = props;
+  const { allowedTypes, classes, currentSubject, disabled, open, onChange, onClose, onError, title, selectedQuestionnaire, ...rest } = props;
   const [ subjects, setSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
@@ -603,6 +616,7 @@ function UnstyledSelectorDialog (props) {
   return (<React.Fragment>
     <NewSubjectDialog
       allowedTypes={allowedTypes}
+      currentSubject={currentSubject}
       onClose={() => { setNewSubjectPopperOpen(false); }}
       onSubmit={handleSubmitNew}
       open={open && newSubjectPopperOpen}
