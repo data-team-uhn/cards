@@ -625,15 +625,18 @@ export default function VariantFilesContainer() {
         json[subjectPath][tumorPath][regionPath] = generateSubjectJson("Patient/Tumor/TumorRegion", file.region.id, file.tumor.path);
       }
 
+      let formPath = "Forms/" + uuidv4();
       let formInfo = {};
       formInfo["jcr:primaryType"] = "lfs:Form";
       formInfo["jcr:reference:questionnaire"] = "/Questionnaires/SomaticVariants";
       // The subject of the questionnaire is the region
       formInfo["jcr:reference:subject"] = `/${subjectPath}/${tumorPath}` + (file?.region?.path ? `/${regionPath}` : "");
 
+      let fileID = uuidv4();
       let fileInfo = {};
-      fileInfo["jcr:primaryType"] = "lfs:SomaticVariantsAnswer";
+      fileInfo["jcr:primaryType"] = "lfs:FileResourceAnswer";
       fileInfo["jcr:reference:question"] = "/Questionnaires/SomaticVariants/file";
+      fileInfo["value"] = formPath + "/" + fileID + "/" + file.name;
 
       let fileDetails = {};
       fileDetails["jcr:primaryType"] = "nt:file";
@@ -644,9 +647,9 @@ export default function VariantFilesContainer() {
 
       fileInfo[file.name] = fileDetails;
 
-      formInfo[uuidv4()] = fileInfo;
+      formInfo[fileID] = fileInfo;
 
-      json["Forms/" + uuidv4()] = formInfo;
+      json[formPath] = formInfo;
 
       return json;
   };

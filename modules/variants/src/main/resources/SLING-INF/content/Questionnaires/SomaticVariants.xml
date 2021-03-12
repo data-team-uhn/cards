@@ -43,7 +43,7 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>somaticVariantsFile</value>
+			<value>file</value>
 			<type>String</type>
 		</property>
 		<property>
