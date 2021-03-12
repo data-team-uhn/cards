@@ -60,7 +60,7 @@ let defaultCreator = (node) => {
 // Extract the subject id from the subject path
 // returns null if the parameter is not a valid subject path (expected format: Subjects/<id>)
 export function getSubjectIdFromPath (path) {
-  return /Subjects\/(.+)/.exec(path || '')?.[1];
+  return /Subjects\/([^.]+)/.exec(path || '')?.[1];
 }
 
 // Recursive function to get a flat list of parents
