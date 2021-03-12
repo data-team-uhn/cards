@@ -99,11 +99,11 @@ function CreateSubjectTypeDialog(props) {
       open={open}
       onClose={onClose}
     >
-      <DialogTitle>Create New Subject Type</DialogTitle>
+      <DialogTitle>{isEdit ? "Modify " + editSubject["@name"] : "Create New Subject Type"}</DialogTitle>
       <DialogContent>
         <Grid container justify="flex-start" alignItems="center" spacing={2}>
           <Grid item xs={4}>
-            <Typography>Subject type name</Typography>
+            <Typography>Name</Typography>
           </Grid>
           <Grid item xs={8}>
             <TextField
@@ -120,7 +120,7 @@ function CreateSubjectTypeDialog(props) {
           { (isEdit || subjects && subjects.length > 0) &&
             <>
               <Grid item xs={4}>
-                <Typography>Parent subject type</Typography>
+                <Typography>Parent</Typography>
               </Grid>
               <Grid item xs={8}>
                 <Select
@@ -145,7 +145,7 @@ function CreateSubjectTypeDialog(props) {
             </>
           }
           <Grid item xs={4}>
-            <Typography>Subject type order</Typography>
+            <Typography>Order</Typography>
           </Grid>
           <Grid item xs={8}>
             <TextField
@@ -166,7 +166,7 @@ function CreateSubjectTypeDialog(props) {
           size="small"
           onClick={(event) => { event.preventDefault(); handleCreateSubjectType(); }}
          >
-          { isEdit ? "Save" : "Create Subject Type" }
+          { isEdit ? "Save" : "Create" }
         </Button>
         <Button variant="contained" size="small" onClick={close}>Close</Button>
       </DialogActions>

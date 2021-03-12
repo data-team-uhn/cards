@@ -20,7 +20,7 @@ import React, { useState, useEffect } from "react";
 import LiveTable from "./LiveTable.jsx";
 import SubjectType from "../questionnaire/SubjectType.jsx";
 
-import { Button, Card, CardContent, CardHeader, Fab, Tooltip, withStyles } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import CreateSubjectTypeDialog from "../questionnaire/NewSubjectTypeDialog.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
@@ -105,7 +105,6 @@ function SubjectTypes(props) {
           entryType={"Subject Type"}
           admin={true}
           disableTopPagination={true}
-          defaultSort={true}
           updateData={updateData}
           onDataReceived={setSubjectData}
         />

@@ -45,7 +45,7 @@ function LiveTable(props) {
 
   const { customUrl, columns, defaultLimit, joinChildren, updateData, classes,
     filters, entryType, actions, admin, disableTopPagination, disableBottomPagination,
-    defaultSort, onDataReceived, ...rest } = props;
+    onDataReceived, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
