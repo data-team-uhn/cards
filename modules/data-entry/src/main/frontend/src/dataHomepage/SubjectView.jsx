@@ -39,10 +39,10 @@ import { Link } from 'react-router-dom';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import LaunchIcon from '@material-ui/icons/Launch';
 import AddIcon from '@material-ui/icons/Add';
+import DeleteButton from "./DeleteButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import NewItemButton from "../components/NewItemButton.jsx";
-import DeleteButton from "./DeleteButton.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 import LiveTable from "./LiveTable.jsx";
 
