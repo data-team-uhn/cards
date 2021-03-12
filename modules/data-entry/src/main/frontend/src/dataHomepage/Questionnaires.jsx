@@ -28,7 +28,7 @@ import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function Questionnaires(props) {
   const { classes } = props;
-  const entry = /Questionnaires\/(.+)/.exec(location.pathname);
+  const entry = /Questionnaires\/([^.]+)/.exec(location.pathname);
 
   if (entry) {
     return <Questionnaire id={entry[1]} key={location.pathname}/>;
