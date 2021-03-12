@@ -62,10 +62,10 @@ let AnswerOptions = (props) => {
   }
 
   let validateOption = (optionInput) => {
-    if (optionInput.indexOf("=") > -1) {
+    if (optionInput) {
       setIsDuplicate(false);
-      let inputs = optionInput.split(/=(.+)/);
-      let duplicateOption = options.find( option => option.value === inputs[0] || option.label === inputs[1]);
+      let inputs = (optionInput + ' ').split(/=(.+)/);
+      let duplicateOption = options.find( option => option.value.trim() === inputs[0].trim() || inputs[1] && (option.label.trim() === inputs[1].trim()));
       duplicateOption && setIsDuplicate(true);
     }
   }
@@ -140,7 +140,7 @@ let AnswerOptions = (props) => {
         fullWidth
         value={tempValue}
         error={isDuplicate}
-        helperText={isDuplicate ? 'duplicated value or label' : 'value OR value=label (e.g. F=Female)'}
+        helperText={isDuplicate ? 'duplicated value or label' : [<span key="helper-value">value OR value=label (e.g. F=Female)</span>,<br key="br"/>,<span key="helper-newline">Press ENTER to add a new line</span>]}
         onChange={(event) => { setTempValue(event.target.value); validateOption(event.target.value); }}
         onBlur={(event) => { handleInputOption(event.target.value); }}
         inputProps={Object.assign({
