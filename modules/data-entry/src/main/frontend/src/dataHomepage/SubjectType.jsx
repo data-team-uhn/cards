@@ -85,11 +85,7 @@ function SubjectType(props) {
       { subjectID &&
         <Card>
           <CardHeader
-            title={
-              <Button className={classes.cardHeaderButton}>
-                {currentTitle}
-              </Button>
-            }
+            title={<Typography variant="h6">{currentTitle}</Typography>}
           />
           <CardContent>
             <SubjectDirectory id={subjectID} disableTopPagination={true} />
