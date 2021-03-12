@@ -17,6 +17,7 @@
 //  under the License.
 //
 import React, { useState, useContext } from "react";
+import LiveTable from "./LiveTable.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
@@ -44,7 +45,6 @@ import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import NewItemButton from "../components/NewItemButton.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
-import LiveTable from "./LiveTable.jsx";
 
 function SubjectView(props) {
   const { expanded, disableHeader, disableAvatar, topPagination, classes } = props;
@@ -151,8 +151,8 @@ function SubjectView(props) {
               columns={columns || defaultColumns}
               customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(subjectTypes[activeTab]["jcr:uuid"])}
               defaultLimit={10}
-              actions={actions}
               entryType={"Subject"}
+              actions={actions}
               disableTopPagination={!topPagination}
             />
           : <Typography>No results</Typography>
