@@ -107,6 +107,7 @@ function SubjectTypes(props) {
           disableTopPagination={true}
           defaultSort={true}
           updateData={updateData}
+          onDataReceived={setSubjectData}
         />
       </CardContent>
     </Card>
