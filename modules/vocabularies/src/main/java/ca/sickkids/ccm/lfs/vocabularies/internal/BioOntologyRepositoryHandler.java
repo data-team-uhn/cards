@@ -35,13 +35,12 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.sickkids.ccm.lfs.vocabularies.VocabularyBioPortalApiKeyServlet;
+import ca.sickkids.ccm.lfs.vocabularies.BioPortalApiKeyManager;
 import ca.sickkids.ccm.lfs.vocabularies.spi.RepositoryHandler;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescription;
 import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyDescriptionBuilder;
@@ -74,10 +73,8 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
     private static final String REQUEST_DOWNLOAD_FORMAT_RDF =
         "&download_format=rdf";
 
-    private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
-
     @Reference
-    private VocabularyBioPortalApiKeyServlet apiKey;
+    private BioPortalApiKeyManager apiKeyManager;
 
     @Override
     public String getRepositoryName()
@@ -224,10 +221,7 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
      */
     private String getRequestConfiguration()
     {
-        String key = this.apiKey.getAPIKeyFromNode(this.resolver.get());
-        if ("".equals(key)) {
-            key = this.apiKey.getAPIKeyFromEnvironment();
-        }
+        String key = this.apiKeyManager.getAPIKey();
         return REQUEST_CONFIGURATION + key;
     }
 }
