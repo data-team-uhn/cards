@@ -40,7 +40,7 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
  * @version $Id$
  */
 @Component(immediate = true)
-public class SimpleOptionsLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
+public class VocabularyOptionsLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
