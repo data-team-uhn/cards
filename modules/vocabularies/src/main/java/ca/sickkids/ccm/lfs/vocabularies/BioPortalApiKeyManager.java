@@ -19,12 +19,17 @@
 package ca.sickkids.ccm.lfs.vocabularies;
 
 /**
- * Interface for BioPortal API key component.
+ * Service for BioPortal API key management.
  *
  * @version $Id$
  */
 public interface BioPortalApiKeyManager
 {
+	/**
+	 * Retrieves the BioPortal API key configured in the system.
+	 *
+	 * @return the configured key, or the empty string if no key is configured.
+	 */
     String getAPIKey();
 
     /**

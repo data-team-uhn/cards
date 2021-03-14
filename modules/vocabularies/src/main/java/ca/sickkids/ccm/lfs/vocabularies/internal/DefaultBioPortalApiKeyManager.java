@@ -66,7 +66,7 @@ public class DefaultBioPortalApiKeyManager implements BioPortalApiKeyManager
     {
         String apiKey = System.getenv(APIKEY_ENVIRONMENT_VARIABLE);
         apiKey = StringUtils.isBlank(apiKey) ? "" : apiKey;
-        LOGGER.info("BioPortal API key as set in the OS environment: [{}]", apiKey);
+        LOGGER.debug("BioPortal API key as set in the OS environment: [{}]", apiKey);
         return apiKey;
     }
 
@@ -80,7 +80,7 @@ public class DefaultBioPortalApiKeyManager implements BioPortalApiKeyManager
             Resource res = this.rrf.getThreadResourceResolver().getResource(resourcePath);
             Node keyNode = res.adaptTo(Node.class);
             apiKey = keyNode.getProperty("key").getString();
-            LOGGER.info("BioPortal API key as set in the BioportalApiKey node: [{}]", apiKey);
+            LOGGER.debug("BioPortal API key as set in the BioportalApiKey node: [{}]", apiKey);
         } catch (Exception e) {
             LOGGER.error("Failed to load BioPortal API key from node: {}", e.getMessage(), e);
         }
