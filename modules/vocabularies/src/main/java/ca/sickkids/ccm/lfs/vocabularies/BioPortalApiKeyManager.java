@@ -25,16 +25,16 @@ package ca.sickkids.ccm.lfs.vocabularies;
  */
 public interface BioPortalApiKeyManager
 {
-	/**
-	 * Retrieves the BioPortal API key configured in the system.
-	 *
-	 * @return the configured key, or the empty string if no key is configured.
-	 */
+    /**
+     * Retrieves the BioPortal API key configured in the system.
+     *
+     * @return the configured key, or the empty string if no key is configured.
+     */
     String getAPIKey();
 
     /**
-     * Retrieves BioPortal API key from the OS environment variable.
-     * If the environment variable is not specified returns an empty string.
+     * Retrieves BioPortal API key from the OS environment variable. If the environment variable is not specified
+     * returns an empty string.
      *
      * @return BioPortal API key
      */

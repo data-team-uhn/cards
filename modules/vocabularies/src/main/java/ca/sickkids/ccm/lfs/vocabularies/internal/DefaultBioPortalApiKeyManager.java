@@ -47,7 +47,7 @@ public class DefaultBioPortalApiKeyManager implements BioPortalApiKeyManager
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultBioPortalApiKeyManager.class);
 
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
-            policyOption = ReferencePolicyOption.GREEDY)
+        policyOption = ReferencePolicyOption.GREEDY)
     private ResourceResolverFactory rrf;
 
     @Override
