@@ -77,10 +77,12 @@ public class DefaultBioPortalApiKeyManager implements BioPortalApiKeyManager
         String apiKey = "";
 
         try {
-            Resource res = this.rrf.getThreadResourceResolver().getResource(resourcePath);
-            Node keyNode = res.adaptTo(Node.class);
-            apiKey = keyNode.getProperty("key").getString();
-            LOGGER.debug("BioPortal API key as set in the BioportalApiKey node: [{}]", apiKey);
+            Resource res = this.rrf.getThreadResourceResolver().resolve(resourcePath);
+            if (!res.isResourceType(Resource.RESOURCE_TYPE_NON_EXISTING)) {
+                Node keyNode = res.adaptTo(Node.class);
+                apiKey = keyNode.getProperty("key").getString();
+                LOGGER.debug("BioPortal API key as set in the BioportalApiKey node: [{}]", apiKey);
+            }
         } catch (Exception e) {
             LOGGER.error("Failed to load BioPortal API key from node: {}", e.getMessage(), e);
         }
