@@ -81,10 +81,12 @@ function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
 
 function CustomTimelineConnector(props) {
   let { classes, text, className} = props;
+
   let divClasses = [classes.timelineConnectorGroup];
   if (className) {
     divClasses.push(className);
   }
+
   return <div className={divClasses.join(",")}>
       <div className={classes.timelineCircle}>
         <Typography variant="body2">{text}</Typography>
@@ -155,7 +157,8 @@ function SubjectTimeline(props) {
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
-  let fetchFormData = (path, level, names) => {
+  // Return all the answers for the form at the provided path
+  let fetchFormAnswers = (path, level, names) => {
     return fetchWithReLogin(globalLoginDisplay, `${path}.deep.json`)
       .then(async (response) => {
         let json = await response.json();
@@ -164,13 +167,13 @@ function SubjectTimeline(props) {
       .catch(response => handleError(response, ""))
   }
 
-  // TODO: Check if this is needed, or if fetchForms gets the required data
+  // Get the full set of data for all forms provided
   let getFormData = async (baseForms) => {
-    let formDataPromises = [];
+    let formAnswerPromises = [];
     for (const form of baseForms) {
-      formDataPromises.push(fetchFormData(form.row["@path"], form.level, form.names));
+      formAnswerPromises.push(fetchFormAnswers(form.row["@path"], form.level, form.names));
     }
-    let results = await Promise.all(formDataPromises);
+    let results = await Promise.all(formAnswerPromises);
     return results;
   }
 
@@ -238,32 +241,47 @@ function SubjectTimeline(props) {
     return results;
   }
 
-  let dateAnswerData = [];
-  let currentFormTitle;
-  let currentLevel;
-  let currentNames;
-  let handleDisplayAnswer = (entryDefinition, data, key) => {
-    const existingQuestionAnswer = data && Object.entries(data)
+  // Handle adding a date answers to the list of date answers,
+  // or regular answers as a followup to previous date answers.
+  let handleDisplayAnswer = (questionDefinition, formData, key, level, names, formTitle, output) => {
+    // Get the answer for the specified question
+    const existingQuestionAnswer = formData && Object.entries(formData)
       .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
-        && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
+        && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
+
     if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
       if (existingQuestionAnswer[1]["jcr:primaryType"] === "lfs:DateAnswer") {
-        dateAnswerData.push({"date": existingQuestionAnswer[1], followup:[], formTitle: currentFormTitle, level: currentLevel, names: currentNames});
-      } else if (dateAnswerData.length > 0 && dateAnswerData[dateAnswerData.length - 1].followup.length < NUM_QUESTIONS) {
-        dateAnswerData[dateAnswerData.length - 1].followup.push(displayQuestion(entryDefinition, data, key));
+        // Push a new date answer
+        output.push({"date": existingQuestionAnswer[1], followup:[], formTitle: formTitle, level: level, names: names});
+      } else if (output.length > 0 && output[output.length - 1].followup.length < NUM_QUESTIONS) {
+        // Append the non-date answer to the previous date answer,
+        // if a previous date answer exists and hasn't met the followup question limit.
+        output[output.length - 1].followup.push(displayQuestion(questionDefinition, formData, key));
       }
     }
   }
 
-  let getDateAnswers = (formDetails) => {
-    formDetails.map(form => {
-      currentLevel = form.level;
-      currentNames = form.names;
-      currentFormTitle = form.response.questionnaire.title;
-      Object.entries(form.response.questionnaire)
+  // Create a list of all date answers, with all data required for displaying these answers.
+  // This includes question, form and subject data, date entered and any followup questions
+  let getDateAnswers = (formData) => {
+    let dateAnswerData = [];
+    // For every form
+    formData.forEach(formAnswerEntries => {
+      // For every node that has a primary type that should be traversed
+      Object.entries(formAnswerEntries.response.questionnaire)
       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-      .map(([key, entryDefinition]) => {
-        handleDisplay(entryDefinition, form.response, key, handleDisplayAnswer);
+      .forEach(([key, entryDefinition]) => {
+        // Try to display this node if it is a question or has any child questions
+        handleDisplay(entryDefinition, formAnswerEntries.response, key,
+          (entryDefinition, data, key) => {handleDisplayAnswer(
+            entryDefinition,
+            data,
+            key,
+            formAnswerEntries.level,
+            formAnswerEntries.names,
+            formAnswerEntries.response.questionnaire.title,
+            dateAnswerData
+        )});
       })
     });
 
@@ -272,6 +290,7 @@ function SubjectTimeline(props) {
     });
   }
 
+  // Given a fully expanded dateAnswer, strip and simplify it to the required data
   let simplifyDateAnswer = (dateAnswer) => {
     return {
       followup: dateAnswer.followup,
@@ -284,6 +303,7 @@ function SubjectTimeline(props) {
     }
   }
 
+  // Convert a list of date answers to a list of displayed groups, grouping answers by date.
   let getDateEntries = (dateAnswers) => {
     let newDateEntries = [];
     let previousDate = null;
@@ -291,17 +311,20 @@ function SubjectTimeline(props) {
     for (const dateAnswer of dateAnswers) {
       let diff = DateQuestionUtilities.dateDifference(previousDate, dateAnswer.date.value);
       if (newDateEntries.length === 0 || diff) {
+        // Create a new paper
         newDateEntries.push({
           date: dateAnswer.date.value,
           level: dateAnswer.level,
           questions: []
         })
       } else {
+        // Data will be grouped into the previous paper: Update the paper's level if required
         let oldLevel = newDateEntries[newDateEntries.length - 1].level;
         if (oldLevel === -1 || (dateAnswer.level !== -1 && dateAnswer.level < oldLevel)) {
           newDateEntries[newDateEntries.length - 1].level = dateAnswer.level;
         }
       }
+      // Add the current date answer to the current paper
       newDateEntries[newDateEntries.length - 1].questions.push(simplifyDateAnswer(dateAnswer));
       previousDate = dateAnswer.date.value;
     }
@@ -311,7 +334,7 @@ function SubjectTimeline(props) {
   useEffect(() => {
     if (subject) {
       getForms().then(baseForms => getFormData(baseForms))
-      .then(formDetails => getDateAnswers(formDetails))
+      .then(formData => getDateAnswers(formData))
       .then(dateAnswers => getDateEntries(dateAnswers));
     }
   }, [subject]);
