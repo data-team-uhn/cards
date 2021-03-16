@@ -103,28 +103,20 @@ export default function VocabularyEntry(props) {
     )
     .then((resp) => resp.json())
     .then((resp) => {
-      if(!resp["isSuccessful"]) {
-        props.setPhase(oldPhase);
-        setAction("Install");
-        setErrorMessage(resp["error"]);
-        setError(true);
-        badResponse = true;
+      if(resp["isSuccessful"]) {
+        vocabulary.released = new Date();
+        props.setPhase(Phase["Latest"]);
+        updateLocalList("add", vocabulary);
+      } else {
+        throw new Error(resp["error"]);
       }
     })
     .catch(function(error) {
       setPhase(oldPhase);
       props.setPhase(oldPhase);
       setAction("Install");
-      setErrorMessage(error);
+      setErrorMessage(error.message || "Server Error");
       setError(true);
-      badResponse = true;
-    })
-    .finally(function() {
-      if (!badResponse) {
-        vocabulary.released = new Date();
-        props.setPhase(Phase["Latest"]);
-        updateLocalList("add", vocabulary);
-      }
     });
   }
 
@@ -134,29 +126,21 @@ export default function VocabularyEntry(props) {
     props.setPhase(Phase["Uninstalling"]);
 
     fetchWithReLogin(globalLoginDisplay, vocabLinks["uninstall"]["base"] + vocabulary.acronym, {method: "DELETE"})
+    .then((resp) => resp.ok ? resp : Promise.reject(resp))
     .then((resp) => {
-      const code = resp.status;
-      if(Math.floor(code/100) !== 2) {
-        props.setPhase(oldPhase);
-        setAction("Uninstall");
-        setErrorMessage("Error " + code + ": " + resp.statusText);
-        setError(true);
-        badResponse = true;
-        return Promise.reject(resp);
-      }
+      props.setPhase(Phase["Not Installed"]);
+      updateLocalList("remove", vocabulary);
     })
     .catch(function(error) {
-      props.setPhase(oldPhase);
-      setAction("Uninstall");
-      setErrorMessage(error);
-      setError(true);
-      badResponse = true;
-    })
-    .finally(function() {
-      if(!badResponse) {
-        props.setPhase(Phase["Not Installed"]);
-        updateLocalList("remove", vocabulary);
-      }
+      let statusText = error.statusText;
+      error.json().then((json) => {
+        const code = json["status.code"];
+        const errorText = (statusText || ("Error " + code)) + ": ";
+        props.setPhase(oldPhase);
+        setAction("Uninstall");
+        setErrorMessage(errorText + json["status.message"]);
+        setError(true);
+      });
     });
   }
   React.useEffect(() => {props.addSetter(setPhase);},[0]);
