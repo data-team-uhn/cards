@@ -348,14 +348,14 @@ function SubjectTimeline(props) {
     return <CircularProgress/>
   }
 
-  return <Timeline align="alternate">
+  return <div className={classes.timelineContainer}><Timeline align="alternate" className={classes.timeline}>
     {
       dateEntries && dateEntries.map((dateEntry, index) => {
         let nextEntry = (index + 1 < dateEntries.length) ? dateEntries[index + 1] : null;
         return TimelineEntry(classes, dateEntry, index, dateEntries.length, nextEntry);
       })
     }
-  </Timeline>;
+  </Timeline></div>;
 }
 
 SubjectTimeline.propTypes = {

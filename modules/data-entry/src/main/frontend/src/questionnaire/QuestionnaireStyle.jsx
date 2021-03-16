@@ -233,8 +233,15 @@ const questionnaireStyle = theme => ({
         },
       },
     },
+    timelineContainer: {
+        alignItems: "center",
+    },
+    timeline: {
+        maxWidth: "1000px",
+        margin: "auto"
+    },
     timelineContent: {
-        padding: theme.spacing(1,3),
+        padding: theme.spacing(1,3,3),
     },
     timelinePaper: {
         padding: theme.spacing(1,2),
@@ -246,7 +253,7 @@ const questionnaireStyle = theme => ({
         },
     },
     timelineDate: {
-        marginTop: "-5px",
+        lineHeight: "1em",
         marginLeft: theme.spacing(-2),
         marginRight: theme.spacing(-2),
         color: theme.palette.primary.main
