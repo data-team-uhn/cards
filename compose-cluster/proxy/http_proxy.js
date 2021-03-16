@@ -50,11 +50,13 @@ function checkAuthentication(opts, method_allow, method_deny) {
 
 var server = new http.Server();
 server.on('request', function(s_req, s_res) {
+	let { cookie, ...filtered_headers } = s_req.headers;
 	let client_opts = {
 		hostname: CLIENT_HOSTNAME,
 		port: CLIENT_PORT,
 		path: s_req.url,
-		method: s_req.method
+		method: s_req.method,
+		headers: filtered_headers
 	};
 	
 	//Check to see if we should allow the request or not
