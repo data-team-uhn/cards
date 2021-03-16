@@ -26,5 +26,15 @@
         "version"
       ]
     }
+  },
+  "remote-list": {
+    "base": "https://data.bioontology.org/ontologies/?",
+    "params": {
+      "display_context": false,
+      "display_links": false,
+      "include" : [
+        "acronym"
+      ]
+    }
   }
 }

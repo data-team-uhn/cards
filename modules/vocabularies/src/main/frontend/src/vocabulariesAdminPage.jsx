@@ -37,19 +37,20 @@ const Phase = require("./phaseCodes.json");
 const vocabLinks = require("./vocabularyLinks.json");
 
 // Generates a URL to the vocabulary listing page
-function generateRemoteLink(apiKey) {
+function generateRemoteLink(apiKey, linkKey) {
   if (apiKey === null) {
     // never returned an incomplete URL without a valid key
     return "";
   }
-  let url = new URL(vocabLinks["remote"]["base"]);
+  let url = new URL(vocabLinks[linkKey]["base"]);
   url.searchParams.set("apikey", apiKey);
-  Object.keys(vocabLinks["remote"]["params"]).forEach(
+  let params = vocabLinks[linkKey]["params"];
+  Object.keys(params).forEach(
     (key) => {
       (key === "include" ? 
-        url.searchParams.set(key, vocabLinks["remote"]["params"][key].join())
+        url.searchParams.set(key, params[key].join())
         :
-        url.searchParams.set(key, vocabLinks["remote"]["params"][key])
+        url.searchParams.set(key, params[key])
       )
     }
   )
@@ -228,7 +229,8 @@ export default function VocabulariesAdminPage() {
 
       <VocabularyDirectory 
         type="remote"
-        link={generateRemoteLink(bioPortalApiKey)}
+        link={generateRemoteLink(bioPortalApiKey, "remote")}
+        listLink={generateRemoteLink(bioPortalApiKey, "remote-list")}
         vocabList={remoteVocabList}
         setVocabList={processRemoteVocabList}
         acronymPhaseObject={acronymPhaseObject}
