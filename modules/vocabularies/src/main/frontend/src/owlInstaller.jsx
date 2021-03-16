@@ -17,9 +17,9 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
-import { 
+import {
   Button,
   CircularProgress,
   Grid,
@@ -28,6 +28,8 @@ import {
   Tooltip,
   Typography
 } from "@material-ui/core";
+
+import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const Status = require("./statusCodes.json");
 
@@ -74,6 +76,7 @@ const useStyles = makeStyles(theme => ({
 export default function OwlInstaller(props) {
 
   const classes = useStyles();
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let [ phase, setPhase ] = useState("install");
   let [ owlSelected, setOwlSelected ] = useState("Select File");
@@ -92,7 +95,7 @@ export default function OwlInstaller(props) {
     event.preventDefault();
 
     const form = event.target;
-    fetch(form.action, {
+    fetchWithReLogin(globalLoginDisplay, form.action, {
       method: form.method,
       body: new FormData(form)
     })

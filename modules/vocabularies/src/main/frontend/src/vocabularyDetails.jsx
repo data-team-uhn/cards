@@ -85,7 +85,7 @@ export default function VocabularyDetails(props) {
 
         <DialogContent dividers>
           <Typography variant="h6">{props.name}</Typography>
-          <Typography variant="body1">{props.description}</Typography>
+          <Typography variant="body1"><span dangerouslySetInnerHTML={{__html: props.description}} /></Typography>
         </DialogContent>
 
         <DialogActions>

@@ -60,7 +60,7 @@ let Fields = (props) => {
 
   let displayStaticField = (key) => {
     return (
-      <Grid container key={key} alignItems='flex-start'spacing={2} direction="row">
+      <Grid container key={key} alignItems='flex-start' spacing={2} direction="row">
         <Grid item xs={4}>
           <Typography variant="subtitle2">{formatString(key)}:</Typography>
         </Grid>

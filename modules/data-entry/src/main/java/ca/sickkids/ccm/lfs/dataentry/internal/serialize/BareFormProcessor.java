@@ -141,12 +141,18 @@ public class BareFormProcessor implements ResourceJsonProcessor
                 if (child.isNodeType("lfs:AnswerSection") && this.childrenJsons.get().containsKey(childId)) {
                     final JsonObject childJson = this.childrenJsons.get().get(childId);
                     final String childLabel = childJson.getString("section");
-                    final JsonArrayBuilder array =
-                        sectionArrays.computeIfAbsent(childLabel, name -> Json.createArrayBuilder());
-                    array.add(Json.createObjectBuilder(childJson).remove("section").build());
-                    // json.add will build the array and store the result, so further changes to it will not be
-                    // reflected. We need to re-add it every time we modify the array.
-                    json.add(childLabel, array);
+                    final JsonObject filteredChildJson = Json.createObjectBuilder(childJson).remove("section").build();
+                    Node section = child.getProperty("section").getNode();
+                    if (section.hasProperty("recurrent") && section.getProperty("recurrent").getBoolean()) {
+                        final JsonArrayBuilder array =
+                            sectionArrays.computeIfAbsent(childLabel, name -> Json.createArrayBuilder());
+                        array.add(filteredChildJson);
+                        // json.add will build the array and store the result, so further changes to it will not be
+                        // reflected. We need to re-add it every time we modify the array.
+                        json.add(childLabel, array);
+                    } else {
+                        json.add(childLabel, filteredChildJson);
+                    }
                     this.childrenJsons.get().remove(childId);
                 } else if (child.isNodeType("lfs:Answer") && this.childrenJsons.get().containsKey(childId)) {
                     final JsonObject childJson = this.childrenJsons.get().get(childId);

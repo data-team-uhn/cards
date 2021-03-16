@@ -20,8 +20,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Checkbox,
   Grid,
+  Switch,
   Typography,
   withStyles
 } from "@material-ui/core";
@@ -38,7 +38,8 @@ let BooleanInput = (props) => {
 
   return (
     <EditorInput name={objectKey}>
-      <Checkbox
+      <Switch
+        edge="start"
         id={objectKey}
         onChange={(event) => {setChecked(event.target.checked);}}
         checked={checked}

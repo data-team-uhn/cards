@@ -26,12 +26,12 @@ import NewItemButton from "../components/NewItemButton.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function NewQuestionnaireDialog(props) {
-  const { children, classes, presetPath } = props;
+  const { children, classes } = props;
   const [ open, setOpen ] = useState(false);
   const [ isFetching, setFetching ] = useState(false);
   const [ error, setError ] = useState("");
   const [ duplicateTitle, setDuplicateTitle ] = useState(false);
-  const [title, setTitle ] = useState("");
+  const [ title, setTitle ] = useState("");
   const [ questionnaires, setQuestionnaires ] = useState([]);
 
   let openDialog = () => {

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React from "react";
+import React, { useContext } from "react";
 
 import {
   Button,
@@ -33,6 +33,7 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 
 import fetchBioPortalApiKey from "./bioportalApiKey";
+import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const vocabLinks = require('./vocabularyLinks.json');
 
@@ -75,6 +76,7 @@ export default function Search(props) {
   const [loading, setLoading] = React.useState(false);
 
   const classes = useStyles();
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Search using the currently entered keywords
   function search() {
@@ -102,12 +104,12 @@ export default function Search(props) {
       props.setParentAcronymList(acronymList);
       props.setParentFilterTable(true);
 
-      fetchBioPortalApiKey((apiKey) => {
+      fetchBioPortalApiKey(globalLoginDisplay, (apiKey) => {
         // Then also make a request to recommender and update filtered list.
         let url = new URL(vocabLinks["recommender"]["base"]);
         url.searchParams.set("apikey", apiKey);
         url.searchParams.set("input", encodeURIComponent(keywords));
-        fetch(url)
+        fetchWithReLogin(globalLoginDisplay, url)
           .then((response) => (response.ok ? response.json() : Promise.reject(response)))
           .then((data) => {
             props.concatParentAcronymList(extractList(data));
@@ -185,11 +187,11 @@ export default function Search(props) {
 
       <Grid item>
         {(filterTable ?
-        <React.Fragment> 
+        <React.Fragment>
           <Typography variant="h6">Browse vocabularies matching </Typography>
           <Typography variant="h6" className={classes.keywords}>{lastSearch}</Typography>
-        </React.Fragment> 
-        : 
+        </React.Fragment>
+        :
         <Typography variant="h6">Browse All</Typography>)}
       </Grid>
     </React.Fragment>

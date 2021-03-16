@@ -67,7 +67,7 @@ public class BioOntologyIndexer implements VocabularyIndexer
     @Reference
     private VocabularyParserUtils utils;
 
-    @Reference(name = "RepositoryHandler.bioontology")
+    @Reference(target = "(component.name=RepositoryHandler.bioontology)")
     private RepositoryHandler repository;
 
     /**

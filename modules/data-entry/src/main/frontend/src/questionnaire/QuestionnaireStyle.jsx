@@ -366,9 +366,6 @@ const questionnaireStyle = theme => ({
         fontSize: "15px",
         color: theme.palette.error.main,
     },
-    newSubjectPopper: {
-        zIndex: "1301 !important"
-    },
     createNewSubjectButton: {
         marginRight: 'auto',
     },

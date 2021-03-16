@@ -34,16 +34,31 @@ let ListInput = (props) => {
     fetch('/query?query=' + encodeURIComponent(`select * from [${type.primaryType}] as n order by n.'${type.orderProperty}'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        let optionTypes = Array.from(json["rows"]); setOptions(optionTypes);
+        let optionTypes = Array.from(json["rows"]);
+        if (optionTypes.length == 0 && value.length == 0) {
+          return;
+        }
         let updatedValues = [];
-        for (let option of optionTypes) {
-          for (let val of value) {
+        for (let val of value) {
+          let found = false;
+          for (let option of optionTypes) {
             let compareVal = typeof(val) === "string" ? val : val[type.identifierProperty];
             if (compareVal === option[type.identifierProperty]) {
+              found = true;
               updatedValues.push(option);
             }
           }
+          if (!found) {
+            // Add the pre-existing value as an option
+            let newOption = {};
+            newOption[type.identifierProperty] = val;
+            newOption["jcr:uuid"] = val;
+            newOption[type.displayProperty] = val;
+            optionTypes.push(newOption);
+            updatedValues.push(newOption);
+          }
         }
+        setOptions(optionTypes);
         setValue(updatedValues);
       })
       .catch(handleError);
@@ -62,7 +77,7 @@ let ListInput = (props) => {
       <input type="hidden" name={objectKey + "@TypeHint"} value={type.saveType} />
       {
         // Maps each selected object to a reference type for submitting
-        value.map((typeObject) => <input type="hidden" name={objectKey} value={typeObject[type.identifierProperty]} key={typeObject["jcr:uuid"]} />)
+        value.map((typeObject, index) => <input type="hidden" name={objectKey} value={typeObject[type.identifierProperty]} key={typeObject + index} />)
       }
       {
         // Delete the current values within this list if nothing is selected
@@ -76,14 +91,14 @@ let ListInput = (props) => {
         input={<Input id={objectKey} />}
         renderValue={(value) => (
           <div>
-            {value.map((val) => (
-              <Chip key={val["jcr:uuid"]} label={val[type.displayProperty]}/>
+            {value.map((val, index) => (
+              <Chip key={val+index} label={val[type.displayProperty]}/>
             ))}
           </div>
         )}
       >
-      {options.map((name) => (
-        <MenuItem key={name["jcr:uuid"]} value={name}>
+      {options.map((name, index) => (
+        <MenuItem key={name + index} value={name}>
           <Typography>{name[type.displayProperty]}</Typography>
         </MenuItem>
       ))}
