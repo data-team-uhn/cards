@@ -78,7 +78,7 @@ let AnswerOptions = (props) => {
     let inputs = event.target.value.split(/=(.+)/);
     setOptions(oldValue => {
       var value = oldValue.slice();
-      value[index].value = sanitizeValue(inputs[0]);
+      value[index].value = inputs[0];
       value[index].label = inputs[1] ? inputs[1].trim() : "";
       return value;
     });
@@ -91,8 +91,8 @@ let AnswerOptions = (props) => {
       // e.g. F=Female as <value> = <label>
       let inputs = optionInput.split(/=(.+)/);
       let newOption = {};
-      newOption.value = sanitizeValue(inputs[0]);
-      newOption["@path"] = path + "/" + newOption.value;
+      newOption.value = inputs[0];
+      newOption["@path"] = path + "/" + sanitizeValue(newOption.value);
       newOption.label = inputs[1] ? inputs[1].trim() : "";
 
       setOptions(oldValue => {
