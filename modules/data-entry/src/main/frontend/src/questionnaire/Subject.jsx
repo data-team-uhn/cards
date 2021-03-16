@@ -104,7 +104,7 @@ export function getTextHierarchy (node, withType = false) {
  */
 
 function Subject(props) {
-  let { id, classes, maxDisplayed, pageSize } = props;
+  let { id, classes, maxDisplayed, pageSize, history } = props;
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ currentSubjectId, setCurrentSubjectId ] = useState(id);
   const [ activeTab, setActiveTab ] = useState(0);
@@ -115,6 +115,9 @@ function Subject(props) {
   useEffect(() => {
     let newId = getSubjectIdFromPath(location.pathname);
     newId && setCurrentSubjectId(newId);
+    if (location.hash.length > 0 && tabs.includes(location.hash.substring(1))) {
+      setActiveTab(tabs.indexOf(location.hash.substring(1)));
+    }
   }, [location]);
 
   let pageTitle = currentSubject && getTextHierarchy(currentSubject, true);
@@ -130,18 +133,21 @@ function Subject(props) {
     setCurrentSubject(e);
   }
 
+  function setTab(index) {
+    history.replace(location.pathname+location.search+"#"+tabs[index], location.state)
+    setActiveTab(index);
+  }
+
   return (
     <React.Fragment>
-      <div className={classes.mainPageAction}>
-        <NewFormDialog currentSubject={currentSubject}>
-          New form for this Subject
-        </NewFormDialog>
-      </div>
+      <NewFormDialog currentSubject={currentSubject}>
+        New form for this Subject
+      </NewFormDialog>
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
         <SubjectHeader id={currentSubjectId} key={"SubjectHeader"}  classes={classes} getSubject={handleSubject}/>
         {
           <Tabs value={activeTab} onChange={(event, value) => {
-            setActiveTab(value);
+            setTab(value);
           }}>
             {tabs.map((tab) => {
               return <Tab label={tab} key={tab}/>;
@@ -684,4 +690,4 @@ Subject.defaultProps = {
   pageSize: 10,
 }
 
-export default withStyles(QuestionnaireStyle)(Subject);
+export default withStyles(QuestionnaireStyle)(withRouter(Subject));

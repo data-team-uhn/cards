@@ -80,13 +80,17 @@ function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
 }
 
 function CustomTimelineConnector(props) {
-  let { classes, text } = props;
-  return <React.Fragment>
-      <div className={classes.circle}>
+  let { classes, text, className} = props;
+  let divClasses = [classes.timelineConnectorGroup];
+  if (className) {
+    divClasses.push(className);
+  }
+  return <div className={divClasses.join(",")}>
+      <div className={classes.timelineCircle}>
         <Typography variant="body2">{text}</Typography>
       </div>
-      <TimelineConnector />
-    </React.Fragment>
+      <TimelineConnector className={classes.timelineConnectorLine}/>
+    </div>
 }
 
 function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
@@ -98,18 +102,34 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
     paperClasses.push(classes.timelineAncestor);
   }
 
+  let separatorClasses = [classes.timelineSeparator];
+  let connectorIsAncestor = false;
+  if (dateEntry.level < 0) {
+    // Grey out connector + dot
+    separatorClasses.push(classes.timelineAncestor);
+  } else if (nextEntry && nextEntry.level < 0) {
+    // Only grey out connector
+    connectorIsAncestor = true;
+  }
+
   return <TimelineItem key={index}>
-      <TimelineOppositeContent>
-        <Typography color="textSecondary">{dateText}</Typography>
+      <TimelineOppositeContent className={classes.timelineContent}>
+        <Typography color="textSecondary" className={classes.timelineDate}>{dateText}</Typography>
       </TimelineOppositeContent>
-      <TimelineSeparator className={dateEntry.level < 0 ? classes.timelineAncestor : null}>
+      <TimelineSeparator className={separatorClasses.join(",")}>
         <TimelineDot color={dateEntry.level == 0 ? "primary" : (dateEntry.level == 1 ? "secondary" : "grey")}/>
         {index !== (length - 1)
-          ? (diff ? <CustomTimelineConnector classes={classes} text={diff}/> : <TimelineConnector />)
+          ? (
+            diff
+            ? <CustomTimelineConnector
+              classes={classes}
+              text={diff}
+              className={connectorIsAncestor ? classes.timelineAncestor : null}/>
+            : <TimelineConnector className={classes.timelineConnectorLine}/>)
           : null
         }
       </TimelineSeparator>
-      <TimelineContent>
+      <TimelineContent className={classes.timelineContent}>
         <Paper elevation={3} className={paperClasses.join(",")}>
           {dateEntry.questions.map((question, index) => {
             return DateAnswerDisplay(classes, question, index, dateEntry.questions.length, dateEntry.level)
@@ -289,9 +309,11 @@ function SubjectTimeline(props) {
   }
 
   useEffect(() => {
-    getForms().then(baseForms => getFormData(baseForms))
-    .then(formDetails => getDateAnswers(formDetails))
-    .then(dateAnswers => getDateEntries(dateAnswers));
+    if (subject) {
+      getForms().then(baseForms => getFormData(baseForms))
+      .then(formDetails => getDateAnswers(formDetails))
+      .then(dateAnswers => getDateEntries(dateAnswers));
+    }
   }, [subject]);
 
   // Callback method for the `fetchData` method, invoked when the request failed.

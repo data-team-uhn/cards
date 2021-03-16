@@ -233,12 +233,23 @@ const questionnaireStyle = theme => ({
         },
       },
     },
+    timelineContent: {
+        padding: theme.spacing(1,3),
+    },
     timelinePaper: {
-        padding: "8px 16px",
-        marginBottom: "40px"
+        padding: theme.spacing(1,2),
     },
     timelineAncestor: {
-        opacity: 0.3
+        opacity: 0.3,
+        "&:hover": {
+          opacity: 1,
+        },
+    },
+    timelineDate: {
+        marginTop: "-5px",
+        marginLeft: theme.spacing(-2),
+        marginRight: theme.spacing(-2),
+        color: theme.palette.primary.main
     },
     timelineDateEntry: {
         paddingBottom: theme.spacing(2),
@@ -246,17 +257,49 @@ const questionnaireStyle = theme => ({
     timelineDateEntryFinal: {
         paddingBottom: 0,
     },
-    mainPageAction: {
-        position: 'fixed',
-        bottom: theme.spacing(2),
-        right: theme.spacing(4),
-        height: theme.spacing(8),
-        zIndex: 100,
-        "& > div" : {
-             position: "absolute !important",
-             top: 0,
-             right: 0,
+    timelineConnectorGroup: {
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "column",
+        flexGrow: 1
+    },
+    timelineConnectorLine: {
+        backgroundColor: theme.palette.grey["200"]
+    },
+    timelineCircle: {
+        background: theme.palette.grey["200"],
+        position: "absolute",
+        top: "50%",
+        transform: "translateY(calc(-50% + 14px))",
+        width: "35px",
+        height: "35px",
+        borderRadius: "50%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        "&:before": {
+            content: "''",
+            display: "block",
+            borderBottom: "12px solid",
+            borderBottomColor: theme.palette.grey["200"],
+            borderLeft: "12px solid transparent",
+            borderRight: "12px solid transparent",
+            position: "absolute",
+            top: "-7px"
         },
+        "&:after": {
+            content: "''",
+            display: "block",
+            borderTop: "12px solid",
+            borderTopColor: theme.palette.grey["200"],
+            borderLeft: "12px solid transparent",
+            borderRight: "12px solid transparent",
+            position: "absolute",
+            bottom: "-7px"
+        }
+    },
+    timelineSeparator: {
+        minHeight: theme.spacing(12)
     },
     collapsedSection: {
         padding: "0 !important"
@@ -514,20 +557,6 @@ const questionnaireStyle = theme => ({
     answerOptionDeleteButton: {
       right: theme.spacing(-3),
     },
-    circle: {
-        background: theme.palette.background.paper,
-        border: "2px solid",
-        borderColor: theme.palette.grey["400"],
-        position: "absolute",
-        top: "50%",
-        transform: "translateY(calc(-50% + 14px))",
-        width: "35px",
-        height: "35px",
-        borderRadius: "50%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-    }
 });
 
 export default questionnaireStyle;
