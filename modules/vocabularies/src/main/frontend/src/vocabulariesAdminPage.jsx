@@ -140,7 +140,7 @@ export default function VocabulariesAdminPage() {
   }
 
   useEffect(() => {
-    localLoaded && remoteLoaded && setPhases();
+    (localLoaded || remoteLoaded) && setPhases();
   }, [localLoaded, remoteLoaded])
 
   function updateLocalList(action, vocab) {
