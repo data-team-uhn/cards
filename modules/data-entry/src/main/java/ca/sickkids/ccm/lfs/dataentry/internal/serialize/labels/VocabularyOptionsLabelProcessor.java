@@ -19,6 +19,7 @@
 package ca.sickkids.ccm.lfs.dataentry.internal.serialize.labels;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -76,11 +77,11 @@ public class VocabularyOptionsLabelProcessor extends SimpleAnswerLabelProcessor 
                 propsMap.put(nodeProp.getString(), nodeProp.getString());
             }
 
-            for (String value : propsMap.keySet()) {
-                if (value.startsWith("/Vocabularies/")) {
+            for (String value : new LinkedHashSet<>(propsMap.keySet())) {
+                if (value.startsWith("/Vocabularies/") && node.getSession().nodeExists(value)) {
                     Node term = node.getSession().getNode(value);
-                    String label = term.getProperty("label").getValue().toString();
-                    if (label != null) {
+                    if (term.hasProperty("label")) {
+                        String label = term.getProperty("label").getValue().toString();
                         propsMap.put(value, label);
                     }
                 }
