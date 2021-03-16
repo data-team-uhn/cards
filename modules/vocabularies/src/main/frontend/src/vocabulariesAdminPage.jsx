@@ -129,7 +129,7 @@ export default function VocabulariesAdminPage() {
       let remoteVocab = remoteVocabList.find(item => item.acronym == vocab.acronym);
       if (remoteVocab && remoteVocab.released) {
         const remoteReleaseDate = new Date(remoteVocab.released);
-        const localInstallDate = new Date(vocab.released);
+        const localInstallDate = new Date(vocab.installed);
         if (remoteReleaseDate > localInstallDate) {
           tempAcronymPhaseObject[vocab.acronym] = Phase["Update Available"];
         }
@@ -154,7 +154,7 @@ export default function VocabulariesAdminPage() {
       if (installedIndex > -1) {
         tempLocalVocabList[installedIndex] = vocab;
       } else {
-        tempLocalVocabList.push(vocab);
+        tempLocalVocabList.push(Object.assign(vocab, {installed : new Date()}));
       }
       setLocalVocabList(tempLocalVocabList);
 

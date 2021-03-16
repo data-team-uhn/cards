@@ -41,7 +41,8 @@ function reformat(data, type) {
           name: type == "remote" ? vocab.ontology.name : vocab.name,
           source: vocab.source,
           description: vocab.description,
-          released: type == "remote" ? vocab.released : vocab["jcr:created"],
+          released: vocab.released,
+          installed: vocab["jcr:created"],
           version: vocab.version
    }));
    return vocabs;

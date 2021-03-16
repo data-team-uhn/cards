@@ -82,7 +82,7 @@ export default function VocabularyEntry(props) {
   const [phase, setPhase] = React.useState(initPhase);
 
   const classes = useStyles();
-  const date = new Date(vocabulary.released);
+  const date = new Date(props.type === "local" ? vocabulary.installed : vocabulary.released);
   const bodyTypography = Config["tableBodyTypography"];
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -104,7 +104,6 @@ export default function VocabularyEntry(props) {
     .then((resp) => resp.json())
     .then((resp) => {
       if(resp["isSuccessful"]) {
-        vocabulary.released = new Date();
         props.setPhase(Phase["Latest"]);
         updateLocalList("add", vocabulary);
       } else {
