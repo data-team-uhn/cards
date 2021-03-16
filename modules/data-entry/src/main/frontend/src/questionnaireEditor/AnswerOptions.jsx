@@ -31,6 +31,7 @@ import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import CloseIcon from '@material-ui/icons/Close';
+import { stringToHash } from "../escape.jsx";
 
 let AnswerOptions = (props) => {
   const { objectKey, data, path, saveButtonRef, classes } = props;
@@ -70,15 +71,11 @@ let AnswerOptions = (props) => {
     }
   }
 
-  let sanitizeValue = (value) => {
-    return value.trim().replace(/\s/g, '_').replace(/\W/g, '');
-  }
-
   let updateOption = (index, event) => {
     let inputs = event.target.value.split(/=(.+)/);
     setOptions(oldValue => {
       var value = oldValue.slice();
-      value[index].value = inputs[0];
+      value[index].value = inputs[0].trim();
       value[index].label = inputs[1] ? inputs[1].trim() : "";
       return value;
     });
@@ -91,8 +88,8 @@ let AnswerOptions = (props) => {
       // e.g. F=Female as <value> = <label>
       let inputs = optionInput.split(/=(.+)/);
       let newOption = {};
-      newOption.value = inputs[0];
-      newOption["@path"] = path + "/" + sanitizeValue(newOption.value);
+      newOption.value = inputs[0].trim();
+      newOption["@path"] = path + "/" + stringToHash(newOption.value);
       newOption.label = inputs[1] ? inputs[1].trim() : "";
 
       setOptions(oldValue => {
