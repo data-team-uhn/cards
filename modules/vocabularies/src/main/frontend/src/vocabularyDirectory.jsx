@@ -51,8 +51,31 @@ function reformat(data, type) {
 export default function VocabularyDirectory(props) {
   const [curStatus, setCurStatus] = React.useState(Status["Init"]);
 
-  // Function that fetches list of Vocabularies from Bioontology API
+  // Function that fetches list of existing Vocabularies from Bioontology API
   function getVocabList() {
+
+    if (props.type === "local") {
+      getFullVocabList();
+      return;
+    }
+
+    let filteredVocabs = null;
+    setCurStatus(Status["Loading"]);
+    var badResponse = false;
+    fetch(props.listLink)
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
+    .then(function(data) {
+      if (data && data.length > 0) {
+        filteredVocabs = data.map( item => item.acronym );
+      }
+    })
+    .finally(() =>{
+      getFullVocabList(filteredVocabs);
+    });
+  }
+
+  // Function that fetches list of Vocabularies with meta info from Bioontology API
+  function getFullVocabList(existingVocabList) {
     setCurStatus(Status["Loading"]);
     var badResponse = false;
     fetch(props.link)
@@ -60,7 +83,13 @@ export default function VocabularyDirectory(props) {
     .then(function(data) {
 
       if (props.type === "remote") {
-        props.setVocabList(reformat(data, props.type));
+        let filteredVocabs = data;
+        // Filter out every vocabulary that is not in `/ontologies`
+        if (existingVocabList && existingVocabList.length > 0) {
+          filteredVocabs = data.filter((vocab) => { return existingVocabList.includes(vocab.ontology.acronym) });
+        }
+
+        props.setVocabList(reformat(filteredVocabs, props.type));
       } else if (props.type === "local") {
         props.setVocabList(reformat(data.rows, props.type));
       }
