@@ -188,7 +188,7 @@ function NewFormDialog(props) {
   useEffect(() => {
     // only considers currentSubject, since setting this error would only be necessary on the 'Subject' page, which would set a currentSubject
     if (currentSubject && relatedForms && selectedQuestionnaire) {
-      let atMax = (relatedForms.length && (relatedForms.filter((i) => (i["@name"] == selectedQuestionnaire["@name"])).length >= selectedQuestionnaire?.["maxPerSubject"]));
+      let atMax = (relatedForms.length && (relatedForms.filter((i) => (i["@name"] == selectedQuestionnaire["@name"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)));
       if (atMax) {
         setError(`${currentSubject?.["type"]["@name"]} ${currentSubject?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
         setDisableProgress(true);
@@ -286,7 +286,7 @@ function NewFormDialog(props) {
                     // /* It doesn't seem possible to alter the className from here */
                     backgroundColor: (selectedQuestionnaire?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
                     // // grey out subjects that have already reached maxPerSubject
-                    color: ((relatedForms && (selectedSubject || currentSubject) && (relatedForms.filter((i) => (i["@name"] == rowData["@name"])).length >= rowData?.["maxPerSubject"]))
+                    color: ((relatedForms?.length && (selectedSubject || currentSubject) && (relatedForms.filter((i) => (i["@name"] == rowData["@name"])).length >= (+(rowData?.["maxPerSubject"]) || undefined)))
                     ? theme.palette.grey["500"]
                     : theme.palette.grey["900"]
                     )

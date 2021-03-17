@@ -173,9 +173,13 @@ let EditDialog = (props) => {
         <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
           <DialogContent>
             <Grid container direction="column" spacing={2}>
-            <Grid item>{targetIdField()}</Grid>
-            <Fields data={targetExists && data || {}} JSON={json[0]} edit={true} />
-            { data && type === 'Question' && <Grid item><AnswerOptions data={data} path={data["@path"] + (targetExists ? "" : `/${targetId}`)} saveButtonRef={saveButtonRef}/></Grid> }
+              <Grid item>{targetIdField()}</Grid>
+              <Fields data={targetExists && data || {}} JSON={json[0]} edit={true} />
+              { data && type === 'Question' &&
+                <Grid item>
+                  <AnswerOptions data={data} path={data["@path"] + (targetExists ? "" : `/${targetId}`)} saveButtonRef={saveButtonRef}/>
+                </Grid>
+              }
             </Grid>
           </DialogContent>
           <DialogActions>

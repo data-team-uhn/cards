@@ -141,7 +141,7 @@ let Questionnaire = (props) => {
                 classes={classes}
                 fields= {Array(
                           {name: "description", label: "Description", value : data.description},
-                          {name: "maxPerType", label: "Maximum forms of this type per subject", value : data.maxPerSubject || 'Unlimited'},
+                          {name: "maxPerType", label: "Maximum forms of this type per subject", value : (data.maxPerSubject > 0 ? data.maxPerSubject : 'Unlimited')},
                           {name: "subjectTypes", label: "Subject types", value: data.requiredSubjectTypes?.label || data.requiredSubjectTypes?.map(t => t.label).join(', ') || 'Any'},
                         )}
               />

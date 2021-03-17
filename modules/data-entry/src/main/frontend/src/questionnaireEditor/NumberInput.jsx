@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React from 'react';
+import React, { useState } from "react";
 import PropTypes from 'prop-types';
 import {
   Grid,
@@ -34,16 +34,25 @@ import QuestionComponentManager from "./QuestionComponentManager";
 
 let NumberInput = (props) => {
   let { objectKey, data } = props;
+  const defaultValue = props.value === "long" ? 0 : '';
+  let [ value, setValue ] = useState(data[objectKey] || defaultValue);
+
   return (
     <EditorInput name={objectKey}>
       <TextField
         fullWidth
         name={objectKey || ''}
         id={objectKey || ''}
-        defaultValue={data[objectKey] || ''}
         type='number'
         placeholder={objectKey.includes('maxPerSubject') ? 'Unlimited' : ''}
-        min={objectKey.includes('maxPerSubject') ? 0 : ''}
+        value={value}
+        onChange={(event) => { setValue(event.target.value); }}
+        onBlur={(event) => { setValue(event.target.value || defaultValue); }}
+        InputProps={{
+          inputProps: { 
+            min: defaultValue 
+          }
+        }}
       />
     </EditorInput>
   )
