@@ -18,7 +18,6 @@
 //
 import React, { useState, useEffect } from "react";
 import LiveTable from "./LiveTable.jsx";
-import SubjectType from "../questionnaire/SubjectType.jsx";
 
 import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -82,11 +81,6 @@ function SubjectTypes(props) {
       setNewSubjectTypePopperOpen(true);
     }
   }, [location.pathname]);
-
-  let subjectPath = /SubjectTypes\/(.+)/.exec(location.pathname);
-  if (subjectPath && !subjectPath[1].endsWith('.edit')) {
-    return <SubjectType id={subjectPath[1]} classes={classes}/>;
-  }
 
   return (
   <>
