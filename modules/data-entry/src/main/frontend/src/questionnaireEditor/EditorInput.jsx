@@ -18,6 +18,7 @@
 //
 
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import {
   Grid,
@@ -29,9 +30,18 @@ let EditorInput = (props) => {
   let formatString = (key) => {
     return key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
   }
+  const classes = makeStyles((theme) => ({
+    labelContainer: {
+      /* Match the input padding so the text of the label would appear aligned with the text of the input */
+      /* To do: switch to a vertical layout in the future to avoid most alignment issues  */
+      paddingTop: theme.spacing(1.75) + "px !important",
+    },
+  }))();
+
   return (
-    <Grid container alignItems='flex-end' spacing={2}>
-      <Grid item xs={4}>
+  <Grid item>
+    <Grid container alignItems="flex-start" spacing={2}>
+      <Grid item xs={4} className={classes.labelContainer}>
         <Typography variant="subtitle2">
           {formatString(name?.concat(':')) || ''}
         </Typography>
@@ -40,7 +50,8 @@ let EditorInput = (props) => {
         {children}
       </Grid>
     </Grid>
-    );
+  </Grid>
+  );
 }
 
 EditorInput.propTypes = {

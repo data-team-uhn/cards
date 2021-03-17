@@ -28,11 +28,13 @@ import {
 } from "@material-ui/core";
 
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
+import EditorInput from "./EditorInput";
+import QuestionComponentManager from "./QuestionComponentManager";
 import { v4 as uuidv4 } from 'uuid';
 import CloseIcon from '@material-ui/icons/Close';
 
 let AnswerOptions = (props) => {
-  const { data, path, saveButtonRef } = props;
+  const { objectKey, data, path, saveButtonRef } = props;
   let [ options, setOptions ] = useState(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
   let [ newUUID, setNewUUID ] = useState([]);
   let [ newValue, setNewValue ] = useState([]);
@@ -111,11 +113,7 @@ let AnswerOptions = (props) => {
   }
 
   return (
-    <Grid container alignItems='baseline' spacing={2}>
-      <Grid item xs={4}>
-        <Typography variant="subtitle2">Answer options:</Typography>
-      </Grid>
-      <Grid item xs={8}>
+    <EditorInput name={objectKey}>
       { options.map((value, index) =>
         <React.Fragment key={value['@path']}>
           <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
@@ -163,8 +161,7 @@ let AnswerOptions = (props) => {
         })}
         multiline
         />
-      </Grid>
-    </Grid>
+    </EditorInput>
   )
 }
 
@@ -172,4 +169,11 @@ AnswerOptions.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-export default withStyles(QuestionnaireStyle)(AnswerOptions);
+var StyledAnswerOptions = withStyles(QuestionnaireStyle)(AnswerOptions);
+export default StyledAnswerOptions;
+
+QuestionComponentManager.registerQuestionComponent((definition) => {
+  if (definition === "options") {
+    return [StyledAnswerOptions, 50];
+  }
+});
