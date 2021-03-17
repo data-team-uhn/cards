@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -73,15 +74,8 @@ public class VocabularyLabelProcessor extends SimpleAnswerLabelProcessor impleme
                 return createJsonArrayFromList(propsMap.values());
             }
 
-            for (String value : propsMap.keySet()) {
-                if (value.startsWith("/Vocabularies/")) {
-                    Node term = node.getSession().getNode(value);
-                    String label = term.getProperty("label").getValue().toString();
-                    if (label != null) {
-                        propsMap.put(value, label);
-                    }
-                }
-            }
+            processVocabularyLabels(node, question, propsMap);
+            processAnswerOptionLabels(node, question, propsMap);
 
             if (propsMap.size() == 1) {
                 return Json.createValue((String) propsMap.values().toArray()[0]);
@@ -92,5 +86,46 @@ public class VocabularyLabelProcessor extends SimpleAnswerLabelProcessor impleme
             // Really shouldn't happen
         }
         return null;
+    }
+
+    private void processVocabularyLabels(final Node node, final Node question, final Map<String, String> propsMap)
+        throws RepositoryException
+    {
+        for (String value : propsMap.keySet()) {
+            if (value.startsWith("/Vocabularies/") && node.getSession().nodeExists(value)) {
+                Node term = node.getSession().getNode(value);
+                String label = term.getProperty("label").getValue().toString();
+                if (label != null) {
+                    propsMap.put(value, label);
+                }
+            }
+        }
+    }
+
+    private void processAnswerOptionLabels(final Node node, final Node question, final Map<String, String> propsMap)
+        throws RepositoryException
+    {
+
+        NodeIterator childNodes = question.getNodes();
+        if (childNodes.getSize() > 0) {
+            int count = 0;
+            while (childNodes.hasNext()) {
+                Node optionNode = childNodes.nextNode();
+                if (!"lfs:AnswerOption".equals(optionNode.getPrimaryNodeType().getName())
+                    || !optionNode.hasProperty(PROP_VALUE)) {
+                    continue;
+                }
+
+                String option = optionNode.getProperty(PROP_VALUE).getString();
+                if (propsMap.containsKey(option) && optionNode.hasProperty(PROP_LABEL)) {
+                    propsMap.put(option, optionNode.getProperty(PROP_LABEL).getString());
+                    count++;
+                }
+
+                if (propsMap.size() == count) {
+                    break;
+                }
+            }
+        }
     }
 }
