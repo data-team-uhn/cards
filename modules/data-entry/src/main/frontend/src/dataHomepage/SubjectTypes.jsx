@@ -39,7 +39,7 @@ function SubjectTypes(props) {
     {
       "key": "",
       "label": "Label",
-      "format": (row) => (<a href={"/content.html/Subjects#" + row['@name']}>{row.label}</a>),
+      "format": (row) => (<a href={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label} target="_blank">{row.label}</a>),
     },
     {
       "key": "jcr:created",
