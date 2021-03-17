@@ -116,7 +116,6 @@ let AnswerOptions = (props) => {
             InputProps={{
               readOnly: true,
             }}
-            variant="filled"
             className={classes.answerOptionInput}
             defaultValue={value.label? value.value + " = " + value.label : value.value}
             multiline
