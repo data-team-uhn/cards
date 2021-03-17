@@ -82,7 +82,6 @@
           "orderProperty": "lfs:Vocabulary",
           "identifierProperty": "identifier"
         },
-        "vocabularyFilter": "string",
         "minAnswers": "long",
         "maxAnswers": "long",
         "displayMode": {
