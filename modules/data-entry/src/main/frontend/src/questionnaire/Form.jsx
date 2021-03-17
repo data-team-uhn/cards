@@ -23,15 +23,14 @@ import PropTypes from "prop-types";
 
 import {
   Breadcrumbs,
-  Button,
   CircularProgress,
-  Grid,
-  Link,
-  Typography,
   Dialog,
   DialogTitle,
   DialogContent,
+  Grid,
   IconButton,
+  Tooltip,
+  Typography,
   withStyles
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
@@ -256,6 +255,12 @@ function Form (props) {
     pageNameWriter((subjectName ? subjectName + ": " : "") + title);
   }, [subjectName, title])
 
+  useEffect(() => {
+    if (!isEdit) {
+      saveDataWithCheckin();
+    }
+  }, [changedSubject])
+
   // Load the Form, only once, upon initialization
   useEffect(() => {
     fetchData();
@@ -343,9 +348,11 @@ function Form (props) {
         <Grid item className={classes.formHeader} xs={12}>
           { parentDetails && <Typography variant="overline">
             {parentDetails}
-            <IconButton className={classes.hierarchyEditButton} size="small" onClick={() => {setSelectorDialogOpen(true)}}>
-              <EditIcon fontSize="small" />
-            </IconButton>
+            <Tooltip title="Change subject">
+              <IconButton className={classes.hierarchyEditButton} size="small" onClick={() => {setSelectorDialogOpen(true)}}>
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
           </Typography> }
           <Typography variant="h2">
             {title}
