@@ -66,19 +66,9 @@ let AnswerOptions = (props) => {
     if (optionInput) {
       setIsDuplicate(false);
       let inputs = (optionInput + ' ').split(/=(.+)/);
-      let duplicateOption = options.find( option => option.value.trim() === inputs[0].trim() || inputs[1] && (option.label.trim() === inputs[1].trim()));
+      let duplicateOption = options.find( option => option.value.trim() === inputs[0].trim() || inputs[1] && (option.label?.trim() === inputs[1].trim()));
       duplicateOption && setIsDuplicate(true);
     }
-  }
-
-  let updateOption = (index, event) => {
-    let inputs = event.target.value.split(/=(.+)/);
-    setOptions(oldValue => {
-      var value = oldValue.slice();
-      value[index].value = inputs[0].trim();
-      value[index].label = inputs[1] ? inputs[1].trim() : "";
-      return value;
-    });
   }
 
   let handleInputOption = (optionInput) => {
@@ -123,9 +113,12 @@ let AnswerOptions = (props) => {
           <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
           <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
           <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            variant="filled"
             className={classes.answerOptionInput}
             defaultValue={value.label? value.value + " = " + value.label : value.value}
-            onChange={(event) => { updateOption(index, event); }}
             multiline
             />
           <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionDeleteButton}>
