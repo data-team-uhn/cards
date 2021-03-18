@@ -36,6 +36,7 @@ argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer ser
 argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of MongoDB) as the back-end for Oak/JCR', action='store_true')
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
+argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to lfsinitial:8080', type=int)
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
@@ -235,6 +236,9 @@ if args.oak_filesystem:
 
 if not (args.oak_filesystem or args.external_mongo):
     yaml_obj['services']['lfsinitial']['depends_on'] = ['router']
+
+if args.sling_admin_port:
+    yaml_obj['services']['lfsinitial']['ports'] = ["127.0.0.1:{}:8080".format(args.sling_admin_port)]
 
 #Configure the NCR container (if enabled) - only one for now
 if ENABLE_NCR:
