@@ -700,6 +700,7 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
   let selectedURL = subjectToTrack["@path"];
   let subjectTypeToUse = subjectType["jcr:uuid"] ? subjectType["jcr:uuid"] : subjectType;
   let lastPromise = null;
+  let firstSubject = true;
   for (let subjectName of newSubjects) {
     // Do not allow blank subjects
     if (subjectName == "") {
@@ -714,7 +715,6 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
     }
 
     // Make a POST request to create a new subject
-    let parentCheckQuery = [];
     let requestData = new FormData();
     requestData.append('jcr:primaryType', 'lfs:Subject');
     requestData.append('identifier', subjectName);
@@ -722,13 +722,13 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
     requestData.append('type@TypeHint', 'Reference');
 
     let parentCheckQueryString = "";
-    if (parentCheckQuery.length) {
-      parentCheckQueryString = " AND (" + parentCheckQuery.join(" OR ") + ")";
+    if (firstSubject && subjectParent) {
+      parentCheckQueryString = `ISCHILDNODE(n , '${subjectParent}')`;
     } else {
-      parentCheckQueryString = " AND n.'parents' IS NULL";
+      parentCheckQueryString = "ISCHILDNODE(n , '/Subjects/')";
     }
 
-    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${escapeJQL(subjectName)}'` + parentCheckQueryString, "lfs:Subject");
+    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${escapeJQL(subjectName)}' AND ${parentCheckQueryString}`, "lfs:Subject");
     let newPromise = fetchWithReLogin(globalLoginDisplay, checkAlreadyExistsURL)
       .then( (response) => response.ok ? response.json() : Promise.reject(response))
       .then( (json) => {
