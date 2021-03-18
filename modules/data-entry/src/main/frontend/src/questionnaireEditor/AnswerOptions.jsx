@@ -79,7 +79,8 @@ let AnswerOptions = (props) => {
       let inputs = optionInput.split(/=(.+)/);
       let newOption = {};
       newOption.value = inputs[0].trim();
-      newOption["@path"] = path + "/" + stringToHash(newOption.value);
+      let sanitisedValue = newOption.value.trim().replace(/\s/g, '_').replace(/\W/g, '');
+      newOption["@path"] = path + "/" + sanitisedValue + stringToHash(newOption.value);
       newOption.label = inputs[1] ? inputs[1].trim() : "";
 
       setOptions(oldValue => {
