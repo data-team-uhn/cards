@@ -94,7 +94,7 @@ public class SubjectParentEditor extends DefaultEditor
     }
 
     /**
-     * Gather the parent of a given node and store it in the {@code parents} property, removing it if there is none.
+     * Grab the parent of a given node and store it in the {@code parents} property, removing it if there is none.
      *
      * @throws RepositoryException if accessing the repository fails
      */
