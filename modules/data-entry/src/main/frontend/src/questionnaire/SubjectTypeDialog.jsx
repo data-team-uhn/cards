@@ -16,32 +16,33 @@
 */
 
 import React, { useState } from "react";
-import { useHistory } from 'react-router-dom';
 
 import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, InputLabel, MenuItem, TextField, Typography, Select, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
-function CreateSubjectTypeDialog(props) {
+function SubjectTypeDialog(props) {
   const { open, onClose, onSubmit, subjects, isEdit, editSubject, classes } = props;
+  const initialParent = editSubject?.["parents"]?.["@path"] || "/SubjectTypes";
+  let subjectTypes = !isEdit ? subjects : subjects.filter(item => item["jcr:uuid"] != editSubject["jcr:uuid"]);
+
   const [ newName, setNewName ] = useState("");
-  const [ parentSubject, setParentSubject ] = useState(editSubject ? editSubject["@path"].replace("/" + editSubject["@name"], "") : "");
+  const [ parentSubject, setParentSubject ] = useState(initialParent);
   const [ order, setOrder ] = useState(editSubject && editSubject["lfs:defaultOrder"] ? editSubject["lfs:defaultOrder"] : 0);
   const [ error, setError ] = useState(null);
   const [ isDuplicateName, setIsDuplicateName ] = useState(false);
-  const history = useHistory();
 
   let validateName = (name) => {
     setIsDuplicateName(false);
     for (var i in subjects) {
-      if (subjects[i]["@name"] === name) {
+      if (subjects[i].label === name) {
         setIsDuplicateName(true);
         return;
       }
     }
   }
 
-  let handleCreateSubjectType = () => {
+  let handleSubjectType = () => {
     setError("");
     let formData = new FormData();
 
@@ -56,10 +57,16 @@ function CreateSubjectTypeDialog(props) {
       formData.append(':nameHint', newName);
       formData.append(':content', JSON.stringify(formInfo));
     } else {
-      formData.append("lfs:defaultOrder", order);
+      if (editSubject["lfs:defaultOrder"] == order) {
+        moveSubjectType();
+        return;
+      } else {
+        // Update the order first
+        formData.append("lfs:defaultOrder", order);
+      }
     }
 
-    fetch(isEdit ? editSubject["@path"] : parentSubject || '/SubjectTypes', {
+    fetch(isEdit ? editSubject["@path"] : parentSubject, {
         method: 'POST',
         body: formData
     })
@@ -68,15 +75,33 @@ function CreateSubjectTypeDialog(props) {
           setError(response.statusText);
           return;
         }
-        onSubmit();
 
-        if (isEdit) {
-          history.push({
-            pathname: "/content.html/admin/SubjectTypes"
-          });
+        // If parent changed we need to move the node
+        if (isEdit && initialParent != parentSubject) {
+          moveSubjectType();
         } else {
-          onClose();
+          onSubmit();
         }
+    });
+  }
+
+  let moveSubjectType = () => {
+    let formData = new FormData();
+    formData.append(':operation', 'move');
+    formData.append(':dest', !parentSubject.endsWith("/") ? parentSubject + "/" : parentSubject);
+    formData.append(':replace', true);
+
+    fetch(editSubject["@path"], {
+        method: 'POST',
+        body: formData
+    })
+    .then((response) => {
+        if (!response.ok) {
+          setError(response.statusText);
+          return;
+        }
+
+        onSubmit();
     });
   }
 
@@ -87,19 +112,15 @@ function CreateSubjectTypeDialog(props) {
     setOrder(0);
     setIsDuplicateName(false);
     onClose();
-    if (isEdit) {
-      history.push({
-        pathname: "/content.html/admin/SubjectTypes"
-      });
-    }
   }
 
   return (
     <Dialog
+      maxWidth="xs"
       open={open}
       onClose={onClose}
     >
-      <DialogTitle>{isEdit ? "Modify " + editSubject["@name"] : "Create New Subject Type"}</DialogTitle>
+      <DialogTitle>{isEdit ? "Modify " + editSubject.label : "Create New Subject Type"}</DialogTitle>
       <DialogContent>
         <Grid container justify="flex-start" alignItems="center" spacing={2}>
           <Grid item xs={4}>
@@ -107,8 +128,9 @@ function CreateSubjectTypeDialog(props) {
           </Grid>
           <Grid item xs={8}>
             <TextField
+                fullWidth
                 disabled={isEdit}
-                value={isEdit ? editSubject["@name"] : newName}
+                value={isEdit ? editSubject.label : newName}
                 id="name"
                 name="name"
                 onChange={(event) => { setNewName(event.target.value); setError(""); validateName(event.target.value); }}
@@ -117,29 +139,29 @@ function CreateSubjectTypeDialog(props) {
                 helperText={isDuplicateName ? "This name already exists" : "Required*"}
             />
           </Grid>
-          { (isEdit || subjects && subjects.length > 0) &&
+          { (isEdit || subjectTypes && subjectTypes.length > 0) &&
             <>
               <Grid item xs={4}>
                 <Typography>Parent</Typography>
               </Grid>
               <Grid item xs={8}>
                 <Select
-                  disabled={isEdit}
+                  disabled={isEdit && editSubject["@referenced"]}
                   labelId="parent"
                   label="optional"
                   value={parentSubject}
                   onChange={(event) => setParentSubject(event.target.value)}
-                  className={classes.selectParent}
                   displayEmpty
                 >
-                  <MenuItem key="none" value="">
-                     <em>None</em>
+                  <MenuItem key="none" value="/SubjectTypes">
+                    <em>None</em>
                   </MenuItem>
-                  { subjects.map((option) => (
-                    <MenuItem key={option["jcr:uuid"]} value={option["@path"]}>
-                      {option.label}
-                    </MenuItem>
-                   )) }
+                  { subjectTypes.map((option) =>
+                      <MenuItem key={option["jcr:uuid"]} value={option["@path"]}>
+                        {option.label}
+                      </MenuItem>
+                    )
+                  }
                 </Select>
               </Grid>
             </>
@@ -160,11 +182,11 @@ function CreateSubjectTypeDialog(props) {
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
         <Button
-          disabled={!isEdit && (!newName || isDuplicateName)}
+          disabled={!isEdit && (!newName || isDuplicateName) || isEdit && (editSubject["lfs:defaultOrder"] == order && initialParent == parentSubject)}
           color="primary"
           variant="contained"
           size="small"
-          onClick={(event) => { event.preventDefault(); handleCreateSubjectType(); }}
+          onClick={(event) => { event.preventDefault(); handleSubjectType(); }}
          >
           { isEdit ? "Save" : "Create" }
         </Button>
@@ -174,4 +196,4 @@ function CreateSubjectTypeDialog(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(CreateSubjectTypeDialog);
+export default withStyles(QuestionnaireStyle)(SubjectTypeDialog);

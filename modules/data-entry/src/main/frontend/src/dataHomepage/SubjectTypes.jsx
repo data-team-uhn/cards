@@ -19,13 +19,24 @@
 import React, { useState, useEffect } from "react";
 import LiveTable from "./LiveTable.jsx";
 
-import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, IconButton, Tooltip, withStyles } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import CreateSubjectTypeDialog from "../questionnaire/NewSubjectTypeDialog.jsx";
+import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import DeleteButton from "./DeleteButton.jsx";
-import EditButton from "./EditButton.jsx";
+import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
+
+function EditSubjectTypeButton(props) {
+  const { classes, onClick } = props;
+  return(
+    <Tooltip title={"Edit Subject Type"}>
+      <IconButton className={classes.actionButton} onClick={onClick}>
+        <EditIcon />
+      </IconButton>
+    </Tooltip>
+  )
+}
 
 function SubjectTypes(props) {
   const { classes } = props;
@@ -55,10 +66,24 @@ function SubjectTypes(props) {
       "label": "Default Order",
       "format": "string",
     },
-  ]
-  const actions = [
-    DeleteButton,
-    EditButton
+    {
+      "key": "",
+      "label": "Actions",
+      "format": (row) => (<>
+                            <DeleteButton
+                              entryPath={row["@path"]}
+                              entryName={row.label}
+                              onComplete={() => { setUpdateData(true); }}
+                              entryType={"Subject Type"}
+                              buttonClass={classes.actionButton}
+                              admin={true}
+                            />
+                            <EditSubjectTypeButton
+                              onClick={() => {setIsEdit(true); setEditSubject(row); setNewSubjectTypePopperOpen(true);}}
+                              classes={classes}
+                            />
+                          </>),
+    },
   ]
 
   // When the subject data is changed, set the update data flag to false
@@ -68,19 +93,11 @@ function SubjectTypes(props) {
     }
   }, [subjectData]);
 
-  useEffect(() => {
+  let onClose = () => {
+    setNewSubjectTypePopperOpen(false);
     setIsEdit(false);
     setEditSubject(null);
-    const entry = /SubjectTypes\/(.+)/.exec(location.pathname);
-    // for edit mode show dialog to allow to modify only the default order
-    if (entry && entry[1].endsWith('.edit')) {
-      let path = "/" + entry[0].replace('.edit', '');
-      let subject = subjectData.find(subject => subject["@path"] === path);
-      setIsEdit(true);
-      setEditSubject(subject);
-      setNewSubjectTypePopperOpen(true);
-    }
-  }, [location.pathname]);
+  }
 
   return (
   <>
@@ -95,7 +112,6 @@ function SubjectTypes(props) {
       <CardContent>
         <LiveTable
           columns={columns}
-          actions={actions}
           entryType={"Subject Type"}
           admin={true}
           disableTopPagination={true}
@@ -108,14 +124,16 @@ function SubjectTypes(props) {
       title="New subject type"
       onClick={() => { setNewSubjectTypePopperOpen(true); }}
     />
-    { newSubjectTypePopperOpen && <CreateSubjectTypeDialog
-      onClose={() => { setNewSubjectTypePopperOpen(false);}}
-      onSubmit={() => { setNewSubjectTypePopperOpen(false); setUpdateData(true);}}
-      open={newSubjectTypePopperOpen}
-      subjects={subjectData}
-      isEdit={isEdit}
-      editSubject={editSubject}
-    /> }
+    { newSubjectTypePopperOpen &&
+        <SubjectTypeDialog
+          onClose={() => { onClose(); }}
+          onSubmit={() => { onClose(); setUpdateData(true); }}
+          open={newSubjectTypePopperOpen}
+          subjects={subjectData}
+          isEdit={isEdit}
+          editSubject={editSubject}
+        />
+     }
   </>
   );
 }

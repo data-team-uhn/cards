@@ -477,9 +477,9 @@ const questionnaireStyle = theme => ({
     answerOptionDeleteButton: {
       right: theme.spacing(-3),
     },
-    selectParent: {
-      width: "182px"
-    }
+    actionButton: {
+        float: "right"
+    },
 });
 
 export default questionnaireStyle;

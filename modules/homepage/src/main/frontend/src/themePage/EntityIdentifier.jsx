@@ -35,6 +35,8 @@ export function getEntityIdentifier(row) {
         return getTextHierarchy(row);
       case "lfs:Questionnaire":
         return row.title;
+      case "lfs:SubjectType":
+        return row.label;
       // default covers other cases
       default:
         return row.subject?.identifier || row["@name"] || anchor;

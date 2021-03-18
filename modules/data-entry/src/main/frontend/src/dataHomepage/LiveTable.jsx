@@ -371,7 +371,15 @@ function LiveTable(props) {
           <TableRow>
           { columns ?
             (
-              columns.map((column, index) => <TableCell key={index} className={classes.tableHeader} {...column.props}>{column.label}</TableCell>)
+              columns.map((column, index) =>
+                <TableCell
+                  key={index}
+                  className={[classes.tableHeader, column.label == 'Actions' ? classes.tableActionsHeader : ''].join(' ')}
+                  {...column.props}
+                >
+                  {column.label}
+                </TableCell>
+              )
             )
           :
             (
