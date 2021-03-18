@@ -636,7 +636,7 @@ export default function VariantFilesContainer() {
       let fileInfo = {};
       fileInfo["jcr:primaryType"] = "lfs:FileResourceAnswer";
       fileInfo["jcr:reference:question"] = "/Questionnaires/SomaticVariants/file";
-      fileInfo["value"] = formPath + "/" + fileID + "/" + file.name;
+      fileInfo["value"] = "/" + formPath + "/" + fileID + "/" + file.name;
 
       let fileDetails = {};
       fileDetails["jcr:primaryType"] = "nt:file";
