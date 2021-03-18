@@ -182,7 +182,14 @@ public class BareFormProcessor implements ResourceJsonProcessor
     {
         // Replace the subject reference with the label of the actual subject (and its parents)
         if (node.isNodeType("lfs:Form") && "subject".equals(property.getName())) {
-            return Json.createValue(property.getNode().getProperty("fullIdentifier").getString());
+            final Node subject = property.getNode();
+            if (subject.hasProperty("fullIdentifier")) {
+                return Json.createValue(subject.getProperty("fullIdentifier").getString());
+            } else if (subject.hasProperty("identifier")) {
+                return Json.createValue(subject.getProperty("identifier").getString());
+            } else {
+                return Json.createValue(subject.getName());
+            }
         }
         return input;
     }
