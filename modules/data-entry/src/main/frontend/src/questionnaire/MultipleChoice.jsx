@@ -27,6 +27,7 @@ import Answer, {LABEL_POS, VALUE_POS} from "./Answer";
 import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import AnswerInstructions from "./AnswerInstructions.jsx";
+import UserInputAssistant from "../components/UserInputAssistant.jsx";
 
 // Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
 const IS_DEFAULT_POS = 2;
@@ -92,6 +93,9 @@ function MultipleChoice(props) {
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio && !ghostSelected;
   let inputEl = null;
+  const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(true);
+  const [separatorDetected, setSeparatorDetected] = useState(false);
+  const [assistantAnchor, setAssistantAnchor] = useState(null);
 
   let selectOption = (id, name, checked = false) => {
     // Selecting a radio button option will select only that option
@@ -225,7 +229,25 @@ function MultipleChoice(props) {
       selectOption(ghostName, ghostName);
       // Clear the ghost
       setGhostName("");
+      checkForSeparators(null);
     }
+  }
+
+  // Check if the user entered any characters that are separators: ",", ";"
+  // If yes, we will show an information bubble about entering each option separately
+  let checkForSeparators = (input) => {
+    let hasSeparators = separatorDetectionEnabled && !!(input?.value?.match(/[,;]/));
+    setSeparatorDetected(hasSeparators);
+    setAssistantAnchor(hasSeparators ? input : null);
+  }
+
+  // Split the input by the separators and add each component as a different entry
+  let splitInput = (input) => {
+    let entries = input?.value?.split(/\s*[,;]\s*/);
+    entries?.filter((item, index) => (item != "" && entries.indexOf(item) === index))
+            .forEach((item) => {addOption(item, item); selectOption(item, item);});
+    setGhostName("");
+    checkForSeparators(null);
   }
 
   // Listen for update commands from other components
@@ -266,15 +288,17 @@ function MultipleChoice(props) {
   let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
       <TextField
         helperText={maxAnswers !== 1 && "Press ENTER to add a new option"}
+        FormHelperTextProps={{error: separatorDetected}}
         className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
         onChange={(event) => {
           setGhostName(event.target.value);
           updateGhost(GHOST_SENTINEL, event.target.value);
+          checkForSeparators(event.target);
           onUpdate && onUpdate(event.target.value);
         }}
         disabled={disabled}
         onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
-        onBlur={acceptEnteredOption}
+        onBlur={separatorDetected ? ()=>{} : acceptEnteredOption}
         inputProps={Object.assign({
           onKeyDown: (event) => {
             if (event.key == 'Enter') {
@@ -291,6 +315,19 @@ function MultipleChoice(props) {
         InputProps={muiInputProps}
         inputRef={ref => {inputEl = ref}}
       />
+      { maxAnswers !== 1 &&
+        <UserInputAssistant
+          variant="hint-secondary"
+          title="Separator detected"
+          anchorEl={assistantAnchor}
+          actionLabel="Separate and add"
+          onAction={() => {splitInput(assistantAnchor)}}
+          onIgnore={() => {setSeparatorDetectionEnabled(false); assistantAnchor?.focus(); checkForSeparators(null);}}
+          >
+          Using separators such as comma or semicolon will not create separate entries.
+          If you wish to enter multiple values, press ENTER to add each one.
+        </UserInputAssistant>
+      }
     </div>);
 
   let selectNonGhostOption = (...args) => {
