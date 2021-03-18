@@ -17,7 +17,7 @@
 
 import React, { useState } from "react";
 
-import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, InputLabel, MenuItem, TextField, Typography, Select, withStyles } from "@material-ui/core";
+import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, InputLabel, MenuItem, TextField, Typography, Select, FormHelperText, withStyles } from "@material-ui/core";
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
@@ -165,6 +165,7 @@ function SubjectTypeDialog(props) {
                     )
                   }
                 </Select>
+                <FormHelperText>{isEdit && editSubject["@referenced"] && "There are already subjects of this type. The parent can no longer be changed"}</FormHelperText>
               </Grid>
             </>
           }
