@@ -26,17 +26,18 @@ function SubjectTypeDialog(props) {
   const initialParent = editSubject?.["parents"]?.["@path"] || "/SubjectTypes";
   let subjectTypes = !isEdit ? subjects : subjects.filter(item => item["jcr:uuid"] != editSubject["jcr:uuid"]);
 
-  const [ newName, setNewName ] = useState("");
+  const [ label, setLabel ] = useState(isEdit ? editSubject.label : "");
   const [ parentSubject, setParentSubject ] = useState(initialParent);
   const [ order, setOrder ] = useState(editSubject && editSubject["lfs:defaultOrder"] ? editSubject["lfs:defaultOrder"] : 0);
   const [ error, setError ] = useState(null);
-  const [ isDuplicateName, setIsDuplicateName ] = useState(false);
+  const [ isDuplicateLabel, setIsDuplicateLabel ] = useState(false);
 
-  let validateName = (name) => {
-    setIsDuplicateName(false);
+  let validateLabel = (name) => {
+    setError("");
+    setIsDuplicateLabel(false);
     for (var i in subjects) {
-      if (subjects[i].label === name) {
-        setIsDuplicateName(true);
+      if (subjects[i].label === name && (!isEdit || editSubject["label"] != name)) {
+        setIsDuplicateLabel(true);
         return;
       }
     }
@@ -49,20 +50,22 @@ function SubjectTypeDialog(props) {
     if (!isEdit) {
       let formInfo = {};
       formInfo["jcr:primaryType"] = "lfs:SubjectType";
-      formInfo["label"] = newName;
+      formInfo["label"] = label;
       formInfo["lfs:defaultOrder"] = order;
 
       formData.append(':contentType', 'json');
       formData.append(':operation', 'import');
-      formData.append(':nameHint', newName);
+      formData.append(':nameHint', label);
       formData.append(':content', JSON.stringify(formInfo));
     } else {
-      if (editSubject["lfs:defaultOrder"] == order) {
+      // if nothing changed - just move the node
+      if (editSubject["lfs:defaultOrder"] == order && editSubject["label"] === label) {
         moveSubjectType();
         return;
       } else {
-        // Update the order first
+        // Update all the changes first
         formData.append("lfs:defaultOrder", order);
+        formData.append("label", label);
       }
     }
 
@@ -107,10 +110,10 @@ function SubjectTypeDialog(props) {
 
   let close = () => {
     setError("");
-    setNewName("");
+    setLabel("");
     setParentSubject("");
     setOrder(0);
-    setIsDuplicateName(false);
+    setIsDuplicateLabel(false);
     onClose();
   }
 
@@ -124,19 +127,18 @@ function SubjectTypeDialog(props) {
       <DialogContent>
         <Grid container justify="flex-start" alignItems="center" spacing={2}>
           <Grid item xs={4}>
-            <Typography>Name</Typography>
+            <Typography>Label</Typography>
           </Grid>
           <Grid item xs={8}>
             <TextField
                 fullWidth
-                disabled={isEdit}
-                value={isEdit ? editSubject.label : newName}
-                id="name"
-                name="name"
-                onChange={(event) => { setNewName(event.target.value); setError(""); validateName(event.target.value); }}
+                value={label}
+                id="label"
+                name="label"
+                onChange={(event) => { setLabel(event.target.value); validateLabel(event.target.value); }}
                 autoFocus
-                error={isDuplicateName}
-                helperText={isDuplicateName ? "This name already exists" : "Required*"}
+                error={isDuplicateLabel}
+                helperText={isDuplicateLabel ? "This label already exists" : "Required*"}
             />
           </Grid>
           { (isEdit || subjectTypes && subjectTypes.length > 0) &&
@@ -150,7 +152,7 @@ function SubjectTypeDialog(props) {
                   labelId="parent"
                   label="optional"
                   value={parentSubject}
-                  onChange={(event) => setParentSubject(event.target.value)}
+                  onChange={(event) => { setParentSubject(event.target.value); setError(""); }}
                   displayEmpty
                 >
                   <MenuItem key="none" value="/SubjectTypes">
@@ -171,10 +173,11 @@ function SubjectTypeDialog(props) {
           </Grid>
           <Grid item xs={8}>
             <TextField
+              fullWidth
               type="number"
               inputProps={{min: 0}}
               value={order}
-              onChange={(event) => setOrder(event.target.value)}
+              onChange={(event) => { setOrder(event.target.value); setError(""); }}
             />
           </Grid>
         </Grid>
@@ -182,7 +185,8 @@ function SubjectTypeDialog(props) {
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
         <Button
-          disabled={!isEdit && (!newName || isDuplicateName) || isEdit && (editSubject["lfs:defaultOrder"] == order && initialParent == parentSubject)}
+          disabled={!isEdit && (!label || isDuplicateLabel)
+                  || isEdit && (editSubject["lfs:defaultOrder"] == order && initialParent == parentSubject && editSubject["label"] == label)}
           color="primary"
           variant="contained"
           size="small"
