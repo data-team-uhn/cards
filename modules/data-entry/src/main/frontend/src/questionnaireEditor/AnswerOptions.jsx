@@ -65,8 +65,8 @@ let AnswerOptions = (props) => {
   let validateOption = (optionInput) => {
     if (optionInput) {
       setIsDuplicate(false);
-      let inputs = (optionInput + ' ').split(/=(.+)/);
-      let duplicateOption = options.find( option => option.value.trim() === inputs[0].trim() || inputs[1] && (option.label?.trim() === inputs[1].trim()));
+      let inputs = (optionInput || '').trim().split(/\s*=\s*(.*)/);
+      let duplicateOption = options.find( option => option.value === inputs[0] || inputs[1] && (option.label === inputs[1]));
       duplicateOption && setIsDuplicate(true);
     }
   }
@@ -76,11 +76,10 @@ let AnswerOptions = (props) => {
       // The text entered on each line should be split
       // by the first occurrence of the separator = if the separator exists
       // e.g. F=Female as <value> = <label>
-      let inputs = optionInput.split(/=(.+)/);
+      let inputs = (optionInput || '').trim().split(/\s*=\s*(.*)/);
       let newOption = {};
       newOption.value = inputs[0].trim();
-      let sanitisedValue = newOption.value.trim().replace(/\s/g, '_').replace(/\W/g, '');
-      newOption["@path"] = path + "/" + sanitisedValue + stringToHash(newOption.value);
+      newOption["@path"] = path + "/AnswerOption" + stringToHash(newOption.value);
       newOption.label = inputs[1] ? inputs[1].trim() : "";
 
       setOptions(oldValue => {
