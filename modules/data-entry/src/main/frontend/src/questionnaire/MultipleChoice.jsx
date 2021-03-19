@@ -403,6 +403,7 @@ function MultipleChoice(props) {
           answers={answers}
           existingAnswer={existingAnswer}
           questionName={questionName}
+          isMultivalued={true}
           {...rest}
           />
       </React.Fragment>
