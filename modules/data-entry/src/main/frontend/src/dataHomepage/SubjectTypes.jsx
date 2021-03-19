@@ -27,6 +27,17 @@ import DeleteButton from "./DeleteButton.jsx";
 import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
 
+// Get a flat list of subject type parents as labels separated by " / "
+function getTextHierarchy (path, subjects) {
+  let names = path.replace("/SubjectTypes/", "").split("/");
+  let hierarchy = "";
+  for (let name of names) {
+    let subject = subjects.find( item => item["@name"] === name );
+    hierarchy = ( hierarchy ? hierarchy + " / " : "") + (subject?.label || name);
+  }
+  return hierarchy;
+}
+
 function EditSubjectTypeButton(props) {
   const { classes, onClick } = props;
   return(
@@ -48,8 +59,8 @@ function SubjectTypes(props) {
   const columns = [
     {
       "key": "",
-      "label": "Label",
-      "format": (row) => (<a href={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label} target="_blank">{row.label}</a>),
+      "label": "Subject Type",
+      "format": (row) => (getTextHierarchy(row['@path'], subjectData)),
     },
     {
       "key": "jcr:created",
