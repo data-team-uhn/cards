@@ -87,7 +87,7 @@ public class ExportTask implements Runnable
     public void doManualExport(LocalDate lower, LocalDate upper)
     {
         LOGGER.info("Executing ManualExport");
-        String fileDateString = lower.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String fileDateString = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String requestDateStringLower = lower.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String requestDateStringUpper = (upper != null)
             ? upper.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
