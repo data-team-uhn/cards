@@ -165,7 +165,7 @@ function SubjectTypeDialog(props) {
                     )
                   }
                 </Select>
-                <FormHelperText>{isEdit && editSubject.subjectsNumber && editSubject.subjectsNumber > 0 && "There are already subjects of this type. The parent can no longer be changed"}</FormHelperText>
+                <FormHelperText>{isEdit && editSubject.subjectsNumber > 0 && "There are already subjects of this type. The parent can no longer be changed"}</FormHelperText>
               </Grid>
             </>
           }
