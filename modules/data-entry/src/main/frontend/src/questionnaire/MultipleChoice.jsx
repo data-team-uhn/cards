@@ -244,8 +244,18 @@ function MultipleChoice(props) {
   // Split the input by the separators and add each component as a different entry
   let splitInput = (input) => {
     let entries = input?.value?.split(/\s*[,;]\s*/);
-    entries?.filter((item, index) => (item != "" && entries.indexOf(item) === index))
-            .forEach((item) => {addOption(item, item); selectOption(item, item);});
+    // Remove empty strings, duplicates, and entries that are already selected
+    entries = entries?.filter((item, index) => (item != "" && entries.indexOf(item) === index && !selection.find(option => option[VALUE_POS] == item))) || [];
+    // Add and select remaining entries
+    if (entries.length > 0) {
+      let newSelection = selection.slice();
+      entries.forEach((item) => {
+        addOption(item, item)
+        newSelection.push([item, item])
+      });
+      setSelection(newSelection);
+    }
+    // Clear the input
     setGhostName("");
     checkForSeparators(null);
   }
