@@ -50,7 +50,7 @@ const GHOST_SENTINEL = "custom-input";
   */
 function MultipleChoice(props) {
   let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
-  let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
+  let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
@@ -93,7 +93,7 @@ function MultipleChoice(props) {
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio && !ghostSelected;
   let inputEl = null;
-  const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(true);
+  const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(enableSeparatorDetection);
   const [separatorDetected, setSeparatorDetected] = useState(false);
   const [assistantAnchor, setAssistantAnchor] = useState(null);
 
