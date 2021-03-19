@@ -383,6 +383,7 @@
             <exclude>compose-cluster/mongos/mongo-router.conf</exclude>
             <exclude>compose-cluster/shard*/**</exclude>
             <exclude>compose-cluster/secrets/**</exclude>
+            <exclude>deployment-configurations/docker-compose.yml</exclude>
           </excludes>
         </configuration>
         <executions>
