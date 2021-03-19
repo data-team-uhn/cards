@@ -48,7 +48,7 @@ public class SimpleSubjectTypeProcessor implements ResourceJsonProcessor
     @Override
     public String getName()
     {
-        return "simplet";
+        return "simple";
     }
 
     @Override

@@ -25,15 +25,14 @@ import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import DeleteButton from "./DeleteButton.jsx";
 import EditIcon from "@material-ui/icons/Edit";
-import AddIcon from "@material-ui/icons/Add";
 
 // Get a flat list of subject type parents as labels separated by " / "
-function getTextHierarchy (path, subjects) {
+function getTextHierarchy (path, subjectTypes) {
   let names = path.replace("/SubjectTypes/", "").split("/");
   let hierarchy = "";
   for (let name of names) {
-    let subject = subjects.find( item => item["@name"] === name );
-    hierarchy = ( hierarchy ? hierarchy + " / " : "") + (subject?.label || name);
+    let subjectType = subjectTypes.find( item => item["@name"] === name );
+    hierarchy = ( hierarchy ? hierarchy + " / " : "") + (subjectType?.label || name);
   }
   return hierarchy;
 }
@@ -65,7 +64,7 @@ function SubjectTypes(props) {
     {
       "key": "",
       "label": "Subjects",
-      "format": (row) => (<a href={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label} target="_blank">{row.subjectsNumber || 0}</a>),
+      "format": (row) => (row.subjectsNumber ? <a href={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label}>{row.subjectsNumber}</a> : "0"),
     },
     {
       "key": "lfs:defaultOrder",
