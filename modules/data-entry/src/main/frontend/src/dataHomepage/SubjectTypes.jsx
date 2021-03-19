@@ -63,18 +63,18 @@ function SubjectTypes(props) {
       "format": (row) => (getTextHierarchy(row['@path'], subjectData)),
     },
     {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
-    },
-    {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
+      "key": "",
+      "label": "Subjects",
+      "format": (row) => (<a href={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label} target="_blank">{row.subjectsNumber || 0}</a>),
     },
     {
       "key": "lfs:defaultOrder",
       "label": "Default Order",
+      "format": "string",
+    },
+        {
+      "key": "jcr:createdBy",
+      "label": "Created by",
       "format": "string",
     },
     {
