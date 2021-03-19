@@ -23,7 +23,7 @@ import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 function SubjectTypeDialog(props) {
   const { open, onClose, onSubmit, subjects, isEdit, editSubject, classes } = props;
-  const initialParent = editSubject?.["parents"]?.["@path"] || "/SubjectTypes";
+  const initialParent = editSubject?.["@path"].replace("/" + editSubject["@name"], "") || "/SubjectTypes";
   let subjectTypes = !isEdit ? subjects : subjects.filter(item => item["jcr:uuid"] != editSubject["jcr:uuid"]);
 
   const [ label, setLabel ] = useState(isEdit ? editSubject.label : "");
