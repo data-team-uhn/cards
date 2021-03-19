@@ -22,21 +22,21 @@ import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, InputL
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 function SubjectTypeDialog(props) {
-  const { open, onClose, onSubmit, subjects, isEdit, editSubject, classes } = props;
-  const initialParent = editSubject?.["@path"].replace("/" + editSubject["@name"], "") || "/SubjectTypes";
-  let subjectTypes = !isEdit ? subjects : subjects.filter(item => item["jcr:uuid"] != editSubject["jcr:uuid"]);
+  const { open, onClose, onSubmit, data, isEdit, currentSubjectType, classes } = props;
+  const initialParent = currentSubjectType?.["@path"].replace("/" + currentSubjectType["@name"], "") || "/SubjectTypes";
+  const subjectTypes = !isEdit ? data : data.filter(item => item["jcr:uuid"] != currentSubjectType["jcr:uuid"]);
 
-  const [ label, setLabel ] = useState(isEdit ? editSubject.label : "");
+  const [ label, setLabel ] = useState(isEdit ? currentSubjectType.label : "");
   const [ parentSubject, setParentSubject ] = useState(initialParent);
-  const [ order, setOrder ] = useState(editSubject && editSubject["lfs:defaultOrder"] ? editSubject["lfs:defaultOrder"] : 0);
+  const [ order, setOrder ] = useState(currentSubjectType && currentSubjectType["lfs:defaultOrder"] ? currentSubjectType["lfs:defaultOrder"] : 0);
   const [ error, setError ] = useState(null);
   const [ isDuplicateLabel, setIsDuplicateLabel ] = useState(false);
 
   let validateLabel = (name) => {
     setError("");
     setIsDuplicateLabel(false);
-    for (var i in subjects) {
-      if (subjects[i].label === name && (!isEdit || editSubject["label"] != name)) {
+    for (var i in subjectTypes) {
+      if (subjectTypes[i].label === name && (!isEdit || currentSubjectType["label"] != name)) {
         setIsDuplicateLabel(true);
         return;
       }
@@ -59,7 +59,7 @@ function SubjectTypeDialog(props) {
       formData.append(':content', JSON.stringify(formInfo));
     } else {
       // if nothing changed - just move the node
-      if (editSubject["lfs:defaultOrder"] == order && editSubject["label"] === label) {
+      if (currentSubjectType["lfs:defaultOrder"] == order && currentSubjectType["label"] === label) {
         moveSubjectType();
         return;
       } else {
@@ -69,7 +69,7 @@ function SubjectTypeDialog(props) {
       }
     }
 
-    fetch(isEdit ? editSubject["@path"] : parentSubject, {
+    fetch(isEdit ? currentSubjectType["@path"] : parentSubject, {
         method: 'POST',
         body: formData
     })
@@ -94,7 +94,7 @@ function SubjectTypeDialog(props) {
     formData.append(':dest', !parentSubject.endsWith("/") ? parentSubject + "/" : parentSubject);
     formData.append(':replace', true);
 
-    fetch(editSubject["@path"], {
+    fetch(currentSubjectType["@path"], {
         method: 'POST',
         body: formData
     })
@@ -123,7 +123,7 @@ function SubjectTypeDialog(props) {
       open={open}
       onClose={onClose}
     >
-      <DialogTitle>{isEdit ? "Modify " + editSubject.label : "Create New Subject Type"}</DialogTitle>
+      <DialogTitle>{isEdit ? "Modify " + currentSubjectType.label : "Create New Subject Type"}</DialogTitle>
       <DialogContent>
         <Grid container justify="flex-start" alignItems="center" spacing={2}>
           <Grid item xs={4}>
@@ -148,7 +148,7 @@ function SubjectTypeDialog(props) {
               </Grid>
               <Grid item xs={8}>
                 <Select
-                  disabled={isEdit && editSubject.subjectsNumber != undefined && editSubject.subjectsNumber > 0}
+                  disabled={isEdit && currentSubjectType.subjectsNumber != undefined && currentSubjectType.subjectsNumber > 0}
                   labelId="parent"
                   label="optional"
                   value={parentSubject}
@@ -165,7 +165,7 @@ function SubjectTypeDialog(props) {
                     )
                   }
                 </Select>
-                <FormHelperText>{isEdit && editSubject.subjectsNumber > 0 && "There are already subjects of this type. The parent can no longer be changed"}</FormHelperText>
+                <FormHelperText>{isEdit && currentSubjectType.subjectsNumber > 0 && "There are already subjects of this type. The parent can no longer be changed"}</FormHelperText>
               </Grid>
             </>
           }
@@ -187,7 +187,7 @@ function SubjectTypeDialog(props) {
       <DialogActions className={classes.dialogActions}>
         <Button
           disabled={!isEdit && (!label || isDuplicateLabel)
-                  || isEdit && (editSubject["lfs:defaultOrder"] == order && initialParent == parentSubject && editSubject["label"] == label)}
+                  || isEdit && (currentSubjectType["lfs:defaultOrder"] == order && initialParent == parentSubject && currentSubjectType["label"] == label)}
           color="primary"
           variant="contained"
           size="small"

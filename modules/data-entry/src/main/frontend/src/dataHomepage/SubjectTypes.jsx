@@ -50,16 +50,16 @@ function EditSubjectTypeButton(props) {
 
 function SubjectTypes(props) {
   const { classes } = props;
-  const [ newSubjectTypePopperOpen, setNewSubjectTypePopperOpen ] = useState(false);
+  const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ updateData, setUpdateData ] = useState(false);
-  const [ subjectData, setSubjectData ] = useState([]);
-  const [ editSubject, setEditSubject ] = useState(null);
+  const [ subjectTypeData, setSubjectTypeData ] = useState([]);
+  const [ currentSubjectType, setCurrentSubjectType ] = useState(null);
   const [ isEdit, setIsEdit ] = useState(false);
   const columns = [
     {
       "key": "",
       "label": "Subject Type",
-      "format": (row) => (getTextHierarchy(row['@path'], subjectData)),
+      "format": (row) => (getTextHierarchy(row['@path'], subjectTypeData)),
     },
     {
       "key": "",
@@ -79,6 +79,7 @@ function SubjectTypes(props) {
     {
       "key": "",
       "label": "Actions",
+      "type": "actions",
       "format": (row) => (<>
                             <DeleteButton
                               entryPath={row["@path"]}
@@ -89,7 +90,7 @@ function SubjectTypes(props) {
                               admin={true}
                             />
                             <EditSubjectTypeButton
-                              onClick={() => {setIsEdit(true); setEditSubject(row); setNewSubjectTypePopperOpen(true);}}
+                              onClick={() => {setIsEdit(true); setCurrentSubjectType(row); setDialogOpen(true);}}
                               classes={classes}
                             />
                           </>),
@@ -98,15 +99,15 @@ function SubjectTypes(props) {
 
   // When the subject data is changed, set the update data flag to false
   useEffect(() => {
-    if (subjectData){
+    if (subjectTypeData){
       setUpdateData(false);
     }
-  }, [subjectData]);
+  }, [subjectTypeData]);
 
   let onClose = () => {
-    setNewSubjectTypePopperOpen(false);
+    setDialogOpen(false);
     setIsEdit(false);
-    setEditSubject(null);
+    setCurrentSubjectType(null);
   }
 
   return (
@@ -126,22 +127,22 @@ function SubjectTypes(props) {
           admin={true}
           disableTopPagination={true}
           updateData={updateData}
-          onDataReceived={setSubjectData}
+          onDataReceived={setSubjectTypeData}
         />
       </CardContent>
     </Card>
     <NewItemButton
       title="New subject type"
-      onClick={() => { setNewSubjectTypePopperOpen(true); }}
+      onClick={() => { setDialogOpen(true); }}
     />
-    { newSubjectTypePopperOpen &&
+    { dialogOpen &&
         <SubjectTypeDialog
           onClose={() => { onClose(); }}
           onSubmit={() => { onClose(); setUpdateData(true); }}
-          open={newSubjectTypePopperOpen}
-          subjects={subjectData}
+          open={dialogOpen}
+          data={subjectTypeData}
           isEdit={isEdit}
-          editSubject={editSubject}
+          currentSubjectType={currentSubjectType}
         />
      }
   </>

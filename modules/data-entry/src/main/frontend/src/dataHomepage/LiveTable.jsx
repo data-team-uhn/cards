@@ -374,7 +374,7 @@ function LiveTable(props) {
               columns.map((column, index) =>
                 <TableCell
                   key={index}
-                  className={[classes.tableHeader, column.label == 'Actions' ? classes.tableActionsHeader : ''].join(' ')}
+                  className={[classes.tableHeader, column.type == 'actions' ? classes.tableActionsHeader : ''].join(' ')}
                   {...column.props}
                 >
                   {column.label}
