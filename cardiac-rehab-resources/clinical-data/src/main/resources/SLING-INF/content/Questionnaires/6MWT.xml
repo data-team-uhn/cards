@@ -1405,6 +1405,11 @@
 					<value>1</value>
 					<type>Long</type>
 				</property>
+				<property>
+					<name>enableSeparatorDetection</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 				<node>
 					<name>Cane (right)</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>

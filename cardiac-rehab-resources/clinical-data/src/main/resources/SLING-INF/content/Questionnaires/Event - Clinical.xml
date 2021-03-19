@@ -286,6 +286,11 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<property>
+				<name>enableSeparatorDetection</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>Exercise stress test</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
@@ -601,6 +606,11 @@
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>enableSeparatorDetection</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>Cardiac catheterization (with no intervention)</name>
