@@ -2186,6 +2186,11 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>enableSeparatorDetection</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 		<node>
 			<name>allegies_seasonal</name>
