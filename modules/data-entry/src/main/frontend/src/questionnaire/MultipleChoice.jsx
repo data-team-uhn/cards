@@ -288,7 +288,6 @@ function MultipleChoice(props) {
   let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
       <TextField
         helperText={maxAnswers !== 1 && "Press ENTER to add a new option"}
-        FormHelperTextProps={{error: separatorDetected}}
         className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
         onChange={(event) => {
           setGhostName(event.target.value);
@@ -317,7 +316,6 @@ function MultipleChoice(props) {
       />
       { maxAnswers !== 1 &&
         <UserInputAssistant
-          variant="hint-secondary"
           title="Separator detected"
           anchorEl={assistantAnchor}
           actionLabel="Separate and add"
