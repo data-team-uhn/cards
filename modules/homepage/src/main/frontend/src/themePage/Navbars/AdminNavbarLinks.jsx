@@ -44,11 +44,21 @@ function HeaderLinks (props) {
   const [ passwordDialogOpen, setPasswordDialogOpen ] = useState(false);
   const [ pwdResetSuccessSnackbarOpen, setPwdResetSuccessSnackbarOpen ] = useState(false);
   const [ username, setUsername ] = useState("");
+  const [ isRemote, setRemote ] = useState(true);
 
   const avatarRef = useRef();
   const headerRef = useRef();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
+
+  useEffect(() => {
+    if (username && username.length > 0) {
+      fetchWithReLogin(globalLoginDisplay, `/system/userManager/user/${username}.json`)
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((json) => setRemote(json["rep:externalId"] && json["rep:externalId"].length > 0))
+        .catch((error) => console.log(error));
+    }
+  }, [username]);
 
   // TODO: Should we make the username accessible to other components (e.g. via a context)?
   useEffect(() => {
@@ -82,12 +92,14 @@ function HeaderLinks (props) {
   }
 
   const menuItems = <MenuList role="menu">
-    <MenuItem onClick={() => setPasswordDialogOpen(true)} className={expand ? "" : classes.itemLink}>
-      <ExpandableIcon>
-        <VpnKeyIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
-      </ExpandableIcon>
-      <ListItemText primary="Change password" className={expand ? "" : classes.whiteFont}/>
-    </MenuItem>
+    {isRemote ? null :
+      <MenuItem onClick={() => setPasswordDialogOpen(true)} className={expand ? "" : classes.itemLink}>
+        <ExpandableIcon>
+          <VpnKeyIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
+        </ExpandableIcon>
+        <ListItemText primary="Change password" className={expand ? "" : classes.whiteFont}/>
+      </MenuItem>
+    }
     {/* Use an onClick instead of a Link to remove the unremovable underline styling */}
     <MenuItem onClick={() => window.location.href = "/system/sling/logout"} className={expand ? "" : classes.itemLink}>
       <ExpandableIcon>
