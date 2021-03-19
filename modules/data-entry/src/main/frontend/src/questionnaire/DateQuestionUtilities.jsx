@@ -160,8 +160,8 @@ export default class DateQuestionUtilities {
     // Compute the displayed difference
     let difference = null;
     if (firstDate && secondDate) {
-      let currentDate = moment(firstDate);
-      let nextDate = moment(secondDate);
+      let currentDate = this.amendMoment(firstDate, "yyyy-MM-dd");
+      let nextDate = this.amendMoment(secondDate, "yyyy-MM-dd");
       let divisions = ["years", "months", "days"];
       for(const division of divisions) {
         let diff = nextDate.diff(currentDate, division);

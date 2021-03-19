@@ -276,7 +276,7 @@ function SubjectHeader(props) {
   // such as authorship and versioning information.
   // Once the data arrives from the server, it will be stored in the `data` state variable.
   let fetchSubjectData = () => {
-    fetchWithReLogin(globalLoginDisplay, `/Subjects/${id}.progeny.deep.json`)
+    fetchWithReLogin(globalLoginDisplay, `/Subjects/${id}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleSubjectResponse)
       .catch(handleError);
@@ -315,10 +315,10 @@ function SubjectHeader(props) {
     );
   }
 
-  let identifier = subject?.data?.identifier ? subject.data.identifier : id;
+  let identifier = subject?.data?.identifier || id;
   let label = subject?.data?.type?.label || "Subject";
   let title = `${label} ${identifier}`;
-  let path = subject?.data ? subject.data["@path"] : "/Subjects/" + id;
+  let path = subject?.data?.["@path"] || "/Subjects/" + id;
   let action = <DeleteButton
                  entryPath={path}
                  entryName={title}
@@ -328,14 +328,14 @@ function SubjectHeader(props) {
                  buttonClass={classes.subjectHeaderButton}
                  size={"large"}
                />
-  let parentDetails = subject?.data && subject.data['parents'] && getHierarchy(subject.data['parents']);
+  let parentDetails = subject?.data?.['parents'] && getHierarchy(subject.data['parents']);
 
   return (
     subject?.data && <Grid item className={classes.subjectHeader}>
       {parentDetails && <Typography variant="overline">{parentDetails}</Typography>}
       <Typography variant="h2">{title}{action}</Typography>
       {
-        subject?.data && subject.data['jcr:createdBy'] && subject.data['jcr:created'] ?
+        subject?.data?.['jcr:created'] ?
         <Typography
           variant="overline"
           className={classes.subjectSubHeader}>
