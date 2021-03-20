@@ -324,7 +324,7 @@ function MultipleChoice(props) {
         InputProps={muiInputProps}
         inputRef={ref => {inputEl = ref}}
       />
-      { maxAnswers !== 1 &&
+      { maxAnswers !== 1 && separatorDetectionEnabled &&
         <UserInputAssistant
           title="Separator detected"
           anchorEl={assistantAnchor}
