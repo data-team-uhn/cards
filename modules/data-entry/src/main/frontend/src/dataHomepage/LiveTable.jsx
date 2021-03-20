@@ -207,7 +207,7 @@ function LiveTable(props) {
       } else if (column.link === 'dashboard+path') {
         content = (<Link to={pathPrefix + entry["@path"]}>{content}</Link>);
       } else if (column.link === 'value') {
-        content = (<a href={content}>{content}</a>);;
+        content = (<a href={content}>{content}</a>);
       } else if (column.link === 'dashboard+value') {
         content = (<Link to={pathPrefix + content}>{content}</Link>);
       } else if (column.link.startsWith('field:')) {
@@ -218,7 +218,7 @@ function LiveTable(props) {
     }
 
     // Render the cell
-    return <TableCell key={index} {...column.props}>{content}</TableCell>
+    return <TableCell key={index} className={ column.type === 'actions' ? classes.tableActions : ""} {...column.props}>{content}</TableCell>
   };
 
   let makeActions = (entry, actions, index) => {
@@ -230,10 +230,9 @@ function LiveTable(props) {
         onComplete={refresh}
         entryType={entryType}
         entryLabel={entry["jcr:primaryType"] == "lfs:Subject" ? entry.type?.label : ''}
-        buttonClass={classes.actionButton}
         admin={admin} />
     });
-    return <TableCell key={index}>{content}</TableCell>;
+    return <TableCell key={index} className={classes.tableActions}>{content}</TableCell>;
   }
 
   let getNestedValue = (entry, path) => {

@@ -38,10 +38,10 @@ function getTextHierarchy (path, subjectTypes) {
 }
 
 function EditSubjectTypeButton(props) {
-  const { classes, onClick } = props;
+  const { onClick } = props;
   return(
     <Tooltip title={"Edit Subject Type"}>
-      <IconButton className={classes.actionButton} onClick={onClick}>
+      <IconButton onClick={onClick}>
         <EditIcon />
       </IconButton>
     </Tooltip>
@@ -86,12 +86,10 @@ function SubjectTypes(props) {
                               entryName={row.label}
                               onComplete={() => { setUpdateData(true); }}
                               entryType={"Subject Type"}
-                              buttonClass={classes.actionButton}
                               admin={true}
                             />
                             <EditSubjectTypeButton
                               onClick={() => {setIsEdit(true); setCurrentSubjectType(row); setDialogOpen(true);}}
-                              classes={classes}
                             />
                           </>),
     },
