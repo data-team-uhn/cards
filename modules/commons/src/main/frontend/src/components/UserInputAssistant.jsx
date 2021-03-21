@@ -27,6 +27,7 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  ClickAwayListener,
   Fade,
   Popper,
   withStyles
@@ -61,6 +62,7 @@ import style from "./style.jsx";
 //   no button is displayed
 // onIgnore: if present, an 'Ignore for now' button is displayed, that disables the
 //   assistant for the current interaction with anchorEl and runs the callback function
+// onClickAway: function called when the user clicks away from the assistant element
 // children: message to display
 //
 // Sample usage:
@@ -77,7 +79,7 @@ import style from "./style.jsx";
 //
 
 function UserInputAssistant (props) {
-  const { anchorEl, variant, title, children, actionLabel, onAction, onIgnore, classes } = {...props};
+  const { anchorEl, variant, title, children, actionLabel, onAction, onIgnore, onClickAway, classes } = {...props};
   let [ enabled, setEnabled ] = useState(true);
 
   let [ placement, setPlacement ] = useState("right");
@@ -94,6 +96,7 @@ function UserInputAssistant (props) {
   }, []);
 
   return (enabled ?
+  <ClickAwayListener onClickAway={onClickAway}>
     <Popper
       className={classes.userInputAssistant}
       open={!!anchorEl}
@@ -136,6 +139,7 @@ function UserInputAssistant (props) {
       </Fade>
     )}
     </Popper>
+  </ClickAwayListener>
   : null);
 }
 UserInputAssistant.propTypes = {
@@ -145,6 +149,7 @@ UserInputAssistant.propTypes = {
   actionLabel: PropTypes.string,
   onAction: PropTypes.func,
   onIgnore: PropTypes.func,
+  onClickAway: PropTypes.func,
 };
 UserInputAssistant.defaultProps = {
   variant: 'hint',

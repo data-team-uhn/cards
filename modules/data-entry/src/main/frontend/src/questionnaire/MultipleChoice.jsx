@@ -96,6 +96,7 @@ function MultipleChoice(props) {
   const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(enableSeparatorDetection);
   const [separatorDetected, setSeparatorDetected] = useState(false);
   const [assistantAnchor, setAssistantAnchor] = useState(null);
+  const [tmpGhostSelection, setTmpGhostSelection] = useState(null);
 
   let selectOption = (id, name, checked = false) => {
     // Selecting a radio button option will select only that option
@@ -239,6 +240,7 @@ function MultipleChoice(props) {
     let hasSeparators = separatorDetectionEnabled && !!(input?.value?.match(/[,;]/));
     setSeparatorDetected(hasSeparators);
     setAssistantAnchor(hasSeparators ? input : null);
+    setTmpGhostSelection(hasSeparators ? [input.value, input.value] : null);
   }
 
   // Split the input by the separators and add each component as a different entry
@@ -331,6 +333,10 @@ function MultipleChoice(props) {
           actionLabel="Separate and add"
           onAction={() => {splitInput(assistantAnchor)}}
           onIgnore={() => {setSeparatorDetectionEnabled(false); assistantAnchor?.focus(); checkForSeparators(null);}}
+          onClickAway={(event) => {
+            (document.activeElement != assistantAnchor) && acceptEnteredOption();
+            checkForSeparators(null);
+          }}
           >
           Using separators such as comma or semicolon will not create separate entries.
           If you wish to enter multiple values, press ENTER to add each one.
@@ -351,6 +357,10 @@ function MultipleChoice(props) {
   // When counting current answers for proper highlighting of answer instructions to the user, exclude the empty one
   let currentAnswers = answers.filter(item => item[VALUE_POS] !== '').length;
   const instructions = <AnswerInstructions currentAnswers={currentAnswers} {...props.questionDefinition} {...props} />;
+
+  // Temporarily append the input content to answers to avoid data loss while separator detection is active and preventing
+  //  the contents of the ghost input from being added as selection
+  tmpGhostSelection?.[VALUE_POS] && !answers.find(item => item[VALUE_POS] == tmpGhostSelection[VALUE_POS]) && answers.push(tmpGhostSelection);
 
   if (isSelect) {
     return (
