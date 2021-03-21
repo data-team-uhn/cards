@@ -30,7 +30,7 @@ export const VALUE_POS = 1;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, answerMetadata, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, onDecidedOutputPath, sectionAnswersState } = props;
+  let { answers, answerMetadata, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, isMultivalued, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, onDecidedOutputPath, sectionAnswersState } = props;
   let { enableNotes } = { ...props, ...questionDefinition };
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
@@ -76,7 +76,7 @@ function Answer (props) {
       {/* Add the answers, if any exist, or otherwise delete them */}
       {(answers && answers.length) ?
         (<React.Fragment>
-          <input type="hidden" name={`${answerPath}/value@TypeHint`} value={valueType}></input>
+          <input type="hidden" name={`${answerPath}/value@TypeHint`} value={valueType + (isMultivalued ? '[]' : '')}></input>
           {answers.map( (element, index) => {
             return (
               <input type="hidden" name={`${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS] + "" + index} value={element[VALUE_POS]}></input>
@@ -114,12 +114,14 @@ Answer.propTypes = {
   answers: PropTypes.array,
   answerNodeType: PropTypes.string,
   valueType: PropTypes.string,
+  isMultivalued: PropTypes.bool,
   noteComponent: PropTypes.elementType
 };
 
 Answer.defaultProps = {
   answerNodeType: "lfs:TextAnswer",
   valueType: 'String',
+  isMultivalued: false,
   noteComponent: Note
 };
 
