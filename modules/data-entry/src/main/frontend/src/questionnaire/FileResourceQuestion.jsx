@@ -288,6 +288,7 @@ function FileResourceQuestion(props) {
         answerNodeType="lfs:FileResourceAnswer"
         onDecidedOutputPath={setAnswerPath}
         valueType="path"
+        isMultivalued={maxAnswers != 1}
         {...rest}
         />
     </Question>);

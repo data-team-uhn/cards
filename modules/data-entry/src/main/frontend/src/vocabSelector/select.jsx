@@ -306,6 +306,7 @@ function VocabularySelector(props) {
         answerNodeType={'lfs:VocabularyAnswer'}
         questionDefinition={questionDefinition}
         existingAnswer={existingAnswer}
+        isMultivalued={max != 1}
         noteComponent={NCRNote}
         noteProps={{
           vocabulary: source,
