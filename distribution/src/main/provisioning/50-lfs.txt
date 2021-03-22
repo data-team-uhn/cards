@@ -52,6 +52,9 @@
     ca.sickkids.ccm.lfs/lfs-vocabularies/${lfs.version}/slingfeature/slingfeature
     ca.sickkids.ccm.lfs/lfs-aggregated-frontend/${lfs.version}
 
+    # Favicon
+    ca.sickkids.ccm.lfs/lfs-modules-favicon/${lfs.version}
+
 [artifacts runModes=permissions_ownership]
     ca.sickkids.ccm.lfs/lfs-permissions-ownership/${lfs.version}
 
