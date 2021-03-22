@@ -1405,6 +1405,11 @@
 					<value>1</value>
 					<type>Long</type>
 				</property>
+				<property>
+					<name>enableSeparatorDetection</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>condition</name>
@@ -1468,6 +1473,11 @@
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>enableSeparatorDetection</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 			<node>
@@ -1993,6 +2003,11 @@
 					<value>1</value>
 					<type>Long</type>
 				</property>
+				<property>
+					<name>enableSeparatorDetection</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>condition</name>
@@ -2056,6 +2071,11 @@
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>enableSeparatorDetection</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 			<node>
@@ -2121,6 +2141,11 @@
 					<value>1</value>
 					<type>Long</type>
 				</property>
+				<property>
+					<name>enableSeparatorDetection</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>condition</name>
@@ -2185,6 +2210,11 @@
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>enableSeparatorDetection</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
@@ -2259,6 +2289,11 @@
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>enableSeparatorDetection</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<node>
 					<name>Cane (right)</name>
@@ -2499,6 +2534,11 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<property>
+				<name>enableSeparatorDetection</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>Chronic back pain</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
@@ -2658,6 +2698,11 @@
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>enableSeparatorDetection</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>Cerebral palsy or other paralytic syndromes</name>
@@ -3274,6 +3319,11 @@
 					<value>1</value>
 					<type>Long</type>
 				</property>
+				<property>
+					<name>enableSeparatorDetection</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 			<node>
 				<name>condition</name>
@@ -3595,6 +3645,11 @@
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>enableSeparatorDetection</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 			<node>

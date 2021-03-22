@@ -30,6 +30,7 @@
       },
       "text" : {
         "validationRegexp": "string",
+        "enableSeparatorDetection": "boolean",
         "minAnswers": "long",
         "maxAnswers": "long"
       },
