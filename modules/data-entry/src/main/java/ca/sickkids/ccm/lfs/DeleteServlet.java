@@ -123,7 +123,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
      * Traverse through the references of the node.
      */
     private NodeConsumer traverseReferences = (node) -> {
-        iterateReferrers(node, this.traverseNode);
+        iterateReferrers(node, this.traverseNode, false);
     };
 
     private NodeConsumer markChildNodeDeleted = (node) -> {
@@ -223,7 +223,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
         // Check if this node or its children are referenced by other nodes
         iterateChildren(node, this.traverseReferences, true);
 
-        if (this.nodesTraversed.get().size() == 1) {
+        if (this.nodesTraversed.get().size() == 0) {
             this.deleteNode.accept(node);
             this.resolver.get().adaptTo(Session.class).save();
         } else {
