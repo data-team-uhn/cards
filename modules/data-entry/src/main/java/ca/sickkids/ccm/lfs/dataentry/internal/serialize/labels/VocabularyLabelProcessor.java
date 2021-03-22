@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -41,7 +40,7 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
  * @version $Id$
  */
 @Component(immediate = true)
-public class VocabularyLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
+public class VocabularyLabelProcessor extends AnswerOptionsLabelProcessor implements ResourceJsonProcessor
 {
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
@@ -75,7 +74,7 @@ public class VocabularyLabelProcessor extends SimpleAnswerLabelProcessor impleme
             }
 
             processVocabularyLabels(node, question, propsMap);
-            processAnswerOptionLabels(node, question, propsMap);
+            super.processOptions(question, propsMap);
 
             if (propsMap.size() == 1) {
                 return Json.createValue((String) propsMap.values().toArray()[0]);
@@ -97,33 +96,6 @@ public class VocabularyLabelProcessor extends SimpleAnswerLabelProcessor impleme
                 String label = term.getProperty("label").getValue().toString();
                 if (label != null) {
                     propsMap.put(value, label);
-                }
-            }
-        }
-    }
-
-    private void processAnswerOptionLabels(final Node node, final Node question, final Map<String, String> propsMap)
-        throws RepositoryException
-    {
-
-        NodeIterator childNodes = question.getNodes();
-        if (childNodes.getSize() > 0) {
-            int count = 0;
-            while (childNodes.hasNext()) {
-                Node optionNode = childNodes.nextNode();
-                if (!"lfs:AnswerOption".equals(optionNode.getPrimaryNodeType().getName())
-                    || !optionNode.hasProperty(PROP_VALUE)) {
-                    continue;
-                }
-
-                String option = optionNode.getProperty(PROP_VALUE).getString();
-                if (propsMap.containsKey(option) && optionNode.hasProperty(PROP_LABEL)) {
-                    propsMap.put(option, optionNode.getProperty(PROP_LABEL).getString());
-                    count++;
-                }
-
-                if (propsMap.size() == count) {
-                    break;
                 }
             }
         }
