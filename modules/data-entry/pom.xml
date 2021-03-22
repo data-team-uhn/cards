@@ -45,6 +45,7 @@
             <Sling-Initial-Content>
               SLING-INF/content/apps/lfs/config/;path:=/apps/lfs/config/;overwrite:=false,
               SLING-INF/content/libs/lfs/dataQuery/;path:=/libs/lfs/dataQuery/;overwrite:=true,
+              SLING-INF/content/libs/lfs/Questionnaire/;path:=/libs/lfs/Questionnaire/;overwrite:=true,
               SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwrite:=true,
               SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwrite:=true,
               SLING-INF/content/Extensions/DashboardMenuItems/;path:=/Extensions/DashboardMenuItems/;overwrite:=true,
