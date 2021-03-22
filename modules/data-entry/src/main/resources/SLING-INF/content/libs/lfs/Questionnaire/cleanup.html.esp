@@ -76,14 +76,14 @@ let checkNode = function(node, hierarchy) {
 let checkAnswerIsMultivalued = function(answer) {
     if (answer.hasProperty("value") && !answer.getProperty("value").isMultiple()) {
         // Make sure the form is checked out
-        findForm(answer);
+        let form = findForm(answer);
         // Creating a typed Java array in JS is not obvious:
         let mvalue = java.lang.reflect.Array.newInstance(javax.jcr.Value, 1);
         mvalue[0] = answer.getProperty("value").getValue();
         // The property is already single valued, trying to just set a new value will fail. We must first remove the old value, then re-add it as a multivalued property.
         dryRun || answer.getProperty("value").remove();
         dryRun || answer.setProperty("value", mvalue);
-        verbose && out.println("<li>Converted to multivalue</li>");
+        verbose && out.println("<li>Converted to multivalue in form <a href='/content.html" + form.getPath() + "'>" + getFormName(form) + "</a></li>");
     }
 }
 
@@ -135,7 +135,7 @@ let checkAnswerHierarchy = function(question, answer, hierarchy) {
                         answer.remove();
                     } else {
                         // Different values, we can not do anything, just report it for manual resolution
-                        out.println("<li style='color: red'>New answer and old answer have different values: " + oldValue + " -> " + newValue + "</li>");
+                        out.println("<li style='color: red'>Old answer and new answer have different values: " + oldValue + " -> " + newValue + "</li>");
                     }
                 }
             } else {
