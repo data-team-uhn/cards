@@ -178,6 +178,11 @@
   // For text answers, a regular expression that can restrict/validate the allowed answers.
   - validationRegexp (string)
 
+  // For text answers that are multivalued and display an input, enable detecting separators
+  // (,;) and notifying the user that each option should be entered separately by
+  // pressing ENTER
+  - enableSeparatorDetection (boolean)
+
   // For numeric answers, the minimum and maximum allowed values
   - minValue (double)
   - maxValue (double)
