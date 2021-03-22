@@ -43,7 +43,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>You can upload variants through the Variant File Uploader on the sidebar.</value>
+			<value>You can also upload variants through the Variant File Uploader on the sidebar.</value>
 			<type>String</type>
 		</property>
 		<property>
