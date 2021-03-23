@@ -119,6 +119,13 @@ public class DeleteServlet extends SlingAllMethodsServlet
         this.nodesTraversed.get().add(node);
     };
 
+    /**
+     * Traverse through the references of the node.
+     */
+    private NodeConsumer traverseReferences = (node) -> {
+        iterateReferrers(node, this.traverseNode, false);
+    };
+
     private NodeConsumer markChildNodeDeleted = (node) -> {
         this.childNodesDeleted.get().add(node);
 
@@ -213,10 +220,10 @@ public class DeleteServlet extends SlingAllMethodsServlet
     private void handleDelete(final SlingHttpServletResponse response, final Node node)
         throws IOException, AccessDeniedException, RepositoryException
     {
-        // Check if node is referenced by other nodes
-        iterateReferrers(node, this.traverseNode);
+        // Check if this node or its children are referenced by other nodes
+        iterateChildren(node, this.traverseReferences, true);
 
-        if (this.nodesTraversed.get().size() == 1) {
+        if (this.nodesTraversed.get().size() == 0) {
             this.deleteNode.accept(node);
             this.resolver.get().adaptTo(Session.class).save();
         } else {
@@ -254,6 +261,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
     private void handleRecursiveDelete(Node node)
         throws AccessDeniedException, RepositoryException
     {
+        iterateChildren(node, this.deleteNode, false);
         iterateReferrers(node, this.deleteNode);
     }
 
@@ -276,9 +284,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
             iterateReferrers(references.nextProperty().getParent(), consumer, true);
         }
 
-        // Also nab references through children
-        iterateChildren(node, consumer, false);
-
         if (includeRoot) {
             consumer.accept(node);
         }
@@ -298,9 +303,9 @@ public class DeleteServlet extends SlingAllMethodsServlet
         boolean includeRoot
     ) throws RepositoryException
     {
-        final NodeIterator references = node.getNodes();
-        while (references.hasNext()) {
-            iterateChildren(references.nextNode(), consumer, true);
+        final NodeIterator children = node.getNodes();
+        while (children.hasNext()) {
+            iterateChildren(children.nextNode(), consumer, true);
         }
 
         if (includeRoot) {
