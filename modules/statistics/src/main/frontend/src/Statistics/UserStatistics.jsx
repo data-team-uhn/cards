@@ -20,9 +20,9 @@ import React, { useState } from "react";
 import {
   Card,
   CardContent,
-  Grid, 
-  withStyles, 
-  Typography 
+  Grid,
+  withStyles,
+  Typography
 } from "@material-ui/core";
 import {
    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Label, Legend,
@@ -105,6 +105,14 @@ function UserStatistics(props) {
     data.map((stat) => fetchStat(stat))
   }
 
+  let expandData = (data) => {
+    let result = [];
+    for (const [key, value] of Object.entries(data)) {
+      result = result.concat(new Array(value).fill(key));
+    }
+    return result;
+  }
+
   return (
     <React.Fragment>
       <Grid container spacing={3}>
@@ -114,7 +122,7 @@ function UserStatistics(props) {
           let rechartsData = [];
           let parsedStat = JSON.parse(stat);
           for (const [key, value] of Object.entries(parsedStat["data"])) {
-            rechartsData.push({"x": key, [parsedStat["y-label"]]: value});
+            rechartsData.push({"x": key, [parsedStat["y-label"]]: expandData(value)});
           }
           return(
             <Grid item lg={12} xl={6} key={stat["name"]}>
