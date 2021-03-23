@@ -40,7 +40,7 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
  * @version $Id$
  */
 @Component(immediate = true)
-public class VocabularyLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
+public class VocabularyLabelProcessor extends AnswerOptionsLabelProcessor implements ResourceJsonProcessor
 {
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
@@ -73,15 +73,8 @@ public class VocabularyLabelProcessor extends SimpleAnswerLabelProcessor impleme
                 return createJsonArrayFromList(propsMap.values());
             }
 
-            for (String value : propsMap.keySet()) {
-                if (value.startsWith("/Vocabularies/")) {
-                    Node term = node.getSession().getNode(value);
-                    String label = term.getProperty("label").getValue().toString();
-                    if (label != null) {
-                        propsMap.put(value, label);
-                    }
-                }
-            }
+            processVocabularyLabels(node, question, propsMap);
+            super.processOptions(question, propsMap);
 
             if (propsMap.size() == 1) {
                 return Json.createValue((String) propsMap.values().toArray()[0]);
@@ -92,5 +85,19 @@ public class VocabularyLabelProcessor extends SimpleAnswerLabelProcessor impleme
             // Really shouldn't happen
         }
         return null;
+    }
+
+    private void processVocabularyLabels(final Node node, final Node question, final Map<String, String> propsMap)
+        throws RepositoryException
+    {
+        for (String value : propsMap.keySet()) {
+            if (value.startsWith("/Vocabularies/") && node.getSession().nodeExists(value)) {
+                Node term = node.getSession().getNode(value);
+                String label = term.getProperty("label").getValue().toString();
+                if (label != null) {
+                    propsMap.put(value, label);
+                }
+            }
+        }
     }
 }
