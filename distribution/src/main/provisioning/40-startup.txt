@@ -38,6 +38,7 @@
     sling.auth.requirements=[ \
       "+/", \
       "-/login", \
+      "-/favicon.ico", \
       "-/libs", \
       "-/apps", \
       "-/system", \
