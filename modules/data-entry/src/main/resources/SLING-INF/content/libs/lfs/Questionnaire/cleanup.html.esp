@@ -36,6 +36,8 @@ let dryRun = request.getParameter("confirm") != "1";
 /** Without verbose=1 in the URL, we only report conflicts. */
 let verbose = request.getParameter("verbose") == "1";
 
+let forceDelete = request.getParameter("forceDelete") == "1";
+
 /**
  * Check if all the references to a question are correctly single- or multi-valued, and in the proper place, and if not, attemts to fix them.
  * If the node is a section, not a question, then it recursively checks all its children.
@@ -136,6 +138,9 @@ let checkAnswerHierarchy = function(question, answer, hierarchy) {
                     } else {
                         // Different values, we can not do anything, just report it for manual resolution
                         out.println("<li style='color: red'>Old answer and new answer have different values: " + oldValue + " -> " + newValue + "</li>");
+                        // Unless we force the deletion of old answers
+                        forceDelete && verbose && out.println("<li style='color: red'>Force deletion is active, deleting old answer</li>");
+                        dryRun || forceDelete && answer.remove();
                     }
                 }
             } else {
