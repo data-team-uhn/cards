@@ -119,6 +119,14 @@ public class SubjectAncestryEditor extends DefaultEditor
         if (identifiers.size() > 0) {
             this.currentNodeBuilder.setProperty(PROP_PARENTS, identifiers.get(0), Type.WEAKREFERENCE);
             this.currentNodeBuilder.setProperty(PROP_ANCESTORS, identifiers, Type.WEAKREFERENCES);
+        } else {
+            // Remove the old properties if they exist
+            if (this.currentNodeBuilder.hasProperty(PROP_ANCESTORS)) {
+                this.currentNodeBuilder.removeProperty(PROP_ANCESTORS);
+            }
+            if (this.currentNodeBuilder.hasProperty(PROP_PARENTS)) {
+                this.currentNodeBuilder.removeProperty(PROP_PARENTS);
+            }
         }
     }
 

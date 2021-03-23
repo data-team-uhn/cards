@@ -28,8 +28,8 @@
 	<property>
 		<name>requiredSubjectTypes</name>
 		<values>
-			<value>/SubjectTypes/Tumor</value>
-			<value>/SubjectTypes/TumorRegion</value>
+			<value>/SubjectTypes/Patient/Tumor</value>
+			<value>/SubjectTypes/Patient/Tumor/TumorRegion</value>
 		</values>
 		<type>Reference</type>
 	</property>
