@@ -74,7 +74,7 @@ let ListInput = (props) => {
 
   return (
     <EditorInput name={objectKey}>
-      <input type="hidden" name={objectKey + "@TypeHint"} value={type.saveType} />
+      <input type="hidden" name={objectKey + "@TypeHint"} value={type.saveType + '[]'} />
       {
         // Maps each selected object to a reference type for submitting
         value.map((typeObject, index) => <input type="hidden" name={objectKey} value={typeObject[type.identifierProperty]} key={typeObject + index} />)
