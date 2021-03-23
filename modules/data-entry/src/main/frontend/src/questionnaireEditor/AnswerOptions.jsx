@@ -23,6 +23,10 @@ import {
   Grid,
   IconButton,
   TextField,
+  InputAdornment,
+  FormControlLabel,
+  Tooltip,
+  Switch,
   Typography,
   withStyles
 } from "@material-ui/core";
@@ -35,14 +39,37 @@ import { stringToHash } from "../escape.jsx";
 
 let AnswerOptions = (props) => {
   const { objectKey, data, path, saveButtonRef, classes } = props;
-  let [ options, setOptions ] = useState(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
+  let [ options, setOptions ] = useState(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption'
+                                                                               && !value.notApplicable
+                                                                               && !value.noneOfTheAbove).slice());
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
   let [ isDuplicate, setIsDuplicate ] = useState(false);
 
+  const notApplicable  = Object.values(data).find(option => option['jcr:primaryType'] == 'lfs:AnswerOption' && option.notApplicable);
+  const noneOfTheAbove = Object.values(data).find(option => option['jcr:primaryType'] == 'lfs:AnswerOption' && option.noneOfTheAbove);
+
+  let [ notApplicableOption, setNotApplicableOption ] = useState(notApplicable || {"value" : "None", "notApplicable" : false, "@path" : path + "/None"});
+  let [ noneOfTheAboveOption, setNoneOfTheAboveOption ] = useState(noneOfTheAbove || {"value": "None of the above", "noneOfTheAbove" : false,  "@path" : path + "/NoneOfTheAbove"});
+
+  const specialOptionsInfo = [
+    {
+      tooltip : "This option behaves as 'None' or 'N/A', and unselects/removes all other options upon selection.",
+      data : notApplicableOption,
+      setter : setNotApplicableOption,
+      label: "notApplicable"
+    },
+    {
+      tooltip : "This option behaves as 'None of the above', and unselects/removes all other options upon selection",
+      data : noneOfTheAboveOption,
+      setter : setNoneOfTheAboveOption,
+      label: "noneOfTheAbove"
+    }
+  ]
+
   // Clear local state when data changes
   useEffect(() => {
-    setOptions(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
+    setOptions(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && !value.notApplicable && !value.noneOfTheAbove).slice());
     setDeletedOptions([]);
     setTempValue('');
     setIsDuplicate(false);
@@ -101,12 +128,52 @@ let AnswerOptions = (props) => {
       }, 500);
     }
   }
+  
+  let generateSpecialOptions = (index) => {
+    let option = specialOptionsInfo[index];
+    return (
+    <>
+      <TextField
+        disabled={!option.data[option.label]}
+        label={option.tootltip}
+        className={classes.specialOption + " " + (!option.data[option.label] ? classes.answerOptionInput : "")}
+        name="label"
+        value={option.data.label || option.data.value}
+        onChange={(event) => option.setter({ ...option.data, [event.target.name]: event.target.value})}
+      />
+      <Tooltip title={option.tooltip} className={classes.specialOptionSwitch}>
+        <FormControlLabel
+            control={
+              <Switch
+                  checked={!!option.data[option.label]}
+                  name={option.label}
+                  onChange={(event) => option.setter({ ...option.data, [event.target.name]: event.target.checked})}
+                  color="primary"
+                />
+            }
+          />
+      </Tooltip>
+      { option.data[option.label]
+        ?
+        <>
+          <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
+          <input type='hidden' name={`${option.data['@path']}/value`} value={option.data.value} />
+          <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
+          <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
+        </>
+        :
+        <input type='hidden' name={`${option.data['@path']}@Delete`} value="0" />
+      }
+    </>
+    )
+  }
 
   return (
     <EditorInput name={objectKey}>
       { deletedOptions.map((value, index) =>
         <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
       )}
+      { generateSpecialOptions(0) }
       { options.map((value, index) =>
         <React.Fragment key={value.value}>
           <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
@@ -125,6 +192,7 @@ let AnswerOptions = (props) => {
           </IconButton>
         </React.Fragment>
       )}
+      { generateSpecialOptions(1) }
       <TextField
         fullWidth
         value={tempValue}
