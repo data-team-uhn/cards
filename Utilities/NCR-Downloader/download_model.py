@@ -38,6 +38,10 @@ argparser.add_argument('--download', help='Download a model')
 argparser.add_argument('--savedir', help='Directory to save downloaded model')
 args = argparser.parse_args()
 
+if (args.list == False) and args.download is None:
+  print("Must specify either --list or --download. Run with -h to display help.")
+  sys.exit(-1)
+
 MANIFEST_FILE = DEFAULT_MANIFEST_FILE
 if args.manifest:
   MANIFEST_FILE = args.manifest
