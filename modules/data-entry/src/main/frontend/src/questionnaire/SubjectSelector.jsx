@@ -453,6 +453,11 @@ export function NewSubjectDialog (props) {
 
     promise.then((json) => {
       let newAllowedTypes = parseToArray(json);
+      if (currentSubject) {
+        // If we have a subject we must be a child of, only allow subject types who are children of the current type
+        let prefix = currentSubject["type"]["@path"];
+        newAllowedTypes.filter((newType) => newType["@path"].startsWith(prefix) && newType["@path"] != prefix);
+      }
       setNewSubjectAllowedTypes((old) => {
         let newTypes = old.slice();
         newTypes.push(newAllowedTypes);
