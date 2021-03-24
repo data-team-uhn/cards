@@ -633,7 +633,7 @@ export default function VariantFilesContainer() {
     return new Promise((resolve, reject) => {
 
       var reader = new FileReader();
-      reader.readAsText(file);
+      reader.readAsArrayBuffer(file);
       file.uploading = true;
 
       //When the file finish load
@@ -641,12 +641,13 @@ export default function VariantFilesContainer() {
 
         // get the file data
         var csv = event.target.result;
-        let json = assembleJson(file, csv, generateSubjects);
+        let [json, filePath] = assembleJson(file, csv, generateSubjects);
 
         let data = new FormData();
         data.append(':contentType', 'json');
         data.append(':operation', 'import');
         data.append(':content', JSON.stringify(json));
+        data.append(filePath, file);
 
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/');
@@ -690,7 +691,9 @@ export default function VariantFilesContainer() {
         }
         xhr.send(data);
       }
-    });
+    }).then(
+      
+    );
   };
 
   /**
@@ -765,20 +768,20 @@ export default function VariantFilesContainer() {
       fileInfo["jcr:reference:question"] = "/Questionnaires/SomaticVariants/file";
       fileInfo["value"] = "/" + formPath + "/" + fileID + "/" + file.name;
 
-      let fileDetails = {};
+      /*let fileDetails = {};
       fileDetails["jcr:primaryType"] = "nt:file";
       fileDetails["jcr:content"] = {};
       fileDetails["jcr:content"]["jcr:primaryType"] = "nt:resource";
 
       fileDetails["jcr:content"]["jcr:data"] = csvData;
 
-      fileInfo[file.name] = fileDetails;
+      fileInfo[file.name] = fileDetails;*/
 
       formInfo[fileID] = fileInfo;
 
       json[formPath] = formInfo;
 
-      return json;
+      return [json, fileInfo["value"]];
   };
 
   if (!somaticVariantsUUID) {
