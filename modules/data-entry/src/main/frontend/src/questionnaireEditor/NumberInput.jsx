@@ -34,8 +34,10 @@ import QuestionComponentManager from "./QuestionComponentManager";
 
 let NumberInput = (props) => {
   let { objectKey, data } = props;
-  const defaultValue = props.value === "long" ? 0 : '';
-  const isMax = props.value === "long" && objectKey.startsWith('max');
+  const type = props.value?.charAt(0).toUpperCase() + props.value?.slice(1).toLowerCase();
+  const defaultValue = type === "Long" ? 0 : '';
+  const isMax = type === "Long" && objectKey.startsWith('max');
+
   let [ value, setValue ] = useState(data[objectKey] || defaultValue);
 
   return (
@@ -56,6 +58,7 @@ let NumberInput = (props) => {
           }
         }}
       />
+      <input type="hidden" name={objectKey + "@TypeHint"} value={type} />
     </EditorInput>
   )
 }
