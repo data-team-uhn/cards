@@ -60,7 +60,7 @@ let AnswerOptions = (props) => {
       label: "notApplicable"
     },
     {
-      tooltip : "This option behaves as 'None of the above', and unselects/removes all other options upon selection",
+      tooltip : "This option behaves as 'None of the above'. When selected, it removes all existing selections except those entered by the user in the input, if applicable.",
       data : noneOfTheAboveOption,
       setter : setNoneOfTheAboveOption,
       label: "noneOfTheAbove"
