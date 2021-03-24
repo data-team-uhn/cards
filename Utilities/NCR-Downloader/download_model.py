@@ -29,7 +29,6 @@ import argparse
 import requests
 
 DEFAULT_MANIFEST_FILE = 'model_repo.json'
-TAR_GZ_TYPES = ['NeuralCR', 'BasicCR']
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--manifest', help='Specify an alternate models manifest file', default=DEFAULT_MANIFEST_FILE)
@@ -90,7 +89,7 @@ if args.download:
     sys.exit(-1)
 
   #Extract the .tar.gz file if necessary
-  if model_type in TAR_GZ_TYPES:
+  if model_url.endswith('.tar.gz'):
     print("Uncompressing...")
     model_archive = tarfile.open(download_filename, 'r:gz')
     model_archive.extractall(path=savedir)
