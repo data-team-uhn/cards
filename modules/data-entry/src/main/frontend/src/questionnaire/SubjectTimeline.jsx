@@ -22,7 +22,8 @@ import PropTypes from "prop-types";
 import {
   CircularProgress,
   Link,
-  Paper
+  Paper,
+  Tooltip
 } from '@material-ui/core'
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
@@ -80,7 +81,7 @@ function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
 }
 
 function CustomTimelineConnector(props) {
-  let { classes, text, className} = props;
+  let { classes, shortText, longText, className} = props;
 
   let divClasses = [classes.timelineConnectorGroup];
   if (className) {
@@ -88,9 +89,11 @@ function CustomTimelineConnector(props) {
   }
 
   return <div className={divClasses.join(",")}>
-      <div className={classes.timelineCircle}>
-        <Typography variant="body2">{text}</Typography>
-      </div>
+      <Tooltip title={longText}>
+        <div className={classes.timelineCircle}>
+          <Typography variant="body2">{shortText}</Typography>
+        </div>
+      </Tooltip>
       <TimelineConnector className={classes.timelineConnectorLine}/>
     </div>
 }
@@ -122,10 +125,11 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
         <TimelineDot color={dateEntry.level == 0 ? "primary" : (dateEntry.level == 1 ? "secondary" : "grey")}/>
         {index !== (length - 1)
           ? (
-            diff
+            diff.short
             ? <CustomTimelineConnector
               classes={classes}
-              text={diff}
+              shortText={diff.short}
+              longText={diff.long}
               className={connectorIsAncestor ? classes.timelineAncestor : null}/>
             : <TimelineConnector className={classes.timelineConnectorLine}/>)
           : null
@@ -310,7 +314,7 @@ function SubjectTimeline(props) {
 
     for (const dateAnswer of dateAnswers) {
       let diff = DateQuestionUtilities.dateDifference(previousDate, dateAnswer.date.value);
-      if (newDateEntries.length === 0 || diff) {
+      if (newDateEntries.length === 0 || diff.short) {
         // Create a new paper
         newDateEntries.push({
           date: dateAnswer.date.value,

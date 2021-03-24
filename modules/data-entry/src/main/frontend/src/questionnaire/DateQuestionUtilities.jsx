@@ -158,19 +158,29 @@ export default class DateQuestionUtilities {
 
   static dateDifference = (firstDate, secondDate) => {
     // Compute the displayed difference
-    let difference = null;
+    let result = {long:""}
     if (firstDate && secondDate) {
       let currentDate = this.amendMoment(firstDate, "yyyy-MM-dd");
       let nextDate = this.amendMoment(secondDate, "yyyy-MM-dd");
-      let divisions = ["years", "months", "days"];
-      for(const division of divisions) {
-        let diff = nextDate.diff(currentDate, division);
-        if (diff > 0) {
-          difference = diff + division.charAt(0);
-          break;
+
+      let diff = [];
+      for (const division of ["years", "months", "days"]) {
+        let value = nextDate.diff(currentDate, division);
+        diff.push(value);
+        if (value > 0) {
+          nextDate = nextDate.subtract(value, division);
+          result.long += value + division.charAt(0);
         }
       }
+
+      if (diff[0] > 0) {
+        result.short = `${diff[0] + (diff[1] > 6 ? 1 : 0)}y`;
+      } else if (diff[1] > 0) {
+        result.short = `${diff[1] + (diff[2] > 15 ? 1 : 0)}m`;
+      } else if (diff[2] > 0) {
+        result.short = `${diff[2]}d`;
+      }
     }
-    return difference;
-}
+    return result;
+  }
 }
