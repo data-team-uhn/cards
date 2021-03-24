@@ -540,10 +540,12 @@ function FormData(props) {
       let content = "";
       switch(entryDefinition["dataType"]) {
         case "file":
+          // The value can either be a single value or an array of values; force it into an array
+          let paths = Array.of(existingQuestionAnswer[1]["value"]).flat();
           content = <>
             {prettyPrintedAnswers.map((answerValue, idx) => {
               let prefix = idx > 0 ? ", " : ""; // Seperator space between different files
-              return <>{prefix}<a key={answerValue} href={existingQuestionAnswer[1]["value"][idx]} target="_blank" rel="noopener" download>{answerValue}</a></>
+              return <>{prefix}<a key={answerValue} href={paths[idx]} target="_blank" rel="noopener" download>{answerValue}</a></>
             })}
             </>
           break;
