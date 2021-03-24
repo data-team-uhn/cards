@@ -1,0 +1,32 @@
+{
+  "HP": {
+    "url": "https://github.com/ccmbioinfo/NeuralCR/releases/download/1.1/HP.tar.gz",
+    "sha256": "08e48710399ce8aa321367d6dafdef87a464048b85437552edc728e0e129668b",
+    "type": "NeuralCR",
+    "description":  "Human Phenotype Ontology trained at a root of HP:0000118"
+  },
+  "MONDO": {
+    "url": "https://github.com/ccmbioinfo/NeuralCR/releases/download/1.1/MONDO.tar.gz",
+    "sha256": "942b03460a87f4372498c0792eafc6a8f7a39f4555b7baf9f6db833a13caef31",
+    "type": "NeuralCR",
+    "description": "MONDO trained at a root of MONDO:0045024"
+  },
+  "ICD-O-3-M": {
+    "url": "https://github.com/ccmbioinfo/NeuralCR/releases/download/1.1/ICD-O-3-M.tar.gz",
+    "sha256": "1b57884072965ff5043f5b38ce2befc5ac5d0a1defc65b9aef2967196d9ee4c9",
+    "type": "NeuralCR",
+    "description": "ICD-O-3-M trained at a root of 'Thing'"
+  },
+  "NCTID" : {
+    "url": "https://github.com/data-team-uhn/BasicCR/releases/download/1.0/NCTID.tar.gz",
+    "sha256": "76ce4fb6990b8d68666ec4d1aae48e2c05ea90fa4e7bde1a1776c6033b83c0b8",
+    "type": "BasicCR",
+    "description": "National Clinical Trials Identifiers"
+  },
+  "pmc_model_new.bin": {
+    "url": "https://github.com/ccmbioinfo/NeuralCR/releases/download/1.1/pmc_model_new.bin",
+    "sha256": "e9947f25ef59693c3dd46eb33418b0a44d0663f2c4675adf98c99a187c0d20c5",
+    "type": "FastText Model",
+    "description": "FastText model required for various NeuralCR trained models"
+  }
+}
