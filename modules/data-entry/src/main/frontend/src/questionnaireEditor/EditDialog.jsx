@@ -31,7 +31,6 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import AnswerOptions from './AnswerOptions';
 import Fields from './Fields'
 
 // Dialog for editing or creating questions or sections
@@ -153,7 +152,7 @@ let EditDialog = (props) => {
 
   let targetIdField = () => {
     return (
-      <Grid container alignItems='flex-end' spacing={2} direction="row">
+      <Grid container alignItems='baseline' spacing={2} direction="row">
         <Grid item xs={4}><Typography variant="subtitle2">{type === 'Question' ? 'Variable name:' : 'Section identifier:' }</Typography></Grid>
         <Grid item xs={8}>{
           targetExists ?
@@ -174,12 +173,13 @@ let EditDialog = (props) => {
           <DialogContent>
             <Grid container direction="column" spacing={2}>
               <Grid item>{targetIdField()}</Grid>
-              <Fields data={targetExists && data || {}} JSON={json[0]} edit={true} />
-              { data && type === 'Question' &&
-                <Grid item>
-                  <AnswerOptions data={data} path={data["@path"] + (targetExists ? "" : `/${targetId}`)} saveButtonRef={saveButtonRef}/>
-                </Grid>
-              }
+              <Fields
+                data={targetExists && data || {}}
+                JSON={json[0]}
+                edit={true}
+                path={data["@path"] + (targetExists ? "" : `/${targetId}`)}
+                saveButtontRef={saveButtonRef}
+               />
             </Grid>
           </DialogContent>
           <DialogActions>

@@ -24,6 +24,7 @@ import QuestionComponentManager from "../questionnaireEditor/QuestionComponentMa
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 
 // Unused imports required for the component manager
+import AnswerOptions from "./AnswerOptions";
 import BooleanInput from "./BooleanInput";
 import ListInput from "./ListInput";
 import NumberInput from "./NumberInput";
@@ -31,7 +32,7 @@ import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";
 
 let Fields = (props) => {
-  let { data, JSON, edit } = props;
+  let { data, JSON, edit, ...rest } = props;
 
   /**
    * Method responsible for displaying a question from the questionnaire
@@ -44,13 +45,13 @@ let Fields = (props) => {
     // This variable must start with an upper case letter so that React treats it as a component
     const FieldDisplay = QuestionComponentManager.getQuestionComponent(value);
     return (
-      <Grid item key={key}>
         <FieldDisplay
+          key={key}
           objectKey={key}
           value={value}
           data={data}
+          {...rest}
           />
-      </Grid>
     );
   };
 
