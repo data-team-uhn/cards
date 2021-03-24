@@ -222,19 +222,30 @@ function NewFormDialog(props) {
     }
   }
 
+  // if the current subject is the only required type for the questionnaire or if the
+  // only acceptable subjects are the subject we're looking at or non-children (e.g.
+  // tumors and patients), filter the acceptable subject types that can be created.
+  let allowedSubjectTypes = selectedQuestionnaire && parseToArray(selectedQuestionnaire["requiredSubjectTypes"]);
+  let filteredAllowedSubjectTypes = allowedSubjectTypes;
+  if (selectedQuestionnaire && currentSubject) {
+    // We only allow creation of children of the current subject, and not the same type of the subject itself
+    let prefix = currentSubject["type"]?.["@path"];
+    filteredAllowedSubjectTypes = allowedSubjectTypes.filter(
+      (allowedType) => allowedType["@path"].startsWith(prefix) && allowedType["@path"] != prefix);
+  }
+
   useEffect(() => {
     if (currentSubject && selectedQuestionnaire) {
-      // if the current subject is the only required type for the questionnaire
-      if ( !selectedQuestionnaire?.["requiredSubjectTypes"] ||
-        (selectedQuestionnaire?.["requiredSubjectTypes"]?.length == 1 &&
-        (currentSubject.type["@path"] == selectedQuestionnaire["requiredSubjectTypes"][0]["@path"]))) {
+      if ( !(filteredAllowedSubjectTypes?.length) ||
+        (filteredAllowedSubjectTypes.length == 1 &&
+        (currentSubject.type["@path"] == filteredAllowedSubjectTypes[0]["@path"]))) {
         setSelectedSubject(currentSubject); // now that selectedsubject is set, will create form with current subject as subject
       }
       else {
         setSelectedSubject(null); // remove selectedsubject so next dialog can open (should not create form right away)
       }
     }
-  }, [selectedQuestionnaire, dialogOpen])
+  }, [selectedQuestionnaire, dialogOpen]);
 
   return (
     <React.Fragment>
@@ -344,7 +355,7 @@ function NewFormDialog(props) {
           <React.Fragment>
             { /* We need selectedQuestionnaire to be filled out before this renders, or it will try grabbing the wrong subjects */
             selectedQuestionnaire && <SubjectSelectorList
-              allowedTypes={parseToArray(selectedQuestionnaire["requiredSubjectTypes"])}
+              allowedTypes={parseToArray(selectedQuestionnaire?.["requiredSubjectTypes"])}
               disabled={isFetching}
               onDelete={unselectSubject}
               onError={setError}
@@ -392,7 +403,7 @@ function NewFormDialog(props) {
         </DialogActions>
       </Dialog>
       <NewSubjectDialog
-        allowedTypes={parseToArray(selectedQuestionnaire?.["requiredSubjectTypes"])}
+        allowedTypes={filteredAllowedSubjectTypes}
         disabled={isFetching}
         onClose={() => {
           setNewSubjectPopperOpen(false);
