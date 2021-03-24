@@ -223,7 +223,7 @@ function NewFormDialog(props) {
   }
 
   // if the current subject is the only required type for the questionnaire or if the
-  // only acceptable subjects are the subject we're looking at or non-children (e.g.
+  // only acceptable subjects are the subject we're looking at or children (e.g.
   // tumors and patients), filter the acceptable subject types that can be created.
   let allowedSubjectTypes = selectedQuestionnaire && parseToArray(selectedQuestionnaire["requiredSubjectTypes"]);
   let filteredAllowedSubjectTypes = allowedSubjectTypes;
