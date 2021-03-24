@@ -162,6 +162,7 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
  *
  * @param {object} childType The object representing the lfs:SubjectType of the child that is being created
  * @param {bool} continueDisabled If true, the continue button is disabled
+ * @param {object} currentSubject The object representing the subject we must be a child of
  * @param {bool} disabled If true, all controls are disabled
  * @param {string} error Error message to display
  * @param {bool} isLast If true, the button to continue will read "Continue" instead of "Create"
@@ -176,7 +177,7 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
  * @param {object} value The currently selected parent
  */
 function UnstyledSelectParentDialog (props) {
-  const { classes, childType, continueDisabled, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
+  const { classes, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -199,7 +200,14 @@ function UnstyledSelectParentDialog (props) {
               title=""
               columns={COLUMNS}
               data={query => {
-                  let url = createQueryURL(` WHERE n.type='${parentType?.["jcr:uuid"]}'` + (query.search ? ` AND CONTAINS(n.fullIdentifier, '*${escapeJQL(query.search)}*')` : ""), "lfs:Subject", "fullIdentifier");
+                  let sql = ` WHERE n.type='${parentType?.["jcr:uuid"]}'`;
+                  if (query.search) {
+                    sql += ` AND CONTAINS(n.fullIdentifier, '*${escapeJQL(query.search)}*')`;
+                  }
+                  if (currentSubject) {
+                    sql += ` AND ISDESCENDANTNODE(n, '${currentSubject["@path"]}')`;
+                  }
+                  let url = createQueryURL(sql, "lfs:Subject", "fullIdentifier");
                   url.searchParams.set("limit", query.pageSize);
                   url.searchParams.set("offset", query.page*query.pageSize);
                   return fetchWithReLogin(globalLoginDisplay, url)
@@ -528,6 +536,7 @@ export function NewSubjectDialog (props) {
       {open && selectParentPopperOpen && <SelectParentDialog
         childType={newSubjectType[newSubjectIndex]}
         continueDisabled={!newSubjectParent[newSubjectIndex]}
+        currentSubject={currentSubject}
         disabled={disabledControls}
         error={error}
         onBack={() => {
