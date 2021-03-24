@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { green } from '@material-ui/core/colors';
+import { green, grey } from '@material-ui/core/colors';
 
 // Props used in grid containers for displaying Form entries
 export const FORM_ENTRY_CONTAINER_PROPS = {
@@ -469,7 +469,14 @@ const questionnaireStyle = theme => ({
     },
     warningStatus: {
       color: theme.palette.warning.main
-    }
+    },
+    answerOptionInput: {
+      width: "85%",
+      backgroundColor: grey[200]
+    },
+    answerOptionDeleteButton: {
+      right: theme.spacing(-3),
+    },
 });
 
 export default questionnaireStyle;

@@ -30,77 +30,67 @@ import {
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
-import { v4 as uuidv4 } from 'uuid';
 import CloseIcon from '@material-ui/icons/Close';
+import { stringToHash } from "../escape.jsx";
 
 let AnswerOptions = (props) => {
-  const { objectKey, data, path, saveButtonRef } = props;
+  const { objectKey, data, path, saveButtonRef, classes } = props;
   let [ options, setOptions ] = useState(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
-  let [ newUUID, setNewUUID ] = useState([]);
-  let [ newValue, setNewValue ] = useState([]);
   let [ deletedOptions, setDeletedOptions ] = useState([]);
-  let [ tempValue, setTempValue ] = useState(''); // Holds new, non-comitted answer options
+  let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
+  let [ isDuplicate, setIsDuplicate ] = useState(false);
 
   // Clear local state when data changes
   useEffect(() => {
     setOptions(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
-    setNewUUID([]);
-    setNewValue([]);
     setDeletedOptions([]);
     setTempValue('');
+    setIsDuplicate(false);
   }, [data])
 
-  let deleteOption = (value) => {
-    setOptions(oldOptions => {
-      let newOptions = oldOptions.slice();
-      newOptions.splice(newOptions.indexOf(value), 1);
-      return newOptions;
-    })
-
+  let deleteOption = (index) => {
     setDeletedOptions(old => {
       let newDeletedOptions = old.slice();
-      newDeletedOptions.push(value);
+      newDeletedOptions.push(options[index]);
       return newDeletedOptions;
-    })
-  }
+    });
 
-  let updateInsertedOption = (index, event) => {
-    setNewValue(oldValue => {
-      var value = oldValue.slice();
-      value[index] = event.target.value;
-      return value;
-    })
-  }
-
-  let deleteInsertedOption = (index, event) => {
-    setNewValue(oldValue => {
-      let value = oldValue.slice();
-      value.splice(index, 1);
-      return value;
-    })
-    setNewUUID(oldUuid => {
-      let uuid = oldUuid.slice();
-      uuid.splice(index, 1);
-      return uuid;
+    setOptions(oldOptions => {
+      let newOptions = oldOptions.slice();
+      newOptions.splice(index, 1);
+      return newOptions;
     });
   }
 
-  let handleInputOption = (event) => {
-    if (tempValue && !newValue.includes(tempValue)) {
-      setNewUUID(oldUuid => {
-        let tempUUID = oldUuid.slice();
-        tempUUID.push(uuidv4());
-        return tempUUID;
-      });
+  let validateOption = (optionInput) => {
+    if (optionInput) {
+      setIsDuplicate(false);
+      let inputs = (optionInput || '').trim().split(/\s*=\s*(.*)/);
+      let duplicateOption = options.find( option => option.value === inputs[0] || inputs[1] && (option.label === inputs[1]));
+      duplicateOption && setIsDuplicate(true);
+    }
+  }
 
-      setNewValue(oldValue => {
-        let value = oldValue.slice();
-        value.push(tempValue);
+  let handleInputOption = (optionInput) => {
+    if (optionInput && !isDuplicate) {
+      // The text entered on each line should be split
+      // by the first occurrence of the separator = if the separator exists
+      // e.g. F=Female as <value> = <label>
+      let inputs = (optionInput || '').trim().split(/\s*=\s*(.*)/);
+      let newOption = {};
+      newOption.value = inputs[0].trim();
+      newOption["@path"] = path + "/AnswerOption" + stringToHash(newOption.value);
+      newOption.label = inputs[1] ? inputs[1].trim() : "";
+
+      setOptions(oldValue => {
+        var value = oldValue.slice();
+        value.push(newOption);
         return value;
       });
     }
 
     tempValue && setTempValue('');
+    setIsDuplicate(false);
 
     // Have to manually invoke submit with timeout to let re-rendering of adding new answer option complete
     // Cause: Calling onBlur and mutating state can cause onClick for form submit to not fire
@@ -114,48 +104,41 @@ let AnswerOptions = (props) => {
 
   return (
     <EditorInput name={objectKey}>
+      { deletedOptions.map((value, index) =>
+        <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
+      )}
       { options.map((value, index) =>
-        <React.Fragment key={value['@path']}>
+        <React.Fragment key={value.value}>
           <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
+          <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
+          <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
           <TextField
-            name={`${value['@path']}/value`}
-            defaultValue={value.value}
+            InputProps={{
+              readOnly: true,
+            }}
+            className={classes.answerOptionInput}
+            defaultValue={value.label? value.value + " = " + value.label : value.value}
             multiline
             />
-          <IconButton onClick={() => { deleteOption(value) }}>
+          <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionDeleteButton}>
             <CloseIcon/>
           </IconButton>
         </React.Fragment>
       )}
-      { newUUID.map((value, index) =>
-        <React.Fragment key={value}>
-          <input type='hidden' name={`${path}/${newValue[index]}/jcr:primaryType`} value={'lfs:AnswerOption'} />
-          <TextField
-            name={`${path}/${newValue[index]}/value`}
-            value={newValue[index]}
-            onChange={(event) => { updateInsertedOption(index, event); }}
-            multiline
-            />
-          <IconButton onClick={(event) => { deleteInsertedOption(index, event) }}>
-            <CloseIcon />
-          </IconButton>
-        </React.Fragment>
-      )}
-      { deletedOptions.map((value, index) =>
-        <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
-      )}
       <TextField
+        fullWidth
         value={tempValue}
-        helperText='Press ENTER to add a new line'
-        onChange={(event) => { setTempValue(event.target.value); }}
-        onBlur={(event) => { handleInputOption(event); }}
+        error={isDuplicate}
+        helperText={isDuplicate ? 'duplicated value or label' : [<span key="helper-value">value OR value=label (e.g. F=Female)</span>,<br key="br"/>,<span key="helper-newline">Press ENTER to add a new line</span>]}
+        onChange={(event) => { setTempValue(event.target.value); validateOption(event.target.value); }}
+        onBlur={(event) => { handleInputOption(event.target.value); }}
         inputProps={Object.assign({
           onKeyDown: (event) => {
             if (event.key == 'Enter') {
               // We need to stop the event so that it doesn't trigger a form submission
               event.preventDefault();
               event.stopPropagation();
-              handleInputOption();
+              handleInputOption(event.target.value);
             }
           }
         })}
