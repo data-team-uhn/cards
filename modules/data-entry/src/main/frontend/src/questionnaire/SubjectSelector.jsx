@@ -286,6 +286,7 @@ export const parseToArray = (object) => {
  * Component that displays a dialog to create a new subject
  *
  * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
+ * @param {currentSubject} object The preselected subject (e.g. on the Subject page, the subject who's page it is is the 'currentSubject')
  * @param {bool} disabled If true, all controls are disabled
  * @param {func} onClose Callback fired when the user tries to close this dialog
  * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
@@ -293,7 +294,7 @@ export const parseToArray = (object) => {
  * @param {bool} open If true, this dialog is open
  */
 export function NewSubjectDialog (props) {
-  const { allowedTypes, disabled, onClose, onSubmit, open, openNewSubject } = props;
+  const { allowedTypes, currentSubject, disabled, onClose, onSubmit, open, openNewSubject } = props;
   const [ error, setError ] = useState("");
   const [ newSubjectName, setNewSubjectName ] = useState([""]);
   const [ newSubjectType, setNewSubjectType ] = useState([""]);
@@ -315,7 +316,7 @@ export function NewSubjectDialog (props) {
   let disabledControls = disabled || isPosting;
 
   // Called only by createNewSubject, a callback to create the next child on our list
-  let createNewSubjectRecursive = (subject, index) => {
+  let createNewSubjectRecursive = (subject, index, parentList) => {
     if (index <= -1) {
       // End of recursion
       setIsPosting(false);
@@ -334,14 +335,14 @@ export function NewSubjectDialog (props) {
     }
 
     // Grab the parent as an array if it exists, or the callback from the previously created parent, or use an empty array
-    let parent = newSubjectParent[index]?.["@path"] || subject;
+    let parent = parentList[index]?.["@path"] || subject;
     createSubjects(
       globalLoginDisplay,
       [newSubjectName[index]],
       newSubjectType[index],
       parent,
       newSubjectName[index],
-      (new_subject) => {createNewSubjectRecursive(new_subject, index-1)},
+      (new_subject) => {createNewSubjectRecursive(new_subject, index-1, parentList)},
       handleError);
   }
 
@@ -365,15 +366,26 @@ export function NewSubjectDialog (props) {
       // They haven't selected a parent for the current type yet
       setError("Please select a valid parent.");
     } else if (newSubjectPopperOpen && curSubjectRequiresParents) {
-      // Display the parent type to select
-      setError();
-      setNewSubjectPopperOpen(false);
-      tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
-      setSelectParentPopperOpen(true);
+      // If we were given a subject whose parent we must be a child of, we can just look there instead
+      // Find everything after the first /
+      let newSubjectParentPath = /(.+)\/.+?/g.exec(newSubjectType[newSubjectIndex]?.["@path"])[1];
+      if (currentSubject && newSubjectParentPath == currentSubject["type"]?.["@path"]) {
+        // Set the last parent to the currentSubject
+        let newParentList = newSubjectParent.slice();
+        newParentList[newParentList.length-1] = currentSubject;
+        setIsPosting(true);
+        createNewSubjectRecursive(null, newSubjectIndex, newParentList);
+      } else {
+        // Display the parent type to select
+        setError();
+        setNewSubjectPopperOpen(false);
+        tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
+        setSelectParentPopperOpen(true);
+      }
     } else {
       // Initiate the call
       setIsPosting(true);
-      createNewSubjectRecursive(null, newSubjectIndex);
+      createNewSubjectRecursive(null, newSubjectIndex, newSubjectParent);
     }
   }
 
@@ -535,6 +547,7 @@ export function NewSubjectDialog (props) {
  * Component that displays the list of subjects in a dialog. Double clicking a subject selects it.
  *
  * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
+ * @param {currentSubject} object The preselected subject (e.g. on the Subject page, the subject who's page it is is the 'currentSubject')
  * @param {bool} open Whether or not this dialog is open
  * @param {func} onChange Callback for when the user changes their selection
  * @param {func} onClose Callback for when the user closes this dialog
@@ -542,7 +555,7 @@ export function NewSubjectDialog (props) {
  * @param {string} title Title of the dialog, if any
  */
 function UnstyledSelectorDialog (props) {
-  const { allowedTypes, classes, disabled, open, onChange, onClose, onError, title, selectedQuestionnaire, ...rest } = props;
+  const { allowedTypes, classes, currentSubject, disabled, open, onChange, onClose, onError, title, selectedQuestionnaire, ...rest } = props;
   const [ subjects, setSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
@@ -603,6 +616,7 @@ function UnstyledSelectorDialog (props) {
   return (<React.Fragment>
     <NewSubjectDialog
       allowedTypes={allowedTypes}
+      currentSubject={currentSubject}
       onClose={() => { setNewSubjectPopperOpen(false); }}
       onSubmit={handleSubmitNew}
       open={open && newSubjectPopperOpen}
@@ -829,6 +843,10 @@ function SubjectSelectorList(props) {
             if (query.search) {
               conditions.push(`CONTAINS(n.fullIdentifier, '*${escapeJQL(query.search)}*')`);
             }
+            if (currentSubject) {
+              let subjectID = currentSubject["jcr:uuid"];
+              conditions.push(`(n.'ancestors'='${subjectID}' OR isdescendantnode(n,'${currentSubject["@path"]}') OR n.'jcr:uuid'='${subjectID}')`);
+            }
             let condition = (conditions.length === 0) ? "" : ` WHERE ${conditions.join(" AND ")}`
 
             // fetch all subjects
@@ -838,46 +856,7 @@ function SubjectSelectorList(props) {
             return fetchWithReLogin(globalLoginDisplay, url)
               .then(response => response.json())
               .then(result => {
-                // recursive function to filter and find related subjects to the currentSubject
-                // should also include subject at the same SubjectType level as currentSubject, if they exist
-
-                let getRelatedChild = (e, array) => {
-                  var array = array || [];
-                  let output = e['parents']?.['@path'];
-                  if (e["parents"]) {
-                    array.push(output);
-                    getRelatedChild(e["parents"], array);
-                    return array;
-                  } else {
-                    return output;
-                  }
-                }
-
-                let filterRelated = (e) => {
-                  // if the selected questionnaire supports the type of current subject
-                  if (e['type']?.['@path'] == currentSubject['type']['@path']) return true;
-                  return getRelatedChild(e)?.includes(currentSubject['@path'])
-                }
-
-                // recursive function to check if the SubjectType of the selected questionnaire is a child of the 'currentSubject' SubjectType
-                // e.g. will return true if the selected questionnaire supports Tumors and the currentSubject SubjectType is Patient
-                // if yes, will filter results to find related subjects (with filterRelated)
-                let toReturn = [];
-
-                let isSubjectRelated = (e) => {
-                  let output = e.type.label;
-                  if (e["parents"]) {
-                    let ancestors = isSubjectRelated(e["parents"]);
-                    toReturn.push(ancestors);
-                    toReturn.push(output);
-                    return toReturn;
-                  } else {
-                    return output;
-                  }
-                }
-
-                let filteredData = (currentSubject && (result['rows'].map((row) => isSubjectRelated(row)?.includes(currentSubject.type.label)))[0])
-                    ? result['rows'].filter((e) => filterRelated(e)) : result["rows"];
+                let filteredData = result["rows"];
                 // Auto-select if there is only one subject available
                 if (filteredData.length === 1) {
                   onSelect(filteredData[0]);

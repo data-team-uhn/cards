@@ -87,7 +87,7 @@ public class AnswerOptionsLabelProcessor extends SimpleAnswerLabelProcessor impl
         return null;
     }
 
-    private void processOptions(final Node question, Map<String, String> propsMap)
+    protected void processOptions(final Node question, final Map<String, String> propsMap)
     {
         try {
             NodeIterator childNodes = question.getNodes();

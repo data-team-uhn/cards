@@ -264,7 +264,44 @@ function NewFormDialog(props) {
                 ]}
                 data={query => {
                   let url = new URL("/query", window.location.origin);
-                  url.searchParams.set("query", `select * from [lfs:Questionnaire] as n${query.search ? ` WHERE CONTAINS(n.'title', '*${query.search}*')` : ""} order by n.'title'`);
+                  let sql = `select * from [lfs:Questionnaire] as n `;
+                  let conditions = [];
+                  if (query.search) {
+                    conditions.push(`CONTAINS(n.'title', '*${query.search}*')`);
+                  }
+                  // If we're on the patient chart, only allow the current subjects whose type is:
+                  // a) the type of the current subject
+                  // b) the type of any progeny of the current subject
+                  if (currentSubject) {
+                    // Join the UUIDs of the progeny types, and convert them into conditions
+                    // These conditions will be n.'requiredSubjectTypes' (IS NULL or ='<uuid>')
+                    let acceptableSubjectTypes = [" IS NULL", `='${currentSubject["type"]["jcr:uuid"]}'`];
+
+                    let findProgeny = (subjectType) => {
+                      let progeny = Object.values(subjectType)?.filter((property) => property["jcr:primaryType"] === "lfs:SubjectType");
+                      let retVal = [].concat.apply([], progeny.map(subject => findProgeny(subject)));
+                      retVal.push(subjectType);
+                      return retVal;
+                    }
+
+                    let progenyTypes = findProgeny(currentSubject["type"]);
+                    if (progenyTypes) {
+                      acceptableSubjectTypes = acceptableSubjectTypes.concat(progenyTypes.map((subject) => `='${subject["jcr:uuid"]}'`));
+                    }
+
+                    // Join the conditions together with an OR, and wrap it in brackets
+                    conditions.push(
+                      "(" + acceptableSubjectTypes.map((condition) => `n.'requiredSubjectTypes'${condition}`).join(" OR ") + ")"
+                    );
+                  }
+
+                  if (conditions.length > 0) {
+                    sql += "WHERE " + conditions.join(" AND ");
+                  }
+
+                  sql += " order by n.'title'";
+
+                  url.searchParams.set("query", sql);
                   url.searchParams.set("limit", query.pageSize);
                   url.searchParams.set("offset", query.page*query.pageSize);
                   return fetchWithReLogin(globalLoginDisplay, url)

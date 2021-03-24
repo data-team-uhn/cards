@@ -102,7 +102,12 @@ public class SubjectProgenyEditor extends DefaultEditor
         final List<String> identifiers = getProgeny(this.currentNodeBuilder);
 
         // Get&write progeny to the JCR repo
-        this.currentNodeBuilder.setProperty(PROP_PROGENY, identifiers, Type.WEAKREFERENCES);
+        // NB: Empty properties cause errors in JCR-SQL2 queries, so we remove the property altogether if it is empty
+        if (identifiers.size() > 0) {
+            this.currentNodeBuilder.setProperty(PROP_PROGENY, identifiers, Type.WEAKREFERENCES);
+        } else if (this.currentNodeBuilder.hasProperty(PROP_PROGENY)) {
+            this.currentNodeBuilder.removeProperty(PROP_PROGENY);
+        }
     }
 
     /**

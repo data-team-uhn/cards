@@ -2,35 +2,35 @@
   {
     "text": "string",
     "description": "string",
-    "displayMode": {
-      "input": {},
-      "textbox": {},
-      "list": {
-        "compact" : "boolean"
-      },
-      "list+input" : {
-        "compact" : "boolean"
-      },
-      "none": {},
-      "hidden": {}
-    },
     "dataType": {
       "text" : {
         "validationRegexp": "string",
+        "enableSeparatorDetection": "boolean",
         "minAnswers": "long",
-        "maxAnswers": "long"
+        "maxAnswers": "long",
+        "displayMode": {
+          "input": {},
+          "textbox": {},
+          "list": {
+            "compact" : "boolean",
+            "answerOptions" : "options"
+          },
+          "list+input" : {
+            "compact" : "boolean",
+            "answerOptions" : "options"
+          }
+        }
       },
       "boolean": {
-        "compact" : "boolean",
         "minAnswers": {"0":{}, "1":{}},
         "yesLabel": "string",
         "noLabel": "string",
         "enableUnknown": "boolean",
-        "unknownLabel": "string"
+        "unknownLabel": "string",
+        "compact" : "boolean"
       },
       "date" : {
-        "minAnswers": "long",
-        "maxAnswers": "long",
+        "minAnswers": {"0":{}, "1":{}},
         "dateFormat": "string"
       },
       "long": {
@@ -38,14 +38,36 @@
         "maxValue": "double",
         "minAnswers": "long",
         "maxAnswers": "long",
-        "unitOfMeasurement" : "string"
+        "unitOfMeasurement" : "string",
+        "displayMode": {
+          "input": {},
+          "list": {
+            "compact" : "boolean",
+            "answerOptions" : "options"
+          },
+          "list+input" : {
+            "compact" : "boolean",
+            "answerOptions" : "options"
+          }
+        }
       },
       "decimal": {
         "minValue": "double",
         "maxValue": "double",
         "minAnswers": "long",
         "maxAnswers": "long",
-        "unitOfMeasurement" : "string"
+        "unitOfMeasurement" : "string",
+        "displayMode": {
+          "input": {},
+          "list": {
+            "compact" : "boolean",
+            "answerOptions" : "options"
+          },
+          "list+input" : {
+            "compact" : "boolean",
+            "answerOptions" : "options"
+          }
+        }
       },
       "file": {
         "minAnswers": "long",
@@ -61,9 +83,19 @@
           "orderProperty": "lfs:Vocabulary",
           "identifierProperty": "identifier"
         },
-        "vocabularyFilter": "string",
         "minAnswers": "long",
-        "maxAnswers": "long"
+        "maxAnswers": "long",
+        "displayMode": {
+          "input": {},
+          "list": {
+            "compact" : "boolean",
+            "answerOptions" : "options"
+          },
+          "list+input" : {
+            "compact" : "boolean",
+            "answerOptions" : "options"
+          }
+        }
       },
       "computed": {
         "expression": "string",
@@ -72,8 +104,7 @@
       "time": {
         "lowerLimit": "string",
         "upperLimit": "string",
-        "minAnswers": "long",
-        "maxAnswers": "long",
+        "minAnswers": {"0":{}, "1":{}},
         "errorText": "string",
         "dateFormat": "string"
       },

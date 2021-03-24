@@ -24,9 +24,9 @@
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-variants</artifactId>
+  <artifactId>lfs-modules-favicon</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Variants management</name>
+  <name>LFS - Favicon</name>
 
   <build>
     <plugins>
@@ -37,18 +37,9 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Sling-Initial-Content>
-              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
-              SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
-              SLING-INF/content/Extensions/Sidebar/;path:=/Extensions/Sidebar/;overwrite:=true
-            </Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/;path:=/</Sling-Initial-Content>
           </instructions>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <version>0.13</version>
       </plugin>
     </plugins>
   </build>

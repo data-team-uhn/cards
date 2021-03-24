@@ -18,7 +18,6 @@ module.exports = {
     [module_name + 'answer']: './src/questionnaire/Answer.jsx',
     [module_name + 'booleanQuestion']: './src/questionnaire/BooleanQuestion.jsx',
     [module_name + 'numberQuestion']: './src/questionnaire/NumberQuestion.jsx',
-    [module_name + 'somaticVariantsQuestion']: './src/questionnaire/SomaticVariantsQuestion.jsx',
     [module_name + 'subjectsIcon']: '@material-ui/icons/AssignmentInd.js',
     [module_name + 'subjectTypeIcon']: '@material-ui/icons/Category.js',
     [module_name + 'questionnairesIcon']: '@material-ui/icons/Assignment.js',

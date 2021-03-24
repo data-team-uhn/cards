@@ -27,6 +27,7 @@ import Answer, {LABEL_POS, VALUE_POS} from "./Answer";
 import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import AnswerInstructions from "./AnswerInstructions.jsx";
+import UserInputAssistant from "../components/UserInputAssistant.jsx";
 
 // Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
 const IS_DEFAULT_POS = 2;
@@ -49,7 +50,7 @@ const GHOST_SENTINEL = "custom-input";
   */
 function MultipleChoice(props) {
   let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
-  let { maxAnswers, minAnswers, displayMode } = {...props.questionDefinition, ...props};
+  let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
@@ -92,6 +93,10 @@ function MultipleChoice(props) {
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio && !ghostSelected;
   let inputEl = null;
+  const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(enableSeparatorDetection);
+  const [separatorDetected, setSeparatorDetected] = useState(false);
+  const [assistantAnchor, setAssistantAnchor] = useState(null);
+  const [tmpGhostSelection, setTmpGhostSelection] = useState(null);
 
   let selectOption = (id, name, checked = false) => {
     // Selecting a radio button option will select only that option
@@ -225,7 +230,36 @@ function MultipleChoice(props) {
       selectOption(ghostName, ghostName);
       // Clear the ghost
       setGhostName("");
+      checkForSeparators(null);
     }
+  }
+
+  // Check if the user entered any characters that are separators: ",", ";"
+  // If yes, we will show an information bubble about entering each option separately
+  let checkForSeparators = (input) => {
+    let hasSeparators = separatorDetectionEnabled && !!(input?.value?.match(/[,;]/));
+    setSeparatorDetected(hasSeparators);
+    setAssistantAnchor(hasSeparators ? input : null);
+    setTmpGhostSelection(hasSeparators ? [input.value, input.value] : null);
+  }
+
+  // Split the input by the separators and add each component as a different entry
+  let splitInput = (input) => {
+    let entries = input?.value?.split(/\s*[,;]\s*/);
+    // Remove empty strings, duplicates, and entries that are already selected
+    entries = entries?.filter((item, index) => (item != "" && entries.indexOf(item) === index && !selection.find(option => option[VALUE_POS] == item))) || [];
+    // Add and select remaining entries
+    if (entries.length > 0) {
+      let newSelection = selection.slice();
+      entries.forEach((item) => {
+        addOption(item, item)
+        newSelection.push([item, item])
+      });
+      setSelection(newSelection);
+    }
+    // Clear the input
+    setGhostName("");
+    checkForSeparators(null);
   }
 
   // Listen for update commands from other components
@@ -270,11 +304,12 @@ function MultipleChoice(props) {
         onChange={(event) => {
           setGhostName(event.target.value);
           updateGhost(GHOST_SENTINEL, event.target.value);
+          checkForSeparators(event.target);
           onUpdate && onUpdate(event.target.value);
         }}
         disabled={disabled}
         onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
-        onBlur={acceptEnteredOption}
+        onBlur={separatorDetected ? ()=>{} : acceptEnteredOption}
         inputProps={Object.assign({
           onKeyDown: (event) => {
             if (event.key == 'Enter') {
@@ -291,6 +326,22 @@ function MultipleChoice(props) {
         InputProps={muiInputProps}
         inputRef={ref => {inputEl = ref}}
       />
+      { maxAnswers !== 1 && separatorDetectionEnabled &&
+        <UserInputAssistant
+          title="Separator detected"
+          anchorEl={assistantAnchor}
+          actionLabel="Separate and add"
+          onAction={() => {splitInput(assistantAnchor)}}
+          onIgnore={() => {setSeparatorDetectionEnabled(false); assistantAnchor?.focus(); checkForSeparators(null);}}
+          onClickAway={(event) => {
+            (document.activeElement != assistantAnchor) && acceptEnteredOption();
+            checkForSeparators(null);
+          }}
+          >
+          Using separators such as comma or semicolon will not create separate entries.
+          If you wish to enter multiple values, press ENTER to add each one.
+        </UserInputAssistant>
+      }
     </div>);
 
   let selectNonGhostOption = (...args) => {
@@ -306,6 +357,10 @@ function MultipleChoice(props) {
   // When counting current answers for proper highlighting of answer instructions to the user, exclude the empty one
   let currentAnswers = answers.filter(item => item[VALUE_POS] !== '').length;
   const instructions = <AnswerInstructions currentAnswers={currentAnswers} {...props.questionDefinition} {...props} />;
+
+  // Temporarily append the input content to answers to avoid data loss while separator detection is active and preventing
+  //  the contents of the ghost input from being added as selection
+  tmpGhostSelection?.[VALUE_POS] && !answers.find(item => item[VALUE_POS] == tmpGhostSelection[VALUE_POS]) && answers.push(tmpGhostSelection);
 
   if (isSelect) {
     return (
@@ -403,6 +458,7 @@ function MultipleChoice(props) {
           answers={answers}
           existingAnswer={existingAnswer}
           questionName={questionName}
+          isMultivalued={true}
           {...rest}
           />
       </React.Fragment>
