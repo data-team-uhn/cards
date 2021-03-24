@@ -102,8 +102,7 @@ let QuestionnaireItemCard = (props) => {
       />
       <CardContent className={classes.questionnaireItemContent + (!!!plain ? " avatarCardContent" : '')}>
         {children}
-      </CardContent>
-      { editDialogOpen && <EditDialog
+        { editDialogOpen && <EditDialog
                               targetExists={true}
                               data={data}
                               type={type}
@@ -111,15 +110,16 @@ let QuestionnaireItemCard = (props) => {
                               onClose={() => { fetchData(); }}
                               onCancel={() => { setEditDialogOpen(false); }}
                             />
-      }
-      { deleteDialogOpen && <DeleteDialog
+        }
+        { deleteDialogOpen && <DeleteDialog
                               isOpen={deleteDialogOpen}
                               data={data}
                               type={type}
                               onClose={() => { onActionDone(); }}
                               onCancel={() => { setDeleteDialogOpen(false); }}
                             />
-      }
+        }
+      </CardContent>
     </Card>
   );
 };

@@ -164,12 +164,11 @@ let EditDialog = (props) => {
   }
 
   return (
-    <React.Fragment>
-      <Dialog id='editDialog' open={open} onClose={() => { setOpen(false); onClose && onClose();} } fullWidth maxWidth='sm'>
-        <DialogTitle>
+    <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
+       <Dialog disablePortal id='editDialog' open={open} onClose={() => { setOpen(false); onClose && onClose();} } fullWidth maxWidth='sm'>
+          <DialogTitle>
           { dialogTitle() }
-        </DialogTitle>
-        <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
+          </DialogTitle>
           <DialogContent>
             <Grid container direction="column" spacing={2}>
               <Grid item>{targetIdField()}</Grid>
@@ -203,9 +202,8 @@ let EditDialog = (props) => {
               {'Cancel'}
             </Button>
           </DialogActions>
-        </form>
-      </Dialog>
-    </React.Fragment>
+       </Dialog>
+    </form>
   );
 };
 
