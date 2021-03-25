@@ -40,7 +40,7 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
  * @version $Id$
  */
 @Component(immediate = true)
-public class SimpleSubjectTypeProcessor implements ResourceJsonProcessor
+public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
 {
     /** A query manager to handle queries. */
     private final ThreadLocal<QueryManager> queryManager = new ThreadLocal<>();
@@ -48,7 +48,7 @@ public class SimpleSubjectTypeProcessor implements ResourceJsonProcessor
     @Override
     public String getName()
     {
-        return "simple";
+        return "instanceCount";
     }
 
     @Override
@@ -81,7 +81,7 @@ public class SimpleSubjectTypeProcessor implements ResourceJsonProcessor
             this.queryManager.set(node.getSession().getWorkspace().getQueryManager());
             Query queryObj = this.queryManager.get().createQuery(generateDataQuery(node), "JCR-SQL2");
             NodeIterator nodeResult = queryObj.execute().getNodes();
-            json.add("subjectsNumber", nodeResult.getSize());
+            json.add("instanceCount", nodeResult.getSize());
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }

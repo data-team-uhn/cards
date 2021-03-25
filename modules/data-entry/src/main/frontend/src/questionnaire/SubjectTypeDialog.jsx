@@ -148,7 +148,7 @@ function SubjectTypeDialog(props) {
               </Grid>
               <Grid item xs={8}>
                 <Select
-                  disabled={isEdit && currentSubjectType.subjectsNumber != undefined && currentSubjectType.subjectsNumber > 0}
+                  disabled={isEdit && currentSubjectType.instanceCount != undefined && currentSubjectType.instanceCount > 0}
                   labelId="parent"
                   label="optional"
                   value={parentSubject}
@@ -165,7 +165,7 @@ function SubjectTypeDialog(props) {
                     )
                   }
                 </Select>
-                <FormHelperText>{isEdit && currentSubjectType.subjectsNumber > 0 && "There are already subjects of this type. The parent can no longer be changed"}</FormHelperText>
+                <FormHelperText>{isEdit && currentSubjectType.instanceCount > 0 && "There are already subjects of this type. The parent can no longer be changed"}</FormHelperText>
               </Grid>
             </>
           }

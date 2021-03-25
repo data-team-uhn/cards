@@ -64,7 +64,7 @@ function SubjectTypes(props) {
     {
       "key": "",
       "label": "Subjects",
-      "format": (row) => (row.subjectsNumber ? <a href={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label}>{row.subjectsNumber}</a> : "0"),
+      "format": (row) => (row.instanceCount ? <a href={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label}>{row.instanceCount}</a> : "0"),
     },
     {
       "key": "lfs:defaultOrder",
