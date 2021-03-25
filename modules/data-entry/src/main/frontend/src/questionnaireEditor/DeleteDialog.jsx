@@ -18,6 +18,7 @@
 //
 
 import React, { useState } from "react";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -57,7 +58,12 @@ let DeleteDialog = (props) => {
     fetch(url, { method: "DELETE" })
       .then((response) => response.ok ? true : Promise.reject(response))
       .then(() => setLastSaveStatus(true))
-      .then(() => { setOpen(false); onClose && onClose(); })
+      .then(() => {
+        setOpen(false);
+        onClose && onClose();
+        // Redirect to the questionnaire
+        props.history.push(/Questionnaires\/([^#]+)/.exec(window.location.href)?.[1]);
+      })
       .catch((errorObj) => {
         // If the user is not logged in, offer to log in
         const sessionInfo = window.Sling.getSessionInfo();
@@ -121,4 +127,4 @@ DeleteDialog.propTypes = {
   isOpen: PropTypes.bool.isRequired
 };
 
-export default withStyles(QuestionnaireStyle)(DeleteDialog);
+export default withStyles(QuestionnaireStyle)(withRouter(DeleteDialog));

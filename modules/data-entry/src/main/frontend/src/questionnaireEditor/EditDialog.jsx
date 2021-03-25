@@ -18,6 +18,7 @@
 //
 
 import React, { useState } from 'react';
+import { withRouter } from "react-router-dom";
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -96,13 +97,21 @@ let EditDialog = (props) => {
         });
     } else {
       // If the question/section doesn't exist, create it
+      const created = false;
       const URL = `${data['@path']}/${targetId}`
       const primaryType = type.includes('Question') ? 'lfs:Question' : 'lfs:Section';
       var request_data = new FormData(event.currentTarget);
       request_data.append('jcr:primaryType', primaryType);
       fetch(URL, { method: 'POST', body: request_data })
         .then((response) => response.ok ? true : Promise.reject(response))
-        .then(() => setLastSaveStatus(true))
+        .then(() => {
+          setLastSaveStatus(true);
+          // Redirect to the created item to focus
+          props.history.push({
+            pathname: /Questionnaires\/([^#]+)/.exec(window.location.href)?.[1],
+            hash: `${data['@path']}/${targetId}`
+          });
+        })
         // FIXME Use setError?
         .catch(() => {
           // If the user is not logged in, offer to log in
@@ -216,4 +225,4 @@ EditDialog.propTypes = {
   onCancel: PropTypes.func
 };
 
-export default EditDialog;
+export default withRouter(EditDialog);
