@@ -164,12 +164,13 @@ export default class DateQuestionUtilities {
       let nextDate = this.amendMoment(secondDate, "yyyy-MM-dd");
 
       let diff = [];
+      let longDiff = [];
       for (const division of ["years", "months", "days"]) {
         let value = nextDate.diff(currentDate, division);
         diff.push(value);
         if (value > 0) {
           nextDate = nextDate.subtract(value, division);
-          result.long += value + division.charAt(0);
+          longDiff.push(value + division.charAt(0));
         }
       }
 
@@ -180,6 +181,7 @@ export default class DateQuestionUtilities {
       } else if (diff[2] > 0) {
         result.short = `${diff[2]}d`;
       }
+      result.long = longDiff.join(" ");
     }
     return result;
   }
