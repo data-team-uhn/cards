@@ -42,9 +42,6 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
 {
-    /** A query manager to handle queries. */
-    private final ThreadLocal<QueryManager> queryManager = new ThreadLocal<>();
-
     @Override
     public String getName()
     {
