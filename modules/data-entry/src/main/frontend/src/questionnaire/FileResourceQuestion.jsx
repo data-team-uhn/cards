@@ -223,9 +223,13 @@ function FileResourceQuestion(props) {
     allowResave();
   }
 
+  let fixFileURL = (path, name) => {
+    return path.slice(0, path.lastIndexOf(name)) + encodeURIComponent(name);
+  }
+
   let hrefs = Array.of(existingAnswer?.[1]["value"]).flat();
   let defaultDisplayFormatter = function(label, idx) {
-    return <a href={hrefs[idx]} target="_blank" rel="noopener" download>{label}</a>;
+    return <a href={fixFileURL(hrefs[idx], label)} target="_blank" rel="noopener" download>{label}</a>;
   }
 
   return (
@@ -253,7 +257,7 @@ function FileResourceQuestion(props) {
           <li key={idx}>
             <div>
               <span>File </span>
-              <Link href={uploadedFiles[filepath]} target="_blank" rel="noopener" download>
+              <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download>
                 {filepath}
               </Link>:
               <IconButton

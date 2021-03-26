@@ -545,7 +545,9 @@ function FormData(props) {
           content = <>
             {prettyPrintedAnswers.map((answerValue, idx) => {
               let prefix = idx > 0 ? ", " : ""; // Seperator space between different files
-              return <>{prefix}<a key={answerValue} href={paths[idx]} target="_blank" rel="noopener" download>{answerValue}</a></>
+              // Encode the filename to ensure special charactars don't result in a broken link
+              let path = paths[idx].slice(0, paths[idx].lastIndexOf(answerValue)) + encodeURIComponent(answerValue);
+              return <React.Fragment key={answerValue}>{prefix}<a href={path} target="_blank" rel="noopener" download={answerValue}>{answerValue}</a></React.Fragment>
             })}
             </>
           break;
