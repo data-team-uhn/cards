@@ -740,11 +740,11 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
       .then( (json) => {
         if (json?.rows?.length > 0) {
           // Create an error message, adding the parents if they exist
-          let error_msg = subjectType?.['@name'] || "Subject";
+          let error_msg = subjectType?.['label'] || "Subject";
           error_msg += ` ${subjectName} already exists`;
           let id = json["rows"][0]["parents"]?.["identifier"];
           if (id) {
-            let parentType = json["rows"][0]["parents"]?.["type"]?.["@name"] || "parent";
+            let parentType = json["rows"][0]["parents"]?.["type"]?.["label"] || "parent";
             error_msg += ` for ${parentType} ${id}.`;
           }
 
