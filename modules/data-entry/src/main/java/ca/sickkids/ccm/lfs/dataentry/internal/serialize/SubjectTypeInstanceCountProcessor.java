@@ -80,7 +80,7 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
     {
         try {
             // Only the original subject type node will have its data appended
-            if (!node.isNodeType("lfs:SubjectType") && !node.getPath().equals(this.originalPath.get())) {
+            if (!node.getPath().equals(this.originalPath.get())) {
                 return;
             }
             Query queryObj = node.getSession().getWorkspace().getQueryManager().createQuery(generateDataQuery(node),
