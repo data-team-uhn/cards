@@ -160,6 +160,7 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
 /**
  * Component that displays a dialog to select parents for a new subject
  *
+ * @param {string} childName The name of the new child, used to determine ineligible parents
  * @param {object} childType The object representing the lfs:SubjectType of the child that is being created
  * @param {bool} continueDisabled If true, the continue button is disabled
  * @param {object} currentSubject The object representing the subject we must be a child of
@@ -177,7 +178,7 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
  * @param {object} value The currently selected parent
  */
 function UnstyledSelectParentDialog (props) {
-  const { classes, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
+  const { classes, childName, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -210,6 +211,7 @@ function UnstyledSelectParentDialog (props) {
                   let url = createQueryURL(sql, "lfs:Subject", "fullIdentifier");
                   url.searchParams.set("limit", query.pageSize);
                   url.searchParams.set("offset", query.page*query.pageSize);
+                  url.searchParams.set("serializeChildren", "1");
                   return fetchWithReLogin(globalLoginDisplay, url)
                     .then(response => response.json())
                     .then(result => {
@@ -228,7 +230,9 @@ function UnstyledSelectParentDialog (props) {
                 addRowPosition: 'first',
                 rowStyle: rowData => ({
                   /* It doesn't seem possible to alter the className from here */
-                  backgroundColor: (value?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
+                  backgroundColor: (value?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
+                  // grey out subjects that already have something by this name
+                  color: (Object.values(rowData).find((rowValue) => (rowValue?.["identifier"] == childName)) ? theme.palette.grey["500"] : theme.palette.grey["900"])
                 })
               }}
               onRowClick={(event, rowData) => {onChangeParent(rowData);}}
@@ -535,6 +539,7 @@ export function NewSubjectDialog (props) {
         value={newSubjectName[newSubjectIndex]}
       />
       {open && selectParentPopperOpen && <SelectParentDialog
+        childName={newSubjectName[newSubjectIndex]}
         childType={newSubjectType[newSubjectIndex]}
         continueDisabled={!newSubjectParent[newSubjectIndex]}
         currentSubject={currentSubject}
