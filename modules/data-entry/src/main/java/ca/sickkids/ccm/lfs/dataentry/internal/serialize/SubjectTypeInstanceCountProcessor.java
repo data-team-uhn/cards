@@ -24,7 +24,6 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -42,6 +41,9 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
 {
+    /** An original resource path. */
+    private String originalPath;
+
     @Override
     public String getName()
     {
@@ -52,6 +54,12 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
     public int getPriority()
     {
         return 55;
+    }
+
+    @Override
+    public void start(Resource resource)
+    {
+        this.originalPath = resource.getPath();
     }
 
     @Override
@@ -71,11 +79,12 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            // Only the original subject node will have its data appended
-            if (!node.isNodeType("lfs:SubjectType")) {
+            // Only the original subject type node will have its data appended
+            if (!node.isNodeType("lfs:SubjectType") && !node.getPath().equals(this.originalPath)) {
                 return;
             }
-            Query queryObj = node.getSession().getWorkspace().getQueryManager().createQuery(generateDataQuery(node), "JCR-SQL2");
+            Query queryObj = node.getSession().getWorkspace().getQueryManager().createQuery(generateDataQuery(node),
+                "JCR-SQL2");
             NodeIterator nodeResult = queryObj.execute().getNodes();
             json.add("instanceCount", nodeResult.getSize());
         } catch (RepositoryException e) {
