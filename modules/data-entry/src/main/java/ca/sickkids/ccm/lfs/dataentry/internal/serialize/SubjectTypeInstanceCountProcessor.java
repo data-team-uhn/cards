@@ -78,8 +78,7 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
             if (!node.isNodeType("lfs:SubjectType")) {
                 return;
             }
-            this.queryManager.set(node.getSession().getWorkspace().getQueryManager());
-            Query queryObj = this.queryManager.get().createQuery(generateDataQuery(node), "JCR-SQL2");
+            Query queryObj = node.getSession().getWorkspace().getQueryManager().createQuery(generateDataQuery(node), "JCR-SQL2");
             NodeIterator nodeResult = queryObj.execute().getNodes();
             json.add("instanceCount", nodeResult.getSize());
         } catch (RepositoryException e) {
