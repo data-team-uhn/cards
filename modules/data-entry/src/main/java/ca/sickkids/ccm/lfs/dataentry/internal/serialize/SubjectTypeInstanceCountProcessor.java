@@ -42,7 +42,7 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
 {
     /** An original resource path. */
-    private String originalPath;
+    private ThreadLocal<String> originalPath;
 
     @Override
     public String getName()
@@ -59,7 +59,7 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
     @Override
     public void start(Resource resource)
     {
-        this.originalPath = resource.getPath();
+        this.originalPath.set(resource.getPath());
     }
 
     @Override
@@ -80,7 +80,7 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
     {
         try {
             // Only the original subject type node will have its data appended
-            if (!node.isNodeType("lfs:SubjectType") && !node.getPath().equals(this.originalPath)) {
+            if (!node.isNodeType("lfs:SubjectType") && !node.getPath().equals(this.originalPath.get())) {
                 return;
             }
             Query queryObj = node.getSession().getWorkspace().getQueryManager().createQuery(generateDataQuery(node),
