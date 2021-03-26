@@ -359,9 +359,8 @@ export function NewSubjectDialog (props) {
     setIsPosting(false);
     setError(error);
 
-    // Since the error will always be during the creation of a subject, we'll revert back to the create subject page
-    setNewSubjectPopperOpen(true);
-    setSelectParentPopperOpen(false);
+    // Since the error will always be during the creation of a subject, we'll revert back to the create subject page and remove all details
+    clearDialog(false);
   }
 
   // Called when creating a new subject
@@ -501,8 +500,10 @@ export function NewSubjectDialog (props) {
     }
   }
 
-  let clearDialog = () => {
-    setError();
+  let clearDialog = (clearError=true) => {
+    if (clearError) {
+      setError();
+    }
     setNewSubjectIndex(0);
     setNewSubjectName([""]);
     setNewSubjectType([""]);
