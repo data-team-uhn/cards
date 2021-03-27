@@ -206,7 +206,7 @@ function FileResourceQuestion(props) {
     // Rather than waiting to delete, we'll just delete it immediately
     let data = new FormData();
     data.append(':operation', 'delete');
-    fetchWithReLogin(globalLoginDisplay, uploadedFiles[answers[index][0]], {
+    fetchWithReLogin(globalLoginDisplay, fixFileURL(uploadedFiles[answers[index][0]], answers[index][0]), {
       method: "POST",
       body: data
       });
