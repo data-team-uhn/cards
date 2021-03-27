@@ -75,7 +75,7 @@ function VocabularySelector(props) {
       return (
         <RadioGroup
           aria-label="selection"
-          name="selection"
+          name={questionDefinition['jcr:uuid']}
           className={classes.selectionList}
           value={radioSelect}
           onChange={changeRadio}
@@ -94,7 +94,6 @@ function VocabularySelector(props) {
             />
             }
             label="&nbsp;"
-            name={radioName}
             value={radioValue}
             className={hasDefaultOptions ? classes.ghostFormControl : classes.hiddenGhostFormControl}
             classes={{

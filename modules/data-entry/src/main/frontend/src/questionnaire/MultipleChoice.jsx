@@ -404,7 +404,7 @@ function MultipleChoice(props) {
         {instructions}
         <RadioGroup
           aria-label="selection"
-          name="selection"
+          name={props.questionDefinition['jcr:uuid']}
           className={classes.selectionList}
           value={selection.length > 0 && selection[0][VALUE_POS]}
         >
