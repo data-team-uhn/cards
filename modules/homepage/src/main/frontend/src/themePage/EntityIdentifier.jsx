@@ -19,8 +19,6 @@
 import React from "react";
 import { getTextHierarchy } from "../questionnaire/Subject.jsx";
 
-import { Link } from "react-router-dom";
-
 // Get the identifier of the item wrt item primaryType
 export function getEntityIdentifier(row) {
     switch (row["jcr:primaryType"]) {
