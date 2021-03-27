@@ -94,6 +94,10 @@ function FileResourceQuestion(props) {
 
   // Add files to the pending state
   let addFiles = (files) => {
+    // Remove existing selection if only one file is permitted
+    if (maxAnswers == 1) {
+      Object.keys(uploadedFiles || {}).forEach((filepath, idx) => deletePath(idx))
+    }
     upload(files);
   }
 
