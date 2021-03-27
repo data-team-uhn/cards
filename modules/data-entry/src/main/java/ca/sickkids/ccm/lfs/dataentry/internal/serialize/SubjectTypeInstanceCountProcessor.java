@@ -42,7 +42,7 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
 {
     /** An original resource path. */
-    private ThreadLocal<String> originalPath;
+    private ThreadLocal<String> originalPath = new ThreadLocal<>();
 
     @Override
     public String getName()
