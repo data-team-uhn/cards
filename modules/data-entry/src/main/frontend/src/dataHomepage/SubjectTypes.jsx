@@ -19,7 +19,7 @@
 import React, { useState, useEffect } from "react";
 import LiveTable from "./LiveTable.jsx";
 
-import { Button, Card, CardContent, CardHeader, IconButton, Tooltip, withStyles } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, IconButton, Link, Tooltip, withStyles } from "@material-ui/core";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
@@ -64,7 +64,7 @@ function SubjectTypes(props) {
     {
       "key": "",
       "label": "Subjects",
-      "format": (row) => (row.instanceCount ? <a href={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label}>{row.instanceCount}</a> : "0"),
+      "format": (row) => (row.instanceCount ? <Link href={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label}>{row.instanceCount}</Link> : "0"),
     },
     {
       "key": "lfs:defaultOrder",
