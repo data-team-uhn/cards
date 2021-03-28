@@ -55,12 +55,14 @@ let AnswerOptions = (props) => {
   const specialOptionsInfo = [
     {
       tooltip : "This option behaves as 'None' or 'N/A', and unselects/removes all other options upon selection.",
+      switchTooltip: "Enable N/A",
       data : notApplicableOption,
       setter : setNotApplicableOption,
       label: "notApplicable"
     },
     {
       tooltip : "This option behaves as 'None of the above'. When selected, it removes all existing selections except those entered by the user in the input, if applicable.",
+      switchTooltip: "Enable 'None of the above'",
       data : noneOfTheAboveOption,
       setter : setNoneOfTheAboveOption,
       label: "noneOfTheAbove"
@@ -132,16 +134,18 @@ let AnswerOptions = (props) => {
   let generateSpecialOptions = (index) => {
     let option = specialOptionsInfo[index];
     return (
-    <>
-      <TextField
-        disabled={!option.data[option.label]}
-        label={option.tootltip}
-        className={classes.specialOption + " " + (!option.data[option.label] ? classes.answerOptionInput : "")}
-        name="label"
-        value={option.data.label || option.data.value}
-        onChange={(event) => option.setter({ ...option.data, [event.target.name]: event.target.value})}
-      />
-      <Tooltip title={option.tooltip} className={classes.specialOptionSwitch}>
+    <div onClick={(event) => option.setter({ ...option.data, [option.label]: true})} >
+      <Tooltip title={option.tooltip}>
+        <TextField
+          disabled={!option.data[option.label]}
+          label={option.tootltip}
+          className={classes.specialOption + " " + (!option.data[option.label] ? classes.answerOptionInput : "")}
+          name="label"
+          value={option.data.label || option.data.value}
+          onChange={(event) => option.setter({ ...option.data, [event.target.name]: event.target.value})}
+        />
+      </Tooltip>
+      <Tooltip title={option.switchTooltip} className={classes.specialOptionSwitch}>
         <FormControlLabel
             control={
               <Switch
@@ -164,7 +168,7 @@ let AnswerOptions = (props) => {
         :
         <input type='hidden' name={`${option.data['@path']}@Delete`} value="0" />
       }
-    </>
+    </div>
     )
   }
 
@@ -192,12 +196,12 @@ let AnswerOptions = (props) => {
           </IconButton>
         </React.Fragment>
       )}
-      { generateSpecialOptions(1) }
       <TextField
-        fullWidth
+        className={classes.specialOption}
         value={tempValue}
         error={isDuplicate}
-        helperText={isDuplicate ? 'duplicated value or label' : [<span key="helper-value">value OR value=label (e.g. F=Female)</span>,<br key="br"/>,<span key="helper-newline">Press ENTER to add a new line</span>]}
+        label="value OR value=label (e.g. F=Female)"
+        helperText={isDuplicate ? 'duplicated value or label' : 'Press ENTER to add a new line'}
         onChange={(event) => { setTempValue(event.target.value); validateOption(event.target.value); }}
         onBlur={(event) => { handleInputOption(event.target.value); }}
         inputProps={Object.assign({
@@ -212,6 +216,7 @@ let AnswerOptions = (props) => {
         })}
         multiline
         />
+      { generateSpecialOptions(1) }
     </EditorInput>
   )
 }

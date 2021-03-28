@@ -471,18 +471,20 @@ const questionnaireStyle = theme => ({
       color: theme.palette.warning.main
     },
     answerOptionInput: {
-      width: "80%",
+      width: "78%",
+      paddingRight: theme.spacing(1),
+      paddingLeft: theme.spacing(1),
       backgroundColor: grey[200]
     },
     answerOptionDeleteButton: {
-      right: theme.spacing(-3),
+      right: theme.spacing(-2),
     },
     specialOption: {
       marginBottom: theme.spacing(2),
-      width: "80%",
+      width: "78%",
     },
     specialOptionSwitch: {
-      marginLeft: "10px",
+      marginLeft: "0",
       marginRight: "0",
     },
 });
