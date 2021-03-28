@@ -18,7 +18,6 @@
 //
 
 import React, { useState } from 'react';
-import { withRouter } from "react-router-dom";
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -81,15 +80,7 @@ let EditDialog = (props) => {
         })
         .then((response) => response.ok ? true : Promise.reject(response))
         .then(() => setLastSaveStatus(true))
-        // FIXME Use setError?
-        .catch(() => {
-          // If the user is not logged in, offer to log in
-          const sessionInfo = window.Sling.getSessionInfo();
-          if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-            // On first attempt to save while logged out, set status to false to make button text inform user
-            setLastSaveStatus(false);
-          }
-        })
+        .catch(handleError)
         .finally(() => {
           setSaveInProgress(false);
           setOpen(false);
@@ -97,7 +88,7 @@ let EditDialog = (props) => {
         });
     } else {
       // If the question/section doesn't exist, create it
-      const created = false;
+      let newData = data;
       const URL = `${data['@path']}/${targetId}`
       const primaryType = type.includes('Question') ? 'lfs:Question' : 'lfs:Section';
       var request_data = new FormData(event.currentTarget);
@@ -106,29 +97,34 @@ let EditDialog = (props) => {
         .then((response) => response.ok ? true : Promise.reject(response))
         .then(() => {
           setLastSaveStatus(true);
-          // Redirect to the created item to focus
-          props.history.push({
-            pathname: /Questionnaires\/([^#]+)/.exec(window.location.href)?.[1],
-            hash: `${data['@path']}/${targetId}`
-          });
+
+          // Fetch and propagate back data with appended newly created item to highlight & focus on it
+          fetch(`${data['@path']}/${targetId}.deep.json`)
+              .then((response) => response.ok ? response.json() : Promise.reject(response))
+              .then((json) => {
+                let item = json;
+                item.doHighlight = true;
+                newData = data;
+                newData[targetId] = item;
+                setSaveInProgress(false);
+                onClose && onClose(newData);
+              })
+              .catch(handleError);
         })
-        // FIXME Use setError?
-        .catch(() => {
-          // If the user is not logged in, offer to log in
-          const sessionInfo = window.Sling.getSessionInfo();
-          if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-            // On first attempt to save while logged out, set status to false to make button text inform user
-            setLastSaveStatus(false);
-          }
-        })
-        .finally(() => {
-          setSaveInProgress(false);
-          setTargetId('');
-          setOpen(false);
-          onClose && onClose();
-        });
+        .catch(handleError);
     }
   }
+
+  let handleError = (response) => {
+    setSaveInProgress(false);
+    // If the user is not logged in, offer to log in
+    const sessionInfo = window.Sling.getSessionInfo();
+    if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
+      // On first attempt to save while logged out, set status to false to make button text inform user
+      setLastSaveStatus(false);
+    }
+    setError(response.statusText ? response.statusText : response.toString());
+  };
 
   // Open the login page in a new popup window, centered wrt the parent window
   let loginToSave = () => {
@@ -179,6 +175,7 @@ let EditDialog = (props) => {
           { dialogTitle() }
           </DialogTitle>
           <DialogContent>
+            { error && <Typography color="error">error</Typography>}
             <Grid container direction="column" spacing={2}>
               <Grid item>{targetIdField()}</Grid>
               <Fields
@@ -225,4 +222,4 @@ EditDialog.propTypes = {
   onCancel: PropTypes.func
 };
 
-export default withRouter(EditDialog);
+export default EditDialog;
