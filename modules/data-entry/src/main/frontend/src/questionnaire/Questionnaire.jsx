@@ -74,7 +74,7 @@ let Questionnaire = (props) => {
     fetchData();
   }
 
-  let questionnaireTitle = data ? data['title'] : id;
+  let questionnaireTitle = data ? data['title'] : decodeURI(id);
   useEffect(() => {
     pageNameWriter(questionnaireTitle);
   }, [questionnaireTitle]);
