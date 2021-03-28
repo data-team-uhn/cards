@@ -247,7 +247,7 @@ function SubjectTimeline(props) {
 
   // Handle adding a date answers to the list of date answers,
   // or regular answers as a followup to previous date answers.
-  let handleDisplayAnswer = (questionDefinition, formData, key, level, names, formTitle, output) => {
+  let handleDisplayAnswer = (questionDefinition, formData, key, level, names, formTitle, output, formIndex) => {
     // Get the answer for the specified question
     const existingQuestionAnswer = formData && Object.entries(formData)
       .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
@@ -256,8 +256,18 @@ function SubjectTimeline(props) {
     if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
       if (existingQuestionAnswer[1]["jcr:primaryType"] === "lfs:DateAnswer") {
         // Push a new date answer
-        output.push({"date": existingQuestionAnswer[1], followup:[], formTitle: formTitle, level: level, names: names});
-      } else if (output.length > 0 && output[output.length - 1].followup.length < NUM_QUESTIONS) {
+        output.push({
+          "date": existingQuestionAnswer[1],
+          followup:[],
+          formTitle: formTitle,
+          level: level,
+          names: names,
+          formIndex: formIndex
+        });
+      } else if (output.length > 0
+        && output[output.length - 1].followup.length < NUM_QUESTIONS
+        && output[output.length - 1].formIndex === formIndex
+      ) {
         // Append the non-date answer to the previous date answer,
         // if a previous date answer exists and hasn't met the followup question limit.
         output[output.length - 1].followup.push(displayQuestion(questionDefinition, formData, key));
@@ -274,7 +284,7 @@ function SubjectTimeline(props) {
       // For every node that has a primary type that should be traversed
       Object.entries(formAnswerEntries.response.questionnaire)
       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-      .forEach(([key, entryDefinition]) => {
+      .forEach(([key, entryDefinition], index) => {
         // Try to display this node if it is a question or has any child questions
         handleDisplay(entryDefinition, formAnswerEntries.response, key,
           (entryDefinition, data, key) => {handleDisplayAnswer(
@@ -284,12 +294,15 @@ function SubjectTimeline(props) {
             formAnswerEntries.level,
             formAnswerEntries.names,
             formAnswerEntries.response.questionnaire.title,
-            dateAnswerData
+            dateAnswerData,
+            index
         )});
       })
     });
-
-    return dateAnswerData.sort((a, b) => {
+    return dateAnswerData.map(entry => {
+      delete entry.formIndex;
+      return entry
+    }).sort((a, b) => {
       return a.date.value > b.date.value ? 1 : (a.date.value === b.date.value ? 0 : -1)
     });
   }
