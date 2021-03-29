@@ -245,7 +245,7 @@ function Form (props) {
 
   let onEdit = (event) => {
     // Redirect the user to the edit form mode
-    props.history.push("/content.html" + formURL + '.edit');
+    props.history.push("/content.html" + formURL + '.edit' + window.location.hash);
   }
 
   let parentDetails = data?.subject && getHierarchy(data.subject);
