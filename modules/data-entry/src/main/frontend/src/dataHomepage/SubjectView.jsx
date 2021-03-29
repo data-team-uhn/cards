@@ -52,14 +52,15 @@ function SubjectView(props) {
   const [ activeTab, setActiveTab ] = useState(0);
   const [ subjectTypes, setSubjectTypes] = useState([])
   const [ tabsLoading, setTabsLoading ] = useState(null);
+  const [ columns, setColumns ] = React.useState(props.columns || null);
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
 
   const activeTabParam = location.hash.substr(1);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  // Column configuration for the LiveTables
-  const columns = [
+  // Default column configuration for the LiveTables to be used from User Dashboard
+  const defaultColumns = [
     {
       "key": "@name",
       "label": "Identifier",
@@ -84,13 +85,16 @@ function SubjectView(props) {
   let fetchSubjectTypes = () => {
     let url = new URL("/query", window.location.origin);
     url.searchParams.set("query", `SELECT * FROM [lfs:SubjectType] as n order by n.'lfs:defaultOrder'`);
-    // TODO: Handle pagination?
-    url.searchParams.set("limit", 10);
-    url.searchParams.set("offset", 0);
     return fetchWithReLogin(globalLoginDisplay, url)
       .then(response => response.json())
       .then(result => {
-        setSubjectTypes(result.rows);
+        let optionTypes = Array.from(result.rows);
+        if (columns && optionTypes.length <= 1) {
+          let result = columns.slice();
+          result.splice(1, 2);
+          setColumns(result);
+        }
+        setSubjectTypes(optionTypes);
         setTabsLoading(false);
 
         if (activeTabParam && result.rows.length > 0) {
@@ -144,7 +148,7 @@ function SubjectView(props) {
       {
         hasSubjects
           ? <LiveTable
-              columns={columns}
+              columns={columns || defaultColumns}
               customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(subjectTypes[activeTab]["jcr:uuid"])}
               defaultLimit={10}
               entryType={"Subject"}

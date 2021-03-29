@@ -43,7 +43,9 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes, filters, entryType, actions, admin, disableTopPagination, disableBottomPagination, ...rest } = props;
+  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes,
+    filters, entryType, actions, admin, disableTopPagination, disableBottomPagination,
+    onDataReceived, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -139,6 +141,7 @@ function LiveTable(props) {
       return;
     }
     setTableData(json.rows);
+    onDataReceived && onDataReceived(json.rows);
     setPaginationData(
       {
         "offset": json.offset,
@@ -204,7 +207,7 @@ function LiveTable(props) {
       } else if (column.link === 'dashboard+path') {
         content = (<Link to={pathPrefix + entry["@path"]}>{content}</Link>);
       } else if (column.link === 'value') {
-        content = (<a href={content}>{content}</a>);;
+        content = (<a href={content}>{content}</a>);
       } else if (column.link === 'dashboard+value') {
         content = (<Link to={pathPrefix + content}>{content}</Link>);
       } else if (column.link.startsWith('field:')) {
@@ -215,7 +218,7 @@ function LiveTable(props) {
     }
 
     // Render the cell
-    return <TableCell key={index} {...column.props}>{content}</TableCell>
+    return <TableCell key={index} className={ column.type === 'actions' ? classes.tableActions : ""} {...column.props}>{content}</TableCell>
   };
 
   let makeActions = (entry, actions, index) => {
@@ -227,10 +230,9 @@ function LiveTable(props) {
         onComplete={refresh}
         entryType={entryType}
         entryLabel={entry["jcr:primaryType"] == "lfs:Subject" ? entry.type?.label : ''}
-        buttonClass={classes.actionButton}
         admin={admin} />
     });
-    return <TableCell key={index}>{content}</TableCell>;
+    return <TableCell key={index} className={classes.tableActions}>{content}</TableCell>;
   }
 
   let getNestedValue = (entry, path) => {
@@ -368,7 +370,15 @@ function LiveTable(props) {
           <TableRow>
           { columns ?
             (
-              columns.map((column, index) => <TableCell key={index} className={classes.tableHeader} {...column.props}>{column.label}</TableCell>)
+              columns.map((column, index) =>
+                <TableCell
+                  key={index}
+                  className={[classes.tableHeader, column.type == 'actions' ? classes.tableActionsHeader : ''].join(' ')}
+                  {...column.props}
+                >
+                  {column.label}
+                </TableCell>
+              )
             )
           :
             (

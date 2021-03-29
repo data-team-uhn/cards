@@ -65,9 +65,11 @@ const liveTableStyle = theme => ({
     deleteButton: {
         width: "100%"
     },
-    actionButton: {
-        float: "right"
-    },
+    tableActions: {
+        "& .MuiIconButton-root": {
+            float : "right"
+        }
+    }
 });
 
 export default liveTableStyle;

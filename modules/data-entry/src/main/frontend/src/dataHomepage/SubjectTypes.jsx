@@ -16,45 +16,101 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
+import React, { useState, useEffect } from "react";
 import LiveTable from "./LiveTable.jsx";
-import SubjectType from "../questionnaire/SubjectType.jsx";
 
-import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, IconButton, Tooltip, withStyles } from "@material-ui/core";
+import { Link } from 'react-router-dom';
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
+import NewItemButton from "../components/NewItemButton.jsx";
 import DeleteButton from "./DeleteButton.jsx";
+import EditIcon from "@material-ui/icons/Edit";
+
+// Get a flat list of subject type parents as labels separated by " / "
+function getTextHierarchy (path, subjectTypes) {
+  let names = path.replace("/SubjectTypes/", "").split("/");
+  let hierarchy = "";
+  for (let name of names) {
+    let subjectType = subjectTypes.find( item => item["@name"] === name );
+    hierarchy = ( hierarchy ? hierarchy + " / " : "") + (subjectType?.label || name);
+  }
+  return hierarchy;
+}
+
+function EditSubjectTypeButton(props) {
+  const { onClick } = props;
+  return(
+    <Tooltip title={"Edit Subject Type"}>
+      <IconButton onClick={onClick}>
+        <EditIcon />
+      </IconButton>
+    </Tooltip>
+  )
+}
 
 function SubjectTypes(props) {
   const { classes } = props;
-
+  const [ dialogOpen, setDialogOpen ] = useState(false);
+  const [ updateData, setUpdateData ] = useState(false);
+  const [ subjectTypeData, setSubjectTypeData ] = useState([]);
+  const [ currentSubjectType, setCurrentSubjectType ] = useState(null);
+  const [ isEdit, setIsEdit ] = useState(false);
   const columns = [
     {
-      "key": "label",
-      "label": "Label",
+      "key": "",
+      "label": "Subject Type",
+      "format": (row) => (getTextHierarchy(row['@path'], subjectTypeData)),
+    },
+    {
+      "key": "",
+      "label": "Subjects",
+      "format": (row) => (row.instanceCount ? <Link to={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label}>{row.instanceCount}</Link> : "0"),
+    },
+    {
+      "key": "lfs:defaultOrder",
+      "label": "Default Order",
       "format": "string",
-      "link": "dashboard+field:@path",
     },
-    {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
-    },
-    {
+        {
       "key": "jcr:createdBy",
       "label": "Created by",
       "format": "string",
     },
-  ]
-  const actions = [
-    DeleteButton
+    {
+      "key": "",
+      "label": "Actions",
+      "type": "actions",
+      "format": (row) => (<>
+                            <DeleteButton
+                              entryPath={row["@path"]}
+                              entryName={row.label}
+                              onComplete={() => { setUpdateData(true); }}
+                              entryType={"Subject Type"}
+                              admin={true}
+                            />
+                            <EditSubjectTypeButton
+                              onClick={() => {setIsEdit(true); setCurrentSubjectType(row); setDialogOpen(true);}}
+                            />
+                          </>),
+    },
   ]
 
-  const entry = /SubjectTypes\/(.+)/.exec(location.pathname);
-  if (entry) {
-    return <SubjectType id={entry[1]} classes={classes}/>;
+  // When the subject data is changed, set the update data flag to false
+  useEffect(() => {
+    if (subjectTypeData){
+      setUpdateData(false);
+    }
+  }, [subjectTypeData]);
+
+  let onClose = () => {
+    setDialogOpen(false);
+    setIsEdit(false);
+    setCurrentSubjectType(null);
   }
 
   return (
+  <>
     <Card>
       <CardHeader
         title={
@@ -66,11 +122,29 @@ function SubjectTypes(props) {
       <CardContent>
         <LiveTable
           columns={columns}
-          actions={actions}
           entryType={"Subject Type"}
-          admin={true} />
+          admin={true}
+          disableTopPagination={true}
+          updateData={updateData}
+          onDataReceived={setSubjectTypeData}
+        />
       </CardContent>
     </Card>
+    <NewItemButton
+      title="New subject type"
+      onClick={() => { setDialogOpen(true); }}
+    />
+    { dialogOpen &&
+        <SubjectTypeDialog
+          onClose={() => { onClose(); }}
+          onSubmit={() => { onClose(); setUpdateData(true); }}
+          open={dialogOpen}
+          data={subjectTypeData}
+          isEdit={isEdit}
+          currentSubjectType={currentSubjectType}
+        />
+     }
+  </>
   );
 }
 
