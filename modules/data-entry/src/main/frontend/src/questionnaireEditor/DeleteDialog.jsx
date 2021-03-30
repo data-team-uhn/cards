@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -30,6 +30,7 @@ import {
 } from "@material-ui/core";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 let DeleteDialog = (props) => {
   // Indicates whether the form has been saved or not. This has three possible values:
@@ -39,46 +40,21 @@ let DeleteDialog = (props) => {
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   const { data, onClose, onCancel, isOpen, id } = props;
   let [ open, setOpen ] = useState(isOpen);
-  let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ error, setError ] = useState("");
+  const globalLoginDisplay = useContext(GlobalLoginContext);
   
   let deleteData = (event) => {
     event.preventDefault();
 
-    // If the previous save attempt failed, instead of trying to save again, open a login popup
-    if (lastSaveStatus === false) {
-      loginToSave();
-      return;
-    }
-
     // Delete this node and every node that refers to this question
     let url = new URL(data["@path"], window.location.origin);
     url.searchParams.set("recursive", true);
-    fetch(url, { method: "DELETE" })
+    fetchWithReLogin(globalLoginDisplay, url, { method: "DELETE" })
       .then((response) => response.ok ? true : Promise.reject(response))
-      .then(() => setLastSaveStatus(true))
       .then(() => { setOpen(false); onClose && onClose(); })
       .catch((errorObj) => {
-        // If the user is not logged in, offer to log in
-        const sessionInfo = window.Sling.getSessionInfo();
-        if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-          // On first attempt to save while logged out, set status to false to make button text inform user
-          setLastSaveStatus(false);
-        } else {
           setError(String(errorObj.statusText));
-        }
       });
-  }
-
-  let loginToSave = () => {
-    const width = 600;
-    const height = 800;
-    const top = window.top.outerHeight / 2 + window.top.screenY - (height / 2);
-    const left = window.top.outerWidth / 2 + window.top.screenX - (width / 2);
-    // After a successful log in, the login dialog code will "open" the specified resource, which results in executing the specified javascript code
-    window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${width}, height=${height}, top=${top}, left=${left}`);
-    // Display 'save' on button
-    setLastSaveStatus(undefined);
   }
 
   return (

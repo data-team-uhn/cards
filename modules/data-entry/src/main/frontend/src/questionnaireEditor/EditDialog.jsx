@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from "react";
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -32,6 +32,7 @@ import {
 } from "@material-ui/core";
 
 import Fields from './Fields'
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 // Dialog for editing or creating questions or sections
 
@@ -56,50 +57,52 @@ let EditDialog = (props) => {
               : propertiesJSON;
 
   let saveButtonRef = React.useRef();
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let saveData = (event) => {
     // This stops the normal browser form submission
     event.preventDefault();
-
-    // If the previous save attempt failed, instead of trying to save again, open a login popup
-    if (lastSaveStatus === false) {
-      loginToSave();
-      return;
-    }
 
     setSaveInProgress(true);
     // If the question/section already exists, update it
     if (targetExists) {
       // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
       let request_data = new FormData(event.currentTarget);
-      fetch(
+      fetchWithReLogin(globalLoginDisplay,
         `${data['@path']}`,
         {
           method: 'POST',
           body: request_data
         })
-        .then((response) => response.ok ? true : Promise.reject(response))
-        .then(() => setLastSaveStatus(true))
-        .catch(handleError)
-        .finally(() => {
-          setSaveInProgress(false);
-          setOpen(false);
-          onClose && onClose();
-        });
+        .then((response) => {
+          if (response.ok) {
+            setSaveInProgress(false);
+            setOpen(false);
+            onClose && onClose();
+          } else {
+            handleError(response);
+          }
+        })
+        .catch(handleError);
+
     } else {
       // If the question/section doesn't exist, create it
       let newData = data;
-      const URL = `${data['@path']}/${targetId}`
       const primaryType = type.includes('Question') ? 'lfs:Question' : 'lfs:Section';
       var request_data = new FormData(event.currentTarget);
       request_data.append('jcr:primaryType', primaryType);
-      fetch(URL, { method: 'POST', body: request_data })
-        .then((response) => response.ok ? true : Promise.reject(response))
-        .then(() => {
-          setLastSaveStatus(true);
+      fetchWithReLogin(globalLoginDisplay,
+        `${data['@path']}/${targetId}`,
+        {
+          method: 'POST',
+          body: request_data
+        })
+        .then((response) => {
+          if (response.ok) {
+            setLastSaveStatus(true);
 
-          // Fetch and propagate back data with appended newly created item to highlight & focus on it
-          fetch(`${data['@path']}/${targetId}.deep.json`)
+            // Fetch and propagate back data with appended newly created item to highlight & focus on it
+            fetch(`${data['@path']}/${targetId}.deep.json`)
               .then((response) => response.ok ? response.json() : Promise.reject(response))
               .then((json) => {
                 let item = json;
@@ -107,36 +110,30 @@ let EditDialog = (props) => {
                 newData = data;
                 newData[targetId] = item;
                 setSaveInProgress(false);
+                setOpen(false);
                 onClose && onClose(newData);
               })
               .catch(handleError);
+          } else {
+            handleError(response);
+          }
         })
         .catch(handleError);
     }
   }
 
   let handleError = (response) => {
-    setSaveInProgress(false);
-    // If the user is not logged in, offer to log in
-    const sessionInfo = window.Sling.getSessionInfo();
-    if (sessionInfo === null || sessionInfo.userID === 'anonymous') {
-      // On first attempt to save while logged out, set status to false to make button text inform user
+    if (response.status === 500) {
+      response.json().then((json) => {
+        setError(json.error.message);
+      })
+      setLastSaveStatus(undefined);
+    } else {
+      setError(response.statusText ? response.statusText : response.toString());
       setLastSaveStatus(false);
     }
-    setError(response.statusText ? response.statusText : response.toString());
+    setSaveInProgress(false);
   };
-
-  // Open the login page in a new popup window, centered wrt the parent window
-  let loginToSave = () => {
-    const width = 600;
-    const height = 800;
-    const top = window.top.outerHeight / 2 + window.top.screenY - ( height / 2);
-    const left = window.top.outerWidth / 2 + window.top.screenX - ( width / 2);
-    // After a successful log in, the login dialog code will "open" the specified resource, which results in executing the specified javascript code
-    window.open("/login.html?resource=javascript%3Awindow.close()", "loginPopup", `width=${width}, height=${height}, top=${top}, left=${left}`);
-    // Display 'save' on button
-    setLastSaveStatus(undefined);
-  }
 
   // If an error was returned, do not display a form at all, but report the error
   if (error) {
