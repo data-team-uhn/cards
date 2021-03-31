@@ -63,7 +63,7 @@ function createTitle(label, idx, isRecurrent) {
  * @param {Object} sectionDefinition the section definition JSON
  */
 function Section(props) {
-  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit } = props;
+  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, instanceId } = props;
   const isRecurrent = sectionDefinition['recurrent'];
 
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
@@ -232,6 +232,7 @@ function Section(props) {
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                     sectionAnswers.map(([key, definition]) =>
                       <FormEntry
+                        instanceId={instanceId + "-" + idx}
                         key={key}
                         entryDefinition={definition}
                         path={sectionPath}

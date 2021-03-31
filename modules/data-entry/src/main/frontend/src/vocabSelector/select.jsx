@@ -50,6 +50,7 @@ const IS_SELECTED_POS = 3;
 function VocabularySelector(props) {
   const {defaultSuggestions, existingAnswer, source, vocabularyFilter, max, selectionContainer, questionDefinition, searchDefault, classes, ...rest} = props;
   const {selectionUpdated} = props;
+  const {instanceId} = props;
 
   const [defaultListChildren, setDefaultListChildren] = useState([]);
   const [listChildren, setListChildren] = useState([]);
@@ -75,7 +76,7 @@ function VocabularySelector(props) {
       return (
         <RadioGroup
           aria-label="selection"
-          name={questionDefinition['jcr:uuid']}
+          name={questionDefinition['jcr:uuid'] + (instanceId || '')}
           className={classes.selectionList}
           value={radioSelect}
           onChange={changeRadio}

@@ -51,6 +51,7 @@ const GHOST_SENTINEL = "custom-input";
 function MultipleChoice(props) {
   let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
+  let { instanceId } = props;
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
@@ -404,7 +405,7 @@ function MultipleChoice(props) {
         {instructions}
         <RadioGroup
           aria-label="selection"
-          name={props.questionDefinition['jcr:uuid']}
+          name={props.questionDefinition['jcr:uuid'] + (instanceId || '')}
           className={classes.selectionList}
           value={selection.length > 0 && selection[0][VALUE_POS]}
         >
