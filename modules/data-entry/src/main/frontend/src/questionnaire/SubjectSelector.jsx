@@ -186,6 +186,12 @@ function UnstyledSelectParentDialog (props) {
     { title: 'Subject', field: 'hierarchy' },
   ];
 
+  // Convert from a MaterialTable row to whether or not it has a child of the same name as
+  // the one we're trying to avoid
+  let hasChild = (rowData) => {
+    return Object.values(rowData).find((rowValue) => (rowValue?.["identifier"] == childName));
+  }
+
   let initialized = parentType && childType;
 
   return(
@@ -232,10 +238,14 @@ function UnstyledSelectParentDialog (props) {
                   /* It doesn't seem possible to alter the className from here */
                   backgroundColor: (value?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
                   // grey out subjects that already have something by this name
-                  color: (Object.values(rowData).find((rowValue) => (rowValue?.["identifier"] == childName)) ? theme.palette.grey["500"] : theme.palette.grey["900"])
+                  color: (hasChild(rowData) ? theme.palette.grey["500"] : theme.palette.grey["900"])
                 })
               }}
-              onRowClick={(event, rowData) => {onChangeParent(rowData);}}
+              onRowClick={(event, rowData) => {
+                if (!hasChild(rowData)) {
+                  onChangeParent(rowData);
+                }
+              }}
               tableRef={tableRef}
             />
         }
