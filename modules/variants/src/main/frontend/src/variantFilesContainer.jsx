@@ -144,8 +144,6 @@ export default function VariantFilesContainer() {
   // All corresponding subjects info derived from file and fetched will be stored here
   let [selectedFiles, setSelectedFiles] = useState([]);
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
-
   let constructQuery = (nodeType, query) => {
     let url = new URL("/query", window.location.origin);
     let sqlquery = "SELECT s.* FROM [" + nodeType + "] as s" + query;
@@ -643,13 +641,58 @@ export default function VariantFilesContainer() {
 
         // get the file data
         var csv = event.target.result;
-        let [json, filePath] = assembleJson(file, csv, generateSubjects);
+
+        /*
+        let formPath = "Forms/" + uuidv4();
+        let formInfo = {};
+        formInfo["jcr:primaryType"] = "lfs:Form";
+        formInfo["jcr:reference:questionnaire"] = "/Questionnaires/SomaticVariants";
+        // The subject of the questionnaire is the region
+        formInfo["jcr:reference:subject"] = `/${subjectPath}/${tumorPath}` + (file?.region?.path ? `/${regionPath}` : "");
+
+        let fileID = uuidv4();
+        let fileInfo = {};
+        fileInfo["jcr:primaryType"] = "lfs:FileResourceAnswer";
+        fileInfo["jcr:reference:question"] = "/Questionnaires/SomaticVariants/file";
+        fileInfo["value"] = "/" + formPath + "/" + fileID + "/" + file.name;
+
+        let fileDetails = {};
+        fileDetails["jcr:primaryType"] = "nt:file";
+        fileDetails["jcr:content"] = {};
+        fileDetails["jcr:content"]["jcr:primaryType"] = "nt:resource";
+
+        fileDetails["jcr:content"]["jcr:data"] = csvData;
+
+        fileInfo[file.name] = fileDetails;
+
+        formInfo[fileID] = fileInfo;
+
+        json[formPath] = formInfo;
+        */
+        let [json, _] = assembleJson(file, generateSubjects);
+        let [subjectJson, subjectPath, tumorPath, regionPath] = assembleSubjectJson(file);
 
         let data = new FormData();
-        data.append(':contentType', 'json');
-        data.append(':operation', 'import');
-        data.append(':content', JSON.stringify(json));
+
+        // Assemble the questionnaire into our payload FormData
+        let formPath = "Forms/" + uuidv4() + "/";
+        data.append(formPath + "jcr:primaryType", "lfs:Form");
+        data.append(formPath + "questionnaire", "/Questionnaires/SomaticVariants");
+        data.append(formPath + "questionnaire@TypeHint", "Reference");
+        data.append(formPath + "subject", `/${subjectPath}/${tumorPath}` + (file?.region?.path ? `/${regionPath}` : ""));
+        data.append(formPath + "subject@TypeHint", "Reference");
+
+        // Assemble the FileResourceAnswer
+        let answerPath = formPath + uuidv4() + "/";
+        data.append(answerPath + "jcr:primaryType", "lfs:FileResourceAnswer");
+        data.append(answerPath + "question", "/Questionnaires/SomaticVariants/file");
+        data.append(answerPath + "question@TypeHint", "Reference");
+        data.append(answerPath + "value", "/" + answerPath + file.name);
+
+        // Assemble the details about the file itself
+        let filePath = answerPath + file.name;
         data.append(filePath, file);
+        data.append(filePath + "@TypeHint", "nt:file");
 
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/');
@@ -750,10 +793,9 @@ export default function VariantFilesContainer() {
    * Assemble the JSON representation of the given file, and, optionally, the JSON representing its subjects
    *
    * @param {File} file the File object that will be uploaded. This will be stringified, so be careful of non-unicode characters
-   * @param {string} csvData the contents of the above file object
    * @param {boolean} generateSubjects If true, the subjects for the given file will be generated as well.
    */
-  let assembleJson = (file, csvData, generateSubjects=true) => {
+  let assembleJson = (file, generateSubjects=true) => {
       let [subjectJson, subjectPath, tumorPath, regionPath] = assembleSubjectJson(file);
       let json = generateSubjects ? subjectJson : {};
 
@@ -783,7 +825,7 @@ export default function VariantFilesContainer() {
 
       json[formPath] = formInfo;
 
-      return [json, fileInfo["value"]];
+      return [json, "/" + formPath + "/" + fileID + "/" + file.name];
   };
 
   if (!somaticVariantsUUID) {
