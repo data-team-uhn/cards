@@ -49,8 +49,12 @@ let AnswerOptions = (props) => {
   const notApplicable  = Object.values(data).find(option => option['jcr:primaryType'] == 'lfs:AnswerOption' && option.notApplicable);
   const noneOfTheAbove = Object.values(data).find(option => option['jcr:primaryType'] == 'lfs:AnswerOption' && option.noneOfTheAbove);
 
-  let [ notApplicableOption, setNotApplicableOption ] = useState(notApplicable || {"value" : "None", "notApplicable" : false, "@path" : path + "/None"});
-  let [ noneOfTheAboveOption, setNoneOfTheAboveOption ] = useState(noneOfTheAbove || {"value": "None of the above", "noneOfTheAbove" : false,  "@path" : path + "/NoneOfTheAbove"});
+  let [ notApplicableOption, setNotApplicableOption ] = useState(notApplicable || {"value" : "None",
+                                                                                   "notApplicable" : false,
+                                                                                   "@path" : path + "/None"});
+  let [ noneOfTheAboveOption, setNoneOfTheAboveOption ] = useState(noneOfTheAbove || {"value": "None of the above",
+                                                                                      "noneOfTheAbove" : false,
+                                                                                      "@path" : path + "/NoneOfTheAbove"});
 
   const specialOptionsInfo = [
     {
@@ -140,29 +144,26 @@ let AnswerOptions = (props) => {
           disabled={!option.data[option.label]}
           label={option.tootltip}
           className={classes.specialOption + " " + (!option.data[option.label] ? classes.answerOptionInput : "")}
-          name="label"
-          value={option.data.label || option.data.value}
-          onChange={(event) => option.setter({ ...option.data, [event.target.name]: event.target.value})}
+          value={option.data.value}
+          onChange={(event) => option.setter({ ...option.data, "value": event.target.value})}
         />
       </Tooltip>
       <Tooltip title={option.switchTooltip} className={classes.specialOptionSwitch}>
         <FormControlLabel
-            control={
-              <Switch
-                  checked={!!option.data[option.label]}
-                  name={option.label}
-                  onChange={(event) => option.setter({ ...option.data, [event.target.name]: event.target.checked})}
-                  color="primary"
-                />
-            }
-          />
+          control={
+            <Switch
+              checked={!!option.data[option.label]}
+              onChange={(event) => option.setter({ ...option.data, [option.label]: event.target.checked})}
+              color="primary"
+              />
+          }
+        />
       </Tooltip>
       { option.data[option.label]
         ?
         <>
           <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
           <input type='hidden' name={`${option.data['@path']}/value`} value={option.data.value} />
-          <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
           <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
         </>
         :
