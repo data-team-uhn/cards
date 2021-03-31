@@ -144,6 +144,8 @@ export default function VariantFilesContainer() {
   // All corresponding subjects info derived from file and fetched will be stored here
   let [selectedFiles, setSelectedFiles] = useState([]);
 
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
   let constructQuery = (nodeType, query) => {
     let url = new URL("/query", window.location.origin);
     let sqlquery = "SELECT s.* FROM [" + nodeType + "] as s" + query;
@@ -155,7 +157,7 @@ export default function VariantFilesContainer() {
 
   // Fetch the SomaticVariants questionnaire and Subjects uuids
   let fetchBasicData = () => {
-    fetch("/Questionnaires/SomaticVariants.json")
+    fetchWithReLogin(globalLoginDisplay, "/Questionnaires/SomaticVariants.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setSomaticVariantsUUID(json["jcr:uuid"]);
@@ -163,7 +165,7 @@ export default function VariantFilesContainer() {
       })
       .catch(handleError);
 
-    fetch("/SubjectTypes/Patient.json")
+    fetchWithReLogin(globalLoginDisplay, "/SubjectTypes/Patient.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setPatientSubjectUUID(json["jcr:uuid"]);
@@ -171,7 +173,7 @@ export default function VariantFilesContainer() {
       })
       .catch(handleError);
 
-    fetch("/SubjectTypes/Patient/Tumor.json")
+    fetchWithReLogin(globalLoginDisplay, "/SubjectTypes/Patient/Tumor.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setTumorSubjectUUID(json["jcr:uuid"]);
@@ -179,7 +181,7 @@ export default function VariantFilesContainer() {
       })
       .catch(handleError);
 
-    fetch("/SubjectTypes/Patient/Tumor/TumorRegion.json")
+    fetchWithReLogin(globalLoginDisplay, "/SubjectTypes/Patient/Tumor/TumorRegion.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setRegionSubjectUUID(json["jcr:uuid"]);
@@ -314,7 +316,7 @@ export default function VariantFilesContainer() {
         if (!file.subject.path) {
 
           // Fire a fetch request for the patient subject
-          fetch( checkSubjectExistsURL )
+          fetchWithReLogin(globalLoginDisplay, checkSubjectExistsURL)
             .then((response) => response.ok ? response.json() : reject(response))
             .then((json) => {
               // If a patient subject is found
@@ -326,7 +328,7 @@ export default function VariantFilesContainer() {
                 checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                 // Fire a fetch request for a tumor subject with the patient subject as its parent
-                fetch( checkTumorExistsURL )
+                fetchWithReLogin(globalLoginDisplay, checkTumorExistsURL)
                     .then((response) => response.ok ? response.json() : reject(response))
                     .then((json) => {
                       // If a tumor subject is found and region subject is defined
@@ -340,7 +342,7 @@ export default function VariantFilesContainer() {
                           checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                           // Fire a fetch request for a region subject with the tumor subject as its parent
-                          fetch( checkRegionExistsURL )
+                          fetchWithReLogin(globalLoginDisplay, checkRegionExistsURL)
                             .then((response) => response.ok ? response.json() : reject(response))
                             .then((json) => {
                               // If a region subject is found
@@ -387,7 +389,7 @@ export default function VariantFilesContainer() {
             checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${file.subject.uuid}'`);
 
             // Fire a fetch request for a tumor subject with the patient subject as its parent
-            fetch( checkTumorExistsURL )
+            fetchWithReLogin(globalLoginDisplay, checkTumorExistsURL)
                 .then((response) => response.ok ? response.json() : reject(response))
                 .then((json) => {
                   // If a tumor subject is found and region subject is defined
@@ -401,7 +403,7 @@ export default function VariantFilesContainer() {
                       checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                       // Fire a fetch request for a region subject with the tumor subject as its parent
-                      fetch( checkRegionExistsURL )
+                      fetchWithReLogin(globalLoginDisplay, checkRegionExistsURL)
                         .then((response) => response.ok ? response.json() : reject(response))
                         .then((json) => {
                           // If a region subject is found
@@ -436,7 +438,7 @@ export default function VariantFilesContainer() {
               checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${file.tumor.uuid}'`);
 
               // Fire a fetch request for a region subject with the tumor subject as its parent
-              fetch( checkRegionExistsURL )
+              fetchWithReLogin(globalLoginDisplay, checkRegionExistsURL)
                 .then((response) => response.ok ? response.json() : reject(response))
                 .then((json) => {
                   // If a region subject is found
