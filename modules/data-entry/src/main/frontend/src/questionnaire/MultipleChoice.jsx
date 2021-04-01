@@ -319,7 +319,8 @@ function MultipleChoice(props) {
               event.stopPropagation();
               acceptEnteredOption();
             }
-          }
+          },
+          tabindex: isRadio ? -1 : undefined
         }, additionalInputProps)
         }
         value={ghostName}

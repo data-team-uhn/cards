@@ -91,6 +91,8 @@ class VocabularyQuery extends React.Component {
       variant='outlined'
       inputProps={{
         "aria-label": "Search"
+      }, {
+        tabindex: isNested ? -1 : undefined
       }}
       onChange={this.delayLookup}
       inputRef={(node) => {
