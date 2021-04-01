@@ -33,6 +33,7 @@ import {
   CircularProgress,
   Chip,
   Grid,
+  Tooltip,
   Typography,
   withStyles,
   Button,
@@ -547,14 +548,17 @@ function FormData(props) {
             {prettyPrintedAnswers.map((answerValue, idx) => {
               // Encode the filename to ensure special charactars don't result in a broken link
               let path = paths[idx].slice(0, paths[idx].lastIndexOf(answerValue)) + encodeURIComponent(answerValue);
-              return <Chip
-                       key={answerValue}
-                       icon={<FileIcon />}
-                       label={<a href={path} target="_blank" rel="noopener" download={answerValue}>{answerValue}</a>}
-                       color="primary"
-                       variant="outlined"
-                       size="small"
-                     />
+              return (
+                 <Tooltip key={answerValue} title={"Download " + answerValue}>
+                   <Chip
+                     icon={<FileIcon />}
+                     label={<a href={path} target="_blank" rel="noopener" download={answerValue}>{answerValue}</a>}
+                     color="primary"
+                     variant="outlined"
+                     size="small"
+                   />
+                 </Tooltip>
+              );
             })}
             </>
           break;
@@ -574,7 +578,7 @@ function FormData(props) {
       // If count of displayed <= max, increase count of displayed
       displayed++;
       return (
-        <Typography variant="body2" component="p" key={key} className={classes.formPreviewQuestion}>{questionTitle}: {content}</Typography>
+        <Typography variant="body2" component="div" key={key} className={classes.formPreviewQuestion}>{questionTitle}: {content}</Typography>
       );
     }
     else return;
