@@ -24,6 +24,7 @@ import moment from "moment";
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
+import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import MaterialTable, { MTablePagination } from 'material-table';
@@ -43,10 +44,6 @@ import FileIcon from "@material-ui/icons/InsertDriveFile";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
 import SubjectTimeline from "./SubjectTimeline.jsx";
-
-export const QUESTION_TYPES = ["lfs:Question"];
-export const SECTION_TYPES = ["lfs:Section"];
-export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
 
 /***
  * Create a URL that checks for the existence of a subject
@@ -109,6 +106,9 @@ function Subject(props) {
   const [ currentSubjectId, setCurrentSubjectId ] = useState(id);
   const [ activeTab, setActiveTab ] = useState(0);
 
+  // TODO: These tabs should be extensible.
+  // This will involve moving SubjectContainer to it's own file and moving
+  // handleDisplay() to a utility file for SubjectContainer and SubjectTimeline.
   const tabs = ["Chart", "Timeline"]
   const location = useLocation();
 
@@ -176,6 +176,9 @@ function Subject(props) {
   );
 }
 
+/**
+ * Component that recursively gets and displays the selected subject and its related SubjectTypes
+ */
 function SubjectContainer(props) {
   let { id, classes, level, maxDisplayed, pageSize, subject } = props;
   // Error message set when fetching the data from the server fails
@@ -267,10 +270,6 @@ function SubjectHeader(props) {
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
-  if (deleted) {
-    return null;
-  }
-
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
   // such as authorship and versioning information.
@@ -296,8 +295,14 @@ function SubjectHeader(props) {
 
   // Fetch this Subject's data
   useEffect(() => {
-    fetchSubjectData();
+    if (!deleted) {
+      fetchSubjectData();
+    }
   }, [id]);
+
+  if (deleted) {
+    return null;
+  }
 
   if (!subject?.data) {
     return (
@@ -398,7 +403,7 @@ function SubjectMemberInternal (props) {
   // Fetch table data for all forms related to a Subject
   useEffect(() => {
     fetchTableData();
-  }, [data]);
+  }, [data['jcr:uuid']]);
 
   // If an error was returned, do not display a subject at all, but report the error
   if (error) {

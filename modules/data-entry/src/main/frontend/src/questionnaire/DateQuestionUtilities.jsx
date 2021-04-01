@@ -156,20 +156,20 @@ export default class DateQuestionUtilities {
     return type == this.INTERVAL_TYPE && answers.length == 2 || answers.length == 1;
   }
 
-  static dateDifference = (firstDate, secondDate) => {
+  static dateDifference = (startDateInput, endDateInput) => {
     // Compute the displayed difference
     let result = {long:""}
-    if (firstDate && secondDate) {
-      let currentDate = this.amendMoment(firstDate, "yyyy-MM-dd");
-      let nextDate = this.amendMoment(secondDate, "yyyy-MM-dd");
+    if (startDateInput && endDateInput) {
+      let startDate = this.amendMoment(startDateInput, "yyyy-MM-dd");
+      let endDate = this.amendMoment(endDateInput, "yyyy-MM-dd");
 
       let diff = [];
       let longDiff = [];
       for (const division of ["years", "months", "days"]) {
-        let value = nextDate.diff(currentDate, division);
+        let value = endDate.diff(startDate, division);
         diff.push(value);
         if (value > 0) {
-          nextDate = nextDate.subtract(value, division);
+          endDate = endDate.subtract(value, division);
           longDiff.push(value + division.charAt(0));
         }
       }

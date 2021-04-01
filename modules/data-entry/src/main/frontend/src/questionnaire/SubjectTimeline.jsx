@@ -36,7 +36,8 @@ import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import DateQuestionUtilities from "./DateQuestionUtilities.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
-import { displayQuestion, handleDisplay, ENTRY_TYPES } from "./Subject.jsx";
+import { displayQuestion, handleDisplay } from "./Subject.jsx";
+import { ENTRY_TYPES } from "./FormEntry.jsx"
 
 import {
   Typography,
@@ -44,16 +45,13 @@ import {
 } from "@material-ui/core";
 
 const NUM_QUESTIONS = 2;
-const STRIPPED_STRINGS = ["date of", "date"]
+const STRIPPING_REGEX = [/^date of +/i, / +date$/i]
 
 function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
   let questionTitle = questionData.questionText;
   // Strip unwanted strings from the question title
-  for (const str of STRIPPED_STRINGS) {
-    let dateIndex = questionTitle.toLowerCase().indexOf(str);
-    if (dateIndex > -1) {
-      questionTitle = questionTitle.substring(0,dateIndex).concat(questionTitle.substring(dateIndex + str.length));
-    }
+  for (const regexp of STRIPPING_REGEX) {
+    questionTitle = questionTitle.replace(regexp, '');
   }
   questionTitle = questionTitle.trim();
   // Make sure the title starts with a capital
@@ -161,38 +159,19 @@ function SubjectTimeline(props) {
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
-  // Return all the answers for the form at the provided path
-  let fetchFormAnswers = (path, level, names) => {
-    return fetchWithReLogin(globalLoginDisplay, `${path}.deep.json`)
-      .then(async (response) => {
-        let json = await response.json();
-        return response.ok ? {response: json, level: level, names: names} : Promise.reject(response)
-      })
-      .catch(response => handleError(response, ""))
-  }
-
-  // Get the full set of data for all forms provided
-  let getFormData = async (baseForms) => {
-    let formAnswerPromises = [];
-    for (const form of baseForms) {
-      formAnswerPromises.push(fetchFormAnswers(form.row["@path"], form.level, form.names));
-    }
-    let results = await Promise.all(formAnswerPromises);
-    return results;
-  }
-
-  // Fetch a form from a given URL
-  let fetchForms = (customUrl, level, subjectNames) => {
-    return Promise.resolve(fetchWithReLogin(globalLoginDisplay, customUrl)
+  // Fetch the forms and answers for a specific subject
+  let fetchSubjectData = (subject, level, subjectNames) => {
+    // Fetch a subject with it's forms (.data) and those forms' answers (.deep)
+    // Combining .data and .deep only fetches the current subject's forms, not children's forms.
+    return Promise.resolve(fetchWithReLogin(globalLoginDisplay, subject["@path"] + ".deep.data.json")
     .then(async (response) => {
       let json = await response.json();
       return response.ok ? {response: json, level: level, names: subjectNames} : Promise.reject(response)
     }));
-    // .catch(handleTableError);
   };
 
   // Recursively fetch all submitted forms for a subject and it's child subjects
-  let fetchSubjectForms = (parent, previousLevel, parentSubjectNames) => {
+  let getSubjectForms = (parent, previousLevel, parentSubjectNames) => {
     // Increment level once the user selected subject is found
     let level = previousLevel;
     if (previousLevel > -1 || parent["jcr:uuid"] === subject["jcr:uuid"]) {
@@ -205,16 +184,14 @@ function SubjectTimeline(props) {
       subjectNames.push(parent.type.label + " " + parent["identifier"]);
     }
 
-    // Fetch the forms for the current subject
-    let promises = [];
-    const formUrl = `/Forms.paginate?fieldname=subject&fieldvalue=${encodeURIComponent(parent["jcr:uuid"])}&includeallstatus=true&limit=1000`;
-    promises.push(fetchForms(formUrl, level, subjectNames));
+    // Fetch the current subjects data
+    let promises = [fetchSubjectData(parent, level, subjectNames)];
 
-    // Repeat for all child subjects
-    const childSubjects = Object.values(parent)
-      .filter(value => value["jcr:primaryType"] == "lfs:Subject");
-    for (const child of childSubjects) {
-      promises = promises.concat(fetchSubjectForms(child, level, subjectNames));
+    // Recursively get the data for the current subject's children
+    for (const child of Object.values(parent)) {
+      if (child["jcr:primaryType"] == "lfs:Subject") {
+        promises = promises.concat(getSubjectForms(child, level, subjectNames));
+      }
     }
 
     return promises;
@@ -235,13 +212,19 @@ function SubjectTimeline(props) {
     // If the subject has parents, fetch forms associated with the root subject instead
     if (subject.ancestors && subject.ancestors.length > 0) {
       let newPath = subject.ancestors[subject.ancestors.length - 1]["@path"];
-      rootSubject = await fetchSubject(newPath);
+      rootSubject = await fetchSubject(newPath, true);
     }
 
     // Get forms for the subject and all it's children, recursively
-    let formPromises = fetchSubjectForms(rootSubject, -1, [])
-    let results = await Promise.all(formPromises);
-    results = [].concat.apply([], results.map(formData => formData.response.rows.map(row => {return {row: row, level: formData.level, names: formData.names}})));
+    let subjectDataPromises = getSubjectForms(rootSubject, -1, [])
+    let results = await Promise.all(subjectDataPromises);
+
+    // Get all the form data into a single array
+    results = results.map(formData =>
+      Object.values(formData.response).filter(entry => Array.isArray(entry)).flat().filter(entry => entry["jcr:primaryType"] == "lfs:Form").map(entry => {
+        return {form: entry, level: formData.level, names: formData.names}
+      })
+    ).flat();
     return results;
   }
 
@@ -280,20 +263,20 @@ function SubjectTimeline(props) {
   let getDateAnswers = (formData) => {
     let dateAnswerData = [];
     // For every form
-    formData.forEach(formAnswerEntries => {
+    formData.forEach((formEntry, index) => {
       // For every node that has a primary type that should be traversed
-      Object.entries(formAnswerEntries.response.questionnaire)
+      Object.entries(formEntry.form.questionnaire)
       .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-      .forEach(([key, entryDefinition], index) => {
+      .forEach(([key, entryDefinition]) => {
         // Try to display this node if it is a question or has any child questions
-        handleDisplay(entryDefinition, formAnswerEntries.response, key,
+        handleDisplay(entryDefinition, formEntry.form, key,
           (entryDefinition, data, key) => {handleDisplayAnswer(
             entryDefinition,
             data,
             key,
-            formAnswerEntries.level,
-            formAnswerEntries.names,
-            formAnswerEntries.response.questionnaire.title,
+            formEntry.level,
+            formEntry.names,
+            formEntry.form.questionnaire.title,
             dateAnswerData,
             index
         )});
@@ -350,8 +333,7 @@ function SubjectTimeline(props) {
 
   useEffect(() => {
     if (subject) {
-      getForms().then(baseForms => getFormData(baseForms))
-      .then(formData => getDateAnswers(formData))
+      getForms().then(formData => getDateAnswers(formData))
       .then(dateAnswers => getDateEntries(dateAnswers));
     }
   }, [subject]);
