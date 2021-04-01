@@ -143,7 +143,7 @@ let AnswerOptions = (props) => {
         <TextField
           disabled={!option.data[option.label]}
           label={option.tootltip}
-          className={classes.specialOption + " " + (!option.data[option.label] ? classes.answerOptionInput : "")}
+          className={classes.specialOption + " " + classes.answerOptionInput}
           value={option.data.value}
           onChange={(event) => option.setter({ ...option.data, "value": event.target.value})}
         />
