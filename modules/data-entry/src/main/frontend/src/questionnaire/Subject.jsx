@@ -37,6 +37,7 @@ import {
   withStyles,
   Button,
 } from "@material-ui/core";
+import FileIcon from "@material-ui/icons/InsertDriveFile";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
 
@@ -416,7 +417,7 @@ function SubjectMemberInternal (props) {
                                          })}
                                        </React.Fragment> },
                   { title: 'Summary',
-                    render: rowData => <FormData className={classes.formData} formID={rowData["@name"]} maxDisplayed={maxDisplayed}/> },
+                    render: rowData => <FormData className={classes.formData} formID={rowData["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> },
                   { title: 'Actions',
                     cellStyle: {
                       padding: '0',
@@ -455,7 +456,7 @@ let SubjectMember = withRouter(SubjectMemberInternal);
 
 // Component that displays a preview of the saved form answers
 function FormData(props) {
-  let { formID, maxDisplayed } = props;
+  let { formID, maxDisplayed, classes } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -544,10 +545,16 @@ function FormData(props) {
           let paths = Array.of(existingQuestionAnswer[1]["value"]).flat();
           content = <>
             {prettyPrintedAnswers.map((answerValue, idx) => {
-              let prefix = idx > 0 ? ", " : ""; // Seperator space between different files
               // Encode the filename to ensure special charactars don't result in a broken link
               let path = paths[idx].slice(0, paths[idx].lastIndexOf(answerValue)) + encodeURIComponent(answerValue);
-              return <React.Fragment key={answerValue}>{prefix}<a href={path} target="_blank" rel="noopener" download={answerValue}>{answerValue}</a></React.Fragment>
+              return <Chip
+                       key={answerValue}
+                       icon={<FileIcon />}
+                       label={<a href={path} target="_blank" rel="noopener" download={answerValue}>{answerValue}</a>}
+                       color="primary"
+                       variant="outlined"
+                       size="small"
+                     />
             })}
             </>
           break;
@@ -567,7 +574,7 @@ function FormData(props) {
       // If count of displayed <= max, increase count of displayed
       displayed++;
       return (
-        <Typography variant="body2" component="p" key={key}>{questionTitle}: {content}</Typography>
+        <Typography variant="body2" component="p" key={key} className={classes.formPreviewQuestion}>{questionTitle}: {content}</Typography>
       );
     }
     else return;

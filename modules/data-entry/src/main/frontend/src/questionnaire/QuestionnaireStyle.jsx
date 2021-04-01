@@ -408,6 +408,18 @@ const questionnaireStyle = theme => ({
     DefaultChip: {
         backgroundColor: theme.palette.warning.main
     },
+    formPreviewQuestion: {
+        "& .MuiChip-root" : {
+            margin: "0 0.5em 0.5em 0",
+            "& .MuiChip-iconSmall": {
+                marginLeft: "6px",
+            },
+            "& a" : {
+                color: "inherit",
+                textDecoration: "none",
+            },
+        },
+    },
     questionnaireDisabledListItem: {
         color: theme.palette.grey["500"]
     },
