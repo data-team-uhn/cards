@@ -94,10 +94,6 @@ function FileResourceQuestion(props) {
 
   // Add files to the pending state
   let addFiles = (files) => {
-    // Remove existing selection if only one file is permitted
-    if (maxAnswers == 1) {
-      Object.keys(uploadedFiles || {}).forEach((filepath, idx) => deletePath(idx))
-    }
     upload(files);
   }
 
@@ -125,6 +121,11 @@ function FileResourceQuestion(props) {
 
   // Find the icon and load them
   let uploadAllFiles = (selectedFiles) => {
+    if (maxAnswers == 1) {
+      // Remove existing selection if only one file is permitted
+      Object.keys(uploadedFiles || {}).forEach((filename, idx) => filename != selectedFiles[0]['name'] && deletePath(idx))
+    }
+
     const promises = [];
     for (let i = 0; i < selectedFiles.length; i++) {
       promises.push(uploadSingleFile(selectedFiles[i]));
