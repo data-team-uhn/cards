@@ -160,6 +160,7 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
 /**
  * Component that displays a dialog to select parents for a new subject
  *
+ * @param {string} childName The name of the new child, used to determine ineligible parents
  * @param {object} childType The object representing the lfs:SubjectType of the child that is being created
  * @param {bool} continueDisabled If true, the continue button is disabled
  * @param {object} currentSubject The object representing the subject we must be a child of
@@ -177,13 +178,19 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
  * @param {object} value The currently selected parent
  */
 function UnstyledSelectParentDialog (props) {
-  const { classes, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
+  const { classes, childName, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   const COLUMNS = [
     { title: 'Subject', field: 'hierarchy' },
   ];
+
+  // Convert from a MaterialTable row to whether or not it has a child of the same name as
+  // the one we're trying to avoid
+  let hasChildWithId = (rowData, childId) => {
+    return Object.values(rowData).find((rowValue) => (rowValue?.["identifier"] == childId));
+  }
 
   let initialized = parentType && childType;
 
@@ -210,6 +217,7 @@ function UnstyledSelectParentDialog (props) {
                   let url = createQueryURL(sql, "lfs:Subject", "fullIdentifier");
                   url.searchParams.set("limit", query.pageSize);
                   url.searchParams.set("offset", query.page*query.pageSize);
+                  url.searchParams.set("serializeChildren", "1");
                   return fetchWithReLogin(globalLoginDisplay, url)
                     .then(response => response.json())
                     .then(result => {
@@ -228,10 +236,16 @@ function UnstyledSelectParentDialog (props) {
                 addRowPosition: 'first',
                 rowStyle: rowData => ({
                   /* It doesn't seem possible to alter the className from here */
-                  backgroundColor: (value?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
+                  backgroundColor: (value?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
+                  // grey out subjects that already have something by this name
+                  color: (hasChildWithId(rowData, childName) ? theme.palette.grey["500"] : theme.palette.grey["900"])
                 })
               }}
-              onRowClick={(event, rowData) => {onChangeParent(rowData);}}
+              onRowClick={(event, rowData) => {
+                if (!hasChildWithId(rowData, childName)) {
+                  onChangeParent(rowData);
+                }
+              }}
               tableRef={tableRef}
             />
         }
@@ -359,9 +373,8 @@ export function NewSubjectDialog (props) {
     setIsPosting(false);
     setError(error);
 
-    // Since the error will always be during the creation of a subject, we'll revert back to the create subject page
-    setNewSubjectPopperOpen(true);
-    setSelectParentPopperOpen(false);
+    // Since the error will always be during the creation of a subject, we'll revert back to the create subject page and remove all details
+    clearDialog(false);
   }
 
   // Called when creating a new subject
@@ -501,8 +514,10 @@ export function NewSubjectDialog (props) {
     }
   }
 
-  let clearDialog = () => {
-    setError();
+  let clearDialog = (clearError=true) => {
+    if (clearError) {
+      setError();
+    }
     setNewSubjectIndex(0);
     setNewSubjectName([""]);
     setNewSubjectType([""]);
@@ -534,6 +549,7 @@ export function NewSubjectDialog (props) {
         value={newSubjectName[newSubjectIndex]}
       />
       {open && selectParentPopperOpen && <SelectParentDialog
+        childName={newSubjectName[newSubjectIndex]}
         childType={newSubjectType[newSubjectIndex]}
         continueDisabled={!newSubjectParent[newSubjectIndex]}
         currentSubject={currentSubject}
@@ -700,6 +716,7 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
   let selectedURL = subjectToTrack["@path"];
   let subjectTypeToUse = subjectType["jcr:uuid"] ? subjectType["jcr:uuid"] : subjectType;
   let lastPromise = null;
+  let firstSubject = true;
   for (let subjectName of newSubjects) {
     // Do not allow blank subjects
     if (subjectName == "") {
@@ -714,7 +731,6 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
     }
 
     // Make a POST request to create a new subject
-    let parentCheckQuery = [];
     let requestData = new FormData();
     requestData.append('jcr:primaryType', 'lfs:Subject');
     requestData.append('identifier', subjectName);
@@ -722,23 +738,23 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
     requestData.append('type@TypeHint', 'Reference');
 
     let parentCheckQueryString = "";
-    if (parentCheckQuery.length) {
-      parentCheckQueryString = " AND (" + parentCheckQuery.join(" OR ") + ")";
+    if (firstSubject && subjectParent) {
+      parentCheckQueryString = `ISCHILDNODE(n , '${subjectParent}')`;
     } else {
-      parentCheckQueryString = " AND n.'parents' IS NULL";
+      parentCheckQueryString = "ISCHILDNODE(n , '/Subjects/')";
     }
 
-    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${escapeJQL(subjectName)}'` + parentCheckQueryString, "lfs:Subject");
+    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${escapeJQL(subjectName)}' AND ${parentCheckQueryString}`, "lfs:Subject");
     let newPromise = fetchWithReLogin(globalLoginDisplay, checkAlreadyExistsURL)
       .then( (response) => response.ok ? response.json() : Promise.reject(response))
       .then( (json) => {
         if (json?.rows?.length > 0) {
           // Create an error message, adding the parents if they exist
-          let error_msg = subjectType?.['@name'] || "Subject";
+          let error_msg = subjectType?.['label'] || "Subject";
           error_msg += ` ${subjectName} already exists`;
           let id = json["rows"][0]["parents"]?.["identifier"];
           if (id) {
-            let parentType = json["rows"][0]["parents"]?.["type"]?.["@name"] || "parent";
+            let parentType = json["rows"][0]["parents"]?.["type"]?.["label"] || "parent";
             error_msg += ` for ${parentType} ${id}.`;
           }
 
