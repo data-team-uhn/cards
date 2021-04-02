@@ -121,8 +121,18 @@ function FileResourceQuestion(props) {
 
   // Find the icon and load them
   let uploadAllFiles = (selectedFiles) => {
+    let allowedUploads = selectedFiles.length;
+
+    if (maxAnswers == 1) {
+      // Remove existing selection if only one file is permitted
+      Object.keys(uploadedFiles || {}).forEach((filename, idx) => filename != selectedFiles[0]['name'] && deletePath(idx))
+      allowedUploads = 1;
+    } else if (maxAnswers > 1) {
+      allowedUploads = Math.max(0, maxAnswers - uploadedFiles.length);
+    }
+
     const promises = [];
-    for (let i = 0; i < selectedFiles.length; i++) {
+    for (let i = 0; i < Math.min(selectedFiles.length, allowedUploads); i++) {
       promises.push(uploadSingleFile(selectedFiles[i]));
     }
 
