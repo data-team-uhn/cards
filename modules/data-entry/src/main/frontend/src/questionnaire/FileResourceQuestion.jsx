@@ -213,6 +213,7 @@ function FileResourceQuestion(props) {
 
   // Delete an answer by its index
   let deletePath = (index) => {
+    setError("");
     // Rather than waiting to delete, we'll just delete it immediately
     let data = new FormData();
     data.append(':operation', 'delete');
@@ -258,9 +259,8 @@ function FileResourceQuestion(props) {
         classes={classes}
         handleDrop={addFiles}
         multifile={maxAnswers != 1}
+        error={error}
         />
-
-      { error && <Typography color="error">error</Typography>}
 
       { uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
         {Object.keys(uploadedFiles).map((filepath, idx) =>
