@@ -122,13 +122,27 @@ function FileResourceQuestion(props) {
   // Find the icon and load them
   let uploadAllFiles = (selectedFiles) => {
     let allowedUploads = selectedFiles.length;
+    let uploadedFileNames = Object.keys(uploadedFiles || {});
 
     if (maxAnswers == 1) {
       // Remove existing selection if only one file is permitted
-      Object.keys(uploadedFiles || {}).forEach((filename, idx) => filename != selectedFiles[0]['name'] && deletePath(idx))
+      uploadedFileNames.forEach((filename, idx) => filename != selectedFiles[0]['name'] && deletePath(idx))
       allowedUploads = 1;
     } else if (maxAnswers > 1) {
-      allowedUploads = Math.max(0, maxAnswers - uploadedFiles.length);
+      allowedUploads = Math.max(0, maxAnswers - uploadedFileNames.length);
+      for (let i = 0; i < selectedFiles.length && allowedUploads < maxAnswers; ++i) {
+        if (uploadedFileNames.includes(selectedFiles[i]['name'])) {
+          allowedUploads++;
+        }
+      }
+    }
+    if (allowedUploads < selectedFiles.length) {
+      let errorText = "At most " + maxAnswers + " file" + (maxAnswers > 1 ? "s" : "") + " can be uploaded to this question. ";
+      errorText += "Not uploaded from your selection: " + selectedFiles[allowedUploads]['name'];
+      for (let i = allowedUploads + 1; i < selectedFiles.length; ++i) {
+        errorText += ", " + selectedFiles[i]['name'];
+      }
+      setError(errorText);
     }
 
     const promises = [];
