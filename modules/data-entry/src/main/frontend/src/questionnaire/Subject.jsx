@@ -582,7 +582,7 @@ function FormData(props) {
   }
   // Handle questions and sections differently
   let handleDisplayQuestion = (entryDefinition, data, key) => {
-    let result = displayQuestion(entryDefinition, data, key);
+    let result = displayQuestion(entryDefinition, data, key, classes);
     if (result && displayed < maxDisplayed) {
       displayed++;
     } else {
@@ -606,7 +606,7 @@ function FormData(props) {
 }
 
 // Display the questions/question found within sections
-export function displayQuestion(entryDefinition, data, key) {
+export function displayQuestion(entryDefinition, data, key, classes) {
   const existingQuestionAnswer = data && Object.entries(data)
     .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
       && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);

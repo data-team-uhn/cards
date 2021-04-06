@@ -253,7 +253,7 @@ function SubjectTimeline(props) {
       ) {
         // Append the non-date answer to the previous date answer,
         // if a previous date answer exists and hasn't met the followup question limit.
-        output[output.length - 1].followup.push(displayQuestion(questionDefinition, formData, key));
+        output[output.length - 1].followup.push(displayQuestion(questionDefinition, formData, key, classes));
       }
     }
   }
