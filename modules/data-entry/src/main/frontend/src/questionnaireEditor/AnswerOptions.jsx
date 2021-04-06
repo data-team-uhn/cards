@@ -159,18 +159,26 @@ let AnswerOptions = (props) => {
   let generateSpecialOptions = (index) => {
     let option = specialOptionsInfo[index];
     return (
-    <div onClick={(event) => option.setter({ ...option.data, [option.label]: true})} >
+    <Grid container
+       direction="row"
+       justify="space-between"
+       alignItems="stretch"
+       onClick={(event) => option.setter({ ...option.data, [option.label]: true})}
+       >
+      <Grid item xs={10}>
       <Tooltip title={option.tooltip}>
         <TextField
           disabled={!option.data[option.label]}
           label={option.tootltip}
           error={option.data[option.label] && option.isDuplicate}
           helperText={option.isDuplicate ? 'duplicated value or label' : ''}
-          className={classes.specialOption + " " + classes.answerOptionInput}
+          className={classes.answerOptionInput}
           defaultValue={option.data.label? option.data.value + " = " + option.data.label : option.data.value}
           onChange={(event) => { handleSpecialInputOption(option, event.target.value); }}
         />
       </Tooltip>
+      </Grid>
+      <Grid item xs={2}>
       <Tooltip title={option.switchTooltip} className={classes.specialOptionSwitch}>
         <FormControlLabel
           control={
@@ -193,7 +201,8 @@ let AnswerOptions = (props) => {
         :
         <input type='hidden' name={`${option.data['@path']}@Delete`} value="0" />
       }
-    </div>
+      </Grid>
+    </Grid>
     )
   }
 
@@ -204,7 +213,14 @@ let AnswerOptions = (props) => {
       )}
       { generateSpecialOptions(0) }
       { options.map((value, index) =>
-        <React.Fragment key={value.value}>
+        <Grid container
+          direction="row"
+          justify="space-between"
+          alignItems="stretch"
+          className={classes.answerOption}
+          key={value.value}
+          >
+          <Grid item xs={10}>
           <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
           <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
           <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
@@ -216,13 +232,17 @@ let AnswerOptions = (props) => {
             defaultValue={value.label? value.value + " = " + value.label : value.value}
             multiline
             />
+          </Grid>
+          <Grid item xs={2}>
           <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionDeleteButton}>
             <CloseIcon/>
           </IconButton>
-        </React.Fragment>
+          </Grid>
+        </Grid>
       )}
       <TextField
-        className={classes.specialOption}
+        fullWidth
+        className={classes.newOptionInput}
         value={tempValue}
         error={isDuplicate}
         label="value OR value=label (e.g. F=Female)"
