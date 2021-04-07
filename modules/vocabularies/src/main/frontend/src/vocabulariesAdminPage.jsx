@@ -31,7 +31,7 @@ import React, {useEffect} from "react";
 
 import VocabularyDirectory from "./vocabularyDirectory";
 import OwlInstaller from "./owlInstaller";
-import { fetchBioPortalApiKey, BioPortalApiKey } from "./bioportalApiKey";
+import { BioPortalApiKey } from "./bioportalApiKey";
 
 const Phase = require("./phaseCodes.json");
 const vocabLinks = require("./vocabularyLinks.json");
