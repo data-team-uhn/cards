@@ -251,7 +251,7 @@ let AnswerOptions = (props) => {
         value={tempValue}
         error={isDuplicate}
         label="value OR value=label (e.g. F=Female)"
-        helperText={isDuplicate ? 'duplicated value or label' : 'Press ENTER to add a new line'}
+        helperText={isDuplicate ? 'Duplicated value or label' : 'Press ENTER to add a new line'}
         onChange={(event) => { setTempValue(event.target.value); validateOption(event.target.value, setIsDuplicate); }}
         onBlur={(event) => { handleInputOption(event.target.value); }}
         inputProps={Object.assign({
