@@ -41,7 +41,8 @@ let AnswerOptions = (props) => {
   const { objectKey, data, path, saveButtonRef, classes } = props;
   let [ options, setOptions ] = useState(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption'
                                                                                && !value.notApplicable
-                                                                               && !value.noneOfTheAbove).slice());
+                                                                               && !value.noneOfTheAbove).slice()
+                                                            .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder)));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
   let [ isDuplicate, setIsDuplicate ] = useState(false);
@@ -67,6 +68,7 @@ let AnswerOptions = (props) => {
       data : notApplicableOption,
       setter : setNotApplicableOption,
       label: "notApplicable",
+      defaultOrder: 0,
       isDuplicate: isNADuplicate,
       duplicateSetter: setIsNADuplicate
     },
@@ -76,6 +78,7 @@ let AnswerOptions = (props) => {
       data : noneOfTheAboveOption,
       setter : setNoneOfTheAboveOption,
       label: "noneOfTheAbove",
+      defaultOrder: 99999,
       isDuplicate: isNoneDuplicate,
       duplicateSetter: setIsNoneDuplicate
     }
@@ -197,6 +200,7 @@ let AnswerOptions = (props) => {
           <input type='hidden' name={`${option.data['@path']}/value`} value={option.data.value} />
           <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
           <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
+          <input type='hidden' name={`${option.data['@path']}/defaultOrder`} value={option.defaultOrder} />
         </>
         :
         <input type='hidden' name={`${option.data['@path']}@Delete`} value="0" />
@@ -224,6 +228,7 @@ let AnswerOptions = (props) => {
           <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
           <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
           <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
+          <input type='hidden' name={`${value['@path']}/defaultOrder`} value={index+1} />
           <TextField
             InputProps={{
               readOnly: true,
