@@ -68,7 +68,7 @@ let AnswerOptions = (props) => {
       setter : setNotApplicableOption,
       label: "notApplicable",
       isDuplicate: isNADuplicate,
-      dupliateSetter: setIsNADuplicate
+      duplicateSetter: setIsNADuplicate
     },
     {
       tooltip : "This option behaves as 'None of the above'. When selected, it removes all existing selections except those entered by the user in the input, if applicable.",
@@ -77,7 +77,7 @@ let AnswerOptions = (props) => {
       setter : setNoneOfTheAboveOption,
       label: "noneOfTheAbove",
       isDuplicate: isNoneDuplicate,
-      dupliateSetter: setIsNoneDuplicate
+      duplicateSetter: setIsNoneDuplicate
     }
   ]
 
@@ -118,7 +118,7 @@ let AnswerOptions = (props) => {
   }
 
   let handleSpecialInputOption = (option, optionInput) => {
-    let duplicate = validateOption(optionInput, option.dupliateSetter, option.data);
+    let duplicate = validateOption(optionInput, option.duplicateSetter, option.data);
     if (optionInput && !duplicate) {
       let inputs = (optionInput || '').trim().split(/\s*=\s*(.*)/);
       option.setter({ ...option.data, "value": inputs[0].trim(), "label": inputs[1] ? inputs[1].trim() : ""});
