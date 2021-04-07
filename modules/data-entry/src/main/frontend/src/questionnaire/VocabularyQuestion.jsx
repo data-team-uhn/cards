@@ -91,9 +91,6 @@ function VocabularyQuestion(props) {
         defaultSuggestions = {defaultSuggestions}
         source = {sourceVocabularies}
         selectionUpdated = {(count) => setCurrentAnswers(count)}
-        onChange={(event) => {
-          console.log("Vocab question updated");
-        }}
         {...rest}
         />
     </Question>);

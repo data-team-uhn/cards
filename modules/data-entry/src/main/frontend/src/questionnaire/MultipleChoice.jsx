@@ -137,7 +137,6 @@ function MultipleChoice(props) {
         let defaultOptions = defaults.filter(option => option[IS_DEFAULT_POS]).map((option) => option[VALUE_POS]);
         let newSelection = old.slice().filter((option) => !defaultOptions.includes(option[VALUE_POS]));
         newSelection.push([name, id]);
-        console.log(newSelection);
         return newSelection;
       });
       // OK to clear input (we more-or-less should never get here via a user-entered input)
@@ -225,14 +224,16 @@ function MultipleChoice(props) {
     return;
   }
 
-  let acceptEnteredOption = () => {
+  let acceptEnteredOption = (overrideValue, overrideName) => {
+    let valToAccept = overrideValue || ghostValue;
+    let labelToAccept = overrideName || ghostName || valToAccept;
     if (isRadio) {
-      selectOption(ghostValue, ghostName) && setGhostName("");
+      selectOption(valToAccept, labelToAccept) && setGhostName("");
       inputEl && inputEl.blur();
-    } else if (maxAnswers !== 1 && !error && ghostName !== "") {
+    } else if (maxAnswers !== 1 && !error && valToAccept !== "") {
       // If we can select multiple and are not in error, add this option (if not already available) and ensure it's selected
-      addOption(ghostName, ghostName);
-      selectOption(ghostName, ghostName);
+      addOption(valToAccept, labelToAccept);
+      selectOption(valToAccept, labelToAccept);
       // Clear the ghost
       setGhostName("");
       checkForSeparators(null);
@@ -307,11 +308,10 @@ function MultipleChoice(props) {
       {
         customInput ?
           <CustomInput
-            onClick={(value) => {
-              console.log("Custom input logged");
-              console.log(value);
+            onClick={(value, label) => {
               setGhostName(value);
               updateGhost(GHOST_SENTINEL, value);
+              acceptEnteredOption(value, label);
               //checkForSeparators(event.target);
               onUpdate && onUpdate(value);
             }}
