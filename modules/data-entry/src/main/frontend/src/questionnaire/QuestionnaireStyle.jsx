@@ -215,6 +215,18 @@ const questionnaireStyle = theme => ({
         }
     },
     compactLayout : {
+      "& .MuiFormGroup-root" : {
+        [theme.breakpoints.up('sm')]: {
+          display: "inline-block",
+        },
+      },
+      "& .MuiFormGroup-root + div > .MuiFormControl-root" : {
+        [theme.breakpoints.up('sm')]: {
+          minWidth: "100px",
+          marginTop: theme.spacing(-1.5),
+          marginLeft: theme.spacing(-4),
+        },
+      },
       "& .MuiList-root" : {
         [theme.breakpoints.up('sm')]: {
           display: "inline-block",
@@ -223,7 +235,8 @@ const questionnaireStyle = theme => ({
       "& .MuiList-root + div > .MuiFormControl-root" : {
         [theme.breakpoints.up('sm')]: {
           minWidth: "100px",
-          marginTop: "-10px",
+          marginTop: theme.spacing(-1.5),
+          marginLeft: theme.spacing(4),
         },
       },
       "& .MuiListItem-root" : {
