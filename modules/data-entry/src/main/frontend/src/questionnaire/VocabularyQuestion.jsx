@@ -27,7 +27,8 @@ import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
-import VocabularySelector from "../vocabSelector/select.jsx";
+import MultipleChoice from "./MultipleChoice";
+import VocabularyQuery from "../vocabQuery/query.jsx";
 
 // Component that renders a vocabulary question.
 // Selected answers are placed in a series of <input type="hidden"> tags for
@@ -80,14 +81,21 @@ function VocabularyQuestion(props) {
       currentAnswers={currentAnswers}
       {...props}
       >
-      <VocabularySelector
+      <MultipleChoice
+        customInput = {VocabularyQuery}
+        customInputProps = {{
+          vocabularies: sourceVocabularies
+        }}
         vocabularyFilter = {vocabularyFilter}
         max = {maxAnswers}
         defaultSuggestions = {defaultSuggestions}
         source = {sourceVocabularies}
         selectionUpdated = {(count) => setCurrentAnswers(count)}
+        onChange={(event) => {
+          console.log("Vocab question updated");
+        }}
         {...rest}
-      />
+        />
     </Question>);
 }
 

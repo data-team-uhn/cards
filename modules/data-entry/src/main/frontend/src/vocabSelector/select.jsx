@@ -19,7 +19,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
-import { FormControlLabel, List, ListItem, RadioGroup, Typography, withStyles, Radio } from "@material-ui/core";
+import { FormControlLabel, List, ListItem, RadioGroup, withStyles, Radio } from "@material-ui/core";
 
 import { MakeRequest } from "../vocabQuery/util.jsx";
 import Answer, { VALUE_POS } from "../questionnaire/Answer.jsx";
@@ -69,6 +69,8 @@ function VocabularySelector(props) {
   }, [selectedListChildren]);
 
   let thesaurusRef = null;
+
+  console.log(questionDefinition);
 
   let generateList = (disabled, isRadio) => {
     if (isRadio) {

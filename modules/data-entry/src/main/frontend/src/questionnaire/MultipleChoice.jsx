@@ -40,6 +40,8 @@ const GHOST_SENTINEL = "custom-input";
   * @param {Object} existingAnswer form data that may include answers already submitted for this component
   * @param {bool} input if true, display a free-text single-line input after the predefined options; at most one of "input" or "textbox" may be true
   * @param {bool} textbox if true, display a free-text multi-line input after the predefined options; at most one of "input" or "textbox" may be true
+  * @param {Component} customInput if true, display this after the predefined options; do not define this and input/textbox
+  * @param {Object} customInputProps additional props to be given to the customInput element provided
   * @param {func} onUpdate Callback for when an input value is changed or an option is added, receives as argument the new value of the changed option
   * @param {func} onChange Callback for when an option is removed, receives as argument the value of the removed option
   * @param {Object} additionalInputProps additional props to be set on the input element
@@ -49,7 +51,7 @@ const GHOST_SENTINEL = "custom-input";
   * @param {bool} error indicates if the current selection is in a state of error
   */
 function MultipleChoice(props) {
-  let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
+  let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
   let { instanceId } = props;
   let defaults = props.defaults || Object.values(props.questionDefinition)
@@ -300,36 +302,52 @@ function MultipleChoice(props) {
   }, [updatedOptions])
 
   // Hold the input box for either multiple choice type
-  let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
-      <TextField
-        helperText={maxAnswers !== 1 && "Press ENTER to add a new option"}
-        className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
-        onChange={(event) => {
-          setGhostName(event.target.value);
-          updateGhost(GHOST_SENTINEL, event.target.value);
-          checkForSeparators(event.target);
-          onUpdate && onUpdate(event.target.value);
-        }}
-        disabled={disabled}
-        onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
-        onBlur={separatorDetected ? ()=>{} : acceptEnteredOption}
-        inputProps={Object.assign({
-          onKeyDown: (event) => {
-            if (event.key == 'Enter') {
-              // We need to stop the event so that it doesn't trigger a form submission
-              event.preventDefault();
-              event.stopPropagation();
-              acceptEnteredOption();
+  let CustomInput = customInput;
+  let ghostInput = (input || textbox || customInput) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
+      {
+        customInput ?
+          <CustomInput
+            onClick={(value) => {
+              console.log("Custom input logged");
+              console.log(value);
+              setGhostName(value);
+              updateGhost(GHOST_SENTINEL, value);
+              //checkForSeparators(event.target);
+              onUpdate && onUpdate(value);
+            }}
+            {...customInputProps}
+            />
+        :
+          <TextField
+            helperText={maxAnswers !== 1 && "Press ENTER to add a new option"}
+            className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
+            onChange={(event) => {
+              setGhostName(event.target.value);
+              updateGhost(GHOST_SENTINEL, event.target.value);
+              checkForSeparators(event.target);
+              onUpdate && onUpdate(event.target.value);
+            }}
+            disabled={disabled}
+            onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
+            onBlur={separatorDetected ? ()=>{} : acceptEnteredOption}
+            inputProps={Object.assign({
+              onKeyDown: (event) => {
+                if (event.key == 'Enter') {
+                  // We need to stop the event so that it doesn't trigger a form submission
+                  event.preventDefault();
+                  event.stopPropagation();
+                  acceptEnteredOption();
+                }
+              },
+              tabindex: isRadio ? -1 : undefined
+            }, additionalInputProps)
             }
-          },
-          tabindex: isRadio ? -1 : undefined
-        }, additionalInputProps)
-        }
-        value={ghostName}
-        multiline={textbox}
-        InputProps={muiInputProps}
-        inputRef={ref => {inputEl = ref}}
-      />
+            value={ghostName}
+            multiline={textbox}
+            InputProps={muiInputProps}
+            inputRef={ref => {inputEl = ref}}
+            />
+      }
       { maxAnswers !== 1 && separatorDetectionEnabled &&
         <UserInputAssistant
           title="Separator detected"
