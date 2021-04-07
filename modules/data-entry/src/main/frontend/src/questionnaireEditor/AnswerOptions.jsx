@@ -45,14 +45,18 @@ let AnswerOptions = (props) => {
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
   let [ isDuplicate, setIsDuplicate ] = useState(false);
+  let [ isNADuplicate, setIsNADuplicate ] = useState(false);
+  let [ isNoneDuplicate, setIsNoneDuplicate ] = useState(false);
 
   const notApplicable  = Object.values(data).find(option => option['jcr:primaryType'] == 'lfs:AnswerOption' && option.notApplicable);
   const noneOfTheAbove = Object.values(data).find(option => option['jcr:primaryType'] == 'lfs:AnswerOption' && option.noneOfTheAbove);
 
-  let [ notApplicableOption, setNotApplicableOption ] = useState(notApplicable || {"value" : "None",
+  let [ notApplicableOption, setNotApplicableOption ] = useState(notApplicable || {"value" : "notApplicable",
+                                                                                   "label" : "None",
                                                                                    "notApplicable" : false,
                                                                                    "@path" : path + "/None"});
-  let [ noneOfTheAboveOption, setNoneOfTheAboveOption ] = useState(noneOfTheAbove || {"value": "None of the above",
+  let [ noneOfTheAboveOption, setNoneOfTheAboveOption ] = useState(noneOfTheAbove || {"value": "noneOfTheAbove",
+                                                                                      "label" : "None of the above",
                                                                                       "noneOfTheAbove" : false,
                                                                                       "@path" : path + "/NoneOfTheAbove"});
 
@@ -62,14 +66,18 @@ let AnswerOptions = (props) => {
       switchTooltip: "Enable N/A",
       data : notApplicableOption,
       setter : setNotApplicableOption,
-      label: "notApplicable"
+      label: "notApplicable",
+      isDuplicate: isNADuplicate,
+      dupliateSetter: setIsNADuplicate
     },
     {
       tooltip : "This option behaves as 'None of the above'. When selected, it removes all existing selections except those entered by the user in the input, if applicable.",
       switchTooltip: "Enable 'None of the above'",
       data : noneOfTheAboveOption,
       setter : setNoneOfTheAboveOption,
-      label: "noneOfTheAbove"
+      label: "noneOfTheAbove",
+      isDuplicate: isNoneDuplicate,
+      dupliateSetter: setIsNoneDuplicate
     }
   ]
 
@@ -95,12 +103,25 @@ let AnswerOptions = (props) => {
     });
   }
 
-  let validateOption = (optionInput) => {
+  let validateOption = (optionInput, setter, specialOption) => {
     if (optionInput) {
-      setIsDuplicate(false);
+      setter(false);
       let inputs = (optionInput || '').trim().split(/\s*=\s*(.*)/);
-      let duplicateOption = options.find( option => option.value === inputs[0] || inputs[1] && (option.label === inputs[1]));
-      duplicateOption && setIsDuplicate(true);
+      let allOptions = options.slice();
+      specialOption != notApplicableOption && notApplicableOption.notApplicable && allOptions.push(notApplicableOption);
+      specialOption != noneOfTheAboveOption && noneOfTheAboveOption.noneOfTheAbove && allOptions.push(noneOfTheAboveOption);
+      let duplicateOption = allOptions.find( option => option.value === inputs[0] || inputs[1] && (option.label === inputs[1]));
+      duplicateOption && setter(true);
+      return !!duplicateOption;
+    }
+    return false;
+  }
+
+  let handleSpecialInputOption = (option, optionInput) => {
+    let duplicate = validateOption(optionInput, option.dupliateSetter, option.data);
+    if (optionInput && !duplicate) {
+      let inputs = (optionInput || '').trim().split(/\s*=\s*(.*)/);
+      option.setter({ ...option.data, "value": inputs[0].trim(), "label": inputs[1] ? inputs[1].trim() : ""});
     }
   }
 
@@ -143,9 +164,11 @@ let AnswerOptions = (props) => {
         <TextField
           disabled={!option.data[option.label]}
           label={option.tootltip}
+          error={option.data[option.label] && option.isDuplicate}
+          helperText={option.isDuplicate ? 'duplicated value or label' : ''}
           className={classes.specialOption + " " + classes.answerOptionInput}
-          value={option.data.value}
-          onChange={(event) => option.setter({ ...option.data, "value": event.target.value})}
+          defaultValue={option.data.label? option.data.value + " = " + option.data.label : option.data.value}
+          onChange={(event) => { handleSpecialInputOption(option, event.target.value); }}
         />
       </Tooltip>
       <Tooltip title={option.switchTooltip} className={classes.specialOptionSwitch}>
@@ -164,6 +187,7 @@ let AnswerOptions = (props) => {
         <>
           <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
           <input type='hidden' name={`${option.data['@path']}/value`} value={option.data.value} />
+          <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
           <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
         </>
         :
@@ -203,7 +227,7 @@ let AnswerOptions = (props) => {
         error={isDuplicate}
         label="value OR value=label (e.g. F=Female)"
         helperText={isDuplicate ? 'duplicated value or label' : 'Press ENTER to add a new line'}
-        onChange={(event) => { setTempValue(event.target.value); validateOption(event.target.value); }}
+        onChange={(event) => { setTempValue(event.target.value); validateOption(event.target.value, setIsDuplicate); }}
         onBlur={(event) => { handleInputOption(event.target.value); }}
         inputProps={Object.assign({
           onKeyDown: (event) => {
