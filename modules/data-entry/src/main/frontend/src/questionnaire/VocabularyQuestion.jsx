@@ -31,30 +31,9 @@ import MultipleChoice from "./MultipleChoice";
 import VocabularyQuery from "../vocabQuery/query.jsx";
 
 // Component that renders a vocabulary question.
-// Selected answers are placed in a series of <input type="hidden"> tags for
-// submission.
-//
-// Required arguments:
-//  text: String containing the question to ask
-//  sourceVocabularies: Array denoting the vocabularies sources
-//
-// Optional arguments:
-//  maxAnswers: Integer indicating the maximum number of terms allowed
-//
-// Other arguments are passed to the VocabularySelector component
 //
 // Sample usage:
 //
-// <VocabularyQuestion
-//   text="Does the patient have any co-morbidities (non cancerous), including abnormal incidental imaging/labs?"
-//   sourceVocabularies={["hpo"]}
-//   />
-// <VocabularyQuestion
-//   text="Does the patient have any skin conditions?"
-//   sourceVocabularies={["hpo"]}
-//   vocabularyFilter={["HP:0000951"]}
-//   />
-// <!-- Alternate method of specifying arguments -->
 // <VocabularyQuestion
 //   questionDefintion={{
 //     text: "Does the patient have any skin conditions?",

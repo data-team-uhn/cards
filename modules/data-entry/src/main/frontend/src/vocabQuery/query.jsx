@@ -63,6 +63,7 @@ class VocabularyQuery extends React.Component {
       browserOpened: false,
       browseID: "",
       browsePath: "",
+      inputValue: props.defaultValue,
       // Strings used by the info box
       infoID: "",
       infoName: "",
@@ -84,7 +85,7 @@ class VocabularyQuery extends React.Component {
   }
 
   render() {
-    const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onInputFocus, placeholder, searchDefault, vocabularies } = this.props;
+    const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onInputFocus, placeholder, searchDefault, value, vocabularies } = this.props;
 
     const inputEl = (<Input
       disabled={disabled}
@@ -94,7 +95,10 @@ class VocabularyQuery extends React.Component {
       }, {
         tabindex: isNested ? -1 : undefined
       }}
-      onChange={this.delayLookup}
+      onChange={(event) => {
+        this.delayLookup(event);
+        this.setState({inputValue: event.target.value})
+      }}
       inputRef={(node) => {
         this.anchorEl = node;
         if (inputRef != null) {
@@ -128,6 +132,7 @@ class VocabularyQuery extends React.Component {
       )}
       defaultValue={defaultValue}
       placeholder={placeholder}
+      value={value || this.state.inputValue}
       />);
 
     return (
