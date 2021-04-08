@@ -22,12 +22,14 @@ import { withRouter, useHistory } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@material-ui/core";
 import { Tooltip, Typography, withStyles } from "@material-ui/core";
 import { Delete, Close } from "@material-ui/icons";
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 /**
  * A component that renders an icon to open a dialog to delete an entry.
+ * variant - defines the action display; possible values: "icon" (default), "text", "extended" (means both icon and text)
  */
 function DeleteButton(props) {
   const { classes, entryPath, entryName, onComplete, entryType, entryLabel, size, shouldGoBack, buttonClass } = props;
@@ -40,6 +42,7 @@ function DeleteButton(props) {
   const [ deleteRecursive, setDeleteRecursive ] = useState(false);
   const [ entryNotFound, setEntryNotFound ] = useState(false);
 
+  const variant = props.variant || "icon";
   const defaultDialogAction = `Are you sure you want to delete ${entryName}?`;
   const defaultErrorMessage = entryName + " could not be removed.";
   const history = useHistory();
@@ -169,11 +172,19 @@ function DeleteButton(props) {
             <Button variant="contained" size="small" onClick={closeDialog}>Close</Button>
         </DialogActions>
       </Dialog>
-      <Tooltip title={entryType ? "Delete " + entryType : "Delete"}>
-        <IconButton component="span" onClick={handleIconClicked} className={buttonClass}>
-          <Delete fontSize={size ? size : "default"}/>
-        </IconButton>
-      </Tooltip>
+      {variant == "icon" &&
+        <Tooltip title={entryType ? "Delete " + entryType : "Delete"}>
+          <IconButton component="span" onClick={handleIconClicked} className={buttonClass}>
+            <Delete fontSize={size ? size : "default"}/>
+          </IconButton>
+        </Tooltip>
+      }
+      {variant == "text" &&
+        <Button onClick={handleIconClicked} size={size ? size : "medium"}>Delete</Button>
+      }
+      {variant == "extended" &&
+        <Button onClick={handleIconClicked} size={size ? size : "medium"} startIcon={<DeleteIcon />}>Delete</Button>
+      }
     </React.Fragment>
   );
 }

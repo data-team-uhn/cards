@@ -402,6 +402,7 @@ function Form (props) {
                           entryType={data?.questionnaire?.title || "Form"}
                           shouldGoBack={true}
                           onComplete={removeWindowHandlers}
+                          variant="text"
                         />
                     </ListItem>
                   </List>
