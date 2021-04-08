@@ -47,6 +47,7 @@ function VocabularyQuestion(props) {
 
   return (
     <Question
+      disableInstructions
       {...props}
       >
       <MultipleChoice
