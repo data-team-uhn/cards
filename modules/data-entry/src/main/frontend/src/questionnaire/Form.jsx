@@ -254,6 +254,11 @@ function Form (props) {
     props.history.push("/content.html" + formURL + '.edit' + window.location.hash);
   }
 
+  let onClose = (event) => {
+    // Redirect the user to the view form mode
+    props.history.push("/content.html" + formURL + window.location.hash);
+  }
+
   let parentDetails = data?.subject && getHierarchy(data.subject);
   let title = data?.questionnaire?.title || id || "";
   let subjectName = data?.subject && getTextHierarchy(data?.subject);
@@ -359,7 +364,7 @@ function Form (props) {
             {title}
             <div className={classes.actionsMenu}>
                 {isEdit ?
-                  <Tooltip title="Save and close" onClick={() => {props.history.push("/content.html" + formURL)}}>
+                  <Tooltip title="Save and close" onClick={onClose}>
                     <IconButton color="primary">
                       <DoneIcon />
                     </IconButton>
