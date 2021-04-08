@@ -35,7 +35,6 @@ const browseStyle = theme => ({
       top: theme.spacing(1),
     },
     infoName: {
-      color: "#000000",
       whiteSpace: "normal", // Enable line wrapping
     },
     treeContainer: {
