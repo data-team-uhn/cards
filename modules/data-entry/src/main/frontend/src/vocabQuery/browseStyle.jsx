@@ -34,11 +34,6 @@ const browseStyle = theme => ({
       right: theme.spacing(1),
       top: theme.spacing(1),
     },
-    // Info box components
-    infoDataSource: {
-      color: "#00ACC1",
-      marginTop: "3px",
-    },
     infoName: {
       color: "#000000",
       whiteSpace: "normal", // Enable line wrapping
@@ -63,7 +58,7 @@ const browseStyle = theme => ({
       margin: "0px",
       padding: "0px",
       textTransform: "none",
-      color: "#00ACC1",
+      color: theme.palette.primary.main,
       backgroundColor: 'transparent',
     },
     childDiv: {
@@ -83,6 +78,7 @@ const browseStyle = theme => ({
     arrowButton: {
       minWidth: "0px",
       backgroundColor: 'transparent',
+      right: theme.spacing(0.5)
     },
 });
 

@@ -188,8 +188,7 @@ const thesaurusStyle = theme => ({
   },
   infoButton: {
     minWidth: "0px",
-    width: "30px",
-    color: "#00ACC1",
+    width: "30px"
   },
   infoDialog: {
     zIndex: "1350 !important",
