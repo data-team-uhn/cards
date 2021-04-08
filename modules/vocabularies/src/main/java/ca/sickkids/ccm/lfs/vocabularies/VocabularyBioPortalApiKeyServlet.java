@@ -55,11 +55,11 @@ public class VocabularyBioPortalApiKeyServlet extends SlingSafeMethodsServlet
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
         response.setContentType("application/json");
-        final Writer out = response.getWriter();
-        JsonGenerator jsonGen = Json.createGenerator(out);
-        jsonGen.writeStartObject();
-        String key = this.apiKeyManager.getAPIKey();
-        jsonGen.write(RESPONSE_JSON_KEY, key);
-        jsonGen.writeEnd().flush();
+        try (Writer out = response.getWriter(); JsonGenerator jsonGen = Json.createGenerator(out)) {
+            jsonGen.writeStartObject();
+            String key = this.apiKeyManager.getAPIKey();
+            jsonGen.write(RESPONSE_JSON_KEY, key);
+            jsonGen.writeEnd().flush();
+        }
     }
 }

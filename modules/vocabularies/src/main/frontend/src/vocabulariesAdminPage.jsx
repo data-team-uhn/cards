@@ -31,7 +31,7 @@ import React, {useEffect} from "react";
 
 import VocabularyDirectory from "./vocabularyDirectory";
 import OwlInstaller from "./owlInstaller";
-import { fetchBioPortalApiKey, BioPortalApiKey } from "./bioportalApiKey";
+import { BioPortalApiKey } from "./bioportalApiKey";
 
 const Phase = require("./phaseCodes.json");
 const vocabLinks = require("./vocabularyLinks.json");
@@ -221,6 +221,12 @@ export default function VocabulariesAdminPage() {
       />
 
       <OwlInstaller updateLocalList={updateLocalList} reloadVocabList={() => {setLocalLoaded(false);}}/>
+
+      <Grid item>
+        <Typography variant="h6">
+          Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
+        </Typography>
+      </Grid>
 
       <BioPortalApiKey
         bioPortalApiKey={bioPortalApiKey}
