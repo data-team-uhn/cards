@@ -64,33 +64,19 @@ import VocabularyQuery from "../vocabQuery/query.jsx";
 //   />
 function VocabularyQuestion(props) {
   let { classes, ...rest } = props;
-  let { enableNotes, maxAnswers, sourceVocabularies, vocabularyFilter } = { ...props.questionDefinition, ...props };
-  let defaultSuggestions = props.defaults || Object.values(props.questionDefinition)
-    // Keep only answer options
-    // FIXME Must deal with nested options, do this recursively
-    .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
-    // Only extract the labels and internal values from the node
-    .map(value => [value.label || value.value, value.value, true])
-    // Reparse defaults into a format VocabularySelector understands
-    .reduce((object, value) => ({...object, [value[VALUE_POS]]: value[LABEL_POS]}), {});
-
-  let [currentAnswers, setCurrentAnswers] = useState(Array.of(props.existingAnswer?.[VALUE_POS]?.value || []).flat().length);
+  let { questionDefinition, sourceVocabularies } = { ...props.questionDefinition, ...props };
 
   return (
     <Question
-      currentAnswers={currentAnswers}
       {...props}
       >
       <MultipleChoice
         customInput = {VocabularyQuery}
         customInputProps = {{
-          vocabularies: sourceVocabularies
+          vocabularies: sourceVocabularies,
+          questionDefinition: questionDefinition
         }}
-        vocabularyFilter = {vocabularyFilter}
-        max = {maxAnswers}
-        defaultSuggestions = {defaultSuggestions}
-        source = {sourceVocabularies}
-        selectionUpdated = {(count) => setCurrentAnswers(count)}
+        answerNodeType = "lfs:VocabularyAnswer"
         {...rest}
         />
     </Question>);

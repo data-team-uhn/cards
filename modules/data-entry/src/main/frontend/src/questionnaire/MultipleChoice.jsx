@@ -75,10 +75,8 @@ function MultipleChoice(props) {
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
     // The value can either be a single value or an array of values; force it into an array
     Array.of(existingAnswer[1].value).flat()
-    // Only the internal values are stored, turn them into pairs of [label, value]
-    // Values that are not predefined come from a custom input, and custom inputs use either the same name as their answer (multiple inputs)
-    // or the the special ghost sentinel value
-    .map(answer => (defaults.find(e => e[1] === String(answer)) || [String(answer), (isBare || isRadio) ? GHOST_SENTINEL : String(answer)]));
+    // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
+    .map((item, index) => [item, Array.of(existingAnswer[1].displayedValue).flat()[index]]);
   let all_options =
     // If the question is a radio, just display the defaults as duplicates
     isRadio ? defaults.slice() :
