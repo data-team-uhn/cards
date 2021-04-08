@@ -348,7 +348,14 @@ const questionnaireStyle = theme => ({
         marginTop: theme.spacing(1)
     },
     actionsMenuItem: {
-        padding: theme.spacing(0,1,0,1)
+        padding: theme.spacing(0,1),
+        "& .MuiButtonBase-root" : {
+          fontWeight: "normal",
+          justifyContent: "flex-start",
+          textTransform: "none",
+          width: "100%",
+       }
+
     },
     subjectSubHeader: {
         display: "block"
