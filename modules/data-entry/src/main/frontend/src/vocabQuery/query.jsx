@@ -381,7 +381,7 @@ class VocabularyQuery extends React.Component {
 
     // Grab suggestions
     //...Make a queue of vocabularies to search through
-    var vocabQueue = this.props.vocabularies.slice();
+    var vocabQueue = this.props.questionDefinition.sourceVocabularies.slice();
     this.makeMultiRequest(vocabQueue, input, null, []);
 
     // Hide the infobox and stop the timer

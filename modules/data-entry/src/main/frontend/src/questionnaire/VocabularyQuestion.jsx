@@ -52,7 +52,6 @@ function VocabularyQuestion(props) {
       <MultipleChoice
         customInput = {VocabularyQuery}
         customInputProps = {{
-          vocabularies: sourceVocabularies,
           questionDefinition: questionDefinition
         }}
         answerNodeType = "lfs:VocabularyAnswer"

@@ -40,14 +40,12 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
  */
 const VocabularyFilter = forwardRef((props, ref) => {
   const { classes, defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
-  let vocabularies = questionDefinition["sourceVocabularies"];
 
   return (
     <VocabularyQuery
       onClick={(id, name) => {onChangeInput(id, name)}}
       clearOnClick={false}
       questionDefinition={questionDefinition}
-      vocabularies={vocabularies}
       placeholder="empty"
       inputRef={ref}
       defaultValue={defaultLabel}
