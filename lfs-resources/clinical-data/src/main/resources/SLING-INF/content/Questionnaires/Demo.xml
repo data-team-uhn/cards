@@ -88,7 +88,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0010</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0010</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -97,7 +97,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0013</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0013</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -106,7 +106,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0595</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0595</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -115,7 +115,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0008</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0008</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -124,7 +124,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0574</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0574</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -133,7 +133,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0552</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0552</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -142,7 +142,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0005</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0005</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -151,7 +151,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0014</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0014</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -160,7 +160,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0487</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0487</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -216,7 +216,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0010</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0010</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -225,7 +225,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0013</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0013</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -234,7 +234,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0595</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0595</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -243,7 +243,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0008</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0008</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -252,7 +252,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0574</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0574</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -261,7 +261,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0552</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0552</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -270,7 +270,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0005</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0005</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -279,7 +279,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0014</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0014</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -288,7 +288,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Vocabularies/HANCESTRO/HANCESTRO_0487</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0487</value>
 				<type>String</type>
 			</property>
 		</node>
