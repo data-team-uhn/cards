@@ -340,7 +340,7 @@ const questionnaireStyle = theme => ({
         margin: theme.spacing(1),
     },
     actionsMenu: {
-        border: "1px solid #ddd",
+        border: "1px solid " + theme.palette.divider,
         borderRadius: theme.spacing(3),
         display: "flex",
         float: "right",
