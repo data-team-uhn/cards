@@ -23,6 +23,7 @@ import PropTypes from "prop-types";
 
 import {
   Breadcrumbs,
+  Button,
   CircularProgress,
   Dialog,
   DialogTitle,
@@ -390,11 +391,9 @@ function Form (props) {
                 >
                   <List>
                     <ListItem className={classes.actionsMenuItem}>
-                      <Tooltip title="Change subject">
-                        <IconButton onClick={() => {setSelectorDialogOpen(true)}}>
-                          <EditIcon />
-                        </IconButton>
-                      </Tooltip>
+                      <Button onClick={() => {setSelectorDialogOpen(true)}}>
+                        Change subject
+                      </Button>
                     </ListItem>
                     <ListItem className={classes.actionsMenuItem}>
                       <DeleteButton
