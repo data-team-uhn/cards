@@ -222,6 +222,12 @@ export default function VocabulariesAdminPage() {
 
       <OwlInstaller updateLocalList={updateLocalList} reloadVocabList={() => {setLocalLoaded(false);}}/>
 
+      <Grid item>
+        <Typography variant="h6">
+          Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
+        </Typography>
+      </Grid>
+
       <BioPortalApiKey
         bioPortalApiKey={bioPortalApiKey}
         updateKey={updateBioPortalApiKey}
