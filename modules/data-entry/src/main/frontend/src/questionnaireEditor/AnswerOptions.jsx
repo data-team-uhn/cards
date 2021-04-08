@@ -23,6 +23,10 @@ import {
   Grid,
   IconButton,
   TextField,
+  InputAdornment,
+  FormControlLabel,
+  Tooltip,
+  Switch,
   Typography,
   withStyles
 } from "@material-ui/core";
@@ -35,14 +39,54 @@ import { stringToHash } from "../escape.jsx";
 
 let AnswerOptions = (props) => {
   const { objectKey, data, path, saveButtonRef, classes } = props;
-  let [ options, setOptions ] = useState(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
+  let [ options, setOptions ] = useState(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption'
+                                                                               && !value.notApplicable
+                                                                               && !value.noneOfTheAbove).slice()
+                                                            .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder)));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
   let [ isDuplicate, setIsDuplicate ] = useState(false);
+  let [ isNADuplicate, setIsNADuplicate ] = useState(false);
+  let [ isNoneDuplicate, setIsNoneDuplicate ] = useState(false);
+
+  const notApplicable  = Object.values(data).find(option => option['jcr:primaryType'] == 'lfs:AnswerOption' && option.notApplicable);
+  const noneOfTheAbove = Object.values(data).find(option => option['jcr:primaryType'] == 'lfs:AnswerOption' && option.noneOfTheAbove);
+
+  let [ notApplicableOption, setNotApplicableOption ] = useState(notApplicable || {"value" : "notApplicable",
+                                                                                   "label" : "None",
+                                                                                   "notApplicable" : false,
+                                                                                   "@path" : path + "/None"});
+  let [ noneOfTheAboveOption, setNoneOfTheAboveOption ] = useState(noneOfTheAbove || {"value": "noneOfTheAbove",
+                                                                                      "label" : "None of the above",
+                                                                                      "noneOfTheAbove" : false,
+                                                                                      "@path" : path + "/NoneOfTheAbove"});
+
+  const specialOptionsInfo = [
+    {
+      tooltip : "This option behaves as 'None' or 'N/A', and unselects/removes all other options upon selection.",
+      switchTooltip: "Enable N/A",
+      data : notApplicableOption,
+      setter : setNotApplicableOption,
+      label: "notApplicable",
+      defaultOrder: 0,
+      isDuplicate: isNADuplicate,
+      duplicateSetter: setIsNADuplicate
+    },
+    {
+      tooltip : "This option behaves as 'None of the above'. When selected, it removes all existing selections except those entered by the user in the input, if applicable.",
+      switchTooltip: "Enable 'None of the above'",
+      data : noneOfTheAboveOption,
+      setter : setNoneOfTheAboveOption,
+      label: "noneOfTheAbove",
+      defaultOrder: 99999,
+      isDuplicate: isNoneDuplicate,
+      duplicateSetter: setIsNoneDuplicate
+    }
+  ]
 
   // Clear local state when data changes
   useEffect(() => {
-    setOptions(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption').slice());
+    setOptions(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && !value.notApplicable && !value.noneOfTheAbove).slice());
     setDeletedOptions([]);
     setTempValue('');
     setIsDuplicate(false);
@@ -62,12 +106,25 @@ let AnswerOptions = (props) => {
     });
   }
 
-  let validateOption = (optionInput) => {
+  let validateOption = (optionInput, setter, specialOption) => {
     if (optionInput) {
-      setIsDuplicate(false);
+      setter(false);
       let inputs = (optionInput || '').trim().split(/\s*=\s*(.*)/);
-      let duplicateOption = options.find( option => option.value === inputs[0] || inputs[1] && (option.label === inputs[1]));
-      duplicateOption && setIsDuplicate(true);
+      let allOptions = options.slice();
+      specialOption != notApplicableOption && notApplicableOption.notApplicable && allOptions.push(notApplicableOption);
+      specialOption != noneOfTheAboveOption && noneOfTheAboveOption.noneOfTheAbove && allOptions.push(noneOfTheAboveOption);
+      let duplicateOption = allOptions.find( option => option.value === inputs[0] || inputs[1] && (option.label === inputs[1]));
+      duplicateOption && setter(true);
+      return !!duplicateOption;
+    }
+    return false;
+  }
+
+  let handleSpecialInputOption = (option, optionInput) => {
+    let duplicate = validateOption(optionInput, option.duplicateSetter, option.data);
+    if (optionInput && !duplicate) {
+      let inputs = (optionInput || '').trim().split(/\s*=\s*(.*)/);
+      option.setter({ ...option.data, "value": inputs[0].trim(), "label": inputs[1] ? inputs[1].trim() : ""});
     }
   }
 
@@ -101,17 +158,77 @@ let AnswerOptions = (props) => {
       }, 500);
     }
   }
+  
+  let generateSpecialOptions = (index) => {
+    let option = specialOptionsInfo[index];
+    return (
+    <Grid container
+       direction="row"
+       justify="space-between"
+       alignItems="stretch"
+       onClick={(event) => option.setter({ ...option.data, [option.label]: true})}
+       >
+      <Grid item xs={10}>
+      <Tooltip title={option.tooltip}>
+        <TextField
+          disabled={!option.data[option.label]}
+          label={option.tootltip}
+          error={option.data[option.label] && option.isDuplicate}
+          helperText={option.isDuplicate ? 'duplicated value or label' : ''}
+          className={classes.answerOptionInput}
+          defaultValue={option.data.label? option.data.value + " = " + option.data.label : option.data.value}
+          onChange={(event) => { handleSpecialInputOption(option, event.target.value); }}
+        />
+      </Tooltip>
+      </Grid>
+      <Grid item xs={2}>
+      <Tooltip title={option.switchTooltip} className={classes.specialOptionSwitch}>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={!!option.data[option.label]}
+              onChange={(event) => option.setter({ ...option.data, [option.label]: event.target.checked})}
+              color="primary"
+              />
+          }
+        />
+      </Tooltip>
+      { option.data[option.label]
+        ?
+        <>
+          <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
+          <input type='hidden' name={`${option.data['@path']}/value`} value={option.data.value} />
+          <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
+          <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
+          <input type='hidden' name={`${option.data['@path']}/defaultOrder`} value={option.defaultOrder} />
+        </>
+        :
+        <input type='hidden' name={`${option.data['@path']}@Delete`} value="0" />
+      }
+      </Grid>
+    </Grid>
+    )
+  }
 
   return (
     <EditorInput name={objectKey}>
       { deletedOptions.map((value, index) =>
         <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
       )}
+      { generateSpecialOptions(0) }
       { options.map((value, index) =>
-        <React.Fragment key={value.value}>
+        <Grid container
+          direction="row"
+          justify="space-between"
+          alignItems="stretch"
+          className={classes.answerOption}
+          key={value.value}
+          >
+          <Grid item xs={10}>
           <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
           <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
           <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
+          <input type='hidden' name={`${value['@path']}/defaultOrder`} value={index+1} />
           <TextField
             InputProps={{
               readOnly: true,
@@ -120,17 +237,22 @@ let AnswerOptions = (props) => {
             defaultValue={value.label? value.value + " = " + value.label : value.value}
             multiline
             />
+          </Grid>
+          <Grid item xs={2}>
           <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionDeleteButton}>
             <CloseIcon/>
           </IconButton>
-        </React.Fragment>
+          </Grid>
+        </Grid>
       )}
       <TextField
         fullWidth
+        className={classes.newOptionInput}
         value={tempValue}
         error={isDuplicate}
-        helperText={isDuplicate ? 'duplicated value or label' : [<span key="helper-value">value OR value=label (e.g. F=Female)</span>,<br key="br"/>,<span key="helper-newline">Press ENTER to add a new line</span>]}
-        onChange={(event) => { setTempValue(event.target.value); validateOption(event.target.value); }}
+        label="value OR value=label (e.g. F=Female)"
+        helperText={isDuplicate ? 'Duplicated value or label' : 'Press ENTER to add a new line'}
+        onChange={(event) => { setTempValue(event.target.value); validateOption(event.target.value, setIsDuplicate); }}
         onBlur={(event) => { handleInputOption(event.target.value); }}
         inputProps={Object.assign({
           onKeyDown: (event) => {
@@ -144,6 +266,7 @@ let AnswerOptions = (props) => {
         })}
         multiline
         />
+      { generateSpecialOptions(1) }
     </EditorInput>
   )
 }

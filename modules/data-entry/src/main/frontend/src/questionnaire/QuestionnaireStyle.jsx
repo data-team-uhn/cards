@@ -482,12 +482,36 @@ const questionnaireStyle = theme => ({
     warningStatus: {
       color: theme.palette.warning.main
     },
+    answerOption: {
+      backgroundColor: grey[200],
+      borderRadius: theme.spacing(.5, 3, 3, .5),
+      margin: theme.spacing(1, 0),
+      "& .MuiFormControl-root" : {
+        paddingTop: theme.spacing(1),
+      },
+      "& .MuiInput-underline:before" : {
+        borderBottom: "0 none !important",
+      },
+      "& .MuiInput-underline:after" : {
+        borderBottom: "0 none !important",
+      }
+    },
     answerOptionInput: {
-      width: "85%",
-      backgroundColor: grey[200]
+      width: "100%",
+      backgroundColor: grey[200],
+      "& .MuiInputBase-input" : {
+        paddingRight: theme.spacing(1),
+        paddingLeft: theme.spacing(1),
+      },
     },
     answerOptionDeleteButton: {
-      right: theme.spacing(-3),
+      float: "right",
+    },
+    newOptionInput: {
+      marginBottom: theme.spacing(2),
+    },
+    specialOptionSwitch: {
+      margin: "0",
     },
 });
 
