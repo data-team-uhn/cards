@@ -25,6 +25,28 @@ import sys
 import requests
 from requests.auth import HTTPBasicAuth
 
+#Display help and exit, if instructed to do so
+if '--help' in sys.argv:
+  print("Configures a running CARDS instance to authenticate users against an LDAP server")
+  print("")
+  print("Environment Variables")
+  print("---------------------")
+  print("")
+  print("- CARDS_URL: URL of the CARDS instance. Defaults to http://localhost:8080.")
+  print("- ADMIN_PASSWORD: Admin password for the CARDS instance. Defaults to 'admin'.")
+  print("- CARDS_LDAP_PROVIDER_NAME: LDAP provider name. Defaults to 'ldap'.")
+  print("- CARDS_LDAP_HOSTNAME: Hostname of the LDAP server. Prompts if not specified.")
+  print("- CARDS_LDAP_PORT: TCP port of the LDAP server. Defaults to 389.")
+  print("- CARDS_LDAP_SSL: Enable SSL when connecting to the LDAP server. Defaults to false.")
+  print("- CARDS_LDAP_TLS: Enable TLS when connecting to the LDAP server. Defaults to false.")
+  print("- CARDS_LDAP_NO_CERT_CHECK: Disable checking the SSL/TLS certificate when connecting to the LDAP server. Defaults to false.")
+  print("- CARDS_LDAP_BIND_DN: Bind DN for connecting to the LDAP server. Prompts if not specified.")
+  print("- CARDS_LDAP_BIND_PASSWORD: Password for connecting to the LDAP server. Prompts if not specified.")
+  print("- CARDS_LDAP_USER_BASE_DN: Where to begin searching through LDAP for a user. Prompts if not specified.")
+  print("- CARDS_LDAP_USER_OBJECT_CLASS: The LDAP object type which will represent a CARDS user. Prompts if not specified.")
+  print("- CARDS_LDAP_USER_ID_ATTRIBUTE: The LDAP attribute that should match the login name.")
+  sys.exit()
+
 CARDS_URL = "http://localhost:8080"
 if "CARDS_URL" in os.environ:
   CARDS_URL = os.environ["CARDS_URL"].rstrip('/')
