@@ -236,7 +236,7 @@ const questionnaireStyle = theme => ({
         [theme.breakpoints.up('sm')]: {
           minWidth: "100px",
           marginTop: theme.spacing(-1.5),
-          marginLeft: theme.spacing(4),
+          marginLeft: theme.spacing(3),
         },
       },
       "& .MuiListItem-root" : {
@@ -245,6 +245,9 @@ const questionnaireStyle = theme => ({
           width: "auto",
         },
       },
+      "& .MuiIconButton-root + div" : {
+        marginRight: theme.spacing(2),
+      }
     },
     collapsedSection: {
         padding: "0 !important"
