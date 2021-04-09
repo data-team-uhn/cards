@@ -256,6 +256,30 @@
 			</property>
 		</node>
 		<node>
+			<name>gw_lap_count</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Number of laps completed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
 			<name>gw_comments</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
