@@ -93,29 +93,12 @@ form_data['host.name'] = CARDS_LDAP_HOSTNAME
 form_data['host.port'] = CARDS_LDAP_PORT
 form_data['host.ssl'] = CARDS_LDAP_SSL
 form_data['host.tls'] = CARDS_LDAP_TLS
-form_data['noCertCheck'] = CARDS_LDAP_NO_CERT_CHECK
+form_data['host.noCertCheck'] = CARDS_LDAP_NO_CERT_CHECK
 form_data['bind.dn'] = CARDS_LDAP_BIND_DN
 form_data['bind.password'] = CARDS_LDAP_BIND_PASSWORD
-form_data['searchTimeout'] = '60s'
-form_data['adminPool.maxActive'] = '8'
-form_data['adminPool.lookupOnValidate'] = 'true'
-form_data['adminPool.lookupOnValidate'] = 'false'
-form_data['userPool.maxActive'] = '8'
-form_data['userPool.lookupOnValidate'] = 'true'
-form_data['userPool.lookupOnValidate'] = 'false'
 form_data['user.baseDN'] = CARDS_LDAP_USER_BASE_DN
 form_data['user.objectclass'] = CARDS_LDAP_USER_OBJECT_CLASS
 form_data['user.idAttribute'] = CARDS_LDAP_USER_ID_ATTRIBUTE
-form_data['user.extraFilter'] = ''
-form_data['user.makeDnPath'] = 'false'
-form_data['group.baseDN'] = 'ou=groups,o=example,dc=com'
-form_data['group.objectclass'] = 'groupOfUniqueNames'
-form_data['group.nameAttribute'] = 'cn'
-form_data['group.extraFilter'] = ''
-form_data['group.makeDnPath'] = 'false'
-form_data['group.memberAttribute'] = 'uniquemember'
-form_data['useUidForExtId'] = 'false'
-form_data['customattributes'] = ''
 
 propertylist = []
 propertylist.append('provider.name')
@@ -126,24 +109,9 @@ propertylist.append('host.tls')
 propertylist.append('host.noCertCheck')
 propertylist.append('bind.dn')
 propertylist.append('bind.password')
-propertylist.append('searchTimeout')
-propertylist.append('adminPool.maxActive')
-propertylist.append('adminPool.lookupOnValidate')
-propertylist.append('userPool.maxActive')
-propertylist.append('userPool.lookupOnValidate')
 propertylist.append('user.baseDN')
 propertylist.append('user.objectclass')
 propertylist.append('user.idAttribute')
-propertylist.append('user.extraFilter')
-propertylist.append('user.makeDnPath')
-propertylist.append('group.baseDN')
-propertylist.append('group.objectclass')
-propertylist.append('group.nameAttribute')
-propertylist.append('group.extraFilter')
-propertylist.append('group.makeDnPath')
-propertylist.append('group.memberAttribute')
-propertylist.append('useUidForExtId')
-propertylist.append('customattributes')
 form_data['propertylist'] = ','.join(propertylist)
 
 
