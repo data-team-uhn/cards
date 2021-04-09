@@ -43,7 +43,7 @@ import VocabularyQuery from "../vocabQuery/query.jsx";
 //   />
 function VocabularyQuestion(props) {
   let { classes, ...rest } = props;
-  let { questionDefinition, sourceVocabularies } = { ...props.questionDefinition, ...props };
+  let { questionDefinition } = { ...props.questionDefinition, ...props };
 
   return (
     <Question
