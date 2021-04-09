@@ -42,10 +42,9 @@ if "CARDS_LDAP_HOSTNAME" in os.environ:
 else:
   CARDS_LDAP_HOSTNAME = input("LDAP server hostname: ")
 
+CARDS_LDAP_PORT = "389"
 if "CARDS_LDAP_PORT" in os.environ:
   CARDS_LDAP_PORT = os.environ["CARDS_LDAP_PORT"]
-else:
-  CARDS_LDAP_PORT = input("LDAP server port: ")
 
 CARDS_LDAP_SSL = "false"
 if "CARDS_LDAP_SSL" in os.environ:
