@@ -42,8 +42,7 @@ import VocabularyQuery from "../vocabQuery/query.jsx";
 //   }}
 //   />
 function VocabularyQuestion(props) {
-  let { classes, ...rest } = props;
-  let { questionDefinition } = { ...props.questionDefinition, ...props };
+  let { questionDefinition } = props;
 
   return (
     <Question
@@ -56,7 +55,7 @@ function VocabularyQuestion(props) {
           questionDefinition: questionDefinition
         }}
         answerNodeType = "lfs:VocabularyAnswer"
-        {...rest}
+        {...props}
         />
     </Question>);
 }

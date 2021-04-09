@@ -79,13 +79,12 @@ class VocabularyQuery extends React.Component {
       infoVocabObtained: "",
       infoVocabTobeObtained: "",
       buttonRefs: {},
-      vocabularies: props.vocabularies,
       noResults: false,
     };
   }
 
   render() {
-    const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onInputFocus, placeholder, searchDefault, value, vocabularies } = this.props;
+    const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onInputFocus, placeholder, searchDefault, value } = this.props;
 
     const inputEl = (<Input
       disabled={disabled}
@@ -617,7 +616,6 @@ VocabularyQuery.propTypes = {
 };
 
 VocabularyQuery.defaultProps = {
-  vocabularies: ['hpo'],
   searchDefault: 'Search',
   overrideText: '',
   clearOnClick: true

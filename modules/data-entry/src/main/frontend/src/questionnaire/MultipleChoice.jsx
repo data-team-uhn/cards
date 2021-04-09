@@ -338,7 +338,7 @@ function MultipleChoice(props) {
                   acceptEnteredOption();
                 }
               },
-              tabindex: isRadio ? -1 : undefined
+              tabIndex: isRadio ? -1 : undefined
             }, additionalInputProps)
             }
             value={ghostName}
