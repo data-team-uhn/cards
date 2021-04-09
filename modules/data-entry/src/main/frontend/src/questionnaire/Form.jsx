@@ -42,7 +42,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import DoneIcon from "@material-ui/icons/Done";
 import WarningIcon from '@material-ui/icons/Warning';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import MoreIcon from '@material-ui/icons/MoreVert';
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";
@@ -378,7 +378,7 @@ function Form (props) {
                 }
                 <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
                   <IconButton>
-                    <MoreHorizIcon fontSize="small" />
+                    <MoreIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
                 <Popover
