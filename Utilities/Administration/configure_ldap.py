@@ -44,7 +44,7 @@ if '--help' in sys.argv:
   print("- CARDS_LDAP_BIND_PASSWORD: Password for connecting to the LDAP server. Prompts if not specified.")
   print("- CARDS_LDAP_USER_BASE_DN: Where to begin searching through LDAP for a user. Prompts if not specified.")
   print("- CARDS_LDAP_USER_OBJECT_CLASS: The LDAP object type which will represent a CARDS user. Prompts if not specified.")
-  print("- CARDS_LDAP_USER_ID_ATTRIBUTE: The LDAP attribute that should match the login name.")
+  print("- CARDS_LDAP_USER_ID_ATTRIBUTE: The LDAP attribute that should match the login name. Prompts if not specified.")
   sys.exit()
 
 CARDS_URL = "http://localhost:8080"
