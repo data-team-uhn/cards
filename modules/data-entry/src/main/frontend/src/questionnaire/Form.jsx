@@ -403,8 +403,8 @@ function Form (props) {
                     <ListItem className={classes.actionsMenuItem}>
                       <DeleteButton
                           entryPath={data ? data["@path"] : formURL}
-                          entryName={(data?.subject?.identifier || "Subject") + ": " + (title)}
-                          entryType={data?.questionnaire?.title || "Form"}
+                          entryName={(data?.subject?.fullIdentifier ? (data.subject.fullIdentifier + ": ") : '') + (title)}
+                          entryType="Form"
                           shouldGoBack={true}
                           onComplete={removeWindowHandlers}
                           variant="text"
