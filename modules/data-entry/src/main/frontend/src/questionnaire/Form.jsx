@@ -259,6 +259,11 @@ function Form (props) {
     props.history.push("/content.html" + formURL + window.location.hash);
   }
 
+  let onDelete = () => {
+    removeWindowHandlers && removeWindowHandlers();
+    props.history.push("/content.html" + (data?.subject?.['@path'] || ''));
+  }
+
   let parentDetails = data?.subject && getHierarchy(data.subject);
   let title = data?.questionnaire?.title || id || "";
   let subjectName = data?.subject && getTextHierarchy(data?.subject);
@@ -405,8 +410,7 @@ function Form (props) {
                           entryPath={data ? data["@path"] : formURL}
                           entryName={(data?.subject?.fullIdentifier ? (data.subject.fullIdentifier + ": ") : '') + (title)}
                           entryType="Form"
-                          shouldGoBack={true}
-                          onComplete={removeWindowHandlers}
+                          onComplete={onDelete}
                           variant="text"
                         />
                     </ListItem>
