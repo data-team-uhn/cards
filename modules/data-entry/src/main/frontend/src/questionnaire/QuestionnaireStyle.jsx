@@ -79,9 +79,6 @@ const questionnaireStyle = theme => ({
         position: 'relative',
         display: 'inline-block',
         padding: theme.spacing(.5, 0, 0, 0),
-        "& textarea" : {
-          paddingLeft: theme.spacing(4),
-        },
     },
     answerField: {
         position: 'relative',
