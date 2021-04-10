@@ -155,4 +155,34 @@ export default class DateQuestionUtilities {
   static isAnswerComplete(answers, type) {
     return type == this.INTERVAL_TYPE && answers.length == 2 || answers.length == 1;
   }
+
+  static dateDifference = (startDateInput, endDateInput) => {
+    // Compute the displayed difference
+    let result = {long:""}
+    if (startDateInput && endDateInput) {
+      let startDate = this.amendMoment(startDateInput, "yyyy-MM-dd");
+      let endDate = this.amendMoment(endDateInput, "yyyy-MM-dd");
+
+      let diff = [];
+      let longDiff = [];
+      for (const division of ["years", "months", "days"]) {
+        let value = endDate.diff(startDate, division);
+        diff.push(value);
+        if (value > 0) {
+          endDate = endDate.subtract(value, division);
+          longDiff.push(value + division.charAt(0));
+        }
+      }
+
+      if (diff[0] > 0) {
+        result.short = `${diff[0] + (diff[1] > 6 ? 1 : 0)}y`;
+      } else if (diff[1] > 0) {
+        result.short = `${diff[1] + (diff[2] > 15 ? 1 : 0)}m`;
+      } else if (diff[2] > 0) {
+        result.short = `${diff[2]}d`;
+      }
+      result.long = longDiff.join(" ");
+    }
+    return result;
+  }
 }

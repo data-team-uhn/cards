@@ -24,6 +24,7 @@ import moment from "moment";
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
+import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import MaterialTable, { MTablePagination } from 'material-table';
@@ -34,17 +35,15 @@ import {
   Chip,
   Grid,
   Tooltip,
+  Tab,
+  Tabs,
   Typography,
   withStyles,
-  Button,
 } from "@material-ui/core";
 import FileIcon from "@material-ui/icons/InsertDriveFile";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
-
-const QUESTION_TYPES = ["lfs:Question"];
-const SECTION_TYPES = ["lfs:Section"];
-const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
+import SubjectTimeline from "./SubjectTimeline.jsx";
 
 /***
  * Create a URL that checks for the existence of a subject
@@ -102,15 +101,23 @@ export function getTextHierarchy (node, withType = false) {
  */
 
 function Subject(props) {
-  let { id, classes, maxDisplayed, pageSize } = props;
-  const [currentSubject, setCurrentSubject] = useState();
-  const [currentSubjectId, setCurrentSubjectId] = useState(id);
+  let { id, classes, maxDisplayed, pageSize, history } = props;
+  const [ currentSubject, setCurrentSubject ] = useState();
+  const [ currentSubjectId, setCurrentSubjectId ] = useState(id);
+  const [ activeTab, setActiveTab ] = useState(0);
 
+  // TODO: These tabs should be extensible.
+  // This will involve moving SubjectContainer to it's own file and moving
+  // handleDisplay() to a utility file for SubjectContainer and SubjectTimeline.
+  const tabs = ["Chart", "Timeline"]
   const location = useLocation();
 
   useEffect(() => {
     let newId = getSubjectIdFromPath(location.pathname);
     newId && setCurrentSubjectId(newId);
+    if (location.hash.length > 0 && tabs.includes(location.hash.substring(1))) {
+      setActiveTab(tabs.indexOf(location.hash.substring(1)));
+    }
   }, [location]);
 
   let pageTitle = currentSubject && getTextHierarchy(currentSubject, true);
@@ -126,14 +133,45 @@ function Subject(props) {
     setCurrentSubject(e);
   }
 
+  function setTab(index) {
+    history.replace(location.pathname+location.search+"#"+tabs[index], location.state)
+    setActiveTab(index);
+  }
+
   return (
     <React.Fragment>
-      <div className={classes.mainPageAction}>
-        <NewFormDialog currentSubject={currentSubject}>
-          New form for this Subject
-        </NewFormDialog>
-      </div>
-      <SubjectContainer path={`/Subjects/${currentSubjectId}`} key={currentSubjectId} classes={classes} maxDisplayed={maxDisplayed} getSubject={handleSubject} pageSize={pageSize}/>
+      <NewFormDialog currentSubject={currentSubject}>
+        New form for this Subject
+      </NewFormDialog>
+      <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
+        <SubjectHeader id={currentSubjectId} key={"SubjectHeader"}  classes={classes} getSubject={handleSubject}/>
+        {
+          <Tabs value={activeTab} onChange={(event, value) => {
+            setTab(value);
+          }}>
+            {tabs.map((tab) => {
+              return <Tab label={tab} key={tab}/>;
+            })}
+          </Tabs>
+        }
+        {
+          activeTab === tabs.indexOf("Chart")
+          ? <SubjectContainer
+              id={currentSubjectId}
+              key={currentSubjectId}
+              classes={classes}
+              maxDisplayed={maxDisplayed}
+              pageSize={pageSize}
+              subject={currentSubject}
+            />
+          : <SubjectTimeline
+              id={currentSubjectId}
+              classes={classes}
+              pageSize={pageSize}
+              subject={currentSubject}
+            />
+        }
+      </Grid>
     </React.Fragment>
   );
 }
@@ -142,9 +180,7 @@ function Subject(props) {
  * Component that recursively gets and displays the selected subject and its related SubjectTypes
  */
 function SubjectContainer(props) {
-  let { path, classes, level, maxDisplayed, pageSize, getSubject } = props;
-  // This holds the full form JSON, once it is received from the server
-  let [ data, setData ] = useState();
+  let { id, classes, level, maxDisplayed, pageSize, subject } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // hold related subjects
@@ -157,50 +193,16 @@ function SubjectContainer(props) {
   // 'level' of subject component
   const currentLevel = level || 0;
 
-  // Fetch the subject's data as JSON from the server.
-  // The data will contain the subject metadata,
-  // such as authorship and versioning information.
-  // Once the data arrives from the server, it will be stored in the `data` state variable.
-  let fetchData = () => {
-    let strippedPath = path.endsWith('/') ? path.slice(0, -1) : path;
-    fetchWithReLogin(globalLoginDisplay, `${strippedPath}.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(handleResponse)
-      .catch(handleError);
-  };
-
-  // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
-  let handleResponse = (json) => {
-    if (currentLevel == 0) {
-      // sends the data to the parent component
-      getSubject(json);
-    }
-    setData(json);
-  };
-
   // Callback method for the `fetchData` method, invoked when the request failed.
   let handleError = (response) => {
     setError(response);
-    setData([]);  // Prevent an infinite loop if data was not set
   };
-
-  // Fetch this Subject's data
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   if (deleted) {
     return null;
   }
 
-  // If the data has not yet been fetched, return an in-progress symbol
-  if (!data) {
-    return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
-    );
-  }
-
-  let check_url = createQueryURL(` WHERE n.'parents'='${data?.['jcr:uuid']}' order by n.'jcr:created'`, "lfs:Subject");
+  let check_url = createQueryURL(` WHERE n.'parents'='${subject?.['jcr:uuid']}' order by n.'jcr:created'`, "lfs:Subject");
   let fetchRelated = () => {
     fetchWithReLogin(globalLoginDisplay, check_url)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -208,8 +210,20 @@ function SubjectContainer(props) {
     .catch(handleError);
   }
 
-  if (!relatedSubjects) {
-    fetchRelated();
+  // Fetch this Subject's data
+  useEffect(() => {
+    if (subject) {
+      fetchRelated();
+    } else {
+      setRelatedSubjects(null);
+    }
+  }, [subject]);
+
+  // If the data has not yet been fetched, return an in-progress symbol
+  if (!subject) {
+    return (
+      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+    );
   }
 
   if (error) {
@@ -225,45 +239,117 @@ function SubjectContainer(props) {
   }
 
   return (
-    data && <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
-      <SubjectMember classes={classes} id={path} level={currentLevel} data={data} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}}/>
+    subject && <React.Fragment>
+      <SubjectMember classes={classes} id={id} level={currentLevel} data={subject} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}}/>
       {relatedSubjects && relatedSubjects.length > 0 ?
         (<Grid item xs={12} className={classes.subjectNestedContainer}>
           {relatedSubjects.map( (subject, i) => {
             // Render component again for each related subject
             return(
-              <SubjectContainer key={i} classes={classes} path={subject["@path"]} level={currentLevel+1} maxDisplayed={maxDisplayed} pageSize={pageSize}/>
+              <SubjectContainer key={i} classes={classes} path={subject["@path"]} level={currentLevel+1} maxDisplayed={maxDisplayed} pageSize={pageSize} subject={subject}/>
             )
           })}
         </Grid>
         ) : ""
       }
-    </Grid>
+    </React.Fragment>
   );
 }
 
 /**
- * Component that displays the subject chart header, with subject id, parents, and actions
+ * Component that displays the header for the selected subject and its SubjectType
  */
-function SubjectHeader (props) {
-  let {data, classes, title, action} = props;
-  let parentDetails = data && data['parents'] && getHierarchy(data['parents']);
+function SubjectHeader(props) {
+  let { id, classes, getSubject } = props;
+  // This holds the full form JSON, once it is received from the server
+  let [ subject, setSubject ] = useState(null);
+  // Error message set when fetching the data from the server fails
+  let [ error, setError ] = useState();
+  // whether the subject has been deleted
+  let [ deleted, setDeleted ] = useState();
+
+  let globalLoginDisplay = useContext(GlobalLoginContext);
+
+  // Fetch the subject's data as JSON from the server.
+  // The data will contain the subject metadata,
+  // such as authorship and versioning information.
+  // Once the data arrives from the server, it will be stored in the `data` state variable.
+  let fetchSubjectData = () => {
+    fetchWithReLogin(globalLoginDisplay, `/Subjects/${id}.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(handleSubjectResponse)
+      .catch(handleError);
+  };
+
+  // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
+  let handleSubjectResponse = (json) => {
+    getSubject(json);
+    setSubject({data: json});
+  };
+
+  // Callback method for the `fetchData` method, invoked when the request failed.
+  let handleError = (response) => {
+    setError(response);
+    setSubject({});  // Prevent an infinite loop if data was not set
+  };
+
+  // Fetch this Subject's data
+  useEffect(() => {
+    if (!deleted) {
+      fetchSubjectData();
+    }
+  }, [id]);
+
+  if (deleted) {
+    return null;
+  }
+
+  if (!subject?.data) {
+    return (
+      <Grid item><CircularProgress/></Grid>
+    );
+  }
+
+  if (error) {
+    return (
+      <Grid item>
+        <Typography variant="h2" color="error">
+          Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
+        </Typography>
+      </Grid>
+    );
+  }
+
+  let identifier = subject?.data?.identifier || id;
+  let label = subject?.data?.type?.label || "Subject";
+  let title = `${label} ${identifier}`;
+  let path = subject?.data?.["@path"] || "/Subjects/" + id;
+  let action = <DeleteButton
+                 entryPath={path}
+                 entryName={title}
+                 entryType={label}
+                 shouldGoBack={true}
+                 onComplete={() => setDeleted(true)}
+                 buttonClass={classes.subjectHeaderButton}
+                 size={"large"}
+               />
+  let parentDetails = subject?.data?.['parents'] && getHierarchy(subject.data['parents']);
 
   return (
-    <Grid item className={classes.subjectHeader}>
+    subject?.data && <Grid item className={classes.subjectHeader}>
       {parentDetails && <Typography variant="overline">{parentDetails}</Typography>}
       <Typography variant="h2">{title}{action}</Typography>
       {
-        data && data['jcr:createdBy'] && data['jcr:created'] ?
+        subject?.data?.['jcr:created'] ?
         <Typography
           variant="overline"
           className={classes.subjectSubHeader}>
-            Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}
+            Entered by {subject.data['jcr:createdBy']} on {moment(subject.data['jcr:created']).format("dddd, MMMM Do YYYY")}
         </Typography>
         : ""
       }
     </Grid>
-  )
+  );
 }
 
 /**
@@ -273,9 +359,7 @@ function SubjectMemberInternal (props) {
   let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
-  // table data: related forms to the subject
-  let [tableData, setTableData] = useState();
-  let [subjectGroups, setSubjectGroups] = useState();
+  let [ subjectGroups, setSubjectGroups ] = useState();
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -291,7 +375,6 @@ function SubjectMemberInternal (props) {
   };
 
   let handleTableResponse = (json) => {
-    setTableData(json.rows);
     let groups = {};
     json.rows.map( (entry, i) => {
       let title = entry.questionnaire.title || entry.questionnaire["@name"];
@@ -302,7 +385,6 @@ function SubjectMemberInternal (props) {
 
   let handleTableError = (response) => {
     setError(response);
-    setTableData([]);
     setSubjectGroups({});
   };
 
@@ -321,7 +403,7 @@ function SubjectMemberInternal (props) {
   // Fetch table data for all forms related to a Subject
   useEffect(() => {
     fetchTableData();
-  }, []);
+  }, [data['jcr:uuid']]);
 
   // If an error was returned, do not display a subject at all, but report the error
   if (error) {
@@ -337,13 +419,13 @@ function SubjectMemberInternal (props) {
   }
 
   // change styling based on 'level'
-  let headerStyle = (level == 0 ? "h2" : (level == 1 ? "h4" : "h5"));
+  let headerStyle = (level == 1 ? "h4" : "h5");
 
   let identifier = data && data.identifier ? data.identifier : id;
   let label = data?.type?.label || "Subject";
   let title = `${label} ${identifier}`;
   let path = data ? data["@path"] : "/Subjects/" + id;
-  let avatar = level > 0 && <Avatar className={classes.subjectAvatar}>{label.split(' ').map(s => s?.charAt(0)).join('').toUpperCase()}</Avatar>;
+  let avatar = <Avatar className={classes.subjectAvatar}>{label.split(' ').map(s => s?.charAt(0)).join('').toUpperCase()}</Avatar>;
   let action = <DeleteButton
                  entryPath={path}
                  entryName={title}
@@ -356,9 +438,7 @@ function SubjectMemberInternal (props) {
   return ( data &&
     <>
     {
-      level == 0 ?
-        <SubjectHeader data={data} classes={classes} title={title} action={action} />
-      :
+      level > 0 &&
         <Grid item className={classes.subjectTitleWithAvatar}>
           <Grid container direction="row" spacing={1} justify="flex-start">
             <Grid item xs={false}>{avatar}</Grid>
@@ -501,9 +581,91 @@ function FormData(props) {
     );
   }
   // Handle questions and sections differently
-  let handleDisplay = (entryDefinition, data, key) => {
+  let handleDisplayQuestion = (entryDefinition, data, key) => {
+    let result = displayQuestion(entryDefinition, data, key, classes);
+    if (result && displayed < maxDisplayed) {
+      displayed++;
+    } else {
+      result = null;
+    }
+    return result;
+  }
+
+  if (data && data.questionnaire) {
+    return (
+      <React.Fragment>
+        {
+          Object.entries(data.questionnaire)
+          .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+          .map(([key, entryDefinition]) => handleDisplay(entryDefinition, data, key, handleDisplayQuestion))
+        }
+      </React.Fragment>
+    );
+  }
+  else return;
+}
+
+// Display the questions/question found within sections
+export function displayQuestion(entryDefinition, data, key, classes) {
+  const existingQuestionAnswer = data && Object.entries(data)
+    .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
+      && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
+
+  // question title, to be used when 'previewing' the form
+  const questionTitle = entryDefinition["text"];
+
+  if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
+    let prettyPrintedAnswers = existingQuestionAnswer[1]["displayedValue"];
+    // The value can either be a single value or an array of values; force it into an array
+    prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
+
+    let content = "";
+    switch(entryDefinition["dataType"]) {
+      case "file":
+        // The value can either be a single value or an array of values; force it into an array
+        let paths = Array.of(existingQuestionAnswer[1]["value"]).flat();
+        content = <>
+          {prettyPrintedAnswers.map((answerValue, idx) => {
+            // Encode the filename to ensure special charactars don't result in a broken link
+            let path = paths[idx].slice(0, paths[idx].lastIndexOf(answerValue)) + encodeURIComponent(answerValue);
+            return (
+                <Tooltip key={answerValue} title={"Download " + answerValue}>
+                  <Chip
+                    icon={<FileIcon />}
+                    label={<a href={path} target="_blank" rel="noopener" download={answerValue}>{answerValue}</a>}
+                    color="primary"
+                    variant="outlined"
+                    size="small"
+                  />
+                </Tooltip>
+            );
+          })}
+          </>
+        break;
+      case "pedigree":
+        if (!prettyPrintedAnswers) {
+          // Display absolutely nothing if the value does not exist
+          return null;
+        } else {
+          // Display Pedigree: yes if the value does exist
+          content = "Yes";
+        }
+        break;
+      default:
+        content = <>{ prettyPrintedAnswers.join(", ") }</>
+        break;
+    }
+    return (
+      <Typography variant="body2" component="div" key={key} className={classes.formPreviewQuestion}>{questionTitle}: {content}</Typography>
+    );
+  }
+  else return null;
+};
+
+// Handle questions and sections differently
+export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion) {
     if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-      return displayQuestion(entryDefinition, data, key);
+      return handleDisplayQuestion(entryDefinition, data, key);
     } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
       // If a section is found, filter questions inside the section
       let currentSection = entryDefinition;
@@ -518,84 +680,10 @@ function FormData(props) {
         .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
                                && value["section"]["@name"] == entryDefinition["@name"])[0];
       currentAnswers = currentAnswers ? currentAnswers[1] : "";
-      return (
-        Object.entries(currentSection)
+      return Object.entries(currentSection)
         .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']) || SECTION_TYPES.includes(value['jcr:primaryType']))
-        .map(([key, entryDefinition]) => handleDisplay(entryDefinition, currentAnswers, key))
-      )
-    }
+        .map(([key, entryDefinition]) => handleDisplay(entryDefinition, currentAnswers, key, handleDisplayQuestion))
   }
-  // Display the questions/question found within sections
-  let displayQuestion = (entryDefinition, data, key) => {
-    const existingQuestionAnswer = data && Object.entries(data)
-      .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
-        && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
-
-    // question title, to be used when 'previewing' the form
-    const questionTitle = entryDefinition["text"];
-
-    if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined" && (displayed < maxDisplayed)) {
-      let prettyPrintedAnswers = existingQuestionAnswer[1]["displayedValue"];
-      // The value can either be a single value or an array of values; force it into an array
-      prettyPrintedAnswers = Array.of(prettyPrintedAnswers).flat();
-
-      let content = "";
-      switch(entryDefinition["dataType"]) {
-        case "file":
-          // The value can either be a single value or an array of values; force it into an array
-          let paths = Array.of(existingQuestionAnswer[1]["value"]).flat();
-          content = <>
-            {prettyPrintedAnswers.map((answerValue, idx) => {
-              // Encode the filename to ensure special charactars don't result in a broken link
-              let path = paths[idx].slice(0, paths[idx].lastIndexOf(answerValue)) + encodeURIComponent(answerValue);
-              return (
-                 <Tooltip key={answerValue} title={"Download " + answerValue}>
-                   <Chip
-                     icon={<FileIcon />}
-                     label={<a href={path} target="_blank" rel="noopener" download={answerValue}>{answerValue}</a>}
-                     color="primary"
-                     variant="outlined"
-                     size="small"
-                   />
-                 </Tooltip>
-              );
-            })}
-            </>
-          break;
-        case "pedigree":
-          if (!prettyPrintedAnswers) {
-            // Display absolutely nothing if the value does not exist
-            return <></>;
-          } else {
-            // Display Pedigree: yes if the value does exist
-            content = "Yes";
-          }
-          break;
-        default:
-          content = <>{ prettyPrintedAnswers.join(", ") }</>
-          break;
-      }
-      // If count of displayed <= max, increase count of displayed
-      displayed++;
-      return (
-        <Typography variant="body2" component="div" key={key} className={classes.formPreviewQuestion}>{questionTitle}: {content}</Typography>
-      );
-    }
-    else return;
-  };
-
-  if (data && data.questionnaire) {
-    return (
-      <React.Fragment>
-        {
-          Object.entries(data.questionnaire)
-          .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-          .map(([key, entryDefinition]) => handleDisplay(entryDefinition, data, key))
-        }
-      </React.Fragment>
-    );
-  }
-  else return;
 }
 
 Subject.propTypes = {
@@ -607,4 +695,4 @@ Subject.defaultProps = {
   pageSize: 10,
 }
 
-export default withStyles(QuestionnaireStyle)(Subject);
+export default withStyles(QuestionnaireStyle)(withRouter(Subject));
