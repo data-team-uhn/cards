@@ -53,12 +53,13 @@ let QuestionnaireItemCard = (props) => {
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
+  const highlight = doHighlight || window.location?.hash?.substr(1) == data["@path"];
 
   const itemRef = useRef();
   // if autofocus is needed and specified in the url
   // create a ref to store the question container DOM element
   useEffect(() => {
-    if (doHighlight || (location?.hash?.substr(1) == data["@path"])) {
+    if (highlight) {
       const timer = setTimeout(() => {
           itemRef?.current?.scrollIntoView({block: "center"});
         }, 500);
@@ -67,7 +68,6 @@ let QuestionnaireItemCard = (props) => {
   }, [itemRef]);
 
   let fetchData = () => {
-    setEditDialogOpen(false);
     fetch(`${data["@path"]}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
@@ -77,7 +77,7 @@ let QuestionnaireItemCard = (props) => {
   };
 
   return (
-    <Card variant="outlined" ref={doHighlight ? itemRef : undefined} className={doHighlight ? classes.focusedQuestionnaireItem : ''}>
+    <Card variant="outlined" ref={highlight ? itemRef : undefined} className={highlight ? classes.focusedQuestionnaireItem : ''}>
       <QuestionnaireCardHeader
         avatar={avatar}
         avatarColor={avatarColor}
@@ -107,7 +107,7 @@ let QuestionnaireItemCard = (props) => {
                               data={data}
                               type={type}
                               isOpen={editDialogOpen}
-                              onClose={() => { fetchData(); }}
+                              onClose={() => { setEditDialogOpen(false); fetchData(); }}
                               onCancel={() => { setEditDialogOpen(false); }}
                             />
         }
@@ -115,7 +115,7 @@ let QuestionnaireItemCard = (props) => {
                               isOpen={deleteDialogOpen}
                               data={data}
                               type={type}
-                              onClose={() => { onActionDone(); }}
+                              onClose={() => { setDeleteDialogOpen(false); onActionDone(); }}
                               onCancel={() => { setDeleteDialogOpen(false); }}
                             />
         }

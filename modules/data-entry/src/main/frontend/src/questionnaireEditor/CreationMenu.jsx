@@ -73,7 +73,7 @@ let CreationMenu = (props) => {
                         data={data}
                         type={entityType}
                         isOpen={dialogOpen}
-                        onClose={() => { onClose && onClose(); setDialogOpen(false); }}
+                        onClose={(newData) => { setDialogOpen(false); onClose && onClose(newData); }}
                         onCancel={() => { setDialogOpen(false); }}
                       />
       }

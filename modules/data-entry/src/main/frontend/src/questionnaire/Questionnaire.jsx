@@ -74,6 +74,11 @@ let Questionnaire = (props) => {
     fetchData();
   }
 
+  let onCreate = (newData) => {
+    setData({});
+    setData(newData);
+  }
+
   let questionnaireTitle = data ? data['title'] : decodeURI(id);
   useEffect(() => {
     pageNameWriter(questionnaireTitle);
@@ -152,7 +157,7 @@ let Questionnaire = (props) => {
           <CreationMenu
             isMainAction={true}
             data={data}
-            onClose={() => { reloadData(); }}
+            onClose={onCreate}
           />
       }
       </Grid>
@@ -201,7 +206,7 @@ QuestionnaireItemSet.propTypes = {
 let Question = (props) => {
   let { onActionDone, data, classes } = props;
   let [ questionData, setQuestionData ] = useState(data);
-  let [ doHighlight, setDoHighlight ] = useState(false);
+  let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
   let answers = Object.values(questionData).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
                       .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
 
@@ -251,7 +256,7 @@ Question.propTypes = {
 let Section = (props) => {
   let { onActionDone, data, classes } = props;
   let [ sectionData, setSectionData ] = useState(data);
-  let [ doHighlight, setDoHighlight ] = useState(false);
+  let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
   let extractProperties = () => {
     let p = Array();
@@ -278,6 +283,11 @@ let Section = (props) => {
       onActionDone();
     }
   }
+
+  let onCreate = (newData) => {
+    setSectionData({});
+    setSectionData(newData);
+  }
   
   return (
     <QuestionnaireItemCard
@@ -290,7 +300,7 @@ let Section = (props) => {
         action={
             <CreationMenu
               data={sectionData}
-              onClose={onActionDone}
+              onClose={onCreate}
             />
         }
         onActionDone={reloadData}
