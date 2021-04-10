@@ -233,6 +233,81 @@ const questionnaireStyle = theme => ({
         },
       },
     },
+    timelineContainer: {
+        alignItems: "center",
+    },
+    timeline: {
+        maxWidth: "1000px",
+        margin: "auto"
+    },
+    timelineContent: {
+        padding: theme.spacing(1,3,3),
+    },
+    timelinePaper: {
+        padding: theme.spacing(1,2),
+    },
+    timelineAncestor: {
+        opacity: 0.3,
+        "&:hover": {
+          opacity: 1,
+        },
+    },
+    timelineDate: {
+        lineHeight: "1em",
+        marginLeft: theme.spacing(-2),
+        marginRight: theme.spacing(-2),
+        color: theme.palette.primary.main
+    },
+    timelineDateEntry: {
+        paddingBottom: theme.spacing(2),
+    },
+    timelineDateEntryFinal: {
+        paddingBottom: 0,
+    },
+    timelineConnectorGroup: {
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "column",
+        flexGrow: 1
+    },
+    timelineConnectorLine: {
+        backgroundColor: theme.palette.grey["200"]
+    },
+    timelineCircle: {
+        background: theme.palette.grey["200"],
+        position: "absolute",
+        top: "50%",
+        transform: "translateY(calc(-50% + 14px))",
+        width: "35px",
+        height: "35px",
+        borderRadius: "50%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        "&:before": {
+            content: "''",
+            display: "block",
+            borderBottom: "12px solid",
+            borderBottomColor: theme.palette.grey["200"],
+            borderLeft: "12px solid transparent",
+            borderRight: "12px solid transparent",
+            position: "absolute",
+            top: "-7px"
+        },
+        "&:after": {
+            content: "''",
+            display: "block",
+            borderTop: "12px solid",
+            borderTopColor: theme.palette.grey["200"],
+            borderLeft: "12px solid transparent",
+            borderRight: "12px solid transparent",
+            position: "absolute",
+            bottom: "-7px"
+        }
+    },
+    timelineSeparator: {
+        minHeight: theme.spacing(12)
+    },
     collapsedSection: {
         padding: "0 !important"
     },
@@ -408,6 +483,18 @@ const questionnaireStyle = theme => ({
     DefaultChip: {
         backgroundColor: theme.palette.warning.main
     },
+    formPreviewQuestion: {
+        "& .MuiChip-root" : {
+            margin: "0 0.5em 0.5em 0",
+            "& .MuiChip-iconSmall": {
+                marginLeft: "6px",
+            },
+            "& a" : {
+                color: "inherit",
+                textDecoration: "none",
+            },
+        },
+    },
     questionnaireDisabledListItem: {
         color: theme.palette.grey["500"]
     },
@@ -470,12 +557,36 @@ const questionnaireStyle = theme => ({
     warningStatus: {
       color: theme.palette.warning.main
     },
+    answerOption: {
+      backgroundColor: grey[200],
+      borderRadius: theme.spacing(.5, 3, 3, .5),
+      margin: theme.spacing(1, 0),
+      "& .MuiFormControl-root" : {
+        paddingTop: theme.spacing(1),
+      },
+      "& .MuiInput-underline:before" : {
+        borderBottom: "0 none !important",
+      },
+      "& .MuiInput-underline:after" : {
+        borderBottom: "0 none !important",
+      }
+    },
     answerOptionInput: {
-      width: "85%",
-      backgroundColor: grey[200]
+      width: "100%",
+      backgroundColor: grey[200],
+      "& .MuiInputBase-input" : {
+        paddingRight: theme.spacing(1),
+        paddingLeft: theme.spacing(1),
+      },
     },
     answerOptionDeleteButton: {
-      right: theme.spacing(-3),
+      float: "right",
+    },
+    newOptionInput: {
+      marginBottom: theme.spacing(2),
+    },
+    specialOptionSwitch: {
+      margin: "0",
     },
 });
 

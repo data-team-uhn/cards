@@ -24,12 +24,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.RepositoryException;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 import javax.script.Bindings;
 
 import org.apache.commons.lang3.StringUtils;
@@ -81,6 +83,7 @@ public class QueryBuilder implements Use
     /** Quick search engines. */
     private List<QuickSearchEngine> searchEngines;
 
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     @Override
     public void init(Bindings bindings)
     {
@@ -95,6 +98,7 @@ public class QueryBuilder implements Use
             final String fullTextQuery = request.getParameter("fulltext");
             final String quickQuery = request.getParameter("quick");
             final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
+            final boolean serializeChildren = getLongValueOrDefault(request.getParameter("serializeChildren"), 0) != 0;
             String requestID = request.getParameter("req");
             if (StringUtils.isBlank(requestID)) {
                 requestID = "";
@@ -110,11 +114,11 @@ public class QueryBuilder implements Use
             // Try to use a JCR-SQL2 query first
             Iterator<JsonObject> results;
             if (StringUtils.isNotBlank(jcrQuery)) {
-                results = QueryBuilder.adaptNodes(queryJCR(this.urlDecode(jcrQuery)));
+                results = QueryBuilder.adaptNodes(queryJCR(this.urlDecode(jcrQuery)), serializeChildren);
             } else if (StringUtils.isNotBlank(luceneQuery)) {
-                results = QueryBuilder.adaptNodes(queryLucene(this.urlDecode(luceneQuery)));
+                results = QueryBuilder.adaptNodes(queryLucene(this.urlDecode(luceneQuery)), serializeChildren);
             } else if (StringUtils.isNotBlank(fullTextQuery)) {
-                results = QueryBuilder.adaptNodes(fullTextSearch(this.urlDecode(fullTextQuery)));
+                results = QueryBuilder.adaptNodes(fullTextSearch(this.urlDecode(fullTextQuery)), serializeChildren);
             } else if (StringUtils.isNotBlank(quickQuery)) {
                 results = quickSearch(this.urlDecode(quickQuery));
             } else {
@@ -234,13 +238,36 @@ public class QueryBuilder implements Use
     /**
      * Convert an iterator of nodes into an iterator of JsonObjects.
      * @param nodes the iterator to convert
+     * @param serializeChildren If true, this also includes the immediate children of each node
      * @return An iterator of the input nodes
      */
-    private static Iterator<JsonObject> adaptNodes(Iterator<Resource> resources)
+    private static Iterator<JsonObject> adaptNodes(Iterator<Resource> resources, boolean serializeChildren)
     {
         ArrayList<JsonObject> list = new ArrayList<>();
         while (resources.hasNext()) {
-            list.add(resources.next().adaptTo(JsonObject.class));
+            Resource resource = resources.next();
+
+            // If there are children we can add, we'll add them as child properties of the JsonObject
+            if (serializeChildren && resource.hasChildren()) {
+                Iterator<Resource> children = resource.listChildren();
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+
+                // First convert the original JsonObject into a JsonObjectBuilder we can adjust
+                JsonObject original = resource.adaptTo(JsonObject.class);
+                for (Map.Entry<String, JsonValue> entry : original.entrySet()) {
+                    builder.add(entry.getKey(), entry.getValue());
+                }
+
+                // Next, add each child
+                while (children.hasNext()) {
+                    Resource child = children.next();
+                    builder.add(child.getName(), child.adaptTo(JsonObject.class));
+                }
+
+                list.add(builder.build());
+            } else {
+                list.add(resource.adaptTo(JsonObject.class));
+            }
         }
         return list.iterator();
     }

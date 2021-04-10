@@ -48,14 +48,18 @@ function Question (props) {
              {...props}
           />
         }
-        { !isEdit && !preventDefaultView && existingAnswer ?
-          <List>
-            { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
-              return(
-                <ListItem key={item}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
-              )})
-            }
-          </List>
+        { !isEdit && !preventDefaultView ?
+          ( existingAnswer ?
+            <List>
+              { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
+                return(
+                  <ListItem key={item}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
+                )})
+              }
+            </List>
+            :
+            ""
+          )
           :
           children
         }

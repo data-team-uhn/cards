@@ -161,12 +161,13 @@ function ListChild(props) {
         onClick={() => changeTerm(id, path)}
         className={classes.browseitem}
         >
-        <Typography className={classes.infoDataSource}>{id}&nbsp;</Typography>
+        <Typography color="textSecondary">{id}&nbsp;</Typography>
         <Typography className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}> {name}</Typography>
       </Button>
 
       {/* Button to open info page */}
       <Button
+        color="primary"
         buttonRef={(node) => {registerInfo(id, node)}}
         onClick={() => {getInfo(path)}}
         className={classes.buttonLink + " " + classes.infoButton}

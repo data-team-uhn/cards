@@ -55,7 +55,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function BioPortalApiKey(props) {
-  const classes = useStyles();
   const { bioPortalApiKey, updateKey } = props;
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -93,12 +92,6 @@ export function BioPortalApiKey(props) {
 
   return(
     <React.Fragment>
-      <Grid item>
-        <Typography className={classes.header} variant="h6">
-          Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
-        </Typography>
-      </Grid>
-
       { !bioPortalApiKey &&
          <Grid item>
            <Typography>Your system does not have a <a href="https://bioportal.bioontology.org/help#Getting_an_API_key" target="_blank">Bioportal API Key</a> configured.</Typography>

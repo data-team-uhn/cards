@@ -91,6 +91,8 @@ class VocabularyQuery extends React.Component {
       variant='outlined'
       inputProps={{
         "aria-label": "Search"
+      }, {
+        tabindex: isNested ? -1 : undefined
       }}
       onChange={this.delayLookup}
       inputRef={(node) => {
@@ -233,7 +235,7 @@ class VocabularyQuery extends React.Component {
                 <ClickAwayListener onClickAway={this.clickAwayInfo}><div>
                    <CardHeader
                      avatar={
-                      <Link className={classes.infoDataSource} color="textSecondary"
+                      <Link color="textSecondary"
                         href={this.state.infoVocabURL || ""}  target="_blank"
                         component={this.state.infoVocabURL ? 'a' : 'span'}
                         underline="none"

@@ -207,7 +207,8 @@ let Question = (props) => {
   let { onActionDone, data, classes } = props;
   let [ questionData, setQuestionData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
-  let answers = Object.values(questionData).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption');
+  let answers = Object.values(questionData).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
+                      .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
 
   let reloadData = (newData) => {
     if (newData) {

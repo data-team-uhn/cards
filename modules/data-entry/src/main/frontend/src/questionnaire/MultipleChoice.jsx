@@ -51,10 +51,13 @@ const GHOST_SENTINEL = "custom-input";
 function MultipleChoice(props) {
   let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
+  let { instanceId } = props;
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
     .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
+    // Sort by default order
+    .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder))
     // Only extract the labels and internal values from the node
     .map(value => [value.label || value.value, value.value, true]);
   // Locate an option referring to the "none of the above", if it exists
@@ -318,7 +321,8 @@ function MultipleChoice(props) {
               event.stopPropagation();
               acceptEnteredOption();
             }
-          }
+          },
+          tabindex: isRadio ? -1 : undefined
         }, additionalInputProps)
         }
         value={ghostName}
@@ -404,7 +408,7 @@ function MultipleChoice(props) {
         {instructions}
         <RadioGroup
           aria-label="selection"
-          name="selection"
+          name={props.questionDefinition['jcr:uuid'] + (instanceId || '')}
           className={classes.selectionList}
           value={selection.length > 0 && selection[0][VALUE_POS]}
         >
