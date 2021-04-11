@@ -579,7 +579,7 @@ const questionnaireStyle = theme => ({
         paddingLeft: theme.spacing(1),
       },
     },
-    answerOptionDeleteButton: {
+    answerOptionButton: {
       float: "right",
     },
     newOptionInput: {

@@ -36,6 +36,8 @@ import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import CloseIcon from '@material-ui/icons/Close';
 import { stringToHash } from "../escape.jsx";
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 let AnswerOptions = (props) => {
   const { objectKey, data, path, saveButtonRef, classes } = props;
@@ -83,6 +85,24 @@ let AnswerOptions = (props) => {
       duplicateSetter: setIsNoneDuplicate
     }
   ]
+
+  let getItemStyle = (isDragging, draggableStyle) => ({
+    // change background colour if dragging
+    border: isDragging ? "2px dashed" : "none",
+    borderColor: isDragging ? "lightblue" : "",
+    ...draggableStyle
+  });
+
+  let onDragEnd = (result) => {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+    let oldOptions = options.slice();
+    const [removed] = oldOptions.splice(result.source.index, 1);
+    oldOptions.splice(result.destination.index, 0, removed);
+    setOptions(oldOptions);
+  }
 
   // Clear local state when data changes
   useEffect(() => {
@@ -216,35 +236,60 @@ let AnswerOptions = (props) => {
         <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
       )}
       { generateSpecialOptions(0) }
-      { options.map((value, index) =>
-        <Grid container
-          direction="row"
-          justify="space-between"
-          alignItems="stretch"
-          className={classes.answerOption}
-          key={value.value}
-          >
-          <Grid item xs={10}>
-          <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
-          <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
-          <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
-          <input type='hidden' name={`${value['@path']}/defaultOrder`} value={index+1} />
-          <TextField
-            InputProps={{
-              readOnly: true,
-            }}
-            className={classes.answerOptionInput}
-            defaultValue={value.label? value.value + " = " + value.label : value.value}
-            multiline
-            />
-          </Grid>
-          <Grid item xs={2}>
-          <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionDeleteButton}>
-            <CloseIcon/>
-          </IconButton>
-          </Grid>
-        </Grid>
-      )}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="droppable">
+          {(provided, snapshot) => (
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              { options.map((value, index) =>
+                <Draggable key={value.value} draggableId={value.value} index={index}>
+                  { (provided, snapshot) => (
+                    <Grid container
+                      direction="row"
+                      justify="space-between"
+                      alignItems="stretch"
+                      className={classes.answerOption}
+                      key={value.value}
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      style={getItemStyle(
+                          snapshot.isDragging,
+                          provided.draggableProps.style
+                      )}
+                    >
+                      <Grid item xs={8}>
+                        <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
+                        <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
+                        <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
+                        <input type='hidden' name={`${value['@path']}/defaultOrder`} value={index+1} />
+                        <TextField
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                          className={classes.answerOptionInput}
+                          defaultValue={value.label? value.value + " = " + value.label : value.value}
+                          multiline
+                        />
+                      </Grid>
+                      <Grid item xs={4}>
+                        <IconButton {...provided.dragHandleProps} className={classes.answerOptionButton}>
+                          <DragIndicatorIcon />
+                        </IconButton>
+                        <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
+                          <CloseIcon/>
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+                  ) }
+                </Draggable>
+              )}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
       <TextField
         fullWidth
         className={classes.newOptionInput}
