@@ -130,9 +130,13 @@ function FileResourceQuestion(props) {
       allowedUploads = 1;
     } else if (maxAnswers > 1) {
       allowedUploads = Math.max(0, maxAnswers - uploadedFileNames.length);
-      for (let i = 0; i < selectedFiles.length && allowedUploads < maxAnswers; ++i) {
+      for (let i = 0; i < Math.min(selectedFiles.length, maxAnswers); ++i) {
         if (uploadedFileNames.includes(selectedFiles[i]['name'])) {
-          allowedUploads++;
+          if (allowedUploads < maxAnswers) {
+            allowedUploads++;
+          } else {
+            break;
+          }
         }
       }
     }
