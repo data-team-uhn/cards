@@ -590,8 +590,8 @@ const questionnaireStyle = theme => ({
     },
     optionsDragIndicator: {
       float: "left",
-      padding: "12px 4px",
-      borderRadius: "4px"
+      padding: theme.spacing(1.5, 0.5),
+      borderRadius: theme.spacing(0.5),
     },
 });
 

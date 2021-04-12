@@ -265,7 +265,7 @@ let AnswerOptions = (props) => {
                       )}
                     >
                       <Grid item xs={1}>
-                        <Tooltip title="Reorder">
+                        <Tooltip title="Drag to reorder">
                           <IconButton {...provided.dragHandleProps} className={classes.optionsDragIndicator}>
                             <DragIndicatorIcon />
                           </IconButton>
