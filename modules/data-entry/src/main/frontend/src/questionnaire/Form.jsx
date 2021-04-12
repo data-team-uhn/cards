@@ -114,6 +114,7 @@ function Form (props) {
   let pageNameWriter = usePageNameWriterContext();
   const history = useHistory();
   const formURL = `/Forms/${id}`;
+  const urlBase = "/content.html";
   const isEdit = window.location.pathname.endsWith(".edit");
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -251,17 +252,17 @@ function Form (props) {
 
   let onEdit = (event) => {
     // Redirect the user to the edit form mode
-    props.history.push("/content.html" + formURL + '.edit' + window.location.hash);
+    props.history.push(urlBase + formURL + '.edit' + window.location.hash);
   }
 
   let onClose = (event) => {
     // Redirect the user to the view form mode
-    props.history.push("/content.html" + formURL + window.location.hash);
+    props.history.push(urlBase + formURL + window.location.hash);
   }
 
   let onDelete = () => {
     removeWindowHandlers && removeWindowHandlers();
-    props.history.push("/content.html" + (data?.subject?.['@path'] || ''));
+    props.history.push(urlBase + (data?.subject?.['@path'] || ''));
   }
 
   let parentDetails = data?.subject && getHierarchy(data.subject);
