@@ -39,12 +39,17 @@ import { stringToHash } from "../escape.jsx";
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
+let extractSortedOptions = (data) => {
+  return Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption'
+                                             && !value.notApplicable
+                                             && !value.noneOfTheAbove)
+                            .slice()
+                            .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
+}
+
 let AnswerOptions = (props) => {
   const { objectKey, data, path, saveButtonRef, classes } = props;
-  let [ options, setOptions ] = useState(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption'
-                                                                               && !value.notApplicable
-                                                                               && !value.noneOfTheAbove).slice()
-                                                            .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder)));
+  let [ options, setOptions ] = useState(extractSortedOptions(data));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
   let [ isDuplicate, setIsDuplicate ] = useState(false);
@@ -106,7 +111,7 @@ let AnswerOptions = (props) => {
 
   // Clear local state when data changes
   useEffect(() => {
-    setOptions(Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && !value.notApplicable && !value.noneOfTheAbove).slice());
+    setOptions(extractSortedOptions(data));
     setDeletedOptions([]);
     setTempValue('');
     setIsDuplicate(false);
@@ -259,7 +264,14 @@ let AnswerOptions = (props) => {
                           provided.draggableProps.style
                       )}
                     >
-                      <Grid item xs={8}>
+                      <Grid item xs={1}>
+                        <Tooltip title="Reorder">
+                          <IconButton {...provided.dragHandleProps} className={classes.optionsDragIndicator}>
+                            <DragIndicatorIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Grid>
+                      <Grid item xs={9}>
                         <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
                         <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
                         <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
@@ -273,13 +285,12 @@ let AnswerOptions = (props) => {
                           multiline
                         />
                       </Grid>
-                      <Grid item xs={4}>
-                        <IconButton {...provided.dragHandleProps} className={classes.answerOptionButton}>
-                          <DragIndicatorIcon />
-                        </IconButton>
-                        <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
-                          <CloseIcon/>
-                        </IconButton>
+                      <Grid item xs={2}>
+                        <Tooltip title="Delete option">
+                          <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
+                            <CloseIcon/>
+                          </IconButton>
+                        </Tooltip>
                       </Grid>
                     </Grid>
                   ) }

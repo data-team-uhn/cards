@@ -588,6 +588,11 @@ const questionnaireStyle = theme => ({
     specialOptionSwitch: {
       margin: "0",
     },
+    optionsDragIndicator: {
+      float: "left",
+      padding: "12px 4px",
+      borderRadius: "4px"
+    },
 });
 
 export default questionnaireStyle;
