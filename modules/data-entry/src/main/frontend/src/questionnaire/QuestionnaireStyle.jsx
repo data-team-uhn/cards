@@ -72,7 +72,8 @@ const questionnaireStyle = theme => ({
         height: "0px",
     },
     ghostListItem: {
-        padding: theme.spacing(0, 2, 0, 2),
+        paddingTop: theme.spacing(0),
+        alignItems: "flex-start",
     },
     searchWrapper: {
         margin: theme.spacing(0),
@@ -87,8 +88,8 @@ const questionnaireStyle = theme => ({
         position: 'relative',
     },
     nestedInput: {
-        minWidth: "218px",
-        marginLeft: theme.spacing(4),
+        minWidth: "218px !important",
+        marginLeft: theme.spacing(-2.5),
     },
     textField: {
         // Differing input types have differing widths, so setting width:100%
@@ -106,6 +107,9 @@ const questionnaireStyle = theme => ({
         margin: theme.spacing(-1,0,-1,-1.5),
         fontSize: "10px",
         minWidth: "42px",
+        "& + div" : {
+            marginRight: theme.spacing(2),
+        },
     },
     mdash: {
         padding: theme.spacing(0, 1),
@@ -220,16 +224,16 @@ const questionnaireStyle = theme => ({
           display: "inline-block",
         },
       },
-      "& .MuiList-root + div > .MuiFormControl-root" : {
-        [theme.breakpoints.up('sm')]: {
-          minWidth: "100px",
-          marginTop: "-10px",
-        },
-      },
       "& .MuiListItem-root" : {
         [theme.breakpoints.up('sm')]: {
           display: "inline-flex",
           width: "auto",
+        },
+      },
+      "& .MuiListItem-root > div:first-child > .MuiTextField-root" : {
+        [theme.breakpoints.up('sm')]: {
+          minWidth: "100px",
+          marginTop: theme.spacing(-1.5),
         },
       },
     },
