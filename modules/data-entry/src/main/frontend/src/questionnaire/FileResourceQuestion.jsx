@@ -121,37 +121,44 @@ function FileResourceQuestion(props) {
 
   // Find the icon and load them
   let uploadAllFiles = (selectedFiles) => {
-    let allowedUploads = selectedFiles.length;
     let uploadedFileNames = Object.keys(uploadedFiles || {});
+    let indicesToUpload = [];
+    let fileNamesDiscarded = [];
 
     if (maxAnswers == 1) {
       // Remove existing selection if only one file is permitted
       uploadedFileNames.forEach((filename, idx) => filename != selectedFiles[0]['name'] && deletePath(idx))
-      allowedUploads = 1;
+      // Only upload the first file, replace selection if applicable
+      indicesToUpload.push(0);
     } else if (maxAnswers > 1) {
-      allowedUploads = Math.max(0, maxAnswers - uploadedFileNames.length);
-      for (let i = 0; i < Math.min(selectedFiles.length, maxAnswers); ++i) {
+      // Prioritize re-uploading what has already been uploaded
+      for (let i = 0; i < selectedFiles.length; ++i) {
         if (uploadedFileNames.includes(selectedFiles[i]['name'])) {
-          if (allowedUploads < maxAnswers) {
-            allowedUploads++;
+          indicesToUpload.push(i);
+        }
+      }
+      // See if there's any room for uploading any new files
+      for (let i = 0; i < selectedFiles.length; ++i) {
+        if (!indicesToUpload.includes(i)) {
+          if (indicesToUpload.length < (maxAnswers - uploadedFileNames.length)) {
+            indicesToUpload.push(i);
           } else {
-            break;
+            fileNamesDiscarded.push(selectedFiles[i]['name']);
           }
         }
       }
     }
-    if (allowedUploads < selectedFiles.length) {
+    if (maxAnswers > 0 && indicesToUpload.length < selectedFiles.length) {
       let errorText = "At most " + maxAnswers + " file" + (maxAnswers > 1 ? "s" : "") + " can be uploaded to this question. ";
-      errorText += "Not uploaded from your selection: " + selectedFiles[allowedUploads]['name'];
-      for (let i = allowedUploads + 1; i < selectedFiles.length; ++i) {
-        errorText += ", " + selectedFiles[i]['name'];
-      }
+      errorText += "Not uploaded from your selection: " + fileNamesDiscarded.join(", ");
       setError(errorText);
     }
 
     const promises = [];
-    for (let i = 0; i < Math.min(selectedFiles.length, allowedUploads); i++) {
-      promises.push(uploadSingleFile(selectedFiles[i]));
+    for (let i = 0; i < selectedFiles.length; i++) {
+      if (maxAnswers == 0 || indicesToUpload.includes(i)) {
+        promises.push(uploadSingleFile(selectedFiles[i]));
+      }
     }
 
     return Promise.all(promises);
