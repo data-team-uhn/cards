@@ -92,7 +92,7 @@ class VocabularyQuery extends React.Component {
       inputProps={{
         "aria-label": "Search"
       }, {
-        tabindex: isNested ? -1 : undefined
+        tabIndex: isNested ? -1 : undefined
       }}
       onChange={(event) => {
         this.delayLookup(event);

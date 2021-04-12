@@ -91,8 +91,8 @@ function MultipleChoice(props) {
   }
   const [selection, setSelection] = useState(initialSelection);
   const [options, setOptions] = useState(all_options);
-  const [ghostName, setGhostName] = useState((isBare || (isRadio && defaults.indexOf(initialSelection[0]) < 0)) && existingAnswer && existingAnswer[1].value || '');
-  const [ghostValue, setGhostValue] = useState((isBare || (isRadio && defaults.indexOf(initialSelection[0]) < 0)) && existingAnswer && existingAnswer[1].value || GHOST_SENTINEL);
+  const [ghostName, setGhostName] = useState((isBare || (isRadio && defaults.indexOf(initialSelection[0]) < 0)) && existingAnswer && existingAnswer[1].value?.[0] || '');
+  const [ghostValue, setGhostValue] = useState((isBare || (isRadio && defaults.indexOf(initialSelection[0]) < 0)) && existingAnswer && existingAnswer[1].value?.[0] || GHOST_SENTINEL);
   const ghostSelected = selection.some(element => {return element[VALUE_POS] === ghostValue;});
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio && !ghostSelected;
   let inputEl = null;
