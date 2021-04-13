@@ -137,10 +137,12 @@ function FileResourceQuestion(props) {
           indicesToUpload.push(i);
         }
       }
+      let reUploadCount = indicesToUpload.length;
+      let maxNewUploads = maxAnswers - uploadedFileNames.length;
       // See if there's any room for uploading any new files
       for (let i = 0; i < selectedFiles.length; ++i) {
         if (!indicesToUpload.includes(i)) {
-          if (indicesToUpload.length < (maxAnswers - uploadedFileNames.length)) {
+          if ((indicesToUpload.length - reUploadCount) < maxNewUploads) {
             indicesToUpload.push(i);
           } else {
             fileNamesDiscarded.push(selectedFiles[i]['name']);
@@ -148,6 +150,8 @@ function FileResourceQuestion(props) {
         }
       }
     }
+    // If there is a limit to how many files can be uploaded and a larger number of files was selected,
+    // inform the user which files did not get uploaded
     if (maxAnswers > 0 && indicesToUpload.length < selectedFiles.length) {
       let errorText = "At most " + maxAnswers + " file" + (maxAnswers > 1 ? "s" : "") + " can be uploaded to this question. ";
       errorText += "Not uploaded from your selection: " + fileNamesDiscarded.join(", ");
