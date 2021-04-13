@@ -35,6 +35,8 @@ argparser.add_argument('--custom_env_file', help='Enable a custom file with envi
 argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer service to the cluster', action='store_true')
 argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of MongoDB) as the back-end for Oak/JCR', action='store_true')
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
+argparser.add_argument('--external_mongo_address', help='Address/Hostname of the external MongoDB instance. Only valid if --external_mongo is specified.')
+argparser.add_argument('--external_mongo_dbname', help='Database name of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to lfsinitial:8080', type=int)
 args = argparser.parse_args()
@@ -253,9 +255,21 @@ if ENABLE_NCR:
 	yaml_obj['services']['neuralcr']['networks']['internalnetwork']['aliases'] = ['neuralcr']
 
 if args.external_mongo:
-	ext_mongo_address = input("Enter the address of the MongoDB server (ip, hostname, or domain name, optionally followed by port, e.g. mongo.localdomain:27017): ")
-	ext_mongo_credentials = input("Enter the username:password for the MongoDB server (leave blank for no password): ")
-	ext_mongo_db_name = input("Enter the Sling storage database name on the MongoDB server (default: sling): ")
+	if args.external_mongo_address:
+		ext_mongo_address = args.external_mongo_address
+	else:
+		ext_mongo_address = input("Enter the address of the MongoDB server (ip, hostname, or domain name, optionally followed by port, e.g. mongo.localdomain:27017): ")
+
+	if args.external_mongo_address and 'CARDS_EXT_MONGO_AUTH' in os.environ:
+		ext_mongo_credentials = os.environ['CARDS_EXT_MONGO_AUTH']
+	else:
+		ext_mongo_credentials = input("Enter the username:password for the MongoDB server (leave blank for no password): ")
+
+	if args.external_mongo_dbname:
+		ext_mongo_db_name = args.external_mongo_dbname
+	else:
+		ext_mongo_db_name = input("Enter the Sling storage database name on the MongoDB server (default: sling): ")
+
 	yaml_obj['services']['lfsinitial']['environment'].append("EXTERNAL_MONGO_ADDRESS={}".format(ext_mongo_address))
 	if len(ext_mongo_credentials) != 0:
 		yaml_obj['services']['lfsinitial']['environment'].append("MONGO_AUTH={}".format(ext_mongo_credentials))
