@@ -377,7 +377,7 @@ function Form (props) {
                   </Tooltip>
                   :
                   <Tooltip title="Edit">
-                    <IconButton color="secondary" onClick={onEdit}>
+                    <IconButton color="primary" onClick={onEdit}>
                       <EditIcon />
                     </IconButton>
                   </Tooltip>
@@ -402,7 +402,7 @@ function Form (props) {
                 >
                   <List>
                     <ListItem className={classes.actionsMenuItem}>
-                      <Button onClick={() => {setSelectorDialogOpen(true)}}>
+                      <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
                         Change subject
                       </Button>
                     </ListItem>
