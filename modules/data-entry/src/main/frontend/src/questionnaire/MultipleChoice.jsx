@@ -314,6 +314,7 @@ function MultipleChoice(props) {
               onUpdate && onUpdate(value);
             }}
             value={ghostSelected ? ghostName : undefined}
+            disabled={disabled}
             {...customInputProps}
             />
         :
