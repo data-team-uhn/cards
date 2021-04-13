@@ -37,6 +37,7 @@ argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of 
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to lfsinitial:8080', type=int)
+argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment')
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
@@ -297,6 +298,11 @@ else:
 print("Configuring the internal network")
 yaml_obj['networks'] = {}
 yaml_obj['networks']['internalnetwork'] = {}
+if args.subnet:
+	yaml_obj['networks']['internalnetwork']['ipam'] = {}
+	yaml_obj['networks']['internalnetwork']['ipam']['driver'] = 'default'
+	yaml_obj['networks']['internalnetwork']['ipam']['config'] = {}
+	yaml_obj['networks']['internalnetwork']['ipam']['config'] = [{'subnet': args.subnet}]
 
 #Save it
 with open(OUTPUT_FILENAME, 'w') as f_out:
