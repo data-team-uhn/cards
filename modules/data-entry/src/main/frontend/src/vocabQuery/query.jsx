@@ -153,7 +153,6 @@ class VocabularyQuery extends React.Component {
             </InputLabel>
             {inputEl}
           </FormControl>}
-          <br />
           <LinearProgress className={classes.progressIndicator + " " + (this.state.suggestionsLoading ? "" : classes.inactiveProgress)}/>
         </div>
         {/* Suggestions list using Popper */}
