@@ -415,8 +415,23 @@ const questionnaireStyle = theme => ({
         float: "right",
         margin: theme.spacing(1),
     },
-    titleButton: {
-        float: "right"
+    actionsMenu: {
+        border: "1px solid " + theme.palette.divider,
+        borderRadius: theme.spacing(3),
+        display: "flex",
+        float: "right",
+        marginRight : theme.spacing(2),
+        marginTop: theme.spacing(1)
+    },
+    actionsMenuItem: {
+        padding: theme.spacing(0,1),
+        "& .MuiButtonBase-root" : {
+          fontWeight: "normal",
+          justifyContent: "flex-start",
+          textTransform: "none",
+          width: "100%",
+       }
+
     },
     subjectSubHeader: {
         display: "block"
@@ -525,9 +540,6 @@ const questionnaireStyle = theme => ({
       borderColor: theme.palette.warning.light,
       borderWidth: '2px',
       borderStyle: 'solid',
-    },
-    hierarchyEditButton: {
-        marginLeft: theme.spacing(1)
     },
     dropzone: {
       display: "flex",

@@ -23,12 +23,16 @@ import PropTypes from "prop-types";
 
 import {
   Breadcrumbs,
+  Button,
   CircularProgress,
   Dialog,
   DialogTitle,
   DialogContent,
   Grid,
   IconButton,
+  List,
+  ListItem,
+  Popover,
   Tooltip,
   Typography,
   withStyles
@@ -38,6 +42,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import DoneIcon from "@material-ui/icons/Done";
 import WarningIcon from '@material-ui/icons/Warning';
+import MoreIcon from '@material-ui/icons/MoreVert';
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";
@@ -103,11 +108,13 @@ function Form (props) {
   let [ pages, setPages ] = useState([]);
   let [ paginationEnabled, setPaginationEnabled ] = useState(false);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
+  let [ actionsMenu, setActionsMenu ] = useState(null);
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
   const history = useHistory();
   const formURL = `/Forms/${id}`;
+  const urlBase = "/content.html";
   const isEdit = window.location.pathname.endsWith(".edit");
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -245,7 +252,17 @@ function Form (props) {
 
   let onEdit = (event) => {
     // Redirect the user to the edit form mode
-    props.history.push("/content.html" + formURL + '.edit' + window.location.hash);
+    props.history.push(urlBase + formURL + '.edit' + window.location.hash);
+  }
+
+  let onClose = (event) => {
+    // Redirect the user to the view form mode
+    props.history.push(urlBase + formURL + window.location.hash);
+  }
+
+  let onDelete = () => {
+    removeWindowHandlers && removeWindowHandlers();
+    props.history.push(urlBase + (data?.subject?.['@path'] || ''));
   }
 
   let parentDetails = data?.subject && getHierarchy(data.subject);
@@ -348,22 +365,59 @@ function Form (props) {
         <Grid item className={classes.formHeader} xs={12}>
           { parentDetails && <Typography variant="overline">
             {parentDetails}
-            <Tooltip title="Change subject">
-              <IconButton className={classes.hierarchyEditButton} size="small" onClick={() => {setSelectorDialogOpen(true)}}>
-                <EditIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
           </Typography> }
           <Typography variant="h2">
             {title}
-            <DeleteButton
-              entryPath={data ? data["@path"] : formURL}
-              entryName={(data?.subject?.identifier || "Subject") + ": " + (title)}
-              entryType={data?.questionnaire?.title || "Form"}
-              shouldGoBack={true}
-              buttonClass={classes.titleButton}
-              onComplete={removeWindowHandlers}
-            />
+            <div className={classes.actionsMenu}>
+                {isEdit ?
+                  <Tooltip title="Save and close" onClick={onClose}>
+                    <IconButton color="primary">
+                      <DoneIcon />
+                    </IconButton>
+                  </Tooltip>
+                  :
+                  <Tooltip title="Edit">
+                    <IconButton color="primary" onClick={onEdit}>
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
+                }
+                <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
+                  <IconButton>
+                    <MoreIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Popover
+                    open={Boolean(actionsMenu)}
+                    anchorEl={actionsMenu}
+                    onClose={() => {setActionsMenu(null)}}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                >
+                  <List>
+                    <ListItem className={classes.actionsMenuItem}>
+                      <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
+                        Change subject
+                      </Button>
+                    </ListItem>
+                    <ListItem className={classes.actionsMenuItem}>
+                      <DeleteButton
+                          entryPath={data ? data["@path"] : formURL}
+                          entryName={(data?.subject?.fullIdentifier ? (data.subject.fullIdentifier + ": ") : '') + (title)}
+                          entryType="Form"
+                          onComplete={onDelete}
+                          variant="text"
+                        />
+                    </ListItem>
+                  </List>
+                </Popover>
+            </div>
           </Typography>
           <Breadcrumbs separator="·">
           {
@@ -445,18 +499,12 @@ function Form (props) {
         :
         <Grid item xs={false} className={classes.formBottom}>
           <div className={classes.mainPageAction}>
-            { isEdit ?
+            { isEdit &&
               <MainActionButton
                 inProgress={saveInProgress}
                 onClick={handleSubmit}
                 icon={saveInProgress ? <CloudUploadIcon /> : <DoneIcon />}
                 label={saveInProgress ? "Saving..." : lastSaveStatus ? "Saved" : "Save"}
-              />
-             :
-              <MainActionButton
-                onClick={onEdit}
-                icon={<EditIcon />}
-                label="Edit"
               />
             }
           </div>
