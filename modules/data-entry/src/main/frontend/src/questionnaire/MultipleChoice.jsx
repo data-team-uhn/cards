@@ -76,7 +76,7 @@ function MultipleChoice(props) {
     // The value can either be a single value or an array of values; force it into an array
     Array.of(existingAnswer[1].value).flat()
     // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
-    .map((item, index) => [item, Array.of(existingAnswer[1].displayedValue).flat()[index]]);
+    .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
   let default_values = defaults.map((thisDefault) => thisDefault[VALUE_POS]);
   let all_options =
     // If the question is a radio, just display the defaults as duplicates
@@ -311,8 +311,14 @@ function MultipleChoice(props) {
         customInput ?
           <CustomInput
             onClick={(value, label) => {
-              setGhostName(label);
-              setGhostValue(value);
+              if (isBare || isRadio) {
+                // If we are bare or a radio, the selected option should become the value
+                setGhostName(label);
+                setGhostValue(value);
+              } else {
+                // In all other cases, we want to clear the ghost value
+                setGhostValue(GHOST_SENTINEL);
+              }
               updateGhost(value, label);
               acceptEnteredOption(value, label);
               onUpdate && onUpdate(value);
