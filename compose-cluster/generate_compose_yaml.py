@@ -301,7 +301,6 @@ yaml_obj['networks']['internalnetwork'] = {}
 if args.subnet:
 	yaml_obj['networks']['internalnetwork']['ipam'] = {}
 	yaml_obj['networks']['internalnetwork']['ipam']['driver'] = 'default'
-	yaml_obj['networks']['internalnetwork']['ipam']['config'] = {}
 	yaml_obj['networks']['internalnetwork']['ipam']['config'] = [{'subnet': args.subnet}]
 
 #Save it
