@@ -37,7 +37,7 @@ argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of 
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to lfsinitial:8080', type=int)
-argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment')
+argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
