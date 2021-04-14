@@ -84,7 +84,7 @@ class VocabularyQuery extends React.Component {
   }
 
   render() {
-    const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onInputFocus, placeholder, searchDefault, value } = this.props;
+    const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onChange, onInputFocus, placeholder, searchDefault, value } = this.props;
 
     const inputEl = (<Input
       disabled={disabled}
@@ -97,6 +97,7 @@ class VocabularyQuery extends React.Component {
       onChange={(event) => {
         this.delayLookup(event);
         this.setState({inputValue: event.target.value})
+        onChange && onChange(event);
       }}
       inputRef={(node) => {
         this.anchorEl = node;

@@ -94,9 +94,9 @@ function MultipleChoice(props) {
   const [options, setOptions] = useState(all_options);
 
   // If this is a bare input or radio input, we need to pre-populate the blank input with the custom answer (if available)
-  let radioPrefill = (isBare || (isRadio && defaults.indexOf(initialSelection[0]) < 0)) && existingAnswer?.[1] || '';
-  const [ghostName, setGhostName] = useState(radioPrefill?.displayedValue);
-  const [ghostValue, setGhostValue] = useState(radioPrefill?.value || GHOST_SENTINEL);
+  let inputPrefill = (isBare || (isRadio && default_values.indexOf(initialSelection[0][VALUE_POS]) < 0)) && existingAnswer?.[1] || '';
+  const [ghostName, setGhostName] = useState(inputPrefill?.displayedValue);
+  const [ghostValue, setGhostValue] = useState(inputPrefill?.value || GHOST_SENTINEL);
   const ghostSelected = selection.some(element => {return element.includes(ghostValue);});
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio && !ghostSelected;
   let inputEl = null;
@@ -304,6 +304,13 @@ function MultipleChoice(props) {
     })
   }, [updatedOptions])
 
+  let ghostUpdateEvent = (event) => {
+    setGhostName(event.target.value);
+    updateGhost(GHOST_SENTINEL, event.target.value);
+    checkForSeparators(event.target);
+    onUpdate && onUpdate(event.target.value);
+  }
+
   // Hold the input box for either multiple choice type
   let CustomInput = customInput;
   let ghostInput = (input || textbox || customInput) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
@@ -323,6 +330,7 @@ function MultipleChoice(props) {
               acceptEnteredOption(value, label);
               onUpdate && onUpdate(value);
             }}
+            onChange = {ghostUpdateEvent}
             value={ghostSelected ? ghostName : undefined}
             disabled={disabled}
             isNested={isRadio}
@@ -332,12 +340,7 @@ function MultipleChoice(props) {
           <TextField
             helperText={maxAnswers !== 1 && "Press ENTER to add a new option"}
             className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
-            onChange={(event) => {
-              setGhostName(event.target.value);
-              updateGhost(GHOST_SENTINEL, event.target.value);
-              checkForSeparators(event.target);
-              onUpdate && onUpdate(event.target.value);
-            }}
+            onChange={ghostUpdateEvent}
             disabled={disabled}
             onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
             onBlur={separatorDetected ? ()=>{} : acceptEnteredOption}
