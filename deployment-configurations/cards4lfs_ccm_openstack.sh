@@ -50,7 +50,6 @@ do
 done
 
 #Generate the docker-compose environment
-#TODO: Wait for merge of LFS-1093 and LFS-1097
 cd $PROJECT_ROOT/compose-cluster
 echo "ADDITIONAL_RUN_MODES=lfs,dev" > custom_env.env
 CARDS_EXT_MONGO_AUTH='' python3 generate_compose_yaml.py \
