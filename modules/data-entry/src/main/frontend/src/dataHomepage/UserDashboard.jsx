@@ -103,7 +103,7 @@ function UserDashboard(props) {
           })
         }
       </Grid>
-      <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose} disableBackdropClick disableEscapeKeyDown>
+      <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose} disableBackdropClick>
         <DialogTitle className={classes.dialogTitle}>New</DialogTitle>
         <DialogContent dividers>
           <MaterialTable
