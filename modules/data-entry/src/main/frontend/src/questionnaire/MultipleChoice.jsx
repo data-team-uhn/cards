@@ -77,11 +77,12 @@ function MultipleChoice(props) {
     Array.of(existingAnswer[1].value).flat()
     // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
     .map((item, index) => [item, Array.of(existingAnswer[1].displayedValue).flat()[index]]);
+  let default_values = defaults.map((thisDefault) => thisDefault[VALUE_POS]);
   let all_options =
     // If the question is a radio, just display the defaults as duplicates
     isRadio ? defaults.slice() :
     // Otherwise, display as options the union of all defaults + existing answers, without duplicates
-    defaults.slice().concat(initialSelection.filter( (selectedAnswer) => defaults.indexOf(selectedAnswer) < 0));
+    defaults.slice().concat(initialSelection.filter( (selectedAnswer) => default_values.indexOf(selectedAnswer[VALUE_POS]) < 0));
 
   // If the field allows for multiple inputs (eg. maxAnswers !== 1),
   // No user input (aka. an empty input) takes the place of an empty string
