@@ -521,7 +521,7 @@ class VocabularyQuery extends React.Component {
         infoID: data["identifier"],
         infoPath: data["@path"],
         infoName: data["label"],
-        infoDefinition: data["def"] || data["description"],
+        infoDefinition: data["def"] || data["description"] || data["definition"],
         infoAlsoKnownAs: synonym,
         infoTypeOf: typeOf,
         infoAnchor: this.state.buttonRefs[data["identifier"]],
