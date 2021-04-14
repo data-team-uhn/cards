@@ -592,7 +592,7 @@ const questionnaireStyle = theme => ({
         paddingLeft: theme.spacing(1),
       },
     },
-    answerOptionDeleteButton: {
+    answerOptionButton: {
       float: "right",
     },
     newOptionInput: {
@@ -600,6 +600,11 @@ const questionnaireStyle = theme => ({
     },
     specialOptionSwitch: {
       margin: "0",
+    },
+    optionsDragIndicator: {
+      float: "left",
+      padding: theme.spacing(1.5, 0.5),
+      borderRadius: theme.spacing(0.5),
     },
 });
 
