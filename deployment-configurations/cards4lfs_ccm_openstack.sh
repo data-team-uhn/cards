@@ -133,6 +133,15 @@ fi
 cd $PROJECT_ROOT/compose-cluster
 docker-compose up -d
 
+#Wait for NeuralCR to start
+while true
+do
+  echo "Waiting for NeuralCR to start"
+  #It is safe to use --insecure here as we are only connecting to localhost
+  curl --fail --insecure https://127.0.0.1/ncr/models/ && break
+  sleep 5
+done
+
 #Install the required NCR models
 #echo "Installing NCR models..."
 #cd $PROJECT_ROOT/Utilities/Administration
