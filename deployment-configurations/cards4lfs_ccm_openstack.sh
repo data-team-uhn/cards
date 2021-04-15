@@ -51,6 +51,7 @@ done
 #Generate the docker-compose environment
 cd $PROJECT_ROOT/compose-cluster
 echo "ADDITIONAL_RUN_MODES=lfs,dev" > custom_env.env
+echo "BIOPORTAL_APIKEY=$BIOPORTAL_APIKEY" >> custom_env.env
 CARDS_EXT_MONGO_AUTH='' python3 generate_compose_yaml.py \
   --external_mongo \
   --external_mongo_address $DOCKER_COMPOSE_HOST_IP \
