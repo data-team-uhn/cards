@@ -30,11 +30,10 @@
 
 DOCKER_COMPOSE_SUBNET='172.19.0.0/16'
 DOCKER_COMPOSE_HOST_IP='172.19.0.1'
-MONGO_DB_VOLUME_DIR_PATH='~/cards4lfs_mongodb'
 
-mkdir $MONGO_DB_VOLUME_DIR_PATH
+MONGO_DB_VOLUME_MOUNT=$(realpath ~/cards4lfs_mongodb)
+mkdir $MONGO_DB_VOLUME_MOUNT
 
-MONGO_DB_VOLUME_MOUNT=$(realpath $MONGO_DB_VOLUME_DIR_PATH)
 PROJECT_ROOT=$(realpath ../)
 
 #We will use a single mongoDB instance for data persistence
