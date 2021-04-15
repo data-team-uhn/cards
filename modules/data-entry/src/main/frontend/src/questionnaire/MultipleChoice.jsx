@@ -416,7 +416,7 @@ function MultipleChoice(props) {
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
           {/* Ghost radio for the text input */}
           {
-          (input || textbox) && <ListItem className={classes.selectionChild + " " + classes.ghostListItem}>
+          ghostInput && <ListItem className={classes.selectionChild + " " + classes.ghostListItem}>
             <FormControlLabel
               control={
               <Radio
@@ -456,7 +456,7 @@ function MultipleChoice(props) {
         {instructions}
         <List className={classes.optionsList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
-          <ListItem>{ghostInput}</ListItem>
+          {ghostInput && <ListItem>{ghostInput}</ListItem>}
         </List>
         <Answer
           answers={answers}
