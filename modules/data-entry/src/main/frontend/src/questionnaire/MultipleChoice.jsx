@@ -227,9 +227,9 @@ function MultipleChoice(props) {
   }
 
   let acceptEnteredOption = (overrideValue, overrideName) => {
-    let valToAccept = overrideValue || ghostValue;
-    let labelToAccept = overrideName || ghostName || valToAccept;
-    if (isRadio) {
+    let labelToAccept = overrideName || ghostName || overrideValue || ghostValue;
+    let valToAccept = overrideValue || (ghostValue == GHOST_SENTINEL ? labelToAccept : ghostValue);
+    if (isRadio || isBare) {
       selectOption(valToAccept, labelToAccept) && setGhostName("");
       inputEl && inputEl.blur();
     } else if (maxAnswers !== 1 && !error && valToAccept !== "") {
@@ -347,7 +347,7 @@ function MultipleChoice(props) {
             onChange={ghostUpdateEvent}
             disabled={disabled}
             onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
-            onBlur={separatorDetected ? ()=>{} : acceptEnteredOption}
+            onBlur={separatorDetected ? ()=>{} : () => acceptEnteredOption()}
             inputProps={Object.assign({
               onKeyDown: (event) => {
                 if (event.key == 'Enter') {
