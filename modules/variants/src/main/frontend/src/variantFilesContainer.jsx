@@ -681,15 +681,18 @@ export default function VariantFilesContainer() {
 
       <input type="hidden" name="*@TypeHint" value="nt:file" />
       <label htmlFor="contained-button-file">
-        <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error && selectedFiles.length == 0} className={classes.uploadButton}>
-          <span><BackupIcon className={classes.buttonIcon}/>
-            {uploadInProgress ? 'Uploading' :
-                // TODO - judge upload status button message over all upload statuses of all files ??
-                // uploadProgress[file.name].state =="done" ? 'Uploaded' :
-                // uploadProgress[file.name].state =="error" ? 'Upload failed, try again?' :
-                'Upload'}
-          </span>
-        </Button>
+        { selectedFiles.length ?
+          <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error && selectedFiles.length == 0} className={classes.uploadButton}>
+            <span><BackupIcon className={classes.buttonIcon}/>
+              {uploadInProgress ? 'Uploading' :
+                  // TODO - judge upload status button message over all upload statuses of all files ??
+                  // uploadProgress[file.name].state =="done" ? 'Uploaded' :
+                  // uploadProgress[file.name].state =="error" ? 'Upload failed, try again?' :
+                  'Upload'}
+            </span>
+          </Button>
+          : <></>
+        }
       </label>
     </form>
 
