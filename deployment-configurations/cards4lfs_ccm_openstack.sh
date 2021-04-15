@@ -25,7 +25,7 @@
 #
 # - Docker images
 #   - lfs/lfs
-#   - ccmsk/neuralcr (version with no preloaded models)
+#   - ccmsk/neuralcr (version with HP preloaded model)
 #
 
 DOCKER_COMPOSE_SUBNET='172.19.0.0/16'
@@ -103,13 +103,19 @@ printenv CARDS_DEPLOYMENT_ADMIN_PASSWORD | python3 set_admin_password.py || exit
 #python3 install_vocabulary.py --bioportal_id HANCESTRO || exit -1
 
 #Download the required NCR models
-#echo "Downloading NCR models..."
+echo "Downloading NCR models..."
 mkdir $PROJECT_ROOT/compose-cluster/NCR_MODEL
-#cd $PROJECT_ROOT/Utilities/NCR-Downloader
+cd $PROJECT_ROOT/Utilities/NCR-Downloader
 
-#[ ! -d $PROJECT_ROOT/compose-cluster/NCR_MODEL/HP ] && python3 download_model.py \
-#  --download HP \
-#  --savedir $PROJECT_ROOT/compose-cluster/NCR_MODEL || exit -1
+#pmc_model_new.bin
+[ ! -f $PROJECT_ROOT/compose-cluster/NCR_MODEL/pmc_model_new.bin ] && python3 download_model.py \
+  --download pmc_model_new.bin \
+  --savedir $PROJECT_ROOT/compose-cluster/NCR_MODEL || exit -1
+
+#HP - Human Phenotype Ontology
+[ ! -d $PROJECT_ROOT/compose-cluster/NCR_MODEL/HP ] && python3 download_model.py \
+  --download HP \
+  --savedir $PROJECT_ROOT/compose-cluster/NCR_MODEL || exit -1
 
 #Set up LDAP
 #cd $PROJECT_ROOT/Utilities/Administration
