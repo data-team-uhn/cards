@@ -318,8 +318,12 @@ function MultipleChoice(props) {
         customInput ?
           <CustomInput
             onClick={(value, label) => {
-              if (isBare || isRadio) {
-                // If we are bare or a radio, the selected option should become the value
+              // If we are bare or a radio, the selected option should become the value
+              // unless it is one of the defaults
+              let isDefault = defaults.filter((option) => {
+                return (option[VALUE_POS] === value || option[LABEL_POS] === label)
+              })[0];
+              if ((isBare || isRadio) && !isDefault) {
                 setGhostName(label);
                 setGhostValue(value);
               } else {
