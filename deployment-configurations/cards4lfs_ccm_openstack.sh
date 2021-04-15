@@ -109,14 +109,14 @@ mkdir $PROJECT_ROOT/compose-cluster/NCR_MODEL
 cd $PROJECT_ROOT/Utilities/NCR-Downloader
 
 #pmc_model_new.bin
-[ ! -f $PROJECT_ROOT/compose-cluster/NCR_MODEL/pmc_model_new.bin ] && python3 download_model.py \
+[ ! -f $PROJECT_ROOT/compose-cluster/NCR_MODEL/pmc_model_new.bin ] && (python3 download_model.py \
   --download pmc_model_new.bin \
-  --savedir $PROJECT_ROOT/compose-cluster/NCR_MODEL || exit -1
+  --savedir $PROJECT_ROOT/compose-cluster/NCR_MODEL || exit -1)
 
 #HP - Human Phenotype Ontology
-[ ! -d $PROJECT_ROOT/compose-cluster/NCR_MODEL/HP ] && python3 download_model.py \
+[ ! -d $PROJECT_ROOT/compose-cluster/NCR_MODEL/HP ] && (python3 download_model.py \
   --download HP \
-  --savedir $PROJECT_ROOT/compose-cluster/NCR_MODEL || exit -1
+  --savedir $PROJECT_ROOT/compose-cluster/NCR_MODEL || exit -1)
 
 #Set up LDAP
 #cd $PROJECT_ROOT/Utilities/Administration
