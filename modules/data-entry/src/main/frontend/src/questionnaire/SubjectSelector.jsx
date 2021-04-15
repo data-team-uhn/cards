@@ -82,7 +82,7 @@ function UnstyledNewSubjectDialog (props) {
 
   return(
     <React.Fragment>
-      <Dialog open={open} onClose={onClose}>
+      <Dialog open={open} onClose={onClose} disableBackdropClick>
         <DialogTitle id="new-form-title">
           Create new subject
         </DialogTitle>
