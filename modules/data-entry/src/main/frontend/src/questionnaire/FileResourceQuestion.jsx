@@ -125,20 +125,21 @@ function FileResourceQuestion(props) {
     let indicesToUpload = [];
     let fileNamesDiscarded = [];
 
-    if (maxAnswers == 1) {
-      // Remove existing selection if only one file is permitted
-      uploadedFileNames.forEach((filename, idx) => filename != selectedFiles[0]['name'] && deletePath(idx))
-      // Only upload the first file, replace selection if applicable
-      indicesToUpload.push(0);
-    } else if (maxAnswers > 1) {
+    if (maxAnswers > 0) {
       // Prioritize re-uploading what has already been uploaded
-      for (let i = 0; i < selectedFiles.length; ++i) {
+      for (let i = 0; i < selectedFiles.length && indicesToUpload.length < maxAnswers; ++i) {
         if (uploadedFileNames.includes(selectedFiles[i]['name'])) {
           indicesToUpload.push(i);
         }
       }
       let reUploadCount = indicesToUpload.length;
       let maxNewUploads = maxAnswers - uploadedFileNames.length;
+      // Remove existing selection if only one file is permitted
+      if (maxAnswers == 1) {
+        uploadedFileNames.forEach((filename, idx) => idx != indicesToUpload[0] && deletePath(idx));
+        maxNewUploads = maxAnswers;
+      }
+
       // See if there's any room for uploading any new files
       for (let i = 0; i < selectedFiles.length; ++i) {
         if (!indicesToUpload.includes(i)) {
@@ -149,13 +150,14 @@ function FileResourceQuestion(props) {
           }
         }
       }
-    }
-    // If there is a limit to how many files can be uploaded and a larger number of files was selected,
-    // inform the user which files did not get uploaded
-    if (maxAnswers > 0 && indicesToUpload.length < selectedFiles.length) {
-      let errorText = "At most " + maxAnswers + " file" + (maxAnswers > 1 ? "s" : "") + " can be uploaded to this question. ";
-      errorText += "Not uploaded from your selection: " + fileNamesDiscarded.join(", ");
-      setError(errorText);
+
+      // If there is a limit to how many files can be uploaded and a larger number of files was selected,
+      // inform the user which files did not get uploaded
+      if (indicesToUpload.length < selectedFiles.length) {
+        let errorText = "At most " + maxAnswers + " file" + (maxAnswers > 1 ? "s" : "") + " can be uploaded to this question. ";
+        errorText += "Not uploaded from your selection: " + fileNamesDiscarded.join(", ");
+        setError(errorText);
+      }
     }
 
     const promises = [];
