@@ -105,6 +105,7 @@ printenv CARDS_DEPLOYMENT_ADMIN_PASSWORD | python3 set_admin_password.py || exit
 
 #Download the required NCR models
 #echo "Downloading NCR models..."
+mkdir $PROJECT_ROOT/compose-cluster/NCR_MODEL
 #cd $PROJECT_ROOT/Utilities/NCR-Downloader
 
 #[ ! -d $PROJECT_ROOT/compose-cluster/NCR_MODEL/HP ] && python3 download_model.py \
