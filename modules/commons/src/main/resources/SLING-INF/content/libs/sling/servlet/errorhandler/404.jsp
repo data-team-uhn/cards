@@ -20,11 +20,33 @@
     pageEncoding="US-ASCII" isErrorPage="true"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "https://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-</head>
-<body>
-  <div style="margin-top: 80px;
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <sly data-sly-use.config="/libs/lfs/conf/Version">
+      <meta name="version" content="${config['Version']}">
+    </sly>
+    <sly data-sly-use.config="/libs/lfs/conf/PlatformName">
+      <meta name="platformName" content="${config['PlatformName']}">
+    </sly>
+    <sly data-sly-use.config="/libs/lfs/conf/AppName">
+      <meta name="title" content="${config['AppName']}">
+      <title>${config.AppName}</title>
+    </sly>
+    <sly data-sly-use.config="/libs/lfs/conf/ThemeColor">
+      <meta name="themeColor" content="${config['ThemeColor']}">
+    </sly>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap" class="next-head"/>
+    <script src="/system/sling.js"></script>
+    <sly data-sly-use.assets="/libs/lfs/resources/assets">
+      <script src="/libs/lfs/resources/${assets['vendor.js']}"></script>
+      <script src="/libs/lfs/resources/${assets['runtime.js']}"></script>
+    </sly>
+  </head>
+  <body>
+    <div style="margin-top: 80px;
 			font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
 			align-items: center;
 			flex-direction: column;
@@ -34,17 +56,17 @@
 			margin-right: auto;
 			display: flex;">
     
-    <img style="max-width: 200px;" src="/libs/lfs/resources/logo_light_bg.png">
-    <br>
-    <div style="color: #35baf6; font-size: 6rem; font-weight: 300;">
-      <div>404</div>
-      <div>Not found</div>
-    </div>
-    <div style="color: #0000008a; font-size: 1.2rem; font-weight: 400; margin: 16px 0;">
-	  The page you are trying to reach does not exist
-	</div>
-	<a href="/content.html/Questionnaires/User">
-	  <button tabindex="0" style="margin-top: 32px;
+      <img style="max-width: 200px;" src="/libs/lfs/resources/logo_light_bg.png">
+      <br>
+      <div style="color: #35baf6; font-size: 6rem; font-weight: 300;">
+        <div>404</div>
+        <div>Not found</div>
+      </div>
+      <div style="color: #0000008a; font-size: 1.2rem; font-weight: 400; margin: 16px 0;">
+	    The page you are trying to reach does not exist
+	  </div>
+	  <a href="/content.html/Questionnaires/User">
+	    <button tabindex="0" style="margin-top: 32px;
 								cursor: pointer;
 								border: 0;
 								color: #fff;
@@ -59,9 +81,9 @@
 								border-radius: 26px;
 								letter-spacing: 0.02857em;
 								text-transform: uppercase;">
-	    Go to the dashboard
-      </button>
-	</a>
-  </div>
-</body>
+	      Go to the dashboard
+        </button>
+	  </a>
+    </div>
+  </body>
 </html>
