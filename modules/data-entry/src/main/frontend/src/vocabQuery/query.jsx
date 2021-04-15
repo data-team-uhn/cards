@@ -108,11 +108,13 @@ class VocabularyQuery extends React.Component {
       onKeyDown={(event) => {
         if (event.key == 'Enter') {
           this.queryInput(this.anchorEl.value);
+          event.preventDefault();
         } else if (event.key == 'ArrowDown') {
           // Move the focus to the suggestions list
           if (this.menuRef.children.length > 0) {
             this.menuRef.children[0].focus();
           }
+          event.preventDefault();
         }
       }}
       onFocus={(status) => {
