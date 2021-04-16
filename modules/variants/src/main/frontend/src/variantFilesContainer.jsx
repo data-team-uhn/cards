@@ -64,7 +64,6 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(1)
   },
   fileName: {
-    color: theme.palette.success.dark,
     fontWeight: "500"
   },
   progressBar: {
@@ -665,12 +664,12 @@ export default function VariantFilesContainer() {
           onSubmit={upload}
           key="file-upload">
       <Typography component="h2" variant="h5" className={classes.dialogTitle}>Variants Upload</Typography>
-      Please upload files named according to one of the following formats:
+      <Typography>Please upload files named according to one of the following formats:</Typography>
       <ul>
         <li><i>PatientId_TumorNumber.csv (e.g. AB12345_1.csv)</i></li>
         <li><i>PatientId_TumorNumber_TumorRegion.csv (e.g. AB12345_1_a.csv)</i></li>
       </ul>
-      The file will be automatically associated with the subject identified by its name. You can review and correct the identifiers after selecting the file, before upload.
+      <Typography>The file will be automatically associated with the subject identified by its name. You can review and correct the identifiers after selecting the file, before upload.</Typography>
       { uploadInProgress && (
         <Grid item className={classes.root}>
           <LinearProgress color="primary" />
@@ -703,8 +702,6 @@ export default function VariantFilesContainer() {
     </form>
 
     { selectedFiles && selectedFiles.length > 0 && <span>
-      <Typography variant="h6" className={classes.fileInfo}>Selected files info</Typography>
-
       { selectedFiles.map( (file, i) => {
 
           const upprogress = uploadProgress ? uploadProgress[file.name] : null;
@@ -715,7 +712,7 @@ export default function VariantFilesContainer() {
           return (
             <div key={file.name} className={classes.fileInfo}>
               <div>
-                <span>File <span className={classes.fileName}>{file.name}:</span></span>
+                <Typography variant="h6">{file.name}:</Typography>
                 { upprogress && upprogress.state != "error" &&
                   <span>
                     <div className={classes.progressBar}>
