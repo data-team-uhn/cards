@@ -128,7 +128,7 @@ class VocabularyQuery extends React.Component {
       className={noMargin ? "" : classes.searchInput}
       multiline={true}
       endAdornment={(
-        <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}}>
+        <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}} className = {classes.searchButton}>
           <Search />
         </InputAdornment>
       )}
@@ -411,7 +411,7 @@ class VocabularyQuery extends React.Component {
                 onClick={(e) => {
                   if (e.target.localName === "li") {
                     this.props.onClick(element["@path"], name);
-                    this.setState({inputValue: ""});
+                    this.setState({inputValue: this.props.clearOnClick ? "" : name});
                     this.closeDialog();
                   }}
                 }
