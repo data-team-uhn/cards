@@ -62,6 +62,10 @@ CARDS_EXT_MONGO_AUTH='' python3 generate_compose_yaml.py \
   --custom_env_file custom_env.env \
   --subnet $DOCKER_COMPOSE_SUBNET
 
+#Add the docker-compose.override.yml file and any other other needed resources
+cp $PROJECT_ROOT/deployment-configurations/resources/cards4lfs_ccm_openstack/docker-compose.override.yml .
+cp $PROJECT_ROOT/deployment-configurations/resources/cards4lfs_ccm_openstack/registered_models.py ncr_registered_models.py
+
 docker-compose build || exit -1
 docker-compose up -d lfsinitial || exit -1
 
