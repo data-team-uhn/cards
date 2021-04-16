@@ -665,6 +665,12 @@ export default function VariantFilesContainer() {
           onSubmit={upload}
           key="file-upload">
       <Typography component="h2" variant="h5" className={classes.dialogTitle}>Variants Upload</Typography>
+      Please upload files named according to one of the following formats:
+      <ul>
+        <li><i>PatientId_TumorNumber.csv (e.g. AB12345_1.csv)</i></li>
+        <li><i>PatientId_TumorNumber_TumorRegion.csv (e.g. AB12345_1_a.csv)</i></li>
+      </ul>
+      The file will be automatically associated with the subject identified by its name. You can review and correct the identifiers after selecting the file, before upload.
       { uploadInProgress && (
         <Grid item className={classes.root}>
           <LinearProgress color="primary" />
