@@ -126,6 +126,8 @@ export default function VariantFilesContainer() {
   let [ tumorSubjectUUID, setTumorSubjectUUID ] = useState();
   let [ regionSubjectUUID, setRegionSubjectUUID ] = useState();
 
+  let [ showOtherVersions, setShowOtherVersions ] = useState({});
+
   // Numerical upload progress object measured in %, for all files
   let [ uploadProgress, setUploadProgress ] = useState({});
   // Marks that a upload operation is in progress
@@ -725,55 +727,73 @@ export default function VariantFilesContainer() {
               </div>
               { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ? 
                 <Typography className={classes.fileDetail}>
-                  Subject id: <Link href={subjectPath} target="_blank"> {file.subject.id} </Link>
-                  Tumor nb: <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
-                  { file?.region?.path && <span>Region nb: <Link href={regionPath} target="_blank"> {file.region.id} </Link> </span> }
+                  Patient: <Link href={subjectPath} target="_blank"> {file.subject.id} </Link>
+                  Tumor: <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
+                  { file?.region?.path && <span>Tumor region: <Link href={regionPath} target="_blank"> {file.region.id} </Link> </span> }
                   { file.formPath && <span>Form: <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank"> {file.formPath.replace("/Forms/", "")} </Link></span> }
                 </Typography>
               : <span>
                 <TextField
-                  label="Subject id"
+                  label="Patient"
                   value={file.subject.id}
                   onChange={(event) => setSubject(event.target.value, file.name)}
                   className={classes.fileDetail}
                   required
                 />
                 <TextField
-                  label="Tumor nb"
+                  label="Tumor"
                   value={file.tumor.id}
                   onChange={(event) => setTumor(event.target.value, file.name)}
                   className={classes.fileDetail}
                   required
                 />
                 <TextField
-                  label="Region nb"
+                  label="Tumor Region"
                   value={file?.region?.id}
                   onChange={(event) => setRegion(event.target.value, file.name)}
                   className={classes.fileDetail}
-                  required
                 />
                 </span>
               }
               <Typography variant="body1" component="div" className={classes.fileInfo}>
                   {(!file.sameFiles || file.sameFiles.length == 0)
-                      ?
-                     <p>There are no versions of this file.</p>
-                      :
-                     <span>
-                         <p>Other versions of this file :</p>
-                         <ul>
-                           {file.sameFiles && file.sameFiles.map( (samefile, index) => {
-                            return (
-                             <li key={index}>
-                               Uploaded at {moment(samefile["jcr:created"]).format("dddd, MMMM Do YYYY")} by {samefile["jcr:createdBy"]}
-                               <IconButton size="small" color="primary">
-                                 <a href={samefile["@path"]} download><GetApp /></a>
-                               </IconButton>
-                             </li>
-                           )})}
-                         </ul>
-                     </span>
+                    ?
+                      <p>There are no versions of this file.</p>
+                    :
+                      <Link
+                        href="#"
+                        onClick={() => {
+                          setShowOtherVersions((old) => {
+                            // Set showOtherVersions[file.name] to true if it was false or didn't exist, or false otherwise
+                            return {...old, [file.name]: !old[file.name]};
+                            /*let wasTrue = old[file.name];
+                            let newVersions = {[file.name]: !wasTrue, ...old};
+                            return newVersions;*/
+                          })
+                        }}>
+                        <p>
+                          There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
+                          of this file
+                        </p>
+                      </Link>
                    }
+                  {
+                    showOtherVersions?.[file.name] &&
+                    <span>
+                      <p>Other versions of this file :</p>
+                      <ul>
+                        {file.sameFiles && file.sameFiles.map( (samefile, index) => {
+                        return (
+                          <li key={index}>
+                            Uploaded at {moment(samefile["jcr:created"]).format("dddd, MMMM Do YYYY")} by {samefile["jcr:createdBy"]}
+                            <IconButton size="small" color="primary">
+                              <a href={samefile["@path"]} download><GetApp /></a>
+                            </IconButton>
+                          </li>
+                        )})}
+                      </ul>
+                    </span>
+                  }
               </Typography>
             </div>
         ) } ) }
