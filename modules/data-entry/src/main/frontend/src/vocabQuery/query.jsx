@@ -570,7 +570,9 @@ class VocabularyQuery extends React.Component {
     if (this.props.clearOnClick) {
       this.anchorEl.value = "";
     }
-    this.anchorEl.select();
+    if (this.props.focusAfterSelecting) {
+      this.anchorEl.select();
+    }
     this.setState({
       browserOpened: false,
       suggestionsVisible: false,
@@ -616,13 +618,15 @@ VocabularyQuery.propTypes = {
     clearOnClick: PropTypes.bool,
     onInputFocus: PropTypes.func,
     defaultValue: PropTypes.string,
-    noMargin: PropTypes.bool
+    noMargin: PropTypes.bool,
+    focusAfterSelecting: PropTypes.bool
 };
 
 VocabularyQuery.defaultProps = {
   label: 'Search',
   overrideText: '',
-  clearOnClick: true
+  clearOnClick: true,
+  focusAfterSelecting: true
 };
 
 export default withStyles(QueryStyle)(VocabularyQuery);

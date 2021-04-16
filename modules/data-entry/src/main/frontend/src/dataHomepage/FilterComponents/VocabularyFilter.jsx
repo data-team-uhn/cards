@@ -45,6 +45,7 @@ const VocabularyFilter = forwardRef((props, ref) => {
     <VocabularyQuery
       onClick={(id, name) => {onChangeInput(id, name)}}
       clearOnClick={false}
+      focusAfterSelecting={false}
       questionDefinition={questionDefinition}
       placeholder="empty"
       inputRef={ref}
