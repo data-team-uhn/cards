@@ -291,7 +291,7 @@ function MultipleChoice(props) {
         selectOption(option, option);
       } else {
         setGhostName(option);
-        updateGhost(GHOST_SENTINEL, option);
+        updateGhost(ghostValue, option);
         onUpdate && onUpdate(option);
       }
     });
@@ -306,7 +306,8 @@ function MultipleChoice(props) {
 
   let ghostUpdateEvent = (event) => {
     setGhostName(event.target.value);
-    updateGhost(GHOST_SENTINEL, event.target.value);
+    setGhostValue(event.target.value);
+    updateGhost(event.target.value, event.target.value);
     checkForSeparators(event.target);
     onUpdate && onUpdate(event.target.value);
   }
