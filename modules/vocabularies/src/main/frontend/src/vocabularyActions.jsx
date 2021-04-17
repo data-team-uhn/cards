@@ -25,8 +25,6 @@ import {
   DialogTitle,
   IconButton,
   makeStyles,
-  TableCell,
-  TableRow,
   Typography,
   withStyles
 } from "@material-ui/core";
@@ -37,7 +35,6 @@ import VocabularyDetails from "./vocabularyDetails"
 import VocabularyAction from "./vocabularyAction"
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
-const Config = require("./config.json");
 const vocabLinks = require('./vocabularyLinks.json');
 const Phase = require("./phaseCodes.json");
 
@@ -53,26 +50,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const StyledTableRow = withStyles(theme => ({
-  root: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.background.default
-    }
-  },
-}))(TableRow);
-
-const StyledTableCell = withStyles(theme => ({
-  body: {
-    whiteSpace: "pre",
-    textAlign: "right"
-  },
-}))(TableCell);
-
 /*
   This function keeps track of the state of the current vocabulary. It also keeps track of any error messages needed to be displayed.
   Then it renders an action button and an about button. It also renders a dialog box for any installation / uninstallation errors
 */
-export default function VocabularyEntry(props) {
+export default function VocabularyActions(props) {
   const { vocabulary, updateLocalList, hidden, initPhase } = props;
   // The following facilitates the usage of the same code to report errors for both installation and uninstallation
   const [error, setError] = React.useState(false);
@@ -82,8 +64,7 @@ export default function VocabularyEntry(props) {
   const [phase, setPhase] = React.useState(initPhase);
 
   const classes = useStyles();
-  const date = new Date(props.type === "local" ? vocabulary.installed : vocabulary.released);
-  const bodyTypography = Config["tableBodyTypography"];
+
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   const handleClose = () => {setError(false)};
@@ -148,52 +129,23 @@ export default function VocabularyEntry(props) {
     <React.Fragment>
       {(!hidden) && (
       <React.Fragment>
-        <StyledTableRow>
 
-          <TableCell component="th" scope="row" >
-            <Typography variant={bodyTypography}>
-              {vocabulary.acronym}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant={bodyTypography}>
-              {vocabulary.name}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant={bodyTypography} noWrap>
-              {vocabulary.version}
-            </Typography>
-          </TableCell>
-
-          <TableCell>
-            <Typography variant={bodyTypography}>
-              {date.toString().substring(4,15)}
-            </Typography>
-          </TableCell>
-
-          <StyledTableCell>
-            <VocabularyAction
-              acronym={vocabulary.acronym}
-              install={install}
-              uninstall={uninstall}
-              phase={phase}
-            />
-            { vocabulary.description &&
-              <VocabularyDetails
-                acronym={vocabulary.acronym}
-                install={install}
-                uninstall={uninstall}
-                phase={phase}
-                name={vocabulary.name}
-                description={vocabulary.description}
-              />
-            }
-          </StyledTableCell>
-
-        </StyledTableRow>
+        <VocabularyAction
+          acronym={vocabulary.acronym}
+          install={install}
+          uninstall={uninstall}
+          phase={phase}
+        />
+        { vocabulary.description &&
+          <VocabularyDetails
+            acronym={vocabulary.acronym}
+            install={install}
+            uninstall={uninstall}
+            phase={phase}
+            name={vocabulary.name}
+            description={vocabulary.description}
+          />
+        }
 
         <Dialog open={error} onClose={handleClose}>
 
