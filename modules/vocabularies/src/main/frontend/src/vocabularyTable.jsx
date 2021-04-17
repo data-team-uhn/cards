@@ -37,7 +37,7 @@ export default function VocabularyTable(props) {
   const { vocabList, type  } = props;
   const [filterTable, setFilterTable] = useState(false);
   const [acronymList, setAcronymList] = useState([]);
-  const [ rowCount, setRowCount ] = useState(5);
+  const [ rowCount, setRowCount ] = useState(10);
   const theme = useTheme();
 
   return(
@@ -70,15 +70,12 @@ export default function VocabularyTable(props) {
                 cellStyle: {
                   width: '10%',
                   whiteSpace: "pre",
-                  fontWeight: '400'
                 },
                 field: 'acronym'
               },
               { title: 'Name',
                 cellStyle: {
                   width: "33%",
-                  whiteSpace: "pre",
-                  fontWeight: '400'
                 },
                 field: 'name'
               },
@@ -86,7 +83,6 @@ export default function VocabularyTable(props) {
                 cellStyle: {
                   width: "20%",
                   whiteSpace: "pre",
-                  fontWeight: '400'
                 },
                 field: 'version'
               },
@@ -95,7 +91,6 @@ export default function VocabularyTable(props) {
                 cellStyle: {
                   width: "14%",
                   whiteSpace: "nowrap",
-                  fontWeight: '400'
                 },
                 render: rowData => (new Date(type === "local" ? rowData.installed : rowData.released)).toString().substring(4,15)
               },
@@ -130,7 +125,7 @@ export default function VocabularyTable(props) {
                            },
             }}
             localization={{
-              toolbar : { searchTooltip: "Filter",
+              toolbar : { searchTooltip: "Filter by vocabulary id or name ",
                           searchPlaceholder: "Filter"
                         }
             }}
