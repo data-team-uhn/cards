@@ -65,7 +65,6 @@ export default function VocabularyTable(props) {
       {(vocabList.length > 0) &&
       <Grid item>
         <MaterialTable
-            title=""
             columns={[
               { title: 'Id',
                 cellStyle: {
@@ -85,6 +84,8 @@ export default function VocabularyTable(props) {
                   width: "20%",
                   maxWidth: "100px",
                 },
+                filtering: false,
+                sorting: false,
                 render: rowData => rowData.version && <Tooltip title={rowData.version}><Typography style={{fontWeight: "inherit"}} noWrap>{rowData.version}</Typography></Tooltip>
               },
               {
@@ -93,6 +94,8 @@ export default function VocabularyTable(props) {
                   width: "14%",
                   whiteSpace: "nowrap",
                 },
+                filtering: false,
+                sorting: false,
                 render: rowData => (new Date(type === "local" ? rowData.installed : rowData.released)).toString().substring(4,15)
               },
               { title: "",
@@ -101,6 +104,8 @@ export default function VocabularyTable(props) {
                   whiteSpace: "pre",
                   textAlign: "right"
                 },
+                filtering: false,
+                sorting: false,
                 render: rowData => <VocabularyActions
                                      type={type}
                                      vocabulary={rowData}
@@ -116,17 +121,14 @@ export default function VocabularyTable(props) {
             ]}
             data={vocabList}
             options={{
-              search: true,
+              toolbar: false,
+              filtering: true,
+              sorting: true,
               emptyRowsWhenPaging: false,
               addRowPosition: 'first',
               pageSize: rowCount,
               headerStyle: { backgroundColor: theme.palette.grey['200'],
                            },
-            }}
-            localization={{
-              toolbar : { searchTooltip: "Filter by vocabulary id or name ",
-                          searchPlaceholder: "Filter"
-                        }
             }}
             onChangeRowsPerPage={pageSize => {
               setRowCount(pageSize);
