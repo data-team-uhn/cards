@@ -23,6 +23,7 @@ import {
   Grid,
   IconButton,
   Typography,
+  Tooltip,
   withStyles
 } from "@material-ui/core";
 
@@ -82,9 +83,9 @@ export default function VocabularyTable(props) {
               { title: 'Version',
                 cellStyle: {
                   width: "20%",
-                  whiteSpace: "pre",
+                  maxWidth: "100px",
                 },
-                field: 'version'
+                render: rowData => rowData.version && <Tooltip title={rowData.version}><Typography style={{fontWeight: "inherit"}} noWrap>{rowData.version}</Typography></Tooltip>
               },
               {
                 title: type === "local" ? "Installation Date" : "Release Date",

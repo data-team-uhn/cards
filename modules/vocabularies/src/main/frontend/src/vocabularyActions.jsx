@@ -143,6 +143,7 @@ export default function VocabularyActions(props) {
             uninstall={uninstall}
             phase={phase}
             name={vocabulary.name}
+            version={vocabulary.version}
             description={vocabulary.description}
           />
         }
