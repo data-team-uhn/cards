@@ -121,19 +121,50 @@ function FileResourceQuestion(props) {
 
   // Find the icon and load them
   let uploadAllFiles = (selectedFiles) => {
-    let allowedUploads = selectedFiles.length;
+    let uploadedFileNames = Object.keys(uploadedFiles || {});
+    let indicesToUpload = [];
+    let fileNamesDiscarded = [];
 
-    if (maxAnswers == 1) {
+    if (maxAnswers > 0) {
+      // Prioritize re-uploading what has already been uploaded
+      for (let i = 0; i < selectedFiles.length && indicesToUpload.length < maxAnswers; ++i) {
+        if (uploadedFileNames.includes(selectedFiles[i]['name'])) {
+          indicesToUpload.push(i);
+        }
+      }
+      let reUploadCount = indicesToUpload.length;
+      let maxNewUploads = maxAnswers - uploadedFileNames.length;
       // Remove existing selection if only one file is permitted
-      Object.keys(uploadedFiles || {}).forEach((filename, idx) => filename != selectedFiles[0]['name'] && deletePath(idx))
-      allowedUploads = 1;
-    } else if (maxAnswers > 1) {
-      allowedUploads = Math.max(0, maxAnswers - uploadedFiles.length);
+      if (maxAnswers == 1) {
+        uploadedFileNames.forEach((filename, idx) => idx != indicesToUpload[0] && deletePath(idx));
+        maxNewUploads = maxAnswers;
+      }
+
+      // See if there's any room for uploading any new files
+      for (let i = 0; i < selectedFiles.length; ++i) {
+        if (!indicesToUpload.includes(i)) {
+          if ((indicesToUpload.length - reUploadCount) < maxNewUploads) {
+            indicesToUpload.push(i);
+          } else {
+            fileNamesDiscarded.push(selectedFiles[i]['name']);
+          }
+        }
+      }
+
+      // If there is a limit to how many files can be uploaded and a larger number of files was selected,
+      // inform the user which files did not get uploaded
+      if (indicesToUpload.length < selectedFiles.length) {
+        let errorText = "At most " + maxAnswers + " file" + (maxAnswers > 1 ? "s" : "") + " can be uploaded to this question. ";
+        errorText += "Not uploaded from your selection: " + fileNamesDiscarded.join(", ");
+        setError(errorText);
+      }
     }
 
     const promises = [];
-    for (let i = 0; i < Math.min(selectedFiles.length, allowedUploads); i++) {
-      promises.push(uploadSingleFile(selectedFiles[i]));
+    for (let i = 0; i < selectedFiles.length; i++) {
+      if (maxAnswers == 0 || indicesToUpload.includes(i)) {
+        promises.push(uploadSingleFile(selectedFiles[i]));
+      }
     }
 
     return Promise.all(promises);
@@ -213,6 +244,7 @@ function FileResourceQuestion(props) {
 
   // Delete an answer by its index
   let deletePath = (index) => {
+    setError("");
     // Rather than waiting to delete, we'll just delete it immediately
     let data = new FormData();
     data.append(':operation', 'delete');
@@ -258,9 +290,8 @@ function FileResourceQuestion(props) {
         classes={classes}
         handleDrop={addFiles}
         multifile={maxAnswers != 1}
+        error={error}
         />
-
-      { error && <Typography color="error">error</Typography>}
 
       { uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
         {Object.keys(uploadedFiles).map((filepath, idx) =>
