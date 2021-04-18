@@ -65,6 +65,7 @@ function createTitle(label, idx, isRecurrent) {
 function Section(props) {
   const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, instanceId } = props;
   const isRecurrent = sectionDefinition['recurrent'];
+  const [ focus, setFocus ] = useState(false);
 
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
   const titleEl = sectionDefinition["label"] &&
@@ -182,12 +183,13 @@ function Section(props) {
               {...FORM_ENTRY_CONTAINER_PROPS}
               >
               {/* Section header */
-                hasHeader &&
+                (hasHeader || isRecurrent) &&
                   <Grid item className={classes.sectionHeader + " " + (isRecurrent ? classes.recurrentHeader : "")}>
                     {/* Delete this entry and expand this entry button */}
                     {isEdit && isRecurrent &&
                       <Tooltip title="Delete section" aria-label="Delete section" >
                         <IconButton
+                          autoFocus={focus && (idx == instanceLabels.length - 1)}
                           color="default"
                           className={classes.entryActionIcon}
                           onClick={() => {
@@ -268,6 +270,7 @@ function Section(props) {
             className={classes.addSectionButton}
             onClick={() => {
               setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
+              setFocus(true);
             }}
             >
             <Add fontSize="small" /> {sectionDefinition["label"]}
@@ -299,7 +302,6 @@ function Section(props) {
             setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, selectedUUID]);
           }}
           color="primary"
-          autoFocus
           >
           Delete
         </Button>
