@@ -503,13 +503,6 @@ class VocabularyQuery extends React.Component {
   // callback for getInfo to populate info box
   showInfo = (status, data) => {
     if (status === null) {
-      // Use an empty array instead of null if this element has no synonyms
-      var synonym = [];
-      if ("synonyms" in data)
-      {
-        synonym = data["synonyms"];
-      }
-
       var typeOf = [];
       if ("parents" in data) {
         typeOf = data["parents"].map(element =>
@@ -522,7 +515,7 @@ class VocabularyQuery extends React.Component {
         infoPath: data["@path"],
         infoName: data["label"],
         infoDefinition: data["def"] || data["description"] || data["definition"],
-        infoAlsoKnownAs: synonym,
+        infoAlsoKnownAs: data["synonyms"] || data["has_exact_synonym"] || [],
         infoTypeOf: typeOf,
         infoAnchor: this.state.buttonRefs[data["identifier"]],
         termInfoVisible: true,
