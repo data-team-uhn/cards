@@ -94,7 +94,7 @@ export default function VocabularyTable(props) {
                 },
                 render: rowData => (new Date(type === "local" ? rowData.installed : rowData.released)).toString().substring(4,15)
               },
-              { title: "Actions",
+              { title: "",
                 cellStyle: {
                   width: "23%",
                   whiteSpace: "pre",
@@ -116,12 +116,10 @@ export default function VocabularyTable(props) {
             data={vocabList}
             options={{
               search: true,
-              exportButton: true,
               emptyRowsWhenPaging: false,
               addRowPosition: 'first',
               pageSize: rowCount,
               headerStyle: { backgroundColor: theme.palette.grey['200'],
-                             textAlign: 'center'
                            },
             }}
             localization={{
