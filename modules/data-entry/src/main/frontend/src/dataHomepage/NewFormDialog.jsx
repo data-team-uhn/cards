@@ -250,6 +250,7 @@ function NewFormDialog(props) {
   return (
     <React.Fragment>
       <Dialog
+        disableBackdropClick
         open={mode === MODE_ACTION ? dialogOpen : open}
         onClose={() => {
           setDialogOpen(false);

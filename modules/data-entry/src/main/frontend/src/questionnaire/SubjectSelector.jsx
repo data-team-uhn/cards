@@ -82,7 +82,7 @@ function UnstyledNewSubjectDialog (props) {
 
   return(
     <React.Fragment>
-      <Dialog open={open} onClose={onClose}>
+      <Dialog open={open} onClose={onClose} disableBackdropClick>
         <DialogTitle id="new-form-title">
           Create new subject
         </DialogTitle>
@@ -195,7 +195,7 @@ function UnstyledSelectParentDialog (props) {
   let initialized = parentType && childType;
 
   return(
-    <Dialog open={open} onClose={onClose} keepMounted>
+    <Dialog open={open} onClose={onClose} keepMounted disableBackdropClick>
       <DialogTitle id="new-form-title">
         Select parent {parentType?.['label']} for new {childType?.['label']}
       </DialogTitle>
@@ -651,7 +651,7 @@ function UnstyledSelectorDialog (props) {
       onSubmit={handleSubmitNew}
       open={open && newSubjectPopperOpen}
       />
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} disableBackdropClick>
       {title && <DialogTitle>{title}</DialogTitle>}
       <DialogContent className={classes.NewFormDialog}>
         {isPosting && <CircularProgress />}
