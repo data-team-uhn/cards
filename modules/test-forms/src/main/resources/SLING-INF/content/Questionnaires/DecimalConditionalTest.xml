@@ -18,11 +18,11 @@
 -->
 
 <node>
-	<name>Lfs484StringTest</name>
+	<name>DecimalConditionalTest</name>
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>LFS-484 (String) Test</value>
+		<value>Decimal Conditional Test (LFS-273, LFS-275, LFS-484)</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -37,12 +37,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Must be equal to hello</value>
+			<value>Must be equal to 22.5</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>decimal</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -55,6 +55,11 @@
 			<property>
 				<name>comparator</name>
 				<value>=</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -79,9 +84,9 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>hello</value>
+						<value>22.5</value>
 					</values>
-					<type>String</type>
+					<type>Decimal</type>
 				</property>
 			</node>
 		</node>
@@ -115,12 +120,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Must NOT be equal to hello</value>
+			<value>Must NOT be equal to 22.5</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>decimal</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -133,6 +138,11 @@
 			<property>
 				<name>comparator</name>
 				<value><![CDATA[<>]]></value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -150,11 +160,6 @@
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
-				<property>
-					<name>requireAll</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
 			</node>
 			<node>
 				<name>operandB</name>
@@ -162,14 +167,9 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>hello</value>
+						<value>22.5</value>
 					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>requireAll</name>
-					<value>True</value>
-					<type>Boolean</type>
+					<type>Decimal</type>
 				</property>
 			</node>
 		</node>
@@ -203,12 +203,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>String Value A</value>
+			<value>Decimal Value A</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>decimal</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -217,12 +217,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>String Value B, make it equal to String Value A</value>
+			<value>Decimal Value B, make it equal to Decimal Value A</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>decimal</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -235,6 +235,11 @@
 			<property>
 				<name>comparator</name>
 				<value>=</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -300,12 +305,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>String Value C</value>
+			<value>Decimal Value C</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>decimal</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -314,12 +319,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>String Value D, make it not equal to String Value C</value>
+			<value>Decimal Value D, make it not equal to Decimal Value C</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>decimal</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -334,6 +339,11 @@
 				<value><![CDATA[<>]]></value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
 			<node>
 				<name>operandA</name>
 				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
@@ -346,11 +356,6 @@
 				</property>
 				<property>
 					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
-					<name>requireAll</name>
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
@@ -370,8 +375,207 @@
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
+			</node>
+		</node>
+		<node>
+			<name>test</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Confirm okay</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>string_ref_five</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Decimal Value E</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>string_ref_six</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Decimal Value F, make it less than Decimal Value E</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>stringref_lt_stringref_details</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value><![CDATA[<]]></value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
 				<property>
-					<name>requireAll</name>
+					<name>value</name>
+					<values>
+						<value>string_ref_six</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>string_ref_five</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>test</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Confirm okay</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>string_ref_seven</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Decimal Value G</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>string_ref_eight</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Decimal Value H, make it greater than Decimal Value G</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>stringref_gt_stringref_details</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value><![CDATA[>]]></value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>string_ref_eight</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>string_ref_seven</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
@@ -412,7 +616,7 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>decimal</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -424,6 +628,11 @@
 			<property>
 				<name>comparator</name>
 				<value>is empty</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -441,11 +650,6 @@
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
-				<property>
-					<name>requireAll</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
 			</node>
 			<node>
 				<name>operandB</name>
@@ -459,11 +663,6 @@
 				</property>
 				<property>
 					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
-					<name>requireAll</name>
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
@@ -499,12 +698,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Must not be empty</value>
+			<value>Must NOT be empty</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>decimal</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -516,6 +715,11 @@
 			<property>
 				<name>comparator</name>
 				<value>is not empty</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<node>

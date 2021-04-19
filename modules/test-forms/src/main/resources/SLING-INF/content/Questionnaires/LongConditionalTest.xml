@@ -18,11 +18,11 @@
 -->
 
 <node>
-	<name>Lfs484DoubleTest</name>
+	<name>LongConditionalTest</name>
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>LFS-484 (Double) Test</value>
+		<value>Long Conditional Test (LFS-273, LFS-275, LFS-484)</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -37,12 +37,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Must be equal to 22.5</value>
+			<value>Must be equal to 22</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>double</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -59,7 +59,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>double</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -84,9 +84,9 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>22.5</value>
+						<value>22</value>
 					</values>
-					<type>Double</type>
+					<type>Long</type>
 				</property>
 			</node>
 		</node>
@@ -120,12 +120,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Must NOT be equal to 22.5</value>
+			<value>Must NOT be equal to 22</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>double</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -142,7 +142,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>double</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -167,9 +167,9 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>22.5</value>
+						<value>22</value>
 					</values>
-					<type>Double</type>
+					<type>Long</type>
 				</property>
 			</node>
 		</node>
@@ -203,12 +203,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Double Value A</value>
+			<value>Long Value A</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>double</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -217,12 +217,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Double Value B, make it equal to Double Value A</value>
+			<value>Long Value B, make it equal to Long Value A</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>double</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -239,7 +239,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>double</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -305,12 +305,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Double Value C</value>
+			<value>Long Value C</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>double</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -319,12 +319,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Double Value D, make it not equal to Double Value C</value>
+			<value>Long Value D, make it not equal to Long Value C</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>double</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -341,7 +341,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>double</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -407,12 +407,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Double Value E</value>
+			<value>Long Value E</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>double</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -421,12 +421,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Double Value F, make it less than Double Value E</value>
+			<value>Long Value F, make it less than Long Value E</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>double</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -443,7 +443,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>double</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -509,12 +509,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Double Value G</value>
+			<value>Long Value G</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>double</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -523,12 +523,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Double Value H, make it greater than Double Value G</value>
+			<value>Long Value H, make it greater than Long Value G</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>double</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -545,7 +545,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>double</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -616,7 +616,7 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>double</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -632,7 +632,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>double</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -703,7 +703,7 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>double</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -719,7 +719,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>double</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>

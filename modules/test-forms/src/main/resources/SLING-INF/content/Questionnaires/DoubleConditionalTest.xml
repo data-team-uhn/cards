@@ -18,11 +18,11 @@
 -->
 
 <node>
-	<name>Lfs484DecimalTest</name>
+	<name>DoubleConditionalTest</name>
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>LFS-484 (Decimal) Test</value>
+		<value>Double Conditional Test (LFS-273, LFS-275, LFS-484)</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -42,7 +42,7 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>decimal</value>
+			<value>double</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -59,7 +59,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>double</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -86,7 +86,7 @@
 					<values>
 						<value>22.5</value>
 					</values>
-					<type>Decimal</type>
+					<type>Double</type>
 				</property>
 			</node>
 		</node>
@@ -125,7 +125,7 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>decimal</value>
+			<value>double</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -142,7 +142,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>double</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -169,7 +169,7 @@
 					<values>
 						<value>22.5</value>
 					</values>
-					<type>Decimal</type>
+					<type>Double</type>
 				</property>
 			</node>
 		</node>
@@ -203,12 +203,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Decimal Value A</value>
+			<value>Double Value A</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>decimal</value>
+			<value>double</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -217,12 +217,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Decimal Value B, make it equal to Decimal Value A</value>
+			<value>Double Value B, make it equal to Double Value A</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>decimal</value>
+			<value>double</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -239,7 +239,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>double</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -305,12 +305,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Decimal Value C</value>
+			<value>Double Value C</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>decimal</value>
+			<value>double</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -319,12 +319,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Decimal Value D, make it not equal to Decimal Value C</value>
+			<value>Double Value D, make it not equal to Double Value C</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>decimal</value>
+			<value>double</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -341,7 +341,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>double</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -407,12 +407,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Decimal Value E</value>
+			<value>Double Value E</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>decimal</value>
+			<value>double</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -421,12 +421,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Decimal Value F, make it less than Decimal Value E</value>
+			<value>Double Value F, make it less than Double Value E</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>decimal</value>
+			<value>double</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -443,7 +443,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>double</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -509,12 +509,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Decimal Value G</value>
+			<value>Double Value G</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>decimal</value>
+			<value>double</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -523,12 +523,12 @@
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Decimal Value H, make it greater than Decimal Value G</value>
+			<value>Double Value H, make it greater than Double Value G</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>decimal</value>
+			<value>double</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -545,7 +545,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>double</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -616,7 +616,7 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>decimal</value>
+			<value>double</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -632,7 +632,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>double</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -703,7 +703,7 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>decimal</value>
+			<value>double</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -719,7 +719,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>double</value>
 				<type>String</type>
 			</property>
 			<node>
