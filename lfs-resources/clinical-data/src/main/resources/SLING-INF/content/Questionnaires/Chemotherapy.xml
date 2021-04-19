@@ -159,7 +159,7 @@
 			</property>
 			<property>
 				<name>minAnswers</name>
-				<value>1</value>
+				<value>0</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -193,7 +193,7 @@
 			</property>
 			<property>
 				<name>minAnswers</name>
-				<value>1</value>
+				<value>0</value>
 				<type>Long</type>
 			</property>
 			<property>
