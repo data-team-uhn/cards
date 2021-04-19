@@ -642,7 +642,7 @@
 			</property>
 			<property>
 				<name>label</name>
-				<value>Frameshift (smalll insertion)</value>
+				<value>Frameshift (small insertion)</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -661,20 +661,25 @@
 			</property>
 		</node>
 		<node>
-			<name>missense</name>
+			<name>fsid</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>missense</value>
+				<value>fsid</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Frameshift (small indel)</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>nonsense</name>
+			<name>missense</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>nonsense</value>
+				<value>Missense</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -683,7 +688,21 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>missense DN</value>
+				<value>Missense DN</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Missense, de novo</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>nonsense</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>value</name>
+				<value>Nonsense</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -692,7 +711,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>splice donor</value>
+				<value>Splice donor</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -701,7 +720,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>splice acceptor</value>
+				<value>Splice acceptor</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -710,7 +729,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>large insertion</value>
+				<value>Large insertion</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -719,7 +738,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>large deletion</value>
+				<value>Large deletion</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -728,7 +747,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>synonymous</value>
+				<value>Synonymous</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -737,7 +756,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>synonymous splicing</value>
+				<value>Synonymous splicing</value>
 				<type>String</type>
 			</property>
 		</node>
