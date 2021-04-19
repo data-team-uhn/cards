@@ -120,6 +120,44 @@
 			<value>Disease</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list+input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>MONDO</value>
+			</values>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vocabularyFilters</name>
+			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<property>
+				<name>MONDO</name>
+				<values>
+					<value>MONDO_0000001</value>
+				</values>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>last_fup</name>
@@ -304,6 +342,44 @@
 			<value>Maternal ethnicity</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>HANCESTRO</value>
+			</values>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vocabularyFilters</name>
+			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<property>
+				<name>HANCESTRO</name>
+				<values>
+					<value>HANCESTRO_0004</value>
+				</values>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>paternal_ethnicity</name>
@@ -313,6 +389,44 @@
 			<value>Paternal ethnicity</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>HANCESTRO</value>
+			</values>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vocabularyFilters</name>
+			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<property>
+				<name>HANCESTRO</name>
+				<values>
+					<value>HANCESTRO_0004</value>
+				</values>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>disease_site</name>
@@ -322,6 +436,44 @@
 			<value>Disease site</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>UBERON</value>
+			</values>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vocabularyFilters</name>
+			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<property>
+				<name>UBERON</name>
+				<values>
+					<value>BFO_0000002</value>
+				</values>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>reason_for_referral</name>

@@ -109,10 +109,41 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>dataType</name>
-			<value>text</value>
+			<name>displayMode</name>
+			<value>input</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>ORDO</value>
+				<value>HP</value>
+			</values>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vocabularyFilters</name>
+			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<property>
+				<name>ORDO</name>
+				<values>
+					<value>Orphanet_C001</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
+				<name>HP</name>
+				<values>
+					<value>HP:0000118</value>
+				</values>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>diagnosis_from_pathology_report</name>
@@ -157,10 +188,41 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>dataType</name>
-			<value>text</value>
+			<name>displayMode</name>
+			<value>input</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>ORDO</value>
+				<value>HP</value>
+			</values>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vocabularyFilters</name>
+			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<property>
+				<name>ORDO</name>
+				<values>
+					<value>Orphanet_C001</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
+				<name>HP</name>
+				<values>
+					<value>HP:0000118</value>
+				</values>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>location</name>
