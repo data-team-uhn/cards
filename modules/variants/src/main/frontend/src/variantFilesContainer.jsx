@@ -21,18 +21,23 @@ import React, { useState } from "react";
 
 import {
   Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Input,
   Grid,
   LinearProgress,
   Link,
   TextField,
+  Tooltip,
   Typography,
   makeStyles
 } from "@material-ui/core";
 import AttachFile from '@material-ui/icons/AttachFile';
 import BackupIcon from '@material-ui/icons/Backup';
 import GetApp from '@material-ui/icons/GetApp';
+import MaterialTable from "material-table";
 import { v4 as uuidv4 } from 'uuid';
 import moment from "moment";
 import DragAndDrop from "./dragAndDrop.jsx";
@@ -126,7 +131,8 @@ export default function VariantFilesContainer() {
   let [ tumorSubjectUUID, setTumorSubjectUUID ] = useState();
   let [ regionSubjectUUID, setRegionSubjectUUID ] = useState();
 
-  let [ showOtherVersions, setShowOtherVersions ] = useState({});
+  let [ showVersionsDialog, setShowVersionsDialog ] = useState(false);
+  let [ fileSelected, setFileSelected ] = useState(null);
 
   // Numerical upload progress object measured in %, for all files
   let [ uploadProgress, setUploadProgress ] = useState({});
@@ -763,13 +769,8 @@ export default function VariantFilesContainer() {
                       <Link
                         href="#"
                         onClick={() => {
-                          setShowOtherVersions((old) => {
-                            // Set showOtherVersions[file.name] to true if it was false or didn't exist, or false otherwise
-                            return {...old, [file.name]: !old[file.name]};
-                            /*let wasTrue = old[file.name];
-                            let newVersions = {[file.name]: !wasTrue, ...old};
-                            return newVersions;*/
-                          })
+                          setShowVersionsDialog(true);
+                          setFileSelected(file);
                         }}>
                         <p>
                           There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
@@ -777,27 +778,60 @@ export default function VariantFilesContainer() {
                         </p>
                       </Link>
                    }
-                  {
-                    showOtherVersions?.[file.name] &&
-                    <span>
-                      <p>Other versions of this file :</p>
-                      <ul>
-                        {file.sameFiles && file.sameFiles.map( (samefile, index) => {
-                        return (
-                          <li key={index}>
-                            Uploaded at {moment(samefile["jcr:created"]).format("dddd, MMMM Do YYYY")} by {samefile["jcr:createdBy"]}
-                            <IconButton size="small" color="primary">
-                              <a href={samefile["@path"]} download><GetApp /></a>
-                            </IconButton>
-                          </li>
-                        )})}
-                      </ul>
-                    </span>
-                  }
               </Typography>
             </div>
         ) } ) }
-    </span> }
+    </span>
+    }
+  <Dialog open={showVersionsDialog} onClose={() => setShowVersionsDialog(false)}>
+    <DialogTitle>
+      Versions of {fileSelected?.name}
+    </DialogTitle>
+    <DialogContent>
+      <MaterialTable
+        data={fileSelected?.sameFiles}
+        style={{ boxShadow : 'none' }}
+        options={{
+          toolbar: false,
+          rowStyle: {
+            verticalAlign: 'top',
+          }
+        }}
+        title={""}
+        columns={[
+          { title: 'Created',
+            cellStyle: {
+              paddingLeft: 0,
+              fontWeight: "bold",
+              width: '1%',
+              whiteSpace: 'nowrap',
+            },
+            render: rowData => <Link to={"/content.html" + rowData["@path"]}>
+                                 {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
+                               </Link> },
+          { title: 'Uploaded By',
+            cellStyle: {
+              width: '50%',
+              whiteSpace: 'pre-wrap',
+              paddingBottom: "8px",
+            },
+            render: rowData => rowData["jcr:createdBy"] },
+          { title: 'Actions',
+            cellStyle: {
+              padding: '0',
+              width: '20px',
+              textAlign: 'end'
+            },
+            sorting: false,
+            render: rowData => <Tooltip title={"Download"}>
+                                <IconButton>
+                                  <GetApp />
+                                </IconButton>
+                              </Tooltip> },
+        ]}
+        />
+    </DialogContent>
+  </Dialog>
   </React.Fragment>
   );
 }
