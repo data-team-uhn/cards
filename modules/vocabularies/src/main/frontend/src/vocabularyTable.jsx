@@ -123,7 +123,6 @@ export default function VocabularyTable(props) {
             options={{
               toolbar: false,
               filtering: true,
-              sorting: true,
               emptyRowsWhenPaging: false,
               addRowPosition: 'first',
               pageSize: rowCount,
