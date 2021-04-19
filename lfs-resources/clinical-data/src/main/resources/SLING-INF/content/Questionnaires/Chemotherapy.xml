@@ -355,6 +355,11 @@
 					<value>Unknown</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 		<node>

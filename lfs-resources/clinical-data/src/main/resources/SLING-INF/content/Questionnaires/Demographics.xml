@@ -158,6 +158,11 @@
 				<value>U</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 	</node>
 	<node>
@@ -510,6 +515,11 @@
 				<value>Undetermined</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 	</node>
 	<node>
@@ -668,6 +678,25 @@
 				<type>String</type>
 			</property>
 		</node>
+		<node>
+			<name>U</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>value</name>
+				<value>U</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Undetermined</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>test_done_code</name>
@@ -741,6 +770,11 @@
 				<value>Unknown</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 	</node>
 	<node>
@@ -801,6 +835,20 @@
 			<type>Boolean</type>
 		</property>
 		<node>
+			<name>NA</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>value</name>
+				<value>N/A</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>notApplicable</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
 			<name>Incidental</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
@@ -835,18 +883,9 @@
 				<value>Unknown</value>
 				<type>String</type>
 			</property>
-		</node>
-		<node>
-			<name>NA</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
-				<name>value</name>
-				<value>N/A</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>notApplicable</name>
-				<value>true</value>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
 				<type>Boolean</type>
 			</property>
 		</node>
@@ -1130,6 +1169,11 @@
 				<name>label</name>
 				<value>This is the proband</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>notApplicable</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
@@ -1627,6 +1671,11 @@
 				<name>label</name>
 				<value>Unknown</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 	</node>
