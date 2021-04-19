@@ -212,38 +212,86 @@
 			</property>
 		</node>
 		<node>
-			<name>African race</name>
+			<name>African</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>African race</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0010</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>African</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>American Indian or Alaska native</name>
+			<name>Native American</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>American Indian or Alaska native</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0013</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Native American</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>Asian or Pacific islander</name>
+			<name>Eskimo</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Asian or Pacific islander</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0595</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Eskimo</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>Australian aborigine</name>
+			<name>Asian</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Australian aborigine</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0008</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Asian</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Pacific Islander</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>value</name>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0574</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Pacific Islander</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Aboriginal Australian</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>value</name>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0552</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Aboriginal Australian</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -252,16 +300,26 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0005</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
 				<value>Caucasian</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>Hispanic</name>
+			<name>Hispanic or Latin American</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Hispanic</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0014</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Hispanic or Latin American</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -270,6 +328,11 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0487</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
 				<value>Indian</value>
 				<type>String</type>
 			</property>
