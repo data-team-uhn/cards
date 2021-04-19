@@ -511,64 +511,6 @@
 		</node>
 	</node>
 	<node>
-		<name>detected_by_imaging</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Detected by surveillance imaging</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>0</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>boolean</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>enableUnknown</name>
-			<value>true</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>comments</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Comments</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>0</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>textbox</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
 		<name>CT</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
@@ -1383,6 +1325,35 @@
 		</property>
 	</node>
 	<node>
+		<name>detected_by_imaging</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Detected by surveillance imaging</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>boolean</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>enableUnknown</name>
+			<value>true</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
 		<name>modality_of_detection</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
@@ -1544,6 +1515,35 @@
 		<property>
 			<name>text</name>
 			<value>Describe treatments done at PMH, if any</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>textbox</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>comments</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Comments</value>
 			<type>String</type>
 		</property>
 		<property>
