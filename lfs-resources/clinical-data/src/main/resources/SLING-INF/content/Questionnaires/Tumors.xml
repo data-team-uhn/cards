@@ -1212,7 +1212,7 @@
 		</property>
 		<property>
 			<name>maxAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
@@ -1241,7 +1241,7 @@
 		</property>
 		<property>
 			<name>maxAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
@@ -1261,6 +1261,21 @@
 		<property>
 			<name>text</name>
 			<value>Risk Group Assignment</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list+input</value>
 			<type>String</type>
 		</property>
 		<node>

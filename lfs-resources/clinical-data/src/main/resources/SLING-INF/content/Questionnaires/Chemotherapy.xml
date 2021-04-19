@@ -140,7 +140,7 @@
 			</property>
 			<property>
 				<name>maxAnswers</name>
-				<value>1</value>
+				<value>0</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -228,6 +228,11 @@
 			<property>
 				<name>minAnswers</name>
 				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -410,6 +415,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>minAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -479,6 +489,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>minAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -507,6 +522,11 @@
 				<name>text</name>
 				<value>Cumulative dose</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>maxAnswers</name>
@@ -602,8 +622,13 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>maxAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
