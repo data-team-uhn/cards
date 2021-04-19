@@ -64,17 +64,17 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1),
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
   },
+  fileName: {
+    display: 'inline'
+  },
   fileDetail: {
     marginRight: theme.spacing(1),
     marginTop: theme.spacing(1)
   },
-  fileName: {
-    fontWeight: "500"
-  },
   progressBar: {
     width: "40%",
     height: theme.spacing(2),
-    backgroundColor: theme.palette.success.dark,
+    backgroundColor: theme.palette.primary.main,
     borderRadius: "2px",
     display: "inline-block",
     marginLeft: theme.spacing(1),
@@ -82,7 +82,7 @@ const useStyles = makeStyles(theme => ({
     verticalAlign: "text-top"
   },
   progress: {
-    backgroundColor: theme.palette.success.main,
+    backgroundColor: theme.palette.primary.main,
     height: "100%",
     margin: "0",
     borderRadius: "2px",
@@ -720,7 +720,7 @@ export default function VariantFilesContainer() {
           return (
             <div key={file.name} className={classes.fileInfo}>
               <div>
-                <Typography variant="h6">{file.name}:</Typography>
+                <Typography variant="h6" className={classes.fileName}>{file.name}:</Typography>
                 { upprogress && upprogress.state != "error" &&
                   <span>
                     <div className={classes.progressBar}>
@@ -732,11 +732,11 @@ export default function VariantFilesContainer() {
                 { upprogress && upprogress.state == "error" && <Typography color='error'>Error uploading file</Typography> }
               </div>
               { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ? 
-                <Typography className={classes.fileDetail}>
-                  Patient: <Link href={subjectPath} target="_blank"> {file.subject.id} </Link>
-                  Tumor: <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
-                  { file?.region?.path && <span>Tumor region: <Link href={regionPath} target="_blank"> {file.region.id} </Link> </span> }
-                  { file.formPath && <span>Form: <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank"> {file.formPath.replace("/Forms/", "")} </Link></span> }
+                <Typography variant="overline" className={classes.fileDetail}>
+                  Patient <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /
+                  Tumor <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
+                  { file?.region?.path && <> / Tumor region: <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
+                  { file.formPath && <span>Somatic Variants / <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank"> {file.name} </Link></span> }
                 </Typography>
               : <span>
                 <TextField
