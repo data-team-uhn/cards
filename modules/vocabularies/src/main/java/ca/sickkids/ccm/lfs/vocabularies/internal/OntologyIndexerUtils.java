@@ -19,6 +19,7 @@
 
 package ca.sickkids.ccm.lfs.vocabularies.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.Map;
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.version.VersionManager;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,14 +47,21 @@ public final class OntologyIndexerUtils
     {
     }
 
+    public static void createVocabularyTermNode(VocabularyTermSource term, InheritableThreadLocal<Node> vocabularyNode)
+    {
+        createVocabularyTermNode(term, vocabularyNode, null);
+    }
+
     /**
      * Creates a <code>VocabularyTerm</code> node representing an individual term of the vocabulary.
      *
      * @param term the term data
      * @param vocabularyNode must be passed from the calling class
+     * @param nodesToCheckIn ArrayList to append the added node to
      * @throws VocabularyIndexException when a node cannot be created
      */
-    public static void createVocabularyTermNode(VocabularyTermSource term, InheritableThreadLocal<Node> vocabularyNode)
+    public static void createVocabularyTermNode(VocabularyTermSource term, InheritableThreadLocal<Node> vocabularyNode,
+        InheritableThreadLocal<ArrayList<Node>> nodesToCheckIn)
     {
         try {
             Node vocabularyTermNode;
@@ -63,6 +72,10 @@ public final class OntologyIndexerUtils
             } catch (ItemExistsException e) {
                 // Sometimes terms appear twice; we'll just update the existing node
                 vocabularyTermNode = vocabularyNode.get().getNode(term.getId());
+            }
+
+            if (nodesToCheckIn != null) {
+                nodesToCheckIn.get().add(vocabularyTermNode);
             }
             vocabularyTermNode.setProperty("identifier", term.getId());
 
@@ -91,17 +104,24 @@ public final class OntologyIndexerUtils
         }
     }
 
+    public static Node createVocabularyNode(final Node homepage, final VocabularyDescription description)
+        throws VocabularyIndexException
+    {
+        return createVocabularyNode(homepage, description, null);
+    }
+
     /**
      * Creates a <code>Vocabulary</code> node that represents the current vocabulary instance with the identifier as the
      * name of the node.
      *
      * @param homepage <code>VocabulariesHomepage</code> node instance that will be parent of the new vocabulary node
      * @param description the vocabulary description, holding all the relevant information about the vocabulary
+     * @param nodesToCheckIn the list of JCR Nodes to be checked in after vocabulary install
      * @return the <code>Vocabulary</code> node that was created
      * @throws VocabularyIndexException when node cannot be created
      */
-    public static Node createVocabularyNode(final Node homepage, final VocabularyDescription description)
-        throws VocabularyIndexException
+    public static Node createVocabularyNode(final Node homepage, final VocabularyDescription description,
+        InheritableThreadLocal<ArrayList<Node>> nodesToCheckIn) throws VocabularyIndexException
     {
         try {
             Node result = homepage.addNode("./" + description.getIdentifier(), "lfs:Vocabulary");
@@ -112,6 +132,9 @@ public final class OntologyIndexerUtils
             result.setProperty("version", description.getVersion());
             result.setProperty("website", description.getWebsite());
             result.setProperty("citation", description.getCitation());
+            if (nodesToCheckIn != null) {
+                nodesToCheckIn.get().add(result);
+            }
             return result;
         } catch (RepositoryException e) {
             String message = "Failed to create Vocabulary node: " + e.getMessage();
@@ -135,6 +158,27 @@ public final class OntologyIndexerUtils
             vocabulariesHomepage.getSession().save();
         } catch (RepositoryException e) {
             String message = "Failed to save session: " + e.getMessage();
+            throw new VocabularyIndexException(message, e);
+        }
+    }
+
+    /**
+     * Checks into JCR the list of JCR Nodes associated with the installation of a vocabulary.
+     *
+     * @param vocabulariesHomepage the <code>VocabulariesHomepage</code> node obtained from the request
+     * @param nodesToCheckIn the InheritableThreadLocal for the ArrayList of JCR Vocabulary nodes to check-in
+     * @throws VocabularyIndexException if the checking-in of a Node fails
+     */
+    public static void checkInVocabulary(Node vocabulariesHomepage,
+        InheritableThreadLocal<ArrayList<Node>> nodesToCheckIn) throws VocabularyIndexException
+    {
+        try {
+            final VersionManager vm = vocabulariesHomepage.getSession().getWorkspace().getVersionManager();
+            for (int i = 0; i < nodesToCheckIn.get().size(); i++) {
+                vm.checkin(nodesToCheckIn.get().get(i).getPath());
+            }
+        } catch (RepositoryException e) {
+            String message = "Failed to check-in vocabulary: " + e.getMessage();
             throw new VocabularyIndexException(message, e);
         }
     }
