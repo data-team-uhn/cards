@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useContext } from "react";
+import React, { useEffect, useContext } from "react";
 
 import {
   Dialog,
@@ -68,6 +68,10 @@ export default function VocabularyActions(props) {
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   const handleClose = () => {setError(false)};
+
+  useEffect(() => {
+    setPhase(props.initPhase);
+  }, [props.initPhase])
 
   function install() {
     const oldPhase = phase;
