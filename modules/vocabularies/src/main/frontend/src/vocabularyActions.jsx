@@ -55,7 +55,7 @@ const useStyles = makeStyles(theme => ({
   Then it renders an action button and an about button. It also renders a dialog box for any installation / uninstallation errors
 */
 export default function VocabularyActions(props) {
-  const { vocabulary, updateLocalList, hidden, initPhase } = props;
+  const { vocabulary, updateLocalList, initPhase } = props;
   // The following facilitates the usage of the same code to report errors for both installation and uninstallation
   const [error, setError] = React.useState(false);
   const [action, setAction] = React.useState("");
@@ -130,10 +130,7 @@ export default function VocabularyActions(props) {
   React.useEffect(() => {props.addSetter(setPhase);},[0]);
 
   return(
-    <React.Fragment>
-      {(!hidden) && (
       <React.Fragment>
-
         <VocabularyAction
           acronym={vocabulary.acronym}
           install={install}
@@ -168,9 +165,6 @@ export default function VocabularyActions(props) {
           </DialogContent>
 
         </Dialog>
-
       </React.Fragment>
-      )}
-    </React.Fragment>
   );
 }

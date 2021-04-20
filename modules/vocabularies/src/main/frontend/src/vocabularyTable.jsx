@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Grid,
@@ -39,7 +39,14 @@ export default function VocabularyTable(props) {
   const [filterTable, setFilterTable] = useState(false);
   const [acronymList, setAcronymList] = useState([]);
   const [ rowCount, setRowCount ] = useState(10);
+  const [ filteredVocabs, setFilteredVocabs ] = useState([]);
   const theme = useTheme();
+
+  useEffect(() => {
+    if (filterTable && acronymList.length > 0) {
+      setFilteredVocabs(vocabList.slice().filter(vocab => acronymList.includes(vocab.acronym)));
+    }
+  }, [filterTable, acronymList])
 
   return(
     <React.Fragment>
@@ -110,16 +117,13 @@ export default function VocabularyTable(props) {
                                      type={type}
                                      vocabulary={rowData}
                                      updateLocalList={props.updateLocalList}
-                                     // If filterTable is True, then check if the acronym is of a vocabulary to be displayed
-                                     // If filterTable is False, then don't hide anything
-                                     hidden={filterTable && !acronymList.includes(rowData.acronym)}
                                      initPhase={props.acronymPhaseObject[rowData.acronym] || Phase["Not Installed"]}
                                      setPhase={(phase) => props.setPhase(rowData.acronym, phase)}
                                      addSetter={(setFunction) => props.addSetter(rowData.acronym, setFunction, type)}
                                    />
               }
             ]}
-            data={vocabList}
+            data={(filterTable && filteredVocabs.length > 0) ? filteredVocabs : vocabList}
             options={{
               toolbar: false,
               filtering: true,
