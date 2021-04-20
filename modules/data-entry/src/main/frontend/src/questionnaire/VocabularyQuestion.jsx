@@ -43,6 +43,9 @@ import VocabularyQuery from "../vocabQuery/query.jsx";
 //   />
 function VocabularyQuestion(props) {
   let { questionDefinition } = props;
+  let { maxAnswers } = { ...questionDefinition, ...props };
+
+  let singleInput = maxAnswers === 1;
 
   return (
     <Question
@@ -52,7 +55,9 @@ function VocabularyQuestion(props) {
       <MultipleChoice
         customInput = {VocabularyQuery}
         customInputProps = {{
-          questionDefinition: questionDefinition
+          questionDefinition: questionDefinition,
+          focusAfterSelecting: !singleInput,
+          isNested: singleInput
         }}
         answerNodeType = "lfs:VocabularyAnswer"
         {...props}

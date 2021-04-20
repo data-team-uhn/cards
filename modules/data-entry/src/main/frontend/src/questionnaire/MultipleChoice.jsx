@@ -338,7 +338,6 @@ function MultipleChoice(props) {
             onChange = {ghostUpdateEvent}
             value={ghostSelected ? ghostName : undefined}
             disabled={disabled}
-            isNested={isRadio}
             {...customInputProps}
             />
         :
