@@ -22,6 +22,7 @@ import React, { useContext } from "react";
 import {
   Button,
   Grid,
+  Divider,
   IconButton,
   InputAdornment,
   LinearProgress,
@@ -31,6 +32,7 @@ import {
 } from "@material-ui/core";
 
 import SearchIcon from "@material-ui/icons/Search";
+import CloseIcon from "@material-ui/icons/Close";
 
 import fetchBioPortalApiKey from "./bioportalApiKey";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
@@ -53,6 +55,13 @@ const useStyles = makeStyles(theme => ({
     borderLeftColor: "#DCDCDC",
     borderLeftWidth: "0.5em",
     fontSize: "2em"
+  },
+  divider: {
+    height: 28,
+    margin: 4,
+  },
+  adornment: {
+    paddingRight: theme.spacing(.5),
   }
 }));
 
@@ -70,7 +79,6 @@ function extractList(data) {
 
 export default function Search(props) {
   const [error, setError] = React.useState(false);
-  const [filterTable, setFilterTable] = React.useState(false);
   const [keywords, setKeywords] = React.useState("");
   const [lastSearch, setLastSearch] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -85,24 +93,6 @@ export default function Search(props) {
       setError(false);
       setLoading(true);
       setLastSearch(keywords);
-      // First check if any of the keywords match a vocabulary name or acronym
-
-      // Process keywords of search into a list of lower case words
-      let keywordsList = keywords.split(" ").map(keyword => keyword.toLowerCase());
-
-      // Filter the list for vocabularies that meet either of 2 criteria
-      let acronymList = props.vocabList.filter(vocab => (
-        keywordsList.some(word => word.includes(
-             // (1) Any of the search keywords contains the vocabulary's acronym
-             vocab.acronym.toLowerCase()) ||
-             // (2) Vocab name contains any of the search keywords as a part of it
-             vocab.name.toLowerCase().includes(word))
-       // Finally return only the acronyms of the vocabularies that meet above criteria as a list
-       )).map(vocab => vocab.acronym);
-
-      setFilterTable(true);
-      props.setParentAcronymList(acronymList);
-      props.setParentFilterTable(true);
 
       fetchBioPortalApiKey(globalLoginDisplay, (apiKey) => {
         // Then also make a request to recommender and update filtered list.
@@ -113,7 +103,6 @@ export default function Search(props) {
           .then((response) => (response.ok ? response.json() : Promise.reject(response)))
           .then((data) => {
             props.concatParentAcronymList(extractList(data));
-            setFilterTable(true);
             props.setParentFilterTable(true);
           })
           .catch(() => {
@@ -137,7 +126,6 @@ export default function Search(props) {
     if (keywords !== "") {
       setKeywords("");
     }
-    setFilterTable(false);
   }
 
   // Checks if return is pressed, and searches/resets the search
@@ -160,13 +148,18 @@ export default function Search(props) {
               fullWidth
               helperText={(error ? "Request Failed" : "")}
               InputProps={{
-                endAdornment: <InputAdornment position="end">
+                endAdornment: <InputAdornment position="end" className={classes.adornment}>
+                                {keywords && <IconButton onClick={reset} size="small">
+                                  <CloseIcon/>
+                                </IconButton>}
+                                <Divider className={classes.divider} orientation="vertical" />
                                 <IconButton onClick={keywords === "" ? reset: search}>
                                   <SearchIcon/>
                                 </IconButton>
                               </InputAdornment>
               }}
-              label="Search by keywords"
+              label="Search BioPortal by keywords"
+              helperText="Search Bioportal for vocabularies mentioning a specific concept, e.g. “Microcephaly”"
               onChange={(event) => setKeywords(event.target.value)}
               onKeyDown={handleSearchInput}
               type="text"
@@ -174,12 +167,6 @@ export default function Search(props) {
               variant="outlined"
             />
             {loading && <LinearProgress/>}
-          </Grid>
-
-          <Grid item xs={12} sm={1}>
-            <Button className={classes.clearButton} onClick={reset} variant="contained" size="large" color="secondary">
-              Clear
-            </Button>
           </Grid>
 
         </Grid>
