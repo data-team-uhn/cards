@@ -227,7 +227,7 @@ function MultipleChoice(props) {
   }
 
   let acceptEnteredOption = (overrideValue, overrideName) => {
-    let labelToAccept = overrideName || ghostName || overrideValue || ghostValue;
+    let labelToAccept = overrideName || ghostName || overrideValue || (ghostValue == GHOST_SENTINEL ? "" : ghostValue);
     let valToAccept = overrideValue || (ghostValue == GHOST_SENTINEL ? labelToAccept : ghostValue);
     if (isRadio || isBare) {
       selectOption(valToAccept, labelToAccept) && setGhostName("");
