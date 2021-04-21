@@ -238,6 +238,7 @@ function MultipleChoice(props) {
       selectOption(valToAccept, labelToAccept);
       // Clear the ghost
       setGhostName("");
+      setGhostValue(GHOST_SENTINEL);
       checkForSeparators(null);
     }
   }
