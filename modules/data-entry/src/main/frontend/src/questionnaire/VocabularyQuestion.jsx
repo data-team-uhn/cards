@@ -27,67 +27,41 @@ import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
-import VocabularySelector from "../vocabSelector/select.jsx";
+import MultipleChoice from "./MultipleChoice";
+import VocabularyQuery from "../vocabQuery/query.jsx";
 
 // Component that renders a vocabulary question.
-// Selected answers are placed in a series of <input type="hidden"> tags for
-// submission.
-//
-// Required arguments:
-//  text: String containing the question to ask
-//  sourceVocabularies: Array denoting the vocabularies sources
-//
-// Optional arguments:
-//  maxAnswers: Integer indicating the maximum number of terms allowed
-//
-// Other arguments are passed to the VocabularySelector component
 //
 // Sample usage:
 //
 // <VocabularyQuestion
-//   text="Does the patient have any co-morbidities (non cancerous), including abnormal incidental imaging/labs?"
-//   sourceVocabularies={["hpo"]}
-//   />
-// <VocabularyQuestion
-//   text="Does the patient have any skin conditions?"
-//   sourceVocabularies={["hpo"]}
-//   vocabularyFilter={["HP:0000951"]}
-//   />
-// <!-- Alternate method of specifying arguments -->
-// <VocabularyQuestion
-//   questionDefintion={{
+//   questionDefinition={{
 //     text: "Does the patient have any skin conditions?",
-//     sourceVocabularies={["hpo"]},
-//     vocabularyFilter: ["HP:0000951"]
+//     sourceVocabularies: ["HP"],
+//     vocabularyFilters: {"HP": ["HP:0000951"]}
 //   }}
 //   />
 function VocabularyQuestion(props) {
-  let { classes, ...rest } = props;
-  let { enableNotes, maxAnswers, sourceVocabularies, vocabularyFilter } = { ...props.questionDefinition, ...props };
-  let defaultSuggestions = props.defaults || Object.values(props.questionDefinition)
-    // Keep only answer options
-    // FIXME Must deal with nested options, do this recursively
-    .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
-    // Only extract the labels and internal values from the node
-    .map(value => [value.label || value.value, value.value, true])
-    // Reparse defaults into a format VocabularySelector understands
-    .reduce((object, value) => ({...object, [value[VALUE_POS]]: value[LABEL_POS]}), {});
+  let { questionDefinition } = props;
+  let { maxAnswers } = { ...questionDefinition, ...props };
 
-  let [currentAnswers, setCurrentAnswers] = useState(Array.of(props.existingAnswer?.[VALUE_POS]?.value || []).flat().length);
+  let singleInput = maxAnswers === 1;
 
   return (
     <Question
-      currentAnswers={currentAnswers}
+      disableInstructions
       {...props}
       >
-      <VocabularySelector
-        vocabularyFilter = {vocabularyFilter}
-        max = {maxAnswers}
-        defaultSuggestions = {defaultSuggestions}
-        source = {sourceVocabularies}
-        selectionUpdated = {(count) => setCurrentAnswers(count)}
-        {...rest}
-      />
+      <MultipleChoice
+        customInput = {VocabularyQuery}
+        customInputProps = {{
+          questionDefinition: questionDefinition,
+          focusAfterSelecting: !singleInput,
+          isNested: singleInput
+        }}
+        answerNodeType = "lfs:VocabularyAnswer"
+        {...props}
+        />
     </Question>);
 }
 

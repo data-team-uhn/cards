@@ -40,6 +40,8 @@ const GHOST_SENTINEL = "custom-input";
   * @param {Object} existingAnswer form data that may include answers already submitted for this component
   * @param {bool} input if true, display a free-text single-line input after the predefined options; at most one of "input" or "textbox" may be true
   * @param {bool} textbox if true, display a free-text multi-line input after the predefined options; at most one of "input" or "textbox" may be true
+  * @param {Component} customInput if true, display this after the predefined options; do not define this and input/textbox
+  * @param {Object} customInputProps additional props to be given to the customInput element provided
   * @param {func} onUpdate Callback for when an input value is changed or an option is added, receives as argument the new value of the changed option
   * @param {func} onChange Callback for when an option is removed, receives as argument the value of the removed option
   * @param {Object} additionalInputProps additional props to be set on the input element
@@ -49,7 +51,7 @@ const GHOST_SENTINEL = "custom-input";
   * @param {bool} error indicates if the current selection is in a state of error
   */
 function MultipleChoice(props) {
-  let { classes, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
+  let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
   let { instanceId } = props;
   let defaults = props.defaults || Object.values(props.questionDefinition)
@@ -73,15 +75,14 @@ function MultipleChoice(props) {
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
     // The value can either be a single value or an array of values; force it into an array
     Array.of(existingAnswer[1].value).flat()
-    // Only the internal values are stored, turn them into pairs of [label, value]
-    // Values that are not predefined come from a custom input, and custom inputs use either the same name as their answer (multiple inputs)
-    // or the the special ghost sentinel value
-    .map(answer => (defaults.find(e => e[1] === String(answer)) || [String(answer), (isBare || isRadio) ? GHOST_SENTINEL : String(answer)]));
+    // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
+    .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
+  let default_values = defaults.map((thisDefault) => thisDefault[VALUE_POS]);
   let all_options =
     // If the question is a radio, just display the defaults as duplicates
     isRadio ? defaults.slice() :
     // Otherwise, display as options the union of all defaults + existing answers, without duplicates
-    defaults.slice().concat(initialSelection.filter( (selectedAnswer) => defaults.indexOf(selectedAnswer) < 0));
+    defaults.slice().concat(initialSelection.filter( (selectedAnswer) => default_values.indexOf(selectedAnswer[VALUE_POS]) < 0));
 
   // If the field allows for multiple inputs (eg. maxAnswers !== 1),
   // No user input (aka. an empty input) takes the place of an empty string
@@ -91,9 +92,12 @@ function MultipleChoice(props) {
   }
   const [selection, setSelection] = useState(initialSelection);
   const [options, setOptions] = useState(all_options);
-  const [ghostName, setGhostName] = useState((isBare || (isRadio && defaults.indexOf(initialSelection[0]) < 0)) && existingAnswer && existingAnswer[1].value || '');
-  const [ghostValue, setGhostValue] = useState(GHOST_SENTINEL);
-  const ghostSelected = selection.some(element => {return element[VALUE_POS] === GHOST_SENTINEL;});
+
+  // If this is a bare input or radio input, we need to pre-populate the blank input with the custom answer (if available)
+  let inputPrefill = (isBare || (isRadio && default_values.indexOf(initialSelection[0]?.[VALUE_POS]) < 0)) && existingAnswer?.[1] || '';
+  const [ghostName, setGhostName] = useState(inputPrefill?.displayedValue);
+  const [ghostValue, setGhostValue] = useState(inputPrefill?.value || GHOST_SENTINEL);
+  const ghostSelected = selection.some(element => {return element.includes(ghostValue);});
   const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio && !ghostSelected;
   let inputEl = null;
   const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(enableSeparatorDetection);
@@ -135,7 +139,6 @@ function MultipleChoice(props) {
         let defaultOptions = defaults.filter(option => option[IS_DEFAULT_POS]).map((option) => option[VALUE_POS]);
         let newSelection = old.slice().filter((option) => !defaultOptions.includes(option[VALUE_POS]));
         newSelection.push([name, id]);
-        console.log(newSelection);
         return newSelection;
       });
       // OK to clear input (we more-or-less should never get here via a user-entered input)
@@ -223,16 +226,19 @@ function MultipleChoice(props) {
     return;
   }
 
-  let acceptEnteredOption = () => {
-    if (isRadio) {
-      selectOption(ghostValue, ghostName) && setGhostName("");
+  let acceptEnteredOption = (overrideValue, overrideName) => {
+    let labelToAccept = overrideName || ghostName || overrideValue || (ghostValue == GHOST_SENTINEL ? "" : ghostValue);
+    let valToAccept = overrideValue || (ghostValue == GHOST_SENTINEL ? labelToAccept : ghostValue);
+    if (isRadio || isBare) {
+      selectOption(valToAccept, labelToAccept) && setGhostName("");
       inputEl && inputEl.blur();
-    } else if (maxAnswers !== 1 && !error && ghostName !== "") {
+    } else if (maxAnswers !== 1 && !error && valToAccept !== "") {
       // If we can select multiple and are not in error, add this option (if not already available) and ensure it's selected
-      addOption(ghostName, ghostName);
-      selectOption(ghostName, ghostName);
+      addOption(valToAccept, labelToAccept);
+      selectOption(valToAccept, labelToAccept);
       // Clear the ghost
       setGhostName("");
+      setGhostValue(GHOST_SENTINEL);
       checkForSeparators(null);
     }
   }
@@ -286,7 +292,7 @@ function MultipleChoice(props) {
         selectOption(option, option);
       } else {
         setGhostName(option);
-        updateGhost(GHOST_SENTINEL, option);
+        updateGhost(ghostValue, option);
         onUpdate && onUpdate(option);
       }
     });
@@ -299,37 +305,68 @@ function MultipleChoice(props) {
     })
   }, [updatedOptions])
 
+  let ghostUpdateEvent = (event) => {
+    setGhostName(event.target.value);
+    setGhostValue(event.target.value);
+    updateGhost(event.target.value, event.target.value);
+    checkForSeparators(event.target);
+    onUpdate && onUpdate(event.target.value);
+  }
+
   // Hold the input box for either multiple choice type
-  let ghostInput = (input || textbox) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
-      <TextField
-        helperText={maxAnswers !== 1 && "Press ENTER to add a new option"}
-        className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
-        onChange={(event) => {
-          setGhostName(event.target.value);
-          updateGhost(GHOST_SENTINEL, event.target.value);
-          checkForSeparators(event.target);
-          onUpdate && onUpdate(event.target.value);
-        }}
-        disabled={disabled}
-        onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
-        onBlur={separatorDetected ? ()=>{} : acceptEnteredOption}
-        inputProps={Object.assign({
-          onKeyDown: (event) => {
-            if (event.key == 'Enter') {
-              // We need to stop the event so that it doesn't trigger a form submission
-              event.preventDefault();
-              event.stopPropagation();
-              acceptEnteredOption();
+  let CustomInput = customInput;
+  let ghostInput = (input || textbox || customInput) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
+      {
+        customInput ?
+          <CustomInput
+            onClick={(value, label) => {
+              // If we are bare or a radio, the selected option should become the value
+              // unless it is one of the defaults
+              let isDefault = defaults.filter((option) => {
+                return (option[VALUE_POS] === value || option[LABEL_POS] === label)
+              })[0];
+              if ((isBare || isRadio) && !isDefault) {
+                setGhostName(label);
+                setGhostValue(value);
+              } else {
+                // In all other cases, we want to clear the ghost value
+                setGhostValue(GHOST_SENTINEL);
+              }
+              updateGhost(value, label);
+              acceptEnteredOption(value, label);
+              onUpdate && onUpdate(value);
+            }}
+            onChange = {ghostUpdateEvent}
+            value={ghostSelected ? ghostName : undefined}
+            disabled={disabled}
+            {...customInputProps}
+            />
+        :
+          <TextField
+            helperText={maxAnswers !== 1 && "Press ENTER to add a new option"}
+            className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
+            onChange={ghostUpdateEvent}
+            disabled={disabled}
+            onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
+            onBlur={separatorDetected ? ()=>{} : () => acceptEnteredOption()}
+            inputProps={Object.assign({
+              onKeyDown: (event) => {
+                if (event.key == 'Enter') {
+                  // We need to stop the event so that it doesn't trigger a form submission
+                  event.preventDefault();
+                  event.stopPropagation();
+                  acceptEnteredOption();
+                }
+              },
+              tabIndex: isRadio ? -1 : undefined
+            }, additionalInputProps)
             }
-          },
-          tabindex: isRadio ? -1 : undefined
-        }, additionalInputProps)
-        }
-        value={ghostName}
-        multiline={textbox}
-        InputProps={muiInputProps}
-        inputRef={ref => {inputEl = ref}}
-      />
+            value={ghostName}
+            multiline={textbox}
+            InputProps={muiInputProps}
+            inputRef={ref => {inputEl = ref}}
+            />
+      }
       { maxAnswers !== 1 && separatorDetectionEnabled &&
         <UserInputAssistant
           title="Separator detected"

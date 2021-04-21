@@ -141,7 +141,6 @@ const thesaurusStyle = theme => ({
     position: 'relative',
     display: 'inline-block',
     paddingBottom: theme.spacing(0),
-    paddingTop: theme.spacing(1),
     "& .MuiInputBase-root" : {
       minWidth: "250px",
     },
@@ -151,12 +150,13 @@ const thesaurusStyle = theme => ({
     margin: "0px"
   },
   nestedSearchInput: {
-    marginLeft: theme.spacing(4),
+    marginLeft: theme.spacing(-2.5),
+    marginTop: theme.spacing(-1),
     "& .MuiInputBase-root" : {
-      width: "218px !important",
+      minWidth: "218px !important",
     },
-    "& .MuiLinearProgress-root": {
-      marginLeft: theme.spacing(4),
+    "& + .MuiLinearProgress-root": {
+      marginLeft: theme.spacing(-2.5),
     }
   },
   searchInput: {
@@ -169,7 +169,7 @@ const thesaurusStyle = theme => ({
     transform: "translate(0, 12px) scale(0.7)",
   },
   searchButton: {
-    margin: "0px",
+    cursor: "pointer"
   },
   dropdownItem: {
     whiteSpace: 'normal',

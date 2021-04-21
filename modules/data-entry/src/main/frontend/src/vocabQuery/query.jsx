@@ -45,7 +45,7 @@ const MAX_RESULTS = 10;
 //
 // Optional arguments:
 //  disabled: Boolean representing whether or not this element is disabled
-//  searchDefault: Default text to display in search bar when nothing has been entered (default: 'Search')
+//  label: Default text to display in search bar when nothing has been entered (default: 'Search')
 //  vocabularyFilter: Array of required ancestor elements, of which any term must be a descendent of
 //  overrideText: When not undefined, this will overwrite the contents of the search bar
 //  defaultValue: Default chosen term ID, which will be converted to the real ID when the vocabulary loads
@@ -63,6 +63,7 @@ class VocabularyQuery extends React.Component {
       browserOpened: false,
       browseID: "",
       browsePath: "",
+      inputValue: props.defaultValue,
       // Strings used by the info box
       infoID: "",
       infoName: "",
@@ -78,13 +79,12 @@ class VocabularyQuery extends React.Component {
       infoVocabObtained: "",
       infoVocabTobeObtained: "",
       buttonRefs: {},
-      vocabularies: props.vocabularies,
       noResults: false,
     };
   }
 
   render() {
-    const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onInputFocus, placeholder, searchDefault, vocabularies } = this.props;
+    const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onChange, onInputFocus, placeholder, label, value } = this.props;
 
     const inputEl = (<Input
       disabled={disabled}
@@ -92,9 +92,13 @@ class VocabularyQuery extends React.Component {
       inputProps={{
         "aria-label": "Search"
       }, {
-        tabindex: isNested ? -1 : undefined
+        tabIndex: isNested ? -1 : undefined
       }}
-      onChange={this.delayLookup}
+      onChange={(event) => {
+        this.delayLookup(event);
+        this.setState({inputValue: event.target.value})
+        onChange && onChange(event);
+      }}
       inputRef={(node) => {
         this.anchorEl = node;
         if (inputRef != null) {
@@ -104,11 +108,13 @@ class VocabularyQuery extends React.Component {
       onKeyDown={(event) => {
         if (event.key == 'Enter') {
           this.queryInput(this.anchorEl.value);
+          event.preventDefault();
         } else if (event.key == 'ArrowDown') {
           // Move the focus to the suggestions list
           if (this.menuRef.children.length > 0) {
             this.menuRef.children[0].focus();
           }
+          event.preventDefault();
         }
       }}
       onFocus={(status) => {
@@ -122,12 +128,12 @@ class VocabularyQuery extends React.Component {
       className={noMargin ? "" : classes.searchInput}
       multiline={true}
       endAdornment={(
-        <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}}>
+        <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}} className = {classes.searchButton}>
           <Search />
         </InputAdornment>
       )}
-      defaultValue={defaultValue}
       placeholder={placeholder}
+      value={value || this.state.inputValue}
       />);
 
     return (
@@ -145,11 +151,13 @@ class VocabularyQuery extends React.Component {
                 shrink: classes.searchShrink,
               }}
             >
-              {searchDefault}
+              { /* Cover up a bug that causes the label to overlap the defaultValue:
+                   if it has a displayed value and isn't focused, don't show the label
+                 */ }
+              { (document.activeElement === this.anchorEl || (!defaultValue && !(this.anchorEl?.value))) ? label : ''}
             </InputLabel>
             {inputEl}
           </FormControl>}
-          <br />
           <LinearProgress className={classes.progressIndicator + " " + (this.state.suggestionsLoading ? "" : classes.inactiveProgress)}/>
         </div>
         {/* Suggestions list using Popper */}
@@ -376,7 +384,7 @@ class VocabularyQuery extends React.Component {
 
     // Grab suggestions
     //...Make a queue of vocabularies to search through
-    var vocabQueue = this.props.vocabularies.slice();
+    var vocabQueue = this.props.questionDefinition.sourceVocabularies.slice();
     this.makeMultiRequest(vocabQueue, input, null, []);
 
     // Hide the infobox and stop the timer
@@ -403,7 +411,7 @@ class VocabularyQuery extends React.Component {
                 onClick={(e) => {
                   if (e.target.localName === "li") {
                     this.props.onClick(element["@path"], name);
-                    this.anchorEl.value = name;
+                    this.setState({inputValue: this.props.clearOnClick ? "" : name});
                     this.closeDialog();
                   }}
                 }
@@ -555,7 +563,9 @@ class VocabularyQuery extends React.Component {
     if (this.props.clearOnClick) {
       this.anchorEl.value = "";
     }
-    this.anchorEl.select();
+    if (this.props.focusAfterSelecting) {
+      this.anchorEl.select();
+    }
     this.setState({
       browserOpened: false,
       suggestionsVisible: false,
@@ -601,14 +611,15 @@ VocabularyQuery.propTypes = {
     clearOnClick: PropTypes.bool,
     onInputFocus: PropTypes.func,
     defaultValue: PropTypes.string,
-    noMargin: PropTypes.bool
+    noMargin: PropTypes.bool,
+    focusAfterSelecting: PropTypes.bool
 };
 
 VocabularyQuery.defaultProps = {
-  vocabularies: ['hpo'],
-  searchDefault: 'Search',
+  label: 'Search',
   overrideText: '',
-  clearOnClick: true
+  clearOnClick: true,
+  focusAfterSelecting: true
 };
 
 export default withStyles(QueryStyle)(VocabularyQuery);
