@@ -120,16 +120,18 @@ export function BioPortalApiKey(props) {
 
   return(
     <React.Fragment>
-      <Typography variant="h6">
-        Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
-        { bioPortalApiKey &&
-          <Tooltip title="Change BioPortal API key">
-            <IconButton onClick={() => {setDisplayPopup(true)}} >
-              <SettingsIcon/>
-            </IconButton>
-          </Tooltip>
-        }
-      </Typography>
+      <Grid item>
+        <Typography variant="h6">
+          Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
+          { bioPortalApiKey &&
+            <Tooltip title="Change BioPortal API key">
+              <IconButton onClick={() => {setDisplayPopup(true)}} >
+                <SettingsIcon/>
+              </IconButton>
+            </Tooltip>
+          }
+        </Typography>
+      </Grid>
 
       { !bioPortalApiKey && <>
          <Grid item className={classes.noKeyInfo}>
@@ -137,7 +139,20 @@ export function BioPortalApiKey(props) {
            <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
          </Grid>
         <Grid item>
-          { getBioportalKeyInfo(!bioPortalApiKey) }
+          <Grid container
+            direction="row"
+            alignItems="center"
+            justify="space-between"
+            alignContent="space-between"
+            spacing={2}
+          >
+            <Grid item xs={10}>
+              { getBioportalKeyInfo(!bioPortalApiKey) }
+            </Grid>
+            <Grid item xs={2}>
+              <Button color="primary" variant="contained" onClick={() => {addNewKey()}}>Submit</Button>
+            </Grid>
+          </Grid>
         </Grid>
       </> }
 

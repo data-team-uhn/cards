@@ -222,12 +222,10 @@ export default function VocabulariesAdminPage() {
 
       <OwlInstaller updateLocalList={updateLocalList} reloadVocabList={() => {setLocalLoaded(false);}}/>
 
-      <Grid item>
-        <BioPortalApiKey
-          bioPortalApiKey={bioPortalApiKey}
-          updateKey={updateBioPortalApiKey}
-        />
-      </Grid>
+      <BioPortalApiKey
+        bioPortalApiKey={bioPortalApiKey}
+        updateKey={updateBioPortalApiKey}
+      />
 
       <VocabularyDirectory 
         type="remote"
