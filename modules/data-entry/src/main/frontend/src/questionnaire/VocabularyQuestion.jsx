@@ -37,7 +37,7 @@ import VocabularyQuery from "../vocabQuery/query.jsx";
 // <VocabularyQuestion
 //   questionDefinition={{
 //     text: "Does the patient have any skin conditions?",
-//     sourceVocabularies=["HP"],
+//     sourceVocabularies: ["HP"],
 //     vocabularyFilters: {"HP": ["HP:0000951"]}
 //   }}
 //   />
