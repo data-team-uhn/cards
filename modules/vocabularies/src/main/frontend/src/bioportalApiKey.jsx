@@ -63,6 +63,9 @@ const useStyles = makeStyles(theme => ({
   },
   noKeyInfo: {
     padding: theme.spacing(1, 0)
+  },
+  settingIcon: {
+    marginTop: theme.spacing(-0.5)
   }
 }));
 
@@ -125,7 +128,7 @@ export function BioPortalApiKey(props) {
           Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
           { bioPortalApiKey &&
             <Tooltip title="Change BioPortal API key">
-              <IconButton onClick={() => {setDisplayPopup(true)}} >
+              <IconButton onClick={() => {setDisplayPopup(true)}} className={classes.settingIcon}>
                 <SettingsIcon/>
               </IconButton>
             </Tooltip>
