@@ -21,11 +21,13 @@ import React, { useContext } from "react";
 
 import {
   Button,
+  CircularProgress,
   Grid,
   IconButton,
   InputAdornment,
   LinearProgress,
-  TextField
+  TextField,
+  makeStyles
 } from "@material-ui/core";
 
 import SearchIcon from "@material-ui/icons/Search";
@@ -48,11 +50,25 @@ function extractList(data) {
   return acronymList;
 }
 
+const useStyles = makeStyles(theme => ({
+  wrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
+  fabProgress: {
+    position: 'absolute',
+    top: theme.spacing(0.5),
+    left: theme.spacing(0.5),
+    zIndex: 1,
+  },
+}));
+
 export default function Search(props) {
   const [error, setError] = React.useState(false);
   const [keywords, setKeywords] = React.useState("");
   const [lastSearch, setLastSearch] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const classes = useStyles();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -62,6 +78,7 @@ export default function Search(props) {
     if (!loading) {
       setError(false);
       setLoading(true);
+      props.setLoading(true);
       setLastSearch(keywords);
 
       fetchBioPortalApiKey(globalLoginDisplay, (apiKey) => {
@@ -80,6 +97,7 @@ export default function Search(props) {
           })
           .finally(() => {
             setLoading(false);
+            props.setLoading(false);
           });
         },
         () => {
@@ -122,16 +140,16 @@ export default function Search(props) {
                                 <CloseIcon/>
                               </IconButton>
                             }
-                            <IconButton onClick={keywords === "" ? reset: search}>
-                              <SearchIcon/>
-                            </IconButton>
+                            <div className={classes.wrapper}>
+                              <IconButton onClick={keywords === "" ? reset: search}>
+                                <SearchIcon/>
+                              </IconButton>
+                              {loading && <CircularProgress className={classes.fabProgress} />}
+                            </div>
                           </InputAdornment>
           }}
           label="Search BioPortal by keywords"
-          helperText={ <>
-                         {loading && <LinearProgress/>}
-                         Search Bioportal for vocabularies mentioning a specific concept, e.g. “Microcephaly”
-                       </> }
+          helperText="Search Bioportal for vocabularies mentioning a specific concept, e.g. “Microcephaly”"
           onChange={(event) => setKeywords(event.target.value)}
           onKeyDown={handleSearchInput}
           type="text"

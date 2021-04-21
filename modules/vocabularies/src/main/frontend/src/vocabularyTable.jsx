@@ -38,8 +38,9 @@ export default function VocabularyTable(props) {
   const { vocabList, type  } = props;
   const [filterTable, setFilterTable] = useState(false);
   const [acronymList, setAcronymList] = useState([]);
-  const [ rowCount, setRowCount ] = useState(10);
-  const [ filteredVocabs, setFilteredVocabs ] = useState([]);
+  const [rowCount, setRowCount] = useState(10);
+  const [filteredVocabs, setFilteredVocabs] = useState([]);
+  const [loading, setLoading] = React.useState(false);
   const theme = useTheme();
 
   useEffect(() => {
@@ -65,6 +66,7 @@ export default function VocabularyTable(props) {
         }}
         setParentAcronymList={setAcronymList}
         setParentFilterTable={setFilterTable}
+        setLoading={setLoading}
         vocabList={vocabList}
       />
       }
@@ -136,6 +138,7 @@ export default function VocabularyTable(props) {
             onChangeRowsPerPage={pageSize => {
               setRowCount(pageSize);
             }}
+            isLoading={loading}
           />
       </Grid>
       }
