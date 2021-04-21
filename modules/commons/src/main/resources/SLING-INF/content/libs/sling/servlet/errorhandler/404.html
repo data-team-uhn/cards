@@ -44,11 +44,9 @@
     </sly>
   </head>
   <body>
-    <sly data-sly-resource="${@selectors='header'}"/>
-      <div id="main-404-container"></div>
-      <sly data-sly-use.assets="/libs/lfs/resources/assets">
-        <script src="/libs/lfs/resources/${assets['lfs-commons.404.js']}"></script>
-      </sly>
-    <sly data-sly-resource="${@selectors='footer'}"/>
+    <div id="main-404-container"></div>
+    <sly data-sly-use.assets="/libs/lfs/resources/assets">
+      <script src="/libs/lfs/resources/${assets['lfs-commons.404.js']}"></script>
+    </sly>
   </body>
 </html>
