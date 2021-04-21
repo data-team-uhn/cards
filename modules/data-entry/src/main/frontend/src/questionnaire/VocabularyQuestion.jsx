@@ -35,10 +35,10 @@ import VocabularyQuery from "../vocabQuery/query.jsx";
 // Sample usage:
 //
 // <VocabularyQuestion
-//   questionDefintion={{
+//   questionDefinition={{
 //     text: "Does the patient have any skin conditions?",
-//     sourceVocabularies={["hpo"]},
-//     vocabularyFilter: ["HP:0000951"]
+//     sourceVocabularies=["HP"],
+//     vocabularyFilters: {"HP": ["HP:0000951"]}
 //   }}
 //   />
 function VocabularyQuestion(props) {
