@@ -22,13 +22,10 @@ import React, { useContext } from "react";
 import {
   Button,
   Grid,
-  Divider,
   IconButton,
   InputAdornment,
   LinearProgress,
-  makeStyles,
-  TextField,
-  Typography
+  TextField
 } from "@material-ui/core";
 
 import SearchIcon from "@material-ui/icons/Search";
@@ -38,32 +35,6 @@ import fetchBioPortalApiKey from "./bioportalApiKey";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const vocabLinks = require('./vocabularyLinks.json');
-
-const useStyles = makeStyles(theme => ({
-  clearButton: {
-    margin: theme.spacing(1),
-    textTransform: "none",
-    color: "white",
-    borderRadius: 3,
-    border: 0,
-    fontSize: "1.25em"
-  },
-  keywords: {
-    paddingLeft: "0.5em",
-    fontStyle: "italic",
-    borderLeftStyle: "solid",
-    borderLeftColor: "#DCDCDC",
-    borderLeftWidth: "0.5em",
-    fontSize: "2em"
-  },
-  divider: {
-    height: 28,
-    margin: 4,
-  },
-  adornment: {
-    paddingRight: theme.spacing(.5),
-  }
-}));
 
 function extractList(data) {
   var acronymList = [];
@@ -83,7 +54,6 @@ export default function Search(props) {
   const [lastSearch, setLastSearch] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
-  const classes = useStyles();
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Search using the currently entered keywords
@@ -142,34 +112,32 @@ export default function Search(props) {
   return(
     <React.Fragment>
       <Grid item>
-        <Grid container alignItems="center" justify="space-between">
-          <Grid item xs={12} sm={11}>
-            <TextField
-              fullWidth
-              helperText={(error ? "Request Failed" : "")}
-              InputProps={{
-                endAdornment: <InputAdornment position="end" className={classes.adornment}>
-                                {keywords && <IconButton onClick={reset} size="small">
-                                  <CloseIcon/>
-                                </IconButton>}
-                                <Divider className={classes.divider} orientation="vertical" />
-                                <IconButton onClick={keywords === "" ? reset: search}>
-                                  <SearchIcon/>
-                                </IconButton>
-                              </InputAdornment>
-              }}
-              label="Search BioPortal by keywords"
-              helperText="Search Bioportal for vocabularies mentioning a specific concept, e.g. “Microcephaly”"
-              onChange={(event) => setKeywords(event.target.value)}
-              onKeyDown={handleSearchInput}
-              type="text"
-              value={keywords}
-              variant="outlined"
-            />
-            {loading && <LinearProgress/>}
-          </Grid>
-
-        </Grid>
+        <TextField
+          fullWidth
+          helperText={(error ? "Request Failed" : "")}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">
+                            { keywords &&
+                              <IconButton onClick={reset} size="small">
+                                <CloseIcon/>
+                              </IconButton>
+                            }
+                            <IconButton onClick={keywords === "" ? reset: search}>
+                              <SearchIcon/>
+                            </IconButton>
+                          </InputAdornment>
+          }}
+          label="Search BioPortal by keywords"
+          helperText={ <>
+                         {loading && <LinearProgress/>}
+                         Search Bioportal for vocabularies mentioning a specific concept, e.g. “Microcephaly”
+                       </> }
+          onChange={(event) => setKeywords(event.target.value)}
+          onKeyDown={handleSearchInput}
+          type="text"
+          value={keywords}
+          variant="outlined"
+        />
       </Grid>
     </React.Fragment>
   );
