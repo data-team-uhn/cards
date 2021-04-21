@@ -44,8 +44,12 @@ export default function VocabularyTable(props) {
   const theme = useTheme();
 
   useEffect(() => {
-    if (filterTable && acronymList.length > 0) {
-      setFilteredVocabs(vocabList.slice().filter(vocab => acronymList.includes(vocab.acronym)));
+    if (filterTable) {
+      if (acronymList.length == 0) {
+        setFilteredVocabs([]);
+      } else {
+        setFilteredVocabs(vocabList.slice().filter(vocab => acronymList.includes(vocab.acronym)));
+      }
     }
   }, [filterTable, acronymList])
 
@@ -125,7 +129,7 @@ export default function VocabularyTable(props) {
                                    />
               }
             ]}
-            data={(filterTable && filteredVocabs.length > 0) ? filteredVocabs : vocabList}
+            data={filterTable ? filteredVocabs : vocabList}
             options={{
               toolbar: false,
               filtering: true,
