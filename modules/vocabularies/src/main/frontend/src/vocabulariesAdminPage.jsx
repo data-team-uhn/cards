@@ -227,7 +227,7 @@ export default function VocabulariesAdminPage() {
         updateKey={updateBioPortalApiKey}
       />
 
-      <VocabularyDirectory 
+      { bioPortalApiKey && <VocabularyDirectory
         type="remote"
         link={generateRemoteLink(bioPortalApiKey, "remote")}
         listLink={generateRemoteLink(bioPortalApiKey, "remote-list")}
@@ -239,7 +239,7 @@ export default function VocabulariesAdminPage() {
         addSetter={addSetter}
         apiKey={bioPortalApiKey}
         loaded={remoteLoaded}
-      />
+      /> }
     </Grid>
   );
 }
