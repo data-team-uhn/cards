@@ -137,12 +137,11 @@ public final class OntologyIndexerUtils
      * @param vocabulariesHomepage the <code>VocabulariesHomepage</code> node obtained from the request
      * @throws VocabularyIndexException if session is not successfully saved
      */
-    public static void saveSession(Node vocabulariesHomepage)
+    private static void saveSession(Node vocabulariesHomepage)
         throws VocabularyIndexException
     {
         try {
             vocabulariesHomepage.getSession().save();
-            checkInVocabulary(vocabulariesHomepage);
         } catch (RepositoryException e) {
             String message = "Failed to save session: " + e.getMessage();
             throw new VocabularyIndexException(message, e);
@@ -155,7 +154,7 @@ public final class OntologyIndexerUtils
      * @param vocabulariesHomepage the <code>VocabulariesHomepage</code> node obtained from the request
      * @throws VocabularyIndexException if the checking-in of a Node fails
      */
-    public static void checkInVocabulary(Node vocabulariesHomepage) throws VocabularyIndexException
+    private static void checkInVocabulary(Node vocabulariesHomepage) throws VocabularyIndexException
     {
         try {
             final VersionManager vm = vocabulariesHomepage.getSession().getWorkspace().getVersionManager();
@@ -169,5 +168,18 @@ public final class OntologyIndexerUtils
             //Cleanup
             NODES_TO_CHECK_IN.remove();
         }
+    }
+
+    /**
+     * Finalizes the vocabulary install by saving the JCR session and checking in all the newly installed
+     * Vocabulary nodes.
+     *
+     * @param vocabulariesHomepage the <code>VocabulariesHomepage</code> node obtained from the request
+     * @throws VocabularyIndexException if the JCR session is not successfully saved or the checking-in of a Node fails
+     */
+    public static void finalizeInstall(Node vocabulariesHomepage) throws VocabularyIndexException
+    {
+        saveSession(vocabulariesHomepage);
+        checkInVocabulary(vocabulariesHomepage);
     }
 }
