@@ -21,7 +21,6 @@ package ca.sickkids.ccm.lfs.vocabularies.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -81,9 +80,6 @@ public class BioOntologyIndexer implements VocabularyIndexer
     /** The vocabulary node where the indexed data must be placed. */
     private InheritableThreadLocal<Node> vocabularyNode = new InheritableThreadLocal<>();
 
-    /** The list which holds all JCR vocabulary nodes associated with a vocabulary to be checked-in. */
-    private InheritableThreadLocal<ArrayList<Node>> nodesToCheckIn = new InheritableThreadLocal<>();
-
     @Override
     public boolean canIndex(String source)
     {
@@ -129,12 +125,8 @@ public class BioOntologyIndexer implements VocabularyIndexer
             // Download the source
             temporaryFile = this.repository.downloadVocabularySource(description);
 
-            // Keep track of the JCR Nodes that are to be checked in
-            this.nodesToCheckIn.set(new ArrayList<Node>());
-
             // Create a new Vocabulary node representing this vocabulary
-            this.vocabularyNode.set(OntologyIndexerUtils.createVocabularyNode(
-                homepage, description, this.nodesToCheckIn));
+            this.vocabularyNode.set(OntologyIndexerUtils.createVocabularyNode(homepage, description));
 
             // Parse the source file and create VocabularyTerm node children
             parser.parse(temporaryFile, description, this::createVocabularyTermNode);
@@ -145,9 +137,6 @@ public class BioOntologyIndexer implements VocabularyIndexer
              * Jackrabbit Oak repository when this is performed.
              */
             OntologyIndexerUtils.saveSession(homepage);
-
-            // Check-in the nodes
-            OntologyIndexerUtils.checkInVocabulary(homepage, this.nodesToCheckIn);
 
             // Success response json
             this.utils.writeStatusJson(request, response, true, null);
@@ -164,6 +153,6 @@ public class BioOntologyIndexer implements VocabularyIndexer
 
     private void createVocabularyTermNode(VocabularyTermSource term)
     {
-        OntologyIndexerUtils.createVocabularyTermNode(term, this.vocabularyNode, this.nodesToCheckIn);
+        OntologyIndexerUtils.createVocabularyTermNode(term, this.vocabularyNode);
     }
 }
