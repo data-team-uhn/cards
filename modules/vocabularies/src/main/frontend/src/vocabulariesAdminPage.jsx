@@ -189,14 +189,25 @@ export default function VocabulariesAdminPage() {
     }
   }
 
+  let wrapSection = (content) => {
+    return (
+      <Grid item>
+        <Grid container direction="column" spacing={2} justify="space-around">
+          {content}
+        </Grid>
+      </Grid>
+    );
+  }
+
   return (
-    <Grid container direction="column" spacing={4} justify="space-between">
+    <Grid container direction="column" spacing={6} justify="space-around">
       <Grid item>
         <Typography variant="h2">
           Vocabularies
         </Typography>
       </Grid>
 
+      {wrapSection(<>
       <Grid item>
         <Typography variant="h6">
           Installed
@@ -219,9 +230,14 @@ export default function VocabulariesAdminPage() {
         apiKey={bioPortalApiKey}
         loaded={localLoaded}
       />
+      </>)}
 
+
+      {wrapSection(
       <OwlInstaller updateLocalList={updateLocalList} reloadVocabList={() => {setLocalLoaded(false);}}/>
+      )}
 
+      {wrapSection(<>
       <BioPortalApiKey
         bioPortalApiKey={bioPortalApiKey}
         updateKey={updateBioPortalApiKey}
@@ -240,6 +256,7 @@ export default function VocabulariesAdminPage() {
         apiKey={bioPortalApiKey}
         loaded={remoteLoaded}
       /> }
+      </>)}
     </Grid>
   );
 }
