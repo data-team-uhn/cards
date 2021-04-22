@@ -37,7 +37,7 @@ const Phase = require("./phaseCodes.json");
 export default function VocabularyTable(props) {
   const { vocabList, type  } = props;
   const [filterTable, setFilterTable] = useState(false);
-  const [acronymList, setAcronymList] = useState([]);
+  const [acronymFilterList, setAcronymFilterList] = useState([]);
   const [rowCount, setRowCount] = useState(5);
   const [filteredVocabs, setFilteredVocabs] = useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -45,30 +45,19 @@ export default function VocabularyTable(props) {
 
   useEffect(() => {
     if (filterTable) {
-      if (acronymList.length == 0) {
+      if (acronymFilterList.length == 0) {
         setFilteredVocabs([]);
       } else {
-        setFilteredVocabs(vocabList.slice().filter(vocab => acronymList.includes(vocab.acronym)));
+        setFilteredVocabs(vocabList.slice().filter(vocab => acronymFilterList.includes(vocab.acronym)));
       }
     }
-  }, [filterTable, acronymList])
+  }, [filterTable, acronymFilterList])
 
   return(
     <React.Fragment>
       {(type === "remote") &&
       <Search
-        // Provide Search with a function that allows it to concatenate a list to acronymList
-        concatParentAcronymList={list => {
-          setAcronymList(oldAcronymList =>
-            // Create a Set with the concatenated list which removes duplicates
-            // Use this duplicate free Set to make a list object and return it
-            [...new Set(
-              // New List = oldAcronymList + list
-              oldAcronymList.concat(list)
-              )
-            ]);
-        }}
-        setParentAcronymList={setAcronymList}
+        setAcronymFilterList={setAcronymFilterList}
         setParentFilterTable={setFilterTable}
         setLoading={setLoading}
         vocabList={vocabList}

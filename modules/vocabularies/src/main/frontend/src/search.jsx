@@ -80,6 +80,7 @@ export default function Search(props) {
       setLoading(true);
       props.setLoading(true);
       setLastSearch(keywords);
+      props.setAcronymFilterList([]);
 
       fetchBioPortalApiKey(globalLoginDisplay, (apiKey) => {
         // Then also make a request to recommender and update filtered list.
@@ -89,7 +90,7 @@ export default function Search(props) {
         fetchWithReLogin(globalLoginDisplay, url)
           .then((response) => (response.ok ? response.json() : Promise.reject(response)))
           .then((data) => {
-            props.concatParentAcronymList(extractList(data));
+            props.setAcronymFilterList(extractList(data));
             props.setParentFilterTable(true);
           })
           .catch(() => {
@@ -110,7 +111,7 @@ export default function Search(props) {
   // Clear the search
   function reset() {
     props.setParentFilterTable(false);
-    props.setParentAcronymList([]);
+    props.setAcronymFilterList([]);
     if (keywords !== "") {
       setKeywords("");
     }
