@@ -30,25 +30,13 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: theme.spacing(2, 3, 3),
+    padding: theme.spacing(12, 3, 3),
+    "& .MuiGrid-item" : {
+      textAlign: "center",
+    },
   },
   logo: {
-    maxWidth: "200px",
-  },
-  notFoundTitle: {
-    color: theme.palette.primary.main,
-    fontSize: '5rem'
-  },
-  notFoundTitleContainer: {
-    padding: '0!important'
-  },
-  notFoundContainer: {
-    paddingTop: theme.spacing(10)
-  },
-  notFoundMessage: {
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(2),
-    color: theme.palette.textSecondary
+    maxWidth: "240px",
   },
   extendedIcon: {
     marginRight: theme.spacing(1),
@@ -64,7 +52,7 @@ export default function PageNotFound() {
         <Grid
           container
           direction="column"
-          spacing={3}
+          spacing={7}
           alignItems="center"
           alignContent="center"
           className={classes.notFoundContainer}
@@ -73,30 +61,26 @@ export default function PageNotFound() {
             <img src="/libs/lfs/resources/logo_light_bg.png" alt="this.state.title" className={classes.logo}/>
           </Grid>
           <Grid item>
-            <Typography variant="h2" color="primary" className={classes.notFoundTitle}>
+            <Typography variant="h1" color="primary">
               404
             </Typography>
-          </Grid>
-          <Grid item className={classes.notFoundTitleContainer}>
-            <Typography variant="h2" color="primary" className={classes.notFoundTitle}>
+            <Typography variant="h1" color="primary" gutterBottom>
               Not found
             </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="subtitle1" className={classes.notFoundMessage}>
+            <Typography variant="subtitle1" color="textSecondary">
               The page you are trying to reach does not exist
             </Typography>
           </Grid>
-            <Grid item>
-              <Fab
-                variant="extended"
-                color="primary"
-                onClick={() => window.location.href = "/content.html/Questionnaires/User"}
-               >
-                <NavigationIcon className={classes.extendedIcon} />
-                Go to the dashboard
-              </Fab>
-            </Grid>
+          <Grid item>
+            <Fab
+              variant="extended"
+              color="primary"
+              onClick={() => window.location.href = "/content.html/Questionnaires/User"}
+            >
+              <NavigationIcon className={classes.extendedIcon} />
+              Go to the dashboard
+            </Fab>
+          </Grid>
         </Grid>
       </Paper>
     </MuiThemeProvider>
