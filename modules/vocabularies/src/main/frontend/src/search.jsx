@@ -51,11 +51,11 @@ function extractList(data) {
 }
 
 const useStyles = makeStyles(theme => ({
-  wrapper: {
-    margin: theme.spacing(1),
+  searchAdornmentWrapper: {
+    marginRight: theme.spacing(-1),
     position: 'relative',
   },
-  fabProgress: {
+  searchProgress: {
     position: 'absolute',
     top: theme.spacing(0.5),
     left: theme.spacing(0.5),
@@ -141,11 +141,11 @@ export default function Search(props) {
                                 <CloseIcon/>
                               </IconButton>
                             }
-                            <div className={classes.wrapper}>
+                            <div className={classes.searchAdornmentWrapper}>
                               <IconButton onClick={keywords === "" ? reset: search}>
                                 <SearchIcon/>
                               </IconButton>
-                              {loading && <CircularProgress className={classes.fabProgress} />}
+                              {loading && <CircularProgress className={classes.searchProgress} />}
                             </div>
                           </InputAdornment>
           }}
