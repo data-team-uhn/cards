@@ -18,6 +18,6 @@
 //
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Component404 from './Component404';
+import PageNotFound from './PageNotFound';
 
-ReactDOM.render(<Component404 selfContained />, document.getElementById('main-404-container'));
+ReactDOM.render(<PageNotFound />, document.getElementById('main-404-container'));

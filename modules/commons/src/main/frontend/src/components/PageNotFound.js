@@ -18,22 +18,47 @@
 //
 import React from 'react';
 
-import { Fab, Grid, Paper, Typography, withStyles } from '@material-ui/core';
+import { Fab, Grid, Paper, Typography, makeStyles } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import NavigationIcon from '@material-ui/icons/Navigation';
+import { lightBlue } from '@material-ui/core/colors';
 import { appTheme } from "../themePalette.jsx";
 import { useHistory } from 'react-router-dom';
 
-import styles from "../notFoundStyles";
+const useStyles = makeStyles(theme => ({
+  paper: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: theme.spacing(2, 3, 3),
+  },
+  logo: {
+    maxWidth: "200px",
+  },
+  notFoundTitle: {
+    color: lightBlue.A400,
+    fontSize: '5rem'
+  },
+  notFoundTitleContainer: {
+    padding: '0!important'
+  },
+  notFoundContainer: {
+    paddingTop: theme.spacing(10)
+  },
+  notFoundMessage: {
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(2)
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1),
+  },
+}));
 
-class Container404 extends React.Component {
-  constructor(props, selfContained) {
-    super(props);
-  }
+export default function PageNotFound() {
+  const classes = useStyles();
 
-  render () {
-    const { classes } = this.props;
-    return (
-      <MuiThemeProvider theme={appTheme}>
+  return (
+    <MuiThemeProvider theme={appTheme}>
       <Paper className={`${classes.paper}`} elevation={0}>
         <Grid
           container
@@ -67,16 +92,12 @@ class Container404 extends React.Component {
                 color="primary"
                 onClick={() => window.location.href = "/content.html/Questionnaires/User"}
                >
+                <NavigationIcon className={classes.extendedIcon} />
                 Go to the dashboard
               </Fab>
             </Grid>
         </Grid>
       </Paper>
-      </MuiThemeProvider>
-    );
-  }
+    </MuiThemeProvider>
+  );
 }
-
-const Component404 = withStyles(styles)(Container404);
-
-export default Component404;
