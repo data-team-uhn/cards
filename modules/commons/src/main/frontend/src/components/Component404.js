@@ -29,38 +29,43 @@ class Container404 extends React.Component {
   constructor(props, selfContained) {
     super(props);
   }
-  
-  handleRedirect = () => {
-	let history = useHistory();
-    history.push({
-      pathname: "/content.html/Questionnaires/User"
-    });
-  };
 
   render () {
-	const { classes } = this.props;
+    const { classes } = this.props;
     return (
       <MuiThemeProvider theme={appTheme}>
       <Paper className={`${classes.paper}`} elevation={0}>
-        <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
+        <Grid
+          container
+          direction="column"
+          spacing={3}
+          alignItems="center"
+          alignContent="center"
+          className={classes.notFoundContainer}
+        >
           <Grid item>
             <img src="/libs/lfs/resources/logo_light_bg.png" alt="this.state.title" className={classes.logo}/>
           </Grid>
           <Grid item>
-            <Typography variant="h1" color="primary" className={classes.dialogTitle}>404</Typography>
+            <Typography variant="h2" color="primary" className={classes.notFoundTitle}>
+              404
+            </Typography>
+          </Grid>
+          <Grid item className={classes.notFoundTitleContainer}>
+            <Typography variant="h2" color="primary" className={classes.notFoundTitle}>
+              Not found
+            </Typography>
           </Grid>
           <Grid item>
-          <Typography variant="h1" color="primary" className={classes.dialogTitle}>Not found</Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="subtitle2">The page you are trying to reach does not exist</Typography>
+            <Typography variant="subtitle1" className={classes.notFoundMessage}>
+              The page you are trying to reach does not exist
+            </Typography>
           </Grid>
             <Grid item>
               <Button
-                fullWidth
-                color="default"
-                className={classes.main}
-                onClick={this.handleRedirect}
+                variant="contained"
+                color="primary"
+                onClick={() => window.location.href = "/content.html/Questionnaires/User"}
                >
                 Go to the dashboard
               </Button>

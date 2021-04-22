@@ -16,6 +16,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
+import { lightBlue } from '@material-ui/core/colors';
+
 const styles = theme => ({
   main: {
     width: 'auto',
@@ -79,6 +81,19 @@ const styles = theme => ({
     background: theme.palette.error.dark,
     padding: theme.spacing(1, 2),
     color: theme.palette.error.contrastText,
+  },
+  notFoundTitle: {
+    color: lightBlue.A400,
+    fontSize: '5rem'
+  },
+  notFoundTitleContainer: {
+    padding: '0!important'
+  },
+  notFoundContainer: {
+    paddingTop: theme.spacing(10)
+  },
+  notFoundMessage: {
+    paddingBottom: theme.spacing(2)
   }
 });
 
