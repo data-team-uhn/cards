@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
     maxWidth: "200px",
   },
   notFoundTitle: {
-    color: lightBlue.A400,
+    color: theme.palette.primary.main,
     fontSize: '5rem'
   },
   notFoundTitleContainer: {
@@ -47,7 +47,8 @@ const useStyles = makeStyles(theme => ({
   },
   notFoundMessage: {
     paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(2)
+    paddingBottom: theme.spacing(2),
+    color: theme.palette.textSecondary
   },
   extendedIcon: {
     marginRight: theme.spacing(1),
