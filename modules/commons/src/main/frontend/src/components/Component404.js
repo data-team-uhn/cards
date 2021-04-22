@@ -23,7 +23,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 import { useHistory } from 'react-router-dom';
 
-import styles from "../styling/styles";
+import styles from "../notFoundStyles";
 
 class Container404 extends React.Component {
   constructor(props, selfContained) {

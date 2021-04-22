@@ -123,7 +123,7 @@ const headerStyle = theme => ({
   },
   quickSearchResultsTitle: {
     display: "inline-block"
-  }
+  },
 });
 
 export default headerStyle;
