@@ -38,7 +38,7 @@ export default function VocabularyTable(props) {
   const { vocabList, type  } = props;
   const [filterTable, setFilterTable] = useState(false);
   const [acronymList, setAcronymList] = useState([]);
-  const [rowCount, setRowCount] = useState(10);
+  const [rowCount, setRowCount] = useState(5);
   const [filteredVocabs, setFilteredVocabs] = useState([]);
   const [loading, setLoading] = React.useState(false);
   const theme = useTheme();
@@ -79,7 +79,7 @@ export default function VocabularyTable(props) {
       <Grid item>
         <MaterialTable
             columns={[
-              { title: 'Id',
+              { title: 'Identifier',
                 cellStyle: {
                   width: '10%',
                   whiteSpace: "pre",
