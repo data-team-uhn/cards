@@ -149,7 +149,7 @@ export default function Search(props) {
                           </InputAdornment>
           }}
           label="Search BioPortal by keywords"
-          helperText="Search Bioportal for vocabularies mentioning a specific concept, e.g. “Microcephaly”"
+          helperText="Search BioPortal for vocabularies mentioning a specific concept, e.g. “Microcephaly”"
           onChange={(event) => setKeywords(event.target.value)}
           onKeyDown={handleSearchInput}
           type="text"
