@@ -18,7 +18,7 @@
 //
 import React from 'react';
 
-import { Button, Grid, Paper, Typography, withStyles } from '@material-ui/core';
+import { Fab, Grid, Paper, Typography, withStyles } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 import { useHistory } from 'react-router-dom';
@@ -62,13 +62,13 @@ class Container404 extends React.Component {
             </Typography>
           </Grid>
             <Grid item>
-              <Button
-                variant="contained"
+              <Fab
+                variant="extended"
                 color="primary"
                 onClick={() => window.location.href = "/content.html/Questionnaires/User"}
                >
                 Go to the dashboard
-              </Button>
+              </Fab>
             </Grid>
         </Grid>
       </Paper>
