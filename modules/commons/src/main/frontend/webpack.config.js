@@ -25,7 +25,7 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    // We don't expose entry points here, as these files are instead imported from other modules and accessed from their entry points
+	[module_name + '404']: './src/components/404.js',
   },
   plugins: [
     new CleanWebpackPlugin(),
