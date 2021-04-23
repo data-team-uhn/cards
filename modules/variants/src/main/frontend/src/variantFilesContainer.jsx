@@ -34,8 +34,8 @@ import {
   Typography,
   makeStyles
 } from "@material-ui/core";
-import AttachFile from '@material-ui/icons/AttachFile';
 import BackupIcon from '@material-ui/icons/Backup';
+import CloseIcon from '@material-ui/icons/Close';
 import GetApp from '@material-ui/icons/GetApp';
 import MaterialTable from "material-table";
 import { v4 as uuidv4 } from 'uuid';
@@ -49,9 +49,6 @@ const useStyles = makeStyles(theme => ({
   },
   fileinput: {
     display: 'none',
-  },
-  dialogTitle: {
-    padding: theme.spacing(2,0,2,3),
   },
   buttonIcon: {
     verticalAlign: 'middle',
@@ -115,6 +112,15 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center",
     borderRadius: theme.spacing(1),
     cursor: "pointer"
+  },
+  dialogTitle: {
+    marginRight: theme.spacing(5)
+  },
+  closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500]
   }
 }));
 
@@ -671,13 +677,13 @@ export default function VariantFilesContainer() {
           encType="multipart/form-data"
           onSubmit={upload}
           key="file-upload">
-      <Typography component="h2" variant="h5" className={classes.dialogTitle}>Variants Upload</Typography>
-      <Typography>Please upload files named according to one of the following formats:</Typography>
+      <Typography variant="h2">Variants Upload</Typography>
+      <p>Please upload files named according to one of the following formats:</p>
       <ul>
-        <li><i>PatientId_TumorNumber.csv (e.g. AB12345_1.csv)</i></li>
-        <li><i>PatientId_TumorNumber_TumorRegion.csv (e.g. AB12345_1_a.csv)</i></li>
+        <li><strong>PatientId_TumorNumber.csv</strong> (e.g. <strong>AB12345_1.csv</strong>)</li>
+        <li><strong>PatientId_TumorNumber_TumorRegion.csv</strong> (e.g. <strong>AB12345_1_a.csv</strong>)</li>
       </ul>
-      <Typography>The file will be automatically associated with the subject identified by its name. You can review and correct the identifiers after selecting the file, before upload.</Typography>
+      <p>The file will be automatically associated with the subject identified by its name. You can review and correct the identifiers after selecting the file, before upload.</p>
       { uploadInProgress && (
         <Grid item className={classes.root}>
           <LinearProgress color="primary" />
@@ -764,19 +770,19 @@ export default function VariantFilesContainer() {
               <Typography variant="body1" component="div" className={classes.fileInfo}>
                   {(!file.sameFiles || file.sameFiles.length == 0)
                     ?
-                      <p>There are no versions of this file.</p>
+                      <Typography variant="caption">There are no versions of this file.</Typography>
                     :
-                      <Link
-                        href="#"
-                        onClick={() => {
-                          setShowVersionsDialog(true);
-                          setFileSelected(file);
-                        }}>
-                        <p>
-                          There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
-                          of this file
-                        </p>
-                      </Link>
+                      <Typography variant="caption">
+                        <Link
+                          href="#"
+                          onClick={() => {
+                            setShowVersionsDialog(true);
+                            setFileSelected(file);
+                          }}>
+                            There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
+                            of this file
+                        </Link>
+                      </Typography>
                    }
               </Typography>
             </div>
@@ -785,7 +791,10 @@ export default function VariantFilesContainer() {
     }
   <Dialog open={showVersionsDialog} onClose={() => setShowVersionsDialog(false)}>
     <DialogTitle>
-      Versions of {fileSelected?.name}
+      <span className={classes.dialogTitle}>Versions of {fileSelected?.name}</span>
+      <IconButton onClick={() => setShowVersionsDialog(false)} className={classes.closeButton}>
+        <CloseIcon />
+      </IconButton>
     </DialogTitle>
     <DialogContent>
       <MaterialTable
