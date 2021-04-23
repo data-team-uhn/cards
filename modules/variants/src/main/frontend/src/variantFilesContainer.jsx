@@ -261,15 +261,15 @@ export default function VariantFilesContainer() {
       if (file.name === fileEl.name) { continue; }
 
       if (fileEl.subject.id === file.subject.id) {
-        file.subject = generateSubject(file.subject, fileEl.subject.path, fileEl.subject.existed, fileEl.subject.uuid);
+        file.subject = generateSubject(file.subject, fileEl.subject.path, fileEl.subject.existed, fileEl.subject.uuid, fileEl.subject.type);
       }
 
       if (fileEl.subject.id === file.subject.id && fileEl.tumor.id === file.tumor.id) {
-        file.tumor = generateSubject(file.tumor, fileEl.tumor.path, fileEl.tumor.existed, fileEl.tumor.uuid);
+        file.tumor = generateSubject(file.tumor, fileEl.tumor.path, fileEl.tumor.existed, fileEl.tumor.uuid, fileEl.tumor.type);
       }
 
       if (fileEl.region && file.region && fileEl.tumor.id === file.tumor.id && fileEl.region.id === file.region.id) {
-        file.region = generateSubject(file.region, fileEl.region.path, fileEl.region.existed, fileEl.region.uuid);
+        file.region = generateSubject(file.region, fileEl.region.path, fileEl.region.existed, fileEl.region.uuid, fileEl.region.type);
       }
     }
     return file;
@@ -298,7 +298,8 @@ export default function VariantFilesContainer() {
               if (json.rows && json.rows.length > 0) {
                 let subject = json.rows[0];
                 // get the path
-                file.subject = generateSubject(file.subject, subject["@path"], true, subject["jcr:uuid"]);
+                file.subject = generateSubject(file.subject, subject["@path"], true, subject["jcr:uuid"], subject.type);
+                file.subject.type = subject["type"];
                 checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                 // Fire a fetch request for a tumor subject with the patient subject as its parent
@@ -309,7 +310,7 @@ export default function VariantFilesContainer() {
                       if (json.rows && json.rows.length > 0) {
                         let subject = json.rows[0];
                         // get the path
-                        file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"]);
+                        file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"], subject.type);
 
                         // If a region subject is defined
                         if (file.region) {
@@ -323,7 +324,7 @@ export default function VariantFilesContainer() {
                               if (json.rows && json.rows.length > 0) {
                                 let subject = json.rows[0];
                                 // get the path
-                                file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"]);
+                                file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
                               } else {
                                 // if a region subject is not found
                                 // record in variables that a region didn’t exist and generate a new random uuid as its path
@@ -374,7 +375,7 @@ export default function VariantFilesContainer() {
                   if (json.rows && json.rows.length > 0) {
                     let subject = json.rows[0];
                     // get the path
-                    file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"]);
+                    file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"], subject.type);
 
                     // If a region subject is defined
                     if (file.region) {
@@ -388,7 +389,7 @@ export default function VariantFilesContainer() {
                           if (json.rows && json.rows.length > 0) {
                             let subject = json.rows[0];
                             // get the path
-                            file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"]);
+                            file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
                           } else {
                             // if a region subject is not found
                             // record in variables that a region didn’t exist, and generate a new random uuid as its path
@@ -425,7 +426,7 @@ export default function VariantFilesContainer() {
                   if (json.rows && json.rows.length > 0) {
                     let subject = json.rows[0];
                     // get the path
-                    file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"]);
+                    file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
                   } else {
                     // if a region subject is not found
                     // record in variables that a region didn’t exist, and generate a new random uuid as its path
@@ -451,10 +452,11 @@ export default function VariantFilesContainer() {
   // 2. subject did not exist, need to create completely new
   // 3. subject did not exist, but was just created for one of previous loaded files, so it has path but no uuid
   //
-  let generateSubject = (subject, path, existed, uuid) => {
+  let generateSubject = (subject, path, existed, uuid, type) => {
     subject.existed = existed;
     subject.path = path || "/Subjects/" + uuidv4();
     subject.uuid = uuid;
+    subject.type = existed && type;
     return subject;
   };
 
@@ -734,9 +736,9 @@ export default function VariantFilesContainer() {
               </div>
               { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ? 
                 <Typography variant="overline" className={classes.fileDetail}>
-                  Patient <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /
-                  Tumor <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
-                  { file?.region?.path && <> / Tumor region: <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
+                  {file.subject?.type?.label || "Patient"} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /
+                  {file.tumor?.type?.label || "Tumor"} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
+                  { file?.region?.path && <> / {file.region?.type?.label || "Tumor Region"}: <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
                   { file.formPath && <span>Somatic Variants / <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank"> {file.name} </Link></span> }
                 </Typography>
               : <span>
