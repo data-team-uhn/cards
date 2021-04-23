@@ -20,12 +20,19 @@
 import {
   Button,
   Grid,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  IconButton,
   TextField,
+  Tooltip,
   Typography,
   makeStyles
 } from "@material-ui/core";
 
 import React, {useEffect, useContext} from "react";
+import SettingsIcon from '@material-ui/icons/Settings';
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const APIKEY_SERVLET_URL = "/Vocabularies.bioportalApiKey";
@@ -41,26 +48,35 @@ export default function fetchBioPortalApiKey(globalLoginDisplay, func, errorHand
     func(keyJson[JSON_KEY]);
   }
 
-  fetchWithReLogin(globalLoginDisplay, APIKEY_SERVLET_URL)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(parseKey)
-      .catch(errorHandler);
+fetchWithReLogin(globalLoginDisplay, APIKEY_SERVLET_URL)
+  .then((response) => response.ok ? response.json() : Promise.reject(response))
+  .then(parseKey)
+  .catch(errorHandler);
 }
 
-
 const useStyles = makeStyles(theme => ({
-  header: {
-    marginTop: theme.spacing(3)
+  dialogTitle: {
+    marginRight: theme.spacing(5)
+  },
+  vocabularyAction: {
+    margin: theme.spacing(1)
+  },
+  noKeyInfo: {
+    padding: theme.spacing(1, 0)
+  },
+  settingIcon: {
+    marginTop: theme.spacing(-0.5)
   }
 }));
 
 export function BioPortalApiKey(props) {
   const { bioPortalApiKey, updateKey } = props;
   const globalLoginDisplay = useContext(GlobalLoginContext);
+  const classes = useStyles();
 
   /* User input api key */
   const [customApiKey, setCustomApiKey] = React.useState('');
-  const [displayChangeKey, setDisplayChangeKey] = React.useState(false);
+  const [displayPopup, setDisplayPopup] = React.useState(false);
 
   // function to create / edit node
   function addNewKey() {
@@ -71,6 +87,7 @@ export function BioPortalApiKey(props) {
       .then((response) => response.ok ? response : Promise.reject(response))
       .then((data) => {
           updateKey(customApiKey);
+          setDisplayPopup(false);
       })
       .catch((error) => {
         console.error("Error creating BioportalApiKey node: " + error)
@@ -83,58 +100,77 @@ export function BioPortalApiKey(props) {
       (apiKey) => {
         updateKey(apiKey);
         setCustomApiKey(apiKey);
-        setDisplayChangeKey(false);
       }, () => {
         updateKey(false);
-        setDisplayChangeKey(true);
     });
   }, [bioPortalApiKey])
 
+  let getBioportalKeyInfo = (enableEdit) => {
+    return (
+        <TextField
+          InputProps={{
+            readOnly: !enableEdit,
+          }}
+          variant={enableEdit ? "outlined" : "filled" }
+          onChange={(evt) => {setCustomApiKey(evt.target.value)}}
+          value={customApiKey}
+          name="customApiKey"
+          label={ enableEdit ? "Enter new Bioportal API key:" : "Bioportal API key:" }
+          fullWidth={true}
+        />
+    );
+  }
+
   return(
     <React.Fragment>
-      { !bioPortalApiKey &&
-         <Grid item>
+      <Grid item>
+        <Typography variant="h6">
+          Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
+          { bioPortalApiKey &&
+            <Tooltip title="Change BioPortal API key">
+              <IconButton onClick={() => {setDisplayPopup(true)}} className={classes.settingIcon}>
+                <SettingsIcon/>
+              </IconButton>
+            </Tooltip>
+          }
+        </Typography>
+      </Grid>
+
+      { !bioPortalApiKey && <>
+         <Grid item className={classes.noKeyInfo}>
            <Typography>Your system does not have a <a href="https://bioportal.bioontology.org/help#Getting_an_API_key" target="_blank">Bioportal API Key</a> configured.</Typography>
            <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
          </Grid>
-      }
-
-      <Grid item>
-        <Grid container
-          direction="row"
-          alignItems="center"
-          spacing={1}
-        >
-          <Grid item xs={6}>
-            <TextField
-              InputProps={{
-                readOnly: !displayChangeKey,
-              }}
-              variant={displayChangeKey ? "outlined" : "filled" }
-              onChange={(evt) => {setCustomApiKey(evt.target.value)}}
-              value={customApiKey}
-              name="customApiKey"
-              label={ displayChangeKey ? "Enter new Bioportal API key:" : "Bioportal API key:" }
-              fullWidth={true}
-            />
-          </Grid>
-          <Grid item>
-            { !displayChangeKey && bioPortalApiKey &&
-              <Button variant="contained" color="primary" onClick={() => {setDisplayChangeKey(true);}}>Change</Button>
-            }
-          </Grid>
-          <Grid item>
-            { displayChangeKey &&
-              <Button color="primary" variant="contained" onClick={() => {addNewKey();}}>Submit</Button>
-            }
-          </Grid>
-          <Grid item>
-            { displayChangeKey && bioPortalApiKey &&
-              <Button color="default" variant="contained" onClick={() => {setDisplayChangeKey(false);}}>Cancel</Button>
-            }
+        <Grid item>
+          <Grid container
+            direction="row"
+            alignItems="center"
+            justify="space-between"
+            alignContent="space-between"
+            spacing={2}
+          >
+            <Grid item xs={10}>
+              { getBioportalKeyInfo(!bioPortalApiKey) }
+            </Grid>
+            <Grid item xs={2}>
+              <Button color="primary" variant="contained" onClick={() => {addNewKey()}}>Submit</Button>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      </> }
+
+      <Dialog onClose={() => {setDisplayPopup(false)}} open={displayPopup}>
+         <DialogTitle disableTypography>
+           <Typography variant="h4" className={classes.dialogTitle}>Change BioPortal API key</Typography>
+         </DialogTitle>
+         <DialogContent dividers>
+           { getBioportalKeyInfo(true) }
+          </DialogContent>
+          <DialogActions>
+            <Button color="primary" variant="contained" className={classes.vocabularyAction} onClick={() => {addNewKey()}}>Update</Button>
+            <Button color="default" variant="contained" className={classes.vocabularyAction} onClick={() => {setDisplayPopup(false)}}>Cancel</Button>
+          </DialogActions>
+      </Dialog>
     </React.Fragment>
   );
 }

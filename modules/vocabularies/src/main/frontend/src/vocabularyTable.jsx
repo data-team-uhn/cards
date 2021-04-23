@@ -17,125 +17,122 @@
 //  under the License.
 //
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Grid,
-  makeStyles,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
+  IconButton,
   Typography,
+  Tooltip,
   withStyles
 } from "@material-ui/core";
 
+import { useTheme } from '@material-ui/core/styles';
+import MaterialTable from "material-table";
+import VocabularyActions from "./vocabularyActions"
 import Search from "./search";
-import VocabularyEntry from "./vocabularyEntry";
 
-const Config = require("./config.json");
 const Phase = require("./phaseCodes.json");
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    overflowX: "auto"
-  },
-  table: {
-    tableLayout: "fixed"
-  }
-}));
-
-// Creating customized Table components for a nicer look
-const HeaderTableCell = withStyles(theme => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white
-  }
-}))(TableCell);
-
 export default function VocabularyTable(props) {
-  const [filterTable, setFilterTable] = React.useState(false);
-  const [acronymList, setAcronymList] = React.useState([]);
+  const { vocabList, type  } = props;
+  const [filterTable, setFilterTable] = useState(false);
+  const [acronymFilterList, setAcronymFilterList] = useState([]);
+  const [rowCount, setRowCount] = useState(5);
+  const [filteredVocabs, setFilteredVocabs] = useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const theme = useTheme();
 
-  const vocabList = props.vocabList;
-  const classes = useStyles();
-  const headingTypography = Config["tableHeadingTypography"];
-  const columnWidths = Config["tableColumnWidths"];
+  useEffect(() => {
+    if (filterTable) {
+      if (acronymFilterList.length == 0) {
+        setFilteredVocabs([]);
+      } else {
+        setFilteredVocabs(vocabList.slice().filter(vocab => acronymFilterList.includes(vocab.acronym)));
+      }
+    }
+  }, [filterTable, acronymFilterList])
 
   return(
     <React.Fragment>
-      {(props.type === "remote") &&
+      {(type === "remote") &&
       <Search
-        // Provide Search with a function that allows it to concatenate a list to acronymList
-        concatParentAcronymList={list => {
-          setAcronymList(oldAcronymList =>
-            // Create a Set with the concatenated list which removes duplicates
-            // Use this duplicate free Set to make a list object and return it
-            [...new Set(
-              // New List = oldAcronymList + list
-              oldAcronymList.concat(list)
-              )
-            ]);
-        }}
-        setParentAcronymList={setAcronymList}
+        setAcronymFilterList={setAcronymFilterList}
         setParentFilterTable={setFilterTable}
+        setLoading={setLoading}
         vocabList={vocabList}
       />
       }
 
       {(vocabList.length > 0) &&
       <Grid item>
-        <Paper className={classes.root}>
-          <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-
-                <HeaderTableCell width={columnWidths["id"]}>
-                  <Typography variant={headingTypography}>ID</Typography>
-                </HeaderTableCell>
-
-                <HeaderTableCell width={columnWidths["name"]}>
-                  <Typography variant={headingTypography}>Name</Typography>
-                </HeaderTableCell>
-
-                <HeaderTableCell width={columnWidths["version"]}>
-                  <Typography variant={headingTypography}>Version</Typography>
-                </HeaderTableCell>
-
-                <HeaderTableCell width={columnWidths["releaseDate"]}>
-                  <Typography variant={headingTypography}>{props.type === "local" ? "Installation Date" : "Release Date"}</Typography>
-                </HeaderTableCell>
-
-                <HeaderTableCell width={columnWidths["actions"]}/>
-
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {vocabList.map((vocab) => {
-                if (props.type === "local" || vocab.status === "production" || vocab.status === "beta") {
-                  return(
-                    <VocabularyEntry
-                      key={vocab.acronym}
-                      type={props.type}
-                      vocabulary={vocab}
-                      updateLocalList={props.updateLocalList}
-                      // If filterTable is True, then check if the acronym is of a vocabulary to be displayed
-                      // If filterTable is False, then don't hide anything
-                      hidden={filterTable && !acronymList.includes(vocab.acronym)}
-                      initPhase={props.acronymPhaseObject[vocab.acronym] || Phase["Not Installed"]}
-                      setPhase={(phase) => props.setPhase(vocab.acronym, phase)}	
-                      addSetter={(setFunction) => props.addSetter(vocab.acronym, setFunction, props.type)}
-                    />
-                  );
-                }
-              })}
-            </TableBody>
-
-          </Table>
-        </Paper>
+        <MaterialTable
+            columns={[
+              { title: 'Identifier',
+                cellStyle: {
+                  width: '10%',
+                  whiteSpace: "pre",
+                },
+                field: 'acronym'
+              },
+              { title: 'Name',
+                cellStyle: {
+                  width: "33%",
+                },
+                field: 'name'
+              },
+              { title: 'Version',
+                cellStyle: {
+                  width: "20%",
+                  maxWidth: "100px",
+                },
+                filtering: false,
+                sorting: false,
+                render: rowData => rowData.version && <Tooltip title={rowData.version}><Typography style={{fontWeight: "inherit"}} noWrap>{rowData.version}</Typography></Tooltip>
+              },
+              {
+                title: type === "local" ? "Installation Date" : "Release Date",
+                cellStyle: {
+                  width: "14%",
+                  whiteSpace: "nowrap",
+                },
+                filtering: false,
+                sorting: false,
+                render: rowData => (new Date(type === "local" ? rowData.installed : rowData.released)).toString().substring(4,15)
+              },
+              { title: "",
+                cellStyle: {
+                  width: "23%",
+                  whiteSpace: "pre",
+                  textAlign: "right"
+                },
+                filtering: false,
+                sorting: false,
+                render: rowData => <VocabularyActions
+                                     type={type}
+                                     vocabulary={rowData}
+                                     updateLocalList={props.updateLocalList}
+                                     initPhase={props.acronymPhaseObject[rowData.acronym] || Phase["Not Installed"]}
+                                     setPhase={(phase) => props.setPhase(rowData.acronym, phase)}
+                                     addSetter={(setFunction) => props.addSetter(rowData.acronym, setFunction, type)}
+                                   />
+              }
+            ]}
+            data={filterTable ? filteredVocabs : vocabList}
+            options={{
+              toolbar: false,
+              filtering: true,
+              emptyRowsWhenPaging: false,
+              addRowPosition: 'first',
+              pageSize: rowCount,
+              headerStyle: { backgroundColor: theme.palette.grey['200'],
+                           },
+            }}
+            onChangeRowsPerPage={pageSize => {
+              setRowCount(pageSize);
+            }}
+            isLoading={loading}
+          />
       </Grid>
       }
     </React.Fragment>

@@ -68,9 +68,6 @@ const useStyles = makeStyles(theme => ({
       background: theme.palette.warning.dark
     }
   },
-  header: {
-    marginTop: theme.spacing(3)
-  }
 }));
 
 export default function OwlInstaller(props) {
@@ -114,7 +111,7 @@ export default function OwlInstaller(props) {
   return(
     <React.Fragment>
       <Grid item>
-        <Typography className={classes.header} variant="h6">
+        <Typography variant="h6">
           Install from local file
         </Typography>
       </Grid>

@@ -189,14 +189,25 @@ export default function VocabulariesAdminPage() {
     }
   }
 
+  let wrapSection = (content) => {
+    return (
+      <Grid item>
+        <Grid container direction="column" spacing={2} justify="space-around">
+          {content}
+        </Grid>
+      </Grid>
+    );
+  }
+
   return (
-    <Grid container direction="column" spacing={4} justify="space-between">
+    <Grid container direction="column" spacing={6} justify="space-around">
       <Grid item>
         <Typography variant="h2">
           Vocabularies
         </Typography>
       </Grid>
 
+      {wrapSection(<>
       <Grid item>
         <Typography variant="h6">
           Installed
@@ -219,21 +230,20 @@ export default function VocabulariesAdminPage() {
         apiKey={bioPortalApiKey}
         loaded={localLoaded}
       />
+      </>)}
 
+
+      {wrapSection(
       <OwlInstaller updateLocalList={updateLocalList} reloadVocabList={() => {setLocalLoaded(false);}}/>
+      )}
 
-      <Grid item>
-        <Typography variant="h6">
-          Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
-        </Typography>
-      </Grid>
-
+      {wrapSection(<>
       <BioPortalApiKey
         bioPortalApiKey={bioPortalApiKey}
         updateKey={updateBioPortalApiKey}
       />
 
-      <VocabularyDirectory 
+      { bioPortalApiKey && <VocabularyDirectory
         type="remote"
         link={generateRemoteLink(bioPortalApiKey, "remote")}
         listLink={generateRemoteLink(bioPortalApiKey, "remote-list")}
@@ -245,7 +255,8 @@ export default function VocabulariesAdminPage() {
         addSetter={addSetter}
         apiKey={bioPortalApiKey}
         loaded={remoteLoaded}
-      />
+      /> }
+      </>)}
     </Grid>
   );
 }

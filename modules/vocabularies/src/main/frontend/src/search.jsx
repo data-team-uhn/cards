@@ -21,40 +21,22 @@ import React, { useContext } from "react";
 
 import {
   Button,
+  CircularProgress,
   Grid,
   IconButton,
   InputAdornment,
   LinearProgress,
-  makeStyles,
   TextField,
-  Typography
+  makeStyles
 } from "@material-ui/core";
 
 import SearchIcon from "@material-ui/icons/Search";
+import CloseIcon from "@material-ui/icons/Close";
 
 import fetchBioPortalApiKey from "./bioportalApiKey";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const vocabLinks = require('./vocabularyLinks.json');
-
-const useStyles = makeStyles(theme => ({
-  clearButton: {
-    margin: theme.spacing(1),
-    textTransform: "none",
-    color: "white",
-    borderRadius: 3,
-    border: 0,
-    fontSize: "1.25em"
-  },
-  keywords: {
-    paddingLeft: "0.5em",
-    fontStyle: "italic",
-    borderLeftStyle: "solid",
-    borderLeftColor: "#DCDCDC",
-    borderLeftWidth: "0.5em",
-    fontSize: "2em"
-  }
-}));
 
 function extractList(data) {
   var acronymList = [];
@@ -68,14 +50,26 @@ function extractList(data) {
   return acronymList;
 }
 
+const useStyles = makeStyles(theme => ({
+  searchAdornmentWrapper: {
+    marginRight: theme.spacing(-1),
+    position: 'relative',
+  },
+  searchProgress: {
+    position: 'absolute',
+    top: theme.spacing(0.5),
+    left: theme.spacing(0.5),
+    zIndex: 1,
+  },
+}));
+
 export default function Search(props) {
   const [error, setError] = React.useState(false);
-  const [filterTable, setFilterTable] = React.useState(false);
   const [keywords, setKeywords] = React.useState("");
   const [lastSearch, setLastSearch] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-
   const classes = useStyles();
+
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Search using the currently entered keywords
@@ -84,25 +78,9 @@ export default function Search(props) {
     if (!loading) {
       setError(false);
       setLoading(true);
+      props.setLoading(true);
       setLastSearch(keywords);
-      // First check if any of the keywords match a vocabulary name or acronym
-
-      // Process keywords of search into a list of lower case words
-      let keywordsList = keywords.split(" ").map(keyword => keyword.toLowerCase());
-
-      // Filter the list for vocabularies that meet either of 2 criteria
-      let acronymList = props.vocabList.filter(vocab => (
-        keywordsList.some(word => word.includes(
-             // (1) Any of the search keywords contains the vocabulary's acronym
-             vocab.acronym.toLowerCase()) ||
-             // (2) Vocab name contains any of the search keywords as a part of it
-             vocab.name.toLowerCase().includes(word))
-       // Finally return only the acronyms of the vocabularies that meet above criteria as a list
-       )).map(vocab => vocab.acronym);
-
-      setFilterTable(true);
-      props.setParentAcronymList(acronymList);
-      props.setParentFilterTable(true);
+      props.setAcronymFilterList([]);
 
       fetchBioPortalApiKey(globalLoginDisplay, (apiKey) => {
         // Then also make a request to recommender and update filtered list.
@@ -112,8 +90,7 @@ export default function Search(props) {
         fetchWithReLogin(globalLoginDisplay, url)
           .then((response) => (response.ok ? response.json() : Promise.reject(response)))
           .then((data) => {
-            props.concatParentAcronymList(extractList(data));
-            setFilterTable(true);
+            props.setAcronymFilterList(extractList(data));
             props.setParentFilterTable(true);
           })
           .catch(() => {
@@ -121,6 +98,7 @@ export default function Search(props) {
           })
           .finally(() => {
             setLoading(false);
+            props.setLoading(false);
           });
         },
         () => {
@@ -133,11 +111,10 @@ export default function Search(props) {
   // Clear the search
   function reset() {
     props.setParentFilterTable(false);
-    props.setParentAcronymList([]);
+    props.setAcronymFilterList([]);
     if (keywords !== "") {
       setKeywords("");
     }
-    setFilterTable(false);
   }
 
   // Checks if return is pressed, and searches/resets the search
@@ -154,45 +131,32 @@ export default function Search(props) {
   return(
     <React.Fragment>
       <Grid item>
-        <Grid container alignItems="center" justify="space-between">
-          <Grid item xs={12} sm={11}>
-            <TextField
-              fullWidth
-              helperText={(error ? "Request Failed" : "")}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">
-                                <IconButton onClick={keywords === "" ? reset: search}>
-                                  <SearchIcon/>
-                                </IconButton>
-                              </InputAdornment>
-              }}
-              label="Search by keywords"
-              onChange={(event) => setKeywords(event.target.value)}
-              onKeyDown={handleSearchInput}
-              type="text"
-              value={keywords}
-              variant="outlined"
-            />
-            {loading && <LinearProgress/>}
-          </Grid>
-
-          <Grid item xs={12} sm={1}>
-            <Button className={classes.clearButton} onClick={reset} variant="contained" size="large" color="secondary">
-              Clear
-            </Button>
-          </Grid>
-
-        </Grid>
-      </Grid>
-
-      <Grid item>
-        {(filterTable ?
-        <React.Fragment>
-          <Typography variant="h6">Browse vocabularies matching </Typography>
-          <Typography variant="h6" className={classes.keywords}>{lastSearch}</Typography>
-        </React.Fragment>
-        :
-        <Typography variant="h6">Browse All</Typography>)}
+        <TextField
+          fullWidth
+          helperText={(error ? "Request Failed" : "")}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">
+                            { keywords &&
+                              <IconButton onClick={reset} size="small">
+                                <CloseIcon/>
+                              </IconButton>
+                            }
+                            <div className={classes.searchAdornmentWrapper}>
+                              <IconButton onClick={keywords === "" ? reset: search}>
+                                <SearchIcon/>
+                              </IconButton>
+                              {loading && <CircularProgress className={classes.searchProgress} />}
+                            </div>
+                          </InputAdornment>
+          }}
+          label="Search BioPortal by keywords"
+          helperText="Search BioPortal for vocabularies mentioning a specific concept, e.g. “Microcephaly”"
+          onChange={(event) => setKeywords(event.target.value)}
+          onKeyDown={handleSearchInput}
+          type="text"
+          value={keywords}
+          variant="outlined"
+        />
       </Grid>
     </React.Fragment>
   );
