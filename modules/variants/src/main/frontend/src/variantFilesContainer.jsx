@@ -676,7 +676,8 @@ export default function VariantFilesContainer() {
     <form method="POST"
           encType="multipart/form-data"
           onSubmit={upload}
-          key="file-upload">
+          key="file-upload"
+          id="variantForm">
       <Typography variant="h2">Variants Upload</Typography>
       <p>Please upload files named according to one of the following formats:</p>
       <ul>
@@ -699,20 +700,6 @@ export default function VariantFilesContainer() {
       />
 
       <input type="hidden" name="*@TypeHint" value="nt:file" />
-      <label htmlFor="contained-button-file">
-        { selectedFiles.length ?
-          <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error && selectedFiles.length == 0} className={classes.uploadButton}>
-            <span><BackupIcon className={classes.buttonIcon}/>
-              {uploadInProgress ? 'Uploading' :
-                  // TODO - judge upload status button message over all upload statuses of all files ??
-                  // uploadProgress[file.name].state =="done" ? 'Uploaded' :
-                  // uploadProgress[file.name].state =="error" ? 'Upload failed, try again?' :
-                  'Upload'}
-            </span>
-          </Button>
-          : <></>
-        }
-      </label>
     </form>
 
     { selectedFiles && selectedFiles.length > 0 && <span>
@@ -765,6 +752,18 @@ export default function VariantFilesContainer() {
                   onChange={(event) => setRegion(event.target.value, file.name)}
                   className={classes.fileDetail}
                 />
+                <label htmlFor="contained-button-file">
+                  <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error && selectedFiles.length == 0} className={classes.uploadButton} form="variantForm">
+                    <span><BackupIcon className={classes.buttonIcon}/>
+                      {uploadInProgress ? 'Uploading' :
+                          // TODO - Make this a per-upload button, pending the completion of LFS-535
+                          // TODO - judge upload status button message over all upload statuses of all files ??
+                          // uploadProgress[file.name].state =="done" ? 'Uploaded' :
+                          // uploadProgress[file.name].state =="error" ? 'Upload failed, try again?' :
+                          'Upload'}
+                    </span>
+                  </Button>
+                </label>
                 </span>
               }
               <Typography variant="body1" component="div" className={classes.fileInfo}>
