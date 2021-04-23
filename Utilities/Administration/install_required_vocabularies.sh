@@ -45,6 +45,7 @@ do
     if [ $? -ne 0 ]
     then
       echo "*ERROR* Could not install $vocab"
-      [ $FAILURE_HANDLER = "exit_on_failure" ] && exit -1
+      [ "$FAILURE_HANDLER" = "exit_on_failure" ] && exit -1
     fi
+  fi
 done
