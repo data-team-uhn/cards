@@ -123,6 +123,10 @@ const useStyles = makeStyles(theme => ({
       right: theme.spacing(1),
       top: theme.spacing(1),
       color: theme.palette.grey[500]
+  },
+  dragAndDrop: {
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
   }
 }));
 
@@ -693,13 +697,15 @@ export default function VariantFilesContainer() {
         </Grid>
       ) }
 
-      <DragAndDrop
-        accept={".csv"}
-        multifile={false}
-        handleDrop={onDrop}
-        classes={classes}
-        error={error}
-      />
+      <div className={classes.dragAndDrop}>
+        <DragAndDrop
+          accept={".csv"}
+          multifile={false}
+          handleDrop={onDrop}
+          classes={classes}
+          error={error}
+        />
+      </div>
 
       <input type="hidden" name="*@TypeHint" value="nt:file" />
     </form>
