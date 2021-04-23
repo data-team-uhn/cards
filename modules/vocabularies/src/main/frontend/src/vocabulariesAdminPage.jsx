@@ -202,7 +202,7 @@ export default function VocabulariesAdminPage() {
           Installed
         </Typography>
       </Grid>
-      { localVocabList.length == 0 &&
+      { localLoaded && localVocabList.length == 0 &&
           <Grid item>
             <Typography color="textSecondary">No vocabularies have been installed yet.</Typography>
           </Grid>
