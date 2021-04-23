@@ -22,7 +22,12 @@
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Radio Button / Checkbox Compact Test (LFS-1077)</value>
+		<value>Radio Button / Checkbox Compact Test</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>description</name>
+		<value>LFS-1077</value>
 		<type>String</type>
 	</property>
 	<property>

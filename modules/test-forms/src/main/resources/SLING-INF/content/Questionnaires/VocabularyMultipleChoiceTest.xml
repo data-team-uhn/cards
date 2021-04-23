@@ -22,7 +22,12 @@
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Vocabulary Multiple Choice Test (LFS-1073)</value>
+		<value>Vocabulary Multiple Choice Test</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>description</name>
+		<value>LFS-1073</value>
 		<type>String</type>
 	</property>
 	<property>

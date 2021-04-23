@@ -22,7 +22,12 @@
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Long Conditional Test (LFS-273, LFS-275, LFS-484)</value>
+		<value>Long Conditional Test</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>description</name>
+		<value>LFS-273, LFS-275, LFS-484</value>
 		<type>String</type>
 	</property>
 	<property>
