@@ -22,8 +22,21 @@
 
 import os
 import sys
+import string
+import argparse
 import requests
 from requests.auth import HTTPBasicAuth
+
+def sanitizeVocabularyIdentifier(vocab):
+  allowed_chars = string.ascii_letters + string.digits + "-_"
+  output = ""
+  for c in str(vocab):
+    if c in allowed_chars:
+      output += c
+  return output
+
+argparser.add_argument('--unsafe', help='Skip character filtering of the vocabulary identifiers obtained from CARDS')
+args = argparser.parse_args()
 
 CARDS_URL = "http://localhost:8080"
 if "CARDS_URL" in os.environ:
@@ -35,7 +48,7 @@ if "ADMIN_PASSWORD" in os.environ:
 
 query_req = requests.get(CARDS_URL + "/query?query=select * from [lfs:Question] as q WHERE q.'dataType'='vocabulary'&limit=1000000000", auth=HTTPBasicAuth('admin', ADMIN_PASSWORD))
 if query_req.status_code != 200:
-  print("Vocabularies query failed")
+  print("Vocabularies query failed", file=sys.stderr)
   sys.exit(-1)
 
 required_vocabularies = set()
@@ -44,4 +57,7 @@ for row in query_req.json()['rows']:
     required_vocabularies.add(vocab)
 
 for vocab in required_vocabularies:
-  print(vocab)
+  if args.unsafe:
+    print(vocab)
+  else:
+    print(sanitizeVocabularyIdentifier(vocab))
