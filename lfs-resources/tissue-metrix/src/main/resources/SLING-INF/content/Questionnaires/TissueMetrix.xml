@@ -508,7 +508,7 @@
 			<property>
 				<name>MONDO</name>
 				<values>
-					<value>MONDO_0000001</value>
+					<value>MONDO:0000001</value>
 				</values>
 				<type>String</type>
 			</property>
