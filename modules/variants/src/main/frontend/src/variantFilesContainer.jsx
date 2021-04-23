@@ -35,6 +35,7 @@ import {
   Typography,
   makeStyles
 } from "@material-ui/core";
+import { Alert, AlertTitle } from '@material-ui/lab';
 import BackupIcon from '@material-ui/icons/Backup';
 import CloseIcon from '@material-ui/icons/Close';
 import GetApp from '@material-ui/icons/GetApp';
@@ -696,35 +697,39 @@ export default function VariantFilesContainer() {
   return (
   <React.Fragment>
     <Typography variant="h2">Variants Upload</Typography>
-    <Card><CardContent className={classes.variantFileCard}>
       <form method="POST"
             encType="multipart/form-data"
             onSubmit={upload}
             key="file-upload"
             id="variantForm">
-        <p>Please upload files with names in one of the following formats:</p>
-        <ul>
-          <li><strong>PatientId_TumorNumber.csv</strong> (e.g. <strong>AB12345_1.csv</strong>)</li>
-          <li><strong>PatientId_TumorNumber_TumorRegion.csv</strong> (e.g. <strong>AB12345_1_a.csv</strong>)</li>
-        </ul>
-        <p>The file will be automatically associated with the subject identified by its name. You can review and correct the identifiers after selecting the file.</p>
-        { uploadInProgress && (
-          <Grid item className={classes.root}>
-            <LinearProgress color="primary" />
+        <Grid container direction="row-reverse" justify="flex-end">
+          <Grid item md={12} lg={6}>
+            <Alert severity="info">
+              <AlertTitle>Expected file name format</AlertTitle>
+              <div>PatientId_TumorNumber.csv (e.g. AB12345_1.csv)</div>
+              <div>PatientId_TumorNumber_TumorRegion.csv (e.g. AB12345_1_a.csv)</div>
+            </Alert>
           </Grid>
-        ) }
+          <Grid item md={12} lg={6}>
+          { uploadInProgress && (
+              <Grid item className={classes.root}>
+                <LinearProgress color="primary" />
+              </Grid>
+            ) }
 
-        <div className={classes.dragAndDrop}>
-          <DragAndDrop
-            accept={".csv"}
-            multifile={false}
-            handleDrop={onDrop}
-            classes={classes}
-            error={error}
-          />
-        </div>
+            <div className={classes.dragAndDrop}>
+              <DragAndDrop
+                accept={".csv"}
+                multifile={false}
+                handleDrop={onDrop}
+                classes={classes}
+                error={error}
+              />
+            </div>
 
-        <input type="hidden" name="*@TypeHint" value="nt:file" />
+            <input type="hidden" name="*@TypeHint" value="nt:file" />
+          </Grid>
+        </Grid>
       </form>
 
       { selectedFiles && selectedFiles.length > 0 && <span>
@@ -866,7 +871,6 @@ export default function VariantFilesContainer() {
           />
       </DialogContent>
     </Dialog>
-    </CardContent></Card>
   </React.Fragment>
   );
 }
