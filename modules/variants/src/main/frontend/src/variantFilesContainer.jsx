@@ -25,7 +25,6 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  Input,
   Grid,
   LinearProgress,
   Link,
@@ -115,6 +114,9 @@ const useStyles = makeStyles(theme => ({
   },
   dialogTitle: {
     marginRight: theme.spacing(5)
+  },
+  dialogContent: {
+    minWidth: "500px"
   },
   closeButton: {
       position: 'absolute',
@@ -795,7 +797,7 @@ export default function VariantFilesContainer() {
         <CloseIcon />
       </IconButton>
     </DialogTitle>
-    <DialogContent>
+    <DialogContent className={classes.dialogContent}>
       <MaterialTable
         data={fileSelected?.sameFiles}
         style={{ boxShadow : 'none' }}
