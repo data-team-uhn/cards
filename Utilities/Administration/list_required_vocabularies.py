@@ -35,7 +35,8 @@ def sanitizeVocabularyIdentifier(vocab):
       output += c
   return output
 
-argparser.add_argument('--unsafe', help='Skip character filtering of the vocabulary identifiers obtained from CARDS')
+argparser = argparse.ArgumentParser()
+argparser.add_argument('--unsafe', help='Skip character filtering of the vocabulary identifiers obtained from CARDS', action='store_true')
 args = argparser.parse_args()
 
 CARDS_URL = "http://localhost:8080"
