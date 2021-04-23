@@ -124,6 +124,11 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 		<node>
 			<name>weight_at_start</name>
@@ -577,30 +582,6 @@
 				<name>enableNotes</name>
 				<value>True</value>
 				<type>Boolean</type>
-			</property>
-		</node>
-		<node>
-			<name>protocol_information</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Protocol information</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>textbox</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
 			</property>
 		</node>
 	</node>
