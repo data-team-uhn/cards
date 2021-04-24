@@ -38,30 +38,6 @@
 		<type>Long</type>
 	</property>
 	<node>
-		<name>lesion_number</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Lesion Number</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>long</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
 		<name>age_at_diagnosis</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
@@ -124,7 +100,7 @@
 		</property>
 		<property>
 			<name>minAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
@@ -133,10 +109,41 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>dataType</name>
-			<value>text</value>
+			<name>displayMode</name>
+			<value>input</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>ORDO</value>
+				<value>HP</value>
+			</values>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vocabularyFilters</name>
+			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<property>
+				<name>ORDO</name>
+				<values>
+					<value>Orphanet_C001</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
+				<name>HP</name>
+				<values>
+					<value>HP:0000118</value>
+				</values>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>diagnosis_from_pathology_report</name>
@@ -177,14 +184,45 @@
 		</property>
 		<property>
 			<name>maxAnswers</name>
-			<value>0</value>
+			<value>1</value>
 			<type>Long</type>
 		</property>
 		<property>
-			<name>dataType</name>
-			<value>text</value>
+			<name>displayMode</name>
+			<value>input</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>ORDO</value>
+				<value>HP</value>
+			</values>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vocabularyFilters</name>
+			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<property>
+				<name>ORDO</name>
+				<values>
+					<value>Orphanet_C001</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
+				<name>HP</name>
+				<values>
+					<value>HP:0000118</value>
+				</values>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>location</name>
@@ -263,6 +301,25 @@
 			<type>String</type>
 		</property>
 		<node>
+			<name>NA</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>value</name>
+				<value>NA</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>N/A</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>notApplicable</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
 			<name>B</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
@@ -317,14 +374,10 @@
 				<value>Unknown</value>
 				<type>String</type>
 			</property>
-		</node>
-		<node>
-			<name>NA</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
-				<name>value</name>
-				<value>NA</value>
-				<type>String</type>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 	</node>
@@ -450,65 +503,12 @@
 				<value>NA</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>label</name>
+				<value>N/A</value>
+				<type>String</type>
+			</property>
 		</node>
-	</node>
-	<node>
-		<name>detected_by_imaging</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Detected by surveillance imaging</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>0</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>boolean</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>enableUnknown</name>
-			<value>true</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>comments</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Comments</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>0</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>textbox</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>CT</name>
@@ -940,8 +940,13 @@
 			</property>
 			<property>
 				<name>label</name>
-				<value>NA</value>
+				<value>N/A</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>notApplicable</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
@@ -1000,6 +1005,11 @@
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<node>
 			<name>Low</name>
@@ -1192,7 +1202,7 @@
 		</property>
 		<property>
 			<name>maxAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
@@ -1221,7 +1231,7 @@
 		</property>
 		<property>
 			<name>maxAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
@@ -1241,6 +1251,21 @@
 		<property>
 			<name>text</name>
 			<value>Risk Group Assignment</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list+input</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1301,6 +1326,35 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>detected_by_imaging</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Detected by surveillance imaging</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>boolean</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>enableUnknown</name>
+			<value>true</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -1466,6 +1520,35 @@
 		<property>
 			<name>text</name>
 			<value>Describe treatments done at PMH, if any</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>textbox</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>comments</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Comments</value>
 			<type>String</type>
 		</property>
 		<property>

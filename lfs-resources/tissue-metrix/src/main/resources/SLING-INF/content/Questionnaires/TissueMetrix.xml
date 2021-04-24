@@ -33,48 +33,6 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>file1</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>File1</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>file2</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>File2</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>file3</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>File3</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
 		<name>donor_number</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
@@ -94,144 +52,16 @@
 		</property>
 	</node>
 	<node>
-		<name>perinatal_history</name>
+		<name>species</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Perinatal history</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>disease</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Disease</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>last_fup</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Last follow-up</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>date</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dateFormat</name>
-			<value>yyyy-MM-dd</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>date_of_birth</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Date of birth</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>date</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dateFormat</name>
-			<value>yyyy-MM-dd</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>date_of_death</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Date of death</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>date</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dateFormat</name>
-			<value>yyyy-MM-dd</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>date_registered</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Date registered</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>date</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dateFormat</name>
-			<value>yyyy-MM-dd</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>tumor</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Tumor type</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>vital_status</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Life status</value>
+			<value>Species</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
-			<value>list</value>
+			<value>list+input</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -240,97 +70,47 @@
 			<type>Long</type>
 		</property>
 		<node>
-			<name>alive</name>
+			<name>human</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Alive</value>
+				<value>Human</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>alive</value>
+				<value>human</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>deceased</name>
+			<name>canide</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Deceased</value>
+				<value>Canide</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>deceased</value>
+				<value>canide</value>
 				<type>String</type>
 			</property>
 		</node>
-	</node>
-	<node>
-		<name>comments</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Comments</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>textbox</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>mutation_status</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Mutation status</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>maternal_ethnicity</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Maternal ethnicity</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>paternal_ethnicity</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Paternal ethnicity</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>disease_site</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Disease site</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>reason_for_referral</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Reason for referral</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
+		<node>
+			<name>murine</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Murine</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>murine</value>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>sex</name>
@@ -413,6 +193,435 @@
 		</node>
 	</node>
 	<node>
+		<name>vital_status</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Life status</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<node>
+			<name>alive</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Alive</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>alive</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>deceased</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Deceased</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>deceased</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>date_of_birth</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Date of birth</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy-MM-dd</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>date_of_death</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Date of death</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy-MM-dd</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>maternal_ethnicity</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Maternal ethnicity</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>HANCESTRO</value>
+			</values>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vocabularyFilters</name>
+			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<property>
+				<name>HANCESTRO</name>
+				<values>
+					<value>HANCESTRO_0004</value>
+				</values>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>paternal_ethnicity</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Paternal ethnicity</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>HANCESTRO</value>
+			</values>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vocabularyFilters</name>
+			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<property>
+				<name>HANCESTRO</name>
+				<values>
+					<value>HANCESTRO_0004</value>
+				</values>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>date_registered</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Date registered</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy-MM-dd</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>last_fup</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Last follow-up</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy-MM-dd</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>perinatal_history</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Perinatal history</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>textbox</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>reason_for_referral</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Reason for referral</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>textbox</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>disease</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Disease</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list+input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>MONDO</value>
+			</values>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vocabularyFilters</name>
+			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<property>
+				<name>MONDO</name>
+				<values>
+					<value>MONDO:0000001</value>
+				</values>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>disease_site</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Disease site</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>UBERON</value>
+			</values>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vocabularyFilters</name>
+			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<property>
+				<name>UBERON</name>
+				<values>
+					<value>BFO_0000002</value>
+				</values>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>tumor</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Tumor type</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>mutation_status</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Mutation status</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>file1</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>File1</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>file2</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>File2</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>file3</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>File3</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
 		<name>source1</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
@@ -455,64 +664,17 @@
 		</property>
 	</node>
 	<node>
-		<name>species</name>
+		<name>comments</name>
 		<primaryNodeType>lfs:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Species</value>
+			<value>Comments</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
-			<value>list+input</value>
+			<value>textbox</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<node>
-			<name>human</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Human</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>human</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>canide</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Canide</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>canide</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>murine</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Murine</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>murine</value>
-				<type>String</type>
-			</property>
-		</node>
 	</node>
 </node>

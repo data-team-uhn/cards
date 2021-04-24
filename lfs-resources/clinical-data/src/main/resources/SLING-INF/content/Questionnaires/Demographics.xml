@@ -158,6 +158,11 @@
 				<value>U</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 	</node>
 	<node>
@@ -207,38 +212,86 @@
 			</property>
 		</node>
 		<node>
-			<name>African race</name>
+			<name>African</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>African race</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0010</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>African</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>American Indian or Alaska native</name>
+			<name>Native American</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>American Indian or Alaska native</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0013</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Native American</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>Asian or Pacific islander</name>
+			<name>Eskimo</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Asian or Pacific islander</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0595</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Eskimo</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>Australian aborigine</name>
+			<name>Asian</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Australian aborigine</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0008</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Asian</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Pacific Islander</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>value</name>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0574</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Pacific Islander</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Aboriginal Australian</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>value</name>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0552</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Aboriginal Australian</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -247,16 +300,26 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0005</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
 				<value>Caucasian</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>Hispanic</name>
+			<name>Hispanic or Latin American</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>Hispanic</value>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0014</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Hispanic or Latin American</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -265,6 +328,11 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
+				<value>/Vocabularies/HANCESTRO/HANCESTRO_0487</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
 				<value>Indian</value>
 				<type>String</type>
 			</property>
@@ -510,6 +578,11 @@
 				<value>Undetermined</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 	</node>
 	<node>
@@ -569,7 +642,7 @@
 			</property>
 			<property>
 				<name>label</name>
-				<value>Frameshift (smalll insertion)</value>
+				<value>Frameshift (small insertion)</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -588,20 +661,25 @@
 			</property>
 		</node>
 		<node>
-			<name>missense</name>
+			<name>fsid</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>missense</value>
+				<value>fsid</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Frameshift (small indel)</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>nonsense</name>
+			<name>missense</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>nonsense</value>
+				<value>Missense</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -610,7 +688,21 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>missense DN</value>
+				<value>Missense DN</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Missense, de novo</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>nonsense</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>value</name>
+				<value>Nonsense</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -619,7 +711,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>splice donor</value>
+				<value>Splice donor</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -628,7 +720,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>splice acceptor</value>
+				<value>Splice acceptor</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -637,7 +729,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>large insertion</value>
+				<value>Large insertion</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -646,7 +738,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>large deletion</value>
+				<value>Large deletion</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -655,7 +747,7 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>synonymous</value>
+				<value>Synonymous</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -664,8 +756,27 @@
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
-				<value>synonymous splicing</value>
+				<value>Synonymous splicing</value>
 				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>U</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>value</name>
+				<value>U</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Undetermined</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 	</node>
@@ -741,6 +852,11 @@
 				<value>Unknown</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 	</node>
 	<node>
@@ -801,6 +917,20 @@
 			<type>Boolean</type>
 		</property>
 		<node>
+			<name>NA</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>value</name>
+				<value>N/A</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>notApplicable</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
 			<name>Incidental</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
@@ -835,18 +965,9 @@
 				<value>Unknown</value>
 				<type>String</type>
 			</property>
-		</node>
-		<node>
-			<name>NA</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
-				<name>value</name>
-				<value>N/A</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>notApplicable</name>
-				<value>true</value>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
 				<type>Boolean</type>
 			</property>
 		</node>
@@ -895,7 +1016,7 @@
 		</property>
 		<property>
 			<name>maxAnswers</name>
-			<value>0</value>
+			<value>1</value>
 			<type>Long</type>
 		</property>
 		<property>
@@ -924,7 +1045,7 @@
 		</property>
 		<property>
 			<name>minAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
@@ -1097,27 +1218,9 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>vocabulary</value>
+			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>sourceVocabularies</name>
-			<values>
-				<value>SNOMEDCT</value>
-			</values>
-			<type>String</type>
-		</property>
-		<node>
-			<name>vocabularyFilters</name>
-			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
-			<property>
-				<name>SNOMEDCT</name>
-				<values>
-					<value>children of Relative</value>
-				</values>
-				<type>String</type>
-			</property>
-		</node>
 		<node>
 			<name>Proband</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
@@ -1130,6 +1233,11 @@
 				<name>label</name>
 				<value>This is the proband</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>notApplicable</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
@@ -1339,7 +1447,7 @@
 			</property>
 			<property>
 				<name>minAnswers</name>
-				<value>1</value>
+				<value>0</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -1446,7 +1554,7 @@
 		</property>
 		<property>
 			<name>minAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
@@ -1627,6 +1735,11 @@
 				<name>label</name>
 				<value>Unknown</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 	</node>
