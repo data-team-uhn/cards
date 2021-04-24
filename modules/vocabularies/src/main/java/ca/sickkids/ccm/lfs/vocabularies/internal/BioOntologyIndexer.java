@@ -132,11 +132,11 @@ public class BioOntologyIndexer implements VocabularyIndexer
             parser.parse(temporaryFile, description, this::createVocabularyTermNode);
 
             /*
-             * Save the JCR session. If any errors occur before this step, all proposed changes will not be applied and
-             * the repository will remain in its original state. Lucene indexing is automatically performed by the
-             * Jackrabbit Oak repository when this is performed.
+             * Save the JCR session and check-in nodes. If any errors occur before this step, all proposed changes
+             * will not be applied and the repository will remain in its original state. Lucene indexing is
+             * automatically performed by the Jackrabbit Oak repository when this is performed.
              */
-            OntologyIndexerUtils.saveSession(homepage);
+            OntologyIndexerUtils.finalizeInstall(homepage);
 
             // Success response json
             this.utils.writeStatusJson(request, response, true, null);

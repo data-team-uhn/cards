@@ -19,13 +19,16 @@
 
 package ca.sickkids.ccm.lfs.vocabularies.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.version.VersionManager;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +42,9 @@ import ca.sickkids.ccm.lfs.vocabularies.spi.VocabularyTermSource;
 public final class OntologyIndexerUtils
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(OntologyIndexerUtils.class);
+
+    /** The list which holds all JCR vocabulary nodes associated with a vocabulary to be checked-in. */
+    private static final ThreadLocal<List<Node>> NODES_TO_CHECK_IN = ThreadLocal.withInitial(ArrayList::new);
 
     //Hide the utility class constructor
     private OntologyIndexerUtils()
@@ -64,6 +70,8 @@ public final class OntologyIndexerUtils
                 // Sometimes terms appear twice; we'll just update the existing node
                 vocabularyTermNode = vocabularyNode.get().getNode(term.getId());
             }
+
+            NODES_TO_CHECK_IN.get().add(vocabularyTermNode);
             vocabularyTermNode.setProperty("identifier", term.getId());
 
             vocabularyTermNode.setProperty("label", term.getLabel());
@@ -112,6 +120,7 @@ public final class OntologyIndexerUtils
             result.setProperty("version", description.getVersion());
             result.setProperty("website", description.getWebsite());
             result.setProperty("citation", description.getCitation());
+            NODES_TO_CHECK_IN.get().add(result);
             return result;
         } catch (RepositoryException e) {
             String message = "Failed to create Vocabulary node: " + e.getMessage();
@@ -128,7 +137,7 @@ public final class OntologyIndexerUtils
      * @param vocabulariesHomepage the <code>VocabulariesHomepage</code> node obtained from the request
      * @throws VocabularyIndexException if session is not successfully saved
      */
-    public static void saveSession(Node vocabulariesHomepage)
+    private static void saveSession(Node vocabulariesHomepage)
         throws VocabularyIndexException
     {
         try {
@@ -137,5 +146,40 @@ public final class OntologyIndexerUtils
             String message = "Failed to save session: " + e.getMessage();
             throw new VocabularyIndexException(message, e);
         }
+    }
+
+    /**
+     * Checks into JCR the list of JCR Nodes associated with the installation of a vocabulary.
+     *
+     * @param vocabulariesHomepage the <code>VocabulariesHomepage</code> node obtained from the request
+     * @throws VocabularyIndexException if the checking-in of a Node fails
+     */
+    private static void checkInVocabulary(Node vocabulariesHomepage) throws VocabularyIndexException
+    {
+        try {
+            final VersionManager vm = vocabulariesHomepage.getSession().getWorkspace().getVersionManager();
+            for (int i = 0; i < NODES_TO_CHECK_IN.get().size(); i++) {
+                vm.checkin(NODES_TO_CHECK_IN.get().get(i).getPath());
+            }
+        } catch (RepositoryException e) {
+            String message = "Failed to check-in vocabulary: " + e.getMessage();
+            throw new VocabularyIndexException(message, e);
+        } finally {
+            //Cleanup
+            NODES_TO_CHECK_IN.remove();
+        }
+    }
+
+    /**
+     * Finalizes the vocabulary install by saving the JCR session and checking in all the newly installed
+     * Vocabulary nodes.
+     *
+     * @param vocabulariesHomepage the <code>VocabulariesHomepage</code> node obtained from the request
+     * @throws VocabularyIndexException if the JCR session is not successfully saved or the checking-in of a Node fails
+     */
+    public static void finalizeInstall(Node vocabulariesHomepage) throws VocabularyIndexException
+    {
+        saveSession(vocabulariesHomepage);
+        checkInVocabulary(vocabulariesHomepage);
     }
 }
