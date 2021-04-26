@@ -752,7 +752,8 @@ export default function VariantFilesContainer() {
       </form>
 
       { selectedFiles && selectedFiles.length > 0 && <>
-        { selectedFiles.map( (file, i) => {
+        { selectedFiles.slice(0, 1).map( (file, i) => {
+            //          ^ Temporarily ignore all but the first selected file until concurency issues are solved
 
             const upprogress = uploadProgress ? uploadProgress[file.name] : null;
             let subjectPath = file.subject.path.replace("/Subjects", "Subjects");
