@@ -206,3 +206,6 @@
     servlet.post.autoCheckin=B"true"
     servlet.post.autoCheckout=B"true"
     servlet.post.checkinNewVersionableNodes=B"true"
+
+  org.apache.sling.engine.parameters
+    sling.default.parameter.encoding="UTF-8"
