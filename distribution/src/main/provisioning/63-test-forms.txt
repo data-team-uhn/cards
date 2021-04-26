@@ -17,11 +17,11 @@
 #  under the License.
 #
 
-# All Questionnaires used for testing various CARDS features, available when running with "-Dsling.run.modes=test_forms"
+# All Questionnaires used for testing various CARDS features, available when running with "-Dsling.run.modes=test"
 [feature name=lfs-test-forms]
 
 [variables]
     lfs.version=0.9-SNAPSHOT
 
-[artifacts runModes=test_forms]
+[artifacts runModes=test]
     ca.sickkids.ccm.lfs/lfs-modules-test-forms/${lfs.version}
