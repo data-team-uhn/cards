@@ -720,9 +720,9 @@ export default function VariantFilesContainer() {
         <Grid container direction="row-reverse" justify="flex-end" spacing={3} alignItems="stretch" className={classes.dragAndDropContainer}>
           <Grid item xs={12} lg={6}>
             <Alert severity="info">
-              <AlertTitle>Expected file name format</AlertTitle>
-              <div>PatientId_TumorNumber.csv (e.g. AB12345_1.csv)</div>
-              <div>PatientId_TumorNumber_TumorRegion.csv (e.g. AB12345_1_a.csv)</div>
+              <AlertTitle>Expected file name format:</AlertTitle>
+              <div>Patient_Tumor.csv (e.g. AB12345_1.csv)</div>
+              <div>Patient_Tumor_TumorRegion.csv (e.g. AB12345_1_a.csv)</div>
             </Alert>
           </Grid>
           <Grid item xs={12} lg={6}>
