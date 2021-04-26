@@ -755,7 +755,6 @@ export default function VariantFilesContainer() {
             let tumorPath = `${subjectPath}/${file.tumor.path.replace(new RegExp(".+/"), "")}`;
             let regionPath = file.region?.path && `${tumorPath}/${file.region.path.replace(new RegExp(".+/"), "")}`;
 
-            console.log(file);
             return (
               <div key={file.name} className={classes.fileInfo}>
                 <div>
