@@ -26,7 +26,7 @@
 
   <artifactId>lfs-modules-test-forms</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Test Forms</name>
+  <name>CARDS - Test Forms</name>
 
   <build>
     <plugins>

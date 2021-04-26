@@ -18,7 +18,7 @@
 #
 
 # All Questionnaires used for testing various CARDS features, available when running with "-Dsling.run.modes=test"
-[feature name=lfs-test-forms]
+[feature name=cards-test-forms]
 
 [variables]
     lfs.version=0.9-SNAPSHOT
