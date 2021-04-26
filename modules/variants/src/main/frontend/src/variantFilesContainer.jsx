@@ -86,27 +86,40 @@ const useStyles = makeStyles(theme => ({
     margin: "0",
     borderRadius: "2px",
   },
+  dragAndDropContainer: {
+    margin: theme.spacing(3, 0),
+    "& .MuiAlert-root": {
+      boxSizing: "border-box",
+      height: "100%",
+    },
+  },
+  dragAndDrop: {
+    "& > div" : {
+      width: "100%",
+    },
+  },
   active: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: theme.spacing(2),
-    width: theme.spacing(40),
-    border: "4px dashed",
-    borderColor: theme.palette.primary.main,
-    padding: theme.spacing(4),
+    color: theme.palette.primary.main,
+    background: theme.palette.action.hover,
+    boxSizing: "border-box",
+    width: "100%",
+    border: "2px dashed",
+    borderColor: theme.palette.primary.light,
+    padding: "2rem",
     paddingLeft: "0",
     textAlign: "center",
     borderRadius: theme.spacing(1),
-    boxShadow: "5px 5px 10px " + theme.palette.background.paper,
     cursor: "pointer"
   },
   dropzone: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: theme.spacing(3),
-    width: theme.spacing(44),
+    boxSizing: "border-box",
+    width: "100%",
     border: "2px dashed",
     borderColor: theme.palette.primary.main,
     padding: "2rem",
@@ -126,10 +139,6 @@ const useStyles = makeStyles(theme => ({
       right: theme.spacing(1),
       top: theme.spacing(1),
       color: theme.palette.grey[500]
-  },
-  dragAndDrop: {
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
   },
   variantFileCard: {
     "& .MuiCardHeader-root" : {
@@ -702,15 +711,15 @@ export default function VariantFilesContainer() {
             onSubmit={upload}
             key="file-upload"
             id="variantForm">
-        <Grid container direction="row-reverse" justify="flex-end">
-          <Grid item md={12} lg={6}>
+        <Grid container direction="row-reverse" justify="flex-end" spacing={3} alignItems="stretch" className={classes.dragAndDropContainer}>
+          <Grid item xs={12} lg={6}>
             <Alert severity="info">
               <AlertTitle>Expected file name format</AlertTitle>
               <div>PatientId_TumorNumber.csv (e.g. AB12345_1.csv)</div>
               <div>PatientId_TumorNumber_TumorRegion.csv (e.g. AB12345_1_a.csv)</div>
             </Alert>
           </Grid>
-          <Grid item md={12} lg={6}>
+          <Grid item xs={12} lg={6}>
           { uploadInProgress && (
               <Grid item className={classes.root}>
                 <LinearProgress color="primary" />
