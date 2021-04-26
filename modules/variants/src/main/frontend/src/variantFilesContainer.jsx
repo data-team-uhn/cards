@@ -751,7 +751,7 @@ export default function VariantFilesContainer() {
         </Grid>
       </form>
 
-      { selectedFiles && selectedFiles.length > 0 && <span>
+      { selectedFiles && selectedFiles.length > 0 && <>
         { selectedFiles.map( (file, i) => {
 
             const upprogress = uploadProgress ? uploadProgress[file.name] : null;
@@ -778,7 +778,7 @@ export default function VariantFilesContainer() {
                     {file.subject?.type?.label || "Patient"} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /&nbsp;
                     {file.tumor?.type?.label || "Tumor"} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
                     { file?.region?.path && <> / {file.region?.type?.label || "Tumor Region"}: <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
-                    { file.formPath && <> / <span> {somaticVariantsTitle} <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank"> {file.name} </Link></span></> }
+                    { file.formPath && <> : <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank">{somaticVariantsTitle}</Link> </>}
                   </Typography>
                 : <div className={classes.fileFormSection}>
                   <TextField
@@ -833,7 +833,7 @@ export default function VariantFilesContainer() {
                 }
               </div>
           ) } ) }
-      </span>
+      </>
       }
     <Dialog open={showVersionsDialog} onClose={() => setShowVersionsDialog(false)}>
       <DialogTitle>
