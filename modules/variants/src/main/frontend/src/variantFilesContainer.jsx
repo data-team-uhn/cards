@@ -169,6 +169,7 @@ export default function VariantFilesContainer() {
   // uuids of the Subjects and the SomaticVariants questionnaire
   // To be fetch on page load
   let [ somaticVariantsUUID, setSomaticVariantsUUID ] = useState();
+  let [ somaticVariantsTItle, setSomaticVariantsTitle ] = useState("");
   let [ patientSubjectUUID, setPatientSubjectUUID ] = useState();
   let [ tumorSubjectUUID, setTumorSubjectUUID ] = useState();
   let [ regionSubjectUUID, setRegionSubjectUUID ] = useState();
@@ -198,7 +199,10 @@ export default function VariantFilesContainer() {
   let fetchBasicData = () => {
     fetch("/Questionnaires/SomaticVariants.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {setSomaticVariantsUUID(json["jcr:uuid"])})
+      .then((json) => {
+        setSomaticVariantsUUID(json["jcr:uuid"]);
+        setSomaticVariantsTitle(json["title"]);
+      })
       .catch(handleError);
 
     fetch("/SubjectTypes/Patient.json")
@@ -771,10 +775,10 @@ export default function VariantFilesContainer() {
                 </div>
                 { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ?
                   <Typography variant="overline" component="div" className={classes.fileDetail}>
-                    {file.subject?.type?.label || "Patient"} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /
+                    {file.subject?.type?.label || "Patient"} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /&nbsp;
                     {file.tumor?.type?.label || "Tumor"} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
                     { file?.region?.path && <> / {file.region?.type?.label || "Tumor Region"}: <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
-                    { file.formPath && <span>Somatic Variants / <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank"> {file.name} </Link></span> }
+                    { file.formPath && <> / <span> {somaticVariantsTItle} <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank"> {file.name} </Link></span></> }
                   </Typography>
                 : <div className={classes.fileFormSection}>
                   <TextField
