@@ -858,7 +858,7 @@ export default function VariantFilesContainer() {
                 width: '1%',
                 whiteSpace: 'nowrap',
               },
-              render: rowData => <Link to={"/content.html" + rowData["@path"]}>
+              render: rowData => <Link href={rowData["@path"]}>
                                   {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
                                 </Link> },
             { title: 'Uploaded By',
@@ -877,7 +877,7 @@ export default function VariantFilesContainer() {
               sorting: false,
               render: rowData => <Tooltip title={"Download"}>
                                   <IconButton>
-                                    <GetApp />
+                                    <Link underline="none" color="inherit" href={rowData["@path"]} download><GetApp /></Link>
                                   </IconButton>
                                 </Tooltip> },
           ]}
