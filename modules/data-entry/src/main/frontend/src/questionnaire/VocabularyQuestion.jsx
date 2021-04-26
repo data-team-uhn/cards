@@ -45,7 +45,12 @@ function VocabularyQuestion(props) {
   let { questionDefinition } = props;
   let { maxAnswers } = { ...questionDefinition, ...props };
 
+  // In order to determine indentation levels, we need to see if there are any default suggestions
+  // (i.e. children of the definition that are of type lfs:AnswerOption)
+  let defaults = props.defaults || Object.values(props.questionDefinition)
+    .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption');
   let singleInput = maxAnswers === 1;
+  let isBare = singleInput && defaults.length > 0;
 
   return (
     <Question
@@ -57,7 +62,7 @@ function VocabularyQuestion(props) {
         customInputProps = {{
           questionDefinition: questionDefinition,
           focusAfterSelecting: !singleInput,
-          isNested: singleInput
+          isNested: isBare
         }}
         answerNodeType = "lfs:VocabularyAnswer"
         {...props}
