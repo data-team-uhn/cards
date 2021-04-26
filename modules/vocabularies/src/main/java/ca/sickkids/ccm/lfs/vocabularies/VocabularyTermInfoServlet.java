@@ -203,24 +203,6 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
             objectCopier.add(key, resource.get(key));
         }
         objectCopier.add(HAS_CHILDREN_PROPERTY, children.hasNext());
-
-        // Copy over our children to lfs:Children
-        JsonArrayBuilder childrenBuilder = Json.createArrayBuilder();
-        while (children.hasNext()) {
-            Resource child = children.next();
-
-            // Copying over the entire child bloats the response, so add only a subset of
-            // the child's properties
-            JsonObject childJson = child.adaptTo(JsonObject.class);
-            JsonObjectBuilder truncatedChild = Json.createObjectBuilder();
-            for (String key : KEYS_TO_COPY) {
-                truncatedChild.add(key, childJson.get(key));
-            }
-
-            childrenBuilder.add(truncatedChild.build());
-        }
-        objectCopier.add(CHILDREN_PROPERTY, childrenBuilder.build());
-
         return objectCopier.build();
     }
 
