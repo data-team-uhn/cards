@@ -57,11 +57,17 @@ const useStyles = makeStyles(theme => ({
     paddingRight: theme.spacing(1)
   },
   uploadButton: {
-    marginLeft: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   fileInfo: {
     padding: theme.spacing(1),
+    margin: theme.spacing(3, 0),
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+  },
+  fileFormSection : {
+    display: "flex",
+    alignItems: "center",
+    flexWrap: "wrap",
   },
   fileName: {
     display: 'inline'
@@ -765,13 +771,13 @@ export default function VariantFilesContainer() {
                   { upprogress && upprogress.state == "error" && <Typography color='error'>Error uploading file</Typography> }
                 </div>
                 { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ?
-                  <Typography variant="overline" className={classes.fileDetail}>
+                  <Typography variant="overline" component="div" className={classes.fileDetail}>
                     {file.subject?.type?.label || "Patient"} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /
                     {file.tumor?.type?.label || "Tumor"} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
                     { file?.region?.path && <> / {file.region?.type?.label || "Tumor Region"}: <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
                     { file.formPath && <span>Somatic Variants / <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank"> {file.name} </Link></span> }
                   </Typography>
-                : <span>
+                : <div className={classes.fileFormSection}>
                   <TextField
                     label="Patient"
                     value={file.subject.id}
@@ -804,26 +810,24 @@ export default function VariantFilesContainer() {
                       </span>
                     </Button>
                   </label>
-                  </span>
+                  </div>
                 }
-                <Typography variant="body1" component="div" className={classes.fileInfo}>
-                    {(!file.sameFiles || file.sameFiles.length == 0)
-                      ?
-                        <Typography variant="caption">There are no versions of this file.</Typography>
-                      :
-                        <Typography variant="caption">
-                          <Link
-                            href="#"
-                            onClick={() => {
-                              setShowVersionsDialog(true);
-                              setFileSelected(file);
-                            }}>
-                              There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
-                              of this file
-                          </Link>
-                        </Typography>
-                    }
-                </Typography>
+                {(!file.sameFiles || file.sameFiles.length == 0)
+                  ?
+                    <Typography variant="caption" component="p">There are no versions of this file.</Typography>
+                  :
+                    <Link
+                      variant="caption"
+                      underline="none"
+                      href="#"
+                      onClick={() => {
+                        setShowVersionsDialog(true);
+                        setFileSelected(file);
+                      }}>
+                        There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
+                        of this file
+                      </Link>
+                }
               </div>
           ) } ) }
       </span>
