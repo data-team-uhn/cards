@@ -111,6 +111,7 @@ function VocabularyBrowser(props) {
   let parseVocabInfo = (status, data) => {
     if (status === null) {
       setVocab( { acronym: data["identifier"] || "",
+                  name: data["name"],
                   url: data["website"] || "",
                   description: data["description"] || "",
                   path: data["@path"]
@@ -191,7 +192,8 @@ function VocabularyBrowser(props) {
         { /* Browse dialog box */}
         {browserOpened && <VocabularyTree
           browserRef={browserRef}
-          open={browserOpened}
+          open={browserOpened || false}
+          title={`${vocab.name} (${vocab.acronym})`}
           path={browsePath}
           onTermClick={focusTerm}
           onClose={closeBrowser}

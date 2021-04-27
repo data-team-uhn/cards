@@ -39,7 +39,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  browserRef: Reference to the vocabulary tree node
 //
 function VocabularyTree(props) {
-  const { open, path, onTermClick, registerInfo, getInfo, onClose, onError, browserRef, classes, ...rest } = props;
+  const { open, path, title, onTermClick, registerInfo, getInfo, onClose, onError, browserRef, classes, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
@@ -109,7 +109,7 @@ function VocabularyTree(props) {
 
   return (
     <ResponsiveDialog
-      title="Related terms"
+      title={title || "Related terms"}
       withCloseButton
       open={open}
       ref={browserRef}
