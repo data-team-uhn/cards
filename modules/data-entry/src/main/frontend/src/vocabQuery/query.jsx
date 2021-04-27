@@ -17,20 +17,21 @@
 //  under the License.
 //
 import classNames from "classnames";
-import React from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
-// @material-ui/core
+
 import { withStyles, FormControl } from "@material-ui/core";
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel } from "@material-ui/core"
 import { LinearProgress, Link, MenuItem, MenuList, Paper, Popper, Snackbar, SnackbarContent, Tooltip, Typography } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
-// @material-ui/icons
+
 import Search from "@material-ui/icons/Search";
 import Info from "@material-ui/icons/Info";
 
 import VocabularyBrowser from "./browse.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
 import QueryStyle from "./queryStyle.jsx";
+import InfoBox from "./infoBox.jsx";
 
 const NO_RESULTS_TEXT = "No results";
 const MAX_RESULTS = 10;
@@ -50,67 +51,68 @@ const MAX_RESULTS = 10;
 //  overrideText: When not undefined, this will overwrite the contents of the search bar
 //  defaultValue: Default chosen term ID, which will be converted to the real ID when the vocabulary loads
 //  noMargin: Removes the margin from the search wrapper
-class VocabularyQuery extends React.Component {
-  constructor(props) {
-    super(props);
+function VocabularyQuery(props) {
+  const [editingFilters, setEditingFilters] = useState([]);
 
-    this.state = {
-      suggestions: [],
-      suggestionsLoading: false,
-      suggestionsVisible: false,
-      termInfoVisible: false,
-      lookupTimer: null,
-      browserOpened: false,
-      browseID: "",
-      browsePath: "",
-      inputValue: props.defaultValue,
-      // Strings used by the info box
-      infoID: "",
-      infoName: "",
-      infoDefinition: "",
-      infoAlsoKnownAs: [],
-      infoTypeOf: [],
-      infoAnchor: null,
-      infoAboveBackground: false,
-      // Information about the vocabulary
-      infoVocabAcronym: "",
-      infoVocabURL: "",
-      infoVocabDescription: "",
-      infoVocabObtained: "",
-      infoVocabTobeObtained: "",
-      buttonRefs: {},
-      noResults: false,
-    };
-  }
+  const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onChange, onInputFocus, placeholder, label, value } = props;
 
-  render() {
-    const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onChange, onInputFocus, placeholder, label, value } = this.props;
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+  const [suggestionsVisible, setSuggestionsVisible] = useState(false);
+  const [termInfoVisible, setTermInfoVisible] = useState(false);
+  const [lookupTimer, setLookupTimer] = useState(null);
+  const [browserOpened, setBrowserOpened] = useState(false);
+  const [browseID, setBrowseID] = useState("");
+  const [browsePath, setBrowsePath] = useState("");
+  const [inputValue, setInputValue] = useState(defaultValue);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
-    const inputEl = (<Input
+  // Strings used by the info box
+  const [infoID, setInfoID] = useState("");
+  const [infoName, setInfoName] = useState("");
+  const [infoPath, setInfoPath] = useState("");
+  const [infoDefinition, setInfoDefinition] = useState("");
+  const [infoAlsoKnownAs, setInfoAlsoKnownAs] = useState([]);
+  const [infoTypeOf, setInfoTypeOf] = useState([]);
+  const [infoAboveBackground, setInfoAboveBackground] = useState(false);
+  const [infoAnchor, setInfoAnchor] = useState(null);
+
+  // Information about the vocabulary
+  const [infoVocabAcronym, setInfoVocabAcronym] = useState("");
+  const [infoVocabURL, setInfoVocabURL] = useState("");
+  const [infoVocabDescription, setInfoVocabDescription] = useState("");
+  const [infoVocabObtained, setInfoVocabObtained] = useState("");
+  const [infoVocabTobeObtained, setInfoVocabTobeObtained] = useState("");
+  const [buttonRefs, setButtonRefs] = useState({});
+  const [noResults, setNoResults] = useState(false);
+
+  let infoRef = useRef();
+  let menuPopperRef = useRef();
+  let anchorEl = useRef();
+  let menuRef = useRef();
+
+  const inputEl = (
+    <Input
       disabled={disabled}
       variant='outlined'
       inputProps={{
         "aria-label": "Search"
       }}
       onChange={(event) => {
-        this.delayLookup(event);
-        this.setState({inputValue: event.target.value})
+        delayLookup(event);
+        setInputValue(event.target.value)
         onChange && onChange(event);
       }}
-      inputRef={(node) => {
-        this.anchorEl = node;
-        if (inputRef != null) {
-          inputRef(node);
-        }
-      }}
+      inputRef={anchorEl}
       onKeyDown={(event) => {
         if (event.key == 'Enter') {
-          this.queryInput(this.anchorEl.value);
+          queryInput(anchorEl.current.value);
           event.preventDefault();
         } else if (event.key == 'ArrowDown') {
           // Move the focus to the suggestions list
-          if (this.menuRef.children.length > 0) {
-            this.menuRef.children[0].focus();
+          if (menuRef.children.length > 0) {
+            menuRef.children[0].focus();
           }
           event.preventDefault();
         }
@@ -119,24 +121,261 @@ class VocabularyQuery extends React.Component {
         if (onInputFocus !== undefined) {
           onInputFocus(status);
         }
-        this.delayLookup(status);
-        this.anchorEl.select();
+        delayLookup(status);
+        anchorEl.current.select();
       }}
       disabled={disabled}
       className={noMargin ? "" : classes.searchInput}
       multiline={true}
       endAdornment={(
-        <InputAdornment position="end" onClick={()=>{this.anchorEl.select();}} className = {classes.searchButton}>
+        <InputAdornment position="end" onClick={()=>{anchorEl.current.select();}} className = {classes.searchButton}>
           <Search />
         </InputAdornment>
       )}
       placeholder={placeholder}
-      value={value || this.state.inputValue}
-      />);
+      value={value || inputValue}
+  />);
 
-    return (
+  // Lookup the search term after a short interval
+  // This will reset the interval if called before the interval hangs up
+  let delayLookup = (status) => {
+    if (lookupTimer !== null) {
+      clearTimeout(lookupTimer);
+    }
+
+    setLookupTimer(setTimeout(queryInput, 500, status.target.value));
+    setSuggestionsVisible(true);
+    setSuggestions([]);
+  }
+
+  let makeMultiRequest = (queue, input, status, prevData) => {
+    //Get an vocabulary to search through
+    var selectedVocab = queue.pop();
+    if (selectedVocab === undefined) {
+      showSuggestions(status, {rows: prevData.slice(0, MAX_RESULTS)});
+      return;
+    }
+    var url = new URL(`./${selectedVocab}.search.json`, REST_URL);
+    url.searchParams.set("suggest", input.replace(/[^\w\s]/g, ' '));
+
+    //Are there any filters that should be associated with this request?
+    if (props?.questionDefinition?.vocabularyFilters?.[selectedVocab]) {
+      var filter = props.questionDefinition.vocabularyFilters[selectedVocab].map((category) => {
+        return (`term_category:${category}`);
+      }).join(" OR ");
+      url.searchParams.set("customFilter", `(${filter})`);
+    }
+
+    MakeRequest(url, (status, data) => {
+      makeMultiRequest(queue, input, status, prevData.concat(!status && data && data['rows'] ? data['rows'] : []));
+    });
+  }
+
+  // Grab suggestions for the given input
+  let queryInput = (input) => {
+    // Empty input? Do not query
+    if (input === "") {
+      setSuggestionsLoading(false);
+      setTermInfoVisible(false);
+      setLookupTimer(null);
+      return;
+    }
+
+    // Grab suggestions
+    //...Make a queue of vocabularies to search through
+    var vocabQueue = props.questionDefinition.sourceVocabularies.slice();
+    makeMultiRequest(vocabQueue, input, null, []);
+
+    // Hide the infobox and stop the timer
+    setSuggestionsLoading(true);
+    setTermInfoVisible(false);
+    setLookupTimer(null);
+  }
+
+  // Callback for queryInput to populate the suggestions bar
+  let showSuggestions = (status, data) => {
+    if (!status) {
+        // Populate suggestions
+        var suggestions = [];
+
+        if (data["rows"].length > 0) {
+          data["rows"].forEach((element) => {
+            var name = element["label"] || element["name"] || element["identifier"];
+            suggestions.push(
+              <MenuItem
+                className={classes.dropdownItem}
+                key={element["@path"]}
+                onClick={(e) => {
+                  if (e.target.localName === "li") {
+                    props.onClick(element["@path"], name);
+                    setInputValue(props.clearOnClick ? "" : name);
+                    closeDialog();
+                  }}
+                }
+              >
+                {name}
+                <IconButton
+                  size="small"
+                  buttonRef={node => {
+                    registerInfoButton(element["identifier"], node);
+                  }}
+                  color="primary"
+                  aria-owns={termInfoVisible ? "menu-list-grow" : null}
+                  aria-haspopup={true}
+                  onClick={(e) => getInfo(element["@path"])}
+                  className={classes.infoButton}
+                >
+                  <Info color="primary" />
+                </IconButton>
+              </MenuItem>
+              );
+          });
+        } else {
+          suggestions.push(
+            <MenuItem
+              className={classes.dropdownItem}
+              key={NO_RESULTS_TEXT}
+              onClick={props.onClick}
+              disabled={true}
+            >
+              {NO_RESULTS_TEXT}
+            </MenuItem>
+          )
+        }
+
+        setSuggestions(suggestions);
+        setSuggestionsVisible(true);
+        setSuggestionsLoading(false);
+    } else {
+      logError("Failed to search vocabulary term");
+    }
+  }
+
+  // Event handler for clicking away from the autocomplete while it is open
+  let closeAutocomplete = event => {
+    if ((menuPopperRef && menuPopperRef.current.contains(event.target))
+      || (infoRef && infoRef.current && infoRef.current.contains(event.target))
+      || browserOpened) {
+      return;
+    }
+
+    setSuggestionsVisible(false);
+    setTermInfoVisible(false);
+  };
+
+  // Register a button reference that the info box can use to align itself to
+  let registerInfoButton = (id, node) => {
+    // List items getting deleted will overwrite new browser button refs, so
+    // we must ignore deregistration events
+    if (node) {
+      buttonRefs[id] = node;
+    }
+  }
+
+  // Grab information about the given ID and populate the info box
+  let getInfo = (path) => {
+    // If we don't yet know anything about our vocabulary, fill it in
+    var vocabPath = `${path.split("/").slice(0, -1).join("/")}.json`;
+    if (infoVocabObtained != vocabPath) {
+      var url = new URL(vocabPath, window.location.origin);
+      setInfoVocabTobeObtained(vocabPath);
+      MakeRequest(url, parseVocabInfo);
+    }
+
+    var url = new URL(path + ".info.json", window.location.origin);
+    MakeRequest(url, showInfo);
+  }
+
+  let parseVocabInfo = (status, data) => {
+    if (status === null) {
+      var vocabPath = infoVocabTobeObtained;
+      setInfoVocabAcronym(data["identifier"] || vocabPath.split("/")[2]?.split('.')[0] || "");
+      setInfoVocabURL(data["website"] || "");
+      setInfoVocabDescription(data["description"]);
+      setInfoVocabObtained(vocabPath);
+    } else {
+      logError("Failed to search vocabulary details");
+    }
+  }
+
+  // callback for getInfo to populate info box
+  let showInfo = (status, data) => {
+    if (status === null) {
+      var typeOf = [];
+      if ("parents" in data) {
+        typeOf = data["parents"].map(element =>
+          element["label"] || element["name"] || element["identifier"] || element["id"]
+        ).filter(i => i);
+      }
+
+      setInfoID(data["identifier"]);
+      setInfoPath(data["@path"]);
+      setInfoName(data["label"]);
+      setInfoDefinition(data["def"] || data["description"] || data["definition"]);
+      setInfoAlsoKnownAs(data["synonyms"] || data["has_exact_synonym"] || []);
+      setInfoTypeOf(typeOf);
+      setInfoAnchor(buttonRefs[data["identifier"]]);
+      setTermInfoVisible(true);
+      setInfoAboveBackground(browserOpened);
+    } else {
+      logError("Failed to search vocabulary term");
+    }
+  }
+
+  let clickAwayInfo = (event) => {
+    if ((menuPopperRef && menuPopperRef.current.contains(event.target))
+      || (infoRef && infoRef.current && infoRef.current.contains(event.target))) {
+      return;
+    }
+
+    closeInfo();
+  }
+
+  // Event handler for clicking away from the info window while it is open
+  let closeInfo = (event) => {
+    setTermInfoVisible(false);
+    setInfoAboveBackground(false);
+  };
+
+  let openDialog = () => {
+    setBrowserOpened(true);
+    setBrowseID(infoID);
+    setBrowsePath(infoPath);
+  }
+
+  let closeDialog = () => {
+    if (props.clearOnClick) {
+      anchorEl.current.value = "";
+    }
+    if (props.focusAfterSelecting) {
+      anchorEl.current.select();
+    }
+    setBrowserOpened(false);
+    setSuggestionsVisible(false);
+    setTermInfoVisible(false);
+    setInfoAboveBackground(false);
+  }
+
+  let changeBrowseTerm = (id, path) => {
+    setBrowseID(id);
+    setBrowsePath(path);
+  }
+
+  let logError = (message) => {
+    setSnackbarVisible(true);
+    setSnackbarMessage(message);
+    setSuggestionsLoading(false);
+  }
+
+  if (disabled) {
+    // Alter our text to either the override ("Please select at most X options")
+    // or empty it
+    anchorEl.currentl.value = disabled ? props.overrideText : "";
+  }
+
+  return (
       <div>
-        {this.props.children}
+        {props.children}
 
         <div className={noMargin ? "" : classes.searchWrapper}>
           {noMargin ?
@@ -152,16 +391,16 @@ class VocabularyQuery extends React.Component {
               { /* Cover up a bug that causes the label to overlap the defaultValue:
                    if it has a displayed value and isn't focused, don't show the label
                  */ }
-              { (document.activeElement === this.anchorEl || (!defaultValue && !(this.anchorEl?.value))) ? label : ''}
+              { (document.activeElement === anchorEl.current || (!defaultValue && !(anchorEl.current?.value))) ? label : ''}
             </InputLabel>
             {inputEl}
           </FormControl>}
-          <LinearProgress className={classes.progressIndicator + " " + (this.state.suggestionsLoading ? "" : classes.inactiveProgress)}/>
+          <LinearProgress className={classes.progressIndicator + " " + (suggestionsLoading ? "" : classes.inactiveProgress)}/>
         </div>
         {/* Suggestions list using Popper */}
         <Popper
-          open={this.state.suggestionsVisible}
-          anchorEl={this.anchorEl}
+          open={suggestionsVisible}
+          anchorEl={anchorEl.current}
           transition
           className={
             classNames({ [classes.popperClose]: !open })
@@ -183,7 +422,7 @@ class VocabularyQuery extends React.Component {
               enabled: true
             }
           }}
-          ref = {(ref) => {this.menuPopperRef = ref}}
+          ref={menuPopperRef}
         >
           {({ TransitionProps }) => (
             <Grow
@@ -194,9 +433,9 @@ class VocabularyQuery extends React.Component {
               }}
             >
               <Paper>
-                <ClickAwayListener onClickAway={this.closeAutocomplete}>
-                  <MenuList role="menu" ref={(ref)=> {this.menuRef = ref}}>
-                    {this.state.suggestions}
+                <ClickAwayListener onClickAway={closeAutocomplete}>
+                  <MenuList role="menu" ref={menuRef}>
+                    {suggestions}
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
@@ -204,116 +443,39 @@ class VocabularyQuery extends React.Component {
           )}
         </Popper>
         {/* Info box using Popper */}
-        <Popper
-          placement="right"
-          open={this.state.termInfoVisible}
-          anchorEl={this.state.infoAnchor}
-          transition
-          className={
-            classNames({ [classes.popperClose]: !open })
-            + " " + classes.popperNav
-            + " " + (this.state.infoAboveBackground ? classes.infoAboveBackdrop : classes.popperInfoOnTop)
-          }
-          ref={(ref) => {this.infoRef = ref}}
-          modifiers={{
-            keepTogether: {
-              enabled: true
-            },
-            preventOverflow: {
-              boundariesElement: 'window',
-              escapeWithReference: false,
-              enabled: true
-            },
-            arrow: {
-              enabled: false
-            }
-          }}
-        >
-          {({ TransitionProps }) => (
-            <Grow
-              {...TransitionProps}
-              id="info-grow"
-              style={{
-                transformOrigin: "center left",
-              }}
-            >
-              <Card className={classes.infoCard}>
-                <ClickAwayListener onClickAway={this.clickAwayInfo}><div>
-                   <CardHeader
-                     avatar={
-                      <Link color="textSecondary"
-                        href={this.state.infoVocabURL || ""}  target="_blank"
-                        component={this.state.infoVocabURL ? 'a' : 'span'}
-                        underline="none"
-                        >
-                        <Tooltip title={this.state.infoVocabDescription}>
-                          <Avatar aria-label="source" className={classes.vocabularyAvatar}>
-                              {this.state.infoVocabAcronym}
-                          </Avatar>
-                        </Tooltip>
-                      </Link>
-                    }
-                    action={
-                      <IconButton aria-label="close" onClick={this.closeInfo}>
-                        <CloseIcon />
-                      </IconButton>
-                    }
-                    title={this.state.infoName}
-                    subheader={this.state.infoID}
-                    titleTypographyProps={{variant: 'h5'}}
-                  />
-                  <CardContent className={classes.infoPaper}>
-                    <div className={classes.infoSection}>
-                      <Typography className={classes.infoDefinition}>{this.state.infoDefinition}</Typography>
-                    </div>
-                      {this.state.infoAlsoKnownAs.length > 0 && (
-                        <div className={classes.infoSection}>
-                          <Typography variant="h6" className={classes.infoHeader}>Also known as</Typography>
-                          {this.state.infoAlsoKnownAs.map((name, index) => {
-                            return (<Typography className={classes.infoAlsoKnownAs} key={index}>
-                                      {name}
-                                    </Typography>
-                            );
-                          })}
-                        </div>
-                      )}
-                      {this.state.infoTypeOf.length > 0 && (
-                        <div className={classes.infoSection}>
-                          <Typography variant="h6" className={classes.infoHeader}>Is a type of</Typography>
-                          {this.state.infoTypeOf.map((name, index) => {
-                            return (<Typography className={classes.infoTypeOf} key={index}>
-                                      {name}
-                                    </Typography>
-                            );
-                          })}
-                        </div>
-                      )}
-                      </CardContent>
-                      {!this.state.browserOpened &&
-                        <CardActions className={classes.infoPaper}>
-                          <Button size="small" onClick={this.openDialog} variant='contained' color='primary'>Learn more</Button>
-                        </CardActions>
-                      }
-                 </div></ClickAwayListener>
-              </Card>
-            </Grow>
-          )}
-        </Popper>
+        <InfoBox
+          termInfoVisible={termInfoVisible}
+          anchorEl={infoAnchor}
+          infoAboveBackground={infoAboveBackground}
+          infoRef={infoRef}
+          menuPopperRef={menuPopperRef}
+          infoVocabURL={infoVocabURL}
+          infoVocabDescription={infoVocabDescription}
+          infoVocabAcronym={infoVocabAcronym}
+          closeInfo={closeInfo}
+          infoName={infoName}
+          infoID={infoID}
+          infoDefinition={infoDefinition}
+          infoAlsoKnownAs={infoAlsoKnownAs}
+          infoTypeOf={infoTypeOf}
+          openDialog={openDialog}
+          browserOpened={browserOpened}
+        />
         { /* Browse dialog box */}
         <VocabularyBrowser
-          open={this.state.browserOpened}
-          id={this.state.browseID}
-          path={this.state.browsePath}
-          changeTerm={this.changeBrowseTerm}
-          onClose={this.closeDialog}
-          onError={this.logError}
-          registerInfo={this.registerInfoButton}
-          getInfo={this.getInfo}
+          open={browserOpened}
+          id={browseID}
+          path={browsePath}
+          changeTerm={changeBrowseTerm}
+          onClose={closeDialog}
+          onError={logError}
+          registerInfo={registerInfoButton}
+          getInfo={getInfo}
           />
         { /* Error snackbar */}
         <Snackbar
-          open={this.state.snackbarVisible}
-          onClose={() => {this.setState({snackbarVisible: false});}}
+          open={snackbarVisible}
+          onClose={() => {setSnackbarVisible(false);}}
           autoHideDuration={6000}
           anchorOrigin={{
             vertical: 'bottom',
@@ -324,284 +486,11 @@ class VocabularyQuery extends React.Component {
             <SnackbarContent
               className={classes.errorSnack}
               role="alertdialog"
-              message={this.state.snackbarMessage}
+              message={snackbarMessage}
             />
           </Snackbar>
       </div>
     );
-  }
-
-  // Lookup the search term after a short interval
-  // This will reset the interval if called before the interval hangs up
-  delayLookup = (status) => {
-    if (this.state.lookupTimer !== null) {
-      clearTimeout(this.state.lookupTimer);
-    }
-
-    this.setState({
-      lookupTimer: setTimeout(this.queryInput, 500, status.target.value),
-      suggestionsVisible: true,
-      suggestions: [],
-    })
-  }
-
-  makeMultiRequest = (queue, input, status, prevData) => {
-    //Get an vocabulary to search through
-    var selectedVocab = queue.pop();
-    if (selectedVocab === undefined) {
-      this.showSuggestions(status, {rows: prevData.slice(0, MAX_RESULTS)});
-      return;
-    }
-    var url = new URL(`./${selectedVocab}.search.json`, REST_URL);
-    url.searchParams.set("suggest", input.replace(/[^\w\s]/g, ' '));
-
-    //Are there any filters that should be associated with this request?
-    if (this.props?.questionDefinition?.vocabularyFilters?.[selectedVocab]) {
-      var filter = this.props.questionDefinition.vocabularyFilters[selectedVocab].map((category) => {
-        return (`term_category:${category}`);
-      }).join(" OR ");
-      url.searchParams.set("customFilter", `(${filter})`);
-    }
-
-    MakeRequest(url, (status, data) => {
-      this.makeMultiRequest(queue, input, status, prevData.concat(!status && data && data['rows'] ? data['rows'] : []));
-    });
-  }
-
-  // Grab suggestions for the given input
-  queryInput = (input) => {
-    // Empty input? Do not query
-    if (input === "") {
-      this.setState({
-        suggestionsLoading: false,
-        termInfoVisible: false,
-        lookupTimer: null,
-      });
-      return;
-    }
-
-    // Grab suggestions
-    //...Make a queue of vocabularies to search through
-    var vocabQueue = this.props.questionDefinition.sourceVocabularies.slice();
-    this.makeMultiRequest(vocabQueue, input, null, []);
-
-    // Hide the infobox and stop the timer
-    this.setState({
-      suggestionsLoading: true,
-      termInfoVisible: false,
-      lookupTimer: null,
-    });
-  }
-
-  // Callback for queryInput to populate the suggestions bar
-  showSuggestions = (status, data) => {
-    if (!status) {
-        // Populate this.state.suggestions
-        var suggestions = [];
-
-        if (data["rows"].length > 0) {
-          data["rows"].forEach((element) => {
-            var name = element["label"] || element["name"] || element["identifier"];
-            suggestions.push(
-              <MenuItem
-                className={this.props.classes.dropdownItem}
-                key={element["@path"]}
-                onClick={(e) => {
-                  if (e.target.localName === "li") {
-                    this.props.onClick(element["@path"], name);
-                    this.setState({inputValue: this.props.clearOnClick ? "" : name});
-                    this.closeDialog();
-                  }}
-                }
-              >
-                {name}
-                <IconButton
-                  size="small"
-                  buttonRef={node => {
-                    this.registerInfoButton(element["identifier"], node);
-                  }}
-                  color="primary"
-                  aria-owns={this.state.termInfoVisible ? "menu-list-grow" : null}
-                  aria-haspopup={true}
-                  onClick={(e) => this.getInfo(element["@path"])}
-                  className={this.props.classes.infoButton}
-                >
-                  <Info color="primary" />
-                </IconButton>
-              </MenuItem>
-              );
-          });
-        } else {
-          suggestions.push(
-            <MenuItem
-              className={this.props.classes.dropdownItem}
-              key={NO_RESULTS_TEXT}
-              onClick={this.props.onClick}
-              disabled={true}
-            >
-              {NO_RESULTS_TEXT}
-            </MenuItem>
-          )
-        }
-
-        this.setState({
-          suggestions: suggestions,
-          suggestionsVisible: true,
-          suggestionsLoading: false,
-        });
-    } else {
-      this.logError("Failed to search vocabulary term");
-    }
-  }
-
-  // Event handler for clicking away from the autocomplete while it is open
-  closeAutocomplete = event => {
-    if ((this.menuPopperRef && this.menuPopperRef.contains(event.target))
-      || (this.infoRef && this.infoRef.contains(event.target))
-      || this.state.browserOpened) {
-      return;
-    }
-
-    this.setState({
-      suggestionsVisible: false,
-      termInfoVisible: false,
-    });
-  };
-
-  // Register a button reference that the info box can use to align itself to
-  registerInfoButton = (id, node) => {
-    // List items getting deleted will overwrite new browser button refs, so
-    // we must ignore deregistration events
-    if (node != null) {
-      this.state.buttonRefs[id] = node;
-    }
-  }
-
-  // Grab information about the given ID and populate the info box
-  getInfo = (path) => {
-    // If we don't yet know anything about our vocabulary, fill it in
-    var vocabPath = `${path.split("/").slice(0, -1).join("/")}.json`;
-    if (this.state.infoVocabObtained != vocabPath) {
-      var url = new URL(vocabPath, window.location.origin);
-      this.setState({
-        infoVocabTobeObtained: vocabPath
-      });
-      MakeRequest(url, this.parseVocabInfo);
-    }
-
-    var url = new URL(path + ".info.json", window.location.origin);
-    MakeRequest(url, this.showInfo);
-  }
-
-  parseVocabInfo = (status, data) => {
-    if (status === null) {
-      var vocabPath = this.state.infoVocabTobeObtained;
-      this.setState({
-        infoVocabAcronym: data["identifier"] || vocabPath.split("/")[2]?.split('.')[0] || "",
-        infoVocabURL: data["website"] || "",
-        infoVocabDescription: data["description"],
-        infoVocabObtained: vocabPath
-      });
-    } else {
-      this.logError("Failed to search vocabulary details");
-    }
-  }
-
-  // callback for getInfo to populate info box
-  showInfo = (status, data) => {
-    if (status === null) {
-      var typeOf = [];
-      if ("parents" in data) {
-        typeOf = data["parents"].map(element =>
-          element["label"] || element["name"] || element["identifier"] || element["id"]
-        ).filter(i => i);
-      }
-
-      this.setState({
-        infoID: data["identifier"],
-        infoPath: data["@path"],
-        infoName: data["label"],
-        infoDefinition: data["def"] || data["description"] || data["definition"],
-        infoAlsoKnownAs: data["synonyms"] || data["has_exact_synonym"] || [],
-        infoTypeOf: typeOf,
-        infoAnchor: this.state.buttonRefs[data["identifier"]],
-        termInfoVisible: true,
-        infoAboveBackground: this.state.browserOpened,
-      });
-    } else {
-      this.logError("Failed to search vocabulary term");
-    }
-  }
-
-  clickAwayInfo = (event) => {
-    if ((this.menuPopperRef && this.menuPopperRef.contains(event.target))
-      || (this.infoRef && this.infoRef.contains(event.target))) {
-      return;
-    }
-
-    this.closeInfo();
-  }
-
-  // Event handler for clicking away from the info window while it is open
-  closeInfo = (event) => {
-    this.setState({
-      termInfoVisible: false,
-      infoAboveBackground: false,
-    });
-  };
-
-  openDialog = () => {
-    this.setState({
-      browserOpened: true,
-      browseID: this.state.infoID,
-      browsePath: this.state.infoPath,
-    })
-  }
-
-  closeDialog = () => {
-    if (this.props.clearOnClick) {
-      this.anchorEl.value = "";
-    }
-    if (this.props.focusAfterSelecting) {
-      this.anchorEl.select();
-    }
-    this.setState({
-      browserOpened: false,
-      suggestionsVisible: false,
-      termInfoVisible: false,
-      infoAboveBackground: false,
-    })
-  }
-
-  changeInfoID = (id) => {
-    this.setState({
-      infoID: id
-    });
-  };
-
-  changeBrowseTerm = (id, path) => {
-    this.setState({
-      browseID: id,
-      browsePath: path,
-    })
-  }
-
-  logError = (message) => {
-    this.setState({
-      snackbarVisible: true,
-      snackbarMessage: message,
-      suggestionsLoading: false,
-    })
-  }
-
-  componentDidUpdate(prevProps) {
-    // Check to see if we were disabled/enabled
-    if (this.props.disabled != prevProps.disabled) {
-      // Alter our text to either the override ("Please select at most X options")
-      // or empty it
-      this.anchorEl.value = this.props.disabled ? this.props.overrideText : "";
-    }
-  }
 }
 
 VocabularyQuery.propTypes = {
