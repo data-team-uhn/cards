@@ -778,7 +778,7 @@ export default function VariantFilesContainer() {
                   <Typography variant="overline" component="div" className={classes.fileDetail}>
                     {file.subject?.type?.label || "Patient"} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /&nbsp;
                     {file.tumor?.type?.label || "Tumor"} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
-                    { file?.region?.path && <> / {file.region?.type?.label || "Tumor Region"}: <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
+                    { file?.region?.path && <> / {file.region?.type?.label || "Tumor Region"} <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
                     { file.formPath && <> : <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank">{somaticVariantsTitle}</Link> </>}
                   </Typography>
                 : <div className={classes.fileFormSection}>
