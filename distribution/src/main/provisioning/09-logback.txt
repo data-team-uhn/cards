@@ -18,10 +18,10 @@
 #
 
 # This is the LFS project
-[feature name=lfs]
+[feature name=bind-validate]
 
 [variables]
-    lfs.version=0.1-SNAPSHOT
+    lfs.version=0.9-SNAPSHOT
 
-[artifacts]
+[artifacts startLevel=1]
   ca.sickkids.ccm.lfs/lfs-bind-validate/${lfs.version}
