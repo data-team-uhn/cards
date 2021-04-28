@@ -18,11 +18,11 @@
 -->
 
 <node>
-	<name>Demographics</name>
+	<name>Patient information</name>
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Demographics</value>
+		<value>Patient information</value>
 		<type>String</type>
 	</property>
 	<property>
