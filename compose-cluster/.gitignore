@@ -4,3 +4,4 @@ mongos/mongo-router.conf
 shard*
 NCR_MODEL
 secrets
+SSL_CONFIG
