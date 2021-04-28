@@ -20,7 +20,7 @@
 
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-modules</artifactId>
+    <artifactId>lfs-parent</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
