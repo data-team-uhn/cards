@@ -95,7 +95,6 @@ public class FileUploadIndexer implements VocabularyIndexer
         String vocabName = request.getParameter("vocabName");
         String overwrite = request.getParameter("overwrite");
         RequestParameter uploadedOntology = request.getRequestParameter("filename");
-        System.exit(1);
 
         // Obtain the resource of the request and adapt it to a JCR node. This must be the /Vocabularies homepage node.
         Node homepage = request.getResource().adaptTo(Node.class);
