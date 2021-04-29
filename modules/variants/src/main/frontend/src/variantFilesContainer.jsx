@@ -171,8 +171,11 @@ export default function VariantFilesContainer() {
   let [ somaticVariantsUUID, setSomaticVariantsUUID ] = useState();
   let [ somaticVariantsTitle, setSomaticVariantsTitle ] = useState("");
   let [ patientSubjectUUID, setPatientSubjectUUID ] = useState();
+  let [ patientSubjectLabel, setPatientSubjectLabel ] = useState();
   let [ tumorSubjectUUID, setTumorSubjectUUID ] = useState();
+  let [ tumorSubjectLabel, setTumorSubjectLabel ] = useState();
   let [ regionSubjectUUID, setRegionSubjectUUID ] = useState();
+  let [ regionSubjectLabel, setRegionSubjectLabel ] = useState();
 
   let [ showVersionsDialog, setShowVersionsDialog ] = useState(false);
   let [ fileSelected, setFileSelected ] = useState(null);
@@ -207,17 +210,26 @@ export default function VariantFilesContainer() {
 
     fetch("/SubjectTypes/Patient.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {setPatientSubjectUUID(json["jcr:uuid"])})
+      .then((json) => {
+        setPatientSubjectUUID(json["jcr:uuid"]);
+        setPatientSubjectLabel(json["label"]);
+      })
       .catch(handleError);
 
     fetch("/SubjectTypes/Patient/Tumor.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {setTumorSubjectUUID(json["jcr:uuid"])})
+      .then((json) => {
+        setTumorSubjectUUID(json["jcr:uuid"]);
+        setTumorSubjectLabel(json["label"]);
+      })
       .catch(handleError);
 
     fetch("/SubjectTypes/Patient/Tumor/TumorRegion.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {setRegionSubjectUUID(json["jcr:uuid"])})
+      .then((json) => {
+        setRegionSubjectUUID(json["jcr:uuid"]);
+        setRegionSubjectLabel(json["label"]);
+      })
       .catch(handleError);
   };
 
@@ -776,28 +788,28 @@ export default function VariantFilesContainer() {
                 </div>
                 { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ?
                   <Typography variant="overline" component="div" className={classes.fileDetail}>
-                    {file.subject?.type?.label || "Patient"} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /&nbsp;
-                    {file.tumor?.type?.label || "Tumor"} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
-                    { file?.region?.path && <> / {file.region?.type?.label || "Tumor Region"} <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
+                    {patientSubjectLabel} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /&nbsp;
+                    {tumorSubjectLabel} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
+                    { file?.region?.path && <> / {regionSubjectLabel} <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
                     { file.formPath && <> : <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank">{somaticVariantsTitle}</Link> </>}
                   </Typography>
                 : <div className={classes.fileFormSection}>
                   <TextField
-                    label="Patient"
+                    label={patientSubjectLabel}
                     value={file.subject.id}
                     onChange={(event) => setSubject(event.target.value, file.name)}
                     className={classes.fileDetail}
                     required
                   />
                   <TextField
-                    label="Tumor"
+                    label={tumorSubjectLabel}
                     value={file.tumor.id}
                     onChange={(event) => setTumor(event.target.value, file.name)}
                     className={classes.fileDetail}
                     required
                   />
                   <TextField
-                    label="Tumor Region"
+                    label={regionSubjectLabel}
                     value={file?.region?.id}
                     onChange={(event) => setRegion(event.target.value, file.name)}
                     className={classes.fileDetail}
