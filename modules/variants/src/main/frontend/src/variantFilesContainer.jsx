@@ -209,7 +209,8 @@ export default function VariantFilesContainer() {
   // on file drop to the drag&drop zone
   let onDrop = (accepted) => {
     cleanForm();
-    let chosenFiles = accepted;
+    // Clone the chosenFiles fileList, in order to prevent weirdness
+    let chosenFiles = [...accepted];
     if (chosenFiles.length == 0) {
       setError("Please submit valid file type");
       return;
@@ -234,6 +235,8 @@ export default function VariantFilesContainer() {
           } else {
             file.region = {};
           }
+          file.sent = false;
+          file.uploading = false;
 
           setSingleFileSubjectData(file, files)
             .then( (processedFile) => {
@@ -249,11 +252,13 @@ export default function VariantFilesContainer() {
                   .then((response) => response.ok ? response.json() : Promise.reject(response))
                   .then((json) => {
                     processedFile.sameFiles = json.rows.filter((row) => row["@name"] === file.name);
+                    files = files.slice();
                     files.push(processedFile);
                     setSelectedFiles(files);
                   })
                   .finally( () => {resolve();} );
               } else {
+                files = files.slice();
                 files.push(processedFile);
                 setSelectedFiles(files);
                 resolve();
@@ -532,14 +537,22 @@ export default function VariantFilesContainer() {
     setUploadProgress({});
   };
 
+  let uploadSubjectsFirst = (toUpload) => {
+    // Create a JSON representation of each file that needs to be stored.
+    // First, we need the subjects
+    console.log("To upload:");
+    console.log(toUpload);
+  }
+
    // Find the icon and load them
-  let uploadAllFiles = (selectedFiles) => {
+  let uploadAllFiles = () => {
     const promises = [];
-    selectedFiles.forEach(file => {
+    uploadSubjectsFirst(selectedFiles);
+    /*selectedFiles.forEach(file => {
       promises.push(uploadSingleFile(file));
     });
 
-    return Promise.all(promises);
+    return Promise.all(promises);*/
   };
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
@@ -553,7 +566,7 @@ export default function VariantFilesContainer() {
     setUploadProgress({});
     setError("");
 
-    uploadAllFiles(selectedFiles)
+    uploadAllFiles()
       .then(() => {
 
         setUploadInProgress(false);
@@ -570,6 +583,7 @@ export default function VariantFilesContainer() {
 
       var reader = new FileReader();
       reader.readAsText(file);
+      file.uploading = true;
 
       //When the file finish load
       reader.onload = function(event) {
@@ -596,6 +610,7 @@ export default function VariantFilesContainer() {
             uploadProgress[file.name] = { state: "done", percentage: 100 };
 
             file.formPath = "/" + Object.keys(json).find(str => str.startsWith("Forms/"));
+            file.sent = true;
             selectedFiles[selectedFiles.findIndex(el => el.name === file.name)] = file;
             setSelectedFiles(selectedFiles);
           }
@@ -606,6 +621,7 @@ export default function VariantFilesContainer() {
 
         xhr.onerror = function() {
           uploadProgress[file.name] = { state: "error", percentage: 0 };
+          file.uploading = false;
           setUploadProgress(uploadProgress);
           resolve(xhr.response);
         }
@@ -716,7 +732,7 @@ export default function VariantFilesContainer() {
             <div className={classes.dragAndDrop}>
               <DragAndDrop
                 accept={".csv"}
-                multifile={false}
+                multifile={true}
                 handleDrop={onDrop}
                 error={error}
               />
@@ -728,9 +744,7 @@ export default function VariantFilesContainer() {
       </form>
 
       { selectedFiles && selectedFiles.length > 0 && <>
-        { selectedFiles.slice(0, 1).map( (file, i) => {
-            //          ^ Temporarily ignore all but the first selected file until concurency issues are solved
-
+        { selectedFiles.map( (file, i) => {
             const upprogress = uploadProgress ? uploadProgress[file.name] : null;
             let subjectPath = file.subject.path?.replace("/Subjects", "Subjects");
             let tumorPath = file.tumor.path && `${subjectPath}/${file.tumor.path.replace(new RegExp(".+/"), "")}`;
@@ -785,9 +799,9 @@ export default function VariantFilesContainer() {
                     helperText="Optional"
                   />
                   <label htmlFor="contained-button-file">
-                    <Button type="submit" variant="contained" color="primary" disabled={!isDataValid || uploadInProgress || !!error && selectedFiles.length == 0} form="variantForm">
+                    <Button variant="outlined" color="primary" disabled={!isDataValid || file.uploading || !!error && selectedFiles.length == 0} onClick={() => uploadSingleFile(file)}>
                       <span><BackupIcon className={classes.buttonIcon}/>
-                        {uploadInProgress ? 'Uploading' :
+                        {file.uploading ? 'Uploading' :
                             // TODO - Make this a per-upload button, pending the completion of LFS-535
                             // TODO - judge upload status button message over all upload statuses of all files ??
                             // uploadProgress[file.name].state =="done" ? 'Uploaded' :
@@ -818,6 +832,18 @@ export default function VariantFilesContainer() {
           ) } ) }
       </>
       }
+    { selectedFiles?.length > 0 ?
+      <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error && selectedFiles.length == 0} form="variantForm">
+        <span><BackupIcon className={classes.buttonIcon}/>
+          {uploadInProgress ? 'Uploading' :
+              // TODO - Make this a per-upload button, pending the completion of LFS-535
+              // TODO - judge upload status button message over all upload statuses of all files ??
+              // uploadProgress[file.name].state =="done" ? 'Uploaded' :
+              // uploadProgress[file.name].state =="error" ? 'Upload failed, try again?' :
+              'Upload all'}
+        </span>
+      </Button>
+      : <></>}
     <Dialog open={showVersionsDialog} onClose={() => setShowVersionsDialog(false)}>
       <DialogTitle>
         <span className={classes.dialogTitle}>Versions of {fileSelected?.name}</span>
