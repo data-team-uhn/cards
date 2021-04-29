@@ -22,7 +22,7 @@
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Vocabulary Multiple Choice Test</value>
+		<value>Multiple Choice Test</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -741,5 +741,29 @@
 				<type>String</type>
 			</property>
 		</node>
+	</node>
+	<node>
+		<name>boolean</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Boolean question</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>boolean</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>boolean</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>enableUnknown</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
 	</node>
 </node>
