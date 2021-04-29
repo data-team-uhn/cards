@@ -19,13 +19,48 @@
 
 import React, { useRef, useEffect, useState } from "react";
 
-import { IconButton, Typography } from "@material-ui/core";
+import { IconButton, Typography, makeStyles } from "@material-ui/core";
 import AttachFile from '@material-ui/icons/AttachFile';
 
+const useStyles = makeStyles(theme => ({
+  active: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: theme.palette.primary.main,
+    background: theme.palette.action.hover,
+    boxSizing: "border-box",
+    width: "100%",
+    border: "2px dashed",
+    borderColor: theme.palette.primary.light,
+    padding: "2rem",
+    paddingLeft: "0",
+    textAlign: "center",
+    borderRadius: theme.spacing(1),
+    cursor: "pointer"
+  },
+  dropzone: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    boxSizing: "border-box",
+    width: "100%",
+    border: "2px dashed",
+    borderColor: theme.palette.primary.main,
+    padding: "2rem",
+    paddingLeft: "0",
+    textAlign: "center",
+    borderRadius: theme.spacing(1),
+    cursor: "pointer"
+  },
+}));
+
 export default function DragAndDrop(props) {
-  const { accept, multifile, handleDrop, classes, error } = props;
+  const { accept, multifile, handleDrop, error } = props;
   const [drag, setDrag] = useState(false);
   const [dragCounter, setDragCounter] = useState(0);
+
+  const classes = useStyles();
 
   const dropRef = useRef();
   const inputRef = useRef();

@@ -42,7 +42,7 @@ import GetApp from '@material-ui/icons/GetApp';
 import MaterialTable from "material-table";
 import { v4 as uuidv4 } from 'uuid';
 import moment from "moment";
-import DragAndDrop from "./dragAndDrop.jsx";
+import DragAndDrop from "./components/dragAndDrop.jsx";
 import { escapeJQL } from "./escape.jsx";
 
 const useStyles = makeStyles(theme => ({
@@ -103,36 +103,6 @@ const useStyles = makeStyles(theme => ({
     "& > div" : {
       width: "100%",
     },
-  },
-  active: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    color: theme.palette.primary.main,
-    background: theme.palette.action.hover,
-    boxSizing: "border-box",
-    width: "100%",
-    border: "2px dashed",
-    borderColor: theme.palette.primary.light,
-    padding: "2rem",
-    paddingLeft: "0",
-    textAlign: "center",
-    borderRadius: theme.spacing(1),
-    cursor: "pointer"
-  },
-  dropzone: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    boxSizing: "border-box",
-    width: "100%",
-    border: "2px dashed",
-    borderColor: theme.palette.primary.main,
-    padding: "2rem",
-    paddingLeft: "0",
-    textAlign: "center",
-    borderRadius: theme.spacing(1),
-    cursor: "pointer"
   },
   dialogTitle: {
     marginRight: theme.spacing(5)
@@ -741,7 +711,6 @@ export default function VariantFilesContainer() {
                 accept={".csv"}
                 multifile={false}
                 handleDrop={onDrop}
-                classes={classes}
                 error={error}
               />
             </div>
