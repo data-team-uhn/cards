@@ -21,18 +21,25 @@ import React, { useState } from "react";
 
 import {
   Button,
+  Card,
+  CardContent,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   IconButton,
-  Input,
   Grid,
   LinearProgress,
   Link,
   TextField,
+  Tooltip,
   Typography,
   makeStyles
 } from "@material-ui/core";
-import AttachFile from '@material-ui/icons/AttachFile';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import BackupIcon from '@material-ui/icons/Backup';
+import CloseIcon from '@material-ui/icons/Close';
 import GetApp from '@material-ui/icons/GetApp';
+import MaterialTable from "material-table";
 import { v4 as uuidv4 } from 'uuid';
 import moment from "moment";
 import DragAndDrop from "./dragAndDrop.jsx";
@@ -45,32 +52,34 @@ const useStyles = makeStyles(theme => ({
   fileinput: {
     display: 'none',
   },
-  dialogTitle: {
-    padding: theme.spacing(2,0,2,3),
-  },
   buttonIcon: {
     verticalAlign: 'middle',
     paddingRight: theme.spacing(1)
   },
   uploadButton: {
-    marginLeft: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   fileInfo: {
     padding: theme.spacing(1),
+    margin: theme.spacing(3, 0),
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+  },
+  fileFormSection : {
+    display: "flex",
+    alignItems: "center",
+    flexWrap: "wrap",
+  },
+  fileName: {
+    display: 'inline'
   },
   fileDetail: {
     marginRight: theme.spacing(1),
     marginTop: theme.spacing(1)
   },
-  fileName: {
-    color: theme.palette.success.dark,
-    fontWeight: "500"
-  },
   progressBar: {
     width: "40%",
     height: theme.spacing(2),
-    backgroundColor: theme.palette.success.dark,
+    backgroundColor: theme.palette.primary.main,
     borderRadius: "2px",
     display: "inline-block",
     marginLeft: theme.spacing(1),
@@ -78,32 +87,45 @@ const useStyles = makeStyles(theme => ({
     verticalAlign: "text-top"
   },
   progress: {
-    backgroundColor: theme.palette.success.main,
+    backgroundColor: theme.palette.primary.main,
     height: "100%",
     margin: "0",
     borderRadius: "2px",
+  },
+  dragAndDropContainer: {
+    margin: theme.spacing(3, 0),
+    "& .MuiAlert-root": {
+      boxSizing: "border-box",
+      height: "100%",
+    },
+  },
+  dragAndDrop: {
+    "& > div" : {
+      width: "100%",
+    },
   },
   active: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: theme.spacing(2),
-    width: theme.spacing(40),
-    border: "4px dashed",
-    borderColor: theme.palette.primary.main,
-    padding: theme.spacing(4),
+    color: theme.palette.primary.main,
+    background: theme.palette.action.hover,
+    boxSizing: "border-box",
+    width: "100%",
+    border: "2px dashed",
+    borderColor: theme.palette.primary.light,
+    padding: "2rem",
     paddingLeft: "0",
     textAlign: "center",
     borderRadius: theme.spacing(1),
-    boxShadow: "5px 5px 10px " + theme.palette.background.paper,
     cursor: "pointer"
   },
   dropzone: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: theme.spacing(3),
-    width: theme.spacing(44),
+    boxSizing: "border-box",
+    width: "100%",
     border: "2px dashed",
     borderColor: theme.palette.primary.main,
     padding: "2rem",
@@ -111,6 +133,30 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center",
     borderRadius: theme.spacing(1),
     cursor: "pointer"
+  },
+  dialogTitle: {
+    marginRight: theme.spacing(5)
+  },
+  dialogContent: {
+    minWidth: "500px"
+  },
+  closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500]
+  },
+  variantFileCard: {
+    "& .MuiCardHeader-root" : {
+      padding: theme.spacing(1, 3, 0, 3),
+    },
+    "& .MuiCardContent-root" : {
+      paddingLeft: theme.spacing(3),
+      paddingRight: theme.spacing(3),
+    },
+    "& .MuiList-root": {
+      marginLeft: theme.spacing(-2),
+    },
   }
 }));
 
@@ -123,9 +169,13 @@ export default function VariantFilesContainer() {
   // uuids of the Subjects and the SomaticVariants questionnaire
   // To be fetch on page load
   let [ somaticVariantsUUID, setSomaticVariantsUUID ] = useState();
+  let [ somaticVariantsTitle, setSomaticVariantsTitle ] = useState("");
   let [ patientSubjectUUID, setPatientSubjectUUID ] = useState();
   let [ tumorSubjectUUID, setTumorSubjectUUID ] = useState();
   let [ regionSubjectUUID, setRegionSubjectUUID ] = useState();
+
+  let [ showVersionsDialog, setShowVersionsDialog ] = useState(false);
+  let [ fileSelected, setFileSelected ] = useState(null);
 
   // Numerical upload progress object measured in %, for all files
   let [ uploadProgress, setUploadProgress ] = useState({});
@@ -149,7 +199,10 @@ export default function VariantFilesContainer() {
   let fetchBasicData = () => {
     fetch("/Questionnaires/SomaticVariants.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {setSomaticVariantsUUID(json["jcr:uuid"])})
+      .then((json) => {
+        setSomaticVariantsUUID(json["jcr:uuid"]);
+        setSomaticVariantsTitle(json["title"]);
+      })
       .catch(handleError);
 
     fetch("/SubjectTypes/Patient.json")
@@ -242,15 +295,15 @@ export default function VariantFilesContainer() {
       if (file.name === fileEl.name) { continue; }
 
       if (fileEl.subject.id === file.subject.id) {
-        file.subject = generateSubject(file.subject, fileEl.subject.path, fileEl.subject.existed, fileEl.subject.uuid);
+        file.subject = generateSubject(file.subject, fileEl.subject.path, fileEl.subject.existed, fileEl.subject.uuid, fileEl.subject.type);
       }
 
       if (fileEl.subject.id === file.subject.id && fileEl.tumor.id === file.tumor.id) {
-        file.tumor = generateSubject(file.tumor, fileEl.tumor.path, fileEl.tumor.existed, fileEl.tumor.uuid);
+        file.tumor = generateSubject(file.tumor, fileEl.tumor.path, fileEl.tumor.existed, fileEl.tumor.uuid, fileEl.tumor.type);
       }
 
       if (fileEl.region && file.region && fileEl.tumor.id === file.tumor.id && fileEl.region.id === file.region.id) {
-        file.region = generateSubject(file.region, fileEl.region.path, fileEl.region.existed, fileEl.region.uuid);
+        file.region = generateSubject(file.region, fileEl.region.path, fileEl.region.existed, fileEl.region.uuid, fileEl.region.type);
       }
     }
     return file;
@@ -279,7 +332,8 @@ export default function VariantFilesContainer() {
               if (json.rows && json.rows.length > 0) {
                 let subject = json.rows[0];
                 // get the path
-                file.subject = generateSubject(file.subject, subject["@path"], true, subject["jcr:uuid"]);
+                file.subject = generateSubject(file.subject, subject["@path"], true, subject["jcr:uuid"], subject.type);
+                file.subject.type = subject["type"];
                 checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                 // Fire a fetch request for a tumor subject with the patient subject as its parent
@@ -290,7 +344,7 @@ export default function VariantFilesContainer() {
                       if (json.rows && json.rows.length > 0) {
                         let subject = json.rows[0];
                         // get the path
-                        file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"]);
+                        file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"], subject.type);
 
                         // If a region subject is defined
                         if (file.region) {
@@ -304,7 +358,7 @@ export default function VariantFilesContainer() {
                               if (json.rows && json.rows.length > 0) {
                                 let subject = json.rows[0];
                                 // get the path
-                                file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"]);
+                                file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
                               } else {
                                 // if a region subject is not found
                                 // record in variables that a region didn’t exist and generate a new random uuid as its path
@@ -355,7 +409,7 @@ export default function VariantFilesContainer() {
                   if (json.rows && json.rows.length > 0) {
                     let subject = json.rows[0];
                     // get the path
-                    file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"]);
+                    file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"], subject.type);
 
                     // If a region subject is defined
                     if (file.region) {
@@ -369,7 +423,7 @@ export default function VariantFilesContainer() {
                           if (json.rows && json.rows.length > 0) {
                             let subject = json.rows[0];
                             // get the path
-                            file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"]);
+                            file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
                           } else {
                             // if a region subject is not found
                             // record in variables that a region didn’t exist, and generate a new random uuid as its path
@@ -406,7 +460,7 @@ export default function VariantFilesContainer() {
                   if (json.rows && json.rows.length > 0) {
                     let subject = json.rows[0];
                     // get the path
-                    file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"]);
+                    file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
                   } else {
                     // if a region subject is not found
                     // record in variables that a region didn’t exist, and generate a new random uuid as its path
@@ -432,10 +486,11 @@ export default function VariantFilesContainer() {
   // 2. subject did not exist, need to create completely new
   // 3. subject did not exist, but was just created for one of previous loaded files, so it has path but no uuid
   //
-  let generateSubject = (subject, path, existed, uuid) => {
+  let generateSubject = (subject, path, existed, uuid, type) => {
     subject.existed = existed;
     subject.path = path || "/Subjects/" + uuidv4();
     subject.uuid = uuid;
+    subject.type = existed && type;
     return subject;
   };
 
@@ -660,118 +715,179 @@ export default function VariantFilesContainer() {
 
   return (
   <React.Fragment>
-    <form method="POST"
-          encType="multipart/form-data"
-          onSubmit={upload}
-          key="file-upload">
-      <Typography component="h2" variant="h5" className={classes.dialogTitle}>Variants Upload</Typography>
-      { uploadInProgress && (
-        <Grid item className={classes.root}>
-          <LinearProgress color="primary" />
-        </Grid>
-      ) }
+    <Typography variant="h2">Variants Upload</Typography>
+      <form method="POST"
+            encType="multipart/form-data"
+            onSubmit={upload}
+            key="file-upload"
+            id="variantForm">
+        <Grid container direction="row-reverse" justify="flex-end" spacing={3} alignItems="stretch" className={classes.dragAndDropContainer}>
+          <Grid item xs={12} lg={6}>
+            <Alert severity="info">
+              <AlertTitle>Expected file name format:</AlertTitle>
+              <div>Patient_Tumor.csv (e.g. AB12345_1.csv)</div>
+              <div>Patient_Tumor_TumorRegion.csv (e.g. AB12345_1_a.csv)</div>
+            </Alert>
+          </Grid>
+          <Grid item xs={12} lg={6}>
+          { uploadInProgress && (
+              <Grid item className={classes.root}>
+                <LinearProgress color="primary" />
+              </Grid>
+            ) }
 
-      <DragAndDrop
-        accept={".csv"}
-        multifile={false}
-        handleDrop={onDrop}
-        classes={classes}
-        error={error}
-      />
-
-      <input type="hidden" name="*@TypeHint" value="nt:file" />
-      <label htmlFor="contained-button-file">
-        <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error && selectedFiles.length == 0} className={classes.uploadButton}>
-          <span><BackupIcon className={classes.buttonIcon}/>
-            {uploadInProgress ? 'Uploading' :
-                // TODO - judge upload status button message over all upload statuses of all files ??
-                // uploadProgress[file.name].state =="done" ? 'Uploaded' :
-                // uploadProgress[file.name].state =="error" ? 'Upload failed, try again?' :
-                'Upload'}
-          </span>
-        </Button>
-      </label>
-    </form>
-
-    { selectedFiles && selectedFiles.length > 0 && <span>
-      <Typography variant="h6" className={classes.fileInfo}>Selected files info</Typography>
-
-      { selectedFiles.map( (file, i) => {
-
-          const upprogress = uploadProgress ? uploadProgress[file.name] : null;
-          let subjectPath = file.subject.path.replace("/Subjects", "Subjects");
-          let tumorPath = `${subjectPath}/${file.tumor.path.replace(new RegExp(".+/"), "")}`;
-          let regionPath = file.region?.path && `${tumorPath}/${file.region.path.replace(new RegExp(".+/"), "")}`;
-
-          return (
-            <div key={file.name} className={classes.fileInfo}>
-              <div>
-                <span>File <span className={classes.fileName}>{file.name}:</span></span>
-                { upprogress && upprogress.state != "error" &&
-                  <span>
-                    <div className={classes.progressBar}>
-                      <div className={classes.progress} style={{ width: upprogress.percentage + "%" }} />
-                    </div>
-                    { upprogress.percentage + "%" }
-                  </span>
-                }
-                { upprogress && upprogress.state == "error" && <Typography color='error'>Error uploading file</Typography> }
-              </div>
-              { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ? 
-                <Typography className={classes.fileDetail}>
-                  Subject id: <Link href={subjectPath} target="_blank"> {file.subject.id} </Link>
-                  Tumor nb: <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
-                  { file?.region?.path && <span>Region nb: <Link href={regionPath} target="_blank"> {file.region.id} </Link> </span> }
-                  { file.formPath && <span>Form: <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank"> {file.formPath.replace("/Forms/", "")} </Link></span> }
-                </Typography>
-              : <span>
-                <TextField
-                  label="Subject id"
-                  value={file.subject.id}
-                  onChange={(event) => setSubject(event.target.value, file.name)}
-                  className={classes.fileDetail}
-                  required
-                />
-                <TextField
-                  label="Tumor nb"
-                  value={file.tumor.id}
-                  onChange={(event) => setTumor(event.target.value, file.name)}
-                  className={classes.fileDetail}
-                  required
-                />
-                <TextField
-                  label="Region nb"
-                  value={file?.region?.id}
-                  onChange={(event) => setRegion(event.target.value, file.name)}
-                  className={classes.fileDetail}
-                  required
-                />
-                </span>
-              }
-              <Typography variant="body1" component="div" className={classes.fileInfo}>
-                  {(!file.sameFiles || file.sameFiles.length == 0)
-                      ?
-                     <p>There are no versions of this file.</p>
-                      :
-                     <span>
-                         <p>Other versions of this file :</p>
-                         <ul>
-                           {file.sameFiles && file.sameFiles.map( (samefile, index) => {
-                            return (
-                             <li key={index}>
-                               Uploaded at {moment(samefile["jcr:created"]).format("dddd, MMMM Do YYYY")} by {samefile["jcr:createdBy"]}
-                               <IconButton size="small" color="primary">
-                                 <a href={samefile["@path"]} download><GetApp /></a>
-                               </IconButton>
-                             </li>
-                           )})}
-                         </ul>
-                     </span>
-                   }
-              </Typography>
+            <div className={classes.dragAndDrop}>
+              <DragAndDrop
+                accept={".csv"}
+                multifile={false}
+                handleDrop={onDrop}
+                classes={classes}
+                error={error}
+              />
             </div>
-        ) } ) }
-    </span> }
+
+            <input type="hidden" name="*@TypeHint" value="nt:file" />
+          </Grid>
+        </Grid>
+      </form>
+
+      { selectedFiles && selectedFiles.length > 0 && <>
+        { selectedFiles.slice(0, 1).map( (file, i) => {
+            //          ^ Temporarily ignore all but the first selected file until concurency issues are solved
+
+            const upprogress = uploadProgress ? uploadProgress[file.name] : null;
+            let subjectPath = file.subject.path.replace("/Subjects", "Subjects");
+            let tumorPath = `${subjectPath}/${file.tumor.path.replace(new RegExp(".+/"), "")}`;
+            let regionPath = file.region?.path && `${tumorPath}/${file.region.path.replace(new RegExp(".+/"), "")}`;
+
+            return (
+              <div key={file.name} className={classes.fileInfo}>
+                <div>
+                  <Typography variant="h6" className={classes.fileName}>{file.name}:</Typography>
+                  { upprogress && upprogress.state != "error" &&
+                    <span>
+                      <div className={classes.progressBar}>
+                        <div className={classes.progress} style={{ width: upprogress.percentage + "%" }} />
+                      </div>
+                      { upprogress.percentage + "%" }
+                    </span>
+                  }
+                  { upprogress && upprogress.state == "error" && <Typography color='error'>Error uploading file</Typography> }
+                </div>
+                { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ?
+                  <Typography variant="overline" component="div" className={classes.fileDetail}>
+                    {file.subject?.type?.label || "Patient"} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /&nbsp;
+                    {file.tumor?.type?.label || "Tumor"} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
+                    { file?.region?.path && <> / {file.region?.type?.label || "Tumor Region"} <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
+                    { file.formPath && <> : <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank">{somaticVariantsTitle}</Link> </>}
+                  </Typography>
+                : <div className={classes.fileFormSection}>
+                  <TextField
+                    label="Patient"
+                    value={file.subject.id}
+                    onChange={(event) => setSubject(event.target.value, file.name)}
+                    className={classes.fileDetail}
+                    required
+                  />
+                  <TextField
+                    label="Tumor"
+                    value={file.tumor.id}
+                    onChange={(event) => setTumor(event.target.value, file.name)}
+                    className={classes.fileDetail}
+                    required
+                  />
+                  <TextField
+                    label="Tumor Region"
+                    value={file?.region?.id}
+                    onChange={(event) => setRegion(event.target.value, file.name)}
+                    className={classes.fileDetail}
+                  />
+                  <label htmlFor="contained-button-file">
+                    <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error && selectedFiles.length == 0} className={classes.uploadButton} form="variantForm">
+                      <span><BackupIcon className={classes.buttonIcon}/>
+                        {uploadInProgress ? 'Uploading' :
+                            // TODO - Make this a per-upload button, pending the completion of LFS-535
+                            // TODO - judge upload status button message over all upload statuses of all files ??
+                            // uploadProgress[file.name].state =="done" ? 'Uploaded' :
+                            // uploadProgress[file.name].state =="error" ? 'Upload failed, try again?' :
+                            'Upload'}
+                      </span>
+                    </Button>
+                  </label>
+                  </div>
+                }
+                {(!file.sameFiles || file.sameFiles.length == 0)
+                  ?
+                    <Typography variant="caption" component="p">There are no versions of this file.</Typography>
+                  :
+                    <Link
+                      variant="caption"
+                      underline="none"
+                      href="#"
+                      onClick={() => {
+                        setShowVersionsDialog(true);
+                        setFileSelected(file);
+                      }}>
+                        There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
+                        of this file
+                      </Link>
+                }
+              </div>
+          ) } ) }
+      </>
+      }
+    <Dialog open={showVersionsDialog} onClose={() => setShowVersionsDialog(false)}>
+      <DialogTitle>
+        <span className={classes.dialogTitle}>Versions of {fileSelected?.name}</span>
+        <IconButton onClick={() => setShowVersionsDialog(false)} className={classes.closeButton}>
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent className={classes.dialogContent}>
+        <MaterialTable
+          data={fileSelected?.sameFiles}
+          style={{ boxShadow : 'none' }}
+          options={{
+            toolbar: false,
+            rowStyle: {
+              verticalAlign: 'top',
+            }
+          }}
+          title={""}
+          columns={[
+            { title: 'Created',
+              cellStyle: {
+                paddingLeft: 0,
+                fontWeight: "bold",
+                width: '1%',
+                whiteSpace: 'nowrap',
+              },
+              render: rowData => <Link href={rowData["@path"]}>
+                                  {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
+                                </Link> },
+            { title: 'Uploaded By',
+              cellStyle: {
+                width: '50%',
+                whiteSpace: 'pre-wrap',
+                paddingBottom: "8px",
+              },
+              render: rowData => rowData["jcr:createdBy"] },
+            { title: 'Actions',
+              cellStyle: {
+                padding: '0',
+                width: '20px',
+                textAlign: 'end'
+              },
+              sorting: false,
+              render: rowData => <Tooltip title={"Download"}>
+                                  <IconButton>
+                                    <Link underline="none" color="inherit" href={rowData["@path"]} download><GetApp /></Link>
+                                  </IconButton>
+                                </Tooltip> },
+          ]}
+          />
+      </DialogContent>
+    </Dialog>
   </React.Fragment>
   );
 }
