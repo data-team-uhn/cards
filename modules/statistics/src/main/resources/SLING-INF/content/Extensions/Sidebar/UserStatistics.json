@@ -1,7 +1,7 @@
 {
     "jcr:primaryType": "cards:Extension",
     "cards:extensionPointId": "cards/coreUI/sidebar/entry",
-    "cards:extensionName": "User Statistics",
+    "cards:extensionName": "Statistics",
     "cards:targetURL": "/content.html/Statistics/User",
     "cards:icon": "asset:cards-statistics.subjectsIcon.js",
     "cards:defaultOrder": 7
