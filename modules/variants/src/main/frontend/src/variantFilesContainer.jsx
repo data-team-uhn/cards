@@ -56,9 +56,6 @@ const useStyles = makeStyles(theme => ({
     verticalAlign: 'middle',
     paddingRight: theme.spacing(1)
   },
-  uploadButton: {
-    marginTop: theme.spacing(2),
-  },
   fileInfo: {
     padding: theme.spacing(1),
     margin: theme.spacing(3, 0),
@@ -735,9 +732,10 @@ export default function VariantFilesContainer() {
             //          ^ Temporarily ignore all but the first selected file until concurency issues are solved
 
             const upprogress = uploadProgress ? uploadProgress[file.name] : null;
-            let subjectPath = file.subject.path.replace("/Subjects", "Subjects");
-            let tumorPath = `${subjectPath}/${file.tumor.path.replace(new RegExp(".+/"), "")}`;
-            let regionPath = file.region?.path && `${tumorPath}/${file.region.path.replace(new RegExp(".+/"), "")}`;
+            let subjectPath = file.subject.path?.replace("/Subjects", "Subjects");
+            let tumorPath = file.tumor.path && `${subjectPath}/${file.tumor.path.replace(new RegExp(".+/"), "")}`;
+            let regionPath = file.region.path && `${tumorPath}/${file.region.path?.replace(new RegExp(".+/"), "")}`;
+            let isDataValid = subjectPath && tumorPath;
 
             return (
               <div key={file.name} className={classes.fileInfo}>
@@ -767,6 +765,8 @@ export default function VariantFilesContainer() {
                     onChange={(event) => setSubject(event.target.value, file.name)}
                     className={classes.fileDetail}
                     required
+                    error={!subjectPath}
+                    helperText="Required"
                   />
                   <TextField
                     label={tumorSubjectLabel}
@@ -774,15 +774,18 @@ export default function VariantFilesContainer() {
                     onChange={(event) => setTumor(event.target.value, file.name)}
                     className={classes.fileDetail}
                     required
+                    error={!tumorPath}
+                    helperText="Required"
                   />
                   <TextField
                     label={regionSubjectLabel}
                     value={file?.region?.id}
                     onChange={(event) => setRegion(event.target.value, file.name)}
                     className={classes.fileDetail}
+                    helperText="Optional"
                   />
                   <label htmlFor="contained-button-file">
-                    <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error && selectedFiles.length == 0} className={classes.uploadButton} form="variantForm">
+                    <Button type="submit" variant="contained" color="primary" disabled={!isDataValid || uploadInProgress || !!error && selectedFiles.length == 0} form="variantForm">
                       <span><BackupIcon className={classes.buttonIcon}/>
                         {uploadInProgress ? 'Uploading' :
                             // TODO - Make this a per-upload button, pending the completion of LFS-535
