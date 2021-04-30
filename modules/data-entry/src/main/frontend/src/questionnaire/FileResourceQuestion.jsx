@@ -24,7 +24,7 @@ import Delete from "@material-ui/icons/Delete";
 import PropTypes from "prop-types";
 
 import Answer from "./Answer";
-import DragAndDrop from "../dragAndDrop";
+import DragAndDrop from "../components/dragAndDrop";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateWriterContext } from "./FormUpdateContext";
@@ -287,7 +287,6 @@ function FileResourceQuestion(props) {
         </Grid>
       ) }
       <DragAndDrop
-        classes={classes}
         handleDrop={addFiles}
         multifile={maxAnswers != 1}
         error={error}
