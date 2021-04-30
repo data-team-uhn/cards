@@ -34,36 +34,40 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>chemotherapy</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Chemotherapy</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>boolean</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>enableUnknown</name>
-			<value>True</value>
-			<type>Boolean</type>
-		</property>
+		<name>chemotherapy_section</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<node>
+			<name>chemotherapy</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Chemotherapy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>enableUnknown</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
 	</node>
 	<node>
-		<name>chemotherapy_details</name>
+		<name>treatment_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
@@ -102,6 +106,40 @@
 			</node>
 		</node>
 		<node>
+			<name>start_date</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Chemotherapy start date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy-MM-dd</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
 			<name>protocol</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
@@ -122,6 +160,42 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>agent</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Chemotherapy Agent</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>vocabulary</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>CHEBI</value>
+				</values>
 				<type>String</type>
 			</property>
 			<property>
@@ -199,40 +273,6 @@
 			</property>
 		</node>
 		<node>
-			<name>start_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Chemotherapy start date</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>0</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>date</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dateFormat</name>
-				<value>yyyy-MM-dd</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>enableNotes</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-		</node>
-		<node>
 			<name>end_date</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
@@ -266,41 +306,45 @@
 				<type>Boolean</type>
 			</property>
 		</node>
+	</node>
+	<node>
+		<name>mode_section</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
-			<name>agent</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Chemotherapy Agent</value>
+				<name>comparator</name>
+				<value>=</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>0</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>vocabulary</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>sourceVocabularies</name>
-				<values>
-					<value>CHEBI</value>
-				</values>
-				<type>String</type>
-			</property>
-			<property>
-				<name>enableNotes</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>chemotherapy</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>1</value>
+					</values>
+					<type>String</type>
+				</property>
+			</node>
 		</node>
 		<node>
 			<name>mode</name>
@@ -511,6 +555,46 @@
 				</property>
 			</node>
 		</node>
+	</node>
+	<node>
+		<name>dose_section</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>chemotherapy</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>1</value>
+					</values>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
 		<node>
 			<name>cumulative_dose</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
@@ -586,32 +670,36 @@
 		</node>
 	</node>
 	<node>
-		<name>comments</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Comments</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>0</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>0</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>textbox</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
+		<name>comments_section</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<node>
+			<name>comments</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Comments</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>textbox</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 </node>
