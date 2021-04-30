@@ -210,8 +210,8 @@ function SubjectTimeline(props) {
     let rootSubject = subject;
 
     // If the subject has parents, fetch forms associated with the root subject instead
-    if (subject.ancestors && subject.ancestors.length > 0) {
-      let newPath = subject.ancestors[subject.ancestors.length - 1]["@path"];
+    if (subject.parents) {
+      let newPath = subject.parents["@path"];
       rootSubject = await fetchSubject(newPath, true);
     }
 
