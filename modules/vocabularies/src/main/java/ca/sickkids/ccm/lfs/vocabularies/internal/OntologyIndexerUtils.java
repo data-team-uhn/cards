@@ -24,10 +24,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.version.VersionManager;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -46,6 +48,9 @@ public final class OntologyIndexerUtils
     /** The list which holds all JCR vocabulary nodes associated with a vocabulary to be checked-in. */
     private static final ThreadLocal<List<Node>> NODES_TO_CHECK_IN = ThreadLocal.withInitial(ArrayList::new);
 
+    /** The list which holds all root vocabulary nodes to add to vocabulary node. */
+    private static final ThreadLocal<List<Node>> ROOT_NODES = ThreadLocal.withInitial(ArrayList::new);
+
     //Hide the utility class constructor
     private OntologyIndexerUtils()
     {
@@ -58,6 +63,7 @@ public final class OntologyIndexerUtils
      * @param vocabularyNode must be passed from the calling class
      * @throws VocabularyIndexException when a node cannot be created
      */
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
     public static void createVocabularyTermNode(VocabularyTermSource term, InheritableThreadLocal<Node> vocabularyNode)
     {
         try {
@@ -75,7 +81,13 @@ public final class OntologyIndexerUtils
             vocabularyTermNode.setProperty("identifier", term.getId());
 
             vocabularyTermNode.setProperty("label", term.getLabel());
-            vocabularyTermNode.setProperty("parents", term.getParents());
+
+            String[] parents = term.getParents();
+            if (parents.length == 0 || parents.length == 1 && "Thing".equals(parents[0])) {
+                vocabularyTermNode.setProperty("isRoot", true);
+                ROOT_NODES.get().add(vocabularyTermNode);
+            }
+            vocabularyTermNode.setProperty("parents", parents);
             vocabularyTermNode.setProperty("ancestors", term.getAncestors());
 
             Iterator<Map.Entry<String, Collection<String>>> it = term.getAllProperties().asMap().entrySet().iterator();
@@ -84,7 +96,8 @@ public final class OntologyIndexerUtils
                 String[] valuesArray = entry.getValue().toArray(ArrayUtils.EMPTY_STRING_ARRAY);
                 // Sometimes the source may contain more than one label or description, but we can't allow that.
                 // Always use one value for these special fields.
-                if (("label".equals(entry.getKey()) || "description".equals(entry.getKey()))
+                if (("label".equals(entry.getKey()) || "description".equals(entry.getKey())
+                    || "isRoot".equals(entry.getKey()))
                         && valuesArray.length == 1) {
                     vocabularyTermNode.setProperty(entry.getKey(), valuesArray[0]);
                 } else {
@@ -181,5 +194,28 @@ public final class OntologyIndexerUtils
     {
         saveSession(vocabulariesHomepage);
         checkInVocabulary(vocabulariesHomepage);
+    }
+
+    /**
+     * Returns root Vocabulary nodes.
+     *
+     * @return the roots array of <code>Values</code>
+     */
+    public static Value[] getRootNodes()
+    {
+        Value[] roots = ROOT_NODES.get().stream()
+                                        .map(item ->
+                                        {
+                                            try {
+                                                return item.getSession().getValueFactory().createValue(item);
+                                            } catch (Exception e) {
+                                                // do nothing
+                                            }
+                                            return null;
+                                        })
+                                        .collect(Collectors.toList()).toArray(new Value[0]);
+        //Cleanup
+        ROOT_NODES.remove();
+        return roots;
     }
 }
