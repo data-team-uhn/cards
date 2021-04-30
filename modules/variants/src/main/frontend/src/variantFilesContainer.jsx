@@ -234,6 +234,8 @@ export default function VariantFilesContainer() {
           file.tumor    = {"id" : parsed[1]};
           if (parsed.length > 2) {
             file.region = {"id" : parsed.slice(2).join("_")};
+          } else {
+            file.region = {};
           }
 
           setSingleFileSubjectData(file, files)
@@ -284,7 +286,7 @@ export default function VariantFilesContainer() {
         file.tumor = generateSubject(file.tumor, fileEl.tumor.path, fileEl.tumor.existed, fileEl.tumor.uuid, fileEl.tumor.type);
       }
 
-      if (fileEl.region && file.region && fileEl.tumor.id === file.tumor.id && fileEl.region.id === file.region.id) {
+      if (fileEl.region.id && file.region.id && fileEl.subject.id === file.subject.id && fileEl.tumor.id === file.tumor.id && fileEl.region.id === file.region.id) {
         file.region = generateSubject(file.region, fileEl.region.path, fileEl.region.existed, fileEl.region.uuid, fileEl.region.type);
       }
     }
@@ -329,7 +331,7 @@ export default function VariantFilesContainer() {
                         file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"], subject.type);
 
                         // If a region subject is defined
-                        if (file.region) {
+                        if (file.region?.id) {
                           checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                           // Fire a fetch request for a region subject with the tumor subject as its parent
@@ -357,9 +359,7 @@ export default function VariantFilesContainer() {
                         // if a tumor subject is not found
                         // record in variables that a tumor and a region didn’t exist and generate a new random uuid as their path
                         file.tumor  = generateSubject(file.tumor);
-                        if (file.region) {
-                            file.region = generateSubject(file.region);
-                        }
+                        file.region = generateSubject(file.region);
                         resolve(file);
                       }
                     })
@@ -370,9 +370,7 @@ export default function VariantFilesContainer() {
                 // fetch existing or record in variables that it didn’t exist, and generate a new random uuid as its path
                 file.subject = generateSubject(file.subject);
                 file.tumor   = generateSubject(file.tumor);
-                if (file.region) {
-                    file.region = generateSubject(file.region);
-                }
+                file.region = generateSubject(file.region);
                 resolve(file);
               }
             })
@@ -394,7 +392,7 @@ export default function VariantFilesContainer() {
                     file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"], subject.type);
 
                     // If a region subject is defined
-                    if (file.region) {
+                    if (file.region?.id) {
                       checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                       // Fire a fetch request for a region subject with the tumor subject as its parent
@@ -422,16 +420,14 @@ export default function VariantFilesContainer() {
                     // if a tumor subject is not found
                     // record in variables that a tumor and a region didn’t exist, and generate a new random uuid as their path
                     file.tumor  = generateSubject(file.tumor);
-                    if (file.region) {
-                      file.region = generateSubject(file.region);
-                    }
+                    file.region = generateSubject(file.region);
                     resolve(file);
                   }
                 })
                 .catch((err) => {console.log(err); reject(err);})
 
           } else {
-            if (file.region && !file.region.path) {
+            if (file.region?.id && !file.region.path) {
               checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${file.tumor.uuid}'`);
 
               // Fire a fetch request for a region subject with the tumor subject as its parent
@@ -469,10 +465,12 @@ export default function VariantFilesContainer() {
   // 3. subject did not exist, but was just created for one of previous loaded files, so it has path but no uuid
   //
   let generateSubject = (subject, path, existed, uuid, type) => {
-    subject.existed = existed;
-    subject.path = path || "/Subjects/" + uuidv4();
-    subject.uuid = uuid;
-    subject.type = existed && type;
+    if (subject.id) {
+      subject.existed = existed;
+      subject.path = path || "/Subjects/" + uuidv4();
+      subject.uuid = uuid;
+      subject.type = existed && type;
+    }
     return subject;
   };
 
@@ -658,7 +656,7 @@ export default function VariantFilesContainer() {
         json[subjectPath][tumorPath] = {};
       }
 
-      if (file.region && !file.region.existed) {
+      if (file.region?.id && !file.region.existed) {
         json[subjectPath][tumorPath][regionPath] = generateSubjectJson("Patient/Tumor/TumorRegion", file.region.id, file.tumor.path);
       }
 
