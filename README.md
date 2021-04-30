@@ -37,7 +37,7 @@ To specify a different URL, use `-Dsling.url=https://lfs.server:8443/system/cons
 
 Installing larger vocabuleries may fail due to default limits imposed on XML documents by the JVM. In this case, the app should be started with an extra parameter:
 
-`java -Djdk.xml.entityExpansionLimit=0 -jar distribution/target/lfs-*.jar`
+`./start_cards.sh -Djdk.xml.entityExpansionLimit=0`
 
 By default, the app will run with username `admin` and password `admin`.
 
