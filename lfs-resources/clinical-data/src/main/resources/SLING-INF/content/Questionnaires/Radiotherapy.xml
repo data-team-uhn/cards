@@ -34,7 +34,7 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>radiation</name>
+		<name>radiation_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>radiation</name>
@@ -72,7 +72,7 @@
 		</node>
 	</node>
 	<node>
-		<name>radiation_details</name>
+		<name>treatment_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
@@ -111,239 +111,481 @@
 			</node>
 		</node>
 		<node>
-			<name>treatment</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<name>start_date</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Radiation start date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy-MM-dd</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>weight_at_start</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Weight at start of radiation therapy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minValue</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>kg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>height_at_start</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Height at start of radiation therapy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minValue</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>cm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>end_date</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Radiation end date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy-MM-dd</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>details_section</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
 			<node>
-				<name>start_date</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Radiation start date</value>
+					<name>value</name>
+					<values>
+						<value>radiation</value>
+					</values>
 					<type>String</type>
 				</property>
 				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dateFormat</name>
-					<value>yyyy-MM-dd</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>enableNotes</name>
+					<name>isReference</name>
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
 			</node>
 			<node>
-				<name>weight_at_start</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Weight at start of radiation therapy</value>
+					<name>value</name>
+					<values>
+						<value>1</value>
+					</values>
 					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>0</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minValue</name>
-					<value>0</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>unitOfMeasurement</name>
-					<value>kg</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>enableNotes</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>height_at_start</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Height at start of radiation therapy</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>0</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minValue</name>
-					<value>0</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>unitOfMeasurement</name>
-					<value>cm</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>enableNotes</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>end_date</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Radiation end date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dateFormat</name>
-					<value>yyyy-MM-dd</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>enableNotes</name>
-					<value>True</value>
-					<type>Boolean</type>
 				</property>
 			</node>
 		</node>
 		<node>
-			<name>details</name>
+			<name>radiation_field</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Radiation field</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>technique</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Radiation technique</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>source</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Radiation source</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>Xray</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>Xray</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Proton</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>Proton</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>beam_energy</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Beam energy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minValue</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>MV</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>total_dose</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Total radiation dose to tumor bed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minValue</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>cGy</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>fraction_number</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Fraction number</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minValue</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>boost_section</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>radiation</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>1</value>
+					</values>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>boost</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Boost</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>enableUnknown</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>boost_details</name>
 			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
-				<name>radiation_field</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Radiation field</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>technique</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Radiation technique</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>source</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Radiation source</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
 				<node>
-					<name>Xray</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
-						<value>Xray</value>
+						<values>
+							<value>boost</value>
+						</values>
 						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 				<node>
-					<name>Proton</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
-						<value>Proton</value>
+						<values>
+							<value>1</value>
+						</values>
 						<type>String</type>
 					</property>
 				</node>
 			</node>
 			<node>
-				<name>beam_energy</name>
+				<name>boost_technique</name>
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Beam energy</value>
+					<value>Boost radiation technique</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>boost_beam_energy</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Boost beam energy</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -368,11 +610,11 @@
 				</property>
 			</node>
 			<node>
-				<name>total_dose</name>
+				<name>boost_dose</name>
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Total radiation dose to tumor bed</value>
+					<value>Boost dose</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -396,12 +638,169 @@
 					<type>String</type>
 				</property>
 			</node>
+		</node>
+	</node>
+	<node>
+		<name>tbi_section</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
 			<node>
-				<name>fraction_number</name>
+				<name>operandA</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>radiation</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>1</value>
+					</values>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>tbi</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Total Body Irradiation (TBI) - transplant conditioning</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>enableUnknown</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>tbi_details</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>tbi</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>tbi_start_date</name>
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Fraction number</value>
+					<value>TBI start date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dateFormat</name>
+					<value>yyyy-MM-dd</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>tbi_end_date</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>TBI end date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dateFormat</name>
+					<value>yyyy-MM-dd</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>tbi_dose</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>TBI dose</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -420,310 +819,15 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>enableNotes</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>boost</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
-			<node>
-				<name>boost</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Boost</value>
+					<name>unitOfMeasurement</name>
+					<value>cGy</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>boolean</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>enableUnknown</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>boost_details</name>
-				<primaryNodeType>lfs:Section</primaryNodeType>
-				<node>
-					<name>condition</name>
-					<primaryNodeType>lfs:Conditional</primaryNodeType>
-					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
-					</property>
-					<node>
-						<name>operandA</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>boost</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-					<node>
-						<name>operandB</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>1</value>
-							</values>
-							<type>String</type>
-						</property>
-					</node>
-				</node>
-				<node>
-					<name>boost_technique</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>Boost radiation technique</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>boost_beam_energy</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>Boost beam energy</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>decimal</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minValue</name>
-						<value>0</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>unitOfMeasurement</name>
-						<value>MV</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>boost_dose</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>Boost dose</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>decimal</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minValue</name>
-						<value>0</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>unitOfMeasurement</name>
-						<value>cGy</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>tbi</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
-			<node>
-				<name>tbi</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Total Body Irradiation (TBI) - transplant conditioning</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>boolean</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>enableUnknown</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>tbi_details</name>
-				<primaryNodeType>lfs:Section</primaryNodeType>
-				<node>
-					<name>condition</name>
-					<primaryNodeType>lfs:Conditional</primaryNodeType>
-					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
-					</property>
-					<node>
-						<name>operandA</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>tbi</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-					<node>
-						<name>operandB</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>1</value>
-							</values>
-							<type>String</type>
-						</property>
-					</node>
-				</node>
-				<node>
-					<name>tbi_start_date</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>TBI start date</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>date</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>dateFormat</name>
-						<value>yyyy-MM-dd</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>tbi_end_date</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>TBI end date</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>date</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>dateFormat</name>
-						<value>yyyy-MM-dd</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>tbi_dose</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>TBI dose</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>decimal</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minValue</name>
-						<value>0</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>unitOfMeasurement</name>
-						<value>cGy</value>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 		</node>
 	</node>
 	<node>
-		<name>demographics</name>
+		<name>comments_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>comments</name>

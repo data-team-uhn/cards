@@ -38,7 +38,7 @@
 		<type>Long</type>
 	</property>
 	<node>
-		<name>demographics</name>
+		<name>demographics_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>date_of_birth</name>
@@ -395,7 +395,7 @@
 		</node>
 	</node>
 	<node>
-		<name>family</name>
+		<name>family_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>family</name>
@@ -726,7 +726,7 @@
 		</node>
 	</node>
 	<node>
-		<name>diagnosis</name>
+		<name>diagnosis_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>reason_for_dx</name>
@@ -887,7 +887,7 @@
 		</node>
 	</node>
 	<node>
-		<name>pathology</name>
+		<name>pathology_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>age_at_1st_malignant_dx</name>
@@ -1035,7 +1035,7 @@
 		</node>
 	</node>
 	<node>
-		<name>genetics</name>
+		<name>genetics_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>tp53_variant_cDNA</name>
@@ -1481,7 +1481,7 @@
 		</node>
 	</node>
 	<node>
-		<name>testing</name>
+		<name>testing_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>test_done_code</name>
@@ -1617,7 +1617,7 @@
 		</node>
 	</node>
 	<node>
-		<name>follow_up</name>
+		<name>follow_up_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>date_of_last_fup</name>
@@ -1684,7 +1684,7 @@
 		</node>
 	</node>
 	<node>
-		<name>surveillance</name>
+		<name>surveillance_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>undergoing_surveillance</name>
@@ -1834,7 +1834,7 @@
 		</node>
 	</node>
 	<node>
-		<name>comments</name>
+		<name>comments_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>comments</name>

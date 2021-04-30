@@ -33,7 +33,7 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>subject_information</name>
+		<name>subject_information_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>donor_number</name>
@@ -267,7 +267,7 @@
 			</property>
 		</node>
 		<node>
-			<name>dod</name>
+			<name>dod_section</name>
 			<primaryNodeType>lfs:Section</primaryNodeType>
 			<node>
 				<name>condition</name>
@@ -512,7 +512,7 @@
 		</node>
 	</node>
 	<node>
-		<name>diagnostics</name>
+		<name>diagnostics_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>disease</name>
@@ -628,7 +628,7 @@
 		</node>
 	</node>
 	<node>
-		<name>data</name>
+		<name>data_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>file1</name>
@@ -716,7 +716,7 @@
 		</node>
 	</node>
 	<node>
-		<name>comments</name>
+		<name>comments_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>comments</name>

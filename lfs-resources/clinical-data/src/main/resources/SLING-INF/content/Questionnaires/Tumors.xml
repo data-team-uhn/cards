@@ -38,7 +38,7 @@
 		<type>Long</type>
 	</property>
 	<node>
-		<name>diagnosis</name>
+		<name>diagnosis_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>age_at_diagnosis</name>
@@ -387,7 +387,7 @@
 		</node>
 	</node>
 	<node>
-		<name>detection</name>
+		<name>detection_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>modality_of_detection</name>
@@ -444,7 +444,7 @@
 		</node>
 	</node>
 	<node>
-		<name>location</name>
+		<name>location_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>location</name>
@@ -596,7 +596,7 @@
 		</node>
 	</node>
 	<node>
-		<name>status</name>
+		<name>status_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>malignancy</name>
@@ -1160,7 +1160,7 @@
 		</node>
 	</node>
 	<node>
-		<name>treatment</name>
+		<name>treatment_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>resected</name>
@@ -1564,7 +1564,7 @@
 		</node>
 	</node>
 	<node>
-		<name>comments</name>
+		<name>comments_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
 			<name>comments</name>
