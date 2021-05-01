@@ -129,8 +129,8 @@ function ListChild(props) {
   return(
     <div key={id} className={headNode ? "" : classes.branch}>
       {/* Expand button ▼ */}
-      <div className={classes.arrowDiv}>
-        {(expands && hasChildren) ?
+      {expands && (hasChildren || currentlyLoading) && <div className={classes.arrowDiv}>
+        { hasChildren &&
           <Button
             onClick={() => {
               // Prevent a race condition when rapidly opening/closing
@@ -148,31 +148,28 @@ function ListChild(props) {
             >
             {expanded ? "▼" : "►"}
           </Button>
-          : ""
         }
-        {(expands && currentlyLoading) ?
-          <CircularProgress size={10} />
-          : ""
-        }
-      </div>
+        { currentlyLoading && <CircularProgress size={10} /> }
+      </div> }
 
       {/* Listitem button */}
-      <Button
-        onClick={() => changeTerm(id, path)}
-        className={classes.browseitem}
-        >
-        <Typography className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}> {name}</Typography>
-      </Button>
+      <Typography onClick={() => changeTerm(id, path)}
+                  className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}>
+        {name.trim().split(" ").slice(0,-1).join(" ")}
+        <span className={classes.infoIcon}>
+          &nbsp;{name.trim().split(" ").pop()}&nbsp;
+          {/* Button to open info page */}
+          <Button
+            color="primary"
+            buttonRef={(node) => {registerInfo(id, node)}}
+            onClick={() => {getInfo(path)}}
+            className={classes.buttonLink + " " + classes.infoButton}
+          >
+            <Info color="primary" fontSize="small" className={classes.infoButton}/>
+          </Button>
+        </span>
+      </Typography>
 
-      {/* Button to open info page */}
-      <Button
-        color="primary"
-        buttonRef={(node) => {registerInfo(id, node)}}
-        onClick={() => {getInfo(path)}}
-        className={classes.buttonLink + " " + classes.infoButton}
-      >
-        <Info color="primary" fontSize="small" className={classes.infoButton}/>
-      </Button>
       <br />
 
       {/* Children */}

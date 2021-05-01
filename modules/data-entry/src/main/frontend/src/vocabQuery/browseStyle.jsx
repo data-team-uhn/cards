@@ -29,13 +29,19 @@ const browseStyle = theme => ({
       top: "0px",
       position: "absolute",
     },
-     closeButton: {
+    closeButton: {
       position: 'absolute',
       right: theme.spacing(1),
       top: theme.spacing(1),
     },
     infoName: {
       whiteSpace: "normal", // Enable line wrapping
+      color: theme.palette.primary.main,
+      display: 'inline'
+    },
+    infoIcon: {
+      whiteSpace: "nowrap",
+      color: theme.palette.primary.main,
     },
     treeContainer: {
       padding: theme.spacing(2),
@@ -51,14 +57,6 @@ const browseStyle = theme => ({
     },
     branch: {
       display: "block",
-    },
-    // Components of the browser list items
-    browseitem: {
-      margin: "0px",
-      padding: "0px",
-      textTransform: "none",
-      color: theme.palette.primary.main,
-      backgroundColor: 'transparent',
     },
     childDiv: {
       marginLeft: "22px",
