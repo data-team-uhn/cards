@@ -423,7 +423,7 @@ class VocabularyQuery extends React.Component {
                   aria-owns={this.state.termInfoVisible ? "menu-list-grow" : null}
                   aria-haspopup={true}
                   onClick={(e) => this.getInfo(element["@path"])}
-                  className={this.props.classes.buttonLink + " " + this.props.classes.infoButton}
+                  className={this.props.classes.infoButton}
                 >
                   <Info color="primary" />
                 </Button>

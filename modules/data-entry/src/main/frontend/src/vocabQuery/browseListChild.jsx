@@ -163,7 +163,7 @@ function ListChild(props) {
             color="primary"
             buttonRef={(node) => {registerInfo(id, node)}}
             onClick={() => {getInfo(path)}}
-            className={classes.buttonLink + " " + classes.infoButton}
+            className={classes.infoButton}
           >
             <Info color="primary" fontSize="small" className={classes.infoButton}/>
           </Button>
