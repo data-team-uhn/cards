@@ -161,7 +161,6 @@ function ListChild(props) {
         onClick={() => changeTerm(id, path)}
         className={classes.browseitem}
         >
-        <Typography color="textSecondary">{id}&nbsp;</Typography>
         <Typography className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}> {name}</Typography>
       </Button>
 
