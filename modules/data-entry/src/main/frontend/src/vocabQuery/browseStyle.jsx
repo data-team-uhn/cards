@@ -75,7 +75,7 @@ const browseStyle = theme => ({
     arrowButton: {
       minWidth: "0px",
       backgroundColor: 'transparent',
-      right: theme.spacing(0.5)
+      right: theme.spacing(2)
     },
 });
 
