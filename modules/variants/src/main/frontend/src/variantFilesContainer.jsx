@@ -553,8 +553,7 @@ export default function VariantFilesContainer() {
    * @returns {Promise} a POST request with the subject upload
    */
   let uploadSubjectsFirst = (toUpload) => {
-    // Create a JSON representation of each file that needs to be stored.
-    // First, we need the subjects
+    // Create a JSON representation of each subject that needs to be created.
     let newSubjects = {};
     toUpload.forEach((file) => {
       let [newJson, subjectPath, tumorPath, regionPath] = assembleSubjectJson(file);
@@ -580,7 +579,7 @@ export default function VariantFilesContainer() {
       file.subject.existed = true;
     })
 
-    // Upload each file's subject one after the other
+    // Upload each file's subject in one batch
     let data = new FormData();
     data.append(':contentType', 'json');
     data.append(':operation', 'import');
@@ -607,7 +606,7 @@ export default function VariantFilesContainer() {
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
   let upload = (event) => {
-    // Stops the normal browser form submission
+    // Stop the normal browser form submission
     event.preventDefault();
 
     setUploadInProgress(true);
@@ -719,6 +718,7 @@ export default function VariantFilesContainer() {
    *
    * @param {File} file the File object from which we can derive subject information. This should be processed via the
    * functions in onDrop prior to using this function
+   * @returns {array} An array of [JSON of the subjects, subject's key in the JSON object, tumor key in the subject, region key]
    */
   let assembleSubjectJson = (file) => {
     let json = {};
@@ -885,12 +885,7 @@ export default function VariantFilesContainer() {
                   <label htmlFor="contained-button-file">
                     <Button variant="outlined" color="primary" disabled={!isDataValid || file.uploading || !!error && selectedFiles.length == 0} onClick={() => uploadSingleFile(file)}>
                       <span><BackupIcon className={classes.buttonIcon}/>
-                        {file.uploading ? 'Uploading' :
-                            // TODO - Make this a per-upload button, pending the completion of LFS-535
-                            // TODO - judge upload status button message over all upload statuses of all files ??
-                            // uploadProgress[file.name].state =="done" ? 'Uploaded' :
-                            // uploadProgress[file.name].state =="error" ? 'Upload failed, try again?' :
-                            'Upload'}
+                        {file.uploading ? 'Uploading' : 'Upload'}
                       </span>
                     </Button>
                   </label>
@@ -919,12 +914,7 @@ export default function VariantFilesContainer() {
     { selectedFiles?.length > 0 ?
       <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error && selectedFiles.length == 0} form="variantForm">
         <span><BackupIcon className={classes.buttonIcon}/>
-          {uploadInProgress ? 'Uploading' :
-              // TODO - Make this a per-upload button, pending the completion of LFS-535
-              // TODO - judge upload status button message over all upload statuses of all files ??
-              // uploadProgress[file.name].state =="done" ? 'Uploaded' :
-              // uploadProgress[file.name].state =="error" ? 'Upload failed, try again?' :
-              'Upload all'}
+          {uploadInProgress ? 'Uploading' : 'Upload all'}
         </span>
       </Button>
       : <></>}
