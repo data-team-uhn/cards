@@ -77,12 +77,15 @@ const useStyles = makeStyles(theme => ({
   progressBar: {
     width: "40%",
     height: theme.spacing(2),
-    backgroundColor: theme.palette.primary.main,
     borderRadius: "2px",
     display: "inline-block",
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    verticalAlign: "text-top"
+    verticalAlign: "text-top",
+    float: "right"
+  },
+  progressText: {
+    float: "right"
   },
   progress: {
     backgroundColor: theme.palette.primary.main,
@@ -839,7 +842,9 @@ export default function VariantFilesContainer() {
                       <div className={classes.progressBar}>
                         <div className={classes.progress} style={{ width: upprogress.percentage + "%" }} />
                       </div>
-                      { upprogress.percentage + "%" }
+                      <div className={classes.progressText}>
+                        { upprogress.percentage + "%" }
+                      </div>
                     </span>
                   }
                   { upprogress && upprogress.state == "error" && <Typography color='error'>Error uploading file</Typography> }
