@@ -336,6 +336,8 @@ function MultipleChoice(props) {
               acceptEnteredOption(value, label);
               onUpdate && onUpdate(value);
             }}
+            initialSelection={initialSelection}
+            removeOption={removeOption}
             onChange = {ghostUpdateEvent}
             value={ghostSelected ? ghostName : undefined}
             disabled={disabled}

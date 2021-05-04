@@ -18,10 +18,10 @@
 //
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-// @material-ui/core
+
 import { withStyles } from "@material-ui/core";
-import { Button, CircularProgress, IconButton, Tooltip, Typography } from '@material-ui/core';
-// @material-ui/icons
+import { Button, Checkbox, CircularProgress, IconButton, Radio, Tooltip, Typography } from '@material-ui/core';
+
 import Info from "@material-ui/icons/Info";
 import ArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
@@ -49,9 +49,15 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  onCloseInfoBox: Callback to close term info box
 //  focused: boolean determining whether this entry is focused and should be visually emphasized
 //           (a focused term entry is displayed as a root of a subtree, with only its parents above and its descendants below)
+//  addCheckbox: whether or not to add a checkbox control for term selection
+//  addRadio: whether or not to add a radio control for term selection
+//  addOption: Function to process term selected in browser
+//  initialSelection: Existing answers
+//  removeOption: Function to remove added answer
 //
 function VocabularyBranch(props) {
-  const { defaultOpen, id, path, name, onTermClick, onCloseInfoBox, registerInfo, getInfo, expands, headNode, focused, onError, knownHasChildren, classes } = props;
+  const { defaultOpen, id, path, name, onTermClick, onCloseInfoBox, registerInfo, getInfo, expands, headNode, focused, onError,
+    knownHasChildren, addCheckbox, addRadio, addOption, removeOption, initialSelection, classes } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
@@ -60,6 +66,7 @@ function VocabularyBranch(props) {
   const [ childrenData, setChildrenData ] = useState();
   const [ children, setChildren ] = useState([]);
   const [ expanded, setExpanded ] = useState(defaultOpen);
+  const [ selectedPaths, setSelectedPaths] = useState(initialSelection ? initialSelection.map(item => item[1]) : []);
 
   let loadTerm = (id, path) => {
     if (focused) return;
@@ -111,6 +118,11 @@ function VocabularyBranch(props) {
         headNode={false}
         onError={onError}
         knownHasChildren={row["lfs:hasChildren"]}
+        addCheckbox={addCheckbox}
+        addRadio={addRadio}
+        addOption={addOption}
+        removeOption={removeOption}
+        initialSelection={initialSelection}
       />)
       );
     setLoadedChildren(true);
@@ -169,6 +181,20 @@ function VocabularyBranch(props) {
     }
   }
 
+  let onTermSelect = (evt, path, name) => {
+    evt.stopPropagation();
+    if (evt.target.checked) {
+      let newPaths = selectedPaths.slice();
+      newPaths.push(path);
+      setSelectedPaths(newPaths);
+      addOption(path, name);
+    } else {
+      let newPaths = selectedPaths.filter(item => item!= path);
+      setSelectedPaths(newPaths);
+      removeOption(path, name);
+    }
+  }
+
   // Ensure we know whether or not we have children, if this is expandable
   if (expands) {
     // Ensure our child list entries are built, if this is currently expanded
@@ -200,8 +226,21 @@ function VocabularyBranch(props) {
       }
 
       {/* Term name */}
-      <Typography onClick={() => loadTerm(id, path)}
+      <Typography onClick={(evt) => {(evt.target.type != "checkbox") && loadTerm(id, path)}}
                   className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}>
+        {/* Browser term select tools */}
+	    { addCheckbox &&
+	      <Checkbox
+	        color="primary"
+	        checked={selectedPaths.includes(path)}
+	        onClick={(evt) => {onTermSelect(evt, path, name);}}
+	      /> }
+	    { addRadio &&
+	       <Radio
+	         checked={selectedPaths.includes(path)}
+	         color="primary"
+	         onChange={(evt) => {onTermSelect(evt, path, name);}}
+	       /> }
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
         <span className={classes.infoIcon}>
           {name.split(" ").pop()}&nbsp;
@@ -238,6 +277,11 @@ VocabularyBranch.propTypes = {
   focused: PropTypes.bool,
   onError: PropTypes.func.isRequired,
   knownHasChildren: PropTypes.bool.isRequired,
+  addCheckbox: PropTypes.bool,
+  addRadio: PropTypes.bool,
+  addOption: PropTypes.func,
+  removeOption: PropTypes.func,
+  initialSelection: PropTypes.array,
   classes: PropTypes.object.isRequired
 };
 

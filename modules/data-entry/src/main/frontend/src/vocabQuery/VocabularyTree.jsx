@@ -42,14 +42,22 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  vocabulary: Vocabulary info
 //  browseRoots: Boolean representing whether or not the vocabulary tree shows roots
 //  onCloseInfoBox: Callback to close term info box
+//  maxAnswers: maximum answers allowed for the vocabulary question
+//  allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
+//  addOption: Process term selected in browser
+//  initialSelection: Existing answers
+//  removeOption: Function to remove added answer
 //
 function VocabularyTree(props) {
-  const { open, path, onTermClick, registerInfo, getInfo, onClose, onCloseInfoBox, onError, browserRef, classes, vocabulary, browseRoots, ...rest } = props;
+  const { open, path, onTermClick, registerInfo, getInfo, onClose, onCloseInfoBox, onError, browserRef, classes, vocabulary,
+    browseRoots, maxAnswers, allowTermSelection, addOption, removeOption, initialSelection, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
   const [ currentNode, setCurrentNode ] = useState();
   const [ roots, setRoots ] = useState(vocabulary.roots);
+  const addCheckbox = allowTermSelection && Number.isInteger(maxAnswers) && maxAnswers != 1;
+  const addRadio = allowTermSelection && maxAnswers == 1;
 
   useEffect(() => {
     if (browseRoots && !vocabulary.roots) {
@@ -135,6 +143,11 @@ function VocabularyTree(props) {
         focused={focused}
         onError={onError}
         knownHasChildren={!!hasChildren}
+        addCheckbox={addCheckbox}
+        addRadio={addRadio}
+        addOption={addOption}
+        removeOption={removeOption}
+        initialSelection={initialSelection}
       />
     );
   }
@@ -179,6 +192,11 @@ VocabularyTree.propTypes = {
   browserRef: PropTypes.object.isRequired,
   browseRoots: PropTypes.bool,
   vocabulary: PropTypes.object,
+  maxAnswers: PropTypes.number,
+  allowTermSelection: PropTypes.bool,
+  removeOption: PropTypes.func,
+  addOption: PropTypes.func,
+  initialSelection: PropTypes.array,
   classes: PropTypes.object.isRequired
 };
 

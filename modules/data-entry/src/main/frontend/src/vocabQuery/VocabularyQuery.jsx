@@ -48,11 +48,13 @@ const MAX_RESULTS = 10;
 //  placeholder: String to display as the input element's placeholder
 //  value: String to use as the input element value
 //  onChange: Callback in term input change event
+//  allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
+//  initialSelection: Existing answers
+//  removeOption: Function to remove added answer
 //
 function VocabularyQuery(props) {
   const { clearOnClick, onClick, focusAfterSelecting, disabled, variant, isNested, placeholder,
-    value, questionDefinition, onChange, classes } = props;
-
+    value, questionDefinition, onChange, allowTermSelection, initialSelection, removeOption, classes } = props;
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsVisible, setSuggestionsVisible] = useState(false);
@@ -146,7 +148,7 @@ function VocabularyQuery(props) {
     url.searchParams.set("suggest", input.replace(/[^\w\s]/g, ' '));
 
     //Are there any filters that should be associated with this request?
-    if (props?.questionDefinition?.vocabularyFilters?.[selectedVocab]) {
+    if (questionDefinition?.vocabularyFilters?.[selectedVocab]) {
       var filter = questionDefinition.vocabularyFilters[selectedVocab].map((category) => {
         return (`term_category:${category}`);
       }).join(" OR ");
@@ -359,6 +361,11 @@ function VocabularyQuery(props) {
           infoButtonRefs={buttonRefs}
           browserRef={browserRef}
           infoboxRef={infoboxRef}
+          maxAnswers={questionDefinition?.maxAnswers}
+          allowTermSelection={allowTermSelection}
+          initialSelection={initialSelection}
+          addOption={onClick}
+          removeOption={removeOption}
         />
       </div>
     );
@@ -376,6 +383,9 @@ VocabularyQuery.propTypes = {
     value: PropTypes.string,
     questionDefinition: PropTypes.object.isRequired,
     onChange: PropTypes.func,
+    allowTermSelection: PropTypes.bool,
+    initialSelection: PropTypes.array,
+    removeOption: PropTypes.func
 };
 
 VocabularyQuery.defaultProps = {
