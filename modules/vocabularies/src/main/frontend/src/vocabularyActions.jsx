@@ -143,9 +143,11 @@ export default function VocabularyActions(props) {
             uninstall={uninstall}
             phase={phase}
             vocabulary={vocabulary}
+            url={vocabulary["@path"]}
+            roots={vocabulary.roots}
+            type={props.type}
           />
         }
-
         <Dialog open={error} onClose={handleClose}>
 
           <DialogTitle disableTypography>

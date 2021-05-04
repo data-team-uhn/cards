@@ -43,7 +43,8 @@ function reformat(data, type) {
           description: vocab.description,
           released: vocab.released,
           installed: vocab["jcr:created"],
-          version: vocab.version
+          version: vocab.version,
+          roots: vocab.roots
    }));
    return vocabs;
 }
