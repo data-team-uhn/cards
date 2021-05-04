@@ -47,7 +47,7 @@ function VocabularyTree(props) {
 
   useEffect(() => {
       rebuildBrowser();
-  }, [roots])
+  }, [id, roots])
 
   // Rebuild the browser tree centered around the given term.
   let rebuildBrowser = () => {
