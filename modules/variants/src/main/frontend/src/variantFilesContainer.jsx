@@ -594,7 +594,9 @@ export default function VariantFilesContainer() {
     return uploadSubjectsFirst(selectedFiles).then(() => {
       let promises = [];
       selectedFiles.forEach(file => {
-        promises.push(uploadSingleFile(file, false));
+        if (!file.uploading && !file.sent) {
+          promises.push(uploadSingleFile(file, false));
+        }
       });
       return Promise.all(promises);
     });
@@ -602,18 +604,23 @@ export default function VariantFilesContainer() {
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
   let upload = (event) => {
-    // This stops the normal browser form submission
+    // Stops the normal browser form submission
     event.preventDefault();
 
-    // TODO - handle possible logged out situation here - open a login popup
-
     setUploadInProgress(true);
-    setUploadProgress({});
+    setUploadProgress((old) => {
+      let progressCopy = {...old};
+      selectedFiles.forEach((file) => {
+        if (!file.sent && !file.uploading) {
+          progressCopy[file.name] = { state: "pending", percentage: 0 };
+        }
+      });
+      return progressCopy;
+    });
     setError("");
 
     uploadAllFiles()
       .then(() => {
-
         setUploadInProgress(false);
       })
       .catch( (error) => {
