@@ -208,6 +208,24 @@ export default function VariantFilesContainer() {
     setError(response.status + " " + response.statusText);
   };
 
+  let updateFileExistsStatus = (processedFile, fileName) => {
+    if (processedFile.tumor.existed && processedFile.tumor.id) {
+      // query data about all of the already uploaded files
+      let url = new URL("/query", window.location.origin);
+      let sqlquery = `select f.* from [lfs:Form] as n inner join [nt:file] as f on isdescendantnode(f, n) where n.questionnaire = '${somaticVariantsUUID}' and n.subject = '${processedFile.region?.uuid || processedFile.tumor.uuid}'`;
+      url.searchParams.set("query", sqlquery);
+
+      return fetchWithReLogin(globalLoginDisplay, url)
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((json) => {
+          processedFile.sameFiles = json.rows.filter((row) => row["@name"] === fileName);
+          return processedFile;
+        });
+    } else {
+      return new Promise((resolve, reject) => resolve(processedFile));
+    }
+  }
+
   // Fetch information about patient, tumor and region subjects from file name
   // on file drop to the drag&drop zone
   let onDrop = (accepted) => {
@@ -242,32 +260,14 @@ export default function VariantFilesContainer() {
           file.uploading = false;
 
           setSingleFileSubjectData(file, files)
-            .then( (processedFile) => {
-
-              if (processedFile.tumor.existed && processedFile.tumor.id) {
-
-                // query data about all of the already uploaded files
-                let url = new URL("/query", window.location.origin);
-                let sqlquery = `select f.* from [lfs:Form] as n inner join [nt:file] as f on isdescendantnode(f, n) where n.questionnaire = '${somaticVariantsUUID}' and n.subject = '${processedFile?.region?.uuid || processedFile.tumor.uuid}'`;
-                url.searchParams.set("query", sqlquery);
-
-                fetch(url)
-                  .then((response) => response.ok ? response.json() : Promise.reject(response))
-                  .then((json) => {
-                    processedFile.sameFiles = json.rows.filter((row) => row["@name"] === file.name);
-                    files = files.slice();
-                    files.push(processedFile);
-                    setSelectedFiles(files);
-                  })
-                  .finally( () => {resolve();} );
-              } else {
-                files = files.slice();
-                files.push(processedFile);
-                setSelectedFiles(files);
-                resolve();
-              }
+            .then((processedFile) => updateFileExistsStatus(processedFile, file.name))
+            .then((processedFile) => {
+              files = files.slice();
+              files.push(processedFile);
+              setSelectedFiles(files);
             })
-            .catch((err) => {setError("Internal server error while fetching file versions");});
+            .catch((err) => {setError("Internal server error while fetching file versions"); console.log(err);})
+            .finally(() => resolve());
         })
         .then(loop.bind(null, i+1));
     })(0);
@@ -489,6 +489,7 @@ export default function VariantFilesContainer() {
     newFiles[index].subject.path = null;
 
     setSingleFileSubjectData(newFiles[index], selectedFiles)
+      .then((file) => updateFileExistsStatus(file, fileName))
       .then((file) => {
           // find all files with this name
           newFiles[index] = file;
@@ -507,6 +508,7 @@ export default function VariantFilesContainer() {
     newFiles[index].tumor.path = null;
 
     setSingleFileSubjectData(newFiles[index], selectedFiles)
+      .then((file) => updateFileExistsStatus(file, fileName))
       .then((file) => {
           // find all files with this name
           newFiles[index] = file;
@@ -525,6 +527,7 @@ export default function VariantFilesContainer() {
     newFiles[index].region.path = null;
 
     setSingleFileSubjectData(newFiles[index], selectedFiles)
+      .then((file) => updateFileExistsStatus(file, fileName))
       .then((file) => {
           // find all files with this name
           newFiles[index] = file;
