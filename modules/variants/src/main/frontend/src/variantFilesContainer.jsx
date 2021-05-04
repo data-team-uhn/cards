@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import {
   Button,
@@ -44,6 +44,7 @@ import { v4 as uuidv4 } from 'uuid';
 import moment from "moment";
 import DragAndDrop from "./components/dragAndDrop.jsx";
 import { escapeJQL } from "./escape.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -129,6 +130,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function VariantFilesContainer() {
   const classes = useStyles();
+
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Error message set when file upload to the server fails
   let [ error, setError ] = useState();
@@ -537,22 +540,61 @@ export default function VariantFilesContainer() {
     setUploadProgress({});
   };
 
+  /**
+   * Create each subject in a single request, to prevent concurrency issues involved in creating multiple subjects.
+   *
+   * @param {array} toUpload Array of File objects to upload. These file objects should be processed via onDrop first
+   * @returns {Promise} a POST request with the subject upload
+   */
   let uploadSubjectsFirst = (toUpload) => {
     // Create a JSON representation of each file that needs to be stored.
     // First, we need the subjects
-    console.log("To upload:");
-    console.log(toUpload);
+    let newSubjects = {};
+    toUpload.forEach((file) => {
+      let [newJson, subjectPath, tumorPath, regionPath] = assembleSubjectJson(file);
+      // Add this JSON to ours, making sure not to overwrite anything already existing
+      if (subjectPath in newSubjects) {
+        if (tumorPath in newSubjects[subjectPath]) {
+          if (file.region?.id) {
+            if (regionPath in newSubjects[subjectPath][tumorPath]) {
+              // This region already exists in the list of things we need to create
+              // So, we ignore it
+            } else {
+              newSubjects[subjectPath][tumorPath][regionPath] = newJson[subjectPath][tumorPath][regionPath];
+            }
+            file.region.existed = true;
+          }
+        } else {
+          newSubjects[subjectPath][tumorPath] = newJson[subjectPath][tumorPath];
+        }
+        file.tumor.existed = true;
+      } else {
+        newSubjects[subjectPath] = newJson[subjectPath];
+      }
+      file.subject.existed = true;
+    })
+
+    // Upload each file's subject one after the other
+    let data = new FormData();
+    data.append(':contentType', 'json');
+    data.append(':operation', 'import');
+    data.append(':content', JSON.stringify(newSubjects));
+    return fetchWithReLogin(
+      globalLoginDisplay,
+      '/',
+      { method: 'POST', body: data }
+    );
   }
 
    // Find the icon and load them
   let uploadAllFiles = () => {
-    const promises = [];
-    uploadSubjectsFirst(selectedFiles);
-    /*selectedFiles.forEach(file => {
-      promises.push(uploadSingleFile(file));
+    return uploadSubjectsFirst(selectedFiles).then(() => {
+      let promises = [];
+      selectedFiles.forEach(file => {
+        promises.push(uploadSingleFile(file, false));
+      });
+      return Promise.all(promises);
     });
-
-    return Promise.all(promises);*/
   };
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
@@ -578,7 +620,7 @@ export default function VariantFilesContainer() {
     });
   };
 
-  let uploadSingleFile = (file) => {
+  let uploadSingleFile = (file, generateSubjects=true) => {
     return new Promise((resolve, reject) => {
 
       var reader = new FileReader();
@@ -590,15 +632,15 @@ export default function VariantFilesContainer() {
 
         // get the file data
         var csv = event.target.result;
-        let json = assembleJson(file, csv);
+        let json = assembleJson(file, csv, generateSubjects);
 
         let data = new FormData();
         data.append(':contentType', 'json');
         data.append(':operation', 'import');
         data.append(':content', JSON.stringify(json));
 
-        var xhr = new XMLHttpRequest()
-        xhr.open('POST', '/')
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/');
 
         xhr.onload = function() {
 
@@ -617,14 +659,14 @@ export default function VariantFilesContainer() {
 
           setUploadProgress(uploadProgress);
           resolve(xhr.response);
-        }
+        };
 
         xhr.onerror = function() {
           uploadProgress[file.name] = { state: "error", percentage: 0 };
           file.uploading = false;
           setUploadProgress(uploadProgress);
           resolve(xhr.response);
-        }
+        };
 
         xhr.upload.onprogress = function (event) {
 
@@ -642,6 +684,13 @@ export default function VariantFilesContainer() {
     });
   };
 
+  /**
+   * Generate the JSON representation of a single subject
+   *
+   * @param {string} refType The jcr:reference:type for this subject (e.g. "Patient")
+   * @param {string} id The identifier for this subject
+   * @param {string} parent If given, supplies a parent for this subject
+   */
   let generateSubjectJson = (refType, id, parent) => {
     let info = {};
     info["jcr:primaryType"] = "lfs:Subject";
@@ -651,27 +700,47 @@ export default function VariantFilesContainer() {
     return info;
   };
 
-  let assembleJson = (file, csvData) => {
-      let json = {};
+  /**
+   * Generate the JSON representation of the subjects from a file
+   * This will not generate details for any subject that already exists
+   *
+   * @param {File} file the File object from which we can derive subject information. This should be processed via the
+   * functions in onDrop prior to using this function
+   */
+  let assembleSubjectJson = (file) => {
+    let json = {};
 
-      let subjectPath = file.subject?.path?.replace("/Subjects", "Subjects");
-      let tumorPath = file.tumor?.path?.replace(new RegExp(".+/"), "");
-      let regionPath = file.region?.path?.replace(new RegExp(".+/"), "");
-      if (!file.subject.existed) {
-        json[subjectPath] = generateSubjectJson("Patient", file.subject.id);
-      } else {
-        json[subjectPath] = {};
-      }
+    let subjectPath = file.subject?.path?.replace("/Subjects", "Subjects");
+    let tumorPath = file.tumor?.path?.replace(new RegExp(".+/"), "");
+    let regionPath = file.region?.path?.replace(new RegExp(".+/"), "");
+    if (!file.subject.existed) {
+      json[subjectPath] = generateSubjectJson("Patient", file.subject.id);
+    } else {
+      json[subjectPath] = {};
+    }
 
-      if (!file.tumor.existed) {
-        json[subjectPath][tumorPath] = generateSubjectJson("Patient/Tumor", file.tumor.id, file.subject.path);
-      } else {
-        json[subjectPath][tumorPath] = {};
-      }
+    if (!file.tumor.existed) {
+      json[subjectPath][tumorPath] = generateSubjectJson("Patient/Tumor", file.tumor.id, file.subject.path);
+    } else {
+      json[subjectPath][tumorPath] = {};
+    }
 
-      if (file.region?.id && !file.region.existed) {
-        json[subjectPath][tumorPath][regionPath] = generateSubjectJson("Patient/Tumor/TumorRegion", file.region.id, file.tumor.path);
-      }
+    if (file.region?.id && !file.region.existed) {
+      json[subjectPath][tumorPath][regionPath] = generateSubjectJson("Patient/Tumor/TumorRegion", file.region.id, file.tumor.path);
+    }
+    return [json, subjectPath, tumorPath, regionPath];
+  }
+
+  /**
+   * Assemble the JSON representation of the given file, and, optionally, the JSON representing its subjects
+   *
+   * @param {File} file the File object that will be uploaded. This will be stringified, so be careful of non-unicode characters
+   * @param {string} csvData the contents of the above file object
+   * @param {boolean} generateSubjects If true, the subjects for the given file will be generated as well.
+   */
+  let assembleJson = (file, csvData, generateSubjects=true) => {
+      let [subjectJson, subjectPath, tumorPath, regionPath] = assembleSubjectJson(file);
+      let json = generateSubjects ? subjectJson : {};
 
       let formPath = "Forms/" + uuidv4();
       let formInfo = {};
