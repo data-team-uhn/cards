@@ -29,8 +29,8 @@ function InfoBox(props) {
   const { classes } = props;
 
   let clickAwayInfo = (event) => {
-    if ((props.menuPopperRef && props.menuPopperRef.current?.contains(event.target))
-      || (props.infoRef && props.infoRef.current?.contains(event.target))) {
+    if (props?.menuPopperRef.current?.contains(event.target)
+      || props?.infoRef.current?.contains(event.target)) {
       return;
     }
 
