@@ -7,9 +7,7 @@
   to you under the Apache License, Version 2.0 (the
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
-
   http://www.apache.org/licenses/LICENSE-2.0
-
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -22,35 +20,27 @@
 
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-parent</artifactId>
+    <artifactId>lfs-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-modules</artifactId>
-  <packaging>pom</packaging>
-  <name>LFS Modules</name>
+  <artifactId>lfs-modules-upgrade-marker</artifactId>
+  <packaging>bundle</packaging>
+  <name>CARDS Upgrade Marker</name>
 
-  <modules>
-    <module>startup-customization</module>
-    <module>form-completion-status</module>
-    <module>commons</module>
-    <module>ui-extension</module>
-    <module>login</module>
-    <module>homepage</module>
-    <module>pedigree</module>
-    <module>subjects</module>
-    <module>data-entry</module>
-    <module>ldap-support</module>
-    <module>utils</module>
-    <module>principals</module>
-    <module>permissions</module>
-    <module>permissions-ownership</module>
-    <module>vocabularies</module>
-    <module>variants</module>
-    <module>demo-banner</module>
-    <module>aggregated-frontend</module>
-    <module>versioning</module>
-    <module>favicon</module>
-    <module>upgrade-marker</module>
-  </modules>
+  <build>
+    <plugins>
+      <!-- This is an OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Sling-Initial-Content>SLING-INF/content/;path:=/</Sling-Initial-Content>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
