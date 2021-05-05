@@ -771,7 +771,7 @@ export default function VariantFilesContainer() {
   }
 
   // Only show the upload all button if there is at least one file that has yet to be sent
-  let showUploadAllButton = selectedFiles.some((file) => !file.sent);
+  let showUploadAllButton = selectedFiles.length > 1 && selectedFiles.some((file) => !file.sent);
 
   return (
   <React.Fragment>
