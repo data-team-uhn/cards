@@ -370,7 +370,7 @@ function VocabularyQuery(props) {
   if (disabled) {
     // Alter our text to either the override ("Please select at most X options")
     // or empty it
-    anchorEl.currentl.value = disabled ? props.overrideText : "";
+    anchorEl.current.value = disabled ? props.overrideText : "";
   }
 
   return (
