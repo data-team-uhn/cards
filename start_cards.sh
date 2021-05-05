@@ -23,6 +23,7 @@ BIND_TEST_SPACING=30
 TERMINAL_NOCOLOR='\033[0m'
 TERMINAL_RED='\033[0;31m'
 TERMINAL_GREEN='\033[0;32m'
+TERMINAL_YELLOW='\033[0;33m'
 
 #CTRL+C should stop everything started by this script
 trap ctrl_c INT
@@ -33,28 +34,50 @@ function ctrl_c() {
   exit
 }
 
+#Determine the port that CARDS is to bind to
+BIND_PORT=$(ARGUMENT_KEY='-p' ARGUMENT_DEFAULT='8080' python3 Utilities/HostConfig/argparse_bash.py $@)
+
+#Check if the psutil Python module is installed
+python3 -c 'import psutil' 2>/dev/null && PSUTIL_INSTALLED=true || PSUTIL_INSTALLED=false
+
+#If psutil is not installed, simply check if BIND_PORT is available now,
+# and therefore will likely be available in the very near future
+if [ $PSUTIL_INSTALLED = false ]
+then
+  python3 Utilities/HostConfig/check_tcp_available.py --tcp_port $BIND_PORT || \
+    { echo -e "${TERMINAL_RED}Unable to bind to TCP port${TERMINAL_NOCOLOR}"; exit -1; }
+fi
+
 #Start CARDS in the background
 java -jar distribution/target/lfs-*jar $@ &
 CARDS_PID=$!
 
 #Check to see if CARDS was able to bind to the TCP port
-BIND_PORT=$(ARGUMENT_KEY='-p' ARGUMENT_DEFAULT='8080' python3 Utilities/HostConfig/argparse_bash.py $@)
-for bind_test in `seq 0 $BIND_TESTS`
-do
-  #Check if we have timed out
-  if [ $bind_test = $BIND_TESTS ]
-  then
-    kill $CARDS_PID
-    wait $CARDS_PID
-    echo -e "${TERMINAL_RED}Unable to bind to TCP port${TERMINAL_NOCOLOR}"
-    exit -1
-  fi
-  sleep $BIND_TEST_SPACING
-  #Check if CARDS was able to bind
-  python3 Utilities/HostConfig/check_tcp_listen.py --tcp_port $BIND_PORT --pid $CARDS_PID && break
-done
+#This is the more robust test that works only if psutil is installed
+if [ $PSUTIL_INSTALLED = true ]
+then
+  for bind_test in `seq 0 $BIND_TESTS`
+  do
+    #Check if we have timed out
+    if [ $bind_test = $BIND_TESTS ]
+    then
+      kill $CARDS_PID
+      wait $CARDS_PID
+      echo -e "${TERMINAL_RED}Unable to bind to TCP port${TERMINAL_NOCOLOR}"
+      exit -1
+    fi
+    sleep $BIND_TEST_SPACING
+    #Check if CARDS was able to bind
+    python3 Utilities/HostConfig/check_tcp_listen.py --tcp_port $BIND_PORT --pid $CARDS_PID && break
+  done
+fi
 
-echo -e "${TERMINAL_GREEN}Started CARDS${TERMINAL_NOCOLOR}"
+if [ $PSUTIL_INSTALLED = true ]
+then
+  echo -e "${TERMINAL_GREEN}Started CARDS${TERMINAL_NOCOLOR}"
+else
+  echo -e "${TERMINAL_YELLOW}Started CARDS - used suboptimal bind test${TERMINAL_NOCOLOR}"
+fi
 
 #Wait for CTRL+C to stop everything
 read -r -d '' _ < /dev/tty
