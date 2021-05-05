@@ -323,8 +323,8 @@ function VocabularyQuery(props) {
   }
 
   let clickAwayInfo = (event) => {
-    if ((menuPopperRef && menuPopperRef.current.contains(event.target))
-      || (infoRef && infoRef.current && infoRef.current.contains(event.target))) {
+    if (menuPopperRef?.current?.contains(event.target)
+      || infoRef?.current?.contains(event.target)) {
       return;
     }
 
