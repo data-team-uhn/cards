@@ -36,12 +36,12 @@ const browseStyle = theme => ({
     },
     infoName: {
       whiteSpace: "normal", // Enable line wrapping
-      color: theme.palette.primary.main,
-      display: 'inline'
+      color: theme.palette.text.primary,
+      display: 'inline',
+      cursor: 'pointer'
     },
     infoIcon: {
-      whiteSpace: "nowrap",
-      color: theme.palette.primary.main,
+      whiteSpace: "nowrap"
     },
     treeContainer: {
       padding: theme.spacing(2),
@@ -62,9 +62,7 @@ const browseStyle = theme => ({
       marginLeft: "22px",
     },
     arrowDiv: {
-      width: "0.8em",
-      display: "inline-block",
-      align: "center",
+      display: "inline-block"
     },
     hiddenDiv: {
       display: "none",
@@ -73,9 +71,7 @@ const browseStyle = theme => ({
       fontWeight: "bold",
     },
     arrowButton: {
-      minWidth: "0px",
-      backgroundColor: 'transparent',
-      right: theme.spacing(2)
+      paddingLeft: '0'
     },
 });
 

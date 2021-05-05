@@ -20,7 +20,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core";
-import { Button, CircularProgress, Typography } from '@material-ui/core';
+import { Button, CircularProgress, IconButton, Typography } from '@material-ui/core';
 // @material-ui/icons
 import Info from "@material-ui/icons/Info";
 
@@ -81,7 +81,7 @@ function ListChild(props) {
       (<BrowseListChild
         id={row["identifier"]}
         path={row["@path"]}
-        name={row["label"]}
+        name={row["label"].trim()}
         changeTerm={changeTerm}
         registerInfo={registerInfo}
         getInfo={getInfo}
@@ -131,23 +131,22 @@ function ListChild(props) {
       {/* Expand button ▼ */}
       {expands && (hasChildren || currentlyLoading) && <div className={classes.arrowDiv}>
         { hasChildren &&
-          <Button
-            onClick={() => {
-              // Prevent a race condition when rapidly opening/closing
-              // by loading children here, and stopping it from loading
-              // children again
-              if (!loadedChildren) {
-                loadChildren();
-              }
-
-              setExpanded(!expanded);
-              setLoadedChildren(true);
-            }}
-            variant="text"
-            className={classes.browseitem + " " + classes.arrowButton}
-            >
+          <IconButton color="primary"
+                      component="span"
+                      className={classes.browseitem + " " + classes.arrowButton}
+                      onClick={() => {
+		              // Prevent a race condition when rapidly opening/closing
+		              // by loading children here, and stopping it from loading
+		              // children again
+		              if (!loadedChildren) {
+		                loadChildren();
+		              }
+		              setExpanded(!expanded);
+		              setLoadedChildren(true);
+		            }}
+          >
             {expanded ? "▼" : "►"}
-          </Button>
+          </IconButton>
         }
         { currentlyLoading && <CircularProgress size={10} /> }
       </div> }
@@ -155,22 +154,20 @@ function ListChild(props) {
       {/* Listitem button */}
       <Typography onClick={() => changeTerm(id, path)}
                   className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}>
-        {name.trim().split(" ").slice(0,-1).join(" ")}
+        {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
         <span className={classes.infoIcon}>
-          &nbsp;{name.trim().split(" ").pop()}&nbsp;
+          {name.split(" ").pop()}&nbsp;
           {/* Button to open info page */}
-          <Button
+          <IconButton
             color="primary"
             buttonRef={(node) => {registerInfo(id, node)}}
             onClick={() => {getInfo(path)}}
             className={classes.infoButton}
           >
             <Info color="primary" fontSize="small" className={classes.infoButton}/>
-          </Button>
+          </IconButton>
         </span>
       </Typography>
-
-      <br />
 
       {/* Children */}
       <div className={classes.childDiv + ((expands && expanded) ? " " : (" " + classes.hiddenDiv)) }> {children} </div>

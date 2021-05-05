@@ -93,7 +93,7 @@ function VocabularyBrowser(props) {
       <BrowseListChild
         id={id}
         path={path}
-        name={name}
+        name={name.trim()}
         changeTerm={changeTerm}
         registerInfo={registerInfo}
         getInfo={getInfo}
