@@ -75,7 +75,6 @@ function VocabularyQuery(props) {
   const [infoDefinition, setInfoDefinition] = useState("");
   const [infoAlsoKnownAs, setInfoAlsoKnownAs] = useState([]);
   const [infoTypeOf, setInfoTypeOf] = useState([]);
-  const [infoAboveBackground, setInfoAboveBackground] = useState(false);
   const [infoAnchor, setInfoAnchor] = useState(null);
 
   // Information about the vocabulary
@@ -316,7 +315,6 @@ function VocabularyQuery(props) {
       setInfoTypeOf(typeOf);
       setInfoAnchor(buttonRefs[data["identifier"]]);
       setTermInfoVisible(true);
-      setInfoAboveBackground(browserOpened);
     } else {
       logError("Failed to search vocabulary term");
     }
@@ -334,7 +332,6 @@ function VocabularyQuery(props) {
   // Event handler for clicking away from the info window while it is open
   let closeInfo = (event) => {
     setTermInfoVisible(false);
-    setInfoAboveBackground(false);
   };
 
   let openDialog = () => {
@@ -353,7 +350,6 @@ function VocabularyQuery(props) {
     setBrowserOpened(false);
     setSuggestionsVisible(false);
     setTermInfoVisible(false);
-    setInfoAboveBackground(false);
   }
 
   let changeBrowseTerm = (id, path) => {
@@ -446,17 +442,11 @@ function VocabularyQuery(props) {
         <InfoBox
           termInfoVisible={termInfoVisible}
           anchorEl={infoAnchor}
-          infoAboveBackground={infoAboveBackground}
           infoRef={infoRef}
           menuPopperRef={menuPopperRef}
-          infoVocabURL={infoVocabURL}
-          infoVocabDescription={infoVocabDescription}
-          infoVocabAcronym={infoVocabAcronym}
+          vocabulary={{url: infoVocabURL, description: infoVocabDescription, acronym: infoVocabAcronym}}
           closeInfo={closeInfo}
-          infoName={infoName}
-          infoID={infoID}
-          infoDefinition={infoDefinition}
-          infoAlsoKnownAs={infoAlsoKnownAs}
+          term={{name: infoName, id: infoID, definition: infoDefinition, alsoKnownAs: infoAlsoKnownAs}}
           infoTypeOf={infoTypeOf}
           openDialog={openDialog}
           browserOpened={browserOpened}

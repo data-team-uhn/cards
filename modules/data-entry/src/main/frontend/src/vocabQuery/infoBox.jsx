@@ -46,7 +46,7 @@ function InfoBox(props) {
       className={
         classNames({ [classes.popperClose]: !open })
         + " " + classes.popperNav
-        + " " + (props.infoAboveBackground ? classes.infoAboveBackdrop : classes.popperInfoOnTop)
+        + " " + (props.browserOpened ? classes.infoAboveBackdrop : classes.popperInfoOnTop)
       }
       ref={props.infoRef}
       modifiers={{
@@ -77,13 +77,13 @@ function InfoBox(props) {
                <CardHeader
                  avatar={
                   <Link color="textSecondary"
-                    href={props.infoVocabURL || ""}  target="_blank"
-                    component={props.infoVocabURL ? 'a' : 'span'}
+                    href={props.vocabulary.url || ""}  target="_blank"
+                    component={props.vocabulary.url ? 'a' : 'span'}
                     underline="none"
                     >
-                    <Tooltip title={props.infoVocabDescription}>
+                    <Tooltip title={props.vocabulary.description}>
                       <Avatar aria-label="source" className={classes.vocabularyAvatar}>
-                          {props.infoVocabAcronym}
+                          {props.vocabulary.acronym}
                       </Avatar>
                     </Tooltip>
                   </Link>
@@ -93,18 +93,18 @@ function InfoBox(props) {
                     <CloseIcon />
                   </IconButton>
                 }
-                title={props.infoName}
-                subheader={props.infoID}
+                title={props.term.name}
+                subheader={props.term.id}
                 titleTypographyProps={{variant: 'h5'}}
               />
               <CardContent className={classes.infoPaper}>
                 <div className={classes.infoSection}>
-                  <Typography className={classes.infoDefinition}>{props.infoDefinition}</Typography>
+                  <Typography className={classes.infoDefinition}>{props.term.definition}</Typography>
                 </div>
-                  {props.infoAlsoKnownAs.length > 0 && (
+                  {props.term.alsoKnownAs.length > 0 && (
                     <div className={classes.infoSection}>
                       <Typography variant="h6" className={classes.infoHeader}>Also known as</Typography>
-                      {props.infoAlsoKnownAs.map((name, index) => {
+                      {props.term.alsoKnownAs.map((name, index) => {
                         return (<Typography className={classes.infoAlsoKnownAs} key={index}>
                                   {name}
                                 </Typography>
