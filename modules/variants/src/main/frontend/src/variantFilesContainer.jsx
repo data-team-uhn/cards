@@ -770,8 +770,11 @@ export default function VariantFilesContainer() {
     fetchBasicData();
   }
 
-  // Only show the upload all button if there is at least one file that has yet to be sent
-  let showUploadAllButton = selectedFiles.length > 1 && selectedFiles.some((file) => !file.sent);
+  // Only show the upload all button if more than one file is selected
+  let showUploadAllButton = selectedFiles.length > 1;
+  // and only enable it if there is at least one file that has yet to be sent
+  let showUploadDisabled = !selectedFiles.some((file) => !file.uploading && !file.sent);
+  let uploadAllComplete = !selectedFiles.some((file) => !file.sent);
 
   return (
   <React.Fragment>
@@ -894,9 +897,10 @@ export default function VariantFilesContainer() {
           ) } ) }
       { showUploadAllButton ?
       <Grid item>
-      <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error && selectedFiles.length == 0} form="variantForm">
+      <Button type="submit" variant="contained" color="primary" disabled={!!error || showUploadDisabled} form="variantForm">
         <span><BackupIcon className={classes.buttonIcon}/>
-          {uploadInProgress ? 'Uploading' : 'Upload all'}
+          {uploadAllComplete ? 'Uploaded' :
+           uploadInProgress ? 'Uploading' : 'Upload all'}
         </span>
       </Button>
       </Grid>
