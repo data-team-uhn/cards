@@ -20,6 +20,7 @@
 import React, { useContext, useState } from "react";
 
 import {
+  Box,
   Button,
   Card,
   CardContent,
@@ -57,41 +58,22 @@ const useStyles = makeStyles(theme => ({
     verticalAlign: 'middle',
     paddingRight: theme.spacing(1)
   },
-  fileInfo: {
-    padding: theme.spacing(1),
-    margin: theme.spacing(3, 0),
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+  fileList: {
+    "& .MuiGrid-item" : {
+      paddingLeft: theme.spacing(4),
+    }
   },
   fileFormSection : {
     display: "flex",
     alignItems: "center",
     flexWrap: "wrap",
   },
-  fileName: {
-    display: 'inline'
-  },
   fileDetail: {
     marginRight: theme.spacing(1),
     marginTop: theme.spacing(1)
   },
-  progressBar: {
-    width: "40%",
-    height: theme.spacing(2),
-    borderRadius: "2px",
-    display: "inline-block",
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    verticalAlign: "text-top",
-    float: "right"
-  },
-  progressText: {
-    float: "right"
-  },
-  progress: {
-    backgroundColor: theme.palette.primary.main,
-    height: "100%",
-    margin: "0",
-    borderRadius: "2px",
+  fileProgress: {
+    maxWidth: "750px",
   },
   dragAndDropContainer: {
     margin: theme.spacing(3, 0),
@@ -825,7 +807,7 @@ export default function VariantFilesContainer() {
         </Grid>
       </form>
 
-      { selectedFiles && selectedFiles.length > 0 && <>
+      { selectedFiles && selectedFiles.length > 0 && <Grid container direction="column" spacing={4} className={classes.fileList}>
         { selectedFiles.map( (file, i) => {
             const upprogress = uploadProgress ? uploadProgress[file.name] : null;
             let subjectPath = file.subject.path?.replace("/Subjects", "Subjects");
@@ -834,23 +816,21 @@ export default function VariantFilesContainer() {
             let isDataValid = subjectPath && tumorPath;
 
             return (
-              <div key={file.name} className={classes.fileInfo}>
-                <div>
-                  <Typography variant="h6" className={classes.fileName}>{file.name}:</Typography>
-                  { upprogress && upprogress.state != "error" &&
-                    <span>
-                      <div className={classes.progressBar}>
-                        <div className={classes.progress} style={{ width: upprogress.percentage + "%" }} />
-                      </div>
-                      <div className={classes.progressText}>
-                        { upprogress.percentage + "%" }
-                      </div>
-                    </span>
-                  }
-                  { upprogress && upprogress.state == "error" && <Typography color='error'>Error uploading file</Typography> }
-                </div>
+              <Grid item key={file.name}>
+                <Typography variant="h6">{file.name}</Typography>
+                { upprogress && upprogress.state != "error" &&
+                  <Box display="flex" alignItems="center" className={classes.fileProgress}>
+                    <Box width="100%" mr={1}>
+                      <LinearProgress variant="determinate" value={upprogress.percentage} />
+                    </Box>
+                    <Box minWidth={35}>
+                      <Typography variant="body2" color="textSecondary">{upprogress.percentage + "%"}</Typography>
+                    </Box>
+                  </Box>
+                }
+                { upprogress && upprogress.state == "error" && <Typography color='error'>Error uploading file</Typography> }
                 { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ?
-                  <Typography variant="overline" component="div" className={classes.fileDetail}>
+                  <Typography variant="overline" component="div">
                     {patientSubjectLabel} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /&nbsp;
                     {tumorSubjectLabel} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
                     { file?.region?.path && <> / {regionSubjectLabel} <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
@@ -883,7 +863,7 @@ export default function VariantFilesContainer() {
                     helperText="Optional"
                   />
                   <label htmlFor="contained-button-file">
-                    <Button variant="outlined" color="primary" disabled={!isDataValid || file.uploading || !!error && selectedFiles.length == 0} onClick={() => uploadSingleFile(file)}>
+                    <Button variant={selectedFiles?.length > 1 ? "outlined" : "contained"} color="primary" disabled={!isDataValid || file.uploading || !!error && selectedFiles.length == 0} onClick={() => uploadSingleFile(file)}>
                       <span><BackupIcon className={classes.buttonIcon}/>
                         {file.uploading ? 'Uploading' : 'Upload'}
                       </span>
@@ -907,17 +887,18 @@ export default function VariantFilesContainer() {
                         of this file
                       </Link>
                 }
-              </div>
+              </Grid>
           ) } ) }
-      </>
-      }
-    { selectedFiles?.length > 0 ?
+      { selectedFiles?.length > 1 ?
+      <Grid item>
       <Button type="submit" variant="contained" color="primary" disabled={uploadInProgress || !!error && selectedFiles.length == 0} form="variantForm">
         <span><BackupIcon className={classes.buttonIcon}/>
           {uploadInProgress ? 'Uploading' : 'Upload all'}
         </span>
       </Button>
+      </Grid>
       : <></>}
+    </Grid>}
     <Dialog open={showVersionsDialog} onClose={() => setShowVersionsDialog(false)}>
       <DialogTitle>
         <span className={classes.dialogTitle}>Versions of {fileSelected?.name}</span>
