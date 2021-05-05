@@ -681,7 +681,7 @@ export default function VariantFilesContainer() {
   /**
    * Generate the JSON representation of a single subject
    *
-   * @param {string} refType The jcr:reference:type for this subject (e.g. "Patient")
+   * @param {string} refType refType The type for this subject, without the `/SubjectType/` path prefix, e.g. "Patient/Tumor"
    * @param {string} id The identifier for this subject
    * @param {string} parent If given, supplies a parent for this subject
    */
