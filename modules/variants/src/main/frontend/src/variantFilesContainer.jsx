@@ -225,36 +225,51 @@ export default function VariantFilesContainer() {
     let files = [];
     // Can not use await due to `regeneratorRuntime is not defined` error
     // as a result - using function passing itself as resolution-callback
+    let allErroneousFiles = [];
     (function loop(i) {
-        if (i < chosenFiles.length) new Promise((resolve, reject) => {
-          let file = chosenFiles[i];
+        if (i < chosenFiles.length) {
+          new Promise((resolve, reject) => {
+            let file = chosenFiles[i];
 
-          let parsed = file.name.split('.csv')[0].split('_');
-          if (parsed.length < 2 || parsed[0] == "" || parsed[1] == "") {
-            setError("File name " + file.name + " does not follow the name convention <subject>_<tumour nb>***.csv");
-            return;
-          }
-          file.subject  = {"id" : parsed[0]};
-          file.tumor    = {"id" : parsed[1]};
-          if (parsed.length > 2) {
-            file.region = {"id" : parsed.slice(2).join("_")};
-          } else {
-            file.region = {};
-          }
-          file.sent = false;
-          file.uploading = false;
+            let parsed = file.name.split('.csv')[0].split('_');
+            if (parsed.length < 2 || parsed[0] == "" || parsed[1] == "") {
+              allErroneousFiles.push(file.name);
+              resolve();
+              return;
+            }
+            file.subject  = {"id" : parsed[0]};
+            file.tumor    = {"id" : parsed[1]};
+            if (parsed.length > 2) {
+              file.region = {"id" : parsed.slice(2).join("_")};
+            } else {
+              file.region = {};
+            }
+            file.sent = false;
+            file.uploading = false;
 
-          setSingleFileSubjectData(file, files)
-            .then((processedFile) => updateFileExistsStatus(processedFile, file.name))
-            .then((processedFile) => {
-              files = files.slice();
-              files.push(processedFile);
-              setSelectedFiles(files);
-            })
-            .catch((err) => {setError("Internal server error while fetching file versions"); console.log(err);})
-            .finally(() => resolve());
-        })
-        .then(loop.bind(null, i+1));
+            setSingleFileSubjectData(file, files)
+              .then((processedFile) => updateFileExistsStatus(processedFile, file.name))
+              .then((processedFile) => {
+                files = files.slice();
+                files.push(processedFile);
+                setSelectedFiles(files);
+              })
+              .catch((err) => {setError("Internal server error while fetching file versions"); console.log(err);})
+              .finally(() => resolve());
+          })
+          .then(loop.bind(null, i+1))
+        } else if (allErroneousFiles.length > 0) {
+          // Display an error for each incorrect filename
+          // There are three cases for pluralizing a list of strings
+          // 1: there is no plural
+          let fileString = allErroneousFiles.length == 1 ? allErroneousFiles[0]
+          // 2: it is a list of two (no oxford comma)
+            : allErroneousFiles.length == 2 ? allErroneousFiles.join(" and ")
+          // 3: it is a list of three or more (with oxford comma)
+            : allErroneousFiles.splice(0, allErroneousFiles.length-1).join(", ") + ", and " + allErroneousFiles[allErroneousFiles.length-1];
+          let plural = allErroneousFiles.length > 1;
+          setError(`File name${plural ? "s" : ""} ${fileString} do${plural ? "" : "es"} not follow the name convention <subject>_<tumour nb>***.csv`);
+        };
     })(0);
   };
 
@@ -869,7 +884,7 @@ export default function VariantFilesContainer() {
                     helperText="Optional"
                   />
                   <label htmlFor="contained-button-file">
-                    <Button variant={selectedFiles?.length > 1 ? "outlined" : "contained"} color="primary" disabled={!isDataValid || file.uploading || !!error && selectedFiles.length == 0} onClick={() => uploadSingleFile(file)}>
+                    <Button variant={selectedFiles?.length > 1 ? "outlined" : "contained"} color="primary" disabled={!isDataValid || file.uploading} onClick={() => uploadSingleFile(file)}>
                       <span><BackupIcon className={classes.buttonIcon}/>
                         {file.uploading ? 'Uploading' : 'Upload'}
                       </span>
@@ -897,7 +912,7 @@ export default function VariantFilesContainer() {
           ) } ) }
       { showUploadAllButton ?
       <Grid item>
-      <Button type="submit" variant="contained" color="primary" disabled={!!error || showUploadDisabled} form="variantForm">
+      <Button type="submit" variant="contained" color="primary" disabled={showUploadDisabled} form="variantForm">
         <span><BackupIcon className={classes.buttonIcon}/>
           {uploadAllComplete ? 'Uploaded' :
            uploadInProgress ? 'Uploading' : 'Upload all'}
