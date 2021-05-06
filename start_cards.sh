@@ -34,6 +34,31 @@ function ctrl_c() {
   exit
 }
 
+function handle_tcp_bind_fail() {
+  echo -e "${TERMINAL_RED}**********************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*   Unable to bind to TCP port   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}**********************************${TERMINAL_NOCOLOR}"
+  exit -1
+}
+
+function handle_tcp_bind_ok_optimal() {
+  echo -e "${TERMINAL_GREEN}*********************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*   Started CARDS   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*********************${TERMINAL_NOCOLOR}"
+}
+
+function handle_tcp_bind_ok_suboptimal() {
+  echo -e "${TERMINAL_YELLOW}*************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                               *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*   Started CARDS - used suboptimal bind test   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                               *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*************************************************${TERMINAL_NOCOLOR}"
+}
+
 #Determine the port that CARDS is to bind to
 BIND_PORT=$(ARGUMENT_KEY='-p' ARGUMENT_DEFAULT='8080' python3 Utilities/HostConfig/argparse_bash.py $@)
 
@@ -44,8 +69,7 @@ python3 -c 'import psutil' 2>/dev/null && PSUTIL_INSTALLED=true || PSUTIL_INSTAL
 # and therefore will likely be available in the very near future
 if [ $PSUTIL_INSTALLED = false ]
 then
-  python3 Utilities/HostConfig/check_tcp_available.py --tcp_port $BIND_PORT || \
-    { echo -e "${TERMINAL_RED}Unable to bind to TCP port${TERMINAL_NOCOLOR}"; exit -1; }
+  python3 Utilities/HostConfig/check_tcp_available.py --tcp_port $BIND_PORT || handle_tcp_bind_fail
 fi
 
 #Start CARDS in the background
@@ -63,8 +87,7 @@ then
     then
       kill $CARDS_PID
       wait $CARDS_PID
-      echo -e "${TERMINAL_RED}Unable to bind to TCP port${TERMINAL_NOCOLOR}"
-      exit -1
+      handle_tcp_bind_fail
     fi
     sleep $BIND_TEST_SPACING
     #Check if CARDS was able to bind
@@ -74,9 +97,9 @@ fi
 
 if [ $PSUTIL_INSTALLED = true ]
 then
-  echo -e "${TERMINAL_GREEN}Started CARDS${TERMINAL_NOCOLOR}"
+  handle_tcp_bind_ok_optimal
 else
-  echo -e "${TERMINAL_YELLOW}Started CARDS - used suboptimal bind test${TERMINAL_NOCOLOR}"
+  handle_tcp_bind_ok_suboptimal
 fi
 
 #Wait for CTRL+C to stop everything
