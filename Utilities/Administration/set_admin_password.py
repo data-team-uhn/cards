@@ -22,8 +22,13 @@
 
 import os
 import sys
+import argparse
 import requests
 from requests.auth import HTTPBasicAuth
+
+argparser = argparse.ArgumentParser()
+argparser.add_argument('--user', help='The user to set the password for', default='admin')
+args = argparser.parse_args()
 
 CARDS_URL = "http://localhost:8080"
 if "CARDS_URL" in os.environ:
@@ -33,14 +38,16 @@ ADMIN_PASSWORD = "admin"
 if "ADMIN_PASSWORD" in os.environ:
   ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 
-new_password = input("New admin password: ")
+new_password = input("New {} password: ".format(args.user))
 form_data = {}
 form_data['newPwd'] = new_password
 form_data['newPwdConfirm'] = new_password
-form_data['oldPwd'] = ADMIN_PASSWORD
+if args.user == "admin":
+  form_data['oldPwd'] = ADMIN_PASSWORD
 
-change_req = requests.post(CARDS_URL + "/system/userManager/user/admin.changePassword.html", data=form_data, auth=HTTPBasicAuth('admin', ADMIN_PASSWORD))
+pw_change_url = CARDS_URL + "/system/userManager/user/{}.changePassword.html".format(args.user)
+change_req = requests.post(pw_change_url, data=form_data, auth=HTTPBasicAuth('admin', ADMIN_PASSWORD))
 if change_req.status_code != 200:
-  print("Error while setting admin password")
+  print("Error while setting {} password".format(args.user))
   sys.exit(-1)
-print("Set admin password")
+print("Set {} password".format(args.user))
