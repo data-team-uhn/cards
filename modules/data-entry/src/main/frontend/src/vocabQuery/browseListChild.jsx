@@ -20,9 +20,12 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 // @material-ui/core
 import { withStyles } from "@material-ui/core";
-import { Button, CircularProgress, Typography } from '@material-ui/core';
+import { Button, CircularProgress, IconButton, Tooltip, Typography } from '@material-ui/core';
 // @material-ui/icons
 import Info from "@material-ui/icons/Info";
+import ArrowDown from "@material-ui/icons/KeyboardArrowDown";
+import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import More from "@material-ui/icons/MoreHoriz";
 
 import BrowseTheme from "./browseStyle.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
@@ -47,12 +50,18 @@ function ListChild(props) {
   const { classes, defaultOpen, id, path, name, changeTerm, registerInfo, getInfo, expands, headNode, bolded, onError, knownHasChildren } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
-  const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined");
+  const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
   const [ loadedChildren, setLoadedChildren ] = useState(false);
   const [ hasChildren, setHasChildren ] = useState(knownHasChildren);
   const [ childrenData, setChildrenData ] = useState();
   const [ children, setChildren ] = useState([]);
   const [ expanded, setExpanded ] = useState(defaultOpen);
+
+  let loadTerm = (id, path) => {
+    if (bolded) return;
+    setCurrentlyLoading(true);
+    changeTerm && changeTerm(id, path);
+  }
 
   let checkForChildren = () => {
     setLastKnownID(id);
@@ -81,7 +90,7 @@ function ListChild(props) {
       (<BrowseListChild
         id={row["identifier"]}
         path={row["@path"]}
-        name={row["label"]}
+        name={row["label"].trim()}
         changeTerm={changeTerm}
         registerInfo={registerInfo}
         getInfo={getInfo}
@@ -113,6 +122,25 @@ function ListChild(props) {
     }
   }
 
+  let expandAction = (icon, title, clickHandler) => {
+    return (
+      <div className={classes.expandAction}>
+        <Tooltip title={title}>
+          <IconButton
+            color={clickHandler ? "primary" : "default"}
+            size="small"
+            className={currentlyLoading ? ' ' + classes.loadingBranch : undefined}
+            onClick={clickHandler}
+            disabled={!clickHandler}
+          >
+            { icon }
+            { currentlyLoading && <CircularProgress size={12} />}
+          </IconButton>
+        </Tooltip>
+      </div>
+    );
+  }
+
   // Ensure we know whether or not we have children, if this is expandable
   if (expands) {
     // Ensure our child list entries are built, if this is currently expanded
@@ -129,52 +157,47 @@ function ListChild(props) {
   return(
     <div key={id} className={headNode ? "" : classes.branch}>
       {/* Expand button ▼ */}
-      <div className={classes.arrowDiv}>
-        {(expands && hasChildren) ?
-          <Button
-            onClick={() => {
+      { hasChildren ?
+        expandAction(
+          expanded ? <ArrowDown/> : <ArrowRight/>,
+          expanded ? "Collapse" : "Expand",
+          () => {
               // Prevent a race condition when rapidly opening/closing
               // by loading children here, and stopping it from loading
               // children again
               if (!loadedChildren) {
                 loadChildren();
               }
-
               setExpanded(!expanded);
               setLoadedChildren(true);
-            }}
-            variant="text"
-            className={classes.browseitem + " " + classes.arrowButton}
-            >
-            {expanded ? "▼" : "►"}
-          </Button>
-          : ""
-        }
-        {(expands && currentlyLoading) ?
-          <CircularProgress size={10} />
-          : ""
-        }
-      </div>
+          }
+        )
+        :
+        ( expands ?
+          expandAction(<ArrowRight/>, "No sub-categories")
+          :
+          expandAction(<More/>, "Show parent categories", () => loadTerm(id, path))
+        )
+      }
 
-      {/* Listitem button */}
-      <Button
-        onClick={() => changeTerm(id, path)}
-        className={classes.browseitem}
-        >
-        <Typography color="textSecondary">{id}&nbsp;</Typography>
-        <Typography className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}> {name}</Typography>
-      </Button>
-
-      {/* Button to open info page */}
-      <Button
-        color="primary"
-        buttonRef={(node) => {registerInfo(id, node)}}
-        onClick={() => {getInfo(path)}}
-        className={classes.buttonLink + " " + classes.infoButton}
-      >
-        <Info color="primary" fontSize="small" className={classes.infoButton}/>
-      </Button>
-      <br />
+      {/* Term name */}
+      <Typography onClick={() => loadTerm(id, path)}
+                  className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}>
+        {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
+        <span className={classes.infoIcon}>
+          {name.split(" ").pop()}&nbsp;
+          {/* Button to open info page */}
+          <IconButton
+            size="small"
+            color="primary"
+            buttonRef={(node) => {registerInfo(id, node)}}
+            onClick={(event) => {event.stopPropagation(); getInfo(path)}}
+            className={classes.infoButton}
+          >
+            <Info color="primary" fontSize="small" className={classes.infoButton}/>
+          </IconButton>
+        </span>
+      </Typography>
 
       {/* Children */}
       <div className={classes.childDiv + ((expands && expanded) ? " " : (" " + classes.hiddenDiv)) }> {children} </div>

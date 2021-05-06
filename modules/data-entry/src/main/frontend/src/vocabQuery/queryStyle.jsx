@@ -187,8 +187,8 @@ const thesaurusStyle = theme => ({
     height: theme.spacing(.5)
   },
   infoButton: {
-    minWidth: "0px",
-    width: "30px"
+    marginLeft: theme.spacing(0.5),
+    marginTop: theme.spacing(-0.25),
   },
   infoDialog: {
     zIndex: "1350 !important",

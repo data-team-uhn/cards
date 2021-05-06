@@ -29,16 +29,22 @@ const browseStyle = theme => ({
       top: "0px",
       position: "absolute",
     },
-     closeButton: {
+    closeButton: {
       position: 'absolute',
       right: theme.spacing(1),
       top: theme.spacing(1),
     },
     infoName: {
       whiteSpace: "normal", // Enable line wrapping
+      color: theme.palette.text.primary,
+      display: 'inline',
+      cursor: 'pointer'
+    },
+    infoIcon: {
+      whiteSpace: "nowrap"
     },
     treeContainer: {
-      padding: theme.spacing(2),
+      padding: theme.spacing(2,2,2,6),
     },
     // Tree components
     treeRoot: {
@@ -47,37 +53,31 @@ const browseStyle = theme => ({
     treeNode: {
       // Nothing in here for now, but this is here in case we
       // want to apply themes in the future
-      marginLeft: "22px",
+      marginLeft: theme.spacing(2.75),
     },
     branch: {
       display: "block",
     },
-    // Components of the browser list items
-    browseitem: {
-      margin: "0px",
-      padding: "0px",
-      textTransform: "none",
-      color: theme.palette.primary.main,
-      backgroundColor: 'transparent',
-    },
     childDiv: {
-      marginLeft: "22px",
+      marginLeft: theme.spacing(2.75),
     },
-    arrowDiv: {
-      width: "0.8em",
+    expandAction: {
       display: "inline-block",
-      align: "center",
+      marginLeft: theme.spacing(-4),
+    },
+    loadingBranch: {
+      "& .MuiSvgIcon-root": {
+        visibility: "hidden",
+      },
+      "& .MuiCircularProgress-root": {
+        position: "absolute",
+      },
     },
     hiddenDiv: {
       display: "none",
     },
     boldedName: {
       fontWeight: "bold",
-    },
-    arrowButton: {
-      minWidth: "0px",
-      backgroundColor: 'transparent',
-      right: theme.spacing(0.5)
     },
 });
 
