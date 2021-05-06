@@ -44,7 +44,7 @@ const browseStyle = theme => ({
       whiteSpace: "nowrap"
     },
     treeContainer: {
-      padding: theme.spacing(2),
+      padding: theme.spacing(2,2,2,6),
     },
     // Tree components
     treeRoot: {
@@ -53,25 +53,31 @@ const browseStyle = theme => ({
     treeNode: {
       // Nothing in here for now, but this is here in case we
       // want to apply themes in the future
-      marginLeft: "22px",
+      marginLeft: theme.spacing(2.75),
     },
     branch: {
       display: "block",
     },
     childDiv: {
-      marginLeft: "22px",
+      marginLeft: theme.spacing(2.75),
     },
-    arrowDiv: {
-      display: "inline-block"
+    expandAction: {
+      display: "inline-block",
+      marginLeft: theme.spacing(-4),
+    },
+    loadingBranch: {
+      "& .MuiSvgIcon-root": {
+        visibility: "hidden",
+      },
+      "& .MuiCircularProgress-root": {
+        position: "absolute",
+      },
     },
     hiddenDiv: {
       display: "none",
     },
     boldedName: {
       fontWeight: "bold",
-    },
-    arrowButton: {
-      paddingLeft: '0'
     },
 });
 

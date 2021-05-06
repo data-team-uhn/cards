@@ -112,6 +112,8 @@ function VocabularyBrowser(props) {
 
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       fullscreen={fullscreen.toString()}
       className={classes.dialog}
       onClose={onClose}
@@ -128,10 +130,12 @@ function VocabularyBrowser(props) {
         </IconButton>
       </DialogTitle>
       <DialogContent className={classes.treeContainer} dividers>
+        {parentNode?.length ?
         <div className={classes.treeRoot}>
           {parentNode}
         </div>
-        <div className={classes.treeNode}>
+        : ""}
+        <div className={parentNode?.length ? classes.treeNode : undefined}>
           {currentNode}
         </div>
       </DialogContent>

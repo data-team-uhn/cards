@@ -415,7 +415,8 @@ class VocabularyQuery extends React.Component {
                 }
               >
                 {name}
-                <Button
+                <IconButton
+                  size="small"
                   buttonRef={node => {
                     this.registerInfoButton(element["identifier"], node);
                   }}
@@ -426,7 +427,7 @@ class VocabularyQuery extends React.Component {
                   className={this.props.classes.infoButton}
                 >
                   <Info color="primary" />
-                </Button>
+                </IconButton>
               </MenuItem>
               );
           });
