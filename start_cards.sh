@@ -65,6 +65,9 @@ BIND_PORT=$(ARGUMENT_KEY='-p' ARGUMENT_DEFAULT='8080' python3 Utilities/HostConf
 #Check if the psutil Python module is installed
 python3 -c 'import psutil' 2>/dev/null && PSUTIL_INSTALLED=true || PSUTIL_INSTALLED=false
 
+#If we are in WSL, psutil will not work, therefore act as if it is not installed
+python3 -c 'import os; import sys; sys.exit(1 * ("Microsoft" not in os.uname().release))' && PSUTIL_INSTALLED=false
+
 #If psutil is not installed, simply check if BIND_PORT is available now,
 # and therefore will likely be available in the very near future
 if [ $PSUTIL_INSTALLED = false ]
