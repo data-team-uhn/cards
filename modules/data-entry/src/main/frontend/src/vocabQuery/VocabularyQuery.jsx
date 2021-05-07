@@ -38,7 +38,7 @@ const MAX_RESULTS = 10;
 // Component that renders a search bar for vocabulary terms.
 //
 // Required arguments:
-//  clearOnClick: Whether selecting an option will clear the search bar
+//  clearOnClick: Whether selecting an option will clear the search bar (default: true)
 //  onClick: Callback when the user clicks on this element
 //  onInputFocus: Callback when the input is focused on
 //  focusAfterSelecting: focus after selecting
