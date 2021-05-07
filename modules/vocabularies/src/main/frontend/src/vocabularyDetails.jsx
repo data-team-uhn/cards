@@ -184,11 +184,6 @@ export default function VocabularyDetails(props) {
     setInfoAboveBackground(false);
   }
 
-  let changeBrowseTerm = (id, path) => {
-    setBrowseID(id);
-    setBrowsePath(path);
-  }
-
   let logError = (message) => {
     setSnackbarVisible(true);
     setSnackbarMessage(message);
@@ -251,7 +246,6 @@ export default function VocabularyDetails(props) {
           title={`${props.name} (${props.acronym})`}
           id={browseID}
           path={browsePath}
-          changeTerm={changeBrowseTerm}
           onClose={closeDialog}
           onError={logError}
           registerInfo={registerInfoButton}
