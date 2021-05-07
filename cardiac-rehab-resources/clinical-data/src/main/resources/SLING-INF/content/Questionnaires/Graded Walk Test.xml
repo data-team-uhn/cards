@@ -280,6 +280,30 @@
 			</property>
 		</node>
 		<node>
+			<name>gw_polar</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was Polar data captured?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
 			<name>gw_comments</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
