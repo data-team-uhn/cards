@@ -6,6 +6,7 @@
 * Java 1.8+
 * Maven 3.3+
 * Python 2.5+ or Python 3.0+
+* psutil Python module (recommended)
 
 ## Build:
 `mvn clean install`
@@ -29,15 +30,15 @@ To specify a different URL, use `-Dsling.url=https://lfs.server:8443/system/cons
 `mvn install -PintegrationTests` to run integration tests
 
 ## Run:
-`java -jar distribution/target/lfs-*.jar` => the app will run at `http://localhost:8080` (default port)
+`./start_cards.sh` => the app will run at `http://localhost:8080` (default port)
 
-`java -jar distribution/target/lfs-*.jar -p PORT` to run at a different port
+`./start_cards.sh -p PORT` to run at a different port
 
-`java -jar distribution/target/lfs-*.jar -Dsling.run.modes=dev` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
+`./start_cards.sh -Dsling.run.modes=dev` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
 
 Installing larger vocabuleries may fail due to default limits imposed on XML documents by the JVM. In this case, the app should be started with an extra parameter:
 
-`java -Djdk.xml.entityExpansionLimit=0 -jar distribution/target/lfs-*.jar`
+`./start_cards.sh -Djdk.xml.entityExpansionLimit=0`
 
 By default, the app will run with username `admin` and password `admin`.
 
