@@ -41,7 +41,7 @@ const MAX_RESULTS = 10;
 //  clearOnClick: Whether selecting an option will clear the search bar (default: true)
 //  onClick: Callback when the user clicks on this element
 //  onInputFocus: Callback when the input is focused on
-//  focusAfterSelecting: focus after selecting
+//  focusAfterSelecting: focus after selecting (default: true)
 //
 // Optional arguments:
 //  disabled: Boolean representing whether or not this element is disabled
