@@ -59,8 +59,12 @@ function ListChild(props) {
 
   let loadTerm = (id, path) => {
     if (bolded) return;
-    setCurrentlyLoading(true);
-    changeTerm && changeTerm(id, path);
+    if (changeTerm) {
+      setCurrentlyLoading(true);
+      changeTerm(id, path);
+    } else {
+      toggleShowChildren();
+    }
   }
 
   let checkForChildren = () => {
@@ -146,6 +150,17 @@ function ListChild(props) {
     );
   }
 
+  let toggleShowChildren = () => {
+    // Prevent a race condition when rapidly opening/closing
+    // by loading children here, and stopping it from loading
+    // children again
+    if (!loadedChildren) {
+      loadChildren();
+    }
+    setExpanded(!expanded);
+    setLoadedChildren(true);
+  }
+
   // Ensure we know whether or not we have children, if this is expandable
   if (expands) {
     // Ensure our child list entries are built, if this is currently expanded
@@ -166,16 +181,7 @@ function ListChild(props) {
         expandAction(
           expanded ? <ArrowDown/> : <ArrowRight/>,
           expanded ? "Collapse" : "Expand",
-          () => {
-              // Prevent a race condition when rapidly opening/closing
-              // by loading children here, and stopping it from loading
-              // children again
-              if (!loadedChildren) {
-                loadChildren();
-              }
-              setExpanded(!expanded);
-              setLoadedChildren(true);
-          }
+          toggleShowChildren
         )
         :
         ( expands ?
