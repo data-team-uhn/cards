@@ -21,9 +21,8 @@ import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 
 import { withStyles, FormControl } from "@material-ui/core";
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel } from "@material-ui/core"
-import { LinearProgress, Link, MenuItem, MenuList, Paper, Popper, Snackbar, SnackbarContent, Tooltip, Typography } from "@material-ui/core";
-import CloseIcon from '@material-ui/icons/Close';
+import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel } from "@material-ui/core"
+import { LinearProgress, MenuItem, MenuList, Paper, Popper, Snackbar, SnackbarContent } from "@material-ui/core";
 
 import Search from "@material-ui/icons/Search";
 import Info from "@material-ui/icons/Info";
@@ -50,16 +49,14 @@ const MAX_RESULTS = 10;
 //  overrideText: When not undefined, this will overwrite the contents of the search bar
 //  defaultValue: Default chosen term ID, which will be converted to the real ID when the vocabulary loads
 //  noMargin: Removes the margin from the search wrapper
-//  isNested:  is nested
-//  placeholder: input placeholder
-//  value: input value
-//  questionDefinition: question definition
+//  isNested:  If true, restyles the element to remove most padding and apply a negative margin for better nesting
+//  placeholder: String to display as the input element's placeholder
+//  value: String to use as the input element value
+//  questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
 
 function VocabularyQuery(props) {
-  const [editingFilters, setEditingFilters] = useState([]);
-
-  const { classes, defaultValue, disabled, noMargin, isNested, onChange, onInputFocus,
-    focusAfterSelecting, placeholder, label, value } = props;
+  const { classes, defaultValue, disabled, noMargin, isNested, onChange, onInputFocus, questionDefinition,
+    focusAfterSelecting, placeholder, label, value, onClick, clearOnClick, overrideText } = props;
 
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
@@ -163,7 +160,7 @@ function VocabularyQuery(props) {
 
     //Are there any filters that should be associated with this request?
     if (props?.questionDefinition?.vocabularyFilters?.[selectedVocab]) {
-      var filter = props.questionDefinition.vocabularyFilters[selectedVocab].map((category) => {
+      var filter = questionDefinition.vocabularyFilters[selectedVocab].map((category) => {
         return (`term_category:${category}`);
       }).join(" OR ");
       url.searchParams.set("customFilter", `(${filter})`);
@@ -186,7 +183,7 @@ function VocabularyQuery(props) {
 
     // Grab suggestions
     //...Make a queue of vocabularies to search through
-    var vocabQueue = props.questionDefinition.sourceVocabularies.slice();
+    var vocabQueue = questionDefinition.sourceVocabularies.slice();
     makeMultiRequest(vocabQueue, input, null, []);
 
     // Hide the infobox and stop the timer
@@ -210,8 +207,8 @@ function VocabularyQuery(props) {
                 key={element["@path"]}
                 onClick={(e) => {
                   if (e.target.localName === "li") {
-                    props.onClick(element["@path"], name);
-                    setInputValue(props.clearOnClick ? "" : name);
+                    onClick(element["@path"], name);
+                    setInputValue(clearOnClick ? "" : name);
                     closeDialog();
                   }}
                 }
@@ -238,7 +235,7 @@ function VocabularyQuery(props) {
             <MenuItem
               className={classes.dropdownItem}
               key={NO_RESULTS_TEXT}
-              onClick={props.onClick}
+              onClick={onClick}
               disabled={true}
             >
               {NO_RESULTS_TEXT}
@@ -336,7 +333,7 @@ function VocabularyQuery(props) {
   }
 
   let closeDialog = () => {
-    if (props.clearOnClick) {
+    if (clearOnClick) {
       anchorEl.current.value = "";
     }
     if (focusAfterSelecting) {
@@ -361,7 +358,7 @@ function VocabularyQuery(props) {
   if (disabled) {
     // Alter our text to either the override ("Please select at most X options")
     // or empty it
-    anchorEl.current.value = disabled ? props.overrideText : "";
+    anchorEl.current.value = disabled ? overrideText : "";
   }
 
   return (
@@ -480,12 +477,20 @@ function VocabularyQuery(props) {
 
 VocabularyQuery.propTypes = {
     classes: PropTypes.object.isRequired,
+    clearOnClick: PropTypes.bool.isRequired,
+    onInputFocus: PropTypes.func.isRequired,
+    onClick: PropTypes.func.isRequired,
+    focusAfterSelecting: PropTypes.bool.isRequired,
+    defaultValue: PropTypes.string,
+    disabled: PropTypes.string,
+    label: PropTypes.string,
     overrideText: PropTypes.string,
-    clearOnClick: PropTypes.bool,
-    onInputFocus: PropTypes.func,
     defaultValue: PropTypes.string,
     noMargin: PropTypes.bool,
-    focusAfterSelecting: PropTypes.bool
+    isNested: PropTypes.bool,
+    placeholder: PropTypes.string,
+    value: PropTypes.string,
+    questionDefinition: PropTypes.object,
 };
 
 VocabularyQuery.defaultProps = {
