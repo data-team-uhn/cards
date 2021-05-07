@@ -37,7 +37,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import VocabularyAction from "./vocabularyAction";
 import VocabularyBrowser from "./vocabQuery/browse.jsx";
 import InfoBox from "./vocabQuery/infoBox.jsx";
-import { MakeRequest } from "./vocabQuery/util.jsx";
+import { REST_URL, MakeRequest } from "./vocabQuery/util.jsx";
 
 const useStyles = makeStyles(theme => ({
   about: {
@@ -93,6 +93,7 @@ export default function VocabularyDetails(props) {
   const [infoTypeOf, setInfoTypeOf] = useState([]);
   const [infoAboveBackground, setInfoAboveBackground] = useState(false);
   const [infoAnchor, setInfoAnchor] = useState(null);
+  const [roots, setRoots] = useState(props.roots);
 
   const [buttonRefs, setButtonRefs] = useState({});
   const [noResults, setNoResults] = useState(false);
@@ -159,9 +160,22 @@ export default function VocabularyDetails(props) {
 
   let openDialog = () => {
     handleClose();
-    setBrowserOpened(true);
     setBrowseID(infoID);
     setBrowsePath(infoPath);
+
+    if (!props.roots) {
+      // if vocab was just installed -> grab the info to get the roots for browser population
+      var url = new URL(`${props.acronym}.json`, REST_URL);
+      MakeRequest(url, setVocabData);
+    } else {
+      setBrowserOpened(true);
+    }
+  }
+
+  // Callback from fetching vocab info
+  let setVocabData = (status, data) => {
+    setRoots(data.roots);
+    setBrowserOpened(true);
   }
 
   let closeDialog = () => {
@@ -242,7 +256,7 @@ export default function VocabularyDetails(props) {
           onError={logError}
           registerInfo={registerInfoButton}
           getInfo={getInfo}
-          roots={props.roots}
+          roots={roots}
         />
       </>}
 
