@@ -481,7 +481,7 @@ VocabularyQuery.propTypes = {
     onClick: PropTypes.func.isRequired,
     focusAfterSelecting: PropTypes.bool.isRequired,
     defaultValue: PropTypes.string,
-    disabled: PropTypes.string,
+    disabled: PropTypes.bool,
     label: PropTypes.string,
     overrideText: PropTypes.string,
     defaultValue: PropTypes.string,
