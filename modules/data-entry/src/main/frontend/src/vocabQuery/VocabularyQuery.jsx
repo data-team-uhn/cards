@@ -438,8 +438,7 @@ function VocabularyQuery(props) {
           menuPopperRef={menuPopperRef}
           vocabulary={{url: infoVocabURL, description: infoVocabDescription, acronym: infoVocabAcronym}}
           closeInfo={closeInfo}
-          term={{name: infoName, id: infoID, definition: infoDefinition, alsoKnownAs: infoAlsoKnownAs}}
-          infoTypeOf={infoTypeOf}
+          term={{name: infoName, id: infoID, definition: infoDefinition, alsoKnownAs: infoAlsoKnownAs, typeOf: infoTypeOf}}
           openDialog={openDialog}
           browserOpened={browserOpened}
         />

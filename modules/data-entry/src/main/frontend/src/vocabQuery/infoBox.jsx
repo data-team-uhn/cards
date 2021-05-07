@@ -27,7 +27,7 @@ import QueryStyle from "./queryStyle.jsx";
 //
 function InfoBox(props) {
   const { termInfoVisible, anchorEl, infoRef, menuPopperRef, vocabulary, closeInfo,
-    term, infoTypeOf, openDialog, browserOpened, classes } = props;
+    term, openDialog, browserOpened, classes } = props;
 
   let clickAwayInfo = (event) => {
     if (menuPopperRef?.current?.contains(event.target)
@@ -113,11 +113,11 @@ function InfoBox(props) {
                       })}
                     </div>
                   )}
-                  {infoTypeOf.length > 0 && (
+                  {term.typeOf.length > 0 && (
                     <div className={classes.infoSection}>
                       <Typography variant="h6" className={classes.infoHeader}>Is a type of</Typography>
-                      {infoTypeOf.map((name, index) => {
-                        return (<Typography className={classes.infoTypeOf} key={index}>
+                      {term.typeOf.map((name, index) => {
+                        return (<Typography className={classes.typeOf} key={index}>
                                   {name}
                                 </Typography>
                         );
