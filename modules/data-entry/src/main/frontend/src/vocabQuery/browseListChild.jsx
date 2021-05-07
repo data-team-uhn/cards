@@ -123,20 +123,25 @@ function ListChild(props) {
   }
 
   let expandAction = (icon, title, clickHandler) => {
+    let button = (
+      <IconButton
+        color={clickHandler ? "primary" : "default"}
+        size="small"
+        className={currentlyLoading ? ' ' + classes.loadingBranch : undefined}
+        onClick={clickHandler}
+        disabled={!clickHandler}
+      >
+        { icon }
+        { currentlyLoading && <CircularProgress size={12} />}
+      </IconButton>
+    );
     return (
       <div className={classes.expandAction}>
-        <Tooltip title={title}>
-          <IconButton
-            color={clickHandler ? "primary" : "default"}
-            size="small"
-            className={currentlyLoading ? ' ' + classes.loadingBranch : undefined}
-            onClick={clickHandler}
-            disabled={!clickHandler}
-          >
-            { icon }
-            { currentlyLoading && <CircularProgress size={12} />}
-          </IconButton>
-        </Tooltip>
+        { title && clickHandler ?
+          <Tooltip title={title}>{button}</Tooltip>
+          :
+          button
+        }
       </div>
     );
   }
@@ -174,7 +179,7 @@ function ListChild(props) {
         )
         :
         ( expands ?
-          expandAction(<ArrowRight/>, "No sub-categories")
+          expandAction(<ArrowRight/>)
           :
           expandAction(<More/>, "Show parent categories", () => loadTerm(id, path))
         )
