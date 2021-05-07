@@ -28,11 +28,14 @@ from requests.auth import HTTPBasicAuth
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--user', help='The user to set the password for', default='admin')
+argparser.add_argument('--cards_url', help='URL for the running CARDS instance')
 args = argparser.parse_args()
 
 CARDS_URL = "http://localhost:8080"
 if "CARDS_URL" in os.environ:
   CARDS_URL = os.environ["CARDS_URL"].rstrip('/')
+if args.cards_url is not None:
+  CARDS_URL = args.cards_url.rstrip('/')
 
 ADMIN_PASSWORD = "admin"
 if "ADMIN_PASSWORD" in os.environ:
