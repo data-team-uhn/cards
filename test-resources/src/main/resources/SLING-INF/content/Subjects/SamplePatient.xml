@@ -22,12 +22,12 @@
 	<primaryNodeType>lfs:Subject</primaryNodeType>
 	<property>
 		<name>fullIdentifier</name>
-		<value>Sample Patient</value>
+		<value>Sample</value>
 		<type>String</type>
 	</property>
 	<property>
 		<name>identifier</name>
-		<value>Sample Patient</value>
+		<value>Sample</value>
 		<type>String</type>
 	</property>
 	<property>
