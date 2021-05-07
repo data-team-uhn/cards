@@ -28,7 +28,7 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
-import VocabularyQuery from "../vocabQuery/query.jsx";
+import VocabularyQuery from "../vocabQuery/VocabularyQuery.jsx";
 
 // Component that renders a vocabulary question.
 //

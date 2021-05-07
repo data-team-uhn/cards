@@ -42,19 +42,24 @@ const MAX_RESULTS = 10;
 //  clearOnClick: Whether selecting an option will clear the search bar
 //  onClick: Callback when the user clicks on this element
 //  onInputFocus: Callback when the input is focused on
-//  vocabularies: Array of Strings of vocabularies to use (e.g. ["hpo"])
+//  focusAfterSelecting: focus after selecting
 //
 // Optional arguments:
 //  disabled: Boolean representing whether or not this element is disabled
 //  label: Default text to display in search bar when nothing has been entered (default: 'Search')
-//  vocabularyFilter: Array of required ancestor elements, of which any term must be a descendent of
 //  overrideText: When not undefined, this will overwrite the contents of the search bar
 //  defaultValue: Default chosen term ID, which will be converted to the real ID when the vocabulary loads
 //  noMargin: Removes the margin from the search wrapper
+//  isNested:  is nested
+//  placeholder: input placeholder
+//  value: input value
+//  questionDefinition: question definition
+
 function VocabularyQuery(props) {
   const [editingFilters, setEditingFilters] = useState([]);
 
-  const { classes, defaultValue, disabled, inputRef, noMargin, isNested, onChange, onInputFocus, placeholder, label, value } = props;
+  const { classes, defaultValue, disabled, noMargin, isNested, onChange, onInputFocus,
+    focusAfterSelecting, placeholder, label, value } = props;
 
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
@@ -84,7 +89,6 @@ function VocabularyQuery(props) {
   const [infoVocabObtained, setInfoVocabObtained] = useState("");
   const [infoVocabTobeObtained, setInfoVocabTobeObtained] = useState("");
   const [buttonRefs, setButtonRefs] = useState({});
-  const [noResults, setNoResults] = useState(false);
 
   let infoRef = useRef();
   let menuPopperRef = useRef();
@@ -320,15 +324,6 @@ function VocabularyQuery(props) {
     }
   }
 
-  let clickAwayInfo = (event) => {
-    if (menuPopperRef?.current?.contains(event.target)
-      || infoRef?.current?.contains(event.target)) {
-      return;
-    }
-
-    closeInfo();
-  }
-
   // Event handler for clicking away from the info window while it is open
   let closeInfo = (event) => {
     setTermInfoVisible(false);
@@ -344,7 +339,7 @@ function VocabularyQuery(props) {
     if (props.clearOnClick) {
       anchorEl.current.value = "";
     }
-    if (props.focusAfterSelecting) {
+    if (focusAfterSelecting) {
       anchorEl.current.select();
     }
     setBrowserOpened(false);

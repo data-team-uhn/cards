@@ -26,29 +26,30 @@ import QueryStyle from "./queryStyle.jsx";
 // Component that renders a dialog with term info for a single vocabulary term.
 //
 function InfoBox(props) {
-  const { classes } = props;
+  const { termInfoVisible, anchorEl, infoRef, menuPopperRef, vocabulary, closeInfo,
+    term, infoTypeOf, openDialog, browserOpened, classes } = props;
 
   let clickAwayInfo = (event) => {
-    if (props?.menuPopperRef.current?.contains(event.target)
-      || props?.infoRef.current?.contains(event.target)) {
+    if (menuPopperRef?.current?.contains(event.target)
+      || infoRef?.current?.contains(event.target)) {
       return;
     }
 
-    props.closeInfo();
+    closeInfo();
   }
 
   return (
     <Popper
       placement="right"
-      open={props.termInfoVisible}
-      anchorEl={props.anchorEl}
+      open={termInfoVisible}
+      anchorEl={anchorEl}
       transition
       className={
         classNames({ [classes.popperClose]: !open })
         + " " + classes.popperNav
-        + " " + (props.browserOpened ? classes.infoAboveBackdrop : classes.popperInfoOnTop)
+        + " " + (browserOpened ? classes.infoAboveBackdrop : classes.popperInfoOnTop)
       }
-      ref={props.infoRef}
+      ref={infoRef}
       modifiers={{
         keepTogether: {
           enabled: true
@@ -77,34 +78,34 @@ function InfoBox(props) {
                <CardHeader
                  avatar={
                   <Link color="textSecondary"
-                    href={props.vocabulary.url || ""}  target="_blank"
-                    component={props.vocabulary.url ? 'a' : 'span'}
+                    href={vocabulary.url || ""}  target="_blank"
+                    component={vocabulary.url ? 'a' : 'span'}
                     underline="none"
                     >
-                    <Tooltip title={props.vocabulary.description}>
+                    <Tooltip title={vocabulary.description}>
                       <Avatar aria-label="source" className={classes.vocabularyAvatar}>
-                          {props.vocabulary.acronym}
+                          {vocabulary.acronym}
                       </Avatar>
                     </Tooltip>
                   </Link>
                 }
                 action={
-                  <IconButton aria-label="close" onClick={props.closeInfo}>
+                  <IconButton aria-label="close" onClick={closeInfo}>
                     <CloseIcon />
                   </IconButton>
                 }
-                title={props.term.name}
-                subheader={props.term.id}
+                title={term.name}
+                subheader={term.id}
                 titleTypographyProps={{variant: 'h5'}}
               />
               <CardContent className={classes.infoPaper}>
                 <div className={classes.infoSection}>
-                  <Typography className={classes.infoDefinition}>{props.term.definition}</Typography>
+                  <Typography className={classes.infoDefinition}>{term.definition}</Typography>
                 </div>
-                  {props.term.alsoKnownAs.length > 0 && (
+                  {term.alsoKnownAs.length > 0 && (
                     <div className={classes.infoSection}>
                       <Typography variant="h6" className={classes.infoHeader}>Also known as</Typography>
-                      {props.term.alsoKnownAs.map((name, index) => {
+                      {term.alsoKnownAs.map((name, index) => {
                         return (<Typography className={classes.infoAlsoKnownAs} key={index}>
                                   {name}
                                 </Typography>
@@ -112,10 +113,10 @@ function InfoBox(props) {
                       })}
                     </div>
                   )}
-                  {props.infoTypeOf.length > 0 && (
+                  {infoTypeOf.length > 0 && (
                     <div className={classes.infoSection}>
                       <Typography variant="h6" className={classes.infoHeader}>Is a type of</Typography>
-                      {props.infoTypeOf.map((name, index) => {
+                      {infoTypeOf.map((name, index) => {
                         return (<Typography className={classes.infoTypeOf} key={index}>
                                   {name}
                                 </Typography>
@@ -124,9 +125,9 @@ function InfoBox(props) {
                     </div>
                   )}
                   </CardContent>
-                  {!props.browserOpened &&
+                  {!browserOpened &&
                     <CardActions className={classes.infoPaper}>
-                      <Button size="small" onClick={props.openDialog} variant='contained' color='primary'>Learn more</Button>
+                      <Button size="small" onClick={openDialog} variant='contained' color='primary'>Learn more</Button>
                     </CardActions>
                   }
              </div></ClickAwayListener>
