@@ -229,14 +229,9 @@ export default function VocabularyDetails(props) {
           infoAboveBackground={infoAboveBackground}
           infoRef={infoRef}
           menuPopperRef={menuPopperRef}
-          infoVocabURL={props.url}
-          infoVocabDescription={props.description}
-          infoVocabAcronym={props.acronym}
+          vocabulary={{url: props.url, description: props.description, acronym: props.acronym}}
           closeInfo={closeInfo}
-          infoName={infoName}
-          infoID={infoID}
-          infoDefinition={infoDefinition}
-          infoAlsoKnownAs={infoAlsoKnownAs}
+          term={{name: infoName, id: infoID, definition: infoDefinition, alsoKnownAs: infoAlsoKnownAs}}
           infoTypeOf={infoTypeOf}
           openDialog={openDialog}
           browserOpened={browserOpened}
