@@ -22,25 +22,35 @@
 
 import os
 import sys
+import argparse
 import requests
 from requests.auth import HTTPBasicAuth
+
+argparser = argparse.ArgumentParser()
+argparser.add_argument('--user', help='The user to set the password for', default='admin')
+argparser.add_argument('--cards_url', help='URL for the running CARDS instance')
+args = argparser.parse_args()
 
 CARDS_URL = "http://localhost:8080"
 if "CARDS_URL" in os.environ:
   CARDS_URL = os.environ["CARDS_URL"].rstrip('/')
+if args.cards_url is not None:
+  CARDS_URL = args.cards_url.rstrip('/')
 
 ADMIN_PASSWORD = "admin"
 if "ADMIN_PASSWORD" in os.environ:
   ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 
-new_password = input("New admin password: ")
+new_password = input("New password for {}: ".format(args.user))
 form_data = {}
 form_data['newPwd'] = new_password
 form_data['newPwdConfirm'] = new_password
-form_data['oldPwd'] = ADMIN_PASSWORD
+if args.user == "admin":
+  form_data['oldPwd'] = ADMIN_PASSWORD
 
-change_req = requests.post(CARDS_URL + "/system/userManager/user/admin.changePassword.html", data=form_data, auth=HTTPBasicAuth('admin', ADMIN_PASSWORD))
+pw_change_url = CARDS_URL + "/system/userManager/user/{}.changePassword.html".format(args.user)
+change_req = requests.post(pw_change_url, data=form_data, auth=HTTPBasicAuth('admin', ADMIN_PASSWORD))
 if change_req.status_code != 200:
-  print("Error while setting admin password")
+  print("Error while setting password for {}".format(args.user))
   sys.exit(-1)
-print("Set admin password")
+print("Password for {} has been updated".format(args.user))
