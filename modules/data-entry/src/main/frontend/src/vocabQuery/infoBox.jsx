@@ -26,30 +26,20 @@ import QueryStyle from "./queryStyle.jsx";
 // Component that renders a dialog with term info for a single vocabulary term.
 //
 function InfoBox(props) {
-  const { termInfoVisible, anchorEl, infoRef, menuPopperRef, vocabulary, closeInfo,
-    term, openDialog, browserOpened, classes } = props;
-
-  let clickAwayInfo = (event) => {
-    if (menuPopperRef?.current?.contains(event.target)
-      || infoRef?.current?.contains(event.target)) {
-      return;
-    }
-
-    closeInfo();
-  }
+  const { open, infoRef, vocabulary, onClose, term, infoAboveBackground, browserOpened, openBrowser, onClickAway, classes } = props;
 
   return (
     <Popper
+      ref={infoRef}
       placement="right"
-      open={termInfoVisible}
-      anchorEl={anchorEl}
+      open={open}
+      anchorEl={term.infoAnchor}
       transition
       className={
         classNames({ [classes.popperClose]: !open })
         + " " + classes.popperNav
-        + " " + (browserOpened ? classes.infoAboveBackdrop : classes.popperInfoOnTop)
+        + " " + (infoAboveBackground ? classes.infoAboveBackdrop : classes.popperInfoOnTop)
       }
-      ref={infoRef}
       modifiers={{
         keepTogether: {
           enabled: true
@@ -74,7 +64,7 @@ function InfoBox(props) {
           }}
         >
           <Card className={classes.infoCard}>
-            <ClickAwayListener onClickAway={clickAwayInfo}><div>
+            <ClickAwayListener onClickAway={onClickAway}><div>
                <CardHeader
                  avatar={
                   <Link color="textSecondary"
@@ -82,7 +72,7 @@ function InfoBox(props) {
                     component={vocabulary.url ? 'a' : 'span'}
                     underline="none"
                     >
-                    <Tooltip title={vocabulary.description}>
+                    <Tooltip title={vocabulary.description || ""}>
                       <Avatar aria-label="source" className={classes.vocabularyAvatar}>
                           {vocabulary.acronym}
                       </Avatar>
@@ -90,7 +80,7 @@ function InfoBox(props) {
                   </Link>
                 }
                 action={
-                  <IconButton aria-label="close" onClick={closeInfo}>
+                  <IconButton aria-label="close" onClick={onClose}>
                     <CloseIcon />
                   </IconButton>
                 }
@@ -127,7 +117,7 @@ function InfoBox(props) {
                   </CardContent>
                   {!browserOpened &&
                     <CardActions className={classes.infoPaper}>
-                      <Button size="small" onClick={openDialog} variant='contained' color='primary'>Learn more</Button>
+                      <Button size="small" onClick={openBrowser} variant='contained' color='primary'>Learn more</Button>
                     </CardActions>
                   }
              </div></ClickAwayListener>

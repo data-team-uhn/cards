@@ -18,7 +18,7 @@
 //
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-// @material-ui/core
+
 import { withStyles } from "@material-ui/core";
 import { Button, Dialog, DialogContent, DialogTitle, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -42,7 +42,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 // Optional arguments:
 //  fullscreen: whether or not the dialog is fullscreen (default: false)
 function VocabularyBrowser(props) {
-  const { classes, fullscreen, id, path, changeTerm, registerInfo, getInfo, onClose, onError, ...rest } = props;
+  const { classes, open, fullscreen, id, path, changeTerm, registerInfo, getInfo, onClose, onError, browserRef, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
@@ -112,6 +112,8 @@ function VocabularyBrowser(props) {
 
   return (
     <Dialog
+      open={open}
+      ref={browserRef}
       fullWidth
       maxWidth="sm"
       fullscreen={fullscreen.toString()}
