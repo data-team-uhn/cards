@@ -83,8 +83,9 @@ public final class OntologyIndexerUtils
             vocabularyTermNode.setProperty("label", term.getLabel());
 
             String[] parents = term.getParents();
-            if ((parents.length == 0 || parents.length == 1 && "Thing".equals(parents[0]))
-                 && term.getAllProperties().asMap().get("is_obsolete") == null && !term.getLabel().toLowerCase().startsWith("obsolete")) {
+            boolean isObsolete = term.getAllProperties().asMap().get("is_obsolete") != null
+                              || term.getLabel().toLowerCase().startsWith("obsolete");
+            if ((parents.length == 0 || parents.length == 1 && "Thing".equals(parents[0])) && !isObsolete) {
                 vocabularyTermNode.setProperty("isRoot", true);
                 ROOT_NODES.get().add(vocabularyTermNode);
             }
