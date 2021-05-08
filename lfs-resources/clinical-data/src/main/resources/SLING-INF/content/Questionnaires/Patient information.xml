@@ -1634,7 +1634,7 @@
 			</property>
 			<property>
 				<name>maxAnswers</name>
-				<value>0</value>
+				<value>1</value>
 				<type>Long</type>
 			</property>
 			<property>
