@@ -41,7 +41,7 @@ ADMIN_PASSWORD = "admin"
 if "ADMIN_PASSWORD" in os.environ:
   ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 
-new_password = input("New {} password: ".format(args.user))
+new_password = input("New password for {}: ".format(args.user))
 form_data = {}
 form_data['newPwd'] = new_password
 form_data['newPwdConfirm'] = new_password
@@ -51,6 +51,6 @@ if args.user == "admin":
 pw_change_url = CARDS_URL + "/system/userManager/user/{}.changePassword.html".format(args.user)
 change_req = requests.post(pw_change_url, data=form_data, auth=HTTPBasicAuth('admin', ADMIN_PASSWORD))
 if change_req.status_code != 200:
-  print("Error while setting {} password".format(args.user))
+  print("Error while setting password for {}".format(args.user))
   sys.exit(-1)
-print("Set {} password".format(args.user))
+print("Password for {} has been updated".format(args.user))
