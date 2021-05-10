@@ -29,7 +29,7 @@ args = argparser.parse_args()
 
 # YAML load
 with open('docker-compose.yml', 'r') as f_yaml:
-  yaml_obj = yaml.load(f_yaml.read())
+  yaml_obj = yaml.load(f_yaml.read(), Loader=yaml.SafeLoader)
 
 # Do the replacement
 new_cards_image = yaml_obj['services']['lfsinitial']['image']
