@@ -59,8 +59,37 @@ function handle_tcp_bind_ok_suboptimal() {
   echo -e "${TERMINAL_YELLOW}*************************************************${TERMINAL_NOCOLOR}"
 }
 
+function message_bioportal_apikey_missing() {
+  echo -e "${TERMINAL_RED}********************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}* BIOPORTAL_APIKEY not specified, skipping HANCESTRO installation. *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}********************************************************************${TERMINAL_NOCOLOR}"
+}
+
+function message_hancestro_install_ok() {
+  echo -e "${TERMINAL_GREEN}***********************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                     *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}* Installed HANCESTRO *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                     *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}***********************${TERMINAL_NOCOLOR}"
+}
+
+function message_hancestro_install_fail() {
+  echo -e "${TERMINAL_RED}****************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                          *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}* HANCESTRO install failed *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                          *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}****************************${TERMINAL_NOCOLOR}"
+}
+
 #Determine the port that CARDS is to bind to
 BIND_PORT=$(ARGUMENT_KEY='-p' ARGUMENT_DEFAULT='8080' python3 Utilities/HostConfig/argparse_bash.py $@)
+CARDS_URL="http://localhost:${BIND_PORT}"
+
+#Get any specified runModes
+EXPR='{"operation": "includes", "key": "sling.run.modes", "val": "test"}' python3 \
+  Utilities/HostConfig/java_property_parser.py $@ && RUNMODE_TEST=true || RUNMODE_TEST=false
 
 #Check if the psutil Python module is installed
 python3 -c 'import psutil' 2>/dev/null && PSUTIL_INSTALLED=true || PSUTIL_INSTALLED=false
@@ -103,6 +132,27 @@ then
   handle_tcp_bind_ok_optimal
 else
   handle_tcp_bind_ok_suboptimal
+fi
+
+#Check if we are in the test runMode
+if [ $RUNMODE_TEST = true ]
+then
+  #If a BIOPORTAL_APIKEY is present, attempt to install HANCESTRO
+  if [ ! -z $BIOPORTAL_APIKEY ]
+  then
+    #Wait for CARDS to be ready
+    while true
+    do
+      echo "Waiting for CARDS to start"
+      curl --fail $CARDS_URL/system/sling/info.sessionInfo.json && break
+      sleep 5
+    done
+    echo ""
+    python3 Utilities/Administration/install_vocabulary.py --bioportal_id HANCESTRO \
+      && message_hancestro_install_ok || message_hancestro_install_fail
+  else
+    message_bioportal_apikey_missing
+  fi
 fi
 
 #Wait for CTRL+C to stop everything
