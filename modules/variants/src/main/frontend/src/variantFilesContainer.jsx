@@ -155,7 +155,7 @@ export default function VariantFilesContainer() {
 
   // Fetch the SomaticVariants questionnaire and Subjects uuids
   let fetchBasicData = () => {
-    fetch("/Questionnaires/SomaticVariants.json")
+    fetchWithReLogin(globalLoginDisplay, "/Questionnaires/SomaticVariants.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setSomaticVariantsUUID(json["jcr:uuid"]);
@@ -163,7 +163,7 @@ export default function VariantFilesContainer() {
       })
       .catch(handleError);
 
-    fetch("/SubjectTypes/Patient.json")
+    fetchWithReLogin(globalLoginDisplay, "/SubjectTypes/Patient.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setPatientSubjectUUID(json["jcr:uuid"]);
@@ -171,7 +171,7 @@ export default function VariantFilesContainer() {
       })
       .catch(handleError);
 
-    fetch("/SubjectTypes/Patient/Tumor.json")
+    fetchWithReLogin(globalLoginDisplay, "/SubjectTypes/Patient/Tumor.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setTumorSubjectUUID(json["jcr:uuid"]);
@@ -179,7 +179,7 @@ export default function VariantFilesContainer() {
       })
       .catch(handleError);
 
-    fetch("/SubjectTypes/Patient/Tumor/TumorRegion.json")
+    fetchWithReLogin(globalLoginDisplay, "/SubjectTypes/Patient/Tumor/TumorRegion.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setRegionSubjectUUID(json["jcr:uuid"]);
@@ -314,7 +314,7 @@ export default function VariantFilesContainer() {
         if (!file.subject.path) {
 
           // Fire a fetch request for the patient subject
-          fetch( checkSubjectExistsURL )
+          fetchWithReLogin(globalLoginDisplay, checkSubjectExistsURL)
             .then((response) => response.ok ? response.json() : reject(response))
             .then((json) => {
               // If a patient subject is found
@@ -326,7 +326,7 @@ export default function VariantFilesContainer() {
                 checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                 // Fire a fetch request for a tumor subject with the patient subject as its parent
-                fetch( checkTumorExistsURL )
+                fetchWithReLogin(globalLoginDisplay, checkTumorExistsURL)
                     .then((response) => response.ok ? response.json() : reject(response))
                     .then((json) => {
                       // If a tumor subject is found and region subject is defined
@@ -340,7 +340,7 @@ export default function VariantFilesContainer() {
                           checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                           // Fire a fetch request for a region subject with the tumor subject as its parent
-                          fetch( checkRegionExistsURL )
+                          fetchWithReLogin(globalLoginDisplay, checkRegionExistsURL)
                             .then((response) => response.ok ? response.json() : reject(response))
                             .then((json) => {
                               // If a region subject is found
@@ -387,7 +387,7 @@ export default function VariantFilesContainer() {
             checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${file.subject.uuid}'`);
 
             // Fire a fetch request for a tumor subject with the patient subject as its parent
-            fetch( checkTumorExistsURL )
+            fetchWithReLogin(globalLoginDisplay, checkTumorExistsURL)
                 .then((response) => response.ok ? response.json() : reject(response))
                 .then((json) => {
                   // If a tumor subject is found and region subject is defined
@@ -401,7 +401,7 @@ export default function VariantFilesContainer() {
                       checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                       // Fire a fetch request for a region subject with the tumor subject as its parent
-                      fetch( checkRegionExistsURL )
+                      fetchWithReLogin(globalLoginDisplay, checkRegionExistsURL)
                         .then((response) => response.ok ? response.json() : reject(response))
                         .then((json) => {
                           // If a region subject is found
@@ -436,7 +436,7 @@ export default function VariantFilesContainer() {
               checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${file.tumor.uuid}'`);
 
               // Fire a fetch request for a region subject with the tumor subject as its parent
-              fetch( checkRegionExistsURL )
+              fetchWithReLogin(globalLoginDisplay, checkRegionExistsURL)
                 .then((response) => response.ok ? response.json() : reject(response))
                 .then((json) => {
                   // If a region subject is found
@@ -543,6 +543,18 @@ export default function VariantFilesContainer() {
     setUploadProgress({});
   };
 
+  let uploadJSON = (json, url='/', additionalArgs={}) => {
+    let data = new FormData();
+    data.append(':contentType', 'json');
+    data.append(':operation', 'import');
+    data.append(':content', JSON.stringify(json));
+    return fetchWithReLogin(
+      globalLoginDisplay,
+      url,
+      { method: 'POST', body: data, ...additionalArgs }
+    );
+  }
+
   /**
    * Create each subject in a single request, to prevent concurrency issues involved in creating multiple subjects.
    *
@@ -577,15 +589,7 @@ export default function VariantFilesContainer() {
     })
 
     // Upload each file's subject in one batch
-    let data = new FormData();
-    data.append(':contentType', 'json');
-    data.append(':operation', 'import');
-    data.append(':content', JSON.stringify(newSubjects));
-    return fetchWithReLogin(
-      globalLoginDisplay,
-      '/',
-      { method: 'POST', body: data }
-    );
+    return uploadJSON(newSubjects);
   }
 
    // Find the icon and load them
@@ -629,68 +633,90 @@ export default function VariantFilesContainer() {
     });
   };
 
+  /**
+   * Upload a single variant file.
+   *
+   * @param {File} file File object to upload. This file objects should be processed via onDrop first
+   * @param {Boolean} generateSubjects If true, uploads the data corresponding to the subject of the file (if it does not already exist)
+   */
   let uploadSingleFile = (file, generateSubjects=true) => {
-    return new Promise((resolve, reject) => {
+    let [subjectJson, subjectPath, tumorPath, regionPath] = assembleSubjectJson(file);
+    file.uploading = true;
+    let retPromise = () => new Promise((resolve, reject) => {
+      // get the file data
+      let data = new FormData();
 
-      var reader = new FileReader();
-      reader.readAsText(file);
-      file.uploading = true;
+      // Assemble the questionnaire into our payload FormData
+      let formPath = "Forms/" + uuidv4() + "/";
+      data.append(formPath + "jcr:primaryType", "lfs:Form");
+      data.append(formPath + "questionnaire", "/Questionnaires/SomaticVariants");
+      data.append(formPath + "questionnaire@TypeHint", "Reference");
+      data.append(formPath + "subject", `/${subjectPath}/${tumorPath}` + (file?.region?.path ? `/${regionPath}` : ""));
+      data.append(formPath + "subject@TypeHint", "Reference");
 
-      //When the file finish load
-      reader.onload = function(event) {
+      // Assemble the FileResourceAnswer
+      let answerPath = formPath + uuidv4() + "/";
+      data.append(answerPath + "jcr:primaryType", "lfs:FileResourceAnswer");
+      data.append(answerPath + "question", "/Questionnaires/SomaticVariants/file");
+      data.append(answerPath + "question@TypeHint", "Reference");
+      data.append(answerPath + "value", "/" + answerPath + file.name);
 
-        // get the file data
-        var csv = event.target.result;
-        let json = assembleJson(file, csv, generateSubjects);
+      // Assemble the details about the file itself
+      let filePath = answerPath + file.name;
+      data.append(filePath, file);
+      data.append(filePath + "@TypeHint", "nt:file");
 
-        let data = new FormData();
-        data.append(':contentType', 'json');
-        data.append(':operation', 'import');
-        data.append(':content', JSON.stringify(json));
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/');
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/');
+      xhr.onload = function() {
 
-        xhr.onload = function() {
-
-          if (xhr.status != 201) {
-            uploadProgress[file.name] = { state: "error", percentage: 0 };
-            console.log("Error", xhr.statusText)
-          } else {
-            // state: "done" change should turn all subject inputs into the link text
-            uploadProgress[file.name] = { state: "done", percentage: 100 };
-
-            file.formPath = "/" + Object.keys(json).find(str => str.startsWith("Forms/"));
-            file.sent = true;
-            selectedFiles[selectedFiles.findIndex(el => el.name === file.name)] = file;
-            setSelectedFiles(selectedFiles);
-          }
-
-          setUploadProgress(uploadProgress);
-          resolve(xhr.response);
-        };
-
-        xhr.onerror = function() {
+        if (xhr.status != 200) {
           uploadProgress[file.name] = { state: "error", percentage: 0 };
-          file.uploading = false;
-          setUploadProgress(uploadProgress);
-          resolve(xhr.response);
-        };
+          console.log("Error", xhr.statusText)
+        } else {
+          // state: "done" change should turn all subject inputs into the link text
+          uploadProgress[file.name] = { state: "done", percentage: 100 };
 
-        xhr.upload.onprogress = function (event) {
-
-          if (event.lengthComputable) {
-            let done = event.position || event.loaded;
-            let total = event.totalSize || event.total;
-            let percent = Math.round((done / total) * 100);
-            const copy = { ...uploadProgress };
-            copy[file.name] = { state: "pending", percentage: percent };
-            setUploadProgress(copy);
-          }
+          file.formPath = "/" + formPath;
+          file.sent = true;
+          selectedFiles[selectedFiles.findIndex(el => el.name === file.name)] = file;
+          setSelectedFiles(selectedFiles);
         }
-        xhr.send(data);
+
+        setUploadProgress(uploadProgress);
+        resolve(xhr.response);
+      };
+
+      xhr.onerror = function() {
+        uploadProgress[file.name] = { state: "error", percentage: 0 };
+        file.uploading = false;
+        setUploadProgress(uploadProgress);
+        // Note that we don't want to reject, lest the Promises.all() call aborts
+        // another concurrent file upload
+        resolve(xhr.response);
+      };
+
+      xhr.upload.onprogress = function (event) {
+        if (event.lengthComputable) {
+          let done = event.position || event.loaded;
+          let total = event.totalSize || event.total;
+          let percent = Math.round((done / total) * 100);
+          const copy = { ...uploadProgress };
+          copy[file.name] = { state: "pending", percentage: percent };
+          setUploadProgress(copy);
+        }
       }
+      xhr.send(data);
     });
+
+    if (generateSubjects) {
+      // Upload the subject first, then the form
+      return uploadJSON(subjectJson).then(retPromise);
+    } else {
+      // Just upload the form
+      return retPromise();
+    }
   };
 
   /**
@@ -740,46 +766,6 @@ export default function VariantFilesContainer() {
     }
     return [json, subjectPath, tumorPath, regionPath];
   }
-
-  /**
-   * Assemble the JSON representation of the given file, and, optionally, the JSON representing its subjects
-   *
-   * @param {File} file the File object that will be uploaded. This will be stringified, so be careful of non-unicode characters
-   * @param {string} csvData the contents of the above file object
-   * @param {boolean} generateSubjects If true, the subjects for the given file will be generated as well.
-   */
-  let assembleJson = (file, csvData, generateSubjects=true) => {
-      let [subjectJson, subjectPath, tumorPath, regionPath] = assembleSubjectJson(file);
-      let json = generateSubjects ? subjectJson : {};
-
-      let formPath = "Forms/" + uuidv4();
-      let formInfo = {};
-      formInfo["jcr:primaryType"] = "lfs:Form";
-      formInfo["jcr:reference:questionnaire"] = "/Questionnaires/SomaticVariants";
-      // The subject of the questionnaire is the region
-      formInfo["jcr:reference:subject"] = `/${subjectPath}/${tumorPath}` + (file?.region?.path ? `/${regionPath}` : "");
-
-      let fileID = uuidv4();
-      let fileInfo = {};
-      fileInfo["jcr:primaryType"] = "lfs:FileResourceAnswer";
-      fileInfo["jcr:reference:question"] = "/Questionnaires/SomaticVariants/file";
-      fileInfo["value"] = "/" + formPath + "/" + fileID + "/" + file.name;
-
-      let fileDetails = {};
-      fileDetails["jcr:primaryType"] = "nt:file";
-      fileDetails["jcr:content"] = {};
-      fileDetails["jcr:content"]["jcr:primaryType"] = "nt:resource";
-
-      fileDetails["jcr:content"]["jcr:data"] = csvData;
-
-      fileInfo[file.name] = fileDetails;
-
-      formInfo[fileID] = fileInfo;
-
-      json[formPath] = formInfo;
-
-      return json;
-  };
 
   if (!somaticVariantsUUID) {
     fetchBasicData();
@@ -884,7 +870,7 @@ export default function VariantFilesContainer() {
                     helperText="Optional"
                   />
                   <label htmlFor="contained-button-file">
-                    <Button variant={selectedFiles?.length > 1 ? "outlined" : "contained"} color="primary" disabled={!isDataValid || file.uploading} onClick={() => uploadSingleFile(file)}>
+                    <Button variant={selectedFiles?.length > 1 ? "outlined" : "contained"} color="primary" disabled={!isDataValid || file.uploading} onClick={() => uploadSingleFile(file, true)}>
                       <span><BackupIcon className={classes.buttonIcon}/>
                         {file.uploading ? 'Uploading' : 'Upload'}
                       </span>
