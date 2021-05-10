@@ -94,7 +94,7 @@ then
   echo "**********************************************************"
   echo ""
 fi
-printenv CARDS_DEPLOYMENT_ADMIN_PASSWORD | python3 set_admin_password.py || exit -1
+printenv CARDS_DEPLOYMENT_ADMIN_PASSWORD | python3 set_sling_password.py || exit -1
 
 #Install the required vocabularies
 echo "Installing vocabularies..."

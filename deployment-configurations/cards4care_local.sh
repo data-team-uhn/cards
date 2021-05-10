@@ -49,7 +49,7 @@ then
   echo "**********************************************************"
   echo ""
 fi
-printenv CARDS_DEPLOYMENT_ADMIN_PASSWORD | python3 set_admin_password.py
+printenv CARDS_DEPLOYMENT_ADMIN_PASSWORD | python3 set_sling_password.py
 
 #Start up everything else
 cd $PROJECT_ROOT/compose-cluster
