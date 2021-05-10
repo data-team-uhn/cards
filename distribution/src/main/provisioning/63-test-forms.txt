@@ -25,3 +25,7 @@
 
 [artifacts runModes=test]
     ca.sickkids.ccm.lfs/lfs-modules-test-forms/${lfs.version}
+
+[configurations runModes=test]
+    org.apache.sling.jcr.repoinit.RepositoryInitializer-test_user
+        scripts=["create user testuser with password testpassword"]
