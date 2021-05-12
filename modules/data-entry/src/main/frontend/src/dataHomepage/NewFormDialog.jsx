@@ -60,7 +60,7 @@ function NewFormDialog(props) {
   const [ error, setError ] = useState("");
   const [ relatedForms, setRelatedForms ] = useState();
   const [ disableProgress, setDisableProgress ] = useState(false);
-  const [ rowCount, setRowCount ] = useState(5);
+  const [ pageSize, setPageSize ] = useState(10);
   const [ wasOpen, setWasOpen ] = useState(false);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -330,7 +330,7 @@ function NewFormDialog(props) {
                   search: true,
                   actionsColumnIndex: -1,
                   addRowPosition: 'first',
-                  pageSize: rowCount,
+                  pageSize: pageSize,
                   rowStyle: rowData => ({
                     // /* It doesn't seem possible to alter the className from here */
                     backgroundColor: (selectedQuestionnaire?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
@@ -346,9 +346,7 @@ function NewFormDialog(props) {
                     setSelectedQuestionnaire(rowData);
                   }
                 }}
-                onChangeRowsPerPage={pageSize => {
-                  setRowCount(pageSize);
-                }}
+                onChangeRowsPerPage={setPageSize}
               />
             }
           </React.Fragment>

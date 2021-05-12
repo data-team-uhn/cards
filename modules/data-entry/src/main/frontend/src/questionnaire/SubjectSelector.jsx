@@ -61,6 +61,7 @@ let createQueryURL = (query, type, order) => {
 function UnstyledNewSubjectDialog (props) {
   const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
+  const [ pageSize, setPageSize ] = useState(10);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -122,6 +123,7 @@ function UnstyledNewSubjectDialog (props) {
             options={{
               search: true,
               addRowPosition: 'first',
+              pageSize: pageSize,
               rowStyle: rowData => ({
                 /* It doesn't seem possible to alter the className from here */
                 backgroundColor: (newSubjectType?.["label"] === rowData["label"]) ? theme.palette.grey["200"] : theme.palette.background.default
@@ -130,6 +132,7 @@ function UnstyledNewSubjectDialog (props) {
             onRowClick={(event, rowData) => {
               changeType(rowData);
             }}
+            onChangeRowsPerPage={setPageSize}
           />
         </DialogContent>
         <DialogActions>
@@ -181,6 +184,7 @@ function UnstyledSelectParentDialog (props) {
   const { classes, childName, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
+  const [ pageSize, setPageSize ] = useState(10);
 
   const COLUMNS = [
     { title: 'Subject', field: 'hierarchy' },
@@ -234,6 +238,7 @@ function UnstyledSelectParentDialog (props) {
               options={{
                 search: true,
                 addRowPosition: 'first',
+                pageSize: pageSize,
                 rowStyle: rowData => ({
                   /* It doesn't seem possible to alter the className from here */
                   backgroundColor: (value?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
@@ -246,6 +251,7 @@ function UnstyledSelectParentDialog (props) {
                   onChangeParent(rowData);
                 }
               }}
+              onChangeRowsPerPage={setPageSize}
               tableRef={tableRef}
             />
         }
@@ -829,7 +835,7 @@ function SubjectSelectorList(props) {
     { title: 'Identifier', field: 'hierarchy' },
   ];
   const [ relatedSubjects, setRelatedSubjects ] = useState();
-  const [ rowCount, setRowCount ] = useState(5);
+  const [ pageSize, setPageSize ] = useState(10);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -969,7 +975,7 @@ function SubjectSelectorList(props) {
           search: true,
           actionsColumnIndex: -1,
           addRowPosition: 'first',
-          pageSize: rowCount,
+          pageSize: pageSize,
           rowStyle: rowData => ({
             /* It doesn't seem possible to alter the className from here */
             backgroundColor: (selectedSubject?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
@@ -990,7 +996,7 @@ function SubjectSelectorList(props) {
           }
         }}
         onRowClick={(event, rowData) => {onSelect(rowData); handleSelection(rowData)}}
-        onChangeRowsPerPage={pageSize => {setRowCount(pageSize);}}
+        onChangeRowsPerPage={setPageSize}
       />
     </React.Fragment>
   )

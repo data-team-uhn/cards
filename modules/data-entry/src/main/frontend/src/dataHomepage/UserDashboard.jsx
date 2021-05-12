@@ -64,7 +64,7 @@ function UserDashboard(props) {
   let [ selectedCreation, setSelectedCreation ] = useState(-1);
   let [ selectedRow, setSelectedRow ] = useState(undefined);
   let [ open, setOpen ] = useState(false);
-  let [ rowCount, setRowCount ] = useState(5);
+  let [ pageSize, setPageSize ] = useState(10);
 
   let onClose = () => {
     setSelectedCreation(-1);
@@ -114,7 +114,7 @@ function UserDashboard(props) {
             options={{
               toolbar: false,
               header: false,
-              pageSize: rowCount,
+              pageSize: pageSize,
               paging: creationExtensions.length > 5,
               rowStyle: rowData => ({
                 // /* It doesn't seem possible to alter the className from here */
@@ -124,9 +124,7 @@ function UserDashboard(props) {
             onRowClick={(event, rowData) => {
               setSelectedRow(rowData);
             }}
-            onChangeRowsPerPage={pageSize => {
-              setRowCount(pageSize);
-            }}
+            onChangeRowsPerPage={setPageSize}
             />
         </DialogContent>
         <DialogActions>
