@@ -59,8 +59,12 @@ function ListChild(props) {
 
   let loadTerm = (id, path) => {
     if (bolded) return;
-    setCurrentlyLoading(true);
-    changeTerm && changeTerm(id, path);
+    if (changeTerm) {
+      setCurrentlyLoading(true);
+      changeTerm(id, path);
+    } else {
+      toggleShowChildren();
+    }
   }
 
   let checkForChildren = () => {
@@ -123,22 +127,38 @@ function ListChild(props) {
   }
 
   let expandAction = (icon, title, clickHandler) => {
+    let button = (
+      <IconButton
+        color={clickHandler ? "primary" : "default"}
+        size="small"
+        className={currentlyLoading ? ' ' + classes.loadingBranch : undefined}
+        onClick={clickHandler}
+        disabled={!clickHandler}
+      >
+        { icon }
+        { currentlyLoading && <CircularProgress size={12} />}
+      </IconButton>
+    );
     return (
       <div className={classes.expandAction}>
-        <Tooltip title={title}>
-          <IconButton
-            color={clickHandler ? "primary" : "default"}
-            size="small"
-            className={currentlyLoading ? ' ' + classes.loadingBranch : undefined}
-            onClick={clickHandler}
-            disabled={!clickHandler}
-          >
-            { icon }
-            { currentlyLoading && <CircularProgress size={12} />}
-          </IconButton>
-        </Tooltip>
+        { title && clickHandler ?
+          <Tooltip title={title}>{button}</Tooltip>
+          :
+          button
+        }
       </div>
     );
+  }
+
+  let toggleShowChildren = () => {
+    // Prevent a race condition when rapidly opening/closing
+    // by loading children here, and stopping it from loading
+    // children again
+    if (!loadedChildren) {
+      loadChildren();
+    }
+    setExpanded(!expanded);
+    setLoadedChildren(true);
   }
 
   // Ensure we know whether or not we have children, if this is expandable
@@ -161,20 +181,11 @@ function ListChild(props) {
         expandAction(
           expanded ? <ArrowDown/> : <ArrowRight/>,
           expanded ? "Collapse" : "Expand",
-          () => {
-              // Prevent a race condition when rapidly opening/closing
-              // by loading children here, and stopping it from loading
-              // children again
-              if (!loadedChildren) {
-                loadChildren();
-              }
-              setExpanded(!expanded);
-              setLoadedChildren(true);
-          }
+          toggleShowChildren
         )
         :
         ( expands ?
-          expandAction(<ArrowRight/>, "No sub-categories")
+          expandAction(<ArrowRight/>)
           :
           expandAction(<More/>, "Show parent categories", () => loadTerm(id, path))
         )
