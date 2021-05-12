@@ -17,6 +17,7 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { 
   Button, 
@@ -27,72 +28,95 @@ import {
   DialogActions, 
   DialogContent, 
   DialogTitle,
-  Fab,
   Grid,
-  IconButton,
   withStyles, 
   MenuItem, 
   Select, 
-  TextField, 
-  Tooltip,
+  TextField,
   Typography 
 } from "@material-ui/core";
-import CreateIcon from "@material-ui/icons/Create";
 import Filters from "../dataHomepage/Filters.jsx";
 import statisticsStyle from "./statisticsStyle.jsx";
+import NewItemComponent from "../components/NewItemButton.jsx";
+import LiveTable from "../dataHomepage/LiveTable.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
+import EditButton from "../dataHomepage/EditButton.jsx";
+import Fields from "../questionnaireEditor/Fields.jsx";
 
+/**
+ * Createa the LIveTable cell contents for a given node. This generates a link to the
+ * given node (via its admin page), or returns the node's label if no valid link can be made.
+ *
+ * @param {Object} node The lfs:SubjectType or lfs:Question node to generate a link for
+ */
+function CreateTableCell(node) {
+  // Subjects use label, questions use text
+  if (!node) {
+    return <></>;
+  }
+
+  if (node["jcr:primaryType"] == "lfs:Question") {
+    // For a question node, we can generate a link directly to the question
+    let label = node.text;
+    let path = node["@path"];
+    try {
+      let questionnairePath = /(.+)\//.exec(path)[0];
+      let link = `/content.html/admin${questionnairePath}#${path}`;
+      return <Link to={link}>{label}</Link>
+    } catch {
+      return label;
+    }
+  } else {
+    return node.label || node.text;
+  }
+
+}
 
 function AdminStatistics(props) {
   const { classes } = props;
-  // This holds the statistics data, once it is received from the server
-  let [statistics, setStatistics] = useState();
   const [ dialogOpen, setDialogOpen ] = useState(false);
-  const [ error, setError ] = useState();
-  const [ message, setMessage ] = useState();
+  // Count the number of new entries, so we can force refreshing of the LiveTable when necessary
+  const [ numNewEntries, setNumNewEntries ] = useState(0);
   // If stat should be created or edited
   const [ newStat, setNewStat ] = useState(true);
   const [ currentId, setCurrentId ] = useState();
 
-  // fetch all statistics
-  let fetchStatistics = () => {
-      fetch("/query?query=select * from [lfs:Statistic]")
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((response) => {
-        if (response.totalrows == 0) {
-          setMessage("No statistics have been added yet."); // displayed to user
-        }
-        else {
-          setMessage(null);
-          setStatistics(response["rows"]);
-        }
-      })
-      .catch(handleError);
-  };
-
-  // Callback method for the `fetchStatistics` method, invoked when the request failed.
-  let handleError = (response) => {
-    setError(response);
-    setStatistics([]);  // Prevent an infinite loop if data was not set
-  };
-
-  // If the data has not yet been fetched, initiate
-  if (!statistics) {
-    fetchStatistics();
-  }
-
-  // If an error was returned, do not display statistics at all, but report the error
-  if (error) {
-    return (
-      <Grid container justify="center">
-        <Grid item>
-          <Typography variant="h2" color="error">
-            Error obtaining statistics: {error.status} {error.statusText ? error.statusText : error.toString()}
-          </Typography>
-        </Grid>
-      </Grid>
-    );
-  }
+  let columns = [
+    {
+      "key": "name",
+      "label": "Name",
+      "format": "string",
+    },
+    {
+      "key": "type",
+      "label": "Type",
+      "format": "string",
+    },
+    {
+      "key": "xVar",
+      "label": "X-axis",
+      "format": (stat) => CreateTableCell(stat?.xVar),
+    },
+    {
+      "key": "yVar",
+      "label": "Y-axis",
+      "format": (stat) => CreateTableCell(stat?.yVar),
+    },
+    {
+      "key": "splitVar",
+      "label": "Split",
+      "format": (stat) => CreateTableCell(stat?.splitVar),
+    },
+    {
+      "key": "order",
+      "label": "Order",
+      "format": "string",
+    },
+  ]
+  const actions = [
+    DeleteButton,
+    EditButton
+  ];
 
   let dialogClose = () => {
     setDialogOpen(false);
@@ -100,59 +124,41 @@ function AdminStatistics(props) {
 
   // If a statistic was successfully added or deleted, perform fetch for new statistic
   let dialogSuccess = () => {
-    fetchStatistics();
+    setNumNewEntries((old) => (old+1));
   }
 
   return (
-    <Grid container spacing={3}>
-      {!message && statistics ? (statistics.map((stat) => {
-        return(
-          <Grid item lg={12} xl={6} key={stat["@path"]}>
-            <Card>
-              <CardHeader
-                action={
-                  <div>
-                    <Tooltip aria-label="Edit" title="Edit Statistic">
-                      <IconButton component="span" onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(stat["@name"]);}}>
-                        <CreateIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <DeleteButton
-                      entryPath={stat["@path"]}
-                      entryName={"Statistic: " + stat["name"]}
-                      entryType={"Statistic"}
-                      warning={stat ? stat["@referenced"] : false}
-                      onComplete={dialogSuccess}
-                    />
-                  </div>
-                }
-              />
-              <CardContent>
-                <Grid container alignItems='flex-end' spacing={2}>
-                  <Grid item xs={12}><Typography variant="body2" component="p">Name: {stat.name}</Typography></Grid>
-                  <Grid item xs={12}><Typography variant="body2" component="p">X-axis: {stat.xVar.text}</Typography></Grid>
-                  <Grid item xs={12}><Typography variant="body2" component="p">Y-axis: {stat.yVar.label}</Typography></Grid>
-                  <Grid item xs={12}><Typography variant="body2" component="p">Split: {stat.splitVar ? stat.splitVar.text : "none"}</Typography></Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-          </Grid>
-        )
-      })) : (
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography>{message}</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        )
-      }
-      <Grid item xs={12}>
-        <Button onClick={() => {setDialogOpen(true); setNewStat(true); setCurrentId();}}>New Statistic</Button>
-      </Grid>
+    <>
+      <Card>
+       <CardHeader
+        title={
+          <Button className={classes.cardHeaderButton}>
+            Statistics
+          </Button>
+        }
+        action={
+          <NewItemComponent
+            title="Create new statistic"
+            onClick={() => {setDialogOpen(true); setNewStat(true); setCurrentId();}}
+            inProgress={false}
+            />
+        }
+        classes={{
+          action: classes.newFormButtonHeader
+        }}
+        />
+        <CardContent>
+          <LiveTable
+            columns={columns}
+            actions={actions}
+            entryType={"Statistic"}
+            admin={true}
+            updateData={numNewEntries}
+            />
+        </CardContent>
+      </Card>
       <StatisticDialog open={dialogOpen} onClose={dialogClose} classes={classes} onSuccess={dialogSuccess} isNewStatistic={newStat} currentId={currentId}/>
-    </Grid>
+    </>
   );
 }
 
@@ -181,6 +187,9 @@ function StatisticDialog(props) {
   const [ xVarLabel, setXVarLabel ] = useState('');
   const [ splitVarLabel, setSplitVarLabel ] = useState('');
 
+  let statisticsSpecs = require('./Statistics.json');
+  let [ userInput, setUserInput ] = useState({});
+
   let reset = () => {
     // reset all fields
     setXVar(null);
@@ -192,6 +201,7 @@ function StatisticDialog(props) {
     setSplitVarLabel('');
     setError();
     setExistingData(false);
+    setUserInput({});
   }
 
   useEffect(() => {
@@ -330,13 +340,28 @@ function StatisticDialog(props) {
       </Grid>
   )
 
+  let test = require('./Statistics.json');
+  console.log(test);
+
   return (
     <Dialog open={open} onClose={onClose}>
     <DialogTitle>{isNewStatistic ? "Create New Statistic" : "Edit Statistic"}</DialogTitle>
     <DialogContent>
       { error && <Typography color="error">{error}</Typography>}
-      <Grid container alignItems='flex-end' spacing={2}>
-        <Grid item xs={2}>
+      <Grid container direction="column" spacing={2}>
+        <Fields data={{}} JSON={require('./Statistics.json')} edit={true} />
+        {/*Object.keys(statisticsSpecs).map((spec) => {
+          console.log(statisticsSpecs[spec]);
+          return <>
+            <Grid item xs={2}>
+              <Typography>{spec}:</Typography>
+            </Grid>
+            <Grid item xs={10}>
+              <>Text: {statisticsSpecs[spec].toString()}</>
+            </Grid>
+          </>
+        })*/
+        /*<Grid item xs={2}>
           <Typography>Name:</Typography>
         </Grid>
         <Grid item xs={10}>
@@ -352,8 +377,8 @@ function StatisticDialog(props) {
         {subjectTypeFilters}
         <Grid item xs={2}>
           <Typography>Split:</Typography>
-        </Grid>
-        <Filters statisticFilters={true} parentHandler={onSplitChange} statisticFiltersValue={splitVarLabel} />
+        </Grid>*/}
+        {/*<Filters statisticFilters={true} parentHandler={onSplitChange} statisticFiltersValue={splitVarLabel} />*/}
       </Grid>
     </DialogContent>
     <DialogActions>

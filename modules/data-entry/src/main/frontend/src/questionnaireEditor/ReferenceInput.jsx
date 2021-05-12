@@ -19,7 +19,7 @@
 
 import React, { useContext, useState } from "react";
 import PropTypes, { object } from 'prop-types';
-import { Input, MenuItem, Select, Typography, withStyles } from "@material-ui/core";
+import { Chip, Input, MenuItem, Select, Typography, withStyles } from "@material-ui/core";
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
