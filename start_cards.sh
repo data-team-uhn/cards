@@ -144,7 +144,7 @@ then
     while true
     do
       echo "Waiting for CARDS to start"
-      curl --fail $CARDS_URL/system/sling/info.sessionInfo.json && break
+      curl --fail $CARDS_URL/system/sling/info.sessionInfo.json > /dev/null 2> /dev/null && break
       sleep 5
     done
     echo ""
