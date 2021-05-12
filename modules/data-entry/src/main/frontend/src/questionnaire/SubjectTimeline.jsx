@@ -36,8 +36,8 @@ import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import DateQuestionUtilities from "./DateQuestionUtilities.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
-import { displayQuestion, handleDisplay } from "./Subject.jsx";
-import { ENTRY_TYPES } from "./FormEntry.jsx"
+import { displayQuestion } from "./Subject.jsx";
+import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry.jsx"
 
 import {
   Typography,
@@ -228,34 +228,52 @@ function SubjectTimeline(props) {
     return results;
   }
 
-  // Handle adding a date answers to the list of date answers,
-  // or regular answers as a followup to previous date answers.
-  let handleDisplayAnswer = (questionDefinition, formData, key, level, names, formTitle, output, formIndex) => {
-    // Get the answer for the specified question
-    const existingQuestionAnswer = formData && Object.entries(formData)
-      .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
-        && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
+  let handleDisplayNodes = (entries, data, formData) => {
+    let currentSectionData = [];
+    let childSectionData = [];
+    entries.forEach(([key, entryDefinition]) => {
+      if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+        const existingQuestionAnswer = Object.entries(data)
+          .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
+            && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
 
-    if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
-      if (existingQuestionAnswer[1]["jcr:primaryType"] === "lfs:DateAnswer") {
-        // Push a new date answer
-        output.push({
-          "date": existingQuestionAnswer[1],
-          followup:[],
-          formTitle: formTitle,
-          level: level,
-          names: names,
-          formIndex: formIndex
-        });
-      } else if (output.length > 0
-        && output[output.length - 1].followup.length < NUM_QUESTIONS
-        && output[output.length - 1].formIndex === formIndex
-      ) {
-        // Append the non-date answer to the previous date answer,
-        // if a previous date answer exists and hasn't met the followup question limit.
-        output[output.length - 1].followup.push(displayQuestion(questionDefinition, formData, key, classes));
+      if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
+        if (existingQuestionAnswer[1]["jcr:primaryType"] === "lfs:DateAnswer") {
+          // Push a new date answer
+          currentSectionData.push({
+            "date": existingQuestionAnswer[1],
+            followup:[],
+            formTitle: formData.title,
+            level: formData.level,
+            names: formData.names
+          });
+        } else if (currentSectionData.length > 0
+          && currentSectionData[currentSectionData.length - 1].followup.length < NUM_QUESTIONS
+        ) {
+          // Append the non-date answer to the previous date answer,
+          // if a previous date answer exists and hasn't met the followup question limit.
+          currentSectionData[currentSectionData.length - 1].followup.push(displayQuestion(entryDefinition, data, key, classes));
+        }
       }
-    }
+
+      } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+        // If a section is found, filter questions inside the section
+        let currentSection = entryDefinition;
+        if (data.questionnaire) {
+          currentSection = Object.entries(data.questionnaire)
+            .filter(([key, value]) => SECTION_TYPES.includes(value['jcr:primaryType'])
+                                  && value["@name"] == entryDefinition["@name"])[0]
+          currentSection = currentSection ? currentSection[1] : "";
+        }
+
+        let currentAnswers = Object.entries(data.form ? data.form : data)
+          .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
+                                  && value["section"]["@name"] == entryDefinition["@name"])[0];
+        currentAnswers = currentAnswers ? currentAnswers[1] : "";
+        childSectionData = childSectionData.concat(handleDisplayNodes(Object.entries(currentSection), currentAnswers, formData));
+      }
+    })
+    return currentSectionData.concat(childSectionData);
   }
 
   // Create a list of all date answers, with all data required for displaying these answers.
@@ -265,27 +283,20 @@ function SubjectTimeline(props) {
     // For every form
     formData.forEach((formEntry, index) => {
       // For every node that has a primary type that should be traversed
-      Object.entries(formEntry.form.questionnaire)
-      .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-      .forEach(([key, entryDefinition]) => {
-        // Try to display this node if it is a question or has any child questions
-        handleDisplay(entryDefinition, formEntry.form, key,
-          (entryDefinition, data, key) => {handleDisplayAnswer(
-            entryDefinition,
-            data,
-            key,
-            formEntry.level,
-            formEntry.names,
-            formEntry.form.questionnaire.title,
-            dateAnswerData,
-            index
-        )});
-      })
+      dateAnswerData = dateAnswerData.concat(
+        handleDisplayNodes(
+          Object.entries(formEntry.form.questionnaire).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType'])),
+          formEntry,
+          {
+            level: formEntry.level,
+            names: formEntry.names,
+            title: formEntry.form.questionnaire.title,
+            dateAnswerData: dateAnswerData,
+            index: index
+          }
+      ))
     });
-    return dateAnswerData.map(entry => {
-      delete entry.formIndex;
-      return entry
-    }).sort((a, b) => {
+    return dateAnswerData.sort((a, b) => {
       return a.date.value > b.date.value ? 1 : (a.date.value === b.date.value ? 0 : -1)
     });
   }
