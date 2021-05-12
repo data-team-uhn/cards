@@ -32,6 +32,7 @@ import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";
 import MarkdownTextField from "./MarkdownTextField";
 import MDEditor from '@uiw/react-md-editor';
+import ReferenceInput from "./ReferenceInput";
 
 let Fields = (props) => {
   let { data, JSON, edit, classes, ...rest } = props;
