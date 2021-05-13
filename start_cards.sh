@@ -142,19 +142,20 @@ else
   handle_tcp_bind_ok_suboptimal
 fi
 
+#Wait for CARDS to be ready
+while true
+do
+  echo "Waiting for CARDS to start"
+  curl --fail $CARDS_URL/system/sling/info.sessionInfo.json > /dev/null 2> /dev/null && break
+  sleep 5
+done
+
 #Check if we are in the test runMode
 if [ $RUNMODE_TEST = true ]
 then
   #If a BIOPORTAL_APIKEY is present, attempt to install HANCESTRO
   if [ ! -z $BIOPORTAL_APIKEY ]
   then
-    #Wait for CARDS to be ready
-    while true
-    do
-      echo "Waiting for CARDS to start"
-      curl --fail $CARDS_URL/system/sling/info.sessionInfo.json > /dev/null 2> /dev/null && break
-      sleep 5
-    done
     #Check if HANCESTRO is already installed
     if [ -z $ADMIN_PASSWORD ]
     then
