@@ -148,8 +148,20 @@ then
       sleep 5
     done
     echo ""
-    python3 Utilities/Administration/install_vocabulary.py --bioportal_id HANCESTRO \
-      && message_hancestro_install_ok || message_hancestro_install_fail
+    #Check if HANCESTRO is already installed
+    if [ -z $ADMIN_PASSWORD ]
+    then
+      ADMIN_PASSWORD="admin"
+    fi
+    curl -u admin:$ADMIN_PASSWORD --fail $CARDS_URL/Vocabularies/HANCESTRO.json > /dev/null 2> /dev/null \
+      && HANCESTRO_INSTALLED=true || HANCESTRO_INSTALLED=false
+    if [ $HANCESTRO_INSTALLED = false ]
+    then
+      python3 Utilities/Administration/install_vocabulary.py --bioportal_id HANCESTRO \
+        && message_hancestro_install_ok || message_hancestro_install_fail
+    else
+      echo "HANCESTRO already installed"
+    fi
   else
     message_bioportal_apikey_missing
   fi
