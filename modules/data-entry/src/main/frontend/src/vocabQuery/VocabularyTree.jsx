@@ -38,21 +38,37 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  onError: Callback when an error occurs
 //  browserRef: Reference to the vocabulary tree node
 //
+// Optional arguments:
+//  vocabulary: Vocabulary info
+//  browseRoots: Boolean representing whether or not the vocabulary tree shows roots
+//
 function VocabularyTree(props) {
-  const { open, path, title, onTermClick, registerInfo, getInfo, onClose, onError, browserRef, classes, roots, ...rest } = props;
+  const { open, path, onTermClick, registerInfo, getInfo, onClose, onError, browserRef, classes, vocabulary, browseRoots, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
   const [ currentNode, setCurrentNode ] = useState();
+  const [ roots, setRoots ] = useState(vocabulary.roots);
 
   useEffect(() => {
+    if (browseRoots && !vocabulary.roots) {
+      // if vocab was just installed -> grab the info to get the roots for browser population
+      var url = new URL(`${vocabulary.acronym}.json`, REST_URL);
+      MakeRequest(url, getRoots);
+    } else {
       rebuildBrowser();
-  }, [id, roots])
+    }
+  }, [path, vocabulary])
+
+  let getRoots = (status, data) => {
+    setRoots(data.roots);
+    rebuildBrowser();
+  }
 
   // Rebuild the browser tree centered around the given term.
   let rebuildBrowser = () => {
-    // if we are building for roots
-    if (roots) {
+    // if we are building for roots for the first time
+    if (roots && !parentNode) {
       let rootBranches = roots.map((row, index) => {
         return row["identifier"] ? constructBranch(row["identifier"], row["@path"], row["label"], true, false, false, true) : false;
       }).filter(i => i);
@@ -120,7 +136,7 @@ function VocabularyTree(props) {
 
   return (
     <ResponsiveDialog
-      title={title || "Related terms"}
+      title={`${vocabulary.name} (${vocabulary.acronym})` || "Related terms"}
       withCloseButton
       open={open}
       ref={browserRef}
@@ -155,6 +171,8 @@ VocabularyTree.propTypes = {
   onClose: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
   browserRef: PropTypes.object.isRequired,
+  browseRoots: PropTypes.bool,
+  vocabulary: PropTypes.object,
   classes: PropTypes.object.isRequired
 };
 

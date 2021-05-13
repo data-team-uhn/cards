@@ -40,7 +40,7 @@ import QueryStyle from "./queryStyle.jsx";
 // browserOpen: Boolean representing whether or not the vocabulary tree dialog is open
 //
 function VocabularyBrowser(props) {
-  const { browserOpen, onCloseInfo, infoPath, infoButtonRefs, infoboxRef, browserRef, classes } = props;
+  const { browserOpen, onCloseInfo, infoPath, infoButtonRefs, infoboxRef, browserRef, browseRoots, vocabulary, classes } = props;
 
   const [termInfoVisible, setTermInfoVisible] = useState(false);
   const [term, setTerm] = useState({});
@@ -49,7 +49,7 @@ function VocabularyBrowser(props) {
   const [browserOpened, setBrowserOpened] = useState(!!browserOpen);
   const [closeupTimer, setCloseupTimer] = useState(null);
 
-  const [vocab, setVocab] = useState({});
+  const [vocab, setVocab] = useState(vocabulary || {});
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -70,7 +70,11 @@ function VocabularyBrowser(props) {
     }
   }, [infoPath])
 
-  // Event handler for clicking away from the info box
+  useEffect(() => {
+    setBrowserOpened(browserOpen);
+  }, [browserOpen])
+
+   // Event handler for clicking away from the info box
   let clickAwayInfo = (event) => {
     if (!infoAboveBackground && browserRef?.current?.contains(event.target)
          || infoboxRef?.current?.contains(event.target)) {
@@ -193,13 +197,15 @@ function VocabularyBrowser(props) {
         {browserOpened && <VocabularyTree
           browserRef={browserRef}
           open={browserOpened || false}
-          title={`${vocab.name} (${vocab.acronym})`}
+          vocabulary={vocab}
           path={browsePath}
           onTermClick={focusTerm}
           onClose={closeBrowser}
           onError={logError}
           registerInfo={registerInfoButton}
           getInfo={getInfo}
+          browseRoots={browseRoots}
+          roots={vocab.roots}
         />}
         { /* Error snackbar */}
         <Snackbar

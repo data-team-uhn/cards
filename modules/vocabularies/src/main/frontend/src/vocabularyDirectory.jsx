@@ -44,6 +44,7 @@ function reformat(data, type) {
           released: vocab.released,
           installed: vocab["jcr:created"],
           version: vocab.version,
+          path: vocab["@path"],
           roots: vocab.roots
    }));
    return vocabs;

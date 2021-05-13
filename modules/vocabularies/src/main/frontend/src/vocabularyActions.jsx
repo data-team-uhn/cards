@@ -137,17 +137,13 @@ export default function VocabularyActions(props) {
           phase={phase}
           vocabulary={vocabulary}
         />
-        { vocabulary.description &&
-          <VocabularyDetails
-            install={install}
-            uninstall={uninstall}
-            phase={phase}
-            vocabulary={vocabulary}
-            url={vocabulary["@path"]}
-            roots={vocabulary.roots}
-            type={props.type}
-          />
-        }
+        <VocabularyDetails
+          install={install}
+          uninstall={uninstall}
+          phase={phase}
+          vocabulary={vocabulary}
+          type={props.type}
+        />
         <Dialog open={error} onClose={handleClose}>
 
           <DialogTitle disableTypography>
