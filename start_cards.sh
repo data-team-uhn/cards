@@ -44,19 +44,19 @@ function handle_tcp_bind_fail() {
 }
 
 function handle_tcp_bind_ok_optimal() {
-  echo -e "${TERMINAL_GREEN}*********************${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*                   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*   Started CARDS   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*                   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*********************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*****************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                           *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*   CARDS Socket BIND: OK   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                           *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*****************************${TERMINAL_NOCOLOR}"
 }
 
 function handle_tcp_bind_ok_suboptimal() {
-  echo -e "${TERMINAL_YELLOW}*************************************************${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}*                                               *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}*   Started CARDS - used suboptimal bind test   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}*                                               *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}*************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*********************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                       *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*   CARDS Socket BIND: OK - used suboptimal bind test   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                       *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*********************************************************${TERMINAL_NOCOLOR}"
 }
 
 function message_bioportal_apikey_missing() {
@@ -81,6 +81,14 @@ function message_hancestro_install_fail() {
   echo -e "${TERMINAL_RED}* HANCESTRO install failed *${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_RED}*                          *${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_RED}****************************${TERMINAL_NOCOLOR}"
+}
+
+function message_started_cards() {
+  echo -e "${TERMINAL_GREEN}*********************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*   Started CARDS   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*********************${TERMINAL_NOCOLOR}"
 }
 
 #Determine the port that CARDS is to bind to
@@ -147,7 +155,6 @@ then
       curl --fail $CARDS_URL/system/sling/info.sessionInfo.json > /dev/null 2> /dev/null && break
       sleep 5
     done
-    echo ""
     #Check if HANCESTRO is already installed
     if [ -z $ADMIN_PASSWORD ]
     then
@@ -166,6 +173,8 @@ then
     message_bioportal_apikey_missing
   fi
 fi
+
+message_started_cards
 
 #Wait for CTRL+C to stop everything
 read -r -d '' _ < /dev/tty
