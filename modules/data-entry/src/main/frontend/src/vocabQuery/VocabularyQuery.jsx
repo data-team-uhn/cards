@@ -60,21 +60,24 @@ function VocabularyQuery(props) {
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsVisible, setSuggestionsVisible] = useState(false);
-
-  const [termPath, setTermPath] = useState("");
-
   const [lookupTimer, setLookupTimer] = useState(null);
+
+  // Holds term path on dropdown info button click
+  const [termPath, setTermPath] = useState("");
 
   const [inputValue, setInputValue] = useState(defaultValue);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
+  // Holds dropdown info buttons refs to be used as anchor elements by term infoBoxes
   const [buttonRefs, setButtonRefs] = useState({});
 
-  let infoBrowserRef = useRef();
   let menuPopperRef = useRef();
   let anchorEl = useRef();
   let menuRef = useRef();
+
+  let infoboxRef = useRef();
+  let browserRef = useRef();
 
   const inputEl = (
     <Input
@@ -234,10 +237,12 @@ function VocabularyQuery(props) {
   // Event handler for clicking away from the autocomplete while it is open
   let closeAutocomplete = event => {
     if ( menuPopperRef?.current?.contains(event.target)
-      || infoBrowserRef?.current?.contains(event.target)) {
+      || infoboxRef?.current?.contains(event.target)
+      || browserRef?.current?.contains(event.target)) {
       return;
     }
 
+    setInputValue("");
     setSuggestionsVisible(false);
   };
 
@@ -340,13 +345,13 @@ function VocabularyQuery(props) {
             </Grow>
           )}
         </Popper>
-        <div ref={infoBrowserRef}>
-          <InfoBrowser
-            infoPath={termPath}
-            onClose={closeInfo}
-            infoButtonRefs={buttonRefs}
-          />
-        </div>
+        <InfoBrowser
+          infoPath={termPath}
+          onClose={closeInfo}
+          infoButtonRefs={buttonRefs}
+          browserRef={browserRef}
+          infoboxRef={infoboxRef}
+        />
       </div>
     );
 }

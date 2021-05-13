@@ -30,7 +30,7 @@ import QueryStyle from "./queryStyle.jsx";
 // Component that renders a vocabulary info box and browser.
 //
 function InfoBrowser(props) {
-  const { browserOpen, onClose, infoPath, infoButtonRefs, classes } = props;
+  const { browserOpen, onClose, infoPath, infoButtonRefs, infoboxRef, browserRef, classes } = props;
 
   const [termInfoVisible, setTermInfoVisible] = useState(false);
   const [term, setTerm] = useState({});
@@ -52,19 +52,19 @@ function InfoBrowser(props) {
   const [noResults, setNoResults] = useState(false);
 
   useEffect(() => {
-    infoPath && getInfo(infoPath);
+    infoPath ? getInfo(infoPath) : setTermInfoVisible(false);
   }, [infoPath])
 
-  let infoRef = useRef();
-  let browserRef = useRef();
 
+  // Event handler for clicking away from the info box or browser while they are open
   let clickAwayInfo = (event) => {
     if ( browserRef?.current?.contains(event.target)
-         || infoRef?.current?.contains(event.target)) {
+         || infoboxRef?.current?.contains(event.target)) {
       return;
     }
 
-    closeInfo();
+    setTermInfoVisible(false);
+    setInfoAboveBackground(false);
   }
 
   // Register a button reference that the info box can use to align itself to
@@ -131,10 +131,11 @@ function InfoBrowser(props) {
     setBrowsePath(path);
   }
 
-  // Event handler for clicking away from the info window while it is open
+  // Event handler for clicking close button for the info box
   let closeInfo = (event) => {
     setTermInfoVisible(false);
     setInfoAboveBackground(false);
+    onClose();
   }
 
   let openBrowser = () => {
@@ -158,10 +159,10 @@ function InfoBrowser(props) {
       <>
         {/* Info box using Popper */}
         <InfoBox
-          infoRef={infoRef}
+          infoboxRef={infoboxRef}
           open={termInfoVisible}
           vocabulary={vocab}
-          onClose={closeInfo}
+          onClose={onClose}
           term={term}
           openBrowser={openBrowser}
           browserOpened={browserOpened}
