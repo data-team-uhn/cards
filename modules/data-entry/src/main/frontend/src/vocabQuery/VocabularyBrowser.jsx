@@ -22,20 +22,19 @@ import PropTypes from "prop-types";
 import { Snackbar, SnackbarContent } from "@material-ui/core";
 import { withStyles } from "@material-ui/core";
 
-import VocabularyBrowser from "./browse.jsx";
-import InfoBox from "./infoBox.jsx";
+import VocabularyTree from "./VocabularyTree.jsx";
+import InfoBox from "./InfoBox.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
 import QueryStyle from "./queryStyle.jsx";
 
 // Component that renders a vocabulary info box and browser.
 //
-function InfoBrowser(props) {
+function VocabularyBrowser(props) {
   const { browserOpen, onClose, infoPath, infoButtonRefs, infoboxRef, browserRef, classes } = props;
 
   const [termInfoVisible, setTermInfoVisible] = useState(false);
   const [term, setTerm] = useState({});
 
-  const [browseID, setBrowseID] = useState("");
   const [browsePath, setBrowsePath] = useState("");
   const [browserOpened, setBrowserOpened] = useState(!!browserOpen);
 
@@ -44,7 +43,7 @@ function InfoBrowser(props) {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  // Strings used by the info box
+  // Info box properties
   const [infoAboveBackground, setInfoAboveBackground] = useState(false);
   const [infoAnchor, setInfoAnchor] = useState(null);
 
@@ -55,7 +54,6 @@ function InfoBrowser(props) {
     infoPath ? getInfo(infoPath) : setTermInfoVisible(false);
   }, [infoPath])
 
-
   // Event handler for clicking away from the info box or browser while they are open
   let clickAwayInfo = (event) => {
     if ( browserRef?.current?.contains(event.target)
@@ -65,6 +63,7 @@ function InfoBrowser(props) {
 
     setTermInfoVisible(false);
     setInfoAboveBackground(false);
+    onClose && onClose();
   }
 
   // Register a button reference that the info box can use to align itself to
@@ -79,9 +78,9 @@ function InfoBrowser(props) {
   // Grab information about the given ID and populate the info box
   let getInfo = (path) => {
     // If we don't yet know anything about our vocabulary, fill it in
-    var vocabPath = `${path.split("/").slice(0, -1).join("/")}.json`;
+    var vocabPath = path.split("/").slice(0, -1).join("/");
     if (vocab.path != vocabPath) {
-      var url = new URL(vocabPath, window.location.origin);
+      var url = new URL(vocabPath + ".json", window.location.origin);
       MakeRequest(url, parseVocabInfo);
     }
 
@@ -104,18 +103,11 @@ function InfoBrowser(props) {
   // callback for getInfo to populate info box
   let showInfo = (status, data) => {
     if (status === null) {
-      var typeOf = [];
-      if ("parents" in data) {
-        typeOf = data["parents"].map(element =>
-          element["label"] || element["name"] || element["identifier"] || element["id"]
-        ).filter(i => i);
-      }
-
       setTerm({name: data["label"],
                id: data["identifier"],
                definition: data["def"] || data["description"] || data["definition"],
                alsoKnownAs: data["synonyms"] || data["has_exact_synonym"] || [],
-               typeOf: typeOf,
+               typeOf: data["parents"]?.map(p => p["label"] || p["name"] || p["identifier"] || p["id"]) || [],
                path: data["@path"],
                infoAnchor: buttonRefs[data["identifier"]]
              });
@@ -126,20 +118,15 @@ function InfoBrowser(props) {
     }
   }
 
-  let changeBrowseTerm = (id, path) => {
-    setBrowseID(id);
-    setBrowsePath(path);
-  }
-
   // Event handler for clicking close button for the info box
   let closeInfo = (event) => {
     setTermInfoVisible(false);
     setInfoAboveBackground(false);
-    onClose();
+    onClose && onClose();
   }
 
   let openBrowser = () => {
-    changeBrowseTerm(term.id, term.path);
+    setBrowsePath(term.path);
     setInfoAboveBackground(false);
     setBrowserOpened(true);
   }
@@ -162,7 +149,7 @@ function InfoBrowser(props) {
           infoboxRef={infoboxRef}
           open={termInfoVisible}
           vocabulary={vocab}
-          onClose={onClose}
+          onClose={closeInfo}
           term={term}
           openBrowser={openBrowser}
           browserOpened={browserOpened}
@@ -170,17 +157,16 @@ function InfoBrowser(props) {
           onClickAway={clickAwayInfo}
         />
         { /* Browse dialog box */}
-        { browseID && browserOpened && <VocabularyBrowser
+        <VocabularyTree
           browserRef={browserRef}
           open={browserOpened || false}
-          id={browseID}
           path={browsePath}
-          changeTerm={changeBrowseTerm}
+          onTermFocus={setBrowsePath}
           onClose={closeBrowser}
           onError={logError}
           registerInfo={registerInfoButton}
           getInfo={getInfo}
-        /> }
+        />
         { /* Error snackbar */}
         <Snackbar
           open={snackbarVisible}
@@ -202,4 +188,4 @@ function InfoBrowser(props) {
     );
 }
 
-export default withStyles(QueryStyle)(InfoBrowser);
+export default withStyles(QueryStyle)(VocabularyBrowser);

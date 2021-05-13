@@ -192,7 +192,10 @@ const thesaurusStyle = theme => ({
   },
   infoDialog: {
     zIndex: "1350 !important",
-  }
+  },
+  hiddenButton: {
+    visibility: "hidden"
+  },
 });
 
 export default thesaurusStyle;

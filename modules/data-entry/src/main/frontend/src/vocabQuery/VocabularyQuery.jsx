@@ -20,14 +20,13 @@ import classNames from "classnames";
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 
-import { withStyles, FormControl } from "@material-ui/core";
-import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel } from "@material-ui/core"
+import { withStyles, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, FormHelperText } from "@material-ui/core"
 import { LinearProgress, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
 
 import Search from "@material-ui/icons/Search";
 import Info from "@material-ui/icons/Info";
 
-import InfoBrowser from "./InfoBrowser.jsx";
+import VocabularyBrowser from "./VocabularyBrowser.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
 import QueryStyle from "./queryStyle.jsx";
 
@@ -66,8 +65,7 @@ function VocabularyQuery(props) {
   const [termPath, setTermPath] = useState("");
 
   const [inputValue, setInputValue] = useState(defaultValue);
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [error, setError] = useState("");
 
   // Holds dropdown info buttons refs to be used as anchor elements by term infoBoxes
   const [buttonRefs, setButtonRefs] = useState({});
@@ -82,11 +80,13 @@ function VocabularyQuery(props) {
   const inputEl = (
     <Input
       disabled={disabled}
+      error={!!error}
       variant='outlined'
       inputProps={{
         "aria-label": "Search"
       }}
       onChange={(event) => {
+        setError("");
         delayLookup(event);
         setInputValue(event.target.value)
         onChange && onChange(event);
@@ -111,7 +111,6 @@ function VocabularyQuery(props) {
         delayLookup(status);
         anchorEl.current.select();
       }}
-      disabled={disabled}
       className={noMargin ? "" : classes.searchInput}
       multiline={true}
       endAdornment={(
@@ -121,7 +120,8 @@ function VocabularyQuery(props) {
       )}
       placeholder={placeholder}
       value={value || inputValue}
-  />);
+    />
+  );
 
   // Lookup the search term after a short interval
   // This will reset the interval if called before the interval hangs up
@@ -230,7 +230,7 @@ function VocabularyQuery(props) {
         setSuggestionsVisible(true);
         setSuggestionsLoading(false);
     } else {
-      console.log("Failed to search vocabulary term");
+      setError("Cannot load suggestions. Please inform your administrator.");
     }
   }
 
@@ -244,6 +244,7 @@ function VocabularyQuery(props) {
 
     setInputValue("");
     setSuggestionsVisible(false);
+    setError("");
   };
 
   // Register a button reference that the info box can use to align itself to
@@ -297,6 +298,7 @@ function VocabularyQuery(props) {
               { (document.activeElement === anchorEl.current || (!defaultValue && !(anchorEl.current?.value))) ? label : ''}
             </InputLabel>
             {inputEl}
+            { error && <FormHelperText>{error}</FormHelperText> }
           </FormControl>}
           <LinearProgress className={classes.progressIndicator + " " + (suggestionsLoading ? "" : classes.inactiveProgress)}/>
         </div>
@@ -345,7 +347,7 @@ function VocabularyQuery(props) {
             </Grow>
           )}
         </Popper>
-        <InfoBrowser
+        <VocabularyBrowser
           infoPath={termPath}
           onClose={closeInfo}
           infoButtonRefs={buttonRefs}

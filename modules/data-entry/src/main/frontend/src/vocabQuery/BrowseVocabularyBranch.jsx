@@ -30,13 +30,13 @@ import More from "@material-ui/icons/MoreHoriz";
 import BrowseTheme from "./browseStyle.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
 
-// Component that renders an element of the VocabularyBrowser, with expandable children.
+// Component that renders an element of the VocabularyTree, with expandable children.
 //
 // Required arguments:
 //  id: Term id to search
 //  path: Term @path to get the term info
 //  name: Text to display
-//  changeTerm: callback to change the term id and path being looked up
+//  onTermFocus: callback to change the term path being looked up
 //  registerInfo: callback to add a possible hook point for the info box
 //  getInfo: callback to change the currently displayed info box term
 //  expands: boolean determining whether or not to allow this child to display its children
@@ -46,8 +46,8 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //
 // Optional arguments:
 //  fullscreen: whether or not the dialog is fullscreen (default: false)
-function ListChild(props) {
-  const { classes, defaultOpen, id, path, name, changeTerm, registerInfo, getInfo, expands, headNode, bolded, onError, knownHasChildren } = props;
+function VocabularyBranch(props) {
+  const { classes, defaultOpen, id, path, name, onTermFocus, registerInfo, getInfo, expands, headNode, bolded, onError, knownHasChildren } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
@@ -59,9 +59,9 @@ function ListChild(props) {
 
   let loadTerm = (id, path) => {
     if (bolded) return;
-    if (changeTerm) {
+    if (onTermFocus) {
       setCurrentlyLoading(true);
-      changeTerm(id, path);
+      onTermFocus(path);
     } else {
       toggleShowChildren();
     }
@@ -91,11 +91,11 @@ function ListChild(props) {
   // Given information about our children, create elements to display their data
   let buildChildren = (data) => {
     var children = data.map((row, index) =>
-      (<BrowseListChild
+      (<BrowseVocabularyBranch
         id={row["identifier"]}
         path={row["@path"]}
         name={row["label"].trim()}
-        changeTerm={changeTerm}
+        onTermFocus={onTermFocus}
         registerInfo={registerInfo}
         getInfo={getInfo}
         expands={true}
@@ -216,10 +216,10 @@ function ListChild(props) {
   );
 }
 
-ListChild.propTypes = {
+VocabularyBranch.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-const BrowseListChild = withStyles(BrowseTheme)(ListChild);
+const BrowseVocabularyBranch = withStyles(BrowseTheme)(VocabularyBranch);
 
-export default BrowseListChild;
+export default BrowseVocabularyBranch;
