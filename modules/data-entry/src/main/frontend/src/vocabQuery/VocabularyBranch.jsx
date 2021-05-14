@@ -92,6 +92,7 @@ function VocabularyBranch(props) {
   let buildChildren = (data) => {
     var children = data.map((row, index) =>
       (<VocabularyBranch
+        classes={classes}
         id={row["identifier"]}
         path={row["@path"]}
         name={row["label"].trim()}
