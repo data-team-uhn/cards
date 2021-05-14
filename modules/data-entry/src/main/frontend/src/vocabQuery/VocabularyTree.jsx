@@ -23,7 +23,7 @@ import { withStyles } from "@material-ui/core";
 import { Button, Dialog, DialogContent, DialogTitle, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
-import BrowseVocabularyBranch from "./BrowseVocabularyBranch.jsx";
+import VocabularyBranch from "./VocabularyBranch.jsx";
 import BrowseTheme from "./browseStyle.jsx";
 
 import { REST_URL, MakeRequest } from "./util.jsx";
@@ -87,9 +87,9 @@ function VocabularyTree(props) {
   }
 
   // Construct a branch element for rendering
-  let constructBranch = (id, path, name, ischildnode, defaultexpanded, bolded, hasChildren) => {
+  let constructBranch = (id, path, name, ischildnode, defaultexpanded, focused, hasChildren) => {
     return(
-      <BrowseVocabularyBranch
+      <VocabularyBranch
         id={id}
         path={path}
         name={name.trim()}
@@ -100,7 +100,7 @@ function VocabularyTree(props) {
         defaultOpen={defaultexpanded}
         key={id}
         headNode={!ischildnode}
-        bolded={bolded}
+        focused={focused}
         onError={onError}
         knownHasChildren={hasChildren}
       />

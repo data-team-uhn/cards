@@ -41,13 +41,13 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  getInfo: callback to change the currently displayed info box term
 //  expands: boolean determining whether or not to allow this child to display its children
 //  headNode: boolean determining whether or not this node is the topmost node in the browser
-//  bolded: boolean determining whether or not to bold this entry
+//  focused: boolean determining whether or not to bold this entry
 //  onError: callback when an error occurs
 //
 // Optional arguments:
 //  fullscreen: whether or not the dialog is fullscreen (default: false)
 function VocabularyBranch(props) {
-  const { classes, defaultOpen, id, path, name, onTermFocus, registerInfo, getInfo, expands, headNode, bolded, onError, knownHasChildren } = props;
+  const { classes, defaultOpen, id, path, name, onTermFocus, registerInfo, getInfo, expands, headNode, focused, onError, knownHasChildren } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
@@ -58,7 +58,7 @@ function VocabularyBranch(props) {
   const [ expanded, setExpanded ] = useState(defaultOpen);
 
   let loadTerm = (id, path) => {
-    if (bolded) return;
+    if (focused) return;
     if (onTermFocus) {
       setCurrentlyLoading(true);
       onTermFocus(path);
@@ -91,7 +91,7 @@ function VocabularyBranch(props) {
   // Given information about our children, create elements to display their data
   let buildChildren = (data) => {
     var children = data.map((row, index) =>
-      (<BrowseVocabularyBranch
+      (<VocabularyBranch
         id={row["identifier"]}
         path={row["@path"]}
         name={row["label"].trim()}
@@ -193,7 +193,7 @@ function VocabularyBranch(props) {
 
       {/* Term name */}
       <Typography onClick={() => loadTerm(id, path)}
-                  className={classes.infoName + (bolded ? (" " + classes.boldedName) : " ")}>
+                  className={classes.infoName + (focused ? (" " + classes.boldedName) : " ")}>
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
         <span className={classes.infoIcon}>
           {name.split(" ").pop()}&nbsp;
@@ -217,9 +217,7 @@ function VocabularyBranch(props) {
 }
 
 VocabularyBranch.propTypes = {
-    classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired
 };
 
-const BrowseVocabularyBranch = withStyles(BrowseTheme)(VocabularyBranch);
-
-export default BrowseVocabularyBranch;
+export default withStyles(BrowseTheme)(VocabularyBranch);
