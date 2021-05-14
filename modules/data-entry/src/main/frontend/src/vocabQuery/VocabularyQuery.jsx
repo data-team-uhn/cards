@@ -20,7 +20,7 @@ import classNames from "classnames";
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 
-import { withStyles, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, FormHelperText } from "@material-ui/core"
+import { withStyles, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@material-ui/core"
 import { LinearProgress, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
 
 import Search from "@material-ui/icons/Search";
@@ -136,7 +136,7 @@ function VocabularyQuery(props) {
   }
 
   let makeMultiRequest = (queue, input, status, prevData) => {
-    //Get an vocabulary to search through
+    // Get vocabulary to search through
     var selectedVocab = queue.pop();
     if (selectedVocab === undefined) {
       showSuggestions(status, {rows: prevData.slice(0, MAX_RESULTS)});
@@ -230,7 +230,8 @@ function VocabularyQuery(props) {
         setSuggestionsVisible(true);
         setSuggestionsLoading(false);
     } else {
-      setError("Cannot load suggestions. Please inform your administrator.");
+      setError("Cannot load answer suggestions for this question. Please inform your administrator.");
+      setSuggestionsLoading(false);
     }
   }
 
@@ -298,7 +299,15 @@ function VocabularyQuery(props) {
               { (document.activeElement === anchorEl.current || (!defaultValue && !(anchorEl.current?.value))) ? label : ''}
             </InputLabel>
             {inputEl}
-            { error && <FormHelperText>{error}</FormHelperText> }
+            { error && <Typography
+                          component="p"
+                          color="secondary"
+                          className={classes.answerInstructions}
+                          variant="caption"
+                        >
+                          {error}
+                        </Typography>
+             }
           </FormControl>}
           <LinearProgress className={classes.progressIndicator + " " + (suggestionsLoading ? "" : classes.inactiveProgress)}/>
         </div>

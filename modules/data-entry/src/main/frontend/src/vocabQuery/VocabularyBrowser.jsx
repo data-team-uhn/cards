@@ -125,7 +125,7 @@ function VocabularyBrowser(props) {
     onClose && onClose();
   }
 
-  let openBrowser = () => {
+  let onOpenBrowser = () => {
     setBrowsePath(term.path);
     setInfoAboveBackground(false);
     setBrowserOpened(true);
@@ -142,6 +142,11 @@ function VocabularyBrowser(props) {
     setSnackbarMessage(message);
   }
 
+  let onTermFocus = (path) => {
+    setBrowsePath(path);
+    setTermInfoVisible(false);
+  }
+
   return (
       <>
         {/* Info box using Popper */}
@@ -151,7 +156,7 @@ function VocabularyBrowser(props) {
           vocabulary={vocab}
           onClose={closeInfo}
           term={term}
-          openBrowser={openBrowser}
+          onActionClick={onOpenBrowser}
           browserOpened={browserOpened}
           infoAboveBackground={infoAboveBackground}
           onClickAway={clickAwayInfo}
@@ -161,7 +166,7 @@ function VocabularyBrowser(props) {
           browserRef={browserRef}
           open={browserOpened || false}
           path={browsePath}
-          onTermFocus={setBrowsePath}
+          onTermFocus={onTermFocus}
           onClose={closeBrowser}
           onError={logError}
           registerInfo={registerInfoButton}

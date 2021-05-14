@@ -41,7 +41,8 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  getInfo: callback to change the currently displayed info box term
 //  expands: boolean determining whether or not to allow this child to display its children
 //  headNode: boolean determining whether or not this node is the topmost node in the browser
-//  focused: boolean determining whether or not to bold this entry
+//  focused: boolean determining whether this entry is focused and should be visually emphasized
+//           (a focused term entry is displayed as a root of a subtree, with only its parents above and its descendants below)
 //  onError: callback when an error occurs
 //
 // Optional arguments:
@@ -194,7 +195,7 @@ function VocabularyBranch(props) {
 
       {/* Term name */}
       <Typography onClick={() => loadTerm(id, path)}
-                  className={classes.infoName + (focused ? (" " + classes.boldedName) : " ")}>
+                  className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}>
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
         <span className={classes.infoIcon}>
           {name.split(" ").pop()}&nbsp;

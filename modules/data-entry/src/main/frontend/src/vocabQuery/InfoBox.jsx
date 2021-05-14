@@ -26,7 +26,7 @@ import QueryStyle from "./queryStyle.jsx";
 // Component that renders a dialog with term info for a single vocabulary term.
 //
 function InfoBox(props) {
-  const { open, infoboxRef, vocabulary, onClose, term, infoAboveBackground, browserOpened, openBrowser, onClickAway, classes } = props;
+  const { open, infoboxRef, vocabulary, onClose, term, infoAboveBackground, browserOpened, onActionClick, onClickAway, classes } = props;
 
   return (
     <Popper
@@ -117,7 +117,7 @@ function InfoBox(props) {
                   </CardContent>
                   { !(browserOpened && infoAboveBackground) &&
                     <CardActions className={classes.infoPaper}>
-                      <Button size="small" onClick={openBrowser} variant='contained' color='primary'>Learn more</Button>
+                      <Button size="small" onClick={onActionClick} variant='contained' color='primary'>Learn more</Button>
                     </CardActions>
                   }
              </div></ClickAwayListener>

@@ -76,7 +76,7 @@ const browseStyle = theme => ({
     hiddenDiv: {
       display: "none",
     },
-    boldedName: {
+    focusedTermName: {
       fontWeight: "bold",
     },
 });
