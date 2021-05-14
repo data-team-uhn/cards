@@ -1,0 +1,5918 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<node>
+	<name>cnoc_assessments_0_5_age</name>
+	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<property>
+		<name>title</name>
+		<value>cnoc_assessments_0_5_age</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>requiredSubjectTypes</name>
+		<values>
+			<value>/SubjectTypes/Patient</value>
+		</values>
+		<type>Reference</type>
+	</property>
+	<node>
+		<name>patientid</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Patientid</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Patientid</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>Adaptive Behavior Assessment System</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Adaptive Behavior Assessment System</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>abas_complete_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Were all ABAS scores able to be completed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Were all ABAS scores able to be completed</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_reason_incomplete_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Indicate why ABAS scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Indicate why ABAS scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_other_incomplete_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other reason ABAS score incomplete</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_taker_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Who filled out ABAS questionnaire</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Who filled out ABAS questionnaire</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_taker_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Please specify other taker</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_communication_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS communication score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS communication score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_communication_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS communication raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS communication raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_communication_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS communication scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS communication scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_community_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS community score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS community score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_community_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS community raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS community raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_community_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS community scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS community scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_composite_sum_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS composite sum score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS composite sum score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_composite_sum_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS composite sum raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS composite sum raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_composite_standard_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS composite sum scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS composite sum scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_conceptual_sum_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS conceptual score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS conceptual score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_conceptual_sum_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS conceptual sum of scaled (raw) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS conceptual sum of scaled (raw) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_conceptual_standard_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS conceptual Standard (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS conceptual Standard (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_health_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS health and safety score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS health and safety score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_health_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS health and safety raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS health and safety raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_health_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS health and safety scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS health and safety scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_home_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS home living score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS home living score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_home_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS home living raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS home living raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_home_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS home living scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS home living scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_leisure_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS leisure score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS leisure score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_leisure_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS leisure raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS leisure raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_leisure_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS leisure scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS leisure scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_motor_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS motor score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS motor score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_motor_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS motor raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS motor raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_motor_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS motor scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS motor scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_practical_sum_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS practical sum score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS practical sum score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_practical_sum_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS practical sum of scaled (raw) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS practical sum of scaled (raw) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_practical_standard_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS practical standard (sum) scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS practical standard (sum) scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_preacademics_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS pre-academics score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS pre-academics score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_preacademics_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS pre-academics raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS pre-academics raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_preacademics_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS pre-academics scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS pre-academics scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_self_care_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS self-care score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS self-care score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_self_care_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS self-care raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS self-care raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_self_care_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS self-care scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS self-care scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_self_direction_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS self-direction score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS self-direction score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_self_direction_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS self-direction raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS self-direction raw score </value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_self_direction_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS self-direction scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS self-direction scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_social_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS social score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS social score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_social_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS social raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS social raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_social_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS social scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS social scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_social_standard_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS social Standard (sum) scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS social Standard (sum) scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_social_sum_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ABAS social scaled sum score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ABAS social scaled sum score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>abas_social_sum_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ABAS social sum of scaled (raw) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ABAS social sum of scaled (raw) score</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>Behavior Assessment System for Children</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Behavior Assessment System for Children</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>basc_complete_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Were all BASC scores able to be calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Were all BASC scores able to be calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_reason_incomplete_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Reason BASC scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Reason BASC scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_other_incomplete_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other reason BASC scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_taker_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Who filled out the BASC questionnaire?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Who filled out the BASC questionnaire?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_taker_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other relationship of BASC taker</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_activities_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC activities of daily living score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC activities of daily living score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_activities_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC activities of daily living raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC activities of daily living raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_activities_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC activities of daily living T(scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC activities of daily living T(scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_adaptability_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC adaptability score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC adaptability score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_adaptability_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC adaptability raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC adaptability raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_adaptability_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC adaptability T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC adaptability T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_adaptive_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC adaptive skills score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC adaptive skills score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_adaptive_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC adaptive skills raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC adaptive skills raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_adaptive_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC adaptive skills T (scaled)score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC adaptive skills T (scaled)score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_aggression_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>WAS BASC aggression score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>WAS BASC aggression score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_aggression_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC aggression raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC aggression raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_aggression_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC aggression T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC aggression T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_anxiety_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC anxiety score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC anxiety score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_anxiety_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC anxiety raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC anxiety raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_anxiety_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC anxiety T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC anxiety T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_attention_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC attention problems score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC attention problems score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_attention_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC attention problems raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC attention problems raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_attention_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC attention problems T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC attention problems T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_atypicality_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC atypicality score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC atypicality score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_atypicality_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC atypicality raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC atypicality raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_atypicality_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC atypicality T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC atypicality T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_behavioral_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC behavioral symptoms index score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC behavioral symptoms index score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_behavioral_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC behavioral symptoms index raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC behavioral symptoms index raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_behavioral_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC behavioral symptoms index T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC behavioral symptoms index T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_communication_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC functional communication score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC functional communication score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_communication_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC functional communication raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC functional communication raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_communication_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC functional communication T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC functional communication T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_consistency_scale_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC consistency scale score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC consistency scale score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_consistency_scale_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC consistency scale</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC consistency scale</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_depression_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC depression score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC depression score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_depression_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC depression raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC depression raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_depression_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC depression T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC depression T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_externalizing_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC externalizing problems score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC externalizing problems score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_externalizing_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC externalizing raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC externalizing raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_externalizing_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC externalizing T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC externalizing T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_f_index_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC F-index score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC F-index score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_f_index_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>F-index</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>F-index</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_hyperactivity_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC hyperactivity score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC hyperactivity score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_hyperactivity_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC hyperactivity raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC hyperactivity raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_hyperactivity_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC hyperactivity T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC hyperactivity T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_internalizing_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC internalizing problems score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC internalizing problems score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_internalizing_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC internalizing raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC internalizing raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_internalizing_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC internalizing T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC internalizing T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_response_pattern_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC response pattern score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC response pattern score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_response_pattern_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC response pattern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC response pattern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_social_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC social skills score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC social skills score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_social_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC social skills raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC social skills raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_social_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC social skills T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC social skills T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_somatization_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC somatization score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC somatization score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_somatization_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC somatization raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC somatization raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_somatization_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC somatization T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC somatization T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_withdrawl_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BASC withdrawal score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BASC withdrawal score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_withdrawl_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC withdrawal raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC withdrawal raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_withdrawl_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC withdrawal T (scaled) score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC withdrawal T (scaled) score</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>Behavior Rating Inventory of Executive Function - Preschool</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Behavior Rating Inventory of Executive Function - Preschool</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>briefp_complete_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Were all other BRIEF-P scores able to be calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Were all other BRIEF-P scores able to be calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_reason_incomplete_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Please indicate why BRIEF-P scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Please indicate why BRIEF-P scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_other_incomplete_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other reason BRIEF-P scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_taker_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Who filled out the BRIEF-P questionnaire?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Who filled out the BRIEF-P questionnaire?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_taker_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Please specify other BRIEF-P taker</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_emi_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BRIEF-P EMI score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BRIEF-P EMI score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_emi_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P EMI raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P EMI raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_emi_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P EMI scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P EMI scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_emotional_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BRIEF-P emotional control score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BRIEF-P emotional control score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_emotional_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P emotional control raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P emotional control raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_emotional_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P emotional control scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P emotional control scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_fi_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BRIEF-P FI score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BRIEF-P FI score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_fi_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P FI raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P FI raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_fi_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P FI scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P FI scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_gec_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BRIEF-P GEC score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BRIEF-P GEC score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_gec_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P GEC raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P GEC raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_gec_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P GEC scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P GEC scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_inconsistency_scale_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BRIEF-P incosistency scale score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BRIEF-P incosistency scale score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_inconsistency_scale_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P inconsistency scale score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P inconsistency scale score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_inhibit_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was Brief-P inhibit score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was Brief-P inhibit score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_inhibit_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P inhibit raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P inhibit raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_inhibit_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P inhibit scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P inhibit scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_isci_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BRIEF-P ISCI score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BRIEF-P ISCI score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_isci_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P ISCI raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P ISCI raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_isci_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P ISCI scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P ISCI scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_memory_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BRIEF-P working memory score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BRIEF-P working memory score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_memory_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P working memory raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P working memory raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_memory_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P working memory scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P working memory scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_negativity_scale_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BRIEF-P negativity scale score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BRIEF-P negativity scale score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_negativity_scale_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P negativity scale score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P negativity scale score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_plan_organize_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BRIEF-P plan/organize score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BRIEF-P plan/organize score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_plan_organize_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P plan/organize raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P plan/organize raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_plan_organize_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P plan/organize scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P plan/organize scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_shift_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was BRIEF-P shift score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was BRIEF-P shift score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_shift_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P shift raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P shift raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>briefp_shift_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BRIEF-P shift scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BRIEF-P shift scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>Bayley Scales of Infant and Toddler Development</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Bayley Scales of Infant and Toddler Development</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>bsid3_complete_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Were all BSID-III scores able to be calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Were all BSID-III scores able to be calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_reason_incomplete_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Indicate why all scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Indicate why all scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_other_incomplete_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other reason</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid_version_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Please specify BSID version</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Please specify BSID version</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_gest_age_adj_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Were BSID scores adjusted to gestational age</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Were BSID scores adjusted to gestational age</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_gest_age_days_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Adjusted age</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Adjusted age (in days)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_gest_age_months_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Adjusted age</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Adjusted age (in months)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_cognitive_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was cognitive score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was cognitive score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_cognitive_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Raw cognitive score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Raw cognitive score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_cognitive_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Scaled cognitive score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Scaled cognitive score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_cognitive_standard_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was cognitive standard score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was cognitive standard score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_cognitive_standard_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Cognitive standard score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Cognitive standard score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_expressive_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was expressive communication score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was expressive communication score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_expressive_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Expressive communication raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expressive communication raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_expressive_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Expressive communication scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expressive communication scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_fine_motor_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was fine motor score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was fine motor score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_fine_motor_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Fine motor raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Fine motor raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_fine_motor_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Fine motor scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Fine motor scaled score </value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_gross_motor_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was gross motor score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was gross motor score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_gross_motor_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Gross motor raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Gross motor raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_gross_motor_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Gross motor scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Gross motor scaled score </value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_language_standard_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was language standard score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was language standard score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_language_standard_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Language standard score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Language standard score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_motor_standard_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was motor standard score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was motor standard score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_motor_standard_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Motor standard score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Motor standard score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_receptive_caled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Receptive communication scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Receptive communication scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_receptive_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was receptive communication score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was receptive communication score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsid3_receptive_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Receptive communication raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Receptive communication raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>Bracken School Readiness Assessment, Third Edition</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Bracken School Readiness Assessment, Third Edition</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>bsra_standard_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BSRA-3 Standard Score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BSRA-3 Standard Score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>bsra_readiness_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BSRA-3 composite raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BSRA-3 composite raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>depression, anxiety, and stress scale (dass-21)</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>depression, anxiety, and stress scale</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>dass-21</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_caregivers_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>How many caregivers filled out DASS-22</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>How many caregivers filled out DASS-22</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_complete_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Were all DASS-21 scores calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Were all DASS-21 scores calculated (taker 1)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_reason_incomplete_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Reason DASS-21 score not calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Reason DASS-21 score not calculated (taker 1)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_other_incomplete_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other reason DASS-21 score not calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>taker 1</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_taker1_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Who filled out the DASS-21</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Who filled out the DASS-21 (taker 1)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_taker1_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Please specify other DASS-21 taker</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>taker 1</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_anxiety_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was DASS anxiety score collected</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was DASS anxiety score collected (taker 1)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_anxiety_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>DASS anxiety raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>DASS anxiety raw score (taker 1)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_depression_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was DASS depression score collected</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was DASS depression score collected (taker 1)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_depression_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>DASS depression raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>DASS depression raw score (taker 1)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_stress_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was DASS stress score collected</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was DASS stress score collected (taker 1)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_stress_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>DASS stress raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>DASS stress raw score (taker 1)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_taker2_complete_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Were all DASS-21 scores calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Were all DASS-21 scores calculated (taker 2)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_taker2_reason_incomplete_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Reason DASS-21 score not calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Reason DASS-21 score not calculated (taker 2)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_taker2_other_incomplete_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other reason DASS-21 score not calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>taker 2</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_taker2_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Who filled out the DASS-21 questionnaire</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Who filled out the DASS-21 questionnaire (taker 2)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_taker2_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Please specify other DASS-21 taker</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>taker 2</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_taker2_anxiety_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was DASS anxiety score collected</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was DASS anxiety score collected (taker 2)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_taker2_anxiety_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>DASS anxiety raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>DASS anxiety raw score (taker 2)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_taker2_depression_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was DASS depression score collected</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was DASS depression score collected (taker 2)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_taker2_depression_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>DASS depression raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>DASS depression raw score (taker 2)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_taker2_stress_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was DASS stress score collected</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was DASS stress score collected (taker 2)</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dass21_taker2_stress_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>DASS stress raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>DASS stress raw score (taker 2)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>Infant Toddler Social Emotional Assessment</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Infant Toddler Social Emotional Assessment</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>itsea_complete_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Were all ITSEA scores calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Were all ITSEA scores calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_reason_incomplete_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Indicate why all ITSEA scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Indicate why all ITSEA scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_other_incomplete_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other reason ITSEA scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_taker_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Who filled out the ITSEA questionnaire?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Who filled out the ITSEA questionnaire?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_taker_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other ITSEA taker</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_aggression_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA aggression/defiance score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA aggression/defiance score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_aggression_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA aggression/defiance raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA aggression/defiance raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_aggression_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA aggression/defiance status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA aggression/defiance status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_anxiety_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA general anxiety score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA general anxiety score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_anxiety_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA general anxiety raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA general anxiety raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_anxiety_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA general anxiety status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA general anxiety status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_attention_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA attention score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA attention score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_attention_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA attention raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA attention raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_attention_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA attention status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA attention status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_aytpical_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA atypical item cluster raw score collected</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA atypical item cluster raw score collected</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_aytpical_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA atypical item cluster raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA atypical item cluster raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_competence_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA competence score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA competence score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_competence_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA competence raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA competence raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_competence_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA competence scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA competence scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_compliance_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA compliance score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA compliance score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_compliance_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA compliance raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA compliance raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_compliance_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA compliance status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA compliance status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_depression_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA depression/withdrawal score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA depression/withdrawal score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_depression_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA depression/withdrawal raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA depression/withdrawal raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_depression_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA depression/withdrawal status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA depression/withdrawal status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_dysregulation_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA dysregulation score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA dysregulation score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_dysregulation_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA dysregulation raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA dysregulation raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_dysregulation_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA dysregulation scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA dysregulation scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_eating_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA eating score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA eating score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_eating_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA eating raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA eating raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_eating_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA eating status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA eating status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_empathy_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA empathy score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA empathy score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_empathy_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA empathy raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA empathy raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_empathy_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA empathy status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA empathy status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_externalizing_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA externalizing score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA externalizing score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_externalizing_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA externalizing raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA externalizing raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_externalizing_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA externalizing scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA externalizing scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_imitation_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA imitation score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA imitation score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_imitation_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA imitation raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA imitation raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_imitation_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA imitation status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA imitation status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_impulsivity_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA impulsivity score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA impulsivity score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_impulsivity_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA impulsivity raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA impulsivity raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_impulsivity_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA impulsivity status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA impulsivity status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_internalizing_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA internalizing score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA internalizing score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_internalizing_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA internalizing raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA internalizing raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_internalizing_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA internalizing scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA internalizing scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_maladaptive_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA maladaptive item cluster raw score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA maladaptive item cluster raw score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_maladaptive_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Maladaptive item cluster raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Maladaptive item cluster raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_motivation_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA motivation score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA motivation score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_motivation_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA motivation raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA motivation raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_motivation_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA motivation status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA motivation status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_neg_emotion_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA negative emotionality score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA negative emotionality score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_neg_emotion_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA negative emotionality raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA negative emotionality raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_neg_emotion_soc_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA negative emotionality status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA negative emotionality status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_novelty_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA inhibition to novelty score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA inhibition to novelty score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_novelty_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA inhibition to novelty raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA inhibition to novelty raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_novelty_soc_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA inhibition to novelty status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA inhibition to novelty status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_peer_aggressive_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA peer aggression score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA peer aggression score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_peer_aggressive_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA peer aggression raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA peer aggression raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_peer_aggressive_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA peer aggression status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA peer aggression status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_prosocial_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA prosocial peer relations score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA prosocial peer relations score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_prosocial_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA prosocial peer relations raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA prosocial peer relations raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_prosocial_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA prosocial peer relations status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA prosocial peer relations status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_relatedness_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA social relatedness raw score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA social relatedness raw score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_relatedness_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA social relatedness raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA social relatedness raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_sensory_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA sensory sensitivity score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA sensory sensitivity score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_sensory_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA sensory sensitivity raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA sensory sensitivity raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_sensory_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA sensory sensitivity status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA sensory sensitivity status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_separation_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA separation distress score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA separation distress score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_separation_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA separation distress raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA separation distress raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_separation_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA separation distress status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA separation distress status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_sleep_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was ITSEA sleep score calculated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was ITSEA sleep score calculated?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_sleep_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA sleep raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA sleep raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>itsea_sleep_score_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>ITSEA sleep status of concern</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>ITSEA sleep status of concern</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>Modified Checklist for Autism in Toddlers</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Modified Checklist for Autism in Toddlers</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>mchatr_taker_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Who filled out the MCHAT-R questionnaire</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Who filled out the MCHAT-R questionnaire</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>mchatr_taker_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Please specify other taker</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>mchatr_total_score_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>MCHAT-R total score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>MCHAT-R total score</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>Social Responsiveness Scale</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Social Responsiveness Scale</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>srs2_complete_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Were all SRS-II scores able to be calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Were all SRS-II scores able to be calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs2_reason_incomplete_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Indicate why SRS-II score incomplete</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Indicate why SRS-II score incomplete</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs2_other_incomplete_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Please specify other reason SRS-II score incomplete</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs2_taker_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Who filled out SRS-II questionnaire</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Who filled out SRS-II questionnaire</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs2_taker_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Please specify other taker</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_awareness_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was SRS-II social awareness score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was SRS-II social awareness score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_awareness_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II social awareness raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II social awareness raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_awareness_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II social awareness t-score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II social awareness t-score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_cognition_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was SRS-II social cognition score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was SRS-II social cognition score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_cognition_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II social cognition raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II social cognition raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_cognition_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II social cognition t-score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II social cognition t-score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_communication_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was SRS-II social communication score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was SRS-II social communication score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_communication_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II social communication raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II social communication raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_communication_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II social communication t-score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II social communication t-score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_motivation_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was SRS-II social motivation score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was SRS-II social motivation score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_motivation_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II social motivation raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II social motivation raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_motivation_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II social motivation t-score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II social motivation t-score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_restricted_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was SRS-II restricted interests and repetitive behavior score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was SRS-II restricted interests and repetitive behavior score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_restricted_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II restricted interests and repetitive behavior raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II restricted interests and repetitive behavior raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_restricted_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II restricted interests and repetitive behavior t score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II restricted interests and repetitive behavior t score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_rrb_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was SRS-II Restricted and Repititive Behaviour (RRB) score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was SRS-II Restricted and Repititive Behaviour (RRB) score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_rrb_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II Restricted and Repititive Behaviour (RRB) raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II Restricted and Repititive Behaviour (RRB) raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_rrb_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II Restricted and Repititive Behaviour (RRB) t-score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II Restricted and Repititive Behaviour (RRB) t-score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_sci_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was SRS-II Social Communication and Interaction (SCI) score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was SRS-II Social Communication and Interaction (SCI) score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_sci_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II Social Communication and Interaction (SCI) raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II Social Communication and Interaction (SCI) raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_sci_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II Social Communication and Interaction (SCI) t-score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II Social Communication and Interaction (SCI) t-score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_total_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was total SRS-II score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was total SRS-II score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_total_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II total raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II total raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_total_t_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS-II total t-score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS-II total t-score</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>BEERY VMI-6 Assessment</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>BEERY VMI-6 Assessment</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vmi_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>VMI raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>VMI raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>vmi_standard_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>VMI standard score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>VMI standard score</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>Wechsler Preschool and Primary Scale of Intelligence, Fourth Edition</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Wechsler Preschool and Primary Scale of Intelligence, Fourth Edition</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>wppsi4_complete_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Were all WPPSI-4 scores able to be calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Were all WPPSI-4 scores able to be calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_reason_incomplete_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Reason all scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Reason all scores were not able to be calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_other_incomplete_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Please specify other reason</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_assembly_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was object assembly score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was object assembly score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_assembly_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Object assembly raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Object assembly raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_assembly_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Object assembly scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Object assembly scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_bug_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was bug search score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was bug search score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_bug_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Bug search raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Bug search raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_bug_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Bug search scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Bug search scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_cancellation_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was cancellation score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was cancellation score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_cancellation_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Cancellation raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Cancellation raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_cancellation_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Cancellation scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Cancellation scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_concepts_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was picture concepts score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was picture concepts score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_concepts_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Picture concepts raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Picture concepts raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_concepts_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Picture concepts scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Picture concepts scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_design_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was block design score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was block design score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_design_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Block design raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Block design raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_design_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Block design scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Block design scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_info_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was information score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was information score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_info_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Information raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Information raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_info_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Information scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Information scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_iq_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was full scale IQ score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was full scale IQ score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_iq_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Full scale IQ sum of scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Full scale IQ sum of scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_iq_standard_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Full scale IQ standard score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Full scale IQ standard score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_matrix_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was matrix reasoning score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was matrix reasoning score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_matrix_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Matrix reasoning raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Matrix reasoning raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_matrix_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Matrix reasoning scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Matrix reasoning scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_memory_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was working memory index score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was working memory index score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_memory_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Working memory index sum of scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Working memory index sum of scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_memory_standard_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Working memory index standard score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Working memory index standard score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_naming_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was picture naming score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was picture naming score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_naming_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Picture naming raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Picture naming raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_naming_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Picture naming scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Picture naming scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_picture_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was picture memory score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was picture memory score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_picture_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Picture memory raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Picture memory raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_picture_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Picture memory scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Picture memory scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_receptive_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was receptive vocabulary score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was receptive vocabulary score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_receptive_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Receptive vocabulary raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Receptive vocabulary raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_receptive_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Receptive vocabluary scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Receptive vocabluary scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_similarities_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was similarities score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was similarities score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_similarities_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Similarities raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Similarities raw score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_similarities_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Similarities scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Similarities scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_verbal_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was verbal comprehension index calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was verbal comprehension index calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_verbal_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Sum of scaled verbal comprehension index score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Sum of scaled verbal comprehension index score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_verbal_standard_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Standard verbal comprehension index score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Standard verbal comprehension index score </value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_visual_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was visual spatial index score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was visual spatial index score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_visual_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Visual spatial index sum of scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Visual spatial index sum of scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_visual_standard_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Visual spatial index standard score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Visual spatial index standard score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_vocab_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was vocabulary acquisition index score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was vocabulary acquisition index score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_vocab_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Vocabulary acquisition index sum of scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Vocabulary acquisition index sum of scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_vocab_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Vocabulary acquisition index standard score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Vocabulary acquisition index standard score</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_zoo_raw_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Was zoo locations score calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Was zoo locations score calculated</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_zoo_raw_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Zoo locations raw score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Zoo locations raw score </value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi4_zoo_scaled_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Zoo locations scaled score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Zoo locations scaled score</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>GENERAL</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>GENERAL</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>calc_age_in_days_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Age</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Age (in days)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>calc_age_in_months_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Age</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Age (in months)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>Growth Measurements</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Growth Measurements</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>weight_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Weight</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Weight</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>weight_dt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date of weight measurement</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Date of weight measurement</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>user_entered_age_in_days_weight_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>User entered age in days at weight measurement</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>User entered age in days at weight measurement</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>user_entered_age_in_months_weight_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>User entered age in months at weight measurement</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>User entered age in months at weight measurement</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>-</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Height</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Height (cm)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>height_dt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date of height measurement</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Date of height measurement</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>user_entered_age_in_days_height_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Age</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Age (in days)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>user_entered_age_in_months_height_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Age</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Age (in months)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>head_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Head circumference</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Head circumference (cm)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>head_dt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date of head circumference measurement</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Date of head circumference measurement</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>user_entered_age_in_days_head_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Age (in days) Head Measurement</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Age (in days) Head Measurement</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>user_entered_age_in_months_head_no</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Age (in months) Head Measurement</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Age (in months) Head Measurement</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>General</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>General</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>assessment_mult_dates_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Tests/questionnaires completed on 2 or more dates</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Tests/questionnaires completed on 2 or more dates</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>testing1_dt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>First testing date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>First testing date</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>testing1_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Tests provided/administered on first date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Tests provided/administered on first date</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>testing2_dt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Second testing date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Second testing date</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>testing2_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Tests provided/administered on second date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Tests provided/administered on second date</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>testing3_dt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Third testing date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Third testing date</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>testing3_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Tests provided/administered on third date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Tests provided/administered on third date</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>additional_tests_dt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date of Neurodevelopmental visit for additional tets</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Date of Neurodevelopmental visit for additional tets</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>additional_tests_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>If you would like to enter additional tests not listed above, please select any that apply</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>If you would like to enter additional tests not listed above, please select any that apply</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>basc_version_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>BASC version</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>BASC version</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi_format_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>WPPSI-IV administration method</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>WPPSI-IV administration method</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>wppsi_version_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>WPPSI-IV version</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>WPPSI-IV version</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>srs_version_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SRS version</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>SRS version</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>reason_not_taken_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Reason other tests were not provided/administered</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Reason other tests were not provided/administered</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>reason_not_taken_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other reason test was not provided/administered</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>Translation</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Translation</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>other_lang_b</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Were tests provided/administered in another language?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Were tests provided/administered in another language?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>test_lang_alt_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Which tests were available in an alternate language?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Which tests were available in an alternate language?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>test_lang_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>In which language were the tests provided/administered?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>In which language were the tests provided/administered?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>test_lang_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Please specify other language</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>test_translated_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Which tests were translated by an examiner or interpreter?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Which tests were translated by an examiner or interpreter?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>other_comments_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Other important information related to language</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Other important information related to language</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>Assessment Diagnosis</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Assessment Diagnosis</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>condition_dx_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Conditions diagnosed as a result of assessment</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Conditions diagnosed as a result of assessment</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>condition_dx_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other condition</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dx_devlp_delay_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Developmental delay</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Developmental delay </value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dx_devlp_delay_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other developmental delay</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dx_disorder_learning_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify learning disorder/disability</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Specify learning disorder/disability</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dx_disorder_learning_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other learning disorder/disability</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dx_disorder_emotion_e</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify emotional disorder</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Specify emotional disorder</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dx_disorder_emotion_other_txt</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Specify other emotional disorder</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+</node>
