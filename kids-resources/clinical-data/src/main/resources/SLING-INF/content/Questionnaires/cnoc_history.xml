@@ -1,0 +1,1287 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<node>
+	<name>cnoc_history</name>
+	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<property>
+		<name>title</name>
+		<value>cnoc_history</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>requiredSubjectTypes</name>
+		<values>
+			<value>/SubjectTypes/Patient</value>
+		</values>
+		<type>Reference</type>
+	</property>
+	<node>
+		<name>patientid</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Patientid</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Patientid</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>calc_age_in_months_no</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Patient age in months</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Patient age in months (site sending PHI)</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>care_members_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Number of parents/guardians</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Number of parents/guardians</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>country_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Country of Residence</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Country of Residence</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>other_country_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Specify other country</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>cpr_current_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Has the patient since last ND visit had cardiopulmonary resuscitation (CPR) at any point?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Has the patient since last ND visit had cardiopulmonary resuscitation (CPR) at any point?</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>cpr_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Has the patient ever had cardiopulmonary resuscitation (CPR) at any point?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Has the patient ever had cardiopulmonary resuscitation (CPR) at any point?</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>education_status_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Educational environment</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Educational environment </value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>genetic_abn_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Has the patient ever had a suspected genetic abnormality or known syndropme associated with developmental delay?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Has the patient ever had a suspected genetic abnormality or known syndropme associated with developmental delay?</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>grade_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Educational grade</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Educational grade</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>grade_non_us_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>non-USA grade</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>non-USA grade</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>head_imaging_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Past head imaging</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Past head imaging</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>heart_transplant_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Has the patient ever had a heart transplant?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Has the patient ever had a heart transplant?</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>isdraft</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>CNOC History Draft</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>CNOC History Draft</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>language_primary_type_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Primary language spoken at home</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Primary language spoken at home</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>language_primary_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Other primary language spoken at home</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>language_secondary_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Is secondary language spoken at home?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Is secondary language spoken at home?</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>language_secondary_type_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Secondary language spoken at home</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Secondary language spoken at home</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>language_secondary_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Secondary language other</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>language_third_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Is third language spoken at home?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Is third language spoken at home?</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>language_third_type_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Third language spoken at home</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Third language spoken at home</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>language_third_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Other third language spoken at home</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>languages_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Number of languages spoken at home</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Number of languages spoken at home</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>mechanical_support_current_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Has the patient since last ND visit had a history of mechanical support (ECMO or VAD use)?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Has the patient since last ND visit had a history of mechanical support (ECMO or VAD use)?</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>mechanical_support_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Has the patient ever had a history of mechanical support (ECMO or VAD use)?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Has the patient ever had a history of mechanical support (ECMO or VAD use)?</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>other_bio_parent_education_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Highest formal education level attained by other bio parent</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Highest formal education level attained by other bio parent</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent1_cohabitant_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian1 lived with child in past</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian1 lived with child in past</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent1_education_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian1 education</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian1 education</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent1_relation_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian1 relationship</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian1 relationship</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent1_relation_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian1 other relationship</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent1_sex_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian1 sex</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian1 sex</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent1_sex_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian1 other sex</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent2_cohabitant_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian2 lived with child in past</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian2 lived with child in past</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent2_education_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian2 education</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian2 education</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent2_relation_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian2 relationship</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian2 relationship</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent2_relation_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian2 other relationship</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent2_sex_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian2 sex</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian2 sex</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent2_sex_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian2 other sex</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent3_cohabitant_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian3 lived with child in past</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian3 lived with child in past</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent3_education_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian3 education</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian3 education</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent3_relation_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian3 relationship</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian3 relationship</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent3_relation_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian3 other relationship</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent3_sex_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian3 sex</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian3 sex</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent3_sex_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian3 other sex</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent4_cohabitant_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian4 lived with child in past</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian4 lived with child in past</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent4_education_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian4 education</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian4 education</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent4_relation_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian4 relationship</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian4 relationship</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent4_relation_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian4 other relationship</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent4_sex_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian4 sex</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Parent/guardian4 sex</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>parent4_sex_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Parent/guardian4 other sex</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>prior_conditions_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Does patient have prior conditions diagnosed by qualified professional</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Does patient have prior conditions diagnosed by qualified professional</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>prior_condition_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Other prior condition</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>prior_devlp_delay_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Developmental delay</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Developmental delay </value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>prior_devlp_delay_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Other developmental delay</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>prior_disorder_emotion_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Emotional disorder</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Emotional disorder</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>prior_disorder_emotion_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Other emotional disorder</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Other emotional disorder</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>prior_disorder_learning_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Learning disorder</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Learning disorder</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>prior_disorder_learning_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Other learning disorder</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>repeated_grade_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Has patient repeated grade</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Has patient repeated grade</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>seizure_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Seizure in past</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Seizure in past</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>seizure_med_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Medication to treat past seizure</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Medication to treat past seizure</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>special_ed_504_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Current 504 plan</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Current 504 plan</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>special_ed_iep_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Current IEP</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Current IEP</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>special_ed_non_us_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Specify non-USA special education accomodation plan</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Specify non-USA special education accomodation plan</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>tx_current_behavioral_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Current behavioral therapy</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Current behavioral therapy</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>tx_current_feeding_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Current feeding therapy</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Current feeding therapy</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>tx_current_ot_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Current OT</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Current OT</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>tx_current_other_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Other current therapy</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Other current therapy</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>tx_current_pt_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Current PT</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Current PT</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>tx_current_speech_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Current speech therapy</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Current speech therapy</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>tx_past_behavioral_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Past behavioral therapy</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Past behavioral therapy</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>tx_past_feeding_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Past feeding therapy</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Past feeding therapy</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>tx_past_ot_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Past OT</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Past OT </value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>tx_past_other_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Past other therapy</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Past other therapy</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>tx_past_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Specify other past therapy</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Specify other past therapy</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>tx_past_pt_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Past PT</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Past PT</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>tx_past_speech_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Past speech therapy</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Past speech therapy</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>user_entered_age_in_days_no</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Patient age in days</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Patient age in days (site not sending PHI)</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>user_entered_age_in_months_no</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Patient age in months</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Patient age in months (site not sending PHI)</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>calc_age_in_years_no</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Years:</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Years:</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>visit_dt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Date of ND Visit</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Date of ND Visit</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>zip_cd</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Zip code</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Zip code </value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>pt_over_six_b</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Is the patient over 6 years of age?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Is the patient over 6 years of age?</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>ethnicty_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Patient Ethnicity</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Patient Ethnicity</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>dvlpmntl_specialist_ever_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value><![CDATA[Has the patient <u>ever</u> received services from a developmental specialist/special instructor or any therapy addressing overall development?]]></value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value><![CDATA[Has the patient <u>ever</u> received services from a developmental specialist/special instructor or any therapy addressing overall development?]]></value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>dvlpmntl_specialist_current_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value><![CDATA[Is the patient <u>currently</u> receiving services from a developmental specialist/special instructor or any therapy addressing overall development ?]]></value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value><![CDATA[Is the patient <u>currently</u> receiving services from a developmental specialist/special instructor or any therapy addressing overall development ?]]></value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>seizure_past_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value><![CDATA[Has the patient had a seizure  <u>since the last ND visit </u>?]]></value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value><![CDATA[Has the patient had a seizure  <u>since the last ND visit </u>?]]></value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>seizure_medication_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value><![CDATA[Is the patient <u>currently</u> on medication for seizures?]]></value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value><![CDATA[Is the patient <u>currently</u> on medication for seizures? ]]></value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>genetic_abn_syndrome_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Suspected genetic anomaly or known syndrome</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Suspected genetic anomaly or known syndrome</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>genetic_abn_other_txt</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Other genetic anomaly/known syndrome:</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Other genetic anomaly/known syndrome:</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>race_e</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Race</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Race</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>lastupdateddate</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Last Updated Date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Last Updated Date</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>creationdate</name>
+		<primaryNodeType>lfs:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Creation Date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Creation Date</value>
+			<type>String</type>
+		</property>
+	</node>
+</node>
