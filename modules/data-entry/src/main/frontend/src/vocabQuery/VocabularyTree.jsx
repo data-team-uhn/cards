@@ -73,7 +73,7 @@ function VocabularyTree(props) {
     // if we are building for roots for the first time
     if (roots && !parentNode) {
       let rootBranches = roots.map((row, index) => {
-        return row["identifier"] ? constructBranch(row["identifier"], row["@path"], row["label"], true, false, false, true) : false;
+        return row["identifier"] ? constructBranch(row["identifier"], row["@path"], row["label"], true, (roots.length == 1), false, true) : false;
       }).filter(i => i);
       setParentNode(rootBranches);
       return;
