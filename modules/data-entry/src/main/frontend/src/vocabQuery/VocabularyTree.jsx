@@ -60,9 +60,12 @@ function VocabularyTree(props) {
     }
   }, [path, vocabulary])
 
-  let getRoots = (status, data) => {
-    setRoots(data.roots);
+  useEffect(() => {
     rebuildBrowser();
+  }, [roots])
+
+  let getRoots = (status, data) => {
+    setRoots(data?.roots);
   }
 
   // Rebuild the browser tree centered around the given term.
