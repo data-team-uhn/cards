@@ -299,17 +299,9 @@ function VocabularyQuery(props) {
               { (document.activeElement === anchorEl.current || (!defaultValue && !(anchorEl.current?.value))) ? label : ''}
             </InputLabel>
             {inputEl}
-            { error && <Typography
-                          component="p"
-                          color="secondary"
-                          className={classes.answerInstructions}
-                          variant="caption"
-                        >
-                          {error}
-                        </Typography>
-             }
           </FormControl>}
           <LinearProgress className={classes.progressIndicator + " " + (suggestionsLoading ? "" : classes.inactiveProgress)}/>
+          { error && <Typography component="div" color="error" variant="caption">{error}</Typography> }
         </div>
         {/* Suggestions list using Popper */}
         <Popper
