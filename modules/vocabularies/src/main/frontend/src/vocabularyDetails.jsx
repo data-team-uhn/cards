@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
   browseAction: {
     margin: theme.spacing(1),
     textTransform: "none",
-    marginRight: theme.spacing(37)
+    marginRight: "auto"
   },
 }));
 
