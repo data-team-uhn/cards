@@ -35,7 +35,7 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 
 import VocabularyAction from "./vocabularyAction";
-import InfoBrowser from "./vocabQuery/InfoBrowser.jsx";
+import VocabularyBrowser from "./vocabQuery/VocabularyBrowser.jsx";
 
 import { REST_URL, MakeRequest } from "./vocabQuery/util.jsx";
 
@@ -123,7 +123,7 @@ export default function VocabularyDetails(props) {
       </Dialog>
 
       { type == "local" &&
-        <InfoBrowser
+        <VocabularyBrowser
           browserRef={browserRef}
           infoboxRef={infoboxRef}
           browserOpen={browserOpened}
