@@ -26,7 +26,7 @@ import QueryStyle from "./queryStyle.jsx";
 // Component that renders a dialog with term info for a single vocabulary term.
 //
 function InfoBox(props) {
-  const { open, infoboxRef, vocabulary, onClose, term, infoAboveBackground, browserOpened, onActionClick, onClickAway, classes } = props;
+  const { open, infoboxRef, vocabulary, term, infoAboveBackground, browserOpened, onActionClick, onClickAway, onClose, classes } = props;
 
   return (
     <Popper
