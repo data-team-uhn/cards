@@ -159,9 +159,9 @@ export function BioPortalApiKey(props) {
         </Grid>
       </> }
 
-      <Dialog onClose={() => {setDisplayPopup(false)}} open={displayPopup}>
-         <DialogTitle disableTypography>
-           <Typography variant="h4" className={classes.dialogTitle}>Change BioPortal API key</Typography>
+      <Dialog onClose={() => {setDisplayPopup(false)}} open={displayPopup} maxWidth="sm" fullWidth>
+         <DialogTitle>
+           Change Bioportal API key
          </DialogTitle>
          <DialogContent dividers>
            { getBioportalKeyInfo(true) }
