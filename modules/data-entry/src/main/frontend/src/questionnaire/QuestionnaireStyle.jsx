@@ -450,9 +450,6 @@ const questionnaireStyle = theme => ({
     subjectFilterInput: {
         width: "100%"
     },
-    NewFormDialog: {
-        width: "500px"
-    },
     deleteText: {
         fontSize: "15px",
         color: theme.palette.error.main,

@@ -22,11 +22,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {
   Button,
-  CircularProgress,
-  Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   Typography,
   withStyles
 } from "@material-ui/core";
@@ -35,6 +32,7 @@ import MaterialTable from "material-table";
 
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
+import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
@@ -249,8 +247,8 @@ function NewFormDialog(props) {
 
   return (
     <React.Fragment>
-      <Dialog
-        disableBackdropClick
+      <ResponsiveDialog
+        title={progress === PROGRESS_SELECT_QUESTIONNAIRE ? "Select a questionnaire" : "Select a subject"}
         open={mode === MODE_ACTION ? dialogOpen : open}
         onClose={() => {
           setDialogOpen(false);
@@ -259,12 +257,8 @@ function NewFormDialog(props) {
           }
         }}
       >
-        <DialogTitle id="new-form-title">
-          {progress === PROGRESS_SELECT_QUESTIONNAIRE ? "Select a questionnaire" : "Select a subject"}
-        </DialogTitle>
-        <DialogContent dividers className={classes.NewFormDialog}>
+        <DialogContent dividers>
           {error && (!newSubjectPopperOpen) && <Typography color='error'>{error}</Typography>}
-          {isFetching && <div className={classes.newFormTypePlaceholder}><CircularProgress size={24} className={classes.newFormTypeLoadingIndicator} /></div>}
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
           <React.Fragment>
             {relatedForms &&
@@ -274,6 +268,7 @@ function NewFormDialog(props) {
                   { title: 'Questionnaire', field: 'title' },
                   { title: 'Description', field: 'description' },
                 ]}
+                isLoading={isFetching}
                 data={query => {
                   let url = new URL("/query", window.location.origin);
                   let sql = `select * from [lfs:Questionnaire] as n `;
@@ -400,7 +395,7 @@ function NewFormDialog(props) {
             }
           </Button>
         </DialogActions>
-      </Dialog>
+      </ResponsiveDialog>
       <NewSubjectDialog
         allowedTypes={filteredAllowedSubjectTypes}
         disabled={isFetching}
