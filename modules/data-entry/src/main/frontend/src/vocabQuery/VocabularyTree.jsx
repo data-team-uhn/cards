@@ -33,7 +33,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 // Required arguments:
 //  open: Boolean representing whether or not the tree dialog is open
 //  path: Term @path to get the term info
-//  onTermFocus: Callback to change the term path being looked up
+//  onTermClick: Callback to change the term path being looked up
 //  registerInfo: Callback to add a possible hook point for the info box
 //  getInfo: Callback to change the currently displayed info box term
 //  onClose: Callback when this dialog is closed
