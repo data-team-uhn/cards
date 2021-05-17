@@ -159,9 +159,9 @@ export function BioPortalApiKey(props) {
         </Grid>
       </> }
 
-      <Dialog onClose={() => {setDisplayPopup(false)}} open={displayPopup} maxWidth="sm" fullWidth>
+      <Dialog onClose={() => {setDisplayPopup(false)}} open={displayPopup} maxWidth="xs" fullWidth>
          <DialogTitle>
-           Change Bioportal API key
+           Change BioPortal API key
          </DialogTitle>
          <DialogContent dividers>
            { getBioportalKeyInfo(true) }
