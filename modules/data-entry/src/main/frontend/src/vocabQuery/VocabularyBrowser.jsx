@@ -199,7 +199,7 @@ function VocabularyBrowser(props) {
           open={browserOpened || false}
           vocabulary={vocab}
           path={browsePath}
-          onTermClick={focusTerm}
+          onTermClick={!browseRoots ? focusTerm : null}
           onClose={closeBrowser}
           onError={logError}
           registerInfo={registerInfoButton}
