@@ -37,7 +37,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  id: Term id to search
 //  path: Term @path to get the term info
 //  name: Text to display
-//  onTermFocus: callback to change the term path being looked up
+//  onTermClick: callback when a term's label is clicked
 //  registerInfo: callback to add a possible hook point for the info box
 //  getInfo: callback to change the currently displayed info box term
 //  expands: boolean determining whether or not to allow this child to display its children
@@ -50,7 +50,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //           (a focused term entry is displayed as a root of a subtree, with only its parents above and its descendants below)
 //
 function VocabularyBranch(props) {
-  const { defaultOpen, id, path, name, onTermFocus, registerInfo, getInfo, expands, headNode, focused, onError, knownHasChildren, classes } = props;
+  const { defaultOpen, id, path, name, onTermClick, registerInfo, getInfo, expands, headNode, focused, onError, knownHasChildren, classes } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
@@ -62,9 +62,9 @@ function VocabularyBranch(props) {
 
   let loadTerm = (id, path) => {
     if (focused) return;
-    if (onTermFocus) {
+    if (onTermClick) {
       setCurrentlyLoading(true);
-      onTermFocus(path);
+      onTermClick(path);
     } else {
       toggleShowChildren();
     }
@@ -99,7 +99,7 @@ function VocabularyBranch(props) {
         id={row["identifier"]}
         path={row["@path"]}
         name={row["label"].trim()}
-        onTermFocus={onTermFocus}
+        onTermClick={onTermClick}
         registerInfo={registerInfo}
         getInfo={getInfo}
         expands={true}
@@ -225,7 +225,7 @@ VocabularyBranch.propTypes = {
   id: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  onTermFocus: PropTypes.func.isRequired,
+  onTermClick: PropTypes.func.isRequired,
   registerInfo: PropTypes.func.isRequired,
   getInfo: PropTypes.func.isRequired,
   expands: PropTypes.bool.isRequired,

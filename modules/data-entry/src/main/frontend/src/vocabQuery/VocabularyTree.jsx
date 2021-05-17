@@ -44,7 +44,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  fullscreen: Boolean representing whether or not the dialog is fullscreen (default: false)
 //
 function VocabularyTree(props) {
-  const { open, path, onTermFocus, registerInfo, getInfo, onClose, onError, browserRef, fullscreen, classes, ...rest } = props;
+  const { open, path, onTermClick, registerInfo, getInfo, onClose, onError, browserRef, fullscreen, classes, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
@@ -96,7 +96,7 @@ function VocabularyTree(props) {
         id={id}
         path={path}
         name={name.trim()}
-        onTermFocus={onTermFocus}
+        onTermClick={onTermClick}
         registerInfo={registerInfo}
         getInfo={getInfo}
         expands={ischildnode}
@@ -150,7 +150,7 @@ function VocabularyTree(props) {
 VocabularyTree.propTypes = {
   open: PropTypes.bool.isRequired,
   path: PropTypes.string.isRequired,
-  onTermFocus: PropTypes.func.isRequired,
+  onTermClick: PropTypes.func.isRequired,
   registerInfo: PropTypes.func.isRequired,
   getInfo: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
