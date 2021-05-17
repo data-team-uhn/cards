@@ -29,6 +29,16 @@ import QueryStyle from "./queryStyle.jsx";
 
 // Component that renders a vocabulary info box and browser.
 //
+// Required arguments:
+// onClose: Callback for the vocabulary browser close event
+// infoPath: Term @path to get the term info
+// infoButtonRefs: References to the term info buttons
+// infoboxRef: Reference to the term info dialog node
+// browserRef: Reference to the vocabulary tree dialog node
+//
+// Optional arguments:
+// browserOpen: Boolean representing whether or not the vocabulary tree dialog is open
+//
 function VocabularyBrowser(props) {
   const { browserOpen, onClose, infoPath, infoButtonRefs, infoboxRef, browserRef, classes } = props;
 
@@ -191,6 +201,16 @@ function VocabularyBrowser(props) {
           </Snackbar>
       </>
     );
+}
+
+VocabularyBrowser.propTypes = {
+  browserOpen: PropTypes.bool,
+  onClose: PropTypes.func.isRequired,
+  infoPath: PropTypes.string.isRequired,
+  infoButtonRefs: PropTypes.object.isRequired,
+  infoboxRef: PropTypes.object.isRequired,
+  browserRef: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 }
 
 export default withStyles(QueryStyle)(VocabularyBrowser);

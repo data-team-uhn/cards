@@ -51,10 +51,11 @@ const MAX_RESULTS = 10;
 //  placeholder: String to display as the input element's placeholder
 //  value: String to use as the input element value
 //  questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
+//  onChange: Callback in term input change event
 
 function VocabularyQuery(props) {
-  const { classes, defaultValue, disabled, noMargin, isNested, onChange, onInputFocus, questionDefinition,
-    focusAfterSelecting, placeholder, label, value, onClick, clearOnClick, overrideText } = props;
+  const { clearOnClick, onClick, focusAfterSelecting, disabled, onInputFocus, label, overrideText, defaultValue, noMargin, isNested, placeholder,
+    value, questionDefinition, onChange, classes } = props;
 
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
@@ -375,6 +376,7 @@ VocabularyQuery.propTypes = {
     placeholder: PropTypes.string,
     value: PropTypes.string,
     questionDefinition: PropTypes.object,
+    onChange: PropTypes.func,
 };
 
 VocabularyQuery.defaultProps = {

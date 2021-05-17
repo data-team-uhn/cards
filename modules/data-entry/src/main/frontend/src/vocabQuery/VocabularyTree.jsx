@@ -31,17 +31,20 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 // Component that renders a modal dialog, to browse related terms of an input term.
 //
 // Required arguments:
+//  open: Boolean representing whether or not the tree dialog is open
 //  path: Term @path to get the term info
-//  onTermFocus: callback to change the term path being looked up
-//  registerInfo: callback to add a possible hook point for the info box
-//  getInfo: callback to change the currently displayed info box term
-//  onClose: callback when this dialog is closed
-//  onError: callback when an error occurs
+//  onTermFocus: Callback to change the term path being looked up
+//  registerInfo: Callback to add a possible hook point for the info box
+//  getInfo: Callback to change the currently displayed info box term
+//  onClose: Callback when this dialog is closed
+//  onError: Callback when an error occurs
+//  browserRef: Reference to the vocabulary tree node
 //
 // Optional arguments:
-//  fullscreen: whether or not the dialog is fullscreen (default: false)
+//  fullscreen: Boolean representing whether or not the dialog is fullscreen (default: false)
+//
 function VocabularyTree(props) {
-  const { classes, open, fullscreen, path, onTermFocus, registerInfo, getInfo, onClose, onError, browserRef, ...rest } = props;
+  const { open, path, onTermFocus, registerInfo, getInfo, onClose, onError, browserRef, fullscreen, classes, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
@@ -102,7 +105,7 @@ function VocabularyTree(props) {
         headNode={!ischildnode}
         focused={focused}
         onError={onError}
-        knownHasChildren={hasChildren}
+        knownHasChildren={!!hasChildren}
       />
     );
   }
@@ -145,14 +148,16 @@ function VocabularyTree(props) {
 }
 
 VocabularyTree.propTypes = {
-  classes: PropTypes.object.isRequired,
-  fullscreen: PropTypes.bool,
+  open: PropTypes.bool.isRequired,
   path: PropTypes.string.isRequired,
   onTermFocus: PropTypes.func.isRequired,
   registerInfo: PropTypes.func.isRequired,
   getInfo: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  onError: PropTypes.func.isRequired
+  onError: PropTypes.func.isRequired,
+  browserRef: PropTypes.object.isRequired,
+  fullscreen: PropTypes.bool,
+  classes: PropTypes.object.isRequired
 };
 
 VocabularyTree.defaultProps = {

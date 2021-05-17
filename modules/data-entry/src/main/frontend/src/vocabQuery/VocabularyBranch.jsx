@@ -33,6 +33,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 // Component that renders an element of the VocabularyTree, with expandable children.
 //
 // Required arguments:
+//  defaultOpen: Boolean representing whether or not the branch is open
 //  id: Term id to search
 //  path: Term @path to get the term info
 //  name: Text to display
@@ -41,14 +42,15 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  getInfo: callback to change the currently displayed info box term
 //  expands: boolean determining whether or not to allow this child to display its children
 //  headNode: boolean determining whether or not this node is the topmost node in the browser
-//  focused: boolean determining whether this entry is focused and should be visually emphasized
-//           (a focused term entry is displayed as a root of a subtree, with only its parents above and its descendants below)
 //  onError: callback when an error occurs
+//  knownHasChildren: Boolean representing whether or not the term has children
 //
 // Optional arguments:
-//  fullscreen: whether or not the dialog is fullscreen (default: false)
+//  focused: boolean determining whether this entry is focused and should be visually emphasized
+//           (a focused term entry is displayed as a root of a subtree, with only its parents above and its descendants below)
+//
 function VocabularyBranch(props) {
-  const { classes, defaultOpen, id, path, name, onTermFocus, registerInfo, getInfo, expands, headNode, focused, onError, knownHasChildren } = props;
+  const { defaultOpen, id, path, name, onTermFocus, registerInfo, getInfo, expands, headNode, focused, onError, knownHasChildren, classes } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
@@ -219,6 +221,18 @@ function VocabularyBranch(props) {
 }
 
 VocabularyBranch.propTypes = {
+  defaultOpen: PropTypes.bool.isRequired,
+  id: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  onTermFocus: PropTypes.func.isRequired,
+  registerInfo: PropTypes.func.isRequired,
+  getInfo: PropTypes.func.isRequired,
+  expands: PropTypes.bool.isRequired,
+  headNode: PropTypes.bool.isRequired,
+  focused: PropTypes.bool,
+  onError: PropTypes.func.isRequired,
+  knownHasChildren: PropTypes.bool.isRequired,
   classes: PropTypes.object.isRequired
 };
 

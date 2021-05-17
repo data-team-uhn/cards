@@ -18,12 +18,24 @@
 //
 import React from "react";
 import classNames from "classnames";
+import PropTypes from "prop-types";
 import { withStyles, Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Link, Popper, Tooltip, Typography } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 
 import QueryStyle from "./queryStyle.jsx";
 
 // Component that renders a dialog with term info for a single vocabulary term.
+//
+// Required arguments:
+// open: Boolean representing whether or not the info dialog is open
+// infoboxRef: Reference to the info dialog node
+// vocabulary: Vocabulary source info
+// term: Vocabulary term of interest
+// infoAboveBackground: Boolean representing whether or not the term info dialog is placed above the vocabulary tree dialog
+// browserOpened: Boolean representing whether or not the vocabulary tree dialog is open
+// onActionClick: Callback for the dialog action button click event
+// onClickAway: Callback for the click away event
+// onClose: Callback for the dialog close event
 //
 function InfoBox(props) {
   const { open, infoboxRef, vocabulary, term, infoAboveBackground, browserOpened, onActionClick, onClickAway, onClose, classes } = props;
@@ -127,5 +139,18 @@ function InfoBox(props) {
     </Popper>
   );
 }
+
+InfoBox.propTypes = {
+  open: PropTypes.bool.isRequired,
+  infoboxRef: PropTypes.object.isRequired,
+  vocabulary: PropTypes.object.isRequired,
+  term: PropTypes.object.isRequired,
+  infoAboveBackground: PropTypes.bool.isRequired,
+  browserOpened: PropTypes.bool.isRequired,
+  onActionClick: PropTypes.func.isRequired,
+  onClickAway: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired
+};
 
 export default withStyles(QueryStyle)(InfoBox);
