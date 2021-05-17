@@ -102,7 +102,7 @@ function VocabularyBrowser(props) {
 
   // callback for getInfo to populate info box
   let showInfo = (status, data) => {
-    if (status === null) {
+    if (status === null && data) {
       setTerm({name: data["label"],
                id: data["identifier"],
                definition: data["def"] || data["description"] || data["definition"],
