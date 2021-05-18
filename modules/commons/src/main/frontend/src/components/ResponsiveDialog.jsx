@@ -23,23 +23,30 @@ import PropTypes from "prop-types";
 import {
   Dialog,
   DialogTitle,
+  IconButton,
+  makeStyles,
   useMediaQuery
 } from "@material-ui/core";
 
+import CloseIcon from '@material-ui/icons/Close';
 import { useTheme } from '@material-ui/core/styles';
 
 // Component that renders the Dialog containers that expand to full screen once
 // the screen becomes more narrow than the specified width
 //
 // Optional props:
-// title: the title of the dialog
+// title: String specifying the title of the dialog
+// withCloseButton: Boolean specifying whether the dialog should have a Close button (x)
+//   at the top-right corner
 // width: the default size of the dialog, and the screen size that makes it go
 //   fullScreen. One of xs, sm, md, lg, xl. Defaults to sm.
 // children: the dialog contents
+// onClose: Callback for closing the dialog
 //
 // Sample usage:
 //<ResponsiveDialog
 //  title="Select a subject"
+//  withCloseButton
 //  open={open}
 //  onClose={selectSubject}
 //  >
@@ -51,21 +58,45 @@ import { useTheme } from '@material-ui/core/styles';
 //  </DialogActions>
 //</ResponsiveDialog>
 //
+
+const useStyles = makeStyles(theme => ({
+  withCloseButton: {
+    "& .MuiDialogTitle-root" : {
+      paddingRight: theme.spacing(5),
+    }
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+  },
+}));
+
 export default function ResponsiveDialog(props) {
-  const { title, width, children, ...rest } = props;
+  const { title, width, children, withCloseButton, onClose, ...rest } = props;
+
+  const classes = useStyles();
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down(width));
 
+  let closeButton = withCloseButton ?
+    <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+      <CloseIcon />
+    </IconButton>
+    : null;
+
   return (
     <Dialog
+      className={withCloseButton ? classes.withCloseButton : undefined}
       maxWidth={width}
       fullWidth
       fullScreen={fullScreen}
       disableBackdropClick
+      onClose={onClose}
       {...rest}
     >
-      { title && <DialogTitle>{title}</DialogTitle>}
+      { title && <DialogTitle>{title}{closeButton}</DialogTitle>}
       { children }
     </Dialog>
   );
@@ -78,6 +109,8 @@ ResponsiveDialog.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
+  withCloseButton: PropTypes.bool,
+  onClose: PropTypes.func,
 }
 
 ResponsiveDialog.defaultProps = {
