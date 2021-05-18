@@ -60,7 +60,7 @@ function NewFormDialog(props) {
   const [ error, setError ] = useState("");
   const [ relatedForms, setRelatedForms ] = useState();
   const [ disableProgress, setDisableProgress ] = useState(false);
-  const [ pageSize, setPageSize ] = useState(10);
+  const [ pageSize, setPageSize ] = useState(5);
   const [ wasOpen, setWasOpen ] = useState(false);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
