@@ -115,7 +115,6 @@ function VocabularyTree(props) {
       ref={browserRef}
       fullWidth
       maxWidth="sm"
-      fullscreen="true"
       className={classes.dialog}
       onClose={onClose}
       classes={{
