@@ -270,10 +270,17 @@ function NewFormDialog(props) {
             {relatedForms &&
               <MaterialTable
                 title=""
-                columns={[
-                  { title: 'Questionnaire', field: 'title' },
-                  { title: 'Description', field: 'description' },
-                ]}
+                columns={[{
+                  field: 'title',
+                  render: q => (<>
+                                <Typography component="div">{q.title}</Typography>
+                                { q.description && <Typography component="div" variant="caption" color="textSecondary">{q.description}</Typography> }
+                                </>)
+                }, {
+                  field: 'description',
+                  searchable: true,
+                  hidden: true
+                }]}
                 data={query => {
                   let url = new URL("/query", window.location.origin);
                   let sql = `select * from [lfs:Questionnaire] as n `;
@@ -328,6 +335,7 @@ function NewFormDialog(props) {
                 }}
                 options={{
                   search: true,
+                  header: false,
                   actionsColumnIndex: -1,
                   addRowPosition: 'first',
                   pageSize: pageSize,
