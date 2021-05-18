@@ -59,6 +59,28 @@
             end \
           "]
 
+[configurations runModes=forms,demo]
+    org.apache.sling.jcr.repoinit.RepositoryInitializer-forms_demo
+        scripts=["\
+            create user github with password github \
+            create path (lfs:QuestionnairesHomepage) /Questionnaires \
+            create path (lfs:FormsHomepage) /Forms \
+            create path (lfs:SubjectsHomepage) /Subjects \
+            create path (lfs:SubjectTypesHomepage) /SubjectTypes \
+\
+            set ACL on /Forms,/Subjects \
+                allow jcr:all for everyone \
+            end \
+\
+            set ACL on /Forms,/Subjects \
+                deny jcr:all for github \
+            end \
+\
+            set ACL on /Questionnaires,/SubjectTypes \
+                allow jcr:read for everyone \
+            end \
+          "]
+
 [configurations runModes=forms,permissions_trusted]
     org.apache.sling.jcr.repoinit.RepositoryInitializer-forms_trusted
         scripts=["\

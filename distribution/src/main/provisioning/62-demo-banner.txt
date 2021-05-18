@@ -26,7 +26,3 @@
 [artifacts runModes=demo]
     ca.sickkids.ccm.lfs/lfs-modules-demo-banner/${lfs.version}
     ca.sickkids.ccm.lfs/lfs-modules-upgrade-marker/${lfs.version}
-
-[configurations runModes=demo]
-    org.apache.sling.jcr.repoinit.RepositoryInitializer-github_user
-        scripts=["create user github with password github"]
