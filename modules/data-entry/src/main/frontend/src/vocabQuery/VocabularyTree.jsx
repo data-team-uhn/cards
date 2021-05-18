@@ -31,7 +31,6 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 // Required arguments:
 //  open: Boolean representing whether or not the tree dialog is open
 //  path: Term @path to get the term info
-//  onTermClick: Callback to change the term path being looked up
 //  registerInfo: Callback to add a possible hook point for the info box
 //  getInfo: Callback to change the currently displayed info box term
 //  onClose: Callback when this dialog is closed
@@ -39,6 +38,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  browserRef: Reference to the vocabulary tree node
 //
 // Optional arguments:
+//  onTermClick: Callback to change the term path being looked up
 //  vocabulary: Vocabulary info
 //  browseRoots: Boolean representing whether or not the vocabulary tree shows roots
 //
@@ -168,7 +168,7 @@ function VocabularyTree(props) {
 VocabularyTree.propTypes = {
   open: PropTypes.bool.isRequired,
   path: PropTypes.string.isRequired,
-  onTermClick: PropTypes.func.isRequired,
+  onTermClick: PropTypes.func,
   registerInfo: PropTypes.func.isRequired,
   getInfo: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,

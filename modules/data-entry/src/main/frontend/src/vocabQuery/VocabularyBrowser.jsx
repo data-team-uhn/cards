@@ -31,12 +31,12 @@ import QueryStyle from "./queryStyle.jsx";
 //
 // Required arguments:
 // onCloseInfo: Callback for the vocabulary info box close event
-// infoPath: Term @path to get the term info
-// infoButtonRefs: References to the term info buttons forwarded from the dropdown menu
 // infoboxRef: Reference to the term info dialog node
 // browserRef: Reference to the vocabulary tree dialog node
 //
 // Optional arguments:
+// infoButtonRefs: References to the term info buttons forwarded from the dropdown menu
+// infoPath: Term @path to get the term info
 // browserOpen: Boolean representing whether or not the vocabulary tree dialog is open
 //
 function VocabularyBrowser(props) {
@@ -101,6 +101,7 @@ function VocabularyBrowser(props) {
 
   // Grab information about the given ID and populate the info box
   let getInfo = (path) => {
+    setTermInfoVisible(false);
     // If we don't yet know anything about our vocabulary, fill it in
     var vocabPath = path.split("/").slice(0, -1).join("/");
     if (vocab.path != vocabPath) {
@@ -190,7 +191,7 @@ function VocabularyBrowser(props) {
           term={term}
           onActionClick={openBrowser}
           browserOpened={browserOpened}
-          infoAboveBackground={infoAboveBackground}
+          infoAboveBackground={!browseRoots ? infoAboveBackground : true}
           onClickAway={clickAwayInfo}
         />
         { /* Browse dialog box */}
@@ -231,8 +232,8 @@ function VocabularyBrowser(props) {
 VocabularyBrowser.propTypes = {
   browserOpen: PropTypes.bool,
   onCloseInfo: PropTypes.func.isRequired,
-  infoPath: PropTypes.string.isRequired,
-  infoButtonRefs: PropTypes.object.isRequired,
+  infoPath: PropTypes.string,
+  infoButtonRefs: PropTypes.object,
   infoboxRef: PropTypes.object.isRequired,
   browserRef: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired

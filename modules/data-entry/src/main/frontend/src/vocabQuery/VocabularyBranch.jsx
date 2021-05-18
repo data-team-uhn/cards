@@ -37,7 +37,6 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  id: Term id to search
 //  path: Term @path to get the term info
 //  name: Text to display
-//  onTermClick: callback when a term's label is clicked
 //  registerInfo: callback to add a possible hook point for the info box
 //  getInfo: callback to change the currently displayed info box term
 //  expands: boolean determining whether or not to allow this child to display its children
@@ -46,6 +45,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  knownHasChildren: Boolean representing whether or not the term has children
 //
 // Optional arguments:
+//  onTermClick: callback when a term's label is clicked
 //  focused: boolean determining whether this entry is focused and should be visually emphasized
 //           (a focused term entry is displayed as a root of a subtree, with only its parents above and its descendants below)
 //
@@ -141,7 +141,7 @@ function VocabularyBranch(props) {
         disabled={!clickHandler}
       >
         { icon }
-        { currentlyLoading && <CircularProgress size={12} />}
+        { currentlyLoading && <CircularProgress size={12} /> }
       </IconButton>
     );
     return (
@@ -226,7 +226,7 @@ VocabularyBranch.propTypes = {
   id: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  onTermClick: PropTypes.func.isRequired,
+  onTermClick: PropTypes.func,
   registerInfo: PropTypes.func.isRequired,
   getInfo: PropTypes.func.isRequired,
   expands: PropTypes.bool.isRequired,
