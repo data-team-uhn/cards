@@ -101,7 +101,6 @@ function VocabularyBrowser(props) {
 
   // Grab information about the given ID and populate the info box
   let getInfo = (path) => {
-    setTermInfoVisible(false);
     // If we don't yet know anything about our vocabulary, fill it in
     var vocabPath = path.split("/").slice(0, -1).join("/");
     if (vocab.path != vocabPath) {
@@ -190,8 +189,8 @@ function VocabularyBrowser(props) {
           onClose={closeInfo}
           term={term}
           onActionClick={openBrowser}
-          browserOpened={browserOpened}
-          infoAboveBackground={!browseRoots ? infoAboveBackground : true}
+          browserOpened={browserOpened || false}
+          infoAboveBackground={browseRoots || infoAboveBackground || false}
           onClickAway={clickAwayInfo}
         />
         { /* Browse dialog box */}
