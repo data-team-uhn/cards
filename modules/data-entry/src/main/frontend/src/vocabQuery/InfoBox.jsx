@@ -28,14 +28,14 @@ import QueryStyle from "./queryStyle.jsx";
 //
 // Required arguments:
 // open: Boolean representing whether or not the info dialog is open
-// infoboxRef: Reference to the info dialog node
+// infoboxRef: Reference to the info box node
 // vocabulary: Vocabulary source info
-// term: Vocabulary term of interest
-// infoAboveBackground: Boolean representing whether or not the term info dialog is placed above the vocabulary tree dialog
+// term: Vocabulary term being displayed in the info box
+// infoAboveBackground: Boolean representing whether or not the term info box is placed above the vocabulary tree dialog
 // browserOpened: Boolean representing whether or not the vocabulary tree dialog is open
-// onActionClick: Callback for the dialog action button click event
+// onActionClick: Callback for the action button click event
 // onClickAway: Callback for the click away event
-// onClose: Callback for the dialog close event
+// onClose: Callback for the close event
 //
 function InfoBox(props) {
   const { open, infoboxRef, vocabulary, term, infoAboveBackground, browserOpened, onActionClick, onClickAway, onClose, classes } = props;

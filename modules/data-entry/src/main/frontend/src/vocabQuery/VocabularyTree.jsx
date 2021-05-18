@@ -40,11 +40,8 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  onError: Callback when an error occurs
 //  browserRef: Reference to the vocabulary tree node
 //
-// Optional arguments:
-//  fullscreen: Boolean representing whether or not the dialog is fullscreen (default: false)
-//
 function VocabularyTree(props) {
-  const { open, path, onTermClick, registerInfo, getInfo, onClose, onError, browserRef, fullscreen, classes, ...rest } = props;
+  const { open, path, onTermClick, registerInfo, getInfo, onClose, onError, browserRef, classes, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
@@ -118,7 +115,7 @@ function VocabularyTree(props) {
       ref={browserRef}
       fullWidth
       maxWidth="sm"
-      fullscreen={fullscreen.toString()}
+      fullscreen="true"
       className={classes.dialog}
       onClose={onClose}
       classes={{
@@ -156,12 +153,7 @@ VocabularyTree.propTypes = {
   onClose: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
   browserRef: PropTypes.object.isRequired,
-  fullscreen: PropTypes.bool,
   classes: PropTypes.object.isRequired
 };
-
-VocabularyTree.defaultProps = {
-  fullscreen: true
-}
 
 export default withStyles(BrowseTheme)(VocabularyTree);

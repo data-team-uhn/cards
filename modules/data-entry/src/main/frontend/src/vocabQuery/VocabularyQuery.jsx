@@ -39,6 +39,7 @@ const MAX_RESULTS = 10;
 //  clearOnClick: Whether selecting an option will clear the search bar (default: true)
 //  onClick: Callback when the user clicks on this element
 //  focusAfterSelecting: focus after selecting (default: true)
+//  questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
 //
 // Optional arguments:
 //  disabled: Boolean representing whether or not this element is disabled
@@ -50,7 +51,6 @@ const MAX_RESULTS = 10;
 //  isNested: If true, restyles the element to remove most padding and apply a negative margin for better nesting
 //  placeholder: String to display as the input element's placeholder
 //  value: String to use as the input element value
-//  questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
 //  onChange: Callback in term input change event
 
 function VocabularyQuery(props) {
@@ -375,7 +375,7 @@ VocabularyQuery.propTypes = {
     isNested: PropTypes.bool,
     placeholder: PropTypes.string,
     value: PropTypes.string,
-    questionDefinition: PropTypes.object,
+    questionDefinition: PropTypes.object.isRequired,
     onChange: PropTypes.func,
 };
 
